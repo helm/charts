@@ -1,3 +1,4 @@
+{{- if .Values.nginx.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -44,13 +45,13 @@ spec:
               - '-c'
               - >
                 until [ -f /etc/nginx/conf.d/artifactory.conf ]; do sleep 1; done;
-                sed -i -e 's,proxy_pass .*,proxy_pass     {{ .Values.nginx.env.artUrl }}/;,g' \
-                    -e 's,server_name .*,server_name ~(?<repo>.+)\\.{{ .Values.artifactory.service.name }} {{ .Values.artifactory.service.name }};,g' \
+                sed -i -e 's,proxy_pass .*,proxy_pass     http://{{ template "artifactory.fullname" . }}:{{ .Values.artifactory.externalPort }}/artifactory/;,g' \
+                    -e 's,server_name .*,server_name ~(?<repo>.+)\\.{{ template "artifactory.fullname" . }} {{ template "artifactory.fullname" . }};,g' \
                     /etc/nginx/conf.d/artifactory.conf;
                 sleep 5; nginx -s reload; touch /var/log/nginx/conf.done
         env:
         - name: ART_BASE_URL
-          value: "{{ .Values.nginx.env.artUrl }}"
+          value: "http://{{ template "artifactory.fullname" . }}:{{ .Values.artifactory.externalPort }}/artifactory"
         - name: SSL
           value: "{{ .Values.nginx.env.ssl }}"
         ports:
@@ -69,3 +70,4 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+{{- end }}

@@ -3,7 +3,7 @@ kind: DaemonSet
 metadata:
   name: {{ template "name" . }}
 spec:
-  {{- if ge .Capabilities.KubeVersion.Minor "6" }}
+  {{- if semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion }}
   updateStrategy:
     type: RollingUpdate
   {{- end }}
@@ -12,6 +12,9 @@ spec:
       labels:
         daemonset: {{ template "name" . }}
     spec:
+      {{- if .Values.serviceAccount }}
+      serviceAccountName: {{ .Values.serviceAccount }}
+      {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}

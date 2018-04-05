@@ -47,6 +47,16 @@ spec:
           value: {{ .Values.postgresql.postgresDatabase }}
         - name: ANCHORE_DB_HOST
           value: {{ template "postgres.fullname" . }}
+        - name: ANCHORE_IO_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: anchoreIOUser
+        - name: ANCHORE_IO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: anchoreIOPassword
         - name: ANCHORE_DB_USER
           valueFrom:
             secretKeyRef:
@@ -88,3 +98,15 @@ spec:
           failureThreshold: 10
         resources:
 {{ toYaml .Values.coreConfig.resources | indent 10 }}
+    {{- if .Values.coreConfig.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.coreConfig.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.coreConfig.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.coreConfig.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

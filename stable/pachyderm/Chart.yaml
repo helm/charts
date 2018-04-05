@@ -10,8 +10,8 @@ keywords:
   - reproducibility
   - distributed
   - processing
-version: 0.1.3
-appVersion: 1.6.6
+version: 0.1.6
+appVersion: 1.7.0
 home: "https://pachyderm.io"
 sources:
   - "https://github.com/pachyderm/pachyderm"

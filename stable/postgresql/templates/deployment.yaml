@@ -25,10 +25,18 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       containers:
       - name: {{ template "postgresql.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        args:
+          {{- range $key, $value := default dict .Values.postgresConfig }}
+          - -c
+          - '{{ $key | snakecase }}={{ $value }}'
+          {{- end }}
         env:
         - name: POSTGRES_USER
           value: {{ default "postgres" .Values.postgresUser | quote }}
@@ -57,7 +65,7 @@ spec:
             - sh
             - -c
             - exec pg_isready --host $POD_IP
-          initialDelaySeconds: 60
+          initialDelaySeconds: 120
           timeoutSeconds: 5
           failureThreshold: 6
         readinessProbe:
@@ -73,7 +81,7 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: data
-          mountPath: /var/lib/postgresql/data/pgdata
+          mountPath: {{ .Values.persistence.mountPath }}
           subPath: {{ .Values.persistence.subPath }}
 {{- if .Values.metrics.enabled }}
       - name: metrics

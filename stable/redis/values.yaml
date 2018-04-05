@@ -1,18 +1,28 @@
 ## Bitnami Redis image version
 ## ref: https://hub.docker.com/r/bitnami/redis/tags/
 ##
-image: bitnami/redis:4.0.6-r1
-
-## Specify a imagePullPolicy
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-##
-imagePullPolicy: IfNotPresent
+image:
+  registry: docker.io
+  repository: bitnami/redis
+  tag: 4.0.9
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 ## Kubernetes service type
 serviceType: ClusterIP
 
 ## Pod Security Context
 securityContext:
+  enabled: true
   fsGroup: 1001
   runAsUser: 1001
 
@@ -34,6 +44,22 @@ usePassword: true
 ##  - "--maxmemory-policy volatile-ttl"
 args:
 
+## Redis additional command line flags
+##
+## Can be used to specify command line flags, for example:
+##
+## redisExtraFlags:
+##  - "--maxmemory-policy volatile-ttl"
+##  - "--repl-backlog-size 1024mb"
+redisExtraFlags:
+
+## Comma-separated list of Redis commands to disable
+##
+## Can be used to disable Redis commands for security reasons.
+## ref: https://github.com/bitnami/bitnami-docker-redis#disabling-redis-commands
+##
+redisDisableCommands: "FLUSHDB,FLUSHALL"
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -43,6 +69,9 @@ persistence:
   ## The path the volume will be mounted at, useful when using different
   ## Redis images.
   path: /bitnami
+
+  ## The subdirectory of the volume to mount to, useful in dev environments and one PV for multiple services.
+  subPath: ""
 
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true

@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "traefik.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "traefik.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,21 +11,26 @@ spec:
   replicas: {{ default 1 .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
+      app: {{ template "traefik.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
-      {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
         scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
       {{- end }}
+      {{- range $key, $value := .Values.deployment.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "traefik.name" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
     spec:
       {{- if .Values.rbac.enabled }}
-      serviceAccountName: {{ template "fullname" . }}
+      serviceAccountName: {{ template "traefik.fullname" . }}
       {{- else }}
       serviceAccountName: default
       {{- end }}
@@ -34,9 +39,13 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
-        name: {{ template "fullname" . }}
+        name: {{ template "traefik.fullname" . }}
         resources:
           requests:
             cpu: "{{ .Values.cpuRequest }}"
@@ -60,6 +69,16 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
+        {{- if and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name }}
+        env:
+        {{- range $k, $_ := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}
+          - name: {{ $k }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "traefik.fullname" $ }}-dnsprovider-config
+                key: {{ $k }}
+        {{- end }}
+        {{- end }}
         volumeMounts:
         - mountPath: /config
           name: config
@@ -100,17 +119,17 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "traefik.fullname" . }}
       {{- if .Values.ssl.enabled }}
       - name: ssl
         secret:
-          secretName: {{ template "fullname" . }}-default-cert
+          secretName: {{ template "traefik.fullname" . }}-default-cert
       {{- end }}
       {{- if .Values.acme.enabled }}
       - name: acme
       {{- if .Values.acme.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-acme
+          claimName: {{ .Values.acme.persistence.existingClaim | default (printf "%s-acme" (include "traefik.fullname" .)) }}
       {{- else }}
         emptyDir: {}
       {{- end }}

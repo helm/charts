@@ -17,10 +17,16 @@ spec:
         release: "{{ .Release.Name }}"
         component: "server"
     spec:
+      {{- if .Values.server.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.server.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "parse.fullname" . }}
-        image: "{{ .Values.server.image }}"
-        imagePullPolicy: {{ .Values.server.imagePullPolicy | quote }}
+        image: "{{ .Values.server.image.registry }}/{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+        imagePullPolicy: {{ .Values.server.image.pullPolicy | quote }}
         env:
         - name: PARSE_HOST
           value: "0.0.0.0"

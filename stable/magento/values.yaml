@@ -1,14 +1,21 @@
 ## Bitnami Magento image version
 ## ref: https://hub.docker.com/r/bitnami/magento/tags/
 ##
-
-image: bitnami/magento:2.2.2-r1
-
-## Specify a imagePullPolicy
-## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-##
-# imagePullPolicy:
+image:
+  registry: docker.io
+  repository: bitnami/magento
+  tag: 2.2.3
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 ## Magento host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-magento#configuration
@@ -64,65 +71,65 @@ allowEmptyPassword: "yes"
 ## External database configuration
 ##
 externalDatabase:
- ## Database host
- host:
+  ## Database host
+  host:
 
- ## Database host
- port: 3306
+  ## Database host
+  port: 3306
 
- ## Database user
- user: bn_magento
+  ## Database user
+  user: bn_magento
 
- ## Database password
- password:
+  ## Database password
+  password:
 
- ## Database name
- database: bitnami_magento
+  ## Database name
+  database: bitnami_magento
 
 
 ##
 ## MariaDB chart configuration
 ##
 mariadb:
- ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
- enabled: true
-
- ## MariaDB admin password
- ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
- ##
- # mariadbRootPassword:
-
- ## Create a database
- ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
- ##
- mariadbDatabase: bitnami_magento
-
- ## Create a database user
- ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
- ##
- mariadbUser: bn_magento
-
- ## Password for mariadbUser
- ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
- ##
- mariadbPassword: magento_db_password
-
-
- ## Enable persistence using Persistent Volume Claims
- ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
- ##
- persistence:
+  ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
   enabled: true
-  ## mariadb data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
+
+  ## MariaDB admin password
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##
-  # storageClass: "-"
-  accessMode: ReadWriteOnce
-  size: 8Gi
+  # mariadbRootPassword:
+
+  ## Create a database
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
+  ##
+  mariadbDatabase: bitnami_magento
+
+  ## Create a database user
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  mariadbUser: bn_magento
+
+  ## Password for mariadbUser
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  mariadbPassword: magento_db_password
+
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+    ## mariadb data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 8Gi
 
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
@@ -133,34 +140,34 @@ serviceType: LoadBalancer
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
- enabled: true
- apache:
-  ## apache data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  # storageClass: "-"
-  accessMode: ReadWriteOnce
-  size: 1Gi
- magento:
-  ## magento data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  # storageClass: "-"
-  accessMode: ReadWriteOnce
-  size: 8Gi
+  enabled: true
+  apache:
+    ## apache data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 1Gi
+  magento:
+    ## magento data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 8Gi
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
 resources:
- requests:
-  memory: 512Mi
-  cpu: 300m
+  requests:
+    memory: 512Mi
+    cpu: 300m

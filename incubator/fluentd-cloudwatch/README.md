@@ -15,6 +15,7 @@ This chart bootstraps a [Fluentd](https://www.fluentd.org/) [Cloudwatch](https:/
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
+- [kube2iam](../../stable/kube2iam) installed to used the **awsRole** config option
 
 ## Installing the Chart
 
@@ -23,6 +24,8 @@ To install the chart with the release name `my-release`:
 ```console
 $ # edit secrets/aws_access_key_id and secrets/aws_access_key_id with the key/password of a AWS user with a policy to access  Cloudwatch
 $ helm install --name my-release incubator/fluentd-cloudwatch
+$ # or add a role to aws with the correct policy to add to cloud watch
+$ helm install --name my-release incubator/fluentd-cloudwatch --set awsRole=roll_name_here
 ```
 
 The command deploys Fluentd Cloudwatch on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -53,8 +56,12 @@ The following tables lists the configurable parameters of the Fluentd Cloudwatch
 | `hostNetwork`                   | Host network                               | `false`                                                    |
 | `annotations` (removed for now) | Annotations                                | `nil`                                                      |
 | `awsRegion`                     | AWS Cloudwatch region                      | `us-east-1`                                                |
+| `awsRole`                       | AWS IAM Role To Use                        | `nil`                                                      |
 | `fluentdConfig`                 | Fluentd configuration                      | `example configuration`                                    |
 | `logGroupName`                  | AWS Cloudwatch log group                   | `kubernetes`                                               |
+| `rbac.create`                   | If true, create & use RBAC resources       | `false`                                                    |
+| `rbac.serviceAccountName`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`                                |
+| `tolerations`                   | Add tolerations                            | `[]`                                                       |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

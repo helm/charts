@@ -2,6 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
+
+updateStrategy:
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
+
 image:
   repository: registry
   tag: 2.6.2
@@ -10,6 +17,7 @@ service:
   name: registry
   type: ClusterIP
   port: 5000
+  # nodePort:
   annotations: {}
   # foo.io/bar: "true"
 ingress:
@@ -42,17 +50,26 @@ persistence:
   size: 10Gi
   # storageClass: '-'
 
-# set the type of filesystem to use
+# set the type of filesystem to use: filesystem, s3
 storage: filesystem
 
 # Set this to name of secret for tls certs
 # tlsSecretName: registry.docker.example.com
 secrets:
   haSharedSecret: ""
+  htpasswd: ""
 # Secrets for S3 access and secret keys
 #   s3:
 #     accessKey: ""
 #     secretKey: ""
+
+# Options for s3 storage type:
+# s3:
+#  region: us-east-1
+#  bucket: my-bucket
+#  encrypt: false
+#  secure: true
+
 configData:
   version: 0.1
   log:

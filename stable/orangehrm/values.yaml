@@ -1,12 +1,21 @@
 ## Bitnami OrangeHRM image version
 ## ref: https://hub.docker.com/r/bitnami/orangehrm/tags/
 ##
-image: bitnami/orangehrm:4.0.0-r0
-
-## Specify a imagePullPolicy
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-##
-imagePullPolicy: IfNotPresent
+image:
+  registry: docker.io
+  repository: bitnami/orangehrm
+  tag: 4.0.0
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-orangehrm#configuration
@@ -18,6 +27,30 @@ orangehrmUsername: admin
 ## ref: https://github.com/bitnami/bitnami-docker-orangehrm#configuration
 ##
 # orangehrmPassword:
+
+## Set to `yes` to allow the container to be started with blank passwords
+## ref: https://github.com/bitnami/bitnami-docker-orangehrm#environment-variables
+allowEmptyPassword: "yes"
+
+##
+## External database configuration
+##
+externalDatabase:
+  ## Database host
+  host:
+
+  ## Database host
+  port: 3306
+
+  ## Database user
+  user: bn_orangehrm
+
+  ## Database password
+  password:
+
+  ## Database name
+  database: bitnami_orangehrm
+
 
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-orangehrm/#smtp-configuration
@@ -31,6 +64,24 @@ orangehrmUsername: admin
 ## MariaDB chart configuration
 ##
 mariadb:
+  ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
+  enabled: true
+
+  ## Create a database
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
+  ##
+  mariadbDatabase: bitnami_orangehrm
+
+  ## Create a database user
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  mariadbUser: bn_orangehrm
+
+  ## Password for mariadbUser
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  # mariadbPassword:
+
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##

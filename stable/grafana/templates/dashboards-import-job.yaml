@@ -1,0 +1,52 @@
+{{- if .Values.dashboardImports.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    "helm.sh/hook": {{ .Values.dashboardImports.hook }}
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  labels:
+    app: {{ template "grafana.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "grafana.server.fullname" . }}-import-dashboards
+spec:
+  activeDeadlineSeconds: {{ .Values.dashboardImports.activeDeadlineSeconds }}
+  backoffLimit: {{ .Values.dashboardImports.backoffLimit }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "grafana.fullname" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      volumes:
+        - name: dashboards-import-volume
+          configMap:
+            name: {{ template "grafana.server.fullname" . }}-dashboardimport
+        - name: dashboards-script-volume
+          configMap:
+            name: {{ template "grafana.server.fullname" . }}-import-script
+      containers:
+        - name: {{ template "grafana.server.fullname" . }}-dashboardimport
+          image: "{{ .Values.dashboardImports.image }}"
+          volumeMounts:
+            - name: dashboards-import-volume
+              mountPath: "/var/lib/grafana/import"
+            - name: dashboards-script-volume
+              mountPath: "/var/lib/grafana/script"
+          env:
+            - name: ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "grafana.server.fullname" . }}
+                  key: grafana-admin-user
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "grafana.server.fullname" . }}
+                  key: grafana-admin-password
+          command: ["/bin/sh", "-x", "/var/lib/grafana/script/init.sh"]
+      restartPolicy: {{ .Values.dashboardImports.restartPolicy }}
+{{- end -}}

@@ -3,17 +3,53 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 
-image: k8s.gcr.io/kubernetes-dashboard-amd64
-imageTag: "v1.7.1"
-imagePullPolicy: "IfNotPresent"
+image:
+  repository: k8s.gcr.io/kubernetes-dashboard-amd64
+  tag: v1.8.3
+  pullPolicy: IfNotPresent
 
+## Here labels can be added to the kubernets dashboard deployment
+##
+labels: {}
+# kubernetes.io/cluster-service: "true"
+# kubernetes.io/name: "Kuberetes Dashboard"
+
+## Additional container arguments
+##
+# extraArgs:
+#   - --enable-insecure-login
+#   - --system-banner="Welcome to Kubernetes"
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
 nodeSelector: {}
 
-httpPort: 80
+## List of node taints to tolerate (requires Kubernetes >= 1.6)
+tolerations: []
+#  - key: "key"
+#    operator: "Equal|Exists"
+#    value: "value"
+#    effect: "NoSchedule|PreferNoSchedule|NoExecute"
 
-serviceType: ClusterIP
-serviceAnnotations: {}
+service:
+  type: ClusterIP
+  externalPort: 443
+
+  ## This allows an override of the heapster service name
+  ## Default: {{ .Chart.Name }}
+  ##
+  # nameOverride:
+
+  ## Kubernetes Dashboard Service annotations
+  ##
+  annotations: {}
   # foo.io/bar: "true"
+
+  ## Here labels can be added to the Kubernetes Dashboard service
+  ##
+  labels: {}
+  # kubernetes.io/name: "Kubernetes Dashboard"
 
 resources:
   limits:
@@ -49,10 +85,16 @@ ingress:
   #       - kubernetes-dashboard.domain.com
 
 rbac:
-  ## If true, create & use RBAC resources
-  #
-  create: false
+  # Specifies whether RBAC resources should be created
+  create: true
 
-  ## Ignored if rbac.create is true
-  #
-  serviceAccountName: default
+  # Specifies whether cluster-admin ClusterRole will be used for dashboard
+  # ServiceAccount (NOT RECOMMENDED).
+  clusterAdminRole: false
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:

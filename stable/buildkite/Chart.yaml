@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Agent for Buildkite
 name: buildkite
-version: 0.2.0
+version: 0.2.2
 appVersion: 3.0
 icon: https://github.com/buildkite/media/blob/master/marks/Buildkite%20-%20Mark%20-%20colour.png
 keywords:
