@@ -5,6 +5,10 @@ image:
   tag: 5.0.4
   pullPolicy: IfNotPresent
 
+downloadDashboardsImage:
+  repository: appropriate/curl
+  tag: latest
+  pullPolicy: IfNotPresent
 ## Expose the grafana service to be accessed from outside the cluster (LoadBalancer service).
 ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -104,26 +108,19 @@ dashboardProviders: {}
 #        path: /var/lib/grafana/dashboards
 
 ## Configure grafana dashboard to import
+## NOTE: To use dashboards you must also enable/configure dashboardProviders
 ## ref: https://grafana.com/dashboards
 ##
-dashboards: []
-#  - name: some-dashboard
+dashboards: {}
+#  some-dashboard:
 #    json: |
 #      $RAW_JSON
-#  - name: prometheus-stats
+#  prometheus-stats:
 #    gnetId: 2
 #    revision: 2
 #    datasource: Prometheus
-#  - name: node-exporter-service-metrics
+#  node-exporter-service-metrics:
 #    gnetId: 405
-#    revision: 6
-#    datasource: Prometheus
-#  - name: kubernetes-cluster-monitoring-via-prometheus
-#    gnetId: 1621
-#    datasource: Prometheus
-#  - name: kubernetes-node-exporter-full
-#    gnetId: 3320
-#    datasource: Prometheus
 
 ## Grafana's primary configuration
 ## NOTE: values in map will be converted to ini format
@@ -141,8 +138,5 @@ grafana.ini:
   log:
     mode: console
     level: info
-  dashboards.json:
-    enabled: true
-    path: /var/lib/grafana/dashboards
   grafana_net:
     url: https://grafana.net

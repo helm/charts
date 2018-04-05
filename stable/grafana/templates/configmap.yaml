@@ -38,15 +38,15 @@ data:
     #!/usr/bin/env sh
     set -euf
     mkdir -p /var/lib/grafana/dashboards
-  {{- range .Values.dashboards }}
-    {{ if .gnetId }}
+  {{- range $key, $value := .Values.dashboards }}
+    {{ if hasKey $value "gnetId" }}
     curl -sk \
     --connect-timeout 60 \
     --max-time 60 \
     -H "Accept: application/json" \
     -H "Content-Type: application/json;charset=UTF-8" \
-    https://grafana.com/api/dashboards/{{ .gnetId }}/revisions/{{ default 1 .revision }}/download {{ if .datasource }}| sed 's|\"datasource\":[^,]*|\"datasource\": \"{{ .datasource }}\"|g'{{ end }} \
-    > /var/lib/grafana/dashboards/{{ .name }}.json
+    https://grafana.com/api/dashboards/{{ $value.gnetId }}/revisions/{{ default 1 $value.revision }}/download {{ if $value.datasource }}| sed 's|\"datasource\":[^,]*|\"datasource\": \"{{ $value.datasource }}\"|g'{{ end }} \
+    > /var/lib/grafana/dashboards/{{ $key }}.json
     {{- end }}
   {{- end }}
 {{- end }}

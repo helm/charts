@@ -8,11 +8,11 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-{{- if .Values.dashboards  }}
-  {{- range .Values.dashboards }}
-    {{ if .json }}
-  {{ .name }}.json: |
-    {{ .json }}
+{{- if .Values.dashboards }}
+  {{- range $key, $value := .Values.dashboards }}
+    {{ if hasKey $value "json" }}
+  {{ $key }}.json: |
+    {{ $value.json }}
     {{- end }}
   {{- end }}
 {{- end -}}

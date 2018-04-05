@@ -26,7 +26,8 @@ spec:
 {{- if .Values.dashboards }}
       initContainers:
         - name: download-dashboards
-          image: appropriate/curl
+          image: "{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
+          imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
           command: ["sh", "/etc/grafana/download_dashboards.sh"]
           volumeMounts:
             - name: config
@@ -45,11 +46,11 @@ spec:
               mountPath: "/etc/grafana/grafana.ini"
               subPath: grafana.ini
 {{- if .Values.dashboards }}
-  {{- range .Values.dashboards }}
-    {{- if .json }}
+  {{- range $key, $value := .Values.dashboards }}
+    {{ if hasKey $value "json" }}
             - name: dashboards-json
-              mountPath: "/var/lib/grafana/dashboards/{{ .name }}.json"
-              subPath: {{ .name }}.json
+              mountPath: "/var/lib/grafana/dashboards/{{ $key }}.json"
+              subPath: {{ $key }}.json
     {{- end }}
   {{- end }}
 {{- end -}}
