@@ -1,5 +1,6 @@
 name: memcached
-version: 2.0.3
+version: 2.0.4
+appVersion: 1.5.6
 description: Free & open source, high-performance, distributed memory object caching
   system.
 keywords:
