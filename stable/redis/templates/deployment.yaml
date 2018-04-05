@@ -33,10 +33,16 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         {{- if .Values.args }}
         args:
 {{ toYaml .Values.args | indent 10 }}
@@ -52,6 +58,8 @@ spec:
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
         {{- end }}
+        - name: REDIS_DISABLE_COMMANDS
+          value: {{ .Values.redisDisableCommands }}
         {{- if .Values.redisExtraFlags }}
         - name: REDIS_EXTRA_FLAGS
           value: {{ .Values.redisExtraFlags | join " " }}

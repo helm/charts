@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 image:
-  repository: kuberstack/bitcoind
+  repository: arilot/docker-bitcoind
   tag: 0.15.1
   pullPolicy: IfNotPresent
 
@@ -12,7 +12,6 @@ service:
   p2pPort: 8333
   testnetPort: 18332
   testnetP2pPort: 18333
-  selector: tx-broadcast-svc
 
 persistence:
   enabled: true

@@ -31,7 +31,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Parameter                                 | Description                         | Default                                           |
 |-------------------------------------------|-------------------------------------|---------------------------------------------------|
-| `server.image`                            | Container image to run              | grafana/grafana:4.6.3                             |
+| `server.image`                            | Container image to run              | grafana/grafana:5.0.4                             |
 | `server.adminUser`                        | Admin user username                 | admin                                             |
 | `server.adminPassword`                    | Admin user password                 | Randomly generated                                |
 | `server.antiAffinity.enabled`             | Enable anti affinity                | false                                             |
@@ -56,3 +56,4 @@ The command removes all the Kubernetes components associated with the chart and 
 | `server.service.type`                     | ClusterIP, NodePort, or LoadBalancer| ClusterIP                                         |
 | `server.setDatasource.enabled`            | Creates grafana datasource with job | false                                             |
 | `server.extraEnv`                          | Extra environment variables to set in the server container. List of [EnvVar](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#envvar-v1-core) values | [] |
+| `dashboardImports.enabled`                | Creates grafana dashboards with job | false |

@@ -157,7 +157,7 @@ $ helm install --name artifactory-ha --set artifactory.license.secret=artifactor
 **NOTE:** You have to keep passing the license secret parameters as `--set artifactory.license.secret=artifactory-cluster-license,artifactory.license.dataKey=art.lic` on all future calls to `helm install` and `helm upgrade`!
 
 #### Scaling your Artifactory cluster
-A key feature in Artifactory HA ia the ability to set an initial cluster size with `--set artifactory.node.replicaCount=${CLUSTER_SIZE}` and if needed, resize it.
+A key feature in Artifactory HA is the ability to set an initial cluster size with `--set artifactory.node.replicaCount=${CLUSTER_SIZE}` and if needed, resize it.
 
 ##### Before scaling
 **IMPORTANT:** When scaling, you need to explicitly pass the database password if it's an auto generated one (this is the default with the enclosed PostgreSQL helm chart).
@@ -238,7 +238,7 @@ $ helm install --name artifactory-ha --set imagePullSecrets=regsecret stable/art
 
 ## Configuration
 
-The following tables lists the configurable parameters of the artifactory chart and their default values.
+The following table lists the configurable parameters of the artifactory chart and their default values.
 
 |         Parameter            |           Description             |                         Default                       |
 |------------------------------|-----------------------------------|-------------------------------------------------------|
@@ -246,7 +246,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `artifactory.name`                   | Artifactory name                     | `artifactory`                              |
 | `artifactory.image.pullPolicy`       | Container pull policy                | `IfNotPresent`                             |
 | `artifactory.image.repository`       | Container image                      | `docker.bintray.io/jfrog/artifactory-pro`  |
-| `artifactory.image.version`          | Container image tag                  | `5.8.4`                                    |
+| `artifactory.image.version`          | Container image tag                  | `5.9.1`                                    |
 | `artifactory.masterKey`      | Artifactory Master Key. Can be generated with `openssl rand -hex 32` |`FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF`|
 | `artifactory.license.secret` | Artifactory license secret name              |                                            |
 | `artifactory.license.dataKey`| Artifactory license secret data key          |                                            |
@@ -295,7 +295,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `nginx.name`                | Nginx name                        | `nginx`                                                |
 | `nginx.replicaCount`        | Nginx replica count               | `1`                                                    |
 | `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`        |
-| `nginx.image.version`       | Container version                 | `5.8.4`                                                |
+| `nginx.image.version`       | Container version                 | `5.9.1`                                                |
 | `nginx.image.pullPolicy`    | Container pull policy             | `IfNotPresent`                                         |
 | `nginx.service.type`        | Nginx service type                | `LoadBalancer`                                         |
 | `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |  |
