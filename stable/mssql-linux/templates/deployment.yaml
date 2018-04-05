@@ -41,6 +41,10 @@ spec:
               value: "{{ .Values.service.port }}"
             - name: MSSQL_BACKUP_DIR
               value: "/mssql-backup/backup"
+            - name: MSSQL_COLLATION
+              value: "{{ .Values.collation }}"
+            - name: MSSQL_LCID
+              value: "{{ .Values.lcid }}"
           ports:
             - name: mssql
               containerPort: {{ .Values.service.port }}
