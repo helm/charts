@@ -178,6 +178,40 @@ controller:
       http: ""
       https: ""
 
+  extraContainers: {}
+  ## Additional containers to be added to the controller pod.
+  ## See https://github.com/lemonldap-ng-controller/lemonldap-ng-controller as example.
+  #  - name: my-sidecar
+  #    image: nginx:latest
+  #  - name: lemonldap-ng-controller
+  #    image: lemonldapng/lemonldap-ng-controller:0.2.0
+  #    args:
+  #      - /lemonldap-ng-controller
+  #      - --alsologtostderr
+  #      - --configmap=$(POD_NAMESPACE)/lemonldap-ng-configuration
+  #    env:
+  #      - name: POD_NAME
+  #        valueFrom:
+  #          fieldRef:
+  #            fieldPath: metadata.name
+  #      - name: POD_NAMESPACE
+  #        valueFrom:
+  #          fieldRef:
+  #            fieldPath: metadata.namespace
+  #    volumeMounts:
+  #    - name: copy-portal-skins
+  #      mountPath: /srv/var/lib/lemonldap-ng/portal/skins
+
+  extraVolumeMounts: {}
+  ## Additional volumeMounts to the controller main container.
+  #  - name: copy-portal-skins
+  #   mountPath: /var/lib/lemonldap-ng/portal/skins
+
+  extraVolumes: {}
+  ## Additional volumes to the controller pod.
+  #  - name: copy-portal-skins
+  #    emptyDir: {}
+
   stats:
     enabled: false
 
