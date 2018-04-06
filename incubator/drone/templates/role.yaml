@@ -1,0 +1,22 @@
+{{ if .Values.rbac.install }}
+{{- $serviceName := include "drone.fullname" . -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: {{ $serviceName }}
+  labels:
+    app: {{ $serviceName }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+rules:
+  - apiGroups:
+      - extensions
+    resources:
+      - deployments
+    verbs:
+      - get
+      - list
+      - patch
+      - update
+{{ end }}

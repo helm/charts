@@ -24,6 +24,7 @@ spec:
       affinity:
 {{ toYaml .Values.server.affinity | indent 8 }}
 {{- end }}
+      serviceAccountName: {{ if .Values.rbac.install }}{{ template "drone.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
       - name: {{ template "drone.fullname" . }}-server
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
