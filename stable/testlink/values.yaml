@@ -1,13 +1,21 @@
 ## Bitnami TestLink image version
 ## ref: https://hub.docker.com/r/bitnami/testlink/tags/
 ##
-image: bitnami/testlink:1.9.16-r11
-
-## Specify a imagePullPolicy
-## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-##
-# imagePullPolicy:
+image:
+  registry: docker.io
+  repository: bitnami/testlink
+  tag: 1.9.16
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 ## Admin username
 ## ref: https://github.com/bitnami/bitnami-docker-testlink#environment-variables
