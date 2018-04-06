@@ -1,5 +1,3 @@
-NOTE: this chart has been DEPRECATED. Please see stable/chartmuseum.
-
 ** Please be patient while the chart is being deployed **
 
 Get the ChartMuseum URL by running:
