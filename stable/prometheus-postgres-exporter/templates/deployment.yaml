@@ -31,7 +31,7 @@ spec:
                   key: data_source_name
                   name: {{ template "prometheus-postgres-exporter.fullname" . }}
           args: 
-            - -extend.query-path: /config
+            - extend.query-path: /config
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
