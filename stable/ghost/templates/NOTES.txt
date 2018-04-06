@@ -36,7 +36,7 @@ host. To configure Ghost with the URL of your service:
 
 {{- else if eq .Values.serviceType "NodePort" }}
   export APP_HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  export APP_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
+  export APP_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "ghost.fullname" . }})
 
   echo Blog URL  : http://$APP_HOST:$APP_PORT/
   echo Admin URL : http://$APP_HOST:$APP_PORT/ghost
