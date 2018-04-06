@@ -1,0 +1,16 @@
+{{ if .Values.filebeat.logstash.externalName }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "dmarc2logstash.fullname" . }}
+  labels:
+    app: {{ template "dmarc2logstash.name" . }}
+    chart: {{ template "dmarc2logstash.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: ExternalName
+  externalName: {{ .Values.filebeat.logstash.externalName }}
+  ports:
+  - port: {{ .Values.filebeat.logstash.port }}
+{{ end }}
