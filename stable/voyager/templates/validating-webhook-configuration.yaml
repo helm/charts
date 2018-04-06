@@ -1,0 +1,39 @@
+{{- if .Values.apiserver.enableAdmissionWebhook }}
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: admission.voyager.appscode.com
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "voyager.name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+webhooks:
+- name: admission.voyager.appscode.com
+  clientConfig:
+    service:
+      namespace: default
+      name: kubernetes
+      path: /apis/admission.voyager.appscode.com/v1beta1/admissionreviews
+    caBundle: {{ b64enc .Values.apiserver.ca }}
+  rules:
+  - operations:
+    - CREATE
+    - UPDATE
+    apiGroups:
+    - voyager.appscode.com
+    apiVersions:
+    - "*"
+    resources:
+    - "*"
+  - operations:
+    - CREATE
+    - UPDATE
+    apiGroups:
+    - extensions
+    apiVersions:
+    - v1beta1
+    resources:
+    - ingresses
+  failurePolicy: Fail
+{{ end }}

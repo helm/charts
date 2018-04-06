@@ -1,0 +1,15 @@
+apiVersion: v1
+appVersion: "0.15.2"
+description: A Helm chart for prometheus node-exporter
+name: prometheus-node-exporter
+version: 0.1.1
+home: https://github.com/prometheus/node_exporter/
+sources:
+- https://github.com/prometheus/node_exporter/
+keywords:
+- node-exporter
+- prometheus
+- exporter
+maintainers:
+- email: gianrubio@gmail.com
+  name: gianrubio

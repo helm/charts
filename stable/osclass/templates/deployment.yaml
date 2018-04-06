@@ -14,20 +14,48 @@ spec:
       labels:
         app: {{ template "osclass.fullname" . }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "osclass.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: {{ .Values.allowEmptyPassword | quote }}
+        {{- if .Values.mariadb.enabled }}
         - name: MARIADB_HOST
           value: {{ template "osclass.mariadb.fullname" . }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
-        - name: MARIADB_PASSWORD
+        - name: OSCLASS_DATABASE_NAME
+          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+        - name: OSCLASS_DATABASE_USER
+          value: {{ .Values.mariadb.mariadbUser | quote }}
+        - name: OSCLASS_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "osclass.mariadb.fullname" . }}
-              key: mariadb-root-password
+              key: mariadb-password
+        {{- else }}
+        - name: MARIADB_HOST
+          value: {{ .Values.externalDatabase.host | quote }}
+        - name: MARIADB_PORT_NUMBER
+          value: {{ .Values.externalDatabase.port | quote }}
+        - name: OSCLASS_DATABASE_NAME
+          value: {{ .Values.externalDatabase.database | quote }}
+        - name: OSCLASS_DATABASE_USER
+          value: {{ .Values.externalDatabase.user | quote }}
+        - name: OSCLASS_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              key: db-password
+        {{- end }}
         - name: OSCLASS_HOST
           value: {{ include "osclass.host" . | quote }}
         - name: OSCLASS_USERNAME
