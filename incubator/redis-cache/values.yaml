@@ -2,8 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-##Statefulset related configurations ss.yaml
-antiAffinity : "hard"
+## Statefulset related configurations ss.yaml
+antiAffinity: "hard"
 replicaCount: 3
 redis:
   image:
