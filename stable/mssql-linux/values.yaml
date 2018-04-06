@@ -12,7 +12,7 @@ service:
   type: ClusterIP
   port: 1433
 persistence:
-  enabled: false
+  enabled: true
   # existingDataClaim:
   # existingTransactionLogClaim:
   # existingBackupClaim:
