@@ -1,5 +1,6 @@
 name: factorio
-version: 0.3.0
+version: 0.3.1
+appVersion: 0.14.22
 description: Factorio dedicated server.
 keywords:
 - game
