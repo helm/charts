@@ -14,7 +14,7 @@
 2. Login with the following credentials
 
    username: admin
-   password: admin123
+   password: {{ .Values.nexusBackup.nexusAdminPassword }}
 
 3. Change Your password after the first login
 
