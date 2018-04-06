@@ -136,14 +136,14 @@ spec:
         - name: nexus-data
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "nexus.fullname" . }}-data
+            claimName: {{ .Values.persistence.existingClaim | default (printf "%s-%s" (include "nexus.fullname" .) "data") }}
           {{- else }}
           emptyDir: {}
           {{- end }}
         - name: nexus-backup
           {{- if .Values.nexusBackup.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "nexus.fullname" . }}-backup
+            claimName: {{ .Values.nexusBackup.persistence.existingClaim | default (printf "%s-%s" (include "nexus.fullname" .) "backup") }}
           {{- else }}
           emptyDir: {}
           {{- end }}

@@ -55,6 +55,7 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
+  # existingClaim:
   # annotations:
   #  "helm.sh/resource-policy": keep
   # storageClass: "-"
@@ -70,6 +71,7 @@ nexusBackup:
   nexusAdminPassword: "admin123"
   persistence:
     enabled: true
+    # existingClaim:
     # annotations:
     #  "helm.sh/resource-policy": keep
     accessMode: ReadWriteOnce
