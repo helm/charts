@@ -6,12 +6,6 @@ env:
   #   http://generator.swagger.io/api/swagger.json
   API_URL:
 
-# External dependencies, used for enhanced authentication
-nginx-ingress:
-  enabled: true
-oauth2-proxy:
-  enabled: true
-
 image:
   repository: swaggerapi/swagger-ui
   tag: v3.9.3

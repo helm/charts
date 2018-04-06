@@ -3,7 +3,7 @@
 Swagger UI is a collection of HTML, Javascript, and CSS assets that dynamically generate beautiful documentation from a Swagger-compliant API.
 
 
-This chart allows for setting the Swagger UI behind basic auth or oauth, by taking advantage of the [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress) and [`oauth2-proxy`](https://github.com/kubernetes/charts/tree/master/stable/oauth2-proxy) charts.
+This chart allows for setting the Swagger UI behind basic auth or oauth, by taking advantage of the [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress) and [`oauth2-proxy`](https://github.com/kubernetes/charts/tree/master/stable/oauth2-proxy) charts, which should be installed and managed seperately.
 
 
 ### Prerequisites
@@ -29,8 +29,6 @@ The following tables lists the configurable parameters of the Swagger UI chart a
 |              Parameter                   |               Description                   |             Default             |
 |------------------------------------------|---------------------------------------------|---------------------------------|
 | `env.API_URL`                            | URL to fetch configuration document from.   | `nil`                           |
-| `nginx-ingress.enabled`                  | Install dependency: nginx-ingress           | `false`                         |
-| `oauth2-proxy.enabled`                   | Install dependency: oauth2-proxy            | `false`                         |
 | `image.repository`                       | Swagger ui image                            | `swaggerapi/swagger-ui`         |
 | `image.tag`                              | Swagger ui image tag                        | `v3.9.3`                        |
 | `image.pullPolicy`                       | Image pull policy                           | `IfNotPresent`                  |
@@ -66,9 +64,6 @@ ingress:
     - test.example.com
     secretName: swagger-tls
 
-nginx-ingress:
-  enabled: true
-
 cert-manager:
   ingressShim:
     extraArgs:
@@ -93,14 +88,11 @@ ingress:
   basicAuth:
     enabled: true
     secret: YWRtaW46JGFwcjEkUm4zVHBwNDUkb2VOd0JoeWtWWHh0bUNmNnJ1Y2VaMAo=
-
-nginx-ingress:
-  enabled: true
 ```
 
 **Oauth**
 
-An example using Github as a backend for Oauth:
+An example using `oauth2-proxy` and `nginx-ingress` with Github as a backend. More documentation on [how to use Github as a backend](https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/external-auth/README.md):
 ```yaml
 ingress:
   enabled: true
@@ -108,11 +100,7 @@ ingress:
   oauth:
     enabled: true
 
-nginx-ingress:
-  enabled: true
-
 oauth2-proxy:
-  enabled: true
   config:
     # OAuth client ID
     clientID: ""
