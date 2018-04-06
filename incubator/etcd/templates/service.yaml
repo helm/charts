@@ -6,16 +6,17 @@ metadata:
 metadata:
   name: {{ template "etcd.fullname" . }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    app: {{ template "etcd.name" . }}
+    chart: {{ template "etcd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   ports:
-  - port: {{ .Values.PeerPort }}
+  - port: 2380
     name: etcd-server
-  - port: {{ .Values.ClientPort }}
+  - port: 2379
     name: etcd-client
   clusterIP: None
   selector:
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    app: {{ template "etcd.name" . }}
+    release: {{ .Release.Name }}

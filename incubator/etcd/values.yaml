@@ -1,31 +1,40 @@
-# Default values for etcd.
-# This is a YAML-formatted file.
-# Declare name/value pairs to be passed into your templates.
-# name: value
+# Replicas scales the cluster with the "helm upgrade" command
+# The recommended etcd cluster size is 3, 5 or 7,
+# which is decided by the fault tolerance requirement.
+# A 7-member cluster can provide enough fault tolerance in most cases.
+# While larger cluster provides better fault tolerance the write performance
+# reduces since data needs to be replicated to more machines.
+replicaCount: 3
 
-Name: etcd
-PeerPort: 2380
-ClientPort: 2379
-Component: "etcd"
-Replicas: 3
-Image: "k8s.gcr.io/etcd-amd64"
-ImageTag: "2.2.5"
-ImagePullPolicy: "Always"
-Cpu: "100m"
-Memory: "512Mi"
-Storage: "1Gi"
-## etcd data Persistent Volume Storage Class
-## If defined, StorageClassName: <storageClass>
-## If set to "-", StorageClassName: "", which disables dynamic provisioning
-## If undefined (the default) or set to null, no storageClassName spec is
-##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-##   GKE, AWS & OpenStack)
-##
-# storageClass: "-"
+image:
+  repository: k8s.gcr.io/etcd-amd64
+  tag: 3.2.14
+  ImagePullPolicy: IfNotPresent
 
-## Node labels and tolerations for pod assignment
+etcd:
+  peerTLS: false
+
+resources: {}
+  # If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 200m
+  #  memory: 1Gi
+  # requests:
+  #  cpu: 100m
+  #  memory: 512Mi
+
+persistentVolume:
+  size: 1G
+  storageClass: ""
+  annotations: {}
+  accessModes:
+    - ReadWriteOnce
+
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-NodeSelector: {}
-Tolerations: []
-Affinity: {}
+tolerations: []
+
+antiAffinity: "soft"

@@ -1,0 +1,176 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "etcd.fullname" . }}
+  labels:
+    app: {{ template "etcd.name" . }}
+    chart: {{ template "etcd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  init.sh: |
+    #!/bin/sh
+    set -ex
+
+    HOSTNAME=$(hostname)
+    IP=$(ip r get 1 | awk '{print $NF;exit}')
+    PROTO=http{{- if .Values.etcd.peerTLS }}s{{- end }}
+
+    # store member id into PVC for later member replacement
+    collect_member() {
+      while ! etcdctl member list &>/dev/null; do sleep 1; done
+      etcdctl member list | grep http://${HOSTNAME}.${SET_NAME}.${POD_NAMESPACE}:2379 | cut -d':' -f1 | cut -d'[' -f1 > /etcd/member_id
+      exit 0
+    }
+
+    # endpoint of the first etcd member
+    ep() {
+      echo "http://${SET_NAME}-0.${SET_NAME}.${POD_NAMESPACE}:2379"
+    }
+
+    # wait for the given hostname to become available to the network
+    await_host() {
+      echo "Waiting for [${1}] to come up "
+      while true; do
+        echo -n '.'
+        ping -W 1 -c 1 ${1} > /dev/null && break
+        sleep 1s
+      done
+      echo -n " done"
+    }
+
+    # add a new member to the etcd cluster
+    add_member() {
+      EPS=$(ep)
+      MEMBER_LIST=$(etcdctl --endpoints ${EPS} member list)
+
+      if echo "${MEMBER_LIST}" | grep ${HOSTNAME}; then
+        echo "Removing old member [${HOSTNAME}] from etcd cluster"
+        MEMBER_ID=$(echo "$MEMBER_LIST" | grep ${HOSTNAME} | cut -d':' -f1 | cut -d'[' -f1)
+        etcdctl --endpoints ${EPS} member remove ${MEMBER_ID}
+      fi
+
+      if [ -e $ETCD_DATA_DIR ]; then
+        echo "Removing old data dir [${ETCD_DATA_DIR}] "
+        rm -Rf $ETCD_DATA_DIR
+      fi
+
+      echo "Adding [${HOSTNAME}] as a new member"
+      STR_ENV="ETCD_"
+      ETCD_PREFIX=$(etcdctl --endpoints ${EPS} member add ${HOSTNAME} ${PROTO}://${HOSTNAME}.${SET_NAME}.${POD_NAMESPACE}:2380 | \
+      {
+        while read i
+          do
+            if test "${i#*$STR_ENV}" != "$i"; then
+              ETCD_PREFIX="$ETCD_PREFIX $i"
+            fi
+          done
+        echo "export $ETCD_PREFIX" | sed 's/"//g'
+      })
+      eval \${ETCD_PREFIX}
+
+      collect_member &
+      echo "Start etcd daemon"
+      exec etcd \
+        --listen-peer-urls ${PROTO}://${IP}:2380 \
+        --initial-advertise-peer-urls ${PROTO}://${HOSTNAME}.${SET_NAME}.${POD_NAMESPACE}:2380 \
+        --listen-client-urls http://${IP}:2379,http://127.0.0.1:2379 \
+        {{- if .Values.etcd.peerTLS }}
+        --peer-auto-tls \
+        {{- end }}
+        --advertise-client-urls http://${HOSTNAME}.${SET_NAME}.${POD_NAMESPACE}:2379
+    }
+
+    # <release-name>-etcd-<set-id>
+    SET_ID=${HOSTNAME##*-}
+
+    # are we rejoining after a failure?
+    if [ -e /etcd/member_id ]; then
+        echo "Found old member ID, attempting to rejoin the etcd cluster"
+
+        MEMBER_ID=$(cat /etcd/member_id)
+
+        # if we are the first member we can't resolve over the default endpoint
+        # attempt to resolve over the defined service instead
+        if [ "${SET_ID}" -eq 0 ]; then
+          EPS="http://${SET_NAME}.${POD_NAMESPACE}:2379"
+        else
+          EPS=$(ep)
+        fi
+
+        await_host ${HOSTNAME}.${SET_NAME}.${POD_NAMESPACE}
+
+        # attempt to resolve a member list from the selected endpoint
+        # if this fails we assume that the previous cluster is gone
+        set +e
+        MEMBER_LIST=$(etcdctl --endpoints ${EPS} member list)
+        if [ "$?" -ne 0 ]; then
+            echo "Removing old data dir [${ETCD_DATA_DIR}] from cluster that is gone"
+            echo "On next restart this will cause the creation of a new cluster"
+            rm -Rf /etcd/*
+            exit 0
+        fi
+        set -e
+
+        if [ ! -z ${MEMBER_ID+x} ] && echo "$MEMBER_LIST" | grep ${MEMBER_ID}; then
+          echo "The member ID is still listed in the cluster, join with member ID and existing data"
+          etcdctl --endpoints ${EPS} member update ${MEMBER_ID} ${PROTO}://${HOSTNAME}.${SET_NAME}.${POD_NAMESPACE}:2380
+          exec etcd --name ${HOSTNAME} \
+            --listen-peer-urls ${PROTO}://${IP}:2380 \
+            --initial-advertise-peer-urls ${PROTO}://${IP}:2380 \
+            --listen-client-urls http://${IP}:2379,http://127.0.0.1:2379 \
+            {{- if .Values.etcd.peerTLS }}
+            --peer-auto-tls \
+            {{- end }}
+            --advertise-client-urls http://${HOSTNAME}.${SET_NAME}.${POD_NAMESPACE}:2379
+        else
+            echo "The member ID is not known to the cluster"
+            add_member
+        fi
+    fi
+
+    # adding a new member to existing cluster
+    if [ "${SET_ID}" -ge 1 ]; then
+        await_host ${HOSTNAME}.${SET_NAME}.${POD_NAMESPACE}
+        add_member
+    fi
+
+    # creating the first member of a new cluster
+    await_host ${HOSTNAME}.${SET_NAME}.${POD_NAMESPACE}
+
+    PEERS="${HOSTNAME}=${PROTO}://${HOSTNAME}.${SET_NAME}.${POD_NAMESPACE}:2380"
+
+    collect_member &
+    echo "Add [${HOSTNAME}] as member to a NEW cluster"
+    rm -Rf /etcd/*
+    exec etcd --name ${HOSTNAME} \
+        --initial-advertise-peer-urls ${PROTO}://${HOSTNAME}.${SET_NAME}.${POD_NAMESPACE}:2380 \
+        --listen-peer-urls ${PROTO}://${IP}:2380 \
+        --listen-client-urls http://${IP}:2379,http://127.0.0.1:2379 \
+        --advertise-client-urls http://${HOSTNAME}.${SET_NAME}.${POD_NAMESPACE}:2379 \
+        --initial-cluster ${PEERS} \
+        {{- if .Values.etcd.peerTLS }}
+        --peer-auto-tls \
+        {{- end }}
+        --initial-cluster-state new
+  pre-stop.sh: |
+    #!/bin/sh
+
+    # Cleaning up after a controlled stop, like a scale down of the cluster
+    # is needed so the member is removed and could be started fresh
+    PROTO=http{{- if .Values.etcd.peerTLS }}s{{- end }}
+    EPS="http://${SET_NAME}-0.${SET_NAME}.${POD_NAMESPACE}:2379"
+    HOSTNAME=$(hostname)
+    ETCD_DIR="/etcd"
+
+    member_hash() {
+        etcdctl member list | grep ${PROTO}://${HOSTNAME}.${SET_NAME}.${POD_NAMESPACE}:2380 | cut -d':' -f1 | cut -d'[' -f1
+    }
+
+    echo "Removing [${HOSTNAME}] from etcd cluster"
+
+    etcdctl --endpoints ${EPS} member remove $(member_hash)
+    if [ $? -eq 0 ]; then
+        # Remove everything otherwise the cluster will no longer scale-up
+        rm -rf $ETCD_DIR
+    fi

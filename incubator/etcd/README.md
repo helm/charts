@@ -14,9 +14,6 @@ Credit to https://github.com/ingvagabund. This is an implementation of that work
 ## StatefulSet Caveats
 * https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations
 
-## Todo
-* Implement SSL
-
 ## Chart Details
 This chart will do the following:
 
@@ -26,7 +23,7 @@ This chart will do the following:
 
 To install the chart with the release name `my-release`:
 
-```bash
+```shell
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 $ helm install --name my-release incubator/etcd
 ```
@@ -35,29 +32,28 @@ $ helm install --name my-release incubator/etcd
 
 The following table lists the configurable parameters of the etcd chart and their default values.
 
-| Parameter               | Description                          | Default                                            |
-| ----------------------- | ------------------------------------ | -------------------------------------------------- |
-| `Name`                  | Spark master name                    | `etcd`                                             |
-| `Image`                 | Container image name                 | `k8s.gcr.io/etcd-amd64`                            |
-| `ImageTag`              | Container image tag                  | `2.2.5`                                            |
-| `ImagePullPolicy`       | Container pull policy                | `Always`                                           |
-| `Replicas`              | k8s statefulset replicas             | `3`                                                |
-| `Component`             | k8s selector key                     | `etcd`                                             |
-| `Cpu`                   | container requested cpu              | `100m`                                             |
-| `Memory`                | container requested memory           | `512Mi`                                            |
-| `ClientPort`            | k8s service port                     | `2379`                                             |
-| `PeerPorts`             | Container listening port             | `2380`                                             |
-| `Storage`               | Persistent volume size               | `1Gi`                                              |
-| `StorageClass`          | Persistent volume storage class      | `anything`                                         |
-| `Affinity`              | Affinity settings for pod assignment | `{}`                                               |
-| `NodeSelector`          | Node labels for pod assignment       | `{}`                                               |
-| `Tolerations`           | Toleration labels for pod assignment | `[]`                                               |
+| Parameter                       | Description                          | Default                                                |
+| ------------------------------- | ------------------------------------ | ------------------------------------------------------ |
+| `replicaCount`                  | Number of replicas                   | `3`                                                    |
+| `image.pullPolicy`              | Image pull policy                    | `Always` if `image.tag` is latest, else `IfNotPresent` |
+| `image.repository`              | Etcd container image repository      | `k8s.gcr.io/etcd-amd64`                                |
+| `image.tag`                     | Etcd container image tag             | `3.2.14`                                               |
+| `etcd.peerTLS`                  | Encrypt peer traffic                 | `false`                                                |
+| `resources`                     | CPU/memory resource requests/limits  | `{}`                                                   |
+| `persistentVolume.size`         | Persistent volume size               | `1Gi`                                                  |
+| `persistentVolume.storageClass` | Persistent volume storage class      | `""`                                                   |
+| `persistentVolume.annotations`  | Persistent volume annotations        | `{}`                                                   |
+| `persistentVolume.accessMode`   | Persistent volume access modes       | `[ReadWriteOnce]`                                      |
+| `nodeSelector`                  | Node labels for pod assignment       | `{}`                                                   |
+| `tolerations`                   | Toleration labels for pod assignment | `[]`                                                   |
+| `antiAffinity`                  | Pod anti affinity, `hard` or `soft`  | `soft`                                                 |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
-Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
+Alternatively, a YAML file that specifies the values for the parameters can be
+provided while installing the chart. For example,
 
-```bash
+```shell
 $ helm install --name my-release -f values.yaml incubator/etcd
 ```
 
@@ -65,24 +61,29 @@ $ helm install --name my-release -f values.yaml incubator/etcd
 
 # Deep dive
 
+This chart spins up 3 replicas by default, which means the Etcd cluster will have
+3 members. However, the initial Etcd cluster size is 1, so the first pod that spins
+up forms the cluster by itself. The next 2 members are added to the cluster. Even
+with the default values you can come down to 1 member without the cluster failing.
+
+This allows cluster size management by Helm and adds relisance to the cluster.
+
 ## Cluster Health
 
+```shell
+$ for i in <0..n>; do kubectl exec ${RELEASE_NAME}-etcd-$i> -- sh -c 'etcdctl cluster-health'; done
 ```
-$ for i in <0..n>; do kubectl exec <release-podname-$i> -- sh -c 'etcdctl cluster-health'; done
-```
+
 eg.
-```
-$ for i in {0..9}; do kubectl exec named-lynx-etcd-$i --namespace=etcd -- sh -c 'etcdctl cluster-health'; done
-member 7878c44dabe58db is healthy: got healthy result from http://named-lynx-etcd-7.named-lynx-etcd:2379
-member 19d2ab7b415341cc is healthy: got healthy result from http://named-lynx-etcd-4.named-lynx-etcd:2379
-member 6b627d1b92282322 is healthy: got healthy result from http://named-lynx-etcd-3.named-lynx-etcd:2379
-member 6bb377156d9e3fb3 is healthy: got healthy result from http://named-lynx-etcd-0.named-lynx-etcd:2379
-member 8ebbb00c312213d6 is healthy: got healthy result from http://named-lynx-etcd-8.named-lynx-etcd:2379
-member a32e3e8a520ff75f is healthy: got healthy result from http://named-lynx-etcd-5.named-lynx-etcd:2379
-member dc83003f0a226816 is healthy: got healthy result from http://named-lynx-etcd-2.named-lynx-etcd:2379
-member e3dc94686f60465d is healthy: got healthy result from http://named-lynx-etcd-6.named-lynx-etcd:2379
-member f5ee1ca177a88a58 is healthy: got healthy result from http://named-lynx-etcd-1.named-lynx-etcd:2379
+
+```shell
+$ for i in {0..3}; do kubectl exec ${RELEASE_NAME}-etcd-$i --namespace=etcd -- sh -c 'etcdctl cluster-health'; done
+member cd9eb4cab7519c is healthy: got healthy result from http://my-release-etcd-2.my-release-etcd.etcd:2379
+member 46b6c09837a46428 is healthy: got healthy result from http://my-release-etcd-0.my-release-etcd.etcd:2379
+member 8a44757850964d58 is healthy: got healthy result from http://my-release-etcd-1.my-release-etcd.etcd:2379
+member c7249fde4c0e6cda is healthy: got healthy result from http://my-release-etcd-3.my-release-etcd.etcd:2379
 cluster is healthy
+...
 ```
 
 ## Failover
@@ -96,78 +97,88 @@ $ kill -9 ETCD_1_PID
 ```
 
 ```shell
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
-NAME                 READY     STATUS        RESTARTS   AGE
-etcd-0               1/1       Running       0          54s
-etcd-2               1/1       Running       0          51s
+$ kubectl get pods -l app=etcd,release=${RELEASE_NAME}
+NAME                READY     STATUS    RESTARTS   AGE
+my-release-etcd-0   1/1       Running   0          3m
+my-release-etcd-2   1/1       Running   0          2m
 ```
 
 After a while:
 
 ```shell
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
-NAME                 READY     STATUS    RESTARTS   AGE
-etcd-0               1/1       Running   0          1m
-etcd-1               1/1       Running   0          20s
-etcd-2               1/1       Running   0          1m
+$ kubectl get pods -l app=etcd,release=${RELEASE_NAME}
+NAME                READY     STATUS    RESTARTS   AGE
+my-release-etcd-0   1/1       Running   0          3m
+my-release-etcd-1   1/1       Running   1          20s
+my-release-etcd-2   1/1       Running   0          2m
 ```
 
-You can check state of re-joining from ``etcd-1``'s logs:
+You can check state of re-joining from ``my-release-etcd-1``'s logs:
 
 ```shell
-$ kubectl logs etcd-1
-Waiting for etcd-0.etcd to come up
-Waiting for etcd-1.etcd to come up
-ping: bad address 'etcd-1.etcd'
-Waiting for etcd-1.etcd to come up
-Waiting for etcd-2.etcd to come up
-Re-joining etcd member
-Updated member with ID 7fd61f3f79d97779 in cluster
-2016-06-20 11:04:14.962169 I | etcdmain: etcd Version: 2.2.5
-2016-06-20 11:04:14.962287 I | etcdmain: Git SHA: bc9ddf2
+$ kubectl logs my-release-etcd-1
++ hostname
++ HOSTNAME=my-release-etcd-1
++ ip r+  get 1
+awk '{print $NF;exit}'
++ IP=172.17.0.8
++ PROTO=https
++ SET_ID=3
++ '[' -e /etcd/member_id ]
++ '[' 3 -ge 1 ]
++ await_host my-release-etcd-1.my-release-etcd.default
++ echo 'Waiting for [my-release-etcd-1.my-release-etcd.default] to come up '
++ true
++ echo -n .
++ ping -W 1 -c 1 my-release-etcd-1.my-release-etcd.default
+Waiting for [my-release-etcd-1.my-release-etcd.default] to come up
+ping: bad address 'my-release-etcd-1.my-release-etcd.default'
++ sleep 1s
++ true
++ echo -n .
++ ping -W 1 -c 1 my-release-etcd-1.my-release-etcd.default
++ break
++ echo -n ' done'
++ add_member
 ...
 ```
 
-## Scaling using kubectl
+## Scaling using Helm
 
-This is for reference. Scaling should be managed by `helm upgrade`
+Scaling is managed by `helm upgrade`.
 
-The etcd cluster can be scale up by running ``kubectl patch`` or ``kubectl edit``. For instance,
+The etcd cluster can be scale up by chaning the number of replicas in the
+`values.yaml` or by specifying it as a parameter.
 
-```sh
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
-NAME      READY     STATUS    RESTARTS   AGE
-etcd-0    1/1       Running   0          7m
-etcd-1    1/1       Running   0          7m
-etcd-2    1/1       Running   0          6m
+```shell
+$ helm upgrade <release-name> --set replicaCount=5 incubator/etcd
 
-$ kubectl patch statefulset/etcd -p '{"spec":{"replicas": 5}}'
-"etcd" patched
-
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
-NAME      READY     STATUS    RESTARTS   AGE
-etcd-0    1/1       Running   0          8m
-etcd-1    1/1       Running   0          8m
-etcd-2    1/1       Running   0          8m
-etcd-3    1/1       Running   0          4s
-etcd-4    1/1       Running   0          1s
+$ kubectl get pods -l app=etcd,release=${RELEASE-NAME}
+NAME               READY  STATUS             RESTARTS  AGE
+my-release-etcd-0  1/1    Running            0         9m
+my-release-etcd-1  1/1    Running            0         9m
+my-release-etcd-2  1/1    Running            0         9m
+my-release-etcd-3  1/1    Running            0         13s
+my-release-etcd-4  1/1    Running            0         9s
 ```
 
 Scaling-down is similar. For instance, changing the number of replicas to ``4``:
 
-```sh
-$ kubectl edit statefulset/etcd
-statefulset "etcd" edited
+```shell
+$ helm upgrade <release-name> --set replicaCount=4 incubator/etcd
 
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
-NAME      READY     STATUS    RESTARTS   AGE
-etcd-0    1/1       Running   0          8m
-etcd-1    1/1       Running   0          8m
-etcd-2    1/1       Running   0          8m
-etcd-3    1/1       Running   0          4s
+$ kubectl get pods -l app=etcd,release=${RELEASE-NAME}
+NAME               READY  STATUS             RESTARTS  AGE
+my-release-etcd-0  1/1    Running            0         9m
+my-release-etcd-1  1/1    Running            0         9m
+my-release-etcd-2  1/1    Running            0         9m
+my-release-etcd-3  1/1    Running            0         1m
 ```
 
-Once a replica is terminated (either by running ``kubectl delete pod etcd-ID`` or scaling down),
-content of ``/var/run/etcd/`` directory is cleaned up.
-If any of the etcd pods restarts (e.g. caused by etcd failure or any other),
-the directory is kept untouched so the pod can recover from the failure.
+Once a replica is terminated (either by running `kubectl delete pod my-release-etcd-${ID}`
+or scaling down), the data directory is cleaned up. If any of the etcd pods restart
+(e.g. caused by etcd failure or other), the data directory is kept untouched so the
+pod can recover from the failure. When for some reason a member is removed from the
+Etcd cluster, the restarting pod will detect this, remove the data directory and
+exit. It will join the Etcd cluster as a new member on next restart as if it were
+a brand new node.
