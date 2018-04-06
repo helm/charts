@@ -47,8 +47,11 @@ The following table lists the configurable parameters of the OpenCart chart and 
 
 |              Parameter              |                Description                |                         Default                          |
 |-------------------------------------|-------------------------------------------|----------------------------------------------------------|
-| `image`                             | OpenCart image                            | `bitnami/opencart:{VERSION}`                             |
-| `imagePullPolicy`                   | Image pull policy                         | `Always` if `image` tag is `latest`, else `IfNotPresent` |
+| `image.registry`                    | OpenCart image registry                   | `docker.io`                                              |
+| `image.repository`                  | OpenCart Image name                       | `bitnami/opencart`                                       |
+| `image.tag`                         | OpenCart Image tag                        | `{VERSION}`                                              |
+| `image.pullPolicy`                  | Image pull policy                         | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`                 | Specify image pull secrets                | `nil`                                                    |
 | `opencartHost`                      | OpenCart host to create application URLs  | `nil`                                                    |
 | `opencartLoadBalancerIP`            | `loadBalancerIP` for the OpenCart Service | `nil`                                                    |
 | `opencartUsername`                  | User of the application                   | `user`                                                   |
@@ -64,7 +67,7 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `externalDatabase.port`             | Port of the external database             | `3306`                                                   |
 | `externalDatabase.user`             | Existing username in the external db      | `bn_opencart`                                            |
 | `externalDatabase.password`         | Password for the above username           | `nil`                                                    |
-| `externalDatabase.database`         | Name of the existing databse              | `bitnami_opencart`                                       |
+| `externalDatabase.database`         | Name of the existing database              | `bitnami_opencart`                                       |
 | `mariadb.enabled`                   | Wheter to use or not the mariadb chart    | `true`                                                   |
 | `mariadb.mariadbDatabase`           | Database name to create                   | `bitnami_opencart`                                       |
 | `mariadb.mariadbUser`               | Database user to create                   | `bn_opencart`                                            | 
