@@ -1,7 +1,5 @@
 # ChartMuseum Helm Chart
 
-**NOTE: this chart has been DEPRECATED. Please see stable/chartmuseum.**
-
 Deploy your own private ChartMuseum.   
 
 Please also see https://github.com/kubernetes-helm/chartmuseum
@@ -71,12 +69,12 @@ their default values. See values.yaml for all available options.
 | `env.open.ALIBABA_BUCKET`              | Bucket to store charts in for Alibaba       | ``                                                  |
 | `env.open.ALIBABA_PREFIX`              | Prefix to store charts under for Alibaba    | ``                                                  |
 | `env.open.ALIBABA_ENDPOINT`            | Alternative Alibaba endpoint                | ``                                                  |
-| `env.open.ALIBABA_SSE`                 | Server side encryption algorithm to use      | ``                                                  |
+| `env.open.ALIBABA_SSE`                 | Server side encryption algorithm to use     | ``                                                  |
 | `env.open.AMAZON_BUCKET`               | Bucket to store charts in for AWS           | ``                                                  |
 | `env.open.AMAZON_ENDPOINT`             | Alternative AWS endpoint                    | ``                                                  |
 | `env.open.AMAZON_PREFIX`               | Prefix to store charts under for AWS        | ``                                                  |
 | `env.open.AMAZON_REGION`               | Region to use for bucket access for AWS     | ``                                                  |
-| `env.open.AMAZON_SSE`                  | Server side encryption algorithm to use      | ``                                                  |
+| `env.open.AMAZON_SSE`                  | Server side encryption algorithm to use     | ``                                                  |
 | `env.open.GOOGLE_BUCKET`               | Bucket to store charts in for GCP           | ``                                                  |
 | `env.open.GOOGLE_PREFIX`               | Prefix to store charts under for GCP        | ``                                                  |
 | `env.open.STORAGE_MICROSOFT_CONTAINER` | Container to store charts under for MS      | ``                                                  |
@@ -102,7 +100,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to
 ## Installation
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Using with Amazon S3
@@ -158,7 +156,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 #### permissions grant with IAM instance profile
@@ -180,7 +178,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 #### permissions grant with IAM assumed role
@@ -205,7 +203,7 @@ replica:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Using with Google Cloud Storage
@@ -224,7 +222,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Using with Microsoft Azure Blob Storage
@@ -252,7 +250,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Using with Alibaba Cloud OSS Storage
@@ -280,7 +278,7 @@ env:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Using with local filesystem storage
@@ -296,7 +294,7 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
   ## A manually managed Persistent Volume and Claim
-  ## Requires Persistence.enabled: true
+  ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
 
@@ -313,7 +311,7 @@ persistence:
 Run command to install
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 #### Example storage class
