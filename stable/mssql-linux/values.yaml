@@ -18,7 +18,6 @@ persistence:
   # existingBackupClaim:
   # existingMasterClaim:
   storageClass: ""
-  
   dataAccessMode: ReadWriteOnce
   dataSize: 1Gi
   transactionLogAccessMode: ReadWriteOnce
