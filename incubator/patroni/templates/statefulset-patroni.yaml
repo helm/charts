@@ -23,23 +23,27 @@ spec:
     spec:
       serviceAccountName: {{ template "patroni.serviceAccountName" . }}
       affinity:
+        {{- if .Values.affinity }}
+{{ toYaml .Values.affinity | indent 8 }}
+        {{- else }}
         podAntiAffinity:
-        {{- if eq .Values.antiAffinity "hard" }}
+          {{- if eq .Values.antiAffinity "hard" }}
           requiredDuringSchedulingIgnoredDuringExecution:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
                 app:  {{ template "patroni.name" . }}
                 release: {{ .Release.Name | quote }}
-        {{- else if eq .Values.antiAffinity "soft" }}
+          {{- else if eq .Values.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 5
+          - weight: 1
             podAffinityTerm:
               topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
                   app:  {{ template "patroni.name" . }}
                   release: {{ .Release.Name | quote }}
+                  {{- end }}
         {{- end }}
       containers:
       - name: {{ .Chart.Name }}

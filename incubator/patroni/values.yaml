@@ -77,6 +77,12 @@ nodeSelector: {}
 tolerations: []
 
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+# If you want to use a simple affinity rule based on the hostname set 'antiAffinity'
+# to 'soft' or 'hard' (preferredDuringSchedulingIgnoredDuringExecution vs
+# requiredDuringSchedulingIgnoredDuringExecution)
+#
+# If you require more complex affinity rules provide them under 'affinity'.
+affinity: {}
 antiAffinity: "soft"
 
 rbac:
