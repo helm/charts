@@ -61,7 +61,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.gridUnregisterIfStillDownAfer` | | `nil` |
 | `hub.seOpts` | Command line arguments to pass to hub | `nil` |
 | `hub.timeZone` | The time zone for the container | `nil` |
-| `hub.nodeselector` | Node label to use for scheduling of the hub if set this takes precendence over the global value | `nil` |
+| `hub.nodeselector` | Node label to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
 | `chrome.enabled` | Schedule a chrome node pod | `false` |
 | `chrome.image` | The selenium node chrome image | `selenium/node-chrome` |
 | `chrome.tag` | The selenium node chrome tag | `3.11.0` |
@@ -82,7 +82,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chrome.nodePort` | The port to listen on | `nil` |
 | `chrome.seOpts` | Command line arguments to pass to node | `nil` |
 | `chrome.timeZone` | The time zone for the container | `nil` |
-| `chrome.nodeselector` | Node label to use for scheduling of chrome images if set this takes precendence over the global value | `nil` |
+| `chrome.nodeselector` | Node label to use for scheduling of chrome images if set this takes precedence over the global value | `nil` |
 | `chromeDebug.enabled` | Schedule a selenium node chrome debug pod | `false` |
 | `chromeDebug.image` | The selenium node chrome debug image | `selenium/node-chrome-debug` |
 | `chromeDebug.tag` | The selenium node chrome debug tag | `3.11.0` |
@@ -103,7 +103,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `chromeDebug.nodePort` | The port to listen on | `nil` |
 | `chromeDebug.seOpts` | Command line arguments to pass to node | `nil` |
 | `chromeDebug.timeZone` | The time zone for the container | `nil` |
-| `chromeDebug.nodeselector` | Node label to use for scheduling of chromeDebug images if set this takes precendence over the global value | `nil` |
+| `chromeDebug.nodeselector` | Node label to use for scheduling of chromeDebug images if set this takes precedence over the global value | `nil` |
 | `firefox.enabled` | Schedule a selenium node firefox pod | `false` |
 | `firefox.image` | The selenium node firefox image | `selenium/node-firefox` |
 | `firefox.tag` | The selenium node firefox tag | `3.11.0` |
@@ -122,7 +122,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefox.nodePort` | The port to listen on | `nil` |
 | `firefox.seOpts` | Command line arguments to pass to node | `nil` |
 | `firefox.timeZone` | The time zone for the container | `nil` |
-| `firefox.nodeselector` | Node label to use for scheduling of firefox images if set this takes precendence over the global value | `nil` |
+| `firefox.nodeselector` | Node label to use for scheduling of firefox images if set this takes precedence over the global value | `nil` |
 | `firefoxDebug.enabled` | Schedule a selenium node firefox debug pod | `false` |
 | `firefoxDebug.image` | The selenium node firefox debug image | `selenium/node-firefox-debug` |
 | `firefoxDebug.tag` | The selenium node firefox debug tag | `3.11.0` |
@@ -141,7 +141,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `firefoxDebug.nodePort` | The port to listen on | `nil` |
 | `firefoxDebug.seOpts` | Command line arguments to pass to node | `nil` |
 | `firefoxDebug.timeZone` | The time zone for the container | `nil` |
-| `firefoxDebug.nodeselector` | Node label to use for scheduling of firefoxDebug images if set this takes precendence over the global value | `nil` |
+| `firefoxDebug.nodeselector` | Node label to use for scheduling of firefoxDebug images if set this takes precedence over the global value | `nil` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
