@@ -45,18 +45,12 @@ security:
 ##
 # schedulerName:
 
-# Affinities to add to the worker pods.
-# Useful if you prefer to run workers on non-spot instances, for example
-affinity: {}
-# nodeAffinity:
-#   preferredDuringSchedulingIgnoredDuringExecution:
-#     - weight: 50
-#       preference:
-#         matchExpressions:
-#           - key: spot
-#             operator: NotIn
-#             values:
-#               - "true"
+# Either 'hard' or 'soft': 'hard' will cause the Kubernetes scheduler to not schedule the
+# Pods on the same physical node under any circumstances 'soft' will cause the Kubernetes
+# scheduler to make a best effort to not co-locate the Pods, but, if the only available
+# resources are on the same node, the scheduler will co-locate them.
+##
+antiAffinity: hard
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
