@@ -30,10 +30,14 @@ spec:
           {{- if .Values.azuregateway.enabled }}
           args: ["gateway", "azure"]
           {{- else }}
+          {{- if .Values.gcsgateway.enabled }}
+          args: ["gateway", "gcs", "{{ .Values.gcsgateway.projectId }}"]
+          {{- else }}
           {{- if .Values.configPath }}
           args: ["-C", "{{ .Values.configPath }}", "server", "{{ .Values.mountPath }}"]
           {{- else }}
           args: ["server", "{{ .Values.mountPath }}"]
+          {{- end }}
           {{- end }}
           {{- end }}
           volumeMounts:
@@ -51,6 +55,11 @@ spec:
             - name: podinfo
               mountPath: /podinfo
               readOnly: false
+            {{- if .Values.gcsgateway.enabled }}
+            - name: minio-user
+              mountPath: "/etc/credentials"
+              readOnly: true
+            {{- end }}
           ports:
             - name: service
               containerPort: 9000
@@ -65,6 +74,10 @@ spec:
                 secretKeyRef:
                   name: {{ template "minio.fullname" . }}
                   key: secretkey
+            {{- if .Values.gcsgateway.enabled }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: "/etc/credentials/gcs_key.json"
+            {{- end }}
           livenessProbe:
             tcpSocket:
               port: 9000

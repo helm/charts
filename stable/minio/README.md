@@ -104,6 +104,11 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `defaultBucket.policy`     | Bucket policy                       | `none`                                                  |
 | `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                 |
 | `azuregateway.enabled`     | Use minio as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
+| `gcsgateway.enabled`       | Use minio as a [Google Cloud Storage gateway](https://docs.minio.io/docs/minio-gateway-for-gcs)| `false`  |
+| `gcsgateway.gcsKeyJson`    | credential json file of service account key | `""`
+      |
+| `gcsgateway.projectId`     | Google cloud project id             | `""`
+      |
 
 Some of the parameters above map to the env variables defined in the [Minio DockerHub image](https://hub.docker.com/r/minio/minio/).
 
