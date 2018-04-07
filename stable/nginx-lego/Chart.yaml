@@ -1,5 +1,5 @@
 name: nginx-lego
-version: 0.3.1
+version: 0.3.2
 deprecated: true
 description: Chart for nginx-ingress-controller and kube-lego
 keywords:
@@ -13,4 +13,6 @@ sources:
 maintainers:
 - name: Jack Zampolin
   email: jack.zampolin@gmail.com
+- name: Shang Chengfei
+  email: cfshang@alauda.io
 engine: gotpl
