@@ -47,7 +47,7 @@ data:
   rabbitmq.conf: |
     ## RabbitMQ configuration
     ## Ref: https://github.com/rabbitmq/rabbitmq-server/blob/master/docs/rabbitmq.conf.example
-    
+
     ## Authentification
     {{- if .Values.rabbitmqAuth.enabled }}
 {{ .Values.rabbitmqAuth.config | indent 4 }}
@@ -56,7 +56,7 @@ data:
     ## Clustering
     cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
     cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
-    cluster_formation.k8s.address_type = ip
+    cluster_formation.k8s.address_type = hostname
     cluster_formation.node_cleanup.interval = 10
     cluster_formation.node_cleanup.only_log_warning = false
     cluster_partition_handling = autoheal
