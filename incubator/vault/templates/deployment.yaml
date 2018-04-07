@@ -30,7 +30,8 @@ spec:
           tcpSocket:
             port: {{ .Values.service.port }}
         readinessProbe:
-          tcpSocket:
+          httpGet:
+            path: /v1/sys/health
             port: {{ .Values.service.port }}
         securityContext:
           readOnlyRootFilesystem: true
