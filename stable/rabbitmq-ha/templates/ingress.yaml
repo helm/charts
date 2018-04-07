@@ -14,25 +14,25 @@ metadata:
     {{- end }}
 spec:
   rules:
-  {{- if .Values.ingress.hostName }}
-  - host: {{ .Values.ingress.hostName }}
-    http:
-  {{- else }}
-  - http:
-  {{- end }}
-      paths:
-        - path: {{ default "/" .path }}
-          backend:
-            serviceName: {{ template "rabbitmq-ha.fullname" . }}
-            servicePort: http
+    {{- if .Values.ingress.hostName }}
+    - host: {{ .Values.ingress.hostName }}
+      http:
+    {{- else }}
+    - http:
+    {{- end }}
+        paths:
+          - path: {{ .Values.ingress.path }}
+            backend:
+              serviceName: {{ template "rabbitmq-ha.fullname" . }}
+              servicePort: http
 {{- if .Values.ingress.tls }}
   tls:
-  - hosts:
-    {{- if  .Values.ingress.hostName }}
-    - {{ .Values.ingress.hostName }}
-    secretName: {{  .Values.ingress.tlsSecret }}
-    {{- else}}
-    - secretName: {{  .Values.ingress.tlsSecret }}
-    {{- end }}
+    - hosts:
+        {{- if  .Values.ingress.hostName }}
+        - {{ .Values.ingress.hostName }}
+        secretName: {{  .Values.ingress.tlsSecret }}
+        {{- else}}
+        - secretName: {{  .Values.ingress.tlsSecret }}
+        {{- end }}
 {{- end }}
 {{- end }}
