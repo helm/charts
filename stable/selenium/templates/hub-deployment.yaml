@@ -81,3 +81,9 @@ spec:
             {{- end }}
           resources:
 {{ toYaml .Values.hub.resources | indent 12 }}
+      nodeSelector:
+{{- if .Values.hub.nodeSelector }}
+{{ toYaml .Values.hub.nodeSelector | indent 8  }}
+{{- else if .Values.global.nodeSelector }}
+{{ toYaml .Values.global.nodeSelector | indent 8  }}
+{{- end }}
