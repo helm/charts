@@ -12,6 +12,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "redis-exporter.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
