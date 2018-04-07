@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
   repository: oliver006/redis_exporter
-  tag: v0.13
+  tag: v0.16.0
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP
