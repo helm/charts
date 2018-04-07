@@ -1,5 +1,6 @@
-
 # ChartMuseum Helm Chart
+
+**NOTE: this chart has been DEPRECATED. Please see stable/chartmuseum.**
 
 Deploy your own private ChartMuseum.   
 
@@ -94,12 +95,6 @@ their default values. See values.yaml for all available options.
 | `env.open.INDEX_LIMIT`                 | Parallel scan limit for the repo indexer    | ``                                                  |
 | `env.secret.BASIC_AUTH_USER`           | Username for basic HTTP authentication      | ``                                                  |
 | `env.secret.BASIC_AUTH_PASS`           | Password for basic HTTP authentication      | ``                                                  |
-
-  secret:
-    # username for basic http authentication
-    BASIC_AUTH_USER:
-    # password for basic http authentication
-    BASIC_AUTH_PASS:
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

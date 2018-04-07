@@ -50,7 +50,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
 | `image`                              | WebPageTest server image                   | `webpagetest/server:{VERSION}`                              |
 | `imagePullPolicy`                    | Image pull policy                          | `IfNotPresent`                                             |
-| `agent.key`                          | API Key for agent to auth the the master   | `nil`                                                      |
+| `agent.key`                          | API Key for agent to auth the master   | `nil`                                                      |
 | `agent.server`                       | Hostname of the WPT server (see below)     | `agent-web-page-test.local`                                |
 | `agent.location`                     | WPT location tag                           | `Test`                                                     |
 | `agent.shaper`                       | Traffic shaping method the agent uses      | `none`                                                      |
