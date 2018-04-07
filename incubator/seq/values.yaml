@@ -4,7 +4,7 @@
 
 image:
   repository: datalust/seq
-  tag: latest
+  tag: 5.0.832-pre
   pullPolicy: IfNotPresent
 
 # By passing the value Y in the ACCEPT_EULA environment variable,
