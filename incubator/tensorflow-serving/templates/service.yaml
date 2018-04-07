@@ -6,7 +6,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: {{ template "tensorflow-serving.chart" . }}
-    app: {{ template "tensorflow-serving.fullname" . }}
+    app: {{ template "tensorflow-serving.name" . }}
 spec:
   type: {{ .Values.serviceType }}
   ports:
@@ -14,4 +14,4 @@ spec:
       targetPort: {{ .Values.port }}
   selector:
     release: {{ .Release.Name | quote }}
-    app: {{ template "tensorflow-serving.fullname" . }}
+    app: {{ template "tensorflow-serving.name" . }}

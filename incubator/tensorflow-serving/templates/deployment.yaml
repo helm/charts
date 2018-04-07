@@ -7,7 +7,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: {{ template "tensorflow-serving.chart" . }}
-    app: {{ template "tensorflow-serving.fullname" . }}
+    app: {{ template "tensorflow-serving.name" . }}
   annotations:
     "helm.sh/created": {{ .Release.Time.Seconds | quote }}
 spec:
@@ -17,14 +17,14 @@ spec:
   selector:
     matchLabels:
       release: {{ .Release.Name | quote }}
-      app: {{ template "tensorflow-serving.fullname" . }}      
+      app: {{ template "tensorflow-serving.name" . }} 
   template:
     metadata:
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: {{ template "tensorflow-serving.chart" . }}
-        app: {{ template "tensorflow-serving.fullname" . }}
+        app: {{ template "tensorflow-serving.name" . }}
     spec:
       containers:
         - name: serving
