@@ -13,6 +13,9 @@ spec:
         app: {{ template "fluent-bit.fullname" . }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fluent-bit.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
