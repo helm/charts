@@ -14,7 +14,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fluent-bit.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "fluent-bit.serviceAccountName" . }}
       containers:
       - name: fluent-bit
         image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
