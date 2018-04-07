@@ -77,7 +77,7 @@ and their default values.
 | `persistentVolume.storageClass`    | Persistent volume storage class                                 | `-`                                                      |
 | `podAntiAffinity`                  | Pod antiaffinity, `hard` or `soft`                              | `hard`                                                   |
 | `rabbitmqCert.enabled`             | Mount a Secret container certificates                           | `false`                                                  |
-| `rabbitmqCert.secretName`          | Name of the secret container certificates                       | _name of the release_-cert                               |
+| `rabbitmqCert.existingSecret`      | Name of an existing `Secret` to mount for amqps                 | ``                                                       |
 | `rabbitmqCert.cacertfile`          | base64 encoded CA certificate (overwrites existing Secret)      | ``                                                       |
 | `rabbitmqCert.certfile`            | base64 encoded server certificate (overwrites existing Secret)  | ``                                                       |
 | `rabbitmqCert.keyfile`             | base64 encoded server private key (overwrites existing Secret)  | ``                                                       |

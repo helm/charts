@@ -42,7 +42,7 @@ rabbitmqCert:
   enabled: false
 
   ## Specify an existing secret to use
-  secretName: |
+  existingSecret: |
 
   ## Create a new secret using these values
   cacertfile: |
