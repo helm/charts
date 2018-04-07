@@ -1,6 +1,6 @@
 # Seq
 
-[Seq](https://getseq.net/) is the easiest way for development teams to capture, search and visualize structured log events! This page will walk you through the very quick setup process.
+[Seq](https://getseq.net/) is the easiest way for development teams to capture, search and visualize structured log events!
 
 ## TL;DR;
 
@@ -14,7 +14,7 @@ This chart bootstraps a [Seq](https://hub.docker.com/r/datalust/seq/) deployment
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.9+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
