@@ -10,8 +10,9 @@ metadata:
 spec:
   type: {{ .Values.serviceType }}
   ports:
-    - port: {{ .Values.port }}
-      targetPort: {{ .Values.port }}
+    - name: serving
+      port: 9090
+      targetPort: 9090
   selector:
     release: {{ .Release.Name | quote }}
     app: {{ template "tensorflow-serving.name" . }}

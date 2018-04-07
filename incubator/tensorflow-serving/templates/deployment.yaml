@@ -30,19 +30,17 @@ spec:
         - name: serving
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-          {{- if .Values.command }}
           command:
-{{ toYaml .Values.command | indent 12 }}
-          {{- end }}
-          {{- if .Values.args }}
+            - "/usr/bin/tensorflow_model_server"
           args:
-{{ toYaml .Values.args | indent 12 }}
-          {{- end }}
+            - "--port=9090"
+            - "--model_name={{ .Values.modelName }}"
+            - "--model_base_path={{ .Values.modelBasePath }}"
           ports:
-            - containerPort: {{ .Values.port }}
+            - containerPort: 9090
           readinessProbe:
             tcpSocket:
-              port: {{ .Values.port }}
+              port: 9090
             initialDelaySeconds: 15
             timeoutSeconds: 1
           resources:

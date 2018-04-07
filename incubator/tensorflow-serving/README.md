@@ -81,12 +81,8 @@ spec:
 
 ```
 ---
-command: 
-  - /usr/bin/tensorflow_model_server
-args: 
-  - "--port=9090"
-  - "--model_name=mnist"
-  - "--model_base_path=/serving/model/mnist"
+modelName: "mnist"
+modelBasePath: "/serving/model/mnist"
 image: "cheyang/tf-model-server-gpu:1.4"
 persistence: 
   mountPath: /serving/model/mnist
@@ -100,12 +96,8 @@ persistence:
 
 ```
 ---
-command: 
-  - /usr/bin/tensorflow_model_server
-args: 
-  - "--port=9090"
-  - "--model_name=mnist"
-  - "--model_base_path=/serving/model/mnist"
+modelName: "mnist"
+modelBasePath: "/serving/model/mnist"
 image: "cheyang/tf-model-server:1.4"
 persistence: 
   mountPath: /serving/model/mnist
@@ -146,8 +138,8 @@ chart and their default values.
 | `port` | Tensorflow Serving port | `9090` |
 | `serviceType` | The service type which supports NodePort, LoadBalancer | `LoadBalancer` |
 |`replicas`| K8S deployment replicas | `1` |
-|`command`|  The command to run | `["/usr/bin/tensorflow_model_server"]`|
-|`args`| The argument for the command | `[ "--port=9090", "--model_name=mnist", "--model_base_path=/serving/model/mnist"] ` |
+|`modelName`|  The model name | `mnist`|
+|`modelBasePath`| The model base path | `/serving/model/mnist"` |
 |`mountPath`| the mount path inside the container | `/serving/model/mnist` |
 |`persistence.enabled` | enable pvc for the tensorflow serving | `false` |
 |`persistence.size`| the storage size to request | `5Gi` |

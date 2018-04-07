@@ -28,8 +28,9 @@ resources: {}
 
 
 ## The command and args to run the pod
-command: ["/usr/bin/tensorflow_model_server"]
-args: ["--port=9090", "--model_name=inception", "--model_base_path=/serving/inception-export"]
+modelName: "inception"
+modelBasePath: "/serving/inception-export"
+
 ## the mount path inside the container
 # mountPath: /serving/inception-export
 
