@@ -23,7 +23,7 @@ elasticsearch:
   # elasticsearch port
   port: 80
   # use_ssl allows to use ES instances via https (True|False)
-  use_ssl: False
+  use_ssl: "False"
 
 # rule configurations e.g. (http://elastalert.readthedocs.io/en/latest/)
 rules: {}
