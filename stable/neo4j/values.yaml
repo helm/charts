@@ -46,7 +46,7 @@ core:
     ## Subdirectory of core server data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
     ##
-    subPath: ""
+    ## subPath: ""
 
   ## Pass extra environment variables to the Neo4j container.
   ##
