@@ -53,7 +53,7 @@ their default values. See values.yaml for all available options.
 |----------------------------------------|---------------------------------------------|-----------------------------------------------------|
 | `image.pullPolicy`                     | Container pull policy                       | `IfNotPresent`                                      |
 | `image.repository`                     | Container image to use                      | `chartmuseum/chartmuseum`                           |
-| `image.tag`                            | Container image tag to deploy               | `v0.4.2`                                            |
+| `image.tag`                            | Container image tag to deploy               | `v0.5.1`                                            |
 | `persistence.accessMode`               | Access mode to use for PVC                  | `ReadWriteOnce`                                     |
 | `persistence.enabled`                  | Whether to use a PVC for persistent storage | `false`                                             |
 | `persistence.size`                     | Amount of space to claim for PVC            | `8Gi`                                               |
@@ -70,18 +70,19 @@ their default values. See values.yaml for all available options.
 | `env.open.ALIBABA_BUCKET`              | Bucket to store charts in for Alibaba       | ``                                                  |
 | `env.open.ALIBABA_PREFIX`              | Prefix to store charts under for Alibaba    | ``                                                  |
 | `env.open.ALIBABA_ENDPOINT`            | Alternative Alibaba endpoint                | ``                                                  |
-| `env.open.ALIBABA_SSE`                 | Server side encryption algoritm to use      | ``                                                  |
+| `env.open.ALIBABA_SSE`                 | Server side encryption algorithm to use      | ``                                                  |
 | `env.open.AMAZON_BUCKET`               | Bucket to store charts in for AWS           | ``                                                  |
 | `env.open.AMAZON_ENDPOINT`             | Alternative AWS endpoint                    | ``                                                  |
 | `env.open.AMAZON_PREFIX`               | Prefix to store charts under for AWS        | ``                                                  |
 | `env.open.AMAZON_REGION`               | Region to use for bucket access for AWS     | ``                                                  |
-| `env.open.AMAZON_SSE`                  | Server side encryption algoritm to use      | ``                                                  |
+| `env.open.AMAZON_SSE`                  | Server side encryption algorithm to use      | ``                                                  |
 | `env.open.GOOGLE_BUCKET`               | Bucket to store charts in for GCP           | ``                                                  |
 | `env.open.GOOGLE_PREFIX`               | Prefix to store charts under for GCP        | ``                                                  |
 | `env.open.STORAGE_MICROSOFT_CONTAINER` | Container to store charts under for MS      | ``                                                  |
 | `env.open.STORAGE_MICROSOFT_PREFIX`    | Prefix to store charts under for MS         | ``                                                  |
 | `env.open.CHART_POST_FORM_FIELD_NAME`  | Form field to query for chart file content  | ``                                                  |
 | `env.open.PROV_POST_FORM_FIELD_NAME`   | Form field to query for chart provenance    | ``                                                  |
+| `env.open.DEPTH`                       | levels of nested repos for multitenancy.    | `0`                                                 |
 | `env.open.DEBUG`                       | Show debug messages                         | `false`                                             |
 | `env.open.LOG_JSON`                    | Output structured logs in JSON              | `true`                                              |
 | `env.open.DISABLE_METRICS`             | Disable Prometheus metrics                  | `true`                                              |
@@ -296,13 +297,13 @@ env:
   open:
     STORAGE: local
 persistence:
-  Enabled: true
-  AccessMode: ReadWriteOnce
-  Size: 8Gi
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 8Gi
   ## A manually managed Persistent Volume and Claim
-  ## Requires Persistence.Enabled: true
+  ## Requires Persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
-  # ExistingClaim:
+  # existingClaim:
 
   ## Chartmuseum data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -311,7 +312,7 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # StorageClass: "-"
+  # storageClass: "-"
 ```
 
 Run command to install
@@ -353,5 +354,3 @@ To delete the deployment and its history:
 ```shell
 helm delete --purge my-chartmuseum
 ```
-
-

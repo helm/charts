@@ -89,7 +89,7 @@ spec:
             value: docker
           - name: KUBERNETES
             value: "yes"
-          {{- if (semverCompare ">=1" .Capabilities.KubeVersion.Major) and (semverCompare ">=7" .Capabilities.KubeVersion.Minor) }}
+          {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
           - name: DD_KUBERNETES_KUBELET_HOST
             valueFrom:
               fieldRef:
