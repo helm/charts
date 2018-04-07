@@ -161,7 +161,7 @@ spec:
           heritage: {{ .Release.Service }}
       spec:
         accessModes:
-{{- toYaml .Values.persistentVolume.accessModes | indent 8 }}
+{{ toYaml .Values.persistentVolume.accessModes | indent 8 }}
         resources:
           requests:
             storage: "{{ .Values.persistentVolume.size }}"
