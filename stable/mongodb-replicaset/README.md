@@ -61,6 +61,8 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `nodeSelector`                      | Node labels for pod assignment                                            | `{}`                                                |
 | `affinity`                          | Node/pod affinities                                                       | `{}`                                                |
 | `tolerations`                       | List of node taints to tolerate                                           | `[]`                                                |
+| `livenessProbe`                     | Liveness probe configuration                                              | See below                                           |
+| `readynessProbe`                    | Readyness probe configuration                                             | See below                                           |
 
 *MongoDB config file*
 
@@ -155,6 +157,29 @@ mongodb with your `mongo.pem` certificate:
 ```console
 $ mongo --ssl --sslCAFile=ca.crt --sslPEMKeyFile=mongo.pem --eval "db.adminCommand('ping')"
 ```
+## Readiness probe
+The default values for the readiness probe are:
+
+```yaml
+readinessProbe:
+  initialDelaySeconds: 5
+  timeoutSeconds: 1
+  failureThreshold: 3
+  periodSeconds: 10
+  successThreshold: 1
+```
+
+## Liveness probe
+The default values for the liveness probe are:
+
+```yaml
+livenessProbe:
+  initialDelaySeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 3
+  periodSeconds: 10
+  successThreshold: 1
+```  
 
 ## Deep dive
 
