@@ -1,9 +1,9 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "redis-exporter.fullname" . }}
+  name: {{ template "prometheus-redis-exporter.fullname" . }}
   labels:
-    app: {{ template "redis-exporter.name" . }}
+    app: {{ template "prometheus-redis-exporter.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -11,12 +11,12 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "redis-exporter.name" . }}
+      app: {{ template "prometheus-redis-exporter.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "redis-exporter.name" . }}
+        app: {{ template "prometheus-redis-exporter.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:

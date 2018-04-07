@@ -1,11 +1,11 @@
-# redis-exporter
+# prometheus-redis-exporter
 
 [redis_exporter](https://github.com/oliver006/redis_exporter) is a Prometheus exporter for Redis metrics.
 
 ## TL;DR;
 
 ```bash
-$ helm install incubator/redis-exporter
+$ helm install incubator/prometheus-redis-exporter
 ```
 
 ## Introduction
@@ -21,10 +21,10 @@ This chart bootstraps a [redis_exporter](https://github.com/oliver006/redis_expo
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/redis-exporter
+$ helm install --name my-release stable/prometheus-redis-exporter
 ```
 
-The command deploys redis-exporter on the Kubernetes cluster in the default configuration.
+The command deploys prometheus-redis-exporter on the Kubernetes cluster in the default configuration.
 
 ## Uninstalling the Chart
 
@@ -42,9 +42,9 @@ The following tables lists the configurable parameters and their default values.
 
 | Parameter              | Description                                         | Default                   |
 | ---------------------- | --------------------------------------------------- | ------------------------- |
-| `replicaCount`         | desired number of redis-exporter pods               | `1`                       |
-| `image.repository`     | redis-exporter image repository                     | `oliver006/redis_exporter`|
-| `image.tag`            | redis-exporter image tag                            | `v0.13`                   |
+| `replicaCount`         | desired number of prometheus-redis-exporter pods    | `1`                       |
+| `image.repository`     | prometheus-redis-exporter image repository          | `oliver006/redis_exporter`|
+| `image.tag`            | prometheus-redis-exporter image tag                 | `v0.13`                   |
 | `image.pullPolicy`     | image pull policy                                   | `IfNotPresent`            |
 | `resources`            | cpu/memory resource requests/limits                 | {}                        |
 | `service.type`         | desired service type                                | `ClusterIP`               |
@@ -59,11 +59,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
   --set "redisAddress=redis://myredis:6379" \
-    incubator/redis-exporter
+    incubator/prometheus-redis-exporter
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml incubator/redis-exporter
+$ helm install --name my-release -f values.yaml incubator/prometheus-redis-exporter
 ```

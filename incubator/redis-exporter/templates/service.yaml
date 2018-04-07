@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "redis-exporter.fullname" . }}
+  name: {{ template "prometheus-redis-exporter.fullname" . }}
   labels:
-    app: {{ template "redis-exporter.name" . }}
+    app: {{ template "prometheus-redis-exporter.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -16,5 +16,5 @@ spec:
       targetPort: {{ .Values.service.internalPort }}
       protocol: TCP
   selector:
-    app: {{ template "redis-exporter.name" . }}
+    app: {{ template "prometheus-redis-exporter.name" . }}
     release: {{ .Release.Name }}

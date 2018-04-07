@@ -1,7 +1,7 @@
 apiVersion: v1
 appVersion: 0.13
 description: Prometheus exporter for Redis metrics
-name: redis-exporter
+name: prometheus-redis-exporter
 version: 0.1.0
 home: https://github.com/oliver006/redis_exporter
 sources:
