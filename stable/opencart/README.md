@@ -68,7 +68,7 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `externalDatabase.user`             | Existing username in the external db      | `bn_opencart`                                            |
 | `externalDatabase.password`         | Password for the above username           | `nil`                                                    |
 | `externalDatabase.database`         | Name of the existing database              | `bitnami_opencart`                                       |
-| `mariadb.enabled`                   | Wheter to use or not the mariadb chart    | `true`                                                   |
+| `mariadb.enabled`                   | Whether to use or not the mariadb chart    | `true`                                                   |
 | `mariadb.mariadbDatabase`           | Database name to create                   | `bitnami_opencart`                                       |
 | `mariadb.mariadbUser`               | Database user to create                   | `bn_opencart`                                            | 
 | `mariadb.mariadbPassword`           | Password for the database                 | `nil`                                                    |
