@@ -1,13 +1,13 @@
 {{ $fullname := include "dex.fullname" . }}
 {{ $tlsBuiltName := printf "%s-tls" $fullname }}
 {{ $tlsSecretName := default $tlsBuiltName .Values.secret.tlsName }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "dex.fullname" . }}
   labels:
     app: {{ template "dex.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "dex.chart" . }}
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 spec:
@@ -17,6 +17,10 @@ spec:
       maxSurge: 0
       maxUnavailable: 1
     type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "dex.name" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:

@@ -14,7 +14,7 @@ metadata:
   name: {{ template "dex.fullname" . }}
   labels:
     app: {{ template "dex.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "dex.chart" . }}
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
     component: "job"
