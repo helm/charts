@@ -41,6 +41,10 @@ spec:
               value: "{{ .Values.service.port }}"
             - name: MSSQL_BACKUP_DIR
               value: "/mssql-backup/backup"
+            - name: MSSQL_MASTER_DATA_FILE
+              value: /mssql-data/master/master.mdf
+            - name: MSSQL_MASTER_LOG_FILE
+              value: /mssql-data/master/mastlog.ldf
           ports:
             - name: mssql
               containerPort: {{ .Values.service.port }}
@@ -51,6 +55,8 @@ spec:
               mountPath: /mssql-translog/translog
             - name: backup
               mountPath: /mssql-backup/backup
+            - name: master
+              mountPath: /mssql-data/master
           livenessProbe:
              tcpSocket:
                port: mssql
@@ -97,6 +103,17 @@ spec:
           claimName: {{ .Values.persistence.existingBackupClaim }}
           {{- else }}
           claimName: {{ template "mssql.fullname" . }}-backup
+          {{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: master
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.existingMasterClaim }}
+          claimName: {{ .Values.persistence.existingMasterClaim }}
+          {{- else }}
+          claimName: {{ template "mssql.fullname" . }}-master
           {{- end }}
       {{- else }}
         emptyDir: {}

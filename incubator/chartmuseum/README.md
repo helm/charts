@@ -1,5 +1,6 @@
-
 # ChartMuseum Helm Chart
+
+**NOTE: this chart has been DEPRECATED. Please see stable/chartmuseum.**
 
 Deploy your own private ChartMuseum.   
 
@@ -53,7 +54,7 @@ their default values. See values.yaml for all available options.
 |----------------------------------------|---------------------------------------------|-----------------------------------------------------|
 | `image.pullPolicy`                     | Container pull policy                       | `IfNotPresent`                                      |
 | `image.repository`                     | Container image to use                      | `chartmuseum/chartmuseum`                           |
-| `image.tag`                            | Container image tag to deploy               | `v0.4.2`                                            |
+| `image.tag`                            | Container image tag to deploy               | `v0.5.1`                                            |
 | `persistence.accessMode`               | Access mode to use for PVC                  | `ReadWriteOnce`                                     |
 | `persistence.enabled`                  | Whether to use a PVC for persistent storage | `false`                                             |
 | `persistence.size`                     | Amount of space to claim for PVC            | `8Gi`                                               |
@@ -70,12 +71,12 @@ their default values. See values.yaml for all available options.
 | `env.open.ALIBABA_BUCKET`              | Bucket to store charts in for Alibaba       | ``                                                  |
 | `env.open.ALIBABA_PREFIX`              | Prefix to store charts under for Alibaba    | ``                                                  |
 | `env.open.ALIBABA_ENDPOINT`            | Alternative Alibaba endpoint                | ``                                                  |
-| `env.open.ALIBABA_SSE`                 | Server side encryption algoritm to use      | ``                                                  |
+| `env.open.ALIBABA_SSE`                 | Server side encryption algorithm to use      | ``                                                  |
 | `env.open.AMAZON_BUCKET`               | Bucket to store charts in for AWS           | ``                                                  |
 | `env.open.AMAZON_ENDPOINT`             | Alternative AWS endpoint                    | ``                                                  |
 | `env.open.AMAZON_PREFIX`               | Prefix to store charts under for AWS        | ``                                                  |
 | `env.open.AMAZON_REGION`               | Region to use for bucket access for AWS     | ``                                                  |
-| `env.open.AMAZON_SSE`                  | Server side encryption algoritm to use      | ``                                                  |
+| `env.open.AMAZON_SSE`                  | Server side encryption algorithm to use      | ``                                                  |
 | `env.open.GOOGLE_BUCKET`               | Bucket to store charts in for GCP           | ``                                                  |
 | `env.open.GOOGLE_PREFIX`               | Prefix to store charts under for GCP        | ``                                                  |
 | `env.open.STORAGE_MICROSOFT_CONTAINER` | Container to store charts under for MS      | ``                                                  |
@@ -94,12 +95,6 @@ their default values. See values.yaml for all available options.
 | `env.open.INDEX_LIMIT`                 | Parallel scan limit for the repo indexer    | ``                                                  |
 | `env.secret.BASIC_AUTH_USER`           | Username for basic HTTP authentication      | ``                                                  |
 | `env.secret.BASIC_AUTH_PASS`           | Password for basic HTTP authentication      | ``                                                  |
-
-  secret:
-    # username for basic http authentication
-    BASIC_AUTH_USER:
-    # password for basic http authentication
-    BASIC_AUTH_PASS:
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
