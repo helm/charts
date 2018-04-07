@@ -1,4 +1,4 @@
-{{- if (or .Values.config .Values.arpCIDR) }}
+{{- if (or .Values.config .Values.arpAddresses) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -17,6 +17,6 @@ data:
     - name: default
       protocol: arp
       cidr:
-      - {{ .Values.arpCIDR }}
+      - {{ .Values.arpAddresses }}
 {{- end }}
 {{- end }}

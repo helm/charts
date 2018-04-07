@@ -86,12 +86,12 @@ create an appropriate ConfigMap.
 
 For simple setups that only use
 MetalLB's [ARP mode](https://metallb.universe.tf/concepts/arp-ndp/),
-you can specify a single IP range using the `arpCIDR` parameter to
-have the chart install a working configuration for you:
+you can specify a single IP range using the `arpAddresses` parameter
+to have the chart install a working configuration for you:
 
 ```console
 $ helm install --name metallb \
-  --set arpCIDR=192.168.16.240/30 \
+  --set arpAddresses=192.168.16.240/30 \
   stable/metallb
 ```
 
