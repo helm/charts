@@ -46,9 +46,12 @@ The command removes all the Kubernetes components associated with the chart and 
 The following table lists the configurable parameters of the WordPress chart and their default values.
 
 | Parameter                            | Description                                | Default                                                    |
-| -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
-| `image`                              | WordPress image                            | `bitnami/wordpress:{VERSION}`                              |
-| `imagePullPolicy`                    | Image pull policy                          | `IfNotPresent`                                             |
+| ------------------------------------ | ------------------------------------------ | ---------------------------------------------------------- |
+| `image.registry`                     | WordPress image registry                   | `docker.io`                                                |
+| `image.repository`                   | WordPress Image name                       | `bitnami/wordpress`                                        |
+| `image.tag`                          | WordPress Image tag                        | `{VERSION}`                                                |
+| `image.pullPolicy`                   | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `image.pullSecrets`                  | Specify image pull secrets                 | `nil`                                                      |
 | `wordpressUsername`                  | User of the application                    | `user`                                                     |
 | `wordpressPassword`                  | Application password                       | _random 10 character long alphanumeric string_             |
 | `wordpressEmail`                     | Admin email                                | `user@example.com`                                         |
@@ -72,7 +75,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `externalDatabase.user`              | Existing username in the external db       | `bn_wordpress`                                             |
 | `externalDatabase.password`          | Password for the above username            | `nil`                                                      |
 | `externalDatabase.database`          | Name of the existing database              | `bitnami_wordpress`                                        |
-| `externalDatabase.port`              | Database port number                       | `3306`                                        |
+| `externalDatabase.port`              | Database port number                       | `3306`                                                     |
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
 | `nodePorts.http`                     | Kubernetes http node port                  | `""`                                                       |
 | `nodePorts.https`                    | Kubernetes https node port                 | `""`                                                       |

@@ -45,7 +45,7 @@ rabbitmqCert:
   certfile: |
   keyfile: |
 
-## Authentification mecanism
+## Authentication mecanism
 ## Ref: http://www.rabbitmq.com/authentication.html
 rabbitmqAuth:
   enabled: false
