@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install incubator/prometheus-redis-exporter
+$ helm install stable/prometheus-redis-exporter
 ```
 
 ## Introduction
@@ -59,11 +59,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
   --set "redisAddress=redis://myredis:6379" \
-    incubator/prometheus-redis-exporter
+    stable/prometheus-redis-exporter
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml incubator/prometheus-redis-exporter
+$ helm install --name my-release -f values.yaml stable/prometheus-redis-exporter
 ```
