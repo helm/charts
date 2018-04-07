@@ -29,6 +29,9 @@ backend:
 
 env: []
 
+## Annotations to add to the DaemonSet's Pods
+podAnnotation: {}
+
 ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.existingConfigMap}}
 ## Defining existingConfigMap will cause templates/config.yaml
 ## to NOT generate a ConfigMap resource
