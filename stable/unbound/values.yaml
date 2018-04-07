@@ -1,0 +1,56 @@
+replicaCount: 1
+
+# values that pertain to the unbound container, for more information
+# on unbound configuration see http://unbound.net/documentation/unbound.conf.html
+unbound:
+  image:
+    repository: markbnj/unbound-docker
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
+  verbosity: 1
+  numThreads: 1
+  statsInterval: 0
+  statsCumulative: "no"
+  serverPort: 53
+
+# values that pertain to the exechealthz container, for more information see
+# https://github.com/kubernetes/contrib/tree/master/exec-healthz
+healthz:
+  image:
+    repository: googlecontainer/exechealthz
+    tag: "1.2"
+    pullPolicy: IfNotPresent
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Controls which IP address ranges unbound will allow queries from.
+# If you want to use unbound as an upstream for kube-dns, or allow other pods
+# to query the resolver directly, you'll at least need to allow the
+# clusterIpV4Cidr range.
+
+# allowedIpRanges:
+# - "10.10.10.10/20"
+
+# You can set as many forward zones as needed by specifying the zone name
+# and forward hosts. Forward hosts can be set by hostname or ip.
+
+# forwardZones:
+# - name: "fake.net"
+#   forwardHosts:
+#   - "fake1.host.net"
+#   forwardIps:
+#   - "10.10.10.10"
+
+# Unbound can store DNS records in a "local zone." This facility can be used to
+# assign context-specific names to a given IP address, and could also be used for
+# private DNS if you don't want or have an external resolver.
+
+# localRecords:
+# - name: "fake3.host.net"
+#   ip: "10.12.10.10"
