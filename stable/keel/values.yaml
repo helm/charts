@@ -4,7 +4,7 @@
 
 image:
   repository: karolisr/keel
-  tag: 0.4.2
+  tag: 0.4.7
   pullPolicy: IfNotPresent
 
 # Polling is enabled by default,
