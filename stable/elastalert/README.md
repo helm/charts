@@ -38,7 +38,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `replicaCount`            | number of replicas to run                           | 1                                 |
 | `elasticsearch.host`      | elasticsearch endpoint to use                       | elasticsearch                     |
 | `elasticsearch.port`      | elasticsearch port to use                           | 80                                |
-| `resources`               |  Container resource requests and limits             | {}                                |
+| `elasticsearch.use_ssl`   | use https with elasticsearch                        | False                             |
+| `resources`               | Container resource requests and limits              | {}                                |
 | `rules`                   | Rule and alert configuration for Elastalert         | {} example shown in values.yaml   |
 | `runIntervalMins`         | Default interval between alert checks, in minutes   | 1                                 |
 | `bufferTimeMins`          | Default rule buffer time, in minutes                | 15                                |
