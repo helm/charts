@@ -12,8 +12,8 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.externalPort }}
-      targetPort: {{ .Values.service.internalPort }}
+    - port: {{ .Values.service.port }}
+      targetPort: exporter-port
       protocol: TCP
   selector:
     app: {{ template "prometheus-redis-exporter.name" . }}

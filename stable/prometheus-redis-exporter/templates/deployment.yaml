@@ -24,18 +24,19 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.service.internalPort }}
+            - name: exporter-port
+              containerPort: 9121
           env:
             - name: REDIS_ADDR
               value: {{ .Values.redisAddress }}
           livenessProbe:
             httpGet:
               path: /
-              port: {{ .Values.service.internalPort }}
+              port: exporter-port
           readinessProbe:
             httpGet:
               path: /
-              port: {{ .Values.service.internalPort }}
+              port: exporter-port
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}

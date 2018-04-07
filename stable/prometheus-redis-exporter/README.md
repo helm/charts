@@ -48,8 +48,7 @@ The following tables lists the configurable parameters and their default values.
 | `image.pullPolicy`     | image pull policy                                   | `IfNotPresent`            |
 | `resources`            | cpu/memory resource requests/limits                 | {}                        |
 | `service.type`         | desired service type                                | `ClusterIP`               |
-| `service.externalPort` | service external port                               | `9121`                    |
-| `service.internalPort` | service internal port                               | `9121`                    |
+| `service.port`         | service external port                               | `9121`                    |
 | `redisAddress`         | address of one or more redis nodes, comma separated | `redis://myredis:6379`    |
 
 For more information please refer to the [redis_exporter](https://github.com/oliver006/redis_exporter) documentation.
