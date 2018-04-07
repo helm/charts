@@ -66,8 +66,9 @@ ingress:
 
   ## Kubernetes Dashboard Ingress annotations
   ##
-  # annotations:
-  #   kubernetes.io/ingress.class: nginx
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/secure-backends: "true"
   #   kubernetes.io/tls-acme: 'true'
 
   ## Kubernetes Dashboard Ingress hostnames
