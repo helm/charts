@@ -17,7 +17,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fluent-bit.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "fluent-bit.serviceAccountName" . }}
       containers:
       - name: fluent-bit
         image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
@@ -35,6 +35,11 @@ spec:
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit.conf
           subPath: fluent-bit.conf
+{{- if .Values.backend.es.tls_ca }}
+        - name: es-tls-secret
+          mountPath: /secure/es-tls-ca.crt
+          subPath: es-tls-ca.crt
+{{- end }}
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 8 }}
 {{- end }}
@@ -59,6 +64,11 @@ spec:
       - name: varlibdockercontainers
         hostPath:
           path: /var/lib/docker/containers
+{{- if .Values.backend.es.tls_ca }}
+      - name: es-tls-secret
+        secret:
+          secretName: "{{ template "fluent-bit.fullname" . }}-es-tls-secret"
+{{- end }}
       - name: config
         configMap:
           name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{- else }}{{ template "fluent-bit.fullname" . }}-config{{- end }}
