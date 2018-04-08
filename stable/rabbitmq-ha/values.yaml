@@ -41,6 +41,10 @@ rabbitmqHipeCompile: false
 rabbitmqCert:
   enabled: false
 
+  ## Specify an existing secret to use
+  existingSecret: |
+
+  ## Create a new secret using these values
   cacertfile: |
   certfile: |
   keyfile: |
