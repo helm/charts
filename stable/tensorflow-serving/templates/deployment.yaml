@@ -42,7 +42,7 @@ spec:
               protocol: TCP
           readinessProbe:
             tcpSocket:
-              port: 9090
+              port: serving
             initialDelaySeconds: 15
             timeoutSeconds: 1
           resources:
