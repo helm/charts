@@ -25,3 +25,15 @@ Return the appropriate apiVersion for RBAC APIs.
 "rbac.authorization.k8s.io/v1beta1"
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "fluent-bit.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "fluent-bit.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
