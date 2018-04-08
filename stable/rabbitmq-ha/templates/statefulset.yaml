@@ -85,15 +85,17 @@ spec:
               command:
                 - rabbitmqctl
                 - status
-            initialDelaySeconds: 30
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             exec:
               command:
                 - rabbitmqctl
                 - status
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           env:
             - name: MY_POD_NAME
               valueFrom:
