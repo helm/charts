@@ -2,16 +2,21 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# config is the MetalLB configuration, in YAML format. Refer to
-# https://metallb.universe.tf/configuration/ for available options.
+# config lets you specify MetalLB's configuration in various
+# ways. Use one of name, inline, or simpleLayer2.
 config:
-
-# When arpAddresses is specified instead of config, the chart will
-# install a trivial "quick start" MetalLB configuration that uses ARP
-# mode. Refer to https://metallb.universe.tf/ for more
-# information. For production configurations, use of the `config`
-# field is recommended instead of arpAddresses.
-arpAddresses:
+  # name specifies the name of an externally-defined ConfigMap to use
+  # as the configuration.
+  name: metallb-config
+  # inline specifies MetalLB's configuration directly, in yaml
+  # format. Refer to https://metallb.universe.tf/configuration/ for
+  # available options.
+  inline:
+  # simpleLayer2 accepts an IP address range and generates a trivial
+  # "quick start" MetalLB configuration that uses layer 2 mode. Refer
+  # to https://metallb.universe.tf/ for more information. This option
+  # is not recommended for production use.
+  simpleLayer2:
 
 rbac:
   # create specifies whether to install and use RBAC rules.
