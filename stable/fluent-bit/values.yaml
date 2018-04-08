@@ -16,6 +16,22 @@ backend:
   es:
     host: elasticsearch
     port: 9200
+    # Elastic Index Name
+    index: kubernetes_cluster
+    type: flb_type
+    logstash_prefix: kubernetes_cluster
+    # Optional username credential for Elastic X-Pack access
+    http_user:
+    # Password for user defined in HTTP_User
+    http_passwd:
+    # Optional TLS encryption to ElasticSeaarch instance
+    tls: off
+    tls_verify: on
+    # TLS certificate for the Elastic (in PEM format). Use if tls=on and tls_verify=on.
+    tls_ca: ""
+    # TLS debugging levels = 1-5
+    tls_debug: 1
+
   ##
   ## Ref: http://fluentbit.io/documentation/current/output/http.html
   ##
@@ -78,9 +94,13 @@ filter:
 # it append the map fields as part of the log structure.
 #  mergeJSONLog: true
 
-## Install Default RBAC roles and bindings
 rbac:
-  ## If true, create & use RBAC resources
-  create: false
-  ## Ignored if rbac.create is true
-  serviceAccountName: default
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
