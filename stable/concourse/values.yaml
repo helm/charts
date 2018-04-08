@@ -77,7 +77,7 @@ concourse:
   ##
   containerPlacementStrategy: random
 
-  ## An URL pointing to the Docker registry to use to fetch Docker images.
+  ## A URL pointing to the Docker registry to use to fetch Docker images.
   ## If unset, this will default to the Docker default
   ##
   # dockerRegistry:
