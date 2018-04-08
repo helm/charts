@@ -30,6 +30,8 @@ spec:
                 secretKeyRef:
                   key: data_source_name
                   name: {{ template "prometheus-postgres-exporter.fullname" . }}
+          args: 
+            - extend.query-path: /config
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -48,7 +50,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
             - name: queries
-              mountPath: /etc
+              mountPath: /config
      {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
