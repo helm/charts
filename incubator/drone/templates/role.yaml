@@ -4,7 +4,7 @@ kind: Role
 metadata:
   name: {{ template "drone.fullname" . }}
   labels:
-    app: {{ template "drone.fullname" . }}
+    app: {{ template "drone.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
