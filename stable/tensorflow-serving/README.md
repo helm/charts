@@ -31,7 +31,7 @@ mkdir /serving
 mount -t nfs -o vers=4.0 10.244.1.4:/serving /serving
 mkdir -p /serving/model
 cd /serving/model
-curl -O https://github.com/cheyang/charts/raw/features/tensorflow_serving/incubator/tensorflow-serving/models/mnist-export.tar.gz
+curl -O https://github.com/cheyang/charts/raw/features/tensorflow_serving/stable/tensorflow-serving/models/mnist-export.tar.gz
 tar -xzvf mnist-export.tar.gz
 rm -rf mnist-export.tar.gz
 cd /
@@ -112,7 +112,7 @@ persistence:
 To install the chart with the release name `mnist`:
 
 ```bash
-$ helm install --values values.yaml --name mnist incubator/tensorflow-serving
+$ helm install --values values.yaml --name mnist stable/tensorflow-serving
 ```
 
 ## Uninstalling the Chart
