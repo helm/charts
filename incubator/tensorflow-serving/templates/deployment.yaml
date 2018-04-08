@@ -38,6 +38,8 @@ spec:
             - "--model_base_path={{ .Values.modelBasePath }}"
           ports:
             - containerPort: 9090
+              name: serving
+              protocol: TCP
           readinessProbe:
             tcpSocket:
               port: 9090
