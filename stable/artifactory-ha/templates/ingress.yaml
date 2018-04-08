@@ -1,12 +1,12 @@
 {{- if .Values.ingress.enabled -}}
-{{- $serviceName := include "artifactory.fullname" . -}}
+{{- $serviceName := include "artifactory-ha.fullname" . -}}
 {{- $servicePort := .Values.artifactory.externalPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "artifactory.fullname" . }}
+  name: {{ template "artifactory-ha.fullname" . }}
   labels:
-    app: {{ template "artifactory.name" . }}
+    app: {{ template "artifactory-ha.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
