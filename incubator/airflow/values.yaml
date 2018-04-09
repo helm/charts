@@ -51,7 +51,7 @@ airflow:
   web_replicas: 1
   ##
   ## Custom airflow configuration environment variables
-  ## Use this to override any airflow setting settings defining environment variables in the 
+  ## Use this to override any airflow setting settings defining environment variables in the
   ## following form: AIRFLOW__<section>__<key>.
   ## See the Airflow documentation: http://airflow.readthedocs.io/en/latest/configuration.html?highlight=__CORE__#setting-configuration-options)
   config: {}
@@ -239,7 +239,7 @@ postgresql:
     enabled: true
 
 
-## Configuration values for the postgresql dependency.
+## Configuration values for the Redis dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/redis/README.md
 redis:
   ##
