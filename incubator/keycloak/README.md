@@ -62,7 +62,7 @@ Parameter | Description | Default
 `keycloak.cli.discovery` | WildFly CLI script for cluster discovery | See `values.yaml`
 `keycloak.cli.custom` | Additional custom WildFly CLI script | `""`
 `keycloak.service.annotations` | Annotations for the Keycloak service | `{}`
-`keycloak.service.labels` | Additional labels for ther Keycloak service | `{}`
+`keycloak.service.labels` | Additional labels for the Keycloak service | `{}`
 `keycloak.service.type` | The service type | `ClusterIP`
 `keycloak.service.port` | The service port | `80`
 `keycloak.service.nodePort` | The node port used if the service is of type `NodePort` | `""`
