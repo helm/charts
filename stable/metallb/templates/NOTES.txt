@@ -1,8 +1,8 @@
 
 MetalLB is now running in the cluster.
-{{ if .Values.arpCIDR -}}
+{{ if .Values.arpAddresses -}}
 LoadBalancer Services in your cluster are now available on IPs
-within {{ .Values.arpCIDR }}. To see the IP assignments,
+within {{ .Values.arpAddresses }}. To see the IP assignments,
 try `kubectl get services`.
 {{- else if .Values.config }}
 LoadBalancer Services in your cluster are now available on the IPs you
