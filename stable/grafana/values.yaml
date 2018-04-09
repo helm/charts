@@ -439,14 +439,14 @@ dashboardImports:
   enabled: false
 
   ## How long should it take to commit failure
-  ## Default: 300
+  ## Default: 30
   ##
-  # activeDeadlineSeconds: 300
+  activeDeadlineSeconds: 30
 
   ## Docker image to run import process
-  ## Default: appropriate/curl:latest
+  ## Default: jgoclawski/wget:1.0
   ##
-  # image: appropriate/curl:latest
+  image: jgoclawski/wget:1.0
 
   ## Grafana dashboard files to import as ConfigMap entries
   # files: {}
@@ -461,6 +461,16 @@ dashboardImports:
   # dashboards: {}
 
   ## Specify the Job policy
-  ## Default: OnFailure
+  ## Default: Never
   ##
-  # restartPolicy: OnFailure
+  restartPolicy: Never
+
+  ## Specify Pod Backoff failure policy
+  ## Default: 1
+  ##
+  backoffLimit: 1
+
+  ## Specify when Helm should run the import job
+  ## Default: post-install,post-upgrade
+  ##
+  hook: post-install,post-upgrade
