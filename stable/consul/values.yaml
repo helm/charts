@@ -4,26 +4,27 @@
 # name: value
 
 ## Consul service ports
-HttpPort: 8500
-RpcPort: 8400
-SerflanPort: 8301
-SerflanUdpPort: 8301
-SerfwanPort: 8302
-SerfwanUdpPort: 8302
-ServerPort: 8300
-ConsulDnsPort: 8600
+httpPort: 8500
+rpcPort: 8400
+serflanPort: 8301
+serflanUdpPort: 8301
+serfwanPort: 8302
+serfwanUdpPort: 8302
+serverPort: 8300
+consulDnsPort: 8600
 
 ## Specify the domain with which consul should run with
 ## This will be passed as a -domain parameter
-Domain: consul
+domain: consul
 
 ## Used as selector
-Component: "consul"
-Replicas: 3
-Image: "consul"
-ImageTag: "1.0.0"
-ImagePullPolicy: "Always"
-Resources: {}
+component: "consul"
+replicas: 3
+image:
+  repository: "consul"
+  tag: "1.0.0"
+  pullPolicy: "Always"
+resource: {}
  # requests:
  #   cpu: "100m"
  #   memory: "256Mi"
@@ -31,38 +32,38 @@ Resources: {}
  #   cpu: "500m"
  #   memory: "512Mi"
 ## Persistent volume size
-Storage: "1Gi"
+storage: "1Gi"
 
 ## Needed for 0.8.0 and later IF all consul containers are spun up
 ## on the same machine. Without this they all generate the same
 ## host id.
-DisableHostNodeId: false
+disableHostNodeId: false
 
 ## Datacenter name for consul. If not supplied, will use the consul
 ## default 'dc1'
-# DatacenterName: dc1
+# datacenterName: dc1
 
 ## Encrypt Gossip traffic
-EncryptGossip: true
+encryptGossip: true
 
 ## predefined value for gossip key.
 ## Will use a generated random alpha numeric if not provided
-# GossipKey: key
+# gossipKey: key
 
-## consul data Persistent Volume Storage Class
-## If defined, StorageClassName: <storageClass>
-## If set to "-", StorageClassName: "", which disables dynamic provisioning
+## consul data Persistent Volume storage Class
+## If defined, storageClassName: <storageClass>
+## If set to "-", storageClassName: "", which disables dynamic provisioning
 ## If undefined (the default) or set to null, no storageClassName spec is
 ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
 ##   GKE, AWS & OpenStack)
 ##
-# StorageClass: "-"
+# storageClass: "-"
 
 ## Setting maxUnavailable will create a pod disruption budget that will prevent
 ## voluntarty cluster administration from taking down too many consul pods. If
 ## you set maxUnavailable, you should set it to ceil((n/2) - 1), where
-## n = Replicas. For example, if you have 5 or 6 Replicas, you'll want to set
-## maxUnavailable = 2. If you are using the default of 3 Replicas, you'll want
+## n = replicas. For example, if you have 5 or 6 replicas, you'll want to set
+## maxUnavailable = 2. If you are using the default of 3 replicas, you'll want
 ## to set maxUnavailable to 1.
 maxUnavailable: 1
 
@@ -102,5 +103,6 @@ uiIngress:
 
 ## test container details
 test:
-  image: lachlanevenson/k8s-kubectl
-  imageTag: v1.4.8-bash
+  image:
+    repository: lachlanevenson/k8s-kubectl
+    tag: v1.4.8-bash

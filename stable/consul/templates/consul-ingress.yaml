@@ -1,6 +1,6 @@
 {{- if .Values.uiIngress.enabled -}}
 {{- $releaseName := .Release.Name -}}
-{{- $servicePort := .Values.HttpPort -}}
+{{- $servicePort := .Values.httpPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -12,7 +12,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    component: "{{ .Release.Name }}-{{ .Values.component }}"
   name: "{{ template "consul.fullname" . }}-ui"
 spec:
   rules:

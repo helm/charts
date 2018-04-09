@@ -7,12 +7,12 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    component: "{{ .Release.Name }}-{{ .Values.component }}"
 spec:
   ports:
   - name: http
-    port: {{ .Values.HttpPort }}
+    port: {{ .Values.httpPort }}
   selector:
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    component: "{{ .Release.Name }}-{{ .Values.component }}"
   type: "{{ .Values.uiService.type }}"
 {{- end }}

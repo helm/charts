@@ -6,34 +6,34 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    component: "{{ .Release.Name }}-{{ .Values.component }}"
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
   ports:
   - name: http
-    port: {{ .Values.HttpPort }}
+    port: {{ .Values.httpPort }}
   - name: rpc
-    port: {{ .Values.RpcPort }}
+    port: {{ .Values.rpcPort }}
   - name: serflan-tcp
     protocol: "TCP"
-    port: {{ .Values.SerflanPort }}
+    port: {{ .Values.serflanPort }}
   - name: serflan-udp
     protocol: "UDP"
-    port: {{ .Values.SerflanUdpPort }}
+    port: {{ .Values.serflanUdpPort }}
   - name: serfwan-tcp
     protocol: "TCP"
-    port: {{ .Values.SerfwanPort }}
+    port: {{ .Values.serfwanPort }}
   - name: serfwan-udp
     protocol: "UDP"
-    port: {{ .Values.SerfwanUdpPort }}
+    port: {{ .Values.serfwanUdpPort }}
   - name: server
-    port: {{.Values.ServerPort}}
+    port: {{.Values.serverPort}}
   - name: consuldns-tcp
-    port: {{.Values.ConsulDnsPort}}
+    port: {{.Values.consulDnsPort}}
   - name: consuldns-udp
     protocol: "UDP"
-    port: {{.Values.ConsulDnsPort}}
+    port: {{.Values.consulDnsPort}}
   clusterIP: None
   selector:
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    component: "{{ .Release.Name }}-{{ .Values.component }}"

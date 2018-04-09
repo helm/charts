@@ -6,10 +6,10 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    component: "{{ .Release.Name }}-{{ .Values.component }}"
 spec:
   serviceName: "{{ template "consul.fullname" . }}"
-  replicas: {{ default 3 .Values.Replicas }}
+  replicas: {{ default 3 .Values.replicas }}
   updateStrategy:
     type: RollingUpdate
   template:
@@ -19,7 +19,7 @@ spec:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        component: "{{ .Release.Name }}-{{ .Values.Component }}"
+        component: "{{ .Release.Name }}-{{ .Values.component }}"
     spec:
       securityContext:
         fsGroup: 1000
@@ -36,7 +36,7 @@ spec:
               - key: component
                 operator: In
                 values:
-                - "{{ .Release.Name }}-{{ .Values.Component }}"
+                - "{{ .Release.Name }}-{{ .Values.component }}"
             topologyKey: kubernetes.io/hostname
       {{- else if eq .Values.antiAffinity "soft" }}
       affinity:
@@ -54,41 +54,41 @@ spec:
                 - key: component
                   operator: In
                   values:
-                  - "{{ .Release.Name }}-{{ .Values.Component }}"
+                  - "{{ .Release.Name }}-{{ .Values.component }}"
       {{- end }}
       containers:
       - name: "{{ template "consul.fullname" . }}"
-        image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
-        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         ports:
         - name: http
-          containerPort: {{ .Values.HttpPort }}
+          containerPort: {{ .Values.httpPort }}
         - name: rpc
-          containerPort: {{ .Values.RpcPort }}
+          containerPort: {{ .Values.rpcPort }}
         - name: serflan-tcp
           protocol: "TCP"
-          containerPort: {{ .Values.SerflanPort }}
+          containerPort: {{ .Values.serflanPort }}
         - name: serflan-udp
           protocol: "UDP"
-          containerPort: {{ .Values.SerflanUdpPort }}
+          containerPort: {{ .Values.serflanUdpPort }}
         - name: serfwan-tcp
           protocol: "TCP"
-          containerPort: {{ .Values.SerfwanPort }}
+          containerPort: {{ .Values.serfwanPort }}
         - name: serfwan-udp
           protocol: "UDP"
-          containerPort: {{ .Values.SerfwanUdpPort }}
+          containerPort: {{ .Values.serfwanUdpPort }}
         - name: server
-          containerPort: {{.Values.ServerPort}}
+          containerPort: {{.Values.serverPort}}
         - name: consuldns-tcp
-          containerPort: {{.Values.ConsulDnsPort}}
+          containerPort: {{.Values.consulDnsPort}}
         - name: consuldns-udp
           protocol: "UDP"
-          containerPort: {{.Values.ConsulDnsPort}}
+          containerPort: {{.Values.consulDnsPort}}
         resources:
-{{ toYaml .Values.Resources | indent 10 }}
+{{ toYaml .Values.resource | indent 10 }}
         env:
         - name: INITIAL_CLUSTER_SIZE
-          value: {{ default 3 .Values.Replicas | quote }}
+          value: {{ default 3 .Values.replicas | quote }}
         - name: STATEFULSET_NAME
           value: "{{ template "consul.fullname" . }}"
         - name: POD_IP
@@ -100,7 +100,7 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         - name: DNSPORT
-          value: "{{ .Values.ConsulDnsPort }}"
+          value: "{{ .Values.consulDnsPort }}"
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/consul
@@ -120,7 +120,7 @@ spec:
           - |
             IP=$(hostname -i)
 
-            {{- if .Values.EncryptGossip }}
+            {{- if .Values.encryptGossip }}
             if [ -e /etc/consul/secrets/gossip-key ]; then
               echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
               GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
@@ -147,14 +147,14 @@ spec:
             {{- if .Values.uiService.enabled }}
               -ui \
             {{- end }}
-            {{- if .Values.DisableHostNodeId }}
+            {{- if .Values.disableHostNodeId }}
               -disable-host-node-id \
             {{- end }}
-            {{- if .Values.DatacenterName }}
-              -datacenter {{ .Values.DatacenterName }} \
+            {{- if .Values.datacenterName }}
+              -datacenter {{ .Values.datacenterName }} \
             {{- end }}
-            {{- if .Values.Domain }}
-              -domain={{ .Values.Domain }} \
+            {{- if .Values.domain }}
+              -domain={{ .Values.domain }} \
             {{- end }}
               -data-dir=/var/lib/consul \
               -server \
@@ -163,12 +163,12 @@ spec:
               -bind=0.0.0.0 \
               -advertise=${IP} \
               ${PEERS} \
-            {{- if .Values.EncryptGossip }}
+            {{- if .Values.encryptGossip }}
               ${GOSSIP_KEY} \
             {{- end }}
               -client=0.0.0.0 \
               -dns-port=${DNSPORT} \
-              -http-port={{ .Values.HttpPort }}
+              -http-port={{ .Values.httpPort }}
       volumes:
       - name: gossip-key
         secret:
@@ -182,11 +182,11 @@ spec:
       resources:
         requests:
           # upstream recommended max is 700M
-          storage: "{{ .Values.Storage }}"
-    {{- if .Values.StorageClass }}
-    {{- if (eq "-" .Values.StorageClass) }}
+          storage: "{{ .Values.storage }}"
+    {{- if .Values.storageClass }}
+    {{- if (eq "-" .Values.storageClass) }}
       storageClassName: ""
     {{- else }}
-      storageClassName: "{{ .Values.StorageClass }}"
+      storageClassName: "{{ .Values.storageClass }}"
     {{- end }}
     {{- end }}

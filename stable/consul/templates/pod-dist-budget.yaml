@@ -7,5 +7,5 @@ spec:
   maxUnavailable: {{ .Values.maxUnavailable }}
   selector:
     matchLabels:
-      component: "{{ .Release.Name }}-{{ .Values.Component }}"
+      component: "{{ .Release.Name }}-{{ .Values.component }}"
 {{- end }}
