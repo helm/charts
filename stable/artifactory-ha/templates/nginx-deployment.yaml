@@ -83,7 +83,7 @@ spec:
       - name: nginx-volume
       {{- if .Values.nginx.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.artifactory.persistence.existingClaim | default (include "artifactory-ha.nginx.fullname" .) }}
+          claimName: {{ .Values.nginx.persistence.existingClaim | default (include "artifactory-ha.nginx.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
