@@ -147,6 +147,9 @@ metrics:
     # The image tag to use for the metrics collector
     imageTag: a23062396cd5af1acdf76512632c20ea6be76885dfc20cd9ff40fb23846557e8
 
+    # The port to expose JMX metrics on
+    port: 5555
+
     # Rules to apply to the Kafka JMX Exporter
     kafkaConfig:
       lowercaseOutputName: true
