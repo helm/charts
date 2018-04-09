@@ -8,8 +8,6 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
 spec:
-  updateStrategy:
-    type: RollingUpdate
   replicas: 1
   template:
     metadata:

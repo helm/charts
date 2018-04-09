@@ -9,7 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
 spec:
   updateStrategy:
-    type: RollingUpdate
+    type: {{ default "OnDelete" .Values.daemonset.updateStrategy }}
   template:
     metadata:
       labels:
