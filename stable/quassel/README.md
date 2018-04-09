@@ -74,7 +74,7 @@ their default values.
 | `postgresql.persistence.accessMode`    | PVC Access Mode for PostgreSQL volume                                                            | `ReadWriteOnce`                                          |
 | `postgresql.persistence.size`          | PVC Storage Request for PostgreSQL volume                                                        | `1Gi`                                                    |
 
-> Additional PostgreSQL paramaters are available - refer to the
+> Additional PostgreSQL parameters are available - refer to the
 [PostgreSQL chart](../../stable/postgresql) for more details.
 
 ```console
