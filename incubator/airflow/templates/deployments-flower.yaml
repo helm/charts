@@ -30,8 +30,9 @@ spec:
           image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
           imagePullPolicy: {{ .Values.airflow.image.pull_policy }}
           envFrom:
-            - configMapRef:
-                name: "{{ template "airflow.fullname" . }}-env"
+          - configMapRef:
+              name: "{{ template "airflow.fullname" . }}-env"
+          env:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
@@ -42,13 +43,16 @@ spec:
                 secretKeyRef:
                   name: {{ template "airflow.fullname" . }}
                   key: postgresPassword
+            - name: REDIS_USER
+              valueFrom:
+                secretKeyRef:
                   name: {{ template "airflow.fullname" . }}
                   key: redisUser
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "airflow.fullname" . }}
-                  key: RedisPassword
+                  key: redisPassword
           ports:
             - name: flower
               containerPort: 5555
