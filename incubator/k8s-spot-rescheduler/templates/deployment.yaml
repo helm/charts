@@ -19,7 +19,7 @@ spec:
         app: {{ template "k8s-spot-rescheduler.name" . }}
         release: {{ .Release.Name }}
     spec:
-      {{- if eq .Values.rbac.enabled true }}
+      {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ template "k8s-spot-rescheduler.fullname" . }}
       {{- end }}
       containers:
