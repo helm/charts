@@ -70,7 +70,7 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `externalDatabase.user`             | Existing username in the external db      | `bn_owncloud`                                           |
 | `externalDatabase.password`         | Password for the above username           | `nil`                                                   |
 | `mariadb.mariadbDatabase`           | Database name to create                   | `bitnami_owncloud`                                      |
-| `mariadb.enabled`                   | Wheter to use or not the mariadb chart    | `true`                                                  |
+| `mariadb.enabled`                   | Whether to use or not the mariadb chart    | `true`                                                  |
 | `mariadb.mariadbPassword`           | Password for the database                 | `nil`                                                   |
 | `mariadb.mariadbUser`               | Database user to create                   | `bn_owncloud`                                           |
 | `mariadb.mariadbRootPassword`       | MariaDB admin password                    | `nil`                                                   |
