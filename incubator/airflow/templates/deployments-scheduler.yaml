@@ -42,11 +42,6 @@ spec:
                 secretKeyRef:
                   name: {{ template "airflow.fullname" . }}
                   key: postgresPassword
-            - name: REDIS_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "airflow.fullname" . }}
-                  key: redisUser
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
