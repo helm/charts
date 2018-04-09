@@ -76,8 +76,9 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.core.persistentVolume.mountPath }}"
-          subPath: "{{ .Values.core.persistentVolume.subPath }}"
-        volumeMounts:
+          {{- if .Values.core.persistentVolume.subPath }}
+          subPath: {{ .Values.core.persistentVolume.subPath }}
+          {{- end }}
         - name: plugins
           mountPath: /plugins
         resources:
@@ -85,6 +86,10 @@ spec:
 {{- if .Values.core.sidecarContainers }}
 {{ toYaml .Values.core.sidecarContainers | indent 6}}
 {{- end }}
+{{- if .Values.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecret }}
+{{- end -}}
 {{- if .Values.core.initContainers }}
       initContainers:
 {{ toYaml .Values.core.initContainers | indent 6}}
