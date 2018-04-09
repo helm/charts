@@ -95,7 +95,7 @@ The configuration parameters in this section control the resources requested and
 | image.pullPolicy | The pull policy for the deployment                                                             | `IfNotPresent`                   |
 | nodeSelector     | Node labels for pod assignment                                                                 | `{}`                             |
 | service.type     | Service Type                                                                                   | `ClusterIP`                      |
-| persistence.enabled | Presist the Data and Log files for SQL Server                                               | `false`                          |
+| persistence.enabled | Persist the Data and Log files for SQL Server                                               | `false`                          |
 | persistence.existingDataClaim | Identify an existing Claim to be used for the Data Directory                      | `Commented Out`                  |
 | persistence.existingLogClaim  | Identify an existing Claim to be used for the Log Directory                       | `Commented Out`                  |
 | persistence.existingBackupClaim | Identify an existing Claim to be used for the SQL Database Backups              | `Commented Out`                  |
