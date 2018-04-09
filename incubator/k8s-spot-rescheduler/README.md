@@ -4,15 +4,25 @@ This chart installs the [k8s-spot-rescheduler](https://github.com/pusher/k8s-spo
 
 ## Purpose
 
-This rescheduler will reschedule Pods that are already running on on-demand instances. Based on worker labels it will move Pods to spot instances. It can work together with Cluster Autoscaler if you want to scale on-demand instances to zero.
+Spot rescheduler will reschedule pods that are already running on on-demand instances. Based on worker labels it will move pods to spot instances. It can work together with [Cluster Autoscaler](https://github.com/kubernetes/charts/tree/master/stable/cluster-autoscaler) if you want to scale on-demand instances back to zero.
 
 ## Installation
 
 You should install this chart into the `kube-system` namespace:
 ```
-helm install incubator/k8s-spot-rescheduler --namespace kube-system
+helm install \
+  --namespace kube-system \
+  incubator/k8s-spot-rescheduler
+```
+
+If your cluster has RBAC enabled, run this command:
+```
+helm install \
+  --namespace kube-system \
+  --set rbac.enabled=true \
+  incubator/k8s-spot-rescheduler
 ```
 
 ## Configuration
 
-Add the flags to `cmdOptions` which you want to use. The full list of flags is available [here](https://github.com/pusher/k8s-spot-rescheduler#flags).
+Add the parameters to `cmdOptions` which you want to use. Here is [the full list of available options](https://github.com/pusher/k8s-spot-rescheduler#flags).

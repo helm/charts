@@ -11,9 +11,8 @@ image:
 rbac:
   enabled: false
 
-# Full list of available options https://github.com/pusher/k8s-spot-rescheduler#flags
+# The full list of available options https://github.com/pusher/k8s-spot-rescheduler#flags
 cmdOptions:
-  # The namespace is set to Helm release namspace, --namespace={{ .Release.Namespace }}
   - --v=2
   - --running-in-cluster=true
   - --housekeeping-interval=10s
