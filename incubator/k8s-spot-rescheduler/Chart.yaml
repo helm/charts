@@ -6,6 +6,7 @@ version: 0.1.0
 keywords:
   - spot
   - rescheduler
+home: https://github.com/pusher/k8s-spot-rescheduler
 sources:
   - https://github.com/pusher/k8s-spot-rescheduler
 maintainers:
