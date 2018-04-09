@@ -47,7 +47,7 @@ $ kubectl delete pvc -l app=${RELEASE-NAME}-worker
 
 ## Scaling the Chart
 
-Scaling should typically be managed via the `helm upgrade` command, but `StatefulSets` don't yet work with `helm upgrade`. In the meantime, until `helm upgrade` works, if you want to change the number of replicas, you can use the kubectl scale as shown below:
+Scaling should typically be managed via the `helm upgrade` command, but `StatefulSets` don't yet work with `helm upgrade`. In the meantime, until `helm upgrade` works, if you want to change the number of replicas, you can use the `kubectl scale` command as shown below:
 
 ```console
 $ kubectl scale statefulset my-release-worker --replicas=3
@@ -63,12 +63,12 @@ The worker's Liveness Probe will trigger a restart of the worker if it detects u
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Concourse chart and their default values.
+The following table lists the configurable parameters of the Concourse chart and their default values.
 
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
-| `imageTag` | Concourse image version | `3.9.0` |
+| `imageTag` | Concourse image version | `3.10.0` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
 | `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.atcPort` | Concourse ATC listen port | `8080` |
@@ -80,7 +80,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `concourse.resourceCacheCleanupInterval` | The interval on which to check for and release old caches of resource versions | `30s` |
 | `concourse.baggageclaimDriver` | The filesystem driver used by baggageclaim | `naive` |
 | `concourse.containerPlacementStrategy` | The selection strategy for placing containers onto workers | `random` |
-| `concourse.dockerRegistry` | An URL pointing to the Docker registry to use to fetch Docker images | `nil` |
+| `concourse.dockerRegistry` | A URL pointing to the Docker registry to use to fetch Docker images | `nil` |
 | `concourse.insecureDockerRegistry` | Docker registry(ies) (comma separated) to allow connecting to even if not secure | `nil` |
 | `concourse.encryption.enabled` | Enable encryption of pipeline configuration | `false` |
 | `concourse.basicAuth.enabled` | Enable basic auth for the "main" Concourse team| `true` |
@@ -148,7 +148,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `credentialManager.vault.enabled` | Use Hashicorp Vault as a Credential Manager | `false` |
 | `credentialManager.vault.url` | Vault Server URL | `nil` |
 | `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
-| `credentialManager.vault.caCert` | CA public certificate when using self-signed TLS with Vault | `nil` |
+| `credentialManager.vault.useCaCert` | CA public certificate when using self-signed TLS with Vault | `nil` |
 | `credentialManager.vault.authBackend` | Vault Authentication Backend to use, leave blank when using clientToken | `nil` |
 | `rbac.create` | Enables creation of RBAC resources | `true` |
 | `rbac.apiVersion` | RBAC version | `v1beta1` |
@@ -230,7 +230,7 @@ Make sure you clean up after yourself.
 
 ### Persistence
 
-This chart mounts a Persistent Volume volume for each Concourse Worker. The volume is created using dynamic volume provisioning. If you want to disable it or change the persistence properties, update the `persistence` section of your custom `values.yaml` file:
+This chart mounts a Persistent Volume for each Concourse Worker. The volume is created using dynamic volume provisioning. If you want to disable it or change the persistence properties, update the `persistence` section of your custom `values.yaml` file:
 
 ```yaml
 ## Persistent Volume Storage configuration.
@@ -312,7 +312,7 @@ The only way to completely avoid putting secrets in Helm is to bring your own Po
 
 ### Credential Management
 
-Pipelines ususally need credentials to do things. Concourse supports the use of a [Credential Manager](https://concourse-ci.org/creds.html) so your pipelines can contain references to secrets instead of the actual secret values. You can't use more than one credential manager at a time.
+Pipelines usually need credentials to do things. Concourse supports the use of a [Credential Manager](https://concourse-ci.org/creds.html) so your pipelines can contain references to secrets instead of the actual secret values. You can't use more than one credential manager at a time.
 
 #### Kubernetes Secrets
 
@@ -383,7 +383,7 @@ credentialManager:
 
 ```
 
-#### AWS Systems Manager Paramter Store (SSM)
+#### AWS Systems Manager Parameter Store (SSM)
 
 To use SSM, set `credentialManager.kubernetes.enabled` to false, and set `credentialManager.ssm.enabled` to true.
 

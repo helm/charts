@@ -41,26 +41,29 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the DokuWiki chart and their default values.
+The following table lists the configurable parameters of the DokuWiki chart and their default values.
 
-|              Parameter              |               Description               |                         Default                         |
-|-------------------------------------|-----------------------------------------|---------------------------------------------------------|
-| `image`                             | DokuWiki image                          | `bitnami/dokuwiki:{VERSION}`                            |
-| `imagePullPolicy`                   | Image pull policy                       | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `dokuwikiUsername`                  | User of the application                 | `user`                                                  |
-| `dokuwikiFullName`                  | User's full name                        | `Full Name`                                             |
-| `dokuwikiPassword`                  | Application password                    | _random 10 character alphanumeric string_               |
-| `dokuwikiEmail`                     | User email                              | `user@example.com`                                      |
-| `dokuwikiWikiName`                  | Wiki name                               | `My Wiki`                                               |
-| `serviceType`                       | Kubernetes Service type                 | `LoadBalancer`                                          |
-| `persistence.enabled`               | Enable persistence using PVC            | `true`                                                  |
-| `persistence.apache.storageClass`   | PVC Storage Class for apache volume     | `nil`  (uses alpha storage class annotation) |
-| `persistence.apache.accessMode`     | PVC Access Mode for apache volume       | `ReadWriteOnce`                                         |
-| `persistence.apache.size`           | PVC Storage Request for apache volume   | `1Gi`                                                   |
-| `persistence.dokuwiki.storageClass` | PVC Storage Class for DokuWiki volume   | `nil`  (uses alpha storage class annotation) |
-| `persistence.dokuwiki.accessMode`   | PVC Access Mode for DokuWiki volume     | `ReadWriteOnce`                                         |
-| `persistence.dokuwiki.size`         | PVC Storage Request for DokuWiki volume | `8Gi`                                                   |
-| `resources`                         | CPU/Memory resource requests/limits     | Memory: `512Mi`, CPU: `300m`                            |
+|              Parameter              |               Description                   |                         Default                         |
+|-------------------------------------|---------------------------------------------|---------------------------------------------------------|
+| `image.registry`                    | DokuWiki image registry                     | `docker.io`                                             |
+| `image.repository`                  | DokuWiki Image name                         | `bitnami/dokuwiki`                                      |
+| `image.tag`                         | DokuWiki Image tag                          | `{VERSION}`                                             |
+| `image.pullPolicy`                  | Image pull policy                           | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`                 | Specify image pull secrets                  | `nil`                                                   |
+| `dokuwikiUsername`                  | User of the application                     | `user`                                                  |
+| `dokuwikiFullName`                  | User's full name                            | `Full Name`                                             |
+| `dokuwikiPassword`                  | Application password                        | _random 10 character alphanumeric string_               |
+| `dokuwikiEmail`                     | User email                                  | `user@example.com`                                      |
+| `dokuwikiWikiName`                  | Wiki name                                   | `My Wiki`                                               |
+| `serviceType`                       | Kubernetes Service type                     | `LoadBalancer`                                          |
+| `persistence.enabled`               | Enable persistence using PVC                | `true`                                                  |
+| `persistence.apache.storageClass`   | PVC Storage Class for apache volume         | `nil`  (uses alpha storage class annotation)            |
+| `persistence.apache.accessMode`     | PVC Access Mode for apache volume           | `ReadWriteOnce`                                         |
+| `persistence.apache.size`           | PVC Storage Request for apache volume       | `1Gi`                                                   |
+| `persistence.dokuwiki.storageClass` | PVC Storage Class for DokuWiki volume       | `nil`  (uses alpha storage class annotation)            |
+| `persistence.dokuwiki.accessMode`   | PVC Access Mode for DokuWiki volume         | `ReadWriteOnce`                                         |
+| `persistence.dokuwiki.size`         | PVC Storage Request for DokuWiki volume     | `8Gi`                                                   |
+| `resources`                         | CPU/Memory resource requests/limits         | Memory: `512Mi`, CPU: `300m`                            |
 
 The above parameters map to the env variables defined in [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki). For more information please refer to the [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki) image documentation.
 

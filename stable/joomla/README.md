@@ -12,7 +12,7 @@ $ helm install stable/joomla
 
 This chart bootstraps a [Joomla!](https://github.com/bitnami/bitnami-docker-joomla) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the Joomla! application.
+It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which bootstraps a MariaDB deployment required by the Joomla! application.
 
 ## Prerequisites
 
@@ -43,12 +43,15 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Joomla! chart and their default values.
+The following table lists the configurable parameters of the Joomla! chart and their default values.
 
 | Parameter                         | Description                            | Default                                                   |
-| --------------------------------- | -------------------------------------  | --------------------------------------------------------- |
-| `image`                           | Joomla! image                          | `bitnami/joomla:{VERSION}`                                |
-| `imagePullPolicy`                 | Image pull policy                      | `Always` if `image` tag is `latest`, else `IfNotPresent`  |
+| --------------------------------- | -------------------------------------- | --------------------------------------------------------- |
+| `image.registry`                  | Joomla! image registry                 | `docker.io`                                               |
+| `image.repository`                | Joomla! Image name                     | `bitnami/joomla`                                          |
+| `image.tag`                       | Joomla! Image tag                      | `{VERSION}`                                               |
+| `image.pullPolicy`                | Image pull policy                      | `Always` if `imageTag` is `latest`, else `IfNotPresent`   |
+| `image.pullSecrets`               | Specify image pull secrets             | `nil`                                                     |
 | `joomlaUsername`                  | User of the application                | `user`                                                    |
 | `joomlaPassword`                  | Application password                   | Randomly generated                                        |
 | `joomlaEmail`                     | Admin email                            | `user@example.com`                                        |
@@ -63,8 +66,8 @@ The following tables lists the configurable parameters of the Joomla! chart and 
 | `externalDatabase.port`           | Port of the external database          | `3306`                                                    |
 | `externalDatabase.user`           | Existing username in the external db   | `bn_joomla`                                               |
 | `externalDatabase.password`       | Password for the above username        | `nil`                                                     |
-| `externalDatabase.database`       | Name of the existing databse           | `bitnami_joomla`                                          |
-| `mariadb.enabled`                 | Wheter to use or not the mariadb chart | `true`                                                    |
+| `externalDatabase.database`       | Name of the existing database          | `bitnami_joomla`                                          |
+| `mariadb.enabled`                 | Whether to use the MariaDB chart       | `true`                                                    |
 | `mariadb.mariadbDatabase`         | Database name to create                | `bitnami_joomla`                                          |
 | `mariadb.mariadbUser`             | Database user to create                | `bn_joomla`                                               |
 | `mariadb.mariadbPassword`         | Password for the database              | `nil`                                                     |
