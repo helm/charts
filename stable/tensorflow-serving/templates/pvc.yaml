@@ -1,0 +1,31 @@
+{{- if .Values.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "tensorflow-serving.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "tensorflow-serving.chart" . }}
+    app: {{ template "tensorflow-serving.fullname" . }}
+  annotations:
+    "helm.sh/hook": pre-install
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size | quote }}
+{{- if .Values.persistence.storageClass }}
+{{- if (eq "-" .Values.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- if .Values.persistence.matchLabels }}
+  selector:
+    matchLabels:
+{{ toYaml .Values.persistence.pvc.matchLabels | indent 12 }}
+{{- end}}
+{{- end}}

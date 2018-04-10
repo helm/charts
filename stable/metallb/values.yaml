@@ -6,12 +6,12 @@
 # https://metallb.universe.tf/configuration/ for available options.
 config:
 
-# When arpCIDR is specified instead of config, the chart will install
-# a trivial "quick start" MetalLB configuration that uses ARP
+# When arpAddresses is specified instead of config, the chart will
+# install a trivial "quick start" MetalLB configuration that uses ARP
 # mode. Refer to https://metallb.universe.tf/ for more
 # information. For production configurations, use of the `config`
-# field is recommended instead of arpCIDR.
-arpCIDR:
+# field is recommended instead of arpAddresses.
+arpAddresses:
 
 rbac:
   # create specifies whether to install and use RBAC rules.
@@ -47,7 +47,7 @@ serviceAccounts:
 controller:
   image:
     repository: metallb/controller
-    tag: v0.4.6
+    tag: v0.5.0
     pullPolicy: IfNotPresent
   resources:
     # limits:
@@ -59,7 +59,7 @@ controller:
 speaker:
   image:
     repository: metallb/speaker
-    tag: v0.4.6
+    tag: v0.5.0
     pullPolicy: IfNotPresent
   resources:
     # limits:
