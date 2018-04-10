@@ -292,6 +292,11 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.node.javaOpts.xms`                 | Artifactory member node java Xms size            |                     |
 | `artifactory.node.javaOpts.xmx`                 | Artifactory member node java Xms size            |                     |
 | `artifactory.node.javaOpts.other`               | Artifactory member node additional java options  |                     |
+| `ingress.enabled`           | If true, Artifactory Ingress will be created | `false` |
+| `ingress.annotations`       | Artifactory Ingress annotations     | `{}` |
+| `ingress.hosts`             | Artifactory Ingress hostnames       | `[]` |
+| `ingress.tls`               | Artifactory Ingress TLS configuration (YAML) | `[]` |
+| `nginx.enabled`             | Deploy nginx server                      | `true`                                               |
 | `nginx.name`                | Nginx name                        | `nginx`                                                |
 | `nginx.replicaCount`        | Nginx replica count               | `1`                                                    |
 | `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`        |
@@ -299,6 +304,12 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.image.pullPolicy`    | Container pull policy             | `IfNotPresent`                                         |
 | `nginx.service.type`        | Nginx service type                | `LoadBalancer`                                         |
 | `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |  |
+| `nginx.loadBalancerIP`| Provide Static IP to to configure with Nginx |  |
+| `nginx.externalPortHttp` | Nginx service external port | `80`   |
+| `nginx.internalPortHttp` | Nginx service internal port | `80`   |
+| `nginx.externalPortHttps` | Nginx service external port | `443`   |
+| `nginx.internalPortHttps` | Nginx service internal port | `443`   |
+| `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |    |
 | `nginx.env.ssl`                   | Nginx Environment enable ssl               | `true`                                  |
 | `nginx.resources.requests.memory` | Nginx initial memory request               | `250Mi`                                 |
 | `nginx.resources.requests.cpu`    | Nginx initial cpu request                  | `100m`                                  |
@@ -323,6 +334,49 @@ The following table lists the configurable parameters of the artifactory chart a
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
+
+### Ingress and TLS
+To get Helm to create an ingress object with a hostname, add these two lines to your Helm command:
+```
+helm install --name artifactory-ha \
+  --set ingress.enabled=true \
+  --set ingress.hosts[0]="artifactory.company.com" \
+  --set artifactory.service.type=NodePort \
+  --set nginx.enabled=false \
+  stable/artifactory-ha
+```
+
+If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
+
+To manually configure TLS, first create/retrieve a key & certificate pair for the address(es) you wish to protect. Then create a TLS secret in the namespace:
+
+```console
+kubectl create secret tls artifactory-tls --cert=path/to/tls.cert --key=path/to/tls.key
+```
+
+Include the secret's name, along with the desired hostnames, in the Artifactory Ingress TLS section of your custom `values.yaml` file:
+
+```
+  ingress:
+    ## If true, Artifactory Ingress will be created
+    ##
+    enabled: true
+
+    ## Artifactory Ingress hostnames
+    ## Must be provided if Ingress is enabled
+    ##
+    hosts:
+      - artifactory.domain.com
+    annotations:
+      kubernetes.io/tls-acme: "true"
+    ## Artifactory Ingress TLS configuration
+    ## Secrets must be manually created in the namespace
+    ##
+    tls:
+      - secretName: artifactory-tls
+        hosts:
+          - artifactory.domain.com
+```
 
 
 ## Useful links

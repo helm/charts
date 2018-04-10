@@ -1,3 +1,4 @@
+{{- if .Values.nginx.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -11,6 +12,9 @@ metadata:
 spec:
   type: {{ .Values.nginx.service.type }}
 {{- if eq .Values.nginx.service.type "LoadBalancer" }}
+  {{ if .Values.nginx.service.loadBalancerIP -}}
+  loadBalancerIP: {{ .Values.nginx.service.loadBalancerIP }}
+  {{ end -}}
   externalTrafficPolicy: Local
 {{- end }}
 {{- if .Values.nginx.service.loadBalancerSourceRanges }}
@@ -18,15 +22,16 @@ spec:
 {{ toYaml .Values.nginx.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
   ports:
-  - port: 80
-    targetPort: 80
+  - port: {{ .Values.nginx.externalPortHttp }}
+    targetPort: {{ .Values.nginx.internalPortHttp }}
     protocol: TCP
     name: http
-  - port: 443
-    targetPort: 443
+  - port: {{ .Values.nginx.externalPortHttps }}
+    targetPort: {{ .Values.nginx.internalPortHttps }}
     protocol: TCP
     name: https
   selector:
     app: {{ template "artifactory-ha.name" . }}
     component: "{{ .Values.nginx.name }}"
     release: {{ .Release.Name }}
+{{- end }}
