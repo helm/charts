@@ -3,12 +3,12 @@
 -------------------------------------------------------------------------------
  WARNING
 
-    By specifying "service.type=LoadBalancer" and "userPassword=false" you have
-    most  likely exposed the MariaDB service externally withoy any authentication
+    By specifying "service.type=LoadBalancer" and "usePassword=false" you have
+    most  likely exposed the MariaDB service externally without any authentication
     mechanism.
 
     For security reasons, we strongly suggest that you switch to "ClusterIP" or
-    "NodePort". As alternative, you can also switch to "userPassword=true"
+    "NodePort". As alternative, you can also switch to "usePassword=true"
     providing a valid pasword on "mariadbRootPassword" parameter.
 
 -------------------------------------------------------------------------------
@@ -46,7 +46,8 @@ To connect to your database from outside the cluster execute the following comma
 {{- if contains "NodePort" .Values.service.type }}
 
     export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-    mysql -h $NODE_IP -P {{ .Values.service.nodePort }} -uroot {{- if .Values.usePassword }} -p$MARIADB_ROOT_PASSWORD{{ end }}
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "mariadb.fullname" . }})
+    mysql -h $NODE_IP -P $NODE_PORT -uroot {{- if .Values.usePassword }} -p$MARIADB_ROOT_PASSWORD{{ end }}
 
 {{- else if contains "LoadBalancer" .Values.service.type }}
 
@@ -59,7 +60,7 @@ To connect to your database from outside the cluster execute the following comma
 {{- else if contains "ClusterIP" .Values.service.type }}
 
     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "mariadb.name" . }}" -o jsonpath="{.items[0].metadata.name}")
-    kubectl port-forward $POD_NAME 3306:3306 &
+    kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 3306:3306 &
     mysql -h 127.0.0.1 -uroot {{- if .Values.usePassword }} -p$MARIADB_ROOT_PASSWORD{{ end }}
 
 {{- end }}
