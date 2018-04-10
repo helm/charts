@@ -77,9 +77,13 @@ spec:
                     done
           env:
             - name: CONCOURSE_TSA_HOST
+          {{- if semverCompare "^3.10" .Values.imageTag }}
+              value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.tsaPort}}"
+          {{- else }}
               value: {{ template "concourse.web.fullname" . }}
             - name: CONCOURSE_TSA_PORT
               value: {{ .Values.concourse.tsaPort | quote }}
+          {{- end }}
             - name: CONCOURSE_GARDEN_DOCKER_REGISTRY
               value: {{ .Values.concourse.dockerRegistry | quote }}
             - name: CONCOURSE_GARDEN_INSECURE_DOCKER_REGISTRY
