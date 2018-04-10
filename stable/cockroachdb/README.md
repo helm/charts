@@ -1,8 +1,7 @@
 # CockroachDB Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.7 (for PodDisruptionBudget `MaxUnavailable` support -- you can
-  run at Kubernetes 1.5 if you don't care about the PodDisruptionBudget)
+* Kubernetes 1.8
 * PV support on the underlying infrastructure
 * If you want to secure your cluster to use TLS certificates for all network
   communication, [Helm must be installed with RBAC
