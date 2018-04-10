@@ -1,475 +1,137 @@
-server:
-  ## Grafana Pod annotations:
-  ##
-  # annotations:
-  #   iam.amazonaws.com/role: grafana
+replicas: 1
 
-  ## Grafana Docker image
-  ##
-  image: "grafana/grafana:5.0.4"
+image:
+  repository: grafana/grafana
+  tag: 5.0.4
+  pullPolicy: IfNotPresent
 
-  extraEnv: []
-
-  nodeSelector: {}
-  tolerations: []
-
-  # Multiple replicas do not work with the default sqlite database,
-  # see http://docs.grafana.org/tutorials/ha_setup/.
-  replicaCount: 1
-
-  antiAffinity:
-    enabled: false
-    type: hard
-
-  ingress:
-    ## If true, Grafana Ingress will be created
-    ##
-    enabled: false
-
-    ## Grafana Ingress annotations
-    ##
-    # annotations:
-    #   kubernetes.io/ingress.class: nginx
-    #   kubernetes.io/tls-acme: 'true'
-
-    ## Grafana Ingress hostnames
-    ## Must be provided if Ingress is enabled
-    ##
-    # hosts:
-    #   - grafana.domain.com
-
-    ## Grafana Ingress path
-    ## Optional, allows specifying paths for more flexibility
-    ## E.g. Traefik ingress likes paths
-    ##
-    # path: /
-
-    ## Grafana Ingress TLS configuration
-    ## Secrets must be manually created in the namespace
-    ##
-    # tls:
-    #   - secretName: grafana-server-tls
-    #     hosts:
-    #       - grafana.domain.com
-
-  ## Grafana container name
-  ##
-  name: grafana
-
-  adminUser: "admin"
-  # adminPassword: "admin"
-
-  ## Global imagePullPolicy
-  ## Default: 'Always' if image tag is 'latest', else 'IfNotPresent'
-  ## Ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-  ##
-  # imagePullPolicy:
-
-  # Persist data to a persitent volume
-  persistentVolume:
-    ## If true, Grafana will create a Persistent Volume Claim
-    ## If false, use emptyDir
-    ##
-    enabled: true
-
-    ## Grafana data Persistent Volume access modes
-    ## Must match those of existing PV or dynamic provisioner
-    ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
-    ##
-    accessModes:
-      - ReadWriteOnce
-
-    ## Grafana data Persistent Volume annotations
-    ##
-    annotations: {}
-
-    ## Grafana data Persistent Volume existing claim name
-    ## Requires server.persistentVolume.enabled: true
-    ## If defined, PVC must be created manually before volume will be bound
-    existingClaim: ""
-
-    ## Grafana data Persistent Volume size
-    ## Default: 1Gi
-    ##
-    size: 1Gi
-
-    ## grafana data Persistent Volume Storage Class
-    ## If defined, storageClassName: <storageClass>
-    ## If set to "-", storageClassName: "", which disables dynamic provisioning
-    ## If undefined (the default) or set to null, no storageClassName spec is
-    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-    ##   GKE, AWS & OpenStack)
-    ##
-    # storageClass: "-"
-
-    ## Subdirectory of data Persistent Volume to mount
-    ## Useful if the volume's root directory is not empty
-    ##
-    subPath: ""
-
-  ## Grafana resource requests and limits
-  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  resources:
-    # limits:
-    #   cpu: 500m
-    #   memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 100Mi
-
-  ## Grafana readiness probe
-  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
-  ##
-  readinessProbe:
-    httpGet:
-      path: /api/health
-      port: 3000
-    initialDelaySeconds: 30
-    timeoutSeconds: 30
-
-  ## Grafana service
-  service:
-    ## Grafana service annotations
-    ##
-    annotations: {}
-
-    ## Grafana service type
-    ##
-    type: ClusterIP
-
-    ## Grafana service port
-    ##
-    httpPort: 80
-
-    ## ClusterIP to use for service
-    ## clusterIP: None
-
-    ## Load balancer IP address
-    ## Is not required, but allows for static address with
-    ## serviceType LoadBalancer.
-    ## If not supported by cloud provider, this field is ignored.
-    ## Default: nil
-    ##
-    # loadBalancerIP: 130.211.x.x
-
-    ## This will restrict traffic through the cloud-provider load-balancer
-    ## to the specified client IPs.
-    ## If not supported by cloud provider, this field is ignored.
-    ## Default: nil
-    ##
-    # loadBalancerSourceRanges:
-    #   - 0.0.0.0/0
-
-    ## nodePort port number
-    ## Is not required, but allows for static port assignment with
-    ## serviceType NodePort.
-    ## Default: nil
-    # nodePort: 30000
-
-    ## External IP addresses of service
-    ## Default: nil
-    ##
-    # externalIPs:
-    # - 192.168.0.1
-
-
-  ## Grafana local config path
-  ## Default '/etc/grafana'
-  ##
-  # configLocalPath: /etc/grafana
-
-  ## Grafana local dashboards path
-  ## Default: '/var/lib/grafana/dashboards'
-  ##
-  # dashboardLocalPath: /var/lib/grafana/dashboards
-
-  ## Grafana local data storage path
-  ## Default: '/var/lib/grafana/data'
-  ##
-  # storageLocalPath: /var/lib/grafana/data
-
-  ## Grafana Pod termination grace period
-  ## Default: 300s (5m)
-  ##
-  # terminationGracePeriodSeconds: 300
-
-  ## Pass the plugins you want installed as a comma separated list.
-  ## This will pass each plugin name to `grafana-cli plugins install ${plugin}`.
-  ## Ref: https://github.com/grafana/grafana-docker#installing-plugins-for-grafana-3
-  ##
-  # installPlugins:
-
-  # Set datasource in beginning
-  setDatasource:
-    ## If true, an initial Grafana Datasource will be set
-    ## Default: false
-    ##
-    enabled: false
-
-    ## How long should it take to commit failure
-    ## Default: 300
-    ##
-    activeDeadlineSeconds: 300
-
-    ## Curl Docker image
-    ## Default: appropriate/curl:latest
-    ##
-    image: appropriate/curl:latest
-
-    ## This assembles how curl post into Grafana
-    ## Ref1: http://docs.grafana.org/reference/http_api/#create-data-source
-    ## Ref2: https://github.com/grafana/grafana/issues/1789
-    ##
-    datasource:
-      ## The datasource name.
-      ## Default: default
-      name: default
-
-      ## Type of datasource
-      ## Default: prometheus
-      ##
-      type: prometheus
-
-      ## The url of the datasource. To set correctly you need to know
-      ## the right datasource name and its port ahead. Check kubernetes
-      ## dashboard or describe the service should fulfill the requirements.
-      ## Syntax like `http://<release name>-<server name>:<port number>
-      ## Default: <empty>
-      ##
-      url:
-
-      ## The name of the database at the datasource.
-      ## Required parameter when used with elasticsearch, which refers to the index_name
-      ## Default: <empty>
-      database:
-
-      ## Additional JSON data to be passed to the configuration of the datasource.
-      ## The JSON data is passed to curl, therefore it needs proper quoting and
-      ## escaping and needs to be on a single line. For example:
-      ##  '\"esVersion\": 2, \"interval\": \"Daily\", \"timeField\": \"@timestamp\"'
-      jsonData: null
-
-      ## Specify if Grafana has to go thru proxy to reach datasource
-      ## Default: proxy
-      ##
-      access: proxy
-
-      ## Specify should Grafana use this datasource as default
-      ## Default: true
-      ##
-      isDefault: true
-
-    ## Specify the job policy
-    ## Default: OnFailure
-    ##
-    restartPolicy: OnFailure
-
-## Grafana config file ConfigMap entry
+downloadDashboardsImage:
+  repository: appropriate/curl
+  tag: latest
+  pullPolicy: IfNotPresent
+## Expose the grafana service to be accessed from outside the cluster (LoadBalancer service).
+## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
+## ref: http://kubernetes.io/docs/user-guide/services/
 ##
-serverConfigFile:
-  grafana.ini: |
-    ; instance_name = ${HOSTNAME}
-    [paths]
-    data = /var/lib/grafana/data
-    logs = /var/log/grafana
-    plugins = /var/lib/grafana/plugins
+service:
+  type: ClusterIP
+  port: 80
+  annotations: {}
 
-    [server]
-    ;protocol = http
-    ;http_addr =
-    ;http_port = 3000
-    ;domain = localhost
-    ;enforce_domain = false
-    ;root_url = %(protocol)s://%(domain)s:%(http_port)s/
-    ;router_logging = false
-    ;static_root_path = public
-    ;enable_gzip = false
-    ;cert_file =
-    ;cert_key =
-
-    [database]
-    ;type = sqlite3
-    ;host = 127.0.0.1:3306
-    ;name = grafana
-    ;user = root
-    ;password =
-    ;ssl_mode = disable
-    ;path = grafana.db
-
-    [session]
-    ;provider = file
-    ;provider_config = sessions
-    ;cookie_name = grafana_sess
-    ;cookie_secure = false
-    ;session_life_time = 86400
-
-    [analytics]
-    ;reporting_enabled = true
-    check_for_updates = true
-    ;google_analytics_ua_id =
-
-    [security]
-    ;admin_user = admin
-    ;admin_password = admin
-    ;secret_key = SW2YcwTIb9zpOOhoPsMm
-    ;login_remember_days = 7
-    ;cookie_username = grafana_user
-    ;cookie_remember_name = grafana_remember
-    ;disable_gravatar = false
-    ;data_source_proxy_whitelist =
-
-    [snapshots]
-    ;external_enabled = true
-    ;external_snapshot_url = https://snapshots-origin.raintank.io
-    ;external_snapshot_name = Publish to snapshot.raintank.io
-
-    [users]
-    ;allow_sign_up = true
-    ;allow_org_create = true
-    ;auto_assign_org = true
-    ;auto_assign_org_role = Viewer
-    ;login_hint = email or username
-    ;default_theme = dark
-
-    [auth.anonymous]
-    ;enabled = false
-    ;org_name = Main Org.
-    ;org_role = Viewer
-
-    [auth.github]
-    ;enabled = false
-    ;allow_sign_up = false
-    ;client_id = some_id
-    ;client_secret = some_secret
-    ;scopes = user:email,read:org
-    ;auth_url = https://github.com/login/oauth/authorize
-    ;token_url = https://github.com/login/oauth/access_token
-    ;api_url = https://api.github.com/user
-    ;team_ids =
-    ;allowed_organizations =
-
-    [auth.google]
-    ;enabled = false
-    ;allow_sign_up = false
-    ;client_id = some_client_id
-    ;client_secret = some_client_secret
-    ;scopes = https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email
-    ;auth_url = https://accounts.google.com/o/oauth2/auth
-    ;token_url = https://accounts.google.com/o/oauth2/token
-    ;api_url = https://www.googleapis.com/oauth2/v1/userinfo
-    ;allowed_domains =
-
-    [auth.proxy]
-    ;enabled = false
-    ;header_name = X-WEBAUTH-USER
-    ;header_property = username
-    ;auto_sign_up = true
-
-    [auth.basic]
-    ;enabled = true
-
-    [auth.ldap]
-    ;enabled = false
-    ;config_file = /etc/grafana/ldap.toml
-
-    [smtp]
-    ;enabled = false
-    ;host = localhost:25
-    ;user =
-    ;password =
-    ;cert_file =
-    ;key_file =
-    ;skip_verify = false
-    ;from_address = admin@grafana.localhost
-
-    [emails]
-    ;welcome_email_on_sign_up = false
-
-    [log]
-    mode = console
-    level = info
-
-    [log.console]
-    ;level =
-    ;format = console
-
-    [event_publisher]
-    ;enabled = false
-    ;rabbitmq_url = amqp://localhost/
-    ;exchange = grafana_events
-
-    [dashboards.json]
-    enabled = true
-    path = /var/lib/grafana/dashboards
-
-    [metrics]
-    ;enabled           = true
-    ;interval_seconds  = 10
-
-    ; [metrics.graphite]
-    ; address = localhost:2003
-    ; prefix = prod.grafana.%(instance_name)s.
-
-    [grafana_net]
-    url = https://grafana.net
-
-
-## Grafana dashboard files ConfigMap entries
-## If you'd like to preinstall prometheus dashboard on the same namespace as example, get it from:
-##
-## https://grafana.net/dashboards/2
-##
-## and add it below.
-##
-serverDashboardFiles: {}
-
-## Grafana dashboard files to import ConfigMap entries
-## The behaviuor is different then 'serverDashboardFiles' in that, this flow will create a Job to import using the API.
-## If you'd like to preinstall prometheus dashboard on the same namespace as example, get it from:
-##
-## https://grafana.net/dashboards/2
-##
-## and add it below.
-##
-dashboardImports:
-  ## If true, a Job will be created to import dashboards
-  ## Default: false
-  ##
+ingress:
   enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
-  ## How long should it take to commit failure
-  ## Default: 30
-  ##
-  activeDeadlineSeconds: 30
+resources: {}
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 100m
+#    memory: 128Mi
 
-  ## Docker image to run import process
-  ## Default: jgoclawski/wget:1.0
-  ##
-  image: jgoclawski/wget:1.0
+## Node labels for pod assignment
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+#
+nodeSelector: {}
 
-  ## Grafana dashboard files to import as ConfigMap entries
-  # files: {}
+## Tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
 
-  ## Grafana dashboard URL to import (this should be a JSON file, not the HTML page)
-  # Example:
-  # dashboards:
-  #   Prometheus_Stats.json: https://grafana.com/api/dashboards/2/revisions/2/download
-  #   Docker_Dashboard.json: https://grafana.com/api/dashboards/179/revisions/5/download
-  #   MyPrivateDashboard.json: http://example.com/dashboard.json
-  # dashboards: {}
+## Affinity for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
 
-  ## Specify the Job policy
-  ## Default: Never
-  ##
-  restartPolicy: Never
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: false
+  # storageClassName: default
+  # accessModes:
+  #   - ReadWriteOnce
+  # size: 10Gi
+  # annotations: {}
+  # subPath: ""
+  # existingClaim:
 
-  ## Specify Pod Backoff failure policy
-  ## Default: 1
-  ##
-  backoffLimit: 1
+adminUser: admin
+# adminPassword: strongpassword
 
-  ## Specify when Helm should run the import job
-  ## Default: post-install,post-upgrade
-  ##
-  hook: post-install,post-upgrade
+
+## Extra enviornment variables that will be pass onto deployment pods
+env: {}
+
+# Pass the plugins you want installed as a comma separated list.
+# plugins: "digrich-bubblechart-panel,grafana-clock-panel"
+plugins: ""
+
+## Configure grafana datasources
+## ref: http://docs.grafana.org/administration/provisioning/#datasources
+##
+datasources: {}
+#  datasources.yaml:
+#    apiVersion: 1
+#    datasources:
+#    - name: Prometheus
+#      type: prometheus
+#      url: http://prometheus-prometheus-server
+#      access: proxy
+#      isDefault: true
+
+## Configure grafana dashboard providers
+## ref: http://docs.grafana.org/administration/provisioning/#dashboards
+##
+dashboardProviders: {}
+#  dashboardproviders.yaml:
+#    apiVersion: 1
+#    providers:
+#    - name: 'default'
+#      orgId: 1
+#      folder: ''
+#      type: file
+#      disableDeletion: false
+#      editable: true
+#      options:
+#        path: /var/lib/grafana/dashboards
+
+## Configure grafana dashboard to import
+## NOTE: To use dashboards you must also enable/configure dashboardProviders
+## ref: https://grafana.com/dashboards
+##
+dashboards: {}
+#  some-dashboard:
+#    json: |
+#      $RAW_JSON
+#  prometheus-stats:
+#    gnetId: 2
+#    revision: 2
+#    datasource: Prometheus
+
+## Grafana's primary configuration
+## NOTE: values in map will be converted to ini format
+## ref: http://docs.grafana.org/installation/configuration/
+##
+grafana.ini:
+  paths:
+    data: /var/lib/grafana/data
+    logs: /var/log/grafana
+    plugins: /var/lib/grafana/plugins
+  analytics:
+    check_for_updates: true
+  log:
+    mode: console
+  grafana_net:
+    url: https://grafana.net
