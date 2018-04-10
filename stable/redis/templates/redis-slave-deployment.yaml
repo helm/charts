@@ -63,8 +63,8 @@ spec:
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              {{- if .Values.master.existingSecret }}
-              name: {{ .Values.master.existingSecret }}
+              {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
               {{- else }}
               name: {{ template "redis.fullname" . }}
               {{- end }}
@@ -72,8 +72,8 @@ spec:
         - name: REDIS_MASTER_PASSWORD
           valueFrom:
             secretKeyRef:
-              {{- if .Values.master.existingSecret }}
-              name: {{ .Values.master.existingSecret }}
+              {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
               {{- else }}
               name: {{ template "redis.fullname" . }}
               {{- end }}
