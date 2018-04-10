@@ -22,6 +22,7 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
     {{- end }}
+    {{- if .Values.nginx.persistence.enabled }}
       initContainers:
       - name: "remove-lost-found"
         image: "{{ .Values.initContainerImage }}"
@@ -33,6 +34,7 @@ spec:
         volumeMounts:
         - mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
           name: nginx-volume
+    {{- end }}
       containers:
       - name: {{ .Values.nginx.name }}
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.version }}"
@@ -51,7 +53,11 @@ spec:
                 sleep 5; nginx -s reload; touch /var/log/nginx/conf.done
         env:
         - name: ART_BASE_URL
+          {{- if .Values.nginx.env.artUrl }}
+          value: {{ .Values.nginx.env.artUrl }}
+          {{- else }}
           value: "http://{{ template "artifactory.fullname" . }}:{{ .Values.artifactory.externalPort }}/artifactory"
+          {{- end }}
         - name: SSL
           value: "{{ .Values.nginx.env.ssl }}"
         ports:
@@ -60,14 +66,23 @@ spec:
         volumeMounts:
         - name: nginx-volume
           mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
+        {{- if .Values.nginx.tlsSecretName }}
+        - name: ssl-secret-volume
+          mountPath: "/var/opt/jfrog/nginx/ssl"
+        {{- end }}
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
       volumes:
       - name: nginx-volume
       {{- if .Values.nginx.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "artifactory.nginx.fullname" . }}
+          claimName: {{ .Values.nginx.persistence.existingClaim | default (include "artifactory.nginx.fullname" .) }}
       {{- else }}
         emptyDir: {}
+      {{- end -}}
+      {{- if .Values.nginx.tlsSecretName }}
+      - name: ssl-secret-volume
+        secret:
+          secretName: {{ .Values.nginx.tlsSecretName }}
       {{- end -}}
 {{- end }}

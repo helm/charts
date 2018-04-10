@@ -90,7 +90,7 @@ spec:
       - name: artifactory-volume
       {{- if .Values.artifactory.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.artifactory.persistence.ExistingClaim | default (include "artifactory.fullname" .) }}
+          claimName: {{ .Values.artifactory.persistence.existingClaim | default (include "artifactory.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
