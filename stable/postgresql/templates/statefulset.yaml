@@ -1,5 +1,5 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: {{ template "postgresql.fullname" . }}
   labels:
@@ -8,6 +8,10 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  serviceName: "job-queue-postgresql"
+  selector:
+    matchLabels:
+      app: {{ template "postgresql.fullname" . }}
   template:
     metadata:
       labels:
