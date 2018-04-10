@@ -15,7 +15,7 @@ data:
     # General system-wide configuration options, these should not need to
     # be altered for basic operation
     #
-    service_dir: {{ default "/config" .Values.globalConfig.configDir }}
+    service_dir: {{ .Values.globalConfig.configDir }}
     tmp_dir: {{ default "/tmp" .Values.workerConfig.analyzerScratchDir }}
 
     allow_awsecr_iam_auto: {{ .Values.globalConfig.allowECRUseIAMRole }}

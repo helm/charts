@@ -132,14 +132,22 @@ spec:
             timeoutSeconds: {{ .Values.controller.readinessProbe.timeoutSeconds }}
             successThreshold: {{ .Values.controller.readinessProbe.successThreshold }}
             failureThreshold: {{ .Values.controller.readinessProbe.failureThreshold }}
-{{- if .Values.controller.customTemplate.configMapName }}
+{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts) }}
           volumeMounts:
+{{- end }}
+{{- if .Values.controller.customTemplate.configMapName }}
             - mountPath: /etc/nginx/template
               name: nginx-template-volume
               readOnly: true
 {{- end }}
+{{- if .Values.controller.extraVolumeMounts }}
+{{ toYaml .Values.controller.extraVolumeMounts | indent 10}}
+{{- end }}
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
+{{- if .Values.controller.extraContainers }}
+{{ toYaml .Values.controller.extraContainers | indent 8}}
+{{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}
       nodeSelector:
@@ -155,13 +163,18 @@ spec:
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "nginx-ingress.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       terminationGracePeriodSeconds: 60
-{{- if .Values.controller.customTemplate.configMapName }}
+{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumes) }}
       volumes:
+{{- end }}
+{{- if .Values.controller.customTemplate.configMapName }}
         - name: nginx-template-volume
           configMap:
             name: {{ .Values.controller.customTemplate.configMapName }}
             items:
             - key: {{ .Values.controller.customTemplate.configMapKey }}
               path: nginx.tmpl
+{{- end }}
+{{- if .Values.controller.extraVolumes }}
+{{ toYaml .Values.controller.extraVolumes | indent 6}}
 {{- end }}
 {{- end }}
