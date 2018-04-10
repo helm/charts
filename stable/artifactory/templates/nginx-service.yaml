@@ -16,6 +16,9 @@ metadata:
 spec:
   type: {{ .Values.nginx.service.type }}
 {{- if eq .Values.nginx.service.type "LoadBalancer" }}
+  {{ if .Values.nginx.service.loadBalancerIP -}}
+  loadBalancerIP: {{ .Values.nginx.service.loadBalancerIP }}
+  {{ end -}}
   externalTrafficPolicy: Local
 {{- end }}
 {{- if .Values.nginx.service.loadBalancerSourceRanges }}
