@@ -41,6 +41,13 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistrKeySecretName
+  
+  ## Metrics exporter labels and tolerations for pod assignment
+  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
+  # tolerations: []
+  
+  ## Metrics exporter pod Annotation and Labels
+  # podLabels: {}
 
   ## Metrics exporter labels and tolerations for pod assignment
   # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
@@ -76,7 +83,6 @@ password:
 master:
   ## Use password authentication
   port: 6379
-  usePassword: true
   ## Redis command arguments
   ##
   ## Can be used to specify command line arguments, for example:

@@ -40,7 +40,6 @@ metrics:
   ## Metrics exporter labels and tolerations for pod assignment
   # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
   # tolerations: []
-
   ## Metrics exporter pod Annotation and Labels
   # podLabels: {}
 
