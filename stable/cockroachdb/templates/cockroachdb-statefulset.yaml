@@ -279,6 +279,9 @@ spec:
       - name: certs
         emptyDir: {}
 {{- end }}
+  podManagementPolicy: {{ .Values.PodManagementPolicy }}
+  updateStrategy:
+{{ toYaml .Values.UpdateStrategy | indent 4 }}
   volumeClaimTemplates:
   - metadata:
       name: datadir
