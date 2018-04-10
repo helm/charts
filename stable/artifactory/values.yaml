@@ -42,6 +42,11 @@ artifactory:
   persistence:
     mountPath: "/var/opt/jfrog/artifactory"
     enabled: true
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
     accessMode: ReadWriteOnce
     size: 20Gi
     ## artifactory data Persistent Volume Storage Class
@@ -87,16 +92,25 @@ nginx:
     ## Example: helm install ... --set nginx.service.loadBalancerSourceRanges='{10.10.10.5/32,10.11.10.5/32}'
     loadBalancerSourceRanges: []
     annotations: {}
+    ## Provide static ip address
+    loadBalancerIP:
   externalPortHttp: 80
   internalPortHttp: 80
   externalPortHttps: 443
   internalPortHttps: 443
+  ## The SSL secret that will be used by the Nginx pod
+  # tlsSecretName: chart-example-tls
   env:
-    artUrl: "http://artifactory:8081/artifactory"
+#    artUrl: "http://artifactory:8081/artifactory"
     ssl: true
   persistence:
     mountPath: "/var/opt/jfrog/nginx"
     enabled: false
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
     accessMode: ReadWriteOnce
     size: 5Gi
     ## nginx data Persistent Volume Storage Class
@@ -124,3 +138,5 @@ postgresql:
   postgresDatabase: "artifactory"
   persistence:
     enabled: true
+  service:
+    port: 5432
