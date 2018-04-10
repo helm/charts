@@ -9,6 +9,20 @@ initContainerImage: "alpine:3.6"
 # For supporting pulling from private registries
 imagePullSecrets:
 
+ingress:
+  enabled: false
+  # Used to create an Ingress record.
+  hosts:
+  #  - artifactory.domain.example
+  annotations:
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  tls:
+  # Secrets must be manually created in the namespace.
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - artifactory.domain.example
+
 # Database
 ## Configuration values for the postgresql dependency
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgressql/README.md
@@ -168,6 +182,7 @@ artifactory:
 
 # Nginx
 nginx:
+  enabled: true
   name: nginx
   replicaCount: 1
   image:
@@ -183,8 +198,35 @@ nginx:
     ## or pass from helm command line
     ## Example: helm install ... --set nginx.service.loadBalancerSourceRanges='{10.10.10.5/32,10.11.10.5/32}'
     loadBalancerSourceRanges: []
+    ## Provide static ip address
+    loadBalancerIP:
+  externalPortHttp: 80
+  internalPortHttp: 80
+  externalPortHttps: 443
+  internalPortHttps: 443
+  ## The SSL secret that will be used by the Nginx pod
+  # tlsSecretName: chart-example-tls
   env:
     ssl: true
+#    artUrl: "http://artifactory:8081/artifactory"
+  persistence:
+    mountPath: "/var/opt/jfrog/nginx"
+    enabled: false
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
+    accessMode: ReadWriteOnce
+    size: 5Gi
+    ## nginx data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
   resources: {}
   #  requests:
   #    memory: "250Mi"
