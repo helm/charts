@@ -13,7 +13,7 @@ metadata:
 {{ toYaml .Values.master.service.annotations | indent 4 }}
 {{- end }}
 {{- if .Values.metrics.enabled }}
-{{ toYaml .Values.metrics.annotations | indent 4 }}
+{{ toYaml .Values.metrics.targetServiceAnnotations | indent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.slave.serviceType }}

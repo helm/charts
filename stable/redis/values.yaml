@@ -26,7 +26,8 @@ cluster:
 metrics:
   enabled: false
   # resources: {}
-  # annotations:
+  # podAnnotations: {}
+  # targetServiceAnnotations: 
   #   prometheus.io/scrape: "true"
   #   prometheus.io/port: "9121"
   image:
@@ -40,6 +41,13 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistrKeySecretName
+  
+  ## Metrics exporter labels and tolerations for pod assignment
+  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
+  # tolerations: []
+  
+  ## Metrics exporter pod Annotation and Labels
+  # podLabels: {}
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
@@ -57,6 +65,7 @@ networkPolicy:
 ## Defaults to a random 10-character alphanumeric string if not set and usePassword is true
 ## ref: https://github.com/bitnami/bitnami-docker-redis#setting-the-server-password-on-first-run
 ##
+usePassword: true
 password:
 ## Use existing secret (ignores previous password)
 # existingSecret:
@@ -67,7 +76,6 @@ password:
 master:
   ## Use password authentication
   port: 6379
-  usePassword: true
   ## Redis command arguments
   ##
   ## Can be used to specify command line arguments, for example:
@@ -166,7 +174,7 @@ master:
 
 ##
 ## Redis Slave properties
-## Note: serviceType, service and usePassword are mandatory parameters
+## Note: serviceType and service are mandatory parameters
 ## The rest of the parameters, if undefined, will inherit those declared in Redis Master
 ##
 slave:
@@ -175,10 +183,6 @@ slave:
   service:
     annotations: {}
     loadBalancerIP:
-
-  ## Redis slave server properties
-  usePassword: true
-
   ## Redis slave optional overrides
 
   ## Redis port

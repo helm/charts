@@ -59,7 +59,7 @@ spec:
           value: {{ .Values.slave.port | default .Values.master.port | quote }}
         - name: REDIS_MASTER_PORT_NUMBER
           value: {{ .Values.master.port | quote }}
-        {{- if .Values.slave.usePassword }}
+        {{- if .Values.usePassword }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -97,24 +97,4 @@ spec:
         {{ include "redis.slave.readinessProbe" . | indent 8 }}  
         resources:
 {{ toYaml (.Values.slave.resources | default .Values.master.resources) | indent 10 }}
-  {{- if .Values.metrics.enabled }}
-      - name: metrics
-        image: {{ template "metrics.image" . }}
-        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
-        env:
-        - name: REDIS_ALIAS
-          value: {{ template "redis.fullname" . }}
-        {{- if .Values.slave.usePassword }}
-        - name: REDIS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "redis.fullname" . }}
-              key: redis-password
-        {{- end }}
-        ports:
-        - name: metrics
-          containerPort: 9121
-        resources:
-{{ toYaml .Values.metrics.resources | indent 10 }}
-  {{- end }}
 {{- end }}

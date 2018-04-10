@@ -58,15 +58,18 @@ The following table lists the configurable parameters of the Redis chart and the
 | `image.pullSecrets`         | Specify docker-ragistry secret names as an array        | `nil`                                                    |
 | `cluster.enabled`                          | Use master-slave topology                                                                                      | `false`                              |               |
 | `cluster.slaveCount`                       | Number of slaves                                                                                               | 1                                    |               |
-        | Randomly generated                   |               |
 | `existingSecret`                           | Name of existing secret object (for password authentication)                                                   | `nil`                                |               |
-| `password`                          | Redis password (ignored if existingSecret set)                                                         | `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                              |               |
+| `password`                          | Redis password (ignored if existingSecret set)  | Randomly generated |
+| `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                              |               |
 | `metrics.image.registry`            | Rabbitmq Image registry                                 | `docker.io`                                              |
 | `metrics.image.repository`          | Rabbitmq Image name                                     | `bitnami/rabbitmq`                                       |
 | `metrics.image.tag`                 | Rabbitmq Image tag                                      | `{VERSION}`                                              |
 | `metrics.image.pullPolicy`          | Image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
-| `metrics.image.pullSecrets`         | Specify docker-ragistry secret names as an array        | `nil`                                                    |
-| `metrics.resources`                        | Exporter resource requests/limit                                                                               | Memory: `256Mi`, CPU: `100m`         |               |
+| `metrics.image.pullSecrets`         | Specify docker-registry secret names as an array        | `nil`                                                    |
+| `metrics.podLabels`                                | Additional labels for Metrics exporter pod                                                                        | {}                                   |               |
+| `metrics.podAnnotations`                           | Additional annotations for Metrics exporter pod                                                                    | {}                         |
+| `metrics.targetServiceAnnotations`                           | Annotations for the services to monitor  (redis master and redis slave service)                                                                   | {} |
+ | `metrics.resources`                        | Exporter resource requests/limit                                                                               | Memory: `256Mi`, CPU: `100m`         |               |
 | `master.persistence.enabled`                      | Use a PVC to persist data (master node)                                                                        | `true`                               |               |
 | `master.persistence.path`                         | Path to mount the volume at, to use other images                                                               | `/bitnami`                           |               |
 | `master.persistence.subPath`                      | Subdirectory of the volume to mount at                                                                         | `""`                                 |               |
@@ -78,7 +81,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `networkPolicy.allowExternal`              | Don't require client label for connections                                                                     | `true`                               |               |
 | `master.podLabels`                                | Additional labels for Redis master pod                                                                         | {}                                   |               |
 | `master.podAnnotations`                           | Additional annotations for Redis master pod                                                                    | {}                                   |               |
-| `master.usePassword`                       | Use password (Redis master)                                                                                    | `true`                               |               |
+| `usePassword`                       | Use password                                                                                    | `true`                               |               |
 | `master.port`                              | Redis master port                                                                                              | 6379                                 |               |
 | `master.args`                              | Redis master command-line args                                                                                 | []                                   |               |
 | `master.disableCommands`                   | Comma-separated list of Redis commands to disable (master)                                                     | `FLUSHDB,FLUSHALL`                   |               |
@@ -107,8 +110,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.serviceType`                        | Kubernetes Service type (redis slave)                                                                          | `LoadBalancer`                       |               |
 | `slave.service.annotations`                | annotations for redis slave service                                                                            | {}                                   |               |
 | `slave.service.loadBalancerIP`             | loadBalancerIP if redis slave service type is `LoadBalancer`                                                   | `nil`                                |               |
-| `slave.usePassword`                        | Use password (Redis slave)                                                                                     | `master.usePassword`                 |               |
-| `slave.port`                               | Redis slave port                                                                                               | 6379                                 | `master.port` |
+| `slave.port`                               | Redis slave port                                                                                               | `master.port` |
 | `slave.args`                               | Redis slave command-line args                                                                                  | `master.args`                        |               |
 | `slave.disableCommands`                    | Comma-separated list of Redis commands to disable (slave)                                                      | `master.disableCommands`             |               |
 | `slave.extraFlags`                         | Redis slave additional command line flags                                                                      | `master.extraFlags`                  |               |
