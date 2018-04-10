@@ -77,7 +77,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
 | `livenessProbe.initialDelaySeconds`   | number of seconds                                       |  120                                           |
 | `livenessProbe.timeoutSeconds`        | number of seconds                                       |  5                                             |
-| `livenessProbe.failureThreshold`      | number of faliures                                      |  6                                             |
+| `livenessProbe.failureThreshold`      | number of failures                                      |  6                                             |
 | `readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                        |
 | `readinessProbe.initialDelaySeconds`  | number of seconds                                       |  10                                            |
 | `readinessProbe.timeoutSeconds`       | number of seconds                                       |  3                                             |
