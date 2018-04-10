@@ -27,12 +27,10 @@ spec:
               servicePort: http
 {{- if .Values.ingress.tls }}
   tls:
-    - hosts:
-        {{- if  .Values.ingress.hostName }}
+    - secretName: {{  .Values.ingress.tlsSecret }}
+      {{- if .Values.ingress.hostName }}
+      hosts:
         - {{ .Values.ingress.hostName }}
-        secretName: {{  .Values.ingress.tlsSecret }}
-        {{- else}}
-        - secretName: {{  .Values.ingress.tlsSecret }}
-        {{- end }}
+      {{- end }}
 {{- end }}
 {{- end }}
