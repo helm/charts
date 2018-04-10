@@ -13,6 +13,9 @@ serviceAccounts:
   nodeExporter:
     create: true
     name:
+  pushgateway:
+    create: true
+    name:
   server:
     create: true
     name:

@@ -154,6 +154,17 @@ Create the name of the service account to use for the nodeExporter component
 {{- end -}}
 
 {{/*
+Create the name of the service account to use for the pushgateway component
+*/}}
+{{- define "prometheus.serviceAccountName.pushgateway" -}}
+{{- if .Values.serviceAccounts.pushgateway.create -}}
+    {{ default (include "prometheus.pushgateway.fullname" .) .Values.serviceAccounts.pushgateway.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccounts.pushgateway.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create the name of the service account to use for the server component
 */}}
 {{- define "prometheus.serviceAccountName.server" -}}
