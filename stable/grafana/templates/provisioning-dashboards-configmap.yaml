@@ -1,0 +1,14 @@
+{{- if .Values.provisioningDashboardsFiles -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "grafana.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Values.server.name }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "grafana.server.fullname" . }}-pdash
+data:
+{{ toYaml .Values.provisioningDashboardsFiles | indent 2 }}
+{{- end -}}
