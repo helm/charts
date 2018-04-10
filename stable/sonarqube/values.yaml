@@ -10,6 +10,8 @@ service:
   type: LoadBalancer
   externalPort: 9000
   internalPort: 9000
+  annotations:
+  # service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 ingress:
   enabled: false
   # Used to create an Ingress record.
