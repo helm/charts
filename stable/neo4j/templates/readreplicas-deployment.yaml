@@ -66,6 +66,9 @@ spec:
           mountPath: /plugins
         securityContext:
           privileged: true
+{{- if .Values.core.sidecarContainers }}
+{{ toYaml .Values.core.sidecarContainers | indent 6}}
+{{- end }}
 {{- if .Values.readReplica.initContainers }}
       initContainers:
 {{ toYaml .Values.readReplica.initContainers | indent 6}}

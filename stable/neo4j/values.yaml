@@ -56,12 +56,12 @@ core:
   # - name: EXTRA_VAR_2
   #   value: extra-var-value-2
 
-  sidecarContainers: {}
+  sidecarContainers: []
   ## Additional containers to be added to the Neo4j core pod.
   #  - name: my-sidecar
   #    image: nginx:latest
 
-  initContainers: {}
+  initContainers: []
   ## init containers to run before the Neo4j core pod e.g. to install plugins
 
   # - name: init-plugins
@@ -88,7 +88,12 @@ readReplica:
   # - name: EXTRA_VAR_2
   #   value: extra-var-value-2
 
-  initContainers: {}
+  sidecarContainers: []
+  ## Additional containers to be added to the Neo4j replica pod.
+  #  - name: my-sidecar
+  #    image: nginx:latest
+
+  initContainers: []
   ## init containers to run before the Neo4j replica pod e.g. to install plugins
 
   # - name: init-plugins
