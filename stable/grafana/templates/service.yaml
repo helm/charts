@@ -12,14 +12,16 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
-{{- if (or (eq .Values.service.type "ClusterIP" "") (empty .Values.service.type)) }}
+{{- if (or (eq .Values.service.type "ClusterIP") (empty .Values.service.type)) }}
   type: ClusterIP
   {{- if .Values.service.clusterIP }}
   clusterIP: {{ .Values.service.clusterIP }}
   {{end}}
 {{- else if eq .Values.service.type "LoadBalancer" }}
   type: {{ .Values.service.type }}
-  loadBalancerIP: {{ default "" .Values.service.loadBalancerIP }}
+  {{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- end }}
   {{- if .Values.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
 {{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}

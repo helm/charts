@@ -8,8 +8,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-{{- if .Values.plugins }}
-  plugins: {{ default "" .Values.plugins | quote }}
+{{- with .Values.plugins }}
+  plugins: {{ . | quote }}
 {{- end }}
   grafana.ini: |
 {{- range $key, $value := index .Values "grafana.ini" }}
@@ -45,7 +45,7 @@ data:
     --max-time 60 \
     -H "Accept: application/json" \
     -H "Content-Type: application/json;charset=UTF-8" \
-    https://grafana.com/api/dashboards/{{ $value.gnetId }}/revisions/{{ default 1 $value.revision }}/download {{ if $value.datasource }}| sed 's|\"datasource\":[^,]*|\"datasource\": \"{{ $value.datasource }}\"|g'{{ end }} \
+    https://grafana.com/api/dashboards/{{ $value.gnetId }}/revisions/{{- if $value.revision -}}{{ $value.revision }}{{- else -}}1{{- end -}}/download {{ if $value.datasource }}| sed 's|\"datasource\":[^,]*|\"datasource\": \"{{ $value.datasource }}\"|g'{{ end }} \
     > /var/lib/grafana/dashboards/{{ $key }}.json
     {{- end }}
   {{- end }}

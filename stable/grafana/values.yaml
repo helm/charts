@@ -59,7 +59,7 @@ affinity: {}
 ##
 persistence:
   enabled: false
-  # storageClass: default
+  # storageClassName: default
   # accessModes:
   #   - ReadWriteOnce
   # size: 10Gi
@@ -75,8 +75,8 @@ adminUser: admin
 env: {}
 
 # Pass the plugins you want installed as a comma separated list.
-# plugins: ""
-
+# plugins: "digrich-bubblechart-panel,grafana-clock-panel"
+plugins: ""
 
 ## Configure grafana datasources
 ## ref: http://docs.grafana.org/administration/provisioning/#datasources
@@ -119,16 +119,12 @@ dashboards: {}
 #    gnetId: 2
 #    revision: 2
 #    datasource: Prometheus
-#  node-exporter-service-metrics:
-#    gnetId: 405
 
 ## Grafana's primary configuration
 ## NOTE: values in map will be converted to ini format
 ## ref: http://docs.grafana.org/installation/configuration/
 ##
 grafana.ini:
-  default:
-    instance_name: ${HOSTNAME}
   paths:
     data: /var/lib/grafana/data
     logs: /var/log/grafana
@@ -137,6 +133,5 @@ grafana.ini:
     check_for_updates: true
   log:
     mode: console
-    level: info
   grafana_net:
     url: https://grafana.net

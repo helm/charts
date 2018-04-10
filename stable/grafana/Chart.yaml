@@ -9,6 +9,6 @@ sources:
 maintainers:
   - name: Ming Hsieh
     email: zanhsieh@gmail.com
-  - name: Ryan Luckie
-    email: rtluckie@gmail.com
+  - name: rtluckie
+    email: rluckie@cisco.com
 engine: gotpl

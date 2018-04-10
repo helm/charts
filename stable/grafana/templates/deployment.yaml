@@ -129,7 +129,11 @@ spec:
         - name: storage
       {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "grafana.fullname" .) }}
+          {{- if .Values.persistence.existingClaim -}}
+            claimName: {{ .Values.persistence.existingClaim }}
+          {{- else }}
+            claimName: {{ template "grafana.fullname" . }}
+          {{- end }}
       {{- else }}
           emptyDir: {}
       {{- end -}}
