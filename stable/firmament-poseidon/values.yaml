@@ -2,6 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+
 poseidon:
   name: poseidon
   repository: gcr.io/poseidon-173606/poseidon
@@ -77,7 +78,6 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: poseidon
 
-
 rbac:
   ## If true, create & use RBAC resources
   ##
@@ -88,3 +88,4 @@ clusterrole:
 
 clusterrolebinding:
   name: system:poseidon                
+
