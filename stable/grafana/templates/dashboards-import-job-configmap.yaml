@@ -12,13 +12,12 @@ data:
   init.sh: |
     #!/bin/sh
     set -e
-    mkdir -p /tmp/grafana/
-    cp -r /var/lib/grafana/import /tmp/grafana/
+    mkdir -p /tmp/grafana/import
     cd /tmp/grafana/import
     {{- range $name, $val := .Values.dashboardImports.dashboards }}
       wget -O {{ $name }} {{ $val }}
     {{- end }}
-    for dashboard in $(ls); do
+    for dashboard in $(ls /var/lib/grafana/import/* /tmp/grafana/import/* 2> /dev/null); do
       wget \
       "http://{{ template "grafana.server.fullname" . }}:{{ .Values.server.service.httpPort }}/api/dashboards/db" \
       --user=${ADMIN_USER} \
