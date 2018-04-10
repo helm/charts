@@ -24,7 +24,7 @@ spec:
           - path: {{ .Values.ingress.path }}
             backend:
               serviceName: {{ template "rabbitmq-ha.fullname" . }}
-              servicePort: http
+              servicePort: {{ .Values.rabbitmqManagerPort }}
 {{- if .Values.ingress.tls }}
   tls:
     - secretName: {{  .Values.ingress.tlsSecret }}
