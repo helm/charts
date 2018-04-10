@@ -11,10 +11,6 @@ Redis can be accessed via port {{ .Values.master.port }} on the following DNS na
 
 {{- end }}
 
-
-{{- end }}
-
-
 {{- if .Values.usePassword }}
 To get your password run:
 
