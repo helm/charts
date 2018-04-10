@@ -221,6 +221,25 @@ spec:
           name: grpc
         - containerPort: {{ .Values.HttpPort }}
           name: http
+        livenessProbe:
+          httpGet:
+            path: "/health"
+            port: http
+{{- if .Values.Secure.Enabled }}
+            scheme: HTTPS
+{{- end }}
+          initialDelaySeconds: 30
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: "/health?ready=1"
+            port: http
+{{- if .Values.Secure.Enabled }}
+            scheme: HTTPS
+{{- end }}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 2
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
