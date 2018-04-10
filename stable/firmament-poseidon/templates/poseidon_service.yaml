@@ -2,11 +2,17 @@ kind: Service
 apiVersion: v1
 metadata:
   name: {{.Values.serviceAccount.name}}
-  namespace: kube-system
+  namespace: {{ .Values.namespace }}
+  labels:
+   app: {{ template "firmament-poseidon.name" . }}
+   chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+   heritage: {{ .Release.Service }}
+   release: {{ .Release.Name }}
+   scheduler: {{ .Values.firmament.scheduler }}
 spec:
   selector:
     poseidonservice: {{.Values.serviceAccount.name}}
   ports:
     - protocol: TCP
-      port: 9091
-      targetPort: 9091
+      port: {{ .Values.poseidon.servicePort }}
+      targetPort: {{ .Values.poseidon.containerPort }}

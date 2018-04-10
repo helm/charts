@@ -2,33 +2,39 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-poseidonReplicaCount: 1
-firmamentReplicaCount: 1
 
-poseidonImage:
+poseidon:
+  name: poseidon
   repository: gcr.io/poseidon-173606/poseidon
   tag: latest
   pullPolicy: IfNotPresent
+  extraContainerArgs:  poseidon
+  replica: 1
+  servicePort: 9091
+  containerPort: 9091
+  service: poseidon
+  component: poseidon
 
-firmamentImage:
+
+firmament:
+  name: firmament-scheduler
   repository: huaweifirmament/firmament
   tag: latest
   pullPolicy: IfNotPresent
+  extraContainerArgs: firmament-scheduler
+  replica: 1
+  servicePort: 9090
+  containerPort: 9090
+  scheduler: firmament
 
-busyboxImage:
+busybox:
+  name: busysbox
   repository: radial/busyboxplus
   tag: curl
   pullPolicy: IfNotPresent
+  extraContainerArgs: init-firmamentservice
 
-## Additional container arguments
-##
-extraPoseidonContainerArgs:
-  name: poseidon
-extraFirmamentContainerArgs:
-  name: firmament-scheduler
-extraBusyBoxContainerArgs:
-  name: init-firmamentservice
-
+namespace: kube-system
 
 service:
   type: ClusterIP
@@ -71,3 +77,15 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: poseidon
+
+rbac:
+  ## If true, create & use RBAC resources
+  ##
+  create: true
+
+clusterrole:
+  name: system:poseidon
+
+clusterrolebinding:
+  name: system:poseidon                
+
