@@ -56,7 +56,7 @@ spec:
       containers:
       - name: {{ template "redis.fullname" . }}
         image: "{{ template "redis.image" . }}"
-        image.pullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
         {{- if .Values.master.args }}
         args:
 {{ toYaml .Values.master.args | indent 10 }}
@@ -118,7 +118,7 @@ spec:
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: {{ template "metrics.image" . }}
-        image.pullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         - name: REDIS_ALIAS
           value: {{ template "redis.fullname" . }}
