@@ -46,7 +46,7 @@ spec:
         {{- if .Values.cluster.enabled }}
           value: {{ printf "%s-master:%d,%s-slave:%d" ( include "redis.fullname" . ) ( int .Values.master.port ) ( include "redis.fullname" . ) ( .Values.slave.port | default .Values.master.port | int ) | quote }}
         {{- else }}  
-          value: {{ printf "%s:%d" (include "redis.fullname" . ) (int .Values.master.port) | quote }}
+          value: {{ printf "%s-master:%d" (include "redis.fullname" . ) (int .Values.master.port) | quote }}
         {{- end }}
         - name: REDIS_ALIAS
           value: {{ template "redis.fullname" . }}
