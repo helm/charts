@@ -47,7 +47,7 @@ Return the proper image name
 */}}
 {{- define "redis.image" -}}
 {{- $registryName :=  default .Values.image.registry "docker.io" -}}
-{{- $tag := default .Values.image.tag "latest" -}}
+{{- $tag := .Values.image.tag | default "latest" -}}
 {{- printf "%s/%s:%s" $registryName .Values.image.repository $tag -}}
 {{- end -}}
 
@@ -56,7 +56,7 @@ Return the proper image name (for the metrics image)
 */}}
 {{- define "metrics.image" -}}
 {{- $registryName :=  default .Values.metrics.image.registry "docker.io" -}}
-{{- $tag := default .Values.metrics.image.tag "latest" -}}
+{{- $tag := .Values.metrics.image.tag | default "latest" -}}
 {{- printf "%s/%s:%s" $registryName .Values.metrics.image.repository $tag -}}
 {{- end -}}
 
