@@ -64,9 +64,25 @@ controller:
   ##   default-ssl-certificate: "<namespace>/<secret_name>"
   extraArgs: {}
 
+  ## Indicates whether the "extraEnvs" value should be inlined to the deployment/daemonset in its raw form,
+  ## or injected as literal key-value pairs.
+  ##
+  ## NOTE: this defaults to false for backwards-compatability reasons. This is subject
+  ## for deprecation in the future, so it is encouraged to set this to true.
+  inlineExtraEnvs: true
+
   ## Additional environment variables to set
   ##
   extraEnvs: {}
+  ## with "inlineExtraEnvs" set to true:
+  #  - name: FOO
+  #    valueFrom:
+  #      secretKeyRef:
+  #        key: FOO
+  #        name: secret-resource
+  #
+  ## with "inlineExtraEnvs" set to false:
+  # FOO: BAR
 
   ## DaemonSet or Deployment
   ##
