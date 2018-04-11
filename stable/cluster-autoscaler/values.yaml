@@ -27,6 +27,8 @@ image:
 
 tolerations: []
 
+extraEnv: {}
+
 extraArgs: {}
   # scale-down-delay: 10m
   # scale-down-unneeded-time: 10m
