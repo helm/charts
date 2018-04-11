@@ -14,5 +14,4 @@ sources:
 - https://github.com/docker-library/postgres
 maintainers:
 - name: databus23
-- name: gaigepr
 engine: gotpl
