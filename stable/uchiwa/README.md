@@ -60,7 +60,7 @@ The following table lists the configurable parameters of the Uchiwa chart and th
 | `image`                              | Uchiwa image                          | `sstarcher/uchiwa`                              |
 | `imageTag`                              | Uchiwa version                          | `0.22`                              |
 | `imagePullPolicy`                    | Image pull policy                        | `IfNotPresent`   |
-| `replicaCount`         | Number of uchiwa replicas | `1`  |
+| `replicaCount`         | Number of Uchiwa replicas | `1`  |
 | `httpPort` | Service port for Kubernetes | `80` |
 | `routable` | Enables routing through the Deis router | `false` |
 | `resources.requests.cpu` | CPU request for Uchiwa | `10m` |
