@@ -60,6 +60,8 @@ airflow:
   pod_disruption_budget:
     maxUnavailable: 1
 
+workers:
+    serviceAccountName: "default"
 
 ##
 ## Configuration for celery workers

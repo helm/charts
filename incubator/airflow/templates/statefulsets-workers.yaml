@@ -12,6 +12,7 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   serviceName: "{{ template "airflow.fullname" . }}-workers"
+  serviceAccountName: {{ .Values.workers.serviceAccountName }}
   updateStrategy:
     type: RollingUpdate
   ## Use experimental burst mode for faster StatefulSet scaling
