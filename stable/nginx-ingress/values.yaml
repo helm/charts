@@ -69,7 +69,7 @@ controller:
   ##
   ## NOTE: this defaults to false for backwards-compatability reasons. This is subject
   ## for deprecation in the future, so it is encouraged to set this to true.
-  inlineExtraEnvs: true
+  inlineExtraEnvs: false
 
   ## Additional environment variables to set
   ##
