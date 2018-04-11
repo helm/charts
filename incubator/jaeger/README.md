@@ -137,6 +137,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 |------------------------------------------|-------------------------------------|----------------------------------------|
 | `agent.annotations`                      | Annotations for Agent               |  nil                                   |
 | `agent.cmdlineParams`                    | Additional command line parameters  |  nil                                   |
+| `agent.dnsPolicy`                        | configure DNS policy for agents     |  ClusterFirst                          |
 | `agent.image`                            | Image for Jaeger Agent              |  jaegertracing/jaeger-agent            |
 | `agent.pullPolicy`                       | Agent image pullPolicy              |  IfNotPresent                          |
 | `agent.tag`                              | Image tag/version                   |  0.6                                   |
@@ -144,6 +145,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.service.binaryPort`               | jaeger.thrift over binary thrift    |  6832                                  |
 | `agent.service.compactPort`              | jaeger.thrift over compact thrift   |  6831                                  |
 | `agent.service.zipkinThriftPort`         | zipkin.thrift over compact thrift   |  5775                                  |
+| `agent.useHostNetwork`                   | enable hostNetwork for agents       |  false                                 |
 | `cassandra.config.cluster_name`          | Cluster name                        |  jaeger                                |
 | `cassandra.config.dc_name`               | Datacenter name                     |  dc1                                   |
 | `cassandra.config.endpoint_snitch`       | Node discovery method               |  GossipingPropertyFileSnitch           |
