@@ -162,3 +162,14 @@ ingress:
 #   - secretName: chartmuseum-server-tls
 #     hosts:
 #     - chartmuseum.domain.com
+
+# Adding secrets to tiller is not a great option, so If you want to use an existing
+# secret that contains the json file, you can use the following entries
+existing:
+  secret:
+    gcp: 
+      enabled: false
+      # Name of the secret that contains the encoded json
+      secretName:      
+      # Secret key that holds the json value.
+      key: credentials.json

@@ -101,9 +101,17 @@ spec:
       {{ if .Values.env.open.GOOGLE_SERVICE_ACCOUNT }}
       - name: {{ include "chartmuseum.fullname" . }}-gcp
         secret:
+      {{ if .Values.env.open.GOOGLE_CREDENTIALS_JSON }}
           secretName: {{ include "chartmuseum.fullname" . }}
           items:
           - key: GOOGLE_CREDENTIALS_JSON
             path: credentials.json
+      {{ end }}
+      {{ if .Values.existing.secret.gcp.enabled }}
+          secretName: {{ .Values.existing.secret.gcp.secretName }}
+          items:
+          - key: {{ .Values.existing.secret.gcp.key }}
+            path: credentials.json
+      {{ end }}
       {{ end }}
 

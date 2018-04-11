@@ -221,12 +221,49 @@ env:
 
 ### Using with Google Cloud Storage and a Google Service Account
 
+A Google service account credentials are stored in a json file. There are two approaches here. Ideally you don't want to send your secrets to tiller. In that case, before installing this chart, you should create a secret with those credentials:
+
+```shell
+kubectl create secret generic chartmuseum-secret --from-file=credentials.json="my-project-45e35d85a593.json"
+```
+
+Then you can either use a `VALUES` yaml with your values or set those values in the command line:
+
+```shell
+helm install stable/chartmuseum --debug  --set env.open.GOOGLE_SERVICE_ACCOUNT=true,env.open.STORAGE=google,env.open.DISABLE_API=false,env.open.STORAGE_GOOGLE_BUCKET=my-gcs-bucket,existing.secret.gcp.enabled=true,existing.secret.gcp.secretName=chartmuseum-secret
+```
+
+If you prefer to use a yaml file:
+
 ```yaml
 env:
   open:
     STORAGE: google
     STORAGE_GOOGLE_BUCKET: my-gcs-bucket
-    STORAGE_GOOGLE_PREFIX:    
+    STORAGE_GOOGLE_PREFIX:
+    GOOGLE_SERVICE_ACCOUNT: true
+existing:
+  secret:
+    gcp:
+      enabled: true
+      secretName: chartmuseum-secret
+      key: credentials.json
+```
+
+Run command to install
+
+```shell
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+```
+
+In case that you don't mind adding your secret to tiller (you shouldn't do it), this are the commands
+
+```yaml
+env:
+  open:
+    STORAGE: google
+    STORAGE_GOOGLE_BUCKET: my-gcs-bucket
+    STORAGE_GOOGLE_PREFIX:
     GOOGLE_SERVICE_ACCOUNT: true
     GOOGLE_CREDENTIALS_JSON: my-json-file-base64-encoded
 ```
@@ -237,12 +274,13 @@ Run command to install
 helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
-Otherwise, you can set all the env vars in the command. Note that we have to base64 encode the json file because we cannot pass a multi-line text as a value
+To set the values directly in the command line, use the follosing command. Note that we have to base64 encode the json file because we cannot pass a multi-line text as a value.
 
 ```shell
 export JSONKEY=$(cat my-project-77e35d85a593.json | base64)
-helm install  ./chartmuseum --debug  --set env.open.GOOGLE_SERVICE_ACCOUNT=true,env.secret.GOOGLE_CREDENTIALS_JSON=${JSONKEY},env.open.STORAGE=google,env.open.DISABLE_API=false,env.open.STORAGE_GOOGLE_BUCKET=my-gcs-bucket
+helm install  stable/chartmuseum --debug  --set env.open.GOOGLE_SERVICE_ACCOUNT=true,env.secret.GOOGLE_CREDENTIALS_JSON=${JSONKEY},env.open.STORAGE=google,env.open.DISABLE_API=false,env.open.STORAGE_GOOGLE_BUCKET=my-gcs-bucket
 ```
+
 
 ### Using with Microsoft Azure Blob Storage
 
