@@ -30,6 +30,7 @@ spec:
             - "-endpoints" 
             - "{{ .Values.etcd.endpoints }}"
 {{- end }}
+{{- if .Values.etcd.tls }}
 {{- if .Values.etcd.tls.secret }}
             - "-certfile"
             - "/etc/zetcd/secrets/{{ .Values.etcd.tls.cert }}"
@@ -42,7 +43,8 @@ spec:
               mountPath: /etc/zetcd/secrets
               readOnly: true
 {{- end }}
-          ports:
+{{- end }}
+         ports:
             - containerPort: {{ .Values.service.internalPort }}
           livenessProbe:
             tcpSocket:
@@ -56,9 +58,11 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+{{- if .Values.etcd.tls }}
 {{- if .Values.etcd.tls.secret }}
       volumes:
       - name: tls
         secret:
           secretName: {{ .Values.etcd.tls.secret }}
+{{- end }}
 {{- end }}
