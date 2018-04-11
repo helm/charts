@@ -19,7 +19,6 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          
           command:
             - "/usr/local/bin/zetcd"
             - "-zkaddr"
@@ -42,7 +41,6 @@ spec:
             - name: tls
               mountPath: /etc/zetcd/secrets
               readOnly: true
-                 
 {{- end }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
