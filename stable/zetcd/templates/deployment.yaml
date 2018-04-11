@@ -44,7 +44,7 @@ spec:
               readOnly: true
 {{- end }}
 {{- end }}
-         ports:
+          ports:
             - containerPort: {{ .Values.service.internalPort }}
           livenessProbe:
             tcpSocket:
