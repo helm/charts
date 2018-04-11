@@ -34,6 +34,8 @@ env:
     STORAGE_GOOGLE_BUCKET:
     # prefix to store charts for google storage backend
     STORAGE_GOOGLE_PREFIX:
+    # gcp service-account
+    GOOGLE_SERVICE_ACCOUNT:
     # container to store charts for microsoft storage backend
     STORAGE_MICROSOFT_CONTAINER:
     # prefix to store charts for microsoft storage backend
@@ -67,6 +69,8 @@ env:
     BASIC_AUTH_USER:
     # password for basic http authentication
     BASIC_AUTH_PASS:
+    # GCP service account json file
+    GOOGLE_CREDENTIALS_JSON:
 deployment:
   ## Chartmuseum Deployment annotations
   annotations: {}

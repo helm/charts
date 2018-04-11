@@ -219,10 +219,29 @@ env:
     STORAGE_GOOGLE_PREFIX:    
 ```
 
+### Using with Google Cloud Storage and a Google Service Account
+
+```yaml
+env:
+  open:
+    STORAGE: google
+    STORAGE_GOOGLE_BUCKET: my-gcs-bucket
+    STORAGE_GOOGLE_PREFIX:    
+    GOOGLE_SERVICE_ACCOUNT: true
+    GOOGLE_CREDENTIALS_JSON: my-json-file-base64-encoded
+```
+
 Run command to install
 
 ```shell
 helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+```
+
+Otherwise, you can set all the env vars in the command. Note that we have to base64 encode the json file because we cannot pass a multi-line text as a value
+
+```shell
+export JSONKEY=$(cat my-project-77e35d85a593.json | base64)
+helm install  ./chartmuseum --debug  --set env.open.GOOGLE_SERVICE_ACCOUNT=true,env.secret.GOOGLE_CREDENTIALS_JSON=${JSONKEY},env.open.STORAGE=google,env.open.DISABLE_API=false,env.open.STORAGE_GOOGLE_BUCKET=my-gcs-bucket
 ```
 
 ### Using with Microsoft Azure Blob Storage
