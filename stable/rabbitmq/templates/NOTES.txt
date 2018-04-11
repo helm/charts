@@ -4,8 +4,8 @@
 Credentials:
 
     Username      : {{ .Values.rabbitmq.username }}
-    Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
-    ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
+    echo Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
+    echo ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
 
 RabbitMQ can be accessed within the cluster on port {{ .Values.rabbitmq.nodePort }} at {{ template "rabbitmq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
@@ -21,11 +21,11 @@ Obtain the NodePort IP and ports:
 
 To Access the RabbitMQ AMQP port:
 
-    URL : amqp://$NODE_IP:$NODE_PORT_AMQP/
+    echo URL : amqp://$NODE_IP:$NODE_PORT_AMQP/
 
 To Access the RabbitMQ Management interface:
 
-    URL : http://$NODE_IP:$NODE_PORT_STATS/
+    echo URL : http://$NODE_IP:$NODE_PORT_STATS/
 
 {{- else if contains "LoadBalancer" .Values.serviceType }}
 
@@ -38,11 +38,11 @@ NOTE: It may take a few minutes for the LoadBalancer IP to be available.
 
 To Access the RabbitMQ AMQP port:
 
-    URL : amqp://$SERVICE_IP:{{ .Values.rabbitmq.nodePort }}/
+    echo URL : amqp://$SERVICE_IP:{{ .Values.rabbitmq.nodePort }}/
 
 To Access the RabbitMQ Management interface:
 
-    URL : http://$SERVICE_IP:{{ .Values.rabbitmq.managerPort }}/
+    echo URL : http://$SERVICE_IP:{{ .Values.rabbitmq.managerPort }}/
 
 {{- else if contains "ClusterIP"  .Values.serviceType }}
 
