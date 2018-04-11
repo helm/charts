@@ -48,7 +48,7 @@ To Access the RabbitMQ Management interface:
 
 Create a proxy server between localhost and the Kubernetes API Server:
 
-    kubectl proxy --port 8002 &
+    kubectl proxy --port 8002
 
 To Access the RabbitMQ AMQP port:
 
