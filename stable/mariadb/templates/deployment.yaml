@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         app: {{ template "mariadb.name" . }}
+        release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
