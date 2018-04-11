@@ -26,7 +26,7 @@ spec:
 {{- if .Values.dashboards }}
       initContainers:
         - name: download-dashboards
-          image: "{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
+          image: "{{ .Values.downloadDashboardsImage.registry }}/{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
           imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
           command: ["sh", "/etc/grafana/download_dashboards.sh"]
           volumeMounts:
@@ -37,9 +37,15 @@ spec:
               mountPath: "/var/lib/grafana"
               subPath: {{ .Values.persistence.subPath }}
 {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: config
