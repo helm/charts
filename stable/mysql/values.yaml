@@ -90,7 +90,7 @@ ssl:
   enabled: false
   secret: mysql-ssl-certs
   certificates:
-#  - name: mysql-certs
+#  - name: mysql-ssl-certs
 #    ca: |-
 #      -----BEGIN CERTIFICATE-----
 #      ...
