@@ -2,7 +2,7 @@
 
 [Redis](http://redis.io/) is an advanced key-value cache and store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets, sorted sets, bitmaps and hyperloglogs.
 
-## TL;DR;
+## TL;DR
 
 ```bash
 # Testing configuration
@@ -54,9 +54,9 @@ The following table lists the configurable parameters of the Redis chart and the
 | `image.registry`            | Rabbitmq Image registry                                 | `docker.io`                                              |
 | `image.repository`          | Rabbitmq Image name                                     | `bitnami/rabbitmq`                                       |
 | `image.tag`                 | Rabbitmq Image tag                                      | `{VERSION}`                                              |
-| `image.pullPolicy`          | Image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullPolicy`          | Image pull policy                                       | `Always` |
 | `image.pullSecrets`         | Specify docker-ragistry secret names as an array        | `nil`                                                    |
-| `cluster.enabled`                          | Use master-slave topology                                                                                      | `false`                              |               |
+| `cluster.enabled`                          | Use master-slave topology                                                                                      | `true`                         |               |
 | `cluster.slaveCount`                       | Number of slaves                                                                                               | 1                                    |               |
 | `existingSecret`                           | Name of existing secret object (for password authentication)                                                   | `nil`                                |               |
 | `password`                          | Redis password (ignored if existingSecret set)  | Randomly generated |
@@ -64,7 +64,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `metrics.image.registry`            | Rabbitmq Image registry                                 | `docker.io`                                              |
 | `metrics.image.repository`          | Rabbitmq Image name                                     | `bitnami/rabbitmq`                                       |
 | `metrics.image.tag`                 | Rabbitmq Image tag                                      | `{VERSION}`                                              |
-| `metrics.image.pullPolicy`          | Image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `metrics.image.pullPolicy`          | Image pull policy                                       | `IfNotPresent` |
 | `metrics.image.pullSecrets`         | Specify docker-registry secret names as an array        | `nil`                                                    |
 | `metrics.podLabels`                                | Additional labels for Metrics exporter pod                                                                        | {}                                   |               |
 | `metrics.podAnnotations`                           | Additional annotations for Metrics exporter pod                                                                    | {}                         |

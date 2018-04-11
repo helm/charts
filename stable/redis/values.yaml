@@ -9,7 +9,7 @@ image:
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -20,7 +20,7 @@ image:
 
 ## Cluster settings
 cluster:
-  enabled: false
+  enabled: true
   slaveCount: 1
 
 metrics:
@@ -136,7 +136,7 @@ master:
   ## Redis Master pod annotations
   podAnnotations: {}
   ## Redis Master Service properties
-  serviceType: LoadBalancer
+  serviceType: ClusterIP
   ## Redis Master Pod Security Context
   securityContext:
     enabled: true
@@ -179,7 +179,7 @@ master:
 ##
 slave:
   ## Slave Service properties
-  serviceType: LoadBalancer
+  serviceType: ClusterIP
   service:
     annotations: {}
     loadBalancerIP:

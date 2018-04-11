@@ -130,7 +130,7 @@ master:
   ## Redis Master pod annotations
   podAnnotations: {}
   ## Redis Master Service properties
-  serviceType: LoadBalancer
+  serviceType: ClusterIP
   ## Redis Master Pod Security Context
   securityContext:
     enabled: true
@@ -171,12 +171,12 @@ master:
 ## Note: serviceType and service are mandatory parameters
 ## The rest of the parameters, if undefined, will inherit those declared in Redis Master
 ##
-# slave:
+slave:
   ## Slave Service properties
-  # serviceType: LoadBalancer
-  # service:
-    # annotations: {}
-    # loadBalancerIP:
+  serviceType: ClusterIP
+  service:
+    annotations: {}
+    loadBalancerIP:
 
   ## Redis slave optional overrides
 
