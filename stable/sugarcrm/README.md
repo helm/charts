@@ -68,8 +68,8 @@ The following table lists the configurable parameters of the SugarCRM chart and 
 | `externalDatabase.port`             | Port of the external database           | `3306`                                                  |
 | `externalDatabase.user`             | Existing username in the external db    | `bn_sugarcrm`                                           |
 | `externalDatabase.password`         | Password for the above username         | `nil`                                                   |
-| `externalDatabase.database`         | Name of the existing database            | `bitnami_sugarcrm`                                      |
-| `mariadb.enabled`                   | Whether to use or not the mariadb chart  | `true`                                                  |
+| `externalDatabase.database`         | Name of the existing database           | `bitnami_sugarcrm`                                      |
+| `mariadb.enabled`                   | Whether to use the MariaDB chart        | `true`                                                  |
 | `mariadb.mariadbDatabase`           | Database name to create                 | `bitnami_sugarcrm`                                      |
 | `mariadb.mariadbUser`               | Database user to create                 | `bn_sugarcrm`                                           |
 | `mariadb.mariadbPassword`           | Password for the database               | `nil`                                                   |
