@@ -33,7 +33,7 @@
     To obtain the CA certificate, do
         kubectl get secret $secret_name --namespace={{ .Release.Namespace }}  -o jsonpath="{.data['ca\.crt']}" | base64 --decode
 {{ else }}
-    Looks like rbac was disabled during installation.
+    Looks like RBAC was disabled during installation.
     For configuring the plugin settings for the kubernetes elastic agent plugin, ensure that the service account `{{ template "gocd.serviceAccountName" . }}` present in the namespace `{{ .Release.Namespace }}` or any manually created service account has been granted the following privileges.
     Privileges:
       - nodes: list, get
