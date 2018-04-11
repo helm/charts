@@ -89,11 +89,12 @@ The following tables list the configurable parameters of the GoCD chart and thei
 
 #### Preconfiguring the GoCD Server
 
-Based on the information available about the Kubernetes cluster, the [Kubernetes elastic agent](https://github.com/gocd/kubernetes-elastic-agents) plugin settings can be configured. A default elastic agent profile too can be created so that users can concentrate on building their CD pipeline.
+Based on the information available about the Kubernetes cluster, the [Kubernetes elastic agent](https://github.com/gocd/kubernetes-elastic-agents) plugin settings can be configured. A default elastic agent profile too is created so that users can concentrate on building their CD pipeline.
+A simple first pipeline is created in order to bootstrap the getting started experience for users. 
 
 If you are comfortable with GoCD and feel that there is no need to preconfigure the server, then you can override `server.shouldPreconfigure` to be false. 
 
-**Note: If the GoCD server is started with an existing config from a persistent volume, it is recommended to set the value of `server.shouldPreconfigure` to `false`.** 
+**Note: If the GoCD server is started with an existing config from a persistent volume, set the value of `server.shouldPreconfigure` to `false`.** 
 
 ```bash
 $ helm install --namespace gocd --name gocd-app --set server.shouldPreconfigure=false stable/gocd
@@ -111,9 +112,9 @@ The above command will show the pod state. This will be in `ContainerCreating` t
 $ kubectl describe pods --namespace gocd
 ```
 
-The above command will show the events that occurred in detail. This can be used to determine if there is any problem at the time of creating the GoCD server pod.
+The above command will show the events that occurred in detail. This can be used to determine if there is any problem at the time of creating the GoCD server pod. If the preconfigure script fails for some reason, the event `FailedPostStartHook` is published.
 
-In some cases, the attempt to preconfigure the GoCD may fail. However, if the GoCD server is up, irrespective of the outcome of the preconfigure script, the GoCD server can still be accessed. 
+The output of the preconfigure script is provided at `/godata/logs/preconfigure.log`.
 
 ```bash
 $ helm status gocd-app

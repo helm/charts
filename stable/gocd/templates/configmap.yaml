@@ -21,9 +21,12 @@ data:
         break
       fi
     done
-    echo "Creating an elastic profile now."
 
-    $(curl 'http://localhost:8153/go/api/elastic/profiles' \
+    set -e
+
+    echo "Trying to create an elastic profile now." >> /godata/logs/preconfigure.log
+
+    (curl --fail -i 'http://localhost:8153/go/api/elastic/profiles' \
       -H 'Accept: application/vnd.go.cd.v1+json' \
       -H 'Content-Type: application/json' \
       -X POST -d '{
@@ -47,13 +50,11 @@ data:
             "value": "true"
           }
         ]
-      }')
+      }' >> /godata/logs/preconfigure.log)
 
-    echo "Done creating the elastic profile."
+    echo "Trying to configure plugin settings." >> /godata/logs/preconfigure.log
 
-    echo "Configuring plugin settings."
-
-    $(curl 'http://localhost:8153/go/api/admin/plugin_settings' \
+    (curl --fail -i 'http://localhost:8153/go/api/admin/plugin_settings' \
       -H 'Accept: application/vnd.go.cd.v1+json' \
       -H 'Content-Type: application/json' \
       -X POST -d '{
@@ -76,7 +77,56 @@ data:
             "value": "'$KUBE_TOKEN'"
           }
         ]
-      }')
+      }' >> /godata/logs/preconfigure.log)
 
-    echo "Done configuring plugin settings."
+    echo "Trying to creating a hello world pipeline." >> /godata/logs/preconfigure.log
 
+    (curl --fail -i 'http://localhost:8153/go/api/admin/pipelines' \
+      -H 'Accept: application/vnd.go.cd.v5+json' \
+      -H 'Content-Type: application/json' \
+      -X POST -d '{ "group": "sample",
+                    "pipeline": {
+                      "label_template": "${COUNT}",
+                      "name": "hello_world",
+                      "materials": [
+                        {
+                          "type": "git",
+                          "attributes": {
+                            "url": "https://github.com/gocd-contrib/getting-started-repo",
+                            "shallow_clone": true
+                          }
+                        }
+                      ],
+                      "stages": [
+                        {
+                          "name": "default_stage",
+                          "jobs": [
+                            {
+                              "name": "default_job",
+                              "elastic_profile_id": "demo-app",
+                              "tasks": [
+                                {
+                                  "type": "exec",
+                                  "attributes": {
+                                    "command": "echo",
+                                    "arguments": [
+                                      "Hello World"
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }' >> /godata/logs/preconfigure.log )
+
+    echo "Unpausing the pipeline." >> /godata/logs/preconfigure.log
+
+    (curl --fail -i 'http://localhost:8153/go/api/pipelines/hello_world/unpause' \
+           -H 'Accept: application/vnd.go.cd.v1+json' \
+           -H 'X-GoCD-Confirm: true' \
+           -X POST >> /godata/logs/preconfigure.log)
+
+    echo "Done preconfiguring the GoCD server" >> /godata/logs/preconfigure.log
