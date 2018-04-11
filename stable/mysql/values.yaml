@@ -88,15 +88,18 @@ service:
 
 ssl:
   enabled: false
-#  ca: |-
-#    -----BEGIN CERTIFICATE-----
-#    ...
-#    -----END CERTIFICATE-----
-#  cert: |-
-#    -----BEGIN CERTIFICATE-----
-#    ...
-#    -----END CERTIFICATE-----
-#  key: |-
-#    -----BEGIN RSA PRIVATE KEY-----
-#    ...
-#    -----END RSA PRIVATE KEY-----
+  secret: mysql-ssl-certs
+  certificates:
+#  - name: mysql-certs
+#    ca: |-
+#      -----BEGIN CERTIFICATE-----
+#      ...
+#      -----END CERTIFICATE-----
+#    cert: |-
+#      -----BEGIN CERTIFICATE-----
+#      ...
+#      -----END CERTIFICATE-----
+#    key: |-
+#      -----BEGIN RSA PRIVATE KEY-----
+#      ...
+#      -----END RSA PRIVATE KEY-----

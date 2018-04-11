@@ -34,7 +34,7 @@ spec:
       - mountPath: /tools
         name: tools
       {{- if .Values.ssl.enabled }}
-      - name: certs
+      - name: certificates
         mountPath: /ssl
       {{- end }}
   volumes:
@@ -44,8 +44,8 @@ spec:
   - name: tools
     emptyDir: {}
   {{- if .Values.ssl.enabled }}
-  - name: certs
+  - name: certificates
     secret:
-      secretName: {{ template "mysql.fullname" . }}-certs
+      secretName: {{ .Values.ssl.secret }}
   {{- end }}
   restartPolicy: Never
