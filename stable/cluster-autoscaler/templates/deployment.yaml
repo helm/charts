@@ -61,6 +61,10 @@ spec:
             - name: SPOTINST_ACCOUNT
               value: "{{ .Values.spotinst.account }}"
           {{- end }}
+          {{- range $key, $value := .Values.extraEnv }}
+          - name: {{ $key }}
+            value: {{ $value }}
+          {{- end }}          
           livenessProbe:
             httpGet:
               path: /health-check

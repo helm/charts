@@ -5,10 +5,24 @@ image:
   tag: 5.0.4
   pullPolicy: IfNotPresent
 
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
+
 downloadDashboardsImage:
   repository: appropriate/curl
   tag: latest
   pullPolicy: IfNotPresent
+
+## Pod Annotations
+# podAnnotations: {}
+
+## Deployment annotations
+# annotations: {}
+
 ## Expose the grafana service to be accessed from outside the cluster (LoadBalancer service).
 ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -71,7 +85,7 @@ adminUser: admin
 # adminPassword: strongpassword
 
 
-## Extra enviornment variables that will be pass onto deployment pods
+## Extra environment variables that will be pass onto deployment pods
 env: {}
 
 # Pass the plugins you want installed as a comma separated list.
