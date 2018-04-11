@@ -31,7 +31,7 @@ spec:
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
-{{- if not (empty .Values.env.open.GOOGLE_SERVICE_ACCOUNT) }}
+{{- if .Values.env.open.GOOGLE_SERVICE_ACCOUNT }}
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: "/etc/secrets/google/credentials.json"
 {{- end }}
@@ -68,7 +68,7 @@ spec:
         - mountPath: /storage
           name: storage-volume
 {{- end }}
-{{- if not (empty .Values.env.open.GOOGLE_SERVICE_ACCOUNT) }}
+{{- if  .Values.env.open.GOOGLE_SERVICE_ACCOUNT }}
         volumeMounts:
         - mountPath: /etc/secrets/google
           name: {{ include "chartmuseum.fullname" . }}-gcp
@@ -98,7 +98,7 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
-      {{ if not (empty .Values.env.open.GOOGLE_SERVICE_ACCOUNT) }}
+      {{ if .Values.env.open.GOOGLE_SERVICE_ACCOUNT }}
       - name: {{ include "chartmuseum.fullname" . }}-gcp
         secret:
           secretName: {{ include "chartmuseum.fullname" . }}
