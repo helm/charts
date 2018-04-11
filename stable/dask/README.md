@@ -59,7 +59,7 @@ The following tables list the configurable parameters of the Dask chart and thei
 
 | Parameter               | Description                      | Default                  |
 |-------------------------|----------------------------------|--------------------------|
-| `jupyter.name`          | jupyter name                     | `jupyter`                |
+| `jupyter.name`          | Jupyter name                     | `jupyter`                |
 | `jupyter.enabled`       | Include optional Jupyter server  | `true`                   |
 | `jupyter.image`         | Container image name             | `daskdev/dask-notebook`  |
 | `jupyter.imageTag`      | Container image tag              | `0.17.1`                 |
