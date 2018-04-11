@@ -123,14 +123,6 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
-      - name: data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "postgresql.fullname" .) }}
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      {{- if and .Values.metrics.enabled .Values.metrics.customMetrics }}
       - name: custom-metrics
         secret:
           secretName: {{ template "postgresql.fullname" . }}
