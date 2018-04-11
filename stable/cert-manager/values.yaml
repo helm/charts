@@ -5,10 +5,12 @@ replicaCount: 1
 
 image:
   repository: quay.io/jetstack/cert-manager-controller
-  tag: v0.2.3
+  tag: v0.2.4
   pullPolicy: IfNotPresent
 
 createCustomResource: true
+
+certificateResourceShortNames: ["cert", "certs"]
 
 rbac:
   # Specifies whether RBAC resources should be created
@@ -32,6 +34,8 @@ resources: {}
   #   cpu: 10m
   #   memory: 32Mi
 
+podAnnotations: {}
+
 nodeSelector: {}
 
 ingressShim:
@@ -39,6 +43,10 @@ ingressShim:
 
   # Optional additional arguments for ingress-shim
   extraArgs: []
+    # Use these flags to specify the default Issuer/ClusterIssuer
+    # (IMPORTANT: You need to create this Issuer/ClusterIssuer resource yourself)
+    # - --default-issuer-name=letsencrypt-prod
+    # - --default-issuer-kind=ClusterIssuer
 
   resources: {}
     # requests:
@@ -53,3 +61,8 @@ ingressShim:
     # tag: v0.2.3
 
     pullPolicy: IfNotPresent
+
+# This is used by the static manifest generator in order to create a static
+# namespace manifest for the namespace that cert-manager is being installed
+# within. It should **not** be used if you are using Helm for deployment.
+createNamespaceResource: false
