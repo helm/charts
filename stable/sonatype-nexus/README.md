@@ -24,7 +24,7 @@ The default login is admin/admin123
 
 ## Uninstalling the Chart
 
-to uninstall/delete the deployment:
+To uninstall/delete the deployment:
 
 ```bash
 $ helm list
@@ -44,7 +44,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `image.repository`                          | `nexus` image repository.           | cavemandaveman/nexus                       |
 | `image.tag`                                 | `nexus` image tag.                  | 3.9.0-01                                   |
 | `image.pullPolicy`                          | Image pull policy                   | `IfNotPresent`                             |
-| `nodeSelector`                              | node labels for pod assignment      | {}                                         |
+| `nodeSelector`                              | Node labels for pod assignment      | {}                                         |
 | `ingress.enabled`                           | Flag for enabling ingress           | false                                      |
 | `persistence.enabled`                       | Create a volume to store data       | true                                       |
 | `persistence.size`                          | Size of persistent volume to claim  | 8Gi RW                                     |
