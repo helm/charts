@@ -37,7 +37,7 @@ $ helm install --name metallb stable/metallb
 ```
 
 The command deploys MetalLB on the Kubernetes cluster. This chart does
-not provide a default configuration, MetalLB will not act on your
+not provide a default configuration; MetalLB will not act on your
 Kubernetes Services until you provide
 one. The [configuration](#configuration) section lists various ways to
 provide this configuration.
@@ -52,7 +52,14 @@ $ helm delete metallb
 ```
 
 The command removes all the Kubernetes components associated with the
-chart and deletes the release.
+chart, but will not remove the release metadata from `helm` — this will prevent
+you, for example, if you later try to create a release also named `metallb`). To
+fully delete the release and release history, simply [include the `--purge`
+flag][helm-usage]:
+
+```console
+$ helm delete --purge metallb
+```
 
 Configuration
 -------------
@@ -111,6 +118,7 @@ $ helm install --name metallb -f values.yaml stable/metallb
 ```
 
 [helm-home]: https://helm.sh
+[helm-usage]: https://docs.helm.sh/using_helm/
 [k8s-home]: https://kubernetes.io
 [metallb-arpndp-concepts]: https://metallb.universe.tf/concepts/arp-ndp/
 [metallb-config]: https://metallb.universe.tf/configuration/
