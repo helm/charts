@@ -1,9 +1,8 @@
 MetalLB
 -------
 
-MetalLB is a load-balancer implementation for bare
-metal [Kubernetes](https://kubernetes.io) clusters, using standard
-routing protocols.
+MetalLB is a load-balancer implementation for bare metal [Kubernetes][k8s-home]
+clusters, using standard routing protocols.
 
 TL;DR;
 ------
@@ -15,10 +14,9 @@ $ helm install --name metallb stable/metallb
 Introduction
 ------------
 
-This chart bootstraps a [MetalLB](https://metallb.universe.tf)
-installation on a [Kubernetes](http://kubernetes.io) cluster using
-the [Helm](https://helm.sh) package manager. This chart provides an
-implementation for LoadBalancer Service objects.
+This chart bootstraps a [MetalLB][metallb-home] installation on
+a [Kubernetes][k8s-home] cluster using the [Helm][helm-home] package manager.
+This chart provides an implementation for LoadBalancer Service objects.
 
 MetalLB is a cluster service, and as such can only be deployed as a
 cluster singleton. Running multiple installations of MetalLB in a
@@ -27,7 +25,7 @@ single cluster is not supported.
 Prerequisites
 -------------
 
--	Kubernetes 1.9+
+-  Kubernetes 1.9+
 
 Installing the Chart
 --------------------
@@ -78,16 +76,13 @@ parameters can be provided while installing the chart. For example,
 $ helm install --name metallb -f values.yaml stable/metallb
 ```
 
-By default, this chart does not install a configuration for MetalLB,
-and simply warns you that you must
-follow
-[the configuration instructions on MetalLB's website](https://metallb.universe.tf/configuration/) to
-create an appropriate ConfigMap.
+By default, this chart does not install a configuration for MetalLB, and simply
+warns you that you must follow [the configuration instructions on MetalLB's
+website][metallb-config] to create an appropriate ConfigMap.
 
-For simple setups that only use
-MetalLB's [ARP mode](https://metallb.universe.tf/concepts/arp-ndp/),
-you can specify a single IP range using the `arpAddresses` parameter
-to have the chart install a working configuration for you:
+For simple setups that only use MetalLB's [ARP mode][metallb-arpndp-concepts],
+you can specify a single IP range using the `arpAddresses` parameter to have the
+chart install a working configuration for you:
 
 ```console
 $ helm install --name metallb \
@@ -95,11 +90,9 @@ $ helm install --name metallb \
   stable/metallb
 ```
 
-If you have a more complex configuration and want Helm to manage it
-for you, you can provide it in the `config` parameter. The
-configuration format
-is
-[documented on MetalLB's website](https://metallb.universe.tf/configuration/).
+If you have a more complex configuration and want Helm to manage it for you, you
+can provide it in the `config` parameter. The configuration format is
+[documented on MetalLB's website][metallb-config].
 
 ```console
 $ cat values.yaml
@@ -116,3 +109,9 @@ config:
 
 $ helm install --name metallb -f values.yaml stable/metallb
 ```
+
+[helm-home]: https://helm.sh
+[k8s-home]: https://kubernetes.io
+[metallb-arpndp-concepts]: https://metallb.universe.tf/concepts/arp-ndp/
+[metallb-config]: https://metallb.universe.tf/configuration/
+[metallb-home]: https://metallb.universe.tf
