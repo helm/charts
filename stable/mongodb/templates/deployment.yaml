@@ -35,11 +35,13 @@ spec:
               key: mongodb-root-password
         - name: MONGODB_USERNAME
           value: {{ default "" .Values.mongodbUsername | quote }}
+        {{ if and .Values.mongodbUsername .Values.mongodbDatabase }}
         - name: MONGODB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mongodb.fullname" . }}
               key: mongodb-password
+        {{ end }}
         - name: MONGODB_DATABASE
           value: {{ default "" .Values.mongodbDatabase | quote }}
         ports:
