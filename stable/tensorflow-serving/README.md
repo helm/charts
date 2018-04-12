@@ -140,10 +140,10 @@ chart and their default values.
 |`replicas`| K8S deployment replicas | `1` |
 |`modelName`|  The model name | `mnist`|
 |`modelBasePath`| The model base path | `/serving/model/mnist"` |
-|`mountPath`| the mount path inside the container | `/serving/model/mnist` |
-|`persistence.enabled` | enable pvc for the tensorflow serving | `false` |
-|`persistence.size`| the storage size to request | `5Gi` |
-|`persistence.matchLabels`| the selector for pv | `{}` |
+|`mountPath`| The mount path inside the container | `/serving/model/mnist` |
+|`persistence.enabled` | Enable pvc for the tensorflow serving | `false` |
+|`persistence.size`| The storage size to request | `5Gi` |
+|`persistence.matchLabels`| The selector for pv | `{}` |
 
 
 
