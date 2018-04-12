@@ -1,3 +1,5 @@
+**This chart is DEPRECATED and moved to https://github.com/appscode/charts**
+
 # Voyager
 [Voyager by AppsCode](https://github.com/appscode/voyager) - Secure Ingress Controller for Kubernetes
 
