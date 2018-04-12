@@ -24,3 +24,4 @@ spec:
     targetPort: stats
   selector:
     app: {{ template "rabbitmq.name" . }}
+    release: "{{ .Release.Name }}"
