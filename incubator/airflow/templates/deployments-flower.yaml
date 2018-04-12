@@ -1,4 +1,4 @@
-apiVersion: extensions/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "airflow.fullname" . }}-flower
@@ -15,6 +15,10 @@ spec:
     rollingUpdate:
       maxSurge: 4
       maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: {{ template "airflow.name" . }}-flower
+      release: {{ .Release.Name }}
   template:
     metadata:
       annotations:

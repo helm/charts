@@ -18,6 +18,10 @@ spec:
   ##   https://github.com/kubernetes/kubernetes/commit/c2c5051adf096ffd48bf1dcf5b11cb47e464ecdd
   podManagementPolicy: Parallel
   replicas: {{ .Values.celery.num_workers }}
+  selector:
+    matchLabels:
+      app: {{ template "airflow.name" . }}-worker
+      release: {{ .Release.Name }}
   template:
     metadata:
       annotations:
