@@ -130,7 +130,7 @@ reference the default `values.yaml` to understand further options.
 | `tiller.image.pullPolicy` | The pull policy to utilize when pulling Tiller images from a Docker repsoitory | `IfNotPresent` |
 | `tiller.maxHistory` | The maximum number of releases Tiller should remember. A value of `0` is interpreted as no limit. | `0` |
 | `tiller.role.type` | Identify the kind of role (`Role` or `ClusterRole`) that will be referenced in the role binding for Tiller's service account. There is seldom any reason to override this. | `ClusterRole` |
-| `tiller.role.type` | Identify the name of the `Role` or `ClusterRole` that will be referenced in the role binding for Tiller's service account. There is seldom any reason to override this. | `admin` |
+| `tiller.role.name` | Identify the name of the `Role` or `ClusterRole` that will be referenced in the role binding for Tiller's service account. There is seldom any reason to override this. | `admin` |
 | `tiller.includeService` | This deploys a service resource for Tiller. This is not generally needed. Please understand the security implications of this before overriding the default. | `false` |
 | `tiller.onlyListenOnLocalhost` | This prevents Tiller from binding to `0.0.0.0`. This is generally advisable to close known Tiller-based attack vectors. Please understand the security implications of this before overriding the default. | `true` |
 | `serviceAccounts` | An optional array of names of additional service account to create | `nil` |
