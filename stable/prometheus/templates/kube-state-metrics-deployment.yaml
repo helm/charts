@@ -22,7 +22,7 @@ spec:
         component: "{{ .Values.kubeStateMetrics.name }}"
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.kubeStateMetrics.fullname" . }}{{ else }}"{{ .Values.kubeStateMetrics.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "prometheus.serviceAccountName.kubeStateMetrics" . }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.kubeStateMetrics.name }}
           image: "{{ .Values.kubeStateMetrics.image.repository }}:{{ .Values.kubeStateMetrics.image.tag }}"
