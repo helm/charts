@@ -1,0 +1,31 @@
+{{- if .Values.metrics.kafka.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kafka.fullname" . }}-exporter
+  labels:
+    app: "{{ template "kafka.name" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "kafka.fullname" . }}-exporter
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9308"
+      labels:
+        app: {{ template "kafka.fullname" . }}-exporter
+    spec:
+      containers:
+      - image: "{{ .Values.metrics.kafka.image }}:{{ .Values.metrics.kafka.imageTag }}"
+        name: kafka-exporter
+        args:
+          - --kafka.server={{ template "kafka.fullname" . }}:9092
+        ports:
+          - containerPort: 9308
+{{- end }}
