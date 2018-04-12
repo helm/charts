@@ -2,7 +2,7 @@
 
 [oauth2-proxy](https://github.com/bitly/oauth2_proxy) is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, and others) to validate accounts by email, domain or group.
 
-**Note - at this time, there is a known incompatibility between `oauth2-proxy` version 2.2 (which is it's latest release) and `nginx-ingress` versions >= 0.9beta12. To utilize this chart at this time please use nginx-ingress version 0.9beta11**
+**Note - at this time, there is a known incompatibility between `oauth2-proxy` version 2.2 (which is its latest release) and `nginx-ingress` versions >= 0.9beta12. To utilize this chart at this time please use nginx-ingress version 0.9beta11**
 
 ## TL;DR;
 
