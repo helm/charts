@@ -46,6 +46,9 @@ portus:
       guess_email:
         enabled: false
         attr: ""
+    registry:
+      jwt_expiration_time: 5
+      catalog_page: 100
   secrets:
     password: ""  # Randomly generated if omitted
     email:

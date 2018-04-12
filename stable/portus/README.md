@@ -145,6 +145,8 @@ helm install -n portus .
 | `portus.config.user_permission.change_visibility` | User Permissions                | `True`                |
 | `portus.config.user_permission.manage_namespace`  | User Permissions                | `True`                |
 | `portus.config.user_permission.manage_team`       | User Permissions                | `True`                |
+| `portus.config.registry.jwt_expiration_time`      | Registry token expiration time  | `5`                   |
+| `portus.config.registry.catalog_page`             | Pagination for API calls        | `100`                 |
 | `portus.secrets.db.host`     | Mysql host                           | `portusdb-mariadb`                  |
 | `portus.secrets.db.catalog`  | Mysql catalog                        | `portusdb`                          |
 | `portus.secrets.db.username` | Mysql username                       | `portus`                            |
