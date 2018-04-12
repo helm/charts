@@ -96,7 +96,7 @@ And then open up your browser to http://localhost:8080 and you should see the ad
 
 ## Cleanup orphaned Persistent Volumes
 
-Deleting a StateFul will not delete associated Persistent Volumes.
+Deleting a StatefulSet will not delete associated Persistent Volumes.
 
 Do the following after deleting the chart release to clean up orphaned Persistent Volumes.
 
