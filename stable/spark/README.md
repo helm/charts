@@ -29,7 +29,7 @@ $ helm install --name my-release stable/spark
 
 ## Configuration
 
-The following table lists the configurable parameters of the Spark chart and their default values.
+The following tables list the configurable parameters of the Spark chart and their default values.
 
 ### Spark Master
 
@@ -40,8 +40,8 @@ The following table lists the configurable parameters of the Spark chart and the
 | `Master.ImageTag`       | Container image tag                | `1.5.1_v3`                                                 |
 | `Master.Replicas`       | k8s deployment replicas            | `1`                                                        |
 | `Master.Component`      | k8s selector key                   | `spark-master`                                             |
-| `Master.Cpu`            | container requested cpu            | `100m`                                                     |
-| `Master.Memory`         | container requested memory         | `512Mi`                                                    |
+| `Master.Cpu`            | Container requested cpu            | `100m`                                                     |
+| `Master.Memory`         | Container requested memory         | `512Mi`                                                    |
 | `Master.ServicePort`    | k8s service port                   | `7077`                                                     |
 | `Master.ContainerPort`  | Container listening port           | `7077`                                                     |
 | `Master.DaemonMemory`   | Master JVM Xms and Xmx option      | `1g`                                                       |
@@ -65,8 +65,8 @@ The following table lists the configurable parameters of the Spark chart and the
 | `Worker.Replicas`            | k8s hpa and deployment replicas    | `3`                                                        |
 | `Worker.ReplicasMax`         | k8s hpa max replicas               | `10`                                                       |
 | `Worker.Component`           | k8s selector key                   | `spark-worker`                                             |
-| `Worker.Cpu`                 | container requested cpu            | `100m`                                                     |
-| `Worker.Memory`              | container requested memory         | `512Mi`                                                    |
+| `Worker.Cpu`                 | Container requested cpu            | `100m`                                                     |
+| `Worker.Memory`              | Container requested memory         | `512Mi`                                                    |
 | `Worker.ContainerPort`       | Container listening port           | `7077`                                                     |
 | `Worker.CpuTargetPercentage` | k8s hpa cpu targetPercentage       | `50`                                                       |
 | `Worker.DaemonMemory`        | Worker JVM Xms and Xmx setting     | `1g`                                                       |
@@ -83,14 +83,14 @@ The following table lists the configurable parameters of the Spark chart and the
 | `Zeppelin.ImageTag`            | Container image tag              | `v0.5.5_v2`                                              |
 | `Zeppelin.Replicas`            | k8s deployment replicas          | `1`                                                      |
 | `Zeppelin.Component`           | k8s selector key                 | `zeppelin`                                               |
-| `Zeppelin.Cpu`                 | container requested cpu          | `100m`                                                   |
+| `Zeppelin.Cpu`                 | Container requested cpu          | `100m`                                                   |
 | `Zeppelin.ServicePort`         | k8s service port                 | `8080`                                                   |
 | `Zeppelin.ContainerPort`       | Container listening port         | `8080`                                                   |
-| `Zeppelin.Ingress.Enabled`     | if `true`, an ingress is created | `false`                                                  |
-| `Zeppelin.Ingress.Annotations` | annotations for the ingress      | `{}`                                                     |
-| `Zeppelin.Ingress.Path`        | the ingress path                 | `/`                                                      |
-| `Zeppelin.Ingress.Hosts`       | a list of ingress hosts          | `[zeppelin.example.com]`                                 |
-| `Zeppelin.Ingress.Tls`         | a list of [IngressTLS](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/#ingresstls-v1beta1-extensions) items | `[]`
+| `Zeppelin.Ingress.Enabled`     | If `true`, an ingress is created | `false`                                                  |
+| `Zeppelin.Ingress.Annotations` | Annotations for the ingress      | `{}`                                                     |
+| `Zeppelin.Ingress.Path`        | The ingress path                 | `/`                                                      |
+| `Zeppelin.Ingress.Hosts`       | A list of ingress hosts          | `[zeppelin.example.com]`                                 |
+| `Zeppelin.Ingress.Tls`         | A list of [IngressTLS](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/#ingresstls-v1beta1-extensions) items | `[]`
 | `Zeppelin.ServiceType `        | Kubernetes Service type          | `LoadBalancer`                                           |
 
 
