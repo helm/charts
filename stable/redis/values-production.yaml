@@ -157,7 +157,7 @@ master:
     ##   GKE, AWS & OpenStack)
     ##
     # storageClass: "-"
-    accessModes: 
+    accessModes:
     - ReadWriteOnce
     size: 8Gi
 
