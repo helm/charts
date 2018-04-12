@@ -1,3 +1,5 @@
+**This chart is DEPRECATED and moved to https://github.com/appscode/charts**
+
 # G2
 [G2 by AppsCode](https://github.com/appscode/g2) is a modern implementation of Gearman server in GO.
 ## TL;DR;
