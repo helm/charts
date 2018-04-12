@@ -1,3 +1,11 @@
+### 1.0.4
+
+* [7fa1860](https://github.com/kubernetes/charts/commit/7fa1860): Typo fix
+
+### 1.0.3
+
+* [c1eaaa1](https://github.com/kubernetes/charts/commit/c1eaaa1): README changes
+
 ### 1.0.2
 
 * [ca90ee6](https://github.com/kubernetes/charts/commit/ca90ee6): fix typo: change recalim -> reclaim in README.
