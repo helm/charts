@@ -28,7 +28,8 @@ spec:
           command:
             - jupyter
           args:
-            - notebook        
+            - notebook
+            - --allow-root      
           env:
             - name: PASSWORD
               valueFrom:
