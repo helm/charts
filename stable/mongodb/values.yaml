@@ -29,8 +29,14 @@ image:
 # mongodbPassword:
 # mongodbDatabase:
 
-## Kubernetes service type
-serviceType: ClusterIP
+service:
+  ## Kubernetes service type
+  type: ClusterIP
+
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
