@@ -71,8 +71,7 @@ following configurable parameters:
 | `external.domain`              | Domain in which to advertise Kafka external listeners.                                                          | `cluster.local`                                            |
 | `external.init`                | External init container settings.                                                                               | (see `values.yaml`)                                        |
 | `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `{ offsets.topic.replication.factor: 3 }`                  |
-| `jmxPort`                      | The jmx port to use for brokers.  Will expose both the port and set the KAFKA_JMX_PORT env variable.            | blank                                                      |
-| `additionalPorts`               | Additional ports to expose on brokers.  Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar   | `{}`                                  |
+| `additionalPorts`               | Additional ports to expose on brokers.  Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar   | `{}`                                 |
 | `readinessProbe.initialDelaySeconds` | Number of seconds before probe is initiated.                                                              | `30`                                                       |
 | `readinessProbe.periodSeconds`       | How often (in seconds) to perform the probe.                                                              | `10`                                                       |
 | `readinessProbe.timeoutSeconds`      | Number of seconds after which the probe times out.                                                        | `5`                                                        |
@@ -83,6 +82,14 @@ following configurable parameters:
 | `persistence.size`             | Size of data volume                                                                                             | `1Gi`                                                      |
 | `persistence.mountPath`        | Mount path of data volume                                                                                       | `/opt/kafka/data`                                          |
 | `persistence.storageClass`     | Storage class of backing PVC                                                                                    | `nil`                                                      |
+| `metrics.jmx.enabled`          | Whether or not to expose JMX metrics to Prometheus                                                              | `false`                                                    |
+| `metrics.jmx.image`            | JMX Exporter container image                                                                                    | `solsson/kafka-prometheus-jmx-exporter@sha256`             |
+| `metrics.jmx.imageTag`         | JMX Exporter container image tag                                                                                | `a23062396cd5af1acdf76512632c20ea6be76885dfc20cd9ff40fb23846557e8` |
+| `metrics.jmx.port`             | The jmx port to use for brokers.  Will expose both the port and set the KAFKA_JMX_PORT env variable.            | `5555`                                                     |
+| `metrics.jmx.kafkaConfig`      | Rules to apply to the Kafka JMX Exporter                                                                        | `Rather complex object. Check values.yaml`                 |
+| `metrics.kafka.enabled`        | Whether or not to create a separate Kafka exporter                                                              | `false`                                                    |
+| `metrics.kafka.image`          | Kafka Exporter container image                                                                                  | `danielqsj/kafka-exporter`                                 |
+| `metrics.kafka.imageTag`       | Kafka Exporter container image tag                                                                              | `v1.0.1`                                                   |
 | `zookeeper.enabled`            | If True, installs Zookeeper Chart                                                                               | `true`                                                     |
 | `zookeeper.resources`          | Zookeeper resource requests and limits                                                                          | `{}`                                                       |
 | `zookeeper.heap`               | JVM heap size to allocate to Zookeeper                                                                          | `1G`                                                       |

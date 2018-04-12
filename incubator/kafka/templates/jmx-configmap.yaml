@@ -1,0 +1,16 @@
+{{- if .Values.metrics.jmx.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kafka.configmap" . }}-metrics
+  labels:
+    app: "{{ template "kafka.name" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+data:
+  jmx-kafka-prometheus.yml: |+
+{{- if .Values.metrics.jmx.kafkaConfig }}
+{{ toYaml .Values.metrics.jmx.kafkaConfig | indent 4 }}
+{{- end }}
+{{- end }}

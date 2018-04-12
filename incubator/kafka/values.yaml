@@ -103,9 +103,6 @@ configurationOverrides:
   # "listener.security.protocol.map": |-
   #   PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
 
-## The jmx port to use for brokers.  Will expose both the port and set the KAFKA_JMX_PORT env variable
-# jmxPort: 9998
-
 ## A collection of additional ports to expose on brokers (formatted as normal containerPort yaml)
 # Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar
 additionalPorts: {}
@@ -133,6 +130,52 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass:
+
+## Metrics
+##
+metrics:
+
+  jmx:
+    enabled: false
+
+    # The image to use for the metrics collector
+    image: solsson/kafka-prometheus-jmx-exporter@sha256
+
+    # The image tag to use for the metrics collector
+    imageTag: a23062396cd5af1acdf76512632c20ea6be76885dfc20cd9ff40fb23846557e8
+
+    # The port to expose JMX metrics on
+    port: 5555
+
+    # Rules to apply to the Kafka JMX Exporter
+    kafkaConfig:
+      lowercaseOutputName: true
+      jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:5555/jmxrmi
+      ssl: false
+      whitelistObjectNames: ["kafka.server:*", "kafka.controller:*", "java.lang:*"]
+      # rules:
+      #   - pattern : kafka.server<type=ReplicaFetcherManager, name=MaxLag, clientId=(.+)><>Value
+      #   - pattern : kafka.server<type=BrokerTopicMetrics, name=(BytesInPerSec|BytesOutPerSec|MessagesInPerSec), topic=(.+)><>OneMinuteRate
+      #   - pattern : kafka.server<type=KafkaRequestHandlerPool, name=RequestHandlerAvgIdlePercent><>OneMinuteRate
+      #   - pattern : kafka.server<type=Produce><>queue-size
+      #   - pattern : kafka.server<type=ReplicaManager, name=(PartitionCount|UnderReplicatedPartitions)><>(Value|OneMinuteRate)
+      #   - pattern : kafka.server<type=controller-channel-metrics, broker-id=(.+)><>(.*)
+      #   - pattern : kafka.server<type=socket-server-metrics, networkProcessor=(.+)><>(.*)
+      #   - pattern : kafka.server<type=Fetch><>queue-size
+      #   - pattern : kafka.server<type=SessionExpireListener, name=(.+)><>OneMinuteRate
+      #   - pattern : kafka.controller<type=KafkaController, name=(.+)><>Value
+      #   - pattern : java.lang<type=OperatingSystem><>SystemCpuLoad
+      #   - pattern : java.lang<type=Memory><HeapMemoryUsage>used
+      #   - pattern : java.lang<type=OperatingSystem><>FreePhysicalMemorySize
+
+  kafka:
+    enabled: false
+
+    # The image to use for the metrics collector
+    image: danielqsj/kafka-exporter
+
+    # The image tag to use for the metrics collector
+    imageTag: v1.0.1
 
 # ------------------------------------------------------------------------------
 # Zookeeper:
