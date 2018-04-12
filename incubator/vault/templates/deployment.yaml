@@ -31,7 +31,7 @@ spec:
             port: {{ .Values.service.port }}
         readinessProbe:
           httpGet:
-            path: /v1/sys/health
+            path: /v1/sys/health?standbyok=true
             port: {{ .Values.service.port }}
         securityContext:
           readOnlyRootFilesystem: true
