@@ -15,6 +15,11 @@ spec:
   replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
+      {{- if .Values.metrics.jmx.enabled }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5556"
+      {{- end }}
       labels:
         app: {{ include "kafka.name" . | quote }}
         release: {{ .Release.Name | quote }}
@@ -55,6 +60,31 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
       containers:
+      {{- if .Values.metrics.jmx.enabled }}
+      - name: metrics
+        image: "{{ .Values.metrics.jmx.image }}:{{ .Values.metrics.jmx.imageTag }}"
+        command:
+        - java
+        - -XX:+UnlockExperimentalVMOptions
+        - -XX:+UseCGroupMemoryLimitForHeap
+        - -XX:MaxRAMFraction=1
+        - -XshowSettings:vm
+        - -jar
+        - jmx_prometheus_httpserver.jar
+        - "5556"
+        - /etc/jmx-kafka/jmx-kafka-prometheus.yml
+        ports:
+        - containerPort: 5556
+        resources:
+          requests:
+            cpu: 0m
+            memory: 60Mi
+          limits:
+            memory: 120Mi
+        volumeMounts:
+        - name: jmx-config
+          mountPath: /etc/jmx-kafka
+      {{- end }}
       - name: {{ template "kafka.name" . }}-broker
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
@@ -85,8 +115,8 @@ spec:
           name: external-{{ $i }}
           {{- end }}
         {{- end }}
-        {{- if .Values.jmxPort }}
-        - containerPort: {{ .Values.jmxPort }}
+        {{- if .Values.metrics.jmx.enabled }}
+        - containerPort: {{ .Values.metrics.jmx.port }}
           name: jmx
         {{- end }}
         {{- if .Values.additionalPorts }}
@@ -95,6 +125,10 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
+        {{- if .Values.metrics.jmx.enabled }}
+        - name: JMX_PORT
+          value: "{{ .Values.metrics.jmx.port }}"
+        {{- end }}
         - name: POD_IP
           valueFrom:
             fieldRef:
@@ -111,9 +145,9 @@ spec:
         - name: {{ printf "KAFKA_%s" $key | replace "." "_" | upper | quote }}
           value: {{ $value | quote }}
         {{- end }}
-        {{- if .Values.jmxPort }}
+        {{- if .Values.metrics.jmx.port }}
         - name: KAFKA_JMX_PORT
-          value: "{{ .Values.jmxPort }}"
+          value: "{{ .Values.metrics.jmx.port }}"
         {{- end }}
         # This is required because the Downward API does not yet support identification of
         # pod numbering in statefulsets. Thus, we are required to specify a command which
@@ -129,10 +163,15 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: {{ .Values.persistence.mountPath | quote }}
-      {{- if not .Values.persistence.enabled }}
       volumes:
+      {{- if not .Values.persistence.enabled }}
       - name: datadir
         emptyDir: {}
+      {{- end }}
+      {{- if .Values.metrics.jmx.enabled }}
+      - name: jmx-config
+        configMap:
+          name: {{ template "kafka.configmap" . }}-metrics
       {{- end }}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
