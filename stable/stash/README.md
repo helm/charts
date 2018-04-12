@@ -1,3 +1,5 @@
+**This chart is DEPRECATED and moved to https://github.com/appscode/charts**
+
 # Stash
 [Stash by AppsCode](https://github.com/appscode/stash) - Backup your Kubernetes Volumes
 ## TL;DR;
