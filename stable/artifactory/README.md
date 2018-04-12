@@ -128,10 +128,12 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.image.pullPolicy`    | Container pull policy                   | `IfNotPresent`                |
 | `nginx.service.type`| Nginx service type | `LoadBalancer` |
 | `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |  |
+| `nginx.loadBalancerIP`| Provide Static IP to to configure with Nginx |  |
 | `nginx.externalPortHttp` | Nginx service external port | `80`   |
 | `nginx.internalPortHttp` | Nginx service internal port | `80`   |
 | `nginx.externalPortHttps` | Nginx service external port | `443`   |
 | `nginx.internalPortHttps` | Nginx service internal port | `443`   |
+| `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |    |
 | `nginx.env.artUrl` | Nginx Environment variable Artifactory URL | `"http://artifactory:8081/artifactory"`   |
 | `nginx.env.ssl` | Nginx Environment enable ssl | `true`   |
 | `nginx.persistence.mountPath` | Nginx persistence volume mount path | `"/var/opt/jfrog/nginx"`   |
@@ -151,6 +153,9 @@ To get Helm to create an ingress object with a hostname, add these two lines to 
 helm install --name artifactory \
   --set ingress.enabled=true \
   --set ingress.hosts[0]="artifactory.company.com" \
+  --set artifactory.service.type=NodePort \
+  --set nginx.enabled=false \
+  stable/artifactory
 ```
 
 If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
@@ -174,7 +179,8 @@ Include the secret's name, along with the desired hostnames, in the Artifactory 
     ##
     hosts:
       - artifactory.domain.com
-
+    annotations:
+      kubernetes.io/tls-acme: "true"
     ## Artifactory Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ##
