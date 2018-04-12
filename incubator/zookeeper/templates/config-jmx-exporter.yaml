@@ -1,4 +1,4 @@
-{{- if and .Values.exporters.jmx.enabled }}
+{{- if .Values.exporters.jmx.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
