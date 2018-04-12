@@ -135,13 +135,13 @@ data:
       #
       # See: https://github.com/SUSE/Portus/issues/510
       jwt_expiration_time:
-        value: {{ .Values.portus.registry.jwt_expiration_time }}
+        value: {{ .Values.portus.config.registry.jwt_expiration_time }}
 
       # Set the pagination value for API calls that fetch data from the
       # registry. You can read more about pagination in the registry here:
       #   https://github.com/docker/distribution/blob/master/docs/spec/api.md#pagination
       catalog_page:
-        value: {{ .Values.portus.registry.catalog_page }}
+        value: {{ .Values.portus.config.registry.catalog_page }}
 
     # The FQDN of the machine where Portus is being deployed.
     # Overwritten by PORTUS_MACHINE_FQDN_VALUE env var
