@@ -118,7 +118,6 @@ Parameter | Description | Default
 `alertmanager.podAnnotations` | annotations to be added to alertmanager pods | `{}`
 `alertmanager.replicaCount` | desired number of alertmanager pods | `1`
 `alertmanager.resources` | alertmanager pod resource requests & limits | `{}`
-`alertmanager.serviceAccountName` | service account name for alertmanager to use (ignored if rbac.create=true) | `default`
 `alertmanager.service.annotations` | annotations for alertmanager service | `{}`
 `alertmanager.service.clusterIP` | internal alertmanager cluster service IP | `""`
 `alertmanager.service.externalIPs` | alertmanager service external IP addresses | `[]`
@@ -151,7 +150,6 @@ Parameter | Description | Default
 `kubeStateMetrics.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
 `kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `{}`
-`kubeStateMetrics.serviceAccountName` | service account name for kube-state-metrics to use (ignored if rbac.create=true) | `default`
 `kubeStateMetrics.service.annotations` | annotations for kube-state-metrics service | `{prometheus.io/scrape: "true"}`
 `kubeStateMetrics.service.clusterIP` | internal kube-state-metrics cluster service IP | `None`
 `kubeStateMetrics.service.externalIPs` | kube-state-metrics service external IP addresses | `[]`
@@ -172,7 +170,6 @@ Parameter | Description | Default
 `nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `{}`
 `nodeExporter.securityContext` | securityContext for containers in pod | `{}`
-`nodeExporter.serviceAccountName` | service account name for node-exporter to use (ignored if rbac.create=true) | `default`
 `nodeExporter.service.annotations` | annotations for node-exporter service | `{prometheus.io/scrape: "true"}`
 `nodeExporter.service.clusterIP` | internal node-exporter cluster service IP | `None`
 `nodeExporter.service.externalIPs` | node-exporter service external IP addresses | `[]`
@@ -231,7 +228,6 @@ Parameter | Description | Default
 `server.podAnnotations` | annotations to be added to Prometheus server pods | `{}`
 `server.replicaCount` | desired number of Prometheus server pods | `1`
 `server.resources` | Prometheus server resource requests and limits | `{}`
-`server.serviceAccountName` | service account name for server to use (ignored if rbac.create=true) | `default`
 `server.service.annotations` | annotations for Prometheus server service | `{}`
 `server.service.clusterIP` | internal Prometheus server cluster service IP | `""`
 `server.service.externalIPs` | Prometheus server service external IP addresses | `[]`
@@ -240,6 +236,16 @@ Parameter | Description | Default
 `server.service.nodePort` | Port to be used as the service NodePort (ignored if `server.service.type` is not `NodePort`) | `0`
 `server.service.servicePort` | Prometheus server service port | `80`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
+`serviceAccounts.alertmanager.create` | If true, create the alertmanager service account | `true`
+`serviceAccounts.alertmanager.name` | name of the alertmanager service account to use or create | `{{ prometheus.alertmanager.fullname }}`
+`serviceAccounts.kubeStateMetrics.create` | If true, create the kubeStateMetrics service account | `true`
+`serviceAccounts.kubeStateMetrics.name` | name of the kubeStateMetrics service account to use or create | `{{ prometheus.kubeStateMetrics.fullname }}`
+`serviceAccounts.nodeExporter.create` | If true, create the nodeExporter service account | `true`
+`serviceAccounts.nodeExporter.name` | name of the nodeExporter service account to use or create | `{{ prometheus.nodeExporter.fullname }}`
+`serviceAccounts.pushgateway.create` | If true, create the pushgateway service account | `true`
+`serviceAccounts.pushgateway.name` | name of the pushgateway service account to use or create | `{{ prometheus.pushgateway.fullname }}`
+`serviceAccounts.server.create` | If true, create the server service account | `true`
+`serviceAccounts.server.name` | name of the server service account to use or create | `{{ prometheus.server.fullname }}`
 `server.terminationGracePeriodSeconds` | Prometheus server Pod termination grace period | `300`
 `server.retention` | (optional) Prometheus data retention | `""`
 `serverFiles.alerts` | Prometheus server alerts configuration | `{}`
@@ -263,9 +269,9 @@ $ helm install stable/prometheus --name my-release -f values.yaml
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ### RBAC Configuration
-Roles and RoleBindings resources will be created automatically for each service
+Roles and RoleBindings resources will be created automatically for `server` and `kubeStateMetrics` services.
 
-To manually setup RBAC you need to set the parameter `rbac.create=false` and specify the service account to be used for each service by setting the parameters: `alertmanager.serviceAccountName`, `kubeStateMetrics.serviceAccountName`, `nodeExporter.serviceAccountName`, `server.serviceAccountName`.
+To manually setup RBAC you need to set the parameter `rbac.create=false` and specify the service account to be used for each service by setting the parameters: `serviceAccounts.{{ component }}.create` to `false` and `serviceAccounts.{{ component }}.name` to the name of a pre-existing service account.
 
 > **Tip**: You can refer to the default `*-clusterrole.yaml` and `*-clusterrolebinding.yaml` files in [templates](templates/) to customize your own.
 

@@ -25,7 +25,7 @@ spec:
         component: "{{ .Values.server.name }}"
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.server.fullname" . }}{{ else }}"{{ .Values.server.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "prometheus.serviceAccountName.server" . }}
       {{- if .Values.initChownData.enabled }}
       initContainers:
       - name: "{{ .Values.initChownData.name }}"
