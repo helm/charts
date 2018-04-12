@@ -106,12 +106,10 @@ spec:
           items:
           - key: GOOGLE_CREDENTIALS_JSON
             path: credentials.json
-      {{ end }}
-      {{ if .Values.existing.secret.gcp.enabled }}
+      {{ else if .Values.existing.secret.gcp.enabled }}
           secretName: {{ .Values.existing.secret.gcp.secretName }}
           items:
           - key: {{ .Values.existing.secret.gcp.key }}
             path: credentials.json
       {{ end }}
       {{ end }}
-
