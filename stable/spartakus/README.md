@@ -47,10 +47,10 @@ Parameter | Description | Default
 `image.repository` | Image | `k8s.gcr.io/spartakus-amd64`
 `image.tag` | Image tag | `v1.0.0`
 `image.pullPolicy` | Image pull policy | `Always` if `image.tag` is `latest`, else `IfNotPresent`
-`nodeSelector` | node labels for pod assignment | `{}`
-`podAnnotations` | annotations to be added to pods | `{}`
-`replicaCount` | desired number of pods | `1`
-`resources` | pod resource requests & limits | `{}`
+`nodeSelector` | Node labels for pod assignment | `{}`
+`podAnnotations` | Annotations to be added to pods | `{}`
+`replicaCount` | Desired number of pods | `1`
+`resources` | Pod resource requests & limits | `{}`
 `uuid` | Unique cluster ID | Dynamically generated using `uuidv4` template function
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
