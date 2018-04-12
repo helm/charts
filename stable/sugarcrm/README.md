@@ -1,6 +1,6 @@
 # SugarCRM
 
-[SugarCRM](https://www.sugarcrm.com) Sugar offers the most innovative, flexible and affordable CRM in the market and delivers the best all-around value of any CRM.
+[SugarCRM](https://www.sugarcrm.com) offers the most innovative, flexible and affordable CRM in the market and delivers the best all-around value of any CRM.
 
 ## TL;DR;
 
