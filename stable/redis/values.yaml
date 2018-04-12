@@ -155,11 +155,6 @@ master:
     ## The subdirectory of the volume to mount to, useful in dev environments and one PV for multiple services.
     subPath: ""
 
-    ## A manually managed Persistent Volume and Claim
-    ## Requires persistence.enabled: true
-    ## If defined, PVC must be created manually before volume will be bound
-    # existingClaim:
-
     ## redis data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -168,7 +163,8 @@ master:
     ##   GKE, AWS & OpenStack)
     ##
     # storageClass: "-"
-    accessMode: ReadWriteOnce
+    accessModes: 
+    - ReadWriteOnce
     size: 8Gi
 
 

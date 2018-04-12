@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
-  name: {{ template "redis.fullname" . }}
+  name: {{ template "redis.fullname" . }}-master
   labels:
     app: {{ template "redis.name" . }}
     chart: {{ template "redis.chart" . }}
@@ -113,11 +113,33 @@ spec:
         - name: redis-data
           mountPath: {{ .Values.master.persistence.path }}
           subPath: {{ .Values.master.persistence.subPath }}
+  {{- if not .Values.master.persistence.enabled }}
       volumes:
-      - name: redis-data
-      {{- if .Values.master.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.master.persistence.existingClaim | default (include "redis.fullname" .) }}
-      {{- else }}
+      - name: "redis-data"
         emptyDir: {}
+  {{- else }}
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-data
+        labels:
+          app: "{{ template "redis.name" . }}"
+          chart: {{ template "redis.chart" . }}
+          component: "master"
+          release: {{ .Release.Name | quote }}
+          heritage: {{ .Release.Service | quote }}
+      spec:
+        accessModes:
+        {{- range .Values.master.persistence.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.master.persistence.size | quote }}
+      {{- if .Values.master.persistence.storageClass }}
+      {{- if (eq "-" .Values.master.persistence.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: {{ .Values.master.persistence.storageClass | quote }}
       {{- end }}
+      {{- end }}
+  {{- end }}
