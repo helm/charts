@@ -1,3 +1,5 @@
+**This chart is DEPRECATED and moved to https://github.com/appscode/charts**
+
 # Searchlight
 [Searchlight by AppsCode](https://github.com/appscode/searchlight) is an alert manager for Kubernetes built around Icinga2.
 
