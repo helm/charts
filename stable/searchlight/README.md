@@ -41,8 +41,8 @@ The following table lists the configurable parameters of the Searchlight chart a
 
 | Parameter                 | Description                                                       | Default                |
 |---------------------------|-------------------------------------------------------------------|------------------------|
-| `operator.image`          | operator container image                                          | `appscode/searchlight` |
-| `operator.tag`            | operator image tag                                                | `5.0.0`                |
+| `operator.image`          | Operator container image                                          | `appscode/searchlight` |
+| `operator.tag`            | Operator image tag                                                | `5.0.0`                |
 | `icinga.image`            | icinga container image                                            | `appscode/icinga`      |
 | `icinga.tag`              | icinga container image tag                                        | `5.0.0-k8s`            |
 | `ido.image`               | ido container image                                               | `appscode/postgress`   |
@@ -52,7 +52,7 @@ The following table lists the configurable parameters of the Searchlight chart a
 | `criticalAddon`           | If true, installs Searchlight operator as critical addon          | `false`                |
 | `logLevel`                | Log level for operator                                            | `3`                    |
 | `nodeSelector`            | Node labels for pod assignment                                    | `{}`                   |
-| `rbac.create`             | install required rbac service account, roles and rolebindings     | `false`                |
+| `rbac.create`             | Install required rbac service account, roles and rolebindings     | `false`                |
 | `rbac.serviceAccountName` | ServiceAccount Searchlight will use (ignored if rbac.create=true) | `default`              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
