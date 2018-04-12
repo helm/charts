@@ -71,7 +71,7 @@ adminUser: admin
 # adminPassword: strongpassword
 
 
-## Extra enviornment variables that will be pass onto deployment pods
+## Extra environment variables that will be pass onto deployment pods
 env: {}
 
 # Pass the plugins you want installed as a comma separated list.

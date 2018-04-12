@@ -49,7 +49,7 @@ The following table lists the configurable parameters of the Voyager chart and t
 | `imagePullPolicy`                  | Image pull policy                                             | `IfNotPresent`        |
 | `cloudProvider`                    | Name of cloud provider                                        | `nil`                 |
 | `cloudConfig`                      | Path to cloud config                                          | ``                    |
-| `criticalAddon`                    | If true, installs voyager operator as critical addon          | `false`               |
+| `criticalAddon`                    | If true, installs Voyager operator as critical addon          | `false`               |
 | `logLevel`                         | Log level for operator                                        | `3`                   |
 | `persistence.enabled`              | Enable mounting cloud config                                  | `false`               |
 | `persistence.hostPath`             | Host mount path for cloud config                              | `/etc/kubernetes`     |
@@ -60,7 +60,7 @@ The following table lists the configurable parameters of the Voyager chart and t
 | `ingressClass`                     | Ingress class to watch for. If empty, it handles all ingress  | ``                    |
 | `apiserver.groupPriorityMinimum`   | The minimum priority the group should have.                   | 10000                 |
 | `apiserver.versionPriority`        | The ordering of this API inside of the group.                 | 15                    |
-| `apiserver.enableAdmissionWebhook` | Configure apiserver as adission webhooks for Voyager CRDs     | false                 |
+| `apiserver.enableAdmissionWebhook` | Configure apiserver as admission webhooks for Voyager CRDs     | false                 |
 | `apiserver.ca`                     | CA certificate used by main Kubernetes api server             | ``                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
