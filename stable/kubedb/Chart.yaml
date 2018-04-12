@@ -10,6 +10,3 @@ home: https://github.com/kubedb/cli
 icon: https://cdn.appscode.com/images/icon/kubedb.png
 sources:
   - https://github.com/kubedb/cli
-maintainers:
-  - name: appscode
-    email: kubedb@appscode.com
