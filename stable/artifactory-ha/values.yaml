@@ -59,7 +59,7 @@ artifactory:
   name: artifactory-ha
   image:
     repository: "docker.bintray.io/jfrog/artifactory-pro"
-    version: 5.9.1
+    version: 5.10.1
     pullPolicy: IfNotPresent
   ## Artifactory requires a unique master key
   ## You can generate one with the command:
@@ -187,7 +187,7 @@ nginx:
   replicaCount: 1
   image:
     repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
-    version: 5.9.1
+    version: 5.10.1
     pullPolicy: IfNotPresent
   service:
     ## For minikube, set this to NodePort, elsewhere use LoadBalancer
