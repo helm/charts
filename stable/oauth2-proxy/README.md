@@ -44,6 +44,7 @@ Parameter | Description | Default
 `config.clientID` | oauth client ID | `""`
 `config.clientSecret` | oauth client secret | `""`
 `config.cookieSecret` | server specific cookie for the secret; create a new one with `python -c 'import os,base64; print base64.b64encode(os.urandom(16))'` | `""`
+`config.configFile` | custom [oauth2_proxy.cfg](https://github.com/bitly/oauth2_proxy/blob/master/contrib/oauth2_proxy.cfg.example) contents for settings not overridable via environment nor command line | `""`
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `a5huynh/oauth2_proxy`
