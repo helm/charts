@@ -32,6 +32,8 @@ extraArgs:
 service:
   type: ClusterIP
   port: 80
+  annotations: {}
+  # foo.io/bar: "true"
 
 ingress:
   enabled: false
