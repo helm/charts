@@ -52,16 +52,3 @@ Create the name for the key secret.
         {{- template "mongodb-replicaset.fullname" . -}}-keyfile
     {{- end -}}
 {{- end -}}
-
-{{/*
-Expand the YAML dict to proper env variables for Kubernetes config.
-*/}}
-{{- define "mongodb-replicaset.envVars" -}}
-{{- if .Values.envVars -}}
-env:
-{{- range $key, $val := .Values.envVars }}
-- name: {{ $key }}
-  value: {{ $val | quote }}
-{{- end -}}
-{{- end -}}
-{{- end -}}
