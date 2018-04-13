@@ -128,7 +128,7 @@ spec:
         - name: {{ template "mongodb-replicaset.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-          {{ template "mongodb-replicaset.envVars" . }}
+{{ include "mongodb-replicaset.envVars" . | indent 10 }}
           securityContext:
             runAsUser: {{ $user }}
             allowPrivilegeEscalation: false
