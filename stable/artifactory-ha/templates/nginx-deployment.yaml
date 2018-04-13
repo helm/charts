@@ -53,6 +53,10 @@ spec:
               - '/bin/sh'
               - '-c'
               - >
+                if [ -f /tmp/ssl/*.crt ]; then
+                rm -rf /var/opt/jfrog/nginx/ssl/example.*;
+                cp -fv /tmp/ssl/* /var/opt/jfrog/nginx/ssl;
+                fi;
                 until [ -f /etc/nginx/conf.d/artifactory.conf ]; do sleep 1; done;
                 sed -i -e 's,proxy_pass .*,proxy_pass     http://{{ $serviceName }}:{{ $servicePort }}/artifactory/;,g' \
                     -e 's,server_name .*,server_name ~(?<repo>.+)\\.{{ $serviceName }} {{ $serviceName }};,g' \
@@ -75,7 +79,7 @@ spec:
           mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
         {{- if .Values.nginx.tlsSecretName }}
         - name: ssl-secret-volume
-          mountPath: "/var/opt/jfrog/nginx/ssl"
+          mountPath: "/tmp/ssl"
         {{- end }}
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
