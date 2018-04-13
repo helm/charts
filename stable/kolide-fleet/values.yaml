@@ -54,6 +54,12 @@ fleet:
     disable_banner: true
 
 pod:
+  annotations: {}
+    ## Attach arbitrary key → value pairs for the pod definition. For example,
+    # prometheus.io/path: /metrics
+    # prometheus.io/port: "8080"
+    # prometheus.io/scheme: https
+    # prometheus.io/scrape: "true"
   fleet:
     ## The image to use with the resource
     ## Ref: https://kolide/fleet
@@ -95,6 +101,12 @@ service:
       - "0.0.0.0/0"
     ## If there is a Hostname associated with this site, add it here and it will be rendered in the documentation.
     # hostName:
+  annotations: {}
+    ## Attack arbitrary key → value pairs for the pod definition. For example
+    # prometheus.io/probe: true
+    # prometheus.io/path: /healthz
+    # prometheus.io/scheme: https
+    # prometheus.io/port: 443
 
 ## How many versions of the deployment to run on kubernetes
 ## Default: 2
