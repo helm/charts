@@ -17,6 +17,8 @@ heap: "2G"
 serverPort: 2888
 leaderElectionPort: 3888
 clientPort: 2181
+image: "gcr.io/google_samples/k8szk"
+imageTag: "v2"
 imagePullPolicy: "Always"
 tickTimeMs: 2000
 initTicks: 10

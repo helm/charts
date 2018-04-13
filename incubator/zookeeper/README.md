@@ -130,11 +130,13 @@ The servers in the ensemble have both liveness and readiness checks specified. T
 | `probeInitialDelaySeconds` | The initial delay before the liveness and readiness probes will be invoked. | `15` |
 | `probeTimeoutSeconds` | The amount of time before the probes are considered to be failed due to a timeout. | `5` |
 
-### ImagePull
+### Image
 This parameter controls when the image is pulled from the repository.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
+| `image` | Zookeeper Container image name. | `gcr.io/google_samples/k8szk` |
+| `imageTag` | Zookeeper Container image tag. | `v2` |
 | `imagePullPolicy` | The policy for pulling the image from the repository. | `Always` |
 
 # Deep dive
