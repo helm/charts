@@ -136,15 +136,26 @@ master:
   ## Redis Master pod annotations
   podAnnotations: {}
   ## Redis Master Service properties
-  serviceType: ClusterIP
+  service:
+    ##  Redis Master Service type
+    type: ClusterIP
+
+    ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    ##
+    # nodePort:
+
+    ## Provide any additional annotations which may be required. This can be used to
+    ## set the LoadBalancer service type to internal only.
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+    ##
+    annotations: {}
+    loadBalancerIP:
   ## Redis Master Pod Security Context
   securityContext:
     enabled: true
     fsGroup: 1001
     runAsUser: 1001
-  service:
-    annotations: {}
-    loadBalancerIP:
   persistence:
     enabled: true
 
@@ -175,11 +186,20 @@ master:
 ##
 slave:
   ## Slave Service properties
-  serviceType: ClusterIP
   service:
+    ##  Redis Slave Service type
+    type: ClusterIP
+    ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    ##
+    # nodePort:
+
+    ## Provide any additional annotations which may be required. This can be used to
+    ## set the LoadBalancer service type to internal only.
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+    ##
     annotations: {}
     loadBalancerIP:
-  ## Redis slave optional overrides
 
   ## Redis port
   # port: 6379
