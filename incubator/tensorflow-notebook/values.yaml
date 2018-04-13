@@ -5,7 +5,7 @@ jupyter:
   image:
     repository: tensorflow/tensorflow
     tag: 1.6.0-devel
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
   password: tensorflow
   resources: {}
   # limits:
@@ -20,6 +20,6 @@ tensorboard:
   image:
     repository: tensorflow/tensorflow
     tag: 1.6.0-devel
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 service:
   type: LoadBalancer

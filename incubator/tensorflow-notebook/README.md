@@ -38,7 +38,7 @@ This chart will deploy the followings:
     image:
       repository: tensorflow/tensorflow
       tag: 1.6.0-devel-gpu
-      pullPolicy: Always
+      pullPolicy: IfNotPresent
     password: tensorflow
     resources:
       limits:
@@ -49,7 +49,7 @@ This chart will deploy the followings:
     image:   
       repository: tensorflow/tensorflow
       tag: 1.6.0-devel
-      pullPolicy: Always
+      pullPolicy: IfNotPresent
   service:
     type: LoadBalancer
   ```
