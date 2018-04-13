@@ -1,7 +1,6 @@
 replicas: 1
 
 image:
-  registry: docker.io
   repository: grafana/grafana
   tag: 5.0.4
   pullPolicy: IfNotPresent
@@ -14,7 +13,6 @@ image:
   #   - myRegistrKeySecretName
 
 downloadDashboardsImage:
-  registry: docker.io
   repository: appropriate/curl
   tag: latest
   pullPolicy: IfNotPresent
