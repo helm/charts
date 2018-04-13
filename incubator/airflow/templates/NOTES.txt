@@ -3,8 +3,8 @@ Congratulations. You have just deployed Apache Airflow
 1. Get the Artifactory URL by running these commands:
 
    {{- if .Values.ingress.enabled }}
-    - Web UI: http://{{ .Value.ingress.web.host }}{{ .Value.ingress.web.path }}
-    - Flower: http://{{ .Value.ingress.flower.host }}{{ .Value.ingress.flower.path }}
+    - Web UI: http://{{ .Values.ingress.web.host }}{{ .Values.ingress.web.path }}
+    - Flower: http://{{ .Values.ingress.flower.host }}{{ .Values.ingress.flower.path }}
 
    {{- else if contains "NodePort" .Values.airflow.service.type }}
    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "airflow.fullname" . }})
