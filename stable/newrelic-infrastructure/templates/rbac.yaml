@@ -16,11 +16,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  labels:
-    app: {{ template "newrelic.name" . }}
-    chart: {{ template "newrelic.chart" . }}
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+  labels: {{ include "newrelic.labels" . | indent 4 }}
   name: {{ template "newrelic.fullname" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io

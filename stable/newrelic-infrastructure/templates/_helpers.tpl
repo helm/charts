@@ -23,16 +23,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "newrelic.labels" }}
 app: {{ template "newrelic.name" . }}
 chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-component: infra
-heritage: {{.Release.Service }}
-release: {{.Release.Name }}
-{{- end }}
-
-{{/* Generate basic labels */}}
-{{- define "newrelic.k8s.labels" }}
-app: {{ template "newrelic.name" . }}
-chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-component: k8s
 heritage: {{.Release.Service }}
 release: {{.Release.Name }}
 {{- end }}
