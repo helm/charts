@@ -16,13 +16,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
-Create the name for our kafka configmap.
-*/}}
-{{- define "kafka.configmap" -}}
-{{- printf "%s-configmap-%d" (include "kafka.fullname" .) .Release.Revision -}}
-{{- end -}}
-
-{{/*
 Create a default fully qualified zookeeper name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
