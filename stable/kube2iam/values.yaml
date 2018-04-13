@@ -37,6 +37,8 @@ podAnnotations: {}
 
 podLabels: {}
 
+probe: true
+
 rbac:
   ## If true, create & use RBAC resources
   ##

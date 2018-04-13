@@ -47,8 +47,11 @@ The following table lists the configurable parameters of the TestLink chart and 
 
 |              Parameter              |               Description               |                         Default                         |
 |-------------------------------------|-----------------------------------------|---------------------------------------------------------|
-| `image`                             | TestLink image                          | `bitnami/testlink:{VERSION}`                            |
-| `imagePullPolicy`                   | Image pull policy                       | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.registry`                    | TestLink image registry                 | `docker.io`                                             |
+| `image.repository`                  | TestLink image name                     | `bitnami/testlink`                                      |
+| `image.tag`                         | TestLink image tag                      | `{VERSION}`                                             |
+| `image.pullPolicy`                  | Image pull policy                       | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`                 | Specify image pull secrets              | `nil`                                                   |
 | `testlinkUsername`                  | Admin username                          | `user`                                                  |
 | `testlinkPassword`                  | Admin user password                     | _random 10 character long alphanumeric string_          |
 | `testlinkEmail`                     | Admin user email                        | `user@example.com`                                      |
@@ -63,8 +66,8 @@ The following table lists the configurable parameters of the TestLink chart and 
 | `externalDatabase.port`             | Port of the external database           | `3306`                                                  |
 | `externalDatabase.user`             | Existing username in the external db    | `bn_testlink`                                           |
 | `externalDatabase.password`         | Password for the above username         | `nil`                                                   |
-| `externalDatabase.database`         | Name of the existing database            | `bitnami_testlink`                                      |
-| `mariadb.enabled`                   | Wheter to use or not the mariadb chart  | `true`                                                  |
+| `externalDatabase.database`         | Name of the existing database           | `bitnami_testlink`                                      |
+| `mariadb.enabled`                   | Whether to use the MariaDB chart        | `true`                                                  |
 | `mariadb.mariadbDatabase`           | Database name to create                 | `bitnami_testlink`                                      |
 | `mariadb.mariadbUser`               | Database user to create                 | `bn_testlink`                                           |
 | `mariadb.mariadbPassword`           | Password for the database               | `nil`                                                   |

@@ -51,6 +51,22 @@ data:
         Port  {{ .Values.backend.es.port }}
         Logstash_Format On
         Retry_Limit False
+        Index {{ .Values.backend.es.index }}
+        Type  {{ .Values.backend.es.type }}
+        Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
+{{- if .Values.backend.es.http_user }}
+        HTTP_User {{ .Values.backend.es.http_user }}
+        HTTP_Passwd {{ .Values.backend.es.http_passwd }}
+{{- end }}
+{{if eq .Values.backend.es.tls true }}
+        tls {{ .Values.backend.es.tls }}
+        tls.verify {{ .Values.backend.es.tls_verify }}
+        tls.debug {{ .Values.backend.es.tls_debug }}
+{{- if .Values.backend.es.tls_ca }}
+        tls.ca_file /secure/es-tls-ca.crt
+{{- end }}
+{{- end }}
+
 {{ else if eq .Values.backend.type "http" }}
     [OUTPUT]
         Name  http

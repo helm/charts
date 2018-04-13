@@ -2,9 +2,9 @@
 Return the appropriate apiVersion for networkpolicy.
 */}}
 {{- define "cockroachdb.networkPolicy.apiVersion" -}}
-{{- if semverCompare ">=1.4, <=1.6" .Capabilities.KubeVersion.GitVersion -}}
+{{- if semverCompare ">=1.4-0, <=1.7-0" .Capabilities.KubeVersion.GitVersion -}}
 {{- print "extensions/v1beta1" -}}
-{{- else if semverCompare "^1.7" .Capabilities.KubeVersion.GitVersion -}}
+{{- else if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion -}}
 {{- print "networking.k8s.io/v1" -}}
 {{- end -}}
 {{- end -}}
