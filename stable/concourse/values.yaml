@@ -457,6 +457,10 @@ credentialManager:
     teams:
       - main
 
+    ## When true, namespaces are not deleted when the release is deleted.
+
+    keepNamespaces: true
+
   ## Configuration for AWS SSM as the Credential Manager. Supported in Concourse 3.9.0.
   ##
   ssm:
