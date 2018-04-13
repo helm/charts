@@ -28,8 +28,8 @@ image:
   pullPolicy: IfNotPresent
 
 # Additional environment variables to be set in the container
-envVars:
-  TCMALLOC_AGGRESSIVE_DECOMMIT: "true"
+envVars: {}
+# TCMALLOC_AGGRESSIVE_DECOMMIT: "true"
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
