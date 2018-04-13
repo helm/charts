@@ -108,10 +108,10 @@ Be aware this requirement more heavy tooling than using git-sync, especially if 
 
 Example of procedure:
 
-- Fork this project
-- Place your DAG inside the `dags` folder of this project, update `/requirements.txt` to
-  install new dependencies if needed (see bellow)
+- Fork the [puckel/docker-airflow](https://github.com/puckel/docker-airflow) repository
+- Place your DAG inside the `dags` folder of the repository, and update `/requirements.txt` to install new dependencies if needed (see below)
 - Add build script connected to your CI that will build the new docker image
+- Change the value of airflow.image in values.yaml
 - Deploy on your Kubernetes cluster
 
 ### Python dependencies
