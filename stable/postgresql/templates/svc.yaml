@@ -18,6 +18,7 @@ spec:
   {{- if .Values.metrics.enabled }}
   - name: metrics
     port: 9187
+    targetPort: metrics
   {{- end }}
   - name: postgresql
     port: {{ .Values.service.port }}
