@@ -38,6 +38,9 @@ spec:
           - --{{ $key }}
           {{- end }}
         {{- end }}
+        {{- if .Values.config.configFile }}
+          - --config=/etc/oauth2_proxy/oauth2_proxy.cfg
+        {{- end }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:
@@ -68,6 +71,16 @@ spec:
             port: http
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.config.configFile }}
+        volumeMounts:
+        - mountPath: /etc/oauth2_proxy
+          name: {{ template "oauth2-proxy.fullname" . }}-configmap
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: {{ template "oauth2-proxy.fullname" . }}
+        name: {{ template "oauth2-proxy.fullname" . }}-configmap
+{{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}

@@ -7,6 +7,11 @@ config:
   # Create a new secret with the following command
   # python -c 'import os,base64; print base64.b64encode(os.urandom(16))'
   cookieSecret: "XXXXXXXXXX"
+  # Custom configuration file: oauth2_proxy.cfg
+  # configFile: |-
+  #   pass_basic_auth = false
+  #   pass_access_token = true
+  configFile: ""
 
 image:
   repository: "a5huynh/oauth2_proxy"
