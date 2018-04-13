@@ -140,7 +140,8 @@ The following table lists the configurable parameters of the Concourse chart and
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
 | `credentialManager.kubernetes.enabled` | Enable Kubernetes Secrets Credential Manager | `true` |
 | `credentialManager.kubernetes.namespacePrefix` | Prefix for namespaces to look for secrets in | `.Release.Name-` |
-| `credentialManager.kubernetes.teams` | Teams to allow secret access when RBAC is enabled | `["main"]` |
+| `credentialManager.kubernetes.teams` | Teams to create namespaces for to hold secrets | `["main"]` |
+| `credentialManager.kubernetes.keepNamespaces` | Don't delete namespaces when the release is deleted | `true` |
 | `credentialManager.ssm.enabled` | Use AWS SSM as a Credential Manager | `false` |
 | `credentialManager.ssm.region` | AWS Region to use for SSM | `nil` |
 | `credentialManager.ssm.pipelineSecretsTemplate` | Pipeline secrets template | `nil` |
@@ -316,7 +317,9 @@ Pipelines usually need credentials to do things. Concourse supports the use of a
 
 #### Kubernetes Secrets
 
-By default, this chart will use Kubernetes Secrets as a credential manager. For a given Concourse *team*, a pipeline will look for secrets in a namespace named `[namespacePrefix][teamName]`. The namespace prefix is the release name hyphen by default, and can be overridden with the value `credentialManager.kubernetes.namespacePrefix`. The service account used by Concourse must have `get` access to secrets in that namespace. When `rbac.create` is true, this access is granted for each team listed under `credentialManager.kubernetes.teams`.
+By default, this chart will use Kubernetes Secrets as a credential manager. For a given Concourse *team*, a pipeline will look for secrets in a namespace named `[namespacePrefix][teamName]`. The namespace prefix is the release name hyphen by default, and can be overridden with the value `credentialManager.kubernetes.namespacePrefix`. Each team listed under `credentialManager.kubernetes.teams` will have a namespace created for it, and the namespace will remain after deletion of the release unless you set `credentialManager.kubernetes.keepNamespace` to `false`. By default, a namespace will be created for the `main` team.
+
+The service account used by Concourse must have `get` access to secrets in that namespace. When `rbac.create` is true, this access is granted for each team listed under `credentialManager.kubernetes.teams`.
 
 Here are some examples of the lookup heuristics, given release name `concourse`:
 
