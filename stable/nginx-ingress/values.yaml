@@ -65,7 +65,7 @@ controller:
   extraArgs: {}
 
   ## Additional environment variables to set
-  extraEnvs: {}
+  extraEnvs: []
   # extraEnvs:
   #   - name: FOO
   #     valueFrom:
