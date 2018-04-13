@@ -20,6 +20,8 @@ spec:
       labels:
         app: "{{ template "portus.name" . }}"
         component: "portus"
+      annotations:
+        checksum/config: {{ include (print $.Chart.Name "/templates/" $.Chart.Name "-cm.yaml") . | sha256sum }}
     spec:
       containers:
       - name: "portus"
