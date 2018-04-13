@@ -23,6 +23,7 @@ spec:
       affinity:
 {{ toYaml .Values.agent.affinity | indent 8 }}
 {{- end }}
+      serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
       - name: {{ template "drone.fullname" . }}-agent
         image: "{{ .Values.images.agent.repository }}:{{ .Values.images.agent.tag }}"
