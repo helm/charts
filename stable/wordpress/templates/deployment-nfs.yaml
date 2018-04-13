@@ -1,0 +1,40 @@
+{{- if .Values.persistence.nfsEnabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-nfs-server
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    selector:
+        matchLabels:
+            app: {{ template "name" . }}-nfs-server
+    metadata:
+      labels:
+        app: {{ template "name" . }}-nfs-server
+    spec:
+      containers:
+      - name: {{ template "name" . }}-nfs-server
+        image: {{ .Values.persistence.nfsImage }}
+        ports:
+          - name: nfs
+            containerPort: 2049
+          - name: mountd
+            containerPort: 20048
+          - name: rpcbind
+            containerPort: 111
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - mountPath: /exports
+            name: rwopvc
+      volumes:
+        - name: rwopvc
+          persistentVolumeClaim:
+            claimName: {{ template "fullname" . }}
+{{- end }}

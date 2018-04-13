@@ -130,7 +130,11 @@ spec:
       - name: wordpress-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
+          {{- if .Values.persistence.nfsEnabled }}
+          claimName: {{ template "fullname" . }}-nfs
+          {{- else }}
           claimName: {{ template "fullname" . }}
+          {{- end }}
       {{- else }}
         emptyDir: {}
       {{ end }}

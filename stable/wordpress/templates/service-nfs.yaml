@@ -1,0 +1,22 @@
+{{- if .Values.persistence.nfsEnabled }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}-nfs-server
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  clusterIP: {{ required "a ClusterIP for the nfs service is required" .Values.persistence.nfsClusterIp }}
+  ports:
+    - name: nfs
+      port: 2049
+    - name: mountd
+      port: 20048
+    - name: rpcbind
+      port: 111
+  selector:
+    app: {{ template "name" . }}-nfs-server
+{{- end}}
