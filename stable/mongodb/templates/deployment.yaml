@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "mongodb.fullname" . }}
   labels:
-    app: {{ template "mongodb.fullname" . }}
+    app: {{ template "mongodb.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "mongodb.fullname" . }}
+        app: {{ template "mongodb.name" . }}
     spec:
       {{- if .Values.nodeSelector }}
       nodeSelector:
