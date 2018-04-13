@@ -33,12 +33,16 @@ spec:
               mountPath: /janusgraph-config
             - name: local-db
               mountPath: {{ .Values.persistence.path }}
+          livenessProbe:
+            exec:
+              command:
+                - /tmp/healthcheck.py
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
         - name: janusgraph-config
           configMap:
-            name: {{ .Release.Name }}-config
+            name: {{ .Values.configMapOverrideName | default ( printf "%s-config" .Release.Name ) }}
         - name: local-db
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
