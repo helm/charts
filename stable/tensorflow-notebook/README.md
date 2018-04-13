@@ -22,13 +22,13 @@ This chart will deploy the followings:
 * To install the chart with the release name `notebook`:
 
   ```bash
-  $ helm install --name notebook incubator/tensorflow-notebook
+  $ helm install --name notebook stable/tensorflow-notebook
   ```
 
 * To install with custom values via file :
   
   ```
-  $ helm install  --values values.yaml  --name notebook  incubator/tensorflow-notebook
+  $ helm install  --values values.yaml  --name notebook  stable/tensorflow-notebook
   ```
   
   Below is an example of the custom value file values.yaml with GPU support.
