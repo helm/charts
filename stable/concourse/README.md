@@ -68,7 +68,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
-| `imageTag` | Concourse image version | `3.9.0` |
+| `imageTag` | Concourse image version | `3.10.0` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
 | `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.atcPort` | Concourse ATC listen port | `8080` |
@@ -80,7 +80,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `concourse.resourceCacheCleanupInterval` | The interval on which to check for and release old caches of resource versions | `30s` |
 | `concourse.baggageclaimDriver` | The filesystem driver used by baggageclaim | `naive` |
 | `concourse.containerPlacementStrategy` | The selection strategy for placing containers onto workers | `random` |
-| `concourse.dockerRegistry` | An URL pointing to the Docker registry to use to fetch Docker images | `nil` |
+| `concourse.dockerRegistry` | A URL pointing to the Docker registry to use to fetch Docker images | `nil` |
 | `concourse.insecureDockerRegistry` | Docker registry(ies) (comma separated) to allow connecting to even if not secure | `nil` |
 | `concourse.encryption.enabled` | Enable encryption of pipeline configuration | `false` |
 | `concourse.basicAuth.enabled` | Enable basic auth for the "main" Concourse team| `true` |
@@ -140,7 +140,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
 | `credentialManager.kubernetes.enabled` | Enable Kubernetes Secrets Credential Manager | `true` |
 | `credentialManager.kubernetes.namespacePrefix` | Prefix for namespaces to look for secrets in | `.Release.Name-` |
-| `credentialManager.kubernetes.teams` | Teams to allow secret access when rbac is enabled | `["main"]` |
+| `credentialManager.kubernetes.teams` | Teams to allow secret access when RBAC is enabled | `["main"]` |
 | `credentialManager.ssm.enabled` | Use AWS SSM as a Credential Manager | `false` |
 | `credentialManager.ssm.region` | AWS Region to use for SSM | `nil` |
 | `credentialManager.ssm.pipelineSecretsTemplate` | Pipeline secrets template | `nil` |

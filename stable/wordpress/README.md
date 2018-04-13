@@ -46,15 +46,19 @@ The command removes all the Kubernetes components associated with the chart and 
 The following table lists the configurable parameters of the WordPress chart and their default values.
 
 | Parameter                            | Description                                | Default                                                    |
-| -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
-| `image`                              | WordPress image                            | `bitnami/wordpress:{VERSION}`                              |
-| `imagePullPolicy`                    | Image pull policy                          | `IfNotPresent`                                             |
+| ------------------------------------ | ------------------------------------------ | ---------------------------------------------------------- |
+| `image.registry`                     | WordPress image registry                   | `docker.io`                                                |
+| `image.repository`                   | WordPress image name                       | `bitnami/wordpress`                                        |
+| `image.tag`                          | WordPress image tag                        | `{VERSION}`                                                |
+| `image.pullPolicy`                   | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `image.pullSecrets`                  | Specify image pull secrets                 | `nil`                                                      |
 | `wordpressUsername`                  | User of the application                    | `user`                                                     |
 | `wordpressPassword`                  | Application password                       | _random 10 character long alphanumeric string_             |
 | `wordpressEmail`                     | Admin email                                | `user@example.com`                                         |
 | `wordpressFirstName`                 | First name                                 | `FirstName`                                                |
 | `wordpressLastName`                  | Last name                                  | `LastName`                                                 |
 | `wordpressBlogName`                  | Blog name                                  | `User's Blog!`                                             |
+| `wordpressTablePrefix`               | Table prefix                               | `wp_`                                                      |
 | `allowEmptyPassword`                 | Allow DB blank passwords                   | `yes`                                                      |
 | `smtpHost`                           | SMTP host                                  | `nil`                                                      |
 | `smtpPort`                           | SMTP port                                  | `nil`                                                      |
@@ -71,7 +75,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `externalDatabase.user`              | Existing username in the external db       | `bn_wordpress`                                             |
 | `externalDatabase.password`          | Password for the above username            | `nil`                                                      |
 | `externalDatabase.database`          | Name of the existing database              | `bitnami_wordpress`                                        |
-| `externalDatabase.port`              | Database port number                       | `3306`                                        |
+| `externalDatabase.port`              | Database port number                       | `3306`                                                     |
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
 | `nodePorts.http`                     | Kubernetes http node port                  | `""`                                                       |
 | `nodePorts.https`                    | Kubernetes https node port                 | `""`                                                       |
@@ -134,7 +138,7 @@ Note also if you disable MariaDB per above you MUST supply values for the `exter
 This chart provides support for ingress resources. If you have an
 ingress controller installed on your cluster, such as [nginx-ingress](https://kubeapps.com/charts/stable/nginx-ingress)
 or [traefik](https://kubeapps.com/charts/stable/traefik) you can utilize
-the ingress controller to service your WordPress application.
+the ingress controller to serve your WordPress application.
 
 To enable ingress integration, please set `ingress.enabled` to `true`
 
@@ -191,11 +195,11 @@ wrj2wDbCDCFmfqnSJ+dKI3vFLlEz44sAV8jX/kd4Y6ZTQhlLbYc=
 -----END RSA PRIVATE KEY-----
 ````
 
-If you are going to use helm to manage the certificates, please copy
+If you are going to use Helm to manage the certificates, please copy
 these values into the `certificate` and `key` values for a given
 `ingress.secrets` entry.
 
-If you are going are going to manage TLS secrets outside of helm, please
+If you are going are going to manage TLS secrets outside of Helm, please
 know that you can create a TLS secret by doing the following:
 
 ```
