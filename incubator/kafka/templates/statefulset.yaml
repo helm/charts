@@ -171,7 +171,7 @@ spec:
       {{- if .Values.metrics.jmx.enabled }}
       - name: jmx-config
         configMap:
-          name: {{ template "kafka.configmap" . }}-metrics
+          name: {{ template "kafka.fullname" . }}-metrics
       {{- end }}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
