@@ -13,7 +13,7 @@ $ helm install incubator/keycloak
 
 This chart bootstraps a [Keycloak](http://www.keycloak.org/) StatefulSet on a [Kubernetes](https://kubernetes.io) cluster 
 using the [Helm](https://helm.sh) package manager. It provisions a fully featured Keycloak installation.
-For more information on Keycloak and its capabilities, see it's [documentation](http://www.keycloak.org/documentation.html).
+For more information on Keycloak and its capabilities, see its [documentation](http://www.keycloak.org/documentation.html).
 
 ## Prerequisites Details
 
