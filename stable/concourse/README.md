@@ -140,7 +140,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
 | `credentialManager.kubernetes.enabled` | Enable Kubernetes Secrets Credential Manager | `true` |
 | `credentialManager.kubernetes.namespacePrefix` | Prefix for namespaces to look for secrets in | `.Release.Name-` |
-| `credentialManager.kubernetes.teams` | Teams to allow secret access when rbac is enabled | `["main"]` |
+| `credentialManager.kubernetes.teams` | Teams to allow secret access when RBAC is enabled | `["main"]` |
 | `credentialManager.ssm.enabled` | Use AWS SSM as a Credential Manager | `false` |
 | `credentialManager.ssm.region` | AWS Region to use for SSM | `nil` |
 | `credentialManager.ssm.pipelineSecretsTemplate` | Pipeline secrets template | `nil` |
