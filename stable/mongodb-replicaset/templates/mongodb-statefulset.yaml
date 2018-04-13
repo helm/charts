@@ -130,7 +130,7 @@ spec:
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           {{- if .Values.extraVars }}
           env:
-{{ toYaml .Values.extraVars | indent 10 }}
+{{ toYaml .Values.extraVars | indent 12 }}
           {{- end }}
           securityContext:
             runAsUser: {{ $user }}
