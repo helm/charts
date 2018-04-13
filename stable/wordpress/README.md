@@ -48,8 +48,8 @@ The following table lists the configurable parameters of the WordPress chart and
 | Parameter                            | Description                                | Default                                                    |
 | ------------------------------------ | ------------------------------------------ | ---------------------------------------------------------- |
 | `image.registry`                     | WordPress image registry                   | `docker.io`                                                |
-| `image.repository`                   | WordPress Image name                       | `bitnami/wordpress`                                        |
-| `image.tag`                          | WordPress Image tag                        | `{VERSION}`                                                |
+| `image.repository`                   | WordPress image name                       | `bitnami/wordpress`                                        |
+| `image.tag`                          | WordPress image tag                        | `{VERSION}`                                                |
 | `image.pullPolicy`                   | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
 | `image.pullSecrets`                  | Specify image pull secrets                 | `nil`                                                      |
 | `wordpressUsername`                  | User of the application                    | `user`                                                     |
@@ -138,7 +138,7 @@ Note also if you disable MariaDB per above you MUST supply values for the `exter
 This chart provides support for ingress resources. If you have an
 ingress controller installed on your cluster, such as [nginx-ingress](https://kubeapps.com/charts/stable/nginx-ingress)
 or [traefik](https://kubeapps.com/charts/stable/traefik) you can utilize
-the ingress controller to service your WordPress application.
+the ingress controller to serve your WordPress application.
 
 To enable ingress integration, please set `ingress.enabled` to `true`
 
@@ -195,11 +195,11 @@ wrj2wDbCDCFmfqnSJ+dKI3vFLlEz44sAV8jX/kd4Y6ZTQhlLbYc=
 -----END RSA PRIVATE KEY-----
 ````
 
-If you are going to use helm to manage the certificates, please copy
+If you are going to use Helm to manage the certificates, please copy
 these values into the `certificate` and `key` values for a given
 `ingress.secrets` entry.
 
-If you are going are going to manage TLS secrets outside of helm, please
+If you are going are going to manage TLS secrets outside of Helm, please
 know that you can create a TLS secret by doing the following:
 
 ```
