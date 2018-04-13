@@ -63,6 +63,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `tolerations`                       | List of node taints to tolerate                                           | `[]`                                                |
 | `livenessProbe`                     | Liveness probe configuration                                              | See below                                           |
 | `readynessProbe`                    | Readyness probe configuration                                             | See below                                           |
+| `extraVars`                         | Set environment variables for the main container                          | `{}`                                                |
 
 *MongoDB config file*
 

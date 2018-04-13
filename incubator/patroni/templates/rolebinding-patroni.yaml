@@ -4,10 +4,10 @@ kind: RoleBinding
 metadata:
   name: {{ template "patroni.fullname" . }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    app: {{ template "patroni.name" . }}
+    chart: {{ template "patroni.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 subjects:
   - kind: ServiceAccount
     name: {{ template "patroni.serviceAccountName" . }}

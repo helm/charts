@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "redis.fullname" . }}
+  name: {{ template "seq.fullname" . }}
   labels:
-    app: {{ template "redis.fullname" . }}
+    app: {{ template "seq.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

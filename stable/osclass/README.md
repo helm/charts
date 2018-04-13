@@ -10,7 +10,7 @@ $ helm install stable/osclass
 
 ## Introduction
 
-This chart bootstraps a [Osclass](https://github.com/bitnami/bitnami-docker-osclass) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps an [Osclass](https://github.com/bitnami/bitnami-docker-osclass) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the Osclass application.
 
@@ -79,8 +79,8 @@ The following table lists the configurable parameters of the Osclass chart and t
 | `externalDatabase.port`            | Port of the external database            | `3306`                                                  |
 | `externalDatabase.user`            | Existing username in the external db     | `bn_osclass`                                            |
 | `externalDatabase.password`        | Password for the above username          | `nil`                                                   |
-| `externalDatabase.database`        | Name of the existing database             | `bitnami_osclass`                                       |
-| `mariadb.enabled`                  | Whether to use or not the mariadb chart   | `true`                                                  |
+| `externalDatabase.database`        | Name of the existing database            | `bitnami_osclass`                                       |
+| `mariadb.enabled`                  | Whether to use the MariaDB chart         | `true`                                                  |
 | `mariadb.mariadbDatabase`          | Database name to create                  | `bitnami_osclass`                                       |
 | `mariadb.mariadbUser`              | Database user to create                  | `bn_osclass`                                            |
 | `mariadb.mariadbPassword`          | Password for the database                | `nil`                                                   |
