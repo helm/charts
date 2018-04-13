@@ -13,3 +13,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this
 {{- $name := default "drone" .Values.nameOverride -}}
 {{ printf "%s-%s" .Release.Name $name | trunc 63 -}}
 {{ end }}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "drone.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "drone.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}

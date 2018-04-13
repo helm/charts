@@ -66,3 +66,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                                                           | `ReadWriteOnce`             |
 | `persistence.size`          | Size of data volume                                                                           | `1Gi`                       |
 | `sharedSecret`              | Drone server and agent shared secret (Note: The Default random value changes on every `helm upgrade` causing a rolling update of server and agents) | `(random value)`            |
+| `rbac.create`               | Specifies whether RBAC resources should be created.                                           | `true`                      |
+| `rbac.apiVersion`           | RBAC API version                                                                              | `v1`                        |
+| `serviceAccount.create`     | Specifies whether a ServiceAccount should be created.                                         | `true`                      |
+| `serviceAccount.name`       | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template. | `(fullname template)` |
