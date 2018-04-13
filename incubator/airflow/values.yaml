@@ -61,14 +61,12 @@ airflow:
     maxUnavailable: 1
 
 workers:
-    serviceAccountName: "default"
+  serviceAccountName: "default"
+  replicas: 1
 
-##
-## Configuration for celery workers
-celery:
-  ##
-  ## Number of celery workers to initialize
-  num_workers: 1
+  celery:
+    # instances per worker
+    instances: 1
 
 
 ##

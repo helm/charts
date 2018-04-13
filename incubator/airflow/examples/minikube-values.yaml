@@ -12,9 +12,13 @@ airflow:
     AIRFLOW__CORE__LOGGING_LEVEL: DEBUG
     AIRFLOW__CORE__LOAD_EXAMPLES: True
 
-celery:
-  ## Number of celery workers to initialize
-  num_workers: 2
+workers:
+  serviceAccountName: "default"
+  replicas: 1
+
+  celery:
+    # instances per worker
+    instances: 1
 
 ingress:
   enabled: true
