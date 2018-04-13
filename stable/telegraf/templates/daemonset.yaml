@@ -1,4 +1,3 @@
-{{- if gt (len .Values.daemonset.config.outputs.influxdb.urls) 0 }}
 {{- if .Values.daemonset.enabled -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -9,6 +8,8 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
 spec:
+  updateStrategy:
+    type: {{ default "OnDelete" .Values.daemonset.updateStrategy }}
   template:
     metadata:
       labels:
@@ -60,5 +61,4 @@ spec:
       - name: config
         configMap:
           name: {{ template "fullname" . }}-ds
-{{- end -}}
 {{- end -}}

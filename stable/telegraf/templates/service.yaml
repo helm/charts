@@ -9,7 +9,9 @@ metadata:
 spec:
   type: {{ .Values.single.service.type }}
   ports:
-  {{- range $key, $value := .Values.single.config.inputs }}
+  {{- range $objectKey, $objectValue := .Values.single.config.inputs }}
+  {{- range $key, $value := . -}}
+    {{- $tp := typeOf $value -}}
     {{- if eq $key "http_listener" }}
   - port: {{ trimPrefix ":" $value.service_address | int64 }}
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
@@ -35,8 +37,9 @@ spec:
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
     name: "webhooks"
     {{- end }}
+  {{- end -}}
   {{- end }}
   selector:
-    app: {{ template "fullname" . }}-s
+    app: {{ template "fullname"  .}}-s
 {{- end -}}
 {{- end -}}

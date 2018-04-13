@@ -9,6 +9,11 @@ image:
 ## Resource limits and outputs can be set separately
 daemonset:
   enabled: true
+
+  ## Configure daemonset updateStrategy. Default is OnDelete
+  ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+  updateStrategy: OnDelete
+
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   resources:
@@ -39,10 +44,10 @@ daemonset:
       hostname: "$HOSTNAME"
       omit_hostname: false
     outputs:
-      influxdb:
-        urls: []
-          # - "http://influxdb-influxdb.tick:8086"
-        database: "telegraf"
+      - influxdb:
+          urls: []
+            # - "http://influxdb-influxdb.tick:8086"
+          database: "telegraf"
 ##        retention_policy: ""
 ##        write_consistency: "any"
 ##        timeout: "5s"
@@ -107,27 +112,27 @@ daemonset:
 ##        topic: "telegraf"
 ##        data_format: "influx"
     inputs:
-      cpu:
-        percpu: true
-        totalcpu: true
-        collect_cpu_time: false
-      disk:
-        ignore_fs:
-          - "tmpfs"
-          - "devtmpfs"
-      diskio:
-      docker:
-        endpoint: "unix:///var/run/docker.sock"
-        container_names: []
-      kernel:
-      mem:
-      processes:
-      swap:
-      system:
-      kubernetes:
-        url: "http://$HOSTNAME:10255"
-        bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
-        insecure_skip_verify: true
+      - cpu:
+          percpu: true
+          totalcpu: true
+          collect_cpu_time: false
+      - disk:
+          ignore_fs:
+            - "tmpfs"
+            - "devtmpfs"
+      - diskio:
+      - docker:
+          endpoint: "unix:///var/run/docker.sock"
+          container_names: []
+      - kernel:
+      - mem:
+      - processes:
+      - swap:
+      - system:
+      - kubernetes:
+          url: "http://$HOSTNAME:10255"
+          bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+          insecure_skip_verify: true
 ## Configure the telegraf single instance here.
 ## Resource limits and outputs can be set separately
 single:
@@ -170,10 +175,10 @@ single:
       hostname: "telegraf-polling-service"
       omit_hostname: false
     outputs:
-      influxdb:
-        urls: []
-          # - "http://influxdb-influxdb.tick:8086"
-        database: "telegraf"
+      - influxdb:
+          urls: []
+            # - "http://influxdb-influxdb.tick:8086"
+          database: "telegraf"
 ##        retention_policy: ""
 ##        write_consistency: "any"
 ##        timeout: "5s"
@@ -185,7 +190,7 @@ single:
 ##        ssl_cert: "/etc/telegraf/cert.pem"
 ##        ssl_key: "/etc/telegraf/key.pem"
 ##        insecure_skip_verify: false
-##      amqp:
+##    - amqp:
 ##        url: "amqp://localhost:5672/influxdb"
 ##        exchange: "telegraf"
 ##        auth_method: "PLAIN"
@@ -198,7 +203,7 @@ single:
 ##        ssl_key: "/etc/telegraf/key.pem"
 ##        insecure_skip_verify: false
 ##        data_format: "influx"
-##      kafka:
+##    - kafka:
 ##        brokers:
 ##          - "localhost:9092"
 ##        topic: "telegraf"
@@ -211,7 +216,7 @@ single:
 ##        ssl_key: "/etc/telegraf/key.pem"
 ##        insecure_skip_verify: false
 ##        data_format: "influx"
-##      mqtt:
+##    - mqtt:
 ##        servers:
 ##          - "localhost:1883"
 ##        topic_prefix: "telegraf"
@@ -222,7 +227,7 @@ single:
 ##        ssl_key: "/etc/telegraf/key.pem"
 ##        insecure_skip_verify: false
 ##        data_format: "influx"
-##      nats:
+##    - nats:
 ##        servers:
 ##          - "nats://localhost:4222"
 ##        username: ""
@@ -233,22 +238,22 @@ single:
 ##        ssl_key: "/etc/telegraf/key.pem"
 ##        insecure_skip_verify: false
 ##        data_format: "influx"
-##      nsq:
+##    - nsq:
 ##        server: "localhost:4150"
 ##        topic: "telegraf"
 ##        data_format: "influx"
     inputs:
-      cpu:
-        percpu: false
-        totalcpu: true
-      system:
-##      aerospike:
+      - cpu:
+          percpu: false
+          totalcpu: true
+      - system:
+##    - aerospike:
 ##        servers:
 ##          - "localhost:3000"
-##      apache:
+##    - apache:
 ##        urls:
 ##          - "http://localhost/server-status?auto"
-##      cassandra:
+##    - cassandra:
 ##        context: "/jolokia/read"
 ##        servers:
 ##          - "myuser:mypassword@10.10.10.1:8778"
@@ -257,7 +262,7 @@ single:
 ##        metrics :
 ##          - "/java.lang:type=Memory/HeapMemoryUsage"
 ##          - "/org.apache.cassandra.metrics:type=Table,keyspace=*,scope=*,name=ReadLatency"
-##      cloudwatch:
+##    - cloudwatch:
 ##        region: "us-east-1"
 ##        access_key: ""
 ##        secret_key: ""
@@ -278,23 +283,23 @@ single:
 ##         dimensions:
 ##           name: "LoadBalancerName"
 ##           value: "p-example"
-##      consul:
+##    - consul:
 ##        address: "localhost"
 ##        scheme: "http"
 ##        token: ""
 ##        username: ""
 ##        password: ""
 ##        datacentre: ""
-##      couchbase:
+##    - couchbase:
 ##        servers:
 ##          - "http://localhost:8091"
-##      couchdb:
+##    - couchdb:
 ##        hosts:
 ##          - "http://localhost:8086/_stats"
-##      disque:
+##    - disque:
 ##        servers:
 ##          - "localhost"
-##      dns_query:
+##    - dns_query:
 ##        servers:
 ##          - "8.8.8.8"
 ##        domains:
@@ -302,13 +307,13 @@ single:
 ##        record_type: "A"
 ##        port: 53
 ##        timeout: 2
-##      dovecot:
+##    - dovecot:
 ##        servers:
 ##          - "localhost:24242"
 ##        type: "global"
 ##        filters:
 ##          - ""
-##      elasticsearch:
+##    - elasticsearch:
 ##        servers:
 ##          - "http://localhost:9200"
 ##        http_timeout: "5s"
@@ -318,7 +323,7 @@ single:
 ##        ssl_cert: "/etc/telegraf/cert.pem"
 ##        ssl_key: "/etc/telegraf/key.pem"
 ##        insecure_skip_verify: false
-##      graylog:
+##    - graylog:
 ##        servers:
 ##          - "http://[graylog-server-ip]:12900/system/metrics/multiple"
 ##        metrics:
@@ -330,14 +335,14 @@ single:
 ##        ssl_cert: "/etc/telegraf/cert.pem"
 ##        ssl_key: "/etc/telegraf/key.pem"
 ##        insecure_skip_verify: false
-##      haproxy:
+##    - haproxy:
 ##        servers:
 ##          - "http://myhaproxy.com:1936/haproxy?stats"
-      influxdb:
-        urls:
-          - "http://influxdb-influxdb.tick:8086/debug/vars"
-        timeout: "5s"
-##      lustre2:
+      - influxdb:
+          urls:
+            - "http://influxdb-influxdb.tick:8086/debug/vars"
+          timeout: "5s"
+##    - lustre2:
 ##        ost_procfiles:
 ##          - "/proc/fs/lustre/obdfilter/*/stats"
 ##          - "/proc/fs/lustre/osd-ldiskfs/*/stats"
@@ -345,16 +350,16 @@ single:
 ##        mds_procfiles:
 ##          - "/proc/fs/lustre/mdt/*/md_stats"
 ##          - "/proc/fs/lustre/mdt/*/job_stats"
-##      mailchimp:
+##    - mailchimp:
 ##        api_key: ""
 ##        days_old: 0
 ##        campaign_id: ""
-##      memcached:
+##    - memcached:
 ##        servers:
 ##          - "localhost:11211"
 ##        unix_sockets:
 ##          - "/var/run/memcached.sock"
-##      mesos:
+##    - mesos:
 ##        timeout: 100
 ##        masters:
 ##          - "localhost:5050"
@@ -377,11 +382,11 @@ single:
 ##          - "executors"
 ##          - "tasks"
 ##          - "messages"
-##      mongodb:
+##    - mongodb:
 ##        servers:
 ##          - "mongodb://user:password@127.0.0.1:27017"
 ##        gather_perdb_stats: false
-##      mysql:
+##    - mysql:
 ##        servers:
 ##          - "tcp(127.0.0.1:3306)?tls=false"
 ##        perf_events_statements_digest_text_limit : 120
@@ -400,46 +405,46 @@ single:
 ##        gather_file_events_stats: false
 ##        gather_perf_events_statements: false
 ##        interval_slow: "30m"
-##      net_response:
+##    - net_response:
 ##        protocol: "tcp"
 ##        address: "github.com:80"
 ##        timeout: "1s"
 ##        send: "ssh"
 ##        expect: "ssh"
 ##        read_timeout: "1s"
-##      nginx:
+##    - nginx:
 ##        urls:
 ##          - "http://nginx.nginx-ingress/nginx_status"
-##      nsq:
+##    - nsq:
 ##        endpoints:
 ##          - "http://localhost:4151"
-##      phpfpm:
+##    - phpfpm:
 ##        urls:
 ##          - "http://localhost/status"
-##      ping:
+##    - ping:
 ##        urls:
 ##          - "www.google.com"
 ##        count: 1
 ##        ping_interval: 1.0
 ##        timeout: 1.0
 ##        interface: ""
-##      postgresql:
+##    - postgresql:
 ##        address: "postgres://user:password@localhost?sslmode=disable"
 ##        ignored_databases:
 ##          - "postgres"
 ##        databases:
 ##          - "app_production"
 ##          - "testing"
-      prometheus:
-        urls:
-          - "https://kubernetes.default:443/metrics"
-        name_prefix: "prom_"
-        bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
-        insecure_skip_verify: true
+      - prometheus:
+          urls:
+            - "https://kubernetes.default:443/metrics"
+          name_prefix: "prom_"
+          bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+          insecure_skip_verify: true
 ##        ssl_ca: /path/to/cafile
 ##        ssl_cert: /path/to/certfile
 ##        ssl_key: /path/to/keyfile
-##     rabbitmq:
+##   - rabbitmq:
 ##       url: "http://localhost:15672"
 ##       name: "rmq-server-1"
 ##       username: "guest"
@@ -451,41 +456,41 @@ single:
 ##       nodes:
 ##         - "rabbit@node1"
 ##         - "rabbit@node2"
-##     raindrops:
+##   - raindrops:
 ##       urls:
 ##         - "http://localhost:8080/_raindrops"
-##     redis:
+##   - redis:
 ##       servers:
 ##         - "tcp://localhost:6379"
-##     rethinkdb:
+##   - rethinkdb:
 ##       servers:
 ##         - "127.0.0.1:28015"
-##     riak:
+##   - riak:
 ##       servers:
 ##         - "http://localhost:8098"
-##     sqlserver:
+##   - sqlserver:
 ##       servers:
 ##         - "Server=192.168.1.10;Port=1433;User Id=<user>;Password=<pw>;app name=telegraf;log=1;"
-##     twemproxy:
+##   - twemproxy:
 ##       addr: "localhost:22222"
 ##        pools:
 ##          - "redis_pool"
 ##          - "mc_pool"
-##      zookeeper:
+##    - zookeeper:
 ##        servers:
 ##          - "localhost:2181"
-##      http_listener:
+##    - http_listener:
 ##        service_address: ":8186"
 ##        read_timeout: "10s"
 ##        write_timeout: "10s"
 ##        max_body_size: 0
 ##        max_line_size: 0
-      statsd:
-        service_address: ":8125"
-        percentiles:
-          - 50
-          - 95
-          - 99
-        metric_separator: "_"
-        allowed_pending_messages: 10000
-        percentile_limit: 1000
+      - statsd:
+          service_address: ":8125"
+          percentiles:
+            - 50
+            - 95
+            - 99
+          metric_separator: "_"
+          allowed_pending_messages: 10000
+          percentile_limit: 1000

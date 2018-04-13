@@ -58,6 +58,22 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 $ helm install --name my-release -f values.yaml stable/telegraf
 ```
 
+Outputs and inputs are configured as arrays of key/value dictionaries. Additional examples and defaults can be found in [values.yaml](values.yaml)
+
+Example:
+```
+outputs:
+  - influxdb:
+      urls: []
+        # - "http://influxdb-influxdb.tick:8086"
+      database: "telegraf"
+inputs:
+  - cpu:
+      percpu: false
+      totalcpu: true
+  - system:
+```
+
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ## Telegraf Configuration
