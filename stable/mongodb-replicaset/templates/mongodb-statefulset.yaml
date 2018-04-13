@@ -161,7 +161,6 @@ spec:
             exec:
               command:
                 - mongo
-              args:
               {{- if .Values.tls.enabled }}
                 - --ssl
                 - --sslCAFile=/data/configdb/tls.crt
