@@ -44,6 +44,8 @@ spec:
         {{ end }}
         - name: MONGODB_DATABASE
           value: {{ default "" .Values.mongodbDatabase | quote }}
+        - name: MONGODB_EXTRA_FLAGS
+          value: {{ default "" .Values.mongodbExtraFlags | join " " }}
         ports:
         - name: mongodb
           containerPort: 27017

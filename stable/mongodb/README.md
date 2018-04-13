@@ -54,6 +54,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `mongodbUsername`                   | MongoDB custom user                        | `nil`                                                    |
 | `mongodbPassword`                   | MongoDB custom user password               | `random alhpanumeric string (10)`                        |
 | `mongodbDatabase`                   | Database to create                         | `nil`                                                    |
+| `mongodbExtraFlags`                 | MongoDB additional command line flags      | []                                                       |
 | `service.type`                      | Kubernetes Service type                    | `ClusterIP`                                              |
 | `service.nodePort`                  | Port to bind to for NodePort service type  | `nil`                                                    |
 | `persistence.enabled`               | Use a PVC to persist data                  | `true`                                                   |
