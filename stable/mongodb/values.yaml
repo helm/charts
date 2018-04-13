@@ -29,6 +29,14 @@ image:
 # mongodbPassword:
 # mongodbDatabase:
 
+## MongoDB additional command line flags
+##
+## Can be used to specify command line flags, for example:
+##
+## mongodbExtraFlags:
+##  - "--wiredTigerCacheSizeGB=2"
+mongodbExtraFlags: []
+
 service:
   ## Kubernetes service type
   type: ClusterIP
