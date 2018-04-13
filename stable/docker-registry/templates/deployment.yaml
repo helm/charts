@@ -9,6 +9,11 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+{{- if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+{{- end }}
+  minReadySeconds: 5
   template:
     metadata:
       labels:
@@ -55,6 +60,12 @@ spec:
                 secretKeyRef:
                   name: {{ template "docker-registry.fullname" . }}-secret
                   key: haSharedSecret
+{{- if .Values.tlsSecretName }}
+            - name: REGISTRY_HTTP_TLS_CERTIFICATE
+              value: /etc/ssl/docker/tls.crt
+            - name: REGISTRY_HTTP_TLS_KEY
+              value: /etc/ssl/docker/tls.key
+{{- end }}
 {{- if eq .Values.storage "filesystem" }}
             - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
               value: "/var/lib/registry"
@@ -123,5 +134,5 @@ spec:
 {{- if .Values.tlsSecretName }}
         - name: tls-cert
           secret:
-            secretName: {{ .Values.tlsSecretName }}.tls
+            secretName: {{ .Values.tlsSecretName }}
 {{- end }}

@@ -27,6 +27,8 @@ image:
 
 tolerations: []
 
+extraEnv: {}
+
 extraArgs: {}
   # scale-down-delay: 10m
   # scale-down-unneeded-time: 10m
@@ -74,6 +76,7 @@ service:
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
   servicePort: 8085
+  portName: http
   type: ClusterIP
 
 spotinst:

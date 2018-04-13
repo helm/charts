@@ -31,7 +31,6 @@ spec:
               subPath: extensions
             - name: install-plugins
               mountPath: /opt/sonarqube/extensions/plugins/install_plugins.sh
-              subPath: install_plugins.sh
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -73,7 +72,6 @@ spec:
             {{- if .Values.sonarProperties }}
             - name: config
               mountPath: /opt/sonarqube/conf/sonar.properties
-              subPath: sonar.properties
             {{- end}}
             - mountPath: /opt/sonarqube/data
               name: sonarqube
@@ -83,7 +81,6 @@ spec:
               subPath: extensions
             - name: install-plugins
               mountPath: /opt/sonarqube/extensions/plugins/install_plugins.sh
-              subPath: install_plugins.sh
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
@@ -97,7 +94,6 @@ spec:
       - name: install-plugins
         configMap:
           name: {{ template "sonarqube.fullname" . }}-install-plugins
-          defaultMode: 0775
       - name: sonarqube
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:

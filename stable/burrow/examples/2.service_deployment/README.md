@@ -83,7 +83,7 @@ make_chain() {
     val=$(cat $d/priv_validator.json | jq -rc '@base64')
     KEYS_FILES+=$keysFilesPrefix$key=$val,
   done
-  rm -rf $CHAIN_SOURCE_DIRECTORY/*validator*/ && unset keysFilesPrefix
+  rm -rf $CHAIN_SOURCE_DIRECTORY/*validator*/ && unset keysFilesPrefix KEYS_FILES GENESIS_FILE
 }
 
 deploy_chain() {
