@@ -119,8 +119,8 @@ data:
       <primaryView>All</primaryView>
       <slaveAgentPort>50000</slaveAgentPort>
       <disabledAgentProtocols>
-{{- range $key, $val := .Values.Master.DisabledAgentProtocols }}
-        <string>{{ $val }}</string>
+{{- range .Values.Master.DisabledAgentProtocols }}
+        <string>{{ . }}</string>
 {{- end }}
       </disabledAgentProtocols>
       <label></label>
@@ -152,14 +152,14 @@ data:
       <pendingClasspathEntries/>
     </scriptApproval>
 {{- end }}
-  jenkins.CLI.xml |-
+  jenkins.CLI.xml: |-
     <?xml version='1.1' encoding='UTF-8'?>
     <jenkins.CLI>
 {{- if .Values.Master.CLI }}
       <enabled>true</enabled>
 {{- else }}
       <enabled>false</enabled>
-{{- fi }}
+{{- end }}
     </jenkins.CLI>
   apply_config.sh: |-
     mkdir -p /usr/share/jenkins/ref/secrets/;
