@@ -91,7 +91,7 @@ server:
   ## Additional server annotations.
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   ##
-  resources: {}
+  annotations: {}
 
   ## CPU and memory limits for drone server
   ##
@@ -122,7 +122,7 @@ agent:
   ## Additional agent annotations.
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   ##
-  resources: {}
+  annotations: {}
 
   ## CPU and memory limits for drone agent
   ##
