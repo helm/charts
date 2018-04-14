@@ -57,7 +57,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
 | `agent.replicas`            | Drone **agent** replicas                                                                      | `1`                         |
 | `agent.resources`           | Drone **agent** pod resource requests & limits                                                | `{}`                        |
-| `server.schedulerName`      | Drone **agent** alternate scheduler name                                                      | `{}`                        |
+| `agent.schedulerName`       | Drone **agent** alternate scheduler name                                                      | `{}`                        |
 | `agent.afinity`             | Drone **agent** scheduling preferences                                                        | `{}`                        |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
