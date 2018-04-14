@@ -59,6 +59,7 @@ Master:
     DefaultCrumbIssuer:
       Enabled: true
       ProxyCompatability: true
+  CLI: false
   # Kubernetes service type for the JNLP slave service
   # SETTING THIS TO "LoadBalancer" IS A HUGE SECURITY RISK: https://github.com/kubernetes/charts/issues/1341
   SlaveListenerServiceType: ClusterIP
