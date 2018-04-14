@@ -26,6 +26,10 @@ podAnnotations: {}
 ##
 nodeSelector: {}
 
+## Overrides for generated resource names. See templates/_helpers.tpl
+# nameOverride:
+# fullnameOverride:
+
 service:
   type: ClusterIP
   externalPort: 8082
