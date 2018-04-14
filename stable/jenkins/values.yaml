@@ -57,7 +57,7 @@ Master:
     - JNLP2-connect
   CSRF:
     DefaultCrumbIssuer:
-      Enabled: false
+      Enabled: true
       ProxyCompatability: true
   # Kubernetes service type for the JNLP slave service
   # SETTING THIS TO "LoadBalancer" IS A HUGE SECURITY RISK: https://github.com/kubernetes/charts/issues/1341
