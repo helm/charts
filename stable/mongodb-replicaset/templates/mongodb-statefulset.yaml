@@ -128,6 +128,10 @@ spec:
         - name: {{ template "mongodb-replicaset.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          {{- if .Values.extraVars }}
+          env:
+{{ toYaml .Values.extraVars | indent 12 }}
+          {{- end }}
           securityContext:
             runAsUser: {{ $user }}
             allowPrivilegeEscalation: false
@@ -157,7 +161,6 @@ spec:
             exec:
               command:
                 - mongo
-              args:
               {{- if .Values.tls.enabled }}
                 - --ssl
                 - --sslCAFile=/data/configdb/tls.crt
@@ -165,8 +168,11 @@ spec:
               {{- end }}
                 - --eval
                 - "db.adminCommand('ping')"
-            initialDelaySeconds: 30
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
           readinessProbe:
             exec:
               command:
@@ -178,8 +184,11 @@ spec:
               {{- end }}
                 - --eval
                 - "db.adminCommand('ping')"
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
           volumeMounts:
             - name: datadir
               mountPath: /data/db

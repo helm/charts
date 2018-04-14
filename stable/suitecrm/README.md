@@ -1,6 +1,6 @@
 # SuiteCRM
 
-[SuiteCRM](https://www.suitecrm.com) SuiteCRM is a completely open source enterprise-grade Customer Relationship Management (CRM) application. SuiteCRM is a software fork of the popular customer relationship management (CRM) system SugarCRM.
+[SuiteCRM](https://www.suitecrm.com) is a completely open source enterprise-grade Customer Relationship Management (CRM) application. SuiteCRM is a software fork of the popular customer relationship management (CRM) system SugarCRM.
 
 ## TL;DR;
 
@@ -69,7 +69,7 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 | `externalDatabase.user`             | Existing username in the external db      | `bn_suitecrm`                                           |
 | `externalDatabase.password`         | Password for the above username           | `nil`                                                   |
 | `externalDatabase.database`         | Name of the existing database             | `bitnami_suitecrm`                                      |
-| `mariadb.enabled`                   | Whether to use or not the mariadb chart   | `true`                                                  |
+| `mariadb.enabled`                   | Whether to use the MariaDB chart          | `true`                                                  |
 | `mariadb.mariadbDatabase`           | Database name to create                   | `bitnami_suitecrm`                                      |
 | `mariadb.mariadbUser`               | Database user to create                   | `bn_suitecrm`                                           |
 | `mariadb.mariadbPassword`           | Password for the database                 | `nil`                                                   |

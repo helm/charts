@@ -13,10 +13,12 @@ spec:
   selector:
     matchLabels:
       app: {{ template "rabbitmq.name" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
         app: {{ template "rabbitmq.name" . }}
+        release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
