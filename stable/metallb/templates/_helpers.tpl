@@ -57,9 +57,9 @@ Create the name of the speaker service account to use
 Create the name of the settings ConfigMap to use.
 */}}
 {{- define "metallb.configMapName" -}}
-{{- if (or .Values.config.inline .Values.config.simpleLayer2) -}}
+{{- if .Values.configInline -}}
     {{ include "metallb.fullname" . }}
 {{- else -}}
-    {{ .Values.config.name }}
+    {{ .Values.configName }}
 {{- end -}}
 {{- end -}}

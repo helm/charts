@@ -2,21 +2,22 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# config lets you specify MetalLB's configuration in various
-# ways. Use one of name, inline, or simpleLayer2.
-config:
-  # name specifies the name of an externally-defined ConfigMap to use
-  # as the configuration.
-  name: metallb-config
-  # inline specifies MetalLB's configuration directly, in yaml
-  # format. Refer to https://metallb.universe.tf/configuration/ for
-  # available options.
-  inline:
-  # simpleLayer2 accepts an IP address range and generates a trivial
-  # "quick start" MetalLB configuration that uses layer 2 mode. Refer
-  # to https://metallb.universe.tf/ for more information. This option
-  # is not recommended for production use.
-  simpleLayer2:
+# To configure MetalLB, you must specify ONE of the following two
+# options.
+
+# configName specifies the name of an externally-defined ConfigMap to
+# use as the configuration. Helm will not manage the contents of this
+# ConfigMap, it is your responsibility to create it.
+configName: metallb-config
+
+# configInline specifies MetalLB's configuration directly, in yaml
+# format. When configInline is used, Helm manages MetalLB's
+# configuration ConfigMap as part of the release, and configName is
+# ignored.
+#
+# Refer to https://metallb.universe.tf/configuration/ for
+# available options.
+configInline:
 
 rbac:
   # create specifies whether to install and use RBAC rules.

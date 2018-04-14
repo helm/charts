@@ -1,4 +1,4 @@
-{{- if (or .Values.config.inline .Values.config.simpleLayer2) }}
+{{- if .Values.configInline }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,13 +10,5 @@ metadata:
     app: {{ template "metallb.name" . }}
 data:
   config: |
-{{- if .Values.config.inline }}
-{{ toYaml .Values.config.inline | indent 4 }}
-{{- else }}
-    address-pools:
-    - name: default
-      protocol: layer2
-      addresses:
-      - {{ .Values.config.simpleLayer2 }}
-{{- end }}
+{{ toYaml .Values.configInline | indent 4 }}
 {{- end }}
