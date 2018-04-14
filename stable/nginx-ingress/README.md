@@ -135,6 +135,7 @@ Parameter | Description | Default
 `defaultBackend.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `defaultBackend.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
+`imagePullSecrets` | name of Secret resource containing private registry credentials | `nil`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | ServiceAccount to be used (ignored if rbac.create=true) | `default`
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
