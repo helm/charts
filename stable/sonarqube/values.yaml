@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: sonarqube
-  tag: 6.5
+  tag: 6.7.3
 service:
   name: sonarqube
   type: LoadBalancer
