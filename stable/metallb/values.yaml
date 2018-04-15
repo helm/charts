@@ -21,7 +21,7 @@ prometheus:
   # scrape annotations specifies whether to add Prometheus metric
   # auto-collection annotations to pods. See
   # https://github.com/prometheus/prometheus/blob/release-2.1/documentation/examples/prometheus-kubernetes.yml
-  # for a corresponding Prometheus configuration.  Alternatively, you
+  # for a corresponding Prometheus configuration. Alternatively, you
   # may want to use the Prometheus Operator
   # (https://github.com/coreos/prometheus-operator) for more powerful
   # monitoring configuration. If you use the Prometheus operator, this
@@ -54,7 +54,7 @@ controller:
       # cpu: 100m
       # memory: 100Mi
 
-# controller contains configuration specific to the MetalLB speaker
+# speaker contains configuration specific to the MetalLB speaker
 # daemonset.
 speaker:
   image:
