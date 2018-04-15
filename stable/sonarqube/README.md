@@ -1,10 +1,10 @@
 # SonarQube
 
-[SonarQube](https://www.sonarqube.org/) is an open sourced code quality scanning tool
+[SonarQube](https://www.sonarqube.org/) is an open sourced code quality scanning tool.
 
 ## Introduction
 
-This chart bootstraps a SonarQube instance with a PostgreSQL database
+This chart bootstraps a SonarQube instance with a PostgreSQL database.
 
 ## Prerequisites
 
@@ -18,9 +18,9 @@ To install the chart :
 $ helm install stable/sonarqube
 ```
 
-The above command deploys Sonarqube on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation
+The above command deploys Sonarqube on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
-The default login is admin/admin
+The default login is admin/admin.
 
 ## Uninstalling the chart
 
@@ -58,6 +58,6 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `plugins.install`                           | List of plugins to install                | `[]`                                       |
 | `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |
 
-You can also configure values for the PostgreSQL database via the Postgresql [README.md](https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md)
+You can also configure values for the PostgreSQL database via the Postgresql [README.md](https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md).
 
 For overriding variables see: [Customizing the chart](https://docs.helm.sh/using_helm/#customizing-the-chart-before-installing)
