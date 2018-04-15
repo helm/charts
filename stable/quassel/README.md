@@ -94,7 +94,7 @@ $ helm install stable/quassel --name my-release -f values.yaml
 ## Persistence
 
 The [quassel-core](https://hub.docker.com/r/linuxserver/quassel-core) image
-stores it's configuration data, and if using SQLite, it's SQLite database at the
+stores its configuration data, and if using SQLite, its SQLite database at the
 `/config` path of the container.
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/)
