@@ -24,6 +24,7 @@ spec:
       affinity:
 {{ toYaml .Values.server.affinity | indent 8 }}
 {{- end }}
+      serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
       - name: {{ template "drone.fullname" . }}-server
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"

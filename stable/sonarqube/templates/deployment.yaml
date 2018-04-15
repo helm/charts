@@ -24,7 +24,7 @@ spec:
             - name: {{ $key }}
               value: {{ $value }}
             {{- end }}
-          command: ["sh", "-c", "'/opt/sonarqube/extensions/plugins/install_plugins.sh'"]
+          command: ["sh", "-c", "/opt/sonarqube/extensions/plugins/install_plugins.sh"]
           volumeMounts:
             - mountPath: /opt/sonarqube/extensions
               name: sonarqube
@@ -79,8 +79,6 @@ spec:
             - mountPath: /opt/sonarqube/extensions
               name: sonarqube
               subPath: extensions
-            - name: install-plugins
-              mountPath: /opt/sonarqube/extensions/plugins/install_plugins.sh
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
