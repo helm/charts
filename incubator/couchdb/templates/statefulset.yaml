@@ -21,6 +21,15 @@ spec:
         app: {{ template "couchdb.name" . }}
         release: {{ .Release.Name }}
     spec:
+      initContainers:
+        - name: couchdb-config
+          image: busybox
+          command: [ "/bin/sh", "-c", "cp -RvpL /config/* /opt/couchdb/etc/default.d"]
+          volumeMounts:
+          - name: init-config
+            mountPath: /config
+          - name: config
+            mountPath: /opt/couchdb/etc/default.d
       containers:
         - name: couchdb
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -52,6 +61,7 @@ spec:
             - name: ERL_FLAGS
               value: "{{ range $k, $v := .Values.erlangFlags }} -{{ $k }} {{ $v }} {{ end }}"
           livenessProbe:
+            initialDelaySeconds: 60
             httpGet:
               path: /
               port: 5984
@@ -87,12 +97,14 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
       volumes:
-        - name: config
+        - name: init-config
           configMap:
             name: {{ template "couchdb.fullname" . }}
             items:
               - key: inifile
                 path: chart.ini
+        - name: config
+          emptyDir: {}
 {{- if not .Values.persistentVolume.enabled }}
         - name: database-storage
           emptyDir: {}
