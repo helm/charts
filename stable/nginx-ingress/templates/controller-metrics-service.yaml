@@ -1,10 +1,10 @@
-{{- if .Values.controller.stats.enabled }}
+{{- if and .Values.controller.stats.enabled .Values.controller.metrics.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-{{- if .Values.statsExporter.service.annotations }}
+{{- if .Values.controller.metrics.service.annotations }}
   annotations:
-{{ toYaml .Values.statsExporter.service.annotations | indent 4 }}
+{{ toYaml .Values.controller.metrics.service.annotations | indent 4 }}
 {{- end }}
   labels:
     app: {{ template "nginx-ingress.name" . }}
@@ -14,25 +14,25 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}-metrics
 spec:
-  clusterIP: "{{ .Values.statsExporter.service.clusterIP }}"
-{{- if .Values.statsExporter.service.externalIPs }}
+  clusterIP: "{{ .Values.controller.metrics.service.clusterIP }}"
+{{- if .Values.controller.metrics.service.externalIPs }}
   externalIPs:
-{{ toYaml .Values.statsExporter.service.externalIPs | indent 4 }}
+{{ toYaml .Values.controller.metrics.service.externalIPs | indent 4 }}
 {{- end }}
-{{- if .Values.statsExporter.service.loadBalancerIP }}
-  loadBalancerIP: "{{ .Values.statsExporter.service.loadBalancerIP }}"
+{{- if .Values.controller.metrics.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.controller.metrics.service.loadBalancerIP }}"
 {{- end }}
-{{- if .Values.statsExporter.service.loadBalancerSourceRanges }}
+{{- if .Values.controller.metrics.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-{{ toYaml .Values.statsExporter.service.loadBalancerSourceRanges | indent 4 }}
+{{ toYaml .Values.controller.metrics.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
   ports:
     - name: metrics
-      port: {{ .Values.statsExporter.service.servicePort }}
-      targetPort: {{ .Values.statsExporter.service.targetPort }}
+      port: {{ .Values.controller.metrics.service.servicePort }}
+      targetPort: metrics
   selector:
     app: {{ template "nginx-ingress.name" . }}
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
-  type: "{{ .Values.statsExporter.service.type }}"
+  type: "{{ .Values.controller.metrics.service.type }}"
 {{- end }}

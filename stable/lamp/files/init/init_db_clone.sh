@@ -48,7 +48,7 @@ function init_from_backup
 }
 
 if [ -e "$WEBDIR/db_clone_initialized" ]; then
-	echo "Pod allready initialized, continuing..."
+	echo "Pod already initialized, continuing..."
 else
 	init_from_backup
 	touch "$WEBDIR/db_clone_initialized"

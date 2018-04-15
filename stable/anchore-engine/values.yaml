@@ -11,8 +11,8 @@ service:
     k8sImagePolicyWebhook: 8338
 
 image:
-  # Specific version tags are also available, e.g. v0.1.5, v0.1.6,...
-  tag: docker.io/anchore/anchore-engine:latest
+  # Can use 'latest' but not recommended
+  tag: docker.io/anchore/anchore-engine:v0.1.9
   # pullPolicy: IfNotPresent
 
 # Used to create Ingress record (should used with service.type: ClusterIP or NodePort depending on platform)
@@ -42,6 +42,9 @@ postgresql:
 
 # Global configuration shared by both core and worker
 globalConfig:
+  # Set where default configs are placed at startup. This must be a writable location for the pod.
+  configDir: /anchore_service_config
+
   dbConfig:
     timeout: 120
     # Use ssl, but the default postgresql config in helm's stable repo does not support ssl on server side, so this should be set for external dbs only for the time being
@@ -137,6 +140,15 @@ coreConfig:
   #    cpu: 100m
   #    memory: 4Gi
 
+  ## Node labels for pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
 # Configuration for the worker pods that perform image analysis
 # There may be many of these workers but best practice is to not have more than one per node since analysis
 # is very IO intensive. Use of affinity/anti-affinity rules for scheduling the workers is future work.
@@ -181,3 +193,12 @@ workerConfig:
   #  requests:
   #    cpu: 100m
   #    memory: 2Gi
+
+  ## Node labels for pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}

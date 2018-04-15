@@ -42,9 +42,9 @@ the first place, you can upgrade using the following command:
 
 ```
 $ export ERLANGCOOKIE=$(kubectl get secrets -n <NAMESPACE> <HELM_RELEASE_NAME>-rabbitmq-ha -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
-$ helm upgrade --name <HELM_RELEASE_NAME> \
+$ helm upgrade \
     --set rabbitmqErlangCookie=$ERLANGCOOKIE \
-    stable/rabbitmq-ha
+    <HELM_RELEASE_NAME> stable/rabbitmq-ha
 ```
 
 ## Uninstalling the Chart
@@ -60,7 +60,7 @@ deletes the release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the RabbitMQ chart
+The following table lists the configurable parameters of the RabbitMQ chart
 and their default values.
 
 |          Parameter                 |                       Description                               |                         Default                          |
@@ -76,17 +76,31 @@ and their default values.
 | `persistentVolume.size`            | Persistent volume size                                          | `8Gi`                                                    |
 | `persistentVolume.storageClass`    | Persistent volume storage class                                 | `-`                                                      |
 | `podAntiAffinity`                  | Pod antiaffinity, `hard` or `soft`                              | `hard`                                                   |
+| `rabbitmqCert.enabled`             | Mount a Secret container certificates                           | `false`                                                  |
+| `rabbitmqCert.existingSecret`      | Name of an existing `Secret` to mount for amqps                 | ``                                                       |
+| `rabbitmqCert.cacertfile`          | base64 encoded CA certificate (overwrites existing Secret)      | ``                                                       |
+| `rabbitmqCert.certfile`            | base64 encoded server certificate (overwrites existing Secret)  | ``                                                       |
+| `rabbitmqCert.keyfile`             | base64 encoded server private key (overwrites existing Secret)  | ``                                                       |
 | `rabbitmqEpmdPort`                 | EPMD port used for cross cluster replication                    | `4369`                                                   |
 | `rabbitmqErlangCookie`             | Erlang cookie                                                   | _random 32 character long alphanumeric string_           |
 | `rabbitmqHipeCompile`              | Precompile parts of RabbitMQ using HiPE                         | `false`                                                  |
+| `rabbitmqMQTTPlugin.config`        | MQTT configuration                                              | ``                                                       |
+| `rabbitmqMQTTPlugin.enabled`       | Enable MQTT plugin                                              | `false`                                                  |
 | `rabbitmqManagerPort`              | RabbitMQ Manager port                                           | `15672`                                                  |
 | `rabbitmqMemoryHighWatermark`      | Memory high watermark                                           | `256MB`                                                  |
 | `rabbitmqNodePort`                 | Node port                                                       | `5672`                                                   |
 | `rabbitmqPassword`                 | RabbitMQ application password                                   | _random 10 character long alphanumeric string_           |
+| `rabbitmqSTOMPPlugin.config`       | STOMP configuration                                             | ``                                                       |
+| `rabbitmqSTOMPPlugin.enabled`      | Enable STOMP plugin                                             | `false`                                                  |
 | `rabbitmqUsername`                 | RabbitMQ application username                                   | `guest`                                                  |
 | `rabbitmqVhost`                    | RabbitMQ application vhost                                      | `/`                                                      |
+| `rabbitmqWebMQTTPlugin.config`     | MQTT over websocket configuration                               | ``                                                       |
+| `rabbitmqWebMQTTPlugin.enabled`    | Enable MQTT over websocket plugin                               | `false`                                                  |
+| `rabbitmqWebSTOMPPlugin.config`    | STOMP over websocket configuration                              | ``                                                       |
+| `rabbitmqWebSTOMPPlugin.enabled`   | Enable STOMP over websocket plugin                              | `false`                                                  |
 | `rbac.create`                      | If true, create & use RBAC resources                            | `true`                                                   |
-| `rbac.serviceAccountName`          | Service account name to use (ignored if rbac.create=true)       | `default`                                                |
+| `serviceAccount.create`            | Create service account                                          | `true`                                                   |
+| `serviceAccount.name`              | Service account name to use                                     | _name of the release_                                    |
 | `replicaCount`                     | Number of replica                                               | `3`                                                      |
 | `resources`                        | CPU/Memory resource requests/limits                             | `{}`                                                     |
 | `service.annotations`              | Annotations to add to service                                   | `none`                                                   |
@@ -126,3 +140,38 @@ can be used to override the default configmap.yaml provided. It also allows for
 providing additional configuration files that will be mounted into
 `/etc/rabbitmq`. In the parent chart's values.yaml, set the value to true and
 provide the file `templates/configmap.yaml` for your use case.
+
+Example of using RabbitMQ definition to setup users, permissions or policies:
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-release-rabbitmq-ha
+data:
+  enabled_plugins: |
+    [
+      rabbitmq_consistent_hash_exchange,
+      rabbitmq_federation,
+      rabbitmq_federation_management,
+      rabbitmq_management,
+      rabbitmq_peer_discovery_k8s,
+      rabbitmq_shovel,
+      rabbitmq_shovel_management
+    ].
+  rabbitmq.conf: |
+    # ....
+    management.load_definitions = /etc/rabbitmq/definitions.json
+  definitions.json: |
+    {
+      "permissions": [],
+      "users": [],
+      "policies: []
+    }
+```
+
+Then, install the chart with the above configuration:
+
+```
+$ helm install --name my-release --set customConfigMap=true stable/rabbitmq-ha
+```

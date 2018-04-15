@@ -43,12 +43,15 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the phpBB chart and their default values.
+The following table lists the configurable parameters of the phpBB chart and their default values.
 
 |             Parameter             |              Description              |                         Default                         |
 |-----------------------------------|---------------------------------------|---------------------------------------------------------|
-| `image`                           | phpBB image                           | `bitnami/phpbb:{VERSION}`                               |
-| `imagePullPolicy`                 | Image pull policy                     | `IfNotPresent`                                          |
+| `image.registry`                  | phpBB image registry                  | `docker.io`                                             |
+| `image.repository`                | phpBB image name                      | `bitnami/phpbb`                                         |
+| `image.tag`                       | phpBB image tag                       | `{VERSION}`                                             |
+| `image.pullPolicy`                | Image pull policy                     | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`               | Specify image pull secrets            | `nil`                                                   |
 | `phpbbUser`                       | User of the application               | `user`                                                  |
 | `phpbbPassword`                   | Application password                  | _random 10 character long alphanumeric string_          |
 | `phpbbEmail`                      | Admin email                           | `user@example.com`                                      |
@@ -60,8 +63,8 @@ The following tables lists the configurable parameters of the phpBB chart and th
 | `externalDatabase.host`           | Host of the external database         | `nil`                                                   |
 | `externalDatabase.user`           | Existing username in the external db  | `bn_phpbb`                                              |
 | `externalDatabase.password`       | Password for the above username       | `nil`                                                   |
-| `externalDatabase.database`       | Name of the existing databse          | `bitnami_phpbb`                                         |
-| `mariadb.enabled`                 | Use or not the mariadb chart          | `true`                                                  |
+| `externalDatabase.database`       | Name of the existing database         | `bitnami_phpbb`                                         |
+| `mariadb.enabled`                 | Use or not the MariaDB chart          | `true`                                                  |
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                | `nil`                                                   |
 | `mariadb.mariadbDatabase`         | Database name to create               | `bitnami_phpbb`                                         |
 | `mariadb.mariadbUser`             | Database user to create               | `bn_phpbb`                                              |
@@ -86,7 +89,7 @@ $ helm install --name my-release \
     stable/phpbb
 ```
 
-The above command sets the phpBB administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the phpBB administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 

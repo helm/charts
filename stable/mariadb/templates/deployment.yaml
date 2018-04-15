@@ -3,19 +3,28 @@ kind: Deployment
 metadata:
   name: {{ template "mariadb.fullname" . }}
   labels:
-    app: {{ template "mariadb.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "mariadb.name" . }}
+    chart: {{ template "mariadb.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
   template:
     metadata:
       labels:
-        app: {{ template "mariadb.fullname" . }}
+        app: {{ template "mariadb.name" . }}
+        release: "{{ .Release.Name }}"
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      {{- if .Values.securitySettings.enabled }}
       securityContext:
-        runAsUser: 1001
-        fsGroup: 1001
+        runAsUser: {{ .Values.securitySettings.runAsUser }}
+        fsGroup: {{ .Values.securitySettings.fsGroup }}
+      {{- end}}
       initContainers:
       - name: "copy-custom-config"
         image: "busybox"
@@ -28,8 +37,8 @@ spec:
           mountPath: /bitnami/mariadb
       containers:
       - name: mariadb
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         {{- if .Values.usePassword }}
         - name: MARIADB_ROOT_PASSWORD
@@ -58,15 +67,17 @@ spec:
         livenessProbe:
           exec:
             command:
-            - mysqladmin
-            - ping
+            - bash
+            - -c
+            - mysqladmin ping{{ if .Values.usePassword }} -uroot -p$MARIADB_ROOT_PASSWORD{{ end }}
           initialDelaySeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           exec:
             command:
-            - mysqladmin
-            - ping
+            - bash
+            - -c
+            - mysqladmin ping{{ if .Values.usePassword }} -uroot -p$MARIADB_ROOT_PASSWORD{{ end }}
           initialDelaySeconds: 5
           timeoutSeconds: 1
         resources:

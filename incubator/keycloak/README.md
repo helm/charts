@@ -13,7 +13,7 @@ $ helm install incubator/keycloak
 
 This chart bootstraps a [Keycloak](http://www.keycloak.org/) StatefulSet on a [Kubernetes](https://kubernetes.io) cluster 
 using the [Helm](https://helm.sh) package manager. It provisions a fully featured Keycloak installation.
-For more information on Keycloak and its capabilities, see it's [documentation](http://www.keycloak.org/documentation.html).
+For more information on Keycloak and its capabilities, see its [documentation](http://www.keycloak.org/documentation.html).
 
 ## Prerequisites Details
 
@@ -38,7 +38,7 @@ $ helm delete keycloak
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Keycloak chart and their default values.
+The following table lists the configurable parameters of the Keycloak chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
@@ -62,7 +62,7 @@ Parameter | Description | Default
 `keycloak.cli.discovery` | WildFly CLI script for cluster discovery | See `values.yaml`
 `keycloak.cli.custom` | Additional custom WildFly CLI script | `""`
 `keycloak.service.annotations` | Annotations for the Keycloak service | `{}`
-`keycloak.service.labels` | Additional labels for ther Keycloak service | `{}`
+`keycloak.service.labels` | Additional labels for the Keycloak service | `{}`
 `keycloak.service.type` | The service type | `ClusterIP`
 `keycloak.service.port` | The service port | `80`
 `keycloak.service.nodePort` | The node port used if the service is of type `NodePort` | `""`
@@ -86,6 +86,9 @@ Parameter | Description | Default
 `postgresql.postgresUser` | The PostgreSQL user (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
 `postgresql.postgresPassword` | The PostgreSQL password (if `keycloak.persistence.deployPostgres=true`) | `""`
 `postgresql.postgresDatabase` | The PostgreSQL database (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
+`rbac.create` | Specifies whether RBAC resources should be created | `true`
+`serviceAccount.create` | Specifies whether a ServiceAccount should be created | `true`
+`serviceAccount.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `""`
 `test.image.repository` | Test image repository | `unguiculus/docker-python3-phantomjs-selenium`
 `test.image.tag` | Test image tag | `v1`
 `test.image.pullPolicy` | Test image pull policy | `IfNotPresent`

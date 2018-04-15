@@ -1,5 +1,5 @@
 name: mediawiki
-version: 0.6.1
+version: 1.0.2
 appVersion: 1.30.0
 description: Extremely powerful, scalable software and a feature-rich wiki implementation
   that uses PHP to process and display data stored in a database.

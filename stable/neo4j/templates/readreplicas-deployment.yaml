@@ -73,3 +73,7 @@ spec:
       volumes:
         - name: plugins
           emptyDir: {}
+{{- if .Values.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecret }}
+{{- end -}}

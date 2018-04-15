@@ -7,7 +7,7 @@ Learn more: https://github.com/justwatchcom/elasticsearch_exporter
 ## TL;DR;
 
 ```bash
-$ helm install .
+$ helm install stable/elasticsearch-exporter
 ```
 
 ## Introduction
@@ -24,7 +24,7 @@ cluster using the [Helm](https://helm.sh) package manager.
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release .
+$ helm install --name my-release stable/elasticsearch-exporter
 ```
 
 The command deploys Elasticsearch-Exporter on the Kubernetes cluster using the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -47,7 +47,7 @@ Parameter | Description | Default
 `replicaCount` | desired number of pods | `1`
 `restartPolicy` | container restart policy | `Always`
 `image.repository` | container image repository | `justwatch/elasticsearch_exporter`
-`image.tag` | container image tag | `1.0.2rc1`
+`image.tag` | container image tag | `1.0.2`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `resources` | resource requests & limits | `{}`
 `service.type` | type of service to create | `ClusterIP`
@@ -67,14 +67,14 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
     --set key_1=value_1,key_2=value_2 \
-    .
+    stable/elasticsearch-exporter
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
 # example for staging
-$ helm install --name my-release -f values.yaml .
+$ helm install --name my-release -f values.yaml stable/elasticsearch-exporter
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

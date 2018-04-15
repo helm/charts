@@ -12,7 +12,7 @@ host:
 
 image:
   repository: jtblin/kube2iam
-  tag: 0.9.0
+  tag: 0.10.0
   pullPolicy: IfNotPresent
 
 # AWS Access keys to inject as environment variables
@@ -22,15 +22,22 @@ aws:
   region: ""
 
 ## Node labels for pod assignment
-## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 ##
 nodeSelector: {}
+
+## Affinity configuration for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+##
+affinity: {}
 
 ## Annotations to be added to pods
 ##
 podAnnotations: {}
 
 podLabels: {}
+
+probe: true
 
 rbac:
   ## If true, create & use RBAC resources
