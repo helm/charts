@@ -37,20 +37,26 @@ $ helm delete kindly-newt
 
 The following table lists the configurable parameters of the Sonarqube chart and their default values.
 
-| Parameter                                   | Description                         | Default                                    |
-| ------------------------------------------  | ----------------------------------  | -------------------------------------------|
-| `image.tag`                                 | `sonarqube` image tag.              | 6.5                                        |
-| `image.pullPolicy`                          | Image pull policy                   | `IfNotPresent`                             |
-| `ingress.enabled`                           | Flag for enabling ingress           | false                                      |
-| `service.type`                              | Kubernetes service type             | `LoadBalancer`                             |
-| `persistence.enabled`                       | Flag for enabling persistent storage| false                                      |
-| `persistence.storageClass`                  | Storage class to be used            | "-"                                        |
-| `persistence.accessMode`                    | Volumes access mode to be set       | `ReadWriteOnce`                            |
-| `persistence.size`                          | Size of the volume                  | `10Gi`                                     |
-| `sonarProperties`                           | Custom `sonar.properties` file      | None                                       |
-| `postgresql.postgresUser`                   | Postgresql database user            | `sonarUser`                                |
-| `postgresql.postgresPassword`               | Postgresql database password        | `sonarPass`                                |
-| `postgresql.postgresDatabase`               | Postgresql database name            | `sonarDB`                                  |
+| Parameter                                   | Description                               | Default                                    |
+| ------------------------------------------  | ----------------------------------------  | -------------------------------------------|
+| `image.tag`                                 | `sonarqube` image tag.                    | 6.5                                        |
+| `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
+| `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
+| `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
+| `persistence.enabled`                       | Flag for enabling persistent storage      | false                                      |
+| `persistence.storageClass`                  | Storage class to be used                  | "-"                                        |
+| `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
+| `persistence.size`                          | Size of the volume                        | `10Gi`                                     |
+| `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
+| `postgresql.postgresUser`                   | Postgresql database user                  | `sonarUser`                                |
+| `postgresql.postgresPassword`               | Postgresql database password              | `sonarPass`                                |
+| `postgresql.postgresDatabase`               | Postgresql database name                  | `sonarDB`                                  |
+| `resources`                                 | Sonarqube Pod resource requests & limits  | `{}`                                       |
+| `affintiy`                                  | Node / Pod affinities                     | `{}`                                       |
+| `nodeSelector`                              | Node labels for pod assignment            | `{}`                                       |
+| `tolerations`                               | List of node taints to tolerate           | `[]`                                       |
+| `plugins.install`                           | List of plugins to install                | `[]`                                       |
+| `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |
 
 You can also configure values for the PostgreSQL database via the Postgresql [README.md](https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md)
 
