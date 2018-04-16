@@ -128,6 +128,10 @@ spec:
         - name: {{ template "mongodb-replicaset.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          {{- if .Values.extraVars }}
+          env:
+{{ toYaml .Values.extraVars | indent 12 }}
+          {{- end }}
           securityContext:
             runAsUser: {{ $user }}
             allowPrivilegeEscalation: false
@@ -157,7 +161,6 @@ spec:
             exec:
               command:
                 - mongo
-              args:
               {{- if .Values.tls.enabled }}
                 - --ssl
                 - --sslCAFile=/data/configdb/tls.crt
