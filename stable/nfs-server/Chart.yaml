@@ -8,9 +8,9 @@ keywords:
 - nfs
 - shared
 - filesystem
-home: tbd
+home: https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs
 sources:
-- tbd
+- https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs
 maintainers:
 - name: bitnami-bot
   email: containers@bitnami.com
