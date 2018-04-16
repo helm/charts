@@ -8,9 +8,6 @@ image:
   tag: v0.1.1
   pullPolicy: IfNotPresent
 
-rbac:
-  enabled: false
-
 # The full list of available options https://github.com/pusher/k8s-spot-rescheduler#flags
 cmdOptions:
   v: 2
@@ -34,3 +31,14 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
