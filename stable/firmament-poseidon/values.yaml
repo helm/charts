@@ -8,7 +8,7 @@ poseidon:
   repository: gcr.io/poseidon-173606/poseidon
   tag: latest
   pullPolicy: IfNotPresent
-  extraContainerArgs:  poseidon
+  extraContainerArgs: poseidon
   replica: 1
   servicePort: 9091
   containerPort: 9091
@@ -87,5 +87,4 @@ clusterrole:
   name: system:poseidon
 
 clusterrolebinding:
-  name: system:poseidon                
-
+  name: system:poseidon
