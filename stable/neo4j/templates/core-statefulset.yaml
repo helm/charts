@@ -76,8 +76,9 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.core.persistentVolume.mountPath }}"
-          subPath: "{{ .Values.core.persistentVolume.subPath }}"
-        volumeMounts:
+          {{- if .Values.core.persistentVolume.subPath }}
+          subPath: {{ .Values.core.persistentVolume.subPath }}
+          {{- end }}
         - name: plugins
           mountPath: /plugins
         resources:

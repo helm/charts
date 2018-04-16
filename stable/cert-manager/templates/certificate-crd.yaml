@@ -11,8 +11,12 @@ metadata:
 spec:
   group: certmanager.k8s.io
   version: v1alpha1
+  scope: Namespaced
   names:
     kind: Certificate
     plural: certificates
-  scope: Namespaced
+    {{- if .Values.certificateResourceShortNames }}
+    shortNames:
+{{ toYaml .Values.certificateResourceShortNames | indent 6 }}
+    {{- end -}}
 {{- end -}}

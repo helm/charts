@@ -54,6 +54,7 @@ New certificates are generated with each deployment.  If persistence is enabled 
 ### Important values
 * service.externalPort: 443 - external LoadBalancer port
 * service.internalPort: 443 - port of openVPN port
+* service.nodePort: 32085 - certain node port for NodePort service type
 * openvpn.OVPN_NETWORK: 10.240.0.0 - Network allocated for openvpn clients (default: 10.240.0.0).
 * openvpn.OVPN_SUBNET:  255.255.0.0 - Network subnet allocated for openvpn client (default: 255.255.0.0).
 * openvpn.OVPN_PROTO: tcp - Protocol used by openvpn tcp or udp (default: tcp).
