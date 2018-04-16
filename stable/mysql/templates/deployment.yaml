@@ -33,8 +33,9 @@ spec:
         command: [
             "sh",
             "-ce",
-            "sed -i \"s/MYSQL_ROOT_PASSWORD/$MYSQL_ROOT_PASSWORD/g\" /tmp/mysql-init &&
-             sed -i \"s/MYSQL_PASSWORD/$MYSQL_PASSWORD/g\" /tmp/mysql-init" ]
+            "cp /configmap/mysql-init /tmp/files/mysql-init &&
+             sed -i \"s/MYSQL_ROOT_PASSWORD/$MYSQL_ROOT_PASSWORD/g\" /tmp/files/mysql-init &&
+             sed -i \"s/MYSQL_PASSWORD/$MYSQL_PASSWORD/g\" /tmp/files/mysql-init" ]
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
@@ -48,7 +49,9 @@ spec:
               key: mysql-password
         volumeMounts:
         - name: mysql-init
-          mountPath: /tmp
+          mountPath: /configmap
+        - name: tmp-files
+          mountPath: /tmp/files
       {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
@@ -59,7 +62,7 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         {{- if not .Values.mysqlAllowEmptyPassword }}
-        args: [ "--init-file=/tmp/mysql-init" ]
+        args: [ "--init-file=/tmp/files/mysql-init" ]
         {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -129,7 +132,9 @@ spec:
           mountPath: /etc/mysql/conf.d
         {{- end }}
         - name: mysql-init
-          mountPath: /tmp
+          mountPath: /configmap
+        - name: tmp-files
+          mountPath: /tmp/files
       volumes:
       {{- if .Values.configurationFiles }}
       - name: configurations
@@ -142,6 +147,8 @@ spec:
           items:
           - key: mysql-init
             path: mysql-init
+      - name: tmp-files
+        emptyDir: {}
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
