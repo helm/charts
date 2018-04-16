@@ -37,6 +37,8 @@ podAnnotations: {}
 
 securityContext:
   runAsUser: 999
+  fsGroup: 999
+  runAsNonRoot: true
 
 resources: {}
 # limits:
