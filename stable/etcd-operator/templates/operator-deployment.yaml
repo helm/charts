@@ -44,6 +44,28 @@ spec:
           requests:
             cpu: {{ .Values.etcdOperator.resources.cpu }}
             memory: {{ .Values.etcdOperator.resources.memory }}
+        {{- if .Values.etcdOperator.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: /readyz
+            port: 8080
+          initialDelaySeconds: {{ .Values.etcdOperator.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.etcdOperator.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.etcdOperator.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.etcdOperator.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.etcdOperator.livenessProbe.failureThreshold }}
+        {{- end}}
+        {{- if .Values.etcdOperator.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8080
+          initialDelaySeconds: {{ .Values.etcdOperator.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.etcdOperator.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.etcdOperator.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.etcdOperator.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.etcdOperator.readinessProbe.failureThreshold }}
+        {{- end }}
     {{- if .Values.etcdOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.etcdOperator.nodeSelector | indent 8 }}
