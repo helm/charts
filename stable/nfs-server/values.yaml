@@ -16,11 +16,11 @@ image:
   ##
   # pullSecrets:
   #   - myRegistrKeySecretName
-  
+
 nfs:
    ## to provide an exiting PVC to mount and share using the existing PVC value, this should be ReadWriteOnce type
   ## existingPVC: your-pvc
-  
+
   ## if you want to create a new ReadWriteOnce PVC you can use storageClass to define a specific storage class to use
   ## storageClass: "-"
 
