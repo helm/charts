@@ -1,0 +1,39 @@
+{{ if and .Values.prometheus.jmx.enabled .Values.prometheus.prometheusOperator }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "kafka.fullname" . }}
+  namespace: monitoring
+  labels:
+{{ toYaml .Values.prometheus.serviceMonitorSelector | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "kafka.name" . }}
+      release: {{ .Release.Name | quote }}
+  endpoints:
+  - port: jmx-exporter
+    interval: {{ .Values.prometheus.jmx.interval }}
+  namespaceSelector:
+    any: true
+{{ end }}
+---
+{{ if and .Values.prometheus.kafka.enabled .Values.prometheus.prometheusOperator }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "kafka.fullname" . }}-exporter
+  namespace: monitoring
+  labels:
+{{ toYaml .Values.prometheus.serviceMonitorSelector | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "kafka.name" . }}-exporter
+      release: {{ .Release.Name | quote }}
+  endpoints:
+  - port: kafka-exporter
+    interval: {{ .Values.prometheus.kafka.interval }}
+  namespaceSelector:
+    any: true
+{{ end }}
