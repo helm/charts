@@ -71,6 +71,9 @@ spec:
             - name: service
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            - name: grafana
+              containerPort: 3000
+              protocol: TCP
           env:
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
