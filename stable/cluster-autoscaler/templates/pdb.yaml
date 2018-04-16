@@ -13,5 +13,5 @@ spec:
     matchLabels:
       app: {{ template "cluster-autoscaler.name" . }}
       release: {{ .Release.Name }}
-{{ toYaml .Values.podDisruptionBudget | indent 2 }}
+{{ .Values.podDisruptionBudget | indent 2 }}
 {{- end -}}
