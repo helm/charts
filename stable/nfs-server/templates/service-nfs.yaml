@@ -1,4 +1,3 @@
-{{- if .Values.nfs.enabled }}
 kind: Service
 apiVersion: v1
 metadata:
@@ -19,4 +18,3 @@ spec:
       port: 111
   selector:
     app: {{ template "name" . }}
-{{- end}}

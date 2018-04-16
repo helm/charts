@@ -1,4 +1,3 @@
-{{- if .Values.nfs.enabled -}}
 {{- if not .Values.nfs.existingPVC}}
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -20,7 +19,6 @@ spec:
   storageClassName: ""
 {{- else }}
   storageClassName: "{{ .Values.nfs.storageClass }}"
-{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

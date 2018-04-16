@@ -63,7 +63,6 @@ The following table lists the configurable parameters of the WordPress chart and
 | `image.tag`                          |  Image tag                        | `0.8`                                                |
 | `image.pullPolicy`                   | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
 | `image.pullSecrets`                  | Specify image pull secrets                 | `nil`                                                      |
-| `nfs.enabled`                        | disables chart, useful for chart dependencies   | `true`                                                |
 | `nfs.existingPVC`                    | existing PVC to use for sharing            | not defined                                                |
 | `nfs.storageClass`                   | storage class to use if creating a new PVC | not defined                                                |
 | `nfs.nfsStorageClass`                | storage class label for the new nfs PV     | not defined, uses release name                       |

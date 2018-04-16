@@ -1,4 +1,3 @@
-{{- if .Values.nfs.enabled }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -16,4 +15,3 @@ spec:
   nfs:
     server: {{ .Values.nfs.clusterIp }}
     path: "/exports"
-{{- end }}
