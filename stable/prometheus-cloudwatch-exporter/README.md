@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `service.type`              | Service type                                           | `ClusterIP`                |
 | `service.port`              | The service port                                       | `80`                       |
 | `service.targetPort`        | The target port of the container                       | `9100`                     |
+| `service.annotations`       | Custom annotations for service                         | `{}`                       |
 | `resources`                 |                                                        | `{}`                       |
 | `aws.region`                | AWS Cloudwatch region                                  | `eu-west-1`                |
 | `aws.role`                  | AWS IAM Role To Use                                    |                            |
