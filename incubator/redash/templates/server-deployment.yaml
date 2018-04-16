@@ -1,0 +1,112 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "redash.fullname" . }}
+  labels:
+    app: {{ template "redash.name" . }}
+    component: "{{ .Values.server.name }}"
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "redash.name" . }}
+        component: "{{ .Values.server.name }}"
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+        - name: "createdb"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["bash", "/config/createdb.sh"]
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          env:
+            - name: REDASH_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "redash.fullname" . }}
+                  key: cookieSecret
+            - name: REDASH_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "redash.fullname" . }}
+                  key: postgresURL
+            - name: REDASH_REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "redash.fullname" . }}
+                  key: redisURL
+          {{- range $key, $value := .Values.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          {{- range $key, $value := .Values.serverEnv }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+      containers:
+        - name: {{ template "redash.name" . }}-{{ .Values.server.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/app/bin/docker-entrypoint", "server"]
+          env:
+            - name: REDASH_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "redash.fullname" . }}
+                  key: cookieSecret
+            - name: REDASH_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "redash.fullname" . }}
+                  key: postgresURL
+            - name: REDASH_REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "redash.fullname" . }}
+                  key: redisURL
+          {{- range $key, $value := .Values.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          {{- range $key, $value := .Values.serverEnv }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          livenessProbe:
+            exec:
+              command:
+              - /app/manage.py
+              - status
+            # Redash can take a while to come up initially, so we delay checks.
+            initialDelaySeconds: 90
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 10
+          readinessProbe:
+            httpGet:
+              path: /static/images/redash_icon_small.png
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ template "redash.fullname" . }}

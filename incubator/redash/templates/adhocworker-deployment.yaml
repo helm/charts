@@ -1,0 +1,49 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "redash.adhocworker.fullname" . }}
+  labels:
+    app: {{ template "redash.name" . }}
+    component: {{ .Values.adhocWorker.name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.adhocWorker.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "redash.name" . }}
+        component: {{ .Values.adhocWorker.name }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "redash.name" . }}-{{ .Values.adhocWorker.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/app/bin/docker-entrypoint", "scheduler"]
+          env:
+            - name: REDASH_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "redash.fullname" . }}
+                  key: postgresURL
+            - name: REDASH_REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "redash.fullname" . }}
+                  key: redisURL
+          {{- range $key, $value := .Values.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          {{- range $key, $value := .Values.adhocWorker.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          resources:
+{{ toYaml .Values.adhocWorker.resources | indent 12 }}
+    {{- if .Values.adhocWorker.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.adhocWorker.nodeSelector | indent 8 }}
+    {{- end }}

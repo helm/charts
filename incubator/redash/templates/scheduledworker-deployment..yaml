@@ -1,0 +1,49 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "redash.scheduledworker.fullname" . }}
+  labels:
+    app: {{ template "redash.name" . }}
+    component: {{ .Values.scheduledWorker.name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.scheduledWorker.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "redash.name" . }}
+        component: {{ .Values.scheduledWorker.name }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "redash.name" . }}-{{ .Values.scheduledWorker.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/app/bin/docker-entrypoint", "scheduler"]
+          env:
+            - name: REDASH_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "redash.fullname" . }}
+                  key: postgresURL
+            - name: REDASH_REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "redash.fullname" . }}
+                  key: redisURL
+          {{- range $key, $value := .Values.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          {{- range $key, $value := .Values.scheduledWorker.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          resources:
+{{ toYaml .Values.scheduledWorker.resources | indent 12 }}
+    {{- if .Values.scheduledWorker.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.scheduledWorker.nodeSelector | indent 8 }}
+    {{- end }}

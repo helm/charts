@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "redash.fullname" . }}
+  labels:
+    app: {{ template "redash.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  createdb.sh: |
+    #!/usr/bin/env bash
+    # Check PostgreSQL is up and create the database on first run.
+    echo "Checking status."
+    while /app/manage.py status 2>&1 | grep 'sqlalchemy.exc.OperationalError'; do
+      echo "Database not yet functional, waiting."
+      sleep 10
+    done
+    sleep 5
+    if /app/manage.py status 2>&1 | grep 'sqlalchemy.exc.ProgrammingError'; then
+      echo "Database tables not ready, creating tables now."
+      /app/manage.py database create_tables
+    fi

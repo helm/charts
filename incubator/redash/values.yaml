@@ -1,0 +1,110 @@
+# Default values for redash.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: redash/redash
+  tag: 4.0.0-rc.1
+  pullPolicy: IfNotPresent
+
+## Redash configuration:
+##
+# Random value for session cookies. If not set a random value will be generated.
+# cookieSecret:
+# Add any environment variables from https://redash.io/help-onpremise/setup/settings-environment-variables.html
+# Variables applied to both server and worker containers.
+env:
+  PYTHONUNBUFFERED: 0
+  REDASH_LOG_LEVEL: "INFO"
+
+# Server specific envrionment variables.
+server:
+  name: redash
+  env:
+    REDASH_WEB_WORKERS: 4
+  replicaCount: 1
+
+  ## Server resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    requests:
+    #  cpu: 100m
+      memory: 2Gi
+
+    ## Node labels for server pod assignment
+    ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+    ##
+  nodeSelector: {}
+
+service:
+  name: redash
+  type: ClusterIP
+  externalPort: 80
+  internalPort: 5000
+ingress:
+  enabled: false
+  # Used to create an Ingress record.
+  hosts:
+    # - chart-example.local
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+
+## Configuration for Redash ad-hoc workers.
+adhocWorker:
+  name: redash-worker-adhoc
+  # Ad-hoc worker specific environment variables.
+  env:
+    QUEUES: "queries,celery"
+    WORKERS_COUNT: 2
+  replicaCount: 1
+  resources: {}
+  nodeSelector: {}
+
+## Configuration for Redash scheduled workers.
+scheduledWorker:
+  name: redash-worker-scheduled
+  # Scheduled worker specific environment variables.
+  env:
+    QUEUES: "scheduled_queries"
+    WORKERS_COUNT: 2
+  replicaCount: 1
+  resources: {}
+  nodeSelector: {}
+
+## Configuration values for the postgresql dependency.
+## This PostgreSQL instance is used for all Redash state storage.
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
+##
+postgresql:
+  imageTag: "9.5.6-alpine"
+  postgresUser: redash
+  postgresPassword: redash
+  postgresDatabase: redash
+  persistence:
+    enabled: true
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    storageClass: ""
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    # existingClaim: ""
+
+## Configuration values for the redis dependency.
+## This Redis instance is used for caching and temporary storage.
+## ref: https://github.com/kubernetes/charts/blob/master/stable/redis/README.md
+##
+redis:
+  redisPassword: redash
