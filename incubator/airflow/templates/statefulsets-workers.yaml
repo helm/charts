@@ -12,7 +12,6 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   serviceName: "{{ template "airflow.fullname" . }}-workers"
-  serviceAccountName: {{ .Values.workers.serviceAccountName }}
   updateStrategy:
     type: RollingUpdate
   ## Use experimental burst mode for faster StatefulSet scaling
@@ -34,6 +33,7 @@ spec:
     spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
+      serviceAccountName: {{ .Values.workers.serviceAccountName }}
       containers:
         - name: {{ .Chart.Name }}-worker
           imagePullPolicy: {{ .Values.airflow.image.pull_policy }}
