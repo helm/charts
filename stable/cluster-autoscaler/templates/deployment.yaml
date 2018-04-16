@@ -74,7 +74,7 @@ spec:
           {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}
             value: {{ $value }}
-          {{- end }}          
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /health-check

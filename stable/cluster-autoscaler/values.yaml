@@ -1,6 +1,6 @@
 autoDiscovery:
-# Only cloudProvider `aws` is supported by auto-discovery at this time
-# Set tags as described in https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#auto-discovery-setup
+# Only cloudProvider `aws` and `gce` are supported by auto-discovery at this time
+# AWS: Set tags as described in https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#auto-discovery-setup
   clusterName:  # cluster.local
 
 autoscalingGroups: []
@@ -75,7 +75,9 @@ rbac:
   ## If true, create & use RBAC resources
   ##
   create: false
-
+  ## If true, create & use Pod Security Policy resources
+  ## https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  pspEnabled: false
   ## Ignored if rbac.create is true
   ##
   serviceAccountName: default
