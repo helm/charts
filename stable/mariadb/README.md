@@ -7,7 +7,7 @@ MariaDB is developed as open source software and as a relational database it pro
 ## TL;DR
 
 ```bash
-$ helm install bitnami/mariadb-cluster
+$ helm install stable/mariadb
 ```
 
 ## Introduction
@@ -24,7 +24,7 @@ This chart bootstraps a [MariaDB](https://github.com/bitnami/bitnami-docker-mari
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release bitnami/mariadb-cluster
+$ helm install --name my-release stable/mariadb
 ```
 
 The command deploys MariaDB on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -103,9 +103,10 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `slave.readinessProbe.successThreshold`   | Minimum consecutive successes for the probe (slave) | `1`                                                               |
 | `slave.readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe (slave)  | `3`                                                               |
 | `metrics.enabled`                         | Start a side-car prometheus exporter                | `false`                                                           |
-| `metrics.image`                           | Exporter image name                                 | `prom/mysqld-exporter`                                            |
-| `metrics.imageTag`                        | Exporter image tag                                  | `v0.10.0`                                                         |
-| `metrics.imagePullPolicy`                 | Exporter image pull policy                          | `IfNotPresent`                                                    |
+| `metrics.image.registry`                           | Exporter image registry                                 | `docker.io` | 
+`metrics.image.repository`                           | Exporter image name                                 | `prom/mysqld-exporter`                                            |
+| `metrics.image.tag`                        | Exporter image tag                                  | `v0.10.0`                                                         |
+| `metrics.image.pullPolicy`                 | Exporter image pull policy                          | `IfNotPresent`                                                    |
 | `metrics.resources`                       | Exporter resource requests/limit                    | `nil`                                                             |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
@@ -115,7 +116,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
   --set root.password=secretpassword,user.database=app_database \
-    bitnami/mariadb-cluster
+    stable/mariadb
 ```
 
 The above command sets the MariaDB `root` account password to `secretpassword`. Additionally it creates a database named `my_database`.
@@ -123,7 +124,7 @@ The above command sets the MariaDB `root` account password to `secretpassword`. 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml bitnami/mariadb-cluster
+$ helm install --name my-release -f values.yaml stable/mariadb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

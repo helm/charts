@@ -3,7 +3,7 @@ Please be patient while the chart is being deployed
 
 Tip:
 
-  Watch the deployment status using the command: kubectl get pods -w --namespace {{ .Release.Namespace }}
+  Watch the deployment status using the command: kubectl get pods -w --namespace {{ .Release.Namespace }} -l release={{ .Release.Name }}
 
 Services:
 
