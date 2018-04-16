@@ -1,0 +1,6 @@
+To use this NFS service, create a PVC with storageclass:
+{{- if .Values.nfs.nfsStorageClass }}
+  storageClassName: "{{ .Values.nfs.nfsStorageClass }}"
+{{- else }}
+  storageClassName: {{ template "fullname" . }}-nfs
+{{- end }}

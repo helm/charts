@@ -1,0 +1,43 @@
+## Bitnami WordPress image version
+## ref: https://hub.docker.com/r/bitnami/wordpress/tags/
+##
+image:
+  registry: k8s.gcr.io
+  repository: volume-nfs
+  tag: 0.8
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
+  
+nfs:
+  enabled: true
+
+  ## to provide an exiting PVC to mount and share using the existing PVC value, this should be ReadWriteOnce type
+  ## existingPVC: your-pvc
+  
+  ## if you want to create a new ReadWriteOnce PVC you can use storageClass to define a specific storage class to use
+  ## storageClass: "-"
+
+  ## To define a name for the storageclass of the NFS PV use nfsStorageClass, if not used the release name would be used
+  ## nfsStorageClass: "-"
+
+  ## nfs service requires a static clusterIP so the PV object can point to it
+  ## please change to match your cluster network definition
+  clusterIp: 10.96.0.200
+
+  ## Size on the PV to share
+  size: 10Gi
+
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}

@@ -1,0 +1,19 @@
+{{- if .Values.nfs.enabled }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "fullname" . }}
+spec:
+{{- if .Values.nfs.nfsStorageClass }}
+  storageClassName: "{{ .Values.nfs.nfsStorageClass }}"
+{{- else }}
+  storageClassName: {{ template "fullname" . }}
+{{- end }}
+  capacity:
+    storage:  {{ .Values.nfs.size | quote }}
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{ .Values.nfs.clusterIp }}
+    path: "/exports"
+{{- end }}
