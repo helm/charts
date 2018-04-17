@@ -1,5 +1,5 @@
 ---
-name: "fleet"
+name: "kolide-fleet"
 ## The version should track the upstream version, followed by the iteration. This follows the pattern established by the
 ## Debian package version.
 ## See https://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Version
