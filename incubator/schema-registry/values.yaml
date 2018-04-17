@@ -44,6 +44,22 @@ servicePort: 8081
 ## Charts uses Kafka Coordinator Master Election: https://docs.confluent.io/current/schema-registry/docs/design.html#kafka-coordinator-master-election
 kafkaStore:
   overrideBootstrapServers: ""
+## Additional Java arguments to pass to Kafka.
+# kafkaOpts: -Dfoo=bar
+
+# Options for connecting to SASL kafka brokers
+sasl:
+  configPath: "/etc/kafka-config"
+  scram:
+    enabled: false
+    init:
+      image: "confluentinc/cp-schema-registry"
+      imageTag: "4.0.0"
+      imagePullPolicy: "IfNotPresent"
+    clientUser: "kafka-client"
+    clientPassword: "client-password"
+    zookeeperClientUser: "zookeeper-client"
+    zookeeperClientPassword: "zookeeper-client-password"
 
 ## Kafka Settings
 kafka:
