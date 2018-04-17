@@ -26,7 +26,7 @@ spec:
             {{- end }}
           command: ["sh",
             "-c",
-            "mkdir -p /opt/sonarqube/extensions/plugins/ && 
+            "mkdir -p /opt/sonarqube/extensions/plugins/ &&
             cp /tmp/scripts/install_plugins.sh /opt/sonarqube/extensions/plugins/install_plugins.sh &&
             chmod 0775 /opt/sonarqube/extensions/plugins/install_plugins.sh &&
             /opt/sonarqube/extensions/plugins/install_plugins.sh
@@ -62,8 +62,10 @@ spec:
           command: [
               "sh",
               "-ce",
-              "cp /tmp/conf/sonar.properties /opt/sonarqube/conf/sonar.properties &&
-              ./bin/run.sh
+              "mkdir /scripts &&
+              cp /tmp-script/startup.sh /scripts/startup.sh &&
+              chmod 0755 /scripts/startup.sh &&
+              /scripts/startup.sh
               "
             ]
           env:
@@ -97,6 +99,8 @@ spec:
             - mountPath: /opt/sonarqube/conf
               name: sonarqube
               subPath: conf
+            - mountPath: /tmp-script/
+              name: startup
             {{- if .Values.sonarProperties }}
             - name: config
               mountPath: /tmp/conf/
@@ -136,6 +140,12 @@ spec:
           items:
             - key: install_plugins.sh
               path: install_plugins.sh
+      - name: startup
+        configMap:
+          name: {{ template "sonarqube.fullname" . }}-startup
+          items:
+            - key: startup.sh
+              path: startup.sh
       - name: sonarqube
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
