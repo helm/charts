@@ -29,7 +29,7 @@ spec:
   ports:
     - name: metrics
       port: {{ .Values.controller.metrics.service.servicePort }}
-      targetPort: metrics
+      targetPort: {{ .Values.controller.metrics.service.targetPort }}
   selector:
     app: {{ template "nginx-ingress.name" . }}
     component: "{{ .Values.controller.name }}"
