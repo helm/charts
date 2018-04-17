@@ -1,4 +1,4 @@
-apiVersion: batch/v1beta1
+apiVersion: {{ template "cronjob.apiVersion" . }}
 kind: CronJob
 metadata:
   name: {{ template "elasticsearch-curator.fullname" . }}
@@ -19,7 +19,7 @@ spec:
         spec:
           volumes:
             - name: config-volume
-              configMap: 
+              configMap:
                 name: curator-config
           restartPolicy: Never
           containers:
