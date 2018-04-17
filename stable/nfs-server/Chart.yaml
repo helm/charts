@@ -1,0 +1,17 @@
+name: nfs-server
+version: 0.1.0
+appVersion: 0.8
+description: File sharing for a PVC with a deployment over NFS.
+# needs changing
+icon: https://d33np9n32j53g7.cloudfront.net/assets/new/stack-badge-plus-dashed-16aa25b68d7ea9e3371f4b95c01b70b8.png
+keywords:
+- nfs
+- shared
+- filesystem
+home: https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs
+sources:
+- https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs
+maintainers:
+- name: bitnami-bot
+  email: containers@bitnami.com
+engine: gotpl
