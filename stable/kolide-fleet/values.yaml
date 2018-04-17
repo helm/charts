@@ -113,30 +113,12 @@ service:
 deployment:
   replicas: 1
 
-## More generally, a "request" can be thought of as "how much is this container expected to need usually". it should be
-## possible to burst outside these constraints (during a high load operation). However, Kubernetes may kill the pod
-## if the node is under too higher load and the burst is outside its request
-##
-## Limits are hard limits. Violating them is either impossible, or results in container death. I'm not sure whether
-## making these optional is a good idea or not; at the moment, I think I'm happy to defer QOS to the cluster and try
-## and keep requests close to usage.
-##
-## Requests are what are used to determine whether more software "fits" onto the cluster.
-##
-## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-## Ref: https://github.com/kubernetes/kubernetes/blob/master/docs/design/resource-qos.md
-## Ref: https://docs.docker.com/engine/reference/run/#/runtime-constraints-on-resources
 resources:
   requests:
-    ## How much CPU this container is expected to need
     cpu: "100m"
-    ## How much memory this container is expected to need.
-    memory: "512Mi"
+    memory: "256Mi"
   limits:
-    ## The max CPU this container should be allowed to use
     # cpu: "100m"
-    ## The max memory this container should be allowed to use. Note: If a container exceeds its memory limit,
-    ## it may terminated.
     # memory: "512Mi"
 
 persistence:
