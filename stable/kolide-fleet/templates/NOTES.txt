@@ -33,7 +33,7 @@ testing purposes a self signed certificate can be generated with the following c
     tls.key: $(cat key.pem | base64 -w 0)
   kind: Secret
   metadata:
-    name: kolide-fleet-fleet-tls
+    name: {{ .Release.Name }}-fleet-tls
   type: kubernetes.io/tls
   EOF
 

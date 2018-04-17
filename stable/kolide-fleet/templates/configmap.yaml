@@ -12,7 +12,7 @@ data:
   config.yml: |-
     ---
     mysql:
-      address: {{ default "kolide-fleet-mysql:3306" .Values.fleet.mysql.address }}
+      address: {{ .Release.Name }}-mysql:3306
       username: {{ default "kolide" .Values.mysql.mysqlUsername }}
       # Handled as a secret in an environment variable
       # password: kolide
@@ -23,7 +23,7 @@ data:
       tls_server_name: {{ default "" .Values.fleet.mysql.tls_server_name }}
       tls_config: {{ default  "" .Values.fleet.mysql.tls_config }}
     redis:
-      address: kolide-fleet-redis:6379
+      address: {{ .Release.Name }}-redis:6379
       # Handled as a secret in an environment variable
       # password: ""
     server:
