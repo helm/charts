@@ -2,6 +2,12 @@
 nameOverride: portus
 portus:
   replicaCount: 1
+  podAnnotations: {}
+  updateStrategy: {}
+    # rollingUpdate:
+    #   maxSurge: 1
+    #   maxUnavailable: 0
+    # type: RollingUpdate
   fqdn: portus.registry.example.com
   # these need to match the values in docker-registry.configData
   dockerFqdn: docker.registry.example.com

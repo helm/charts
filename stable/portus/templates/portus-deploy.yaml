@@ -10,11 +10,10 @@ metadata:
     component: "portus"
 spec:
   replicas: {{ .Values.portus.replicaCount }}
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-    type: RollingUpdate
+ {{- if .Values.updateStrategy }}
+   strategy:
+ {{ toYaml .Values.updateStrategy | indent 4 }}
+ {{- end }}
   template:
     metadata:
       labels:
@@ -22,6 +21,9 @@ spec:
         component: "portus"
       annotations:
         checksum/config: {{ include (print $.Chart.Name "/templates/" $.Chart.Name "-cm.yaml") . | sha256sum }}
+{{- if $.Values.podAnnotations }}
+{{ toYaml $.Values.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       containers:
       - name: "portus"
