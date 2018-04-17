@@ -124,7 +124,7 @@ affinity: {}
 
 # Custom database,user that will be initialized during sturtup with non superuser privileges for future use in project
 
-EntrypointInitDB: 
+EntrypointInitDB:
   enable: false      # if true will use initdb script and creates new env variable for project user, default is false
 
   projectDatabase: ""  # Creates in deployment env varaible PROJECT_DB_NAME
