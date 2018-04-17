@@ -27,3 +27,26 @@ else use user-provided URL
 {{- printf "%s:%s" .Values.kafka.zookeeperUrl $port }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Form the Kafka URL. If Kafka is installed as part of this chart, use k8s service discovery,
+else use user-provided URL
+*/}}
+{{- define "schema-registry.kafkaStore.bootstrapServers" }}
+{{- if .Values.kafkaStore.overrideBootstrapServers -}}
+{{- .Values.kafkaStore.overrideBootstrapServers }}
+{{- else -}}
+{{- printf "PLAINTEXT://%s-kafka-headless:9092" .Release.Name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Default GroupId to Release Name but allow it to be overridden
+*/}}
+{{- define "schema-registry.groupId" -}}
+{{- if .Values.overrideGroupId -}}
+{{- .Values.overrideGroupId -}}
+{{- else -}}
+{{- .Release.Name -}}
+{{- end -}}
+{{- end -}}
