@@ -28,6 +28,10 @@ imageTag: "5.7.14"
 ##
 imagePullPolicy: IfNotPresent
 
+## Node selector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
 livenessProbe:
   initialDelaySeconds: 30
   periodSeconds: 10

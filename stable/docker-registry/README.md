@@ -22,7 +22,7 @@ $ helm install stable/docker-registry
 
 ## Configuration
 
-The following tables lists the configurable parameters of the docker-registry chart and
+The following table lists the configurable parameters of the docker-registry chart and
 their default values.
 
 | Parameter                   | Description                                                                              | Default         |
@@ -39,6 +39,7 @@ their default values.
 | `service.type`              | service type                                                                             | `ClusterIP`     |
 | `service.nodePort`          | if `service.type` is `NodePort` and this is non-empty, sets the node port of the service | `nil`           |
 | `replicaCount`              | k8s replicas                                                                             | `1`             |
+| `updateStrategy`            | update strategy for deployment                                                           | `{}`            |
 | `resources.limits.cpu`      | Container requested CPU                                                                  | `nil`           |
 | `resources.limits.memory`   | Container requested memory                                                               | `nil`           |
 | `storage`                   | Storage system to use                                                                    | `fileststem`    |

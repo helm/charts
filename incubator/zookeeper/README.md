@@ -1,8 +1,8 @@
-# Zookeeper Helm Chart
+# ZooKeeper Helm Chart
  This helm chart provides an implementation of the ZooKeeper [StatefulSet](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/) found in Kubernetes Contrib [Zookeeper StatefulSet](https://github.com/kubernetes/contrib/tree/master/statefulsets/zookeeper).
 
 ## Prerequisites
-* Kubernetes 1.6
+* Kubernetes 1.6+
 * PersistentVolume support on the underlying infrastructure
 * A dynamic provisioner for the PersistentVolumes
 * A familiarity with [Apache ZooKeeper 3.4.x](https://zookeeper.apache.org/doc/current/)
@@ -46,7 +46,7 @@ statefulsets/myzk-zookeeper   3         3         2m
 
 1. `statefulsets/myzk-zookeeper` is the StatefulSet created by the chart.
 1. `po/myzk-zookeeper-<0|1|2>` are the Pods created by the StatefulSet. Each Pod has a single container running a ZooKeeper server.
-1. `svc/myzk-zookeeper-headless` is the Headless Server used to control the network domain of the ZooKeeper ensemble.
+1. `svc/myzk-zookeeper-headless` is the Headless Service used to control the network domain of the ZooKeeper ensemble.
 1. `svc/myzk-zookeeper` is a Service that can be used by clients to connect to an available ZooKeeper server.
 
 ## Configuration
@@ -113,6 +113,7 @@ Spreading allows you specify an anti-affinity between ZooKeeper servers in the e
 | --------- | ----------- | ------- |
 | `schedulerName` | Name of scheduler to use (other than the default). | `nil` |
 | `antiAffinity` | If present it must take the values 'hard' or 'soft'. 'hard' will cause the Kubernetes scheduler to not schedule the Pods on the same physical node under any circumstances 'soft' will cause the Kubernetes scheduler to make a best effort to not co-locate the Pods, but, if the only available resources are on the same node, the scheduler will co-locate them. | `hard` |
+| `tolerations` | An optional list of tolerations for the zookeeper pods. https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ | `[]` |
 
 ### Logging
 In order to allow for the default installation to work well with the log rolling and retention policy of Kubernetes, all logs are written to stdout. This should also be compatible with logging integrations such as Google Cloud Logging and ELK.

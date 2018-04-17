@@ -5,7 +5,7 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v1.1.5"
+ImageTag: "v2.0.0"
 ImagePullPolicy: "Always"
 Replicas: 3
 MaxUnavailable: 1
@@ -31,3 +31,15 @@ ClusterDomain: "cluster.local"
 NetworkPolicy:
   Enabled: false
   AllowExternal: true
+Service:
+  type: ClusterIP
+Secure:
+  Enabled: false
+  RequestCertsImage: "cockroachdb/cockroach-k8s-request-cert"
+  RequestCertsImageTag: "0.3"
+  ServiceAccount:
+    # Specifies whether a service account should be created.
+    Create: true
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated.
+    Name:
