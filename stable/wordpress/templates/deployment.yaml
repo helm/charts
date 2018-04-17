@@ -137,12 +137,14 @@ spec:
       volumes:
       - name: wordpress-data
       {{- if .Values.persistence.enabled }}
+      {{- if .Values.persistence.nfsEnabled }}
+        nfs:
+          path: /exports
+          server: {{ .Values.persistence.nfsClusterIp }}
+      {{- else }}    
         persistentVolumeClaim:
-          {{- if .Values.persistence.nfsEnabled }}
-          claimName: {{ template "fullname" . }}-nfs
-          {{- else }}
           claimName: {{ template "fullname" . }}
-          {{- end }}
+      {{- end }}
       {{- else }}
         emptyDir: {}
       {{ end }}
