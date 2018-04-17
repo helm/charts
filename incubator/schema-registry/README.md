@@ -7,11 +7,14 @@ This helm chart creates a [Confluent Schema-Registry server](https://github.com/
 * A running Zookeeper Installation
 
 ## Chart Components
-This chart will dot he following:
+This chart will do the following:
 
 * Create a Schema-Registry deployment
 * Create a Service configured to connect to the available Schema-Registry pods on the configured
   client port.
+
+Note: Distributed Schema Registry Master Election is done via Kafka Coordinator Master Election
+https://docs.confluent.io/current/schema-registry/docs/design.html#kafka-coordinator-master-election
 
 ## Installing the Chart
 You can install the chart with the release name `mysr` as below.
@@ -65,6 +68,8 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `configurationOverrides` | `SchemaRegistry` [configuration setting](https://github.com/confluentinc/schema-registry/blob/master/docs/config.rst#configuration-options) overrides in the dictionary format `setting.name: value` | `{}` |
 | `resources` | CPU/Memory resource requests/limits | `{}` |
 | `servicePort` | The port on which the SchemaRegistry server will be exposed. | `8081` |
+| `overrideGroupId` | Group ID defaults to using Release Name so each release is its own Schema Registry worker group, it can be overridden | `{- .Release.Name -}}` |
+| `kafkaStore.overrideBootstrapServers` | Defaults to Kafka Servers in the same release, it can be overridden in case there was a separate release for Kafka Deploy | `{{- printf "PLAINTEXT://%s-kafka-headless:9092" .Release.Name }}`
 | `kafka.enabled` | If `true`, install Kafka/Zookeeper alongside the `SchemaRegistry`. This is intended for testing and argument-less helm installs of this chart only and should not be used in Production. | `true` |
 | `kafka.replicas` | The number of Kafka Pods to install as part of the `StatefulSet` if `kafka.Enabled` is `true`| `1` |
 | `kafka.zookeeper.servers` | The number of Zookeeper Pods to install as part of the `StatefulSet` if `kafka.Enabled` is `true`| `1` |
