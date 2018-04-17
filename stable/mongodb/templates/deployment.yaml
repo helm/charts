@@ -66,6 +66,9 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /bitnami/mongodb
+          {{- if .Values.persistence.subPath }}
+          subPath: {{ .Values.persistence.subPath }}
+          {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:
