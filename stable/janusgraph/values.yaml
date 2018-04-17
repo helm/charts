@@ -4,7 +4,7 @@
 
 image:
   repository: gcr.io/cloud-solutions-images/janusgraph
-  tag: v1
+  tag: v2
   pullPolicy: IfNotPresent
 
 ## The default configuration provided here uses attached storage for db and indexing
@@ -73,3 +73,7 @@ persistence:
   accessMode: ReadWriteOnce
   size: 4Gi  # adjust size as needed depending on the size of local storage and indexing required
   existingClaim:  # to reattach to previously used storage, provide an existing claim (or use --set)
+
+## To make adjustments to janusgraph.properties and gremlin-server.yaml, provide a
+## custom ConfigMap in your k8s cluster (using the helm created ConfigMap as a base).
+configMapOverrideName: ""
