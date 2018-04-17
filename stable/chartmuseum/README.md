@@ -12,6 +12,7 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
 
 - [Prerequisites](#prerequisites)
 - [Configuration](#configuration)
+  - [Mount Secrets as Volumes](#mount-secrets-as-volumes)
 - [Installation](#installation)
   - [Using with Amazon S3](#using-with-amazon-s3)
     - [permissions grant with access keys](#permissions-grant-with-access-keys)
@@ -96,6 +97,18 @@ their default values. See values.yaml for all available options.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
+
+### Mount secrets as volumes
+
+If you want to mount arbitrary, pre-existing secrets as volumes you can specify them in your `values.yaml` like so:
+
+```yaml
+volumes:
+  secrets:
+    - volumeName: name-your-volume
+      secretName: name-of-the-existing-secret
+      mountPath: /var/secrets/somewhere
+```
 
 ## Installation
 
@@ -224,6 +237,11 @@ Run command to install
 ```shell
 helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
+
+#### Connecting to GCS from outside GKE/GCE
+If you are running chartmuseum in an on-premise cluster, you need to specify `GOOGLE_APPLICATION_CREDENTIALS` and point it to your `service-account.json`. See [Mount Secrets as Volumes](#mount-secrets-as-volumes) on how to mount secrets as volumes.
+
+See [Server-to-Server Authentication](https://cloud.google.com/docs/authentication/production) on Google Cloud Docs for more general information about Authentication for GCS.
 
 ### Using with Microsoft Azure Blob Storage
 
