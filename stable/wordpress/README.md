@@ -91,6 +91,9 @@ The following table lists the configurable parameters of the WordPress chart and
 | `ingress.secrets[0].key`             | TLS Secret Key                             | `nil`                                                      |
 | `persistence.enabled`                | Enable persistence using PVC               | `true`                                                     |
 | `persistence.storageClass`           | PVC Storage Class                          | `nil` (uses alpha storage class annotation)                |
+| `persistence.nfsEnabled`             | Deploy nfs server to share RWO PVC         | `true`                                                     |
+| `persistence.nfsClusterIp`           | nfs svc static clusterIP                   | `10.96.0.200`                                              |
+| `persistence.nfdImage`               | nfs server image                           | `k8s.gcr.io/volume-nfs:0.8`                                |
 | `persistence.accessMode`             | PVC Access Mode                            | `ReadWriteOnce`                                            |
 | `persistence.size`                   | PVC Storage Request                        | `10Gi`                                                     |
 | `nodeSelector`                       | Node labels for pod assignment             | `{}`                                                       |
