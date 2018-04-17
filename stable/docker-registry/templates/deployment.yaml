@@ -84,10 +84,14 @@ spec:
               value: {{ required ".Values.s3.region is required" .Values.s3.region }}
             - name: REGISTRY_STORAGE_S3_BUCKET
               value: {{ required ".Values.s3.bucket is required" .Values.s3.bucket }}
+          {{- if .Values.s3.encrypt }}
             - name: REGISTRY_STORAGE_S3_ENCRYPT
-              value: {{ .Values.s3.encrypt }}
+              value: {{ .Values.s3.encrypt | quote }}
+          {{- end }}
+          {{- if .Values.s3.secure }}
             - name: REGISTRY_STORAGE_S3_SECURE
-              value: {{ .Values.s3.secure }}
+              value: {{ .Values.s3.secure | quote }}
+          {{- end }}
 {{- end }}
           volumeMounts:
 {{- if .Values.secrets.htpasswd }}
