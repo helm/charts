@@ -64,6 +64,11 @@ spec:
         - mountPath: /storage
           name: storage-volume
 {{- end }}
+{{- range $_, $secretVolume := .Values.volumes.secrets }}
+        - name: {{ $secretVolume.volumeName | quote }}
+          mountPath: {{ $secretVolume.mountPath | quote }}
+          readOnly: true
+{{- end }}
       {{- with .Values.resources }}
         resources:
 {{ toYaml . | indent 10 }}
@@ -89,3 +94,8 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+{{- range $_, $secretVolume := .Values.volumes.secrets }}
+      - name: {{ $secretVolume.volumeName | quote }}
+        secret:
+          secretName: {{ $secretVolume.secretName | quote }}
+{{- end }}
