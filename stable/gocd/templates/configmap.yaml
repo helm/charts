@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "gocd.fullname" . }}
   labels:
-    app: {{ template "gocd.fullname" . }}
+    app: {{ template "gocd.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -20,6 +20,7 @@ data:
       if [ $status_code == 200 ]; then
         break
       fi
+      sleep 10
     done
 
     set -e
