@@ -64,10 +64,12 @@ spec:
         - mountPath: /storage
           name: storage-volume
 {{- end }}
-{{- range $_, $secretVolume := .Values.volumes.secrets }}
+{{- if not (empty .Values.volumes) }}
+  {{- range $_, $secretVolume := .Values.volumes.secrets }}
         - name: {{ $secretVolume.volumeName | quote }}
           mountPath: {{ $secretVolume.mountPath | quote }}
           readOnly: true
+  {{- end }}
 {{- end }}
       {{- with .Values.resources }}
         resources:
@@ -94,8 +96,10 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
-{{- range $_, $secretVolume := .Values.volumes.secrets }}
+{{- if not (empty .Values.volumes) }}
+  {{- range $_, $secretVolume := .Values.volumes.secrets }}
       - name: {{ $secretVolume.volumeName | quote }}
         secret:
           secretName: {{ $secretVolume.secretName | quote }}
+  {{- end }}
 {{- end }}
