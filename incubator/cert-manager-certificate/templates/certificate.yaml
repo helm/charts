@@ -3,6 +3,11 @@ kind: Certificate
 metadata:
   name: {{ template "cert-manager-certificate.fullname" . }}
   namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "cert-manager-certificate.name" . }}
+    chart: {{ template "cert-manager-certificate.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   secretName: {{ .Values.secretName }}
   issuerRef:
