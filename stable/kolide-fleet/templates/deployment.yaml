@@ -69,57 +69,9 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           securityContext:
             privileged: {{ default false .Values.pod.fleet.securityContext.privileged }}
-            # capabilities:
-              # add:
-                # - "SETPCAP"
-                # - "SYS_MODULE"
-                # - "SYS_RAWIO"
-                # - "SYS_PACCT"
-                # - "SYS_ADMIN"
-                # - "SYS_NICE"
-                # - "SYS_RESOURCE"
-                # - "SYS_TIME"
-                # - "SYS_TTY_CONFIG"
-                # - "MKNOD"
-                # - "AUDIT_WRITE"
-                # - "AUDIT_CONTROL"
-                # - "MAC_OVERRIDE"
-                # - "MAC_ADMIN"
-                # - "NET_ADMIN"
-                # - "SYSLOG"
-                # - "CHOWN"
-                # - "NET_RAW"
-                # - "DAC_OVERRIDE"
-                # - "FOWNER"
-                # - "DAC_READ_SEARCH"
-                # - "FSETID"
-                # - "KILL"
-                # - "SETGID"
-                # - "SETUID"
-                # - "LINUX_IMMUTABLE"
-                # - "NET_BIND_SERVICE"
-                # - "NET_BROADCAST"
-                # - "IPC_LOCK"
-                # - "IPC_OWNER"
-                # - "SYS_CHROOT"
-                # - "SYS_PTRACE"
-                # - "SYS_BOOT"
-                # - "LEASE"
-                # - "SETFCAP"
-                # - "WAKE_ALARM"
-                # - "BLOCK_SUSPEND"
           ports:
-            ## The container port to expose, and how to expose it. Possible values are any valid port number. You
-            ## probably want to expose your application port, though.
-            ##
-            ## See http://kubernetes.io/docs/api-reference/v1/definitions/#_v1_containerport
             - containerPort: 8080
-              ## What protocol the port uses. Possible values are:
-              # - "TCP"
-              # - "UDP"
               protocol: "TCP"
-              ## What designation to give the port. Useful later, so we can reference the port by name in the health
-              ## check.
               name: "http"
           volumeMounts:
             - name: "fleet-configuration"
@@ -147,12 +99,3 @@ spec:
               timeoutSeconds: 1
               failureThreshold: 3
       restartPolicy: "Always"
-      securityContext:
-        ## Volumes which support ownership management are modified to be owned and writable by the GID specified in
-        ## fsGroup. See the Ownership Management design document for more details.
-        ## See: https://github.com/kubernetes/community/blob/master/contributors/design-proposals/
-        ##      volume-ownership-management.md
-        # fsGroup: 1000
-        ## A list of groups applied to the first process run in each container, in addition to the container’s primary
-        ## GID. If unspecified, no groups will be added to any container.
-        # supplementalGroups: [1000]
