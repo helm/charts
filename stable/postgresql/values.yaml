@@ -68,8 +68,9 @@ persistence:
 metrics:
   enabled: false
   image: wrouesnel/postgres_exporter
-  imageTag: v0.1.1
+  imageTag: v0.4.6
   imagePullPolicy: IfNotPresent
+  servicePort: 9187
   resources:
     requests:
       memory: 256Mi
