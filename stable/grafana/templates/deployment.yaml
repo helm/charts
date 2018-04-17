@@ -24,7 +24,7 @@ spec:
         release: {{ .Release.Name }}
 {{- with .Values.podAnnotations }}
       annotations:
-{{ toYaml . | indent 4 }}
+{{ toYaml . | indent 8 }}
 {{- end }}
     spec:
 {{- if .Values.dashboards }}
