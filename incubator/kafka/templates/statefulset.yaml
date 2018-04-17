@@ -10,6 +10,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 spec:
   serviceName: {{ template "kafka.fullname" . }}-headless
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
   replicas: {{ default 3 .Values.replicas }}
@@ -133,6 +134,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        - name: KAFKA_HEAP_OPTS
+          value: {{ .Values.heapOptions }}
         {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
         - name: KAFKA_ZOOKEEPER_CONNECT
           value: {{ include "zookeeper.url" . | quote }}
@@ -159,7 +162,7 @@ spec:
         - |
           export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
           export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
-          /etc/confluent/docker/run
+          exec /etc/confluent/docker/run
         volumeMounts:
         - name: datadir
           mountPath: {{ .Values.persistence.mountPath | quote }}
@@ -173,6 +176,7 @@ spec:
         configMap:
           name: {{ template "kafka.fullname" . }}-metrics
       {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:

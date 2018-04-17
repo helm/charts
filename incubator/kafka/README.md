@@ -61,6 +61,7 @@ following configurable parameters:
 | `replicas`                     | Kafka Brokers                                                                                                   | `3`                                                        |
 | `component`                    | Kafka k8s selector key                                                                                          | `kafka`                                                    |
 | `resources`                    | Kafka resource requests and limits                                                                              | `{}`                                                       |
+| `kafkaHeapOptions`             | Kafka broker JVM heap options                                                                                   | `-Xmx1G-Xms1G`                                                       |
 | `logSubPath`                   | Subpath under `persistence.mountPath` where kafka logs will be placed.                                          | `logs`                                                     |
 | `schedulerName`                | Name of Kubernetes scheduler (other than the default)                                                           | `nil`                                                      |
 | `affinity`                     | Pod scheduling preferences                                                                                      | `{}`                                                       |
@@ -71,13 +72,15 @@ following configurable parameters:
 | `external.domain`              | Domain in which to advertise Kafka external listeners.                                                          | `cluster.local`                                            |
 | `external.init`                | External init container settings.                                                                               | (see `values.yaml`)                                        |
 | `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `{ offsets.topic.replication.factor: 3 }`                  |
-| `additionalPorts`               | Additional ports to expose on brokers.  Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar   | `{}`                                 |
+| `additionalPorts`              | Additional ports to expose on brokers.  Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar   | `{}`                                 |
 | `readinessProbe.initialDelaySeconds` | Number of seconds before probe is initiated.                                                              | `30`                                                       |
 | `readinessProbe.periodSeconds`       | How often (in seconds) to perform the probe.                                                              | `10`                                                       |
 | `readinessProbe.timeoutSeconds`      | Number of seconds after which the probe times out.                                                        | `5`                                                        |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed.              | `1`                                                        |
 | `readinessProbe.failureThreshold`    | After the probe fails this many times, pod will be marked Unready.                                        | `3`                                                        |
+| `terminationGracePeriodSeconds`      | Wait up to this many seconds for a broker to shut down gracefully, after which it is killed               | `60`                                                        |
 | `updateStrategy`               | StatefulSet update strategy to use.                                                                             | `{ type: "OnDelete" }`                                     |
+| `podManagementPolicy`          | Start and stop pods in Parallel or OrderedReady (one-by-one.)  Can not change after first release.              | `OrderedReady`                                     |
 | `persistence.enabled`          | Use a PVC to persist data                                                                                       | `true`                                                     |
 | `persistence.size`             | Size of data volume                                                                                             | `1Gi`                                                      |
 | `persistence.mountPath`        | Mount path of data volume                                                                                       | `/opt/kafka/data`                                          |
@@ -136,9 +139,9 @@ Where `my-release` is the name of your helm release.
 
 ## Extensions
 
-Kafka has a rich ecosystem, with lots of tools. This sections is intended to compile all of those tools for which a corresponding Helm chart has already been created. 
+Kafka has a rich ecosystem, with lots of tools. This sections is intended to compile all of those tools for which a corresponding Helm chart has already been created.
 
-- [Schema-registry](https://github.com/kubernetes/charts/tree/master/incubator/schema-registry) -  A confluent project that provides a serving layer for your metadata. It provides a RESTful interface for storing and retrieving Avro schemas. 
+- [Schema-registry](https://github.com/kubernetes/charts/tree/master/incubator/schema-registry) -  A confluent project that provides a serving layer for your metadata. It provides a RESTful interface for storing and retrieving Avro schemas.
 
 ### Connecting to Kafka from outside Kubernetes
 
