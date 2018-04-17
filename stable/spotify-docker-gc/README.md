@@ -23,13 +23,13 @@ See the [spotify/docker-gc GitHub repository][] for more settings which may be a
 
 | Parameter                         | Description                              | Default                                 |
 | --------------------------------- | ---------------------------------------- | --------------------------------------- |
-| `cron.schedule`                   | cron schedule                            | `0 0 * * *` (daily at 12:00AM UTC)      |
-| `cron.log`                        | cron log name                            | `/var/logs/cron.log`                    |
-| `env.gracePeriodSeconds`          | grace period in seconds before gc occurs | `0`                                     |
+| `cron.schedule`                   | Cron schedule                            | `0 0 * * *` (daily at 12:00AM UTC)      |
+| `cron.log`                        | Cron log name                            | `/var/logs/cron.log`                    |
+| `env.gracePeriodSeconds`          | Grace period in seconds before gc occurs | `0`                                     |
 | `env.dockerAPIVersion`            | Docker API Version for docker-gc client  | Not set                                 |
-| `exclude.images`                  | images to be excluded                    | Not set                                 |
-| `exclude.containers`              | containers to be excluded                | Not set                                 |
-| `serviceAccount`                  | service account to attach to deamonset   | Not set                                 |
+| `exclude.images`                  | Images to be excluded                    | Not set                                 |
+| `exclude.containers`              | Containers to be excluded                | Not set                                 |
+| `serviceAccount`                  | Service account to attach to deamonset   | Not set                                 |
 | `imagePullSecrets`                | Specify image pull secrets               | Not set                                 |
 
 ## Design/Evolution
