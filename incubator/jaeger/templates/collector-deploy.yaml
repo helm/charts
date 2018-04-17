@@ -92,7 +92,7 @@ spec:
                 key: collector.zipkin.http-port
           {{- range $key, $value := .Values.collector.cmdlineParams }}
           - name: {{ $key | replace "." "_" | replace "-" "_" | upper | quote }}
-          value: {{ $value }}
+            value: {{ $value }}
           {{- end }}
         ports:
         - containerPort: {{ .Values.collector.service.tchannelPort }}
