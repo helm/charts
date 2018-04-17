@@ -46,9 +46,12 @@ The following tables lists the configurable parameters of the Fluentd Cloudwatch
 
 | Parameter                       | Description                                | Default                                                    |
 | ------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
-| `image`                         | Image                                      | `fluent/fluentd-kubernetes-daemonset`                      |
-| `imageTag`                      | Image tag                                  | `v0.12.33-cloudwatch`                                      |
-| `imagePullPolicy`               | Image pull policy                          | `Always` if `imageTag` is `imagePullPolicy`                |
+| `image.repository`              | Image repository                           | `fluent/fluentd-kubernetes-daemonset`            
+|
+| `image.tag`                     | Image tag                                  | `v0.12.33-cloudwatch`                                      
+|
+| `image.pullPolicy`              | Image pull policy                          | `Always` if `imageTag` is `image.pullPolicy`             
+|
 | `resources.limits.cpu`          | CPU limit                                  | `100m`                                                     |
 | `resources.limits.memory`       | Memory limit                               | `200Mi`                                                    |
 | `resources.requests.cpu`        | CPU request                                | `100m`                                                     |
