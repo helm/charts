@@ -67,8 +67,6 @@ spec:
             - "/etc/fleet/config.yml"
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-          securityContext:
-            privileged: {{ default false .Values.pod.fleet.securityContext.privileged }}
           ports:
             - containerPort: 8080
               protocol: "TCP"
