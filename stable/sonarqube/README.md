@@ -43,6 +43,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
 | `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
 | `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
+| `service.annotations`                       | Kubernetes service annotations            | None                                       |
 | `persistence.enabled`                       | Flag for enabling persistent storage      | false                                      |
 | `persistence.storageClass`                  | Storage class to be used                  | "-"                                        |
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
