@@ -45,7 +45,7 @@ servicePort: 8081
 kafkaStore:
   overrideBootstrapServers: ""
 ## Additional Java arguments to pass to Kafka.
-# kafkaOpts: -Dfoo=bar
+# schemaRegistryOpts: -Dfoo=bar
 
 # Options for connecting to SASL kafka brokers
 sasl:
@@ -57,9 +57,23 @@ sasl:
       imageTag: "4.0.0"
       imagePullPolicy: "IfNotPresent"
     clientUser: "kafka-client"
-    clientPassword: "client-password"
     zookeeperClientUser: "zookeeper-client"
+    # Passwords can be either provided here or pulled from an existing k8s secret.
+    # If user wants to specify the password here:
+    clientPassword: "client-password"
     zookeeperClientPassword: "zookeeper-client-password"
+    # If user has an existing k8s secret they would like to use instead of generating them:
+    # useExistingSecret:
+    #   # Where to find the schema registry user secret
+    #   clientPassword:
+    #     secretKeyRef:
+    #       name: "schema-reg-secret"
+    #       key: "client-password"
+    #   # Where to find the zookeeper user secret
+    #   zookeeperClientPassword:
+    #     secretKeyRef:
+    #       name: "zookeeper-secret"
+    #       key: "zokeeper-client-password"
 
 ## Kafka Settings
 kafka:

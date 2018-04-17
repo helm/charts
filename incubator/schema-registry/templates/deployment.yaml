@@ -30,24 +30,33 @@ spec:
           - name: ZOOKEEPER_CLIENT_USER
             value: {{ .Values.sasl.scram.zookeeperClientUser }}
           - name: ZOOKEEPER_CLIENT_PASSWORD
+            {{- if (hasKey .Values.sasl.scram "useExistingSecret") }}
+            valueFrom:
+{{ toYaml .Values.sasl.scram.useExistingSecret.zookeeperClientPassword | indent 14 -}}
+            {{- else }}
             valueFrom:
               secretKeyRef:
                 name: {{ template "schema-registry.fullname" . }}-sasl-scram-secret
                 key: zookeeper-client-password
+            {{- end }}
           - name: SCRAM_CLIENT_USER
             value: {{ .Values.sasl.scram.clientUser }}
           - name: SCRAM_CLIENT_PASSWORD
+            {{- if (hasKey .Values.sasl.scram "useExistingSecret") }}
+            valueFrom: 
+{{ toYaml .Values.sasl.scram.useExistingSecret.clientPassword | indent 14 -}}
+            {{- else }}
             valueFrom:
               secretKeyRef:
                 name: {{ template "schema-registry.fullname" . }}-sasl-scram-secret
                 key: scram-client-password
+            {{- end }}
         volumeMounts:
         - name: jaastemplate
           mountPath: "/tmp/kafka-template"
         - name: jaasconfig
           mountPath: {{ .Values.sasl.configPath | quote }}
     {{- end }}
-
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -81,11 +90,12 @@ spec:
           - name: SCHEMA_REGISTRY_{{ $configName | replace "." "_" | upper }}
             value: {{ $configValue }}
           {{ end }}
-          {{- if .Values.kafkaOpts }}
+          {{- if .Values.schemaRegistryOpts }}
+          # The pre-flight checks use KAFKA_OPTS instead of SCHEMA_REGISTRY_OPTS.
           - name: KAFKA_OPTS
-            value: "{{ .Values.kafkaOpts }}"
+            value: "{{ .Values.schemaRegistryOpts }}"
           - name: SCHEMA_REGISTRY_OPTS
-            value: "{{ .Values.kafkaOpts }}"
+            value: "{{ .Values.schemaRegistryOpts }}"
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

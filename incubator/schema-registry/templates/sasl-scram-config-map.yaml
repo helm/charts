@@ -9,7 +9,6 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 
-  {{/* - range $i, $e := until (int .Values.replicas) */}}
 data:
   kafka_client_jaas.conf: |-
     // Info for Schema Registry to connect to Zookeeper
@@ -25,6 +24,4 @@ data:
         username="$SCRAM_CLIENT_USER"
         password="$SCRAM_CLIENT_PASSWORD";
     };
-  {{/* - end */}}
 {{- end }}
-
