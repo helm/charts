@@ -1,0 +1,14 @@
+{{- if .Values.EntrypointInitDB.enable }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "postgresql.fullname" . }}-init-db
+  labels:
+    app: {{ template "postgresql.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  init-db.sh: |-
+{{ printf .Values.EntrypointInitDB.initScript | indent 4 }}
+{{- end }}
