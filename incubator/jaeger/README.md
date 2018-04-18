@@ -111,7 +111,7 @@ After a few minutes, you should see 2 ElasticSearch client nodes, 2 ElasticSearc
 If you already have an existing running ElasticSearch cluster, you can configure the chart as follows to use it as your backing store:
 
 ```bash
-helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=false --set provisionDataStore.elasticsearch=true --set storage.type=elasticsearch --set storage.elasticsearch.host=<HOST> --set storage.elasticsearch.port=<PORT> --set storage.elasticsearch.user=<USER> --set storage.elasticsearch.password=<password>
+helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=false --set provisionDataStore.elasticsearch=false --set storage.type=elasticsearch --set storage.elasticsearch.host=<HOST> --set storage.elasticsearch.port=<PORT> --set storage.elasticsearch.user=<USER> --set storage.elasticsearch.password=<password>
 ```
 
 > **Tip**: It is highly encouraged to run the ElasticSearch cluster with storage persistence.
