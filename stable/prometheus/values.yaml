@@ -278,6 +278,9 @@ kubeStateMetrics:
   ##
   podAnnotations: {}
 
+  pod:
+    labels: {}
+
   replicaCount: 1
 
   ## kube-state-metrics resource requests and limits
@@ -296,7 +299,7 @@ kubeStateMetrics:
       prometheus.io/scrape: "true"
     labels: {}
 
-    clusterIP: None
+    clusterIP: ""
 
     ## List of IP addresses at which the kube-state-metrics service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -386,7 +389,7 @@ nodeExporter:
       prometheus.io/scrape: "true"
     labels: {}
 
-    clusterIP: None
+    clusterIP: ""
 
     ## List of IP addresses at which the node-exporter service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
