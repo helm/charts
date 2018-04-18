@@ -22,7 +22,7 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: {{ printf "%s-%s" $releaseName $consulFullName | trunc 63 | trimSuffix "-" }}-ui
+              serviceName: {{ printf "%s-%s" $releaseName $consulFullName | trunc 60 | trimSuffix "-" }}-ui
               servicePort: {{ $servicePort }}
   {{- end -}}
   {{- if .Values.uiIngress.tls }}
