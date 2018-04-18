@@ -84,9 +84,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-          {{- range $key, $value := .Values.controller.extraEnvs }}
-            - name: {{ $key | upper | replace "." "_" }}
-              value: {{ $value }}
+          {{- if .Values.controller.extraEnvs }}
+{{ toYaml .Values.controller.extraEnvs | indent 12 }}
           {{- end }}
           livenessProbe:
             httpGet:
