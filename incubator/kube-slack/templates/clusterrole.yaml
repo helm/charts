@@ -1,5 +1,5 @@
 {{- if .Values.rbac.create -}}
-apiVersion: {{ template "rbac.apiVersion" . }}
+apiVersion: {{ template "kube-slack.rbac.apiVersion" . }}
 kind: ClusterRole
 metadata:
   name: {{ template "kube-slack.fullname" . }}

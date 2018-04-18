@@ -1,5 +1,5 @@
 {{- if .Values.rbac.create -}}
-apiVersion: {{ template "rbac.apiVersion" . }}
+apiVersion: {{ template "kube-slack.rbac.apiVersion" . }}
 kind: ClusterRoleBinding
 metadata:
   name: {{ template "kube-slack.fullname" . }}
@@ -14,6 +14,6 @@ roleRef:
   name: {{ template "kube-slack.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "kube-slack.fullname" . }}
+    name: {{ template "kube-slack.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end -}}

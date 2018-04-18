@@ -32,10 +32,21 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Create the name of the service account to use
+*/}}
+{{- define "kube-slack.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "kube-slack.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the appropriate apiVersion for RBAC APIs.
 */}}
-{{- define "rbac.apiVersion" -}}
-{{- if semverCompare ">= 1.8" .Capabilities.KubeVersion.GitVersion -}}
+{{- define "kube-slack.rbac.apiVersion" -}}
+{{- if semverCompare ">= 1.8-0" .Capabilities.KubeVersion.GitVersion -}}
 "rbac.authorization.k8s.io/v1"
 {{- else -}}
 "rbac.authorization.k8s.io/v1beta1"
