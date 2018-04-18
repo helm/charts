@@ -1,0 +1,7 @@
+apiVersion: v1
+description: Creates Certificate resources for cert-manager
+name: cert-manager-certificate
+version: 0.1.0
+maintainers:
+- name: rendhalver
+  email: pete.brown@powerhrg.com
