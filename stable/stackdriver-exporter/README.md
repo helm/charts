@@ -1,7 +1,7 @@
 # Stackdriver Exporter
 
 Prometheus exporter for Stackdriver, allowing for Google Cloud metrics.  You
-must have appropriate IAM permissions for this to exporter to work.  If you
+must have appropriate IAM permissions for this exporter to work.  If you
 are passing in an IAM key then you must have:
 
 * monitoring.metricDescriptors.list
@@ -58,14 +58,14 @@ Stackdriver-Exporter chart and their default values.
 
 Parameter                           | Description                          | Default
 ----------------------------------- | ------------------------------------ | --------------------------------
-`replicaCount`                      | desired number of pods               | `1`
-`restartPolicy`                     | container restart policy             | `Always`
-`image.repository`                  | container image repository           | `justwatch/stackdriver_exporter`
-`image.tag`                         | container image tag                  | `1.0.2`
-`image.pullPolicy`                  | container image pull policy          | `IfNotPresent`
-`resources`                         | resource requests & limits           | `{}`
-`service.type`                      | type of service to create            | `ClusterIP`
-`service.httpPort`                  | port for the http service            | `9255`
+`replicaCount`                      | Desired number of pods               | `1`
+`restartPolicy`                     | Container restart policy             | `Always`
+`image.repository`                  | Container image repository           | `justwatch/stackdriver_exporter`
+`image.tag`                         | Container image tag                  | `1.0.2`
+`image.pullPolicy`                  | Container image pull policy          | `IfNotPresent`
+`resources`                         | Resource requests & limits           | `{}`
+`service.type`                      | Type of service to create            | `ClusterIP`
+`service.httpPort`                  | Port for the http service            | `9255`
 `stackdriver.projectId`             | GCP Project ID                       | ``
 `stackdriver.metrics.typePrefixes`  | Comma separated Metric Type prefixes | ``
 `stackdriver.metrics.interval`      | Metrics interval to request from GCP | `5m`
