@@ -4,7 +4,7 @@
 
 ## Configuration
 
-The chart values file contains the default settings for the unbound server. In the default configuration unbound will allow queries from localhost only, and will not have any forward zones. This means that queries sent to the clusterip of the service will return access denied, and queries from localhost for anything other than the health check record `health.check.unbound` will return NXDOMAIN.
+The chart values file contains the default settings for the unbound server. In the default configuration unbound will allow queries from localhost only, and will not have any forward zones. This means that queries sent to the ClusterIP of the service will return access denied, and queries from localhost for anything other than the health check record `health.check.unbound` will return NXDOMAIN.
 
 You can configure unbound for your specific use case by passing a values file that contains the following properties. Most or all of these can also be set from the helm command line using `--set`.
 
@@ -20,7 +20,7 @@ allowedIpRanges:
 
 ### Forward zones
 
-You can set as many forward zones as needed by specifying the zone name and forward hosts. Forward hosts can be set by hostname or ip.
+You can set as many forward zones as needed by specifying the zone name and forward hosts. Forward hosts can be set by hostname or IP.
 
 ```yaml
 forwardZones:
@@ -92,7 +92,7 @@ Liveness and readiness probes are implemented by a side-car [healthz container](
 
 ## Configuring as an upstream resolver for kube-dns
 
-To configure unbound to act as an upstream resolver for kube-dns edit the `kube-dns` configmap in the kube-system namespace to add the `stubDomains` value as shown below. The forwarding address for the domain should be set to the cluster IP of the unbound service.
+To configure unbound to act as an upstream resolver for kube-dns edit the `kube-dns` configmap in the kube-system namespace to add the `stubDomains` value as shown below. The forwarding address for the domain should be set to the ClusterIP of the unbound service.
 
 ```yaml
 apiVersion: v1
