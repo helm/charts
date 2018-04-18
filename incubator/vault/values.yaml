@@ -16,19 +16,13 @@ deployment:
     annotations: {}
   ##    Read more about kube2iam to provide access to s3 https://github.com/jtblin/kube2iam
   #     iam.amazonaws.com/role: role-arn
-service:
-  type: ClusterIP
-  externalPort: 8080
-  internalPort: 8080
-  annotations: {}
-  #   foo.io/bar: "true"
 
 service:
   name: vault
   type: ClusterIP
   port: 8200
   # clusterIP: None
-  # annotations:
+  annotations: {}
   #   cloud.google.com/load-balancer-type: "Internal"
 ingress:
   enabled: false
