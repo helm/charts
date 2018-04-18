@@ -14,7 +14,7 @@ spec:
 {{- if and .Values.prometheus.jmx.enabled .Values.prometheus.prometheusOperator }}
   - name: jmx-exporter
     protocol: TCP
-    port: {{ .Values.jmxPort }}
+    port: {{ .Values.jmx.port }}
     targetPort: {{ .Values.prometheus.jmx.port }}
 {{- end }}
   selector:

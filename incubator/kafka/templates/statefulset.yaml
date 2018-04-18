@@ -113,7 +113,7 @@ spec:
           {{- end }}
         {{- end }}
         {{- if .Values.prometheus.jmx.enabled }}
-        - containerPort: {{ .Values.jmxPort }}
+        - containerPort: {{ .Values.jmx.port }}
           name: jmx
         {{- end }}
         {{- if .Values.additionalPorts }}
@@ -124,7 +124,7 @@ spec:
         env:
         {{- if .Values.prometheus.jmx.enabled }}
         - name: JMX_PORT
-          value: "{{ .Values.jmxPort }}"
+          value: "{{ .Values.jmx.port }}"
         {{- end }}
         - name: POD_IP
           valueFrom:
@@ -144,9 +144,9 @@ spec:
         - name: {{ printf "KAFKA_%s" $key | replace "." "_" | upper | quote }}
           value: {{ $value | quote }}
         {{- end }}
-        {{- if .Values.jmxPort }}
+        {{- if .Values.jmx.port }}
         - name: KAFKA_JMX_PORT
-          value: "{{ .Values.jmxPort }}"
+          value: "{{ .Values.jmx.port }}"
         {{- end }}
         # This is required because the Downward API does not yet support identification of
         # pod numbering in statefulsets. Thus, we are required to specify a command which

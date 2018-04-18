@@ -144,14 +144,21 @@ persistence:
   # storageClass:
 
 ## Port the jmx metrics are exposed in native jmx format, not in Prometheus format
-jmxPort: 5555
+jmx:
+  port: 5555
+  whitelistObjectNames:
+  - kafka.controller:*
+  - kafka.server:*
+  - java.lang:*
+  - kafka.network:*
+  - kafka.log:*
 
 ## Prometheus Exporters / Metrics
 ##
 prometheus:
 
   jmx:
-    enabled: false
+    enabled: true
 
     ## The image to use for the metrics collector
     image: solsson/kafka-prometheus-jmx-exporter@sha256

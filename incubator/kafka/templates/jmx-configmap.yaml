@@ -13,11 +13,11 @@ data:
 {{- if .Values.prometheus.jmx.configMap.overrideConfig }}
 {{ toYaml .Values.prometheus.jmx.configMap.overrideConfig | indent 4 }}
 {{- else }}
-    jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:{{ .Values.jmxPort }}/jmxrmi
+    jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:{{ .Values.jmx.port }}/jmxrmi
     lowercaseOutputName: true
     lowercaseOutputLabelNames: true
     ssl: false
-    whitelistObjectNames: ["kafka.controller:*","kafka.server:*","java.lang:*","kafka.network:*","kafka.log:*"]
+    whitelistObjectNames: ["{{ join "\",\"" .Values.jmx.whitelistObjectNames }}"]
     rules:
     - pattern: kafka.controller<type=(ControllerChannelManager), name=(QueueSize), broker-id=(\d+)><>(Value)
       name: kafka_controller_$1_$2_$4
