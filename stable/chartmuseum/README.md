@@ -52,7 +52,7 @@ their default values. See values.yaml for all available options.
 |----------------------------------------|---------------------------------------------|-----------------------------------------------------|
 | `image.pullPolicy`                     | Container pull policy                       | `IfNotPresent`                                      |
 | `image.repository`                     | Container image to use                      | `chartmuseum/chartmuseum`                           |
-| `image.tag`                            | Container image tag to deploy               | `v0.5.1`                                            |
+| `image.tag`                            | Container image tag to deploy               | `v0.5.2`                                            |
 | `persistence.accessMode`               | Access mode to use for PVC                  | `ReadWriteOnce`                                     |
 | `persistence.enabled`                  | Whether to use a PVC for persistent storage | `false`                                             |
 | `persistence.size`                     | Amount of space to claim for PVC            | `8Gi`                                               |
@@ -93,6 +93,9 @@ their default values. See values.yaml for all available options.
 | `env.open.INDEX_LIMIT`                 | Parallel scan limit for the repo indexer    | ``                                                  |
 | `env.secret.BASIC_AUTH_USER`           | Username for basic HTTP authentication      | ``                                                  |
 | `env.secret.BASIC_AUTH_PASS`           | Password for basic HTTP authentication      | ``                                                  |
+| `gcp.secret.enabled`                   | Flag for the GCP service account            | `false`                                             |
+| `gcp.secret.name`                      | Secret name for the GCP json file           | ``                                                  |
+| `gcp.secret.key`                       | Secret key for te GCP json file             | `credentials.json`                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
