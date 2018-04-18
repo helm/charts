@@ -1,4 +1,3 @@
-{{ $user := .Values.securityContext.runAsUser }}
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
@@ -25,6 +24,8 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
         - name: copy-config
           image: busybox
@@ -45,6 +46,7 @@ spec:
 
             {{- if .Values.auth.enabled }}
               cp /keydir-readonly/key.txt /data/configdb/key.txt
+              chmod 600 /data/configdb/key.txt
             {{- end }}
           volumeMounts:
             - name: workdir
@@ -108,33 +110,14 @@ spec:
               mountPath: /data/configdb
             - name: datadir
               mountPath: /data/db
-        - name: permissions
-          image: busybox
-          command:
-            - "sh"
-          args:
-            - "-c"
-            - |
-              set -e
-              set -x
-
-              chown -R '{{ $user }}:{{ $user }}' /data/configdb /data/db
-          volumeMounts:
-            - name: configdir
-              mountPath: /data/configdb
-            - name: datadir
-              mountPath: /data/db
       containers:
         - name: {{ template "mongodb-replicaset.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-          {{- if .Values.extraVars }}
+        {{- if .Values.extraVars }}
           env:
 {{ toYaml .Values.extraVars | indent 12 }}
-          {{- end }}
-          securityContext:
-            runAsUser: {{ $user }}
-            allowPrivilegeEscalation: false
+        {{- end }}
           ports:
             - name: peer
               containerPort: 27017
@@ -194,6 +177,8 @@ spec:
               mountPath: /data/db
             - name: configdir
               mountPath: /data/configdb
+            - name: workdir
+              mountPath: /work-dir
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
