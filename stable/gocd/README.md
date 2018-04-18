@@ -68,6 +68,7 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | Parameter                                  | Description                                                                                                   | Default             |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------- |
 | `server.enabled`                           | Enable GoCD Server. Supported values are `true`, `false`. When enabled, the GoCD server deployment is done on helm install.  | `true`              |
+| `server.shouldPreconfigure`                | Preconfigure GoCD Server to have a default elastic agent profile and Kubernetes elastic agent plugin settings. Supported values are `true`, `false`.  | `true`              |
 | `server.image.repository`                  | GoCD server image                                                                                             | `gocd/gocd-server`  |
 | `server.image.tag`                         | GoCD server image tag                                                                                         | `.Chart.appVersion` |
 | `server.image.pullPolicy`                  | Image pull policy                                                                                             | `IfNotPresent`      |
@@ -85,6 +86,46 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.healthCheck.initialDelaySeconds`   | Initial delays in seconds to start the health checks. **Note**:GoCD server start up time.                     | `90`                |
 | `server.healthCheck.periodSeconds`         | GoCD server heath check interval period.                                                                      | `15`                |
 | `server.healthCheck.failureThreshold`      | Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.              | `10`                |
+
+#### Preconfiguring the GoCD Server
+
+Based on the information available about the Kubernetes cluster, the [Kubernetes elastic agent](https://github.com/gocd/kubernetes-elastic-agents) plugin settings can be configured. A default elastic agent profile too is created so that users can concentrate on building their CD pipeline.
+A simple first pipeline is created in order to bootstrap the getting started experience for users. 
+
+If you are comfortable with GoCD and feel that there is no need to preconfigure the server, then you can override `server.shouldPreconfigure` to be false. 
+
+**Note: If the GoCD server is started with an existing config from a persistent volume, set the value of `server.shouldPreconfigure` to `false`.** 
+
+```bash
+$ helm install --namespace gocd --name gocd-app --set server.shouldPreconfigure=false stable/gocd
+```
+
+We are using the `postStart` container lifecycle hook to configure the plugin settings and the elastic agent profile. On starting the container, an attempt is made to configure the GoCD server. 
+
+```bash
+$ kubectl get pods --namespace gocd
+```
+
+The above command will show the pod state. This will be in `ContainerCreating` till the preconfigure script exits. 
+
+```bash
+$ kubectl describe pods --namespace gocd
+```
+
+The above command will show the events that occurred in detail. This can be used to determine if there is any problem at the time of creating the GoCD server pod. If the preconfigure script fails for some reason, the event `FailedPostStartHook` is published.
+
+The output of the preconfigure script is provided at `/godata/logs/preconfigure.log`.
+
+```bash
+$ helm status gocd-app
+```
+
+This command provides the information on how to access the GoCD server.
+
+The cases when the attempt to preconfigure the GoCD server fails:
+
+1. The service account token mounted as a secret for the GoCD server pod does not have sufficient permissions. The API call to configure the plugin settings will fail.
+2. If the GoCD server is started with an existing configuration with security configured, then the API calls in the preconfigure script will fail. 
 
 ### GoCD Agent
 

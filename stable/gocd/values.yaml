@@ -15,12 +15,16 @@ serviceAccount:
   create: true
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
-  # If create if false and a name is not specified, the default service account is used for the cluster role binding.
+  # If create is false and a name is not specified, the default service account is used for the cluster role binding.
   name:
 
 server:
   # server.enabled is the toggle to run GoCD Server. Change to false for Agent Only Deployment.
   enabled: true
+  # server.shouldPreconfigure is used to invoke a script to pre configure the elastic agent profile and the plugin settings in the GoCD server.
+  # Note: If this value is set to true, then, the serviceAccount.name is configured for the GoCD server pod. The service account token is mounted as a secret and is used in the lifecycle hook.
+  # Note: An attempt to preconfigure the GoCD server is made. There are cases where the pre-configuration can fail and the GoCD server starts with an empty config.
+  shouldPreconfigure: true
   image:
     # server.image.repository is the GoCD Server image name
     repository: "gocd/gocd-server"
