@@ -25,11 +25,15 @@ spec:
         release: {{ .Release.Name | quote }}
         component: server
     spec:
+      serviceAccountName: {{ template "gocd.serviceAccountName" . }}
       {{- if .Values.server.persistence.enabled }}
       volumes:
         - name: goserver-vol
           persistentVolumeClaim:
             claimName: {{ .Values.server.persistence.existingClaim | default (printf "%s-%s" (include "gocd.fullname" .) "server") }}
+        - name: config-vol
+          configMap:
+            name: {{ template "gocd.fullname" . }}
       {{- end }}
       containers:
         - name: {{ template "gocd.name" . }}-server
@@ -75,6 +79,15 @@ spec:
             - name: goserver-vol
               mountPath: /docker-entrypoint.d
               subPath: {{ .Values.server.persistence.subpath.dockerEntryPoint }}
+            - name: config-vol
+              mountPath: /preconfigure_server.sh
+              subPath: preconfigure_server.sh
+          {{- end }}
+          {{- if .Values.server.shouldPreconfigure }}
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/bash","/preconfigure_server.sh"]
           {{- end }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
