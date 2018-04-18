@@ -21,6 +21,9 @@ spec:
         app: {{ template "prometheus.name" . }}
         component: "{{ .Values.kubeStateMetrics.name }}"
         release: {{ .Release.Name }}
+{{- if .Values.kubeStateMetrics.pod.labels }}
+{{ toYaml .Values.kubeStateMetrics.pod.labels | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.kubeStateMetrics" . }}
       containers:
