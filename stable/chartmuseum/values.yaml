@@ -158,3 +158,14 @@ ingress:
 #   - secretName: chartmuseum-server-tls
 #     hosts:
 #     - chartmuseum.domain.com
+#
+
+## Mount additional, arbitrary volumes
+# volumes:
+#   # Mount volumes from secret
+#   # This is useful, for example, when you want to mount a service-account.json
+#   # for accessing GCS from an on-premise K8s cluster.
+#   secrets:
+#     - volumeName: gcs-service-account
+#       secretName: gcs-service-account
+#       mountPath: /var/secrets/gcs
