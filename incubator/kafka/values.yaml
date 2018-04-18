@@ -175,7 +175,7 @@ prometheus:
         # lowercaseOutputName: true
         # lowercaseOutputLabelNames: true
         # ssl: false
-      ## Allows setting the name of the ConfigMap to use, note a configMap 
+      ## Allows setting the name of the ConfigMap to use, note a configMap
       ## with said name needs to exists for jmx stats to work
       overrideName: ""
     resources: {}
@@ -202,7 +202,7 @@ prometheus:
     ## Port kafka-exporter exposes for Prometheus to scrape metrics
     port: 9308
 
-    ## Resource limits 
+    ## Resource limits
     resources: {}
 #      limits:
 #        cpu: 200m
