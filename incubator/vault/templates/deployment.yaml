@@ -7,6 +7,8 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+{{ toYaml .Values.deployment.annotations | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
@@ -14,6 +16,8 @@ spec:
       labels:
         app: {{ template "vault.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+{{ toYaml .Values.deployment.replicas.annotations | indent 8 }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
