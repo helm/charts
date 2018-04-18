@@ -78,6 +78,15 @@ resources:
     memory: 16Gi
     cpu: 8
 
+ingress:
+  enabled: false
+  tls: false
+  hostname: influxdb.foobar.com
+  annotations:
+    # kubernetes.io/ingress.class: "nginx"
+    # secretName: my-tls-cert
+    # kubernetes.io/tls-acme: "true"
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
