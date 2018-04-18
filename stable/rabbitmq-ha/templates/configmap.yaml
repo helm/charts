@@ -58,7 +58,9 @@ data:
     cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
     cluster_formation.k8s.address_type = hostname
     cluster_formation.node_cleanup.interval = 10
-    cluster_formation.node_cleanup.only_log_warning = false
+    # Set to false if automatic cleanup of absent nodes is desired.
+    # This can be dangerous, see http://www.rabbitmq.com/cluster-formation.html#node-health-checks-and-cleanup.
+    cluster_formation.node_cleanup.only_log_warning = true
     cluster_partition_handling = autoheal
 
     ## The default "guest" user is only permitted to access the server
