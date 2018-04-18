@@ -244,13 +244,12 @@ env:
     STORAGE: google
     STORAGE_GOOGLE_BUCKET: my-gcs-bucket
     STORAGE_GOOGLE_PREFIX:
-    GOOGLE_SERVICE_ACCOUNT: true
-existing:
+
+gcp:
   secret:
-    gcp:
-      enabled: true
-      secretName: chartmuseum-secret
-      key: credentials.json
+    enabled: true
+    secretName: chartmuseum-secret
+    key: credentials.json
 ```
 
 Run command to install
@@ -267,8 +266,12 @@ env:
     STORAGE: google
     STORAGE_GOOGLE_BUCKET: my-gcs-bucket
     STORAGE_GOOGLE_PREFIX:
-    GOOGLE_SERVICE_ACCOUNT: true
+  secret:
     GOOGLE_CREDENTIALS_JSON: my-json-file-base64-encoded
+gcp:
+  secret:
+    enabled: true
+
 ```
 
 Run command to install
