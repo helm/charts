@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 | `imagePullSecrets`         | Image pull secrets                              | `nil`                                                      |
 | `postgresUser`             | Username of new user to create.                 | `postgres`                                                 |
 | `postgresPassword`         | Password for the new user.                      | random 10 characters                                       |
+| `usePasswordFile`          | Inject the password via file instead of env var | `false`                                                    |
 | `postgresDatabase`         | Name for new database to create.                | `postgres`                                                 |
 | `postgresInitdbArgs`       | Initdb Arguments                                | `nil`                                                      |
 | `schedulerName`            | Name of an alternate scheduler                  | `nil`                                                      |

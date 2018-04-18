@@ -49,11 +49,16 @@ spec:
           value: {{ default "" .Values.postgresInitdbArgs | quote }}
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
+        {{- if .Values.usePasswordFile }}
+        - name: POSTGRES_PASSWORD_FILE
+          value: /conf/postgres-password
+        {{- else }}
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "postgresql.fullname" . }}
               key: postgres-password
+        {{- end }}
         - name: POD_IP
           valueFrom: { fieldRef: { fieldPath: status.podIP } }
         ports:
@@ -83,6 +88,11 @@ spec:
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
           subPath: {{ .Values.persistence.subPath }}
+        {{- if .Values.usePasswordFile }}
+        - name: password-file
+          mountPath: /conf
+          readOnly: true
+        {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
@@ -118,6 +128,14 @@ spec:
           items:
             - key: custom-metrics.yaml
               path: custom-metrics.yaml
+      {{- end }}
+      {{- if .Values.usePasswordFile }}
+      - name: password-file
+        secret:
+          secretName: {{ template "postgresql.fullname" . }}
+          items:
+            - key: postgres-password
+              path: postgres-password
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
