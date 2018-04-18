@@ -8,6 +8,11 @@ loadBalancerIP:
 whiteListSourceRange: []
 externalTrafficPolicy: Cluster
 replicas: 1
+
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
+
 cpuRequest: 100m
 memoryRequest: 20Mi
 cpuLimit: 100m
