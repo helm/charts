@@ -1,5 +1,5 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: {{ template "postgresql.fullname" . }}
   labels:
@@ -8,10 +8,29 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  serviceName: {{ template "postgresql.fullname" . }}
+  selector:
+    matchLabels:
+      app: {{ template "postgresql.fullname" . }}
   template:
     metadata:
       labels:
         app: {{ template "postgresql.fullname" . }}
+    volumeClaimTemplates:
+      - metadata:
+          name: data
+        spec:
+          accessModes: {{ .Values.persistence.accessMode | quote }}
+        {{- if .Values.persistence.storageClass }}
+        {{- if (eq "-" .Values.persistence.storageClass) }}
+          storageClassName: ""
+        {{- else }}
+          storageClassName: "{{ .Values.persistence.storageClass }}"
+        {{- end }}
+        {{- end }}
+          resources:
+            requests:
+              storage: {{ .Values.persistence.size | quote }}
     spec:
       {{- if .Values.affinity }}
       affinity:
@@ -104,14 +123,6 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
-      - name: data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "postgresql.fullname" .) }}
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      {{- if and .Values.metrics.enabled .Values.metrics.customMetrics }}
       - name: custom-metrics
         secret:
           secretName: {{ template "postgresql.fullname" . }}
