@@ -171,7 +171,7 @@ jmx:
 prometheus:
 
   jmx:
-    enabled: true
+    enabled: false
 
     ## The image to use for the metrics collector
     image: solsson/kafka-prometheus-jmx-exporter@sha256
