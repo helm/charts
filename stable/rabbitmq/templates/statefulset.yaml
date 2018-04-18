@@ -1,4 +1,4 @@
-apiVersion: {{ template "rabbitmq.workloadApiVersion" . }}
+apiVersion: app/v1beta2
 kind: StatefulSet
 metadata:
   name: {{ template "rabbitmq.fullname" . }}

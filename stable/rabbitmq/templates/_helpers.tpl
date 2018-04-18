@@ -30,18 +30,3 @@ Create chart name and version as used by the chart label.
 {{- define "rabbitmq.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-
-{{/*
-Return the appropriate apiVersion for APIs.
-*/}}
-{{- define "rabbitmq.workloadApiVersion" -}}
-{{- if .Capabilities.APIVersions.Has "apps/v1" -}}
-"apps/v1"
-{{- else if .Capabilities.APIVersions.Has "apps/v1beta2" -}}
-"apps/v1beta2"
-{{- else if .Capabilities.APIVersions.Has "apps/v1beta1" -}}
-"apps/v1beta1"
-{{- else -}}
-"extensions/v1beta1"
-{{- end -}}
-{{- end -}}
