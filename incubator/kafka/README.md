@@ -172,5 +172,6 @@ such port at a time, setting the range at every Kafka pod is a reasonably safe c
 
 * Topic creation is not automated
 * Only supports storage options that have backends for persistent volume claims (tested mostly on AWS)
+* There must not exist a service called `kafka` in the same namespace
 
 [brokerconfigs]: https://kafka.apache.org/documentation/#brokerconfigs
