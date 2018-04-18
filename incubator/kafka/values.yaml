@@ -165,7 +165,7 @@ jmx:
   ## Port the jmx metrics are exposed in native jmx format, not in Prometheus format
   port: 5555
 
-  ## JMX Whitelist Objects, can be set to control which JMX metrics are exposed.  Only whitelisted 
+  ## JMX Whitelist Objects, can be set to control which JMX metrics are exposed.  Only whitelisted
   ## values will be exposed via JMX Exporter.  Note: applies to default ConfigMap
   whitelistObjectNames:
   - kafka.controller:*
