@@ -10,7 +10,7 @@ metadata:
 {{- if .Values.metrics.enabled }}
   annotations:
     prometheus.io/scrape: "true"
-    prometheus.io/port: "9187"
+    prometheus.io/port: "{{ .Values.metrics.servicePort }}"
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
@@ -25,5 +25,11 @@ spec:
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
 {{- end }}
+{{- if .Values.metrics.enabled }}
+  - name: metrics
+    port: {{ .Values.metrics.servicePort }}
+    targetPort: metrics
+{{- end }}
   selector:
     app: {{ template "postgresql.fullname" . }}
+

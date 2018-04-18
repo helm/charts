@@ -68,8 +68,9 @@ persistence:
 metrics:
   enabled: false
   image: wrouesnel/postgres_exporter
-  imageTag: v0.1.1
+  imageTag: v0.4.6
   imagePullPolicy: IfNotPresent
+  servicePort: 9187
   resources:
     requests:
       memory: 256Mi
@@ -121,3 +122,23 @@ networkPolicy:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+# Custom database,user that will be initialized during sturtup with non superuser privileges for future use in project
+
+EntrypointInitDB:
+  enable: false      # if true will use initdb script and creates new env variable for project user, default is false
+
+  projectDatabase: ""  # Creates in deployment env varaible PROJECT_DB_NAME
+  projectUser: ""      # Creates in deployment env varaible PROJECT_DB_USER
+  projectPass: ""      # Creates in deployment env varaible PROJECT_DB_PASS
+
+  # You can change init script to anything you want
+  initScript: |-
+    #!/bin/bash
+    set -e
+
+    psql -v ON_ERROR_STOP=1 --username "${POSTGRES_USER}" <<-EOSQL
+        CREATE USER ${PROJECT_DB_USER} WITH NOSUPERUSER PASSWORD '${PROJECT_DB_PASS}';
+        CREATE DATABASE ${PROJECT_DB_NAME};
+        GRANT ALL PRIVILEGES ON DATABASE ${PROJECT_DB_NAME} TO ${PROJECT_DB_USER};
+    EOSQL
