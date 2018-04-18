@@ -1,0 +1,44 @@
+# Default values for openebs.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  create: true
+  name:
+
+image:
+  pullPolicy: IfNotPresent
+
+apiserver:
+  image: "openebs/m-apiserver"
+  imageTag: "0.5.3"
+  replicas: 1
+  ports:
+    externalPort: 5656
+    internalPort: 5656
+  nodeSelector: {}
+  tolerations: {}
+  affinity: {}
+
+provisioner:
+  image: "openebs/openebs-k8s-provisioner"
+  imageTag: "0.5.3"
+  replicas: 1
+  nodeSelector: {}
+  tolerations: {}
+  affinity: {}
+
+jiva:
+  image: "openebs/jiva"
+  imageTag: "0.5.3"
+  replicas: 3
+
+policies:
+  monitoring:
+    enabled: true
+    image: "openebs/m-exporter"
+    imageTag: "0.5.3"
