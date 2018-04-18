@@ -1,0 +1,7 @@
+{{- if not .Values.slackUrl }}
+WARNING:
+To use this chart, configure the "slackUrl" value:
+In slack, add a new "Incoming WebHooks" configuration.
+https://my.slack.com/apps/A0F7XDUAZ-incoming-webhooks
+Set the "slackUrl" value to the Slack "Webhook URL".
+{{- end }}
