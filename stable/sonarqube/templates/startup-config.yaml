@@ -1,0 +1,17 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sonarqube.fullname" . }}-startup
+  labels:
+    app: {{ template "sonarqube.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  startup.sh: |-
+    #! /bin/sh
+    if [ -e /tmp/conf/sonar.properties ]; then
+      cp /tmp/conf/sonar.properties /opt/sonarqube/conf/sonar.properties
+    fi
+    /opt/sonarqube/bin/run.sh
