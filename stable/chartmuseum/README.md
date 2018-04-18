@@ -248,7 +248,7 @@ env:
 gcp:
   secret:
     enabled: true
-    secretName: chartmuseum-secret
+    name: chartmuseum-secret
     key: credentials.json
 ```
 
