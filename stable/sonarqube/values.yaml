@@ -4,12 +4,15 @@
 replicaCount: 1
 image:
   repository: sonarqube
-  tag: 6.5
+  tag: 6.7.3
 service:
   name: sonarqube
   type: LoadBalancer
   externalPort: 9000
   internalPort: 9000
+  annotations:
+  # May be used in example for internal load balancing in GCP:
+  # cloud.google.com/load-balancer-type: Internal
 ingress:
   enabled: false
   # Used to create an Ingress record.
@@ -23,6 +26,18 @@ ingress:
   # - secretName: chart-example-tls
   #   hosts:
   #     - chart-example.local
+
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
 
 readinessProbe:
   initialDelaySeconds: 60
@@ -66,6 +81,9 @@ persistence:
 #    - "https://github.com/SonarSource/sonar-ldap/releases/download/2.2-RC3/sonar-ldap-plugin-2.2.0.601.jar"
 plugins:
   install: []
+  resources: {}
+  # We allow the plugins init container to have a separate resources declaration because
+  # the initContainer does not take as much resources.
 
 # A custom sonar.properties file can be provided using a multiline YAML string.
 # For example:
