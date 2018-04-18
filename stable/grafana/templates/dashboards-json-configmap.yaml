@@ -10,9 +10,9 @@ metadata:
 data:
 {{- if .Values.dashboards }}
   {{- range $key, $value := .Values.dashboards }}
-    {{ if hasKey $value "json" }}
+    {{- if hasKey $value "json" }}
   {{ $key }}.json: |
-    {{ $value.json }}
+{{ $value.json | indent 4 }}
     {{- end }}
   {{- end }}
 {{- end -}}
