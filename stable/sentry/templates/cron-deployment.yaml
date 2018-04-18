@@ -16,6 +16,18 @@ spec:
         release: "{{ .Release.Name }}"
         role: cron
     spec:
+      {{- if .Values.cron.affinity }}
+      affinity:
+{{ toYaml .Values.cron.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.cron.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.cron.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.cron.tolerations }}
+      tolerations:
+{{ toYaml .Values.cron.tolerations | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}-cron
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
