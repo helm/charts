@@ -16,6 +16,18 @@ spec:
         release: "{{ .Release.Name }}"
         role: web
     spec:
+      {{- if .Values.web.affinity }}
+      affinity:
+{{ toYaml .Values.web.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.web.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.web.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.web.tolerations }}
+      tolerations:
+{{ toYaml .Values.web.tolerations | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}-web
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

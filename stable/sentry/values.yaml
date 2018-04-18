@@ -21,6 +21,9 @@ web:
       value:
     - name: GITHUB_API_SECRET
       value:
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 # How many cron instances to run
 cron:
@@ -32,6 +35,9 @@ cron:
     requests:
       cpu: 100m
       memory: 100Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 # How many worker instances to run
 worker:
@@ -43,6 +49,9 @@ worker:
     requests:
       cpu: 100m
       memory: 100Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 # Initial admin user to create
 user:
