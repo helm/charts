@@ -1,4 +1,4 @@
-{{- if and .Values.prometheus.jmx.enabled .Values.prometheus.jmx.configMap.enabled }}
+{{- if and .Values.prometheus.jmx.enabled .Values.jmx.configMap.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,8 +10,8 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 data:
   jmx-kafka-prometheus.yml: |+
-{{- if .Values.prometheus.jmx.configMap.overrideConfig }}
-{{ toYaml .Values.prometheus.jmx.configMap.overrideConfig | indent 4 }}
+{{- if .Values.jmx.configMap.overrideConfig }}
+{{ toYaml .Values.jmx.configMap.overrideConfig | indent 4 }}
 {{- else }}
     jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:{{ .Values.jmx.port }}/jmxrmi
     lowercaseOutputName: true

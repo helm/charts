@@ -170,8 +170,8 @@ spec:
       {{- if .Values.prometheus.jmx.enabled }}
       - name: jmx-config
         configMap:
-          {{- if .Values.prometheus.jmx.configMap.overrideName }}
-          name: {{ .Values.prometheus.jmx.configMap.overrideName }}
+          {{- if .Values.jmx.configMap.overrideName }}
+          name: {{ .Values.jmx.configMap.overrideName }}
           {{- else }}
           name: {{ template "kafka.fullname" . }}-metrics
           {{- end }}
