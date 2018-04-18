@@ -174,6 +174,8 @@ The [Bitnami Redis](https://github.com/bitnami/bitnami-docker-redis) image store
 
 By default, the chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning. If a Persistent Volume Claim already exists, specify it during installation.
 
+By default, the chart persists both data and configuration. If you wish to persist only the data directory set `persistence.path` to `/bitnami/redis/data` and `persistence.subPath` to `redis/data`.
+
 ### Existing PersistentVolumeClaim
 
 1. Create the PersistentVolume
