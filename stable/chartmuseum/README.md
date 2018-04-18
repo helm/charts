@@ -230,7 +230,7 @@ kubectl create secret generic chartmuseum-secret --from-file=credentials.json="m
 Then you can either use a `VALUES` yaml with your values or set those values in the command line:
 
 ```shell
-helm install stable/chartmuseum --debug  --set env.open.GOOGLE_SERVICE_ACCOUNT=true,env.open.STORAGE=google,env.open.DISABLE_API=false,env.open.STORAGE_GOOGLE_BUCKET=my-gcs-bucket,existing.secret.gcp.enabled=true,existing.secret.gcp.secretName=chartmuseum-secret
+helm install stable/chartmuseum --debug  --set gcp.secret.enabled=true,env.open.STORAGE=google,env.open.DISABLE_API=false,env.open.STORAGE_GOOGLE_BUCKET=my-gcp-chartmuseum,gcp.secret.name=chartmuseum-secret
 ```
 
 If you prefer to use a yaml file:
@@ -278,9 +278,8 @@ To set the values directly in the command line, use the follosing command. Note 
 
 ```shell
 export JSONKEY=$(cat my-project-77e35d85a593.json | base64)
-helm install  stable/chartmuseum --debug  --set env.open.GOOGLE_SERVICE_ACCOUNT=true,env.secret.GOOGLE_CREDENTIALS_JSON=${JSONKEY},env.open.STORAGE=google,env.open.DISABLE_API=false,env.open.STORAGE_GOOGLE_BUCKET=my-gcs-bucket
+helm install stable/chartmuseum --debug  --set gcp.secret.enabled=true,env.secret.GOOGLE_CREDENTIALS_JSON=${JSONKEY},env.open.STORAGE=google,env.open.DISABLE_API=false,env.open.STORAGE_GOOGLE_BUCKET=my-gcp-chartmuseum
 ```
-
 
 ### Using with Microsoft Azure Blob Storage
 
