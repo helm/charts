@@ -95,7 +95,7 @@ $ helm install --name my-release -f values.yaml stable/percona-xtradb-cluster
 
 ## Persistence
 
-The [Percona XtraDB Cluster DockerHub image](https://hub.docker.com/r/percona/percona-xtradb-cluster/) image stores the MySQL data and configurations at the `/var/lib/mysql` path of the container.
+The [Percona XtraDB Cluster DockerHub image](https://hub.docker.com/r/percona/percona-xtradb-cluster/) stores the MySQL data and configurations at the `/var/lib/mysql` path of the container.
 
 By default, an emptyDir volume is mounted at that location.
 
