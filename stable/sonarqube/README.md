@@ -49,9 +49,12 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
 | `persistence.size`                          | Size of the volume                        | `10Gi`                                     |
 | `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
+| `postgresql.enabled`                        | Set to `false` to use external server     | `true`                                     |
+| `postgresql.postgresServer`                 | Hostname of the external Postgresql server| `null`                                     |
 | `postgresql.postgresUser`                   | Postgresql database user                  | `sonarUser`                                |
 | `postgresql.postgresPassword`               | Postgresql database password              | `sonarPass`                                |
 | `postgresql.postgresDatabase`               | Postgresql database name                  | `sonarDB`                                  |
+| `postgresql.service.port`                | Postgresql port                              | `5432`                                     |
 | `resources`                                 | Sonarqube Pod resource requests & limits  | `{}`                                       |
 | `affintiy`                                  | Node / Pod affinities                     | `{}`                                       |
 | `nodeSelector`                              | Node labels for pod assignment            | `{}`                                       |

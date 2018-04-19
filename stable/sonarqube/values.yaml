@@ -93,9 +93,17 @@ plugins:
 #   ldap.url=ldaps://organization.com
 
 ## Configuration values for the postgresql dependency
-## ref: https://github.com/kubernetes/charts/blob/master/stable/postgressql/README.md
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
 postgresql:
+  # Enable to deploy the PostgreSQL chart
+  enabled: true
+  # To use an external PostgreSQL instance, set enabled to false and uncomment
+  # the line below:
+  # postgresServer: ""
   postgresUser: "sonarUser"
   postgresPassword: "sonarPass"
   postgresDatabase: "sonarDB"
+  # Specify the TCP port that PostgreSQL should use
+  service:
+    port: 5432

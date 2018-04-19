@@ -81,7 +81,7 @@ spec:
                   name: {{ template "postgresql.fullname" .}}
                   key: postgres-password
             - name: SONARQUBE_JDBC_URL
-              value: "jdbc:postgresql://{{ template "postgresql.fullname" .}}:5432/{{.Values.postgresql.postgresDatabase}}"
+              value: "jdbc:postgresql://{{ template "postgresql.hostname" . }}:{{- .Values.postgresql.service.port -}}/{{- .Values.postgresql.postgresDatabase -}}"
           livenessProbe:
             httpGet:
               path: /
