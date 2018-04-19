@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "beamium.fullname" . }}
+  labels:
+    app: {{ template "beamium.name" . }}
+    chart: {{ template "beamium.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  config.yaml: |
+    scrapers:
+{{ toYaml .Values.config.scrapers| indent 6 }}  
+    sinks:
+      sink-ovh:
+        url: "{{ .Values.config.warp.url }}"
+        token: "{{ .Values.config.warp.token }}"
+    labels:
+{{ toYaml .Values.config.labels| indent 6 }}  
+    parameters:
+{{ toYaml .Values.config.parameters| indent 6 }}  

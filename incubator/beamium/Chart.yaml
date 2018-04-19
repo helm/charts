@@ -1,0 +1,10 @@
+name: beamium
+version: 0.1.0
+description: A Helm chart for beamium support with prometheus.
+appVersion: 1.7.0
+home: https://github.com/ovh/beamium
+sources:
+    - https://github.com/ovh/beamium
+maintainers:
+    - name: Julien Cartigny
+      email: kartoch@gmail.com
