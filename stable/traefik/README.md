@@ -94,6 +94,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `whiteListSourceRange`          | Enable IP whitelisting at the entrypoint level.                      | `false`                                   |
 | `externalTrafficPolicy`         | Set the externalTrafficPolicy in the Service to either Cluster or Local | `Cluster`                              |
 | `replicas`                      | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
+| `podDisruptionBudget`                  | Pod disruption budget             | `{}` |
 | `cpuRequest`                    | Initial share of CPU requested per Traefik pod                       | `100m`                                    |
 | `memoryRequest`                 | Initial share of memory requested per Traefik pod                    | `20Mi`                                    |
 | `cpuLimit`                      | CPU limit per Traefik pod                                            | `200m`                                    |

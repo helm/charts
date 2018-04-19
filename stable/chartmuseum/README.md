@@ -52,7 +52,7 @@ their default values. See values.yaml for all available options.
 |----------------------------------------|---------------------------------------------|-----------------------------------------------------|
 | `image.pullPolicy`                     | Container pull policy                       | `IfNotPresent`                                      |
 | `image.repository`                     | Container image to use                      | `chartmuseum/chartmuseum`                           |
-| `image.tag`                            | Container image tag to deploy               | `v0.5.1`                                            |
+| `image.tag`                            | Container image tag to deploy               | `v0.5.2`                                            |
 | `persistence.accessMode`               | Access mode to use for PVC                  | `ReadWriteOnce`                                     |
 | `persistence.enabled`                  | Whether to use a PVC for persistent storage | `false`                                             |
 | `persistence.size`                     | Amount of space to claim for PVC            | `8Gi`                                               |
@@ -93,6 +93,9 @@ their default values. See values.yaml for all available options.
 | `env.open.INDEX_LIMIT`                 | Parallel scan limit for the repo indexer    | ``                                                  |
 | `env.secret.BASIC_AUTH_USER`           | Username for basic HTTP authentication      | ``                                                  |
 | `env.secret.BASIC_AUTH_PASS`           | Password for basic HTTP authentication      | ``                                                  |
+| `gcp.secret.enabled`                   | Flag for the GCP service account            | `false`                                             |
+| `gcp.secret.name`                      | Secret name for the GCP json file           | ``                                                  |
+| `gcp.secret.key`                       | Secret key for te GCP json file             | `credentials.json`                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
@@ -219,10 +222,69 @@ env:
     STORAGE_GOOGLE_PREFIX:    
 ```
 
+### Using with Google Cloud Storage and a Google Service Account
+
+A Google service account credentials are stored in a json file. There are two approaches here. Ideally you don't want to send your secrets to tiller. In that case, before installing this chart, you should create a secret with those credentials:
+
+```shell
+kubectl create secret generic chartmuseum-secret --from-file=credentials.json="my-project-45e35d85a593.json"
+```
+
+Then you can either use a `VALUES` yaml with your values or set those values in the command line:
+
+```shell
+helm install stable/chartmuseum --debug  --set gcp.secret.enabled=true,env.open.STORAGE=google,env.open.DISABLE_API=false,env.open.STORAGE_GOOGLE_BUCKET=my-gcp-chartmuseum,gcp.secret.name=chartmuseum-secret
+```
+
+If you prefer to use a yaml file:
+
+```yaml
+env:
+  open:
+    STORAGE: google
+    STORAGE_GOOGLE_BUCKET: my-gcs-bucket
+    STORAGE_GOOGLE_PREFIX:
+
+gcp:
+  secret:
+    enabled: true
+    name: chartmuseum-secret
+    key: credentials.json
+```
+
 Run command to install
 
 ```shell
 helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+```
+
+In case that you don't mind adding your secret to tiller (you shouldn't do it), this are the commands
+
+```yaml
+env:
+  open:
+    STORAGE: google
+    STORAGE_GOOGLE_BUCKET: my-gcs-bucket
+    STORAGE_GOOGLE_PREFIX:
+  secret:
+    GOOGLE_CREDENTIALS_JSON: my-json-file-base64-encoded
+gcp:
+  secret:
+    enabled: true
+
+```
+
+Run command to install
+
+```shell
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
+```
+
+To set the values directly in the command line, use the follosing command. Note that we have to base64 encode the json file because we cannot pass a multi-line text as a value.
+
+```shell
+export JSONKEY=$(cat my-project-77e35d85a593.json | base64)
+helm install stable/chartmuseum --debug  --set gcp.secret.enabled=true,env.secret.GOOGLE_CREDENTIALS_JSON=${JSONKEY},env.open.STORAGE=google,env.open.DISABLE_API=false,env.open.STORAGE_GOOGLE_BUCKET=my-gcp-chartmuseum
 ```
 
 ### Using with Microsoft Azure Blob Storage
