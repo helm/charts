@@ -39,6 +39,10 @@ extraArgs: {}
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ## affinity: {}
 
+podDisruptionBudget: |
+  maxUnavailable: 1
+  # minAvailable: 2
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
