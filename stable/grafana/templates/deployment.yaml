@@ -22,6 +22,10 @@ spec:
       labels:
         app: {{ template "grafana.name" . }}
         release: {{ .Release.Name }}
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
 {{- if .Values.dashboards }}
       initContainers:
