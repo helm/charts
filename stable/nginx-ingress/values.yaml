@@ -65,8 +65,13 @@ controller:
   extraArgs: {}
 
   ## Additional environment variables to set
-  ##
-  extraEnvs: {}
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## DaemonSet or Deployment
   ##
