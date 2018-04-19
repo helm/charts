@@ -47,13 +47,16 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.11.0`
+`controller.image.tag` | controller container image tag | `0.12.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
 `controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
 `controller.electionID` | election ID to use for the status update | `ingress-controller-leader`
 `controller.extraEnvs` | any additional environment variables to set in the pods | `{}`
+`controller.extraContainers` | Sidecar containers to add to the controller pod. See [LemonLDAP::NG controller](https://github.com/lemonldap-ng-controller/lemonldap-ng-controller) as example | `{}`
+`controller.extraVolumeMounts` | Additional volumeMounts to the controller main container | `{}`
+`controller.extraVolumes` | Additional volumes to the controller pod | `{}`
 `controller.ingressClass` | name of the ingress class to route through this controller | `nginx`
 `controller.scope.enabled` | limit the scope of the ingress controller | `false` (watch all namespaces)
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)
@@ -87,11 +90,13 @@ Parameter | Description | Default
 `controller.livenessProbe.timeoutSeconds` | When the probe times out | 5
 `controller.livenessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
 `controller.livenessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
+`controller.livenessProbe.port` | The port number that the liveness probe will listen on. | 10254
 `controller.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 10
 `controller.readinessProbe.periodSeconds` | How often to perform the probe | 10
 `controller.readinessProbe.timeoutSeconds` | When the probe times out | 1
 `controller.readinessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
 `controller.readinessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
+`controller.readinessProbe.port` | The port number that the readiness probe will listen on. | 10254
 `controller.stats.enabled` | if `true`, enable "vts-status" page | `false`
 `controller.stats.service.annotations` | annotations for controller stats service | `{}`
 `controller.stats.service.clusterIP` | internal controller stats cluster service IP | `""`
@@ -130,6 +135,7 @@ Parameter | Description | Default
 `defaultBackend.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `defaultBackend.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
+`imagePullSecrets` | name of Secret resource containing private registry credentials | `nil`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | ServiceAccount to be used (ignored if rbac.create=true) | `default`
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`

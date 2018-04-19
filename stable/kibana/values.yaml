@@ -3,6 +3,9 @@ image:
   tag: "6.0.0"
   pullPolicy: "IfNotPresent"
 
+commandline:
+  args:
+
 env:
   # All Kibana configuration options are adjustable via env vars.
   # To adjust a config option to an env var uppercase + replace `.` with `_`

@@ -6,7 +6,7 @@ metadata:
     app: {{ template "filebeat.name" . }}
     chart: {{ template "filebeat.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}   
+    heritage: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -22,18 +22,32 @@ spec:
       labels:
         app: {{ template "filebeat.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+        checksum/secret: {{ toYaml .Values.config | sha256sum }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        args: 
+        args:
         - "-e"
         env:
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+{{- range $key, $value := .Values.extraVars }}
+        - name: {{ $key }}
+          value: {{ $value }}
+{{- end }}
+        {{- if index .Values.config "http.enabled" }}
+        ports:
+          - containerPort: {{ index .Values.config "http.port" }}
+        {{- end }}
         securityContext:
           runAsUser: 0
         resources:
@@ -47,10 +61,13 @@ spec:
           mountPath: /usr/share/filebeat/data
         - name: varlog
           mountPath: /var/log
-          readOnly: true          
+          readOnly: true
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
       volumes:
       - name: varlog
         hostPath:
@@ -64,7 +81,10 @@ spec:
       - name: data
         hostPath:
           path: /var/lib/filebeat
-          type: DirectoryOrCreate    
+          type: DirectoryOrCreate
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
       terminationGracePeriodSeconds: 60
       serviceAccountName: {{ template "filebeat.serviceAccountName" . }}
       tolerations:

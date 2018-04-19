@@ -3,7 +3,7 @@ kind: DaemonSet
 metadata:
   name: {{ template "name" . }}
 spec:
-  {{- if ge .Capabilities.KubeVersion.Minor "6" }}
+  {{- if semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion }}
   updateStrategy:
     type: RollingUpdate
   {{- end }}

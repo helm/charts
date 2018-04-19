@@ -100,6 +100,16 @@ defaultBucket:
 azuregateway:
   enabled: false
 
+## Use minio as GCS (Google Cloud Storage) gateway, you should disable data persistence so no volume claim are created.
+## https://docs.minio.io/docs/minio-gateway-for-gcs
+
+gcsgateway:
+  enabled: false
+  # credential json file of service account key
+  gcsKeyJson: ""
+  # Google cloud project-id
+  projectId: ""
+
 ## https://docs.minio.io/docs/minio-bucket-notification-guide
 ##
 minioConfig:
