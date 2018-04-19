@@ -344,8 +344,8 @@ helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Using with local filesystem storage
-By default chartmuseum use local filesystem storage. 
-But on pod recreation if will lose all charts, to prevent that enable persistent storage. 
+By default chartmuseum uses local filesystem storage. 
+But on pod recreation it will lose all charts, to prevent that enable persistent storage. 
 
 ```yaml
 env:
