@@ -88,6 +88,11 @@ server:
     # DRONE_GITHUB_CLIENT: "github-oauth2-client-id"
     # DRONE_GITHUB_SECRET: "github-oauth2-client-secret"
 
+  ## Additional server annotations.
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  annotations: {}
+
   ## CPU and memory limits for drone server
   ##
   resources: {}
@@ -113,6 +118,11 @@ agent:
 
   ## Number of drone agent replicas
   replicas: 1
+
+  ## Additional agent annotations.
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  annotations: {}
 
   ## CPU and memory limits for drone agent
   ##

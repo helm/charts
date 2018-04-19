@@ -15,6 +15,9 @@ spec:
     metadata:
       annotations:
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+{{- if .Values.server.annotations }}
+{{ toYaml .Values.server.annotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "drone.name" . }}
         release: "{{ .Release.Name }}"
