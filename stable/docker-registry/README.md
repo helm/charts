@@ -40,6 +40,7 @@ their default values.
 | `service.nodePort`          | if `service.type` is `NodePort` and this is non-empty, sets the node port of the service | `nil`           |
 | `replicaCount`              | k8s replicas                                                                             | `1`             |
 | `updateStrategy`            | update strategy for deployment                                                           | `{}`            |
+| `podAnnotations`            | Annotations for pod                                                                      | `{}`            |
 | `resources.limits.cpu`      | Container requested CPU                                                                  | `nil`           |
 | `resources.limits.memory`   | Container requested memory                                                               | `nil`           |
 | `storage`                   | Storage system to use                                                                    | `filesystem`    |
