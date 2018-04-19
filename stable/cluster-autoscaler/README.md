@@ -84,6 +84,7 @@ Parameter | Description | Default
 `image.tag` | Image tag (used if `cloudProvider=aws`) | `v1.1.0`
 `image.pullPolicy` | Image pull policy (used if `cloudProvider=aws`) | `IfNotPresent`
 `extraArgs` | additional container arguments | `{}`
+`podDisruptionBudget` | Pod disruption budget | `maxUnavailable: 1`
 `extraEnv` | additional container environment variables | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
