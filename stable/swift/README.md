@@ -1,3 +1,5 @@
+**This chart is DEPRECATED and moved to https://github.com/appscode/charts**
+
 # swift
 [swift by AppsCode](https://github.com/appscode/swift) - Ajax friendly Helm Tiller Proxy
 ## TL;DR;

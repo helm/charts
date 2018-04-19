@@ -61,6 +61,7 @@ following configurable parameters:
 | `replicas`                     | Kafka Brokers                                                                                                   | `3`                                                        |
 | `component`                    | Kafka k8s selector key                                                                                          | `kafka`                                                    |
 | `resources`                    | Kafka resource requests and limits                                                                              | `{}`                                                       |
+| `kafkaHeapOptions`             | Kafka broker JVM heap options                                                                                   | `-Xmx1G-Xms1G`                                                       |
 | `logSubPath`                   | Subpath under `persistence.mountPath` where kafka logs will be placed.                                          | `logs`                                                     |
 | `schedulerName`                | Name of Kubernetes scheduler (other than the default)                                                           | `nil`                                                      |
 | `affinity`                     | Pod scheduling preferences                                                                                      | `{}`                                                       |
@@ -71,18 +72,27 @@ following configurable parameters:
 | `external.domain`              | Domain in which to advertise Kafka external listeners.                                                          | `cluster.local`                                            |
 | `external.init`                | External init container settings.                                                                               | (see `values.yaml`)                                        |
 | `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `{ offsets.topic.replication.factor: 3 }`                  |
-| `jmxPort`                      | The jmx port to use for brokers.  Will expose both the port and set the KAFKA_JMX_PORT env variable.            | blank                                                      |
-| `additionalPorts`               | Additional ports to expose on brokers.  Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar   | `{}`                                  |
+| `additionalPorts`              | Additional ports to expose on brokers.  Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar   | `{}`                                 |
 | `readinessProbe.initialDelaySeconds` | Number of seconds before probe is initiated.                                                              | `30`                                                       |
 | `readinessProbe.periodSeconds`       | How often (in seconds) to perform the probe.                                                              | `10`                                                       |
 | `readinessProbe.timeoutSeconds`      | Number of seconds after which the probe times out.                                                        | `5`                                                        |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed.              | `1`                                                        |
 | `readinessProbe.failureThreshold`    | After the probe fails this many times, pod will be marked Unready.                                        | `3`                                                        |
+| `terminationGracePeriodSeconds`      | Wait up to this many seconds for a broker to shut down gracefully, after which it is killed               | `60`                                                        |
 | `updateStrategy`               | StatefulSet update strategy to use.                                                                             | `{ type: "OnDelete" }`                                     |
+| `podManagementPolicy`          | Start and stop pods in Parallel or OrderedReady (one-by-one.)  Can not change after first release.              | `OrderedReady`                                     |
 | `persistence.enabled`          | Use a PVC to persist data                                                                                       | `true`                                                     |
 | `persistence.size`             | Size of data volume                                                                                             | `1Gi`                                                      |
 | `persistence.mountPath`        | Mount path of data volume                                                                                       | `/opt/kafka/data`                                          |
 | `persistence.storageClass`     | Storage class of backing PVC                                                                                    | `nil`                                                      |
+| `metrics.jmx.enabled`          | Whether or not to expose JMX metrics to Prometheus                                                              | `false`                                                    |
+| `metrics.jmx.image`            | JMX Exporter container image                                                                                    | `solsson/kafka-prometheus-jmx-exporter@sha256`             |
+| `metrics.jmx.imageTag`         | JMX Exporter container image tag                                                                                | `a23062396cd5af1acdf76512632c20ea6be76885dfc20cd9ff40fb23846557e8` |
+| `metrics.jmx.port`             | The jmx port to use for brokers.  Will expose both the port and set the KAFKA_JMX_PORT env variable.            | `5555`                                                     |
+| `metrics.jmx.kafkaConfig`      | Rules to apply to the Kafka JMX Exporter                                                                        | `Rather complex object. Check values.yaml`                 |
+| `metrics.kafka.enabled`        | Whether or not to create a separate Kafka exporter                                                              | `false`                                                    |
+| `metrics.kafka.image`          | Kafka Exporter container image                                                                                  | `danielqsj/kafka-exporter`                                 |
+| `metrics.kafka.imageTag`       | Kafka Exporter container image tag                                                                              | `v1.0.1`                                                   |
 | `zookeeper.enabled`            | If True, installs Zookeeper Chart                                                                               | `true`                                                     |
 | `zookeeper.resources`          | Zookeeper resource requests and limits                                                                          | `{}`                                                       |
 | `zookeeper.heap`               | JVM heap size to allocate to Zookeeper                                                                          | `1G`                                                       |
@@ -129,9 +139,9 @@ Where `my-release` is the name of your helm release.
 
 ## Extensions
 
-Kafka has a rich ecosystem, with lots of tools. This sections is intended to compile all of those tools for which a corresponding Helm chart has already been created. 
+Kafka has a rich ecosystem, with lots of tools. This sections is intended to compile all of those tools for which a corresponding Helm chart has already been created.
 
-- [Schema-registry](https://github.com/kubernetes/charts/tree/master/incubator/schema-registry) -  A confluent project that provides a serving layer for your metadata. It provides a RESTful interface for storing and retrieving Avro schemas. 
+- [Schema-registry](https://github.com/kubernetes/charts/tree/master/incubator/schema-registry) -  A confluent project that provides a serving layer for your metadata. It provides a RESTful interface for storing and retrieving Avro schemas.
 
 ### Connecting to Kafka from outside Kubernetes
 
