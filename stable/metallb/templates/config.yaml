@@ -1,4 +1,4 @@
-{{- if (or .Values.config .Values.arpAddresses) }}
+{{- if .Values.configInline }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,13 +10,5 @@ metadata:
     app: {{ template "metallb.name" . }}
 data:
   config: |
-{{- if .Values.config }}
-{{ toYaml .Values.config | indent 4 }}
-{{- else }}
-    address-pools:
-    - name: default
-      protocol: arp
-      cidr:
-      - {{ .Values.arpAddresses }}
-{{- end }}
+{{ toYaml .Values.configInline | indent 4 }}
 {{- end }}
