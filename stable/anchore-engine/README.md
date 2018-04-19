@@ -41,7 +41,7 @@ Deploying PostgreSQL as a dependency managed in the chart:
 `helm install stable/anchore-engine`
 
 
-Using and existing/external PostgreSQL service:
+Using an existing/external PostgreSQL service:
 
 `helm install --name <name> --set postgresql.enabled=False stable/anchore-engine`
 
