@@ -80,9 +80,11 @@ spec:
       - name: {{ .Chart.Name }}-consul-agent
         image: "{{ .Values.consulAgent.repository }}:{{ .Values.consulAgent.tag }}"
         imagePullPolicy: {{ .Values.consulAgent.pullPolicy }}
+        securityContext:
+          readOnlyRootFilesystem: true
         volumeMounts:
         - name: consul-data
-          mountPath: /consul/data
+          mountPath: /etc/consul
         {{- if .Values.consulAgent.gossipKeySecretName }}
         - name: consul-gossip-key
           mountPath: /etc/consul/secrets
@@ -102,7 +104,7 @@ spec:
             exec /bin/consul agent \
               $GOSSIP_KEY \
               -join={{- .Values.consulAgent.join }} \
-              -data-dir=/consul/data
+              -data-dir=/etc/consul
       {{- end }}
       affinity:
 {{ tpl .Values.affinity . | indent 8 }}
