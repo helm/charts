@@ -1,6 +1,6 @@
 # TensorFlow Serving
 
-TensorFlow Serving is an open-source software library for serving machine learning models. We hope to demonstrate how to deploy a generic TensorFlow Model Server and serve a model from distributed storage instead of baking into the image like [TensorFlow inception](../tensorflow-inception/README.md). 
+TensorFlow Serving is an open-source software library for serving machine learning models. We hope to demonstrate how to deploy a generic TensorFlow Model Server and serve a model from distributed storage instead of baking into the image like [TensorFlow inception](../../incubator/tensorflow-inception/README.md). 
 
 For more information,
 [visit the project on github](https://github.com/tensorflow/serving).
@@ -31,7 +31,7 @@ mkdir /serving
 mount -t nfs -o vers=4.0 10.244.1.4:/serving /serving
 mkdir -p /serving/model
 cd /serving/model
-curl -O https://github.com/cheyang/charts/raw/features/tensorflow_serving/stable/tensorflow-serving/models/mnist-export.tar.gz
+curl -O https://raw.githubusercontent.com/kubernetes/charts/master/stable/tensorflow-serving/models/mnist-export.tar.gz
 tar -xzvf mnist-export.tar.gz
 rm -rf mnist-export.tar.gz
 cd /
@@ -64,7 +64,7 @@ metadata:
     model: mnist
   name: pv-nas-mnist
 spec:
-  persistentVolumeReclaimPolicy: Recycle
+  persistentVolumeReclaimPolicy: Retain
   accessModes: 
     - ReadWriteMany
   capacity: 
@@ -90,6 +90,9 @@ persistence:
     matchLabels: 
       model: mnist
     storage: 5Gi
+resources:
+  limits:
+    nvidia.com/gpu: 1
 ```
 
 * To deploy without GPU, you can create `values.yaml` like 
