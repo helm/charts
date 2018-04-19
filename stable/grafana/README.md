@@ -59,5 +59,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `dashboardProviders`       | Configure grafana dashboard providers | `{}` |
 | `dashboards`               | Dashboards to import | `{}` |
 | `grafana.ini`              | Grafana's primary configuration | `{}` |
+| `ldap.toml  `              | Grafana's LDAP configuration    | `{}` |
 | `annotations`              | Deployment annotations | `{}` |
 | `podAnnotations`           | Pod annotations | `{}` |
+
