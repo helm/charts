@@ -1,0 +1,9 @@
+1. Get the application URL by running these commands:
+
+{{- if contains "LoadBalancer" .Values.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ template "tensorflow-notebook.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "tensorflow-notebook.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo notebook_url=http://$SERVICE_IP:8888
+  echo tensorboard_url=http://$SERVICE_IP:6006
+{{- end }}
