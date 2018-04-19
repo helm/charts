@@ -73,8 +73,8 @@ Password: <Enter SA Password>
 $ 1> select @@VERSION;
 $ 2> go
 ------------------------------------------------------------------------------------
-Microsoft SQL Server 2017 (RTM-CU3-GDR) (KB4052987) - 14.0.3015.40 (X64) 
-Dec 22 2017 16:13:22 
+Microsoft SQL Server 2017 (RTM-CU5) (KB4092643) - 14.0.3023.8 (X64)
+Dec 22 2017 16:13:22
 Copyright (C) 2017 Microsoft Corporation
 Express Edition (64-bit) on Linux (Ubuntu 16.04.3 LTS)
 (1 rows affected)
@@ -95,6 +95,10 @@ The configuration parameters in this section control the resources requested and
 | image.pullPolicy | The pull policy for the deployment                                                             | `IfNotPresent`                   |
 | nodeSelector     | Node labels for pod assignment                                                                 | `{}`                             |
 | service.type     | Service Type                                                                                   | `ClusterIP`                      |
+| service.port     | Service Port                                                                                   | `1433`                           |
+| collation        | Default collation for SQL Server                                                               | `SQL_Latin1_General_CP1_CI_AS`   |
+| lcid             | Default languages for SQL Server                                                               | `1033`                           |
+| persistence.enabled | Presist the Data and Log files for SQL Server                                               | `false`                          |
 | persistence.enabled | Persist the Data and Log files for SQL Server                                               | `false`                          |
 | persistence.existingDataClaim | Identify an existing Claim to be used for the Data Directory                      | `Commented Out`                  |
 | persistence.existingLogClaim  | Identify an existing Claim to be used for the Log Directory                       | `Commented Out`                  |
@@ -192,3 +196,16 @@ Below are the supported versions of SQL Server on Linux.  You can find out more 
 * Enterprise : This will run the container using the Enterprise Edition
 * EnterpriseCore : This will run the container using the Enterprise Edition Core
 * Product ID: This will run the container with the edition that is associated with the PID
+
+## Collation and Language Support
+
+You can change the collation of the MSSQL installation by changing the `collation` key in the `values.yaml` file.  More information about Collation and Unicode Support can be found on the [Microsoft Docs Page](https://docs.microsoft.com/en-us/sql/relational-databases/collations/collation-and-unicode-support).
+
+To change the language of the MSSQL installation, change the `lcid` key in the `values.yaml`.  More informationa about languages can be found using the system view `sys.syslanguages`.  A list of available languages can be found [here](https://docs.microsoft.com/en-us/sql/relational-databases/system-compatibility-views/sys-syslanguages-transact-sql).
+
+* Example 1 - Retrieve Collation and Language
+
+```sql
+1>select substring(convert(varchar(30),serverproperty('Collation')),1,30), substring(convert(varchar(20),serverproperty('lcid')),1,20);
+2>go
+```
