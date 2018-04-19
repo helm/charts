@@ -60,6 +60,6 @@ Create the name of the settings ConfigMap to use.
 {{- if .Values.configInline -}}
     {{ include "metallb.fullname" . }}
 {{- else -}}
-    {{ .Values.configName }}
+    {{ .Values.existingConfigMap }}
 {{- end -}}
 {{- end -}}

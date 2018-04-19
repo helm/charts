@@ -5,15 +5,15 @@
 # To configure MetalLB, you must specify ONE of the following two
 # options.
 
-# configName specifies the name of an externally-defined ConfigMap to
-# use as the configuration. Helm will not manage the contents of this
-# ConfigMap, it is your responsibility to create it.
-configName: metallb-config
+# existingConfigMap specifies the name of an externally-defined
+# ConfigMap to use as the configuration. Helm will not manage the
+# contents of this ConfigMap, it is your responsibility to create it.
+existingConfigMap: metallb-config
 
 # configInline specifies MetalLB's configuration directly, in yaml
 # format. When configInline is used, Helm manages MetalLB's
-# configuration ConfigMap as part of the release, and configName is
-# ignored.
+# configuration ConfigMap as part of the release, and
+# existingConfigMap is ignored.
 #
 # Refer to https://metallb.universe.tf/configuration/ for
 # available options.
