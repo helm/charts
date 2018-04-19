@@ -11,7 +11,7 @@ $ helm install incubator/keycloak
 
 ## Introduction
 
-This chart bootstraps a [Keycloak](http://www.keycloak.org/) StatefulSet on a [Kubernetes](https://kubernetes.io) cluster 
+This chart bootstraps a [Keycloak](http://www.keycloak.org/) StatefulSet on a [Kubernetes](https://kubernetes.io) cluster
 using the [Helm](https://helm.sh) package manager. It provisions a fully featured Keycloak installation.
 For more information on Keycloak and its capabilities, see its [documentation](http://www.keycloak.org/documentation.html).
 
@@ -49,6 +49,7 @@ Parameter | Description | Default
 `keycloak.image.repository` | The Keycloak image repository | `jboss/keycloak`
 `keycloak.image.tag` | The Keycloak image tag | `3.4.0.Final`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
+`keycloak.image.pullSecrets`| Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods) |
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
 `keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
 `keycloak.additionalEnv` | Allows the specification of additional environment variables for Keycloak | `[]`
@@ -104,7 +105,7 @@ $ helm install --name keycloak -f values.yaml incubator/keycloak
 ### Database Setup
 
 By default, the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) chart is deployed and used as database.
-Please refer to this chart for additional PostgreSQL configuration options. If PostgreSQL is disabled, Keycloak uses an embedded H2 
+Please refer to this chart for additional PostgreSQL configuration options. If PostgreSQL is disabled, Keycloak uses an embedded H2
 database which is only suitable for testing with a single replica.
 
 #### Using an External Database
@@ -158,7 +159,7 @@ WildFly can be configured via its [command line interface (CLI)](https://docs.jb
 This chart uses the official Keycloak Docker image and customizes the installation running CLI scripts at server startup.
 
 In order to make further customization easier, the CLI commands are separated by their concerns into smaller scripts.
-Everything is in `values.yaml` and can be overridden. Additional CLI commands may be added via `keycloak.cli.custom`, 
+Everything is in `values.yaml` and can be overridden. Additional CLI commands may be added via `keycloak.cli.custom`,
 which is empty by default.
 
 ### High Availability and Clustering
