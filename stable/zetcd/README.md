@@ -24,7 +24,7 @@ $ helm install stable/zetcd --name my-release
 ```
 
 __Note__: By default etcd-operator is installed with zetcd. `cluster.enabled` is set on install but it will have no effect.
-Before you create an zetcd deployment, the TPR must be installed by the operator, so this option is ignored during helm installs. Alternatively, the release can be upgraded after install to launch the etcd cluster pods.
+Before you create a zetcd deployment, the TPR must be installed by the operator, so this option is ignored during helm installs. Alternatively, the release can be upgraded after install to launch the etcd cluster pods.
 
 ## Uninstalling the Chart
 
