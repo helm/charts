@@ -1,6 +1,6 @@
 # Elastalert Helm Chart
 
-[elastalert](https://github.com/Yelp/elastalert) a simple framework for alerting on anomalies, spikes, or other patterns of interest from data in Elasticsearch.
+[elastalert](https://github.com/Yelp/elastalert) is a simple framework for alerting on anomalies, spikes, or other patterns of interest from data in Elasticsearch.
 
 ## TL;DR;
 
