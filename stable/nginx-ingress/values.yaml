@@ -152,6 +152,7 @@ controller:
 
   service:
     annotations: {}
+    labels: {}
     clusterIP: ""
 
     ## List of IP addresses at which the controller services are available
