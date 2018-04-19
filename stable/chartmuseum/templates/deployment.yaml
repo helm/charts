@@ -31,6 +31,10 @@ spec:
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
+{{- if .Values.gcp.secret.enabled }}
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/etc/secrets/google/credentials.json"
+{{- end }}
 {{- $secret_name := include "chartmuseum.fullname" . }}
 {{- range $name, $value := .Values.env.secret }}
 {{- if not ( empty $value) }}
@@ -64,6 +68,11 @@ spec:
         - mountPath: /storage
           name: storage-volume
 {{- end }}
+{{- if  .Values.gcp.secret.enabled }}
+        volumeMounts:
+        - mountPath: /etc/secrets/google
+          name: {{ include "chartmuseum.fullname" . }}-gcp
+{{- end }}
       {{- with .Values.resources }}
         resources:
 {{ toYaml . | indent 10 }}
@@ -89,3 +98,18 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+      {{ if .Values.gcp.secret.enabled }}
+      - name: {{ include "chartmuseum.fullname" . }}-gcp
+        secret:
+      {{ if .Values.env.secret.GOOGLE_CREDENTIALS_JSON }}
+          secretName: {{ include "chartmuseum.fullname" . }}
+          items:
+          - key: GOOGLE_CREDENTIALS_JSON
+            path: credentials.json
+      {{ else }}
+          secretName: {{ .Values.gcp.secret.name }}
+          items:
+          - key: {{ .Values.gcp.secret.key }}
+            path: credentials.json
+      {{ end }}
+      {{ end }}
