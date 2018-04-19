@@ -38,8 +38,12 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
-          - name: SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL
-            value: {{ template "kafka-zookeeper.url" . }}/
+          - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
+            value: {{ template "schema-registry.kafkaStore.bootstrapServers" . }}
+          - name: SCHEMA_REGISTRY_KAFKASTORE_GROUP_ID
+            value: {{ template "schema-registry.groupId" . }}
+          - name: SCHEMA_REGISTRY_MASTER_ELIGIBILITY
+            value: "true"
           {{ range $configName, $configValue := .Values.configurationOverrides }}
           - name: SCHEMA_REGISTRY_{{ $configName | replace "." "_" | upper }}
             value: {{ $configValue }}

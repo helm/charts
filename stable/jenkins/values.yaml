@@ -20,6 +20,13 @@ Master:
   # AdminPassword: <defaults to random>
   Cpu: "200m"
   Memory: "256Mi"
+  # Environment variables that get added to the init container (useful for e.g. http_proxy)
+  # InitContainerEnv:
+  #   - name: http_proxy
+  #     value: "http://192.168.64.1:3128"
+  # ContainerEnv:
+  #   - name: http_proxy
+  #     value: "http://192.168.64.1:3128"
   # Set min/max heap here if needed with:
   # JavaOpts: "-Xms512m -Xmx512m"
   # JenkinsOpts: ""

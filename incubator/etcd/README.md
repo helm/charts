@@ -33,7 +33,7 @@ $ helm install --name my-release incubator/etcd
 
 ## Configuration
 
-The following tables lists the configurable parameters of the etcd chart and their default values.
+The following table lists the configurable parameters of the etcd chart and their default values.
 
 | Parameter               | Description                          | Default                                            |
 | ----------------------- | ------------------------------------ | -------------------------------------------------- |

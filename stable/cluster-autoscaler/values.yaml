@@ -1,7 +1,16 @@
+autoDiscovery:
+# Only cloudProvider `aws` is supported by auto-discovery at this time
+# Set tags as described in https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#auto-discovery-setup
+  clusterName:  # cluster.local
+
 autoscalingGroups: []
+# At least one element is required if not using autoDiscovery
   # - name: asg1
   #   maxSize: 1
-  #   minSize: 1
+  #   minSize: 2
+  # - name: asg2
+  #   maxSize: 1
+  #   minSize: 2
 
 # Required if cloudProvider=aws
 awsRegion: us-east-1
@@ -18,6 +27,8 @@ image:
 
 tolerations: []
 
+extraEnv: {}
+
 extraArgs: {}
   # scale-down-delay: 10m
   # scale-down-unneeded-time: 10m
@@ -28,9 +39,12 @@ extraArgs: {}
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ## affinity: {}
 
+podDisruptionBudget: |
+  maxUnavailable: 1
+  # minAvailable: 2
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
-##
 nodeSelector: {}
 
 podAnnotations: {}
@@ -66,12 +80,12 @@ service:
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
   servicePort: 8085
+  portName: http
   type: ClusterIP
 
 spotinst:
   account: ""
   token: ""
-
   image:
     repository: spotinst/kubernetes-cluster-autoscaler
     tag: 0.6.0

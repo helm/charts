@@ -36,10 +36,20 @@ else
   exit 1
 fi
 
+# Pull numbers are only available on presubmit jobs. When the tests are run as
+# part of a batch job (e.g., batch merge) the PULL_NUMBER is not available. Pull
+# numbers are useful for some debugging. When no PULL_NUMBER is supplied we build
+# from other info.
+PULL_INFO=${PULL_NUMBER:-}
+if [ -z "$PULL_INFO" ]; then
+  PULL_INFO=${PULL_BASE_SHA}
+fi
+
 docker run ${VOLUMES} ${GKE_CREDS} \
            -e GOOGLE_APPLICATION_CREDENTIALS=/service-account.json \
-           -e "PULL_NUMBER=$PULL_NUMBER" \
-           -e "BUILD_NUMBER=$BUILD_NUMBER" \
+           -e "JOB_TYPE=$JOB_TYPE" \
+           -e "PULL_INFO=$PULL_INFO" \
+           -e "BUILD_ID=$BUILD_ID" \
            -e "VERIFICATION_PAUSE=${VERIFICATION_PAUSE:=0}" \
            ${IMAGE_NAME} /src/test/changed.sh
 echo "Done Testing!"
