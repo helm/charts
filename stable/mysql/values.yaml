@@ -74,6 +74,15 @@ configurationFiles:
 #    [mysqld]
 #    skip-name-resolve
 
+metrics:
+  enabled: false
+  image: prom/mysqld-exporter
+  imageTag: v0.10.0
+  imagePullPolicy: IfNotPresent
+  resources: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9104"
 
 ## Configure the service
 ## ref: http://kubernetes.io/docs/user-guide/services/
