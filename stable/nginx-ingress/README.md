@@ -72,6 +72,7 @@ Parameter | Description | Default
 `controller.resources` | controller pod resource requests & limits | `{}`
 `controller.lifecycle` | controller pod lifecycle hooks | `{}`
 `controller.service.annotations` | annotations for controller service | `{}`
+`controller.service.labels` | labels for controller service | `{}`
 `controller.publishService.enabled` | if true, the controller will set the endpoint records on the ingress objects to reflect those on the service | `false`
 `controller.publishService.pathOverride` | override of the default publish-service name | `""`
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
@@ -135,6 +136,7 @@ Parameter | Description | Default
 `defaultBackend.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `defaultBackend.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
+`imagePullSecrets` | name of Secret resource containing private registry credentials | `nil`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | ServiceAccount to be used (ignored if rbac.create=true) | `default`
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
@@ -190,3 +192,33 @@ spec:
       interval: 30s
 ```
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## AWS L7 ELB with SSL Termination
+
+Annotate the controller as shown in the [nginx-ingress l7 patch](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/provider/aws/service-l7.yaml):
+
+```yaml
+controller:
+  service:
+    targetPorts:
+      http: http
+      https: http
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:XX-XXXX-X:XXXXXXXXX:certificate/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXX
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
+      service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '3600'
+```
+
+## AWS route53-mapper
+
+To configure the LoadBalancer service with the [route53-mapper addon](https://github.com/kubernetes/kops/tree/master/addons/route53-mapper), add the `domainName` annotation and `dns` label:
+
+```yaml
+controller:
+  service:
+    labels:
+      dns: "route53"
+    annotations:
+      domainName: "kubernetes-example.com"
+```
