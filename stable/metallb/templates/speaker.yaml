@@ -56,3 +56,15 @@ spec:
             - all
             add:
             - net_raw
+    {{- with .Values.speaker.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.speaker.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.speaker.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
