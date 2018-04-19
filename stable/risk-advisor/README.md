@@ -1,7 +1,7 @@
 # risk-advisor
 Risk advisor module for Kubernetes. This project is licensed under the terms of the Apache 2.0 license.
 
-It allows you to check how the cluster state would change it the request of creating provided pods was accepted by Kubernetes.
+It allows you to check how the cluster state would change if the request of creating provided pods was accepted by Kubernetes.
 
 ## TL;DR
 
