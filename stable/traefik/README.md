@@ -91,7 +91,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `deployType`                    | Deploy Traefik as Deployment or DaemonSet([official doc](https://docs.traefik.io/user-guide/kubernetes/#deploy-trfik-using-a-deployment-or-daemonset))                           | `LoadBalancer`                            |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
 | `loadBalancerIP`                | An available static IP you have reserved on your cloud platform      | None                                      |
-| `loadBalancerSourceRanges`      | list of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
+| `loadBalancerSourceRanges`      | List of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
 | `whiteListSourceRange`          | Enable IP whitelisting at the entrypoint level.                      | `false`                                   |
 | `externalTrafficPolicy`         | Set the externalTrafficPolicy in the Service to either Cluster or Local | `Cluster`                              |
 | `replicas`                      | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
@@ -105,7 +105,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `affinity`                      | Affinity settings                                                    | `{}`                                      |
 | `tolerations`                   | List of node taints to tolerate                                      | `[]`                                      |
 | `proxyProtocol.enabled`         | Enable PROXY protocol support.                                       | `false`                                   |
-| `proxyProtocol.trustedIPs`      | List of proxy IPs (CIDR ranges) trusted to accurately convey the end-user IP. | `[]`                              |
+| `proxyProtocol.trustedIPs`      | List of PROXY IPs (CIDR ranges) trusted to accurately convey the end-user IP. | `[]`                              |
 | `debug.enabled`                 | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
@@ -118,7 +118,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.dnsProvider.$name`        | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. See [here](#example-aws-route-53). | `{}`                     |
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
-| `acme.logging`                  | display debug log messages from the acme client library              | `false`                                   |
+| `acme.logging`                  | Display debug log messages from the ACME client library              | `false`                                   |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
 | `acme.persistence.annotations`  | PVC annotations                                                      | `{}`                                      |
 | `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `nil` (uses alpha storage class annotation) |
@@ -247,4 +247,4 @@ How to set this up on AWS is described in the Kubernetes documentation [here](ht
 
 **Caution**
 
-If only one of the components (either the loadbalancer or traefik) is set to use the Proxy protocol and the other is not, this will break badly as they will not be able to communicate with each other.
+If only one of the components (either the loadbalancer or Traefik) is set to use the Proxy protocol and the other is not, this will break badly as they will not be able to communicate with each other.
