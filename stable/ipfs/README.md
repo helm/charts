@@ -10,7 +10,7 @@ $ helm install stable/ipfs
 
 ## Introduction
 
-This chart bootstraps a [IPFS](https://ipfs.io) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps an [IPFS](https://ipfs.io) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Installing the Chart
 
