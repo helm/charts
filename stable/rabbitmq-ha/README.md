@@ -74,6 +74,7 @@ and their default values.
 | `persistentVolume.accessMode`      | Persistent volume access modes                                  | `[ReadWriteOnce]`                                        |
 | `persistentVolume.annotations`     | Persistent volume annotations                                   | `{}`                                                     |
 | `persistentVolume.enabled`         | If `true`, persistent volume claims are created                 | `false`                                                  |
+| `persistentVolume.name`            | Persistent volume name                                          | `data`                                                   |
 | `persistentVolume.size`            | Persistent volume size                                          | `8Gi`                                                    |
 | `persistentVolume.storageClass`    | Persistent volume storage class                                 | `-`                                                      |
 | `podAntiAffinity`                  | Pod antiaffinity, `hard` or `soft`                              | `hard`                                                   |
