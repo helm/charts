@@ -1,5 +1,11 @@
+### 1.0.6
+
+* [98cead4](https://github.com/kubernetes/charts/commit/98cead4): Bump up application version to 18.3
+
 ### 1.0.5
+
 * [8b205e0](https://github.com/kubernetes/charts/commit/8b205e0): Add a script to preconfigure the GoCD server using the `postStart` lifecycle hook.
+
 ### 1.0.4
 
 * [7fa1860](https://github.com/kubernetes/charts/commit/7fa1860): Typo fix
