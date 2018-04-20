@@ -25,27 +25,27 @@ The following tables lists the configurable parameters of the openldap chart and
 
 | Parameter                       | Description                           | Default                                                    |
 | ------------------------------- | ----------------------------------    | ---------------------------------------------------------- |
-| `openldap.replicas`             | How many replicas to schedule         | `1`                                                        |
-| `openldap.image.name`           | Container image name                  | `osixia/openldap`                                          |
-| `openldap.image.tag`            | Container image tag                   | `1.1.10`                                                   |
-| `openldap.imagePullPolicy`      | Container pull policy                 | `IfNotPresent`                                             |
-| `openldap.containerName`        | Name of the container in the Pod      | `slapd`                                                    |
-| `openldap.serviceType`          | Service type                          | `ClusterIP`                                                |
-| `openldap.ldapInternalPort`     | Internal port for LDAP                | `389`                                                      |
-| `openldap.ldapExternalPort`     | External port for LDAP                | `389`                                                      |
-| `openldap.sslLdapInternalPort`  | Internal port for SSL+LDAP            | `636`                                                      |
-| `openldap.sslLdapExternalPort`  | External port for SSL+LDAP            | `636`                                                      |
-| `openldap.env`                  | List of key value pairs as env variables to be sent to the docker image. See https://github.com/osixia/docker-openldap for available ones and their usage | `[see values.yaml]`  |
-| `openldap.adminPassword`        | Password for admin user. Unset to auto-generate the password  | `admin`                            |
-| `openldap.configPassword`       | Password for config user. Unset to auto-generate the password | `config`                           |
-| `openldap.customLdifFiles`      | Custom ldif files to seed the LDAP server. List of filename -> data pairs | ``                     |
-| `openldap.persistence.enabled`  | Whether to use PersistentVolumes or not | `false`                                                  |
-| `openldap.persistence.storageClass`  | Storage class for PersistentVolumes| `<unset>`                                                |
-| `openldap.persistence.accessMode`    | Access mode for PersistentVolumes  | `ReadWriteOnce`                                          |
-| `openldap.persistence.size`     | PersistentVolumeClaim storage size     | `8Gi`                                                     |
-| `openldap.resources`            | Container resource requests and limits in yaml | `{}`                                              |
-| `openldaptest.image.name`       | Test container image requires bats framework   |  `dduportal/bats`                                 |
-| `openldaptest.image.tag`        | Test container tag                     | `0.4.0`                                                   |
+| `replicas`             | How many replicas to schedule         | `1`                                                        |
+| `image.repository`     | Container image repository                  | `osixia/openldap`                                          |
+| `image.tag`            | Container image tag                   | `1.1.10`                                                   |
+| `image.pullPolicy`     | Container pull policy                 | `IfNotPresent`                                             |
+| `containerName`        | Name of the container in the Pod      | `slapd`                                                    |
+| `service.type`         | Service type                          | `ClusterIP`                                                |
+| `service.ldapInternalPort` | Internal port for LDAP                | `389`                                                      |
+| `service.ldapExternalPort` | External port for LDAP                | `389`                                                      |
+| `service.sslInternalPort`  | Internal port for SSL+LDAP            | `636`                                                      |
+| `service.sslExternalPort`  | External port for SSL+LDAP            | `636`                                                      |
+| `env`                  | List of key value pairs as env variables to be sent to the docker image. See https://github.com/osixia/docker-openldap for available ones and their usage | `[see values.yaml]`  |
+| `adminPassword`        | Password for admin user. Unset to auto-generate the password  | `admin`                            |
+| `configPassword`       | Password for config user. Unset to auto-generate the password | `config`                           |
+| `customLdifFiles`      | Custom ldif files to seed the LDAP server. List of filename -> data pairs | ``                     |
+| `persistence.enabled`  | Whether to use PersistentVolumes or not | `false`                                                  |
+| `persistence.storageClass`  | Storage class for PersistentVolumes| `<unset>`                                                |
+| `persistence.accessMode`    | Access mode for PersistentVolumes  | `ReadWriteOnce`                                          |
+| `persistence.size`     | PersistentVolumeClaim storage size     | `8Gi`                                                     |
+| `resources`            | Container resource requests and limits in yaml | `{}`                                              |
+| `test.image.repository`       | Test container image requires bats framework   |  `dduportal/bats`                                 |
+| `test.image.tag`        | Test container tag                     | `0.4.0`                                                   |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

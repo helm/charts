@@ -1,28 +1,27 @@
 #
 # A PVC for persisting data
 #
-{{- if and .Values.openldap.persistence.enabled (not .Values.openldap.persistence.existingClaim) }}
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "openldap.fullname" . }}
   labels:
-    app: {{ template "openldap.fullname" . }}
-    version: {{ .Chart.Version }}
+    app: {{ template "openldap.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   accessModes:
-    - {{ .Values.openldap.persistence.accessMode | quote }}
+    - {{ .Values.persistence.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.openldap.persistence.size | quote }}
-{{- if .Values.openldap.persistence.storageClass }}
-{{- if (eq "-" .Values.openldap.persistence.storageClass) }}
+      storage: {{ .Values.persistence.size | quote }}
+{{- if .Values.persistence.storageClass }}
+{{- if (eq "-" .Values.persistence.storageClass) }}
   storageClassName: ""
 {{- else }}
-  storageClassName: "{{ .Values.openldap.persistence.storageClass }}"
+  storageClassName: "{{ .Values.persistence.storageClass }}"
 {{- end }}
 {{- end }}
 {{- end }}

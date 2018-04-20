@@ -7,7 +7,7 @@ metadata:
 spec:
   initContainers:
     - name: test-framework
-      image: {{ .Values.openldaptest.image.name }}:{{ .Values.openldaptest.image.tag }}
+      image: {{ .Values.test.image.repository }}:{{ .Values.test.image.tag }}
       command:
       - "bash"
       - "-c"
@@ -20,7 +20,7 @@ spec:
         name: tools
   containers:
     - name: {{ .Release.Name }}-service-test
-      image: {{ .Values.openldaptest.image.name }}:{{ .Values.openldaptest.image.tag }}
+      image: {{ .Values.test.image.repository }}:{{ .Values.test.image.tag }}
       envFrom:
       - secretRef:
           name: {{ template "openldap.fullname" . }}-secret

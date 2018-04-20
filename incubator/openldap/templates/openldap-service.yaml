@@ -6,22 +6,21 @@ kind: Service
 metadata:
   name: {{ template "openldap.fullname" . }}-service
   labels:
-    app: {{ template "openldap.fullname" . }}
-    version: {{ .Chart.Version }}
+    app: {{ template "openldap.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "-" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  type: {{ .Values.openldap.serviceType | quote }}
+  type: {{ .Values.service.type | quote }}
   selector:
-    app: {{ template "openldap.fullname" . }}
+    app: {{ template "openldap.name" . }}
     release: {{ .Release.Name }}
   ports:
   - name: ldap-port
     protocol: TCP
-    port: {{ .Values.openldap.ldapExternalPort }}
-    targetPort: {{ .Values.openldap.ldapInternalPort }}
+    port: {{ .Values.service.ldapExternalPort }}
+    targetPort: {{ .Values.service.ldapInternalPort }}
   - name: ldap-ssl-port
     protocol: TCP
-    port: {{ .Values.openldap.sslLdapExternalPort }}
-    targetPort: {{ .Values.openldap.sslLdapInternalPort }}
+    port: {{ .Values.service.sslExternalPort }}
+    targetPort: {{ .Values.service.sslInternalPort }}
