@@ -92,11 +92,11 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `persistence.storageSize`                   | Size of Nexus data volume           | `8Gi`                                   |
 | `persistence.annotations`                   | Persistent Volume annotations       | `{}`                                    |
 | `persistence.existingClaim`                 | Existing persistent volume name     | `nil`                                   |
-| `nexusBackup.enabled`                       | Nexus backup process                | `true`                                  |
+| `nexusBackup.enabled`                       | Nexus backup process                | `false`                                 |
 | `nexusBackup.imageName`                     | Nexus backup image                  | `quay.io/travelaudience/docker-nexus-backup` |
 | `nexusBackup.imageTag`                      | Nexus backup image version          | `1.2.0`                                 |
 | `nexusBackup.imagePullPolicy`               | Backup image pull policy            | `IfNotPresent`                          |
-| `nexusBackup.env.targetBucket`              | Google Cloud Storage bucker for backups format `gs://BACKUP_BUCKET`  | `nil`  |
+| `nexusBackup.env.targetBucket`              | Required if `nexusBackup` is enabled. Google Cloud Storage bucker for backups format `gs://BACKUP_BUCKET`  | `nil`  |
 | `nexusBackup.nexusAdminPassword`            | Nexus admin password used by the backup container to access Nexus API. This password should match the one that gets chosen by the user to replace the default admin password after the first login  | `admin123`                |
 | `nexusBackup.persistence.enabled`           | Create a volume for backing Nexus configuration  | `true`                     |
 | `nexusBackup.persistence.accessMode`        | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                         |

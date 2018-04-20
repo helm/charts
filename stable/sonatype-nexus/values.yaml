@@ -70,7 +70,7 @@ persistence:
   storageSize: 8Gi
 
 nexusBackup:
-  enabled: true
+  enabled: false
   imageName: quay.io/travelaudience/docker-nexus-backup
   imageTag: 1.2.0
   imagePullPolicy: IfNotPresent
