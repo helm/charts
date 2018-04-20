@@ -17,6 +17,11 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+## Enable authentication
+## ref: https://docs.mongodb.com/manual/tutorial/enable-authentication/
+#
+usePassword: true
+
 ## MongoDB admin password
 ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#setting-the-root-password-on-first-run
 ##

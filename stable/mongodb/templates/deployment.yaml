@@ -25,23 +25,25 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "mongodb.fullname" . }}
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: {{ template "mongodb.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        {{- if .Values.usePassword }}
         - name: MONGODB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mongodb.fullname" . }}
               key: mongodb-root-password
+        {{- end }}
         - name: MONGODB_USERNAME
           value: {{ default "" .Values.mongodbUsername | quote }}
-        {{ if and .Values.mongodbUsername .Values.mongodbDatabase }}
+        {{- if and .Values.mongodbUsername .Values.mongodbDatabase }}
         - name: MONGODB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mongodb.fullname" . }}
               key: mongodb-password
-        {{ end }}
+        {{- end }}
         - name: MONGODB_DATABASE
           value: {{ default "" .Values.mongodbDatabase | quote }}
         - name: MONGODB_EXTRA_FLAGS
