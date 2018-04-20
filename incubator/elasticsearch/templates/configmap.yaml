@@ -93,8 +93,6 @@ data:
 {{- end }}
   pre-stop-hook.sh: |-
     #!/bin/bash
-    set -e
-
     NODE_NAME=${HOSTNAME}
     echo "Prepare to migrate data of the node ${NODE_NAME}"
     echo "Move all data from node ${NODE_NAME}"
@@ -113,5 +111,17 @@ data:
       fi
       sleep 1
     done
-
     echo "Node ${NODE_NAME} is ready to shutdown"
+  post-start-hook.sh: |-
+    #!/bin/bash
+    NODE_NAME=${HOSTNAME}
+    CLUSTER_SETTINGS=$(curl -s -XGET "http://localhost:9200/_cluster/settings")
+    if echo "${CLUSTER_SETTINGS}" | grep -E "${NODE_NAME}"; then
+      echo "Activate node ${NODE_NAME}"
+      curl -s -XPUT -H 'Content-Type: application/json' "http://localhost:9200/_cluster/settings" -d "{
+        \"transient\" :{
+            \"cluster.routing.allocation.exclude._name\" : null
+        }
+      }"
+    fi
+    echo "Node ${NODE_NAME} is ready to be used"
