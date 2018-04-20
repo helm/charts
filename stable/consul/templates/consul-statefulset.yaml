@@ -5,7 +5,7 @@ metadata:
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
   serviceName: "{{ template "consul.fullname" . }}"
@@ -14,9 +14,7 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      heritage: {{ .Release.Service | quote }}
       release: {{ .Release.Name | quote }}
-      chart: "{{ .Chart.Name }}"
       component: "{{ .Release.Name }}-{{ .Values.Component }}"
   template:
     metadata:
@@ -24,7 +22,7 @@ spec:
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}"
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         component: "{{ .Release.Name }}-{{ .Values.Component }}"
     spec:
       securityContext:
