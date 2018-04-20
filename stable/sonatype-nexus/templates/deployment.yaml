@@ -34,6 +34,20 @@ spec:
               name: nexus-docker-g
             - containerPort: {{ .Values.nexus.nexusPort }}
               name: nexus-http
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.nexus.nexusPort }}
+            initialDelaySeconds: {{ .Values.nexus.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.nexus.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.nexus.livenessProbe.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.nexus.nexusPort }}
+            initialDelaySeconds: {{ .Values.nexus.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.nexus.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.nexus.readinessProbe.failureThreshold }}
           volumeMounts:
             - mountPath: /nexus-data
               name: nexus-data

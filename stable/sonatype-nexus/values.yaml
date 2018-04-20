@@ -26,6 +26,14 @@ nexus:
   serviceType: NodePort
   # securityContext:
   #   fsGroup: 2000
+  livenessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    failureThreshold: 6
+  readinessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    failureThreshold: 6
 
 nexusProxy:
   imageName: quay.io/travelaudience/docker-nexus-proxy

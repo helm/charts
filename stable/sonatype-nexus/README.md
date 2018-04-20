@@ -72,6 +72,12 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.nexusPort`                           | Internal port for Nexus service     | `8081`                                  |
 | `nexus.serviceType`                         | Service for Nexus                   | `NodePort`                              |
 | `nexus.securityContext`                     | Security Context (for enabling official image use `fsGroup: 2000`) | `{}`     |
+| `nexus.livenessProbe.initialDelaySeconds`   | LivenessProbe initial delay         | 30                                      |
+| `nexus.livenessProbe.periodSeconds`         | Seconds between polls               | 30                                      |
+| `nexus.livenessProbe.failureThreshold`      | Number of attempts before failure   | 6                                       |
+| `nexus.readinessProbe.initialDelaySeconds`  | ReadinessProbe initial delay        | 30                                      |
+| `nexus.readinessProbe.periodSeconds`        | Seconds between polls               | 30                                      |
+| `nexus.readinessProbe.failureThreshold`     | Number of attempts before failure   | 6                                       |
 | `nexusProxy.port`                           | Port for exposing Nexus             | `8080`                                  |
 | `nexusProxy.imageName`                      | Proxy image                         | `quay.io/travelaudience/docker-nexus-proxy` |
 | `nexusProxy.imageTag`                       | Proxy image verion                  | `2.1.0`                                 |
