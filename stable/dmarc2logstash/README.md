@@ -34,22 +34,9 @@ filebeat.image.tag                | Elastic filebeat tag, typically the version,
 filebeat.image.pullPolicy         | Elastic filebeat Kubernetes image pull policy                                                                         | IfNotPresent
 filebeat.logstash.host            | Logstash service host; ex: logstash (this value must be provided)                                                     | ""
 filebeat.logstash.port            | Logstash service port                                                                                                 | 5000
-filebeat.logstash.externalName    | If the logstash host is a service in another Kubernetes namespace, define the full service name here. See note below. | ""
 filebeat.logstash.sourceType      | Logstash source type will allow custom filtering via the Logstash configuration                                       | json-logs
 filebeat.logstash.index           | Elastisearch index that will contain the new DMARC data (index will be created on-the-fly if doesn't exist)           | dmarc
 filebeat.logstash.timeout         | Seconds to wait before timing out the connection to logstash                                                          | 15
-
-### filebeat.logstash.externalName
-
-If logstash is running within the Kubernetes cluster, set the filebeat.logstash.externalName value to the fully-qualified cluster hostname, such as logstash.elastic.svc.cluster.local. Then, set filebeat.logstash.host to Chart fullname, which is usually `dmarc2logstash`. Following the above example namespace for logstash, the override yaml file would contain the following:
-
-```
-filebeat:
-  logstash:
-    host: dmarc2logstash
-    port: 5000
-    externalName: logstash.elastic.svc.cluster.local
-```
 
 ## Secrets
 

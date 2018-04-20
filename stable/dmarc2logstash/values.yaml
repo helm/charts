@@ -19,5 +19,4 @@ filebeat:
     sourceType: json-logs
     index: dmarc
     timeout: 15
-    externalName: ""
   resources: {}
