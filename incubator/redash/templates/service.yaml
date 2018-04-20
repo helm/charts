@@ -4,16 +4,16 @@ metadata:
   name: {{ template "redash.fullname" . }}
   labels:
     app: {{ template "redash.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "redash.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.externalPort }}
-      targetPort: {{ .Values.service.internalPort }}
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.server.httpPort }}
       protocol: TCP
-      name: {{ .Values.service.name }}
+      name: http
   selector:
     app: {{ template "redash.name" . }}
     component: "{{ .Values.server.name }}"

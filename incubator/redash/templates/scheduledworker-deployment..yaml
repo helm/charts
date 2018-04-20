@@ -1,11 +1,11 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "redash.scheduledworker.fullname" . }}
+  name: {{ template "redash.scheduledWorker.fullname" . }}
   labels:
     app: {{ template "redash.name" . }}
     component: {{ .Values.scheduledWorker.name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "redash.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -46,4 +46,12 @@ spec:
     {{- if .Values.scheduledWorker.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.scheduledWorker.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.scheduledWorker.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.scheduledWorker.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
     {{- end }}

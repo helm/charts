@@ -1,11 +1,11 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "redash.adhocworker.fullname" . }}
+  name: {{ template "redash.adhocWorker.fullname" . }}
   labels:
     app: {{ template "redash.name" . }}
     component: {{ .Values.adhocWorker.name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "redash.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -46,4 +46,12 @@ spec:
     {{- if .Values.adhocWorker.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.adhocWorker.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.adhocWorker.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.adhocWorker.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
     {{- end }}

@@ -4,7 +4,7 @@ metadata:
   name: {{ template "redash.fullname" . }}
   labels:
     app: {{ template "redash.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "redash.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:

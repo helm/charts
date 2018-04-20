@@ -54,28 +54,35 @@ The following table lists the configurable parameters of the Redash chart and th
 | `cookieSecret`                         | Secret used for cookie session management             | Randomly generated |
 | `env`                                  | Environment variables from [Redash settings](https://redash.io/help-onpremise/setup/settings-environment-variables.html) and [example Docker Compose](https://github.com/getredash/redash/blob/master/docker-compose.production.yml). Variables applied to both server and worker containers. | `PYTHONUNBUFFERED: 0`<br>`REDASH_LOG_LEVEL: "INFO"` |
 | `server.name`                          | Name used for Redash server deployment                | `redash`           |
+| `server.httpPort`                      | Redash server container http port                     | `5000`             |
 | `server.env`                           | Environment variables from [Redash settings](https://redash.io/help-onpremise/setup/settings-environment-variables.html) and [example Docker Compose](https://github.com/getredash/redash/blob/master/docker-compose.production.yml). Variables applied to only server containers. | `REDASH_WEB_WORKERS: 4` |
 | `server.replicaCount`                  | Number of Redash server replicas to start             | `1`                |
 | `server.resources`                     | Server CPU/Memory resource requests/limits            | Memory `2GB`       |
 | `server.nodeSelector`                  | Node labels for server pod assignment                 | `{}`               |
-| `service.name`                         | Name used for service                                 | `redash`           |
+| `server.tolerations`                   | List of node taints to tolerate for server pod        | `[]`               |
+| `server.affinity`                      | Affinity settings for server pod assignment           | `{}`               |
 | `service.type`                         | Kubernetes Service type                               | `ClusterIP`        |
-| `service.externalPort`                 | Service external port                                 | `80`               |
-| `service.internalPort`                 | Internal service and container port                   | `5000`             |
+| `service.port`                         | Service external port                                 | `80`               |
 | `ingress.enabled`                      | Enable ingress controller resource                    | `false`            |
-| `ingress.hosts`                        | Ingress resource hostnames                            | `nil`              |
 | `ingress.annotations`                  | Ingress annotations configuration                     | `nil`              |
+| `ingress.path`                         | Ingress resource path                                 | `nil`              |
+| `ingress.hosts`                        | Ingress resource hostnames                            | `nil`              |
 | `ingress.tls`                          | Ingress TLS configuration                             | `nil`              |
-| `adhocWorker.name`                     | Name used for Redash ad-hoc worker deployment         | `redash-worker-adhoc` |
+| `adhocWorker.name`                     | Name used for Redash ad-hoc worker deployment         | `worker-adhoc` |
 | `adhocWorker.env`                      | Environment variables from [Redash settings](https://redash.io/help-onpremise/setup/settings-environment-variables.html) and [example Docker Compose](https://github.com/getredash/redash/blob/master/docker-compose.production.yml). Variables applied to only ad-hoc worker containers. Default worker count will run 2 worker threads per-replica. | `QUEUES: "queries,celery"`<br>`WORKERS_COUNT: 2` |
 | `adhocWorker.replicaCount`             | Number of Redash adhoc worker replicas to start       | `1`                |
 | `adhocWorker.resources`                | Ad-hoc worker CPU/Memory resource requests/limits     | `nil`              |
-| `adhocWorker.nodeSelector`             | Node labels for scheduled worker pod assignment       | `{}`               |
-| `scheduledWorker.name`                 | Name used for Redash scheduled worker deployment      | `redash-worker-scheduled` |
+| `adhocWorker.nodeSelector`             | Node labels for adhocWorker pod assignment            | `{}`               |
+| `adhocWorker.tolerations`              | List of node taints to tolerate for adhocWorker pod   | `[]`               |
+| `adhocWorker.affinity`                 | Affinity settings for adhocWorker pod assignment      | `{}`               |
+| `scheduledWorker.name`                 | Name used for Redash scheduled worker deployment      | `worker-scheduled` |
 | `scheduledWorker.env`                  | Environment variables from [Redash settings](https://redash.io/help-onpremise/setup/settings-environment-variables.html) and [example Docker Compose](https://github.com/getredash/redash/blob/master/docker-compose.production.yml). Variables applied to only scheduled worker containers. Default worker count will run 2 worker threads per-replica. | `QUEUES: "scheduled_queries"`<br>`WORKERS_COUNT: 2` |
 | `scheduledWorker.replicaCount`         | Number of Redash scheduled worker replicas to start   | `1`                |
 | `scheduledWorker.resources`            | Scheduled worker CPU/Memory resource requests/limits  | `nil`              |
-| `scheduledWorker.nodeSelector`         | Node labels for scheduled worker pod assignment       | `{}`               |
+| `scheduledWorker.nodeSelector`         | Node labels for scheduledWorker pod assignment        | `{}`               |
+| `scheduledWorker.tolerations`          | List of node taints to tolerate for scheduledWorker pod | `[]`             |
+| `scheduledWorker.affinity`             | Affinity settings for scheduledWorker pod assignment  | `{}`               |
+| `postgresql.name`                      | Name used for PostgreSQL deployment                   | `postgresql`       |
 | `postgresql.imageTag`                  | PostgreSQL image version                              | `9.5.6-alpine`     |
 | `postgresql.postgresUser`              | PostgreSQL User to create                             | `redash`           |
 | `postgresql.postgresPassword`          | PostgreSQL Password for the new user                  | `redash`           |
@@ -85,6 +92,7 @@ The following table lists the configurable parameters of the Redash chart and th
 | `postgresql.persistence.accessMode`    | Use PostgreSQL volume as ReadOnly or ReadWrite        | `ReadWriteOnce`    |
 | `postgresql.persistence.storageClass`  | Storage Class for PostgreSQL backing PVC              | `nil`<br>(uses alpha storage class annotation) |
 | `postgresql.persistence.existingClaim` | Provide an existing PostgreSQL PersistentVolumeClaim  | `nil`              |
+| `redis.name`                           | Name used for Redis deployment                        | `redis`            |
 | `redis.redisPassword`                  | Redis Password to use                                 | `redash`           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

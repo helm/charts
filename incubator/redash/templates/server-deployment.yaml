@@ -5,11 +5,11 @@ metadata:
   labels:
     app: {{ template "redash.name" . }}
     component: "{{ .Values.server.name }}"
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "redash.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.server.replicaCount }}
   template:
     metadata:
       labels:
@@ -18,7 +18,7 @@ spec:
         release: {{ .Release.Name }}
     spec:
       initContainers:
-        - name: "createdb"
+        - name: {{ template "redash.name" . }}-{{ .Values.server.name }}-createdb
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["bash", "/config/createdb.sh"]
@@ -45,7 +45,7 @@ spec:
             - name: "{{ $key }}"
               value: "{{ $value }}"
           {{- end }}
-          {{- range $key, $value := .Values.serverEnv }}
+          {{- range $key, $value := .Values.server.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
           {{- end }}
@@ -74,12 +74,12 @@ spec:
             - name: "{{ $key }}"
               value: "{{ $value }}"
           {{- end }}
-          {{- range $key, $value := .Values.serverEnv }}
+          {{- range $key, $value := .Values.server.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
           {{- end }}
           ports:
-            - containerPort: {{ .Values.service.internalPort }}
+            - containerPort: {{ .Values.server.httpPort }}
           livenessProbe:
             exec:
               command:
@@ -94,19 +94,27 @@ spec:
           readinessProbe:
             httpGet:
               path: /static/images/redash_icon_small.png
-              port: {{ .Values.service.internalPort }}
+              port: {{ .Values.server.httpPort }}
             initialDelaySeconds: 10
             timeoutSeconds: 1
             periodSeconds: 10
             successThreshold: 1
             failureThreshold: 3
           resources:
-{{ toYaml .Values.resources | indent 12 }}
-    {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-    {{- end }}
+{{ toYaml .Values.server.resources | indent 12 }}
       volumes:
         - name: config
           configMap:
             name: {{ template "redash.fullname" . }}
+    {{- with .Values.server.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.server.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.server.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
