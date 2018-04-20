@@ -11,7 +11,7 @@ metadata:
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: "{{ .Chart.Name }}"
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
   name: "{{ template "consul.fullname" . }}-ui"
 spec:
@@ -29,4 +29,3 @@ spec:
 {{ toYaml .Values.uiIngress.tls | indent 4 }}
   {{- end -}}
 {{- end }}
-

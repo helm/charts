@@ -6,7 +6,7 @@ metadata:
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: "{{ .Chart.Name }}"
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
   ports:

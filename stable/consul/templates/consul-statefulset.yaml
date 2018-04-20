@@ -5,20 +5,26 @@ metadata:
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: "{{ .Chart.Name }}"
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
   serviceName: "{{ template "consul.fullname" . }}"
   replicas: {{ default 3 .Values.Replicas }}
   updateStrategy:
     type: RollingUpdate
+  selector:
+    matchLabels:
+      heritage: {{ .Release.Service | quote }}
+      release: {{ .Release.Name | quote }}
+      chart: "{{ .Chart.Name }}"
+      component: "{{ .Release.Name }}-{{ .Values.Component }}"
   template:
     metadata:
       name: "{{ template "consul.fullname" . }}"
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: "{{ .Chart.Name }}"
         component: "{{ .Release.Name }}-{{ .Values.Component }}"
     spec:
       securityContext:
