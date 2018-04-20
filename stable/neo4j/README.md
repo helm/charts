@@ -57,6 +57,7 @@ their default values.
 | `image`                              | Neo4j image                                                                                                                             | `neo4j`                                         |
 | `imageTag`                           | Neo4j version                                                                                                                           | `{VERSION}`                                     |
 | `imagePullPolicy`                    | Image pull policy                                                                                                                       | `IfNotPresent`                                  |
+| `podDisruptionBudget`                | Pod disruption budget                                                                                                                   | `{}`                                            |
 | `authEnabled`                        | Is login/password required?                                                                                                             | `true`                                          |
 | `core.numberOfServers`               | Number of machines in CORE mode                                                                                                         | `3`                                             |
 | `core.sideCarContainers`             | Sidecar containers to add to the core pod. Example use case is a sidecar which identifies and labels the leader when using the http API | `{}`                                            |
@@ -91,3 +92,5 @@ $ helm install --name neo4j-helm -f values.yaml stable/neo4j
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+Once you have all 3 pods in running, you can run the "test.sh" script in this directory, which will verify the role attached to each pod and also test recovery of a failed/deleted pod. This script requires that the $RELEASE_NAME environment variable be set, in order to access the pods, if you have specified a custom `namespace` or `replicas` value when installing you can set those via `RELEASE_NAMESPACE` and `CORE_REPLICAS` environment variables for this script.

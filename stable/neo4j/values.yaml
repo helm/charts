@@ -7,9 +7,14 @@ name: "neo4j"
 
 # Specs for the Neo4j docker image
 image: "neo4j"
-imageTag: "3.2.3-enterprise"
+imageTag: "3.3.4-enterprise"
 imagePullPolicy: "IfNotPresent"
 # imagePullSecret: registry-secret
+
+podDisruptionBudget: {}
+  # minAvailable: 2
+  # maxUnavailable: 1
+
 
 # Use password authentication
 authEnabled: true
