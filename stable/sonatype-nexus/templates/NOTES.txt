@@ -1,19 +1,30 @@
-1. Get the application URL by running these commands:
-{{- if .Values.ingress.enabled }}
-{{- range .Values.ingress.hosts }}
-  http://{{ . }}
-{{- end }}
-{{- else if contains "NodePort" .Values.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT
-{{- else if contains "LoadBalancer" .Values.service.type }}
-     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch the status of by running 'kubectl get svc -w {{ template "fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$SERVICE_IP:{{ .Values.service.externalPort }}
-{{- else if contains "ClusterIP" .Values.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  echo "Visit http://127.0.0.1:8081 to use your application"
-  kubectl port-forward $POD_NAME 8081:{{ .Values.service.externalPort }}
-{{- end }}
+1. To access Nexus:
+
+   NOTE: It may take a few minutes for the ingress load balancer to become available or the backends to become HEALTHY.
+         You can watch the status of the backends by running:
+         `kubectl get ingress -o jsonpath='{.items[*].metadata.annotations.ingress\.kubernetes\.io/backends}'`
+
+   To access Nexus you can check:
+   {{- if .Values.nexusProxy.env.enforceHttps }}
+     https://{{ .Values.nexusProxy.env.nexusHttpHost }}
+   {{- else }}
+     http://{{ .Values.nexusProxy.env.nexusHttpHost }}
+   {{- end }}
+
+2. Login with the following credentials
+
+   username: admin
+   password: {{ .Values.nexusBackup.nexusAdminPassword }}
+
+3. Change Your password after the first login
+
+  {{- if .Values.nexusBackup.enabled }}
+   Once you login you should change your admin password to match the value of `nexusBackup.env.nexusAdminPassword`
+   This is important for security reasons and also because backup container needs this password set for admin user
+   to access Nexus API to run backups.
+  {{- end }}
+
+4. Next steps in configuration
+
+   Please follow the link below for nexus configuration, usage, backups and DR info:
+   https://github.com/travelaudience/core-nexus-kubernetes/tree/create-helm-chart/helm/nexus#after-installing-the-chart
