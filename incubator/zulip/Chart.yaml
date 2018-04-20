@@ -1,0 +1,4 @@
+apiVersion: v1
+description: zulipchat
+name: zulip
+version: 0.1.0

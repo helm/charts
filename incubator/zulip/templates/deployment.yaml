@@ -1,0 +1,81 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "zulip.fullname" . }}
+  labels:
+    app: {{ template "zulip.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "zulip.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: redis
+        image: {{ .Values.redis.image }}
+        resources:
+{{ toYaml .Values.redis.resources | indent 12 }}
+        volumeMounts:
+          - name: redis-persistent-storage
+            mountPath: /var/lib/redis
+      - name: memcached
+        image: {{ .Values.memcached.image }}
+        resources:
+{{ toYaml .Values.memcached.resources | indent 12 }}
+      - name: rabbitmq
+        image: {{ .Values.rabbitmq.image }}
+        resources:
+{{ toYaml .Values.rabbitmq.resources | indent 12 }}
+        env:
+{{ toYaml .Values.rabbitmq.env | indent 12 }}
+      - name: postgresql
+        image: {{ .Values.postgresql.image }}
+        resources:
+{{ toYaml .Values.postgresql.resources | indent 12 }}
+        env:
+{{ toYaml .Values.postgresql.env | indent 12 }}
+        volumeMounts:
+          - name: postgresql-persistent-storage
+            mountPath: /var/lib/postgresql
+      - name: zulip
+        image: {{ .Values.zulip.image }}
+        resources:
+{{ toYaml .Values.zulip.resources | indent 12 }}
+        env:
+{{ toYaml .Values.zulip.env | indent 12 }}
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        - containerPort: 443
+          name: https
+          protocol: TCP
+        volumeMounts:
+          - name: zulip-persistent-storage
+            mountPath: /data
+#        livenessProbe:
+#          httpGet:
+#            path: /login
+#            port: 443
+#            scheme: HTTP
+#          initialDelaySeconds: 120
+#          timeoutSeconds: 12
+      volumes:
+      - name: zulip-persistent-storage
+        persistentVolumeClaim:
+          claimName: {{ template "zulip.fullname" . }}-zulip
+      - name: redis-persistent-storage
+        persistentVolumeClaim:
+          claimName: {{ template "zulip.fullname" . }}-redis
+      - name: postgresql-persistent-storage
+        persistentVolumeClaim:
+          claimName: {{ template "zulip.fullname" . }}-postgresql
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
