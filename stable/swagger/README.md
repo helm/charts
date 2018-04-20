@@ -30,7 +30,7 @@ The following tables lists the configurable parameters of the Swagger UI chart a
 |------------------------------------------|---------------------------------------------|---------------------------------|
 | `env.API_URL`                            | URL to fetch configuration document from.   | `nil`                           |
 | `image.repository`                       | Swagger ui image                            | `swaggerapi/swagger-ui`         |
-| `image.tag`                              | Swagger ui image tag                        | `v3.9.3`                        |
+| `image.tag`                              | Swagger ui image tag                        | `v3.13.4`                       |
 | `image.pullPolicy`                       | Image pull policy                           | `IfNotPresent`                  |
 | `service.name`                           | Kubernetes service name                     | `http`                          |
 | `service.type`                           | Kubernetes service type                     | `TCP`                           |
@@ -46,7 +46,10 @@ The following tables lists the configurable parameters of the Swagger UI chart a
 | `ingress.basicAuth.basicAuthAnnotations` | Ingress annotations specific to basic auth  | `{  nginx.ingress.kubernetes.io/auth-type: basic,    nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"}`   |
 | `ingress.oauth.enabled`                  | Enable oauth auth                           | `false`                         |
 | `ingress.oauth.oauthAnnotations`         | Ingress annotations specific to oauth       | `{  kubernetes.io/ingress.class: nginx,   nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start,   nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth}`     |
-| `resources`                              | Swagger UI pod resource requests & limits   | `{}`                            |
+| `resources`                              | pod resource requests & limits              | `{}`                            |
+| `nodeSelector`                           | node labels for pod assignment              | `{}`                            |
+| `tolerations`                            | node taints to tolerate                     | `[]`                            |
+| `affinity`                               | node/pod affinities                         | `{}`                            |
 
 
 **Https and Nginx**

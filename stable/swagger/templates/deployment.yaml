@@ -4,7 +4,7 @@ metadata:
   name: {{ template "swagger.fullname" . }}
   labels:
     app: {{ template "swagger.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "swagger.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -12,6 +12,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "swagger.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
@@ -51,7 +52,15 @@ spec:
               protocol: {{ .Values.service.protocol }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-    {{- if .Values.nodeSelector }}
+    {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
     {{- end }}

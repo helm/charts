@@ -8,7 +8,7 @@ env:
 
 image:
   repository: swaggerapi/swagger-ui
-  tag: v3.9.3
+  tag: v3.13.4
   pullPolicy: IfNotPresent
 
 service:
@@ -56,3 +56,9 @@ ingress:
       nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
 
 resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

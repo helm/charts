@@ -4,7 +4,7 @@ name: swagger
 home: https://swagger.io/
 icon: https://hub.docker.com/v2/users/swaggerapi/avatar/
 version: 0.1.0
-appVersion: 3.9.3
+appVersion: 3.13.4
 sources:
 - https://github.com/swagger-api/swagger-ui
 maintainers:
