@@ -22,6 +22,10 @@ spec:
       labels:
         app: {{ template "grafana.name" . }}
         release: {{ .Release.Name }}
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
 {{- if .Values.dashboards }}
       initContainers:
@@ -37,6 +41,12 @@ spec:
               mountPath: "/var/lib/grafana"
               subPath: {{ .Values.persistence.subPath }}
 {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
