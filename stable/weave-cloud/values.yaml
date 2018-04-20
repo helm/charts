@@ -1,1 +1,12 @@
-# ServiceToken: ""
+# Default values for weave-cloud.
+
+# token: ""
+
+agent:
+  name: weave-agent
+
+image:
+  repository: quay.io/weaveworks/launcher-agent
+  tag: master-b60524c
+  pullPolicy: IfNotPresent
+
