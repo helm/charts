@@ -1,6 +1,6 @@
 # Default values for weave-cloud.
 
-token: ""
+token: demo
 agent:
   name: weave-agent
 image:
