@@ -9,8 +9,7 @@ replicaCount: 1
 image:
   repository: "amancevice/superset"
   tag: "0.24.0"
-  pullPolicy: "Always"
-
+  pullPolicy: "IfNotPresent"
 
 initFile: |-
   /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin
