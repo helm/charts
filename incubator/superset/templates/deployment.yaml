@@ -12,6 +12,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "superset.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       name: {{ template "superset.fullname" . }}
