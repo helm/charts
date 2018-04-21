@@ -68,7 +68,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the cluster-autoscaler chart and their default values.
+The following table lists the configurable parameters of the cluster-autoscaler chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
@@ -84,6 +84,8 @@ Parameter | Description | Default
 `image.tag` | Image tag (used if `cloudProvider=aws`) | `v1.1.0`
 `image.pullPolicy` | Image pull policy (used if `cloudProvider=aws`) | `IfNotPresent`
 `extraArgs` | additional container arguments | `{}`
+`podDisruptionBudget` | Pod disruption budget | `maxUnavailable: 1`
+`extraEnv` | additional container environment variables | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `rbac.create` | If true, create & use RBAC resources | `false`
@@ -96,6 +98,7 @@ Parameter | Description | Default
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `service.servicePort` | service port to expose | `8085`
+`service.portName` | name for service port | `http`
 `service.type` | type of service to create | `ClusterIP`
 `spotinst.account` | Spotinst Account ID (required if `cloudprovider=spotinst`) | `""`
 `spotinst.token` | Spotinst API token (required if `cloudprovider=spotinst`) | `""`

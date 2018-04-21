@@ -24,14 +24,34 @@ spec:
             - name: {{ $key }}
               value: {{ $value }}
             {{- end }}
-          command: ["sh", "-c", "'/opt/sonarqube/extensions/plugins/install_plugins.sh'"]
+          command: ["sh",
+            "-c",
+            "mkdir -p /opt/sonarqube/extensions/plugins/ &&
+            cp /tmp/scripts/install_plugins.sh /opt/sonarqube/extensions/plugins/install_plugins.sh &&
+            chmod 0775 /opt/sonarqube/extensions/plugins/install_plugins.sh &&
+            /opt/sonarqube/extensions/plugins/install_plugins.sh
+            "
+           ]
           volumeMounts:
             - mountPath: /opt/sonarqube/extensions
               name: sonarqube
               subPath: extensions
             - name: install-plugins
-              mountPath: /opt/sonarqube/extensions/plugins/install_plugins.sh
-              subPath: install_plugins.sh
+              mountPath: /tmp/scripts/
+          resources:
+{{ toYaml .Values.plugins.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -39,6 +59,15 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
+          command: [
+              "sh",
+              "-ce",
+              "mkdir /scripts &&
+              cp /tmp-script/startup.sh /scripts/startup.sh &&
+              chmod 0755 /scripts/startup.sh &&
+              /scripts/startup.sh
+              "
+            ]
           env:
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
@@ -52,7 +81,7 @@ spec:
                   name: {{ template "postgresql.fullname" .}}
                   key: postgres-password
             - name: SONARQUBE_JDBC_URL
-              value: "jdbc:postgresql://{{ template "postgresql.fullname" .}}:5432/{{.Values.postgresql.postgresDatabase}}"
+              value: "jdbc:postgresql://{{ template "postgresql.hostname" . }}:{{- .Values.postgresql.service.port -}}/{{- .Values.postgresql.postgresDatabase -}}"
           livenessProbe:
             httpGet:
               path: /
@@ -70,10 +99,11 @@ spec:
             - mountPath: /opt/sonarqube/conf
               name: sonarqube
               subPath: conf
+            - mountPath: /tmp-script/
+              name: startup
             {{- if .Values.sonarProperties }}
             - name: config
-              mountPath: /opt/sonarqube/conf/sonar.properties
-              subPath: sonar.properties
+              mountPath: /tmp/conf/
             {{- end}}
             - mountPath: /opt/sonarqube/data
               name: sonarqube
@@ -81,23 +111,41 @@ spec:
             - mountPath: /opt/sonarqube/extensions
               name: sonarqube
               subPath: extensions
-            - name: install-plugins
-              mountPath: /opt/sonarqube/extensions/plugins/install_plugins.sh
-              subPath: install_plugins.sh
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
       volumes:
+      {{- if .Values.sonarProperties}}
       - name: config
         configMap:
           name: {{ template "sonarqube.fullname" . }}-config
+          items:
+          - key: sonar.properties
+            path: sonar.properties
+      {{- end }}
       - name: install-plugins
         configMap:
           name: {{ template "sonarqube.fullname" . }}-install-plugins
-          defaultMode: 0775
+          items:
+            - key: install_plugins.sh
+              path: install_plugins.sh
+      - name: startup
+        configMap:
+          name: {{ template "sonarqube.fullname" . }}-startup
+          items:
+            - key: startup.sh
+              path: startup.sh
       - name: sonarqube
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:

@@ -23,7 +23,7 @@ $ helm install --name my-release stable/jenkins
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Jenkins chart and their default values.
+The following tables list the configurable parameters of the Jenkins chart and their default values.
 
 ### Jenkins Master
 | Parameter                         | Description                          | Default                                                                      |
@@ -32,7 +32,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `fullnameOverride`                | Override the full resource names     | `jenkins-{release-name}` (or `jenkins` if release-name is `jenkins`)         |
 | `Master.Name`                     | Jenkins master name                  | `jenkins-master`                                                             |
 | `Master.Image`                    | Master image name                    | `jenkinsci/jenkins`                                                          |
-| `Master.ImageTag`                 | Master image tag                     | `2.46.1`                                                                     |
+| `Master.ImageTag`                 | Master image tag                     | `lts`                                                                     |
 | `Master.ImagePullPolicy`          | Master image pull policy             | `Always`                                                                     |
 | `Master.ImagePullSecret`          | Master image pull secret             | Not set                                                                      |
 | `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
@@ -50,6 +50,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.NodePort`                 | k8s node port                        | Not set                                                                      |
 | `Master.HealthProbes`             | Enable k8s liveness and readiness probes | `true`                                                                   |
 | `Master.HealthProbesTimeout`      | Set the timeout for the liveness and readiness probes | `120`                                                       |
+| `Master.HealthProbeLivenessFailureThreshold` | Set the failure threshold for the liveness probe | `12`                                                       |
 | `Master.ContainerPort`            | Master listening port                | `8080`                                                                       |
 | `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |
 | `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                                                                  |
