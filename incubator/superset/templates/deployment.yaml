@@ -53,7 +53,7 @@ spec:
               mountPath: /var/lib/superset
           ports:
             - name: http
-              containerPort: {{ .Values.containerPort }}
+              containerPort: 8088
               protocol: TCP
     {{- with .Values.resources }}
           resources:

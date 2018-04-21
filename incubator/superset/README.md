@@ -44,7 +44,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | `image`                    | `superset` image repository                     | `amancevice/superset`                                                    |
 | `imageTag`                 | `superset` image tag                            | `0.23.3`                                                    |
 | `imagePullPolicy`          | Image pull policy                               | `Always`                                                     |
-| `containerPort`            | Container port                                  | `8088`                                                       |
 | `configFile`               | Content of [`superset_config.py`](https://superset.incubator.apache.org/installation.html)                      | See [values.yaml](./values.yaml)                                                   |
 | `initFile`                 | Content of init shell script                    | See [values.yaml](./values.yaml)                             |
 | `replicas`                 | Number of replicas of superset                  | `1`                                                          |

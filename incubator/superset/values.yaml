@@ -11,7 +11,6 @@ image:
   tag: "0.23.3"
   pullPolicy: "Always"
 
-containerPort: 8088
 
 initFile: |-
   /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin
