@@ -8,7 +8,7 @@ replicaCount: 1
 ## Set default image, imageTag, and imagePullPolicy.
 image:
   repository: "amancevice/superset"
-  tag: "0.23.3"
+  tag: "0.24.0"
   pullPolicy: "Always"
 
 
