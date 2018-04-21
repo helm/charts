@@ -1,0 +1,19 @@
+name: nextcloud
+version: 0.1.0
+appVersion: 13.0.0
+description: A file sharing server that puts the control and security of your own data back into your hands.
+keywords:
+- owncloud
+- nextcloud
+- storage
+- http
+- web
+- php
+home: https://nextcloud.com/
+icon: https://cdn.rawgit.com/docker-library/docs/defa5ffc7123177acd60ddef6e16bddf694cc35f/nextcloud/logo.svg
+sources:
+- https://github.com/nextcloud/server
+maintainers:
+- name: Keiran Smith
+  email: opensource@keiran.scot
+engine: gotpl
