@@ -1,8 +1,7 @@
 # CockroachDB Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.7 (for PodDisruptionBudget `MaxUnavailable` support -- you can
-  run at Kubernetes 1.5 if you don't care about the PodDisruptionBudget)
+* Kubernetes 1.8
 * PV support on the underlying infrastructure
 * If you want to secure your cluster to use TLS certificates for all network
   communication, [Helm must be installed with RBAC
@@ -46,7 +45,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | ----------------------------- | ------------------------------------------ | -------------------------------------------- |
 | `Name`                        | Chart name                                 | `cockroachdb`                                |
 | `Image`                       | Container image name                       | `cockroachdb/cockroach`                      |
-| `ImageTag`                    | Container image tag                        | `v1.1.5`                                     |
+| `ImageTag`                    | Container image tag                        | `v2.0.0`                                     |
 | `ImagePullPolicy`             | Container pull policy                      | `Always`                                     |
 | `Replicas`                    | k8s statefulset replicas                   | `3`                                          |
 | `MaxUnavailable`              | k8s PodDisruptionBudget parameter          | `1`                                          |
@@ -63,6 +62,8 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `NetworkPolicy.Enabled`       | Enable NetworkPolicy                       | `false`                                      |
 | `NetworkPolicy.AllowExternal` | Don't require client label for connections | `true`                                       |
 | `Service.Type`                | Public service type                        | `ClusterIP`                                  |
+| `PodManagementPolicy` | `OrderedReady` or `Parallel` pod creation/deletion order | `Parallel` |
+| `UpdateStrategy.type` | allows setting of RollingUpdate strategy | `RollingUpdate` |
 | `Secure.Enabled` | Whether to run securely using TLS certificates | `false` |
 | `Secure.RequestCertsImage` | Image to use for requesting TLS certificates | `cockroachdb/cockroach-k8s-request-cert` |
 | `Secure.RequestCertsImageTag` | Image tag to use for requesting TLS certificates | `0.3` |

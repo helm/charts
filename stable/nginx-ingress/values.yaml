@@ -5,7 +5,7 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.12.0"
+    tag: "0.13.0"
     pullPolicy: IfNotPresent
 
   config: {}
@@ -65,8 +65,13 @@ controller:
   extraArgs: {}
 
   ## Additional environment variables to set
-  ##
-  extraEnvs: {}
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## DaemonSet or Deployment
   ##
@@ -147,6 +152,7 @@ controller:
 
   service:
     annotations: {}
+    labels: {}
     clusterIP: ""
 
     ## List of IP addresses at which the controller services are available
@@ -177,6 +183,40 @@ controller:
     nodePorts:
       http: ""
       https: ""
+
+  extraContainers: {}
+  ## Additional containers to be added to the controller pod.
+  ## See https://github.com/lemonldap-ng-controller/lemonldap-ng-controller as example.
+  #  - name: my-sidecar
+  #    image: nginx:latest
+  #  - name: lemonldap-ng-controller
+  #    image: lemonldapng/lemonldap-ng-controller:0.2.0
+  #    args:
+  #      - /lemonldap-ng-controller
+  #      - --alsologtostderr
+  #      - --configmap=$(POD_NAMESPACE)/lemonldap-ng-configuration
+  #    env:
+  #      - name: POD_NAME
+  #        valueFrom:
+  #          fieldRef:
+  #            fieldPath: metadata.name
+  #      - name: POD_NAMESPACE
+  #        valueFrom:
+  #          fieldRef:
+  #            fieldPath: metadata.namespace
+  #    volumeMounts:
+  #    - name: copy-portal-skins
+  #      mountPath: /srv/var/lib/lemonldap-ng/portal/skins
+
+  extraVolumeMounts: {}
+  ## Additional volumeMounts to the controller main container.
+  #  - name: copy-portal-skins
+  #   mountPath: /var/lib/lemonldap-ng/portal/skins
+
+  extraVolumes: {}
+  ## Additional volumes to the controller pod.
+  #  - name: copy-portal-skins
+  #    emptyDir: {}
 
   stats:
     enabled: false
@@ -292,7 +332,14 @@ defaultBackend:
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:
   create: false
+  createRole: false
+  createClusterRole: false
   serviceAccountName: default
+
+## Optional array of imagePullSecrets containing private registry credentials
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+imagePullSecrets: []
+# - name: secretName
 
 # TCP service key:value pairs
 # Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tcp
