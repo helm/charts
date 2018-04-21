@@ -14,3 +14,12 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Return the proper image name
+*/}}
+{{- define "mongodb.image" -}}
+{{- $registryName :=  default .Values.image.registry "docker.io" -}}
+{{- $tag := .Values.image.tag | default "latest" -}}
+{{- printf "%s/%s:%s" $registryName .Values.image.repository $tag -}}
+{{- end -}}

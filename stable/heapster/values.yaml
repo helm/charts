@@ -40,6 +40,12 @@ service:
   #   kubernetes.io/name: "Heapster"
   labels:
 
+  ## Here annotations can be added to the heapster service
+  # annotations:
+  #   prometheus.io/path: /metrics
+  #   prometheus.io/port: "8082"
+  #   prometheus.io/scrape: "true"
+  annotations: {}
 resources:
   limits:
     cpu: 100m
