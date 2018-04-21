@@ -7,7 +7,7 @@ This chart bootstraps an [Apache superset](https://superset.incubator.apache.org
 ## TL;DR;
 
 ```bash
-$ helm install incubator/superset
+$ helm install stable/superset
 ```
 
 ## Prerequisites
@@ -88,5 +88,5 @@ The [superset image](https://hub.docker.com/r/amancevice/superset/) mounts the S
 1. Create the PersistentVolumeClaim with name `superset-pvc` in the same namespace
 1. Install the chart
 ```bash
-$ helm install --set persistence.enabled=true,persistence.existingClaim=superset-pvc incubator/superset
+$ helm install --set persistence.enabled=true,persistence.existingClaim=superset-pvc stable/superset
 ```
