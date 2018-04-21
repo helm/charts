@@ -49,6 +49,8 @@ Master:
   # Enable Kubernetes Liveness and Readiness Probes
   HealthProbes: true
   HealthProbesTimeout: 60
+  # ~2 minutes to allow Jenkins to restart when upgrading plugins
+  HealthProbeLivenessFailureThreshold: 12
   SlaveListenerPort: 50000
   # Kubernetes service type for the JNLP slave service
   # SETTING THIS TO "LoadBalancer" IS A HUGE SECURITY RISK: https://github.com/kubernetes/charts/issues/1341
