@@ -1,4 +1,4 @@
-#  Apache superset
+# Apache superset
 
 ## Introduction
 
@@ -40,11 +40,11 @@ The command removes all the Kubernetes components associated with the chart and 
 ## Configuration
 
 | Parameter                  | Description                                     | Default                                                      |
-| -----------------------    | ---------------------------------------------   | ------------------------------------------------------------ |
-| `image.repository`                    | `superset` image repository                     | `amancevice/superset`                                                    |
+| -------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
+| `image.repository`         | `superset` image repository                     | `amancevice/superset`                                        |
 | `image.tag`                 | `superset` image tag                            | `0.23.3`                                                    |
-| `image.pullPolicy`          | Image pull policy                               | `IfNotPresent`                                                     |
-| `configFile`               | Content of [`superset_config.py`](https://superset.incubator.apache.org/installation.html)                      | See [values.yaml](./values.yaml)                                                   |
+| `image.pullPolicy`         | Image pull policy                               | `IfNotPresent`                                               |
+| `configFile`               | Content of [`superset_config.py`](https://superset.incubator.apache.org/installation.html)                     | See values.yaml](./values.yaml)              |
 | `initFile`                 | Content of init shell script                    | See [values.yaml](./values.yaml)                             |
 | `replicas`                 | Number of replicas of superset                  | `1`                                                          |
 | `persistence.enabled`      | Enable persistence                              | `false`                                                      |
@@ -52,7 +52,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                  |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                              |
 | `persistence.size`         | Size of data volume                             | `8Gi`                                                        |
-| `resources`                | CPU/Memory resource requests/limits             |  Memory: `256Mi`, CPU: `50m`     / Memory: `500Mi`, CPU: `500m`|
+| `resources`                | CPU/Memory resource requests/limits             | Memory: `256Mi`, CPU: `50m`   / Memory: `500Mi`, CPU: `500m` |
 | `service.port`             | TCP port                                        | `9000`                                                       |
 | `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                  |
 | `nodeSelector`             | Node labels for pod assignment                  | {}                                                           |
@@ -64,7 +64,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ingress.hosts`            | ingress hosts                                   | `[superset.domain.com]`                                      |
 | `ingress.path`             | ingress path                                    | `\`                                                          |
 | `ingress.tls`              | ingress tls                                     | `[]`                                                         |
-
 
  see [values.yaml](./values.yaml)
 
@@ -87,6 +86,7 @@ The [superset image](https://hub.docker.com/r/amancevice/superset/) mounts the S
 
 1. Create the PersistentVolumeClaim with name `superset-pvc` in the same namespace
 1. Install the chart
+
 ```bash
 $ helm install --set persistence.enabled=true,persistence.existingClaim=superset-pvc stable/superset
 ```
