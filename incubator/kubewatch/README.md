@@ -35,7 +35,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the kubewatch chart and their default values.
+The following table lists the configurable parameters of the kubewatch chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
@@ -45,7 +45,7 @@ Parameter | Description | Default
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
-`podLabels` | additional labesl to add to each pod | `{}`
+`podLabels` | additional labels to add to each pod | `{}`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
 `replicaCount` | desired number of pods | `1`
