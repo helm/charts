@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -166,3 +167,4 @@ spec:
           configMap:
             name: {{ .configMap }}
       {{- end }}
+{{- end }}
