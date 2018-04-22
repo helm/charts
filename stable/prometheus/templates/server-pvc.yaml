@@ -1,5 +1,4 @@
-{{- if .Values.server.enabled }}
-{{- if .Values.server.persistentVolume.enabled -}}
+{{- if and .Values.server.enabled .Values.server.persistentVolume.enabled -}}
 {{- if not .Values.server.persistentVolume.existingClaim -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -28,6 +27,5 @@ spec:
   resources:
     requests:
       storage: "{{ .Values.server.persistentVolume.size }}"
-{{- end -}}
 {{- end -}}
 {{- end -}}

@@ -1,5 +1,4 @@
-{{- if .Values.server.enabled }}
-{{- if (empty .Values.server.configMapOverrideName) -}}
+{{- if and .Values.server.enabled (empty .Values.server.configMapOverrideName) -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -40,7 +39,6 @@ data:
         - source_labels: [__meta_kubernetes_pod_container_port_number]
           regex:
           action: drop
-{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
