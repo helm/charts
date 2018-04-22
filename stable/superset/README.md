@@ -12,7 +12,7 @@ $ helm install stable/superset
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.9+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure (Only when persisting data)
 
 ## Installing the Chart
