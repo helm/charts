@@ -222,7 +222,17 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  ## in order to scale beyond 1 replica the wordpress deployment accessMode of the PVC must be
+  ## ReadWriteMany if you are planning to use the admin panel to update/install plugins and themes
+  ## if not use ReadOnlyMany so the same volume is shared across nodes
+  ## To use ReadWriteOnce and be able to scale replicas of the wordpress deployment set nfsEnabled to true
+  ## for more info see - https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
   accessMode: ReadWriteOnce
+  nfsEnabled: false
+  ## nfs service requires a static clusterIP so the volume can point to it
+  ## please change to match your cluster network definition
+  nfsClusterIp: 10.96.0.200
+  nfsImage: k8s.gcr.io/volume-nfs:0.8
   size: 10Gi
 
 ## Configure resource requests and limits
