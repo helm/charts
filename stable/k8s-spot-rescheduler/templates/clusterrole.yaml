@@ -1,6 +1,6 @@
 {{- if .Values.rbac.create }}
-kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
 metadata:
   name: {{ template "k8s-spot-rescheduler.fullname" . }}
   labels:
