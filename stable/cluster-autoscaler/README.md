@@ -31,6 +31,8 @@ To install the chart with the release name `my-release`:
 
 ### Using auto-discovery of tagged instance groups
 
+#### AWS
+
 Auto-discovery finds ASGs tags as below and automatically manages them based on the min and max size specified in the ASG. `cloudProvider=aws` only.
 
 1) tag the ASGs with _key_ `k8s.io/cluster-autoscaler/enabled` and _key_ `kubernetes.io/cluster/<YOUR CLUSTER NAME>`
@@ -43,7 +45,24 @@ $ helm install stable/cluster-autoscaler --name my-release --set autoDiscovery.c
 
 The [auto-discovery](#auto-discovery) section provides more details and examples
 
-### Specifying groups manually
+#### GCE
+##### Required parameters
+- `autoDiscovery.clusterName=any-name`
+- `--cloud-provider=gce`
+- `autoscalingGroupsnamePrefix[0].name=your-ig-prefix,autoscalingGroupsnamePrefix[0].maxSize=10,autoscalingGroupsnamePrefix[0].minSize=1`
+
+1) Either provide a yaml file setting `autoscalingGroupsnamePrefix` (see values.yaml) or use `--set` e.g.:
+
+```console
+$ helm install stable/cluster-autoscaler \
+--name my-release \
+--set autoDiscovery.clusterName=<CLUSTER NAME> \
+--set cloudProvider=gce \
+--set autoDiscovery.clusterName=mycluster \
+--set "autoscalingGroupsnamePrefix[0].name=your-ig-prefix,autoscalingGroupsnamePrefix[0].maxSize=10,autoscalingGroupsnamePrefix[0].minSize=1"
+```
+
+### Specifying groups manually (only aws)
 
 Without autodiscovery, specify an array of elements each containing ASG name, min size, max size. The sizes specified here will be applied to the ASG, assuming IAM permissions are correctly configured.
 
@@ -73,16 +92,19 @@ The following table lists the configurable parameters of the cluster-autoscaler 
 Parameter | Description | Default
 --- | --- | ---
 `affinity` | node/pod affinities | None
-`autoDiscovery.clusterName` | enable autodiscovery for name in ASG tag (only `cloudProvider=aws`)| `""` **required unless autoscalingGroups[] provided**
+`autoDiscovery.clusterName` | enable autodiscovery for name in ASG tag (only `cloudProvider=aws`). Must be set for `cloudProvider=gce`, but no MIG tagging required.| `""` **required unless autoscalingGroups[] provided**
 `autoscalingGroups[].name` | autoscaling group name | None. Required unless `autoDiscovery.enabled=true`
 `autoscalingGroups[].maxSize` | maximum autoscaling group size | None. Required unless `autoDiscovery.enabled=true`
 `autoscalingGroups[].minSize` | minimum autoscaling group size | None. Required unless `autoDiscovery.enabled=true`
 `awsRegion` | AWS region (required if `cloudProvider=aws`) | `us-east-1`
+`autoscalingGroupsnamePrefix[].name` | GCE MIG name | None. Required for `cloudProvider=gce`
+`autoscalingGroupsnamePrefix[].maxSize` | maximum MIG size | None. Required for `cloudProvider=gce`
+`autoscalingGroupsnamePrefix[].minSize` | minimum MIG size |  None. Required for `cloudProvider=gce`
 `sslCertPath` | Path on the host where ssl ca cert exists | `/etc/ssl/certs/ca-certificates.crt`
-`cloudProvider` | `aws` or `spotinst` are currently supported | `aws`
-`image.repository` | Image (used if `cloudProvider=aws`) | `k8s.gcr.io/cluster-autoscaler`
-`image.tag` | Image tag (used if `cloudProvider=aws`) | `v1.1.0`
-`image.pullPolicy` | Image pull policy (used if `cloudProvider=aws`) | `IfNotPresent`
+`cloudProvider` | `aws` or `spotinst` are currently supported for AWS. `gce` for GCE| `aws`
+`image.repository` | Image | `k8s.gcr.io/cluster-autoscaler`
+`image.tag` | Image tag  | `v1.2.0`
+`image.pullPolicy` | Image pull policy  | `IfNotPresent`
 `extraArgs` | additional container arguments | `{}`
 `podDisruptionBudget` | Pod disruption budget | `maxUnavailable: 1`
 `extraEnv` | additional container environment variables | `{}`
@@ -90,6 +112,7 @@ Parameter | Description | Default
 `podAnnotations` | annotations to add to each pod | `{}`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
+`rbac.pspEnabled` | Must be used with `rbac.create` true. If true, creates & uses RBAC resources required in the cluster with [Pod Security Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) enabled. | `false`
 `replicaCount` | desired number of pods | `1`
 `resources` | pod resource requests & limits | `{}`
 `service.annotations` | annotations to add to service | none
