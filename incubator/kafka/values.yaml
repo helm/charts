@@ -145,7 +145,10 @@ persistence:
 
 jmx:
 
-  ## Rules to apply to the Kafka JMX Exporter
+  ## Rules to apply to the Kafka JMX Exporter.  Note while lots of stats have been cleaned and exposed,
+  ## there are still more stats to clean up and exposed.  A lot of stats won't ever expose, b/c they keep lots
+  ## of rates (999th percentile, 99th, 95th, 1 MinRate, 5 MinRate, 15 MinRate).  PR's to expose and clean up stats
+  ## are gladly accepted and encouraged.
   configMap:
 
     ## Allows disabling the default configmap, note a configMap is needed
