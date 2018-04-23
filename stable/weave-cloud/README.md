@@ -15,7 +15,10 @@ You will need a service token which you can get from [cloud.weave.works](https:/
 To install the chart:
 
 ```console
-$ helm install --name weave-cloud --namespace weave --set token=<YOUR_WEAVE_CLOUD_SERVICE_TOKEN> stable/weave-cloud
+$ helm install --name weave-cloud \
+--namespace weave \
+--set token=<YOUR_WEAVE_CLOUD_SERVICE_TOKEN> \
+stable/weave-cloud
 ```
 
 To view the pods installed:
@@ -51,3 +54,5 @@ The following tables lists the configurable parameters of the Weave Cloud Agents
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `token` | Weave Cloud service token | _none_ _(**must be set**)_ |
+| `rbac.create` | If `true`, create and use RBAC resources | `true` |
+| `serviceAccount.create` | If `true`, create a new service account | `true` |

@@ -1,9 +1,19 @@
 # Default values for weave-cloud.
 
 token: ""
+
 agent:
   name: weave-agent
+
 image:
   repository: quay.io/weaveworks/launcher-agent
   tag: master-b60524c
   pullPolicy: IfNotPresent
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true

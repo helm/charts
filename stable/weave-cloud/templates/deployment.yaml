@@ -21,8 +21,10 @@ spec:
         app: {{ .Values.agent.name }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ .Values.agent.name }}
       serviceAccountName: {{ .Values.agent.name }}
+      {{- end }}
       terminationGracePeriodSeconds: 30
       containers:
         - name: {{ .Values.agent.name }}
