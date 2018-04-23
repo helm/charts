@@ -160,8 +160,8 @@ jmx:
       # rules:
       # - pattern: ".*"
 
-    ## Allows setting the name of the ConfigMap to use, note a configMap
-    ## with said name needs to exists for jmx stats to work
+    ## If you would like to supply your own ConfigMap for JMX metrics, supply the name of that 
+    ## ConfigMap as an `overrideName` here.
     overrideName: ""
 
   ## Port the jmx metrics are exposed in native jmx format, not in Prometheus format
