@@ -113,7 +113,11 @@ spec:
             - name: RABBITMQ_ERLANG_COOKIE
               valueFrom:
                 secretKeyRef:
+                  {{ if .Values.secret.name}}
+                  name: {{ .Values.secret.name}}
+                  {{ else }}
                   name: {{ template "rabbitmq-ha.fullname" . }}
+                  {{ end }}
                   key: rabbitmq-erlang-cookie
             {{- if .Values.rabbitmqHipeCompile }}
             - name: RABBITMQ_HIPE_COMPILE
@@ -124,7 +128,11 @@ spec:
             - name: RABBITMQ_DEFAULT_PASS
               valueFrom:
                 secretKeyRef:
+                  {{ if .Values.secret.name}}
+                  name: {{ .Values.secret.name}}
+                  {{ else }}
                   name: {{ template "rabbitmq-ha.fullname" . }}
+                  {{ end }}
                   key: rabbitmq-password
             - name: RABBITMQ_DEFAULT_VHOST
               value: {{ .Values.rabbitmqVhost | quote }}
