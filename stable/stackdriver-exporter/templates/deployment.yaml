@@ -23,10 +23,10 @@ spec:
       labels:
         app: {{ template "stackdriver-exporter.name" . }}
         release: "{{ .Release.Name }}"
+{{- if .Values.annotations }}
       annotations:
-      {{- range $key, $value := .Values.annotations }}
-        {{ $key }}: {{ $value | quote }}
-      {{- end }}
+{{ toYaml .Values.annotations | indent 8 }}
+{{- end }}
     spec:
       restartPolicy: {{ .Values.restartPolicy }}
       containers:
