@@ -15,5 +15,3 @@ data:
     default_user={{.Values.rabbitmq.username}}
     default_pass=CHANGEME
 {{ .Values.rabbitmq.configuration | indent 4 }}
-
-      
