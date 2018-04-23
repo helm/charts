@@ -118,7 +118,19 @@ data:
       </views>
       <primaryView>All</primaryView>
       <slaveAgentPort>50000</slaveAgentPort>
+      <disabledAgentProtocols>
+{{- range .Values.Master.DisabledAgentProtocols }}
+        <string>{{ . }}</string>
+{{- end }}
+      </disabledAgentProtocols>
       <label></label>
+{{- if .Values.Master.CSRF.DefaultCrumbIssuer.Enabled }}
+      <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
+{{- if .Values.Master.CSRF.DefaultCrumbIssuer.ProxyCompatability }}
+        <excludeClientIPFromCrumb>true</excludeClientIPFromCrumb>
+{{- end }}
+      </crumbIssuer>
+{{- end }}
       <nodeProperties/>
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
@@ -140,10 +152,20 @@ data:
       <pendingClasspathEntries/>
     </scriptApproval>
 {{- end }}
+  jenkins.CLI.xml: |-
+    <?xml version='1.1' encoding='UTF-8'?>
+    <jenkins.CLI>
+{{- if .Values.Master.CLI }}
+      <enabled>true</enabled>
+{{- else }}
+      <enabled>false</enabled>
+{{- end }}
+    </jenkins.CLI>
   apply_config.sh: |-
     mkdir -p /usr/share/jenkins/ref/secrets/;
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
     cp -n /var/jenkins_config/config.xml /var/jenkins_home;
+    cp -n /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
 {{- if .Values.Master.InstallPlugins }}
     cp /var/jenkins_config/plugins.txt /var/jenkins_home;
     rm -rf /usr/share/jenkins/ref/plugins/*.lock
