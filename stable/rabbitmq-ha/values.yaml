@@ -257,3 +257,24 @@ readinessProbe:
   initialDelaySeconds: 10
   timeoutSeconds: 3
   periodSeconds: 5
+
+secret:
+  autogenerate: true
+
+prometheus:
+  alerts:
+    enabled: true
+    selector:
+      role: alert-rules
+    labels: {}
+  exporter:
+    enabled: true
+    env: {}
+    image:
+      repository: kbudde/rabbitmq-exporter
+      tag: latest
+      pullPolicy: IfNotPresent
+    port: 9090
+    resources: {}
+    selector:
+      prometheus: kube-prometheus

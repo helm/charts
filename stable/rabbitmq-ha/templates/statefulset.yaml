@@ -147,6 +147,33 @@ spec:
             - name: cert
               mountPath: /etc/cert
             {{- end }}
+        {{ if .Values.prometheus.exporter.enabled }}
+        - name: {{ .Chart.Name }}-exporter
+          image: {{ .Values.prometheus.exporter.image.repository }}:{{ .Values.prometheus.exporter.image.tag }}
+          imagePullPolicy: {{ .Values.prometheus.exporter.image.pullPolicy }}
+          ports:
+          - name: exporter
+            protocol: TCP
+            containerPort: {{ .Values.prometheus.exporter.port }}
+          env:
+            - name: RABBIT_USER
+              value: {{ .Values.rabbitmqUsername | quote }}
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  {{ if .Values.secret.name}}
+                  name: {{ .Values.secret.name}}
+                  {{ else }}
+                  name: {{ template "rabbitmq-ha.fullname" . }}
+                  {{ end }}
+                  key: rabbitmq-password
+            {{- range $key, $value := .Values.prometheus.exporter.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.prometheus.exporter.resources | indent 12 }}
+        {{ end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

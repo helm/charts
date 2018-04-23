@@ -1,0 +1,22 @@
+{{ if .Values.prometheus.exporter.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "rabbitmq-ha.fullname" . }}
+  namespace: monitoring
+  labels:
+{{- if .Values.prometheus.exporter.selector }}
+{{ toYaml .Values.prometheus.exporter.selector | indent 4 }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+{{- if .Values.prometheus.exporter.selector }}
+{{ toYaml .Values.prometheus.exporter.selector | indent 6 }}
+{{- end }}
+  endpoints:
+  - port: exporter
+    interval: 10s 
+  namespaceSelector:
+    any: true
+{{ end }}
