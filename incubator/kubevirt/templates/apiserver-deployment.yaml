@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kubevirt.fullname" . }}-virt-api
+  namespace: kube-system
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    component: "virt-api-server"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+{{ include "labels.standard" . | indent 8 }}
+        component: "virt-api-server"
+    spec:
+      serviceAccountName: {{ template "kubevirt.serviceAccountName.apiserver" . }}
+      containers:
+        - name: virt-api
+          image: "{{ .Values.kubevirt.repository }}/virt-api:{{ .Values.kubevirt.tag }}"
+          imagePullPolicy: {{ .Values.kubevirt.pullPolicy }}
+          command:
+              - "/virt-api"
+              - "--port"
+              - "8443"
+              - "--subresources-only"
+          ports:
+            - containerPort: 8443
+              name: "virt-api"
+              protocol: "TCP"
+          readinessProbe:
+            tcpSocket:
+              port: 8443
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      securityContext:
+        runAsNonRoot: true

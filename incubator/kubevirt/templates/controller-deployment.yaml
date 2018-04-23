@@ -1,22 +1,24 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: virt-controller
+  name: {{ template "kubevirt.fullname" . }}-virt-controller
   namespace: kube-system
   labels:
-    kubevirt.io: "virt-controller"
+{{ include "labels.standard" . | indent 4 }}
+    component: "virt-controller"
 spec:
   replicas: 2
   template:
     metadata:
       labels:
-        kubevirt.io: virt-controller
+{{ include "labels.standard" . | indent 8 }}
+        component: "virt-controller"
     spec:
-      serviceAccountName: kubevirt-controller
+      serviceAccountName: {{ template "kubevirt.serviceAccountName.controller" . }}
       containers:
         - name: virt-controller
           image: "{{ .Values.kubevirt.repository }}/virt-controller:{{ .Values.kubevirt.tag }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.kubevirt.pullPolicy }}
           command:
               - "/virt-controller"
               - "--launcher-image"

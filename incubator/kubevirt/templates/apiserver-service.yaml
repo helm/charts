@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kubevirt.fullname" . }}-virt-api
+  namespace: kube-system
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    component: "virt-api-server"
+spec:
+  ports:
+    - port: 443
+      targetPort: 8443
+      protocol: TCP
+  selector:
+{{ include "selectors.standard" . | indent 4 }}
+    component: "virt-api-server"

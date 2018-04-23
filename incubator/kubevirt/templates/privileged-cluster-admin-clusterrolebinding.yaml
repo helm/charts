@@ -1,9 +1,11 @@
+{{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: kubevirt-privileged-cluster-admin
+  name: {{ template "kubevirt.fullname" . }}-privileged-cluster-admin
   namespace: kube-system
   labels:
+{{ include "labels.standard" . | indent 4 }}
     kubevirt.io: ""
 roleRef:
   kind: ClusterRole
@@ -11,5 +13,6 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 subjects:
   - kind: ServiceAccount
-    name: kubevirt-privileged
+    name: {{ template "kubevirt.serviceAccountName.privileged" . }}
     namespace: kube-system
+{{- end -}}

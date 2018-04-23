@@ -1,18 +1,20 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: virt-handler
+  name: {{ template "kubevirt.fullname" . }}-virt-handler
   namespace: kube-system
   labels:
-    kubevirt.io: "virt-handler"
+{{ include "labels.standard" . | indent 4 }}
+    component: "virt-handler"
 spec:
   template:
     metadata:
-      name: virt-handler
+      name: {{ template "kubevirt.fullname" . }}-virt-handler
       labels:
-        kubevirt.io: virt-handler
+{{ include "labels.standard" . | indent 8 }}
+        component: "virt-handler"
     spec:
-      serviceAccountName: kubevirt-privileged
+      serviceAccountName: {{ template "kubevirt.serviceAccountName.privileged" . }}
       hostPID: true
       containers:
         - name: virt-handler
@@ -20,7 +22,7 @@ spec:
             - containerPort: 8185
               hostPort: 8185
           image: "{{ .Values.kubevirt.repository }}/virt-handler:{{ .Values.kubevirt.tag }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.kubevirt.pullPolicy }}
           command:
             - "/virt-handler"
             - "-v"

@@ -39,7 +39,15 @@ $ helm delete my-release
 
 The following tables lists the configurable parameters of the kubevirt chart and their default values.
 
-|                Parameter                  |            Description              |          Default           |
-| ----------------------------------------- | ------------------------------------| -------------------------- |
-| `kubevirt.repository`                     |KubeVirt containers repository       | `kubevirt`                 |
-| `kubevirt.tag`                            |KubeVirt containers tag              | `v0.3.0-alpha.2`                   |
+Parameter | Description | Default
+--- | --- | ---
+| `kubevirt.repository` | KubeVirt containers repository | `kubevirt`
+| `kubevirt.tag` | KubeVirt containers tag | `v0.4.1`
+| `kubevirt.pullPolicy` | Image pull policy | `IfNotPresent`
+| `rbac.create` | Specifies whether RBAC resources should be created | `true`
+| `serviceAccount.apiserver.create` | Specifies whether the apiserver ServiceAccount should be created | `true`
+| `serviceAccount.apiserver.name` | The name of the apiserver ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `kubevirt-apiserver`
+| `serviceAccount.controller.create` | Specifies whether the controller ServiceAccount should be created | `true`
+| `serviceAccount.controller.name` | The name of the controller ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `kubevirt-controller`
+| `serviceAccount.privileged.create` | Specifies whether the privileged ServiceAccount should be created | `true`
+| `serviceAccount.privileged.name` | The name of the privileged ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `kubevirt-privileged`
