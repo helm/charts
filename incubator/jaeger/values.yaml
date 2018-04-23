@@ -20,6 +20,7 @@ storage:
     port: 9200
     user: elastic
     password: changeme
+    nodesWanOnly: false
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
