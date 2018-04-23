@@ -3,7 +3,7 @@ apiVersion: v1
 metadata:
   name: {{ template "blackbox-exporter.fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    chart: {{ template "blackbox-exporter.chart" . }}
     app: {{ template "blackbox-exporter.name" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
