@@ -1,0 +1,10 @@
+image:
+  repository: gcr.io/google-containers/volume-nfs
+  tag: 0.8
+  pullPolicy: IfNotPresent
+
+server:
+  persistentVolume:
+    capacity: 50Gi
+    storageClass: default
+    annotations: {}

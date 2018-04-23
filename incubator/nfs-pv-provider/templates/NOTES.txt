@@ -1,0 +1,8 @@
+This chart is a (WIP) dynamic provider of NFS volumes for NFS
+PersistentVolumeClaims.
+
+Submit issues about this chart to kingdonb/nfs-data:
+https://github.com/kingdonb/nfs-data
+
+For an example that shows how to connect in ReadWriteMany from pods in a
+deployment and scale it up, check out README.md and kingdonb/nfs-data

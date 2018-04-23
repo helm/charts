@@ -1,0 +1,19 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "nfs-pv-provider.fullname" . }}
+  labels:
+    app: {{ template "nfs-pv-provider.name" . }}
+    chart: {{ template "nfs-pv-provider.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  ports:
+    - name: nfs
+      port: 2049
+    - name: mountd
+      port: 20048
+    - name: rpcbind
+      port: 111
+  selector:
+    role: nfs-server

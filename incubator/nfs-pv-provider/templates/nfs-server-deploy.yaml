@@ -1,0 +1,43 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: nfs-server
+  labels:
+    app: {{ template "nfs-pv-provider.name" . }}
+    chart: {{ template "nfs-pv-provider.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: nfs-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "nfs-pv-provider.name" . }}
+      release: {{ .Release.Name }}
+      role: nfs-server
+  template:
+    metadata:
+      labels:
+        app: {{ template "nfs-pv-provider.name" . }}
+        release: {{ .Release.Name }}
+        role: nfs-server
+    spec:
+      containers:
+        - name: nfs-server
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - name: nfs
+              containerPort: 2049
+            - name: mountd
+              containerPort: 20048
+            - name: rpcbind
+              containerPort: 111
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /exports
+              name: mypvc
+      volumes:
+        - name: mypvc
+          persistentVolumeClaim:
+            claimName: {{ template "nfs-pv-provider.fullname" . }}
