@@ -11,8 +11,6 @@ service:
   externalPort: 8089
   internalPort: 8089
   nodePort: 0
-  annotations: {}
-  extra_labels: {}
 master:
   config:
     target-host: https://site.example.com
