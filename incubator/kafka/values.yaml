@@ -157,6 +157,8 @@ jmx:
       # lowercaseOutputName: true
       # lowercaseOutputLabelNames: true
       # ssl: false
+      # rules:
+      # - pattern: ".*"
 
     ## Allows setting the name of the ConfigMap to use, note a configMap
     ## with said name needs to exists for jmx stats to work
@@ -166,8 +168,9 @@ jmx:
   port: 5555
 
   ## JMX Whitelist Objects, can be set to control which JMX metrics are exposed.  Only whitelisted
-  ## values will be exposed via JMX Exporter.  Note: applies to default ConfigMap
-  whitelistObjectNames:
+  ## values will be exposed via JMX Exporter.  They must also be exposed via Rules.  Both accept wildcards.
+  ## whitelistObjectNames: [] or whitelistObjectNames: ["*"] expose all metrics.  Note: applied as default ConfigMap
+  whitelistObjectNames: #[]
   - kafka.controller:*
   - kafka.server:*
   - java.lang:*
@@ -179,7 +182,7 @@ jmx:
 prometheus:
 
   jmx:
-    enabled: false
+    enabled: true
 
     ## The image to use for the metrics collector
     image: solsson/kafka-prometheus-jmx-exporter@sha256
@@ -202,7 +205,7 @@ prometheus:
       #   memory: 100Mi
 
   kafka:
-    enabled: false
+    enabled: true
 
     ## The image to use for the metrics collector
     image: danielqsj/kafka-exporter

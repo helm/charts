@@ -17,7 +17,9 @@ data:
     lowercaseOutputName: true
     lowercaseOutputLabelNames: true
     ssl: false
+    {{ if .Values.jmx.whitelistObjectNames }}
     whitelistObjectNames: ["{{ join "\",\"" .Values.jmx.whitelistObjectNames }}"]
+    {{ end }}
     rules:
     - pattern: kafka.controller<type=(ControllerChannelManager), name=(QueueSize), broker-id=(\d+)><>(Value)
       name: kafka_controller_$1_$2_$4
