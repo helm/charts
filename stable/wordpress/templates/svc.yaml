@@ -9,7 +9,9 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   type: {{ .Values.serviceType }}
+  {{- if (or (eq .Values.serviceType "LoadBalancer") (eq .Values.serviceType "NodePort")) }}
   externalTrafficPolicy: {{ .Values.serviceExternalTrafficPolicy | quote }}
+  {{- end }}
   ports:
     - name: http
       port: 80
