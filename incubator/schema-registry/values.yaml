@@ -44,6 +44,36 @@ servicePort: 8081
 ## Charts uses Kafka Coordinator Master Election: https://docs.confluent.io/current/schema-registry/docs/design.html#kafka-coordinator-master-election
 kafkaStore:
   overrideBootstrapServers: ""
+## Additional Java arguments to pass to Kafka.
+# schemaRegistryOpts: -Dfoo=bar
+
+# Options for connecting to SASL kafka brokers
+sasl:
+  configPath: "/etc/kafka-config"
+  scram:
+    enabled: false
+    init:
+      image: "confluentinc/cp-schema-registry"
+      imageTag: "4.0.0"
+      imagePullPolicy: "IfNotPresent"
+    clientUser: "kafka-client"
+    zookeeperClientUser: "zookeeper-client"
+    # Passwords can be either provided here or pulled from an existing k8s secret.
+    # If user wants to specify the password here:
+    clientPassword: "client-password"
+    zookeeperClientPassword: "zookeeper-client-password"
+    # If user has an existing k8s secret they would like to use instead of generating them:
+    # useExistingSecret:
+    #   # Where to find the schema registry user secret
+    #   clientPassword:
+    #     secretKeyRef:
+    #       name: "schema-reg-secret"
+    #       key: "client-password"
+    #   # Where to find the zookeeper user secret
+    #   zookeeperClientPassword:
+    #     secretKeyRef:
+    #       name: "zookeeper-secret"
+    #       key: "zokeeper-client-password"
 
 ## Kafka Settings
 kafka:
