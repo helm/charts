@@ -9,9 +9,7 @@ metadata:
     app: {{ template "locust.fullname" . }}
     component: "master"
     {{- range $key, $value :=  .Values.service.extra_labels }}
-    - name: {{ $key }}
-      value: {{ $value | quote }}
-    {{- end }}
+    {{ $key }}: {{ $value | quote }}
     {{- end }}
   {{- if .Values.service.annotations }}
   annotations:
