@@ -129,7 +129,7 @@ mariadb:
     size: 8Gi
 
 ## Kubernetes configuration
-## For minikube, set this to NodePort, elsewhere use LoadBalancer
+## For minikube, set this to NodePort, elsewhere use LoadBalancer or ClusterIP
 ##
 serviceType: LoadBalancer
 ##
