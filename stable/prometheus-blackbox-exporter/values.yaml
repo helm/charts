@@ -1,9 +1,3 @@
-## number of exporter instances
-##
-apiVersion: apps/v1
-# or apps/v1beta2
-# or apps/v1beta1
-
 restartPolicy: Always
 
 user: prometheus

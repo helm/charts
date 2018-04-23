@@ -4,7 +4,7 @@
 {{- else -}}
 {{ $_ := set $local "bind" (printf ":%0.f" .Values.service.httpPort) -}}
 {{- end -}}
-apiVersion: {{ .Values.apiVersion }}
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "blackbox-exporter.fullname" . }}
@@ -69,7 +69,7 @@ spec:
             runAsNonRoot: true
             runAsUser: 1000
           args:
-{{- if gt (len .Values.config) 0 }}
+{{- if .Values.config }}
             - "--config.file=/config/blackbox.yaml"
 {{- else }}
             - "--config.file=/etc/blackbox_exporter/config.yml"

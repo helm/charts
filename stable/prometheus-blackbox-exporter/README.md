@@ -45,8 +45,8 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 Parameter | Description | Default
 --- | --- | ---
 `restartPolicy` | container restart policy | `Always`
-`image.repository` | container image repository | `justwatch/elasticsearch_exporter`
-`image.tag` | container image tag | `1.0.2`
+`image.repository` | container image repository | `prom/blackbox-exporter`
+`image.tag` | container image tag | `v0.11.0`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `resources` | resource requests & limits | `{}`
 `service.type` | type of service to create | `ClusterIP`
