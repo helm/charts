@@ -84,7 +84,7 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.core.sidecarContainers }}
-{{ toYaml .Values.core.sidecarContainers | indent 6}}
+{{ toYaml .Values.core.sidecarContainers | indent 6 }}
 {{- end }}
 {{- if .Values.imagePullSecret }}
       imagePullSecrets:
@@ -92,7 +92,7 @@ spec:
 {{- end -}}
 {{- if .Values.core.initContainers }}
       initContainers:
-{{ toYaml .Values.core.initContainers | indent 6}}
+{{ toYaml .Values.core.initContainers | indent 6 }}
 {{- end }}
       volumes:
         - name: plugins
