@@ -52,6 +52,14 @@ Master:
   # ~2 minutes to allow Jenkins to restart when upgrading plugins
   HealthProbeLivenessFailureThreshold: 12
   SlaveListenerPort: 50000
+  DisabledAgentProtocols:
+    - JNLP-connect
+    - JNLP2-connect
+  CSRF:
+    DefaultCrumbIssuer:
+      Enabled: true
+      ProxyCompatability: true
+  CLI: false
   # Kubernetes service type for the JNLP slave service
   # SETTING THIS TO "LoadBalancer" IS A HUGE SECURITY RISK: https://github.com/kubernetes/charts/issues/1341
   SlaveListenerServiceType: ClusterIP
