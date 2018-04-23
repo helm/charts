@@ -199,6 +199,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.elasticsearch.port`             | Provisioned elasticsearch port      |  9200                                  |
 | `storage.elasticsearch.scheme`           | Provisioned elasticsearch scheme    |  http                                  |
 | `storage.elasticsearch.user`             | Provisioned elasticsearch user      |  elastic                               |
+| `storage.elasticsearch.nodesWanOnly`     | Only access specified es host       |  false                                 |
 | `storage.type`                           | Storage type (ES or Cassandra)      |  cassandra                             |
 |------------------------------------------|-------------------------------------|----------------------------------------|
 

@@ -62,6 +62,11 @@ spec:
                 configMapKeyRef:
                   name: {{ template "jaeger.fullname" . }}
                   key: es.server-urls
+            - name: ES_NODES_WAN_ONLY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "jaeger.fullname" . }}
+                  key: es.nodes-wan-only
             - name: ES_PASSWORD
               valueFrom:
                 configMapKeyRef:
