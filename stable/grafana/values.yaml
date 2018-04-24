@@ -165,6 +165,8 @@ grafana.ini:
 ldap:
   enabled: false
   createSecret: true
+  # `name` is a reference to an existing secret containing the ldap configuration
+  # for Grafana in a key `ldap-toml`. This is only required if `createSecret` is false
   name: ""
   config: {}
     # servers:
