@@ -1,0 +1,11 @@
+name: tomcat
+description: Deploy a basic tomcat application server 
+version: 0.1.0
+home: https://github.com/yahavb
+sources:
+  - https://github.com/yahavb
+maintainers:
+   - name: Yahav Biran
+     email: ybiran@ananware.systems
+   - name: Joel Dubow
+     email: jdubow@ananware.systems

@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "tomcat.fullname" . }}
+  labels:
+    app: {{ template "tomcat.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+      metadata:
+       labels:
+        app: {{ .Values.service.frontend.selector.app }}
+        tier: {{ .Values.service.frontend.selector.tier }}
+        release: {{ .Release.Name }}
+      spec:
+       {{- if .Values.NodeSelector }}	
+       affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: {{ .Values.NodeSelector.key }}
+                operator: In
+                values:
+                - {{ .Values.NodeSelector.value }}
+       {{- end }}
+       {{- if .Values.Tolerations }}
+       tolerations:
+       - key: {{ .Values.Tolerations.key }}
+         operator: "Equal"
+         value: {{ .Values.Tolerations.value }}
+         effect: "NoSchedule"
+       {{- end }}
+       volumes:
+       - name: app-volume
+         emptyDir: {}
+       containers:
+       - name: war
+         image: {{ .Values.image.webarchive.repository }}:{{ .Values.image.webarchive.tag }}
+         volumeMounts:
+         - name: app-volume
+           mountPath: /app
+       - name: tomcat
+         image: {{ .Values.image.tomcat.repository }}:{{ .Values.image.tomcat.tag }}
+         command: ["sh","-c", {{ .Values.cmd.start }}]
+         volumeMounts:
+         - name: app-volume
+           mountPath: {{ .Values.deploy.directory }}
+         ports:
+         - containerPort: {{ .Values.service.frontend.port }}
+           hostPort: {{ .Values.service.host.port }}

@@ -1,0 +1,3 @@
+To verify that {{ .Values.service.frontend.selector.app }} has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ .Values.service.frontend.selector.app }}"
