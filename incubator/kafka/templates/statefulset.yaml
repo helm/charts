@@ -16,7 +16,7 @@ spec:
   replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
-{{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.prometheusOperator) }}
+{{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.operator.enabled) }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.prometheus.jmx.port | quote }}

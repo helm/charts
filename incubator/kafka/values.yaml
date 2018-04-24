@@ -144,17 +144,18 @@ persistence:
   # storageClass:
 
 jmx:
-
-  ## Rules to apply to the Kafka JMX Exporter.  Note while lots of stats have been cleaned and exposed,
-  ## there are still more stats to clean up and exposed.  A lot of stats won't ever expose, b/c they keep lots
-  ## of rates (999th percentile, 99th, 95th, 1 MinRate, 5 MinRate, 15 MinRate).  PR's to expose and clean up stats
-  ## are gladly accepted and encouraged.
+  ## Rules to apply to the Prometheus JMX Exporter.  Note while lots of stats have been cleaned and exposed,
+  ## there are still more stats to clean up and expose, others will never get exposed.  They keep lots of duplicates
+  ## that can be derived easily.  The configMap in this chart cleans up the metrics it exposes to be in a Prometheus 
+  ## format, eg topic, broker are labels and not part of metric name. Improvements are gladly accepted and encouraged.
   configMap:
 
     ## Allows disabling the default configmap, note a configMap is needed
     enabled: true
 
-    ## Allows setting values to generate confimap
+    ## Allows setting values to generate confimap 
+    ## To allow all metrics through (warning its crazy excessive) comment out below `overrideConfig` and set
+    ## `whitelistObjectNames: []`
     overrideConfig: {}
       # jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:5555/jmxrmi
       # lowercaseOutputName: true
@@ -171,8 +172,9 @@ jmx:
   port: 5555
 
   ## JMX Whitelist Objects, can be set to control which JMX metrics are exposed.  Only whitelisted
-  ## values will be exposed via JMX Exporter.  They must also be exposed via Rules.  Both accept wildcards.
-  ## whitelistObjectNames: [] or whitelistObjectNames: ["*"] expose all metrics.  Note: applied as default ConfigMap
+  ## values will be exposed via JMX Exporter.  They must also be exposed via Rules.  To expose all metrics
+  ## (warning its crazy excessive and they aren't formatted in a prometheus style) (1) `whitelistObjectNames: []`
+  ## (2) commented out above `overrideConfig`.
   whitelistObjectNames: #[]
   - kafka.controller:*
   - kafka.server:*
@@ -183,7 +185,7 @@ jmx:
 ## Prometheus Exporters / Metrics
 ##
 prometheus:
-
+  ## Prometheus JMX Exporter: exposes the majority of Kafkas metrics
   jmx:
     enabled: true
 
@@ -206,7 +208,8 @@ prometheus:
       # requests:
       #   cpu: 100m
       #   memory: 100Mi
-
+  
+  ## Prometheus Kafka Exporter: exposes complimentary metrics to JMX Exporter
   kafka:
     enabled: true
 
@@ -231,17 +234,23 @@ prometheus:
 #        cpu: 100m
 #        memory: 100Mi
 
-  ## Are you using Prometheus Operator?
-  prometheusOperator: true
-  ## Defaults to whats used if you follow CoreOS current instructions:
-  ## https://github.com/coreos/prometheus-operator/tree/master/helm#tldr
-  ## helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-  ## helm install coreos/prometheus-operator --name prometheus-operator --namespace monitoring
-  ## helm install coreos/kube-prometheus --name kube-prometheus --namespace monitoring
-  ## https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65
-  ## https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298
-  serviceMonitorSelector:
-    prometheus: kube-prometheus
+  operator:
+    ## Are you using Prometheus Operator?
+    enabled: false
+
+    serviceMonitor:
+      # Namespace Prometheus is installed in
+      namespace: monitoring
+
+      ## Defaults to whats used if you follow CoreOS current instructions:
+      ## https://github.com/coreos/prometheus-operator/tree/master/helm#tldr
+      ## helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
+      ## helm install coreos/prometheus-operator --name prometheus-operator --namespace monitoring
+      ## helm install coreos/kube-prometheus --name kube-prometheus --namespace monitoring
+      ## https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65
+      ## https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298
+      selector:
+        prometheus: kube-prometheus
 
 # ------------------------------------------------------------------------------
 # Zookeeper:

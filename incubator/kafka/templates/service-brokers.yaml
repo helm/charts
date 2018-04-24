@@ -11,7 +11,7 @@ spec:
   ports:
   - name: broker
     port: 9092
-{{- if and .Values.prometheus.jmx.enabled .Values.prometheus.prometheusOperator }}
+{{- if and .Values.prometheus.jmx.enabled .Values.prometheus.operator.enabled }}
   - name: jmx-exporter
     protocol: TCP
     port: {{ .Values.jmx.port }}
@@ -21,7 +21,7 @@ spec:
     app: {{ include "kafka.name" . | quote }}
     release: {{ .Release.Name | quote }}
 ---
-{{- if and .Values.prometheus.kafka.enabled .Values.prometheus.prometheusOperator }}
+{{- if and .Values.prometheus.kafka.enabled .Values.prometheus.operator.enabled }}
 apiVersion: v1
 kind: Service
 metadata:

@@ -1,11 +1,11 @@
-{{ if and .Values.prometheus.jmx.enabled .Values.prometheus.prometheusOperator }}
+{{ if and .Values.prometheus.jmx.enabled .Values.prometheus.operator.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "kafka.fullname" . }}
-  namespace: monitoring
+  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
   labels:
-{{ toYaml .Values.prometheus.serviceMonitorSelector | indent 4 }}
+{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
 spec:
   selector:
     matchLabels:
@@ -18,14 +18,14 @@ spec:
     any: true
 {{ end }}
 ---
-{{ if and .Values.prometheus.kafka.enabled .Values.prometheus.prometheusOperator }}
+{{ if and .Values.prometheus.kafka.enabled .Values.prometheus.operator.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "kafka.fullname" . }}-exporter
   namespace: monitoring
   labels:
-{{ toYaml .Values.prometheus.serviceMonitorSelector | indent 4 }}
+{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
 spec:
   selector:
     matchLabels:
