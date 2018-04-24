@@ -242,13 +242,9 @@ prometheus:
       # Namespace Prometheus is installed in
       namespace: monitoring
 
-      ## Defaults to whats used if you follow CoreOS current instructions:
-      ## https://github.com/coreos/prometheus-operator/tree/master/helm#tldr
-      ## helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-      ## helm install coreos/prometheus-operator --name prometheus-operator --namespace monitoring
-      ## helm install coreos/kube-prometheus --name kube-prometheus --namespace monitoring
-      ## https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65
-      ## https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298
+      ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
+      ## [Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65)
+      ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
       selector:
         prometheus: kube-prometheus
 
