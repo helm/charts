@@ -14,8 +14,7 @@ metadata:
   {{- if .Values.service.annotations }}
   annotations:
   {{- range $key, $value :=  .Values.service.annotations }}
-  - name: {{ $key }}
-    value: {{ $value | quote }}
+    {{ $key }}: {{ $value | quote }}
   {{- end }}
   {{- end }}
 spec:
