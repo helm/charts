@@ -60,7 +60,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `dashboards`               | Dashboards to import | `{}` |
 | `grafana.ini`              | Grafana's primary configuration | `{}` |
 | `ldap.enabled`             | Enable LDAP authentication in Grafana | `false` |
-| `ldap.createConfig`        | The Helm chart will create the LDAP configuration secret | `true` |
+| `ldap.createSecret`        | The Helm chart will create the LDAP configuration secret | `true` |
 | `ldap.name`                | The name of an existing secret containing the `ldap.toml` file, this must have the key `ldap-toml` | `""` |
 | `ldap.config  `              | Grafana's LDAP configuration    | `{}` |
 | `annotations`              | Deployment annotations | `{}` |

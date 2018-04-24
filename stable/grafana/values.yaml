@@ -164,7 +164,7 @@ grafana.ini:
 ## ref: http://docs.grafana.org/installation/ldap/#configuration
 ldap:
   enabled: false
-  createConfig: true
+  createSecret: true
   name: ""
   config: {}
     # servers:
