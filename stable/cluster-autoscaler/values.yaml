@@ -58,7 +58,7 @@ extraArgs:
   # scale-down-unneeded-time: 10m
   # skip-nodes-with-local-storage: false
   # skip-nodes-with-system-pods: true
-  
+
 extraEnv: {}
 
 ## Affinity for pod assignment
