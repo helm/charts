@@ -192,27 +192,22 @@ such port at a time, setting the range at every Kafka pod is a reasonably safe c
 
 ### Prometheus vs Prometheus Operator
 
-Prometheus is default option of this chart b/c the Prometheus Operator is part of another repo: 
-
-https://github.com/coreos/prometheus-operator/tree/master/helm 
-
-The Prometheus Operator gives additional functionality like automagically updating Prometheus and Alert Manager configuration.  These are things you will
-need to manually do if you are running Prometheus without the Operator.  For more details about the Prometheus Operator:
-
-https://coreos.com/blog/the-prometheus-operator.html
+Standard Prometheus is the default monitoring option for this chart. This chart also supports the CoreOS Prometheus Operator,
+which can provide additional functionality like automatically updating Prometheus and Alert Manager configuration. If you are
+interested in installing the Prometheus Operator please see the [CoreOS repository](https://github.com/coreos/prometheus-operator/tree/master/helm) for more information or
+read through the [CoreOS blog post introducing the Prometheus Operator](https://coreos.com/blog/the-prometheus-operator.html)
 
 ### JMX Exporter
 
-https://github.com/prometheus/jmx_exporter Almost all the stats on Kafka come from JMX.  There are some limited complimentary stats that come from
-Kafka Exporter.  JMX Exporter is a generic exporter not only intended for Kafka.  When using with Kafka you get way more stats than one could want,
-white list them all or connect to JMX port (not Prometheus JMX Port used for scraping), also can see raw stats that way.
+The majority of Kafka statistics are provided via JMX and are exposed via the [Prometheus JMX Exporter](https://github.com/prometheus/jmx_exporter).
 
-JMX performs some transforms but without configuration metrics are not in a Prometheus format, things like broker names and topic names become part of
-the metric name instead of being a label.  Further things that should be part of the metric name show as labels.  Metrics have been cleaned up in default
-JMX ConfigMap to be in a proper Prometheus format.  As more metrics are cleaned up, they should be exposed as well.  Then users can control which metrics
-show via `whitelistObjectNames`.  PR's are gladly accepted.
+The JMX Exporter is a general purpose prometheus provider which is intended for use with any Java application. Because of this, it produces a number of statistics which
+may not be of interest. To help in reducing these statistics to their relevant components we have created a curated whitelist `whitelistObjectNames` for the JMX exporter.
+This whitelist may be modified or removed via the values configuration.
+
+To accommodate compatibility with the Prometheus metrics, this chart performs transformations of raw JMX metrics. For example, broker names and topics names are incorporated
+into the metric name instead of becoming a label. If you are curious to learn more about any default transformations to the chart metrics, please have reference the [configmap template](https://github.com/kubernetes/charts/blob/master/incubator/kafka/templates/jmx-configmap.yaml).
 
 ### Kafka Exporter
 
-https://github.com/danielqsj/kafka_exporter is complimentary to JMX Exporter.  It gives additional stats on things like Consumer Groups, see
-link for more details.  There isn't nearly as much to this configuration/exporter.
+The [Kafka Exporter](https://github.com/danielqsj/kafka_exporter) is a complimentary metrics exporter to the JMX Exporter. The Kafka Exporter provides additional statistics on Kafka Consumer Groups.
