@@ -298,8 +298,7 @@ prometheus:
      #   cpu: 100m
      #   memory: 100Mi
 
-  ## Prometheus is using Operator.  Implementing without Operator has not been tested, PRs welcome.  Setting to false
-  ## will prevent Operator specific resources like ServiceMonitors and Alerts from being created
+  ## Prometheus is using Operator.  Setting to true will create Operator specific resources like ServiceMonitors and Alerts
   operator:
     ## Are you using Prometheus Operator?
     enabled: false

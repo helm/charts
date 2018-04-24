@@ -21,6 +21,10 @@ spec:
         {{- if not .Values.customConfigMap }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- end }}
+{{- if and .Values.prometheus.exporter.enabled  (not .Values.prometheus.operator.enabled) }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.prometheus.exporter.port | quote }}
+{{- end }}
     spec:
       terminationGracePeriodSeconds: 10
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
