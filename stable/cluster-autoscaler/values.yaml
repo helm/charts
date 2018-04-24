@@ -60,7 +60,7 @@ extraArgs:
   # skip-nodes-with-system-pods: true
 
 ## Extra environment variables for example proxy settings
-## extraEnv: 
+## extraEnv:
 ##   http_proxy: example:3128
 ##   https_proxy: example:3128
 
