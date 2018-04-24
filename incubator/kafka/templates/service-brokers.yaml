@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "kafka.fullname" . }}
   labels:
-    app: {{ include "kafka.name" . | quote }}
+    app: {{ template "kafka.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -11,6 +11,33 @@ spec:
   ports:
   - name: broker
     port: 9092
+{{- if and .Values.prometheus.jmx.enabled .Values.prometheus.operator.enabled }}
+  - name: jmx-exporter
+    protocol: TCP
+    port: {{ .Values.jmx.port }}
+    targetPort: {{ .Values.prometheus.jmx.port }}
+{{- end }}
   selector:
     app: {{ include "kafka.name" . | quote }}
     release: {{ .Release.Name | quote }}
+---
+{{- if and .Values.prometheus.kafka.enabled .Values.prometheus.operator.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kafka.fullname" . }}-exporter
+  labels:
+    app: {{ template "kafka.name" . }}-exporter
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  ports:
+  - name: kafka-exporter
+    protocol: TCP
+    port: {{ .Values.prometheus.kafka.port }}
+    targetPort: {{ .Values.prometheus.kafka.port }}
+  selector:
+    app: {{ include "kafka.name" . }}-exporter
+    release: {{ .Release.Name | quote }}
+{{- end }}
