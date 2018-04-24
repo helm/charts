@@ -236,7 +236,7 @@ prometheus:
 
   operator:
     ## Are you using Prometheus Operator?
-    enabled: true
+    enabled: false
 
     serviceMonitor:
       # Namespace Prometheus is installed in
