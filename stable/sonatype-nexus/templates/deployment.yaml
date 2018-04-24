@@ -25,8 +25,7 @@ spec:
           image: {{ .Values.nexus.imageName }}:{{ .Values.nexus.imageTag }}
           imagePullPolicy: {{ .Values.nexus.imagePullPolicy }}
           env:
-            - name: INSTALL4J_ADD_VM_PARAMS
-              value: {{ .Values.nexus.env.install4jAddVmParams | quote }}
+{{ toYaml .Values.nexus.env | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           ports:
