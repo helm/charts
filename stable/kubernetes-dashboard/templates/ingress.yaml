@@ -1,7 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $serviceName := include "kubernetes-dashboard.fullname" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
-{{- $path := default "/" .Values.ingress.path -}}
+{{- $path := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:

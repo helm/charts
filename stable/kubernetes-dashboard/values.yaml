@@ -73,7 +73,7 @@ ingress:
 
   ## Kubernetes Dashboard Ingress path
   ##
-  # path: /
+  path: /
 
   ## Kubernetes Dashboard Ingress hostnames
   ## Must be provided if Ingress is enabled
