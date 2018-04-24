@@ -296,13 +296,13 @@ prometheus:
     alerts:
       ## Prometheus exporter must be enabled as well
       enabled: true
-  
+
       ## Selector must be configured to match Prometheus Install, defaulting to whats done by Prometheus Operator
       ## See [CoreOS Prometheus Chart](https://github.com/coreos/prometheus-operator/tree/master/helm)
       selector:
         role: alert-rules
       labels: {}
-  
+
     serviceMonitor:
       ## Interval at which Prometheus scrapes RabbitMQ Exporter
       interval: 10s
