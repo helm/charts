@@ -23,7 +23,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "kafka.fullname" . }}-exporter
-  namespace: monitoring
+  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
   labels:
 {{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
 spec:

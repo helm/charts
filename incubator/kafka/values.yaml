@@ -187,7 +187,7 @@ jmx:
 prometheus:
   ## Prometheus JMX Exporter: exposes the majority of Kafkas metrics
   jmx:
-    enabled: true
+    enabled: false
 
     ## The image to use for the metrics collector
     image: solsson/kafka-prometheus-jmx-exporter@sha256
@@ -211,7 +211,7 @@ prometheus:
   
   ## Prometheus Kafka Exporter: exposes complimentary metrics to JMX Exporter
   kafka:
-    enabled: true
+    enabled: false
 
     ## The image to use for the metrics collector
     image: danielqsj/kafka-exporter
@@ -236,7 +236,7 @@ prometheus:
 
   operator:
     ## Are you using Prometheus Operator?
-    enabled: false
+    enabled: true
 
     serviceMonitor:
       # Namespace Prometheus is installed in
