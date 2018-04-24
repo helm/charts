@@ -59,7 +59,10 @@ extraArgs:
   # skip-nodes-with-local-storage: false
   # skip-nodes-with-system-pods: true
 
-extraEnv: {}
+## Extra environment variables for example proxy settings
+## extraEnv: 
+##   http_proxy: example:3128
+##   https_proxy: example:3128
 
 ## Affinity for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
