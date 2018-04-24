@@ -152,39 +152,42 @@ grafana.ini:
     url: https://grafana.net
 ## LDAP Authentication can be enabled with the following values on grafana.ini
 ## NOTE: Grafana will fail to start if the value for ldap.toml is invalid
-#  auth.ldap:
-#    enabled: true
-#    allow_sign_up: true
-#    config_file: /etc/grafana/ldap.toml
+  # auth.ldap:
+  #   enabled: true
+  #   allow_sign_up: true
+  #   config_file: /etc/grafana/ldap.toml
 
 ## Grafana's LDAP configuration
 ## Templated by the template in _helpers.tpl
 ## NOTE: To enable the grafana.ini must be configured with auth.ldap.enabled
 ## ref: http://docs.grafana.org/installation/configuration/#auth-ldap
 ## ref: http://docs.grafana.org/installation/ldap/#configuration
-ldap.toml: {}
-  # verbose_logging: false
-  # servers:
-  #   - host: 127.0.0.1
-  #     port: 389
-  #     use_ssl: false
-  #     start_tls: false
-  #     ssl_skip_verify: false
-  #     # root_ca_cert = "/path/to/certificate.crt"
-  #     bind_dn: cn=admin,dc=grafana,dc=org
-  #     bind_password: grafana
-  #     search_filter: (cn=%s)
-  #     search_base_dns:
-  #       - dc=grafana,dc=org
-  #     # group_search_filter = "(&(objectClass=posixGroup)(memberUid=%s))"
-  #     # group_search_base_dns:
-  #     #  - ou=groups,dc=grafana,dc=org
-  #     attributes:
-  #       name: givenName
-  #       surname: sn
-  #       username: cn
-  #       member_of: memberOf
-  #       email: email
-  #     group_mappings:
-  #       - group_dn: cn=admins,dc=grafana,dc=org
-  #         org_role: Admin
+ldap:
+  enabled: false
+  createConfig: true
+  name: ""
+  config: {}
+    # servers:
+    #   - host: 127.0.0.1
+    #     port: 389
+    #     use_ssl: false
+    #     start_tls: false
+    #     ssl_skip_verify: false
+    #     root_ca_cert: "/path/to/certificate.crt"
+    #     bind_dn: cn=admin,dc=grafana,dc=org
+    #     bind_password: grafana
+    #     search_filter: (cn=%s)
+    #     search_base_dns:
+    #       - dc=grafana,dc=org
+    #     group_search_filter: "(&(objectClass=posixGroup)(memberUid=%s))"
+    #     group_search_base_dns:
+    #      - ou=groups,dc=grafana,dc=org
+    #     attributes:
+    #       name: givenName
+    #       surname: sn
+    #       username: cn
+    #       member_of: memberOf
+    #       email: email
+    #     group_mappings:
+    #       - group_dn: cn=admins,dc=grafana,dc=org
+    #         org_role: Admin

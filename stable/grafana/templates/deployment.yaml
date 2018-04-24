@@ -55,7 +55,7 @@ spec:
             - name: config
               mountPath: "/etc/grafana/grafana.ini"
               subPath: grafana.ini
-{{- if index .Values "ldap.toml" }}
+{{- if .Values.ldap.enabled }}
             - name: ldap
               mountPath: "/etc/grafana/ldap.toml"
               subpath: ldap.toml
@@ -151,10 +151,10 @@ spec:
       {{- else }}
           emptyDir: {}
       {{- end -}}
-{{- if index .Values "ldap.toml" }}
+{{- if .Values.ldap.enabled }}
         - name: ldap
           secret:
-            secretName: {{ template "grafana.fullname" . }}
+            secretName: {{ .Values.ldap.name | default (include "grafana.fullname" .) }}
             items:
               - key: ldap.toml
                 path: ldap.toml
