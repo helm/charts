@@ -58,6 +58,8 @@ extraArgs:
   # scale-down-unneeded-time: 10m
   # skip-nodes-with-local-storage: false
   # skip-nodes-with-system-pods: true
+  
+extraEnv: {}
 
 ## Affinity for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
