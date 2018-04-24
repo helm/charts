@@ -266,16 +266,6 @@ secret:
   # overrideName: mysecret
 
 prometheus:
-  ## Configures Alerts, which will be setup via Prometheus Operator / ConfigMaps.  Support for Prometheus without 
-  ## Operator is not currently tested/supported.  PRs are welcome
-  alerts:
-    enabled: true
-
-    ## Selector must be configured to match Prometheus Install, defaulting to whats done by Prometheus Operator
-    ## See [CoreOS Prometheus Chart](https://github.com/coreos/prometheus-operator/tree/master/helm)
-    selector:
-      role: alert-rules
-    labels: {}
 
   ## Configures Prometheus Exporter to expose and scrape stats.
   exporter:
@@ -303,6 +293,17 @@ prometheus:
     ## Are you using Prometheus Operator?
     enabled: false
 
+    ## Configures Alerts, which will be setup via Prometheus Operator / ConfigMaps.  Support for Prometheus without 
+    ## Operator is not currently tested/supported.  PRs are welcome
+    alerts:
+      enabled: true
+  
+      ## Selector must be configured to match Prometheus Install, defaulting to whats done by Prometheus Operator
+      ## See [CoreOS Prometheus Chart](https://github.com/coreos/prometheus-operator/tree/master/helm)
+      selector:
+        role: alert-rules
+      labels: {}
+  
     serviceMonitor:
       ## Interval at which Prometheus scrapes RabbitMQ Exporter
       interval: 10s
