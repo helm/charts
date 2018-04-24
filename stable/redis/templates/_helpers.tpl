@@ -114,4 +114,23 @@ securityContext:
   runAsUser: {{ $securityContext.runAsUser | default .Values.master.securityContext.runAsUser }}
 {{- end }}
 {{- end }}
+
+{{/*
+generates a yaml secretKeyRef env structure and expects the folowing structure as input (dict):
+```
+secretKeyRefs:
+    <container-env-var-name>:
+        name: <secret resource name> (optional, defaults to redis.fullname as secret resource name)
+        key: <secret resource entry>
+```
+*/}}
+{{- define "redis.secretKeyRefs" -}}
+{{- $global := . -}}
+{{- range $k, $v := .Values.secretKeyRefs }}
+- name: {{ $k | upper | quote }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ default (include "redis.fullname" $global) $v.name | quote }}
+      key: {{ $v.key | quote }}
+{{- end -}}
 {{- end -}}
