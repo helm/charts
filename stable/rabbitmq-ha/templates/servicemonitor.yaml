@@ -1,12 +1,12 @@
-{{ if .Values.prometheus.exporter.enabled }}
+{{ if and .Values.prometheus.exporter.enabled .Values.prometheus.operator.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "rabbitmq-ha.fullname" . }}
-  namespace: monitoring
+  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
   labels:
-{{- if .Values.prometheus.exporter.selector }}
-{{ toYaml .Values.prometheus.exporter.selector | indent 4 }}
+{{- if .Values.prometheus.operator.serviceMonitor.selector }}
+{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
 {{- end }}
 spec:
   selector:
@@ -15,7 +15,7 @@ spec:
       release: {{ .Release.Name }}
   endpoints:
   - port: exporter
-    interval: {{ .Values.prometheus.exporter.interval }}
+    interval: {{ .Values.prometheus.operator.serviceMonitor.interval }}
   namespaceSelector:
     any: true
 {{ end }}

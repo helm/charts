@@ -1,4 +1,4 @@
-{{ if .Values.prometheus.alerts.enabled }}
+{{ if and .Values.prometheus.alerts.enabled .Values.prometheus.operator.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,8 +9,8 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-{{- if .Values.prometheus.exporter.selector }}
-{{ toYaml .Values.prometheus.exporter.selector | indent 4 }}
+{{- if .Values.prometheus.operator.serviceMonitor.selector }}
+{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
 {{- end }}
 {{- if .Values.prometheus.alerts.selector }}
 {{ toYaml .Values.prometheus.alerts.selector | indent 4 }}

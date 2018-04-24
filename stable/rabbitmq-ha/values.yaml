@@ -266,7 +266,8 @@ secret:
   # overrideName: mysecret
 
 prometheus:
-  ## Configures Alerts, which will be setup via Prometheus Operator / ConfigMaps
+  ## Configures Alerts, which will be setup via Prometheus Operator / ConfigMaps.  Support for Prometheus without 
+  ## Operator is not currently tested/supported.  PRs are welcome
   alerts:
     enabled: true
 
@@ -275,6 +276,8 @@ prometheus:
     selector:
       role: alert-rules
     labels: {}
+
+  ## Configures Prometheus Exporter to expose and scrape stats.
   exporter:
     enabled: true
     env: {}
@@ -283,16 +286,33 @@ prometheus:
       tag: latest
       pullPolicy: IfNotPresent
 
-    ## Interval at which Prometheus scrapes RabbitMQ Exporter
-    interval: 10s
-
-    ## Needs to be set to the same namespace Prometheus is running in, default to what Prometheus Operator is doing
-    ## See [CoreOS Prometheus Chart](https://github.com/coreos/prometheus-operator/tree/master/helm)
-    namespace: monitoring
+    ## Port Prometheus scrapes for metrics
     port: 9090
-    resources: {}
 
-    ## Selector must be configured to match Prometheus Install, defaulting to whats done by Prometheus Operator
-    ## See [CoreOS Prometheus Chart](https://github.com/coreos/prometheus-operator/tree/master/helm)
-    selector:
-      prometheus: kube-prometheus
+    ## Allow overriding of container resources
+    resources: {}
+     # limits:
+     #   cpu: 200m
+     #   memory: 1Gi
+     # requests:
+     #   cpu: 100m
+     #   memory: 100Mi
+
+  ## Prometheus is using Operator.  Implementing without Operator has not been tested, PRs welcome.  Setting to false
+  ## will prevent Operator specific resources like ServiceMonitors and Alerts from being created
+  operator:
+    ## Are you using Prometheus Operator?
+    enabled: false
+
+    serviceMonitor:
+      ## Interval at which Prometheus scrapes RabbitMQ Exporter
+      interval: 10s
+
+      # Namespace Prometheus is installed in
+      namespace: monitoring
+
+      ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
+      ## [Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65)
+      ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
+      selector:
+        prometheus: kube-prometheus

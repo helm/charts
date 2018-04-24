@@ -113,8 +113,8 @@ spec:
             - name: RABBITMQ_ERLANG_COOKIE
               valueFrom:
                 secretKeyRef:
-                  {{ if .Values.secret.name}}
-                  name: {{ .Values.secret.name}}
+                  {{ if .Values.secret.overrideName}}
+                  name: {{ .Values.secret.overrideName}}
                   {{ else }}
                   name: {{ template "rabbitmq-ha.fullname" . }}
                   {{ end }}
@@ -128,8 +128,8 @@ spec:
             - name: RABBITMQ_DEFAULT_PASS
               valueFrom:
                 secretKeyRef:
-                  {{ if .Values.secret.name}}
-                  name: {{ .Values.secret.name}}
+                  {{ if .Values.secret.overrideName}}
+                  name: {{ .Values.secret.overrideName}}
                   {{ else }}
                   name: {{ template "rabbitmq-ha.fullname" . }}
                   {{ end }}
@@ -161,8 +161,8 @@ spec:
             - name: RABBIT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  {{ if .Values.secret.name}}
-                  name: {{ .Values.secret.name}}
+                  {{ if .Values.secret.overrideName}}
+                  name: {{ .Values.secret.overrideName}}
                   {{ else }}
                   name: {{ template "rabbitmq-ha.fullname" . }}
                   {{ end }}
