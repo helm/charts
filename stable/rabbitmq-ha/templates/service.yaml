@@ -11,9 +11,6 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- if .Values.prometheus.exporter.selector }}
-{{ toYaml .Values.prometheus.exporter.selector | indent 4 }}
-{{- end }}
 spec:
   clusterIP: "{{ .Values.service.clusterIP }}"
 {{- if .Values.service.externalIPs }}

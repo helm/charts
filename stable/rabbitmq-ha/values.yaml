@@ -259,11 +259,19 @@ readinessProbe:
   periodSeconds: 5
 
 secret:
+  ## Autogenerate secret, defaults to true.  If false a secret must be created outside of this chart
   autogenerate: true
 
+  ## Allows overriding secret name, Defaults to: {{ template "rabbitmq-ha.fullname" . }}
+  # overrideName: mysecret
+
 prometheus:
+  ## Configures Alerts, which will be setup via Prometheus Operator / ConfigMaps
   alerts:
     enabled: true
+
+    ## Selector must be configured to match Prometheus Install, defaulting to whats done by Prometheus Operator
+    ## See [CoreOS Prometheus Chart](https://github.com/coreos/prometheus-operator/tree/master/helm)
     selector:
       role: alert-rules
     labels: {}
@@ -274,7 +282,17 @@ prometheus:
       repository: kbudde/rabbitmq-exporter
       tag: latest
       pullPolicy: IfNotPresent
+
+    ## Interval at which Prometheus scrapes RabbitMQ Exporter
+    interval: 10s
+
+    ## Needs to be set to the same namespace Prometheus is running in, default to what Prometheus Operator is doing
+    ## See [CoreOS Prometheus Chart](https://github.com/coreos/prometheus-operator/tree/master/helm)
+    namespace: monitoring
     port: 9090
     resources: {}
+
+    ## Selector must be configured to match Prometheus Install, defaulting to whats done by Prometheus Operator
+    ## See [CoreOS Prometheus Chart](https://github.com/coreos/prometheus-operator/tree/master/helm)
     selector:
       prometheus: kube-prometheus

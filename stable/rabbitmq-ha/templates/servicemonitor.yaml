@@ -11,12 +11,11 @@ metadata:
 spec:
   selector:
     matchLabels:
-{{- if .Values.prometheus.exporter.selector }}
-{{ toYaml .Values.prometheus.exporter.selector | indent 6 }}
-{{- end }}
+      app: {{ template "rabbitmq-ha.name" . }}
+      release: {{ .Release.Name }}
   endpoints:
   - port: exporter
-    interval: 10s 
+    interval: {{ .Values.prometheus.exporter.interval }}
   namespaceSelector:
     any: true
 {{ end }}
