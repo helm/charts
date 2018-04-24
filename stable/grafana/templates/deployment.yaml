@@ -58,7 +58,7 @@ spec:
 {{- if .Values.ldap.enabled }}
             - name: ldap
               mountPath: "/etc/grafana/ldap.toml"
-              subpath: ldap.toml
+              subPath: ldap.toml
 {{- end }}
 {{- if .Values.dashboards }}
   {{- range $key, $value := .Values.dashboards }}
