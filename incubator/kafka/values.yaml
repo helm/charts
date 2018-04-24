@@ -146,14 +146,14 @@ persistence:
 jmx:
   ## Rules to apply to the Prometheus JMX Exporter.  Note while lots of stats have been cleaned and exposed,
   ## there are still more stats to clean up and expose, others will never get exposed.  They keep lots of duplicates
-  ## that can be derived easily.  The configMap in this chart cleans up the metrics it exposes to be in a Prometheus 
+  ## that can be derived easily.  The configMap in this chart cleans up the metrics it exposes to be in a Prometheus
   ## format, eg topic, broker are labels and not part of metric name. Improvements are gladly accepted and encouraged.
   configMap:
 
     ## Allows disabling the default configmap, note a configMap is needed
     enabled: true
 
-    ## Allows setting values to generate confimap 
+    ## Allows setting values to generate confimap
     ## To allow all metrics through (warning its crazy excessive) comment out below `overrideConfig` and set
     ## `whitelistObjectNames: []`
     overrideConfig: {}
@@ -164,7 +164,7 @@ jmx:
       # rules:
       # - pattern: ".*"
 
-    ## If you would like to supply your own ConfigMap for JMX metrics, supply the name of that 
+    ## If you would like to supply your own ConfigMap for JMX metrics, supply the name of that
     ## ConfigMap as an `overrideName` here.
     overrideName: ""
 
@@ -175,7 +175,7 @@ jmx:
   ## values will be exposed via JMX Exporter.  They must also be exposed via Rules.  To expose all metrics
   ## (warning its crazy excessive and they aren't formatted in a prometheus style) (1) `whitelistObjectNames: []`
   ## (2) commented out above `overrideConfig`.
-  whitelistObjectNames: #[]
+  whitelistObjectNames:  # []
   - kafka.controller:*
   - kafka.server:*
   - java.lang:*
@@ -208,7 +208,7 @@ prometheus:
       # requests:
       #   cpu: 100m
       #   memory: 100Mi
-  
+
   ## Prometheus Kafka Exporter: exposes complimentary metrics to JMX Exporter
   kafka:
     enabled: false
