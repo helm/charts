@@ -2,6 +2,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "zookeeper.fullname" . }}
+{{- if .Values.annotations }}
+  annotations: 
+{{ toYaml .Values.annotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ include "zookeeper.name" . | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -14,3 +18,7 @@ spec:
   selector:
     app: {{ include "zookeeper.name" . | quote }}
     release: {{ .Release.Name | quote }}
+{{- if .Values.serviceType }}
+  type: {{ .Values.serviceType }}
+{{- end }}
+

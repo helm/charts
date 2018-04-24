@@ -42,7 +42,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the MySQL chart and their default values.
+The following table lists the configurable parameters of the MySQL chart and their default values.
 
 | Parameter                            | Description                               | Default                                              |
 | ------------------------------------ | ----------------------------------------- | ---------------------------------------------------- |
@@ -64,12 +64,19 @@ The following tables lists the configurable parameters of the MySQL chart and th
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3 |
 | `persistence.enabled`                | Create a volume to store data             | true                                                 |
 | `persistence.size`                   | Size of persistent volume claim           | 8Gi RW                                               |
+| `nodeSelector`                       | Node labels for pod assignment            | {}                                                   |
 | `persistence.storageClass`           | Type of persistent volume claim           | nil  (uses alpha storage class annotation)           |
 | `persistence.accessMode`             | ReadWriteOnce or ReadOnly                 | ReadWriteOnce                                        |
 | `persistence.existingClaim`          | Name of existing persistent volume        | `nil`                                                |
 | `persistence.subPath`                | Subdirectory of the volume to mount       | `nil`                                                |
 | `resources`                          | CPU/Memory resource requests/limits       | Memory: `256Mi`, CPU: `100m`                         |
 | `configurationFiles`                 | List of mysql configuration files         | `nil`                                                |
+| `ssl.enabled`                        | Setup and use SSL for MySQL connections   | `false`                                              |
+| `ssl.secret`                         | Name of the secret containing the SSL certificates                             | mysql-ssl-certs |
+| `ssl.certificates[0].name`           | Name of the secret containing the SSL certificates                                       | `nil` |
+| `ssl.certificates[0].ca`             | CA certificate                            | `nil`                                                |
+| `ssl.certificates[0].cert`           | Server certificate (public key)           | `nil`                                                |
+| `ssl.certificates[0].key`            | Server key (private key)                  | `nil`                                                |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 
@@ -114,3 +121,51 @@ configurationFiles:
   mysql_custom.cnf: |-
     [mysqld]
 ```
+
+## SSL
+
+This chart supports configuring MySQL to use [encrypted connections](https://dev.mysql.com/doc/refman/5.7/en/encrypted-connections.html) with TLS/SSL certificates provided by the user. This is accomplished by storing the required Certificate Authority file, the server public key certificate, and the server private key as a Kubernetes secret. The SSL options for this chart support the following use cases:
+
+* Manage certificate secrets with helm
+* Manage certificate secrets outside of helm
+
+## Manage certificate secrets with helm
+
+Include your certificate data in the `ssl.certificates` section. For example:
+
+```
+ssl:
+  enabled: false
+  secret: mysql-ssl-certs
+  certificates:
+  - name: mysql-ssl-certs
+    ca: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+    cert: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+    key: |-
+      -----BEGIN RSA PRIVATE KEY-----
+      ...
+      -----END RSA PRIVATE KEY-----
+```
+
+> **Note**: Make sure your certificate data has the correct formatting in the values file.
+
+## Manage certficate secrets outside of helm
+
+1. Ensure the certificate secret exist before installation of this chart.
+2. Set the name of the certficate secret in `ssl.secret`.
+3. Make sure there are no entries underneath `ssl.certificates`.
+
+To manually create the certificate secret from local files you can execute:
+```
+kubectl create secret generic mysql-ssl-certs \
+  --from-file=ca.pem=./ssl/certificate-authority.pem \
+  --from-file=server-cert.pem=./ssl/server-public-key.pem \
+  --from-file=server-key.pem=./ssl/server-private-key.pem
+```
+> **Note**: `ca.pem`, `server-cert.pem`, and `server-key.pem` **must** be used as the key names in this generic secret.

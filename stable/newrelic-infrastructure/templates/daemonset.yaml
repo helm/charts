@@ -1,10 +1,14 @@
-{{- if .Values.licenseKey }}
-apiVersion: extensions/v1beta1
+{{- if and .Values.licenseKey .Values.cluster }}
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  labels: {{ include "newrelic-infra.labels" . | indent 4 }}
-  name: {{ template "newrelic-infra.fullname" . }}
+  labels: {{ include "newrelic.labels" . | indent 4 }}
+  name: {{ template "newrelic.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "newrelic.name" . }}
+      release: {{.Release.Name }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -12,41 +16,48 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8}}
     {{- end }}
       labels:
-        app: {{ template "newrelic-infra.name" . }}
+        app: {{ template "newrelic.name" . }}
         release: {{.Release.Name }}
         {{- if .Values.podLabels}}
         {{ toYaml .Values.podLabels }}
         {{- end }}
     spec:
-      hostPID: true
-      hostIPC: true
-      hostNetwork: true
+      serviceAccountName: {{ template "newrelic.serviceAccountName" . }}
       containers:
-        - name: {{ template "newrelic-infra.name" . }}
+        - name: {{ template "newrelic.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           securityContext:
             privileged: true
-          command: [ "bash", "-c", "source /etc/kube-nr-infra/config && /usr/bin/newrelic-infra -config /etc/newrelic/newrelic-infra.yml" ]
-          {{- if or (.Values.verboseLog) (.Values.logFile) }}
           env:
+            - name: NRIA_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "newrelic.fullname" . }}-config
+                  key: license
+            - name: "CLUSTER_NAME"
+              value: "{{ .Values.cluster }}"
+            - name: "NRIA_DISPLAY_NAME"
+              valueFrom:
+                fieldRef:
+                  apiVersion: "v1"
+                  fieldPath: "spec.nodeName"
+            - name: "NRIA_PASSTHROUGH_ENVIRONMENT"
+              value: "KUBERNETES_SERVICE_HOST,KUBERNETES_SERVICE_PORT,CLUSTER_NAME"
             {{- if .Values.verboseLog }}
             - name: NRIA_VERBOSE
-              value: 1
+              value: "1"
             {{- end }}
             {{- if .Values.logFile }}
             - name: NRIA_LOG_FILE
               value: {{ .Values.logFile }}
             {{- end }}
-            {{- end }}
           volumeMounts:
             {{- if .Values.config }}
             - name: config
-              mountPath: /etc/newrelic/
+              mountPath: /etc/newrelic
+              subPath: newrelic-infra.yml
             {{- end }}
-            - name: newrelic-config
-              mountPath: /etc/kube-nr-infra
-              readOnly: true
             - name: dev
               mountPath: /dev
             - name: run
@@ -61,9 +72,6 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           {{- end }}
       volumes:
-        - name: newrelic-config
-          secret:
-            secretName: newrelic-config
         - name: dev
           hostPath:
             path: /dev
@@ -76,12 +84,18 @@ spec:
         - name: host-root
           hostPath:
               path: /
-        {{- if .Values.config }}
         - name: config
           configMap:
-            name: {{ template "newrelic-infra.fullname" . }}
+            name: {{ template "newrelic.fullname" . }}
             items:
             - key: newrelic-infra.yml
               path: newrelic-infra.yml
-        {{- end }}
+      {{- if $.Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml $.Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
 {{- end }}

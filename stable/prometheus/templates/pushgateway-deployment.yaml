@@ -22,6 +22,7 @@ spec:
         component: "{{ .Values.pushgateway.name }}"
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "prometheus.serviceAccountName.pushgateway" . }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.pushgateway.name }}
           image: "{{ .Values.pushgateway.image.repository }}:{{ .Values.pushgateway.image.tag }}"
@@ -43,6 +44,10 @@ spec:
     {{- if .Values.pushgateway.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.pushgateway.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.pushgateway.tolerations }}
+      tolerations:
+{{ toYaml .Values.pushgateway.tolerations | indent 8 }}
     {{- end }}
     {{- if .Values.pushgateway.affinity }}
       affinity:

@@ -1,13 +1,21 @@
 ## Bitnami MariaDB image version
 ## ref: https://hub.docker.com/r/bitnami/mariadb/tags/
 ##
-## Default: none
-image: bitnami/mariadb:10.1.30-r1
-
-## Specify an imagePullPolicy (Required)
-## It's recommended to change this to 'Always' if the image tag is 'latest'
-## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
-imagePullPolicy: IfNotPresent
+image:
+  registry: docker.io
+  repository: bitnami/mariadb
+  tag: 10.1.32
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 ## Use password authentication
 usePassword: true
@@ -16,19 +24,19 @@ usePassword: true
 ## Defaults to a random 10-character alphanumeric string if not set and usePassword is true
 ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
 ##
-# mariadbRootPassword:
+mariadbRootPassword:
 
 ## Create a database user
 ## Password defaults to a random 10-character alphanumeric string if not set and usePassword is true
 ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
 ##
-# mariadbUser:
-# mariadbPassword:
+mariadbUser:
+mariadbPassword:
 
 ## Create a database
 ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
 ##
-# mariadbDatabase:
+mariadbDatabase:
 
 
 service:
@@ -40,7 +48,7 @@ service:
   ##
   # nodePort:
 
-  ## Provide any additonal annotations which may be required. This can be used to
+  ## Provide any additional annotations which may be required. This can be used to
   ## set the LoadBalancer service type to internal only.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
   ##
@@ -64,16 +72,16 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
+  storageClass: ""
   accessMode: ReadWriteOnce
   size: 8Gi
 
 ## Configure MariaDB with a custom my.cnf file
 ## ref: https://mariadb.com/kb/en/mariadb/configuring-mariadb-with-mycnf/#example-of-configuration-file
 ##
-# config: |-
-#   [mysqld]
-#   innodb_buffer_pool_size=2G
+config: |-
+  # [mysqld]
+  # innodb_buffer_pool_size=2G
 
 metrics:
   enabled: false
@@ -92,3 +100,11 @@ resources:
   requests:
     memory: 256Mi
     cpu: 250m
+
+## Discretionary Access Controls
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securitySettings:
+  enabled: true
+  runAsUser: 1001
+  fsGroup: 1001

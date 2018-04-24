@@ -4,7 +4,7 @@ Helm chart for [Mcrouter](https://github.com/facebook/mcrouter), a Memcached pro
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Mcrouter chart and their default values.
+The following table lists the configurable parameters of the Mcrouter chart and their default values.
 
 | Parameter                     | Description                            | Default                                         |
 | ----------------------------- | -------------------------------------- | ----------------------------------------------- |

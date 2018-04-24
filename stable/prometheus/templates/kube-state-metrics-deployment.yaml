@@ -21,8 +21,11 @@ spec:
         app: {{ template "prometheus.name" . }}
         component: "{{ .Values.kubeStateMetrics.name }}"
         release: {{ .Release.Name }}
+{{- if .Values.kubeStateMetrics.pod.labels }}
+{{ toYaml .Values.kubeStateMetrics.pod.labels | indent 8 }}
+{{- end }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.kubeStateMetrics.fullname" . }}{{ else }}"{{ .Values.kubeStateMetrics.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "prometheus.serviceAccountName.kubeStateMetrics" . }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.kubeStateMetrics.name }}
           image: "{{ .Values.kubeStateMetrics.image.repository }}:{{ .Values.kubeStateMetrics.image.tag }}"
@@ -41,6 +44,10 @@ spec:
     {{- if .Values.kubeStateMetrics.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.kubeStateMetrics.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.kubeStateMetrics.tolerations }}
+      tolerations:
+{{ toYaml .Values.kubeStateMetrics.tolerations | indent 8 }}
     {{- end }}
     {{- if .Values.kubeStateMetrics.affinity }}
       affinity:

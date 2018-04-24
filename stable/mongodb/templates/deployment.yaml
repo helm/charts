@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "mongodb.fullname" . }}
   labels:
-    app: {{ template "mongodb.fullname" . }}
+    app: {{ template "mongodb.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,27 +11,43 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "mongodb.fullname" . }}
+        app: {{ template "mongodb.name" . }}
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "mongodb.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: {{ template "mongodb.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        {{- if .Values.usePassword }}
         - name: MONGODB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mongodb.fullname" . }}
               key: mongodb-root-password
+        {{- end }}
         - name: MONGODB_USERNAME
           value: {{ default "" .Values.mongodbUsername | quote }}
+        {{- if and .Values.mongodbUsername .Values.mongodbDatabase }}
         - name: MONGODB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mongodb.fullname" . }}
               key: mongodb-password
+        {{- end }}
         - name: MONGODB_DATABASE
           value: {{ default "" .Values.mongodbDatabase | quote }}
+        - name: MONGODB_EXTRA_FLAGS
+          value: {{ default "" .Values.mongodbExtraFlags | join " " }}
         ports:
         - name: mongodb
           containerPort: 27017
@@ -41,16 +57,14 @@ spec:
             - mongo
             - --eval
             - "db.adminCommand('ping')"
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
+{{ toYaml .Values.livenessProbe | indent 10 }}
         readinessProbe:
           exec:
             command:
             - mongo
             - --eval
             - "db.adminCommand('ping')"
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+{{ toYaml .Values.readinessProbe | indent 10 }}
         volumeMounts:
         - name: data
           mountPath: /bitnami/mongodb

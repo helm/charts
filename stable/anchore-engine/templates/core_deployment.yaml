@@ -98,3 +98,15 @@ spec:
           failureThreshold: 10
         resources:
 {{ toYaml .Values.coreConfig.resources | indent 10 }}
+    {{- if .Values.coreConfig.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.coreConfig.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.coreConfig.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.coreConfig.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

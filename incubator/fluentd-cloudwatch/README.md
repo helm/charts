@@ -61,6 +61,7 @@ The following tables lists the configurable parameters of the Fluentd Cloudwatch
 | `logGroupName`                  | AWS Cloudwatch log group                   | `kubernetes`                                               |
 | `rbac.create`                   | If true, create & use RBAC resources       | `false`                                                    |
 | `rbac.serviceAccountName`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`                                |
+| `tolerations`                   | Add tolerations                            | `[]`                                                       |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

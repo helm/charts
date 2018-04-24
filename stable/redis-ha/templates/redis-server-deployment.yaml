@@ -19,6 +19,7 @@ spec:
         redis-node: "true"
 {{ include "labels.standard" . | indent 8 }}
     spec:
+      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -37,6 +38,13 @@ spec:
             value: "redis-sentinel"
           - name: REDIS_CHART_PREFIX
             value: {{ template "fullname" . }}-
+{{- if .Values.auth }}
+          - name: REDIS_PASS
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "fullname" . }}
+                key: auth
+{{- end }}
         ports:
           - containerPort: 6379
         volumeMounts:

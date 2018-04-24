@@ -99,7 +99,7 @@ helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=fa
 To install the chart with the release name `myrel` using a new ElasticSearch cluster instead of Cassandra (default), run the following command:
 
 ```bash
-$ helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=false  --set provisionDataStore.elasticsearch=true
+$ helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=false  --set provisionDataStore.elasticsearch=true --set storage.type=elasticsearch
 ```
 
 After a few minutes, you should see 2 ElasticSearch client nodes, 2 ElasticSearch data nodes, 3 ElasticSearch master nodes, a Jaeger DaemonSet, a Jaeger Collector, and a Jaeger Query (UI) pod deployed into your Kubernetes cluster.
@@ -111,7 +111,7 @@ After a few minutes, you should see 2 ElasticSearch client nodes, 2 ElasticSearc
 If you already have an existing running ElasticSearch cluster, you can configure the chart as follows to use it as your backing store:
 
 ```bash
-helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=false --set provisionDataStore.elasticsearch=true --set storage.type=elasticsearch --set storage.elasticsearch.host=<HOST> --set storage.elasticsearch.port=<PORT> --set storage.elasticsearch.user=<USER> --set storage.elasticsearch.password=<password>
+helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=false --set provisionDataStore.elasticsearch=false --set storage.type=elasticsearch --set storage.elasticsearch.host=<HOST> --set storage.elasticsearch.port=<PORT> --set storage.elasticsearch.user=<USER> --set storage.elasticsearch.password=<password>
 ```
 
 > **Tip**: It is highly encouraged to run the ElasticSearch cluster with storage persistence.
@@ -131,7 +131,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Jaeger chart and their default values.
+The following table lists the configurable parameters of the Jaeger chart and their default values.
 
 |             Parameter                    |            Description              |                  Default               |
 |------------------------------------------|-------------------------------------|----------------------------------------|
@@ -162,7 +162,7 @@ The following tables lists the configurable parameters of the Jaeger chart and t
 | `collector.type`                         | Service type                        |  ClusterIP                             |
 | `collector.zipkinPort`                   | Zipkin port for JSON/thrift HTTP    |  9411                                  |
 | `elasticsearch.cluster.name`             | Elasticsearch cluster name          |  "tracing"                             |
-| `elasticsearch.data.persistance.enabled` | To enable storage persistence       |  false (Highly recommended to enable)  |
+| `elasticsearch.data.persistence.enabled` | To enable storage persistence       |  false (Highly recommended to enable)  |
 | `elasticsearch.image.tag`                | Elasticsearch image tag             |  "5.4"                                 |
 | `elasticsearch.rbac.create`              | To enable RBAC                      |  false                                 |
 | `hotrod.enabled`                         | Enables the Hotrod demo app         |  false                                 |
@@ -174,10 +174,10 @@ The following tables lists the configurable parameters of the Jaeger chart and t
 | `query.image`                            | Image for Jaeger Query UI           |  jaegertracing/jaeger-query            |
 | `query.ingress.enabled`                  | Allow external traffic access       |  false                                 |
 | `query.pullPolicy`                       | Query UI image pullPolicy           |  IfNotPresent                          |
-| `query.queryPort`                        | External accessible port            |  80                                    |
+| `query.service.queryPort`                | External accessible port            |  80                                    |
+| `query.service.targetPort`               | Internal Query UI port              |  16686                                 |
+| `query.service.type`                     | Service type                        |  ClusterIP                             |
 | `query.tag`                              | Image tag/version                   |  0.6                                   |
-| `query.targetPort`                       | Internal Query UI port              |  16686                                 |
-| `query.type`                             | Service type                        |  ClusterIP                             |
 | `schema.annotations`                     | Annotations for the schema job      |  nil                                   |
 | `schema.image`                           | Image to setup cassandra schema     |  jaegertracing/jaeger-cassandra-schema |
 | `schema.mode`                            | Schema mode (prod or test)          |  prod                                  |
@@ -187,6 +187,8 @@ The following tables lists the configurable parameters of the Jaeger chart and t
 | `spark.image`                            | Image for the dependencies job      |  jaegertracing/spark-dependencies      |
 | `spark.pullPolicy`                       | Image pull policy of the deps image |  Always                                |
 | `spark.schedule`                         | Schedule of the cron job            |  "49 23 * * *"                         |
+| `spark.successfulJobsHistoryLimit`       | Cron job successfulJobsHistoryLimit |  5                                     |
+| `spark.failedJobsHistoryLimit`           | Cron job failedJobsHistoryLimit     |  5                                     |
 | `spark.tag`                              | Tag of the dependencies job image   |  latest                                |
 | `storage.cassandra.host`                 | Provisioned cassandra host          |  cassandra                             |
 | `storage.cassandra.password`             | Provisioned cassandra password      |  password                              |
@@ -197,6 +199,7 @@ The following tables lists the configurable parameters of the Jaeger chart and t
 | `storage.elasticsearch.port`             | Provisioned elasticsearch port      |  9200                                  |
 | `storage.elasticsearch.scheme`           | Provisioned elasticsearch scheme    |  http                                  |
 | `storage.elasticsearch.user`             | Provisioned elasticsearch user      |  elastic                               |
+| `storage.elasticsearch.nodesWanOnly`     | Only access specified es host       |  false                                 |
 | `storage.type`                           | Storage type (ES or Cassandra)      |  cassandra                             |
 |------------------------------------------|-------------------------------------|----------------------------------------|
 

@@ -38,12 +38,13 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Selenium chart and their default values.
+The following table lists the configurable parameters of the Selenium chart and their default values.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
+| `global.nodeselector` | Node label to be useed globally for scheduling of all images | `nil` |
 | `hub.image` | The selenium hub image | `selenium/hub` |
-| `hub.tag` | The selenium hub image tag | `3.8.1` |
+| `hub.tag` | The selenium hub image tag | `3.11.0` |
 | `hub.pullPolicy` | The pull policy for the hub image | `IfNotPresent` |
 | `hub.port` | The port the hub listens on | `4444` |
 | `hub.javaOpts` | The java options for the selenium hub JVM, default sets the maximum heap size to 1,000 mb | `-Xmx1000m` |
@@ -60,9 +61,10 @@ The following tables lists the configurable parameters of the Selenium chart and
 | `hub.gridUnregisterIfStillDownAfer` | | `nil` |
 | `hub.seOpts` | Command line arguments to pass to hub | `nil` |
 | `hub.timeZone` | The time zone for the container | `nil` |
+| `hub.nodeselector` | Node label to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
 | `chrome.enabled` | Schedule a chrome node pod | `false` |
 | `chrome.image` | The selenium node chrome image | `selenium/node-chrome` |
-| `chrome.tag` | The selenium node chrome tag | `3.8.1` |
+| `chrome.tag` | The selenium node chrome tag | `3.11.0` |
 | `chrome.pullPolicy` | The pull policy for the node chrome image | `IfNotPresent` |
 | `chrome.replicas` | The number of selenium node chrome pods | `1` |
 | `chrome.javaOpts` | The java options for the selenium node chrome JVM, default sets the maximum heap size to 900 mb | `-Xmx900m` |
@@ -80,9 +82,10 @@ The following tables lists the configurable parameters of the Selenium chart and
 | `chrome.nodePort` | The port to listen on | `nil` |
 | `chrome.seOpts` | Command line arguments to pass to node | `nil` |
 | `chrome.timeZone` | The time zone for the container | `nil` |
+| `chrome.nodeselector` | Node label to use for scheduling of chrome images if set this takes precedence over the global value | `nil` |
 | `chromeDebug.enabled` | Schedule a selenium node chrome debug pod | `false` |
 | `chromeDebug.image` | The selenium node chrome debug image | `selenium/node-chrome-debug` |
-| `chromeDebug.tag` | The selenium node chrome debug tag | `3.8.1` |
+| `chromeDebug.tag` | The selenium node chrome debug tag | `3.11.0` |
 | `chromeDebug.pullPolicy` | The selenium node chrome debug pull policy | `IfNotPresent` |
 | `chromeDebug.replicas` | The number of selenium node chrome debug pods | `1` |
 | `chromeDebug.javaOpts` | The java options for a selenium node chrome debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
@@ -100,9 +103,10 @@ The following tables lists the configurable parameters of the Selenium chart and
 | `chromeDebug.nodePort` | The port to listen on | `nil` |
 | `chromeDebug.seOpts` | Command line arguments to pass to node | `nil` |
 | `chromeDebug.timeZone` | The time zone for the container | `nil` |
+| `chromeDebug.nodeselector` | Node label to use for scheduling of chromeDebug images if set this takes precedence over the global value | `nil` |
 | `firefox.enabled` | Schedule a selenium node firefox pod | `false` |
 | `firefox.image` | The selenium node firefox image | `selenium/node-firefox` |
-| `firefox.tag` | The selenium node firefox tag | `3.8.1` |
+| `firefox.tag` | The selenium node firefox tag | `3.11.0` |
 | `firefox.pullPolicy` | The selenium node firefox pull policy | `IfNotPresent` |
 | `firefox.replicas` | The number of selenium node firefox pods | `1` |
 | `firefox.javaOpts` | The java options for a selenium node firefox JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
@@ -118,9 +122,10 @@ The following tables lists the configurable parameters of the Selenium chart and
 | `firefox.nodePort` | The port to listen on | `nil` |
 | `firefox.seOpts` | Command line arguments to pass to node | `nil` |
 | `firefox.timeZone` | The time zone for the container | `nil` |
+| `firefox.nodeselector` | Node label to use for scheduling of firefox images if set this takes precedence over the global value | `nil` |
 | `firefoxDebug.enabled` | Schedule a selenium node firefox debug pod | `false` |
 | `firefoxDebug.image` | The selenium node firefox debug image | `selenium/node-firefox-debug` |
-| `firefoxDebug.tag` | The selenium node firefox debug tag | `3.8.1` |
+| `firefoxDebug.tag` | The selenium node firefox debug tag | `3.11.0` |
 | `firefoxDebug.pullPolicy` | The selenium node firefox debug pull policy | `IfNotPresent` |
 | `firefoxDebug.replicas` | The numer of selenium node firefox debug pods | `1` |
 | `firefoxDebug.javaOpts` | The java options for a selenium node firefox debug JVM, default sets the max heap size to 900 mb | `-Xmx900m` |
@@ -136,6 +141,7 @@ The following tables lists the configurable parameters of the Selenium chart and
 | `firefoxDebug.nodePort` | The port to listen on | `nil` |
 | `firefoxDebug.seOpts` | Command line arguments to pass to node | `nil` |
 | `firefoxDebug.timeZone` | The time zone for the container | `nil` |
+| `firefoxDebug.nodeselector` | Node label to use for scheduling of firefoxDebug images if set this takes precedence over the global value | `nil` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

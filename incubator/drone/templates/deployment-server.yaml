@@ -15,6 +15,9 @@ spec:
     metadata:
       annotations:
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+{{- if .Values.server.annotations }}
+{{ toYaml .Values.server.annotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "drone.name" . }}
         release: "{{ .Release.Name }}"
@@ -24,6 +27,7 @@ spec:
       affinity:
 {{ toYaml .Values.server.affinity | indent 8 }}
 {{- end }}
+      serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
       - name: {{ template "drone.fullname" . }}-server
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
@@ -46,9 +50,9 @@ spec:
           {{- end }}
           - name: DRONE_HOST
           {{- if hasKey .Values.server "host" }}
-            value: {{ .Values.server.host }}
+            value: "{{ .Values.server.host }}"
           {{- else }}
-            value: {{ template "drone.fullname" . }}
+            value: "http://{{ template "drone.fullname" . }}"
           {{- end }}
           {{ range $key, $value := .Values.server.env }}
           - name: {{ $key }}

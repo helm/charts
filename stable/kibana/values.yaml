@@ -3,6 +3,9 @@ image:
   tag: "6.0.0"
   pullPolicy: "IfNotPresent"
 
+commandline:
+  args:
+
 env:
   # All Kibana configuration options are adjustable via env vars.
   # To adjust a config option to an env var uppercase + replace `.` with `_`
@@ -17,6 +20,19 @@ service:
   type: ClusterIP
   externalPort: 443
   internalPort: 5601
+  ## External IP addresses of service
+  ## Default: nil
+  ##
+  # externalIPs:
+  # - 192.168.0.1
+  #
+  ## LoadBalancer IP if service.type is LoadBalancer
+  ## Default: nil
+  ##
+  # loadBalancerIP: 10.2.2.2
+  annotations:
+    # Annotation example: setup ssl with aws cert when service.type is LoadBalancer
+    # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:EXAMPLE_CERT
 
 ingress:
   enabled: false

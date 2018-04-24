@@ -28,6 +28,10 @@ imageTag: "5.7.14"
 ##
 imagePullPolicy: IfNotPresent
 
+## Node selector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
 livenessProbe:
   initialDelaySeconds: 30
   periodSeconds: 10
@@ -69,7 +73,9 @@ configurationFiles:
 #  mysql.cnf: |-
 #    [mysqld]
 #    skip-name-resolve
-
+#    ssl-ca=/ssl/ca.pem
+#    ssl-cert=/ssl/server-cert.pem
+#    ssl-key=/ssl/server-key.pem
 
 ## Configure the service
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -78,3 +84,22 @@ service:
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
   type: ClusterIP
   port: 3306
+  # nodePort: 32000
+
+ssl:
+  enabled: false
+  secret: mysql-ssl-certs
+  certificates:
+#  - name: mysql-ssl-certs
+#    ca: |-
+#      -----BEGIN CERTIFICATE-----
+#      ...
+#      -----END CERTIFICATE-----
+#    cert: |-
+#      -----BEGIN CERTIFICATE-----
+#      ...
+#      -----END CERTIFICATE-----
+#    key: |-
+#      -----BEGIN RSA PRIVATE KEY-----
+#      ...
+#      -----END RSA PRIVATE KEY-----
