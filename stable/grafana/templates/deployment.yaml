@@ -156,6 +156,6 @@ spec:
           secret:
             secretName: {{ .Values.ldap.name | default (include "grafana.fullname" .) }}
             items:
-              - key: ldap.toml
+              - key: ldap-toml
                 path: ldap.toml
 {{- end }}
