@@ -114,6 +114,9 @@ helm install -n portus .
 | Parameter                    | Description                          | Default                             |
 | ---------------------------- | ------------------------------------ | ----------------------------------- |
 | `nameOverride`               | Name                                 | `portus`                            |
+| `portus.replicaCount`        | k8s replicas                         | `1`                                 |
+| `portus.podAnnotations`      | annotations for the pods             | `{}`                                |
+| `portus.updateStrategy`      | update strategy for deployment       | `{}`                                |
 | `portus.image.repository`    | Image and registry name              | `opensuse/portus`                   |
 | `portus.image.tag`           | Container image tag                  | `2.2`                               |
 | `portus.image.pullPolicy`    | Container image pullPolicy           | `IfNotPresent`                      |
@@ -153,6 +156,9 @@ helm install -n portus .
 | `portus.secrets.email.smtp.user_name` | SMTP credentials if enabled | `-`                                 |
 | `portus.secrets.email.smtp.password`  | SMTP credentials if enabled | `-`                                 |
 | `portus.secrets.ldap.bind_password`   | LDAP credentials if enabled | `-`                                 |
+| `portus.service.type`                 | Service type                | `ClusterIP`                         |
+| `portus.service.nodePort`             | Service NodePort if needed  | ``                                  |
+| `portus.service.annotaions`           | Service Annotations         | `{}`                                |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install` or pass in custom configuration with `-f` flag
 

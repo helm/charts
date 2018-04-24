@@ -76,6 +76,11 @@ portus:
     requests:
       cpu: 100m
       memory: 384Mi
+  service:
+    type: ClusterIP
+    # nodePort:
+    annotations: {}
+    # foo.io/bar: "true"
   ingress:
     annotations:
       # kubernetes.io/ingress.class: nginx

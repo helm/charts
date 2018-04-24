@@ -19,6 +19,7 @@ spec:
       labels:
         app: "{{ template "portus.name" . }}"
         component: "portus"
+        release: {{ .Release.Name | quote }}
       annotations:
         checksum/config: {{ include (print $.Chart.Name "/templates/" $.Chart.Name "-cm.yaml") . | sha256sum }}
 {{- if $.Values.podAnnotations }}

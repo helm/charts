@@ -7,11 +7,20 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app: "{{ template "portus.name" . }}"
+{{- if .Values.portus.service.annotations }}
+  annotations:
+{{ toYaml .Values.portus.service.annotations | indent 4 }}
+{{- end }}
 spec:
+  type: {{ .Values.portus.service.type }}
   ports:
   - name: https
     port: 443
     targetPort: 443
+{{- if (and (eq .Values.portus.service.type "NodePort") (not (empty .Values.portus.service.nodePort))) }}
+    nodePort: {{ .Values.portus.service.nodePort }}
+{{- end }}
   selector:
     app: "{{ template "portus.name" . }}"
+    release: {{ .Release.Name }}
     component: "portus"
