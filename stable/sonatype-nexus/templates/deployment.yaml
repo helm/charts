@@ -27,7 +27,7 @@ spec:
           env:
 {{ toYaml .Values.nexus.env | indent 12 }}
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.nexus.resources | indent 12 }}
           ports:
             - containerPort: {{ .Values.nexus.dockerPort }}
               name: nexus-docker-g
