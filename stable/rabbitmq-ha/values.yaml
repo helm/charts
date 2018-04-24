@@ -266,10 +266,9 @@ secret:
   # overrideName: mysecret
 
 prometheus:
-
   ## Configures Prometheus Exporter to expose and scrape stats.
   exporter:
-    enabled: true
+    enabled: false
     env: {}
     image:
       repository: kbudde/rabbitmq-exporter
@@ -293,9 +292,9 @@ prometheus:
     ## Are you using Prometheus Operator?
     enabled: false
 
-    ## Configures Alerts, which will be setup via Prometheus Operator / ConfigMaps.  Support for Prometheus without 
-    ## Operator is not currently tested/supported.  PRs are welcome
+    ## Configures Alerts, which will be setup via Prometheus Operator / ConfigMaps.
     alerts:
+      ## Prometheus exporter must be enabled as well
       enabled: true
   
       ## Selector must be configured to match Prometheus Install, defaulting to whats done by Prometheus Operator
