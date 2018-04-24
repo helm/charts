@@ -1,13 +1,16 @@
 version: 2
 jobs:
-   build:
-     docker:
-       - image: circleci/python:3.6.4
-     steps:
-       - checkout
-       - run:
-           name: install tools
-           command: test/circle/install.sh
-       - run: 
-           name: lint
-           command: test/circle/lint.sh
+  build:
+    docker:
+     - image: unguiculus/chart-testing
+    steps:
+      - checkout
+      - run:
+          name: environment
+          command: env && ls -al /testing
+      - run:
+          name: lint
+          command: |
+            git remote add k8s https://github.com/kubernetes/charts
+            git fetch k8s master
+            chart_test.sh --config test/.testenv --no-install

@@ -1,0 +1,17 @@
+# The name of the Git remote
+REMOTE=k8s
+
+# The name of the Git target branch
+TARGET_BRANCH=master
+
+# Chart directories separated by a space
+CHART_DIRS="stable incubator"
+
+# Charts the should be skipped
+EXCLUDED_CHART_DIRS=
+
+# Additional chart repos to add (<name>=<url>), separated by a space
+CHART_REPOS=incubator=https://kubernetes-charts-incubator.storage.googleapis.com/
+
+TIMEOUT=600
+
