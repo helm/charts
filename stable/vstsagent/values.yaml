@@ -1,0 +1,23 @@
+vsts:
+  image:
+    name: microsoft/vsts-agent
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  secret:
+    # account: <base64 encoded vsts account name (e.g. account name is my-vsts-project if the url is https://my-vsts-project.visualstudio.com)
+    account:
+    # token: <base64 encode personal access token>
+    token:
+
+  agentpool:
+    # name: <agentpool name>
+    name:
+
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "100m"
+    limits:
+      memory: "128Mi"
+      cpu: "200m"

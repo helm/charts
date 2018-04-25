@@ -1,0 +1,19 @@
+apiVersion: v1
+name: vstsagent
+version: "0.1"
+appVersion: 2.131.0
+description: A chart for deploying a private Microsoft VSTS build/release agent
+icon: https://twitter.com/vsts
+keywords:
+- vsts
+- build
+- release
+- CI/CD
+home: https://github.com/Microsoft/vsts-agent
+sources:
+- https://docs.microsoft.com/nl-nl/vsts/build-release/?view=vsts
+- https://docs.microsoft.com/nl-nl/vsts/build-release/actions/agents/v2-linux?view=vsts
+- https://github.com/Microsoft/vsts-agent
+maintainers:
+- name: BramvdKlinkenberg
+  email: bramvandenklinkenberg@gmail.com
