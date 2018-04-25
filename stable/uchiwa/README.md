@@ -60,13 +60,13 @@ The following table lists the configurable parameters of the Uchiwa chart and th
 | `image`                              | Uchiwa image                          | `sstarcher/uchiwa`                              |
 | `imageTag`                              | Uchiwa version                          | `0.22`                              |
 | `imagePullPolicy`                    | Image pull policy                        | `IfNotPresent`   |
-| `replicaCount`         | Number of uchiwa replicas | `1`  |
-| `httpPort` | Service port for kubernetes | `80` |
+| `replicaCount`         | Number of Uchiwa replicas | `1`  |
+| `httpPort` | Service port for Kubernetes | `80` |
 | `routable` | Enables routing through the Deis router | `false` |
-| `resources.requests.cpu` | CPU request for uchiwa | `10m` |
-| `resources.requests.memory` | Memory request for uchiwa | `50Mi` |
-| `resources.limits.cpu` | CPU limit for uchiwa | `` |
-| `resources.limits.memory` | Memory limit for uchiwa | `50Mi` |
+| `resources.requests.cpu` | CPU request for Uchiwa | `10m` |
+| `resources.requests.memory` | Memory request for Uchiwa | `50Mi` |
+| `resources.limits.cpu` | CPU limit for Uchiwa | `` |
+| `resources.limits.memory` | Memory limit for Uchiwa | `50Mi` |
 | `host` | Address on which Uchiwa will listen | `0.0.0.0` |
 | `port` | Port on which Uchiwa will listen | `3000` |
 | `refresh` | Determines the interval to pull the Sensu APIs, in seconds | `10` |
