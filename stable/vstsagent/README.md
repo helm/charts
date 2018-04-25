@@ -16,7 +16,11 @@ After you've installed the agent on a machine, you can install any other softwar
 1. You need to create a vsts account at https://www.visualstudio.com/team-services/
 2. You need to create a Personal Access Token (https://docs.microsoft.com/en-us/vsts/build-release/actions/agents/v2-linux?view=vsts)
 3. You need to create an agentpool (https://docs.microsoft.com/en-us/vsts/build-release/actions/agents/v2-linux?view=vsts)
+<<<<<<< HEAD
 4. You need a Kubernetes cluster to deploy the agent on.
+=======
+4. You need a Kubernetes cluster to deploy the agent on
+>>>>>>> dd1d1bbc9473f9e093e30a29b7d75f3ea5da6add
 
 Without the PAT, account name and agentpool filled in either the values.yaml or by using parameters (see Configuration) you won't be able to deploy the agent
 
