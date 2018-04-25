@@ -1,0 +1,28 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "firmament.fullname" .}}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "firmament-poseidon.name" .}}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    scheduler: {{ .Values.firmament.scheduler }}
+spec:
+  replicas: {{ .Values.firmament.replica }}
+  template:
+    metadata:
+      labels:
+        scheduler: {{ .Values.firmament.scheduler }}
+    spec:
+      containers:
+      - command: [/firmament/build/src/firmament_scheduler, --flagfile=/firmament/config/firmament_scheduler_cpu_mem.cfg]
+        image: "{{ .Values.firmament.repository }}:{{ .Values.firmament.tag }}"
+        name: {{.Values.firmament.extraContainerArgs}}
+        ports:
+         - containerPort:  {{ .Values.firmament.containerPort }}
+      hostNetwork: true
+      hostPID: false
+      volumes: []
+

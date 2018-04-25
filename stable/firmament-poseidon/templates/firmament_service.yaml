@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: firmament-service
+  namespace: {{ .Values.namespace }}
+  labels:
+   app: {{ template "firmament-poseidon.name" . }}
+   chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+   heritage: {{ .Release.Service }}
+   release: {{ .Release.Name }}
+   scheduler: {{ .Values.firmament.scheduler }}
+spec:
+  selector:
+    scheduler: firmament
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090

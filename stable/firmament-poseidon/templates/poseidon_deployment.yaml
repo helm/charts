@@ -1,0 +1,39 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "firmament-poseidon.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: {{ .Values.poseidon.component }}
+    tier: control-plane
+    poseidonservice: {{ .Values.poseidon.service }}
+  name: {{ template "poseidon.fullname" . }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{.Values.poseidon.replica}}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.poseidon.component }}
+        tier: control-plane
+        version: first
+        poseidonservice: {{ .Values.poseidon.service }}
+    spec:
+      serviceAccountName: {{.Values.serviceAccount.name}}
+      containers:
+      - command: [/poseidon, --logtostderr, --kubeConfig=, --kubeVersion=1.6]
+        image: "{{ .Values.poseidon.repository }}:{{ .Values.poseidon.tag }}"
+        name: {{.Values.poseidon.extraContainerArgs}}
+      initContainers:
+      - name: {{ .Values.busybox.extraContainerArgs }}
+        image: "{{ .Values.busybox.repository }}:{{ .Values.busybox.tag }}"
+        command: ['sh', '-c', 'until nslookup firmament-service.kube-system; do echo waiting for firmamentservice; sleep 1; done;']
+        securityContext:
+          privileged: false
+        volumeMounts: []
+      hostNetwork: false
+      hostPID: false
+volumes: []
+

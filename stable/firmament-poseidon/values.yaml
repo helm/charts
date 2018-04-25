@@ -1,0 +1,90 @@
+# Default values for firmament-poseidon.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+poseidon:
+  name: poseidon
+  repository: gcr.io/poseidon-173606/poseidon
+  tag: latest
+  pullPolicy: IfNotPresent
+  extraContainerArgs: poseidon
+  replica: 1
+  servicePort: 9091
+  containerPort: 9091
+  service: poseidon
+  component: poseidon
+
+
+firmament:
+  name: firmament-scheduler
+  repository: huaweifirmament/firmament
+  tag: latest
+  pullPolicy: IfNotPresent
+  extraContainerArgs: firmament-scheduler
+  replica: 1
+  servicePort: 9090
+  containerPort: 9090
+  scheduler: firmament
+
+busybox:
+  name: busysbox
+  repository: radial/busyboxplus
+  tag: curl
+  pullPolicy: IfNotPresent
+  extraContainerArgs: init-firmamentservice
+
+namespace: kube-system
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: poseidon
+
+rbac:
+  ## If true, create & use RBAC resources
+  ##
+  create: true
+
+clusterrole:
+  name: system:poseidon
+
+clusterrolebinding:
+  name: system:poseidon
