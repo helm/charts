@@ -16,4 +16,3 @@ data:
     default_pass=CHANGEME
 {{ .Values.rabbitmq.configuration | indent 4 }}
 
-      

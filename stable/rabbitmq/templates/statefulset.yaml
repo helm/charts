@@ -27,7 +27,7 @@ spec:
       {{- end}}
       {{- end }}
       {{- if .Values.rbacEnabled}}
-      serviceAccountName: {{ template "rabbitmq.fullname" . }} 
+      serviceAccountName: {{ template "rabbitmq.fullname" . }}
       {{- end }}
       {{- if .Values.affinity }}
       affinity:
@@ -42,7 +42,7 @@ spec:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: 10
-      containers:        
+      containers:
       - name: {{ template "rabbitmq.fullname" . }}
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
@@ -52,7 +52,7 @@ spec:
          - |
             #create the var/lib/rabbitmq directory under the bitnami folder
             mkdir -p /opt/bitnami/rabbitmq/var/lib/rabbitmq/
-            
+
             #persist the erlang cookie in both places for server and cli tools
             echo $RABBITMQ_ERL_COOKIE > /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
             cp /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie /root
@@ -127,7 +127,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ template "rabbitmq.fullname" . }}
-                key: rabbitmq-erlang-cookie 
+                key: rabbitmq-erlang-cookie
           - name: RABBITMQ_PASSWORD
             valueFrom:
               secretKeyRef:
@@ -135,7 +135,7 @@ spec:
                 key: rabbitmq-password
       volumes:
         - name: config-volume
-          configMap: 
+          configMap:
             name: {{ template "rabbitmq.fullname" . }}-config
             items:
             - key: rabbitmq.conf
@@ -149,4 +149,3 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end -}}
-       
