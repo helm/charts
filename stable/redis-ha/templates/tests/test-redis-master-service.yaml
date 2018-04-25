@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ .Release.Name }}-master-service-test"
+  name: {{ template "redis-ha.fullname" . }}-master-service-test
   labels:
 {{ include "labels.standard" . | indent 4 }}
   annotations:
