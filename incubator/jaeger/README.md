@@ -99,7 +99,7 @@ helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=fa
 To install the chart with the release name `myrel` using a new ElasticSearch cluster instead of Cassandra (default), run the following command:
 
 ```bash
-$ helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=false  --set provisionDataStore.elasticsearch=true
+$ helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=false  --set provisionDataStore.elasticsearch=true --set storage.type=elasticsearch
 ```
 
 After a few minutes, you should see 2 ElasticSearch client nodes, 2 ElasticSearch data nodes, 3 ElasticSearch master nodes, a Jaeger DaemonSet, a Jaeger Collector, and a Jaeger Query (UI) pod deployed into your Kubernetes cluster.
@@ -111,7 +111,7 @@ After a few minutes, you should see 2 ElasticSearch client nodes, 2 ElasticSearc
 If you already have an existing running ElasticSearch cluster, you can configure the chart as follows to use it as your backing store:
 
 ```bash
-helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=false --set provisionDataStore.elasticsearch=true --set storage.type=elasticsearch --set storage.elasticsearch.host=<HOST> --set storage.elasticsearch.port=<PORT> --set storage.elasticsearch.user=<USER> --set storage.elasticsearch.password=<password>
+helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=false --set provisionDataStore.elasticsearch=false --set storage.type=elasticsearch --set storage.elasticsearch.host=<HOST> --set storage.elasticsearch.port=<PORT> --set storage.elasticsearch.user=<USER> --set storage.elasticsearch.password=<password>
 ```
 
 > **Tip**: It is highly encouraged to run the ElasticSearch cluster with storage persistence.
@@ -174,10 +174,10 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.image`                            | Image for Jaeger Query UI           |  jaegertracing/jaeger-query            |
 | `query.ingress.enabled`                  | Allow external traffic access       |  false                                 |
 | `query.pullPolicy`                       | Query UI image pullPolicy           |  IfNotPresent                          |
-| `query.queryPort`                        | External accessible port            |  80                                    |
+| `query.service.queryPort`                | External accessible port            |  80                                    |
+| `query.service.targetPort`               | Internal Query UI port              |  16686                                 |
+| `query.service.type`                     | Service type                        |  ClusterIP                             |
 | `query.tag`                              | Image tag/version                   |  0.6                                   |
-| `query.targetPort`                       | Internal Query UI port              |  16686                                 |
-| `query.type`                             | Service type                        |  ClusterIP                             |
 | `schema.annotations`                     | Annotations for the schema job      |  nil                                   |
 | `schema.image`                           | Image to setup cassandra schema     |  jaegertracing/jaeger-cassandra-schema |
 | `schema.mode`                            | Schema mode (prod or test)          |  prod                                  |
@@ -199,6 +199,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.elasticsearch.port`             | Provisioned elasticsearch port      |  9200                                  |
 | `storage.elasticsearch.scheme`           | Provisioned elasticsearch scheme    |  http                                  |
 | `storage.elasticsearch.user`             | Provisioned elasticsearch user      |  elastic                               |
+| `storage.elasticsearch.nodesWanOnly`     | Only access specified es host       |  false                                 |
 | `storage.type`                           | Storage type (ES or Cassandra)      |  cassandra                             |
 |------------------------------------------|-------------------------------------|----------------------------------------|
 

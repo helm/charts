@@ -1,5 +1,5 @@
 name: sematext-docker-agent
-version: 0.1.3
+version: 0.1.4
 description: Sematext Docker Agent
 keywords:
 - alerts

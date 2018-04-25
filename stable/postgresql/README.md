@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 | `imagePullSecrets`         | Image pull secrets                              | `nil`                                                      |
 | `postgresUser`             | Username of new user to create.                 | `postgres`                                                 |
 | `postgresPassword`         | Password for the new user.                      | random 10 characters                                       |
+| `usePasswordFile`          | Inject the password via file instead of env var | `false`                                                    |
 | `postgresDatabase`         | Name for new database to create.                | `postgres`                                                 |
 | `postgresInitdbArgs`       | Initdb Arguments                                | `nil`                                                      |
 | `schedulerName`            | Name of an alternate scheduler                  | `nil`                                                      |
@@ -104,7 +105,7 @@ $ helm install --name my-release -f values.yaml stable/postgresql
 
 The [postgres](https://github.com/docker-library/postgres) image stores the PostgreSQL data and configurations at the `/var/lib/postgresql/data/pgdata` path of the container.
 
-The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning. If the PersistentVolumeClaim should not be managed by the chart, define `persistence.existingClaim`.
+The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning. If the PersistentVolumeClaim should not be managed by the chart, define `persistence.existingClaim`.
 
 ### Existing PersistentVolumeClaims
 

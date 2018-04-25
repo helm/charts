@@ -48,6 +48,8 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `elasticsearch.port`               | Elasticsearch Port                         | `9200`                                                     |
 | `elasticsearch.buffer_chunk_limit` | Elasticsearch buffer chunk limit           | `2M`                                                       |
 | `elasticsearch.buffer_queue_limit` | Elasticsearch buffer queue limit           | `8`                                                        |
+| `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
+| `extraVolume`                      | Extra volume                               |                                                            | 
 | `fluentdcustomconfig`              | Optional custom configmaps                 | `NULL`                                                     |
 | `image`                            | Image                                      | `gcr.io/google-containers/fluentd-elasticsearch`           |
 | `imageTag`                         | Image tag                                  | `v2.0.4                                                    |
@@ -57,6 +59,8 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `resources.limits.memory`          | Memory limit                               | `500Mi`                                                    |
 | `resources.requests.cpu`           | CPU request                                | `100m`                                                     |
 | `resources.requests.memory`        | Memory request                             | `200Mi`                                                    |
+| `serviceAccount.create`            | Specifies whether a service account should be created.| `true`                                          |
+| `serviceAccount.name`              | Name of the service account.               |                                                            |   
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                                     |
 
 

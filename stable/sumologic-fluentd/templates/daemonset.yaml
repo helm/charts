@@ -1,3 +1,4 @@
+# Sumologic collector URL is required
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -163,6 +164,7 @@ spec:
           {{- if .Values.persistence.enabled }}
           hostPath:
             path: {{ .Values.persistence.hostPath }}
+            type: "{{ if .Values.persistence.createPath }}DirectoryOrCreate{{ end }}"
           {{- else }}
           emptyDir: {}
           {{- end }}
