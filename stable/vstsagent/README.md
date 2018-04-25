@@ -50,5 +50,3 @@ $ helm install --name vsts --set vsts.secret.account=<bas64 encoded account name
 ```
 
 ## Roadmap
-1. Make available as stable chart
-
