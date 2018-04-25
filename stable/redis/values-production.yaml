@@ -179,6 +179,7 @@ master:
 ## The rest of the parameters, if undefined, will inherit those declared in Redis Master
 ##
 slave:
+  podAntiAffinity: true
   ## Slave Service properties
   service:
     ## Redis Slave Service type

@@ -26,6 +26,20 @@ spec:
 {{ toYaml (.Values.slave.podAnnotations | default .Values.master.podAnnotations) | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.slave.podAntiAffinity }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ template "redis.name" . }}
+              topologyKey: kubernetes.io/hostname
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
         {{- range .Values.image.pullSecrets }}
@@ -33,7 +47,7 @@ spec:
         {{- end}}
       {{- end}}
       {{- /* Include master securityContext if slave securityContext not defined */ -}}
-      {{ include "redis.slave.securityContext" . | indent 6 }}  
+      {{ include "redis.slave.securityContext" . | indent 6 }}
       {{- if (.Values.slave.nodeSelector | default .Values.master.nodeSelector) }}
       nodeSelector:
 {{ toYaml (.Values.slave.nodeSelector | default .Values.master.nodeSelector) | indent 8 }}
@@ -92,9 +106,9 @@ spec:
         - name: redis
           containerPort: {{ .Values.slave.port | default .Values.master.port }}
         {{- /* Include master livenessProbe if slave livenessProbe not defined */ -}}
-        {{ include "redis.slave.livenessProbe" . | indent 8 }}  
+        {{ include "redis.slave.livenessProbe" . | indent 8 }}
         {{- /* Include master readinessProbe if slave readinessProbe not defined */ -}}
-        {{ include "redis.slave.readinessProbe" . | indent 8 }}  
+        {{ include "redis.slave.readinessProbe" . | indent 8 }}
         resources:
 {{ toYaml (.Values.slave.resources | default .Values.master.resources) | indent 10 }}
 {{- end }}
