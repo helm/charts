@@ -32,7 +32,7 @@ $ git clone https://github.com/kubernetes/charts.git
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/sensu
+$ helm install --name my-release stable/sensu:x.x.x
 ```
 
 *Replace the `x.x.x` placeholder with the chart release version.*
