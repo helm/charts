@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "tomcat.fullname" . }}
+  name: {{ template "tomcat.name" . }}
   labels:
-    app: {{ template "tomcat.fullname" . }}
+    app: {{ template "tomcat.name" . }}
     chart: {{ template "tomcat.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -53,10 +53,13 @@ spec:
          - containerPort: {{ .Values.service.frontend.port }}
            hostPort: {{ .Values.service.host.port }}
          livenessProbe:
-           httpGet:
-             path: /
-             port: {{ .Values.service.frontend.port }}
+           tcpSocket:
+             port: {{ .Values.service.host.port }}
+           initialDelaySeconds: 5
+           periodSeconds: 10
          readinessProbe:
            httpGet:
-             path: /
-             port: {{ .Values.service.host.port }}
+             path: /sample
+             port: {{ .Values.service.frontend.port }}
+           initialDelaySeconds: 15
+           periodSeconds: 20  

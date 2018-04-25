@@ -14,7 +14,7 @@ deploy:
   directory: /root/apache-tomcat-7.0.42-v2/webapps
 service:
   host:
-    port: 8001
+    port: 8009
   frontend:
     type: LoadBalancer
     port: 8080
