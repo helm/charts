@@ -1,8 +1,8 @@
 Check that the ark-server is up and running:
-kubectl get pod --namespace {{ .Values.namespace.server.name }}
+kubectl get pod --namespace {{ .Values.namespace.name }}
 
 Check that the secret has been created:
-kubectl get secret --namespace {{ .Values.namespace.server.name }} {{ .Values.secret.name }}
+kubectl get secret --namespace {{ .Values.namespace.name }} {{ .Values.secret.name }}
 
 Once ark server is up and running you need the client before you can use it
 1. wget https://github.com/heptio/ark/releases/download/{{ .Values.image.tag }}/ark-{{ .Values.image.tag }}-darwin-amd64.tar.gz

@@ -36,7 +36,7 @@ Create the name of the service account to use for creating or deleting the ark c
 */}}
 {{- define "ark-server.hookSA" -}}
 {{- if .Values.serviceAccount.hook.create -}}
-    {{ default (include "ark-server.fullname" .) .Values.serviceAccount.hook.name }}
+    {{ default "hook-sa" .Values.serviceAccount.hook.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.hook.name }}
 {{- end -}}

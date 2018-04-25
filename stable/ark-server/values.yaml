@@ -3,33 +3,29 @@
 # Declare variables to be passed into your templates.
 
 configuration:
+  # cloudprovider and bucket are always needed
   cloudprovider: ChangeMe
   bucket: ChangeMe
-  # project is gcp only
-  project: ChangeMe
   # region is aws only
   region: ChangeMe
+  # apitimeout is azure only
+  apitimeout: ChangeMe
+  # credentials not needed if kube2iam is enabled
   credentials: ChangeMe
+  kube2iam: false
   # following are default values
-  backupSyncPeriod: 30m
-  gcSyncPeriod: 30m
+  backupSyncPeriod: 60m
+  gcSyncPeriod: 60m
   scheduleSyncPeriod: 1m
   restoreOnlyMode: false
 
 namespace:
-  # the namespace where ark server runs
-  # from version 0.7 can be custom
-  server:
-    create: true
-    name: heptio-ark-server
-  # the namespace where ark resources (backup, schedules, config...) live
-  backup:
-    create: true
-    name: heptio-ark
+  create: true
+  name: heptio-ark
 
 image:
   repository: gcr.io/heptio-images/ark
-  tag: v0.7.1
+  tag: v0.8.1
   pullPolicy: IfNotPresent
 
 # this must be created manually before helm install, see README
@@ -46,3 +42,10 @@ serviceAccount:
   server:
     create: true
     name:
+
+podAnnotations:
+
+kubectl:
+  image:
+    repository:
+    tag:

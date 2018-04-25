@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: delete-ark-config
-  namespace: {{ .Values.namespace.backup.name }}
+  namespace: {{ .Values.namespace.name }}
   annotations:
     "helm.sh/hook": pre-delete
     "helm.sh/hook-delete-policy": hook-succeeded
@@ -11,12 +11,12 @@ spec:
   template:
     metadata:
       name: delete-ark-config
-      namespace: {{ .Values.namespace.backup.name }}
+      namespace: {{ .Values.namespace.name }}
     spec:
       restartPolicy: Never
       containers:
         - name: delete-ark-config
-          image: claranet/gcloud-kubectl-docker
+          image: {{ .Values.kubectl.image.repository }}/{{ .Values.kubectl.image.tag }}
           imagePullPolicy: Always
           command: ["kubectl","delete","-f","/tmp/"]
           volumeMounts:

@@ -1,15 +1,16 @@
 apiVersion: ark.heptio.com/v1
 kind: Config
 metadata:
-  namespace: {{ .Values.namespace.backup.name }}
+  namespace: {{ .Values.namespace.name }}
   name: default
 persistentVolumeProvider:
   name: {{ .Values.configuration.cloudprovider  }}
   config:
-    {{- if eq .Values.configuration.cloudprovider "gcp" }}
-    project: {{ .Values.configuration.project  }}
-    {{- else if eq .Values.configuration.cloudprovider "aws" }}
+    {{- if eq .Values.configuration.cloudprovider "aws" }}
     region: {{ .Values.configuration.region  }}
+    {{- end }}
+    {{- if eq .Values.configuration.cloudprovider "azure" }}
+    apiTimeout: {{ .Values.configuration.apitimeout  }}
     {{- end }}
 backupStorageProvider:
   name: {{ .Values.configuration.cloudprovider  }}

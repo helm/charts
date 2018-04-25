@@ -1,23 +1,22 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  namespace: {{ .Values.namespace.server.name }}
+  namespace: {{ .Values.namespace.name }}
   name: {{ template "ark-server.fullname" . }}
   release: {{ .Release.Name }}
   app: {{ template "ark-server.name" . }}
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      component: ark
-      release: {{ .Release.Name }}
-      app: {{ template "ark-server.name" . }}
   template:
     metadata:
       labels:
         component: ark
         release: {{ .Release.Name }}
         app: {{ template "ark-server.name" . }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
     spec:
       restartPolicy: Always
       serviceAccountName: {{ template "ark-server.sa" . }}
@@ -28,19 +27,30 @@ spec:
             - /ark
           args:
             - server
-            - --namespace
-            - {{ .Values.namespace.backup.name }}
+          {{- if eq .Values.configuration.cloudprovider "azure" }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secret.name }}
+          {{- end }}
           volumeMounts:
-            - name: cloud-credentials
-              mountPath: /credentials
             - name: plugins
               mountPath: /plugins
+          {{- if (or (eq .Values.configuration.cloudprovider "aws") (eq .Values.configuration.cloudprovider "gcp")) }}
+            - name: cloud-credentials
+              mountPath: /credentials
           env:
             - name: {{ .Values.configuration.credentials }}
               value: /credentials/cloud
+          {{- end }}
       volumes:
+        {{- if (or (eq .Values.configuration.cloudprovider "aws") (eq .Values.configuration.cloudprovider "gcp")) }}
         - name: cloud-credentials
           secret:
             secretName: {{ .Values.secret.name }}
+        {{- end }}
         - name: plugins
           emptyDir: {}
+      {{- if eq .Values.configuration.cloudprovider "azure" }}
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+      {{- end }}

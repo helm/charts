@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: deploy-ark-config
-  namespace: {{ .Values.namespace.backup.name }}
+  namespace: {{ .Values.namespace.name }}
   annotations:
     "helm.sh/hook": post-install
     "helm.sh/hook-delete-policy": hook-succeeded
@@ -10,12 +10,12 @@ spec:
   template:
     metadata:
       name: deploy-ark-config
-      namespace: {{ .Values.namespace.backup.name }}
+      namespace: {{ .Values.namespace.name }}
     spec:
       restartPolicy: Never
       containers:
         - name: deploy-ark-config
-          image: claranet/gcloud-kubectl-docker
+          image: {{ .Values.kubectl.image.repository }}/{{ .Values.kubectl.image.tag }}
           imagePullPolicy: Always
           command: ["kubectl","create","-f","/tmp/"]
           volumeMounts:
