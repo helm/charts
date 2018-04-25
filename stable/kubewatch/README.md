@@ -2,12 +2,11 @@
 
 [kubewatch](https://github.com/skippbox/kubewatch) is a Kubernetes watcher that currently publishes notification to Slack. Run it in your k8s cluster, and you will get event notifications in a slack channel.
 
-**N.B. this chart is deprecated and has been [moved to stable](../../stable/kubewatch).**
 
 ## TL;DR;
 
 ```console
-$ helm install incubator/kubewatch
+$ helm install stable/kubewatch
 ```
 
 ## Introduction
@@ -19,7 +18,7 @@ This chart bootstraps a kubewatch deployment on a [Kubernetes](http://kubernetes
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install incubator/kubewatch --name my-release
+$ helm install stable/kubewatch --name my-release
 ```
 
 The command deploys kubewatch on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -47,8 +46,9 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `podLabels` | additional labesl to add to each pod | `{}`
-`rbac.create` | If true, create & use RBAC resources | `false`
-`rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
+`rbac.create` | If true, create & use RBAC resources | `true`
+`serviceAccount.create` | If true, create a serviceAccount | `true`
+`serviceAccount.name` | existing ServiceAccount to use (ignored if rbac.create=true) | ``
 `replicaCount` | desired number of pods | `1`
 `resourcesToWatch` | list of resources which kubewatch should watch and notify slack | `{pod: true, deployment: true}`
 `resourcesToWatch.pod` | watch changes to [Pods](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) | `true`
@@ -67,14 +67,14 @@ Parameter | Description | Default
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install incubator/kubewatch --name my-release \
+$ helm install stable/kubewatch --name my-release \
   --set=slack.channel="#bots",slack.token="XXXX-XXXX-XXXX"
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install incubator/kubewatch --name my-release -f values.yaml
+$ helm install stable/kubewatch --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
