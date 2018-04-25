@@ -21,6 +21,9 @@ spec:
             - name: config-volume
               configMap:
                 name: curator-config
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 12 }}
+{{- end }}
           restartPolicy: Never
           containers:
             - name: {{ .Chart.Name }}
@@ -29,6 +32,9 @@ spec:
               volumeMounts:
                 - name: config-volume
                   mountPath: /etc/es-curator
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 16 }}
+{{- end }}
               command: [ "curator" ]
               args: [ "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
               resources:

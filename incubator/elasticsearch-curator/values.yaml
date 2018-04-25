@@ -75,3 +75,15 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+# extraVolumes and extraVolumeMounts allows you to mount other volumes
+# Example Use Case: mount ssl certificates when elasticsearch has tls enabled
+# extraVolumes:
+#   - name: es-certs
+#     secret:
+#       defaultMode: 420
+#       secretName: es-certs
+# extraVolumeMounts:
+#   - name: es-certs
+#     mountPath: /certs
+#     readOnly: true
