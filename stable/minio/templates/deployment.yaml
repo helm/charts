@@ -1,0 +1,119 @@
+{{- if eq .Values.mode "standalone" "shared" }}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "minio.fullname" . }}
+  labels:
+    app: {{ template "minio.name" . }}
+    chart: {{ template "minio.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  {{- if eq .Values.mode "shared" }}
+  replicas: {{ .Values.replicas }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "minio.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      name: {{ template "minio.fullname" . }}
+      labels:
+        app: {{ template "minio.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.azuregateway.enabled }}
+          args: ["gateway", "azure"]
+          {{- else }}
+          {{- if .Values.gcsgateway.enabled }}
+          args: ["gateway", "gcs", "{{ .Values.gcsgateway.projectId }}"]
+          {{- else }}
+          {{- if .Values.configPath }}
+          args: ["-C", "{{ .Values.configPath }}", "server", "{{ .Values.mountPath }}"]
+          {{- else }}
+          args: ["server", "{{ .Values.mountPath }}"]
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          volumeMounts:
+            - name: export
+              mountPath: {{ .Values.mountPath }}
+              {{- if and .Values.persistence.enabled .Values.persistence.subPath }}
+              subPath: "{{ .Values.persistence.subPath }}"
+              {{- end }}
+            - name: minio-server-config
+              mountPath: {{ default "/root/.minio/config.json" .Values.configPath | quote }}
+              subPath: config.json
+            - name: minio-server-config
+              mountPath: /root/.minio/initialize
+              subPath: initialize
+            - name: podinfo
+              mountPath: /podinfo
+              readOnly: false
+            {{- if .Values.gcsgateway.enabled }}
+            - name: minio-user
+              mountPath: "/etc/credentials"
+              readOnly: true
+            {{- end }}
+          ports:
+            - name: service
+              containerPort: 9000
+          env:
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "minio.fullname" . }}
+                  key: accesskey
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "minio.fullname" . }}
+                  key: secretkey
+            {{- if .Values.gcsgateway.enabled }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: "/etc/credentials/gcs_key.json"
+            {{- end }}
+          livenessProbe:
+            tcpSocket:
+              port: 9000
+            timeoutSeconds: 1
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      volumes:
+        - name: podinfo
+          downwardAPI:
+            items:
+              - path: "labels"
+                fieldRef:
+                  fieldPath: metadata.labels
+        - name: export
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "minio.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: minio-server-config
+          configMap:
+            name: {{ template "minio.fullname" . }}
+        - name: minio-user
+          secret:
+            secretName: {{ template "minio.fullname" . }}
+{{- end }}

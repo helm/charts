@@ -18,6 +18,17 @@ spec:
         app: {{ template "bitcoind.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.configurationFile }}
+      initContainers:
+        - name: copy-bitcoind-config
+          image: busybox
+          command: ['sh', '-c', 'cp /configmap/bitcoin.conf /bitcoin/.bitcoin/bitcoin.conf']
+          volumeMounts:
+            - name: configmap
+              mountPath: /configmap
+            - name: config
+              mountPath: /bitcoin/.bitcoin/
+      {{- end }}
       containers:
         - name: {{ template "bitcoind.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -44,6 +55,8 @@ spec:
       volumes:
         {{- if .Values.configurationFile }}
         - name: config
+          emptyDir: {}
+        - name: configmap
           configMap:
             name: {{ template "bitcoind.fullname" . }}
         {{- end }}
