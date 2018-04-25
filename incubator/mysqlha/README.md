@@ -8,7 +8,7 @@ This chart bootstraps a single master and multiple slave MySQL deployment on a [
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.6+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart

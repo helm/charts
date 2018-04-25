@@ -223,10 +223,7 @@ spec:
           name: {{ template "fullname" . }}
       - name: scripts
         emptyDir: {}
-{{- if not .Values.persistence.enabled }}
-      - name: data
-        emptyDir: {}
-{{- else }}
+{{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: data
@@ -249,4 +246,7 @@ spec:
       storageClassName: "{{ .Values.persistence.storageClass }}"
       {{- end }}
       {{- end }}
+{{- else }}
+      - name: data
+        emptyDir: {}
 {{- end }}
