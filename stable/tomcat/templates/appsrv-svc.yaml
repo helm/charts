@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "tomcat.name" . }}
+  name: {{ template "tomcat.fullname" . }}
   labels:
-    app: {{ template "tomcat.name" . }}
+    app: {{ template "tomcat.fullname" . }}
     tier: {{ .Values.service.frontend.selector.tier }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "tomcat.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:

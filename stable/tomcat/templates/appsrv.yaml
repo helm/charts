@@ -4,7 +4,7 @@ metadata:
   name: {{ template "tomcat.fullname" . }}
   labels:
     app: {{ template "tomcat.fullname" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "tomcat.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:

@@ -39,6 +39,27 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
+The following table lists the configurable parameters of the tomcat chart and their default values.
+
+Parameter                  	| Description                        	| Default
+------------------------------- | ------------------------------------- | ----------------------------------------------------------
+`image.webarchive.repository`   | Sidecar image source repository name  | `ananwaresystems/webarchive`
+`image.webarchive.tag`          | `webarchive` release tag.             | `1.0`
+`image.tomcat.repository`       | Tomact image source repository name   | `ananwaresystems/tomcat`
+`image.tomcat.tag`          	| `tomcat` release tag.                 | `7.0`
+`image.pullPolicy`         	| Image pull policy                  	| `IfNotPresent`
+`deploy.directory`		| Webarchive deployment directory	| `/root/apache-tomcat-7.0.42-v2/webapps`
+`service.host.port`             | Tomcat host port                      | `8001`
+`service.frontend.port`         | Frontend port                         | `8080`
+`service.frontend.type`         | k8s service Frontend type             | `LoadBalancer`
+`service.frontend.selector.app` | k8s service app selector              | `tomcat`
+`service.frontend.selector.tier`| k8s service tier selector             | `frontend`
+`resources`                	| CPU/Memory resource requests/limits	| `{}`
+`NodeSelector.key`        	| Node affinity node label key       	| `{}`
+`NodeSelector.value`        	| Node affinity node label value       	| `{}`
+`Tolerations.key`        	| Node tolerations node label key       | `{}`
+`Tolerations.value`        	| Node tolerations node label value     | `{}`
+
 Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are a mixture of Kubernetes and tomcat-related directives that map to environment variables. 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
