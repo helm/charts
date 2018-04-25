@@ -143,51 +143,110 @@ persistence:
   ##
   # storageClass:
 
-## Metrics
-##
-metrics:
+jmx:
+  ## Rules to apply to the Prometheus JMX Exporter.  Note while lots of stats have been cleaned and exposed,
+  ## there are still more stats to clean up and expose, others will never get exposed.  They keep lots of duplicates
+  ## that can be derived easily.  The configMap in this chart cleans up the metrics it exposes to be in a Prometheus
+  ## format, eg topic, broker are labels and not part of metric name. Improvements are gladly accepted and encouraged.
+  configMap:
 
+    ## Allows disabling the default configmap, note a configMap is needed
+    enabled: true
+
+    ## Allows setting values to generate confimap
+    ## To allow all metrics through (warning its crazy excessive) comment out below `overrideConfig` and set
+    ## `whitelistObjectNames: []`
+    overrideConfig: {}
+      # jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:5555/jmxrmi
+      # lowercaseOutputName: true
+      # lowercaseOutputLabelNames: true
+      # ssl: false
+      # rules:
+      # - pattern: ".*"
+
+    ## If you would like to supply your own ConfigMap for JMX metrics, supply the name of that
+    ## ConfigMap as an `overrideName` here.
+    overrideName: ""
+
+  ## Port the jmx metrics are exposed in native jmx format, not in Prometheus format
+  port: 5555
+
+  ## JMX Whitelist Objects, can be set to control which JMX metrics are exposed.  Only whitelisted
+  ## values will be exposed via JMX Exporter.  They must also be exposed via Rules.  To expose all metrics
+  ## (warning its crazy excessive and they aren't formatted in a prometheus style) (1) `whitelistObjectNames: []`
+  ## (2) commented out above `overrideConfig`.
+  whitelistObjectNames:  # []
+  - kafka.controller:*
+  - kafka.server:*
+  - java.lang:*
+  - kafka.network:*
+  - kafka.log:*
+
+## Prometheus Exporters / Metrics
+##
+prometheus:
+  ## Prometheus JMX Exporter: exposes the majority of Kafkas metrics
   jmx:
     enabled: false
 
-    # The image to use for the metrics collector
+    ## The image to use for the metrics collector
     image: solsson/kafka-prometheus-jmx-exporter@sha256
 
-    # The image tag to use for the metrics collector
+    ## The image tag to use for the metrics collector
     imageTag: a23062396cd5af1acdf76512632c20ea6be76885dfc20cd9ff40fb23846557e8
 
-    # The port to expose JMX metrics on
-    port: 5555
+    ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
+    interval: 10s
 
-    # Rules to apply to the Kafka JMX Exporter
-    kafkaConfig:
-      lowercaseOutputName: true
-      jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:5555/jmxrmi
-      ssl: false
-      whitelistObjectNames: ["kafka.server:*", "kafka.controller:*", "java.lang:*"]
-      # rules:
-      #   - pattern : kafka.server<type=ReplicaFetcherManager, name=MaxLag, clientId=(.+)><>Value
-      #   - pattern : kafka.server<type=BrokerTopicMetrics, name=(BytesInPerSec|BytesOutPerSec|MessagesInPerSec), topic=(.+)><>OneMinuteRate
-      #   - pattern : kafka.server<type=KafkaRequestHandlerPool, name=RequestHandlerAvgIdlePercent><>OneMinuteRate
-      #   - pattern : kafka.server<type=Produce><>queue-size
-      #   - pattern : kafka.server<type=ReplicaManager, name=(PartitionCount|UnderReplicatedPartitions)><>(Value|OneMinuteRate)
-      #   - pattern : kafka.server<type=controller-channel-metrics, broker-id=(.+)><>(.*)
-      #   - pattern : kafka.server<type=socket-server-metrics, networkProcessor=(.+)><>(.*)
-      #   - pattern : kafka.server<type=Fetch><>queue-size
-      #   - pattern : kafka.server<type=SessionExpireListener, name=(.+)><>OneMinuteRate
-      #   - pattern : kafka.controller<type=KafkaController, name=(.+)><>Value
-      #   - pattern : java.lang<type=OperatingSystem><>SystemCpuLoad
-      #   - pattern : java.lang<type=Memory><HeapMemoryUsage>used
-      #   - pattern : java.lang<type=OperatingSystem><>FreePhysicalMemorySize
+    ## Port jmx-exporter exposes Prometheus format metrics to scrape
+    port: 5556
 
+    resources: {}
+      # limits:
+      #   cpu: 200m
+      #   memory: 1Gi
+      # requests:
+      #   cpu: 100m
+      #   memory: 100Mi
+
+  ## Prometheus Kafka Exporter: exposes complimentary metrics to JMX Exporter
   kafka:
     enabled: false
 
-    # The image to use for the metrics collector
+    ## The image to use for the metrics collector
     image: danielqsj/kafka-exporter
 
-    # The image tag to use for the metrics collector
+    ## The image tag to use for the metrics collector
     imageTag: v1.0.1
+
+    ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
+    interval: 10s
+
+    ## Port kafka-exporter exposes for Prometheus to scrape metrics
+    port: 9308
+
+    ## Resource limits
+    resources: {}
+#      limits:
+#        cpu: 200m
+#        memory: 1Gi
+#      requests:
+#        cpu: 100m
+#        memory: 100Mi
+
+  operator:
+    ## Are you using Prometheus Operator?
+    enabled: false
+
+    serviceMonitor:
+      # Namespace Prometheus is installed in
+      namespace: monitoring
+
+      ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
+      ## [Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65)
+      ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
+      selector:
+        prometheus: kube-prometheus
 
 # ------------------------------------------------------------------------------
 # Zookeeper:
