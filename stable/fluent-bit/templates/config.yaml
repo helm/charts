@@ -58,7 +58,7 @@ data:
         HTTP_User {{ .Values.backend.es.http_user }}
         HTTP_Passwd {{ .Values.backend.es.http_passwd }}
 {{- end }}
-{{if eq .Values.backend.es.tls true }}
+{{if eq .Values.backend.es.tls "on" }}
         tls {{ .Values.backend.es.tls }}
         tls.verify {{ .Values.backend.es.tls_verify }}
         tls.debug {{ .Values.backend.es.tls_debug }}
