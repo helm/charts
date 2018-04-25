@@ -10,7 +10,7 @@ keywords:
 - release
 - CI/CD
 home: https://github.com/Microsoft/vsts-agent
-sources: 
+sources:
 - https://docs.microsoft.com/nl-nl/vsts/build-release/?view=vsts
 - https://docs.microsoft.com/nl-nl/vsts/build-release/actions/agents/v2-linux?view=vsts
 - https://github.com/Microsoft/vsts-agent
