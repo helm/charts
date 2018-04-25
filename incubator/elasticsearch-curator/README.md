@@ -39,6 +39,8 @@ their default values.
 | `configMaps.action_file_yml` | Contents of the Curator action_file.yml               | See values.yaml                              |
 | `configMaps.config_yml`      | Contents of the Curator config.yml (overrides config) | See values.yaml                              |
 | `resources`                  | Resource requests and limits                          | {}                                           |
+| `extraVolumeMounts`          | Mount extra volume(s),                                |                                              |
+| `extraVolumes`               | Extra volumes                                         |                                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
