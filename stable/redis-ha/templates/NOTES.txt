@@ -1,12 +1,12 @@
 Redis cluster can be accessed via port 6379 on the following DNS name from within your cluster:
-{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ template "redis-ha.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 To connect to your Redis server:
 
 {{- if .Values.auth }}
 1. Get the randomly generated redis password:
    
-   echo $(kubectl get secret {{ template "fullname" . }} -o "jsonpath={.data['auth']}" | base64 -D)
+   echo $(kubectl get secret {{ template "redis-ha.fullname" . }} -o "jsonpath={.data['auth']}" | base64 -D)
 
 2. Connect to the Redis master pod that you can use as a client:
 
@@ -18,9 +18,9 @@ To connect to your Redis server:
 {{- else }}
 1. Run a Redis pod that you can use as a client:
 
-   kubectl exec -it {{ template "fullname" . }}-master-0 bash
+   kubectl exec -it {{ template "redis-ha.fullname" . }}-master-0 bash
 
 2. Connect using the Redis CLI:
 
-  redis-cli -h {{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  redis-cli -h {{ template "redis-ha.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 {{- end }}
