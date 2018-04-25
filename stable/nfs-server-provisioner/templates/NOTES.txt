@@ -1,0 +1,26 @@
+The NFS Provisioner service has now been installed.
+
+{{ if .Values.storageClass.create -}}
+A storage class named '{{ .Values.storageClass.name }}' has now been created
+and is available to provision dynamic volumes.
+
+You can use this storageclass by creating a `PersistentVolumeClaim` with the
+correct storageClassName attribute. For example:
+
+    ---
+    kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: test-dynamic-volume-claim
+    spec:
+      storageClassName: "{{ .Values.storageClass.name }}"
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+
+{{ else -}}
+A storage class has NOT been created. You may create a custom `StorageClass`
+resource with a `provisioner` attribute of `{{ template "nfs-provisioner.provisionerName" . }}`.
+{{ end -}}
