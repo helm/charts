@@ -52,3 +52,11 @@ spec:
          ports:
          - containerPort: {{ .Values.service.frontend.port }}
            hostPort: {{ .Values.service.host.port }}
+         livenessProbe:
+           httpGet:
+             path: /
+             port: {{ .Values.service.frontend.port }}
+         readinessProbe:
+           httpGet:
+             path: /
+             port: {{ .Values.service.host.port }}

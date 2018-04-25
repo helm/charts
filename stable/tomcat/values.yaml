@@ -33,10 +33,10 @@ resources:
     cpu: 100m
     memory: 256Mi
 NodeSelector:
-  key: cloud.ea/tenant
-  value: cluster-infra
+  key: beta.kubernetes.io/os
+  value: linux
 Tolerations:
-  key: cloud.ea/tenant
-  value: cluster-infra
+  key: beta.kubernetes.io/os
+  value: linux
 cmd:
   start: "/root/apache-tomcat-7.0.42-v2/bin/start.sh"
