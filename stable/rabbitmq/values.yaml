@@ -23,7 +23,7 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
-## does your cluster have rbac enabled? assume no by default
+## does your cluster have rbac enabled? assume yes by default
 rbacEnabled: true
 
 ## section of specific values for rabbitmq
