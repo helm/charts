@@ -30,6 +30,8 @@ spec:
     - hosts:
         - {{ .Values.nexusProxy.env.nexusDockerHost }}
         - {{ .Values.nexusProxy.env.nexusHttpHost }}
+      {{- if .Values.ingress.tls.secretName }}
       secretName: {{ .Values.ingress.tls.secretName | quote }}
+      {{- end }}
 {{- end -}}
 {{- end }}
