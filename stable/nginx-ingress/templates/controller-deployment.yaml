@@ -17,9 +17,8 @@ spec:
   minReadySeconds: {{ .Values.controller.minReadySeconds }}
   template:
     metadata:
-      annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/controller-configmap.yaml") . | sha256sum }}
       {{- if .Values.controller.podAnnotations }}
+      annotations:
 {{ toYaml .Values.controller.podAnnotations | indent 8}}
       {{- end }}
       labels:
@@ -31,6 +30,10 @@ spec:
         {{- end }}
     spec:
       dnsPolicy: {{ .Values.controller.dnsPolicy }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.controller.name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
@@ -81,9 +84,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-          {{- range $key, $value := .Values.controller.extraEnvs }}
-            - name: {{ $key | upper | replace "." "_" }}
-              value: {{ $value }}
+          {{- if .Values.controller.extraEnvs }}
+{{ toYaml .Values.controller.extraEnvs | indent 12 }}
           {{- end }}
           livenessProbe:
             httpGet:
@@ -132,14 +134,22 @@ spec:
             timeoutSeconds: {{ .Values.controller.readinessProbe.timeoutSeconds }}
             successThreshold: {{ .Values.controller.readinessProbe.successThreshold }}
             failureThreshold: {{ .Values.controller.readinessProbe.failureThreshold }}
-{{- if .Values.controller.customTemplate.configMapName }}
+{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts) }}
           volumeMounts:
+{{- end }}
+{{- if .Values.controller.customTemplate.configMapName }}
             - mountPath: /etc/nginx/template
               name: nginx-template-volume
               readOnly: true
 {{- end }}
+{{- if .Values.controller.extraVolumeMounts }}
+{{ toYaml .Values.controller.extraVolumeMounts | indent 10}}
+{{- end }}
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
+{{- if .Values.controller.extraContainers }}
+{{ toYaml .Values.controller.extraContainers | indent 8}}
+{{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}
       nodeSelector:
@@ -153,15 +163,20 @@ spec:
       affinity:
 {{ toYaml .Values.controller.affinity | indent 8 }}
     {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "nginx-ingress.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if or .Values.rbac.create .Values.rbac.createRole .Values.rbac.createClusterRole }}{{ template "nginx-ingress.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       terminationGracePeriodSeconds: 60
-{{- if .Values.controller.customTemplate.configMapName }}
+{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumes) }}
       volumes:
+{{- end }}
+{{- if .Values.controller.customTemplate.configMapName }}
         - name: nginx-template-volume
           configMap:
             name: {{ .Values.controller.customTemplate.configMapName }}
             items:
             - key: {{ .Values.controller.customTemplate.configMapKey }}
               path: nginx.tmpl
+{{- end }}
+{{- if .Values.controller.extraVolumes }}
+{{ toYaml .Values.controller.extraVolumes | indent 6}}
 {{- end }}
 {{- end }}

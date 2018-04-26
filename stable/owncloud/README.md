@@ -10,7 +10,7 @@ $ helm install stable/owncloud
 
 ## Introduction
 
-This chart bootstraps a [ownCloud](https://github.com/bitnami/bitnami-docker-owncloud) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps an [ownCloud](https://github.com/bitnami/bitnami-docker-owncloud) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the ownCloud application.
 
@@ -66,11 +66,11 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `allowEmptyPassword`                | Allow DB blank passwords                  | `yes`                                                   |
 | `externalDatabase.host`             | Host of the external database             | `nil`                                                   |
 | `externalDatabase.port`             | Port of the external database             | `3306`                                                  |
-| `externalDatabase.database`         | Name of the existing databse              | `bitnami_owncloud`                                      |
+| `externalDatabase.database`         | Name of the existing database             | `bitnami_owncloud`                                      |
 | `externalDatabase.user`             | Existing username in the external db      | `bn_owncloud`                                           |
 | `externalDatabase.password`         | Password for the above username           | `nil`                                                   |
 | `mariadb.mariadbDatabase`           | Database name to create                   | `bitnami_owncloud`                                      |
-| `mariadb.enabled`                   | Wheter to use or not the mariadb chart    | `true`                                                  |
+| `mariadb.enabled`                   | Whether to use the MariaDB chart          | `true`                                                  |
 | `mariadb.mariadbPassword`           | Password for the database                 | `nil`                                                   |
 | `mariadb.mariadbUser`               | Database user to create                   | `bn_owncloud`                                           |
 | `mariadb.mariadbRootPassword`       | MariaDB admin password                    | `nil`                                                   |

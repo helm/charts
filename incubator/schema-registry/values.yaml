@@ -3,6 +3,10 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 
+# By Default uses Release Name, but can be overridden.  Which means each release is its own group of
+# Schema Registry workers.  You can have multiple groups talking to same Kafka Cluster
+overrideGroupId: ""
+
 ## schema-registry repository
 image: "confluentinc/cp-schema-registry"
 ## The container tag to use
@@ -34,16 +38,49 @@ resources: {}
 ## The port on which the SchemaRegistry will be available and serving requests
 servicePort: 8081
 
+## If `Kafka.Enabled` is `false`, kafkaStore.overrideBootstrapServers must be provided for Master Election.
+## You can list load balanced service endpoint, or list of all brokers (which is hard in K8s).  e.g.:
+## overrideBootstrapServers: "PLAINTEXT://dozing-prawn-kafka-headless:9092"
+## Charts uses Kafka Coordinator Master Election: https://docs.confluent.io/current/schema-registry/docs/design.html#kafka-coordinator-master-election
+kafkaStore:
+  overrideBootstrapServers: ""
+## Additional Java arguments to pass to Kafka.
+# schemaRegistryOpts: -Dfoo=bar
+
+# Options for connecting to SASL kafka brokers
+sasl:
+  configPath: "/etc/kafka-config"
+  scram:
+    enabled: false
+    init:
+      image: "confluentinc/cp-schema-registry"
+      imageTag: "4.0.0"
+      imagePullPolicy: "IfNotPresent"
+    clientUser: "kafka-client"
+    zookeeperClientUser: "zookeeper-client"
+    # Passwords can be either provided here or pulled from an existing k8s secret.
+    # If user wants to specify the password here:
+    clientPassword: "client-password"
+    zookeeperClientPassword: "zookeeper-client-password"
+    # If user has an existing k8s secret they would like to use instead of generating them:
+    # useExistingSecret:
+    #   # Where to find the schema registry user secret
+    #   clientPassword:
+    #     secretKeyRef:
+    #       name: "schema-reg-secret"
+    #       key: "client-password"
+    #   # Where to find the zookeeper user secret
+    #   zookeeperClientPassword:
+    #     secretKeyRef:
+    #       name: "zookeeper-secret"
+    #       key: "zokeeper-client-password"
+
 ## Kafka Settings
 kafka:
   ## This is enabled only to allow installations of this chart without arguments
   enabled: true
-  ## Install only a single Kafka pod in the StatefulSet
-  Replicas: 1
+  ## Install 3x Kafka pods in the StatefulSet, 3 are wanted for default settings in Kafka-Connect
+  Replicas: 3
   ## Install only a single Zookeeper pod in the StatefulSet
   zookeeper:
     Servers: 1
-  ## If `Kafka.Enabled` is `false`, the Zookeeper url servicing the Kafka cluster must be provided
-  zookeeperUrl: ""
-  ## If `Kafka.Enabled` is `false`, the Zookeeper port servicing the Kafka cluster must be provided
-  zookeeperPort: 2181
