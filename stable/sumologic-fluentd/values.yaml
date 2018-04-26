@@ -30,6 +30,15 @@ sumologic:
   ## in the container (Default "/fluentd/conf.d/user")
   fluentdUserConfigDir: ""
 
+  ## Provide user-defined fluentd configuration files
+  ## Each key will become a file in `fluentdUserConfigDir`
+  ##
+  # fluentdUserConfig:
+  #   source.systemd.conf: |-
+  #     <source>
+  #        ...
+  #     </source>
+
   ## How frequently to push logs to SumoLogic (default 5s)
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
   # flushInterval: 5
@@ -129,12 +138,15 @@ sumologic:
   ## ref: https://kubernetes.io/docs/tasks/debug-application-cluster/audit/
   auditLogPath: ""
 
+## Note: Requires Kubernetes 1.8+ to enable this feature via hostPath volume type
 ## By default, the daemonset will store position files, for logs tailed, in an
-## emptyDir. If you have a directory, on the host, to store pos files, specify
-## it here.
+## emptyDir. If you have already have a directory on the host for storing pos files,
+## specify it here. Otherwise, it can create the directory for you by setting the type
+## to "DirectoryOrCreate".
 persistence:
   enabled: false
   hostPath: /var/run/fluentd-pos
+  createPath: false
 
 resources:
   requests:

@@ -1,7 +1,8 @@
 Thank you for installing ZooKeeper on your Kubernetes cluster. More information
 about ZooKeeper can be found at https://zookeeper.apache.org/doc/current/
 
-1. ZooKeeper is not accessible outside of the Kubernetes cluster. Its purpose is
+1. ZooKeeper will be accessible outside of the Kubernetes cluster only if 
+appropriate annotations and service type were provided. Its purpose is
 to provide coordination for distributed systems running inside the cluster. As
 ZooKeeper uses a TCP based protocol with an internal wire format, you will
 probably want to use an existing client library for communication with the

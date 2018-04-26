@@ -32,6 +32,14 @@ security:
   runAsUser: 1000
   fsGroup: 1000
 
+## Make zookeeper accessible outside of the kubernetes cluster
+## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer
+##
+# annotations:
+#   service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+# serviceType: LoadBalancer
+
+
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##

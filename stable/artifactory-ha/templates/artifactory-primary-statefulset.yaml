@@ -69,7 +69,7 @@ spec:
         - name: DB_PORT
           value: '{{ .Values.postgresql.service.port }}'
         - name: DB_USER
-          value: '{{.Values.postgresql.postgresUser }}'
+          value: '{{ .Values.postgresql.postgresUser }}'
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -187,6 +187,13 @@ spec:
       name: volume
     spec:
       accessModes: [ "ReadWriteOnce" ]
+      {{- if .Values.artifactory.persistence.storageClass }}
+      {{- if (eq "-" .Values.artifactory.persistence.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.artifactory.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
       resources:
         requests:
           storage: {{ .Values.artifactory.persistence.size }}

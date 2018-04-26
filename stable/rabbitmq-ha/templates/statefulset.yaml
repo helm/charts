@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  serviceName: {{ template "rabbitmq-ha.fullname" . }}
+  serviceName: {{ template "rabbitmq-ha.fullname" . }}-discovery
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
     type: {{ .Values.updateStrategy }}
@@ -22,8 +22,19 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- end }}
     spec:
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
+      initContainers:
+        - name: copy-rabbitmq-config
+          image: busybox
+          command: ['sh', '-c', 'cp /configmap/* /etc/rabbitmq; rm -f /var/lib/rabbitmq/.erlang.cookie']
+          volumeMounts:
+            - name: configmap
+              mountPath: /configmap
+            - name: config
+              mountPath: /etc/rabbitmq
+            - name: {{ .Values.persistentVolume.name }}
+              mountPath: /var/lib/rabbitmq
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -37,7 +48,7 @@ spec:
               containerPort: 5672
             - name: http
               protocol: TCP
-              containerPort: 15672
+              containerPort: {{ .Values.rabbitmqManagerPort }}
             {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
             - name: stomp-tcp
               protocol: TCP
@@ -74,26 +85,31 @@ spec:
               command:
                 - rabbitmqctl
                 - status
-            initialDelaySeconds: 30
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             exec:
               command:
                 - rabbitmqctl
                 - status
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           env:
-            - name: MY_POD_IP
+            - name: MY_POD_NAME
               valueFrom:
                 fieldRef:
-                  fieldPath: status.podIP
+                  apiVersion: v1
+                  fieldPath: metadata.name
             - name: RABBITMQ_USE_LONGNAME
               value: "true"
             - name: RABBITMQ_NODENAME
-              value: "rabbit@$(MY_POD_IP)"
+              value: rabbit@$(MY_POD_NAME).{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.cluster.local
+            - name: K8S_HOSTNAME_SUFFIX
+              value: .{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.cluster.local
             - name: K8S_SERVICE_NAME
-              value: {{ template "rabbitmq-ha.fullname" . }}
+              value: {{ template "rabbitmq-ha.fullname" . }}-discovery
             - name: RABBITMQ_ERLANG_COOKIE
               valueFrom:
                 secretKeyRef:
@@ -115,7 +131,7 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
-            - name: data
+            - name: {{ .Values.persistentVolume.name }}
               mountPath: /var/lib/rabbitmq
             - name: config
               mountPath: /etc/rabbitmq
@@ -154,18 +170,20 @@ spec:
       {{- end }}
       volumes:
         - name: config
+          emptyDir: {}
+        - name: configmap
           configMap:
             name: {{ template "rabbitmq-ha.fullname" . }}
         {{- if .Values.rabbitmqCert.enabled }}
         - name: cert
           secret:
             defaultMode: 420
-            secretName: {{ template "rabbitmq-ha.fullname" . }}-cert
+            secretName: {{ .Values.rabbitmqCert.existingSecret | default (printf "%s-cert" (include "rabbitmq-ha.fullname" . )) }}
         {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
-        name: data
+        name: {{ .Values.persistentVolume.name }}
         annotations:
         {{- range $key, $value := .Values.persistentVolume.annotations }}
           {{ $key }}: {{ $value }}
