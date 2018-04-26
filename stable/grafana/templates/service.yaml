@@ -7,6 +7,9 @@ metadata:
     chart: {{ template "grafana.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | indent 4 }}
+{{- end }}
 {{- with .Values.service.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
