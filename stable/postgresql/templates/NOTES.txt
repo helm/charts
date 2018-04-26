@@ -29,7 +29,7 @@ To connect to your database directly from outside the K8s cluster:
      PGPORT={{ default "5432" .Values.service.port }}
 
      # Execute the following commands to route the connection:
-     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "postgresql.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "postgresql.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
      kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ default "5432" .Values.service.port }}:{{ default "5432" .Values.service.port }}
 
    {{- end }}
