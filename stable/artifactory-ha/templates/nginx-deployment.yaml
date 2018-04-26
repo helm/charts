@@ -85,6 +85,19 @@ spec:
         {{- end }}
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
+        readinessProbe:
+          httpGet:
+            path: '/artifactory/webapp/#/login'
+            port: 80
+          initialDelaySeconds: 300
+          periodSeconds: 10
+          failureThreshold: 10
+        livenessProbe:
+          httpGet:
+            path: '/artifactory/webapp/#/login'
+            port: 80
+          initialDelaySeconds: 300
+          periodSeconds: 10
       volumes:
       - name: nginx-volume
       {{- if .Values.nginx.persistence.enabled }}
