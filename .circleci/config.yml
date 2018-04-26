@@ -6,9 +6,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: environment
-          command: env && ls -al /testing
-      - run:
           name: lint
           command: |
             git remote add k8s https://github.com/kubernetes/charts

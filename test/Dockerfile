@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM gcr.io/kubernetes-charts-ci/chart-testing:v1.0.0-alpha.1
+FROM gcr.io/kubernetes-charts-ci/chart-testing:v1.0.0-alpha.2
 
 USER root
 
@@ -32,4 +32,3 @@ RUN gcloud config set core/disable_usage_reporting true && \
     gcloud config set metrics/environment github_docker_image
 
 WORKDIR /workdir
-COPY .testenv /workdir/
