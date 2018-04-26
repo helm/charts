@@ -8,7 +8,7 @@ maintainers:
   email: kiall@macinnes.ie
 home: https://github.com/kubernetes/charts/tree/master/stable/nfs-server-provisioner
 sources:
-- https://github.com/kubernetes/charts/tree/master/stable/nfs-server-provisioner
+- https://github.com/kubernetes-incubator/external-storage/tree/master/nfs
 keywords:
 - nfs
 - storage
