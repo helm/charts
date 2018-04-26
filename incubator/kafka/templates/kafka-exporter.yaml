@@ -1,4 +1,4 @@
-{{- if .Values.metrics.kafka.enabled }}
+{{- if .Values.prometheus.kafka.enabled }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -12,20 +12,27 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "kafka.fullname" . }}-exporter
+      app: {{ template "kafka.name" . }}-exporter
+      release: {{ .Release.Name | quote }}
   template:
     metadata:
       annotations:
+{{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.operator.enabled) }}
         prometheus.io/scrape: "true"
-        prometheus.io/port: "9308"
+        prometheus.io/port: {{ .Values.prometheus.kafka.port | quote }}
+{{- end }}
       labels:
-        app: {{ template "kafka.fullname" . }}-exporter
+        app: {{ template "kafka.name" . }}-exporter
+        release: {{ .Release.Name | quote }}
     spec:
       containers:
-      - image: "{{ .Values.metrics.kafka.image }}:{{ .Values.metrics.kafka.imageTag }}"
+      - image: "{{ .Values.prometheus.kafka.image }}:{{ .Values.prometheus.kafka.imageTag }}"
         name: kafka-exporter
         args:
           - --kafka.server={{ template "kafka.fullname" . }}:9092
+          - --web.listen-address=:{{ .Values.prometheus.kafka.port }}
         ports:
-          - containerPort: 9308
+          - containerPort: {{ .Values.prometheus.kafka.port }}
+        resources:
+{{ toYaml .Values.prometheus.kafka.resources | indent 10 }}
 {{- end }}

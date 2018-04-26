@@ -99,6 +99,10 @@ spec:
         - name: configurations
           mountPath: /etc/mysql/conf.d
         {{- end }}
+        {{- if .Values.ssl.enabled }}
+        - name: certificates
+          mountPath: /ssl
+        {{- end }}
       {{- if .Values.metrics.enabled }}
       - name: metrics
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
@@ -137,6 +141,11 @@ spec:
       - name: configurations
         configMap:
           name: {{ template "mysql.fullname" . }}
+      {{- end }}
+      {{- if .Values.ssl.enabled }}
+      - name: certificates
+        secret:
+          secretName: {{ .Values.ssl.secret }}
       {{- end }}
       - name: data
       {{- if .Values.persistence.enabled }}
