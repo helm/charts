@@ -31,6 +31,7 @@ service:
   type: ClusterIP
   port: 80
   annotations: {}
+  labels: {}
 
 ingress:
   enabled: false
