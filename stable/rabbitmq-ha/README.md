@@ -198,4 +198,9 @@ $ helm install --name my-release --set customConfigMap=true stable/rabbitmq-ha
 
 ### Custom Secret
 
-Similar to custom ConfigMap, `customSecret` can be used to override the default secret.yaml provided.
+Similar to custom ConfigMap, `secret.autogenerate` and `secret.overrideName` can be used to override the default secret.yaml provided, and
+`rabbitmqCert.secret.autogenerate` and `rabbitmqCert.secret.overrideName` can be used to override the default certificates.
+
+### Prometheus Monitoring & Alerts
+
+Prometheus and its features can be enabled by setting `prometheus.enabled` to `true`.  See values.yaml for more details and configuration options
