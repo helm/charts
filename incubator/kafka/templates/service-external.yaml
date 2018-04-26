@@ -1,7 +1,7 @@
 {{- if .Values.external.enabled }}
   {{- $fullName := include "kafka.fullname" . }}
   {{- $replicas := .Values.replicaCount | int }}
-  {{- $servicePort := .Values.external.servicePort }}
+  {{- $servicePort := .Values.external.service.port }}
   {{- $root := . }}
   {{- range $i, $e := until $replicas }}
     {{- $externalListenerPort := add $root.Values.external.firstListenerPort $i }}
@@ -12,7 +12,7 @@ kind: Service
 metadata:
   annotations:
     ## ref: https://github.com/kubernetes/kops/blob/master/dns-controller/pkg/watchers/annotations.go#L21
-    dns.alpha.kubernetes.io/internal: "{{ $root.Release.Name }}.{{ $root.Values.external.domain }}"
+    dns.alpha.kubernetes.io/internal: "{{ $root.Values.external.service.dnsShortname }}.{{ $root.Values.external.domain }}"
   name: {{ $root.Release.Name }}-{{ $i }}-external
   labels:
     app: {{ template "kafka.name" $root }}

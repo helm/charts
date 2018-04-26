@@ -68,7 +68,7 @@ following configurable parameters:
 | `affinity`                     | Defines affinities and anti-affinities for pods as defined in: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity preferences                                                                                      | `{}`                                                       |
 | `tolerations`                  | List of node tolerations for the pods. https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/  | `[]`                                                       |
 | `external.enabled`             | If True, exposes Kafka brokers via NodePort (PLAINTEXT by default)                                              | `false`                                                    |
-| `external.servicePort`         | TCP port configured at external services (one per pod) to relay from NodePort to the external listener port.    | '19092'                                                    |
+| `external.service.port`         | TCP port configured at external services (one per pod) to relay from NodePort to the external listener port.    | '19092'                                                    |
 | `external.firstListenerPort`   | TCP port which is added pod index number to arrive at the port used for NodePort and external listener port.    | '31090'                                                    |
 | `external.domain`              | Domain in which to advertise Kafka external listeners.                                                          | `cluster.local`                                            |
 | `external.init`                | External init container settings.                                                                               | (see `values.yaml`)                                        |
@@ -178,7 +178,7 @@ container and NodePorts will be opened for external access: `31090`, `31091`, `3
 be reachable from any host to NodePorts are exposed because Kubernetes routes each NodePort from entry node
 to pod/container listening on the same port (e.g. `31091`).
 
-The `external.servicePort` at each external access service (one such service per pod) is a relay toward
+The `external.service.port` at each external access service (one such service per pod) is a relay toward
 the a `containerPort` with a number matching its respective `NodePort`. The range of NodePorts is set, but
 should not actually listen, on all Kafka pods in the StatefulSet. As any given pod will listen only one
 such port at a time, setting the range at every Kafka pod is a reasonably safe configuration.

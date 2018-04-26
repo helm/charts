@@ -168,9 +168,11 @@ logSubPath: "logs"
 ##
 external:
   enabled: false
-  servicePort: 19092
   firstListenerPort: 31090
   domain: cluster.local
+  service:
+    dnsShortname: kafka
+    port: 19092
 
 ## Init container. Adds pod labels.
 ##

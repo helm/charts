@@ -51,7 +51,7 @@ clients to point at the following brokers. Please allow a few minutes for all
 associated resources to become healthy.
   {{  $fullName := include "kafka.fullname" . }}
   {{- $replicaCount := .Values.replicaCount | int }}
-  {{- $servicePort := .Values.external.servicePort }}
+  {{- $servicePort := .Values.external.service.port }}
   {{- $externalFqdn := printf "%s.%s" .Release.Name .Values.external.domain }}
   {{- $root := . }}
   {{- range $i, $e := until $replicaCount }}
