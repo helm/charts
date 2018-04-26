@@ -289,8 +289,8 @@ prometheus:
 
   ## Prometheus is using Operator.  Setting to true will create Operator specific resources like ServiceMonitors and Alerts
   operator:
-    ## Are you using Prometheus Operator?
-    enabled: false
+    ## Are you using Prometheus Operator? [Blog Post](https://coreos.com/blog/the-prometheus-operator.html)
+    enabled: true
 
     ## Configures Alerts, which will be setup via Prometheus Operator / ConfigMaps.
     alerts:

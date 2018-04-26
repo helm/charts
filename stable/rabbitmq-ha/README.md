@@ -76,6 +76,20 @@ and their default values.
 | `persistentVolume.size`            | Persistent volume size                                          | `8Gi`                                                    |
 | `persistentVolume.storageClass`    | Persistent volume storage class                                 | `-`                                                      |
 | `podAntiAffinity`                  | Pod antiaffinity, `hard` or `soft`                              | `hard`                                                   |
+| `prometheus.exporter.enabled`      | Configures Prometheus Exporter to expose and scrape stats       | `true`                                                   |
+| `prometheus.exporter.env`          | Environment variables to set for Exporter container             | `{}`                                                   |
+| `prometheus.exporter.image.repository`   | Prometheus Exporter repository                              | `kbudde/rabbitmq-exporter`                                                   |
+| `prometheus.exporter.image.tag`   | Image Tag                          | `latest`                  |
+| `prometheus.exporter.image.pullPolicy`   | Image Pull Policy                          | `IfNotPresent`                  |
+| `prometheus.exporter.port`        | Port Prometheus scrapes for metrics                      | `9090`        |
+| `prometheus.exporter.resources`   | Resource Limits for Prometheus Exporter                  | `{}`                                                   |
+| `prometheus.operator.enabled`      | Are you using Prometheus Operator?  [Blog Post](https://coreos.com/blog/the-prometheus-operator.html)                       | `true`                                  |
+| `prometheus.operator.alerts.enabled`         | Create default Alerts for RabbitMQ       | `true`                                                   |
+| `prometheus.operator.alerts.selector`        | Selector to find ConfigMaps and create Prometheus Alerts    | `alert-rules`                                                   |
+| `prometheus.operator.alerts.labels`          | Labels to add to Alerts                         | `{}`         |
+| `prometheus.operator.serviceMonitor.interval`           | How often Prometheus Scrapes metrics                       | `10s`                                                   |
+| `prometheus.operator.serviceMonitor.namespace`                  | Namespace which Prometheus is installed                              | `monitoring`                                                   |
+| `prometheus.operator.serviceMonitor.selector`                  | Label Selector for Prometheus to find ServiceMonitors                     | `{ prometheus: kube-prometheus }`                                                   |
 | `rabbitmqCert.enabled`             | Mount a Secret container certificates                           | `false`                                                  |
 | `rabbitmqCert.existingSecret`      | Name of an existing `Secret` to mount for amqps                 | ``                                                       |
 | `rabbitmqCert.cacertfile`          | base64 encoded CA certificate (overwrites existing Secret)      | ``                                                       |
