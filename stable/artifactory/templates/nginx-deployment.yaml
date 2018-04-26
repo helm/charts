@@ -81,14 +81,14 @@ spec:
         readinessProbe:
           httpGet:
             path: '/artifactory/webapp/#/login'
-            port: 8081
+            port: 80
           initialDelaySeconds: 60
           periodSeconds: 10
           failureThreshold: 10
         livenessProbe:
           httpGet:
             path: '/artifactory/webapp/#/login'
-            port: 8081
+            port: 80
           initialDelaySeconds: 180
           periodSeconds: 10
       volumes:
