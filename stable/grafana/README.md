@@ -39,6 +39,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `service.type`             | Kubernetes service type | `ClusterIP` |
 | `service.port`             | Kubernetes port where service is exposed| `9000` |
 | `service.annotations`      | Service annotations | `80` |
+| `service.labels`           | Custom labels                       | `{}`
 | `ingress.enabled`          | Enables Ingress | `false` |
 | `ingress.annotations`      | Ingress annotations | `{}` |
 | `ingress.hosts`            | Ingress accepted hostnames | `[]` |
