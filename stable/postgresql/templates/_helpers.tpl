@@ -34,3 +34,10 @@ Return the appropriate apiVersion for networkpolicy.
 "networking.k8s.io/v1"
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "postgresql.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}

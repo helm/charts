@@ -4,14 +4,15 @@ apiVersion: {{ template "postgresql.networkPolicy.apiVersion" . }}
 metadata:
   name: "{{ template "postgresql.fullname" . }}"
   labels:
-    app: {{ template "postgresql.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "postgresql.name" . }}
+    chart: {{ template "postgresql.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   podSelector:
     matchLabels:
-      app: "{{ template "postgresql.fullname" . }}"
+      app: {{ template "postgresql.name" . }}
+      release: {{ .Release.Name }}
   ingress:
     # Allow inbound connections
     - ports:
