@@ -19,6 +19,11 @@ spec:
       labels:
         app: {{ template "docker-registry.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- if $.Values.podAnnotations }}
+{{ toYaml $.Values.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
