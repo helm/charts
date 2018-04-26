@@ -1,0 +1,35 @@
+# Test values for ethereum for CI
+
+imagePullPolicy: IfNotPresent
+
+bootnode:
+  image:
+    repository: ethereum/client-go
+    tag: alltools-v1.7.3
+
+ethstats:
+  image:
+    repository: ethereumex/eth-stats-dashboard
+    tag: v0.0.1
+  webSocketSecret: my-secret-for-connecting-to-ethstats
+  service:
+    type: LoadBalancer
+
+geth:
+  image:
+    repository: ethereum/client-go
+    tag: v1.7.3
+  tx:
+    replicaCount: 2
+    service:
+      type: ClusterIP
+  miner:
+    replicaCount: 3
+  genesis:
+    difficulty: '0x0400'
+    gasLimit: '0x8000000'
+    networkId: 98052
+  account:
+    address: 0xab70383d9207c6cc43ab85eeef9db4d33a8ad4e8
+    privateKey: 38000e15ca07309cc2d0b30faaaadb293c45ea222a117e9e9c6a2a9872bb3bcf
+    secret: my-super-secret-passphrase

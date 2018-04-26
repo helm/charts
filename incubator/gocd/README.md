@@ -4,6 +4,10 @@
 
 [GoCD](https://www.gocd.org/) is an open-source continuous delivery server to model and visualize complex workflow with ease.
 
+# Deprecation
+
+The GoCD Helm chart has been moved the stable. This chart in incubator will no longer be maintained. Please switch to the stable GoCD Helm chart.
+
 # Introduction
 
 This chart bootstraps a single node GoCD server and GoCD agents on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
@@ -59,7 +63,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the GoCD chart and their default values.
+The following tables list the configurable parameters of the GoCD chart and their default values.
 
 ### GoCD Server
 
@@ -122,7 +126,7 @@ $ helm install --namespace gocd --name gocd-app -f values.yaml incubator/gocd
 By default, the GoCD helm chart supports dynamic volume provisioning. This means that the standard storage class with a default provisioner provided by various cloud platforms used. 
 Refer to the [Kubernetes blog](http://blog.kubernetes.io/2017/03/dynamic-provisioning-and-storage-classes-kubernetes.html) to know more about the default provisioners across platforms.
 
-> **Note**: The recalim policy for most default volume provisioners is `delete`. This means that, the persistent volume provisioned using the default provisioner will be deleted along with the data when the PVC gets deleted.
+> **Note**: The reclaim policy for most default volume provisioners is `delete`. This means that, the persistent volume provisioned using the default provisioner will be deleted along with the data when the PVC gets deleted.
 
 One can change the storage class to be used by overriding `server.persistence.storageClass` and `agent.persistence.storageClass` like below:
 

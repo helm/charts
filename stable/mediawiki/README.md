@@ -43,12 +43,15 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the MediaWiki chart and their default values.
+The following table lists the configurable parameters of the MediaWiki chart and their default values.
 
 |              Parameter               |               Description                |                         Default                         |
 |--------------------------------------|------------------------------------------|---------------------------------------------------------|
-| `image`                              | MediaWiki image                          | `bitnami/mediawiki:{VERSION}`                           |
-| `imagePullPolicy`                    | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.registry`                     | MediaWiki image registry                 | `docker.io`                                             |
+| `image.repository`                   | MwdiaWiki Image name                     | `bitnami/mediawiki`                                     |
+| `image.tag`                          | MediaWiki Image tag                      | `{VERSION}`                                             |
+| `image.pullPolicy`                   | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`                  | Specify image pull secrets               | `nil`                                                   |
 | `mediawikiUser`                      | User of the application                  | `user`                                                  |
 | `mediawikiPassword`                  | Application password                     | _random 10 character long alphanumeric string_          |
 | `mediawikiEmail`                     | Admin email                              | `user@example.com`                                      |
@@ -62,7 +65,7 @@ The following tables lists the configurable parameters of the MediaWiki chart an
 | `externalDatabase.host`              | Host of the external database            | `nil`                                                   |
 | `externalDatabase.user`              | Existing username in the external db     | `bn_mediawiki`                                          |
 | `externalDatabase.password`          | Password for the above username          | `nil`                                                   |
-| `externalDatabase.database`          | Name of the existing databse             | `bitnami_mediawiki`                                     |
+| `externalDatabase.database`          | Name of the existing database             | `bitnami_mediawiki`                                     |
 | `mariadb.enabled`                    | Use or not the mariadb chart             | `true`                                                  |
 | `mariadb.mariadbRootPassword`        | MariaDB admin password                   | `nil`                                                   |
 | `mariadb.mariadbDatabase`            | Database name to create                  | `bitnami_mediawiki`                                     |
@@ -88,7 +91,7 @@ $ helm install --name my-release \
     stable/mediawiki
 ```
 
-The above command sets the MediaWiki administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the MediaWiki administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 

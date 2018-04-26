@@ -1,6 +1,6 @@
 # Elastalert Helm Chart
 
-[elastalert](https://github.com/Yelp/elastalert) a simple framework for alerting on anomalies, spikes, or other patterns of interest from data in Elasticsearch.
+[elastalert](https://github.com/Yelp/elastalert) is a simple framework for alerting on anomalies, spikes, or other patterns of interest from data in Elasticsearch.
 
 ## TL;DR;
 
@@ -32,11 +32,13 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Parameter                 | Description                                         | Default                           |
 |---------------------------|-----------------------------------------------------|-----------------------------------|
-| `image.repository`        | docker image                                        | quay.io/pickledrick/elastalert    |
-| `image.tag`               | docker image tag                                    | latest                            |
+| `image.repository`        | docker image                                        | jertel/elastalert-docker    |
+| `image.tag`               | docker image tag                                    | 0.1.29                            |
 | `image.pullPolicy`        | image pull policy                                   | IfNotPresent                      |
 | `replicaCount`            | number of replicas to run                           | 1                                 |
 | `elasticsearch.host`      | elasticsearch endpoint to use                       | elasticsearch                     |
 | `elasticsearch.port`      | elasticsearch port to use                           | 80                                |
 | `resources`               |  Container resource requests and limits             | {}                                |
 | `rules`                   | Rule and alert configuration for Elastalert         | {} example shown in values.yaml   |
+| `runIntervalMins`         | Default interval between alert checks, in minutes   | 1                                 |
+| `bufferTimeMins`          | Default rule buffer time, in minutes                | 15                                |

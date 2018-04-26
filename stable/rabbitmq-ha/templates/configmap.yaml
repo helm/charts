@@ -31,6 +31,10 @@ data:
       rabbitmq_web_stomp,
       {{- end }}
 
+      {{- if .Values.rabbitmqAuth.enabled }}
+      rabbitmq_auth_mechanism_ssl,
+      {{- end }}
+
       rabbitmq_consistent_hash_exchange,
       rabbitmq_federation,
       rabbitmq_federation_management,
@@ -44,12 +48,19 @@ data:
     ## RabbitMQ configuration
     ## Ref: https://github.com/rabbitmq/rabbitmq-server/blob/master/docs/rabbitmq.conf.example
 
+    ## Authentification
+    {{- if .Values.rabbitmqAuth.enabled }}
+{{ .Values.rabbitmqAuth.config | indent 4 }}
+    {{- end }}
+
     ## Clustering
     cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
     cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
-    cluster_formation.k8s.address_type = ip
+    cluster_formation.k8s.address_type = hostname
     cluster_formation.node_cleanup.interval = 10
-    cluster_formation.node_cleanup.only_log_warning = false
+    # Set to false if automatic cleanup of absent nodes is desired.
+    # This can be dangerous, see http://www.rabbitmq.com/cluster-formation.html#node-health-checks-and-cleanup.
+    cluster_formation.node_cleanup.only_log_warning = true
     cluster_partition_handling = autoheal
 
     ## The default "guest" user is only permitted to access the server
@@ -83,4 +94,10 @@ data:
     {{- if .Values.rabbitmqWebSTOMPPlugin.enabled }}
 {{ .Values.rabbitmqWebSTOMPPlugin.config | indent 4 }}
     {{- end }}
+
+    ## AMQPS support
+    {{- if .Values.rabbitmqAmqpsSupport.enabled }}
+{{ .Values.rabbitmqAmqpsSupport.config | indent 4 }}
+    {{- end }}
+
 {{- end }}

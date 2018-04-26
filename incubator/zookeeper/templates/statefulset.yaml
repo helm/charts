@@ -18,6 +18,10 @@ spec:
         app: {{ include "zookeeper.name" . | quote }}
         release: {{ .Release.Name | quote }}
     spec:
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}

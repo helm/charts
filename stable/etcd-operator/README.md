@@ -47,15 +47,15 @@ Work around options are documented [here](https://github.com/coreos/etcd-operato
 
 ## Configuration
 
-The following tables lists the configurable parameters of the etcd-operator chart and their default values.
+The following table lists the configurable parameters of the etcd-operator chart and their default values.
 
 | Parameter                                         | Description                                                          | Default                                        |
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
-| `rbac.create`                                     | install required rbac service account, roles and rolebindings        | `true`                                         |
-| `rbac.apiVersion`                                 | rbac api version `v1alpha1|v1beta1`                                  | `v1beta1`                                      |
-| `rbac.etcdOperatorServiceAccountName`             | Name of the service account resource when rbac is enabled            | `etcd-operator-sa`                                      |
-| `rbac.backupOperatorServiceAccountName`           | Name of the service account resource when rbac is enabled            | `etcd-backup-operator-sa`                                      |
-| `rbac.restoreOperatorServiceAccountName`          | Name of the service account resource when rbac is enabled            | `etcd-restore-operator-sa`                                      |
+| `rbac.create`                                     | install required RBAC service account, roles and rolebindings        | `true`                                         |
+| `rbac.apiVersion`                                 | RBAC api version `v1alpha1|v1beta1`                                  | `v1beta1`                                      |
+| `rbac.etcdOperatorServiceAccountName`             | Name of the service account resource when RBAC is enabled            | `etcd-operator-sa`                                      |
+| `rbac.backupOperatorServiceAccountName`           | Name of the service account resource when RBAC is enabled            | `etcd-backup-operator-sa`                                      |
+| `rbac.restoreOperatorServiceAccountName`          | Name of the service account resource when RBAC is enabled            | `etcd-restore-operator-sa`                                      |
 | `deployments.etcdOperator`                        | Deploy the etcd cluster operator                                     | `true`                                         |
 | `deployments.backupOperator`                      | Deploy the etcd backup operator                                      | `true`                                         |
 | `deployments.restoreOperator`                     | Deploy the etcd restore operator                                     | `true`                                         |
@@ -139,11 +139,11 @@ You also need to have the following parameter on the api server. See the followi
 --authorization-mode=RBAC
 ```
 
-If the output contains "beta" or both "alpha" and "beta" you can may install rbac by default, if not, you may turn rbac off as described below.
+If the output contains "beta" or both "alpha" and "beta" you can may install rbac by default, if not, you may turn RBAC off as described below.
 
 ### RBAC role/rolebinding creation
 
-RBAC resources are enabled by default. To disable rbac do the following:
+RBAC resources are enabled by default. To disable RBAC do the following:
 
 ```console
 $ helm install --name my-release stable/etcd-operator --set rbac.create=false
