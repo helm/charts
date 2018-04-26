@@ -34,3 +34,23 @@ Return the appropriate apiVersion for networkpolicy.
 "networking.k8s.io/v1"
 {{- end -}}
 {{- end -}}
+
+{{/*
+    generates a yaml secretKeyRef env structure and expects the following structure as input (dict):
+    ```
+    secretKeyRefs:
+        <container-env-var-name>:
+            name: <secret resource name> (optional, defaults to postgresql.fullname as secret resource name)
+            key: <secret resource entry>
+    ```
+*/}}
+{{- define "postgresql.secretKeyRefs" -}}
+{{- $global := . -}}
+{{- range $k, $v := .Values.secretKeyRefs }}
+- name: {{ $k | upper | quote }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ default (include "postgresql.fullname" $global) $v.name | quote }}
+      key: {{ $v.key | quote }}
+{{- end -}}
+{{- end -}}
