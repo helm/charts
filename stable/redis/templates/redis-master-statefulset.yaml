@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: {{ template "apps.apiVersion" $ }}
 kind: StatefulSet
 metadata:
   name: {{ template "redis.fullname" . }}-master

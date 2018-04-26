@@ -1,6 +1,6 @@
 {{- if .Values.networkPolicy.enabled }}
 kind: NetworkPolicy
-apiVersion: {{ template "networkPolicy.apiVersion" . }}
+apiVersion: "networking.k8s.io/v1"
 metadata:
   name: "{{ template "redis.fullname" . }}"
   labels:
