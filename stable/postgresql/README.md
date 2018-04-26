@@ -93,6 +93,8 @@ $ helm install --name my-release \
 
 The above command creates a PostgreSQL user named `my-user` with password `secretpassword`. Additionally it creates a database named `my-database`.
 
+`postgresPassword` can alternatively be provided as map containing the name of an external `Secret` and key which contains this password.
+
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash

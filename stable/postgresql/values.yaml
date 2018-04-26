@@ -21,6 +21,9 @@ imageTag: "9.6.2"
 # postgresUser:
 ## Default: random 10 character string
 # postgresPassword:
+## Alternately, can be provided a map of a Secret name, and key.
+#   secret: # defaults to `postgresql.fullname` template.
+#   key: # defaults to `postgres-password`, used only when `secret` is provided.
 
 ## Inject postgresPassword via a volume mount instead of environment variable
 usePasswordFile: false
