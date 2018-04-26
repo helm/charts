@@ -217,7 +217,7 @@ spec:
         - name: cert
           secret:
             defaultMode: 420
-            secretName: {{ .Values.rabbitmqCert.existingSecret | default (printf "%s-cert" (include "rabbitmq-ha.fullname" . )) }}
+            secretName: {{ .Values.rabbitmqCert.secret.overrideName | default (printf "%s-cert" (include "rabbitmq-ha.fullname" . )) }}
         {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:

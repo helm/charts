@@ -93,10 +93,11 @@ and their default values.
 | `prometheus.operator.serviceMonitor.namespace`                  | Namespace which Prometheus is installed                              | `monitoring`                                                   |
 | `prometheus.operator.serviceMonitor.selector`                  | Label Selector for Prometheus to find ServiceMonitors                     | `{ prometheus: kube-prometheus }`                                                   |
 | `rabbitmqCert.enabled`             | Mount a Secret container certificates                           | `false`                                                  |
-| `rabbitmqCert.existingSecret`      | Name of an existing `Secret` to mount for amqps                 | ``                                                       |
 | `rabbitmqCert.cacertfile`          | base64 encoded CA certificate (overwrites existing Secret)      | ``                                                       |
 | `rabbitmqCert.certfile`            | base64 encoded server certificate (overwrites existing Secret)  | ``                                                       |
 | `rabbitmqCert.keyfile`             | base64 encoded server private key (overwrites existing Secret)  | ``                                                       |
+| `rabbitmqCert.secret.autogenerate`      | Autogenerate Certificates file                 | `true`                                                       |
+| `rabbitmqCert.secret.overrideName`      | Override Certificate Secret Name                 | ``                                                       |
 | `rabbitmqEpmdPort`                 | EPMD port used for cross cluster replication                    | `4369`                                                   |
 | `rabbitmqErlangCookie`             | Erlang cookie                                                   | _random 32 character long alphanumeric string_           |
 | `rabbitmqHipeCompile`              | Precompile parts of RabbitMQ using HiPE                         | `false`                                                  |
@@ -115,10 +116,12 @@ and their default values.
 | `rabbitmqWebSTOMPPlugin.config`    | STOMP over websocket configuration                              | ``                                                       |
 | `rabbitmqWebSTOMPPlugin.enabled`   | Enable STOMP over websocket plugin                              | `false`                                                  |
 | `rbac.create`                      | If true, create & use RBAC resources                            | `true`                                                   |
-| `serviceAccount.create`            | Create service account                                          | `true`                                                   |
-| `serviceAccount.name`              | Service account name to use                                     | _name of the release_                                    |
 | `replicaCount`                     | Number of replica                                               | `3`                                                      |
 | `resources`                        | CPU/Memory resource requests/limits                             | `{}`                                                     |
+| `secret.autogenerate`      | Autogenerate Secrets for Password & Erlang Cookie                 | `true`                                                       |
+| `secret.overrideName`      | Override Secret Name for Password & Erlang Cookie                | ``                                                       |
+| `serviceAccount.create`            | Create service account                                          | `true`                                                   |
+| `serviceAccount.name`              | Service account name to use                                     | _name of the release_                                    |
 | `service.annotations`              | Annotations to add to service                                   | `none`                                                   |
 | `service.clusterIP`                | IP address to assign to service                                 | `""`                                                     |
 | `service.externalIPs`              | Service external IP addresses                                   | `[]`                                                     |

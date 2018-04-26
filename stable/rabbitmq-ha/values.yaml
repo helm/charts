@@ -41,8 +41,13 @@ rabbitmqHipeCompile: false
 rabbitmqCert:
   enabled: false
 
-  ## Specify an existing secret to use
-  existingSecret: |
+  secret:
+    ## Autogenerate Certificate secret, defaults to true.  If false a Certificate secret must be created outside of this chart
+    autogenerate: true
+
+    ## Allows overriding secret name, Defaults to: {{ template "rabbitmq-ha.fullname" . }}-cert
+    overrideName: ""
+
 
   ## Create a new secret using these values
   cacertfile: |
@@ -216,10 +221,6 @@ podAntiAffinity: soft
 ##
 customConfigMap: false
 
-## Create default Secret
-##
-customSecret: false
-
 ## Role Based Access
 ## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
 ##
@@ -271,7 +272,7 @@ secret:
   autogenerate: true
 
   ## Allows overriding secret name, Defaults to: {{ template "rabbitmq-ha.fullname" . }}
-  # overrideName: mysecret
+  overrideName: ""
 
 prometheus:
   ## Configures Prometheus Exporter to expose and scrape stats.
