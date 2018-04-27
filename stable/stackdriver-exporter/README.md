@@ -72,6 +72,7 @@ Parameter                           | Description                          | Def
 `stackdriver.metrics.offset`        | Offset (into the past) to request    | `0s`
 `web.listenAddress`                 | Port to listen on                    | `9255`
 `web.path`                          | Path under which to expose metrics   | `/metrics`
+`annoations`                        | Deployment annotations               | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`. For example,
