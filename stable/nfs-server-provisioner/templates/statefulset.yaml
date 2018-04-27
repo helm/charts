@@ -56,7 +56,7 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             - name: SERVICE_NAME
-              value: {{ .Chart.Name }}
+              value: {{ template "nfs-provisioner.fullname" . }}
             - name: POD_NAMESPACE
               valueFrom:
                 fieldRef:
