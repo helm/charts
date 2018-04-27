@@ -21,7 +21,7 @@ resources:
 nodeSelector: {}
 tolerations: []
 
-# Affinity per Pod type
+## Affinity per Pod type
 affinity:
   servers: {}
   sentinels: {}
