@@ -73,8 +73,6 @@ spec:
         volumeMounts:
           - mountPath: /redis-master-data
             name: data
-      volumes:
-      - name: data
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
