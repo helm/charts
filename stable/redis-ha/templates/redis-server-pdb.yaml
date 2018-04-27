@@ -2,6 +2,9 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: {{ template "redis-ha.fullname" . }}-server-pdb
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+{{ toYaml .Values.extraLabels | indent 4 }}
 spec:
   minAvailable: 2
   selector:

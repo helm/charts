@@ -23,8 +23,12 @@ tolerations: []
 
 # Affinity per Pod type
 affinity:
-  # servers:
-  # sentinels:
+  servers: {}
+  sentinels: {}
+
+## Additional labels to set on all resources
+extraLabels:
+# mylabel: myvalue
 
 ## Redis image version
 image: kumina/redis-ha-k8s:4.0.9-r0-5

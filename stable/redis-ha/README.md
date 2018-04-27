@@ -69,6 +69,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `affinity.sentinels`             | Affinity for the sentinels                            | ``                                                        |
 | `nodeSelector`                   | Node labels for pod assignment                        | {}                                                        |
 | `tolerations`                    | Toleration labels for pod assignment                  | []                                                        |
+| `extraLabels`                    | Extra labels to add to all resources                  | {}                                                        |
 | `servers.serviceType`            | Set to "LoadBalancer" to enable access from the VPC   | ClusterIP                                                 |
 | `servers.annotations`            | See Appliance mode                                    | ``                                                        |
 | `serviceAccount.create`          | If true, create & use RBAC resources                  | `false`                                                   |
