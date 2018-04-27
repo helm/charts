@@ -210,6 +210,8 @@ slave:
   ## Comma-separated list of Redis commands to disable
   # disableCommands: ""
 
+  podAntiAffinity: false
+
   ## Redis slave Liveness Probe
   # livenessProbe:
   #   enabled: true
