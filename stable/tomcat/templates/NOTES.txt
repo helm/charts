@@ -1,3 +1,6 @@
-To verify that {{ .Values.service.frontend.selector.app }} has started, run:
-
-  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ .Values.service.frontend.selector.app }}"
+1. Get the application URL by running these commands:
+export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "tomcat.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+echo http://$SERVICE_IP:{{ .Values.service.externalPort }}
+export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "tomcat.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl port-forward $POD_NAME {{ .Values.service.internalPort }}:{{ .Values.service.externalPort }}

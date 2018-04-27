@@ -1,19 +1,19 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "tomcat.name" . }}
+  name: {{ template "tomcat.fullname" . }}
   labels:
-    app: {{ template "tomcat.name" . }}
-    tier: {{ .Values.service.frontend.selector.tier }}
-    chart: {{ template "tomcat.chart" . }}
+    app: {{ template "tomcat.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  type: {{ .Values.service.frontend.type }}
+  type: {{ .Values.service.type }}
   ports:
-    - name: http
+    - port: {{ .Values.service.externalPort }}
+      targetPort: {{ .Values.service.internalPort }}
       protocol: TCP
-      port: {{.Values.service.frontend.port}}
+      name: {{ .Values.service.name }}
   selector:
-    app: {{.Values.service.frontend.selector.app}}
-    tier: {{.Values.service.frontend.selector.tier}}
+    app: {{ template "tomcat.name" . }}
+    release: {{ .Release.Name }}
