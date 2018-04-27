@@ -91,4 +91,15 @@ rules:
     - watch
     - list
     - get
+{{- if .Values.rbac.pspEnabled }}
+  - apiGroups:
+    - extensions
+    resources:
+    - podsecuritypolicies
+    resourceNames:
+    - privileged-{{ template "cluster-autoscaler.fullname" . }}
+    verbs:
+    - use
+{{- end -}}
+
 {{- end -}}
