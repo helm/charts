@@ -70,6 +70,9 @@ deployment:
   # dogstatsdNodePort: 8125
   # traceNodePort: 8126
 
+secret:
+  create: true
+
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
 ##

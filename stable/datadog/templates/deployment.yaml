@@ -1,5 +1,5 @@
 {{- if .Values.deployment.enabled }}
-{{- if .Values.datadog.apiKey }}
+{{- if (or (not .Values.secret.create) (.Values.datadog.apiKey)) }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
