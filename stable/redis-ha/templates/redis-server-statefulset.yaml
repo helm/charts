@@ -61,6 +61,8 @@ spec:
         env:
           - name: MAX_MEMORY
             value: {{ .Values.maxMemory }}
+          - name: MAX_MEMORY_POLICY
+            value: {{ .Values.maxMemoryPolicy }}
           - name: REDIS_SENTINEL_SERVICE_HOST
             value: "redis-sentinel"
           - name: REDIS_CHART_PREFIX

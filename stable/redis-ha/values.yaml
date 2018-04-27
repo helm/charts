@@ -49,6 +49,9 @@ serviceAccount:
 
 ## Max memory to use for each redis instance. Default is unlimited.
 maxMemory: ""
+## The policy to use for clearing memory when hitting maxMemory. A full list can be found here:
+## https://redis.io/topics/lru-cache#eviction-policies
+maxMemoryPolicy: "noeviction"
 
 ## Configures redis with AUTH (requirepass & masterauth conf params)
 auth: false

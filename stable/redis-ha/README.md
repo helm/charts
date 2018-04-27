@@ -73,6 +73,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `servers.annotations`            | See Appliance mode                                    | ``                                                        |
 | `serviceAccount.create`          | If true, create & use RBAC resources                  | `false`                                                   |
 | `maxMemory`                      | Sets the maximum memory redis can allocate            | "" This defaults to the maximum memory allowed            |
+| `maxMemoryPolicy`                | Set the policy to use for key eviction                | `noeviction`                                              |
 | `persistentVolume.enabled`       | Set to true if you want to use a PV                   | `false`                                                   |
 | `persistentVolume.accessMode`    | The mode with which to access the PV                  | `ReadWriteOnce`                                           |
 | `persistentVolume.size`          | The size of the PV                                    | `8Gi`                                                     |
@@ -85,7 +86,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install \
-  --set image=quay.io/bzumhagen/kube-redis-ha:4.0.6-2 \
+  --set image=kumina/redis-ha-k8s:4.0.9-r0-5 \
     stable/redis-ha
 ```
 
