@@ -64,4 +64,4 @@ spec:
             claimName: {{ .Values.persistence.existingClaim | default (include "airflow.fullname" .) }}
         {{- else }}
           emptyDir: {}
-        {{- end -}}
+        {{- end }}
