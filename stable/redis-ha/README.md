@@ -73,6 +73,10 @@ The following table lists the configurable parameters of the Redis chart and the
 | `servers.annotations`            | See Appliance mode                                    | ``                                                        |
 | `serviceAccount.create`          | If true, create & use RBAC resources                  | `false`                                                   |
 | `max_memory`                     | Sets the maximum memory redis can allocate            | "" This defaults to the maximum memory allowed            |
+| `persistentVolume.enabled`       | Set to true if you want to use a PV                   | `false`                                                   |
+| `persistentVolume.accessMode`    | The mode with which to access the PV                  | `ReadWriteOnce`                                           |
+| `persistentVolume.size`          | The size of the PV                                    | `8Gi`                                                     |
+| `persistentVolume.annotations`   | Annotations for the PV                                | ``                                                        |
 
 
 
