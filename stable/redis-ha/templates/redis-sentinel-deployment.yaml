@@ -4,7 +4,9 @@ metadata:
   name: {{ template "redis-ha.fullname" . }}-sentinel
   labels:
 {{ include "labels.standard" . | indent 4 }}
+  {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.replicas.sentinels }}
   template:
@@ -14,7 +16,9 @@ spec:
         release: {{ .Release.Name }}
         component: sentinel
         name: {{ template "redis-ha.fullname" . }}-sentinel
+     {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 8 }}
+     {{- end }}
     spec:
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
       {{- if .Values.nodeSelector }}

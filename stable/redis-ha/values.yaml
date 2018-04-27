@@ -27,7 +27,7 @@ affinity:
   sentinels: {}
 
 ## Additional labels to set on all resources
-extraLabels:
+extraLabels: {}
 # mylabel: myvalue
 
 ## Redis image version

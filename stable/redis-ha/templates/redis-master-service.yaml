@@ -4,7 +4,9 @@ metadata:
   name: {{ template "redis-ha.fullname" . }}-master-svc
   labels:
 {{ include "labels.standard" . | indent 4 }}
+  {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
+  {{- end }}
   annotations:
 {{ toYaml .Values.servers.annotations | indent 4 }}
 spec:

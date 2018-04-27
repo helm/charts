@@ -4,7 +4,9 @@ metadata:
   name: {{ template "redis-ha.fullname" . }}-server-pdb
   labels:
 {{ include "labels.standard" . | indent 4 }}
+  {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
+  {{- end }}
 spec:
   minAvailable: 2
   selector:
