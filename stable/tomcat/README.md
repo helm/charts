@@ -49,16 +49,14 @@ Parameter                       | Description                           | Defaul
 `image.tomcat.tag`              | `tomcat` release tag.                 | `7.0`
 `image.pullPolicy`              | Image pull policy                     | `IfNotPresent`
 `deploy.directory`              | Webarchive deployment directory       | `/root/apache-tomcat-7.0.42-v2/webapps`
-`service.host.port`             | Tomcat host port                      | `8001`
-`service.frontend.port`         | Frontend port                         | `8080`
-`service.frontend.type`         | k8s service Frontend type             | `LoadBalancer`
-`service.frontend.selector.app` | k8s service app selector              | `tomcat`
-`service.frontend.selector.tier`| k8s service tier selector             | `frontend`
+`service.name`                  | Tomcat service name                   | `http`
+`service.externalPort`          | Kubernetes service port               | `80`
+`service.internalPort`          | Tomcat front port                     | `8080`
+`service.type`                  | Kubernetes service type               | `LoadBalancer`
 `resources`                     | CPU/Memory resource requests/limits   | `{}`
-`nodeSelector.key`              | Node affinity node label key          | `{}`
-`nodeSelector.value`            | Node affinity node label value        | `{}`
-`tolerations.key`               | Node tolerations node label key       | `{}`
-`tolerations.value`             | Node tolerations node label value     | `{}`
+`nodeSelector`                  | Node affinity                         | `{}`
+`tolerations`                   | Node tolerations                      | `{}`
+`cmd.start`                     | Servlet Container start cmd           | `{}`
 
 Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are a mixture of Kubernetes and tomcat-related directives that map to environment variables. 
 
