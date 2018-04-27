@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-server-svc
+  name: {{ template "redis-ha.fullname" . }}-server-svc
   annotations:
 {{ toYaml .Values.servers.annotations | indent 4 }}
 spec:
@@ -22,7 +22,7 @@ metadata:
     redis-node: "true"
 {{ include "labels.standard" . | indent 4 }}
 spec:
-  serviceName: {{ template "fullname" . }}-server-svc
+  serviceName: {{ template "redis-ha.fullname" . }}-server-svc
   replicas: {{ .Values.replicas.servers }}
   template:
     metadata:

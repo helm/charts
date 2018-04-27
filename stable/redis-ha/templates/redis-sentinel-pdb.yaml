@@ -1,7 +1,7 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "fullname" . }}-sentinel-pdb
+  name: {{ template "redis-ha.fullname" . }}-sentinel-pdb
 spec:
   minAvailable: 2
   selector:

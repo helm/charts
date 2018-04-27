@@ -1,7 +1,7 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "fullname" . }}-server-pdb
+  name: {{ template "redis-ha.fullname" . }}-server-pdb
 spec:
   minAvailable: 2
   selector:
