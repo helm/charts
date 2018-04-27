@@ -22,7 +22,7 @@ nodeSelector: {}
 tolerations: []
 
 ## Redis image version
-redis_image: quay.io/bzumhagen/kube-redis-ha:4.0.6-2
+redis_image: kumina/redis-ha-k8s:4.0.9-r0-5
 ## replicas number for each component
 replicas:
   servers: 3
@@ -53,3 +53,12 @@ auth: false
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/redis-ha/templates/redis-auth-secret.yaml
 ##
 ## redisPassword:
+
+## When persistent volumes are required, set these
+persistentVolume:
+  enabled: false
+  # storageClass: "-"
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
+  annotations: {}
