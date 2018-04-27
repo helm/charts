@@ -13,10 +13,10 @@ image:
 deploy:
   directory: /root/apache-tomcat-7.0.42-v2/webapps
 service:
-    name: http
-    type: LoadBalancer
-    externalPort: 80
-    internalPort: 8080
+  name: http
+  type: LoadBalancer
+  externalPort: 80
+  internalPort: 8080
 resources:
   limits:
     cpu: 100m
