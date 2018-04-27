@@ -16,9 +16,7 @@ spec:
   template:
     metadata:
       annotations:
-        prometheus.io/path: /metrics
-        prometheus.io/port: "9121"
-        prometheus.io/scrape: "true"
+{{ toYaml .Values.annotations | indent 8 }}
       labels:
         app: {{ template "prometheus-redis-exporter.name" . }}
         release: {{ .Release.Name }}
