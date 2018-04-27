@@ -80,7 +80,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `backupOperator.resources.memory`                 | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
 | `backupOperator.spec.storageType`                 | Storage to use for backup file, currently only S3 supported          | `S3`                                           |
 | `backupOperator.spec.s3.s3Bucket`                 | Bucket in S3 to store backup file                                    |                                                |
-| `backupOperator.spec.s3.awsSecret`                | Name of kubernetes secrete containing aws credentials                |                                                |
+| `backupOperator.spec.s3.awsSecret`                | Name of kubernetes secret containing aws credentials                |                                                |
 | `backupOperator.nodeSelector`                     | Node labels for etcd operator pod assignment                         | `{}`                                           |
 | `backupOperator.commandArgs`                      | Additional command arguments                                         | `{}`                                           |
 | `restoreOperator.name`                            | Restore operator name                                                | `etcd-backup-operator`                         |
@@ -91,7 +91,7 @@ The following table lists the configurable parameters of the etcd-operator chart
 | `restoreOperator.resources.cpu`                   | CPU limit per etcd-operator pod                                      | `100m`                                         |
 | `restoreOperator.resources.memory`                | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
 | `restoreOperator.spec.s3.path`                    | Path in S3 bucket containing the backup file                         |                                                |
-| `restoreOperator.spec.s3.awsSecret`               | Name of kubernetes secrete containing aws credentials                |                                                |
+| `restoreOperator.spec.s3.awsSecret`               | Name of kubernetes secret containing aws credentials                |                                                |
 | `restoreOperator.nodeSelector`                    | Node labels for etcd operator pod assignment                         | `{}`                                           |
 | `restoreOperator.commandArgs`                     | Additional command arguments                                         | `{}`                                           |
 | `etcdCluster.name`                                | etcd cluster name                                                    | `etcd-cluster`                                 |
