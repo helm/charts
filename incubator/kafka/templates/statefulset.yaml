@@ -34,6 +34,9 @@ spec:
       - name: init-ext
         image: "{{ .Values.external.init.image }}:{{ .Values.external.init.imageTag }}"
         imagePullPolicy: "{{ .Values.external.init.imagePullPolicy }}"
+        {{- if .Values.rbac.enabled }}
+        serviceAccountName: {{ .Release.Name }}
+        {{- end }}
         command:
           - sh
           - -euxc
