@@ -21,6 +21,11 @@ resources:
 nodeSelector: {}
 tolerations: []
 
+# Affinity per Pod type
+affinity:
+  # servers:
+  # sentinels:
+
 ## Redis image version
 redis_image: kumina/redis-ha-k8s:4.0.9-r0-5
 ## replicas number for each component

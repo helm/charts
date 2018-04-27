@@ -61,16 +61,18 @@ The following table lists the configurable parameters of the Redis chart and the
 | Parameter                        | Description                                           | Default                                                   |
 | -------------------------------- | ----------------------------------------------------- | --------------------------------------------------------- |
 | `redis_image`                    | Redis image                                           | `quay.io/smile/redis:4.0.6r2`                             |
-| `resources.server`               | CPU/Memory for redis nodes resource requests/limits  | Memory: `200Mi`, CPU: `100m`                              |
+| `resources.server`               | CPU/Memory for redis nodes resource requests/limits  | Memory: `200Mi`, CPU: `100m`                               |
 | `resources.sentinel`             | CPU/Memory for sentinel node resource requests/limits | Memory: `200Mi`, CPU: `100m`                              |
 | `replicas.servers`               | Number of redis master/slave pods                     | 3                                                         |
 | `replicas.sentinels`             | Number of sentinel pods                               | 3                                                         |
+| `affinity.servers`               | Affinity for the servers                              | ``                                                        |
+| `affinity.sentinels`             | Affinity for the sentinels                            | ``                                                        |
 | `nodeSelector`                   | Node labels for pod assignment                        | {}                                                        |
 | `tolerations`                    | Toleration labels for pod assignment                  | []                                                        |
 | `servers.serviceType`            | Set to "LoadBalancer" to enable access from the VPC   | ClusterIP                                                 |
 | `servers.annotations`            | See Appliance mode                                    | ``                                                        |
-| `serviceAccount.create`                    | If true, create & use RBAC resources                  | `false`                                                   |
-| `max_memory`                     | Sets the maximum memory redis can allocate            | "" This defaults to the maximum memory allowed               |
+| `serviceAccount.create`          | If true, create & use RBAC resources                  | `false`                                                   |
+| `max_memory`                     | Sets the maximum memory redis can allocate            | "" This defaults to the maximum memory allowed            |
 
 
 

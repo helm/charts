@@ -40,6 +40,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
+      {{- if .Values.affinity.servers }}
+      affinity:
+{{ toYaml .Values.affinity.servers | indent 8 }}
+      {{- end }}
       {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
