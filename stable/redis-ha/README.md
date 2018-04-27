@@ -60,7 +60,7 @@ The following table lists the configurable parameters of the Redis chart and the
 
 | Parameter                        | Description                                           | Default                                                   |
 | -------------------------------- | ----------------------------------------------------- | --------------------------------------------------------- |
-| `redis_image`                    | Redis image                                           | `quay.io/smile/redis:4.0.6r2`                             |
+| `image`                          | Redis image                                           | `quay.io/smile/redis:4.0.6r2`                             |
 | `resources.server`               | CPU/Memory for redis nodes resource requests/limits  | Memory: `200Mi`, CPU: `100m`                               |
 | `resources.sentinel`             | CPU/Memory for sentinel node resource requests/limits | Memory: `200Mi`, CPU: `100m`                              |
 | `replicas.servers`               | Number of redis master/slave pods                     | 3                                                         |
@@ -72,7 +72,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `servers.serviceType`            | Set to "LoadBalancer" to enable access from the VPC   | ClusterIP                                                 |
 | `servers.annotations`            | See Appliance mode                                    | ``                                                        |
 | `serviceAccount.create`          | If true, create & use RBAC resources                  | `false`                                                   |
-| `max_memory`                     | Sets the maximum memory redis can allocate            | "" This defaults to the maximum memory allowed            |
+| `maxMemory`                      | Sets the maximum memory redis can allocate            | "" This defaults to the maximum memory allowed            |
 | `persistentVolume.enabled`       | Set to true if you want to use a PV                   | `false`                                                   |
 | `persistentVolume.accessMode`    | The mode with which to access the PV                  | `ReadWriteOnce`                                           |
 | `persistentVolume.size`          | The size of the PV                                    | `8Gi`                                                     |
@@ -85,7 +85,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install \
-  --set redis_image=quay.io/bzumhagen/kube-redis-ha:4.0.6-2 \
+  --set image=quay.io/bzumhagen/kube-redis-ha:4.0.6-2 \
     stable/redis-ha
 ```
 

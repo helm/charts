@@ -9,7 +9,7 @@ metadata:
 spec:
   containers:
   - name: "{{ .Release.Name }}-sentinel-service-test"
-    image: {{ .Values.redis_image }}
+    image: {{ .Values.image }}
     env:
       - name: REDIS_CHART_PREFIX
         value: {{ template "redis-ha.fullname" . }}-

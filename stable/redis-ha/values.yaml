@@ -27,7 +27,7 @@ affinity:
   # sentinels:
 
 ## Redis image version
-redis_image: kumina/redis-ha-k8s:4.0.9-r0-5
+image: kumina/redis-ha-k8s:4.0.9-r0-5
 ## replicas number for each component
 replicas:
   servers: 3
@@ -48,7 +48,7 @@ serviceAccount:
   name:
 
 ## Max memory to use for each redis instance. Default is unlimited.
-max_memory: ""
+maxMemory: ""
 
 ## Configures redis with AUTH (requirepass & masterauth conf params)
 auth: false

@@ -50,7 +50,7 @@ spec:
       {{- end }}
       containers:
       - name: redis
-        image: {{ .Values.redis_image }}
+        image: {{ .Values.image }}
         livenessProbe:
           exec:
             command: ["redis-cli", "ping"]
@@ -60,7 +60,7 @@ spec:
 {{ toYaml .Values.resources.server | indent 10 }}
         env:
           - name: MAX_MEMORY
-            value: {{ .Values.max_memory }}
+            value: {{ .Values.maxMemory }}
           - name: REDIS_SENTINEL_SERVICE_HOST
             value: "redis-sentinel"
           - name: REDIS_CHART_PREFIX
@@ -105,3 +105,4 @@ spec:
         - name: data
           emptyDir: {}
 {{- end }}
+

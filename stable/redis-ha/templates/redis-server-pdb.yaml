@@ -9,3 +9,4 @@ spec:
       app: "redis-ha"
       redis-node: "true"
       release: "{{ .Release.Name }}"
+

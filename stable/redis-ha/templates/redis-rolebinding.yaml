@@ -13,3 +13,4 @@ subjects:
 - kind: ServiceAccount
   name: {{ template "redis-ha.serviceAccountName" . }}
 {{- end -}}
+

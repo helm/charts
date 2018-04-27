@@ -9,3 +9,4 @@ spec:
       app: "redis-ha"
       redis-role: "sentinel"
       release: "{{ .Release.Name }}"
+
