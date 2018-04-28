@@ -8,10 +8,8 @@ metadata:
 {{ toYaml .Values.extraLabels | indent 4 }}
   {{- end }}
 spec:
-  minAvailable: 2
+  maxUnavailable: 1
   selector:
     matchLabels:
-      app: "redis-ha"
       redis-role: "sentinel"
-      release: "{{ .Release.Name }}"
-
+{{ include "labels.standard" . | indent 6 }}

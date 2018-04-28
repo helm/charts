@@ -3,17 +3,13 @@ kind: Service
 metadata:
   name: {{ template "redis-ha.fullname" . }}-server-svc
   labels:
-{{ include "labels.standard" . | indent 4 }}
-  {{- if .Values.extraLabels }}
-{{ toYaml .Values.extraLabels | indent 4 }}
-  {{- end }}
+    chart: {{ template "chartref" . }}
   annotations:
 {{ toYaml .Values.servers.annotations | indent 4 }}
 spec:
   selector:
-    app: "redis-ha"
     redis-node: "true"
-    release: "{{ .Release.Name }}"
+{{ include "labels.standard" . | indent 4 }}
   type: "{{ .Values.servers.serviceType }}"
   clusterIP: None
 ---
@@ -26,35 +22,24 @@ metadata:
     name: {{ template "redis-ha.fullname" . }}-server
     redis-node: "true"
 {{ include "labels.standard" . | indent 4 }}
-  {{- if .Values.extraLabels }}
-{{ toYaml .Values.extraLabels | indent 4 }}
-  {{- end }}
-
 spec:
   serviceName: {{ template "redis-ha.fullname" . }}-server-svc
   replicas: {{ .Values.replicas.servers }}
+  updateStrategy:
+    type: OnDelete
   template:
     metadata:
       labels:
-        app: {{ template "redis-ha.name" . }}
-        release: {{ .Release.Name }}
-        component: server
         name: {{ template "redis-ha.fullname" . }}-server
         redis-node: "true"
-  {{- if .Values.extraLabels }}
-{{ toYaml .Values.extraLabels | indent 8 }}
-  {{- end }}
+{{ include "labels.standard" . | indent 8 }}
     spec:
-      {{ if .Values.serviceAccount.create }}
-      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
+      {{ if .Values.rbac.create }}
+      serviceAccountName: {{ template "redis-ha.fullname" . }}-svcacct
       {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
-      {{- end }}
-      {{ if .Values.affinity.servers }}
-      affinity:
-{{ toYaml .Values.affinity.servers | indent 8 }}
       {{- end }}
       {{- if .Values.tolerations }}
       tolerations:
@@ -62,7 +47,7 @@ spec:
       {{- end }}
       containers:
       - name: redis
-        image: {{ .Values.image }}
+        image: {{ .Values.redis_image }}
         livenessProbe:
           exec:
             command: ["redis-cli", "ping"]
@@ -72,51 +57,21 @@ spec:
 {{ toYaml .Values.resources.server | indent 10 }}
         env:
           - name: MAX_MEMORY
-            value: {{ .Values.maxMemory }}
+            value: {{ .Values.redis.max_memory }}
           - name: MAX_MEMORY_POLICY
-            value: {{ .Values.maxMemoryPolicy }}
+            value: {{ .Values.redis.max_memory_policy }}
+          - name: RDB_BACKUPS
+            value: {{ .Values.redis.rdb_backups | quote }}
+          - name: DISKLESS_REPLICATION
+            value: {{ .Values.redis.diskless_replication | quote }}
           - name: REDIS_SENTINEL_SERVICE_HOST
             value: "redis-sentinel"
           - name: REDIS_CHART_PREFIX
             value: {{ template "redis-ha.fullname" . }}-
-{{- if .Values.auth }}
-          - name: REDIS_PASS
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "redis-ha.fullname" . }}
-                key: auth
-{{- end }}
         ports:
           - containerPort: 6379
         volumeMounts:
           - mountPath: /redis-master-data
             name: data
-{{- if .Values.persistentVolume.enabled }}
-  volumeClaimTemplates:
-    - metadata:
-        name: data
-        annotations:
-        {{- range $key, $value := .Values.persistentVolume.annotations }}
-          {{ $key }}: {{ $value }}
-        {{- end }}
-      spec:
-        accessModes:
-        {{- range .Values.persistentVolume.accessModes }}
-          - {{ . | quote }}
-        {{- end }}
-        resources:
-          requests:
-            storage: {{ .Values.persistentVolume.size | quote }}
-      {{- if .Values.persistentVolume.storageClass }}
-      {{- if (eq "-" .Values.persistentVolume.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: "{{ .Values.persistentVolume.storageClass }}"
-      {{- end }}
-      {{- end }}
-{{- else }}
       volumes:
-        - name: data
-          emptyDir: {}
-{{- end }}
-
+      - name: data
