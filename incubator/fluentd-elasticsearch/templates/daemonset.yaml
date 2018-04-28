@@ -53,7 +53,7 @@ spec:
         - name: OUTPUT_BUFFER_QUEUE_LIMIT
           value: {{ .Values.elasticsearch.buffer_queue_limit | quote }}
         resources:
-{{ toYaml .Values.resources | indent 8 }}
+{{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: varlog
           mountPath: /var/log
