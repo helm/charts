@@ -22,7 +22,7 @@ nodeSelector: {}
 tolerations: []
 
 ## Redis image version
-redis_image: quay.io/bzumhagen/kube-redis-ha:4.0.6-2
+redis_image: quay.io/bzumhagen/kube-redis-ha:4.0.9-1
 ## replicas number for each component
 replicas:
   servers: 3
@@ -42,14 +42,22 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-## Max memory to use for each redis instance. Default is unlimited.
-max_memory: ""
-
-## Configures redis with AUTH (requirepass & masterauth conf params)
-auth: false
-
 ## Redis password
 ## Defaults to a random 10-character alphanumeric string if not set and auth is true
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/redis-ha/templates/redis-auth-secret.yaml
 ##
 ## redisPassword:
+
+## Redis specific configuration options
+redis:
+  ## Configures redis with AUTH (requirepass & masterauth conf params)
+  auth: false
+  # Max memory to use for each redis instance. Default is unlimited.
+  max_memory: ""
+  # Max memory policy to use for each redis instance. Default is volatile-lru.
+  max_memory_policy: ""
+  # Determines if scheduled RDB backups are created. Default is false.
+  # Please note that local (on-disk) RDBs will still be created when re-syncing with a new slave. The only way to prevent this is to enable diskless replication.
+  rdb_backups: "false"
+  # When enabled, directly sends the RDB over the wire to slaves, without using the disk as intermediate storage. Default is false.
+  diskless_replication: "false"
