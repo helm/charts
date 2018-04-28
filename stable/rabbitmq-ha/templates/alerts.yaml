@@ -1,4 +1,4 @@
-{{ if and .Values.prometheus.operator.alerts.enabled .Values.prometheus.operator.enabled }}
+{{ if and .Values.prometheus.operator.alerts.enabled .Values.prometheus.exporter.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
