@@ -60,8 +60,8 @@ The following table lists the configurable parameters of the Redis chart and the
 
 | Parameter                        | Description                                           | Default                                                   |
 | -------------------------------- | ----------------------------------------------------- | --------------------------------------------------------- |
-| `redis_image`                    | Redis image                                           | `quay.io/smile/redis:4.0.6r2`                             |
-| `resources.server`               | CPU/Memory for redis nodes resource requests/limits  | Memory: `200Mi`, CPU: `100m`                              |
+| `redis_image`                    | Redis image                                           | `quay.io/bzumhagen/redis:4.0.9-1`                             |
+| `resources.server`               | CPU/Memory for redis nodes resource requests/limits   | Memory: `200Mi`, CPU: `100m`                              |
 | `resources.sentinel`             | CPU/Memory for sentinel node resource requests/limits | Memory: `200Mi`, CPU: `100m`                              |
 | `replicas.servers`               | Number of redis master/slave pods                     | 3                                                         |
 | `replicas.sentinels`             | Number of sentinel pods                               | 3                                                         |
@@ -69,8 +69,11 @@ The following table lists the configurable parameters of the Redis chart and the
 | `tolerations`                    | Toleration labels for pod assignment                  | []                                                        |
 | `servers.serviceType`            | Set to "LoadBalancer" to enable access from the VPC   | ClusterIP                                                 |
 | `servers.annotations`            | See Appliance mode                                    | ``                                                        |
-| `serviceAccount.create`                    | If true, create & use RBAC resources                  | `false`                                                   |
-| `max_memory`                     | Sets the maximum memory redis can allocate            | "" This defaults to the maximum memory allowed               |
+| `serviceAccount.create`                    | If true, create & use RBAC resources        | `false`                                                   |
+| `redis.maxMemory`               | Sets the maximum memory redis can allocate            | "" (This defaults to the maximum memory allowed)          |
+| `redis.maxMemoryPolicy`        | Sets the max memory policy used by redis              | "" (This defaults to volatile-lru)                        |
+| `redis.rdbBackups`              | Determines if scheduled RDB backups will be created   | `false`                                                   |
+| `redis.disklessReplication`     | Directly sends the RDB over the wire to slaves, without using the disk as intermediate storage| `false`           |
 
 
 
@@ -79,7 +82,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install \
-  --set redis_image=quay.io/bzumhagen/kube-redis-ha:4.0.6-2 \
+  --set redis_image=quay.io/bzumhagen/kube-redis-ha:4.0.9-1 \
     stable/redis-ha
 ```
 

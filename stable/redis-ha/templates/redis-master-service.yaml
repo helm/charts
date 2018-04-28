@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: {{ template "redis-ha.fullname" . }}-master-svc
   labels:
+    redis-role: "master"
 {{ include "labels.standard" . | indent 4 }}
   annotations:
 {{ toYaml .Values.servers.annotations | indent 4 }}
@@ -12,8 +13,7 @@ spec:
     protocol: TCP
     targetPort: 6379
   selector:
-    app: {{ template "redis-ha.name" . }}
-    release: "{{ .Release.Name }}"
     redis-node: "true"
     redis-role: "master"
+{{ include "labels.standard" . | indent 4 }}
   type: "{{ .Values.servers.serviceType }}"
