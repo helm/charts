@@ -32,10 +32,8 @@ $ git clone https://github.com/kubernetes/charts.git
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/sensu:x.x.x
+$ helm install --name my-release stable/sensu
 ```
-
-*Replace the `x.x.x` placeholder with the chart release version.*
 
 The command deploys Sensu on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
