@@ -43,7 +43,7 @@ spec:
 {{ toYaml .Values.extraLabels | indent 8 }}
       {{- end }}
     spec:
-      {{ if .Values.serviceAccount.create }}
+      {{ if .Values.rbac.create }}
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
       {{- end }}
       {{- if .Values.nodeSelector }}
