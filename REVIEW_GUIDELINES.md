@@ -162,6 +162,6 @@ While reviewing Charts that contain workloads such as [Deployments](https://kube
 7. Batch workloads are to be created using Jobs.
 8. It is best to always create workloads with the latest supported [api version](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/) as older version are either deprecated or soon to be deprecated.
 9. It is generally not advisable to provide hard [resource limits](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#resource-requests-and-limits-of-pod-and-container) to workloads and leave it configurable unless the workload requires such quantity bare minimum to function.
-10. As much as possible complex pre-app setups are configured using [init contianers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/).
+10. As much as possible complex pre-app setups are configured using [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/).
 
 More [configuration](https://kubernetes.io/docs/concepts/configuration/overview/) best practices.
