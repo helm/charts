@@ -60,7 +60,7 @@ spec:
       {{- end }}
       containers:
       - name: sentinel
-        image: {{ .Values.redis_image }}
+        image: {{ .Values.image }}
         livenessProbe:
           exec:
             command: ["redis-cli", "-p", "26379", "ping"]
