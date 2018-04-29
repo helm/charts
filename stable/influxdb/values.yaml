@@ -209,3 +209,82 @@ config:
     log_enabled: true
     enabled: true
     run_interval: 1s
+
+
+# Init databases and advanced configuration from side container
+# https://github.com/epcim/wheelhouse
+wheelhouse:
+  enabled: true
+  engine: salt
+  image: docker.io/epcim/salt:wheelhouse-debian-stretch-salt-stable-formula-stable
+
+  # Individual task specification
+  job:
+    initdb:
+      wheel:
+        - client
+      logging:
+        severity: debug
+
+  # Shared, consolidated, metadata structure
+  pillar:
+    influxdb:
+      client:
+        enabled: true
+        server:
+          protocol: http
+          host: $INFLUXDB_HOST
+          port: 8086
+          user: admin
+          password: password
+        user:
+          fluentd:
+            name: fluentd
+            password: password
+            enabled: true
+        database:
+          h2o_measurement:
+            enabled: true
+            name: initialdb
+            retention_policy:
+              - name: a_year
+                duration: 52w
+                replication: 1
+              - name: rp_a_month
+                duration: 30d
+                replication: 1
+                is_default: true
+            continuous_query:
+              cq_avg_bus_passengers: >-
+                SELECT mean("h2o_quality") INTO "h2o_measurement"."rp_a_month"."average_quality" FROM "bus_data" GROUP BY time(1h)
+              cq_br_downsample_all_hourly: >-
+                SELECT mean(*) INTO "h2o_measurement"."ds_all_mean_h".:MEASUREMENT FROM /.*/ GROUP BY time(60m),*
+            query:
+              drop_h2o: >-
+                DROP MEASUREMENT h2o_measurement
+
+    # This section is only needed if I want to use influx module/state directly
+    salt:
+      minion:
+        config:
+          influxdb:
+            host: $INFLUXDB_HOST
+            port: 8086
+
+  # Free structure to compose execution logic that fit the engine
+  wheel:
+    client:
+      state.apply:
+        - influxdb.client
+    prune_openstack_metrics:
+      state.sls_id:
+        - prune_measurement
+        - influxdb.query
+    minion_influxdb_config:
+      state.apply:
+        /etc/salt/minion:
+          file.serialize:
+          - dataset_pillar: salt:minion:config
+          - formatter: yaml
+          - merge_if_exists: "True"
+          - makedirs: "True"
