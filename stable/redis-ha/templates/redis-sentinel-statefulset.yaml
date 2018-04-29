@@ -5,6 +5,9 @@ metadata:
   labels:
     redis-role: "sentinel"
 {{ include "labels.standard" . | indent 4 }}
+  {{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+  {{- end }}
   annotations:
 {{ toYaml .Values.servers.annotations | indent 4 }}
 spec:
@@ -23,6 +26,9 @@ metadata:
   labels:
     name: {{ template "redis-ha.fullname" . }}-sentinel
 {{ include "labels.standard" . | indent 4 }}
+  {{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+  {{- end }}
 spec:
   serviceName: {{ template "redis-ha.fullname" . }}-sentinel-svc
   replicas: {{ .Values.replicas.sentinels }}
@@ -33,6 +39,9 @@ spec:
       labels:
         name: {{ template "redis-ha.fullname" . }}-sentinel
 {{ include "labels.standard" . | indent 8 }}
+      {{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 8 }}
+      {{- end }}
     spec:
       {{ if .Values.rbac.create }}
       serviceAccountName: {{ template "redis-ha.fullname" . }}-svcacct
@@ -40,6 +49,10 @@ spec:
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity.sentinels }}
+      affinity:
+{{ toYaml .Values.affinity.sentinels | indent 8 }}
       {{- end }}
       {{- if .Values.tolerations }}
       tolerations:

@@ -3,7 +3,11 @@ kind: Service
 metadata:
   name: {{ template "redis-ha.fullname" . }}-server-svc
   labels:
-    chart: {{ template "chartref" . }}
+    redis-role: "node"
+{{ include "labels.standard" . | indent 4 }}
+  {{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+  {{- end }}
   annotations:
 {{ toYaml .Values.servers.annotations | indent 4 }}
 spec:
@@ -22,6 +26,9 @@ metadata:
     name: {{ template "redis-ha.fullname" . }}-server
     redis-node: "true"
 {{ include "labels.standard" . | indent 4 }}
+  {{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+  {{- end }}
 spec:
   serviceName: {{ template "redis-ha.fullname" . }}-server-svc
   replicas: {{ .Values.replicas.servers }}
@@ -33,6 +40,9 @@ spec:
         name: {{ template "redis-ha.fullname" . }}-server
         redis-node: "true"
 {{ include "labels.standard" . | indent 8 }}
+      {{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 8 }}
+      {{- end }}
     spec:
       {{ if .Values.rbac.create }}
       serviceAccountName: {{ template "redis-ha.fullname" . }}-svcacct
@@ -40,6 +50,10 @@ spec:
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity.servers }}
+      affinity:
+{{ toYaml .Values.affinity.servers | indent 8 }}
       {{- end }}
       {{- if .Values.tolerations }}
       tolerations:
