@@ -3,11 +3,8 @@ kind: Deployment
 metadata:
   name: {{ template "cert-manager.fullname" . }}
   namespace: {{ .Release.Namespace | quote }}
-  labels:
-    app: {{ template "cert-manager.name" . }}
-    chart: {{ template "cert-manager.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  labels: {{ include "cert-manager.labels" . | indent 4 }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -16,9 +13,7 @@ spec:
       release: {{ .Release.Name }}
   template:
     metadata:
-      labels:
-        app: {{ template "cert-manager.name" . }}
-        release: {{ .Release.Name }}
+      labels: {{ include "cert-manager.labels" . | indent 8 }}
       annotations:
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
