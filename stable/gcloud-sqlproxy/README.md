@@ -35,7 +35,7 @@ $ helm upgrade pg-sqlproxy stable/gcloud-sqlproxy --namespace sqlproxy \
 Replace Postgres/MySQL host with: if access is from the same namespace with `pg-sqlproxy-gcloud-sqlproxy` or if it is from a different namespace with `pg-sqlproxy-gcloud-sqlproxy.sqlproxy`, the rest database connections settings do not have to be changed.
 
 > **Tip**: List all releases using `helm list`
-> **Tip**: If you encounter a YAML parse error on on `gcloud-sqlproxy/templates/secrets.yaml`, you might need to set `-w 0` option to `base64` command.
+> **Tip**: If you encounter a YAML parse error on `gcloud-sqlproxy/templates/secrets.yaml`, you might need to set `-w 0` option to `base64` command.
 > **Tip**: If you are using a MySQL instance, you may want to replace `pg-sqlproxy` with `mysql-sqlproxy` and `5432` with `3306`.
 
 ## Uninstalling the Chart
