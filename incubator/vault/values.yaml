@@ -59,7 +59,7 @@ vault:
   # Allows the mounting of various custom secrets th enable production vault
   # configurations. The comments show an example usage for mounting a TLS
   # secret. The two fields required are a secretName indicating the name of
-  # the Kuberentes secret (created outside of this chart), and the mountPath
+  # the Kubernetes secret (created outside of this chart), and the mountPath
   # at which it should be mounted in the Vault container.
   customSecrets: []
     # - secretName: vault-tls
