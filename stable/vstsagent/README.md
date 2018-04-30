@@ -28,7 +28,7 @@ $ helm install --name vsts .
 
 ## Uninstalling
 ```bash
-$ helm uninstall vsts --purge
+$ helm delete vsts --purge
 ```
 
 ## Configuration
