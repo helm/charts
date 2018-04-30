@@ -122,7 +122,6 @@ collector:
   replicaCount: 1
   service:
     annotations: {}
-
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     type: ClusterIP
@@ -157,7 +156,6 @@ query:
   service:
     annotations: {}
     type: ClusterIP
-
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     # queryPort: externally accessible port for UI and API
@@ -223,7 +221,6 @@ hotrod:
     annotations: {}
     name: hotrod
     type: ClusterIP
-
     # List of IP ranges that are allowed to access the load balancer (if supported)
     loadBalancerSourceRanges: []
     externalPort: 80
