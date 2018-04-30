@@ -128,7 +128,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.image.pullPolicy`    | Container pull policy                   | `IfNotPresent`                |
 | `nginx.service.type`| Nginx service type | `LoadBalancer` |
 | `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |  |
-| `nginx.loadBalancerIP`| Provide Static IP to to configure with Nginx |  |
+| `nginx.loadBalancerIP`| Provide Static IP to configure with Nginx |  |
 | `nginx.externalPortHttp` | Nginx service external port | `80`   |
 | `nginx.internalPortHttp` | Nginx service internal port | `80`   |
 | `nginx.externalPortHttps` | Nginx service external port | `443`   |
