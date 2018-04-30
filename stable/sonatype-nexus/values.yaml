@@ -5,7 +5,8 @@ nexus:
   imageTag: 3.9.0
   imagePullPolicy: IfNotPresent
   env:
-    install4jAddVmParams: "-Xms1200M -Xmx1200M -XX:MaxDirectMemorySize=2G -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+    - name: install4jAddVmParams
+      value: "-Xms1200M -Xmx1200M -XX:MaxDirectMemorySize=2G -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
   # nodeSelector:
   #   cloud.google.com/gke-nodepool: default-pool
   resources: {}
