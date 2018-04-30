@@ -71,13 +71,13 @@ spec:
 {{ toYaml .Values.resources.server | indent 10 }}
         env:
           - name: MAX_MEMORY
-            value: {{ .Values.redis.max_memory }}
+            value: {{ .Values.redis.maxMemory }}
           - name: MAX_MEMORY_POLICY
-            value: {{ .Values.redis.max_memory_policy }}
+            value: {{ .Values.redis.maxMemoryPolicy }}
           - name: RDB_BACKUPS
-            value: {{ .Values.redis.rdb_backups | quote }}
+            value: {{ .Values.redis.rdbBackups | quote }}
           - name: DISKLESS_REPLICATION
-            value: {{ .Values.redis.diskless_replication | quote }}
+            value: {{ .Values.redis.disklessReplication | quote }}
           - name: REDIS_SENTINEL_SERVICE_HOST
             value: "redis-sentinel"
           - name: REDIS_CHART_PREFIX
