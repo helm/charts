@@ -71,6 +71,7 @@ following configurable parameters:
 | `external.firstListenerPort`   | TCP port which is added pod index number to arrive at the port used for NodePort and external listener port.    | '31090'                                                    |
 | `external.domain`              | Domain in which to advertise Kafka external listeners.                                                          | `cluster.local`                                            |
 | `external.init`                | External init container settings.                                                                               | (see `values.yaml`)                                        |
+| `rbac.enabled`                 | Enable a service account and role for the init container to use in an RBAC enabled cluster                      | `false`                                                    |
 | `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `{ offsets.topic.replication.factor: 3 }`                  |
 | `additionalPorts`              | Additional ports to expose on brokers.  Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar   | `{}`                                 |
 | `readinessProbe.initialDelaySeconds` | Number of seconds before probe is initiated.                                                              | `30`                                                       |
