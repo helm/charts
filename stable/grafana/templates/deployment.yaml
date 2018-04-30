@@ -157,7 +157,7 @@ spec:
             {{- if .Values.ldap.createSecret }}
             secretName: {{ template "grafana.fullname" . }}
             {{- else }}
-            secretName: {{ .Values.ldap.existingSecretName }}
+            secretName: {{ .Values.ldap.existingSecret }}
             {{- end }}
             items:
               - key: ldap-toml
