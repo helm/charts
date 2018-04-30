@@ -35,8 +35,6 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/uchiwa
 ```
 
-*Replace the `x.x.x` placeholder with the chart release version.*
-
 The command deploys Uchiwa on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`

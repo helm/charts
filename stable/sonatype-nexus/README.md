@@ -66,7 +66,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.imageName`                           | Nexus image                         | `quay.io/travelaudience/docker-nexus`   |
 | `nexus.imageTag`                            | Version of Nexus                    | `3.9.0`                                 |
 | `nexus.imagePullPolicy`                     | Nexus image pull policy             | `IfNotPresent`                          |
-| `nexus.env.install4jAddVmParams`            | JVM options                         | `-Xms1200M -Xmx1200M -XX:MaxDirectMemorySize=2G -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap`  |
+| `nexus.env`                                 | Nexus environment variables         | `[{install4jAddVmParams: -Xms1200M -Xmx1200M -XX:MaxDirectMemorySize=2G -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap}]` |
 | `nexus.resources`                           | Nexus resource requests and limits  | `{}`                                    |
 | `nexus.dockerPort`                          | Port to access docker               | `5003`                                  |
 | `nexus.nexusPort`                           | Internal port for Nexus service     | `8081`                                  |
@@ -107,7 +107,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `ingress.enabled`                           | Create an ingress for Nexus         | `true`                                  |
 | `ingress.annotations`                       | Annotations to enhance ingress configuration  | `{}`                          |
 | `ingress.tls.enabled`                       | Enable TLS                          | `false`                                 |
-| `ingress.tls.secretName`                    | Name of the secret storing TLS cert | `nexus-tls`                             |
+| `ingress.tls.secretName`                    | Name of the secret storing TLS cert, `false` to use the Ingress' default certificate | `nexus-tls`                             |
 
 If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables need to be configured
 
