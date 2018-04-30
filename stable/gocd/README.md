@@ -92,6 +92,7 @@ The following tables list the configurable parameters of the GoCD chart and thei
 Based on the information available about the Kubernetes cluster, the [Kubernetes elastic agent](https://github.com/gocd/kubernetes-elastic-agents) plugin settings can be configured. A default elastic agent profile too is created so that users can concentrate on building their CD pipeline.
 A simple first pipeline is created in order to bootstrap the getting started experience for users. 
 
+An attempt at preconfiguring the GoCD server is made if `server.shouldPreconfigure` is set to true. This means that there are cases when this attempt will fail. These cases are listed below. However, in all cases, the GoCD server will be available for users to configure. 
 If you are comfortable with GoCD and feel that there is no need to preconfigure the server, then you can override `server.shouldPreconfigure` to be false. 
 
 **Note: If the GoCD server is started with an existing config from a persistent volume, set the value of `server.shouldPreconfigure` to `false`.** 
@@ -125,7 +126,7 @@ This command provides the information on how to access the GoCD server.
 The cases when the attempt to preconfigure the GoCD server fails:
 
 1. The service account token mounted as a secret for the GoCD server pod does not have sufficient permissions. The API call to configure the plugin settings will fail.
-2. If the GoCD server is started with an existing configuration with security configured, then the API calls in the preconfigure script will fail. 
+2. If the GoCD server is started with an existing configuration with security configured, then the API calls in the preconfigure script will fail, but the GoCD server will come up. This is to accommodate the fact the the preconfigure script will fail in case a `helm upgrade` happens. 
 
 ### GoCD Agent
 

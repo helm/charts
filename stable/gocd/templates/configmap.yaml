@@ -23,8 +23,6 @@ data:
       sleep 10
     done
 
-    set -e
-
     echo "Trying to create an elastic profile now." >> /godata/logs/preconfigure.log
 
     (curl --fail -i 'http://localhost:8153/go/api/elastic/profiles' \
