@@ -29,9 +29,9 @@ To do this we add the keyword `tpl` when reading the file
 
 ## Prerequisites
 
-### Heptio Secret
+### Secret for cloud provider credentials
 Ark server needs a IAM service account in order to run, if you don't have it you must create it.
-This is the guide for gcp: https://github.com/heptio/ark/blob/v0.8.1/docs/gcp-config.md#create-service-account
+Please follow the official documentation: https://heptio.github.io/ark/v0.8.1/cloud-common
 
 Don't forget the step to create the secret
 ```
@@ -40,7 +40,7 @@ kubectl create secret generic cloud-credentials --namespace <ARK_NAMESPACE> --fr
 
 ### Configuration
 Please change the values.yaml according to your setup
-See here for the official documentation https://github.com/heptio/ark/blob/v0.8.1/docs/config-definition.md
+See here for the official documentation https://heptio.github.io/ark/v0.8.1/config-definition
 
 Parameter | Description | Default | Required
 --- | --- | --- | ---
@@ -60,4 +60,4 @@ helm install --name ark-server --namespace heptio-ark ./ark-server
 ```
 
 ## Remove heptio/ark
-Rememebr that when you remove ark all backups remain untouched
+Remember that when you remove ark all backups remain untouched
