@@ -38,10 +38,5 @@ spec:
     component: agent
     release: {{ .Release.Name }}
     jaeger-infra: agent-instance
-{{- if .Values.agent.service.loadBalancerSourceRanges }}
-  loadBalancerSourceRanges:
-  {{- range $cidr := .Values.agent.service.loadBalancerSourceRanges }}
-    - {{ $cidr }}
-  {{- end }}
-{{- end }}
+{{- template "loadBalancerSourceRanges" .Values.agent }}
 {{- end -}}

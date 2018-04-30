@@ -46,10 +46,5 @@ spec:
     release: {{ .Release.Name }}
     jaeger-infra: collector-pod
   type: {{ .Values.collector.service.type }}
-{{- if .Values.collector.service.loadBalancerSourceRanges }}
-  loadBalancerSourceRanges:
-  {{- range $cidr := .Values.collector.service.loadBalancerSourceRanges }}
-    - {{ $cidr }}
-  {{- end }}
-{{- end }}
+{{- template "loadBalancerSourceRanges" .Values.collector }}
 {{- end -}}
