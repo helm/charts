@@ -133,6 +133,18 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.internalPortHttp` | Nginx service internal port | `80`   |
 | `nginx.externalPortHttps` | Nginx service external port | `443`   |
 | `nginx.internalPortHttps` | Nginx service internal port | `443`   |
+| `nginx.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
+| `nginx.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 30                                                   |
+| `nginx.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
+| `nginx.livenessProbe.timeoutSeconds`       | When the probe times out                  | 5                                                    |
+| `nginx.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `nginx.livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3 |
+| `nginx.readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                        |
+| `nginx.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 5                                                    |
+| `nginx.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                   |
+| `nginx.readinessProbe.timeoutSeconds`      | When the probe times out                  | 1                                                    |
+| `nginx.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `nginx.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3 |
 | `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |    |
 | `nginx.env.artUrl` | Nginx Environment variable Artifactory URL | `"http://artifactory:8081/artifactory"`   |
 | `nginx.env.ssl` | Nginx Environment enable ssl | `true`   |

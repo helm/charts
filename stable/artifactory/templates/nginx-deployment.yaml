@@ -78,19 +78,28 @@ spec:
         {{- end }}
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
+        {{- if .Values.nginx.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: '/artifactory/webapp/#/login'
             port: 80
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          failureThreshold: 10
+          initialDelaySeconds: {{ .Values.nginx.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.nginx.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.nginx.readinessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.nginx.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.nginx.readinessProbe.successThreshold }}
+        {{- end }}
+        {{- if .Values.nginx.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: '/artifactory/webapp/#/login'
             port: 80
-          initialDelaySeconds: 180
-          periodSeconds: 10
+          initialDelaySeconds: {{ .Values.nginx.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.nginx.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.nginx.livenessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.nginx.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.nginx.livenessProbe.successThreshold }}
+        {{- end }}
       volumes:
       - name: nginx-volume
       {{- if .Values.nginx.persistence.enabled }}
