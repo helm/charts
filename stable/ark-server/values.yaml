@@ -43,7 +43,9 @@ serviceAccount:
     create: true
     name:
 
+# Only kube2iam: change the AWS_ACCOUNT_ID and HEPTIO_ARK_ROLE_NAME
 podAnnotations:
+  iam.amazonaws.com/role: arn:aws:iam::<AWS_ACCOUNT_ID>:role/<HEPTIO_ARK_ROLE_NAME>
 
 kubectl:
   image:
