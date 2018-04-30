@@ -73,7 +73,7 @@ their default values.
 | `storageClass.provisionerName` | The provisioner name for the storageclass                                                                       | `cluster.local/{release-name}-{chart-name}`              |
 | `storageClass.defaultClass`    | Whether to set the created StorageClass as the clusters default StorageClass                                    | `false`                                                  |
 | `storageClass.name`            | The name to assign the created StorageClass                                                                     | `nfs`                                                    |
-| `resources`                    | Resoure limits for nfs-server-provisioner pod                                                                          | `{}`                                                     |
+| `resources`                    | Resource limits for nfs-server-provisioner pod                                                                          | `{}`                                                     |
 | `nodeSelector`                 | Map of node labels for pod assignment                                                                           | `{}`                                                     |
 | `tolerations`                  | List of node taints to tolerate                                                                                 | `[]`                                                     |
 | `affinity`                     | Map of node/pod affinities                                                                                      | `{}`                                                     |
