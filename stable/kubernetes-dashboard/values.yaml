@@ -12,7 +12,7 @@ image:
 ##
 labels: {}
 # kubernetes.io/cluster-service: "true"
-# kubernetes.io/name: "Kuberetes Dashboard"
+# kubernetes.io/name: "Kubernetes Dashboard"
 
 ## Additional container arguments
 ##
