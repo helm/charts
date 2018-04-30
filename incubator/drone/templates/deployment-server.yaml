@@ -38,14 +38,13 @@ spec:
               secretKeyRef:
                 name: {{ template "drone.fullname" . }}
                 key: secret
-          {{- range .Values.server.envSecret }}
-          {{- $secretName := .name -}}
-          {{- range $key, $value := .data }}
-          - name: {{ $key }}
+          {{- range $secret, $keys := .Values.server.envSecrets }}
+          {{- range $keys }}
+          - name: {{ . }}
             valueFrom:
               secretKeyRef:
-                name: {{ $secretName }}
-                key: {{ $value | lower | quote }}
+                name: {{ $secret }}
+                key: {{ . | quote }}
           {{- end }}
           {{- end }}
           - name: DRONE_HOST

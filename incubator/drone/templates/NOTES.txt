@@ -41,7 +41,7 @@ control provider:
 
     kubectl create secret generic drone-server-secrets \
       --namespace={{ .Release.Namespace }} \
-      --from-literal=drone-github-secret="github-oauth2-client-secret"
+      --from-literal=DRONE_GITHUB_SECRET="github-oauth2-client-secret"
 
     helm upgrade {{ .Release.Name }} \
       --reuse-values \
@@ -49,8 +49,7 @@ control provider:
       --set server.env.DRONE_GITHUB="true" \
       --set server.env.DRONE_ORGS="my-github-org" \
       --set server.env.DRONE_GITHUB_CLIENT="github-oauth2-client-id" \
-      --set server.envSecret[0].name="drone-server-secrets" \
-      --set server.envSecret[0].data.DRONE_GITHUB_SECRET=drone-github-secret \
+      --set server.envSecrets.drone-server-secrets[0]=DRONE_GITHUB_SECRET \
       incubator/drone
 
 Currently supported providers:
