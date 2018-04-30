@@ -97,6 +97,12 @@ vault:
   customSecrets: []
     # - secretName: vault-tls
     #   mountPath: /vault/tls
+  #
+  # Configure additional environment variables for the Vault containers  
+  #
+  #env: 
+  #  - name: VAULT_API_ADDR
+  #    value: "https://my-svc.my-namespace.svc.cluster.local:8200"
   readiness:
     readyIfSealed: false
     readyIfStandby: true
