@@ -19,6 +19,7 @@ metadata:
     chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
     release: {{ $root.Release.Name | quote }}
     heritage: {{ $root.Release.Service | quote }}
+    pod: {{ $responsiblePod | quote }}
 spec:
   type: NodePort
   ports:
