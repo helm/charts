@@ -155,10 +155,10 @@ ssl:
 
 > **Note**: Make sure your certificate data has the correct formatting in the values file.
 
-## Manage certficate secrets outside of helm
+## Manage certificate secrets outside of helm
 
 1. Ensure the certificate secret exist before installation of this chart.
-2. Set the name of the certficate secret in `ssl.secret`.
+2. Set the name of the certificate secret in `ssl.secret`.
 3. Make sure there are no entries underneath `ssl.certificates`.
 
 To manually create the certificate secret from local files you can execute:
