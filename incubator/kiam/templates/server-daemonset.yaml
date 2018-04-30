@@ -1,0 +1,125 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    app: {{ template "kiam.name" . }}
+    chart: {{ template "kiam.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "kiam.fullname" . }}-server
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: {{ quote .Values.server.prometheus.scrape }}
+        prometheus.io/port: {{ quote .Values.server.prometheus.port }}
+      {{- if .Values.server.podAnnotations }}
+{{ toYaml .Values.server.podAnnotations | indent 8 }}
+      {{- end }}
+      labels:
+        app: {{ template "kiam.name" . }}
+        role: server
+      {{- if .Values.server.podLabels }}
+{{ toYaml .Values.server.podLabels | indent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "kiam.fullname" . }}-server{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+    {{- if .Values.server.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.server.nodeSelector | indent 8 }}
+    {{- end }}
+      tolerations:
+{{ toYaml .Values.server.tolerations | indent 8 }}
+      volumes:
+        - name: tls
+          secret:
+            secretName: {{ .Values.server.tls.secretName | default (printf "%s-server-tls" (include "kiam.fullname" .)) }}
+      {{- range .Values.server.extraHostPathMounts }}
+        - name: {{ .name }}
+          hostPath:
+            path: {{ .hostPath }}
+      {{- end }}
+      containers:
+        - name: kiam
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          command:
+            - /server
+          args:
+            {{- if .Values.server.log.jsonOutput }}
+            - --json-log
+            {{- end }}
+            - --level={{ .Values.server.log.level }}
+            - --bind=0.0.0.0:{{ .Values.server.service.targetPort }}
+            - --cert={{ .Values.server.tls.mountPath }}/{{ .Values.server.tls.certFileName }}
+            - --key={{ .Values.server.tls.mountPath }}/{{ .Values.server.tls.keyFileName }}
+            - --ca={{ .Values.server.tls.mountPath }}/{{ .Values.server.tls.caFileName }}
+            {{- if .Values.server.roleBaseArn }}
+            - --role-base-arn={{ .Values.server.roleBaseArn }}
+            {{- else }}
+            - --role-base-arn-autodetect
+            {{- end }}
+            {{- if .Values.server.assumeRoleArn }}
+            - --assume-role-arn={{ .Values.server.assumeRoleArn }}
+            {{- end }}
+            - --session-duration={{ .Values.server.sessionDuration }}
+            - --sync={{ .Values.server.cache.syncInterval }}
+            - --prometheus-listen-addr=0.0.0.0:{{ .Values.server.prometheus.port }}
+            - --prometheus-sync-interval={{ .Values.server.prometheus.syncInterval }}
+          {{- range $key, $value := .Values.server.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
+        {{- if .Values.server.extraEnv }}
+          env:
+          {{- range $name, $value := .Values.server.extraEnv }}
+            - name: {{ $name }}
+              value: {{ quote $value }}
+          {{- end }}
+        {{- end }}
+          volumeMounts:
+            - mountPath: {{ .Values.server.tls.mountPath }}
+              name: tls
+          {{- range .Values.server.extraHostPathMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+          livenessProbe:
+            exec:
+              command:
+              - /health
+              - --cert={{ .Values.server.tls.mountPath }}/{{ .Values.server.tls.certFileName }}
+              - --key={{ .Values.server.tls.mountPath }}/{{ .Values.server.tls.keyFileName }}
+              - --ca={{ .Values.server.tls.mountPath }}/{{ .Values.server.tls.caFileName }}
+              - --server-address=localhost:{{ .Values.server.service.targetPort }}
+              - --server-address-refresh=2s
+              - --timeout=5s
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+              - /health
+              - --cert={{ .Values.server.tls.mountPath }}/{{ .Values.server.tls.certFileName }}
+              - --key={{ .Values.server.tls.mountPath }}/{{ .Values.server.tls.keyFileName }}
+              - --ca={{ .Values.server.tls.mountPath }}/{{ .Values.server.tls.caFileName }}
+              - --server-address=localhost:{{ .Values.server.service.targetPort }}
+              - --server-address-refresh=2s
+              - --timeout=5s
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 10
+        {{- if .Values.server.resources }}
+          resources:
+{{ toYaml .Values.server.resources | indent 12 }}
+        {{- end }}
+{{- if and (eq .Capabilities.KubeVersion.Major "1") (gt .Capabilities.KubeVersion.Minor "5") }}
+  updateStrategy:
+    type: {{ .Values.server.updateStrategy }}
+{{- end }}

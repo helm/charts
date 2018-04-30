@@ -1,0 +1,156 @@
+extraArgs: {}
+
+agent:
+  ## Logging settings
+  ##
+  log:
+    jsonOutput: true
+    level: info
+  ## Host networking settings
+  ##
+  host:
+    iptables: false
+    port: 8181
+    interface: cali+
+  ## Prometheus metrics
+  ##
+  prometheus:
+    scrape: true
+    port: 9620
+    syncInterval: 5s
+  ## Annotations to be added to pods
+  ##
+  podAnnotations: {}
+  ## Labels to be added to pods
+  ##
+  podLabels: {}
+  image:
+    repository: quay.io/uswitch/kiam
+    tag: v2.7
+    pullPolicy: IfNotPresent
+  ## Strategy for DaemonSet updates (requires Kubernetes 1.6+)
+  ## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+  ##
+  updateStrategy: OnDelete
+  ## Pod DNS policy
+  ## Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pods-dns-policy
+  ##
+  dnsPolicy: ClusterFirstWithHostNet
+  ## Node labels for pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+    # kubernetes.io/role: node
+  ## Pod tolerations
+  ## Ref https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+  ## Agent container resources
+  ## Ref https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+  ##
+  resources: {}
+  ## Additional container arguments
+  ##
+  extraArgs: {}
+  ## Additional container environment variables
+  ##
+  extraEnv: {}
+
+  ## Additional container hostPath mounts
+  ##
+  extraHostPathMounts: []
+    # - name: ssl-certs
+    #   mountPath: /etc/ssl/certs
+    #   hostPath: /usr/share/ca-certificates
+    #   readOnly: true
+
+  tls:
+    mountPath: "/etc/kiam/tls"
+    secretName: kiam-agent-tls
+    caFileName: ca.pem
+    certFileName: agent.pem
+    keyFileName: agent-key.pem
+
+server:
+  ## Logging settings
+  ##
+  log:
+    jsonOutput: true
+    level: info
+  ## Prometheus metrics
+  ##
+  prometheus:
+    scrape: true
+    port: 9620
+    syncInterval: 5s
+  ## Annotations to be added to pods
+  ##
+  podAnnotations: {}
+  image:
+    repository: quay.io/uswitch/kiam
+    tag: v2.7
+    pullPolicy: Always
+  ## Strategy for DaemonSet updates (requires Kubernetes 1.6+)
+  ## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+  ##
+  updateStrategy: OnDelete
+  ## Node labels for pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+    # kubernetes.io/role: master
+  ## Pod tolerations
+  ## Ref https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+  ## Server container resources
+  ## Ref https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+  ##
+  resources: {}
+  ## Additional container arguments
+  ##
+  extraArgs: {}
+  ## Additional container environment variables
+  ##
+  extraEnv: {}
+
+  ## Additional container hostPath mounts
+  ##
+  extraHostPathMounts: []
+    # - name: ssl-certs
+    #   mountPath: /etc/ssl/certs
+    #   hostPath: /usr/share/ca-certificates
+    #   readOnly: true
+
+  service:
+    port: 443
+    targetPort: 443
+  tls:
+    mountPath: "/etc/kiam/tls"
+    secretName: kiam-server-tls
+    caFileName: ca.pem
+    certFileName: server.pem
+    keyFileName: server-key.pem
+  ## Base ARN for IAM roles
+  ## If not specified use EC2 metadata service to detect ARN prefix
+  ##
+  roleBaseArn: null
+  ## Pod cache settings
+  ##
+  cache:
+    syncInterval: 1m
+  ## IAM role for the server to assume
+  ##
+  assumeRoleArn: null
+  ## Session duration for STS tokens
+  ##
+  sessionDuration: 15m
+
+rbac:
+  ## If true, create & use RBAC resources
+  ##
+  create: false
+
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default

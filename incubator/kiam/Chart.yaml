@@ -1,0 +1,14 @@
+name: kiam
+version: 0.3.0
+description: Integrate AWS IAM with Kubernetes
+keywords:
+- kiam
+- aws
+- iam
+- security
+sources:
+- https://github.com/uswitch/kiam
+maintainers:
+- name: Kit Ewbank
+  email: Kit_Ewbank@hotmail.com
+engine: gotpl

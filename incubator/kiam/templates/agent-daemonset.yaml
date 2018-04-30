@@ -1,0 +1,112 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    app: {{ template "kiam.name" . }}
+    chart: {{ template "kiam.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "kiam.fullname" . }}-agent
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: {{ quote .Values.agent.prometheus.scrape }}
+        prometheus.io/port: {{ quote .Values.agent.prometheus.port }}
+      {{- if .Values.agent.podAnnotations }}
+{{ toYaml .Values.agent.podAnnotations | indent 8 }}
+      {{- end }}
+      labels:
+        app: {{ template "kiam.name" . }}
+        role: agent
+      {{- if .Values.agent.podLabels }}
+{{ toYaml .Values.agent.podLabels | indent 8 }}
+      {{- end }}
+    spec:
+      hostNetwork: true
+      dnsPolicy: {{ .Values.agent.dnsPolicy }}
+    {{- if .Values.agent.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.agent.nodeSelector | indent 8 }}
+    {{- end }}
+      tolerations:
+{{ toYaml .Values.agent.tolerations | indent 8 }}
+      volumes:
+        - name: tls
+          secret:
+            secretName: {{ .Values.agent.tls.secretName | default (printf "%s-agent-tls" (include "kiam.fullname" .)) }}
+        - name: xtables
+          hostPath:
+            path: /run/xtables.lock
+      {{- range .Values.agent.extraHostPathMounts }}
+        - name: {{ .name }}
+          hostPath:
+            path: {{ .hostPath }}
+      {{- end }}
+      containers:
+        - name: kiam
+        {{- if .Values.agent.host.iptables }}
+          securityContext:
+            privileged: true
+        {{- end }}
+          image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
+          imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
+          command:
+            - /agent
+          args:
+            {{- if .Values.agent.host.iptables }}
+            - --iptables
+            {{- end }}
+            - --host-interface={{ .Values.agent.host.interface }}
+            {{- if .Values.agent.log.jsonOutput }}
+            - --json-log
+            {{- end }}
+            - --level={{ .Values.agent.log.level }}
+            - --port={{ .Values.agent.host.port }}
+            - --cert={{ .Values.agent.tls.mountPath }}/{{ .Values.agent.tls.certFileName }}
+            - --key={{ .Values.agent.tls.mountPath }}/{{ .Values.agent.tls.keyFileName }}
+            - --ca={{ .Values.agent.tls.mountPath }}/{{ .Values.agent.tls.caFileName }}
+            - --server-address={{ template "kiam.fullname" . }}-server:{{ .Values.server.service.port }}
+            - --prometheus-listen-addr=0.0.0.0:{{ .Values.agent.prometheus.port }}
+            - --prometheus-sync-interval={{ .Values.agent.prometheus.syncInterval }}
+          {{- range $key, $value := .Values.agent.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
+          env:
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          {{- range $name, $value := .Values.agent.extraEnv }}
+            - name: {{ $name }}
+              value: {{ quote $value }}
+          {{- end }}
+          volumeMounts:
+            - mountPath: {{ .Values.agent.tls.mountPath }}
+              name: tls
+            - mountPath: /var/run/xtables.lock
+              name: xtables
+          {{- range .Values.agent.extraHostPathMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.agent.host.port }}
+            initialDelaySeconds: 3
+            periodSeconds: 3
+        {{- if .Values.agent.resources }}
+          resources:
+{{ toYaml .Values.agent.resources | indent 12 }}
+        {{- end }}
+{{- if and (eq .Capabilities.KubeVersion.Major "1") (gt .Capabilities.KubeVersion.Minor "5") }}
+  updateStrategy:
+    type: {{ .Values.agent.updateStrategy }}
+{{- end }}
