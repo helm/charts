@@ -16,6 +16,9 @@ spec:
   - name: amqp
     port: {{ .Values.rabbitmq.nodePort }}
     targetPort: amqp
+    {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.rabbitmq.nodePort))) }}
+    nodePort: {{ .Values.rabbitmq.nodePort }}
+    {{- end }}
   - name: dist
     port: {{ .Values.rabbitmq.nodePort | add 20000 }}
     targetPort: dist
