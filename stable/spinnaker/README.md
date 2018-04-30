@@ -8,7 +8,7 @@ that can deploy and manage applications in the cluster that it is deployed to.
 
 Redis and Minio are used as the stores for Spinnaker state.
 
-For more information on Spinnaker and its capabilities, see it's [documentation](http://www.spinnaker.io/docs).
+For more information on Spinnaker and its capabilities, see its [documentation](http://www.spinnaker.io/docs).
 
 ## Installing the Chart
 
