@@ -97,8 +97,8 @@ Datadog offers a multitude of [tags](https://hub.docker.com/r/datadog/docker-dd-
 By default installs Datadog agent inside a DaemonSet. You may also use Datadog agent inside a Deployment, if you want to collect Kubernetes API events or send custom metrics to DogStatsD endpoint.
 
 ### Secret
-By default chart creates Secret and puts API key to that Secret. If disabled (via `secret.create`) skips a creation of
-Secret and disables an API key presence check, so DaemonSet and/or Deployment will be created anyway, and will expect a Secret to be present. 
+By default, this Chart creates a Secret and puts an API key in that Secret. However, this behavior can be disabled when `secret.create` is set to false.
+You can use this in cases where you want to manually create a Secret instead. 
 
 ### confd and checksd
 

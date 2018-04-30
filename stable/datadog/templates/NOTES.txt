@@ -7,7 +7,7 @@ minutes, you should see your agents starting in your event stream:
 No further action should be required.
 {{- else if (not .Values.secret.create) }}
 You disabled creation of Secret containing API key, therefore it is expected
-you create Secret named '{{ template "datadog.fullname" . }}' including a key 'api-key'.
+that you create Secret named '{{ template "datadog.fullname" . }}' which includes a key called 'api-key', which actually contains the API key.
 {{ end }}
 {{- else -}}
 ##############################################################################
