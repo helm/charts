@@ -37,9 +37,9 @@ The following table lists the configurable parameters of the etcd chart and thei
 
 | Parameter               | Description                          | Default                                            |
 | ----------------------- | ------------------------------------ | -------------------------------------------------- |
-| `image`                 | Container image name                 | `k8s.gcr.io/etcd-amd64`                            |
-| `imageTag`              | Container image tag                  | `2.2.5`                                            |
-| `imagePullPolicy`       | Container pull policy                | `Always`                                           |
+| `image.repository`      | Container image repository           | `k8s.gcr.io/etcd-amd64`                            |
+| `image.tag`             | Container image tag                  | `2.2.5`                                            |
+| `image.pullPolicy`      | Container pull policy                | `IfNotPresent`                                     |
 | `replicas`              | k8s statefulset replicas             | `3`                                                |
 | `component`             | k8s selector key                     | `etcd`                                             |
 | `cpu`                   | container requested cpu              | `100m`                                             |
