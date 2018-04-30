@@ -7,7 +7,7 @@ peerPort: 2380
 clientPort: 2379
 component: "etcd"
 replicas: 3
-image: 
+image:
   repository: "k8s.gcr.io/etcd-amd64"
   tag: "2.2.5"
   pullPolicy: "Always"
