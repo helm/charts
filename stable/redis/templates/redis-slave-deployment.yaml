@@ -42,20 +42,10 @@ spec:
       tolerations:
 {{ toYaml (.Values.slave.tolerations | default .Values.master.tolerations) | indent 8 }}
       {{- end }}
-      {{- if .Values.slave.podAntiAffinity }}
+    {{- with .Values.affinity }}
       affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: Release
-                  operator: In
-                  values:
-                  - "{{ .Release.Name }}"
-              topologyKey: kubernetes.io/hostname
-      {{- end }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
         image: {{ template "redis.image" . }}
