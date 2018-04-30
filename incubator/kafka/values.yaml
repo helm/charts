@@ -35,6 +35,11 @@ updateStrategy:
 ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy
 podManagementPolicy: OrderedReady
 
+## If RBAC is enabled on the cluster, the Kafka init container needs a service account
+## with permissisions sufficient to apply pod labels
+rbac:
+  enabled: false
+
 ## The name of the storage class which the cluster should use.
 # storageClass: default
 
