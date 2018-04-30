@@ -4,19 +4,19 @@
 # name: value
 
 Name: etcd
-PeerPort: 2380
-ClientPort: 2379
-Component: "etcd"
-Replicas: 3
-Image: "k8s.gcr.io/etcd-amd64"
-ImageTag: "2.2.5"
-ImagePullPolicy: "Always"
-Cpu: "100m"
-Memory: "512Mi"
-Storage: "1Gi"
-## etcd data Persistent Volume Storage Class
-## If defined, StorageClassName: <storageClass>
-## If set to "-", StorageClassName: "", which disables dynamic provisioning
+peerPort: 2380
+clientPort: 2379
+component: "etcd"
+replicas: 3
+image: "k8s.gcr.io/etcd-amd64"
+imageTag: "2.2.5"
+imagePullPolicy: "Always"
+cpu: "100m"
+memory: "512Mi"
+storage: "1Gi"
+## etcd data Persistent Volume storage Class
+## If defined, storageClassName: <storageClass>
+## If set to "-", storageClassName: "", which disables dynamic provisioning
 ## If undefined (the default) or set to null, no storageClassName spec is
 ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
 ##   GKE, AWS & OpenStack)
@@ -26,6 +26,6 @@ Storage: "1Gi"
 ## Node labels and tolerations for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-NodeSelector: {}
-Tolerations: []
-Affinity: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
