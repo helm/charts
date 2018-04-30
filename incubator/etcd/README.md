@@ -37,7 +37,6 @@ The following table lists the configurable parameters of the etcd chart and thei
 
 | Parameter               | Description                          | Default                                            |
 | ----------------------- | ------------------------------------ | -------------------------------------------------- |
-| `Name`                  | Spark master name                    | `etcd`                                             |
 | `image`                 | Container image name                 | `k8s.gcr.io/etcd-amd64`                            |
 | `imageTag`              | Container image tag                  | `2.2.5`                                            |
 | `imagePullPolicy`       | Container pull policy                | `Always`                                           |
