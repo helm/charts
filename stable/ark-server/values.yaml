@@ -47,7 +47,8 @@ serviceAccount:
 podAnnotations:
   iam.amazonaws.com/role: arn:aws:iam::<AWS_ACCOUNT_ID>:role/<HEPTIO_ARK_ROLE_NAME>
 
+# A docker image with kubectl installed
 kubectl:
   image:
-    repository:
-    tag:
+    repository: claranet
+    tag: gcloud-kubectl-docker

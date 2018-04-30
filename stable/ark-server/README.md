@@ -47,12 +47,14 @@ Parameter | Description | Default | Required
 `cloudprovider` | Cloud provider  | `nil` | yes
 `bucket` | Object storage where to store backups  | `nil` | yes
 `region` | AWS region  | `nil` | only if using AWS
+`apitimeout` | Api Timeout  | `nil` | only if using Azure
 `credentials` | Credentials  | `nil` | Yes (not required for kube2iam)
 `kube2iam` | Enable kube2iam  | `false` | No
 `backupSyncPeriod` | How frequently Ark queries the object storage to make sure that the appropriate Backup resources have been created for existing backup files. | `60m` | yes
 `gcSyncPeriod` | How frequently Ark queries the object storage to delete backup files that have passed their TTL.  | `60m` | yes
 `scheduleSyncPeriod` | How frequently Ark checks its Schedule resource objects to see if a backup needs to be initiated  | `1m` | yes
 `restoreOnlyMode` | When RestoreOnly mode is on, functionality for backups, schedules, and expired backup deletion is turned off. Restores are made from existing backup files in object storage.  | `false` | yes
+`kubectl.image` | A docker image with kubectl, required by hook-deploy.yaml and hook-delete.yaml  | `docker pull claranet/gcloud-kubectl-docker` | yes
 
 ## How to
 ```

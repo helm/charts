@@ -15,7 +15,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: deploy-ark-config
-          image: {{ .Values.kubectl.image.repository }}/{{ .Values.kubectl.image.tag }}
+          image: {{ required "A docker image with kubectl" .Values.kubectl.image.repository }}/{{ required "A docker image with kubectl" .Values.kubectl.image.tag }}
           imagePullPolicy: Always
           command: ["kubectl","create","-f","/tmp/"]
           volumeMounts:
