@@ -144,6 +144,16 @@ spec:
         - name: dashboards-json
           configMap:
             name: {{ template "grafana.fullname" . }}-dashboards-json
+        - name: ldap
+          secret:
+            {{- if .Values.ldap.existingSecret }}
+            secretName: {{ .Values.ldap.existingSecret }}
+            {{- else }}
+            secretName: {{ template "grafana.fullname" . }}            
+            {{- end }}
+            items:
+              - key: ldap-toml
+                path: ldap.toml
         - name: storage
       {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
@@ -151,15 +161,4 @@ spec:
       {{- else }}
           emptyDir: {}
       {{- end -}}
-{{- if .Values.ldap.enabled }}
-        - name: ldap
-          secret:
-            {{- if .Values.ldap.createSecret }}
-            secretName: {{ template "grafana.fullname" . }}
-            {{- else }}
-            secretName: {{ .Values.ldap.existingSecret }}
-            {{- end }}
-            items:
-              - key: ldap-toml
-                path: ldap.toml
-{{- end }}
+        

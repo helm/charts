@@ -163,11 +163,9 @@ grafana.ini:
 ## ref: http://docs.grafana.org/installation/configuration/#auth-ldap
 ## ref: http://docs.grafana.org/installation/ldap/#configuration
 ldap:
-  enabled: false
-  createSecret: true
-  # `name` is a reference to an existing secret containing the ldap configuration
-  # for Grafana in a key `ldap-toml`. This is only required if `createSecret` is false
-  name: ""
+  # `existingSecret` is a reference to an existing secret containing the ldap configuration
+  # for Grafana in a key `ldap-toml`.
+  existingSecret: ""
   config: {}
     # servers:
     #   - host: 127.0.0.1
