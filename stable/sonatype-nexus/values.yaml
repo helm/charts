@@ -46,7 +46,7 @@ nexusProxy:
     nexusHttpHost:
     enforceHttps: false
     cloudIamAuthEnabled: false
-## If cloudIamAuthEnabled is set to true uncomment the variables bellow and remove this line
+## If cloudIamAuthEnabled is set to true uncomment the variables below and remove this line
   #   clientId: ""
   #   clientSecret: ""
   #   organizationId: ""
