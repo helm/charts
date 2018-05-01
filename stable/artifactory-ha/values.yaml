@@ -85,7 +85,7 @@ artifactory:
     failureThreshold: 10
     timeoutSeconds: 10
     periodSeconds: 10
-    successThreshold: 3
+    successThreshold: 1
 
   readinessProbe:
     enabled: true
@@ -93,7 +93,7 @@ artifactory:
     failureThreshold: 10
     timeoutSeconds: 10
     periodSeconds: 10
-    successThreshold: 3
+    successThreshold: 1
   persistence:
     redundancy: 3
     mountPath: "/var/opt/jfrog/artifactory"
@@ -226,7 +226,7 @@ nginx:
     failureThreshold: 10
     timeoutSeconds: 10
     periodSeconds: 10
-    successThreshold: 3
+    successThreshold: 1
 
   readinessProbe:
     enabled: true
@@ -234,7 +234,7 @@ nginx:
     failureThreshold: 10
     timeoutSeconds: 10
     periodSeconds: 10
-    successThreshold: 3
+    successThreshold: 1
   ## The SSL secret that will be used by the Nginx pod
   # tlsSecretName: chart-example-tls
   env:
