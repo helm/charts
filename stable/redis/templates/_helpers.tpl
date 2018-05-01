@@ -32,17 +32,6 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
-Return the appropriate apiVersion for networkpolicy.
-*/}}
-{{- define "networkPolicy.apiVersion" -}}
-{{- if semverCompare ">=1.4-0, <1.7-0" .Capabilities.KubeVersion.GitVersion -}}
-{{- print "extensions/v1beta1" -}}
-{{- else -}}
-{{- print "networking.k8s.io/v1" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Return the proper image name
 */}}
 {{- define "redis.image" -}}
@@ -114,4 +103,15 @@ securityContext:
   runAsUser: {{ $securityContext.runAsUser | default .Values.master.securityContext.runAsUser }}
 {{- end }}
 {{- end }}
+{{- end -}}
+
+{{/*
+Return the appropriate version for the 'apps' API.
+*/}}
+{{- define "apps.apiVersion" -}}
+{{- if .Capabilities.APIVersions.Has "apps/v1" -}}
+"apps/v1"
+{{- else -}}
+"apps/v1beta2"
+{{- end -}}
 {{- end -}}
