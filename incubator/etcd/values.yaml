@@ -14,7 +14,7 @@ image:
 cpu: "100m"
 memory: "512Mi"
 storage: "1Gi"
-## etcd data Persistent Volume storage Class
+## etcd data Persistent Volume Storage Class
 ## If defined, storageClassName: <storageClass>
 ## If set to "-", storageClassName: "", which disables dynamic provisioning
 ## If undefined (the default) or set to null, no storageClassName spec is
