@@ -20,14 +20,18 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 
 * Kubernetes 1.6+ with Beta APIs enabled
 * PV provisioner support in the underlying infrastructure
+* Requires the following variables
+  You must add `acceptLicenseAgreement` in the values.yaml file and set it to `yes` or include `--set acceptLicenseAgreement=yes` in the command line of helm install to accept the license.
 
 ## Installing the Chart
 
 To install the chart with the release name `neo4j-helm`:
 
 ```bash
-$ helm install --name neo4j-helm stable/neo4j --set neo4jPassword=mySecretPassword
+$ helm install --name neo4j-helm stable/neo4j --set acceptLicenseAgreement=yes --set neo4jPassword=mySecretPassword
 ```
+
+You must explicitly accept the neo4j license agreement for the installation to be successful.
 
 The command deploys Neo4j on the Kubernetes cluster in the default configuration
 but with the password set to `mySecretPassword`. The

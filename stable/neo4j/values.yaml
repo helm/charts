@@ -15,7 +15,6 @@ podDisruptionBudget: {}
   # minAvailable: 2
   # maxUnavailable: 1
 
-
 # Use password authentication
 authEnabled: true
 

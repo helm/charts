@@ -9,28 +9,43 @@ metadata:
     app: {{ template "neo4j.name" . }}
 data:
   run.sh: |-
-    check_endpoint_on_machines() {
-      path=$1
+    @test "Testing Neo4j cluster has quorum" {
+      echo "checking if the cluster is up"
+      path="data"
       for id in $(seq 0 $((CORE_REPLICAS - 1))); do
         host="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.${NAMESPACE}.svc.cluster.local"
         auth="neo4j:${NEO4J_SECRETS_PASSWORD}"
         url="http://${auth}@${host}:7474/db/${path}"
-        end="$((SECONDS+120))"
+        attempts=10
+        attempt=0
         while true; do
-          wget -q ${url} -O /dev/null 2>&1
-          response_code=$?
-          [[ "0" = "$response_code" ]] && break
-          [[ "${SECONDS}" -ge "${end}" ]] && exit 1
+          attempt=$[$attempt + 1]
+          echo "Try $attempt: Connecting to $host:7474/db/${path}"
+          run wget ${url} -qO- 2>&1
+          echo "Exit code: $status"
+          [ $status -eq 0 ] && break
+          [ "${attempt}" -ge "${attempts}" ] && exit 1
           sleep 5
         done
       done
     }
-    @test "Testing Neo4j cluster has quorum" {
-      echo "checking if the cluster is up"
-      check_endpoint_on_machines "data"
-    }
 
     @test "Testing Neo4j core servers are available" {
       echo "checking if nodes are available"
-      check_endpoint_on_machines "manage/server/core/available"
+      path="manage/server/core/available"
+      for id in $(seq 0 $((CORE_REPLICAS - 1))); do
+        host="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.${NAMESPACE}.svc.cluster.local"
+        auth="neo4j:${NEO4J_SECRETS_PASSWORD}"
+        url="http://${auth}@${host}:7474/db/${path}"
+        attempts=10
+        attempt=0
+        while true; do
+          attempt=$[$attempt + 1]
+          echo "Try $attempt: Connecting to $host:7474/db/${path}"
+          response=$(wget ${url} -qO- 2>&1)
+          [ "$response" = "true" ] && break
+          [ "${attempt}" -ge "${attempts}" ] && exit 1
+          sleep 5
+        done
+      done
     }
