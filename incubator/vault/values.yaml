@@ -34,7 +34,7 @@ service:
   #
   # An example using type:loadbalancer and AWS internal ELB on kops
   # annotations:
-  #   dns.alpha.kubernetes.io/internal: vault.internal.cqd.k8s.janusz.io
+  #   dns.alpha.kubernetes.io/internal: vault.internal.domain.name
   #   service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
   #type: LoadBalancer
 ingress:
@@ -108,7 +108,7 @@ vault:
   #
   #env: 
   #  - name: VAULT_API_ADDR
-  #    value: "https://my-svc.my-namespace.svc.cluster.local:8200"
+  #    value: "https://vault.internal.domain.name:8200"
   readiness:
     readyIfSealed: false
     readyIfStandby: true
