@@ -34,15 +34,15 @@ $ helm delete vsts --purge
 ## Configuration
 The following table lists the configurable parameters of the VSTS chart and their default values.
 
-| Parameter                     | Description                   | Default                                                                               |
-| ----------------------------- | ----------------------------  | ------------------------------------------------------------------------------------- |
-| `vsts.secret.account`         |  vsts account name            | None, needs to be provided. Must be base64 encoded (base64 -w 0)                      |
-| `vsts.secret.token`           |  vsts personal access token   | None, needs to be provided. Must be base64 encoded (base64 -w 0)                      |
-| `vsts.agentpool.name`         |  vsts agentpool name          | None, needs to be provided. E.g. myproject when the url is myproject.visualstudio.com |
-| `vsts.resources.requests.mem` |  min memory need              | `64Mi`                                                                                |
-| `vsts.resources.requests.cpu` |  min cpu needed               | `100m`                                                                                |
-| `vsts.resources.limits.mem`   |  max memory that can be used  | `128Mi`                                                                               |
-| `vsts.resources.limits.cpu`   |  max cpu that can be used     | `200m`                                                                                |
+| Parameter                     | Description                   | Default                                                                                                                    |
+| ----------------------------- | ----------------------------  | -------------------------------------------------------------------------------------------------------------------------- |
+| `vsts.secret.account`         |  vsts account name            | None, needs to be provided. Must be base64 encoded (base64 -w 0).E.g. myproject when the url is myproject.visualstudio.com |
+| `vsts.secret.token`           |  vsts personal access token   | None, needs to be provided. Must be base64 encoded (base64 -w 0)                                                           |
+| `vsts.agentpool.name`         |  vsts agentpool name          | None, needs to be provided.                                                                                                |
+| `vsts.resources.requests.mem` |  min memory need              | `64Mi`                                                                                                                     |
+| `vsts.resources.requests.cpu` |  min cpu needed               | `100m`                                                                                                                     |
+| `vsts.resources.limits.mem`   |  max memory that can be used  | `128Mi`                                                                                                                    |
+| `vsts.resources.limits.cpu`   |  max cpu that can be used     | `200m`                                                                                                                     |
 
 
 ```bash
