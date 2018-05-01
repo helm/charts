@@ -36,7 +36,7 @@ service:
   # annotations:
   #   dns.alpha.kubernetes.io/internal: vault.internal.domain.name
   #   service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
-  #type: LoadBalancer
+  # type: LoadBalancer
 ingress:
   enabled: false
   labels: {}
@@ -104,11 +104,11 @@ vault:
     # - secretName: vault-tls
     #   mountPath: /vault/tls
   #
-  # Configure additional environment variables for the Vault containers  
+  # Configure additional environment variables for the Vault containers
   #
-  #env: 
-  #  - name: VAULT_API_ADDR
-  #    value: "https://vault.internal.domain.name:8200"
+  # env:
+  #   - name: VAULT_API_ADDR
+  #     value: "https://vault.internal.domain.name:8200"
   readiness:
     readyIfSealed: false
     readyIfStandby: true
