@@ -112,7 +112,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
 | `artifactory.livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
 | `artifactory.readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                        |
-| `artifactory.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 240                                                    |
+| `artifactory.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 60                                                    |
 | `artifactory.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                   |
 | `artifactory.readinessProbe.timeoutSeconds`      | When the probe times out                  | 10                                                    |
 | `artifactory.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
@@ -146,13 +146,13 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.externalPortHttps` | Nginx service external port | `443`   |
 | `nginx.internalPortHttps` | Nginx service internal port | `443`   |
 | `nginx.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
-| `nginx.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 240                                                   |
+| `nginx.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 60                                                   |
 | `nginx.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
 | `nginx.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                                                    |
 | `nginx.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 10 |
 | `nginx.livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 1|
 | `nginx.readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                        |
-| `nginx.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 360                                                   |
+| `nginx.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 60                                                   |
 | `nginx.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                   |
 | `nginx.readinessProbe.timeoutSeconds`      | When the probe times out                  | 10                                                    |
 | `nginx.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 10 |

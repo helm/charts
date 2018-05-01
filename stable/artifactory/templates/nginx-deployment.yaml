@@ -22,8 +22,8 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
     {{- end }}
-    {{- if .Values.nginx.persistence.enabled }}
       initContainers:
+    {{- if .Values.nginx.persistence.enabled }}
       - name: "remove-lost-found"
         image: "{{ .Values.initContainerImage }}"
         imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
@@ -35,6 +35,15 @@ spec:
         - mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
           name: nginx-volume
     {{- end }}
+      - name: "wait-for-artifactory"
+        image: "{{ .Values.initContainerImage }}"
+        command:
+        - 'sh'
+        - '-c'
+        - >
+          until nc -z -w 2 {{ template "artifactory.fullname" . }} {{ .Values.artifactory.externalPort }} && echo artifactory ok; do
+            sleep 2;
+          done;
       containers:
       - name: {{ .Values.nginx.name }}
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.version }}"

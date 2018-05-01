@@ -50,7 +50,7 @@ artifactory:
 
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 240
+    initialDelaySeconds: 60
     failureThreshold: 10
     timeoutSeconds: 10
     periodSeconds: 10
@@ -117,7 +117,7 @@ nginx:
   ## The following settings are to configure the frequency of the liveness and readiness probes
   livenessProbe:
     enabled: true
-    initialDelaySeconds: 240
+    initialDelaySeconds: 60
     failureThreshold: 10
     timeoutSeconds: 10
     periodSeconds: 10
@@ -125,7 +125,7 @@ nginx:
 
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 360
+    initialDelaySeconds: 60
     failureThreshold: 10
     timeoutSeconds: 10
     periodSeconds: 10
