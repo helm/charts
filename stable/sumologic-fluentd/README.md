@@ -88,6 +88,7 @@ The following tables lists the configurable parameters of the sumologic-fluentd 
 | `sumologic.readFromHead` | Start to read the logs from the head of file, not bottom. Only applies to containers log files. See in_tail doc for more information | `true` |
 | `sumologic.concatSeparator` | The character to use to delimit lines within the final concatenated message. Most multi-line messages contain a newline at the end of each line | `Nil` |
 | `sumologic.auditLogPath` | Define the path to the [Kubernetes Audit Log](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/) | `/mnt/log/kube-apiserver-audit.log` |
+| `sumologic.timeKey` | The field name for json formatted sources that should be used as the time. See [time_key](https://docs.fluentd.org/v0.12/articles/formatter_json#time_key-(string,-optional,-defaults-to-%E2%80%9Ctime%E2%80%9D)). | `time`
 | `image.name` | The image repository and name to pull from | `sumologic/fluentd-kubernetes-sumologic` |
 | `image.tag` | The image tag to pull | `v1.13` |
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` |
