@@ -5,6 +5,8 @@ metadata:
   labels: {{ include "newrelic.labels" . | indent 4 }}
   name: {{ template "newrelic.fullname" . }}
 spec:
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
   selector:
     matchLabels:
       app: {{ template "newrelic.name" . }}
