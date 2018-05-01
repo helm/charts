@@ -196,5 +196,5 @@ To see how to use Nexus with different tools like Docker, Maven, Python, and so 
 - [Nexus Usage](https://github.com/travelaudience/kubernetes-nexus#usage)
 
 ### Disaster Recovery
-In a disaster recovery scenario, the latest backup made by the nexus-backup container should be restored. In order to achieve this please follow the procedure described bellow:
+In a disaster recovery scenario, the latest backup made by the nexus-backup container should be restored. In order to achieve this please follow the procedure described below:
 - [Restore Backups](https://github.com/travelaudience/kubernetes-nexus#restore)
