@@ -1,11 +1,10 @@
+apiVersion: v1
 name: tomcat
 description: Deploy a basic tomcat application server with sidecar as web archive container
 icon: https://github.com/kubernetes/kubernetes/blob/master/logo/logo.png
 version: 0.1.0
 appVersion: 7.0
 home: https://github.com/yahavb
-sources:
-  - https://github.com/yahavb
 maintainers:
   - name: yahavb
     email: ybiran@ananware.systems

@@ -37,15 +37,15 @@ spec:
            hostPort: 8009
          livenessProbe:
            tcpSocket:
-             port: 8009
-           initialDelaySeconds: 5
-           periodSeconds: 10
+             port: 8080
+           initialDelaySeconds: 15
+           periodSeconds: 20  
          readinessProbe:
            httpGet:
              path: /sample
              port: {{ .Values.service.internalPort }}
            initialDelaySeconds: 15
-           periodSeconds: 20  
+           periodSeconds: 30  
          resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
