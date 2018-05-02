@@ -17,7 +17,7 @@ It also packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/mast
 
 ```console
 $ git clone https://github.com/hackmdio/docker-hackmd.git
-$ helm install incubator/hackmd
+$ helm install stable/hackmd
 ```
 
 ## Configuration
