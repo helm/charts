@@ -45,10 +45,10 @@ Parameter                       | Description                           | Defaul
 ------------------------------- | ------------------------------------- | ----------------------------------------------------------
 `image.webarchive.repository`   | Sidecar image source repository name  | `ananwaresystems/webarchive`
 `image.webarchive.tag`          | `webarchive` release tag.             | `1.0`
-`image.tomcat.repository`       | Tomact image source repository name   | `ananwaresystems/tomcat`
+`image.tomcat.repository`       | Tomact image source repository name   | `tomcat`
 `image.tomcat.tag`              | `tomcat` release tag.                 | `7.0`
 `image.pullPolicy`              | Image pull policy                     | `IfNotPresent`
-`deploy.directory`              | Webarchive deployment directory       | `/root/apache-tomcat-7.0.42-v2/webapps`
+`deploy.directory`              | Webarchive deployment directory       | `/usr/local/tomcat/webapps`
 `service.name`                  | Tomcat service name                   | `http`
 `service.externalPort`          | Kubernetes service port               | `80`
 `service.internalPort`          | Tomcat front port                     | `8080`
@@ -56,7 +56,6 @@ Parameter                       | Description                           | Defaul
 `resources`                     | CPU/Memory resource requests/limits   | `{}`
 `nodeSelector`                  | Node affinity                         | `{}`
 `tolerations`                   | Node tolerations                      | `{}`
-`cmd.start`                     | Servlet Container start cmd           | `{}`
 
 Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are a mixture of Kubernetes and tomcat-related directives that map to environment variables. 
 

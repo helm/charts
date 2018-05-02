@@ -8,12 +8,12 @@ image:
     repository: ananwaresystems/webarchive
     tag: "1.0"
   tomcat:
-    repository: ananwaresystems/tomcat
-    tag: "7.0.1"
+    repository: tomcat
+    tag: "7.0"
   pullPolicy: IfNotPresent
 
 deploy:
-  directory: /root/apache-tomcat-7.0.42-v2/webapps
+  directory: /usr/local/tomcat/webapps
 
 service:
   name: http
@@ -47,6 +47,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-cmd:
-  start: "/root/apache-tomcat-7.0.42-v2/bin/start.sh"

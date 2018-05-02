@@ -11,27 +11,26 @@ spec:
   replicas: {{ .Values.replicaCount }}
   template:
       metadata:
-       labels:
-        app: {{ template "tomcat.name" . }}
-        release: {{ .Release.Name }}
+        labels:
+          app: {{ template "tomcat.name" . }}
+          release: {{ .Release.Name }}
       spec:
-       volumes:
-       - name: app-volume
-         emptyDir: {}
-       containers:
-       - name: war
-         image: {{ .Values.image.webarchive.repository }}:{{ .Values.image.webarchive.tag }}
-         imagePullPolicy: {{ .Values.image.pullPolicy }}
-         volumeMounts:
+         volumes:
          - name: app-volume
-           mountPath: /app
-       - name: {{ .Chart.Name }}
-         image: {{ .Values.image.tomcat.repository }}:{{ .Values.image.tomcat.tag }}
-         imagePullPolicy: {{ .Values.image.pullPolicy }}
-         command: ["sh","-c", {{ .Values.cmd.start }}]
-         volumeMounts:
-         - name: app-volume
-           mountPath: {{ .Values.deploy.directory }}
+           emptyDir: {}
+         containers:
+         - name: war
+           image: {{ .Values.image.webarchive.repository }}:{{ .Values.image.webarchive.tag }}
+           imagePullPolicy: {{ .Values.image.pullPolicy }}
+           volumeMounts:
+           - name: app-volume
+             mountPath: /app
+         - name: {{ .Chart.Name }}
+           image: {{ .Values.image.tomcat.repository }}:{{ .Values.image.tomcat.tag }}
+           imagePullPolicy: {{ .Values.image.pullPolicy }}
+           volumeMounts:
+           - name: app-volume
+             mountPath: {{ .Values.deploy.directory }}
          ports:
          - containerPort: {{ .Values.service.internalPort }}
            hostPort: 8009
@@ -42,8 +41,8 @@ spec:
            periodSeconds: 20  
          readinessProbe:
            httpGet:
-             path: /sample
-             port: {{ .Values.service.internalPort }}
+             path: /
+             port: 8080
            initialDelaySeconds: 15
            periodSeconds: 30  
          resources:
