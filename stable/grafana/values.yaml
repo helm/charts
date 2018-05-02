@@ -134,6 +134,8 @@ dashboards: {}
 #    gnetId: 2
 #    revision: 2
 #    datasource: Prometheus
+#  local-dashboard:
+#    url: https://example.com/repository/test.json
 
 ## Grafana's primary configuration
 ## NOTE: values in map will be converted to ini format
