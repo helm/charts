@@ -8,6 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  serviceAccountName: "{{ .Values.web.serviceAccountName }}"
   replicas: {{ .Values.web.replicacount }}
   template:
     metadata:
@@ -40,6 +41,7 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: sentry-secret
+{{- if .Values.postgresql.enabled }}
         - name: SENTRY_DB_USER
           value: {{ default "sentry" .Values.postgresUser | quote }}
         - name: SENTRY_DB_NAME
@@ -51,6 +53,28 @@ spec:
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "postgresql.fullname" . }}
+{{- else if .Values.postgresql.secret }}
+        - name: SENTRY_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.postgresql.secret }}
+              key: user
+        - name: SENTRY_DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.postgresql.secret }}
+              key: db_name
+        - name: SENTRY_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.postgresql.secret }}
+              key: password
+        - name: SENTRY_POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.postgresql.secret }}
+              key: host
+{{- end }}
         - name: SENTRY_POSTGRES_PORT
           value: "5432"
         - name: SENTRY_REDIS_PASSWORD

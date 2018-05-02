@@ -8,6 +8,7 @@ image:
 
 # How many web UI instances to run
 web:
+  serviceAccountName: default
   replicacount: 1
   resources:
     limits:
@@ -27,6 +28,7 @@ web:
 
 # How many cron instances to run
 cron:
+  serviceAccountName: default
   replicacount: 1
   resources:
     limits:
@@ -41,6 +43,7 @@ cron:
 
 # How many worker instances to run
 worker:
+  serviceAccountName: default
   replicacount: 2
   resources:
     limits:
@@ -127,6 +130,7 @@ ingress:
 # TODO: add support for plugins https://docs.sentry.io/server/plugins/
 
 postgresql:
+  enabled: true
   postgresDatabase: sentry
   postgresUser: sentry
   imageTag: "9.5"
