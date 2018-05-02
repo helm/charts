@@ -9,11 +9,13 @@ image:
   #   - secret1
   #   - secret2
 
-output:
-  host: elasticsearch-client.default.svc.cluster.local
-  port: 9200
-  buffer_chunk_limit: 2M
-  buffer_queue_limit: 8
+env:
+  open:
+    OUTPUT_HOST: elasticsearch-client.default.svc.cluster.local
+    OUTPUT_PORT: 9200
+    OUTPUT_BUFFER_CHUNK_LIMIT: 2M
+    OUTPUT_BUFFER_QUEUE_LIMIT: 8
+  secret:
 
 service:
   type: ClusterIP
