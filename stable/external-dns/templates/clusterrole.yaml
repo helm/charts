@@ -12,6 +12,7 @@ rules:
     resources:
       - ingresses
       - services
+      - pods
     verbs:
       - get
       - list
