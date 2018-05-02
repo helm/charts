@@ -9,3 +9,7 @@ service:
   annotations: {}
 resources: {}
 redisAddress: redis://myredis:6379
+annotations: {}
+#  prometheus.io/path: /metrics
+#  prometheus.io/port: "9121"
+#  prometheus.io/scrape: "true"
