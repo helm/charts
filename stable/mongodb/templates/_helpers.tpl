@@ -19,7 +19,8 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Return the proper image name
 */}}
 {{- define "mongodb.image" -}}
-{{- $registryName :=  default .Values.image.registry "docker.io" -}}
-{{- $tag := .Values.image.tag | default "latest" -}}
-{{- printf "%s/%s:%s" $registryName .Values.image.repository $tag -}}
+{{- $registryName :=  .Values.image.registry -}}
+{{- $repositoryName := .Values.image.repository -}}
+{{- $tag := .Values.image.tag -}}
+{{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
