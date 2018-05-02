@@ -5,7 +5,7 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.12.0"
+    tag: "0.14.0"
     pullPolicy: IfNotPresent
 
   config: {}
@@ -65,8 +65,13 @@ controller:
   extraArgs: {}
 
   ## Additional environment variables to set
-  ##
-  extraEnvs: {}
+  extraEnvs: []
+  # extraEnvs:
+  #   - name: FOO
+  #     valueFrom:
+  #       secretKeyRef:
+  #         key: FOO
+  #         name: secret-resource
 
   ## DaemonSet or Deployment
   ##
@@ -147,6 +152,7 @@ controller:
 
   service:
     annotations: {}
+    labels: {}
     clusterIP: ""
 
     ## List of IP addresses at which the controller services are available
@@ -326,6 +332,8 @@ defaultBackend:
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:
   create: false
+  createRole: false
+  createClusterRole: false
   serviceAccountName: default
 
 ## Optional array of imagePullSecrets containing private registry credentials
