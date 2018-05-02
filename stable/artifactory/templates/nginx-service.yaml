@@ -1,16 +1,24 @@
+{{- if .Values.nginx.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "artifactory.nginx.name" . }}
+  name: {{ template "artifactory.nginx.fullname" . }}
   labels:
     app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.nginx.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- if .Values.nginx.service.annotations }}
+  annotations:
+{{ toYaml .Values.nginx.service.annotations | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.nginx.service.type }}
 {{- if eq .Values.nginx.service.type "LoadBalancer" }}
+  {{ if .Values.nginx.service.loadBalancerIP -}}
+  loadBalancerIP: {{ .Values.nginx.service.loadBalancerIP }}
+  {{ end -}}
   externalTrafficPolicy: Local
 {{- end }}
 {{- if .Values.nginx.service.loadBalancerSourceRanges }}
@@ -30,3 +38,4 @@ spec:
     app: {{ template "artifactory.name" . }}
     component: "{{ .Values.nginx.name }}"
     release: {{ .Release.Name }}
+{{- end }}

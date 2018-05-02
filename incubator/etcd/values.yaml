@@ -8,7 +8,7 @@ PeerPort: 2380
 ClientPort: 2379
 Component: "etcd"
 Replicas: 3
-Image: "gcr.io/google_containers/etcd-amd64"
+Image: "k8s.gcr.io/etcd-amd64"
 ImageTag: "2.2.5"
 ImagePullPolicy: "Always"
 Cpu: "100m"
@@ -22,3 +22,10 @@ Storage: "1Gi"
 ##   GKE, AWS & OpenStack)
 ##
 # storageClass: "-"
+
+## Node labels and tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+NodeSelector: {}
+Tolerations: []
+Affinity: {}

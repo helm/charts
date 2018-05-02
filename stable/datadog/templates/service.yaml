@@ -11,6 +11,7 @@ spec:
   type: {{ .Values.serviceType }}
   selector:
     app: {{ template "datadog.fullname" . }}
+    type: deployment
   ports:
   - port: 8125
     name: dogstatsdport

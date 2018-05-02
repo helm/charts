@@ -16,10 +16,12 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
-Create the name for our kafka configmap.
+Create a default fully qualified zookeeper name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "kafka.configmap" -}}
-{{- printf "%s-configmap-%d" (include "kafka.fullname" .) .Release.Revision -}}
+{{- define "kafka.zookeeper.fullname" -}}
+{{- $name := default "zookeeper" .Values.zookeeper.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -29,8 +31,10 @@ else use user-provided URL
 {{- define "zookeeper.url" }}
 {{- $port := .Values.zookeeper.port | toString }}
 {{- if .Values.zookeeper.enabled -}}
-{{- printf "%s-zookeeper:%s" .Release.Name $port }}
+{{- printf "%s:%s" (include "kafka.zookeeper.fullname" .) $port }}
 {{- else -}}
-{{- printf "%s:%s" .Values.zookeeper.url $port }}
+{{- $zookeeperConnect := printf "%s:%s" .Values.zookeeper.url $port }}
+{{- $zookeeperConnectOverride := index .Values "configurationOverrides" "zookeeper.connect" }}
+{{- default $zookeeperConnect $zookeeperConnectOverride }}
 {{- end -}}
 {{- end -}}

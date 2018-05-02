@@ -25,7 +25,21 @@ spec:
         component: "{{ .Values.server.name }}"
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.server.fullname" . }}{{ else }}"{{ .Values.server.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "prometheus.serviceAccountName.server" . }}
+      {{- if .Values.initChownData.enabled }}
+      initContainers:
+      - name: "{{ .Values.initChownData.name }}"
+        image: "{{ .Values.initChownData.image.repository }}:{{ .Values.initChownData.image.tag }}"
+        imagePullPolicy: "{{ .Values.initChownData.image.pullPolicy }}"
+        resources:
+{{ toYaml .Values.initChownData.resources | indent 12 }}
+        # 65534 is the nobody user that prometheus uses.
+        command: ["chown", "-R", "65534:65534", "{{ .Values.server.persistentVolume.mountPath }}"]
+        volumeMounts:
+        - name: storage-volume
+          mountPath: {{ .Values.server.persistentVolume.mountPath }}
+          subPath: "{{ .Values.server.persistentVolume.subPath }}"
+      {{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
@@ -33,27 +47,33 @@ spec:
           args:
             - --volume-dir=/etc/config
             - --webhook-url=http://localhost:9090{{ .Values.server.prefixURL }}/-/reload
+          {{- range $key, $value := .Values.configmapReload.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config
               readOnly: true
+          {{- range .Values.configmapReload.extraConfigmapMounts }}
+            - name: {{ $.Values.configmapReload.name }}-{{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
 
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
           args:
-          {{- if or .Values.alertmanager.enabled .Values.server.alertmanagerURL }}
-            - --alertmanager.url={{- if .Values.alertmanager.enabled }}http://{{ template "prometheus.alertmanager.fullname" . }}:{{ .Values.alertmanager.service.servicePort }}{{ .Values.alertmanager.prefixURL }}{{- else }}{{ .Values.server.alertmanagerURL }}{{- end }}
-          {{- end }}
           {{- if .Values.server.retention }}
-            - --storage.local.retention={{ .Values.server.retention }}
+            - --storage.tsdb.retention={{ .Values.server.retention }}
           {{- end }}
             - --config.file=/etc/config/prometheus.yml
-            - --storage.local.path={{ .Values.server.persistentVolume.mountPath }}
+            - --storage.tsdb.path={{ .Values.server.persistentVolume.mountPath }}
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
+            - --web.enable-lifecycle
           {{- range $key, $value := .Values.server.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
@@ -64,7 +84,13 @@ spec:
             - containerPort: 9090
           readinessProbe:
             httpGet:
-              path: {{ .Values.server.prefixURL }}/status
+              path: {{ .Values.server.prefixURL }}/-/ready
+              port: 9090
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.server.prefixURL }}/-/healthy
               port: 9090
             initialDelaySeconds: 30
             timeoutSeconds: 30
@@ -77,6 +103,16 @@ spec:
               mountPath: {{ .Values.server.persistentVolume.mountPath }}
               subPath: "{{ .Values.server.persistentVolume.subPath }}"
           {{- range .Values.server.extraHostPathMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- range .Values.server.extraConfigmapMounts }}
+            - name: {{ $.Values.server.name }}-{{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- range .Values.server.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
@@ -109,4 +145,24 @@ spec:
         - name: {{ .name }}
           hostPath:
             path: {{ .hostPath }}
+      {{- end }}
+      {{- range .Values.configmapReload.extraConfigmapMounts }}
+        - name: {{ $.Values.configmapReload.name }}-{{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
+      {{- range .Values.server.extraConfigmapMounts }}
+        - name: {{ $.Values.server.name }}-{{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
+      {{- range .Values.server.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+      {{- end }}
+      {{- range .Values.configmapReload.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
       {{- end }}

@@ -1,14 +1,13 @@
 name: sugarcrm
-version: 0.2.2
-description: SugarCRM enables businesses to create extraordinary customer relationships with the most innovative and affordable CRM solution in the market.
+version: 1.0.7
+appVersion: 6.5.26
+deprecated: true
+description: DEPRECATED SugarCRM enables businesses to create extraordinary customer relationships with the most innovative and affordable CRM solution in the market.
 keywords:
 - sugarcrm
 - CRM
 home: http://www.sugarcrm.com/
 sources:
 - https://github.com/bitnami/bitnami-docker-sugarcrm
-maintainers:
-- name: Bitnami
-  email: containers@bitnami.com
 engine: gotpl
 icon: https://bitnami.com/assets/stacks/sugarcrm/img/sugarcrm-stack-110x117.png

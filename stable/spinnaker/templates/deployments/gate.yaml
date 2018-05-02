@@ -18,6 +18,10 @@ spec:
         app: {{ template "fullname" . }}
         component: gate
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       containers:
         - image: {{ .Values.images.gate }}
           name: gate

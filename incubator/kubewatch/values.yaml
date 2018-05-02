@@ -1,19 +1,21 @@
 slack:
   # Slack channel to notify
-  channel: ""
+  channel: "XXXX"
 
-  # Slack bots token
-  # Ref: https://api.slack.com/docs/token-types#bot
-  token: ""
+  # Slack bots token. Create using: https://my.slack.com/services/new/bot
+  # and invite the bot to your channel using: /join @botname
+  token: "XXXX"
 
-# Resouces to watch
-resourcesToWatch: {}
-  # deployment: true
-  # replicationcontroller: true
-  # replicaset: true
-  # daemonset: true
-  # services: true
-  # pod: true
+# Resources to watch
+resourcesToWatch:
+  deployment: true
+  replicationcontroller: false
+  replicaset: false
+  daemonset: false
+  services: false
+  pod: true
+  job: false
+  persistentvolume: false
 
 image:
   repository: "tuna/kubewatch"

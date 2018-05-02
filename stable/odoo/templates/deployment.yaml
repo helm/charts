@@ -13,10 +13,16 @@ spec:
       labels:
         app: {{ template "odoo.fullname" . }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "odoo.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: POSTGRESQL_HOST
           value: {{ template "odoo.postgresql.fullname" . }}
@@ -54,7 +60,7 @@ spec:
           httpGet:
             path: /
             port: http
-          initialDelaySeconds: 180
+          initialDelaySeconds: 300
           timeoutSeconds: 30
         readinessProbe:
           httpGet:

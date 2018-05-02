@@ -28,6 +28,10 @@ spec:
         {{- if not .Values.dryRun }}
         - --no-dry-run
         {{- end }}
+        - --excluded-weekdays={{ .Values.excludedWeekdays }}
+        - --excluded-times-of-day={{ .Values.excludedTimesOfDay }}
+        - --excluded-days-of-year={{ .Values.excludedDaysOfYear }}
+        - --timezone={{ .Values.timezone }}
         resources:
           requests:
             cpu: {{ .Values.resources.cpu }}
@@ -36,3 +40,7 @@ spec:
             cpu: {{ .Values.resources.cpu }}
             memory: {{ .Values.resources.memory }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ printf "%s-%s" .Release.Name .Values.name }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end -}}

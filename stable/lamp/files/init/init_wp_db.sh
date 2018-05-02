@@ -174,7 +174,7 @@ function init_from_backup
 }
 
 if [ -e "$WEBDIR/db_initialized" ]; then
-	echo "DB allready initialized, continuing..."
+	echo "DB already initialized, continuing..."
 else
 	if [ -z "$CLONE_INIT" ]; then
 		init_from_sql

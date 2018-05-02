@@ -4,7 +4,7 @@ metadata:
   name: {{ template "rethinkdb.fullname" . }}-proxy
   labels:
     app: {{ template "rethinkdb.name" . }}-proxy
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "rethinkdb.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   annotations:

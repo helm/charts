@@ -20,10 +20,24 @@ resources:
 
 # hostNetwork: false
 
+## Add tolerations if specified
+tolerations: []
+#   - key: node-role.kubernetes.io/master
+#     operator: Exists
+#     effect: NoSchedule
+
 annotations: {}
 
 awsRegion: us-east-1
+awsRole:
 logGroupName: kubernetes
+
+rbac:
+  ## If true, create and use RBAC resources
+  create: false
+
+  ## Ignored if rbac.create is true
+  serviceAccountName: default
 
 fluentdConfig: |
   <match fluent.**>

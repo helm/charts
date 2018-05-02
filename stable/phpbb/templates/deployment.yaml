@@ -1,3 +1,4 @@
+{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -14,35 +15,68 @@ spec:
       labels:
         app: {{ template "phpbb.fullname" . }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "phpbb.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: {{ .Values.allowEmptyPassword | quote }}
         - name: MARIADB_HOST
+        {{- if .Values.mariadb.enabled }}
           value: {{ template "phpbb.mariadb.fullname" . }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.host | quote }}
+        {{- end }}
         - name: MARIADB_PORT_NUMBER
+        {{- if .Values.mariadb.enabled }}
           value: "3306"
-        - name: MARIADB_PASSWORD
+        {{- else }}
+          value: {{ .Values.externalDatabase.port | quote }}
+        {{- end }}
+        - name: PHPBB_DATABASE_NAME
+        {{- if .Values.mariadb.enabled }}
+          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.database | quote }}
+        {{- end }}
+        - name: PHPBB_DATABASE_USER
+        {{- if .Values.mariadb.enabled }}
+          value: {{ .Values.mariadb.mariadbUser | quote }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.user | quote }}
+        {{- end }}
+        - name: PHPBB_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.mariadb.enabled }}
               name: {{ template "phpbb.mariadb.fullname" . }}
-              key: mariadb-root-password
+              key: mariadb-password
+            {{- else }}
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              key: db-password
+            {{- end }}
         - name: PHPBB_USERNAME
-          value: {{ default "" .Values.phpbbUser | quote }}
+          value: {{ .Values.phpbbUser | quote }}
         - name: PHPBB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "phpbb.fullname" . }}
               key: phpbb-password
         - name: PHPBB_EMAIL
-          value: {{ default "" .Values.phpbbEmail | quote }}
+          value: {{ .Values.phpbbEmail | quote }}
         - name: SMTP_HOST
-          value: {{ default "" .Values.smtpHost | quote }}
+          value: {{ .Values.smtpHost | quote }}
         - name: SMTP_PORT
-          value: {{ default "" .Values.smtpPort | quote }}
+          value: {{ .Values.smtpPort | quote }}
         - name: SMTP_USER
-          value: {{ default "" .Values.smtpUser | quote }}
+          value: {{ .Values.smtpUser | quote }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -87,3 +121,4 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+{{- end }}

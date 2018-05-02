@@ -49,7 +49,7 @@ deletes the release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Neo4j chart and
+The following table lists the configurable parameters of the Neo4j chart and
 their default values.
 
 | Parameter                            | Description                                                                                                                             | Default                                         |
@@ -60,11 +60,14 @@ their default values.
 | `authEnabled`                        | Is login/password required?                                                                                                             | `true`                                          |
 | `core.numberOfServers`               | Number of machines in CORE mode                                                                                                         | `3`                                             |
 | `core.sideCarContainers`             | Sidecar containers to add to the core pod. Example use case is a sidecar which identifies and labels the leader when using the http API | `{}`                                            |
+| `core.initContainers`                | Init containers to add to the core pod. Example use case is a script that installs the APOC library                                     | `{}`                                            |
 | `core.persistentVolume.storageClass` | Storage class of backing PVC                                                                                                            | `standard` (uses beta storage class annotation) |
 | `core.persistentVolume.size`         | Size of data volume                                                                                                                     | `10Gi`                                          |
 | `core.persistentVolume.mountPath`    | Persistent Volume mount root path                                                                                                       | `/data`                                         |
+| `core.persistentVolume.subPath`      | Subdirectory of the volume to mount                                                                                                     | `nil`                                           |
 | `core.persistentVolume.annotations`  | Persistent Volume Claim annotations                                                                                                     | `{}`                                            |
 | `readReplica.numberOfServers`        | Number of machines in READ_REPLICA mode                                                                                                 | `0`                                             |
+| `readReplica.initContainers`         | Init containers to add to the replica pod. Example use case is a script that installs the APOC library                                  | `{}`                                            |
 | `resources`                          | Resources required (e.g. CPU, memory)                                                                                                   | `{}`                                            |
 
 The above parameters map to the env variables defined in the

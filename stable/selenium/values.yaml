@@ -1,3 +1,10 @@
+global:
+  ## NodeSelector to be used in every deployment
+  ## hub, chrome, firefox, chromeDebug and firefoxDebug
+  ## can also be spceifed at chart level see below
+  nodeSelector:
+  #  label: value
+
 hub:
   ## The repository and image
   ## ref: https://hub.docker.com/r/selenium/hub/
@@ -5,9 +12,9 @@ hub:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.8.1"
+  tag: "3.11.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
@@ -72,19 +79,24 @@ hub:
   # gridUnregisterIfStillDownAfer: 30000
   # timeZone: UTC
 
+  ## NodeSelector to be used for the hub
+  nodeSelector:
+  #  label: value
+
+
 chrome:
   ## Enable the creation of a node-chrome pod
   enabled: false
 
   ## The repository and image
-  ## ref: https://hub.docker.com/r/selenium/hub/
+  ## ref: https://hub.docker.com/r/selenium/node-chrome/
   image: "selenium/node-chrome"
 
   ## The tag for the image
-  ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.8.1"
+  ## ref: https://hub.docker.com/r/selenium/node-chrome/tags/
+  tag: "3.11.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
@@ -143,19 +155,24 @@ chrome:
   # nodePort: 5555
   # timeZone: UTC
 
+  ## NodeSelector to be used for chrome
+  nodeSelector:
+  #  label: value
+
+
 chromeDebug:
-  ## Enable the creation of a node-chrome pod
+  ## Enable the creation of a node-chrome-debug pod
   enabled: false
 
   ## The repository and image
-  ## ref: https://hub.docker.com/r/selenium/hub/
+  ## ref: https://hub.docker.com/r/selenium/node-chrome-debug/
   image: "selenium/node-chrome-debug"
 
   ## The tag for the image
-  ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.8.1"
+  ## ref: https://hub.docker.com/r/selenium/node-chrome-debug/tags/
+  tag: "3.11.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
@@ -214,19 +231,23 @@ chromeDebug:
   # nodePort: 5555
   # timeZone: UTC
 
+  ## NodeSelector to be used for chromeDebug
+  nodeSelector:
+  #  label: value
+
 firefox:
-  ## Enable the creation of a node-chrome pod
+  ## Enable the creation of a node-firefox pod
   enabled: false
 
   ## The repository and image
-  ## ref: https://hub.docker.com/r/selenium/hub/
+  ## ref: https://hub.docker.com/r/selenium/node-firefox/
   image: "selenium/node-firefox"
 
   ## The tag for the image
-  ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.8.1"
+  ## ref: https://hub.docker.com/r/selenium/node-firefox/tags/
+  tag: "3.11.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
@@ -272,19 +293,23 @@ firefox:
   # nodePort: 5555
   # timeZone: UTC
 
+  ## NodeSelector to be used for firefox
+  nodeSelector:
+  #  label: value
+
 firefoxDebug:
-  ## Enable the creation of a node-chrome pod
+  ## Enable the creation of a node-firefox-debug pod
   enabled: false
 
   ## The repository and image
-  ## ref: https://hub.docker.com/r/selenium/hub/
+  ## ref: https://hub.docker.com/r/selenium/node-firefox-debug/
   image: "selenium/node-firefox-debug"
 
   ## The tag for the image
-  ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.8.1"
+  ## ref: https://hub.docker.com/r/selenium/node-firefox-debug/tags/
+  tag: "3.11.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
@@ -329,3 +354,7 @@ firefoxDebug:
   # nodeRegisterCycle: 5000
   # nodePort: 5555
   # timeZone: UTC
+
+  ## NodeSelector to be used for firefoxDebug
+  nodeSelector:
+  #  label: value

@@ -5,7 +5,7 @@ name: chaoskube
 image: quay.io/linki/chaoskube
 
 # docker image tag
-imageTag: v0.6.1
+imageTag: v0.8.0
 
 # number of replicas to run
 replicas: 1
@@ -25,6 +25,18 @@ namespaces:
 # don't kill pods, only log what would have been done
 dryRun: true
 
+# Set values for exempting specific week days from Chaoskube Actions
+excludedWeekdays:
+
+# Set values for exempting specific times of day from Chaoskube Actions
+excludedTimesOfDay:
+
+# Set values for exempting specific days of the year from Chaoskube Actions (Dec24,Jan1)
+excludedDaysOfYear:
+
+# Set specific Timezone for Actions to take place
+timezone: UTC
+
 # resource requests and limits
 resources:
   cpu: 10m
@@ -36,3 +48,7 @@ rbac:
 
   # only used when create is false
   serviceAccountName: default
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}

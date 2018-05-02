@@ -59,7 +59,8 @@ The **agent** section controls how the Weave Scope node agent pods are installed
 | **probeToken** | the token used to connect to Weave Cloud -- this is not needed for connecting to non-cloud Scope frontends | |
 | **rbac.*** | controls RBAC resource creation/use | |
 | **rbac.create** | whether RBAC resources should be created (required) -- this **must** be set to false if RBAC is not enabled in the cluster; it *may* be set to false in an RBAC-enabled cluster to allow for external management of RBAC | true |
-| **rbac.serviceAccountName** | the service account name that the agent will use (optional, but if not specified by the user a value will be calculated) -- this name **must** be specified and already exist if rbac.create is false; it **must not** already exist if rbac.create is true (it will then be created/managed as part of the release) | "weave-scope" |
+| **serviceAccount.create** | whether a new service account name that the agent will use should be created. | true |
+| **serviceAccount.name** | service account to be used.  If not set and serviceAccount.create is `true` a name is generated using the fullname template. |  |
 | **resources.*** | controls requests/limits for the agent (these values are all optional) | |
 | **resources.requests.cpu** | CPU request in MHz (m) | |
 | **resources.requests.memory** | memory request in MiB (Mi)| |

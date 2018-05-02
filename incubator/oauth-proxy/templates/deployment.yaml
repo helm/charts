@@ -28,7 +28,11 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
         {{- range $key, $value := .Values.extraArgs }}
+          {{- if $value }}
           - --{{ $key }}={{ $value }}
+          {{- else }}
+          - --{{ $key }}
+          {{- end }}
         {{- end }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
@@ -58,6 +62,10 @@ spec:
             port: {{ .Values.service.internalPort }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
     {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
