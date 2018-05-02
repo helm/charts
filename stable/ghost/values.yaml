@@ -161,3 +161,19 @@ resources:
   requests:
     memory: 512Mi
     cpu: 300m
+
+## Configure ingress resource
+## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - ghost.local
+  tls: []
+  #  - secretName: ghost-tls
+  #    hosts:
+  #      - ghost.local
