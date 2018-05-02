@@ -183,3 +183,8 @@ agent:
   ## Additional GoCD agent pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   nodeSelector: {}
+
+security:
+  ssh:
+    enabled: false
+    secretName: gocd-ssh
