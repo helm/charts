@@ -8,6 +8,11 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "elasticsearch.client.fullname" . }}
+{{- if .Values.client.serviceAnnotations }}
+  annotations:
+{{ toYaml .Values.client.serviceAnnotations | indent 4 }}
+{{- end }}
+
 spec:
   ports:
     - name: http

@@ -10,5 +10,36 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "prometheus.server.fullname" . }}
 data:
-{{ toYaml .Values.serverFiles | indent 2 }}
-{{- end }}
+{{- $root := . -}}
+{{- range $key, $value := .Values.serverFiles }}
+  {{ $key }}: |
+{{ toYaml $value | default "{}" | indent 4 }}
+{{- if eq $key "prometheus.yml" -}}
+{{- if $root.Values.alertmanager.enabled -}}
+    alerting:
+      alertmanagers:
+      - kubernetes_sd_configs:
+          - role: pod
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        {{- if $root.Values.alertmanager.prefixURL }}
+        path_prefix: {{ $root.Values.alertmanager.prefixURL }}
+        {{- end }}
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_namespace]
+          regex: {{ $root.Release.Namespace }}
+          action: keep
+        - source_labels: [__meta_kubernetes_pod_label_app]
+          regex: prometheus
+          action: keep
+        - source_labels: [__meta_kubernetes_pod_label_component]
+          regex: alertmanager
+          action: keep
+        - source_labels: [__meta_kubernetes_pod_container_port_number]
+          regex:
+          action: drop
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

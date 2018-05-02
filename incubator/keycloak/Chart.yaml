@@ -1,6 +1,6 @@
 name: keycloak
-version: 0.1.0
-appVersion: 3.3.0.Final
+version: 0.3.0
+appVersion: 3.4.0.Final
 description: Open Source Identity and Access Management For Modern Applications and Services
 keywords:
   - authentication
@@ -11,4 +11,5 @@ sources:
 maintainers:
   - name: nexeck
     email: marcel@beck.im
-engine: gotpl
+  - name: unguiculus
+    email: unguiculus@gmail.com

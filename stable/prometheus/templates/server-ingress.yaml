@@ -19,10 +19,12 @@ metadata:
 spec:
   rules:
   {{- range .Values.server.ingress.hosts }}
-    - host: {{ . }}
+    {{- $url := splitList "/" . }}
+    - host: {{ first $url }}
       http:
         paths:
-          - backend:
+          - path: /{{ rest $url | join "/" }}
+            backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
   {{- end -}}

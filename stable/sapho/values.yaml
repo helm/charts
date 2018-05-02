@@ -35,6 +35,7 @@ resources:
   requests:
     cpu: 250m
     memory: 2048Mi
+saphoVersion: 4.2.0
 saphoDBport: 3306
 saphoDBtype: mysql
 saphoDBuser: root

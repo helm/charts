@@ -1,0 +1,26 @@
+
+The namespace "{{ .Release.Namespace }}" has been created if it didn't already exist.
+
+{{ if or .Values.tiller.enabled .Values.serviceAccounts -}}
+The following service accounts have been created in the namespace:
+{{ if .Values.tiller.enabled }}
+  - tiller
+{{- end }}
+{{- range .Values.serviceAccounts }}
+  - {{ . }}
+{{- end }}
+{{ end }}
+{{ if or .Values.tiller.enabled .Values.roleBindings -}}
+The following role bindings have been created in the namespace:
+{{ if .Values.tiller.enabled }}
+  - ServiceAccount[tiller] --> {{ .Values.tiller.role.kind }}[{{ .Values.tiller.role.name }}]
+{{- end }}
+{{- range .Values.roleBindings }}
+  - {{ .subject.kind }}[{{ .subject.name }}] --> {{ .role.kind }}[{{ .role.name }}]
+{{- end }}
+{{ end }}
+{{ if .Values.tiller.enabled -}}
+Utilize the Tiller in your new namespace like so:
+
+  $ helm <command> --tiller-namespace {{ .Release.Namespace }}
+{{- end }}

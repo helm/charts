@@ -11,6 +11,7 @@ metadata:
   name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
 spec:
   replicas: {{ .Values.defaultBackend.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:
     {{- if .Values.defaultBackend.podAnnotations }}
@@ -25,6 +26,10 @@ spec:
 {{ toYaml .Values.defaultBackend.podLabels | indent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.defaultBackend.name }}
           image: "{{ .Values.defaultBackend.image.repository }}:{{ .Values.defaultBackend.image.tag }}"
@@ -56,6 +61,10 @@ spec:
     {{- if .Values.defaultBackend.tolerations }}
       tolerations:
 {{ toYaml .Values.defaultBackend.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.defaultBackend.affinity }}
+      affinity:
+{{ toYaml .Values.defaultBackend.affinity | indent 8 }}
     {{- end }}
       terminationGracePeriodSeconds: 60
 {{- end }}

@@ -1,4 +1,4 @@
-Selenium Hub can be accessed via port {{ .Values.hub.port }} on the following 
+Selenium Hub can be accessed via port {{ .Values.hub.port }} on the following
 DNS name from within your cluster:
 
 - http://{{ template "selenium.hub.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.hub.port }}
@@ -67,6 +67,9 @@ To scale the number of selenium nodes
   $(kubectl get pods --namespace {{ .Release.Namespace }} \
     -l app={{ template "selenium.chromeDebug.fullname" . }} \
     -o jsonpath='{ .items[0].metadata.name }') 5900
+
+  Install VNC Client and open a session at localhost:5900. Username is not
+  required, password is "secret".
 {{ end }}
 
 {{- if eq true .Values.firefox.enabled }}
@@ -82,6 +85,9 @@ To scale the number of selenium nodes
   $(kubectl get pods --namespace {{ .Release.Namespace }} \
     -l app={{ template "selenium.firefoxDebug.fullname" . }} \
     -o jsonpath='{ .items[0].metadata.name }') 5900
+
+  Install VNC Client and open a session at localhost:5900. Username is not
+  required, password is "secret".
 {{ end -}}
 
 {{ end }}

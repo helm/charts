@@ -3,16 +3,26 @@ kind: Deployment
 metadata:
   name: {{ template "postgresql.fullname" . }}
   labels:
-    app: {{ template "postgresql.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "postgresql.name" . }}
+    chart: {{ template "postgresql.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
+  template:
+  selector:
+    matchLabels:
+      app: {{ template "postgresql.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "postgresql.fullname" . }}
+        app: {{ template "postgresql.name" . }}
+        release: {{ .Release.Name }}
     spec:
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -21,10 +31,18 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       containers:
       - name: {{ template "postgresql.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        args:
+          {{- range $key, $value := default dict .Values.postgresConfig }}
+          - -c
+          - '{{ $key | snakecase }}={{ $value }}'
+          {{- end }}
         env:
         - name: POSTGRES_USER
           value: {{ default "postgres" .Values.postgresUser | quote }}
@@ -37,11 +55,16 @@ spec:
           value: {{ default "" .Values.postgresInitdbArgs | quote }}
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
+        {{- if .Values.usePasswordFile }}
+        - name: POSTGRES_PASSWORD_FILE
+          value: /conf/postgres-password
+        {{- else }}
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "postgresql.fullname" . }}
               key: postgres-password
+        {{- end }}
         - name: POD_IP
           valueFrom: { fieldRef: { fieldPath: status.podIP } }
         ports:
@@ -53,7 +76,7 @@ spec:
             - sh
             - -c
             - exec pg_isready --host $POD_IP
-          initialDelaySeconds: 60
+          initialDelaySeconds: 120
           timeoutSeconds: 5
           failureThreshold: 6
         readinessProbe:
@@ -69,8 +92,13 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: data
-          mountPath: /var/lib/postgresql/data/pgdata
+          mountPath: {{ .Values.persistence.mountPath }}
           subPath: {{ .Values.persistence.subPath }}
+        {{- if .Values.usePasswordFile }}
+        - name: password-file
+          mountPath: /conf
+          readOnly: true
+        {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
@@ -106,4 +134,16 @@ spec:
           items:
             - key: custom-metrics.yaml
               path: custom-metrics.yaml
+      {{- end }}
+      {{- if .Values.usePasswordFile }}
+      - name: password-file
+        secret:
+          secretName: {{ template "postgresql.fullname" . }}
+          items:
+            - key: postgres-password
+              path: postgres-password
+      {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
       {{- end }}

@@ -12,7 +12,7 @@ $ helm install stable/magento
 
 This chart bootstraps a [Magento](https://github.com/bitnami/bitnami-docker-magento) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the Magento application.
+It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment as a database for the Magento application.
 
 ## Prerequisites
 
@@ -43,12 +43,15 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Magento chart and their default values.
+The following table lists the configurable parameters of the Magento chart and their default values.
 
 |             Parameter              |               Description                |                         Default                          |
 |------------------------------------|------------------------------------------|----------------------------------------------------------|
-| `image`                            | Magento image                            | `bitnami/magento:{VERSION}`                              |
-| `imagePullPolicy`                  | Image pull policy                        | `Always` if `image` tag is `latest`, else `IfNotPresent` |
+| `image.registry`                   | Magento image registry                   | `docker.io`                                              |
+| `image.repository`                 | Magento Image name                       | `bitnami/magento`                                        |
+| `image.tag`                        | Magento Image tag                        | `{VERSION}`                                              |
+| `image.pullPolicy`                 | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`                | Specify image pull secrets               | `nil`                                                    |
 | `magentoHost`                      | Magento host to create application URLs  | `nil`                                                    |
 | `magentoLoadBalancerIP`            | `loadBalancerIP` for the magento Service | `nil`                                                    |
 | `magentoUsername`                  | User of the application                  | `user`                                                   |
@@ -58,13 +61,23 @@ The following tables lists the configurable parameters of the Magento chart and 
 | `magentoLastName`                  | Magento Admin Last Name                  | `LastName`                                               |
 | `magentoMode`                      | Magento mode                             | `developer`                                              |
 | `magentoAdminUri`                  | Magento prefix to access Magento Admin   | `admin`                                                  |
+| `allowEmptyPassword`               | Allow DB blank passwords                 | `yes`                                                    |
+| `externalDatabase.host`            | Host of the external database            | `nil`                                                    |
+| `externalDatabase.port`            | Port of the external database            | `3306`                                                   |
+| `externalDatabase.user`            | Existing username in the external db     | `bn_magento`                                             |
+| `externalDatabase.password`        | Password for the above username          | `nil`                                                    |
+| `externalDatabase.database`        | Name of the existing database            | `bitnami_magento`                                        |
+| `mariadb.enabled`                  | Whether to use the MariaDB chart           | `true`                                                   |
 | `mariadb.mariadbRootPassword`      | MariaDB admin password                   | `nil`                                                    |
+| `mariadb.mariadbDatabase`          | Database name to create                  | `bitnami_magento`                                        |
+| `mariadb.mariadbUser`              | Database user to create                  | `bn_magento`                                             |
+| `mariadb.mariadbPassword`          | Password for the database                | _random 10 character long alphanumeric string_           |
 | `serviceType`                      | Kubernetes Service type                  | `LoadBalancer`                                           |
 | `persistence.enabled`              | Enable persistence using PVC             | `true`                                                   |
-| `persistence.apache.storageClass`  | PVC Storage Class for Apache volume      | `nil`  (uses alpha storage annotation)                                              |
+| `persistence.apache.storageClass`  | PVC Storage Class for Apache volume      | `nil`  (uses alpha storage annotation)                   |
 | `persistence.apache.accessMode`    | PVC Access Mode for Apache volume        | `ReadWriteOnce`                                          |
 | `persistence.apache.size`          | PVC Storage Request for Apache volume    | `1Gi`                                                    |
-| `persistence.magento.storageClass` | PVC Storage Class for Magento volume     | `nil`  (uses alpha storage annotation)                                                |
+| `persistence.magento.storageClass` | PVC Storage Class for Magento volume     | `nil`  (uses alpha storage annotation)                   |
 | `persistence.magento.accessMode`   | PVC Access Mode for Magento volume       | `ReadWriteOnce`                                          |
 | `persistence.magento.size`         | PVC Storage Request for Magento volume   | `8Gi`                                                    |
 | `resources`                        | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                             |
@@ -93,7 +106,7 @@ $ helm install --name my-release \
     stable/magento
 ```
 
-The above command sets the Magento administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the Magento administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 

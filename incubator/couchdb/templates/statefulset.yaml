@@ -1,0 +1,123 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "couchdb.fullname" . }}
+  labels:
+    app: {{ template "couchdb.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.clusterSize }}
+  serviceName: {{ template "couchdb.fullname" . }}
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
+  selector:
+    matchLabels:
+      app: {{ template "couchdb.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "couchdb.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: couchdb
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: couchdb
+              containerPort: 5984
+            - name: epmd
+              containerPort: 4369
+            - containerPort: 9100
+          env:
+{{- if not .Values.allowAdminParty }}
+            - name: COUCHDB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "couchdb.fullname" . }}
+                  key: adminUsername
+            - name: COUCHDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "couchdb.fullname" . }}
+                  key: adminPassword
+            - name: COUCHDB_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "couchdb.fullname" . }}
+                  key: cookieAuthSecret
+{{- end }}
+            - name: ERL_FLAGS
+              value: "{{ range $k, $v := .Values.erlangFlags }} -{{ $k }} {{ $v }} {{ end }}"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5984
+          readinessProbe:
+            httpGet:
+              path: /_up
+              port: 5984
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+          - name: database-storage
+            mountPath: /opt/couchdb/data
+          - name: config
+            mountPath: /opt/couchdb/etc/default.d
+        - name: couchdb-statefulset-assembler
+          image: "{{ .Values.helperImage.repository }}:{{ .Values.helperImage.tag }}"
+          imagePullPolicy: {{ .Values.helperImage.pullPolicy }}
+{{- if not .Values.allowAdminParty }}
+          env:
+            - name: COUCHDB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "couchdb.fullname" . }}
+                  key: adminUsername
+            - name: COUCHDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "couchdb.fullname" . }}
+                  key: adminPassword
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ template "couchdb.fullname" . }}
+            items:
+              - key: inifile
+                path: chart.ini
+{{- if not .Values.persistentVolume.enabled }}
+        - name: database-storage
+          emptyDir: {}
+{{- else }}
+  volumeClaimTemplates:
+    - metadata:
+        name: database-storage
+        labels:
+          app: {{ template "couchdb.name" . }}
+          chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+          release: {{ .Release.Name }}
+          heritage: {{ .Release.Service }}
+      spec:
+        accessModes:
+        {{- range .Values.persistentVolume.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistentVolume.size | quote }}
+      {{- if .Values.persistentVolume.storageClass }}
+      {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+      {{- end }}
+      {{- end }}
+{{- end }}

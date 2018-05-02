@@ -1,7 +1,7 @@
 CoreDNS
 =======
 
-CoreDNS is a DNS server that chains middleware and provides DNS Services
+CoreDNS is a DNS server that chains plugins and provides DNS Services
 
 TL;DR;
 ------
@@ -17,11 +17,11 @@ This chart bootstraps a [CoreDNS](https://github.com/coredns/coredns) deployment
 
  - CoreDNS as a cluster dns service and a drop-in replacement for Kube/SkyDNS. This is the default mode and CoreDNS is deployed as cluster-service in kube-system namespace. This mode is chosen by setting `isClusterService` to true.
  - CoreDNS as an external dns service. In this mode CoreDNS is deployed as any kubernetes app in user specified namespace. The CoreDNS service can be exposed outside the cluster by using using either the NodePort or LoadBalancer type of service. This mode is chosen by setting `isClusterService` to false.
- - CoreDNS as an external dns provider for kubernetes federation. This is a sub case of 'external dns service' which uses etcd middleware for CoreDNS backend. This deployment mode as a dependency on `etcd-operator` chart, which needs to be pre-installed. To use this deployment mode use below configuration file to override default values.
+ - CoreDNS as an external dns provider for kubernetes federation. This is a sub case of 'external dns service' which uses etcd plugin for CoreDNS backend. This deployment mode as a dependency on `etcd-operator` chart, which needs to be pre-installed. To use this deployment mode use below configuration file to override default values.
 ```
 isClusterService: false
    serviceType: "NodePort"
-   middleware:
+   plugins:
      kubernetes:
        enabled: false
      etcd:
@@ -67,11 +67,11 @@ See `values.yaml` for configuration notes. Specify each parameter using the `--s
 
 ```console
 $ helm install --name coredns \
-  --set middleware.prometheus.enabled=false \
+  --set plugins.prometheus.enabled=false \
     stable/coredns
 ```
 
-The above command disables the Prometheus middleware.
+The above command disables the Prometheus plugin.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 

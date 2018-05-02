@@ -1,3 +1,4 @@
+{{- if (empty .Values.existingConfigMap) -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -22,9 +23,14 @@ data:
         Skip_Long_Lines  On
 
     [FILTER]
-        Name   kubernetes
-        Match  kube.*
-
+        Name             kubernetes
+        Match            kube.*
+        Kube_URL         {{ .Values.filter.kubeURL }}
+        Kube_CA_File     {{ .Values.filter.kubeCAFile }}
+        Kube_Token_File  {{ .Values.filter.kubeTokenFile }}
+{{- if .Values.filter.mergeJSONLog }}
+        Merge_JSON_Log   On
+{{- end }}
 {{ if eq .Values.backend.type "test" }}
     [OUTPUT]
         Name  file
@@ -45,4 +51,32 @@ data:
         Port  {{ .Values.backend.es.port }}
         Logstash_Format On
         Retry_Limit False
+        Index {{ .Values.backend.es.index }}
+        Type  {{ .Values.backend.es.type }}
+        Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
+{{- if .Values.backend.es.http_user }}
+        HTTP_User {{ .Values.backend.es.http_user }}
+        HTTP_Passwd {{ .Values.backend.es.http_passwd }}
 {{- end }}
+{{if eq .Values.backend.es.tls "on" }}
+        tls {{ .Values.backend.es.tls }}
+        tls.verify {{ .Values.backend.es.tls_verify }}
+        tls.debug {{ .Values.backend.es.tls_debug }}
+{{- if .Values.backend.es.tls_ca }}
+        tls.ca_file /secure/es-tls-ca.crt
+{{- end }}
+{{- end }}
+
+{{ else if eq .Values.backend.type "http" }}
+    [OUTPUT]
+        Name  http
+        Match *
+        Host {{ .Values.backend.http.host }}
+        Port {{ .Values.backend.http.port }}
+        URI {{ .Values.backend.http.uri }}
+{{- if .Values.backend.http.proxy }}
+        Proxy {{ .Values.backend.http.proxy }}
+{{- end }}
+        Format {{ .Values.backend.http.format }}
+{{- end }}
+{{- end -}}

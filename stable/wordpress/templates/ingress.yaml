@@ -21,10 +21,10 @@ spec:
   - host: {{ .name }}
     http:
       paths:
-        - path: /
+        - path: {{ default "/" .path }}
           backend:
             serviceName: {{ template "fullname" $ }}
-            servicePort: {{ if .tls }}443{{ else }}80{{end}}
+            servicePort: 80
 {{- if .tls }}
   tls:
   - hosts:

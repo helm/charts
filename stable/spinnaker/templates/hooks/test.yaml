@@ -5,6 +5,10 @@ metadata:
   annotations:
     "helm.sh/hook": test-success
 spec:
+{{- if .Values.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 4 }}
+{{- end }}
   initContainers:
     - name: "test-framework"
       image: "dduportal/bats:0.4.0"
@@ -20,7 +24,7 @@ spec:
         name: tools
   containers:
     - name: {{.Release.Name}}-ui-test
-      image: {{.Values.jenkins.Master.Image}}:{{.Values.jenkins.Master.ImageTag}}
+      image: tutum/curl:trusty
       command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
       volumeMounts:
       - mountPath: /tests

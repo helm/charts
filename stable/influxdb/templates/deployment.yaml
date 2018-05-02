@@ -43,6 +43,10 @@ spec:
         - name: opentsdb
           containerPort: {{ .Values.config.opentsdb.bind_address }}
         {{- end }}
+        {{ if .Values.env }}
+        env:
+{{ toYaml .Values.env | indent 10 }}
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /ping

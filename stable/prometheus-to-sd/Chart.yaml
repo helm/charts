@@ -1,0 +1,12 @@
+apiVersion: v1
+appVersion: 0.2.2
+description: Scrape metrics stored in prometheus format and push them to the Stackdriver
+home: https://github.com/GoogleCloudPlatform/k8s-stackdriver/tree/master/prometheus-to-sd
+keywords:
+- prometheus
+- stackdriver
+maintainers:
+- name: acondrat
+  email: arcadie.condrat@gmail.com
+name: prometheus-to-sd
+version: 0.1.0

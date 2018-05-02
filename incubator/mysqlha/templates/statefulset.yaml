@@ -15,7 +15,7 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
-      initContainers: 
+      initContainers:
       - name: clone-mysql
         image: {{ .Values.xtraBackupImage }}
         command:
@@ -32,7 +32,7 @@ spec:
             # Clone data from previous peer.
             ncat --recv-only {{ template "fullname" . }}-$(($ordinal-1)).{{ template "fullname" . }} 3307 | xbstream -x -C /var/lib/mysql
             # Prepare the backup.
-            xtrabackup --prepare --user=${MYSQL_REPLICATION_USER} --password=${MYSQL_REPLICATION_PASSWORD} --target-dir=/var/lib/mysql\n
+            xtrabackup --prepare --user=${MYSQL_REPLICATION_USER} --password=${MYSQL_REPLICATION_PASSWORD} --target-dir=/var/lib/mysql
         env:
         - name: MYSQL_REPLICATION_USER
           value: {{ .Values.mysqlha.mysqlReplicationUser }}
@@ -236,7 +236,7 @@ spec:
         volume.alpha.kubernetes.io/storage-class: {{ .Values.persistence.storageClass }}
         {{- end }}
     spec:
-      accessModes: 
+      accessModes:
       - {{ .Values.persistence.accessMode | quote }}
       resources:
         requests:

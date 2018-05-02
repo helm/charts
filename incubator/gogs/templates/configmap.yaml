@@ -24,6 +24,9 @@ data:
     DOMAIN = {{ .Values.service.gogs.serverDomain }}
     ROOT_URL = {{ .Values.service.gogs.serverRootUrl }}
     LANDING_PAGE = {{ .Values.service.gogs.serverLandingPage }}
+    SSH_DOMAIN = {{ default .Values.service.gogs.serverDomain .Values.service.sshDomain }}
+    SSH_PORT = {{ .Values.service.sshPort }}
+    SSH_LISTEN_PORT = {{ .Values.service.sshPort }}
 
     [service]
     ENABLE_CAPTCHA = {{ .Values.service.gogs.serviceEnableCaptcha }}

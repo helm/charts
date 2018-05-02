@@ -41,23 +41,29 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the PostgresSQL chart and their default values.
+The following table lists the configurable parameters of the PostgreSQL chart and their default values.
 
 | Parameter                  | Description                                     | Default                                                    |
 | -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
 | `image`                    | `postgres` image repository                     | `postgres`                                                 |
 | `imageTag`                 | `postgres` image tag                            | `9.6.2`                                                    |
 | `imagePullPolicy`          | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `imagePullSecrets`         | Image pull secrets                              | `nil`                                                      |
 | `postgresUser`             | Username of new user to create.                 | `postgres`                                                 |
 | `postgresPassword`         | Password for the new user.                      | random 10 characters                                       |
+| `usePasswordFile`          | Inject the password via file instead of env var | `false`                                                    |
 | `postgresDatabase`         | Name for new database to create.                | `postgres`                                                 |
 | `postgresInitdbArgs`       | Initdb Arguments                                | `nil`                                                      |
+| `schedulerName`            | Name of an alternate scheduler                  | `nil`                                                      |
+| `postgresConfig`           | Runtime Config Parameters                       | `nil`                                                      |
 | `persistence.enabled`      | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `nil`                                                      |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |
+| `persistence.annotations`  | Persistent Volume annotations                   | `{}`                                                       |
 | `persistence.size`         | Size of data volume                             | `8Gi`                                                      |
 | `persistence.subPath`      | Subdirectory of the volume to mount at          | `postgresql-db`                                            |
+| `persistence.mountPath`    | Mount path of data volume                       | `/var/lib/postgresql/data/pgdata`                          |
 | `resources`                | CPU/Memory resource requests/limits             | Memory: `256Mi`, CPU: `100m`                               |
 | `metrics.enabled`          | Start a side-car prometheus exporter            | `false`                                                    |
 | `metrics.image`            | Exporter image                                  | `wrouesnel/postgres_exporter`                              |
@@ -68,9 +74,11 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `service.externalIPs`      | External IPs to listen on                       | `[]`                                                       |
 | `service.port`             | TCP port                                        | `5432`                                                     |
 | `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
+| `service.nodePort`         | NodePort value if service.type is `NodePort`    | `nil`                                                      |
 | `networkPolicy.enabled`    | Enable NetworkPolicy                            | `false`                                                    |
 | `networkPolicy.allowExternal` | Don't require client label for connections   | `true`                                                     |
 | `nodeSelector`             | Node labels for pod assignment                  | {}                                                         |
+| `affinity`                 | Affinity settings for pod assignment            | {}                                                         |
 | `tolerations`              | Toleration labels for pod assignment            | []                                                         |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
@@ -83,7 +91,7 @@ $ helm install --name my-release \
     stable/postgresql
 ```
 
-The above command creates a PostgresSQL user named `root` with password `secretpassword`. Additionally it creates a database named `my-database`.
+The above command creates a PostgreSQL user named `my-user` with password `secretpassword`. Additionally it creates a database named `my-database`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
@@ -97,7 +105,7 @@ $ helm install --name my-release -f values.yaml stable/postgresql
 
 The [postgres](https://github.com/docker-library/postgres) image stores the PostgreSQL data and configurations at the `/var/lib/postgresql/data/pgdata` path of the container.
 
-The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning. If the PersistentVolumeClaim should not be managed by the chart, define `persistence.existingClaim`.
+The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning. If the PersistentVolumeClaim should not be managed by the chart, define `persistence.existingClaim`.
 
 ### Existing PersistentVolumeClaims
 

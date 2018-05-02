@@ -1,6 +1,6 @@
 # Phabricator
 
-[Phabricator](https://www.phacility.com) is a collection of open source web applications that help software companies build better software. Phabricator is built by developers for developers. Every feature is optimized around developer efficiency for however you like to work. Code Quality starts with effective collaboration between team members.
+[Phabricator](https://www.phacility.com) is a collection of open source web applications that help software companies build better software. Phabricator is built by developers for developers. Every feature is optimized around developer efficiency for however you like to work. Code Quality starts with an effective collaboration between team members.
 
 ## TL;DR;
 
@@ -43,12 +43,15 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Phabricator chart and their default values.
+The following table lists the configurable parameters of the Phabricator chart and their default values.
 
 |               Parameter                |                 Description                  |                         Default                          |
 |----------------------------------------|----------------------------------------------|----------------------------------------------------------|
-| `image`                                | Phabricator image                            | `bitnami/phabricator:{VERSION}`                          |
-| `imagePullPolicy`                      | Image pull policy                            | `Always` if `image` tag is `latest`, else `IfNotPresent` |
+| `image.registry`                       | Phabricator image registry                   | `docker.io`                                              |
+| `image.repository`                     | Phabricator image name                       | `bitnami/phabricator`                                    |
+| `image.tag`                            | Phabricator image tag                        | `{VERSION}`                                              |
+| `image.pullPolicy`                     | Image pull policy                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`                    | Specify image pull secrets                   | `nil`                                                    |
 | `phabricatorHost`                      | Phabricator host to create application URLs  | `nil`                                                    |
 | `phabricatorLoadBalancerIP`            | `loadBalancerIP` for the Phabricator Service | `nil`                                                    |
 | `phabricatorUsername`                  | User of the application                      | `user`                                                   |
@@ -71,6 +74,12 @@ The following tables lists the configurable parameters of the Phabricator chart 
 | `persistence.phabricator.accessMode`   | PVC Access Mode for Phabricator volume       | `ReadWriteOnce`                                          |
 | `persistence.phabricator.size`         | PVC Storage Request for Phabricator volume   | `8Gi`                                                    |
 | `resources`                            | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                             |
+| `ingress.enabled`                      | enable ingress                               | `false`                                                  |
+| `ingress.path`                         | path to expose on ingress                    | `nil`                                                    |
+| `ingress.hosts`                        | listss of accepted hostnames                 | `nil`                                                    |
+| `ingress.annotations`                  | annotations to use on the ingress            | `nil`                                                    |
+| `ingress.tls.secretName`               | tls secret name                              | `nil`                                                    |
+| `ingress.tls.hosts`                    | hostnames the secret applies to              | `nil`                                                    |
 
 The above parameters map to the env variables defined in [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator). For more information please refer to the [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator) image documentation.
 
@@ -96,7 +105,7 @@ $ helm install --name my-release \
     stable/phabricator
 ```
 
-The above command sets the Phabricator administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the Phabricator administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
@@ -112,3 +121,16 @@ The [Bitnami Phabricator](https://github.com/bitnami/bitnami-docker-phabricator)
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Ingress With Reverse Proxy And Kube Lego
+
+You can define a custom ingress following the example config in values.yaml
+
+`helm install stable/phabricator/ --name my-release --set phabricatorHost=example.com`
+
+Everything looks great but requests over https will cause asset requests to fail. Assuming you want to use HTTPS/TLS you will need to set the base-uri to an https schema.
+
+```
+export POD_NAME=$(kubectl get pods -l "app=my-release-phabricator" -o jsonpath="{.items[0].metadata.name}")
+kubectl exec $POD_NAME /opt/bitnami/phabricator/bin/config set phabricator.base-uri https://example.com
+```

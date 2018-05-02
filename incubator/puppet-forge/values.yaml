@@ -1,0 +1,60 @@
+# Default values for puppet_forge.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  repository: hickey/puppet_forge
+  tag: 1.10.0
+  pullPolicy: IfNotPresent
+service:
+  name: puppet-forge
+  type: NodePort
+  externalPort: 80
+  internalPort: 8080
+ingress:
+  # Used to create an Ingress record.
+  enabled: true
+  hosts:
+    # Array of host rules
+    # - name: HOSTNAME
+    #   path: URL_PATH
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+resources:
+  requests:
+    cpu: 100m
+    memory: 16Mi
+  limits:
+    cpu: 200m
+    memory: 32Mi
+
+persistence:
+  enabled: true
+  size: 8Gi
+  ## A manually managed Persistent Volume and Claim
+  ## Requires Persistence.Enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # ExistingClaim:
+
+  ## jenkins data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageclass: "-"
+
+puppet_forge:
+  url: 'https://forgeapi.puppetlabs.com/'
+  cache:
+    ttl: '1800'
+    size: '250'
+  module_dir:
+    - /puppet/modules

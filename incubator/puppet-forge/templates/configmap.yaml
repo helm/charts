@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  puppet_forge_proxy: {{ .Values.puppet_forge.url }}
+  puppet_forge_cache_ttl: {{ .Values.puppet_forge.cache.ttl | quote }}
+  puppet_forge_cache_size: {{ .Values.puppet_forge.cache.size | quote }}
+#  puppet_forge_module_dir: {{ .Values.puppet_forge.module_dir }}

@@ -7,6 +7,8 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  annotations:
+    checksum/checksd-config: {{ toYaml .Values.datadog.checksd | sha256sum }}
 data:
 {{- if .Values.datadog.checksd }}
 {{ toYaml .Values.datadog.checksd | indent 2 }}

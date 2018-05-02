@@ -28,6 +28,11 @@ service:
   ##
   sshPort: 22
 
+  ## SSH_DOMAIN - Domain name to be exposed in SSH clone URL.
+  ## ref: https://gogs.io/docs/advanced/configuration_cheat_sheet
+  ##
+  sshDomain: localhost
+
   ## Gogs configuration values
   ## ref: https://gogs.io/docs/advanced/configuration_cheat_sheet
   ##
@@ -216,6 +221,12 @@ service:
     #   - secretName: gogs-tls
     #     hosts:
     #       - gogs.domain.com
+
+  ## Service annotations.
+  ## Allows attaching metadata to services for kubernetes components to act on.
+  ##
+  # annotations:
+  #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
 
 
 ## Persistent Volume Storage configuration.

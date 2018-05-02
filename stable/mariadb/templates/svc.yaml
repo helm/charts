@@ -3,24 +3,31 @@ kind: Service
 metadata:
   name: {{ template "mariadb.fullname" . }}
   labels:
-    app: {{ template "mariadb.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "mariadb.name" . }}
+    chart: {{ template "mariadb.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-{{- if .Values.metrics.enabled }}
   annotations:
+{{- if .Values.service.annotations }}
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+{{- if .Values.metrics.enabled }}
 {{ toYaml .Values.metrics.annotations | indent 4 }}
 {{- end }}
 spec:
-  type: {{ .Values.serviceType }}
+  type: {{ .Values.service.type }}
   ports:
   - name: mysql
     port: 3306
     targetPort: mysql
+{{- if .Values.service.nodePort }}
+    nodePort: {{ .Values.service.nodePort }}
+{{- end }}
 {{- if .Values.metrics.enabled }}
   - name: metrics
     port: 9104
     targetPort: metrics
 {{- end }}
   selector:
-    app: {{ template "mariadb.fullname" . }}
+    app: {{ template "mariadb.name" . }}
+    release: "{{ .Release.Name }}"

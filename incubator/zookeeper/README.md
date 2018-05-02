@@ -1,8 +1,8 @@
-# Zookeeper Helm Chart
+# ZooKeeper Helm Chart
  This helm chart provides an implementation of the ZooKeeper [StatefulSet](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/) found in Kubernetes Contrib [Zookeeper StatefulSet](https://github.com/kubernetes/contrib/tree/master/statefulsets/zookeeper).
 
 ## Prerequisites
-* Kubernetes 1.6
+* Kubernetes 1.6+
 * PersistentVolume support on the underlying infrastructure
 * A dynamic provisioner for the PersistentVolumes
 * A familiarity with [Apache ZooKeeper 3.4.x](https://zookeeper.apache.org/doc/current/)
@@ -46,7 +46,7 @@ statefulsets/myzk-zookeeper   3         3         2m
 
 1. `statefulsets/myzk-zookeeper` is the StatefulSet created by the chart.
 1. `po/myzk-zookeeper-<0|1|2>` are the Pods created by the StatefulSet. Each Pod has a single container running a ZooKeeper server.
-1. `svc/myzk-zookeeper-headless` is the Headless Server used to control the network domain of the ZooKeeper ensemble.
+1. `svc/myzk-zookeeper-headless` is the Headless Service used to control the network domain of the ZooKeeper ensemble.
 1. `svc/myzk-zookeeper` is a Service that can be used by clients to connect to an available ZooKeeper server.
 
 ## Configuration
@@ -66,12 +66,18 @@ The configuration parameters in this section control the resources requested and
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `servers` | The number of ZooKeeper servers. This should always be (1,3,5, or 7) | `3` |
+| `updateStrategy` | The ZooKeeper StatefulSet update strategy. | `{ type: "OnDelete" }` |
 | `minAvailable` | The minimum number of servers that must be available during evictions. This should in the interval `[(servers/2) + 1,(servers - 1)]`. | `servers-1` |
 | `resources.requests.cpu` | The amount of CPU to request. As ZooKeeper is not very CPU intensive, `2` is a good choice to start with for a production deployment. | `500m` |
 | `heap` | The amount of JVM heap that the ZooKeeper servers will use. As ZooKeeper stores all of its data in memory, this value should reflect the size of your working set. The JVM -Xms/-Xmx format is used. |`2G` |
-| `resources.requests.memory` | The amount of memory to request. This value should be at least 2 GiB larger than `heap` to avoid swapping. You many want to use `1.5 * heap` for values larger than 2GiB. The Kubernetes format is used. |`2Gi` |
-| `storage` | The amount of storage to request. Even though ZooKeeper keeps is working set in memory, it logs all transactions, and periodically snapshots, to storage media. The amount of storage required will vary with your workload, working memory size, and log and snapshot retention policy. Note that, on some cloud providers selecting a small volume size will result is sub-par I/O performance. 250 GiB is a good place to start for production workloads. | `50Gi`|
-| `storageClass` | The storage class of the storage allocated for the ensemble. If this value is present, it will add an annotation asking the PV Provisioner for that storage class. | `default` |
+| `resources.requests.memory` | The amount of memory to request. This value should be at least 2 GiB larger than `heap` to avoid swapping. You may want to use `1.5 * heap` for values larger than 2GiB. The Kubernetes format is used. |`2Gi` |
+
+### Persistence
+| Parameter | Description | Default |
+| --------- | ----------- | ------- |
+| `persistence.enabled` | Whether to create a PVC. If `false`, an `emptyDir` on the host will be used. | `true` |
+| `persistence.size` | Size of PVC that gets created. For production deployments this value should likely be much larger. | `5Gi` |
+| `persistence.storageClass` | Valid options: `nil`, `"-"`, or storage class name. See values.yaml for details. | `nil` |
 
 ### Network
 These parameters control the network ports on which the ensemble communicates.
@@ -105,7 +111,9 @@ Spreading allows you specify an anti-affinity between ZooKeeper servers in the e
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
+| `schedulerName` | Name of scheduler to use (other than the default). | `nil` |
 | `antiAffinity` | If present it must take the values 'hard' or 'soft'. 'hard' will cause the Kubernetes scheduler to not schedule the Pods on the same physical node under any circumstances 'soft' will cause the Kubernetes scheduler to make a best effort to not co-locate the Pods, but, if the only available resources are on the same node, the scheduler will co-locate them. | `hard` |
+| `tolerations` | An optional list of tolerations for the zookeeper pods. https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ | `[]` |
 
 ### Logging
 In order to allow for the default installation to work well with the log rolling and retention policy of Kubernetes, all logs are written to stdout. This should also be compatible with logging integrations such as Google Cloud Logging and ELK.
