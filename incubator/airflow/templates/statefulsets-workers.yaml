@@ -18,7 +18,7 @@ spec:
   ## Use experimental burst mode for faster StatefulSet scaling
   ##   https://github.com/kubernetes/kubernetes/commit/c2c5051adf096ffd48bf1dcf5b11cb47e464ecdd
   podManagementPolicy: Parallel
-  replicas: {{ .Values.workers.celery.instances }}
+  replicas: {{ .Values.workers.replicas }}
   selector:
     matchLabels:
       app: {{ template "airflow.name" . }}-worker
