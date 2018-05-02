@@ -101,6 +101,9 @@ spec:
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 12 }}
 {{- end }}
+          ports:
+            - name: worker
+              containerPort: 7799
           resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
           securityContext:

@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "3.11.0"
+imageTag: "3.13.0"
 
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -301,6 +301,14 @@ web:
     ## Log database queries
     ###
     logDBQueries: false
+
+  ## Default build logs to retain, 0 means all
+  ##
+  # defaultBuildLogsToRetain:
+
+  ## Maximum build logs to retain, 0 means not specified. Will override values configured in jobs
+  ##
+  # maxBuildLogsToRetain:
 
 ## Configuration values for Concourse Worker components.
 ##

@@ -274,6 +274,14 @@ spec:
             - name: CONCOURSE_LOG_LEVEL
               value: {{ .Values.web.logging.logLevel | quote }}
             {{- end }}
+            {{- if .Values.web.defaultBuildLogsToRetain }}
+            - name: CONCOURSE_DEFAULT_BUILD_LOGS_TO_RETAIN
+              value: {{ .Values.web.defaultBuildLogsToRetain | quote }}
+            {{- end }}
+            {{- if .Values.web.maxBuildLogsToRetain }}
+            - name: CONCOURSE_MAX_BUILD_LOGS_TO_RETAIN
+              value: {{ .Values.web.maxBuildLogsToRetain | quote }}
+            {{- end }}
           ports:
             - name: atc
               containerPort: {{ .Values.concourse.atcPort }}
