@@ -342,6 +342,11 @@ worker:
   #               values:
   #                 - "true"
 
+  ## Whether the workers should be forced to run on separate nodes.
+  ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
+  hardAntiAffinity: false
+
   ## Tolerations for the worker nodes.
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
