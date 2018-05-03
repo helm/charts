@@ -21,4 +21,8 @@ spec:
     {{- range $host := .Values.server.ingress.hosts }}
     - host: {{ $host }}
     {{- end -}}
+  {{- if .Values.server.ingress.tls }}
+  tls:
+{{ toYaml .Values.server.ingress.tls | indent 4 }}
+  {{- end -}}
 {{- end -}}

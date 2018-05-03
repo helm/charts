@@ -83,6 +83,8 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.service.nodeHttpsPort`             | GoCD server service node HTTPS port. **Note**: A random nodePort will get assigned if not specified           | `nil`               |  
 | `server.ingress.enabled`                   | Enable/disable GoCD ingress. Allow traffic from outside the cluster via http. Do `kubectl describe ing` to get the public ip to access the gocd server.                                | `true`              |                                                                                     
 | `server.ingress.hosts`                     | GoCD ingress hosts records.                                                                                   | `nil`               |
+| `server.ingress.annotations`               | GoCD ingress annotations.                                                                                     | `{}`                |
+| `server.ingress.tls`                       | GoCD ingress TLS configuration.                                                                               | `[]`                |
 | `server.healthCheck.initialDelaySeconds`   | Initial delays in seconds to start the health checks. **Note**:GoCD server start up time.                     | `90`                |
 | `server.healthCheck.periodSeconds`         | GoCD server heath check interval period.                                                                      | `15`                |
 | `server.healthCheck.failureThreshold`      | Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.              | `10`                |
