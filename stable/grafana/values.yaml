@@ -152,7 +152,6 @@ grafana.ini:
   grafana_net:
     url: https://grafana.net
 
-
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
 sidecar:
