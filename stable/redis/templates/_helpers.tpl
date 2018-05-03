@@ -46,7 +46,7 @@ Return the appropriate apiVersion for networkpolicy.
 Return the proper image name
 */}}
 {{- define "redis.image" -}}
-{{- $registryName :=  default .Values.image.registry "docker.io" -}}
+{{- $registryName := .Values.image.registry | default "docker.io" -}}
 {{- $tag := .Values.image.tag | default "latest" -}}
 {{- printf "%s/%s:%s" $registryName .Values.image.repository $tag -}}
 {{- end -}}
