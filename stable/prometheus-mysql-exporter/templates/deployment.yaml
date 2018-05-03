@@ -1,33 +1,37 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "prometheus-mysql-exporter.fullname" . }}
   labels:
     app: {{ template "prometheus-mysql-exporter.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "prometheus-mysql-exporter.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-mysql-exporter.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "prometheus-mysql-exporter.name" . }}
         release: {{ .Release.Name }}
       annotations:
-{{- if .Values.cloudsqlproxy.enabled }}
+      {{- if .Values.cloudsqlproxy.enabled }}
         checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
-  {{- if .Values.annotations }}
+        {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
-  {{- end }}
-{{- else }}
+        {{- end }}
+      {{- else }}
 {{ toYaml .Values.annotations | indent 8 }}
-{{- end }}
+      {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.PullPolicy  }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: DATA_SOURCE_NAME
             value: {{ .Values.datasource }}
@@ -58,13 +62,21 @@ spec:
         {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-    {{- if .Values.nodeSelector }}
+    {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml . | indent 8 }}
     {{- end }}
-      {{- if .Values.cloudsqlproxy.enabled }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if .Values.cloudsqlproxy.enabled }}
       volumes:
         - name: cloudsql-proxy-sa-credentials
           secret:
             secretName: {{ template "prometheus-mysql-exporter.cloudsqlsecret" . }}
-      {{- end }}
+    {{- end }}

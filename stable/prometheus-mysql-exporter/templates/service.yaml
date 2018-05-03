@@ -4,7 +4,7 @@ metadata:
   name: {{ template "prometheus-mysql-exporter.fullname" . }}
   labels:
     app: {{ template "prometheus-mysql-exporter.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "prometheus-mysql-exporter.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
