@@ -4,7 +4,7 @@ metadata:
   name: {{ template "prometheus-rabbitmq-exporter.fullname" . }}
   labels:
     app: {{ template "prometheus-rabbitmq-exporter.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "prometheus-rabbitmq-exporter.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:

@@ -22,6 +22,12 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
 loglevel: info
 rabbitmq:
   url: http://myrabbit:15672
