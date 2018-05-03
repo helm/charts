@@ -14,8 +14,8 @@ Services:
 
 Administrator credentials:
 
-  echo Username: root
-  echo Password : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+  Username: root
+  Password : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
 
 To connect to your database
 
