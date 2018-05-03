@@ -34,7 +34,7 @@ datasource: "username:password@(localhost:3306)/"
 cloudsqlproxy:
   enabled: false
   image:
-    repo : "gcr.io/cloudsql-docker/gce-proxy"
+    repo: "gcr.io/cloudsql-docker/gce-proxy"
     tag: "1.11"
     pullPolicy: "IfNotPresent"
   instanceConnectionName: "project:us-central1:dbname"
@@ -52,4 +52,3 @@ cloudsqlproxy:
       "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
       "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/user%40project.iam.gserviceaccount.com"
     }'
-
