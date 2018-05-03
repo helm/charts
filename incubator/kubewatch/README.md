@@ -2,6 +2,7 @@
 
 [kubewatch](https://github.com/skippbox/kubewatch) is a Kubernetes watcher that currently publishes notification to Slack. Run it in your k8s cluster, and you will get event notifications in a slack channel.
 
+**N.B. this chart is deprecated and has been [moved to stable](../../stable/kubewatch).**
 
 ## TL;DR;
 

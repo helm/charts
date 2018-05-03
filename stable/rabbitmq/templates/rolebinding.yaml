@@ -10,7 +10,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
 subjects:
 - kind: ServiceAccount
-  name: rabbitmq
+  name: {{ template "rabbitmq.fullname" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

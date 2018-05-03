@@ -52,7 +52,7 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `tolerations`             | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                | `[]`                                                                     |
 | `service.externalPort`    | Dashboard external port                                                                                                     | 443                                                                      |
 | `service.internalPort`    | Dashboard internal port                                                                                                     | 443                                                                      |
-| `ingress.annotations`     | Specify ingress class                                                                                                       | `kubernetes.io/ingress.class: nginx`                                     |
+| `ingress.annotations`     | Specify ingress class                                                                                                       | `kubernetes.io/ingress.class: nginx` |
 | `ingress.enabled`         | Enable ingress controller resource                                                                                          | `false`                                                                  |
 | `ingress.hosts`           | Dashboard Hostnames                                                                                                         | `nil`                                                                    |
 | `ingress.tls`             | Ingress TLS configuration                                                                                                   | `[]`                                                                     |
@@ -76,3 +76,10 @@ $ helm install stable/kubernetes-dashboard --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Using the dashboard with 'kubectl proxy'
+
+When running 'kubectl proxy', the address `localhost:8001/ui` automatically expands to `http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/`. For this to reach the dashboard, the name of the service must be 'kubernetes-dashboard', not any other value as set by Helm. You can manually specify this using the value 'fullnameOverride':
+```
+fullnameOverride: 'kubernetes-dashboard'
+```
