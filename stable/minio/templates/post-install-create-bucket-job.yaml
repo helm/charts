@@ -27,8 +27,6 @@ spec:
         - name: minio-configuration
           projected:
             sources:
-            - configMap:
-                name: {{ template "minio.fullname" . }}
             - secret:
                 name: {{ template "minio.fullname" . }}
       containers:
