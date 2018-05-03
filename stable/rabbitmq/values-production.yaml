@@ -10,18 +10,18 @@ image:
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
   pullPolicy: IfNotPresent
-  
+
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
-  ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging 
+  ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging
   debug: false
-  
+
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName 
+  #   - myRegistrKeySecretName
 
 
 ## does your cluster have rbac enabled?
@@ -64,11 +64,11 @@ rabbitmq:
   ## ref: https://www.rabbitmq.com/disk-alarms.html
   ##
   diskFreeLimit: '"6GiB"'
-  
+
   ## Plugins to enable
   plugins: |-
       [rabbitmq_management,rabbitmq_peer_discovery_k8s].
-  
+
   ## Configution file content
   configuration: |-
       ## Clustering
@@ -78,10 +78,11 @@ rabbitmq:
       cluster_formation.node_cleanup.interval = 10
       cluster_formation.node_cleanup.only_log_warning = false
       cluster_partition_handling = autoheal
-      ## queue master locator 
+      ## queue master locator
       queue_master_locator=min-masters
-      ## enable guest user  
+      ## enable guest user
       loopback_users.guest = false
+
 ## Kubernetes service type
 serviceType: ClusterIP
 
@@ -120,7 +121,7 @@ replicas: 3
 ## Node labels and tolerations for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-nodeSelector: 
+nodeSelector:
   beta.kubernetes.io/arch: amd64
 tolerations: []
 affinity: {}

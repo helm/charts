@@ -38,3 +38,5 @@ web:
   listenAddress: ':9255'
   # Path under which to expose metrics.
   path: /metrics
+
+annotations: {}

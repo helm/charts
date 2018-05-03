@@ -143,6 +143,9 @@ image:
   tag: 3.7-alpine
   pullPolicy: IfNotPresent
 
+## Duration in seconds the pod needs to terminate gracefully
+terminationGracePeriodSeconds: 10
+
 service:
   annotations: {}
   clusterIP: ""
@@ -189,6 +192,7 @@ persistentVolume:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  name: data
   accessModes:
     - ReadWriteOnce
   size: 8Gi
@@ -211,6 +215,10 @@ podAntiAffinity: soft
 ## Create default configMap
 ##
 customConfigMap: false
+
+## Create default Secret
+##
+customSecret: false
 
 ## Role Based Access
 ## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
