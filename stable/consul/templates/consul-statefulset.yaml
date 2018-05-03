@@ -107,6 +107,11 @@ spec:
         - name: gossip-key
           mountPath: /etc/consul/secrets
           readOnly: true
+        {{ range .Values.ConsulConfig }}
+        - name: userconfig-{{ .name }}
+          readOnly: true
+          mountPath: /etc/consul/userconfig/{{ .name }}
+        {{ end }}
         livenessProbe:
           exec:
             command:
@@ -144,6 +149,9 @@ spec:
             done
 
             exec /bin/consul agent \
+            {{- range .Values.ConsulConfig }}
+              -config-dir /etc/consul/userconfig/{{ .name }} \
+            {{- end}}
             {{- if .Values.uiService.enabled }}
               -ui \
             {{- end }}
@@ -173,6 +181,15 @@ spec:
       - name: gossip-key
         secret:
           secretName: {{ template "consul.fullname" . }}-gossip-key
+      {{ range .Values.ConsulConfig }}
+      - name: userconfig-{{ .name }}
+        {{ .type }}:
+          {{- if (eq .type "configMap") }}
+          name: {{ .name }}
+          {{- else if (eq .type "secret") }}
+          secretName: {{ .name }}
+          {{- end}}
+      {{ end }}
   volumeClaimTemplates:
   - metadata:
       name: datadir
