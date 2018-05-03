@@ -99,6 +99,10 @@ spec:
         - name: configurations
           mountPath: /etc/mysql/conf.d
         {{- end }}
+        {{- if .Values.initializationFiles }}
+        - name: migrations
+          mountPath: /docker-entrypoint-initdb.d
+        {{- end }}
         {{- if .Values.ssl.enabled }}
         - name: certificates
           mountPath: /ssl
@@ -107,7 +111,12 @@ spec:
       {{- if .Values.configurationFiles }}
       - name: configurations
         configMap:
-          name: {{ template "mysql.fullname" . }}
+          name: {{ template "mysql.fullname" . }}-configuration
+      {{- end }}
+      {{- if .Values.initializationFiles }}
+      - name: migrations
+        configMap:
+          name: {{ template "mysql.fullname" . }}-initialization
       {{- end }}
       {{- if .Values.ssl.enabled }}
       - name: certificates
