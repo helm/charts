@@ -7,6 +7,9 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
 data:
+{{- if .Values.sematext.config }}
+{{ toYaml .Values.sematext.config | indent 2 }}
+{{- end }}
 {{- if .Values.sematext.url }}
   SPM_RECEIVER_URL: {{ default "" .Values.sematext.url.spmReceiver | quote }}
   LOGSENE_RECEIVER_URL: {{ default "" .Values.sematext.url.logseneReceiver | quote }}

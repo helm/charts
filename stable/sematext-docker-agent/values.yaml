@@ -1,7 +1,7 @@
 image:
   repository: sematext/sematext-agent-docker
   # For all available tags check here https://hub.docker.com/r/sematext/sematext-agent-docker/tags/
-  tag: 1.31.48
+  tag: 1.31.50
   pullPolicy: IfNotPresent
 
 sematext:
@@ -13,7 +13,7 @@ sematext:
   # Depending on where you created your apps, choose US or EU region.
   region: US
 
-  useHostNetwork: true
+  useHostNetwork: false
   name: sematext-docker-agent
 
   # Support for custom URLs
@@ -21,6 +21,11 @@ sematext:
   #   spmReceiver: http://spm-receiver:8080
   #   logseneReceiver: http://logsene-receiver:8080
   #   eventsReceiver: http://events-receiver:8080
+
+  # The full list of available options is here https://sematext.com/docs/sematext-docker-agent/configuration/
+  config:
+    # MATCH_BY_NAME: .*_default_
+    # SPM_MATCH_BY_NAME: .*_default_
 
   resources: {}
   #  requests:
