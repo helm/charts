@@ -93,6 +93,12 @@ uiService:
   enabled: true
   type: "NodePort"
 
+ConsulConfig: []
+#  - type: secret
+#    name: consul-defaults
+#  - type: configMap
+#    name: consul-defaults
+
 ## Create an Ingress for the Web UI
 uiIngress:
   enabled: false
