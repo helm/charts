@@ -116,6 +116,14 @@ spec:
 {{ toYaml .Values.worker.additionalAffinities | indent 8 }}
 {{- end }}
         podAntiAffinity:
+          {{- if .Values.worker.hardAntiAffinity }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: {{ template "concourse.worker.fullname" . }}
+                release: {{ .Release.Name | quote }}
+            topologyKey: kubernetes.io/hostname
+          {{- else }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
             podAffinityTerm:
@@ -124,6 +132,7 @@ spec:
                 matchLabels:
                   app: {{ template "concourse.worker.fullname" . }}
                   release: {{ .Release.Name | quote }}
+          {{- end }}
       volumes:
         - name: concourse-keys
           secret:
