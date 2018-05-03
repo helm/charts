@@ -1,3 +1,10 @@
+rbac:
+  create: true
+  pspEnabled: true
+serviceAccount:
+  create: true
+  name:
+
 replicas: 1
 
 image:

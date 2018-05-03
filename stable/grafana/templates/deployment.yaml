@@ -27,6 +27,7 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      serviceAccountName: {{ template "grafana.serviceAccountName" . }}
 {{- if .Values.dashboards }}
       initContainers:
         - name: download-dashboards
