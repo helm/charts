@@ -42,21 +42,26 @@ The following table lists the configurable parameters of the Keycloak chart and 
 
 Parameter | Description | Default
 --- | --- | ---
-`hyperkube.image.repository` | Hyperkube image repository | `quay.io/coreos/hyperkube`
-`hyperkube.image.tag` | Hyperkube image tag | `v1.8.1_coreos.0`
-`hyperkube.image.pullPolicy` | Hyperkube image pull policy | `IfNotPresent`
+`init.image.repository` | Init image repository | `alpine`
+`init.image.tag` | Init image tag | `3.6`
+`init.image.pullPolicy` | Init image pull policy | `IfNotPresent`
 `keycloak.replicas` | The number of Keycloak replicas | `1`
 `keycloak.image.repository` | The Keycloak image repository | `jboss/keycloak`
-`keycloak.image.tag` | The Keycloak image tag | `3.4.0.Final`
+`keycloak.image.tag` | The Keycloak image tag | `3.4.3.Final`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
 `keycloak.image.pullSecrets`| Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods) |
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
 `keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
-`keycloak.additionalEnv` | Allows the specification of additional environment variables for Keycloak | `[]`
+`keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak | `[]`
+`keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes | `[]`
+`keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes | `[]`
+`keycloak.podDisruptionBudget` | Pod disruption budget | `{}`
 `keycloak.resources` | Pod resource requests and limits | `{}`
-`keycloak.podAntiAffinity` | Pod anti-affinity (`soft` or `hard`) | `soft`
+`keycloak.affinity` | Pod affinity | ``
 `keycloak.nodeSelector` | Node labels for pod assignment | `{}`
 `keycloak.tolerations` | Node taints to tolerate | `[]`
+`keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
+`keycloak.preStartScript` | Custom script to run before Keycloak starts up | ``
 `keycloak.cli.nodeIdentifier` | WildFly CLI script for setting the node identifier | See `values.yaml`
 `keycloak.cli.logging` | WildFly CLI script for logging configuration | See `values.yaml`
 `keycloak.cli.reverseProxy` | WildFly CLI script for reverse proxy configuration | See `values.yaml`
@@ -87,9 +92,6 @@ Parameter | Description | Default
 `postgresql.postgresUser` | The PostgreSQL user (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
 `postgresql.postgresPassword` | The PostgreSQL password (if `keycloak.persistence.deployPostgres=true`) | `""`
 `postgresql.postgresDatabase` | The PostgreSQL database (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
-`rbac.create` | Specifies whether RBAC resources should be created | `true`
-`serviceAccount.create` | Specifies whether a ServiceAccount should be created | `true`
-`serviceAccount.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `""`
 `test.image.repository` | Test image repository | `unguiculus/docker-python3-phantomjs-selenium`
 `test.image.tag` | Test image tag | `v1`
 `test.image.pullPolicy` | Test image pull policy | `IfNotPresent`
@@ -144,7 +146,7 @@ See also:
 
 ```yaml
 keycloak:
-  additionalEnv:
+  extraEnv:
     - name: KEYCLOAK_LOGLEVEL
       value: : DEBUG
     - name: WILDFLY_LOGLEVEL
