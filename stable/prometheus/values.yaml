@@ -1,13 +1,29 @@
 rbac:
   create: true
 
+## Define serviceAccount names for components. Defaults to component's fully qualified name.
+##
+serviceAccounts:
+  alertmanager:
+    create: true
+    name:
+  kubeStateMetrics:
+    create: true
+    name:
+  nodeExporter:
+    create: true
+    name:
+  pushgateway:
+    create: true
+    name:
+  server:
+    create: true
+    name:
+
 alertmanager:
   ## If false, alertmanager will not be installed
   ##
   enabled: true
-
-  # Defines the serviceAccountName to use when `rbac.create=false`
-  serviceAccountName: default
 
   ## alertmanager container name
   ##
@@ -149,6 +165,10 @@ alertmanager:
     #   cpu: 10m
     #   memory: 32Mi
 
+  ## Security context to be added to alertmanager pods
+  ##
+  securityContext: {}
+
   service:
     annotations: {}
     labels: {}
@@ -229,9 +249,6 @@ kubeStateMetrics:
   ##
   enabled: true
 
-  # Defines the serviceAccountName to use when `rbac.create=false`
-  serviceAccountName: default
-
   ## kube-state-metrics container name
   ##
   name: kube-state-metrics
@@ -265,6 +282,9 @@ kubeStateMetrics:
   ##
   podAnnotations: {}
 
+  pod:
+    labels: {}
+
   replicaCount: 1
 
   ## kube-state-metrics resource requests and limits
@@ -278,12 +298,16 @@ kubeStateMetrics:
     #   cpu: 10m
     #   memory: 16Mi
 
+  ## Security context to be added to kube-state-metrics pods
+  ##
+  securityContext: {}
+
   service:
     annotations:
       prometheus.io/scrape: "true"
     labels: {}
 
-    clusterIP: None
+    clusterIP: ""
 
     ## List of IP addresses at which the kube-state-metrics service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -299,9 +323,6 @@ nodeExporter:
   ## If false, node-exporter will not be installed
   ##
   enabled: true
-
-  # Defines the serviceAccountName to use when `rbac.create=false`
-  serviceAccountName: default
 
   ## node-exporter container name
   ##
@@ -376,7 +397,7 @@ nodeExporter:
       prometheus.io/scrape: "true"
     labels: {}
 
-    clusterIP: None
+    clusterIP: ""
 
     ## List of IP addresses at which the node-exporter service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -393,9 +414,6 @@ server:
   ## Prometheus server container name
   ##
   name: server
-
-  # Defines the serviceAccountName to use when `rbac.create=false`
-  serviceAccountName: default
 
   ## Prometheus server container image
   ##
@@ -551,6 +569,10 @@ server:
     #   cpu: 500m
     #   memory: 512Mi
 
+  ## Security context to be added to server pods
+  ##
+  securityContext: {}
+
   service:
     annotations: {}
     labels: {}
@@ -650,6 +672,10 @@ pushgateway:
     # requests:
     #   cpu: 10m
     #   memory: 32Mi
+
+  ## Security context to be added to push-gateway pods
+  ##
+  securityContext: {}
 
   service:
     annotations:
