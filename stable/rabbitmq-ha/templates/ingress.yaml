@@ -24,15 +24,13 @@ spec:
           - path: {{ .Values.ingress.path }}
             backend:
               serviceName: {{ template "rabbitmq-ha.fullname" . }}
-              servicePort: http
+              servicePort: {{ .Values.rabbitmqManagerPort }}
 {{- if .Values.ingress.tls }}
   tls:
-    - hosts:
-        {{- if  .Values.ingress.hostName }}
+    - secretName: {{  .Values.ingress.tlsSecret }}
+      {{- if .Values.ingress.hostName }}
+      hosts:
         - {{ .Values.ingress.hostName }}
-        secretName: {{  .Values.ingress.tlsSecret }}
-        {{- else}}
-        - secretName: {{  .Values.ingress.tlsSecret }}
-        {{- end }}
+      {{- end }}
 {{- end }}
 {{- end }}
