@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ template "cassandra.fullname" . }}
   labels:
-    app: {{ template "cassandra.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "cassandra.name" . }}
+    chart: {{ template "cassandra.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   clusterIP: None
   type: {{ .Values.service.type }}
@@ -32,17 +32,18 @@ spec:
     targetPort: {{ .Values.config.ports.agent }}
   {{- end }}
   selector:
-    app: {{ template "cassandra.fullname" . }}
+    app: {{ template "cassandra.name" . }}
+    release: {{ .Release.Name }}
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: {{ template "cassandra.fullname" . }}
   labels:
-    app: {{ template "cassandra.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "cassandra.name" . }}
+    chart: {{ template "cassandra.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   serviceName: {{ template "cassandra.fullname" . }}
   replicas: {{ .Values.config.cluster_size }}
@@ -52,7 +53,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "cassandra.fullname" . }}
+        app: {{ template "cassandra.name" . }}
+        release: {{ .Release.Name }}
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
@@ -139,10 +141,10 @@ spec:
   - metadata:
       name: data
       labels:
-        app: {{ template "cassandra.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        app: {{ template "cassandra.name" . }}
+        chart: {{ template "cassandra.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
     spec:
       accessModes:
         - {{ .Values.persistence.accessMode | quote }}
