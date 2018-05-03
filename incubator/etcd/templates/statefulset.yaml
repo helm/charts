@@ -49,9 +49,11 @@ spec:
           value: {{ default 3 .Values.replicas | quote }}
         - name: SET_NAME
           value: {{ template "etcd.fullname" . }}
+       {{- if .Values.storage }}
         volumeMounts:
         - name: datadir
           mountPath: /var/run/etcd
+       {{- end }}
         lifecycle:
           preStop:
             exec:
@@ -181,6 +183,7 @@ spec:
                 --initial-cluster ${PEERS} \
                 --initial-cluster-state new \
                 --data-dir /var/run/etcd/default.etcd
+  {{- if .Values.storage }}
   volumeClaimTemplates:
   - metadata:
       name: datadir
@@ -198,3 +201,4 @@ spec:
       storageClassName: "{{ .Values.storageClass }}"
     {{- end }}
     {{- end }}
+  {{- end }}

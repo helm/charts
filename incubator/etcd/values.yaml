@@ -13,7 +13,7 @@ image:
   pullPolicy: "Always"
 cpu: "100m"
 memory: "512Mi"
-storage: "1Gi"
+# storage: "1Gi"
 ## etcd data Persistent Volume Storage Class
 ## If defined, storageClassName: <storageClass>
 ## If set to "-", storageClassName: "", which disables dynamic provisioning
