@@ -1,3 +1,8 @@
+{{- if and (ne "yes" .Values.acceptLicenseAgreement) (contains "enterprise" .Values.imageTag)}}
+####   ERROR: You did not accept the Neo4j Enterprise License. ####
+####   ERROR: Please set acceptLicenseAgreement to yes.        ####
+###################################################################
+{{- else }}
 We'll need to wait a few seconds for the Neo4j cluster to form.
 We need to see this line in all of our pods' logs:
 
@@ -23,3 +28,4 @@ If you didn't set a password, one will be auto generated.
 You can find the base64 encoded version of the password by running the following command:
 
 kubectl get secrets {{ template "neo4j.secrets.fullname" . }} -o yaml
+{{- end}}
