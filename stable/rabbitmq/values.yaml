@@ -24,7 +24,7 @@ image:
   #   - myRegistrKeySecretName
 
 ## does your cluster have rbac enabled? assume yes by default
-rbacEnabled: true
+rbacEnabled: false
 
 ## section of specific values for rabbitmq
 rabbitmq:
