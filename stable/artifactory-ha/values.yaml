@@ -25,7 +25,7 @@ ingress:
 
 # Database
 ## Configuration values for the postgresql dependency
-## ref: https://github.com/kubernetes/charts/blob/master/stable/postgressql/README.md
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
 postgresql:
   enabled: true
