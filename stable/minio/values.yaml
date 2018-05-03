@@ -4,7 +4,7 @@
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2018-03-16T22-52-12Z
+  tag: RELEASE.2018-04-27T23-33-52Z
   pullPolicy: IfNotPresent
 
 mode: standalone
