@@ -8,7 +8,7 @@ This chart bootstraps a single master and multiple slave MySQL deployment on a [
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.6+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -47,7 +47,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `persistence.enabled`      | Create a volume to store data       | true                                   | 
 | `persistence.size`         | Size of persistent volume claim     | 10Gi                                   |
 | `persistence.storageClass` | Type of persistent volume claim     | `nil`                                  |
-| `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | ReadWriteOnce                          |
+| `persistence.accessModes`  | Persistent volume access modes      | `[ReadWriteOnce]`                      |
+| `persistence.annotations`  | Persistent volume annotations       | `{}`                                   |
 | `resources`                | CPU/Memory resource requests/limits | Memory: `128Mi`, CPU: `100m`           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
