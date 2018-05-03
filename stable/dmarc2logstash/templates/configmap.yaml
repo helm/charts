@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "dmarc2logstash.fullname" . }}-config
+  labels:
+    app: {{ template "dmarc2logstash.name" . }}
+    chart: {{ template "dmarc2logstash.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  filebeat.yml: |
+    filebeat.registry_file: /tmp/filebeat_registry
+    filebeat.prospectors:
+    - type: log
+      enabled: true
+      paths:
+        - "/app/log/forward/*.log"
+      json.keys_under_root: true
+      json.add_error_key: true
+      fields_under_root: true
+      fields:
+        source_type: {{ .Values.filebeat.sourceType }}
+    output.logstash:
+      hosts: 
+        - {{ .Values.filebeat.logstash.host }}:{{ .Values.filebeat.logstash.port }}
+      index: {{ .Values.filebeat.logstash.index }}
+      timeout: {{ .Values.filebeat.logstash.timeout }}
+{{ if .Values.filebeat.logstash.extraOutput }}
+      {{- .Values.filebeat.logstash.extraOutput | indent 8 }}
+{{ end }}
+    logging.level: info
