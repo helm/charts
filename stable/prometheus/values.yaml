@@ -170,6 +170,10 @@ alertmanager:
     #   cpu: 10m
     #   memory: 32Mi
 
+  ## Security context to be added to alertmanager pods
+  ##
+  securityContext: {}
+
   service:
     annotations: {}
     labels: {}
@@ -298,6 +302,10 @@ kubeStateMetrics:
     # requests:
     #   cpu: 10m
     #   memory: 16Mi
+
+  ## Security context to be added to kube-state-metrics pods
+  ##
+  securityContext: {}
 
   service:
     annotations:
@@ -571,6 +579,10 @@ server:
     #   cpu: 500m
     #   memory: 512Mi
 
+  ## Security context to be added to server pods
+  ##
+  securityContext: {}
+
   service:
     annotations: {}
     labels: {}
@@ -670,6 +682,10 @@ pushgateway:
     # requests:
     #   cpu: 10m
     #   memory: 32Mi
+
+  ## Security context to be added to push-gateway pods
+  ##
+  securityContext: {}
 
   service:
     annotations:
