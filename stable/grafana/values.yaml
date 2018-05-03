@@ -173,4 +173,3 @@ sidecar:
   datasources:
     enabled: false
     label: grafana_datasource
-    
