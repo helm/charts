@@ -12,6 +12,7 @@ imageTag: "5.7.14"
 ## Create a database user
 ##
 # mysqlUser:
+## Default: random 10 character string
 # mysqlPassword:
 
 ## Allow unauthenticated access, uncomment to enable
