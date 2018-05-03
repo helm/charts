@@ -1,9 +1,9 @@
 1. Get the GoCD server URL by running these commands:
 {{- if .Values.server.ingress.enabled }}
     It may take a few minutes before the IP is available to access the GoCD server.
-         echo "GoCD server public IP: http://$(kubectl get ingress {{ template "gocd.fullname" . }}-server --namespace={{ .Release.Namespace }}  -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"
+         echo "GoCD server public IP: http{{ if $.Values.server.ingress.tls }}s{{ end }}://$(kubectl get ingress {{ template "gocd.fullname" . }}-server --namespace={{ .Release.Namespace }}  -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"
 {{- range .Values.server.ingress.hosts }}
-    http://{{ . }}
+    http{{ if $.Values.server.ingress.tls }}s{{ end }}://{{ . }}
 {{- end }}
 {{- else if contains "NodePort" .Values.server.service.type }}
     export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "gocd.fullname" . }}-server)

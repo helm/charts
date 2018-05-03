@@ -1,3 +1,7 @@
+### 1.0.7
+
+* [0c66dbf](https://github.com/kubernetes/charts/commit/0c66dbf): Support TLS for ingress
+
 ### 1.0.6
 
 * [98cead4](https://github.com/kubernetes/charts/commit/98cead4): Bump up application version to 18.3
