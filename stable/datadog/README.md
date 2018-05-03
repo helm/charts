@@ -63,6 +63,8 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `daemonset.useHostPort`     | If true, use the same ports for both host and container  | `nil`               |
 | `datadog.leaderElection`    | Adds the leader Election feature   | `false`                                   |
 | `datadog.leaderLeaseDuration`| The duration for which a leader stays elected.| `nil`                         |
+| `deployment.affinity`       | Node / Pod affinities              | `{}`                                      |
+| `deployment.tolerations`    | List of node taints to tolerate    | `[]`                                      |
 | `kube-state-metrics.rbac.create`| If true, create & use RBAC resources for kube-state-metrics | `true`       |
 | `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
 
