@@ -144,9 +144,33 @@ grafana.ini:
     data: /var/lib/grafana/data
     logs: /var/log/grafana
     plugins: /var/lib/grafana/plugins
+    provisioning: /etc/grafana/provisioning
   analytics:
     check_for_updates: true
   log:
     mode: console
   grafana_net:
     url: https://grafana.net
+
+
+## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
+## Requires at least Grafana 5 to work ([dashboard.json] deprecated with that version)
+sidecar:
+  image: kiwigrid/k8s-sidecar:0.0.3
+  imagePullPolicy: Always
+  resources:
+    # limits:
+    #   cpu: 100m
+    #   memory: 100Mi
+    requests:
+      cpu: 50m
+      memory: 50Mi
+  provisioningFolder: /var/lib/grafana/provisioning
+  dashboards:
+    enabled: true
+    label: grafana_dashboard
+    folder: /tmp/dashboards
+  datasources:
+    enabled: true
+    label: grafana_datasource
+
