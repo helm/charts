@@ -7,7 +7,7 @@ metadata:
   name: {{ template "openldap.fullname" . }}-service
   labels:
     app: {{ template "openldap.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "-" }}
+    chart: {{ template "openldap.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -16,11 +16,11 @@ spec:
     app: {{ template "openldap.name" . }}
     release: {{ .Release.Name }}
   ports:
-  - name: ldap-port
-    protocol: TCP
-    port: {{ .Values.service.ldapExternalPort }}
-    targetPort: {{ .Values.service.ldapInternalPort }}
-  - name: ldap-ssl-port
-    protocol: TCP
-    port: {{ .Values.service.sslExternalPort }}
-    targetPort: {{ .Values.service.sslInternalPort }}
+    - name: ldap-port
+      protocol: TCP
+      port: {{ .Values.service.ldapPort }}
+      targetPort: ldap-port
+    - name: ssl-ldap-port
+      protocol: TCP
+      port: {{ .Values.service.sslLdapPort }}
+      targetPort: ssl-ldap-port

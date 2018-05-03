@@ -8,7 +8,7 @@ metadata:
   name: {{ template "openldap.fullname" . }}
   labels:
     app: {{ template "openldap.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "openldap.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:

@@ -31,10 +31,8 @@ The following tables lists the configurable parameters of the openldap chart and
 | `image.pullPolicy`     | Container pull policy                 | `IfNotPresent`                                             |
 | `containerName`        | Name of the container in the Pod      | `slapd`                                                    |
 | `service.type`         | Service type                          | `ClusterIP`                                                |
-| `service.ldapInternalPort` | Internal port for LDAP                | `389`                                                      |
-| `service.ldapExternalPort` | External port for LDAP                | `389`                                                      |
-| `service.sslInternalPort`  | Internal port for SSL+LDAP            | `636`                                                      |
-| `service.sslExternalPort`  | External port for SSL+LDAP            | `636`                                                      |
+| `service.ldapPort`     | External service port for LDAP        | `389`                                                      |
+| `service.sslLdapPort`  | External service port for SSL+LDAP    | `636`                                                      |
 | `env`                  | List of key value pairs as env variables to be sent to the docker image. See https://github.com/osixia/docker-openldap for available ones and their usage | `[see values.yaml]`  |
 | `adminPassword`        | Password for admin user. Unset to auto-generate the password  | `admin`                            |
 | `configPassword`       | Password for config user. Unset to auto-generate the password | `config`                           |

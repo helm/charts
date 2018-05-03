@@ -13,10 +13,8 @@ containerName: slapd
 
 service:
   type: ClusterIP
-  ldapInternalPort: 389
-  ldapExternalPort: 389
-  sslInternalPort: 636
-  sslExternalPort: 636
+  ldapPort: 389
+  sslLdapPort: 636
 
 # Default configuration for openldap as environment variables. These get injected directly in the container.
 # Use the env variables from https://github.com/osixia/docker-openldap#beginner-guide
