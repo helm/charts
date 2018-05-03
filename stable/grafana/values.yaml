@@ -154,7 +154,7 @@ grafana.ini:
 
 
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
-## Requires at least Grafana 5 to work ([dashboard.json] deprecated with that version)
+## Requires at least Grafana 5 to work
 sidecar:
   image: kiwigrid/k8s-sidecar:0.0.3
   imagePullPolicy: Always
