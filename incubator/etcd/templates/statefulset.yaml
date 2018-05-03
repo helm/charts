@@ -200,7 +200,7 @@ spec:
     {{- end }}
     {{- end }}
   {{- else }}
-        volumes:
-         - name: datadir
-           emptyDir: {}
+      volumes:
+      - name: datadir
+        emptyDir: {}
   {{- end }}
