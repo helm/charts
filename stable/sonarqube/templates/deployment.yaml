@@ -78,7 +78,7 @@ spec:
             - name: SONARQUBE_JDBC_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "postgresql.fullname" .}}
+                  name: {{- if .Values.postgresql.enabled }} {{ template "postgresql.fullname" .}} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
                   key: postgres-password
             - name: SONARQUBE_JDBC_URL
               value: "jdbc:postgresql://{{ template "postgresql.hostname" . }}:{{- .Values.postgresql.service.port -}}/{{- .Values.postgresql.postgresDatabase -}}"
