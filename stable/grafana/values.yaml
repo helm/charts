@@ -165,12 +165,11 @@ sidecar:
     requests:
       cpu: 50m
       memory: 50Mi
-  provisioningFolder: /var/lib/grafana/provisioning
   dashboards:
-    enabled: true
+    enabled: false
     label: grafana_dashboard
     folder: /tmp/dashboards
   datasources:
-    enabled: true
+    enabled: false
     label: grafana_datasource
 
