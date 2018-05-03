@@ -39,6 +39,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 
 | Parameter                                   | Description                               | Default                                    |
 | ------------------------------------------  | ----------------------------------------  | -------------------------------------------|
+| `image.repository`                          | image repoistory                          | `sonarqube`                                |
 | `image.tag`                                 | `sonarqube` image tag.                    | 6.5                                        |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
 | `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
@@ -56,7 +57,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `postgresql.postgresDatabase`               | Postgresql database name                  | `sonarDB`                                  |
 | `postgresql.service.port`                | Postgresql port                              | `5432`                                     |
 | `resources`                                 | Sonarqube Pod resource requests & limits  | `{}`                                       |
-| `affintiy`                                  | Node / Pod affinities                     | `{}`                                       |
+| `affinity`                                  | Node / Pod affinities                     | `{}`                                       |
 | `nodeSelector`                              | Node labels for pod assignment            | `{}`                                       |
 | `tolerations`                               | List of node taints to tolerate           | `[]`                                       |
 | `plugins.install`                           | List of plugins to install                | `[]`                                       |
