@@ -2,7 +2,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "openvpn.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "openvpn.name" . }}
+    chart: {{ template "openvpn.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 data:
   setup-certs.sh: |-
     #!/bin/bash
