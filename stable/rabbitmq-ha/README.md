@@ -96,7 +96,7 @@ and their default values.
 | `rabbitmqCert.cacertfile`          | base64 encoded CA certificate (overwrites existing Secret)      | ``                                                       |
 | `rabbitmqCert.certfile`            | base64 encoded server certificate (overwrites existing Secret)  | ``                                                       |
 | `rabbitmqCert.keyfile`             | base64 encoded server private key (overwrites existing Secret)  | ``                                                       |
-| `rabbitmqCert.secret.autogenerate`      | Autogenerate Certificates file                 | `true`                                                       |
+| `rabbitmqCert.secret.existing`      | Use existing Certificates secret                 | `false`                                                       |
 | `rabbitmqCert.secret.overrideName`      | Override Certificate Secret Name                 | ``                                                       |
 | `rabbitmqEpmdPort`                 | EPMD port used for cross cluster replication                    | `4369`                                                   |
 | `rabbitmqErlangCookie`             | Erlang cookie                                                   | _random 32 character long alphanumeric string_           |
@@ -118,8 +118,8 @@ and their default values.
 | `rbac.create`                      | If true, create & use RBAC resources                            | `true`                                                   |
 | `replicaCount`                     | Number of replica                                               | `3`                                                      |
 | `resources`                        | CPU/Memory resource requests/limits                             | `{}`                                                     |
-| `secret.autogenerate`      | Autogenerate Secrets for Password & Erlang Cookie                 | `true`                                                       |
-| `secret.overrideName`      | Override Secret Name for Password & Erlang Cookie                | ``                                                       |
+| `secret.existing`      | Use an existing secret for password & erlang cookie                 | `true`                                                       |
+| `secret.overrideName`      | Override secret name for password & erlang cookie                | ``                                                       |
 | `serviceAccount.create`            | Create service account                                          | `true`                                                   |
 | `serviceAccount.name`              | Service account name to use                                     | _name of the release_                                    |
 | `service.annotations`              | Annotations to add to service                                   | `none`                                                   |
@@ -198,8 +198,8 @@ $ helm install --name my-release --set customConfigMap=true stable/rabbitmq-ha
 
 ### Custom Secret
 
-Similar to custom ConfigMap, `secret.autogenerate` and `secret.overrideName` can be used to override the default secret.yaml provided, and
-`rabbitmqCert.secret.autogenerate` and `rabbitmqCert.secret.overrideName` can be used to override the default certificates.
+Similar to custom ConfigMap, `secret.existing` and `secret.overrideName` can be used to override the default secret.yaml provided, and
+`rabbitmqCert.secret.existing` and `rabbitmqCert.secret.overrideName` can be used to override the default certificates.
 
 ### Prometheus Monitoring & Alerts
 

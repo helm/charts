@@ -42,8 +42,8 @@ rabbitmqCert:
   enabled: false
 
   secret:
-    ## Autogenerate Certificate secret, defaults to true.  If false a Certificate secret must be created outside of this chart
-    autogenerate: true
+    ## Use existing secret, this chart will not create a secret.  It must be created outside of this chart
+    existing: false
 
     ## Allows overriding secret name, Defaults to: {{ template "rabbitmq-ha.fullname" . }}-cert
     overrideName: ""
@@ -268,8 +268,8 @@ readinessProbe:
   periodSeconds: 5
 
 secret:
-  ## Autogenerate secret, defaults to true.  If false a secret must be created outside of this chart
-  autogenerate: true
+  ## Use existing secret, this chart will not create a secret.  It must be created outside of this chart
+  existing: false
 
   ## Allows overriding secret name, Defaults to: {{ template "rabbitmq-ha.fullname" . }}
   overrideName: ""
