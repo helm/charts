@@ -50,7 +50,7 @@ The following tables lists the configurable parameters of the Fluentd Cloudwatch
 |
 | `image.tag`                     | Image tag                                  | `v0.12.33-cloudwatch`                                      
 |
-| `image.pullPolicy`              | Image pull policy                          | `Always` if `imageTag` is `image.pullPolicy`             
+| `image.pullPolicy`              | Image pull policy                          | `IfNotPresent` if `imageTag` is `image.pullPolicy`             
 |
 | `resources.limits.cpu`          | CPU limit                                  | `100m`                                                     |
 | `resources.limits.memory`       | Memory limit                               | `200Mi`                                                    |
