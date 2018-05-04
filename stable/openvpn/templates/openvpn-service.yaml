@@ -18,3 +18,6 @@ spec:
   selector:
     app: {{ template "openvpn.fullname" . }}
   type: {{ .Values.service.type }}
+{{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end }}
