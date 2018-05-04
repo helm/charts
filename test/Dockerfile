@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM gcr.io/kubernetes-charts-ci/chart-testing:v1.0.0-alpha.3
+FROM gcr.io/kubernetes-charts-ci/chart-testing:v1.0.0-alpha.4
 
 USER root
 
 ENV PATH /google-cloud-sdk/bin:$PATH
-ARG CLOUD_SDK_VERSION=198.0.0
+ARG CLOUD_SDK_VERSION=200.0.0
 RUN curl -LO "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-$CLOUD_SDK_VERSION-linux-x86_64.tar.gz" && \
     tar xzf "google-cloud-sdk-$CLOUD_SDK_VERSION-linux-x86_64.tar.gz" && \
     rm "google-cloud-sdk-$CLOUD_SDK_VERSION-linux-x86_64.tar.gz" && \
