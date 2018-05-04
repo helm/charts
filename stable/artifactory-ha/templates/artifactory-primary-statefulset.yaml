@@ -149,19 +149,28 @@ spec:
       {{- end }}
         resources:
 {{ toYaml .Values.artifactory.primary.resources | indent 10 }}
+        {{- if .Values.artifactory.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: '/artifactory/webapp/#/login'
             port: 8081
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          failureThreshold: 10
+          initialDelaySeconds: {{ .Values.artifactory.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.artifactory.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.artifactory.readinessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.artifactory.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.artifactory.readinessProbe.successThreshold }}
+        {{- end }}
+        {{- if .Values.artifactory.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: '/artifactory/webapp/#/login'
             port: 8081
-          initialDelaySeconds: 180
-          periodSeconds: 10
+          initialDelaySeconds: {{ .Values.artifactory.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.artifactory.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.artifactory.livenessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.artifactory.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.artifactory.livenessProbe.successThreshold }}
+        {{- end }}
       volumes:
       - name: binarystore-xml
         configMap:
