@@ -10,7 +10,7 @@ $ helm install stable/prometheus-mysql-exporter
 
 ## Introduction
 
-This chart bootstraps a prometheus [mysqk exporter](http://github.com/prometheus/mysql_exporter) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager. The exporter can connecto mysql directly or using the [Cloud SQL Proxy](https://cloud.google.com/sql/docs/mysql/sql-proxy).
+This chart bootstraps a prometheus [mysql exporter](http://github.com/prometheus/mysql_exporter) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager. The exporter can connect to mysql directly or using the [Cloud SQL Proxy](https://cloud.google.com/sql/docs/mysql/sql-proxy).
 
 ## Installing the Chart
 
