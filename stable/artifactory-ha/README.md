@@ -255,6 +255,18 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.service.pool`   | Artifactory instances to be in the load balancing pool. `members` or `all` | `members`    |
 | `artifactory.externalPort`   | Artifactory service external port                         | `8081`                        |
 | `artifactory.internalPort`   | Artifactory service internal port                         | `8081`                        |
+| `artifactory.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
+| `artifactory.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 180                                                   |
+| `artifactory.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
+| `artifactory.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                                                    |
+| `artifactory.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `artifactory.livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
+| `artifactory.readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                        |
+| `artifactory.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 60                                                    |
+| `artifactory.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                   |
+| `artifactory.readinessProbe.timeoutSeconds`      | When the probe times out                  | 10                                                    |
+| `artifactory.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `artifactory.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
 | `artifactory.persistence.mountPath`  | Artifactory persistence volume mount path       | `"/var/opt/jfrog/artifactory"`  |
 | `artifactory.persistence.enabled`    | Artifactory persistence volume enabled          | `true`                          |
 | `artifactory.persistence.accessMode` | Artifactory persistence volume access mode      | `ReadWriteOnce`                 |
@@ -309,6 +321,18 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.internalPortHttp` | Nginx service internal port | `80`   |
 | `nginx.externalPortHttps` | Nginx service external port | `443`   |
 | `nginx.internalPortHttps` | Nginx service internal port | `443`   |
+| `nginx.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
+| `nginx.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 100                                                   |
+| `nginx.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
+| `nginx.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                                                    |
+| `nginx.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `nginx.livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
+| `nginx.readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                        |
+| `nginx.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 60                                                    |
+| `nginx.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                   |
+| `nginx.readinessProbe.timeoutSeconds`      | When the probe times out                  | 10                                                    |
+| `nginx.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `nginx.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
 | `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |    |
 | `nginx.env.ssl`                   | Nginx Environment enable ssl               | `true`                                  |
 | `nginx.resources.requests.memory` | Nginx initial memory request               | `250Mi`                                 |
