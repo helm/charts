@@ -3,7 +3,11 @@ description: Identity Service provides single-sign-on and protects web apis for 
 name: identityservice
 version: 1.1.8
 appVersion: 1.1.8
+home: https://rcl-identityserver.github.io/documentation
+icon: https://raw.githubusercontent.com/rcladmin/helm-charts/master/images/logo_idsvc3.png
+sources:
+ - https://github.com/rcl-identityserver/identityservice
+ - https://hub.docker.com/r/rcladmin/identitysvc3
 maintainers:
 - name: rcladmin
   email: rcl@rclapp.com
-icon: https://raw.githubusercontent.com/rcladmin/helm-charts/master/images/logo_idsvc3.png
