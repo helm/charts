@@ -59,7 +59,7 @@ The following tables lists the configurable parameters of the Fluent-Bit chart a
 | `podAnnotations`                   | Optional pod annotations                   | `NULL`                |
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
-| `extraVolume`                      | Extra volume                               |                                                | 
+| `extraVolume`                      | Extra volume                               |                                                |
 | `filter.kubeURL`                   | Optional custom configmaps                 | `https://kubernetes.default.svc:443`            |
 | `filter.kubeCAFile`                | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`    |
 | `filter.kubeTokenFile`             | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/token`     |
@@ -73,7 +73,7 @@ The following tables lists the configurable parameters of the Fluent-Bit chart a
 | `resources.limits.cpu`             | CPU limit                                  | `100m`                                            |
 | `resources.limits.memory`          | Memory limit                               | `500Mi`                                           |
 | `resources.requests.cpu`           | CPU request                                | `100m`                                            |
-| `resources.requests.memory`        | Memory request                             | `200Mi`                                           | 
+| `resources.requests.memory`        | Memory request                             | `200Mi`                                           |
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
 | | | |
