@@ -12,7 +12,7 @@ You should install this chart into the `kube-system` namespace:
 ```
 helm install \
   --namespace kube-system \
-  incubator/k8s-spot-rescheduler
+  stable/k8s-spot-rescheduler
 ```
 
 If your cluster has RBAC enabled, run this command:
