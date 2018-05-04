@@ -21,3 +21,6 @@ spec:
   selector:
     app: {{ template "logstash.name" . }}
     release: {{ .Release.Name }}
+{{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end }}
