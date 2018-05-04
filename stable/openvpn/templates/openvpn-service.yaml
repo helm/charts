@@ -2,10 +2,11 @@ kind: Service
 apiVersion: v1
 metadata:
   name: {{ template "openvpn.fullname" . }}
-  namespace: {{ .Release.Namespace }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    type: openvpn
+    app: {{ template "openvpn.name" . }}
+    chart: {{ template "openvpn.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   ports:
     - name: openvpn
