@@ -55,6 +55,9 @@ spec:
             - name: config
               mountPath: "/etc/grafana/grafana.ini"
               subPath: grafana.ini
+            - name: ldap
+              mountPath: "/etc/grafana/ldap.toml"
+              subPath: ldap.toml
 {{- if .Values.dashboards }}
   {{- range $key, $value := .Values.dashboards }}
     {{ if hasKey $value "json" }}
@@ -139,6 +142,16 @@ spec:
         - name: dashboards-json
           configMap:
             name: {{ template "grafana.fullname" . }}-dashboards-json
+        - name: ldap
+          secret:
+            {{- if .Values.ldap.existingSecret }}
+            secretName: {{ .Values.ldap.existingSecret }}
+            {{- else }}
+            secretName: {{ template "grafana.fullname" . }}            
+            {{- end }}
+            items:
+              - key: ldap-toml
+                path: ldap.toml
         - name: storage
       {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
@@ -146,3 +159,4 @@ spec:
       {{- else }}
           emptyDir: {}
       {{- end -}}
+        
