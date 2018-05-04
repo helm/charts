@@ -17,7 +17,7 @@ spec:
   template:
     metadata:
       annotations:
-{{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.operator.enabled) }}
+{{- if and .Values.prometheus.kafka.enabled  (not .Values.prometheus.operator.enabled) }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.prometheus.kafka.port | quote }}
 {{- end }}
