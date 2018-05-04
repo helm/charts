@@ -90,6 +90,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                     | `nil`                                                      |
 | `ingress.secrets[0].key`             | TLS Secret Key                             | `nil`                                                      |
 | `persistence.enabled`                | Enable persistence using PVC               | `true`                                                     |
+| `persistence.existingClaim`          | Enable persistence using an existing PVC   | `nil`                                                      |
 | `persistence.storageClass`           | PVC Storage Class                          | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | PVC Access Mode                            | `ReadWriteOnce`                                            |
 | `persistence.size`                   | PVC Storage Request                        | `10Gi`                                                     |
