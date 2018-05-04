@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{.Release.Name}}-{{.Values.serviceName}}-ingress
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+  - hosts:
+    - {{.Values.host}}
+    secretName: rcl-tls-secret
+  rules:
+  - host: {{.Values.host}}
+    http:
+      paths:
+      - path: /identitysvc
+        backend:
+          serviceName: {{.Values.serviceName}}
+          servicePort: 80

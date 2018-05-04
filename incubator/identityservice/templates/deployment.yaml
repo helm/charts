@@ -1,0 +1,25 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{.Release.Name}}-{{.Values.serviceName}}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{.Release.Name}}-{{.Values.serviceName}}
+    spec:
+      containers:
+      - name: {{.Release.Name}}-{{.Values.serviceName}}
+        image: rcladmin/identitysvc3:118
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Production
+        - name: DatabaseConnection
+          value: Server=tcp:{{.Values.dbServerName}},1433;Initial Catalog={{.Values.dbName}};Persist Security Info=False;User ID={{.Values.dbUserName}};Password={{.Values.dbPassword}};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;       
+        - name: SendGridAPIKey
+          value: {{.Values.sendgridKey}} 
+        - name: AdminUserName
+          value: {{.Values.adminEmail}} 

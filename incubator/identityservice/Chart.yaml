@@ -1,0 +1,8 @@
+apiVersion: v1
+description: Identity Service provides single-sign-on and protects web apis for ASP.NET Core applications
+name: identitysvc3
+version: 1.1.8
+maintainers:
+- name: rcladmin
+  email: rcl@rclapp.com
+icon: https://raw.githubusercontent.com/rcladmin/helm-charts/master/images/logo_idsvc3.png
