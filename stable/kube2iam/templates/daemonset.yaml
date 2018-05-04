@@ -65,7 +65,7 @@ spec:
           {{- end }}
           {{- range $name, $value := .Values.extraEnv }}
             - name: {{ $name }}
-              value: {{ $value }}
+              value: {{ quote $value }}
           {{- end }}
           ports:
             - containerPort: {{ .Values.host.port }}
