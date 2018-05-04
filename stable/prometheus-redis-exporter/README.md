@@ -50,6 +50,7 @@ The following tables lists the configurable parameters and their default values.
 | `service.type`         | desired service type                                | `ClusterIP`               |
 | `service.port`         | service external port                               | `9121`                    |
 | `redisAddress`         | address of one or more redis nodes, comma separated | `redis://myredis:6379`    |
+| `annotations`          | pod annotations for easier discovery                | {}                        |
 
 For more information please refer to the [redis_exporter](https://github.com/oliver006/redis_exporter) documentation.
 
