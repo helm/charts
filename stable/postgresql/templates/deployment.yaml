@@ -129,11 +129,10 @@ spec:
       {{- end }}
       {{- if and .Values.metrics.enabled .Values.metrics.customMetrics }}
       - name: custom-metrics
-        secret:
-          secretName: {{ template "postgresql.fullname" . }}
-          items:
-            - key: custom-metrics.yaml
-              path: custom-metrics.yaml
+        valueFrom:
+          configMapKeyRef:
+            name: {{ template "postgresql.fullname" . }}
+            key: custom-metrics.yaml
       {{- end }}
       {{- if .Values.usePasswordFile }}
       - name: password-file
