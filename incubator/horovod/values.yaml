@@ -1,0 +1,60 @@
+# Default values for horovod.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+useHostNetwork: false
+useHostPID: false
+
+ssh:
+  port: 22
+  hostKey: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpQIBAAKCAQEAuRnO6wwGIQOeeCpfKTP4pZNJPf93DivW6ZxzuDkFb8Q+Gz29
+    ykdeWvzjCGIF17tPQlOCUjYAAjLIs/MXekQCYMZpXi7CVmMn15E5n3dbJgx+P711
+    G4+CnWe4xYUuYogwII2zquKdZx/P6MTmiB1A5Zuk+GncmdZxjc1cw5BRjp+qv1Rm
+    StZRvRYmHfktYaP7FaDuikq7SeeZtd0Uht2ZZUbiCrDljOI5nR+DWr8LD5xPmhuv
+    WSD3A/sqVz5bgRLHF2jbUhLTY5FKWRVUv9+US80FCb2mfPf6hTHwmCcWb68nFQKg
+    5lJEk5obDVlemfNE1XgyJSoxR8E1Ineq+AZSqQIDAQABAoIBACHRq1KaocwKYzvF
+    UhmvGzD1Vh5zvIbkT6HjKelw0aN4EXjcsP5yR7UMG1b+wd6GpJaTt23Z2+qK6Myo
+    D5QRNPYFil7g4DT0bOUf7Y1LO2YaRj7TGMBuWgj0WHgOO0lZZKGuAjOor+WVlGEN
+    CKm53o+U/nE8tkeNPLYR3W8FwUDzb6zX81uZkKOcdrI7jKzOugjHgM0TIJKILvwo
+    +hzCNPk5b5hbO34F1NucJnoYvyQc7tqFLMQOwS3hHNaHwEDozth0TMmKw15EjiCF
+    lAIa5xu85mt1SCh2M3SIhzNLpAUvKQHxmRe9wB7znCN4e21hjZnJDAp57ZtjIifF
+    1jA7bfkCgYEA22GaLt/9hFMFaoDoE25fncfC+RjFctzt99Rmbujq8nNRx0Um7vIV
+    UriUZTKivE2DIZhWGAeVOtG0BP5ETrIr5i3J2BFTEaRvHrH31yNSX+Xeju+LVK7s
+    shJLjUqUwu71/pml9vJSb/sk/1d1NCdrM+dMcsnrqRmkqfza9zfLXucCgYEA1/9d
+    mHKm8J9yuwrz9n7CvjUTloFiyKAZXr3Cn9miDnpD72sK4sfBQKgPacrpcLvEtZu/
+    XQ3TSaxka7G7hOet+J30lx41ig1MlE335NbbFhFwXFqDUFtFOUDqKArZXTEJlZR9
+    0qySwSACnkY7wqxoGpusoLVLyRp4GduucrZnX+8CgYEA2RCYqxrL0DsJF9lWR6ul
+    BgvaufetnjpFZzsM416o4Z4C44VjwXdca83gXsUcSe7z+bCuNvaBzIIjefFQCwG1
+    9/mERrrVk5Y8sIVs8bysS+C5NnqERRUTdBowESwjR0GDuxeyJEaeFNjNQaz6ddEu
+    /Fs2xDlQaK/LwrpCuevF2S8CgYEApD14RNhBWkxT6Cfe8/rVR96CA3pky9r5D5JJ
+    MFVDJbEQgTeqsmBj8S8ZcT8qnF8ap2FDdJVzqNyeC0m9JcUpAxfQiSweV9fe+BIF
+    Qguh0bj28DKfEPYlv/A9XK9LMtJ70DJ2LkCs4o7djs4m2NNR4ZGoBRd2BffLhRYH
+    IxDRsB8CgYEA2EB0zQZuWaTnwKsSfvn4TwDr7RoRvWw1MNE0LVr8aaXzfTvUhj1e
+    E+LbXXOAc9CM5tOKYdOGQtZFVrHGP0dx+0hNHb6yf+W19APVmBZKu0Vdtk+Xsgq/
+    jVc/u49fyRDu90KXCyoWyCSUwqPvbc5UtHOwuq36olqc+TjNTDChOHc=
+    -----END RSA PRIVATE KEY-----
+  hostKeyPub: |-
+    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5Gc7rDAYhA554Kl8pM/ilk0k9/3cOK9bpnHO4OQVvxD4bPb3KR15a/OMIYgXXu09CU4JSNgACMsiz8xd6RAJgxmleLsJWYyfXkTmfd1smDH4/vXUbj4KdZ7jFhS5iiDAgjbOq4p1nH8/oxOaIHUDlm6T4adyZ1nGNzVzDkFGOn6q/VGZK1lG9FiYd+S1ho/sVoO6KSrtJ55m13RSG3ZllRuIKsOWM4jmdH4NavwsPnE+aG69ZIPcD+ypXPluBEscXaNtSEtNjkUpZFVS/35RLzQUJvaZ89/qFMfCYJxZvrycVAqDmUkSTmhsNWV6Z80TVeDIlKjFHwTUid6r4BlKp
+
+worker:
+  number: 3
+  podManagementPolicy: Parallel
+  image:
+    repository: cheyang/horovod
+    tag: gpu-tf-1.6.0
+    pullPolicy: IfNotPresent
+  # resources:
+  #   limits:
+  #     nvidia.com/gpu: 1
+  #   requests:
+  #     nvidia.com/gpu: 1
+
+master:
+  image:
+    repository: cheyang/horovod
+    tag: gpu-tf-1.6.0
+    pullPolicy: IfNotPresent
+  #args:
+  #  - "mpiexec -n 3 --hostfile /horovod/generated/hostfile --mca orte_keep_fqdn_hostnames t --allow-run-as-root --display-map --tag-output --timestamp-output sh -c 'LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-9.0/targets/x86_64-linux/lib/stubs python /examples/tensorflow_mnist.py'"
