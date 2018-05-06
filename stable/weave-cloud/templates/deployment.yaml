@@ -27,16 +27,16 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: 30
       containers:
-        - name: {{ .Values.agent.name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args:
-          - -agent.poll-url=https://get.weave.works/k8s/agent.yaml?instanceID={{"{{.InstanceID}}"}}
-          - -wc.hostname=cloud.weave.works
-          - -wc.token=$(WEAVE_CLOUD_TOKEN)
-          env:
-          - name: WEAVE_CLOUD_TOKEN
-            valueFrom:
-              secretKeyRef:
-                key: token
-                name: weave-cloud
+      - name: {{ .Values.agent.name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        - -agent.poll-url=https://get.weave.works/k8s/agent.yaml?instanceID={{"{{.InstanceID}}"}}
+        - -wc.hostname=cloud.weave.works
+        - -wc.token=$(WEAVE_CLOUD_TOKEN)
+        env:
+        - name: WEAVE_CLOUD_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: token
+              name: weave-cloud
