@@ -130,7 +130,7 @@ spec:
             - --dbpath=/data/db
             - --replSet={{ .Values.replicaSetName }}
             - --port=27017
-            - --bind_ip_all
+            - --bind_ip=0.0.0.0
           {{- if .Values.auth.enabled }}
             - --auth
             - --keyFile=/data/configdb/key.txt
