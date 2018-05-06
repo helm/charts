@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ .Values.agent.name }}
   labels:
-    app: {{ .Values.agent.name }}
+    app: {{ template "weave-cloud.name" . }}
     chart: {{ template "weave-cloud.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -13,17 +13,17 @@ spec:
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: {{ .Values.agent.name }}
+      app: {{ template "weave-cloud.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.agent.name }}
+        app: {{ template "weave-cloud.name" . }}
         release: {{ .Release.Name }}
     spec:
       {{- if .Values.serviceAccount.create }}
-      serviceAccount: {{ .Values.agent.name }}
-      serviceAccountName: {{ .Values.agent.name }}
+      serviceAccount: {{ template "weave-cloud.serviceAccountName" . }}
+      serviceAccountName: {{ template "weave-cloud.serviceAccountName" . }}
       {{- end }}
       terminationGracePeriodSeconds: 30
       containers:

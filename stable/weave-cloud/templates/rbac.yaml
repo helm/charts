@@ -2,9 +2,12 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: {{ .Values.agent.name }}
+  name: {{ template "weave-cloud.fullname" . }}
   labels:
-    name: {{ .Values.agent.name }}
+    app: {{ template "weave-cloud.name" . }}
+    chart: {{ template "weave-cloud.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 rules:
   - apiGroups:
       - '*'
@@ -20,15 +23,18 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ .Values.agent.name }}
+  name: {{ template "weave-cloud.fullname" . }}
   labels:
-    name: {{ .Values.agent.name }}
+    app: {{ template "weave-cloud.name" . }}
+    chart: {{ template "weave-cloud.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 roleRef:
-  kind: ClusterRole
-  name: {{ .Values.agent.name }}
   apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "weave-cloud.fullname" . }}
 subjects:
-  - kind: ServiceAccount
-    name: {{ .Values.agent.name }}
-    namespace: {{ .Release.Namespace }}
+  - name: {{ template "weave-cloud.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace | quote }}
+    kind: ServiceAccount
 {{- end -}}
