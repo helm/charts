@@ -12,7 +12,7 @@ service:
 
 image:
   # Can use 'latest' but not recommended
-  tag: docker.io/anchore/anchore-engine:v0.1.9
+  tag: docker.io/anchore/anchore-engine:v0.1.10
   # pullPolicy: IfNotPresent
 
 # Used to create Ingress record (should used with service.type: ClusterIP or NodePort depending on platform)
