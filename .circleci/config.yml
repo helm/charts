@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-     - image: gcr.io/kubernetes-charts-ci/test-image:v2.0.0-alpha.7
+     - image: gcr.io/kubernetes-charts-ci/test-image:v2.0.0-alpha.8
     steps:
       - checkout
       - run:
