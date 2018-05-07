@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM gcr.io/kubernetes-charts-ci/chart-testing:v1.0.0-alpha.6
+FROM gcr.io/kubernetes-charts-ci/chart-testing:v1.0.0-alpha.7
 
 ENV PATH /google-cloud-sdk/bin:$PATH
 ARG CLOUD_SDK_VERSION=200.0.0
