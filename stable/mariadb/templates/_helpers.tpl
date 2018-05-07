@@ -28,19 +28,21 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
-Return the proper MariaDB image name
+Return the proper image name
 */}}
 {{- define "mariadb.image" -}}
-{{- $registryName :=  default "docker.io" .Values.image.registry -}}
-{{- $tag := default "latest" .Values.image.tag -}}
-{{- printf "%s/%s:%s" $registryName .Values.image.repository $tag -}}
+{{- $registryName :=  .Values.image.registry -}}
+{{- $repositoryName := .Values.image.repository -}}
+{{- $tag := .Values.image.tag -}}
+{{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
 
 {{/*
-Return the proper MariaDB metrics exporter image name
+Return the proper image name
 */}}
 {{- define "metrics.image" -}}
-{{- $registryName :=  default "docker.io" .Values.metrics.image.registry -}}
-{{- $tag := default "latest" .Values.metrics.image.tag -}}
-{{- printf "%s/%s:%s" $registryName .Values.metrics.image.repository $tag -}}
+{{- $registryName :=  .Values.metrics.mage.registry -}}
+{{- $repositoryName := .Values.metrics.image.repository -}}
+{{- $tag := .Values.metrics.image.tag -}}
+{{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
