@@ -18,6 +18,7 @@ image:
 service:
   name: registry
   type: ClusterIP
+  # clusterIP:
   port: 5000
   # nodePort:
   annotations: {}
