@@ -15,6 +15,8 @@ env:
     OUTPUT_PORT: 9200
     OUTPUT_BUFFER_CHUNK_LIMIT: 2M
     OUTPUT_BUFFER_QUEUE_LIMIT: 8
+    FLUENT_UID: 0
+    FLUENTD_OPT: ""
   secret:
 
 service:
@@ -42,6 +44,7 @@ ingress:
     #   hosts:
     #     - http-input.local
 
+configDir: /etc/fluent/config.d
 configMaps:
   general.conf: |
     # Prevent fluentd from handling records containing its own logs. Otherwise
