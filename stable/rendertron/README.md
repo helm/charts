@@ -6,7 +6,7 @@
 
 This chart will do the following:
 
-* 1 x Rendertron pod with port 8080 exposed on an external LoadBalancer
+* 1 x Rendertron pod with port 3000 exposed on an external LoadBalancer
 * All using Kubernetes Deployments
 
 ## Installing the Chart
