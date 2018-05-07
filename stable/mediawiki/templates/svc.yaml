@@ -9,6 +9,9 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   type: {{ .Values.serviceType }}
+  {{ if .Values.serviceLoadBalancerIP -}}
+  loadBalancerIP: {{ .Values.serviceLoadBalancerIP }}
+  {{ end -}}
   ports:
   - name: http
     port: 80
