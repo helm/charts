@@ -90,7 +90,7 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "magento.host" . | quote }}
-          initialDelaySeconds: 420
+          initialDelaySeconds: 1000
           timeoutSeconds: 5
           failureThreshold: 6
         readinessProbe:
