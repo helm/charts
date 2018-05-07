@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM gcr.io/kubernetes-charts-ci/chart-testing:v1.0.0-alpha.4
+FROM gcr.io/kubernetes-charts-ci/chart-testing:v1.0.0-alpha.5
 
 USER root
 
