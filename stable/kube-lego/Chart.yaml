@@ -7,6 +7,7 @@ deprecated: true
 keywords:
 - kube-lego
 - letsencrypt
+home: https://github.com/jetstack/kube-lego
 sources:
 - https://github.com/jetstack/kube-lego/tree/master/examples/nginx
 engine: gotpl
