@@ -127,7 +127,7 @@ mariadb:
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer or ClusterIP
 ##
-serviceType: ClusterIp
+serviceType: ClusterIP
 ##
 ## serviceType: NodePort
 ## nodePorts:

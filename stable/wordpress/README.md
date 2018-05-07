@@ -118,7 +118,7 @@ $ helm install --name my-release -f values.yaml stable/wordpress
 
 ## Production and horizontal scaling
 
-The following repo contains the recommended production settings for wordpress capture in an alternative [values file](values-production.yaml). Please read carefully the comments in the values-production.yaml file to set up your environment appropiately.
+The following repo contains the recommended production settings for wordpress capture in an alternative [values file](values-production.yaml). Please read carefully the comments in the values-production.yaml file to set up your environment appropriately.
 
 To horizontally scale this chart:
 
