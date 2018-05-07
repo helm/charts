@@ -5,6 +5,7 @@ version: "0.1.1"
 appVersion: "1.6.0"
 sources:
   - https://github.com/uber/horovod
+  - https://github.com/uber/horovod/blob/master/docs/docker.md
 home: https://eng.uber.com/horovod/
 maintainers:
   - name: cheyang
