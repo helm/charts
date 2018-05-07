@@ -17,19 +17,21 @@ spec:
           - backend:
               serviceName: {{ template "nexus.fullname" . }}
               servicePort: {{ .Values.nexusProxy.port }}
-            path: /*
+            path: /
     - host: {{ .Values.nexusProxy.env.nexusHttpHost }}
       http:
         paths:
           - backend:
               serviceName: {{ template "nexus.fullname" . }}
               servicePort: {{ .Values.nexusProxy.port }}
-            path: /*
+            path: /
 {{- if .Values.ingress.tls }}
   tls:
     - hosts:
         - {{ .Values.nexusProxy.env.nexusDockerHost }}
         - {{ .Values.nexusProxy.env.nexusHttpHost }}
+      {{- if .Values.ingress.tls.secretName }}
       secretName: {{ .Values.ingress.tls.secretName | quote }}
+      {{- end }}
 {{- end -}}
 {{- end }}
