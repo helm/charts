@@ -33,7 +33,7 @@ spec:
         {{- end}}
       {{- end}}
       {{- /* Include master securityContext if slave securityContext not defined */ -}}
-      {{ include "redis.slave.securityContext" . | indent 6 }}  
+      {{ include "redis.slave.securityContext" . | indent 6 }}
       {{- if (.Values.slave.nodeSelector | default .Values.master.nodeSelector) }}
       nodeSelector:
 {{ toYaml (.Values.slave.nodeSelector | default .Values.master.nodeSelector) | indent 8 }}
@@ -42,6 +42,10 @@ spec:
       tolerations:
 {{ toYaml (.Values.slave.tolerations | default .Values.master.tolerations) | indent 8 }}
       {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
         image: {{ template "redis.image" . }}
@@ -92,9 +96,9 @@ spec:
         - name: redis
           containerPort: {{ .Values.slave.port | default .Values.master.port }}
         {{- /* Include master livenessProbe if slave livenessProbe not defined */ -}}
-        {{ include "redis.slave.livenessProbe" . | indent 8 }}  
+        {{ include "redis.slave.livenessProbe" . | indent 8 }}
         {{- /* Include master readinessProbe if slave readinessProbe not defined */ -}}
-        {{ include "redis.slave.readinessProbe" . | indent 8 }}  
+        {{ include "redis.slave.readinessProbe" . | indent 8 }}
         resources:
 {{ toYaml (.Values.slave.resources | default .Values.master.resources) | indent 10 }}
 {{- end }}
