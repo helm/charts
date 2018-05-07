@@ -185,6 +185,4 @@ spec:
 {{- if .Values.controller.extraVolumes }}
 {{ toYaml .Values.controller.extraVolumes | indent 6}}
 {{- end }}
-  updateStrategy:
-{{ toYaml .Values.controller.updateStrategy | indent 4 }}
 {{- end }}
