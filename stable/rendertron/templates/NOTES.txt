@@ -1,8 +1,4 @@
-1. Get your '{{ .Values.adminUser }}' user password by running:
-
-   kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rendertron.fullname" . }} -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
-
-2. The rendertron server can be accessed via port {{ .Values.service.port }} on the following DNS name from within your cluster:
+1. The rendertron server can be accessed via port {{ .Values.service.port }} on the following DNS name from within your cluster:
 
    {{ template "rendertron.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 {{ if .Values.ingress.enabled }}
@@ -25,13 +21,4 @@
      export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "rendertron.fullname" . }},component={{ .Values.name }}" -o jsonpath="{.items[0].metadata.name}")
      kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 3000
 {{- end }}
-{{- end }}
-
-3. Login with the password from step 1 and the username: {{ .Values.adminUser }}
-
-{{- if not .Values.persistence.enabled }}
-#################################################################################
-######   WARNING: Persistence is disabled!!! You will lose your data when   #####
-######            the rendertron pod is terminated.                            #####
-#################################################################################
 {{- end }}
