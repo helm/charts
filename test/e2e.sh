@@ -18,7 +18,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-readonly IMAGE_TAG=v2.0.0-alpha.5
+readonly IMAGE_TAG=v2.0.0-alpha.6
 readonly IMAGE_REPOSITORY="gcr.io/kubernetes-charts-ci/test-image"
 readonly REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
 

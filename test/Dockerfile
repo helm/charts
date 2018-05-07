@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM gcr.io/kubernetes-charts-ci/chart-testing:v1.0.0-alpha.5
-
-USER root
+FROM gcr.io/kubernetes-charts-ci/chart-testing:v1.0.0-alpha.6
 
 ENV PATH /google-cloud-sdk/bin:$PATH
 ARG CLOUD_SDK_VERSION=200.0.0
@@ -24,8 +22,6 @@ RUN curl -LO "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-
     ln -s /lib /lib64 && \
     rm -rf /google-cloud-sdk/.install/.backup && \
     gcloud version
-
-USER testing
 
 RUN gcloud config set core/disable_usage_reporting true && \
     gcloud config set component_manager/disable_update_check true && \
