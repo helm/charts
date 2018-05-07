@@ -8,6 +8,8 @@ image:
   tag: v1.8.3
   pullPolicy: IfNotPresent
 
+replicaCount: 1
+
 ## Here labels can be added to the kubernets dashboard deployment
 ##
 labels: {}
