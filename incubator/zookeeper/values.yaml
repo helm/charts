@@ -46,17 +46,19 @@ security:
 # schedulerName:
 
 # Affinities to add to the worker pods.
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 # Useful if you prefer to run workers on non-spot instances, for example
-affinity: {}
-# nodeAffinity:
-#   preferredDuringSchedulingIgnoredDuringExecution:
-#     - weight: 50
-#       preference:
-#         matchExpressions:
-#           - key: spot
-#             operator: NotIn
-#             values:
-#               - "true"
+## By default keep pods within a release on separate nodes.
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: release
+          operator: In
+          values:
+          - default
+      topologyKey: "kubernetes.io/hostname"
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
