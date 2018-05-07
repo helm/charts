@@ -3,6 +3,11 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: "{{ template "consul.fullname" . }}-pdb"
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
   maxUnavailable: {{ .Values.maxUnavailable }}
   selector:

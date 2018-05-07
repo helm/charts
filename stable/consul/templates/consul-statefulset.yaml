@@ -12,6 +12,10 @@ spec:
   replicas: {{ default 3 .Values.Replicas }}
   updateStrategy:
     type: RollingUpdate
+  selector:
+    matchLabels:
+      release: {{ .Release.Name | quote }}
+      component: "{{ .Release.Name }}-{{ .Values.Component }}"
   template:
     metadata:
       name: "{{ template "consul.fullname" . }}"
