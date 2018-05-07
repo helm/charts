@@ -8,9 +8,11 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- if .Values.rbac.pspEnabled -}}
 rules:
 - apiGroups:      ['extensions']
   resources:      ['podsecuritypolicies']
   verbs:          ['use']
   resourceNames:  [{{ template "grafana.fullname" . }}]
+{{- end -}}
 {{- end -}}
