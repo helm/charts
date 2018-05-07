@@ -70,6 +70,13 @@ password:
 ## Use existing secret (ignores previous password)
 # existingSecret:
 
+## Persist data to a persitent volume
+persistence: {}
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
 ##
 ## Redis Master parameters
 ##
@@ -113,21 +120,21 @@ master:
 
   ## Redis Master Liveness Probe
   livenessProbe:
-    enabled: false
-  #   initialDelaySeconds: 30
-  #   periodSeconds: 10
-  #   timeoutSeconds: 5
-  #   successThreshold: 1
-  #   failureThreshold: 5
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 5
 
   ## Redis Master Readiness Probe
   readinessProbe:
-    enabled: false
-  #   initialDelaySeconds: 5
-  #   periodSeconds: 10
-  #   timeoutSeconds: 1
-  #   successThreshold: 1
-  #   failureThreshold: 5
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 5
   ## Redis Master Node labels and tolerations for pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
@@ -209,6 +216,8 @@ slave:
   # extraFlags: []
   ## Comma-separated list of Redis commands to disable
   # disableCommands: ""
+
+  affinity: {}
 
   ## Redis slave Liveness Probe
   # livenessProbe:

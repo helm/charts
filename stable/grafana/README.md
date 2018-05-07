@@ -39,6 +39,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `service.type`             | Kubernetes service type | `ClusterIP` |
 | `service.port`             | Kubernetes port where service is exposed| `9000` |
 | `service.annotations`      | Service annotations | `80` |
+| `service.labels`           | Custom labels                       | `{}`
 | `ingress.enabled`          | Enables Ingress | `false` |
 | `ingress.annotations`      | Ingress annotations | `{}` |
 | `ingress.hosts`            | Ingress accepted hostnames | `[]` |
@@ -58,4 +59,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `dashboardProviders`       | Configure grafana dashboard providers | `{}` |
 | `dashboards`               | Dashboards to import | `{}` |
 | `grafana.ini`              | Grafana's primary configuration | `{}` |
+| `ldap.existingSecret`      | The name of an existing secret containing the `ldap.toml` file, this must have the key `ldap-toml`. | `""` |
+| `ldap.config  `            | Grafana's LDAP configuration    | `""` |
+| `annotations`              | Deployment annotations | `{}` |
+| `podAnnotations`           | Pod annotations | `{}` |
 

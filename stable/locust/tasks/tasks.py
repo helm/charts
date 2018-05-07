@@ -1,8 +1,7 @@
 from locust import HttpLocust, TaskSet, task
-import json, requests
 
 class ElbTasks(TaskSet):
-  @task(1)
+  @task
   def status(self):
       self.client.get("/status")
 
