@@ -83,7 +83,4 @@ spec:
         - name: config
           configMap:
             name: {{ template "rendertron.fullname" . }}
-        - name: dashboards-json
-          configMap:
-            name: {{ template "rendertron.fullname" . }}-dashboards-json
         
