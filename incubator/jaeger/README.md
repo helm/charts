@@ -9,7 +9,7 @@ This chart adds all components required to run Jaeger as described in the [jaege
 ## Prerequisites
 
 - Has been tested on Kubernetes 1.7+
-  - The `spark` cron job requires [K8s CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) support: 
+  - The `spark` cron job requires [K8s CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) support:
     > You need a working Kubernetes cluster at version >= 1.8 (for CronJob). For previous versions of cluster (< 1.8) you need to explicitly enable `batch/v2alpha1` API by passing `--runtime-config=batch/v2alpha1=true` to the API server ([see Turn on or off an API version for your cluster for more](https://kubernetes.io/docs/admin/cluster-management/#turn-on-or-off-an-api-version-for-your-cluster)).
 
 - The Cassandra chart calls out the following requirements (default) for a test environment (please see the important note in the installation section):
@@ -89,7 +89,7 @@ helm install incubator/jaeger --name myrel --set cassandra.config.max_heap_size=
 If you already have an existing running Cassandra cluster, you can configure the chart as follows to use it as your backing store (make sure you replace `<HOST>`, `<PORT>`, etc with your values):
 
 ```bash
-helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=false --set storage.cassandra.host=<HOST> --set storage.cassandra.port=<PORT> --set storage.cassandra.user=<USER> --set storage.cassandra.password=<PASSWORD> 
+helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=false --set storage.cassandra.host=<HOST> --set storage.cassandra.port=<PORT> --set storage.cassandra.user=<USER> --set storage.cassandra.password=<PASSWORD>
 ```
 
 > **Tip**: It is highly encouraged to run the Cassandra cluster with storage persistence.
@@ -135,15 +135,15 @@ The following table lists the configurable parameters of the Jaeger chart and th
 
 |             Parameter                    |            Description              |                  Default               |
 |------------------------------------------|-------------------------------------|----------------------------------------|
-| `agent.annotationsPod`                   | Annotations for Agent               |  nil                                   |
-| `agent.annotationsSvc`                   | Annotations for Agent SVC           |  nil                                   |
-| `agent.binaryPort`                       | jaeger.thrift over binary thrift    |  6832                                  |
+| `agent.annotations`                      | Annotations for Agent               |  nil                                   |
 | `agent.cmdlineParams`                    | Additional command line parameters  |  nil                                   |
-| `agent.compactPort`                      | jaeger.thrift over compact thrift   |  6831                                  |
 | `agent.image`                            | Image for Jaeger Agent              |  jaegertracing/jaeger-agent            |
 | `agent.pullPolicy`                       | Agent image pullPolicy              |  IfNotPresent                          |
 | `agent.tag`                              | Image tag/version                   |  0.6                                   |
-| `agent.zipkinThriftPort`                 | zipkin.thrift over compact thrift   |  5775                                  |
+| `agent.service.annotations`              | Annotations for Agent SVC           |  nil                                   |
+| `agent.service.binaryPort`               | jaeger.thrift over binary thrift    |  6832                                  |
+| `agent.service.compactPort`              | jaeger.thrift over compact thrift   |  6831                                  |
+| `agent.service.zipkinThriftPort`         | zipkin.thrift over compact thrift   |  5775                                  |
 | `cassandra.config.cluster_name`          | Cluster name                        |  jaeger                                |
 | `cassandra.config.dc_name`               | Datacenter name                     |  dc1                                   |
 | `cassandra.config.endpoint_snitch`       | Node discovery method               |  GossipingPropertyFileSnitch           |
@@ -151,16 +151,16 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `cassandra.config.seed_size`             | Seed size                           |  1                                     |
 | `cassandra.image.tag`                    | The image tag/version               |  3.11                                  |
 | `cassandra.persistence.enabled`          | To enable storage persistence       |  false (Highly recommended to enable)  |
-| `collector.annotationsPod`               | Annotations for Collector           |  nil                                   |
-| `collector.annotationsSvc`               | Annotations for Collector SVC       |  nil                                   |
+| `collector.annotations`                  | Annotations for Collector           |  nil                                   |
 | `collector.cmdlineParams`                | Additional command line parameters  |  nil                                   |
-| `collector.httpPort`                     | Client port for HTTP thrift         |  14268                                 |
 | `collector.image`                        | Image for jaeger collector          |  jaegertracing/jaeger-collector        |
 | `collector.pullPolicy`                   | Collector image pullPolicy          |  IfNotPresent                          |
+| `collector.service.annotations`          | Annotations for Collector SVC       |  nil                                   |
+| `collector.service.httpPort`             | Client port for HTTP thrift         |  14268                                 |
+| `collector.service.tchannelPort`         | Jaeger Agent port for thrift        |  14267                                 |
+| `collector.service.type`                 | Service type                        |  ClusterIP                             |
+| `collector.service.zipkinPort`           | Zipkin port for JSON/thrift HTTP    |  9411                                  |
 | `collector.tag`                          | Image tag/version                   |  0.6                                   |
-| `collector.tchannelPort`                 | Jaeger Agent port for thrift        |  14267                                 |
-| `collector.type`                         | Service type                        |  ClusterIP                             |
-| `collector.zipkinPort`                   | Zipkin port for JSON/thrift HTTP    |  9411                                  |
 | `elasticsearch.cluster.name`             | Elasticsearch cluster name          |  "tracing"                             |
 | `elasticsearch.data.persistence.enabled` | To enable storage persistence       |  false (Highly recommended to enable)  |
 | `elasticsearch.image.tag`                | Elasticsearch image tag             |  "5.4"                                 |
@@ -231,7 +231,7 @@ Jaeger offers a multitude of [tags](https://hub.docker.com/u/jaegertracing/) for
 - [x] Use ConfigMap for configurable parameters
 - [x] Add the Hotrod example app
 - [x] Allow only some of the components to be installed
-- [x] Add support for the spark dependencies job (as a [k8s cronjob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)) 
+- [x] Add support for the spark dependencies job (as a [k8s cronjob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/))
 - [x] Use `provisionDataStore` key in the values.yaml file instead of `tags` to configure data store provisioning.
 - [x] Refactor chart to remove unnecessary quotes
 - [x] Remove the command overrides of the docker images and use [environment variables configuration](http://jaeger.readthedocs.io/en/latest/deployment/#configuration) instead

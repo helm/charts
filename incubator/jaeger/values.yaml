@@ -207,7 +207,7 @@ hotrod:
   enabled: false
   replicaCount: 1
   image:
-    repository: mikelorant/jaeger-hotrod
+    repository: jaegertracing/example-hotrod
     tag: latest
     pullPolicy: Always
   service:
