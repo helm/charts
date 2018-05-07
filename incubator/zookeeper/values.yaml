@@ -54,10 +54,10 @@ affinity:
     requiredDuringSchedulingIgnoredDuringExecution:
     - labelSelector:
         matchExpressions:
-        - key: release
+        - key: app
           operator: In
           values:
-          - default
+          - zookeeper
       topologyKey: "kubernetes.io/hostname"
 
 ## Node labels for pod assignment
