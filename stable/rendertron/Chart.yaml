@@ -1,0 +1,12 @@
+name: rendertron
+home: https://github.com/GoogleChrome/rendertron
+version: 0.0.1
+appVersion: 1.1.1
+description: Rendertron is a dockerized, headless Chrome rendering solution designed
+  to render & serialise web pages on the fly.
+sources:
+- https://github.com/GoogleChrome/rendertron
+maintainers:
+- name: ravishivt
+  email: javishi@gmail.com
+icon: https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Chrome__logo.max-2800x2800.png

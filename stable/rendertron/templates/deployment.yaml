@@ -1,0 +1,89 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "rendertron.fullname" . }}
+  labels:
+    app: {{ template "rendertron.name" . }}
+    chart: {{ template "rendertron.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "rendertron.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "rendertron.name" . }}
+        release: {{ .Release.Name }}
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+    spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: config
+              mountPath: "/etc/rendertron/rendertron.ini"
+              subPath: rendertron.ini
+          ports:
+            - name: service
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+            - name: rendertron
+              containerPort: 8080
+              protocol: TCP
+          env:
+{{- range $key, $value := .Values.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+{{- end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 30
+            failureThreshold: 10
+            periodSeconds: 10
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ template "rendertron.fullname" . }}
+        - name: dashboards-json
+          configMap:
+            name: {{ template "rendertron.fullname" . }}-dashboards-json
+        
