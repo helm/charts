@@ -29,4 +29,3 @@ spec:
 {{ toYaml .Values.uiIngress.tls | indent 4 }}
   {{- end -}}
 {{- end }}
-
