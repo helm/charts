@@ -272,7 +272,7 @@ zookeeper:
   persistence:
     enabled: false
     ## The amount of PV storage allocated to each Zookeeper pod in the statefulset
-    # storage: "2Gi"
+    # size: "2Gi"
 
   ## Specify a Zookeeper imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
