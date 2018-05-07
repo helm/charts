@@ -18,6 +18,8 @@ spec:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config-openvpn.yaml") . | sha256sum }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
