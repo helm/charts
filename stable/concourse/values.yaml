@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "3.10.0"
+imageTag: "3.13.0"
 
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -278,6 +278,37 @@ web:
     prometheus:
       enabled: false
       port: 9391
+
+  ## Set secure flag on auth cookies
+  ##
+  cookieSecure: false
+
+  ## The value to set for X-Frame-Options
+  ##
+  xFrameOptions: ""
+
+  ## Length of time for a intercepted session to be idle before terminating, in Go duration format
+  ##
+  interceptIdleTimeout: ""
+
+  ## Logging configuration
+  logging:
+
+    ## The log level for the ATC
+    ##
+    level: ""
+
+    ## Log database queries
+    ###
+    logDBQueries: false
+
+  ## Default build logs to retain, 0 means all
+  ##
+  # defaultBuildLogsToRetain:
+
+  ## Maximum build logs to retain, 0 means not specified. Will override values configured in jobs
+  ##
+  # maxBuildLogsToRetain:
 
 ## Configuration values for Concourse Worker components.
 ##

@@ -36,6 +36,12 @@ spec:
             - "--aws-ssm-region"
             - "$(CONCOURSE_AWS_SSM_REGION)"
             {{- end }}
+            {{- if .Values.web.cookieSecure }}
+            - "--cookie-secure"
+            {{- end }}
+            {{- if .Values.web.logging.logDBQueries }}
+            - "--log-db-queries"
+            {{- end }}
           env:
             - name: CONCOURSE_TSA_HOST_KEY
               value: "/concourse-keys/host_key"
@@ -255,6 +261,26 @@ spec:
               value: "0.0.0.0"
             - name: CONCOURSE_PROMETHEUS_BIND_PORT
               value: {{ .Values.web.metrics.prometheus.port | quote }}
+            {{- end }}
+            {{- if .Values.web.xFrameOptions }}
+            - name: CONCOURSE_X_FRAME_OPTIONS
+              value: {{ .Values.web.xFrameOptions | quote }}
+            {{- end }}
+            {{- if .Values.web.interceptIdleTimeout }}
+            - name: CONCOURSE_INTERCEPT_IDLE_TIMEOUT
+              value: {{ .Values.web.interceptIdleTimeout | quote }}
+            {{- end }}
+            {{- if .Values.web.logging.level }}
+            - name: CONCOURSE_LOG_LEVEL
+              value: {{ .Values.web.logging.logLevel | quote }}
+            {{- end }}
+            {{- if .Values.web.defaultBuildLogsToRetain }}
+            - name: CONCOURSE_DEFAULT_BUILD_LOGS_TO_RETAIN
+              value: {{ .Values.web.defaultBuildLogsToRetain | quote }}
+            {{- end }}
+            {{- if .Values.web.maxBuildLogsToRetain }}
+            - name: CONCOURSE_MAX_BUILD_LOGS_TO_RETAIN
+              value: {{ .Values.web.maxBuildLogsToRetain | quote }}
             {{- end }}
           ports:
             - name: atc
