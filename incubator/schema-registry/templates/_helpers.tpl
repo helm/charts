@@ -30,9 +30,9 @@ else use user-provided URL
 {{/*
 Default GroupId to Release Name but allow it to be overridden
 */}}
-{{- define "schema-registry.groupId" -}}
-{{- if .Values.overrideGroupId -}}
-{{- .Values.overrideGroupId -}}
+{{- define "schema-registry.kafkaStore.groupId" -}}
+{{- if .Values.kafkaStore.overrideGroupId -}}
+{{- .Values.kafkaStore.overrideGroupId -}}
 {{- else -}}
 {{- .Release.Name -}}
 {{- end -}}
