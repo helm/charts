@@ -48,7 +48,7 @@ $ kubectl create secret generic --from-file=$HOME/.kube/config my-kubeconfig
 1. Set the following values of the chart:
 
 ```yaml
-kubeconfig:
+kubeConfig:
   enabled: true
   secretName: my-kubeconfig
   secretKey: config

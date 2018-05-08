@@ -50,4 +50,4 @@ spec:
             secretName: {{ template "fullname" . }}-registry
         - name: {{ template "fullname" . }}-kubeconfig
           secret:
-            secretName: {{ .Values.kubeconfig.secretName }}
+            secretName: {{ .Values.kubeConfig.secretName }}

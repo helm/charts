@@ -249,7 +249,7 @@ data:
         {{- if .Values.kubeConfig.enabled }}
         {{- range $index, $context := .Values.kubeConfig.contexts }}
         - name: {{ $context }}
-          kubeconfigFile: /tmp/kube/{{ .Values.kubeconfig.secretKey }}
+          kubeconfigFile: /tmp/kube/{{ $.Values.kubeConfig.secretKey }}
           context: {{ $context }}
           dockerRegistries:
           {{- range $index, $account := $.Values.accounts }}
