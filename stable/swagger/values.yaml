@@ -12,7 +12,7 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  name: http
+  portName: http
   protocol: TCP
   type: NodePort
   externalPort: 80

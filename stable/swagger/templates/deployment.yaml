@@ -48,7 +48,7 @@ spec:
             timeoutSeconds: 2
           ports:
             - containerPort: {{ .Values.service.internalPort }}
-              name: {{ .Values.service.name }}
+              name: {{ .Values.service.portName }}
               protocol: {{ .Values.service.protocol }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
