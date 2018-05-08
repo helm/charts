@@ -23,6 +23,7 @@ accounts:
 #   https://www.spinnaker.io/setup/features/notifications/#email
 
 kubeConfig:
+  # Use this when you want to register arbitrary clusters with Spinnaker
   # Upload your ~/kube/.config to a secret
   enabled: false
   secretName: my-kubeconfig
