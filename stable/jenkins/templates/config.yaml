@@ -177,10 +177,8 @@ data:
 {{- if .Values.Master.ScriptApproval }}
     cp -n /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
 {{- end }}
-{{- if .Values.Master.InitScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
     cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
-{{- end }}
 {{- if .Values.Master.CredentialsXmlSecret }}
     cp -n /var/jenkins_credentials/credentials.xml /var/jenkins_home;
 {{- end }}
@@ -197,6 +195,39 @@ data:
   init{{ $key }}.groovy: |-
 {{ $val | indent 4 }}
 {{- end }}
+  initcacert.groovy: |-
+    def env = System.getenv()
+    def (JAVA_HOME, JENKINS_HOME) = [env["JAVA_HOME"], env["JENKINS_HOME"]]
+    def keystore_dir = JENKINS_HOME + '/.keystore'
+
+    // Test for keystore directory
+    def keystore_fh = new File(keystore_dir)
+    if (! keystore_fh.isDirectory()) {
+      keystore_fh.mkdir()
+    }
+    println "initcacert: Copying Java keystore to ${JENKINS_HOME}/.keystore"
+    "cp ${JAVA_HOME}/jre/lib/security/cacerts ${JENKINS_HOME}/.keystore".execute()
+    "chmod 644 ${JENKINS_HOME}/.keystore".execute()
+
+    def add_certs_fh = new File("/usr/share/ca-certificates/additional")
+    def cert_conf_fh = new File("/etc/ca-certificates.conf")
+    if (add_certs_fh.isDirectory()) {
+      add_certs_fh.eachFile() { cert ->
+        if (cert.isFile()) {
+          def basename = cert.name.replaceFirst(~/\.[^\.]+$/, '')
+          def filename = cert.name.replaceFirst(/^.*\//, '')
+          println "initcacert: Adding ${basename} to local Java keystore"
+          println "${JAVA_HOME}/bin/keytool -import -keystore ${JENKINS_HOME}/.keystore/cacerts -alias ${basename} -file ${cert} -storepass changeit -noprompt"
+          "${JAVA_HOME}/bin/keytool -import -keystore ${JENKINS_HOME}/.keystore/cacerts -alias ${basename} -file ${cert} -storepass changeit -noprompt".execute()
+
+          cert_conf_fh.append("\nadditional/${filename}\n")
+        }
+      }
+      println "initcacert: Adding additional certs to OS certificate store"
+      "/usr/sbin/update-ca-certificates".execute()
+    }
+
+
   plugins.txt: |-
 {{- if .Values.Master.InstallPlugins }}
 {{- range $index, $val := .Values.Master.InstallPlugins }}
