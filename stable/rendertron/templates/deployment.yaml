@@ -39,7 +39,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: config
-              mountPath: "/app"
+              mountPath: "/app/config.json"
               subPath: config.json
           ports:
             - name: service
