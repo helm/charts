@@ -32,11 +32,9 @@ The following tables lists the configurable parameters of the Swagger UI chart a
 | `image.repository`                       | Swagger ui image                            | `swaggerapi/swagger-ui`         |
 | `image.tag`                              | Swagger ui image tag                        | `v3.13.4`                       |
 | `image.pullPolicy`                       | Image pull policy                           | `IfNotPresent`                  |
-| `service.name`                           | Kubernetes service name                     | `http`                          |
 | `service.type`                           | Kubernetes service type                     | `TCP`                           |
 | `service.protocol`                       | Kubernetes service protocol                 | `NodePort`                      |
-| `service.externalPort`                   | Kubernetes external service port            | `80`                            |
-| `service.internalPort`                   | Kubernetes internal service port            | `8080`                          |
+| `service.externalPort`                   | Port in which swagger service is exposed    | `80`                            |
 | `ingress.enabled`                        | Enable ingress controller resource          | `false`                         |
 | `ingress.annotations`                    | Ingress annotations                         | `{}`                            |
 | `ingress.hostname`                       | URL to address Swagger                      | `nil`                           |
