@@ -81,6 +81,13 @@ server:
     # server.ingress.hosts is used to create an Ingress record.
 #    hosts:
 #      - ci.example.com
+    annotations:
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    tls:
+    #  - secretName: ci-example-tls
+    #    hosts:
+    #      - ci.example.com
 
   persistence:
     # server.persistence.enabled is the toggle for server volume persistence.
