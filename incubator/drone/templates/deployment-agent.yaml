@@ -66,6 +66,10 @@ spec:
         env:
         - name: DOCKER_DRIVER
           value: {{ .Values.dind.driver }}
+        {{ range $key, $value := .Values.dind.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{ end }}
         securityContext:
           privileged: true
         resources:
