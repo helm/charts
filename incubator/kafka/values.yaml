@@ -309,16 +309,10 @@ zookeeper:
   ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   ## By default we don't set affinity:
-  affinity: {}
-  ## Alternatively, this typical example defines:
-  ## antiAffinity (to keep Zookeeper pods on separate pods)
-  # affinity:
-  #   podAntiAffinity:
-  #     requiredDuringSchedulingIgnoredDuringExecution:
-  #     - labelSelector:
-  #         matchExpressions:
-  #         - key: app
-  #           operator: In
-  #           values:
-  #           - zookeeper
-  #       topologyKey: "kubernetes.io/hostname"
+  affinity: {}  # Criteria by which pod label-values influence scheduling for zookeeper pods.
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     - topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           release: zookeeper
