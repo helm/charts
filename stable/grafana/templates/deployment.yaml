@@ -135,6 +135,18 @@ spec:
             periodSeconds: 10
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.database.cloudSQL.enabled  }}
+        - name: {{ .Chart.Name }}-cloudsql-proxy
+          image: "{{ .Values.database.cloudSQL.image.repository }}:{{ .Values.database.cloudSQL.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/cloud_sql_proxy",
+                    {{ printf "\"-instances=%v=tcp:%v\"," .Values.database.cloudSQL.instanceConnectionName .Values.database.cloudSQL.port }}
+                    "-credential_file=/secrets/cloudsql/credentials.json"]
+          volumeMounts:
+            - name: cloudsql-instance-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+    {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -171,4 +183,9 @@ spec:
       {{- else }}
           emptyDir: {}
       {{- end -}}
+      {{- if .Values.database.cloudSQL.enabled  }}
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: {{ .Values.database.cloudSQL.existingSecret }}
+      {{- end }}
 
