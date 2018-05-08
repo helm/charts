@@ -23,6 +23,9 @@ spec:
         {{- end }}
     spec:
       serviceAccountName: {{ template "elasticsearch.fullname" . }}
+      {{- if .Values.data.schedulerName }}
+      schedulerName: "{{ .values.data.schedulerName }}"
+      {{- end }}
       {{- if eq .Values.data.antiAffinity "hard" }}
       affinity:
         podAntiAffinity:

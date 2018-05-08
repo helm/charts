@@ -45,6 +45,10 @@ master:
   exposeHttp: false
   replicas: 3
   heapSize: "512m"
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
@@ -69,6 +73,10 @@ data:
   exposeHttp: false
   replicas: 2
   heapSize: "1536m"
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
