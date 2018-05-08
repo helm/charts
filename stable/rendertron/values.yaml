@@ -36,8 +36,8 @@ ingress:
   #    hosts:
   #      - chart-example.local
 config:
+  cache: false
+  debug: false
   # analyticsTrackingId: ""
-  # cache: false
-  # debug: false
   # renderOnly:
   #   - 'http://render.only.this.domain'
