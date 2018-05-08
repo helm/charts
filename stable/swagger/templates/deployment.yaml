@@ -24,8 +24,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-          - name: API_URL
-            value: {{ .Values.env.API_URL | quote }}
+            - name: API_URL
+              value: {{ .Values.env.API_URL | quote }}
           livenessProbe:
             failureThreshold: 5
             httpGet:

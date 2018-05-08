@@ -61,15 +61,15 @@ ingress:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: 'true'
   tls:
-  - hosts:
-    - test.example.com
-    secretName: swagger-tls
+    - hosts:
+      - test.example.com
+        secretName: swagger-tls
 
 cert-manager:
   ingressShim:
     extraArgs:
-    - --default-issuer-name=letsencrypt-prod
-    - --default-issuer-kind=Issuer
+      - --default-issuer-name=letsencrypt-prod
+      - --default-issuer-kind=Issuer
 ```
 
 **Basic Auth**
@@ -83,9 +83,9 @@ ingress:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: 'true'
   tls:
-  - hosts:
-    - test.example.com
-    secretName: swagger-tls
+    - hosts:
+      - test.example.com
+        secretName: swagger-tls
   basicAuth:
     enabled: true
     secret: YWRtaW46JGFwcjEkUm4zVHBwNDUkb2VOd0JoeWtWWHh0bUNmNnJ1Y2VaMAo=
