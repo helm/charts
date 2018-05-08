@@ -24,7 +24,7 @@ spec:
       initContainers:
         - name: init-copy
           image: busybox
-          command: ['sh','-c','cp /tmp/chart.ini /default.d; ls -lrt /defaul.d; chmod 777 /default.d;']
+          command: ['sh','-c','cp /tmp/chart.ini /default.d; ls -lrt /default.d;']
           volumeMounts:
           - name: config
             mountPath: /tmp/
