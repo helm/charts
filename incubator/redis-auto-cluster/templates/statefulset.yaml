@@ -109,7 +109,6 @@ spec:
         - name: data
           mountPath: /data
           readOnly: false
-
       volumes:
       - name: host-sys
         hostPath:
@@ -120,7 +119,6 @@ spec:
           items:
           - key: redis.conf
             path: redis.conf
-
   volumeClaimTemplates:
   - metadata:
       name: data
