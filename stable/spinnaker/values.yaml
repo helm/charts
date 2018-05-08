@@ -23,9 +23,10 @@ accounts:
 #   https://www.spinnaker.io/setup/features/notifications/#email
 
 kubeConfig:
-  # Upload your ~/kube/.config to a secrent named
-  # $release-spinnaker-kubeconfig to use register external clusters
+  # Upload your ~/kube/.config to a secret
   enabled: false
+  secretName: my-kubeconfig
+  secretKey: config
   # List of contexts from the kubeconfig to make available to Spinnaker
   contexts: []
 
