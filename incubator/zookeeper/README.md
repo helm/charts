@@ -112,7 +112,7 @@ Spreading allows you specify an anti-affinity between ZooKeeper servers in the e
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `schedulerName` | Name of scheduler to use (other than the default). | `nil` |
-| `affinity` | Defines affinities and anti-affinities for pods used by Kafka as defined in: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity | `{ "podAntiAffinity": { "requiredDuringSchedulingIgnoredDuringExecution": [{"labelSelector": {"matchExpressions": [{"key": "app", "operator": "In", "values": ["zookeeper"]}]}, "topologyKey": "kubernetes.io/hostname"}] } }` |
+| `affinity` | Defines affinities and anti-affinities for pods used by Kafka as defined in: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity | `{}` |
 | `tolerations` | An optional list of tolerations for the zookeeper pods. https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ | `[]` |
 
 ### Logging
