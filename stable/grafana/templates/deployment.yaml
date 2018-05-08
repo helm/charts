@@ -105,6 +105,18 @@ spec:
                   name: {{ template "grafana.fullname" . }}
                   key: plugins
             {{- end }}
+            {{- if .Values.database.existingSecret }}
+            - name: GF_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.existingSecret }}
+                  key: user
+            - name: GF_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.existingSecret }}
+                  key: password
+            {{- end }}
 {{- range $key, $value := .Values.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
@@ -147,7 +159,7 @@ spec:
             {{- if .Values.ldap.existingSecret }}
             secretName: {{ .Values.ldap.existingSecret }}
             {{- else }}
-            secretName: {{ template "grafana.fullname" . }}            
+            secretName: {{ template "grafana.fullname" . }}
             {{- end }}
             items:
               - key: ldap-toml
@@ -159,4 +171,4 @@ spec:
       {{- else }}
           emptyDir: {}
       {{- end -}}
-        
+

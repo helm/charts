@@ -180,3 +180,9 @@ ldap:
   #   start_tls = false
   #   ssl_skip_verify = false
   #   bind_dn = "uid=%s,ou=users,dc=myorg,dc=com"
+
+database:
+  # `existingSecret` is a reference to an existing secret containing the database configuration
+  # for Grafana in keys `user` and `password`.
+  existingSecret: ""
+
