@@ -39,14 +39,11 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: config
-              mountPath: "/etc/rendertron/rendertron.ini"
-              subPath: rendertron.ini
+              mountPath: "/app"
+              subPath: config.json
           ports:
             - name: service
               containerPort: {{ .Values.service.port }}
-              protocol: TCP
-            - name: rendertron
-              containerPort: 8080
               protocol: TCP
           env:
 {{- range $key, $value := .Values.env }}
@@ -56,11 +53,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: 8080
+              port: {{ .Values.service.port }}
           readinessProbe:
             httpGet:
               path: /
-              port: 8080
+              port: {{ .Values.service.port }}
             initialDelaySeconds: 60
             timeoutSeconds: 30
             failureThreshold: 10
