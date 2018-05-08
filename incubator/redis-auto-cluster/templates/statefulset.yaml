@@ -15,7 +15,6 @@ spec:
     matchLabels:
       role: redis-node
       app: {{ template "redis-auto-cluster.name" . }}
-      chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
       release: {{ .Release.Name }}
   template:
     metadata:
@@ -68,7 +67,7 @@ spec:
 {{- end }}
       containers:
       - name: redis
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: Always
         ports:
         - containerPort: 6379

@@ -14,10 +14,8 @@ persistence:
 
 podAntiAffinity: false
 
-
-image:
-  repository: "redis"
-  tag: "4.0.8-alpine"
+image: "redis"
+imageTag: "4.0.9-alpine"
 
 config:
   appendOnly: "yes"
