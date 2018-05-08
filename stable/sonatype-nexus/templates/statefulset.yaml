@@ -117,7 +117,7 @@ spec:
                   key: nexus.nexusAdminPassword
                   name: {{ template "nexus.fullname" . }}
             - name: NEXUS_BACKUP_DIRECTORY
-              value: /nexus-data/nexus-backup
+              value: /nexus-data/backup
             - name: NEXUS_DATA_DIRECTORY
               value: /nexus-data
             - name: NEXUS_LOCAL_HOST_PORT
@@ -133,7 +133,7 @@ spec:
           volumeMounts:
             - mountPath: /nexus-data
               name: nexus-data
-            - mountPath: /nexus-data/nexus-backup
+            - mountPath: /nexus-data/backup
               name: nexus-backup
         {{- end }}
       {{- if .Values.nexus.securityContext }}
