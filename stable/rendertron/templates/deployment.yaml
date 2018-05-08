@@ -46,7 +46,7 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
             - name: rendertron
-              containerPort: 3000
+              containerPort: 8080
               protocol: TCP
           env:
 {{- range $key, $value := .Values.env }}
@@ -56,11 +56,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: 3000
+              port: 8080
           readinessProbe:
             httpGet:
               path: /
-              port: 3000
+              port: 8080
             initialDelaySeconds: 60
             timeoutSeconds: 30
             failureThreshold: 10
