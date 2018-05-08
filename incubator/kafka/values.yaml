@@ -65,6 +65,17 @@ affinity:
           values:
           - kafka
       topologyKey: "kubernetes.io/hostname"
+  podAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+     - weight: 50
+       podAffinityTerm:
+         labelSelector:
+           matchExpressions:
+           - key: app
+             operator: In
+             values:
+               - zookeeper
+         topologyKey: "kubernetes.io/hostname"
 
 ## Node labels for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
