@@ -97,6 +97,8 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
       volumes:
+        - name: config-storage
+          emptyDir: {}
         - name: config
           configMap:
             name: {{ template "couchdb.fullname" . }}
@@ -105,8 +107,6 @@ spec:
                 path: chart.ini
 {{- if not .Values.persistentVolume.enabled }}
         - name: database-storage
-          emptyDir: {}
-        - name: config-storage
           emptyDir: {}
 {{- else }}
   volumeClaimTemplates:
