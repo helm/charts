@@ -14,15 +14,25 @@ metadata:
     heritage: {{ .Release.Service }}
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "false"
+{{- if .Values.metrics.enabled }}
+    prometheus.io/path: /metrics
+    prometheus.io/port: metrics
+    prometheus.io/scrape: "true"
+{{- end }}
 spec:
   type: ClusterIP
   ports:
-  - port: 6379
-    targetPort: 6379
-    name: client
-  - port: 26379
-    targetPort: 26379
-    name: gossip
+    - port: 6379
+      targetPort: 6379
+      name: client
+    - port: 26379
+      targetPort: 26379
+      name: gossip
+{{- if .Values.metrics.enabled }}
+    - port: 9121
+      targetPort: 9121
+      name: metrics
+{{- end }}
   clusterIP: None
   selector:
     app: {{ template "redis-auto-cluster.name" . }}
