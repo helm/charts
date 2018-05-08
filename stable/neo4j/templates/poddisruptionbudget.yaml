@@ -1,0 +1,17 @@
+{{- if .Values.podDisruptionBudget -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app: {{ template "neo4j.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "neo4j.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "neo4j.name" . }}
+      release: {{ .Release.Name | quote }}
+{{ toYaml .Values.podDisruptionBudget | indent 2 }}
+{{- end -}}

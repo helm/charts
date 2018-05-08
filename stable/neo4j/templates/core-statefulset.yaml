@@ -1,4 +1,4 @@
-apiVersion: "apps/v1beta1"
+apiVersion: "apps/v1beta2"
 kind: StatefulSet
 metadata:
   name: "{{ template "neo4j.core.fullname" . }}"
@@ -24,6 +24,8 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         env:
+          - name: NEO4J_ACCEPT_LICENSE_AGREEMENT
+            value: "{{ .Values.acceptLicenseAgreement }}"
           - name: NEO4J_dbms_mode
             value: CORE
           - name: NUMBER_OF_CORES
