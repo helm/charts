@@ -8,7 +8,7 @@ env:
 
 image:
   repository: swaggerapi/swagger-ui
-  tag: v3.13.4
+  tag: v3.14.1
   pullPolicy: IfNotPresent
 
 service:

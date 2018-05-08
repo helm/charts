@@ -30,7 +30,7 @@ The following tables lists the configurable parameters of the Swagger UI chart a
 |------------------------------------------|---------------------------------------------|---------------------------------|
 | `env.API_URL`                            | URL to fetch configuration document from.   | `nil`                           |
 | `image.repository`                       | Swagger ui image                            | `swaggerapi/swagger-ui`         |
-| `image.tag`                              | Swagger ui image tag                        | `v3.13.4`                       |
+| `image.tag`                              | Swagger ui image tag                        | `v3.14.1`                       |
 | `image.pullPolicy`                       | Image pull policy                           | `IfNotPresent`                  |
 | `service.type`                           | Kubernetes service type                     | `TCP`                           |
 | `service.protocol`                       | Kubernetes service protocol                 | `NodePort`                      |
