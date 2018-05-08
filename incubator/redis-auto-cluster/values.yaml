@@ -29,10 +29,20 @@ config:
 autoCluster:
   enabled: true
   image: "uenicontrib/redis-auto-cluster-builder"
+  imageTag: "1.0.0"
   imagePullPolicy: "IfNotPresent"
-  tag: "1.0.0"
 
 security:
   enabled: false
 
 tuning: false
+
+metrics:
+  enabled: false
+  image: oliver006/redis_exporter
+  imageTag: v0.17.2
+  imagePullPolicy: IfNotPresent
+  resources: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9121"
