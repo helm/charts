@@ -84,12 +84,14 @@ spec:
         - name: host-root
           hostPath:
               path: /
+        {{- if .Values.config }}
         - name: config
           configMap:
             name: {{ template "newrelic.fullname" . }}
             items:
             - key: newrelic-infra.yml
               path: newrelic-infra.yml
+         {{- end }}
       {{- if $.Values.nodeSelector }}
       nodeSelector:
 {{ toYaml $.Values.nodeSelector | indent 8 }}
