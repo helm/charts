@@ -42,9 +42,9 @@ the first place, you can upgrade using the following command:
 
 ```
 $ export ERLANGCOOKIE=$(kubectl get secrets -n <NAMESPACE> <HELM_RELEASE_NAME>-rabbitmq-ha -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
-$ helm upgrade --name <HELM_RELEASE_NAME> \
+$ helm upgrade \
     --set rabbitmqErlangCookie=$ERLANGCOOKIE \
-    stable/rabbitmq-ha
+    <HELM_RELEASE_NAME> stable/rabbitmq-ha
 ```
 
 ## Uninstalling the Chart
@@ -60,12 +60,13 @@ deletes the release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the RabbitMQ chart
+The following table lists the configurable parameters of the RabbitMQ chart
 and their default values.
 
 |          Parameter                 |                       Description                               |                         Default                          |
 |------------------------------------|-----------------------------------------------------------------|----------------------------------------------------------|
 | `customConfigMap`                  | Use a custom ConfigMap                                          | `false`                                                  |
+| `customSecret`                     | Use a custom Secret                                             | `false`                                                  |
 | `image.pullPolicy`                 | Image pull policy                                               | `Always` if `image` tag is `latest`, else `IfNotPresent` |
 | `image.repository`                 | RabbitMQ container image repository                             | `rabbitmq`                                               |
 | `image.tag`                        | RabbitMQ container image tag                                    | `3.7-alpine`                                             |
@@ -73,9 +74,15 @@ and their default values.
 | `persistentVolume.accessMode`      | Persistent volume access modes                                  | `[ReadWriteOnce]`                                        |
 | `persistentVolume.annotations`     | Persistent volume annotations                                   | `{}`                                                     |
 | `persistentVolume.enabled`         | If `true`, persistent volume claims are created                 | `false`                                                  |
+| `persistentVolume.name`            | Persistent volume name                                          | `data`                                                   |
 | `persistentVolume.size`            | Persistent volume size                                          | `8Gi`                                                    |
 | `persistentVolume.storageClass`    | Persistent volume storage class                                 | `-`                                                      |
 | `podAntiAffinity`                  | Pod antiaffinity, `hard` or `soft`                              | `hard`                                                   |
+| `rabbitmqCert.enabled`             | Mount a Secret container certificates                           | `false`                                                  |
+| `rabbitmqCert.existingSecret`      | Name of an existing `Secret` to mount for amqps                 | ``                                                       |
+| `rabbitmqCert.cacertfile`          | base64 encoded CA certificate (overwrites existing Secret)      | ``                                                       |
+| `rabbitmqCert.certfile`            | base64 encoded server certificate (overwrites existing Secret)  | ``                                                       |
+| `rabbitmqCert.keyfile`             | base64 encoded server private key (overwrites existing Secret)  | ``                                                       |
 | `rabbitmqEpmdPort`                 | EPMD port used for cross cluster replication                    | `4369`                                                   |
 | `rabbitmqErlangCookie`             | Erlang cookie                                                   | _random 32 character long alphanumeric string_           |
 | `rabbitmqHipeCompile`              | Precompile parts of RabbitMQ using HiPE                         | `false`                                                  |
@@ -89,7 +96,7 @@ and their default values.
 | `rabbitmqSTOMPPlugin.enabled`      | Enable STOMP plugin                                             | `false`                                                  |
 | `rabbitmqUsername`                 | RabbitMQ application username                                   | `guest`                                                  |
 | `rabbitmqVhost`                    | RabbitMQ application vhost                                      | `/`                                                      |
-| `rabbitmqWebMQTTPlugin.config`     | MQTT over websocket configuration                               | ``                                                       |
+| `rabbitmqWebMQTTPlugin.config`     | MQTT over websocket configuration                               | ``                                                       |
 | `rabbitmqWebMQTTPlugin.enabled`    | Enable MQTT over websocket plugin                               | `false`                                                  |
 | `rabbitmqWebSTOMPPlugin.config`    | STOMP over websocket configuration                              | ``                                                       |
 | `rabbitmqWebSTOMPPlugin.enabled`   | Enable STOMP over websocket plugin                              | `false`                                                  |
@@ -105,6 +112,7 @@ and their default values.
 | `service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`                                                     |
 | `service.type`                     | Type of service to create                                       | `ClusterIP`                                              |
 | `tolerations`                      | Toleration labels for pod assignment                            | `[]`                                                     |
+| `terminationGracePeriodSeconds`    | Duration pod needs to terminate gracefully                      | `10`                                                     |
 | `updateStrategy`                   | Statefulset update strategy                                     | `OnDelete`                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -171,3 +179,6 @@ Then, install the chart with the above configuration:
 $ helm install --name my-release --set customConfigMap=true stable/rabbitmq-ha
 ```
 
+### Custom Secret
+
+Similar to custom ConfigMap, `customSecret` can be used to override the default secret.yaml provided.

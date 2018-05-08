@@ -56,9 +56,10 @@ if [ ! -e "$DATADIR/mysql" ]; then
     -- What's done in this file shouldn't be replicated
     --  or products like mysql-fabric won't work
     SET @@SESSION.SQL_LOG_BIN=0;
-    CREATE USER 'root'@'127.0.0.1' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}' ;
-    GRANT ALL ON *.* TO 'root'@'127.0.0.1' WITH GRANT OPTION ;
+    CREATE USER 'root'@'${ALLOW_ROOT_FROM}' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}' ;
+    GRANT ALL ON *.* TO 'root'@'${ALLOW_ROOT_FROM}' WITH GRANT OPTION ;
     ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
+    GRANT ALL ON *.* TO 'root'@'localhost' WITH GRANT OPTION ;
     CREATE USER 'xtrabackup'@'localhost' IDENTIFIED BY '$XTRABACKUP_PASSWORD';
     GRANT RELOAD,PROCESS,LOCK TABLES,REPLICATION CLIENT ON *.* TO 'xtrabackup'@'localhost';
     GRANT REPLICATION CLIENT ON *.* TO monitor@'%' IDENTIFIED BY 'monitor';

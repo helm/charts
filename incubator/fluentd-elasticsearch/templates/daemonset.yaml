@@ -32,6 +32,9 @@ spec:
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- if .Values.annotations }}
+{{ toYaml .Values.annotations | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ template "fluentd-elasticsearch.fullname" . }}
       containers:
@@ -62,6 +65,9 @@ spec:
           readOnly: true
         - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
           mountPath: /etc/fluent/config.d
+{{- if .Values.extraVolumeMounts }}          
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
       terminationGracePeriodSeconds: 30
       volumes:
       - name: varlog
@@ -77,6 +83,9 @@ spec:
       - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
         configMap:
           name: {{ template "fluentd-elasticsearch.fullname" . }}
+{{- if .Values.extraVolumes }}          
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
 {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}

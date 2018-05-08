@@ -1,0 +1,51 @@
+{{ if .Values.jupyter.enabled -}}
+
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "dask.fullname" . }}-jupyter
+  labels:
+    app: {{ template "dask.name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "dask.chart" . }}
+    component: jupyter
+spec:
+  replicas: {{ .Values.jupyter.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "dask.name" . }}
+      release: {{ .Release.Name | quote }}
+      component: jupyter
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "dask.name" . }}
+        release: {{ .Release.Name | quote }}
+        component: jupyter
+    spec:
+      containers:
+        - name: {{ template "dask.fullname" . }}-jupyter
+          image: "{{ .Values.jupyter.image.repository }}:{{ .Values.jupyter.image.tag }}"
+          imagePullPolicy: {{ .Values.jupyter.image.pullPolicy }}
+          ports:
+            - containerPort: 8888
+          resources:
+{{ toYaml .Values.jupyter.resources | indent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /home/jovyan/.jupyter
+          env:
+            - name: DASK_SCHEDULER_ADDRESS
+              value: {{ template "dask.fullname" . }}-scheduler:{{ .Values.scheduler.servicePort }}
+{{- if .Values.jupyter.env }}
+{{ toYaml .Values.jupyter.env | indent 12 }}
+{{- end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "dask.fullname" . }}-jupyter-config
+
+{{ end }}

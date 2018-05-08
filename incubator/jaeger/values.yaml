@@ -20,6 +20,7 @@ storage:
     port: 9200
     user: elastic
     password: changeme
+    nodesWanOnly: false
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
@@ -187,6 +188,8 @@ spark:
   tag: latest
   pullPolicy: Always
   schedule: "49 23 * * *"
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 5
   resources: {}
     # limits:
     #   cpu: 500m
@@ -204,7 +207,7 @@ hotrod:
   enabled: false
   replicaCount: 1
   image:
-    repository: mikelorant/jaeger-hotrod
+    repository: jaegertracing/example-hotrod
     tag: latest
     pullPolicy: Always
   service:

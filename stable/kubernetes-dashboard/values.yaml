@@ -12,7 +12,7 @@ image:
 ##
 labels: {}
 # kubernetes.io/cluster-service: "true"
-# kubernetes.io/name: "Kuberetes Dashboard"
+# kubernetes.io/name: "Kubernetes Dashboard"
 
 ## Additional container arguments
 ##
@@ -36,7 +36,7 @@ service:
   type: ClusterIP
   externalPort: 443
 
-  ## This allows an overide of the heapster service name
+  ## This allows an override of the heapster service name
   ## Default: {{ .Chart.Name }}
   ##
   # nameOverride:
@@ -68,7 +68,12 @@ ingress:
   ##
   # annotations:
   #   kubernetes.io/ingress.class: nginx
+  #   nginx.ingress.kubernetes.io/secure-backends: "true"
   #   kubernetes.io/tls-acme: 'true'
+
+  ## Kubernetes Dashboard Ingress path
+  ##
+  path: /
 
   ## Kubernetes Dashboard Ingress hostnames
   ## Must be provided if Ingress is enabled

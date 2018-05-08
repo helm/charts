@@ -12,6 +12,11 @@ SerfwanPort: 8302
 SerfwanUdpPort: 8302
 ServerPort: 8300
 ConsulDnsPort: 8600
+
+## Specify the domain with which consul should run with
+## This will be passed as a -domain parameter
+Domain: consul
+
 ## Used as selector
 Component: "consul"
 Replicas: 3
@@ -39,6 +44,10 @@ DisableHostNodeId: false
 
 ## Encrypt Gossip traffic
 EncryptGossip: true
+
+## predefined value for gossip key.
+## Will use a generated random alpha numeric if not provided
+# GossipKey: key
 
 ## consul data Persistent Volume Storage Class
 ## If defined, StorageClassName: <storageClass>
@@ -83,6 +92,12 @@ ui:
 uiService:
   enabled: true
   type: "NodePort"
+
+ConsulConfig: []
+#  - type: secret
+#    name: consul-defaults
+#  - type: configMap
+#    name: consul-defaults
 
 ## Create an Ingress for the Web UI
 uiIngress:

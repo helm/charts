@@ -25,8 +25,8 @@ spec:
   {{- else }}
     app: {{ template "coredns.fullname" . }}
   {{- end }}
-  {{- if .Values.isClusterService }}
-  clusterIP: {{ .Values.plugins.kubernetes.clusterIP }}
+  {{- if .Values.clusterIP }}
+  clusterIP: {{ .Values.clusterIP }}
   {{- end }}
   ports:
   {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "UDP") }}
