@@ -59,27 +59,27 @@ affinity: {}
 ## Alternatively, this typical example defines:
 ## antiAffinity (to keep Kafka pods on separate pods)
 ## and affinity (to encourage Kafka pods to be collocated with Zookeeper pods)
-#affinity:
-#  podAntiAffinity:
-#    requiredDuringSchedulingIgnoredDuringExecution:
-#    - labelSelector:
-#        matchExpressions:
-#        - key: app
-#          operator: In
-#          values:
-#          - kafka
-#      topologyKey: "kubernetes.io/hostname"
-#  podAffinity:
-#    preferredDuringSchedulingIgnoredDuringExecution:
-#     - weight: 50
-#       podAffinityTerm:
-#         labelSelector:
-#           matchExpressions:
-#           - key: app
-#             operator: In
-#             values:
-#               - zookeeper
-#         topologyKey: "kubernetes.io/hostname"
+# affinity:
+#   podAntiAffinity:
+#     requiredDuringSchedulingIgnoredDuringExecution:
+#     - labelSelector:
+#         matchExpressions:
+#         - key: app
+#           operator: In
+#           values:
+#           - kafka
+#       topologyKey: "kubernetes.io/hostname"
+#   podAffinity:
+#     preferredDuringSchedulingIgnoredDuringExecution:
+#      - weight: 50
+#        podAffinityTerm:
+#          labelSelector:
+#            matchExpressions:
+#            - key: app
+#              operator: In
+#              values:
+#                - zookeeper
+#          topologyKey: "kubernetes.io/hostname"
 
 ## Node labels for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -312,13 +312,13 @@ zookeeper:
   affinity: {}
   ## Alternatively, this typical example defines:
   ## antiAffinity (to keep Zookeeper pods on separate pods)
-  #affinity:
-  #  podAntiAffinity:
-  #    requiredDuringSchedulingIgnoredDuringExecution:
-  #    - labelSelector:
-  #        matchExpressions:
-  #        - key: app
-  #          operator: In
-  #          values:
-  #          - zookeeper
-  #      topologyKey: "kubernetes.io/hostname"
+  # affinity:
+  #   podAntiAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #     - labelSelector:
+  #         matchExpressions:
+  #         - key: app
+  #           operator: In
+  #           values:
+  #           - zookeeper
+  #       topologyKey: "kubernetes.io/hostname"

@@ -51,27 +51,27 @@ security:
 affinity: {}
 ## Alternatively, this typical example defines:
 ## antiAffinity (to keep Zookeeper pods on separate pods)
-#affinity:
-#  podAntiAffinity:
-#    requiredDuringSchedulingIgnoredDuringExecution:
-#    - labelSelector:
-#        matchExpressions:
-#        - key: app
-#          operator: In
-#          values:
-#          - zookeeper
-#      topologyKey: "kubernetes.io/hostname"
+# affinity:
+#   podAntiAffinity:
+#     requiredDuringSchedulingIgnoredDuringExecution:
+#     - labelSelector:
+#         matchExpressions:
+#         - key: app
+#           operator: In
+#           values:
+#           - zookeeper
+#       topologyKey: "kubernetes.io/hostname"
 ## Another example, useful if you prefer to run workers on non-spot instances:
-#affinity:
-#  nodeAffinity:
-#    preferredDuringSchedulingIgnoredDuringExecution:
-#      - weight: 50
-#        preference:
-#          matchExpressions:
-#            - key: spot
-#              operator: NotIn
-#              values:
-#                - "true"
+# affinity:
+#   nodeAffinity:
+#     preferredDuringSchedulingIgnoredDuringExecution:
+#       - weight: 50
+#         preference:
+#           matchExpressions:
+#             - key: spot
+#               operator: NotIn
+#               values:
+#                 - "true"
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
