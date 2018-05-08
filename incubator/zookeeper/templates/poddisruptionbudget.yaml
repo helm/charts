@@ -2,17 +2,17 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "zookeeper.fullname" . }}
+  name: {{ include "zookeeper.fullname" . }}
   labels:
-    app: {{ include "zookeeper.name" . | quote }}
+    app: {{ include "zookeeper.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "zookeeper.name" . | quote }}
-      release: {{ .Release.Name | quote }}
+      app: {{ include "zookeeper.name" . }}
+      release: {{ .Release.Name }}
   {{- if .Values.minAvailable }}
   minAvailable: {{ .Values.minAvailable }}
   {{- else }}

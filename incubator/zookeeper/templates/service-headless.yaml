@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "zookeeper.fullname" . }}-headless
+  name: {{ include "zookeeper.fullname" . }}-headless
   labels:
-    app: {{ include "zookeeper.name" . | quote }}
+    app: {{ include "zookeeper.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   ports:
   - port: {{ .Values.serverPort }}
@@ -15,5 +15,5 @@ spec:
     name: leader-election
   clusterIP: None
   selector:
-    app: {{ include "zookeeper.name" . | quote }}
-    release: {{ .Release.Name | quote }}
+    app: {{ include "zookeeper.name" . }}
+    release: {{ .Release.Name }}

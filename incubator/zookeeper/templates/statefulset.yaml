@@ -3,10 +3,10 @@ kind: StatefulSet
 metadata:
   name: {{ template "zookeeper.fullname" . }}
   labels:
-    app: {{ include "zookeeper.name" . | quote }}
+    app: {{ template "zookeeper.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   serviceName: {{ template "zookeeper.fullname" . }}-headless
   replicas: {{ .Values.servers }}
@@ -15,8 +15,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ include "zookeeper.name" . | quote }}
-        release: {{ .Release.Name | quote }}
+        app: {{ template "zookeeper.name" . }}
+        release: {{ .Release.Name }}
     spec:
 {{- if .Values.tolerations }}
       tolerations:
