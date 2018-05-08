@@ -51,7 +51,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.enabled`      | Use persistent volume to store data | `false` |
 | `persistence.size`         | Size of persistent volume claim | `10Gi` |
 | `persistence.existingClaim`| Use an existing PVC to persist data | `nil` |
-| `persistence.storageClass` | Type of persistent volume claim | `generic` |
+| `persistence.storageClassName` | Type of persistent volume claim | `nil` |
 | `persistence.accessModes`  | Persistence access modes | `[]` |
 | `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""` |
 | `env`                      | Extra environment variables passed to pods | `{}` |
