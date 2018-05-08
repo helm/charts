@@ -22,7 +22,6 @@ service:
   type: ClusterIP
   externalPort: 8200
   port: 8200
-  annotations: {}
   # clusterIP: None
   annotations: {}
   #   cloud.google.com/load-balancer-type: "Internal"

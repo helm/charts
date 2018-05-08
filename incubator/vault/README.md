@@ -45,18 +45,22 @@ vault:
 
 The following table lists the configurable parameters of the Vault chart and their default values.
 
-|       Parameter         |           Description               |                         Default                     |
-|-------------------------|-------------------------------------|-----------------------------------------------------|
-| `image.pullPolicy`      | Container pull policy               | `IfNotPresent`                                      |
-| `image.repository`      | Container image to use              | `vault`                                             |
-| `image.tag`             | Container image tag to deploy       | `0.9.0`                                             |
-| `vault.dev`             | Use Vault in dev mode               | true (set to false in production)                   |
-| `vault.customSecrets`   | Custom secrets available to Vault   | `[]`                                                |
-| `vault.config`          | Vault configuration                 | No default backend                                  |
-| `replicaCount`          | k8s replicas                        | `1`                                                 |
-| `resources.limits.cpu`  | Container requested CPU             | `nil`                                               |
-| `resources.limits.memory` | Container requested memory        | `nil`                                               |
-| `affinity`              | Affinity settings                   | See values.yaml                                               |
+|             Parameter             |             Description                |                         Default                     |
+|-----------------------------------|----------------------------------------|-----------------------------------------------------|
+| `image.pullPolicy`                | Container pull policy                  | `IfNotPresent`                                      |
+| `image.repository`                | Container image to use                 | `vault`                                             |
+| `image.tag`                       | Container image tag to deploy          | `0.9.0`                                             |
+| `vault.dev`                       | Use Vault in dev mode                  | true (set to false in production)                   |
+| `vault.customSecrets`             | Custom secrets available to Vault      | `[]`                                                |
+| `vault.config`                    | Vault configuration                    | No default backend                                  |
+| `replicaCount`                    | k8s replicas                           | `1`                                                 |
+| `resources.limits.cpu`            | Container requested CPU                | `nil`                                               |
+| `resources.limits.memory`         | Container requested memory             | `nil`                                               |
+| `affinity`                        | Affinity settings                      | See values.yaml                                     |
+| `service.annotations`             | Annotations for service                | `{}`                                                |
+| `deployment.annotations`          | Annotations for deployment             | `{}`                                                |
+| `deployment.replicas.annotations` | Annotations for replicas (affect pods) | `{}`                                                |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
