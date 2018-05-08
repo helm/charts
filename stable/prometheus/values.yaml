@@ -719,6 +719,17 @@ serverFiles:
   rules: {}
 
   prometheus.yml:
+    global:
+      ## How frequently to scrape targets by default
+      ##
+      scrape_interval: 1m
+      ## How long until a scrape request times out
+      ##
+      scrape_timeout: 10s
+      ## How frequently to evaluate rules
+      ##
+      evaluation_interval: 1m
+
     rule_files:
       - /etc/config/rules
       - /etc/config/alerts
