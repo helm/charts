@@ -165,6 +165,10 @@ alertmanager:
     #   cpu: 10m
     #   memory: 32Mi
 
+  ## Security context to be added to alertmanager pods
+  ##
+  securityContext: {}
+
   service:
     annotations: {}
     labels: {}
@@ -293,6 +297,10 @@ kubeStateMetrics:
     # requests:
     #   cpu: 10m
     #   memory: 16Mi
+
+  ## Security context to be added to kube-state-metrics pods
+  ##
+  securityContext: {}
 
   service:
     annotations:
@@ -466,7 +474,7 @@ server:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## Prometheus server Ingress hostnames with optinal path
+    ## Prometheus server Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
@@ -561,6 +569,10 @@ server:
     #   cpu: 500m
     #   memory: 512Mi
 
+  ## Security context to be added to server pods
+  ##
+  securityContext: {}
+
   service:
     annotations: {}
     labels: {}
@@ -615,7 +627,7 @@ pushgateway:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## pushgateway Ingress hostnames with optinal path
+    ## pushgateway Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
@@ -660,6 +672,10 @@ pushgateway:
     # requests:
     #   cpu: 10m
     #   memory: 32Mi
+
+  ## Security context to be added to push-gateway pods
+  ##
+  securityContext: {}
 
   service:
     annotations:
