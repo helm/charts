@@ -152,3 +152,31 @@ grafana.ini:
     mode: console
   grafana_net:
     url: https://grafana.net
+## LDAP Authentication can be enabled with the following values on grafana.ini
+## NOTE: Grafana will fail to start if the value for ldap.toml is invalid
+  # auth.ldap:
+  #   enabled: true
+  #   allow_sign_up: true
+  #   config_file: /etc/grafana/ldap.toml
+
+## Grafana's LDAP configuration
+## Templated by the template in _helpers.tpl
+## NOTE: To enable the grafana.ini must be configured with auth.ldap.enabled
+## ref: http://docs.grafana.org/installation/configuration/#auth-ldap
+## ref: http://docs.grafana.org/installation/ldap/#configuration
+ldap:
+  # `existingSecret` is a reference to an existing secret containing the ldap configuration
+  # for Grafana in a key `ldap-toml`.
+  existingSecret: ""
+  # `config` is the content of `ldap.toml` that will be stored in the created secret
+  config: ""
+  # config: |-
+  #   verbose_logging = true
+
+  #   [[servers]]
+  #   host = "my-ldap-server"
+  #   port = 636
+  #   use_ssl = true
+  #   start_tls = false
+  #   ssl_skip_verify = false
+  #   bind_dn = "uid=%s,ou=users,dc=myorg,dc=com"
