@@ -4,8 +4,8 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-jmx-exporter
   labels:
-    app: {{ include "zookeeper.name" . }}
-    chart: {{ include "zookeeper.chart" . }}
+    app: {{ template "zookeeper.name" . }}
+    chart: {{ template "zookeeper.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:

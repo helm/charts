@@ -4,14 +4,14 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "zookeeper.fullname" . }}-chroots
+  name: {{ template "zookeeper.fullname" . }}-chroots
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": hook-succeeded
   labels:
-    app: {{ include "zookeeper.name" . }}
-    chart: {{ include "zookeeper.chart" . }}
+    app: {{ template "zookeeper.name" . }}
+    chart: {{ template "zookeeper.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: jobs
@@ -24,7 +24,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ include "zookeeper.name" . }}
+        app: {{ template "zookeeper.name" . }}
         release: {{ .Release.Name }}
         component: jobs
         job: chroots
@@ -42,14 +42,14 @@ spec:
   {{- $port := .Values.service.ports.client.port }}
             - >
               sleep 15;
-              export SERVER={{ include "zookeeper.fullname" $root }}:{{ $port }};
+              export SERVER={{ template "zookeeper.fullname" $root }}:{{ $port }};
   {{- range $job.config.create }}
               echo '==> {{ . }}';
               echo '====> Create chroot if does not exist.';
-              zkCli.sh -server {{ include "zookeeper.fullname" $root }}:{{ $port }} get {{ . }} 2>&1 >/dev/null | grep 'cZxid'
-              || zkCli.sh -server {{ include "zookeeper.fullname" $root }}:{{ $port }} create {{ . }} "";
+              zkCli.sh -server {{ template "zookeeper.fullname" $root }}:{{ $port }} get {{ . }} 2>&1 >/dev/null | grep 'cZxid'
+              || zkCli.sh -server {{ template "zookeeper.fullname" $root }}:{{ $port }} create {{ . }} "";
               echo '====> Confirm chroot exists.';
-              zkCli.sh -server {{ include "zookeeper.fullname" $root }}:{{ $port }} get {{ . }} 2>&1 >/dev/null | grep 'cZxid';
+              zkCli.sh -server {{ template "zookeeper.fullname" $root }}:{{ $port }} get {{ . }} 2>&1 >/dev/null | grep 'cZxid';
               echo '====> Chroot exists.';
   {{- end }}
           env:

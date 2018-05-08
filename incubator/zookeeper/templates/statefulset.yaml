@@ -1,20 +1,20 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ include "zookeeper.fullname" . }}
+  name: {{ template "zookeeper.fullname" . }}
   labels:
-    app: {{ include "zookeeper.name" . }}
-    chart: {{ include "zookeeper.chart" . }}
+    app: {{ template "zookeeper.name" . }}
+    chart: {{ template "zookeeper.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: server
 spec:
-  serviceName: {{ include "zookeeper.fullname" . }}-headless
+  serviceName: {{ template "zookeeper.fullname" . }}-headless
   replicas: {{ .Values.replicaCount }}
   terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
   selector:
     matchLabels:
-      app: {{ include "zookeeper.name" . }}
+      app: {{ template "zookeeper.name" . }}
       release: {{ .Release.Name }}
       component: server
   updateStrategy:
@@ -22,7 +22,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ include "zookeeper.name" . }}
+        app: {{ template "zookeeper.name" . }}
         release: {{ .Release.Name }}
         component: server
       {{- if .Values.podLabels }}

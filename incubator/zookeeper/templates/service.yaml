@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "zookeeper.fullname" . }}
+  name: {{ template "zookeeper.fullname" . }}
   labels:
-    app: {{ include "zookeeper.name" . }}
-    chart: {{ include "zookeeper.chart" . }}
+    app: {{ template "zookeeper.name" . }}
+    chart: {{ template "zookeeper.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
@@ -19,5 +19,5 @@ spec:
 {{ toYaml $value | indent 6 }}
   {{- end }}
   selector:
-    app: {{ include "zookeeper.name" . }}
+    app: {{ template "zookeeper.name" . }}
     release: {{ .Release.Name }}
