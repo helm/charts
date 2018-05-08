@@ -21,7 +21,7 @@ The static analysis currently:
 
 #### Procedure
 
-Pull requests testing is run via the [Kuberentes Test Infrastructure](https://github.com/kubernetes/test-infra).
+Pull requests testing is run via the [Kubernetes Test Infrastructure](https://github.com/kubernetes/test-infra).
 
 The configuration of the Pull Request trigger is [in the config.json](https://github.com/kubernetes/test-infra/blob/827797c54b48295045698465b437f463ca9276c2/jobs/config.json#L10285).
 
