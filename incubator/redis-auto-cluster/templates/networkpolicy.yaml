@@ -19,12 +19,12 @@ spec:
       app: {{ template "redis-auto-cluster.name" . }}
       release: {{ .Release.Name }}
   ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: {{ template "redis-auto-cluster.name" . }}
-          release: {{ .Release.Name }}
-    ports:
-    - protocol: TCP
-      port: 6379
+    - from:
+      - podSelector:
+          matchLabels:
+            app: {{ template "redis-auto-cluster.name" . }}
+            release: {{ .Release.Name }}
+      ports:
+        - protocol: TCP
+          port: 6379
 {{- end }}
