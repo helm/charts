@@ -85,6 +85,10 @@ persistence:
 adminUser: admin
 # adminPassword: strongpassword
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## Extra environment variables that will be pass onto deployment pods
 env: {}

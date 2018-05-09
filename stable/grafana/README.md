@@ -54,6 +54,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.storageClass` | Type of persistent volume claim | `generic` |
 | `persistence.accessModes`  | Persistence access modes | `[]` |
 | `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""` |
+| `schedulerName`            | Alternate scheduler name | `nil` |
 | `env`                      | Extra environment variables passed to pods | `{}` |
 | `datasource`               | Configure grafana datasources | `{}` |
 | `dashboardProviders`       | Configure grafana dashboard providers | `{}` |
