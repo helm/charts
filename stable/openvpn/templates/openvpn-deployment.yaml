@@ -45,6 +45,7 @@ spec:
             name: openvpn
             readOnly: false
           - mountPath: /etc/openvpn/certs
+            subPath: {{ .Values.persistence.subPath }}
             name: certs
             readOnly: false
       volumes:

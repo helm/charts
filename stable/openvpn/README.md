@@ -23,6 +23,10 @@ POD_NAME=$(kubectl get pods -l type=openvpn -o jsonpath='{.items[0].metadata.nam
 
 When all components of the openvpn chart have started use the following script to generate a client key:
 
+```shell
+kubectl -n <namespace> exec -it <pod_name> /etc/openvpn/setup/newClientCert.sh <key_name>
+```
+
 ```bash
 #!/bin/bash
 
@@ -45,28 +49,39 @@ Be sure to change `KEY_NAME` if generating additional keys.  Import the .ovpn fi
 
 ## Configuration
 
-The following table lists the configurable parameters of the nginx-ingress chart and their default values.
+The following table lists the configurable parameters of the `openvpn` chart and their default values.
 
 Parameter | Description | Default
---- | --- | ---
-`replicaCount` | amount of parallel openvpn replicas to be started | `1`
-`` | a | ``
-
-
-
-### Certificates
-
-New certificates are generated with each deployment.  If persistence is enabled certificate data will be persisted across pod restarts.  Otherwise new client certs will be needed after each deployment or pod restart.
-
-### Important values
-* service.externalPort: 443 - external LoadBalancer port
-* service.internalPort: 443 - port of openVPN port
-* service.nodePort: 32085 - certain node port for NodePort service type
-* openvpn.OVPN_NETWORK: 10.240.0.0 - Network allocated for openvpn clients (default: 10.240.0.0).
-* openvpn.OVPN_SUBNET:  255.255.0.0 - Network subnet allocated for openvpn client (default: 255.255.0.0).
-* openvpn.OVPN_PROTO: tcp - Protocol used by openvpn tcp or udp (default: tcp).
-* openvpn.OVPN_K8S_POD_NETWORK: "10.0.0.0" - Kubernetes pod network (optional).
-* openvpn.OVPN_K8S_POD_SUBNET: "255.0.0.0" - Kubernetes pod network subnet (optional).
-* openvpn.conf: "" - Arbitrary lines appended to the end of the server configuration file
+---                            | ---                                                                  | ---
+`replicaCount`                 | amount of parallel openvpn replicas to be started                    | `1`
+`image.repository`             | `openvpn` image repository                                           | `jfelten/openvpn-docker`
+`image.tag`                    | `openvpn` image tag                                                  | `1.1.0`
+`image.pullPolicy`             | Image pull policy                                                    | `IfNotPresent`
+`service.type`                 | k8s service type exposing ports, e.g. `NodePort`                     | `LoadBalancer`
+`service.externalPort`         | TCP port reported when creating configuration files                  | `443`
+`service.internalPort`         | TCP port on which the service works                                  | `443`
+`service.nodePort`             | NodePort value if service.type is `NodePort`                         | `nil` (auto-assigned)
+`service.externalIPs`          | External IPs to listen on                                            | `[]`
+`resources.requests.cpu`       | OpenVPN cpu request                                                  | `300m`
+`resources.requests.memory`    | OpenVPN memory request                                               | `128Mi`
+`resources.limits.cpu`         | OpenVPN cpu limit                                                    | `300m`
+`resources.limits.memory`      | OpenVPN memory limit                                                 | `128Mi`
+`persistence.enabled`          | Use a PVC to persist configuration                                   | `true`
+`persistence.subPath`          | Subdirectory of the volume to mount at                               | `openvpn`
+`persistence.existingClaim`    | Provide an existing PersistentVolumeClaim                            | `nil`
+`persistence.storageClass`     | Storage class of backing PVC                                         | `nil`
+`persistence.accessMode`       | Use volume as ReadOnly or ReadWrite                                  | `ReadWriteOnce`
+`persistence.size`             | Size of data volume                                                  | `2M`
+`openvpn.OVPN_NETWORK`         | Network allocated for openvpn clients                                | `10.240.0.0`
+`openvpn.OVPN_SUBNET`          | Network subnet allocated for openvpn                                 | `255.255.0.0`
+`openvpn.OVPN_PROTO`           | Protocol used by openvpn tcp or udp                                  | `tcp`
+`openvpn.OVPN_K8S_POD_NETWORK` | Kubernetes pod network (optional)                                    | `10.0.0.0`
+`openvpn.OVPN_K8S_POD_SUBNET`  | Kubernetes pod network subnet (optional)                             | `255.0.0.0`
+`openvpn.conf`                 | Arbitrary lines appended to the end of the server configuration file | `nil`
 
 #### Note: As configured the chart will create a route for a large 10.0.0.0/8 network that may cause issues if that is your local network.  If so tweak this value to something more restrictive.  This route is added, because GKE generates pods with IPs in this range.
+
+### Certificates
+New certificates are generated with each deployment.
+If persistence is enabled certificate data will be persisted across pod restarts.
+Otherwise new client certs will be needed after each deployment or pod restart.
