@@ -52,7 +52,7 @@ The following tables lists the configurable parameters of the Fluent-Bit chart a
 | `backend.http.uri`            | Specify an optional HTTP URI for the target web server, e.g: /something | `"/"`
 | `backend.http.format`         | Specify the data format to be used in the HTTP request body, by default it uses msgpack, optionally it can be set to json.  | `msgpack` |
 | **General**                   |
-| `annotations`                      | Optional deamon set annotations            | `NULL`                |
+| `annotations`                      | Optional daemonset annotations            | `NULL`                |
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                | 
