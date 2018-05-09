@@ -88,8 +88,10 @@ The following tables lists the configurable parameters of the sumologic-fluentd 
 | `sumologic.readFromHead` | Start to read the logs from the head of file, not bottom. Only applies to containers log files. See in_tail doc for more information | `true` |
 | `sumologic.concatSeparator` | The character to use to delimit lines within the final concatenated message. Most multi-line messages contain a newline at the end of each line | `Nil` |
 | `sumologic.auditLogPath` | Define the path to the [Kubernetes Audit Log](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/) | `/mnt/log/kube-apiserver-audit.log` |
+| `sumologic.timeKey` | The field name for json formatted sources that should be used as the time. See [time_key](https://docs.fluentd.org/v0.12/articles/formatter_json#time_key-(string,-optional,-defaults-to-%E2%80%9Ctime%E2%80%9D)). | `time`
+| `sumologic.addTimeStamp` | Option to control adding timestamp to logs. | `true`
 | `image.name` | The image repository and name to pull from | `sumologic/fluentd-kubernetes-sumologic` |
-| `image.tag` | The image tag to pull | `v1.11` |
+| `image.tag` | The image tag to pull | `v1.14` |
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` |
 | `persistence.enabled` | Boolean value, used to turn on or off fluentd position file persistence, on nodes (requires Kubernetes >= 1.8) | `false` |
 | `persistence.hostPath` | The path, on each node, to a directory for fluentd pos files. You must create the directory on each node first or set `persistence.createPath` (requires Kubernetes >= 1.8) | `/var/run/fluentd-pos` |
@@ -160,4 +162,85 @@ To enable the creation of RBAC resources, do the following
 
 ```console
 $ helm install --name my-release stable/sumologic-fluentd --set rbac.create=true
+```
+
+### Excluding and Including data
+
+You have several options controlling the filtering of data that gets sent to Sumo Logic.  
+
+#### Excluding data using environment variables
+
+There are several environment variables that can exclude data.  The following table show which  environment variables affect which Fluentd sources.
+                                                                
+| Environment Variable | Containers | Docker | Kubernetes | Systemd |
+|----------------------|------------|--------|------------|---------|
+| `EXCLUDE_CONTAINER_REGEX` | ✔ | ✘ | ✘ | ✘ |
+| `EXCLUDE_FACILITY_REGEX` | ✘ | ✘ | ✘ | ✔ |
+| `EXCLUDE_HOST_REGEX `| ✔ | ✘ | ✘ | ✔ |
+| `EXCLUDE_NAMESPACE_REGEX` | ✔ | ✘ | ✔ | ✘ |
+| `EXCLUDE_PATH` | ✔ | ✔ | ✔ | ✘ |
+| `EXCLUDE_PRIORITY_REGEX` | ✘ | ✘ | ✘ | ✔ |
+| `EXCLUDE_POD_REGEX` | ✔ | ✘ | ✘ | ✘ |
+| `EXCLUDE_UNIT_REGEX` | ✘ | ✘ | ✘ | ✔ |
+
+#### Excluding data using annotations
+
+You can also use the sumologic.com/exclude annotation to exclude data from Sumo. This data is sent to FluentD, but not to Sumo Logic.
+
+```yaml
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    app: mywebsite
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: mywebsite
+      annotations:
+        sumologic.com/format: "text"
+        sumologic.com/sourceCategory: "mywebsite/nginx"
+        sumologic.com/sourceName: "mywebsite_nginx"
+        sumologic.com/exclude: "true"
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+```
+
+#### Include excluded using annotations
+
+If you excluded a whole namespace, but still need one or few pods to be still included for shipping to Sumo Logic, you can use the sumologic.com/include annotation to include data to Sumo. It takes precedence over the exclusion described above.
+
+```yaml
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    app: mywebsite
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: mywebsite
+      annotations:
+        sumologic.com/format: "text"
+        sumologic.com/sourceCategory: "mywebsite/nginx"
+        sumologic.com/sourceName: "mywebsite_nginx"
+        sumologic.com/include: "true"
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
 ```
