@@ -75,6 +75,7 @@ nexusBackup:
   imageName: quay.io/travelaudience/docker-nexus-backup
   imageTag: 1.2.0
   imagePullPolicy: IfNotPresent
+  podAnnotations: {}
   env:
     targetBucket:
   nexusAdminPassword: "admin123"
