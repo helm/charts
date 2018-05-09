@@ -64,6 +64,9 @@ Parameter | Description | Default
 `openvpn.OVPN_K8S_POD_SUBNET`  | Kubernetes pod network subnet (optional)                             | `255.0.0.0`
 `openvpn.conf`                 | Arbitrary lines appended to the end of the server configuration file | `nil`
 
+This chart has been engineered to use kube-dns and route all network traffic to kubernetes pods and services,
+to disable this behaviour set `openvpn.OVPN_K8S_POD_NETWORK` and `openvpn.OVPN_K8S_POD_SUBNET` to `null`.
+
 #### Note: As configured the chart will create a route for a large 10.0.0.0/8 network that may cause issues if that is your local network.  If so tweak this value to something more restrictive.  This route is added, because GKE generates pods with IPs in this range.
 
 ### Certificates
