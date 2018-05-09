@@ -26,6 +26,9 @@ spec:
         component: "{{ .Values.alertmanager.name }}"
         release: {{ .Release.Name }}
     spec:
+{{- if .Values.alertmanager.schedulerName }}
+      schedulerName: "{{ .Values.alertmanager.schedulerName }}"
+{{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.alertmanager" . }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}
