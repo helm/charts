@@ -25,6 +25,9 @@ spec:
         component: "{{ .Values.server.name }}"
         release: {{ .Release.Name }}
     spec:
+{{- if .Values.server.schedulerName }}
+      schedulerName: "{{ .Values.server.schedulerName }}"
+{{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.server" . }}
       {{- if .Values.initChownData.enabled }}
       initContainers:
