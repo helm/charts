@@ -2,7 +2,7 @@ replicaCount: 1
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
-  imageTag: 3.9.0
+  imageTag: 3.10.0
   imagePullPolicy: IfNotPresent
   env:
     - name: install4jAddVmParams
