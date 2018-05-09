@@ -107,6 +107,7 @@ Parameter | Description | Default
 `alertmanager.ingress.tls` | alertmanager Ingress TLS configuration (YAML) | `[]`
 `alertmanager.nodeSelector` | node labels for alertmanager pod assignment | `{}`
 `alertmanager.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
+`alertmanager.schedulerName` | alertmanager alternate scheduler name | `nil`
 `alertmanager.persistentVolume.enabled` | If true, alertmanager will create a Persistent Volume Claim | `true`
 `alertmanager.persistentVolume.accessModes` | alertmanager data Persistent Volume access modes | `[ReadWriteOnce]`
 `alertmanager.persistentVolume.annotations` | Annotations for alertmanager Persistent Volume Claim | `{}`
@@ -219,6 +220,7 @@ Parameter | Description | Default
 `server.ingress.tls` | Prometheus server Ingress TLS configuration (YAML) | `[]`
 `server.nodeSelector` | node labels for Prometheus server pod assignment | `{}`
 `server.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
+`server.schedulerName` | Prometheus server alternate scheduler name | `nil`
 `server.persistentVolume.enabled` | If true, Prometheus server will create a Persistent Volume Claim | `true`
 `server.persistentVolume.accessModes` | Prometheus server data Persistent Volume access modes | `[ReadWriteOnce]`
 `server.persistentVolume.annotations` | Prometheus server data Persistent Volume annotations | `{}`
