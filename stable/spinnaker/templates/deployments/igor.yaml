@@ -25,6 +25,9 @@ spec:
       containers:
         - image: {{ .Values.images.igor }}
           name: igor
+          env:
+            - name: JAVA_OPTS
+              value: -Xmx{{ .Values.igor.maxmem | (print "1024m") }} -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
           ports:
             - containerPort: 8088
               name: igor

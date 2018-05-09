@@ -32,6 +32,8 @@ spec:
               value: "0.0.0.0"
             - name: DECK_PORT
               value: {{ .Values.deck.port | quote }}
+            - name: JAVA_OPTS
+              value: -Xmx{{ .Values.deck.maxmem | (print "1024m") }} -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
           ports:
             - containerPort: {{ .Values.deck.port }}
               name: deck

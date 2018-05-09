@@ -25,6 +25,9 @@ spec:
       containers:
         - image: {{ .Values.images.rosco }}
           name: rosco
+          env:
+            - name: JAVA_OPTS
+              value: -Xmx{{ .Values.rosco.maxmem | (print "1024m") }} -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
           ports:
             - containerPort: 8087
               name: rosco

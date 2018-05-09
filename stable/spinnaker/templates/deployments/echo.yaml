@@ -25,6 +25,9 @@ spec:
       containers:
         - image: {{ .Values.images.echo }}
           name: echo
+          env:
+            - name: JAVA_OPTS
+              value: -Xmx{{ .Values.echo.maxmem | (print "1024m") }} -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
           ports:
             - containerPort: 8089
               name: echo
