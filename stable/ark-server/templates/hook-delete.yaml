@@ -2,7 +2,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: delete-ark-config
-  namespace: {{ .Values.namespace.name }}
   annotations:
     "helm.sh/hook": pre-delete
     "helm.sh/hook-delete-policy": hook-succeeded
@@ -11,7 +10,6 @@ spec:
   template:
     metadata:
       name: delete-ark-config
-      namespace: {{ .Values.namespace.name }}
     spec:
       restartPolicy: Never
       containers:

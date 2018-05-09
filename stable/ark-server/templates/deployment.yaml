@@ -1,7 +1,6 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  namespace: {{ .Values.namespace.name }}
   name: {{ template "ark-server.fullname" . }}
   release: {{ .Release.Name }}
   app: {{ template "ark-server.name" . }}
