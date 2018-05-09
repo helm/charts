@@ -1,13 +1,14 @@
 # Rendertron Helm Chart
 
+> Rendertron is a dockerized, headless Chrome rendering solution designed to render & serialise web pages on the fly.
 
-
-## Chart Details
-
-This chart will do the following:
-
-* 1 x Rendertron pod with port 8080 exposed on an external LoadBalancer
-* All using Kubernetes Deployments
+[Rendertron](https://github.com/GoogleChrome/rendertron#config) is designed to enable your Progressive Web App (PWA) to serve the correct
+content to any bot that doesn't render or execute JavaScript. Rendertron runs as a
+standalone HTTP server. Rendertron renders requested pages using Headless Chrome,
+[auto-detecting](#auto-detecting-loading-function) when your PWA has completed loading
+and serializes the response back to the original request. To use Rendertron, your application
+configures [middleware](#middleware) to determine whether to proxy a request to Rendertron.
+Rendertron is compatible with all client side technologies, including [web components](#web-components).
 
 ## Installing the Chart
 
@@ -25,6 +26,31 @@ The following tables list the configurable parameters of the Rendertron chart an
 | --------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------- |
 | `nameOverride`                    | Override the resource name prefix    | `jenkins`                                                                    |
 | `fullnameOverride`                | Override the full resource names     | `jenkins-{release-name}` (or `jenkins` if release-name is `jenkins`)         |
+
+## Configuration
+
+| Parameter                  | Description                         | Default                                                 |
+|----------------------------|-------------------------------------|---------------------------------------------------------|
+| `replicaCount`             | Number of nodes | `1` |
+| `image.repository`         | Image repository | `ravishi/rendertron` |
+| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/ravishi/rendertron/tags/).| `a6b93ee7ca98687610542ac930597ce5064762d2`|
+| `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
+| `service.type`             | Kubernetes service type | `ClusterIP` |
+| `service.port`             | Kubernetes port where service is exposed| `8080` |
+| `service.annotations`      | Service annotations | `{}` |
+| `service.labels`           | Custom labels | `{}`
+| `ingress.enabled`          | Enables Ingress | `false` |
+| `ingress.annotations`      | Ingress path | `/` |
+| `ingress.path`             | Ingress annotations | `{}` |
+| `ingress.hosts`            | Ingress accepted hostnames | `[]` |
+| `ingress.tls`              | Ingress TLS configuration | `[]` |
+| `resources`                | CPU/Memory resource requests/limits | `{}` |
+| `nodeSelector`             | Node labels for pod assignment | `{}` |
+| `tolerations`              | Toleration labels for pod assignment | `[]` |
+| `affinity`                 | Affinity settings for pod assignment | `{}` |
+| `env`                      | Extra environment variables passed to pods | `{}` |
+| `annotations`              | Deployment annotations | `{}` |
+| `podAnnotations`           | Pod annotations | `{}` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
