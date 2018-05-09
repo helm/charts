@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "stolon.fullname" . }}-proxy
+  labels:
+    app: {{ template "stolon.name" . }}
+    chart: {{ template "stolon.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.proxy.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.proxy.service.type }}
+  ports:
+    - port: {{ .Values.ports.externalPort }}
+      targetPort: {{ .Values.ports.internalPort }}
+  selector:
+    app: {{ template "stolon.fullname" . }}-proxy
+    release: {{ .Release.Name }}

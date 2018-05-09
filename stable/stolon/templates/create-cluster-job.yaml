@@ -1,0 +1,50 @@
+{{ if .Release.IsInstall }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "stolon.fullname" . }}-create-cluster
+  labels:
+    app: {{ template "stolon.name" . }}
+    chart: {{ template "stolon.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "stolon.fullname" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        {{- if eq .Values.store.backend "etcd" }}
+        pod.beta.kubernetes.io/init-containers: '[
+              {
+                  "name": "create-cluster",
+                  "image": "gcr.io/google_containers/etcd-amd64:3.0.14",
+                  "command": ["/bin/sh", "-c", "while ! etcdctl --endpoints {{ .Values.store.endpoints }} cluster-health; do sleep 1 && echo -n .; done"],
+                  "imagePullPolicy": {{ default "Always" .Values.imagePullPolicy | quote }}
+              }
+          ]'
+        {{- end }}
+    spec:
+      serviceAccountName: {{ template "stolon.serviceAccountName" . }}
+      restartPolicy: Never
+      containers:
+      - name: {{ template "stolon.fullname" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/usr/local/bin/stolonctl"]
+        args:
+          - init
+          - --cluster-name={{ template "stolon.clusterName" . }}
+          - --store-backend={{ .Values.store.backend }}
+          {{- if eq .Values.store.backend "kubernetes" }}
+          - --kube-resource-kind={{ default "configmap" .Values.store.kubeResourceKind }}
+          {{- else }}
+          - --store-endpoints={{ .Values.store.endpoints }}
+          {{- end }}
+          - --yes
+          - '{  "initMode": "new"{{- if or .Values.keeper.client_ssl.enabled .Values.slow_queries.enabled }}, "pgParameters": { {{- if .Values.keeper.client_ssl.enabled }} "ssl": "on", "ssl_cert_file": "/etc/secrets/ssl/server.crt", "ssl_key_file": "/etc/secrets/ssl/server.key"{{- end }}{{- if and .Values.keeper.client_ssl.enabled .Values.slow_queries.enabled }},{{- end }}{{ if .Values.slow_queries.enabled }} "log_min_duration_statement" :  "{{ .Values.slow_queries.min_duration }}" {{ end }} }{{- end}} }'
+{{ end }}
+

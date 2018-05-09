@@ -1,0 +1,96 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "stolon.fullname" . }}-keeper
+  labels:
+    app: {{ template "stolon.name" . }}-keeper
+    chart: {{ template "stolon.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.keeper.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "stolon.name" . }}-keeper
+        release: {{ .Release.Name }}
+      annotations:
+        pod.alpha.kubernetes.io/initialized: "true"
+    spec:
+      serviceAccountName: {{ template "stolon.serviceAccountName" . }}
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: {{ template "stolon.fullname" . }}-keeper
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/bin/bash"
+            - "-ec"
+            - |
+              # Generate our keeper uid using the pod index
+              IFS='-' read -ra ADDR <<< "$(hostname)"
+              export STKEEPER_UID="keeper${ADDR[-1]}"
+              export POD_IP=$(hostname -i)
+              export STKEEPER_PG_LISTEN_ADDRESS=$POD_IP
+              export STOLON_DATA=/stolon-data
+              chown stolon:stolon $STOLON_DATA
+              exec gosu stolon stolon-keeper --data-dir $STOLON_DATA
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: STKEEPER_CLUSTER_NAME
+              value: {{ template "stolon.clusterName" . }}
+            - name: STKEEPER_STORE_BACKEND
+              value: {{ .Values.store.backend | quote}}
+            {{- if eq .Values.store.backend "kubernetes" }}
+            - name: STKEEPER_KUBE_RESOURCE_KIND
+              value: {{ default "configmap" .Values.store.kubeResourceKind  | quote}}
+            {{- else }}
+            - name: STKEEPER_STORE_ENDPOINTS
+              value: {{ .Values.store.endpoints | quote}}
+            {{- end }}
+            - name: STKEEPER_PG_REPL_USERNAME
+              value: {{ .Values.replicationUsername | quote}}
+            - name: STKEEPER_PG_REPL_PASSWORDFILE
+              value: "/etc/secrets/stolon/pg_repl_password"
+            - name: STKEEPER_PG_SU_USERNAME
+              value: {{ .Values.superuserUsername | quote}}
+            - name: STKEEPER_PG_SU_PASSWORDFILE
+              value: "/etc/secrets/stolon/pg_su_password"
+            - name: STKEEPER_DEBUG
+              value: {{ .Values.debug | quote}}
+          ports:
+            - containerPort: {{ .Values.ports.internalPort }}
+          volumeMounts:
+          - name: stolon-data
+            mountPath: /stolon-data
+          - name: stolon-secrets
+            mountPath: /etc/secrets/stolon
+      volumes:
+        - name: stolon-secrets
+          secret:
+            secretName: {{ template "stolon.fullname" . }}
+
+{{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: stolon-data
+      spec:
+        accessModes:
+  {{- range .Values.persistence.accessModes }}
+          - {{ . | quote }}
+  {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
+  {{- if .Values.persistence.storageClassName }}
+        storageClassName: {{ .Values.persistence.storageClassName | quote }}
+    {{- else }}
+        storageClassName: default
+  {{- end }}
+{{- else }}
+        - name: stolon-data
+          emptyDir: {}
+{{- end }}

@@ -1,0 +1,86 @@
+image:
+  repository: sorintlab/stolon
+  tag: v0.10.0-pg9.6
+  pullPolicy: Always
+
+debug: false
+
+persistence:
+  enabled: true
+  storageClassName: default
+  size: 10Gi
+  accessModes:
+    - ReadWriteOnce
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # name: my-name
+
+superuserUsername: "stolon"
+replicationUsername: "repluser"
+
+## password for the replication user (default is 40 random chars)
+# replicationPassword: "replPassword"
+
+## password for the superuser (default is 40 random chars)
+# superuserPassword: ""
+
+store:
+  backend: "consul"
+  endpoints: "http://consul-consul:8500"
+
+ports:
+  internalPort: 5432
+  externalPort: 5432
+
+sentinel:
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512Mi"
+  service:
+    type: ClusterIP
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+
+proxy:
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512Mi"
+  service:
+    type: ClusterIP
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+
+keeper:
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512Mi"
+  service:
+    type: ClusterIP
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+  ## configure ssl for client access
+  # create certificates according to these instructions: https://www.postgresql.org/docs/9.6/static/ssl-tcp.html
+  # to enable encrypted traffic, servert.crt and server.key are required, by that name.
+  # the use of ** Client Certificates ** is not supported
+  client_ssl:
+    enabled: false
+    certs_secret_name: pg-cert-secret
+
+slow_queries:
+  enabled: false
+  min_duration: 300
