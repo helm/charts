@@ -72,12 +72,12 @@ spec:
             - name: LABEL
               value: "{{ .Values.sidecar.datasources.label }}"
             - name: FOLDER
-              value: /etc/grafana/provisioning/datasources
+              value: "/etc/grafana/provisioning/datasources"
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:
             - name: sc-datasources-volume
-              mountPath: /etc/grafana/provisioning/datasources
+              mountPath: "/etc/grafana/provisioning/datasources"
 {{- end}}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
