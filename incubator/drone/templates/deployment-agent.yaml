@@ -43,10 +43,10 @@ spec:
           - name: DOCKER_HOST
             value: tcp://localhost:2375
 {{- end }}
-          {{ range $key, $value := .Values.agent.env }}
+          {{- range $key, $value := .Values.agent.env }}
           - name: {{ $key }}
             value: {{ $value | quote }}
-          {{ end }}
+          {{- end }}
         resources:
 {{ toYaml .Values.agent.resources | indent 10 }}
 {{- if not .Values.dind.enabled }}

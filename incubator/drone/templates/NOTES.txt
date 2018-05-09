@@ -39,13 +39,17 @@ Get the Drone URL by running:
 This deployment will be incomplete until you configure a valid version
 control provider:
 
+    kubectl create secret generic drone-server-secrets \
+      --namespace={{ .Release.Namespace }} \
+      --from-literal=DRONE_GITHUB_SECRET="github-oauth2-client-secret"
+
     helm upgrade {{ .Release.Name }} \
       --reuse-values \
       --set server.env.DRONE_PROVIDER="github" \
       --set server.env.DRONE_GITHUB="true" \
       --set server.env.DRONE_ORGS="my-github-org" \
       --set server.env.DRONE_GITHUB_CLIENT="github-oauth2-client-id" \
-      --set server.env.DRONE_GITHUB_SECRET="github-oauth2-client-secret" \
+      --set server.envSecrets.drone-server-secrets[0]=DRONE_GITHUB_SECRET \
       incubator/drone
 
 Currently supported providers:
