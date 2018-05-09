@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         app: {{ template "concourse.worker.fullname" . }}
+        release: "{{ .Release.Name }}"
       annotations:
         {{- range $key, $value := .Values.worker.annotations }}
         {{ $key }}: {{ $value | quote }}
