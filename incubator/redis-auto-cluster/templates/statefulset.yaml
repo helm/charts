@@ -15,7 +15,6 @@ spec:
     matchLabels:
       role: redis-node
       app: {{ template "redis-auto-cluster.name" . }}
-      chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
       release: {{ .Release.Name }}
   template:
     metadata:
@@ -92,8 +91,8 @@ spec:
                 - sh
                 - -c
                 - redis-cli -h $(hostname) ping
-            initialDelaySeconds: 15
-            timeoutSeconds: 5
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
           livenessProbe:
             exec:
               command:
@@ -143,7 +142,6 @@ spec:
           items:
           - key: redis.conf
             path: redis.conf
-
   volumeClaimTemplates:
   - metadata:
       name: data

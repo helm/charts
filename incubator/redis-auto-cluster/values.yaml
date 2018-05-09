@@ -10,13 +10,12 @@ nodePool: ""
 tolerations: []
 
 persistence:
-  storageClassName: "standard"
+  storageClassName: standard
 
 podAntiAffinity: false
 
 image: "redis"
 imageTag: "4.0.9-alpine"
-imagePullPolicy: "IfNotPresent"
 
 config:
   appendOnly: "yes"
@@ -30,8 +29,8 @@ config:
 autoCluster:
   enabled: true
   image: "uenicontrib/redis-auto-cluster-builder"
+  imageTag: "1.0.0"
   imagePullPolicy: "IfNotPresent"
-  tag: "1.0.0"
 
 security:
   enabled: false
