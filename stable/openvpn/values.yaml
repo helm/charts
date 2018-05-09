@@ -12,6 +12,7 @@ service:
   externalPort: 443
   internalPort: 443
   nodePort: 32085
+  # loadBalancerIP: 10.0.0.1
 resources:
   limits:
     cpu: 300m
