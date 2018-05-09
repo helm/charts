@@ -24,6 +24,8 @@ spec:
       serviceAccountName: {{ template "prometheus-postgres-exporter.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
+          args:
+          - "--extend.query-path=/etc/config.yaml"
           env:          
             - name: DATA_SOURCE_NAME
               valueFrom:
