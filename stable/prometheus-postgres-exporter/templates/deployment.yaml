@@ -48,7 +48,8 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
             - name: queries
-              mountPath: /etc
+              mountPath: /etc/config.yaml
+              subPath: config.yaml
      {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
