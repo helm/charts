@@ -42,8 +42,10 @@ DisableHostNodeId: false
 ## default 'dc1'
 # DatacenterName: dc1
 
-## Encrypt Gossip traffic
-EncryptGossip: true
+## Encrypt Gossip Traffic
+Gossip:
+  Encrypt: true
+  Create: true
 
 ## predefined value for gossip key.
 ## Will use a generated random alpha numeric if not provided
