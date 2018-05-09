@@ -22,7 +22,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- end }}
     spec:
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
       initContainers:
         - name: copy-rabbitmq-config
@@ -33,7 +33,7 @@ spec:
               mountPath: /configmap
             - name: config
               mountPath: /etc/rabbitmq
-            - name: data
+            - name: {{ .Values.persistentVolume.name }}
               mountPath: /var/lib/rabbitmq
       containers:
         - name: {{ .Chart.Name }}
@@ -48,7 +48,7 @@ spec:
               containerPort: 5672
             - name: http
               protocol: TCP
-              containerPort: 15672
+              containerPort: {{ .Values.rabbitmqManagerPort }}
             {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
             - name: stomp-tcp
               protocol: TCP
@@ -131,7 +131,7 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
-            - name: data
+            - name: {{ .Values.persistentVolume.name }}
               mountPath: /var/lib/rabbitmq
             - name: config
               mountPath: /etc/rabbitmq
@@ -183,7 +183,7 @@ spec:
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
-        name: data
+        name: {{ .Values.persistentVolume.name }}
         annotations:
         {{- range $key, $value := .Values.persistentVolume.annotations }}
           {{ $key }}: {{ $value }}

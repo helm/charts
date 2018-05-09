@@ -9,6 +9,8 @@ updateStrategy:
   #   maxSurge: 1
   #   maxUnavailable: 0
 
+podAnnotations: {}
+
 image:
   repository: registry
   tag: 2.6.2
@@ -16,6 +18,7 @@ image:
 service:
   name: registry
   type: ClusterIP
+  # clusterIP:
   port: 5000
   # nodePort:
   annotations: {}
