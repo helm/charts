@@ -46,7 +46,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 
 | Parameter                            | Description                               | Default                                              |
 | ------------------------------------ | ----------------------------------------- | ---------------------------------------------------- |
-| `imageTag`                           | `mysql` image tag.                        | Most recent release                                  |
+| `image`                              | `mysql` image repository.                 | `mysql`                                              |
+| `imageTag`                           | `mysql` image tag.                        | `5.7.14`                                              |
 | `imagePullPolicy`                    | Image pull policy                         | `IfNotPresent`                                       |
 | `mysqlRootPassword`                  | Password for the `root` user.             | Random 10 characters                                 |
 | `mysqlUser`                          | Username of new user to create.           | `nil`                                                |
