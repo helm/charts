@@ -4,22 +4,14 @@ This helm chart install ark-server version v0.8.1
 https://github.com/heptio/ark/tree/v0.8.1
 
 ## Premise
-Helm cannot handle properly CRD becauses it has a validation mechanism that checks the installation before the CRD are actually created,
-hence each resource that uses a CRD cannot be validated because the CRD doesn't exist yet!
+In general, Helm cannot install CRDs and resources based on these CRDs in the same Helm chart because CRDs need to be installed before CRD 
+resources can be created and Helm cannot guarantee the correct ordering for this to work.
 
-The trick here is to create CRD via helm chart, and only after (using a `post-install`) to install the resources with a container.
-The container has the only job to execute a `kubectl create -f filename` and create the resources.
+As a workaround, the chart creates a Config resource via post-install hook.
+Since resources created by hooks are not managed by Helm, a pre-delete hook removes the Config CRD when the release is deleted.
 
 At the same time the resources created with the hook are completely transparent to Helm, that is, when you delete the
 chart those resources remain there. Hence we need a sencond hook for deleting them (see hook-delete.yaml)
-
-## Content
-- `templates/backups.yaml`
-  `configs`
-  `schedules`
-  `downloadrequest`  these files contain the custom resouces needed by Ark Server
-- `hook_delete.yaml` and `hook_deploy.yaml` are the containers that will deploy or delete ark-server configuration
-- `configmap.yaml` Configmap will be mounted to the hook container as a file and subsequently used as k8s manifest for deploy or deletion
 
 ## ConfigMap customization
 Since we want to have a customizable chart it's important that the configmap is a template and not a static file.
