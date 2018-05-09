@@ -33,8 +33,8 @@ The entire list of helper scripts can be found on [templates/config-openvpn.yaml
 Be sure to change `KEY_NAME` if generating additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick and verify connectivity.
 
 ## Configuration
-
-The following table lists the configurable parameters of the `openvpn` chart and their default values.
+The following table lists the configurable parameters of the `openvpn` chart and their default values,
+and can be overwritten via the helm `--set` flag.
 
 Parameter | Description | Default
 ---                            | ---                                                                  | ---
@@ -62,6 +62,7 @@ Parameter | Description | Default
 `openvpn.OVPN_PROTO`           | Protocol used by openvpn tcp or udp                                  | `tcp`
 `openvpn.OVPN_K8S_POD_NETWORK` | Kubernetes pod network (optional)                                    | `10.0.0.0`
 `openvpn.OVPN_K8S_POD_SUBNET`  | Kubernetes pod network subnet (optional)                             | `255.0.0.0`
+`openvpn.dhcpOptionDomain`     | Push a `dhcp-option DOMAIN` config                                   | `true`
 `openvpn.conf`                 | Arbitrary lines appended to the end of the server configuration file | `nil`
 
 This chart has been engineered to use kube-dns and route all network traffic to kubernetes pods and services,
