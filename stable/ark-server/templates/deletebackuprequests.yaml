@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: deletebackuprequests.ark.heptio.com
   labels:
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "ark-server.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     app: {{ template "ark-server.name" . }}

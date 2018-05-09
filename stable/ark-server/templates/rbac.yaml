@@ -4,14 +4,14 @@ kind: ClusterRoleBinding
 metadata:
   name: ark
   labels:
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "ark-server.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     app: {{ template "ark-server.name" . }}
 subjects:
   - kind: ServiceAccount
     namespace: {{ .Values.namespace.name }}
-    name: {{ template "ark-server.sa" . }}
+    name: {{ template "ark-server.serverServiceAccount" . }}
 roleRef:
   kind: ClusterRole
   name: cluster-admin
@@ -25,7 +25,7 @@ metadata:
     rbac.authorization.kubernetes.io/autoupdate: "true"
   labels:
     kubernetes.io/bootstrapping: rbac-defaults
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "ark-server.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     app: {{ template "ark-server.name" . }}
@@ -40,7 +40,7 @@ kind: ClusterRoleBinding
 metadata:
   name: deploy-ark
   labels:
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "ark-server.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     app: {{ template "ark-server.name" . }}
@@ -50,6 +50,6 @@ roleRef:
   name: deploy-ark
 subjects:
   - kind: ServiceAccount
-    name: {{ template "ark-server.hookSA" . }}
+    name: {{ template "ark-server.hookServiceAccount" . }}
     namespace: {{ .Values.namespace.name }}
 {{- end }}

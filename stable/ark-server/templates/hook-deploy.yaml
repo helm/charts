@@ -17,7 +17,7 @@ spec:
         - name: deploy-ark-config
           image: {{ required "A docker image with kubectl" .Values.kubectl.image.repository }}/{{ required "A docker image with kubectl" .Values.kubectl.image.tag }}
           imagePullPolicy: Always
-          command: ["kubectl","create","-f","/tmp/"]
+          command: ["kubectl", "create", "-f", "/tmp/"]
           volumeMounts:
             - name: ark-server-config
               mountPath: /tmp
@@ -25,4 +25,4 @@ spec:
         - name: ark-server-config
           configMap:
             name: ark-server-config
-      serviceAccountName: {{ template "ark-server.hookSA" . }}
+      serviceAccountName: {{ template "ark-server.hookServiceAccount" . }}

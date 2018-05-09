@@ -34,7 +34,7 @@ Create chart name and version as used by the chart label.
 {{/*
 Create the name of the service account to use for creating or deleting the ark config
 */}}
-{{- define "ark-server.hookSA" -}}
+{{- define "ark-server.hookServiceAccount" -}}
 {{- if .Values.serviceAccount.hook.create -}}
     {{ default "hook-sa" .Values.serviceAccount.hook.name }}
 {{- else -}}
@@ -45,7 +45,7 @@ Create the name of the service account to use for creating or deleting the ark c
 {{/*
 Create the name of the service account to use for creating or deleting the ark server
 */}}
-{{- define "ark-server.sa" -}}
+{{- define "ark-server.serverServiceAccount" -}}
 {{- if .Values.serviceAccount.server.create -}}
     {{ default (include "ark-server.fullname" .) .Values.serviceAccount.server.name }}
 {{- else -}}
