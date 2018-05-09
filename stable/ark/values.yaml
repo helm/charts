@@ -1,4 +1,4 @@
-# Default values for ark-server.
+# Default values for ark
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -12,16 +12,11 @@ configuration:
   apitimeout: ChangeMe
   # credentials not needed if kube2iam is enabled
   credentials: ChangeMe
-  kube2iam: false
   # following are default values
   backupSyncPeriod: 60m
   gcSyncPeriod: 60m
   scheduleSyncPeriod: 1m
   restoreOnlyMode: false
-
-namespace:
-  create: true
-  name: heptio-ark
 
 image:
   repository: gcr.io/heptio-images/ark
@@ -52,3 +47,7 @@ kubectl:
   image:
     repository: claranet
     tag: gcloud-kubectl-docker
+
+tolerations:
+
+nodeSelector:

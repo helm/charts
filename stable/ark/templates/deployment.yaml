@@ -53,4 +53,7 @@ spec:
       {{- if eq .Values.configuration.cloudprovider "azure" }}
       nodeSelector:
         beta.kubernetes.io/os: linux
+{{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
