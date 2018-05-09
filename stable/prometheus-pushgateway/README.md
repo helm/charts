@@ -56,6 +56,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `serviceAccount.name`   | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                    |
 | `tolerations`           | List of node taints to tolerate                                                                                               | `{}`               |
 | `nodeSelector`          | Node labels for pod assignment                                                                                                | `{}`               |
+| `podAnnotations`        | Annotations for pod                                                                                                           | `{}`               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
