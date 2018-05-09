@@ -70,7 +70,7 @@ password:
 ## Use existing secret (ignores previous password)
 # existingSecret:
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 persistence: {}
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
