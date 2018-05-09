@@ -17,5 +17,6 @@ spec:
       nodePort: {{ .Values.service.nodePort }}
 {{- end }}
   selector:
-    app: {{ template "openvpn.fullname" . }}
+    app: {{ template "openvpn.name" . }}
+    release: {{ .Release.Name }}
   type: {{ .Values.service.type }}
