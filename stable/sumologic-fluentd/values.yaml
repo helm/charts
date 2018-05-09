@@ -1,7 +1,7 @@
 # Default values for sumologic-fluentd.
 image:
   name: sumologic/fluentd-kubernetes-sumologic
-  tag: v1.11
+  tag: v1.14
   pullPolicy: IfNotPresent
 
 ## Annotations to add to the DaemonSet's Pods
@@ -118,6 +118,9 @@ sumologic:
   ## The field name for json formatted sources that should be used as the time
   ## ref: https://docs.fluentd.org/v0.12/articles/formatter_json#time_key-(string,-optional,-defaults-to-%E2%80%9Ctime%E2%80%9D)
   # timeKey:
+
+  ## Option to control adding timestamp to logs. (Default true)
+  addTimeStamp: true
 
   ## Fluentd command line options
   ## ref: http://docs.fluentd.org/v0.12/articles/command-line-option
