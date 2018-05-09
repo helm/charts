@@ -138,7 +138,7 @@ spec:
     {{- if .Values.database.cloudSQL.enabled  }}
         - name: {{ .Chart.Name }}-cloudsql-proxy
           image: "{{ .Values.database.cloudSQL.image.repository }}:{{ .Values.database.cloudSQL.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.database.cloudSQL.image.pullPolicy }}
           command: ["/cloud_sql_proxy",
                     {{ printf "\"-instances=%v=tcp:%v\"," .Values.database.cloudSQL.instanceConnectionName .Values.database.cloudSQL.port }}
                     "-credential_file=/secrets/cloudsql/credentials.json"]
