@@ -146,6 +146,12 @@ dind:
   ##
   enabled: true
 
+  ## Values in here get injected as environment variables to DinD.
+  ## ref: http://readme.drone.io/admin/installation-reference
+  ##
+  #  env:
+  #    DRONE_DEBUG: "false"
+
   ## Docker storage driver.
   ## Your DinD instance should be using the same driver as your host.
   ## ref: https://docs.docker.com/engine/userguide/storagedriver/selectadriver/

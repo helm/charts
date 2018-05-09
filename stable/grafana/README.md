@@ -59,6 +59,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `dashboardProviders`       | Configure grafana dashboard providers | `{}` |
 | `dashboards`               | Dashboards to import | `{}` |
 | `grafana.ini`              | Grafana's primary configuration | `{}` |
+| `ldap.existingSecret`      | The name of an existing secret containing the `ldap.toml` file, this must have the key `ldap-toml`. | `""` |
+| `ldap.config  `            | Grafana's LDAP configuration    | `""` |
 | `annotations`              | Deployment annotations | `{}` |
 | `podAnnotations`           | Pod annotations | `{}` |
 | `sidecar.dashboards.enabled`            | Enabled the cluster wide search for dashboards and adds/updates/deletes them in grafana | false |
