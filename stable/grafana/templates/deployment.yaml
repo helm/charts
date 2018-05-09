@@ -27,6 +27,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+{{- end }}
 {{- if .Values.dashboards }}
       initContainers:
         - name: download-dashboards
