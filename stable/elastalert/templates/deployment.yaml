@@ -13,6 +13,9 @@ spec:
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        checksum/rules: {{ include (print $.Template.BasePath "/rules.yaml") . | sha256sum }}
       labels:
         name: {{ template "elastalert.fullname" . }}-elastalert
         app: {{ template "elastalert.name" . }}
