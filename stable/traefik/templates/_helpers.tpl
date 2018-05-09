@@ -49,3 +49,15 @@ Create the block for whiteListSourceRange.
 	   {{- end -}}
          ]
 {{- end -}}
+
+{{/*
+Create defaultEntryPoints.
+*/}}
+{{- define "traefik.defaultEntryPoints" -}}
+defaultEntryPoints = [
+{{- range $idx, $entry := .Values.defaultEntryPoints }}
+{{- if $idx }}, {{ end }}
+{{- $entry | quote }}
+{{- end -}}
+]
+{{- end -}}

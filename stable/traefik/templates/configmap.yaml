@@ -20,11 +20,7 @@ data:
     {{- if .Values.ssl.insecureSkipVerify }}
     InsecureSkipVerify = true
     {{- end }}
-    {{- if .Values.ssl.enabled }}
-    defaultEntryPoints = ["http","https"]
-    {{- else }}
-    defaultEntryPoints = ["http", "httpn"]
-    {{- end }}
+    {{ template "traefik.defaultEntryPoints" . }}
     [entryPoints]
       [entryPoints.http]
       address = ":80"
@@ -41,7 +37,7 @@ data:
           regex = "^http://(.*)"
           replacement = "https://$1"
         {{- end }}
-      {{- if .Values.ssl.enabled }}
+      {{- if has "https" .Values.defaultEntryPoints }}
       [entryPoints.https]
       {{- if .Values.whiteListSourceRange }}
       {{ template "traefik.whiteListSourceRange" . }}

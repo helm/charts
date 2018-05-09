@@ -47,7 +47,7 @@ spec:
     {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.service.nodePorts.https)))}}
     nodePort: {{ .Values.service.nodePorts.https }}
     {{- end }}
-    {{- if not .Values.ssl.enabled }}
+    {{- if (not (has "https" .Values.defaultEntryPoints)) }}
     targetPort: httpn
     {{- end }}
   {{- if or .Values.metrics.prometheus.enabled .Values.metrics.datadog.enabled .Values.metrics.statsd.enabled }}

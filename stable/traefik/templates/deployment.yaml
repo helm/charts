@@ -82,7 +82,7 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: config
-        {{- if .Values.ssl.enabled }}
+        {{- if has "https" .Values.defaultEntryPoints }}
         - mountPath: /ssl
           name: ssl
         {{- end }}
@@ -120,7 +120,7 @@ spec:
       - name: config
         configMap:
           name: {{ template "traefik.fullname" . }}
-      {{- if .Values.ssl.enabled }}
+      {{- if has "https" .Values.defaultEntryPoints }}
       - name: ssl
         secret:
           secretName: {{ template "traefik.fullname" . }}-default-cert

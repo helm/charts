@@ -106,7 +106,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `proxyProtocol.enabled`         | Enable PROXY protocol support.                                       | `false`                                   |
 | `proxyProtocol.trustedIPs`      | List of PROXY IPs (CIDR ranges) trusted to accurately convey the end-user IP. | `[]`                              |
 | `debug.enabled`                 | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
-| `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
+| `defaultEntryPoints`            | List of enabled entrypoints. This also controls if SSL is enabled or not                  | `[http, httpn]`      |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
 | `ssl.insecureSkipVerify`        | Whether to verify certs on SSL connections                           | `false`                                   |
 | `ssl.defaultCert`               | Base64 encoded default certificate                                    | A self-signed certificate                 |
