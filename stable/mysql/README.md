@@ -46,11 +46,12 @@ The following table lists the configurable parameters of the MySQL chart and the
 
 | Parameter                            | Description                               | Default                                              |
 | ------------------------------------ | ----------------------------------------- | ---------------------------------------------------- |
-| `imageTag`                           | `mysql` image tag.                        | Most recent release                                  |
+| `image`                              | `mysql` image repository.                 | `mysql`                                              |
+| `imageTag`                           | `mysql` image tag.                        | `5.7.14`                                              |
 | `imagePullPolicy`                    | Image pull policy                         | `IfNotPresent`                                       |
-| `mysqlRootPassword`                  | Password for the `root` user.             | `nil`                                                |
+| `mysqlRootPassword`                  | Password for the `root` user.             | Random 10 characters                                 |
 | `mysqlUser`                          | Username of new user to create.           | `nil`                                                |
-| `mysqlPassword`                      | Password for the new user.                | `nil`                                                |
+| `mysqlPassword`                      | Password for the new user.                | Random 10 characters                                 |
 | `mysqlDatabase`                      | Name for new database to create.          | `nil`                                                |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 30                                                   |
 | `livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |

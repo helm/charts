@@ -80,6 +80,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `service.type`              | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.annotations`       | Service annotations                                | `{}`                                             |
 | `service.ports`             | Ports exposed by service                           | beats                                            |
+| `service.loadBalancerIP`    | The load balancer IP for the service               | unset                                            |
 | `ports`                     | Ports exposed by logstash container                | beats                                            |
 | `ingress.enabled`           | Enables Ingress                                    | `false`                                          |
 | `ingress.annotations`       | Ingress annotations                                | `{}`                                             |
