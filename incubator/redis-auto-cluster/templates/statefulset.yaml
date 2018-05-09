@@ -1,11 +1,11 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "redis-auto-cluster.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "redis-auto-cluster.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "redis-auto-cluster.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -21,7 +21,7 @@ spec:
       labels:
         role: redis-node
         app: {{ template "redis-auto-cluster.name" . }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        chart: {{ template "redis-auto-cluster.chart" . }}
         release: {{ .Release.Name }}
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . |  sha256sum | trunc 63 }}
     spec:
@@ -38,7 +38,7 @@ spec:
             labelSelector:
               matchLabels:
                 app: {{ template "redis-auto-cluster.name" . }}
-                chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+                chart: {{ template "redis-auto-cluster.chart" . }}
                 release: {{ .Release.Name }}
 {{- end }}
 {{- if .Values.tolerations }}
@@ -67,38 +67,38 @@ spec:
 {{- end }}
       containers:
         - name: redis
-          image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-          imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            - "redis-server"
+          - "redis-server"
           args:
-            - "/conf/redis.conf"
-            - --cluster-announce-ip
-            - "$(MY_POD_IP)"
+          - "/conf/redis.conf"
+          - --cluster-announce-ip
+          - "$(MY_POD_IP)"
           env:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
           ports:
-            - name: client
-              containerPort: 6379
-            - name: gossip
-              containerPort: 26379
+          - name: client
+            containerPort: 6379
+          - name: gossip
+            containerPort: 26379
           readinessProbe:
             exec:
               command:
-                - sh
-                - -c
-                - redis-cli -h $(hostname) ping
+              - "sh"
+              - "-c"
+              - "redis-cli -h $(hostname) ping"
             initialDelaySeconds: 5
             timeoutSeconds: 1
           livenessProbe:
             exec:
               command:
-                - sh
-                - -c
-                - redis-cli -h $(hostname) ping
+              - "sh"
+              - "-c"
+              - "redis-cli -h $(hostname) ping"
             initialDelaySeconds: 20
             periodSeconds: 3
           resources:
@@ -109,24 +109,24 @@ spec:
               cpu: 100m
               memory: {{ .Values.shards.sizeGb }}Gi
           volumeMounts:
-            - name: config
-              mountPath: /conf
-              readOnly: false
-            - name: data
-              mountPath: /data
-              readOnly: false
+          - name: config
+            mountPath: /conf
+            readOnly: false
+          - name: data
+            mountPath: /data
+            readOnly: false
 {{- if .Values.metrics.enabled }}
         - name: metrics
-          image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
-          imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
+          image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
           env:
-            - name: REDIS_ALIAS
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
+          - name: REDIS_ALIAS
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
           ports:
-            - name: metrics
-              containerPort: 9121
+          - name: metrics
+            containerPort: 9121
   {{- if .Values.metrics.resources }}
           resources:
   {{ toYaml .Values.metrics.resources | indent 12 }}

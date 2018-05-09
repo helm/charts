@@ -14,8 +14,10 @@ persistence:
 
 podAntiAffinity: false
 
-image: "redis"
-imageTag: "4.0.9-alpine"
+image:
+  repository: redis
+  tag: 4.0.9-alpine
+  pullPolicy: IfNotPresent
 
 config:
   appendOnly: "yes"
@@ -28,9 +30,10 @@ config:
 
 autoCluster:
   enabled: true
-  image: "uenicontrib/redis-auto-cluster-builder"
-  imageTag: "1.0.0"
-  imagePullPolicy: "IfNotPresent"
+  image:
+    repository: uenicontrib/redis-auto-cluster-builder
+    tag: 1.0.0
+    pullPolicy: IfNotPresent
 
 security:
   enabled: false
@@ -39,9 +42,10 @@ tuning: false
 
 metrics:
   enabled: false
-  image: oliver006/redis_exporter
-  imageTag: v0.17.2
-  imagePullPolicy: IfNotPresent
+  image:
+    repository: oliver006/redis_exporter
+    tag: v0.17.2
+    pullPolicy: IfNotPresent
   resources: {}
   annotations:
     prometheus.io/scrape: "true"
