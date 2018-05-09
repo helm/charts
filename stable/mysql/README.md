@@ -46,11 +46,12 @@ The following table lists the configurable parameters of the MySQL chart and the
 
 | Parameter                            | Description                               | Default                                              |
 | ------------------------------------ | ----------------------------------------- | ---------------------------------------------------- |
-| `imageTag`                           | `mysql` image tag.                        | Most recent release                                  |
+| `image`                              | `mysql` image repository.                 | `mysql`                                              |
+| `imageTag`                           | `mysql` image tag.                        | `5.7.14`                                              |
 | `imagePullPolicy`                    | Image pull policy                         | `IfNotPresent`                                       |
-| `mysqlRootPassword`                  | Password for the `root` user.             | `nil`                                                |
+| `mysqlRootPassword`                  | Password for the `root` user.             | Random 10 characters                                 |
 | `mysqlUser`                          | Username of new user to create.           | `nil`                                                |
-| `mysqlPassword`                      | Password for the new user.                | `nil`                                                |
+| `mysqlPassword`                      | Password for the new user.                | Random 10 characters                                 |
 | `mysqlDatabase`                      | Name for new database to create.          | `nil`                                                |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 30                                                   |
 | `livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
@@ -77,6 +78,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `ssl.certificates[0].ca`             | CA certificate                            | `nil`                                                |
 | `ssl.certificates[0].cert`           | Server certificate (public key)           | `nil`                                                |
 | `ssl.certificates[0].key`            | Server key (private key)                  | `nil`                                                |
+| `initializationFiles`                | List of SQL files which are run after the container started        | `nil`                       |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 
@@ -122,6 +124,21 @@ configurationFiles:
     [mysqld]
 ```
 
+## MySQL initialization files
+
+The [MySQL](https://hub.docker.com/_/mysql/) image accepts *.sh, *.sql and *.sql.gz files at the path `/docker-entrypoint-initdb.d`. 
+These files are being run exactly once for container initialization and ignored on following container restarts.
+If you want to use initialization scripts, you can create initialization files by passing the file contents on the `initializationFiles` attribute. 
+
+
+```yaml
+initializationFiles:
+  first-db.sql: |-
+    CREATE DATABASE IF NOT EXISTS first DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+  second-db.sql: |-
+    CREATE DATABASE IF NOT EXISTS second DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+```
+
 ## SSL
 
 This chart supports configuring MySQL to use [encrypted connections](https://dev.mysql.com/doc/refman/5.7/en/encrypted-connections.html) with TLS/SSL certificates provided by the user. This is accomplished by storing the required Certificate Authority file, the server public key certificate, and the server private key as a Kubernetes secret. The SSL options for this chart support the following use cases:
@@ -155,10 +172,10 @@ ssl:
 
 > **Note**: Make sure your certificate data has the correct formatting in the values file.
 
-## Manage certficate secrets outside of helm
+## Manage certificate secrets outside of helm
 
 1. Ensure the certificate secret exist before installation of this chart.
-2. Set the name of the certficate secret in `ssl.secret`.
+2. Set the name of the certificate secret in `ssl.secret`.
 3. Make sure there are no entries underneath `ssl.certificates`.
 
 To manually create the certificate secret from local files you can execute:
