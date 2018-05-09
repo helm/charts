@@ -188,12 +188,12 @@ database:
   # use Google Cloud Platform CloudSQL proxy
   cloudSQL:
     enabled: false
-    # image:
-    #   repository: gcr.io/cloudsql-docker/gce-proxy
-    #   tag: 1.11
-    #   pullPolicy: IfNotPresent
-    # instanceConnectionName: ""
-    # port: 5432
-    # # `existingSecret` is a reference to an existing secret containing the CloudSQL instance credentials
-    # # for Grafana in a key `credentials.json`.
-    # existingSecret: ""
+    image:
+      repository: gcr.io/cloudsql-docker/gce-proxy
+      tag: 1.11
+      pullPolicy: IfNotPresent
+    instanceConnectionName: ""
+    port: 5432
+    # `existingSecret` is a reference to an existing secret containing the CloudSQL instance credentials
+    # for Grafana in a key `credentials.json`.
+    existingSecret: ""
