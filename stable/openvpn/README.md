@@ -24,8 +24,11 @@ POD_NAME=$(kubectl get pods -l type=openvpn -o jsonpath='{.items[0].metadata.nam
 When all components of the openvpn chart have started use the following script to generate a client key:
 
 ```shell
-kubectl -n <namespace> exec -it <pod_name> /etc/openvpn/setup/newClientCert.sh <key_name>
+kubectl -n <namespace> exec -it <pod_name> /etc/openvpn/setup/newClientCert.sh <key_name> <external-ip>
+kubectl -n <namespace> exec -it <pod_name> /etc/openvpn/setup/newClientCert.sh <key_name> > <key_name>.ovpn
 ```
+
+The entire list of helper scripts can be found on [templates/config-openvpn.yaml](templates/config-openvpn.yaml)
 
 Be sure to change `KEY_NAME` if generating additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick and verify connectivity.
 
