@@ -23,7 +23,7 @@ spec:
     spec:
       initContainers:
       - name: wait-until-ready
-        image: "{{ .Values.autoCluster.image }}:{{ .Values.autoCluster.tag }}"
+        image: "{{ .Values.autoCluster.image }}:{{ .Values.autoCluster.imageTag }}"
         imagePullPolicy: {{ .Values.autoCluster.imagePullPolicy }}
         command: ["./wait.sh"]
         env:
@@ -39,7 +39,7 @@ spec:
           privileged: true
       containers:
       - name: {{ template "redis-auto-cluster.fullname" . }}-builder
-        image: "{{ .Values.autoCluster.image }}:{{ .Values.autoCluster.tag }}"
+        image: "{{ .Values.autoCluster.image }}:{{ .Values.autoCluster.imageTag }}"
         imagePullPolicy: {{ .Values.autoCluster.imagePullPolicy }}
         command: ["./setup.sh"]
         env:

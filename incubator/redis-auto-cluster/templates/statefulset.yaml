@@ -91,8 +91,8 @@ spec:
                 - sh
                 - -c
                 - redis-cli -h $(hostname) ping
-            initialDelaySeconds: 15
-            timeoutSeconds: 5
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
           livenessProbe:
             exec:
               command:
