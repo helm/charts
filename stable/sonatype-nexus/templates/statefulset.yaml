@@ -108,6 +108,13 @@ spec:
           {{- end }}
         {{- if .Values.nexusBackup.enabled }}
         - name: nexus-backup
+          annotations:
+            {{- range $key, $value := .Values.ingress.annotations }}
+            {{ $key }}: {{ $value | quote }}
+            {{- end }}
+      {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 12 }}
+      {{- end }}
           image: {{ .Values.nexusBackup.imageName }}:{{ .Values.nexusBackup.imageTag }}
           imagePullPolicy: {{ .Values.nexusBackup.imagePullPolicy }}
           env:
@@ -150,7 +157,7 @@ spec:
         - name: nexus-data
           emptyDir: {}
           {{- end }}
-          {{- if not .Values.nexusBackup.persistence.enabled }}
+        {{- if not .Values.nexusBackup.persistence.enabled }}
         - name: nexus-backup
           emptyDir: {}
           {{- end }}
@@ -166,7 +173,7 @@ spec:
         requests:
           storage: {{ default "8Gi" .Values.persistence.storageSize }}
 {{- end }}
-{{- if .Values.nexusBackup.persistence.enabled }}
+{{- if and .Values.nexusBackup.enabled .Values.nexusBackup.persistence.enabled }}
   - metadata:
       name: nexus-backup
     spec:
