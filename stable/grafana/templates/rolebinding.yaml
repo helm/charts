@@ -1,4 +1,4 @@
-{{- if or .Values.sidecar.datasources.enabled .Values.sidecar.dashboards.enabled }}
+{{- if .Values.rbac.create }}
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -14,7 +14,7 @@ metadata:
 {{- end }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "grafana.fullname" . }}-account
+    name: {{ template "grafana.serviceAccountName" . }}
     namespace: default
 roleRef:
   kind: ClusterRole

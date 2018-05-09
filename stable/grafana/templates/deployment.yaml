@@ -27,9 +27,7 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
-{{- if or .Values.sidecar.datasources.enabled .Values.sidecar.dashboards.enabled }}
-      serviceAccountName: {{ template "grafana.fullname" . }}-account
-{{- end }}
+      serviceAccountName: {{ template "grafana.serviceAccountName" . }}
 {{- if .Values.dashboards }}
       initContainers:
         - name: download-dashboards
