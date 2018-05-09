@@ -2,6 +2,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: ark-config
+  labels:
+    chart: {{ template "ark.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark.name" . }}
 data:
   01-config-deploy.yaml: |+
 {{ (tpl (.Files.Get "configuration/01-config-deploy.yaml") .) | indent 4 }}

@@ -2,6 +2,11 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: delete-ark-config
+  labels:
+    chart: {{ template "ark.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark.name" . }}
   annotations:
     "helm.sh/hook": pre-delete
     "helm.sh/hook-delete-policy": hook-succeeded
