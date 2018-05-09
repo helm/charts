@@ -63,4 +63,4 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ldap.config  `            | Grafana's LDAP configuration    | `""` |
 | `annotations`              | Deployment annotations | `{}` |
 | `podAnnotations`           | Pod annotations | `{}` |
-
+| `session.existingSecret`   | The name of an existing secret containing the session provider configuration, this must have the key `provider_config`. Must match the session `provider` configured in grafana.ini. Possible values listed [here](http://docs.grafana.org/installation/configuration/#provider-config) | `""` |
