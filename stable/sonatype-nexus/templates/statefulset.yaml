@@ -147,18 +147,18 @@ spec:
             secretName: {{ template "nexus.proxy-ks.name" . }}
         {{- end }}
         {{- if not .Values.persistence.enabled }}
-        - name: {{ template "nexus.fullname" . }}-data
+        - name: nexus-data
           emptyDir: {}
           {{- end }}
           {{- if not .Values.nexusBackup.persistence.enabled }}
-        - name: {{ template "nexus.fullname" . }}-backup
+        - name: nexus-backup
           emptyDir: {}
           {{- end }}
 {{- if or .Values.persistence.enabled .Values.nexusBackup.persistence.enabled }}
   volumeClaimTemplates:
 {{- if .Values.persistence.enabled }}
   - metadata:
-      name: {{ template "nexus.fullname" . }}-data
+      name: nexus-data
     spec:
       accessModes:
         - {{ default "ReadWriteOnce" .Values.persistence.accessMode | quote }}
@@ -168,7 +168,7 @@ spec:
 {{- end }}
 {{- if .Values.nexusBackup.persistence.enabled }}
   - metadata:
-      name: {{ template "nexus.fullname" . }}-backup
+      name: nexus-backup
     spec:
       accessModes:
         - {{ default "ReadWriteOnce" .Values.nexusBackup.persistence.accessMode | quote }}
