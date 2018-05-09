@@ -1,6 +1,6 @@
 # Ark-server
 
-This helm chart install ark-server version v0.8.1
+This helm chart install ark version v0.8.1
 https://github.com/heptio/ark/tree/v0.8.1
 
 ## Premise
@@ -50,7 +50,7 @@ Parameter | Description | Default | Required
 
 ## How to
 ```
-helm install --name ark-server --namespace heptio-ark ./ark-server
+helm install --name ark --namespace heptio-ark ./ark
 ```
 
 ## Remove heptio/ark

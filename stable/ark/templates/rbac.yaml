@@ -4,14 +4,14 @@ kind: ClusterRoleBinding
 metadata:
   name: ark
   labels:
-    chart: {{ template "ark-server.chart" . }}
+    chart: {{ template "ark.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    app: {{ template "ark-server.name" . }}
+    app: {{ template "ark.name" . }}
 subjects:
   - kind: ServiceAccount
     namespace: {{ .Release.Namespace }}
-    name: {{ template "ark-server.serverServiceAccount" . }}
+    name: {{ template "ark.serverServiceAccount" . }}
 roleRef:
   kind: ClusterRole
   name: cluster-admin
@@ -25,10 +25,10 @@ metadata:
     rbac.authorization.kubernetes.io/autoupdate: "true"
   labels:
     kubernetes.io/bootstrapping: rbac-defaults
-    chart: {{ template "ark-server.chart" . }}
+    chart: {{ template "ark.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    app: {{ template "ark-server.name" . }}
+    app: {{ template "ark.name" . }}
   name: deploy-ark
 rules:
   - apiGroups: ['ark.heptio.com']
@@ -40,16 +40,16 @@ kind: ClusterRoleBinding
 metadata:
   name: deploy-ark
   labels:
-    chart: {{ template "ark-server.chart" . }}
+    chart: {{ template "ark.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    app: {{ template "ark-server.name" . }}
+    app: {{ template "ark.name" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: deploy-ark
 subjects:
   - kind: ServiceAccount
-    name: {{ template "ark-server.hookServiceAccount" . }}
+    name: {{ template "ark.hookServiceAccount" . }}
     namespace: {{ .Release.Namespace }}
 {{- end }}

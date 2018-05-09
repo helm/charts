@@ -3,10 +3,10 @@ kind: CustomResourceDefinition
 metadata:
   name: backups.ark.heptio.com
   labels:
-    chart: {{ template "ark-server.chart" . }}
+    chart: {{ template "ark.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    app: {{ template "ark-server.name" . }}
+    app: {{ template "ark.name" . }}
 spec:
   group: ark.heptio.com
   version: v1

@@ -1,4 +1,4 @@
-Check that the ark-server is up and running:
+Check that the ark is up and running:
 
 Check that the secret has been created:
 

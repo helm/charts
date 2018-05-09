@@ -1,9 +1,9 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "ark-server.fullname" . }}
+  name: {{ template "ark.fullname" . }}
   release: {{ .Release.Name }}
-  app: {{ template "ark-server.name" . }}
+  app: {{ template "ark.name" . }}
 spec:
   replicas: 1
   template:
@@ -11,14 +11,14 @@ spec:
       labels:
         component: ark
         release: {{ .Release.Name }}
-        app: {{ template "ark-server.name" . }}
+        app: {{ template "ark.name" . }}
       {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
     spec:
       restartPolicy: Always
-      serviceAccountName: {{ template "ark-server.serverServiceAccount" . }}
+      serviceAccountName: {{ template "ark.serverServiceAccount" . }}
       containers:
         - name: ark
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

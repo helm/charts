@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "ark-server.name" -}}
+{{- define "ark.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "ark-server.fullname" -}}
+{{- define "ark.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,14 +27,14 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "ark-server.chart" -}}
+{{- define "ark.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Create the name of the service account to use for creating or deleting the ark config
 */}}
-{{- define "ark-server.hookServiceAccount" -}}
+{{- define "ark.hookServiceAccount" -}}
 {{- if .Values.serviceAccount.hook.create -}}
     {{ default "hook-sa" .Values.serviceAccount.hook.name }}
 {{- else -}}
@@ -45,9 +45,9 @@ Create the name of the service account to use for creating or deleting the ark c
 {{/*
 Create the name of the service account to use for creating or deleting the ark server
 */}}
-{{- define "ark-server.serverServiceAccount" -}}
+{{- define "ark.serverServiceAccount" -}}
 {{- if .Values.serviceAccount.server.create -}}
-    {{ default (include "ark-server.fullname" .) .Values.serviceAccount.server.name }}
+    {{ default (include "ark.fullname" .) .Values.serviceAccount.server.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.server.name }}
 {{- end -}}
