@@ -4,4 +4,5 @@ metadata:
   name: ark-server-config
   namespace: {{ .Values.namespace.name }}
 data:
-{{ (tpl (.Files.Glob "configuration/*").AsConfig .) | indent 2 }}
+  01-config-deploy.yaml: |+
+{{ (tpl (.Files.Get "configuration/01-config-deploy.yaml") .) | indent 4 }}
