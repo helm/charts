@@ -33,9 +33,9 @@ then
 fi
 
 KEY_NAME=$1
-NAMESPACE=$(kubectl get pods --all-namespaces -l type=openvpn -o jsonpath='{.items[0].metadata.namespace}')
-POD_NAME=$(kubectl get pods -n $NAMESPACE -l type=openvpn -o jsonpath='{.items[0].metadata.name}')
-SERVICE_NAME=$(kubectl get svc -n $NAMESPACE -l type=openvpn  -o jsonpath='{.items[0].metadata.name}')
+NAMESPACE=$(kubectl get pods --all-namespaces -l app=openvpn -o jsonpath='{.items[0].metadata.namespace}')
+POD_NAME=$(kubectl get pods -n $NAMESPACE -l app=openvpn -o jsonpath='{.items[0].metadata.name}')
+SERVICE_NAME=$(kubectl get svc -n $NAMESPACE -l app=openvpn  -o jsonpath='{.items[0].metadata.name}')
 SERVICE_IP=$(kubectl get svc -n $NAMESPACE $SERVICE_NAME -o go-template='{{range $k, $v := (index .status.loadBalancer.ingress 0)}}{{$v}}{{end}}')
 kubectl -n $NAMESPACE exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP
 kubectl -n $NAMESPACE exec -it $POD_NAME cat /etc/openvpn/certs/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
@@ -45,7 +45,14 @@ Be sure to change `KEY_NAME` if generating additional keys.  Import the .ovpn fi
 
 ## Configuration
 
-All configuration is in the values.yaml file, and can be overwritten via the helm --set flag.
+The following table lists the configurable parameters of the nginx-ingress chart and their default values.
+
+Parameter | Description | Default
+--- | --- | ---
+`replicaCount` | amount of parallel openvpn replicas to be started | `1`
+`` | a | ``
+
+
 
 ### Certificates
 
