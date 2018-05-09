@@ -69,6 +69,8 @@ spec:
             - name: wlog
               containerPort: 8793
               protocol: TCP
+          resources:
+{{ toYaml .Values.workers.resources | indent 12 }}
       volumes:
         - name: dags-data
         {{- if .Values.persistence.enabled }}

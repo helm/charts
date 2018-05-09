@@ -63,6 +63,14 @@ airflow:
 workers:
   serviceAccountName: "default"
   replicas: 1
+  
+  resources: {}
+    # limits:
+    #   cpu: "1"
+    #   memory: "2G"
+    # requests:
+    #   cpu: "0.5"
+    #   memory: "512Mi"
 
   celery:
     # instances per worker
