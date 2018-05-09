@@ -48,6 +48,8 @@ openvpn:
   OVPN_K8S_POD_NETWORK: "10.0.0.0"
   # Kubernetes pod network subnet (optional).
   OVPN_K8S_POD_SUBNET: "255.0.0.0"
+  # Push a `dhcp-option DOMAIN` config
+  dhcpOptionDomain: true
   # Arbitrary lines appended to the end of the server configuration file
   # conf: |
   #  max-clients 100
