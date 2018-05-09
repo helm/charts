@@ -1,3 +1,7 @@
+### 1.0.8
+
+* [aec7607](https://github.com/kubernetes/charts/commit/aec7607) Bump up appVersion to GoCD 18.4.0
+
 ### 1.0.7
 
 * [0c66dbf](https://github.com/kubernetes/charts/commit/0c66dbf): Support TLS for ingress
