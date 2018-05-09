@@ -16,7 +16,7 @@ replicaCount: 3
 ## Pod disruption budget minAvailable count
 pdbMinAvailable: 3
 
-## Select AnitAffinity as either hard or soft, default is hard
+## Select AntiAffinity as either hard or soft, default is hard
 AntiAffinity: "hard"
 
 memcached:
