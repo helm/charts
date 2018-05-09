@@ -42,8 +42,8 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 
 | Parameter                          | Description                                | Default                                                    |
 | ---------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
-| `annotations`                      | Optional daemonset annotations            | `NULL`                                                     |
-| `configMaps`                       | Fluentd configmaps                         | `output.conf`                                              |
+| `annotations`                      | Optional daemonset annotations             | `NULL`                                                     |
+| `configMaps`                       | Fluentd configmaps                         | `default conf files`                                       |
 | `elasticsearch.host`               | Elstaicsearch Host                         | `elasticsearch-client`                                     |
 | `elasticsearch.port`               | Elasticsearch Port                         | `9200`                                                     |
 | `elasticsearch.buffer_chunk_limit` | Elasticsearch buffer chunk limit           | `2M`                                                       |
