@@ -108,6 +108,11 @@ alertmanager:
   ##
   nodeSelector: {}
 
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
+
   persistentVolume:
     ## If true, alertmanager will create/use a Persistent Volume Claim
     ## If false, use emptyDir
@@ -168,6 +173,10 @@ alertmanager:
     # requests:
     #   cpu: 10m
     #   memory: 32Mi
+
+  ## Security context to be added to alertmanager pods
+  ##
+  securityContext: {}
 
   service:
     annotations: {}
@@ -297,6 +306,10 @@ kubeStateMetrics:
     # requests:
     #   cpu: 10m
     #   memory: 16Mi
+
+  ## Security context to be added to kube-state-metrics pods
+  ##
+  securityContext: {}
 
   service:
     annotations:
@@ -474,7 +487,7 @@ server:
     ##
     extraLabels: {}
 
-    ## Prometheus server Ingress hostnames with optinal path
+    ## Prometheus server Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
@@ -506,6 +519,11 @@ server:
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   persistentVolume:
     ## If true, Prometheus server will create/use a Persistent Volume Claim
@@ -569,6 +587,10 @@ server:
     #   cpu: 500m
     #   memory: 512Mi
 
+  ## Security context to be added to server pods
+  ##
+  securityContext: {}
+
   service:
     annotations: {}
     labels: {}
@@ -623,7 +645,7 @@ pushgateway:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## pushgateway Ingress hostnames with optinal path
+    ## pushgateway Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
@@ -669,6 +691,10 @@ pushgateway:
     #   cpu: 10m
     #   memory: 32Mi
 
+  ## Security context to be added to push-gateway pods
+  ##
+  securityContext: {}
+
   service:
     annotations:
       prometheus.io/probe: pushgateway
@@ -711,6 +737,17 @@ serverFiles:
   rules: {}
 
   prometheus.yml:
+    global:
+      ## How frequently to scrape targets by default
+      ##
+      scrape_interval: 1m
+      ## How long until a scrape request times out
+      ##
+      scrape_timeout: 10s
+      ## How frequently to evaluate rules
+      ##
+      evaluation_interval: 1m
+
     rule_files:
       - /etc/config/rules
       - /etc/config/alerts
