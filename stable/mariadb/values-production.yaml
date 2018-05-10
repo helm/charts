@@ -32,7 +32,7 @@ rootUser:
   ##
   ## Option to force users to specify a password. That is required for 'helm upgrade' to work properly.
   ## If it is not force, a random password will be generated.
-  forcePassword: false
+  forcePassword: true
 
 db:
   ## MariaDB username and password
@@ -47,7 +47,7 @@ db:
   name: my_database
   ## Option to force users to specify a password. That is required for 'helm upgrade' to work properly.
   ## If it is not force, a random password will be generated.
-  forcePassword: false
+  forcePassword: true
 
 replication:
   ## Enable replication. This enables the creation of replicas of MariaDB. If false, only a
@@ -66,7 +66,7 @@ replication:
   ##
   ## Option to force users to specify a password. That is required for 'helm upgrade' to work properly.
   ## If it is not force, a random password will be generated.
-  forcePassword: false
+  forcePassword: true
 
 master:
   antiAffinity: soft
@@ -151,7 +151,7 @@ master:
     failureThreshold: 3
 
 slave:
-  replicas: 1
+  replicas: 2
   antiAffinity: soft
   persistence:
     ## If true, use a Persistent Volume Claim, If false, use emptyDir
