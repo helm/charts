@@ -22,7 +22,6 @@ spec:
         release: {{ .Release.Name }}
     spec:
       {{- if .Values.serviceAccount.create }}
-      serviceAccount: {{ template "weave-cloud.serviceAccountName" . }}
       serviceAccountName: {{ template "weave-cloud.serviceAccountName" . }}
       {{- end }}
       terminationGracePeriodSeconds: 30
