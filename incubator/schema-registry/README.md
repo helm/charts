@@ -74,8 +74,8 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `sasl.scram.init.imagePullPolicy` | the sasl scram init pull policy | `IfNotPresent` |
 | `sasl.scram.clientUser` | the sasl scram user to use to authenticate to kafka | `kafka-client` |
 | `sasl.scram.clientPassword` | the sasl scram password to use to authenticate to kafka | `kafka-password` |
-| `sasl.scram.zookeeperClientUser` | the sasl scram user to use to authenticate to zookeeper | `zookeper-client` |
-| `sasl.scram.zookeeperClientPassword` | the sasl scram password to use to authenticate to zookeeper | `zookeper-password` |
+| `sasl.scram.zookeeperClientUser` | the sasl scram user to use to authenticate to zookeeper | `zookeeper-client` |
+| `sasl.scram.zookeeperClientPassword` | the sasl scram password to use to authenticate to zookeeper | `zookeeper-password` |
 | `resources` | CPU/Memory resource requests/limits | `{}` |
 | `servicePort` | The port on which the SchemaRegistry server will be exposed. | `8081` |
 | `overrideGroupId` | Group ID defaults to using Release Name so each release is its own Schema Registry worker group, it can be overridden | `{- .Release.Name -}}` |
