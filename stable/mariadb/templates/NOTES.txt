@@ -1,66 +1,35 @@
-{{- if contains .Values.service.type "LoadBalancer" }}
-{{- if not .Values.usePassword }}
--------------------------------------------------------------------------------
- WARNING
 
-    By specifying "service.type=LoadBalancer" and "usePassword=false" you have
-    most  likely exposed the MariaDB service externally without any authentication
-    mechanism.
+Please be patient while the chart is being deployed
 
-    For security reasons, we strongly suggest that you switch to "ClusterIP" or
-    "NodePort". As alternative, you can also switch to "usePassword=true"
-    providing a valid pasword on "mariadbRootPassword" parameter.
+Tip:
 
--------------------------------------------------------------------------------
-{{- end }}
+  Watch the deployment status using the command: kubectl get pods -w --namespace {{ .Release.Namespace }} -l release={{ .Release.Name }}
+
+Services:
+
+  echo Master: {{ template "master.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+{{- if .Values.replication.enabled }}
+  echo Slave:  {{ template "slave.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
 {{- end }}
 
-** Please be patient while the chart is being deployed **
+Administrator credentials:
 
-MariaDB can be accessed via port 3306 on the following DNS name from within your cluster:
-{{ template "mariadb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  Username: root
+  Password : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
 
-{{ if .Values.usePassword -}}
-To get the root password run:
+To connect to your database
 
-    export MARIADB_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+  1. Run a pod that you can use as a client:
 
-{{ if .Values.mariadbUser -}}
-To get the password for "{{ .Values.mariadbUser }}" run:
+      kubectl run {{ template "mariadb.fullname" . }}-client --rm --tty -i --image  {{ template "mariadb.image" . }} --namespace {{ .Release.Namespace }} --command -- bash
 
-    export MARIADB_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-password}" | base64 --decode)
-{{- end }}
-{{- end -}}
+  2. To connect to master service (read/write):
 
-To connect to your database:
+      mysql -h {{ template "master.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local -uroot -p {{ .Values.db.name }}
 
-1. Run a pod that you can use as a client:
+{{- if .Values.replication.enabled }}
 
-    kubectl run {{ template "mariadb.fullname" . }}-client --rm --tty -i {{ if .Values.usePassword }}--env MARIADB_ROOT_PASSWORD=$MARIADB_ROOT_PASSWORD{{ end }} --image bitnami/mariadb --command -- bash
+  3. To connect to slave service (read-only):
 
-2. Connect using the mysql cli, then provide your password:
-    mysql -h {{ template "mariadb.fullname" . }} -uroot {{- if .Values.usePassword }} -p$MARIADB_ROOT_PASSWORD{{ end }}
-
-To connect to your database from outside the cluster execute the following commands:
-
-{{- if contains "NodePort" .Values.service.type }}
-
-    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "mariadb.fullname" . }})
-    mysql -h $NODE_IP -P $NODE_PORT -uroot {{- if .Values.usePassword }} -p$MARIADB_ROOT_PASSWORD{{ end }}
-
-{{- else if contains "LoadBalancer" .Values.service.type }}
-
-  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "mariadb.fullname" . }}'
-
-    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    mysql -h $SERVICE_IP -P {{ .Values.service.nodePort }} -uroot {{- if .Values.usePassword }} -p$MARIADB_ROOT_PASSWORD{{ end }}
-
-{{- else if contains "ClusterIP" .Values.service.type }}
-
-    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "mariadb.name" . }}" -o jsonpath="{.items[0].metadata.name}")
-    kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 3306:3306 &
-    mysql -h 127.0.0.1 -uroot {{- if .Values.usePassword }} -p$MARIADB_ROOT_PASSWORD{{ end }}
-
+      mysql -h {{ template "slave.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local -uroot -p {{ .Values.db.name }}
 {{- end }}
