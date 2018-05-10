@@ -1,0 +1,9 @@
+dependencies:
+- name: consul
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 2.0.1
+- name: etcd
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  version: 0.3.9
+digest: sha256:9c0a79c88d27ae7bdfdddbe93f90b8c36983b4535a48afb15ab06ac7e9420e1c
+generated: 2018-05-10T16:06:39.405054577-05:00

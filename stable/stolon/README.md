@@ -17,6 +17,9 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/stolon
 ```
 
+## Backend
+Consul is the default (and suggested) backend. etcdv2, etcdv3, and kubernetes (experimental) can also be used as a backend, but be sure to update `values.yaml` accordingly.
+
 ## Configuration
 
 | Parameter                               | Description                                    | Default                                                      |
@@ -36,21 +39,21 @@ $ helm install --name my-release stable/stolon
 | `replicationPassword`                   | Repl password                                  | random 40 characters                                         |
 | `superuserUsername`                     | Postgres Superuser name                        | `stolon`                                                     |
 | `superuserPassword`                     | Postgres Superuser password                    | random 40 characters                                         |
-| `store.backend`                         | Store backend to use (etcd/consul/kubernetes)  | `etcd`                                                       |
-| `store.endpoints`                       | Store backend endpoints                        | `http://etcd-0:2379,http://etcd-1:2379,http://etcd-2:2379`   |
+| `store.backend`                         | Store backend to use (etcd/consul/kubernetes)  | `consul`                                                     |
+| `store.endpoints`                       | Store backend endpoints                        | `http://stolon-consul:8500`                                  |
 | `store.kubeResourceKind`                | Kubernetes resource kind (only for kubernetes) | `configmap`                                                  |
 | `sentinel.replicaCount`                 | Number of sentinel nodes                       | `2`                                                          |
-| `sentinel.resources`                    | Sentinel resource requests/limit               | Memory: `256Mi`, CPU: `100m`                                 |
+| `sentinel.resources`                    | Sentinel resource requests/limit               | `{}`                                                         |
 | `sentinel.affinity`                     | Affinity settings for sentinel pod assignment  | `{}`                                                         |
 | `sentinel.nodeSelector`                 | Node labels for sentinel pod assignment        | `{}`                                                         |
 | `sentinel.tolerations`                  | Toleration labels for sentinel pod assignment  | `[]`                                                         |
 | `proxy.replicaCount`                    | Number of proxy nodes                          | `2`                                                          |
-| `proxy.resources`                       | Proxy resource requests/limit                  | Memory: `256Mi`, CPU: `100m`                                 |
+| `proxy.resources`                       | Proxy resource requests/limit                  | `{}`                                                         |
 | `proxy.affinity`                        | Affinity settings for proxy pod assignment     | `{}`                                                         |
 | `proxy.nodeSelector`                    | Node labels for proxy pod assignment           | `{}`                                                         |
 | `proxy.tolerations`                     | Toleration labels for proxy pod assignment     | `[]`                                                         |
 | `keeper.replicaCount`                   | Number of keeper nodes                         | `2`                                                          |
-| `keeper.resources`                      | Keeper resource requests/limit                 | Memory: `256Mi`, CPU: `100m`                                 |
+| `keeper.resources`                      | Keeper resource requests/limit                 | `{}`                                                         |
 | `keeper.affinity`                       | Affinity settings for keeper pod assignment    | `{}`                                                         |
 | `keeper.nodeSelector`                   | Node labels for keeper pod assignment          | `{}`                                                         |
 | `keeper.tolerations`                    | Toleration labels for keeper pod assignment    | `[]`                                                         |

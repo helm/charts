@@ -12,9 +12,20 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
+{{- if (or (eq .Values.keeper.service.type "ClusterIP" "") (empty .Values.keeper.service.type)) }}
+  type: ClusterIP
+  {{- if .Values.keeper.service.clusterIP }}
+  clusterIP: {{ .Values.keeper.service.clusterIP }}
+  {{end}}
+{{- else if eq .Values.keeper.service.type "LoadBalancer" }}
   type: {{ .Values.keeper.service.type }}
+  loadBalancerIP: {{ default "" .Values.keeper.service.loadBalancerIP }}
+{{- else }}
+  type: {{ .Values.keeper.service.type }}
+{{- end }}
   ports:
-    - port: {{ .Values.ports.externalPort }}
+    - name: {{ template "stolon.fullname" . }}-keeper
+      port: {{ .Values.ports.externalPort }}
       targetPort: {{ .Values.ports.internalPort }}
   selector:
     app: {{ template "stolon.fullname" . }}-keeper

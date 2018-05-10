@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "stolon.fullname" . }}-sentinel
@@ -8,7 +8,12 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  serviceName: {{ template "stolon.fullname" . }}
   replicas: {{ .Values.sentinel.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "stolon.fullname" . }}-sentinel
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:

@@ -14,7 +14,8 @@ metadata:
 spec:
   type: {{ .Values.proxy.service.type }}
   ports:
-    - port: {{ .Values.ports.externalPort }}
+    - name: {{ template "stolon.fullname" . }}
+      port: {{ .Values.ports.externalPort }}
       targetPort: {{ .Values.ports.internalPort }}
   selector:
     app: {{ template "stolon.fullname" . }}-proxy

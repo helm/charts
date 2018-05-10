@@ -23,13 +23,13 @@ spec:
                   "name": "create-cluster",
                   "image": "gcr.io/google_containers/etcd-amd64:3.0.14",
                   "command": ["/bin/sh", "-c", "while ! etcdctl --endpoints {{ .Values.store.endpoints }} cluster-health; do sleep 1 && echo -n .; done"],
-                  "imagePullPolicy": {{ default "Always" .Values.imagePullPolicy | quote }}
+                  "imagePullPolicy": {{ .Values.image.pullPolicy | quote }}
               }
           ]'
         {{- end }}
     spec:
+      restartPolicy: OnFailure
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
-      restartPolicy: Never
       containers:
       - name: {{ template "stolon.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -45,6 +45,6 @@ spec:
           - --store-endpoints={{ .Values.store.endpoints }}
           {{- end }}
           - --yes
-          - '{  "initMode": "new"{{- if or .Values.keeper.client_ssl.enabled .Values.slow_queries.enabled }}, "pgParameters": { {{- if .Values.keeper.client_ssl.enabled }} "ssl": "on", "ssl_cert_file": "/etc/secrets/ssl/server.crt", "ssl_key_file": "/etc/secrets/ssl/server.key"{{- end }}{{- if and .Values.keeper.client_ssl.enabled .Values.slow_queries.enabled }},{{- end }}{{ if .Values.slow_queries.enabled }} "log_min_duration_statement" :  "{{ .Values.slow_queries.min_duration }}" {{ end }} }{{- end}} }'
+          - '{  "initMode": "new"{{- if or .Values.keeper.clientSsl.enabled .Values.slowQueries.enabled }}, "pgParameters": { {{- if .Values.keeper.clientSsl.enabled }} "ssl": "on", "ssl_cert_file": "/etc/secrets/ssl/server.crt", "ssl_key_file": "/etc/secrets/ssl/server.key"{{- end }}{{- if and .Values.keeper.clientSsl.enabled .Values.slowQueries.enabled }},{{- end }}{{ if .Values.slowQueries.enabled }} "log_min_duration_statement" :  "{{ .Values.slowQueries.minDuration }}" {{ end }} }{{- end}} }'
 {{ end }}
 

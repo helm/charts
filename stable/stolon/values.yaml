@@ -1,16 +1,22 @@
 image:
   repository: sorintlab/stolon
   tag: v0.10.0-pg9.6
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 debug: false
 
 persistence:
   enabled: true
-  storageClassName: default
-  size: 10Gi
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClassName: ""
   accessModes:
     - ReadWriteOnce
+  size: 10Gi
 
 rbac:
   create: true
@@ -30,9 +36,19 @@ replicationUsername: "repluser"
 ## password for the superuser (default is 40 random chars)
 # superuserPassword: ""
 
+## backend could be one of the following: consul, etcdv2, etcdv3, or kubernetes (experimental)
 store:
+  installConsul: true
   backend: "consul"
-  endpoints: "http://consul-consul:8500"
+  endpoints: "http://stolon-consul:8500"
+
+## Update to customize backend store
+consul:
+  Replicas: 1
+  ui:
+    enabled: false
+  uiService:
+    enabled: false
 
 ports:
   internalPort: 5432
@@ -40,10 +56,7 @@ ports:
 
 sentinel:
   replicaCount: 2
-  resources:
-    requests:
-      cpu: "100m"
-      memory: "512Mi"
+  resources: {}
   service:
     type: ClusterIP
   affinity: {}
@@ -52,10 +65,7 @@ sentinel:
 
 proxy:
   replicaCount: 2
-  resources:
-    requests:
-      cpu: "100m"
-      memory: "512Mi"
+  resources: {}
   service:
     type: ClusterIP
   affinity: {}
@@ -64,10 +74,7 @@ proxy:
 
 keeper:
   replicaCount: 2
-  resources:
-    requests:
-      cpu: "100m"
-      memory: "512Mi"
+  resources: {}
   service:
     type: ClusterIP
   affinity: {}
@@ -77,10 +84,10 @@ keeper:
   # create certificates according to these instructions: https://www.postgresql.org/docs/9.6/static/ssl-tcp.html
   # to enable encrypted traffic, servert.crt and server.key are required, by that name.
   # the use of ** Client Certificates ** is not supported
-  client_ssl:
+  clientSsl:
     enabled: false
     certs_secret_name: pg-cert-secret
 
-slow_queries:
+slowQueries:
   enabled: false
-  min_duration: 300
+  minDuration: 300

@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
   name: {{ template "stolon.fullname" . }}-keeper
@@ -8,14 +8,17 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  serviceName: {{ template "stolon.fullname" . }}
   replicas: {{ .Values.keeper.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "stolon.fullname" . }}-keeper
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "stolon.name" . }}-keeper
         release: {{ .Release.Name }}
-      annotations:
-        pod.alpha.kubernetes.io/initialized: "true"
     spec:
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       terminationGracePeriodSeconds: 10
@@ -84,13 +87,12 @@ spec:
   {{- end }}
         resources:
           requests:
-            storage: {{ .Values.persistence.size }}
+            storage: {{ .Values.persistence.size | quote }}
   {{- if .Values.persistence.storageClassName }}
-        storageClassName: {{ .Values.persistence.storageClassName | quote }}
+    {{- if (eq "-" .Values.persistence.storageClassName) }}
+  storageClassName: ""
     {{- else }}
-        storageClassName: default
+  storageClassName: "{{ .Values.persistence.storageClassName }}"
+    {{- end }}
   {{- end }}
-{{- else }}
-        - name: stolon-data
-          emptyDir: {}
 {{- end }}

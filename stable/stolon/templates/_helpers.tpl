@@ -45,24 +45,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf $name -}}
 {{- end -}}
 
-{{- define "stolon.keeper.fullname" -}}
-{{- $serviceName := default "keeper" .Values.keeper.nameOverride -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s-%s" .Release.Name $name $serviceName | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{- define "stolon.sentinel.fullname" -}}
-{{- $serviceName := default "sentinel" .Values.sentinel.nameOverride -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s-%s" .Release.Name $name $serviceName | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{- define "stolon.proxy.fullname" -}}
-{{- $serviceName := default "proxy" .Values.proxy.nameOverride -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s-%s" .Release.Name $name $serviceName | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
 {{/* Create the name of the service account to use */}}
 {{- define "stolon.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}

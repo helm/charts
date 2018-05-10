@@ -1,0 +1,13 @@
+dependencies:
+  - name: consul
+    version: ~2.0
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: store.installConsul
+    tags:
+      - stolon-backend
+  - name: etcd
+    version: ~0.3
+    repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+    condition: store.installEtcd
+    tags:
+      - stolon-backend

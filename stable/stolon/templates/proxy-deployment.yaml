@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "stolon.fullname" . }}-proxy
@@ -8,13 +8,19 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  serviceName: {{ template "stolon.fullname" . }}
   replicas: {{ .Values.proxy.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "stolon.fullname" . }}-proxy
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "stolon.name" . }}-proxy
         release: {{ .Release.Name }}
     spec:
+      serviceName: {{ template "stolon.fullname" . }}-proxy
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       containers:
         - name: {{ template "stolon.fullname" . }}-proxy
@@ -38,7 +44,7 @@ spec:
               value: {{ .Values.store.backend | quote}}
             {{- if eq .Values.store.backend "kubernetes" }}
             - name: STPROXY_KUBE_RESOURCE_KIND
-              value: {{ default "configmap" .Values.store.kubeResourceKind  | quote}}
+              value: {{ .Values.store.kubeResourceKind  | quote}}
             {{- else }}
             - name: STPROXY_STORE_ENDPOINTS
               value: {{ .Values.store.endpoints | quote}}
