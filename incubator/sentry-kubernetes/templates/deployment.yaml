@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/secrets: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}
       labels:
         app: {{ template "sentry-kubernetes.name" . }}
         release: {{.Release.Name }}    
