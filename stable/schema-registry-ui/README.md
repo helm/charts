@@ -5,7 +5,7 @@ This is a web tool for the confluentinc/schema-registry in order to create / vie
 
 
 ## Prerequisites
-* Kubernetes 1.6
+* Kubernetes 1.8
 * A running Kafka Installation
 * A running Zookeeper Installation
 * A running Schema-Registry installation
@@ -26,9 +26,6 @@ $ helm install --name srui incubator/schema-registry-ui
 ```
 
 If you do not specify a name, helm will select a name for you.
-
-### Installed Components
-You can use `kubectl get` to view all of the installed components.
 
 ```console{%raw}
 $ kubectl get all -l app=schema-registry-ui

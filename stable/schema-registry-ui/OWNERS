@@ -1,25 +1,11 @@
 approvers:
-  - lachie83
-  - linki
-  - mgoodness
   - prydonius
-  - sameersbn
-  - seanknox
-  - viglesiasce
-  - foxish
   - unguiculus
-  - scottrigby
-  - mattfarina
-reviewers:
-  - lachie83
-  - linki
-  - mgoodness
-  - prydonius
-  - sameersbn
-  - seanknox
-  - viglesiasce
-  - foxish
-  - unguiculus
-  - scottrigby
   - mattfarina
   - cristian04
+reviewers:
+  - cristian04
+  - prydonius
+  - unguiculus
+  - mattfarina
+  - timstoop
