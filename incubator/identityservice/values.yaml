@@ -4,6 +4,6 @@ dbUserName: none
 dbPassword: none
 sendgridKey: none
 adminEmail: none
-serviceName: identitysvc3
+serviceName: identityservice
 serviceType: ClusterIP
 host: example.com

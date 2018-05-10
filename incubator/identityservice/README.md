@@ -28,15 +28,14 @@ Create an AKS Linux cluster in the Azure portal or add Identity Service to an ex
 
 In the cluster, install the following if they are not already installed :
 
-* NGINX ingress controller
-* Helm
-* KUBE-LEO
+* A Kubernetes supported ingress controller (eg: [nginx](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress) , [GCE](https://github.com/kubernetes/ingress-gce/blob/master/README.md))
+* TLS termination (eg. [cert-manager](https://github.com/kubernetes/charts/tree/master/stable/cert-manager) or installed TLS Certificate)
 
 For detailed instructions on these installations refer to the  [Azure AKS Documentation](https://docs.microsoft.com/en-us/azure/aks/ingress)
 
 ### NGINX Ingress Controller Proxy Buffer Size
 
-The NGINX ingress controller Proxy Buffer Size is not large enough for the headers returned by Identity Service. You will need to increase the buffer size. Create a ConfigMap file called nginx-configuration.yaml and add this code. Replace the placeholder text with your nginx pod name.
+This applies if you are using the NGINX ingress controller. The NGINX ingress controller Proxy Buffer Size is not large enough for the headers returned by Identity Service. You will need to increase the buffer size. Create a ConfigMap file called nginx-configuration.yaml and add this code. Replace the placeholder text with your nginx pod name.
 
 ```yaml
 kind: ConfigMap  
@@ -85,24 +84,12 @@ Identity Service requires verification of emails when a user first registers. We
 
 ### Helm repository
 
-Add the RCL Helm repository on your development system if it does not exist.
-
-```bash
-helm repo add rcl-apps https://rcladmin.github.io/helm-charts/
-```
-
-Update the helm repo to get the latest charts
-
-```bash
-helm repo update
-```
-
 ### Install the chart
 
-Install the chart with the following command (replace the placeholder text with your own data) :
+Install the chart with the following command , the parameters shown are all mandatory (replace the placeholder text with your own data) :
 
 ```bash
-helm install rcl-apps/identitysvc3 \
+helm install incubator/identityservice \
   --set dbServerName=your-db-server-name \
   --set dbName=your-db-name \
   --set dbUserName=your-db-server-username \
@@ -115,7 +102,7 @@ helm install rcl-apps/identitysvc3 \
 The following is an example of an installation command :
 
 ```bash
-helm install rcl-apps/identitysvc3 \
+helm install incubator/identityservice \
   --set dbServerName=contosodbsvr.database.windows.net\
   --set dbName=contosodb \
   --set dbUserName=montanadmin \
@@ -134,8 +121,6 @@ https://your-dns-name/identitysvc
 You will need to do some configuration of the UI before you can use the application. Just follow the steps on the setup page when you first open the UI dashboard.
 
 ### Helm chart configuration parameters
-
-Please avoid commas (,) in your parameters.
 
 | Parameter           | Description                                                                    |Default
 | ------------------- |:------------------------------------------------------------------------------:|:--------
