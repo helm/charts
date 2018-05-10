@@ -23,3 +23,4 @@ spec:
           value: {{.Values.sendgridKey}} 
         - name: AdminUserName
           value: {{.Values.adminEmail}} 
+          

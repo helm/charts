@@ -136,8 +136,3 @@ You will need to do some configuration of the UI before you can use the applicat
 * For a custom host, you can register your custom domain with a domain service provider that points to the static IP (A record) or DNS (CNAME Record) of your AKS cluster.  
 
 
-
-
-
-
-

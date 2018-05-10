@@ -18,3 +18,4 @@ spec:
         backend:
           serviceName: {{.Values.serviceName}}
           servicePort: 80
+          
