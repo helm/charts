@@ -116,6 +116,24 @@ $ helm install --name my-release -f values.yaml stable/wordpress
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Production and horizontal scaling
+
+The following repo contains the recommended production settings for wordpress capture in an alternative [values file](values-production.yaml). Please read carefully the comments in the values-production.yaml file to set up your environment appropriately.
+
+To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then:
+
+```console
+$ 
+$ helm install --name my-release -f ./values-production.yaml stable/wordpress
+$ kubectl scale deployment my-wp-deployment --replicas=3 
+```
+To use the /admin portal and to ensure you can scale wordpress you need to provide a ReadWriteMany PVC, if you dont have a provisioner for this type of storage, we recommend that you install the nfs provisioner and map it to a RWO volume.
+
+```console
+$ helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
+$ helm install --name my-release -f values-production.yaml --set persitence.storageClass=nfs stable/wordpress
+```
+
 ## Persistence
 
 The [Bitnami WordPress](https://github.com/bitnami/bitnami-docker-wordpress) image stores the WordPress data and configurations at the `/bitnami` path of the container.
