@@ -83,5 +83,3 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `kafka.enabled` | If `true`, install Kafka/Zookeeper alongside the `SchemaRegistry`. This is intended for testing and argument-less helm installs of this chart only and should not be used in Production. | `true` |
 | `kafka.replicas` | The number of Kafka Pods to install as part of the `StatefulSet` if `kafka.Enabled` is `true`| `1` |
 | `kafka.zookeeper.servers` | The number of Zookeeper Pods to install as part of the `StatefulSet` if `kafka.Enabled` is `true`| `1` |
-| `kafka.ZookeeperUrl` | The URL of the Zookeeper servicing the Kafka installation if `Kafka.Enabled` is `false` | `""` |
-| `kafka.ZookeeperPort` | The Port of the Zookeeper servicing the Kafka installation if `Kafka.Enabled` is `false` | `2181` |
