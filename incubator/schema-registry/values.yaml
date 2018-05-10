@@ -3,14 +3,11 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 
-# By Default uses Release Name, but can be overridden.  Which means each release is its own group of
-# Schema Registry workers.  You can have multiple groups talking to same Kafka Cluster
-overrideGroupId: ""
 
 ## schema-registry repository
 image: "confluentinc/cp-schema-registry"
 ## The container tag to use
-imageTag: "4.0.0"
+imageTag: 4.0.1
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 imagePullPolicy: "IfNotPresent"
@@ -20,7 +17,8 @@ replicaCount: 1
 
 ## Schema Registry Settings Overrides
 ## Configuration Options can be found here: https://docs.confluent.io/current/schema-registry/docs/config.html
-configurationOverrides: {}
+configurationOverrides:
+  kafkastore.topic.replication.factor: 1
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -44,8 +42,11 @@ servicePort: 8081
 ## Charts uses Kafka Coordinator Master Election: https://docs.confluent.io/current/schema-registry/docs/design.html#kafka-coordinator-master-election
 kafkaStore:
   overrideBootstrapServers: ""
-## Additional Java arguments to pass to Kafka.
-# schemaRegistryOpts: -Dfoo=bar
+  # By Default uses Release Name, but can be overridden.  Which means each release is its own group of
+  # Schema Registry workers.  You can have multiple groups talking to same Kafka Cluster
+  overrideGroupId: ""
+  ## Additional Java arguments to pass to Kafka.
+  # schemaRegistryOpts: -Dfoo=bar
 
 # Options for connecting to SASL kafka brokers
 sasl:
@@ -79,8 +80,12 @@ sasl:
 kafka:
   ## This is enabled only to allow installations of this chart without arguments
   enabled: true
-  ## Install 3x Kafka pods in the StatefulSet, 3 are wanted for default settings in Kafka-Connect
-  Replicas: 3
+  imageTag: 4.0.1
+  configurationOverrides:
+    # Needed to run with 1 Kafka Broker
+    offsets.topic.replication.factor: 1
+  replicas: 1
+
   ## Install only a single Zookeeper pod in the StatefulSet
   zookeeper:
-    Servers: 1
+    servers: 1
