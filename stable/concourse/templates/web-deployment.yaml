@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: {{ template "concourse.web.fullname" . }}
+        release: "{{ .Release.Name }}"
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.web.fullname" . }}{{ else }}{{ .Values.rbac.webServiceAccountName }}{{ end }}
       tolerations:
