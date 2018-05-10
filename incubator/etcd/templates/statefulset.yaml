@@ -6,7 +6,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.component }}"
+    app: {{ template "etcd.name" . }}
 spec:
   serviceName: {{ template "etcd.fullname" . }}
   replicas: {{ default 3 .Values.replicas }}
@@ -17,7 +17,7 @@ spec:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        component: "{{ .Release.Name }}-{{ .Values.component }}"
+        app: {{ template "etcd.name" . }}
     spec:
 {{- if .Values.affinity }}
       affinity:

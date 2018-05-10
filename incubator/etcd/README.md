@@ -41,7 +41,6 @@ The following table lists the configurable parameters of the etcd chart and thei
 | `image.tag`             | Container image tag                  | `2.2.5`                                            |
 | `image.pullPolicy`      | Container pull policy                | `IfNotPresent`                                     |
 | `replicas`              | k8s statefulset replicas             | `3`                                                |
-| `component`             | k8s selector key                     | `etcd`                                             |
 | `cpu`                   | container requested cpu              | `100m`                                             |
 | `memory`                | container requested memory           | `512Mi`                                            |
 | `clientPort`            | k8s service port                     | `2379`                                             |
@@ -95,7 +94,7 @@ $ kill -9 ETCD_1_PID
 ```
 
 ```shell
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
+$ kubectl get pods -l "release=${RELEASE-NAME}"
 NAME                 READY     STATUS        RESTARTS   AGE
 etcd-0               1/1       Running       0          54s
 etcd-2               1/1       Running       0          51s
@@ -104,7 +103,7 @@ etcd-2               1/1       Running       0          51s
 After a while:
 
 ```shell
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
+$ kubectl get pods -l "release=${RELEASE-NAME}"
 NAME                 READY     STATUS    RESTARTS   AGE
 etcd-0               1/1       Running   0          1m
 etcd-1               1/1       Running   0          20s
@@ -134,7 +133,7 @@ This is for reference. Scaling should be managed by `helm upgrade`
 The etcd cluster can be scale up by running ``kubectl patch`` or ``kubectl edit``. For instance,
 
 ```sh
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
+$ kubectl get pods -l "release=${RELEASE-NAME}"
 NAME      READY     STATUS    RESTARTS   AGE
 etcd-0    1/1       Running   0          7m
 etcd-1    1/1       Running   0          7m
@@ -143,7 +142,7 @@ etcd-2    1/1       Running   0          6m
 $ kubectl patch statefulset/etcd -p '{"spec":{"replicas": 5}}'
 "etcd" patched
 
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
+$ kubectl get pods -l "release=${RELEASE-NAME}"
 NAME      READY     STATUS    RESTARTS   AGE
 etcd-0    1/1       Running   0          8m
 etcd-1    1/1       Running   0          8m
@@ -158,7 +157,7 @@ Scaling-down is similar. For instance, changing the number of replicas to ``4``:
 $ kubectl edit statefulset/etcd
 statefulset "etcd" edited
 
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
+$ kubectl get pods -l "release=${RELEASE-NAME}"
 NAME      READY     STATUS    RESTARTS   AGE
 etcd-0    1/1       Running   0          8m
 etcd-1    1/1       Running   0          8m

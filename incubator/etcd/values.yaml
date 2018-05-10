@@ -10,7 +10,7 @@ replicas: 3
 image:
   repository: "k8s.gcr.io/etcd-amd64"
   tag: "2.2.5"
-  pullPolicy: "Always"
+  pullPolicy: "IfNotPresent"
 cpu: "100m"
 memory: "512Mi"
 
