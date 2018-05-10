@@ -13,7 +13,7 @@ service:
   replicas: 1
   type: ClusterIP
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 ##
 persistence:
   enabled: false
