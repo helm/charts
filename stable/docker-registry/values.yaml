@@ -25,6 +25,7 @@ service:
   # foo.io/bar: "true"
 ingress:
   enabled: false
+  path: /
   # Used to create an Ingress record.
   hosts:
     - chart-example.local
