@@ -53,7 +53,7 @@ svc/mymssql-mssql-linux   ClusterIP   10.104.152.61   <none>        1433/TCP   9
 
 ### SA Password Retrieval
 
-The sa password is a randonmized in the secret.yaml file.  To retrieve the password, perform the following steps once you install the helm chart.
+The sa password is a randomized in the secret.yaml file.  To retrieve the password, perform the following steps once you install the helm chart.
 
 ```console
 $ printf $(kubectl get secret --namespace default mymssql-mssql-linux-secret -o jsonpath="{.data.sapassword}" | base64 --decode);echo
@@ -98,7 +98,7 @@ The configuration parameters in this section control the resources requested and
 | service.port     | Service Port                                                                                   | `1433`                           |
 | collation        | Default collation for SQL Server                                                               | `SQL_Latin1_General_CP1_CI_AS`   |
 | lcid             | Default languages for SQL Server                                                               | `1033`                           |
-| persistence.enabled | Presist the Data and Log files for SQL Server                                               | `false`                          |
+| persistence.enabled | Persist the Data and Log files for SQL Server                                               | `false`                          |
 | persistence.enabled | Persist the Data and Log files for SQL Server                                               | `false`                          |
 | persistence.existingDataClaim | Identify an existing Claim to be used for the Data Directory                      | `Commented Out`                  |
 | persistence.existingLogClaim  | Identify an existing Claim to be used for the Log Directory                       | `Commented Out`                  |

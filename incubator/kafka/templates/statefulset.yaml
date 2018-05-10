@@ -2,31 +2,34 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "kafka.fullname" . }}
+  name: {{ include "kafka.fullname" . }}
   labels:
-    app: {{ include "kafka.name" . | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    app: {{ include "kafka.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
-  serviceName: {{ template "kafka.fullname" . }}-headless
+  serviceName: {{ include "kafka.fullname" . }}-headless
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
   replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
-      {{- if .Values.metrics.jmx.enabled }}
+{{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.operator.enabled) }}
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "5556"
-      {{- end }}
+        prometheus.io/port: {{ .Values.prometheus.jmx.port | quote }}
+{{- end }}
       labels:
-        app: {{ include "kafka.name" . | quote }}
-        release: {{ .Release.Name | quote }}
+        app: {{ include "kafka.name" . }}
+        release: {{ .Release.Name }}
     spec:
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
+{{- end }}
+{{- if .Values.rbac.enabled }}
+      serviceAccountName: {{ .Release.Name }}
 {{- end }}
     {{- if .Values.external.enabled }}
       ## ref: https://github.com/Yolean/kubernetes-kafka/blob/master/kafka/50kafka.yml
@@ -61,9 +64,9 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
       containers:
-      {{- if .Values.metrics.jmx.enabled }}
+      {{- if .Values.prometheus.jmx.enabled }}
       - name: metrics
-        image: "{{ .Values.metrics.jmx.image }}:{{ .Values.metrics.jmx.imageTag }}"
+        image: "{{ .Values.prometheus.jmx.image }}:{{ .Values.prometheus.jmx.imageTag }}"
         command:
         - java
         - -XX:+UnlockExperimentalVMOptions
@@ -72,21 +75,17 @@ spec:
         - -XshowSettings:vm
         - -jar
         - jmx_prometheus_httpserver.jar
-        - "5556"
+        - {{ .Values.prometheus.jmx.port | quote }}
         - /etc/jmx-kafka/jmx-kafka-prometheus.yml
         ports:
-        - containerPort: 5556
+        - containerPort: {{ .Values.prometheus.jmx.port }}
         resources:
-          requests:
-            cpu: 0m
-            memory: 60Mi
-          limits:
-            memory: 120Mi
+{{ toYaml .Values.prometheus.jmx.resources | indent 10 }}
         volumeMounts:
         - name: jmx-config
           mountPath: /etc/jmx-kafka
       {{- end }}
-      - name: {{ template "kafka.name" . }}-broker
+      - name: {{ include "kafka.name" . }}-broker
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         livenessProbe:
@@ -116,8 +115,8 @@ spec:
           name: external-{{ $i }}
           {{- end }}
         {{- end }}
-        {{- if .Values.metrics.jmx.enabled }}
-        - containerPort: {{ .Values.metrics.jmx.port }}
+        {{- if .Values.prometheus.jmx.enabled }}
+        - containerPort: {{ .Values.jmx.port }}
           name: jmx
         {{- end }}
         {{- if .Values.additionalPorts }}
@@ -126,9 +125,9 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
-        {{- if .Values.metrics.jmx.enabled }}
+        {{- if .Values.prometheus.jmx.enabled }}
         - name: JMX_PORT
-          value: "{{ .Values.metrics.jmx.port }}"
+          value: "{{ .Values.jmx.port }}"
         {{- end }}
         - name: POD_IP
           valueFrom:
@@ -148,9 +147,9 @@ spec:
         - name: {{ printf "KAFKA_%s" $key | replace "." "_" | upper | quote }}
           value: {{ $value | quote }}
         {{- end }}
-        {{- if .Values.metrics.jmx.port }}
+        {{- if .Values.jmx.port }}
         - name: KAFKA_JMX_PORT
-          value: "{{ .Values.metrics.jmx.port }}"
+          value: "{{ .Values.jmx.port }}"
         {{- end }}
         # This is required because the Downward API does not yet support identification of
         # pod numbering in statefulsets. Thus, we are required to specify a command which
@@ -171,10 +170,14 @@ spec:
       - name: datadir
         emptyDir: {}
       {{- end }}
-      {{- if .Values.metrics.jmx.enabled }}
+      {{- if .Values.prometheus.jmx.enabled }}
       - name: jmx-config
         configMap:
-          name: {{ template "kafka.fullname" . }}-metrics
+          {{- if .Values.jmx.configMap.overrideName }}
+          name: {{ .Values.jmx.configMap.overrideName }}
+          {{- else }}
+          name: {{ include "kafka.fullname" . }}-metrics
+          {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
   {{- if .Values.persistence.enabled }}
