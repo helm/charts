@@ -63,6 +63,10 @@ spec:
             - name: AWS_DEFAULT_REGION
               value: {{ .Values.aws.region }}
           {{- end }}
+          {{- range $name, $value := .Values.extraEnv }}
+            - name: {{ $name }}
+              value: {{ quote $value }}
+          {{- end }}
           ports:
             - containerPort: {{ .Values.host.port }}
         {{- if .Values.probe }}
