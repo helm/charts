@@ -15,7 +15,7 @@ spec:
     targetPort: 3000
     name: {{ default "gogs" .Values.service.nameOverride }}-http
   - port: {{ .Values.service.sshPort | int }}
-    targetPort:  {{ .Values.service.sshPort | int }}
+    targetPort: 22
     name: {{ default "gogs" .Values.service.nameOverride }}-ssh
   selector:
     app: {{ template "gogs.fullname" . }}
