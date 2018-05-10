@@ -34,7 +34,7 @@ $ helm delete my-release
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 ## Access control
-It is critical for the Kubernetes custer to correctly setup access control of Kubernetes Dashboard. See this [guide](https://github.com/kubernetes/dashboard/wiki/Access-control) for best practises.
+It is critical for the Kubernetes cluster to correctly setup access control of Kubernetes Dashboard. See this [guide](https://github.com/kubernetes/dashboard/wiki/Access-control) for best practises.
 
 It is highly recommended to use RBAC with minimal privileges needed for Dashboard to run.
 
