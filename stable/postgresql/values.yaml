@@ -44,7 +44,7 @@ usePasswordFile: false
 ## ref: https://www.postgresql.org/docs/current/static/runtime-config.html
 # postgresConfig:
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 persistence:
   enabled: true
 
