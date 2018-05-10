@@ -201,8 +201,8 @@ spark:
     #   cpu: 500m
     #   memory: 512Mi
     # requests:
-    #    cpu: 256m
-    #    memory: 128Mi
+    #   cpu: 256m
+    #   memory: 128Mi
   nodeSelector: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
