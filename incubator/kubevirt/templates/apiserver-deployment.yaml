@@ -1,8 +1,8 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "kubevirt.fullname" . }}-virt-api
-  namespace: kube-system
+  namespace: {{ .Values.kubevirt.namespace }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
     component: "virt-api-server"
@@ -20,10 +20,10 @@ spec:
           image: "{{ .Values.kubevirt.repository }}/virt-api:{{ .Values.kubevirt.tag }}"
           imagePullPolicy: {{ .Values.kubevirt.pullPolicy }}
           command:
-              - "/virt-api"
-              - "--port"
-              - "8443"
-              - "--subresources-only"
+            - "/virt-api"
+            - "--port"
+            - "8443"
+            - "--subresources-only"
           ports:
             - containerPort: 8443
               name: "virt-api"

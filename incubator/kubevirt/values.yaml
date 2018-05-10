@@ -2,6 +2,7 @@ kubevirt:
   repository: "kubevirt"
   tag: "v0.4.1"
   pullPolicy: IfNotPresent
+  namespace: "kube-system"
 
 rbac:
   # Specifies whether RBAC resources should be created
@@ -11,10 +12,10 @@ serviceAccount:
   # Specifies whether a service accounts should be created
   apiserver:
     create: true
-    name: "kubevirt-apiserver"
+    name: ""
   controller:
     create: true
-    name: "kubevirt-controller"
+    name: ""
   privileged:
     create: true
-    name: "kubevirt-privileged"
+    name: ""

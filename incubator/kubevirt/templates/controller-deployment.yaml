@@ -1,8 +1,8 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "kubevirt.fullname" . }}-virt-controller
-  namespace: kube-system
+  namespace: {{ .Values.kubevirt.namespace }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
     component: "virt-controller"
@@ -20,11 +20,11 @@ spec:
           image: "{{ .Values.kubevirt.repository }}/virt-controller:{{ .Values.kubevirt.tag }}"
           imagePullPolicy: {{ .Values.kubevirt.pullPolicy }}
           command:
-              - "/virt-controller"
-              - "--launcher-image"
-              - "{{ .Values.kubevirt.repository }}/virt-launcher:{{ .Values.kubevirt.tag }}"
-              - "--port"
-              - "8182"
+            - "/virt-controller"
+            - "--launcher-image"
+            - "{{ .Values.kubevirt.repository }}/virt-launcher:{{ .Values.kubevirt.tag }}"
+            - "--port"
+            - "8182"
           ports:
             - containerPort: 8182
               name: "virt-controller"

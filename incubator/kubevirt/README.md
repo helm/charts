@@ -44,6 +44,7 @@ Parameter | Description | Default
 | `kubevirt.repository` | KubeVirt containers repository | `kubevirt`
 | `kubevirt.tag` | KubeVirt containers tag | `v0.4.1`
 | `kubevirt.pullPolicy` | Image pull policy | `IfNotPresent`
+| `kubevirt.namespace` | Specifies what namespace to use for KubeVirt deploy | `kube-system`
 | `rbac.create` | Specifies whether RBAC resources should be created | `true`
 | `serviceAccount.apiserver.create` | Specifies whether the apiserver ServiceAccount should be created | `true`
 | `serviceAccount.apiserver.name` | The name of the apiserver ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `kubevirt-apiserver`
