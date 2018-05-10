@@ -12,7 +12,7 @@ $ helm install stable/jasperreports
 
 This chart bootstraps a [JasperReports](https://github.com/bitnami/bitnami-docker-jasperreports) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the JasperReports application.
+It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which bootstraps a MariaDB deployment required by the JasperReports application.
 
 ## Prerequisites
 
@@ -66,8 +66,8 @@ The following table lists the configurable parameters of the JasperReports chart
 | `externalDatabase.port`       | Port of the external database                | `3306`                                                   |
 | `externalDatabase.user`       | Existing username in the external db         | `bn_jasperreports`                                       |
 | `externalDatabase.password`   | Password for the above username              | `nil`                                                    |
-| `externalDatabase.database`   | Name of the existing databse                 | `bitnami_jasperreports`                                  |
-| `mariadb.enabled`             | Wheter to use or not the mariadb chart       | `true`                                                   |
+| `externalDatabase.database`   | Name of the existing database                | `bitnami_jasperreports`                                  |
+| `mariadb.enabled`             | Whether to use the MariaDB chart             | `true`                                                   |
 | `mariadb.mariadbDatabase`     | Database name to create                      | `bitnami_jasperreports`                                  |
 | `mariadb.mariadbUser`         | Database user to create                      | `bn_jasperreports`                                       |
 | `mariadb.mariadbPassword`     | Password for the database                    | `nil`                                                    |

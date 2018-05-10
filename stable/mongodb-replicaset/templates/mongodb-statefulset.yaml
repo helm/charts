@@ -1,4 +1,3 @@
-{{ $user := .Values.securityContext.runAsUser }}
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
@@ -31,6 +30,8 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
         - name: copy-config
           image: busybox
@@ -51,6 +52,7 @@ spec:
 
             {{- if .Values.auth.enabled }}
               cp /keydir-readonly/key.txt /data/configdb/key.txt
+              chmod 600 /data/configdb/key.txt
             {{- end }}
           volumeMounts:
             - name: workdir
@@ -114,29 +116,14 @@ spec:
               mountPath: /data/configdb
             - name: datadir
               mountPath: /data/db
-        - name: permissions
-          image: busybox
-          command:
-            - "sh"
-          args:
-            - "-c"
-            - |
-              set -e
-              set -x
-
-              chown -R '{{ $user }}:{{ $user }}' /data/configdb /data/db
-          volumeMounts:
-            - name: configdir
-              mountPath: /data/configdb
-            - name: datadir
-              mountPath: /data/db
       containers:
         - name: {{ template "mongodb-replicaset.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-          securityContext:
-            runAsUser: {{ $user }}
-            allowPrivilegeEscalation: false
+        {{- if .Values.extraVars }}
+          env:
+{{ toYaml .Values.extraVars | indent 12 }}
+        {{- end }}
           ports:
             - name: peer
               containerPort: 27017
@@ -149,7 +136,7 @@ spec:
             - --dbpath=/data/db
             - --replSet={{ .Values.replicaSetName }}
             - --port=27017
-            - --bind_ip_all
+            - --bind_ip=0.0.0.0
           {{- if .Values.auth.enabled }}
             - --auth
             - --keyFile=/data/configdb/key.txt
@@ -163,7 +150,6 @@ spec:
             exec:
               command:
                 - mongo
-              args:
               {{- if .Values.tls.enabled }}
                 - --ssl
                 - --sslCAFile=/data/configdb/tls.crt
@@ -171,8 +157,11 @@ spec:
               {{- end }}
                 - --eval
                 - "db.adminCommand('ping')"
-            initialDelaySeconds: 30
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
           readinessProbe:
             exec:
               command:
@@ -184,13 +173,18 @@ spec:
               {{- end }}
                 - --eval
                 - "db.adminCommand('ping')"
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
           volumeMounts:
             - name: datadir
               mountPath: /data/db
             - name: configdir
               mountPath: /data/configdb
+            - name: workdir
+              mountPath: /work-dir
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

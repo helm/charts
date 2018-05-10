@@ -33,6 +33,9 @@ NetworkPolicy:
   AllowExternal: true
 Service:
   type: ClusterIP
+PodManagementPolicy: Parallel
+UpdateStrategy:
+  type: RollingUpdate
 Secure:
   Enabled: false
   RequestCertsImage: "cockroachdb/cockroach-k8s-request-cert"

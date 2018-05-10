@@ -32,7 +32,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | ----------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
 | `replicas`                          | Number of replicas in the replica set                                     | `3`                                                 |
 | `replicaSetName`                    | The name of the replica set                                               | `rs0`                                               |
-| `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                 |
+| `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                                |
 | `port`                              | MongoDB port                                                              | `27017`                                             |
 | `installImage.repository`           | Image name for the install container                                      | `k8s.gcr.io/mongodb-install`                        |
 | `installImage.tag`                  | Image tag for the install container                                       | `0.5`                                               |
@@ -41,6 +41,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `image.tag`                         | MongoDB image tag                                                         | `3.6`                                               |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | `IfNotPresent`                                      |
 | `podAnnotations`                    | Annotations to be added to MongoDB pods                                   | `{}`                                                |
+| `securityContext`                   | Security context for the pod                                              | `{runAsUser: 999, fsGroup: 999, runAsNonRoot: true}`|
 | `resources`                         | Pod resource requests and limits                                          | `{}`                                                |
 | `persistentVolume.enabled`          | If `true`, persistent volume claims are created                           | `true`                                              |
 | `persistentVolume.storageClass`     | Persistent volume storage class                                           | ``                                                  |
@@ -61,6 +62,9 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `nodeSelector`                      | Node labels for pod assignment                                            | `{}`                                                |
 | `affinity`                          | Node/pod affinities                                                       | `{}`                                                |
 | `tolerations`                       | List of node taints to tolerate                                           | `[]`                                                |
+| `livenessProbe`                     | Liveness probe configuration                                              | See below                                           |
+| `readinessProbe`                    | Readiness probe configuration                                             | See below                                           |
+| `extraVars`                         | Set environment variables for the main container                          | `{}`                                                |
 | `extraLabels`                       | Additional labels to add to resources                                     | `{}`                                                |
 
 *MongoDB config file*
@@ -155,6 +159,29 @@ mongodb with your `mongo.pem` certificate:
 
 ```console
 $ mongo --ssl --sslCAFile=ca.crt --sslPEMKeyFile=mongo.pem --eval "db.adminCommand('ping')"
+```
+## Readiness probe
+The default values for the readiness probe are:
+
+```yaml
+readinessProbe:
+  initialDelaySeconds: 5
+  timeoutSeconds: 1
+  failureThreshold: 3
+  periodSeconds: 10
+  successThreshold: 1
+```
+
+## Liveness probe
+The default values for the liveness probe are:
+
+```yaml
+livenessProbe:
+  initialDelaySeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 3
+  periodSeconds: 10
+  successThreshold: 1
 ```
 
 ## Deep dive
