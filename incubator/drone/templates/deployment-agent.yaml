@@ -22,6 +22,9 @@ spec:
         release: "{{ .Release.Name }}"
         component: agent
     spec:
+{{- if .Values.agent.schedulerName }}
+      schedulerName: "{{ .Values.agent.schedulerName }}"
+{{- end }}
 {{- if .Values.agent.affinity }}
       affinity:
 {{ toYaml .Values.agent.affinity | indent 8 }}
