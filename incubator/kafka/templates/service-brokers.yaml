@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "kafka.fullname" . }}
+  name: {{ include "kafka.fullname" . }}
   labels:
-    app: {{ template "kafka.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    app: {{ include "kafka.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   ports:
   - name: broker
@@ -18,19 +18,19 @@ spec:
     targetPort: {{ .Values.prometheus.jmx.port }}
 {{- end }}
   selector:
-    app: {{ include "kafka.name" . | quote }}
-    release: {{ .Release.Name | quote }}
+    app: {{ include "kafka.name" . }}
+    release: {{ .Release.Name }}
 ---
 {{- if and .Values.prometheus.kafka.enabled .Values.prometheus.operator.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "kafka.fullname" . }}-exporter
+  name: {{ include "kafka.fullname" . }}-exporter
   labels:
-    app: {{ template "kafka.name" . }}-exporter
+    app: {{ include "kafka.name" . }}-exporter
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   ports:
   - name: kafka-exporter
@@ -39,5 +39,5 @@ spec:
     targetPort: {{ .Values.prometheus.kafka.port }}
   selector:
     app: {{ include "kafka.name" . }}-exporter
-    release: {{ .Release.Name | quote }}
+    release: {{ .Release.Name }}
 {{- end }}

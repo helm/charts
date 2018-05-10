@@ -52,10 +52,34 @@ logSubPath: "logs"
 ##
 # schedulerName:
 
-## Pod scheduling preferences.
+## Pod scheduling preferences (by default keep pods within a release on separate nodes).
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-##
+## By default we don't set affinity
 affinity: {}
+## Alternatively, this typical example defines:
+## antiAffinity (to keep Kafka pods on separate pods)
+## and affinity (to encourage Kafka pods to be collocated with Zookeeper pods)
+# affinity:
+#   podAntiAffinity:
+#     requiredDuringSchedulingIgnoredDuringExecution:
+#     - labelSelector:
+#         matchExpressions:
+#         - key: app
+#           operator: In
+#           values:
+#           - kafka
+#       topologyKey: "kubernetes.io/hostname"
+#   podAffinity:
+#     preferredDuringSchedulingIgnoredDuringExecution:
+#      - weight: 50
+#        podAffinityTerm:
+#          labelSelector:
+#            matchExpressions:
+#            - key: app
+#              operator: In
+#              values:
+#                - zookeeper
+#          topologyKey: "kubernetes.io/hostname"
 
 ## Node labels for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -272,7 +296,7 @@ zookeeper:
   persistence:
     enabled: false
     ## The amount of PV storage allocated to each Zookeeper pod in the statefulset
-    # storage: "2Gi"
+    # size: "2Gi"
 
   ## Specify a Zookeeper imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -281,3 +305,14 @@ zookeeper:
   ## If the Zookeeper Chart is disabled a URL and port are required to connect
   url: ""
   port: 2181
+
+  ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## By default we don't set affinity:
+  affinity: {}  # Criteria by which pod label-values influence scheduling for zookeeper pods.
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     - topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           release: zookeeper
