@@ -6,7 +6,7 @@
 # Installation:
 
 ```console
-$ helm install incubator/eventrouter --name my-release
+$ helm install stable/eventrouter --name my-release
 ```
 
 ## Configuration
