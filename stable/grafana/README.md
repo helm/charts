@@ -55,10 +55,14 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.storageClass` | Type of persistent volume claim | `generic` |
 | `persistence.accessModes`  | Persistence access modes | `[]` |
 | `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""` |
+| `schedulerName`            | Alternate scheduler name | `nil` |
 | `env`                      | Extra environment variables passed to pods | `{}` |
 | `datasource`               | Configure grafana datasources | `{}` |
 | `dashboardProviders`       | Configure grafana dashboard providers | `{}` |
 | `dashboards`               | Dashboards to import | `{}` |
 | `grafana.ini`              | Grafana's primary configuration | `{}` |
+| `ldap.existingSecret`      | The name of an existing secret containing the `ldap.toml` file, this must have the key `ldap-toml`. | `""` |
+| `ldap.config  `            | Grafana's LDAP configuration    | `""` |
 | `annotations`              | Deployment annotations | `{}` |
 | `podAnnotations`           | Pod annotations | `{}` |
+
