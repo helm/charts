@@ -3,19 +3,27 @@ replicaCount: 1
 # number of helm release revisions to retain
 revisionHistoryLimit: 5
 
+# Default internal between alert checks against the elasticsearch datasource, in minutes
+runIntervalMins: 1
+
+# Default rule buffer duration, in minutes
+bufferTimeMins: 15
+
 image:
   # docker image
-  repository: quay.io/pickledrick/elastalert
+  repository: jertel/elastalert-docker
   # docker image tag
-  tag: stable
+  tag: 0.1.29
   pullPolicy: IfNotPresent
 resources: {}
 
 elasticsearch:
   # elasticsearch endpoint e.g. (svc.namespace||svc)
-  host: elasticsearch
+  host: ""
   # elasticsearch port
   port: 80
+  # whether or not to connect to es_host using TLS
+  useSsl: False
 
 # rule configurations e.g. (http://elastalert.readthedocs.io/en/latest/)
 rules: {}

@@ -16,6 +16,14 @@ web:
     requests:
       cpu: 300m
       memory: 300Mi
+  env:
+    - name: GITHUB_APP_ID
+      value:
+    - name: GITHUB_API_SECRET
+      value:
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 # How many cron instances to run
 cron:
@@ -27,6 +35,9 @@ cron:
     requests:
       cpu: 100m
       memory: 100Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 # How many worker instances to run
 worker:
@@ -38,6 +49,9 @@ worker:
     requests:
       cpu: 100m
       memory: 100Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 # Initial admin user to create
 user:
@@ -62,6 +76,11 @@ service:
   type: LoadBalancer
   externalPort: 9000
   internalPort: 9000
+  ## External IP addresses of service
+  ## Default: nil
+  ##
+  # externalIPs:
+  # - 192.168.0.1
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -84,7 +103,7 @@ persistence:
   filestore_dir: /var/lib/sentry/files
 
 ## Configure ingress resource that allow you to access the
-## Sentry instalation. Set up the URL
+## Sentry installation. Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:

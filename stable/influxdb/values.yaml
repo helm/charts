@@ -60,7 +60,8 @@ setDefaultUser:
     username: "admin"
 
     ## User password
-    ## Default: (Randomly generated 10 characters of Ascii)
+    ## single quotes must be escaped (\')
+    ## Default: (Randomly generated 10 characters of AlphaNum)
     # password:
 
     ## User privileges
@@ -89,7 +90,7 @@ env:
   # - name: INFLUXDB_DB
   #   value: "demo"
 
-## Change InfluxDB configuration paramaters below:
+## Change InfluxDB configuration parameters below:
 ## Defaults are indicated
 ## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
 config:
@@ -167,6 +168,9 @@ config:
     consistency_level: one
     separator: .
     udp_read_buffer: 0
+    # Uncomment to define graphite templates
+    # templates:
+    #   - "graphite.metric.*.*.* measurement.run"
   collectd:
     enabled: false
     bind_address: 25826

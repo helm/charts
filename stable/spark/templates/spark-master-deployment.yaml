@@ -29,7 +29,7 @@ spec:
       targetPort: {{ .Values.WebUi.ContainerPort }}
   selector:
     component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
-  type: "LoadBalancer"
+  type: {{ .Values.Master.ServiceType }}
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -59,7 +59,7 @@ spec:
         - name: {{ template "master-fullname" . }}
           image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
           command: ["/bin/sh","-c"]
-          args: ["echo $(hostname -i) {{ template "master-fullname" . }} >> /etc/hosts; /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master"]
+          args: ["echo $(hostname -i) {{ template "master-fullname" . }} >> /etc/hosts; {{ .Values.Spark.Path }}/bin/spark-class org.apache.spark.deploy.master.Master"]
           ports:
             - containerPort: {{ .Values.Master.ContainerPort }}
             - containerPort: {{ .Values.WebUi.ContainerPort }}

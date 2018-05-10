@@ -5,10 +5,8 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v1.1.3"
+ImageTag: "v2.0.0"
 ImagePullPolicy: "Always"
-BootstrapImage: "cockroachdb/cockroach-k8s-init"
-BootstrapImageTag: "0.2"
 Replicas: 3
 MaxUnavailable: 1
 Component: "cockroachdb"
@@ -19,10 +17,32 @@ Resources:
     cpu: "100m"
     memory: "512Mi"
 Storage: "1Gi"
-StorageClass: "anything"
+## Persistent Volume Storage Class for database data
+## If defined, storageClassName: <StorageClass>
+## If set to "-", storageClassName: "", which disables dynamic provisioning
+## If undefined or set to null, no storageClassName spec is
+##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+##   GKE, AWS & OpenStack)
+##
+StorageClass: null
 CacheSize: "25%"
 MaxSQLMemory: "25%"
 ClusterDomain: "cluster.local"
 NetworkPolicy:
   Enabled: false
   AllowExternal: true
+Service:
+  type: ClusterIP
+PodManagementPolicy: Parallel
+UpdateStrategy:
+  type: RollingUpdate
+Secure:
+  Enabled: false
+  RequestCertsImage: "cockroachdb/cockroach-k8s-request-cert"
+  RequestCertsImageTag: "0.3"
+  ServiceAccount:
+    # Specifies whether a service account should be created.
+    Create: true
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated.
+    Name:

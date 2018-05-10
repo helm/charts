@@ -1,6 +1,6 @@
 description: A Helm chart for the Weave Scope cluster visualizer frontend.
 name: weave-scope-frontend
-version: 0.9.1
+version: 0.9.2
 appVersion: 1.6.5
 keywords:
   - containers

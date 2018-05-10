@@ -29,7 +29,7 @@ $ helm install --name my-release stable/spark
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Spark chart and their default values.
+The following table lists the configurable parameters of the Spark chart and their default values.
 
 ### Spark Master
 
@@ -45,6 +45,7 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `Master.ServicePort`    | k8s service port                   | `7077`                                                     |
 | `Master.ContainerPort`  | Container listening port           | `7077`                                                     |
 | `Master.DaemonMemory`   | Master JVM Xms and Xmx option      | `1g`                                                       |
+| `Master.ServiceType `   | Kubernetes Service type            | `LoadBalancer`                                             |
 
 ### Spark WebUi
 
@@ -75,16 +76,22 @@ The following tables lists the configurable parameters of the Spark chart and th
 
 ### Zeppelin
 
-|       Parameter         |           Description            |                         Default                          |
-|-------------------------|----------------------------------|----------------------------------------------------------|
-| `Zeppelin.Name`         | Zeppelin name                    | `zeppelin-controller`                                    |
-| `Zeppelin.Image`        | Container image name             | `k8s.gcr.io/zeppelin`                      |
-| `Zeppelin.ImageTag`     | Container image tag              | `v0.5.5_v2`                                              |
-| `Zeppelin.Replicas`     | k8s deployment replicas          | `1`                                                      |
-| `Zeppelin.Component`    | k8s selector key                 | `zeppelin`                                               |
-| `Zeppelin.Cpu`          | container requested cpu          | `100m`                                                   |
-| `Zeppelin.ServicePort`  | k8s service port                 | `8080`                                                   |
-| `Zeppelin.ContainerPort`| Container listening port         | `8080`                                                   |
+|       Parameter                |           Description            |                         Default                          |
+|--------------------------------|----------------------------------|----------------------------------------------------------|
+| `Zeppelin.Name`                | Zeppelin name                    | `zeppelin-controller`                                    |
+| `Zeppelin.Image`               | Container image name             | `gcr.io/google_containers/zeppelin`                      |
+| `Zeppelin.ImageTag`            | Container image tag              | `v0.5.5_v2`                                              |
+| `Zeppelin.Replicas`            | k8s deployment replicas          | `1`                                                      |
+| `Zeppelin.Component`           | k8s selector key                 | `zeppelin`                                               |
+| `Zeppelin.Cpu`                 | container requested cpu          | `100m`                                                   |
+| `Zeppelin.ServicePort`         | k8s service port                 | `8080`                                                   |
+| `Zeppelin.ContainerPort`       | Container listening port         | `8080`                                                   |
+| `Zeppelin.Ingress.Enabled`     | if `true`, an ingress is created | `false`                                                  |
+| `Zeppelin.Ingress.Annotations` | annotations for the ingress      | `{}`                                                     |
+| `Zeppelin.Ingress.Path`        | the ingress path                 | `/`                                                      |
+| `Zeppelin.Ingress.Hosts`       | a list of ingress hosts          | `[zeppelin.example.com]`                                 |
+| `Zeppelin.Ingress.Tls`         | a list of [IngressTLS](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/#ingresstls-v1beta1-extensions) items | `[]`
+| `Zeppelin.ServiceType `        | Kubernetes Service type          | `LoadBalancer`                                           |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

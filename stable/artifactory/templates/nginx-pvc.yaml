@@ -1,4 +1,5 @@
-{{- if .Values.nginx.persistence.enabled }}
+{{- if and .Values.nginx.persistence.enabled (.Values.nginx.enabled ) }}
+{{- if (not .Values.nginx.persistence.existingClaim) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -19,6 +20,7 @@ spec:
   storageClassName: ""
 {{- else }}
   storageClassName: "{{ .Values.nginx.persistence.storageClass }}"
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

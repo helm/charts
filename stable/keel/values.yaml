@@ -4,7 +4,7 @@
 
 image:
   repository: karolisr/keel
-  tag: 0.4.2
+  tag: 0.4.7
   pullPolicy: IfNotPresent
 
 # Polling is enabled by default,
@@ -20,7 +20,7 @@ helmProvider:
 # GCP Project ID
 gcr:
   enabled: false
-  projectId:  ""
+  projectId: ""
   pubSub:
     enabled: false
 
@@ -59,7 +59,7 @@ webhookRelay:
     pullPolicy: IfNotPresent
 
 # Keel self-update
-# Comment lines below if you do not want Keel to automaticly
+# Comment lines below if you do not want Keel to automatically
 # self-update to the latest release version
 keel:
   # keel policy (all/major/minor/patch/force)
@@ -70,11 +70,11 @@ keel:
   pollSchedule: "@every 3m"
   # images to track and update
   images:
-   - repository: image.repository
-     tag: image.tag
+    - repository: image.repository
+      tag: image.tag
 
 # Resources
-#resources:
+# resources:
 #  limits:
 #    cpu: 100m
 #    memory: 128Mi

@@ -1,3 +1,5 @@
+**This chart is DEPRECATED and moved to https://github.com/appscode/charts**
+
 # swift
 [swift by AppsCode](https://github.com/appscode/swift) - Ajax friendly Helm Tiller Proxy
 ## TL;DR;
@@ -35,20 +37,21 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the swift chart and their default values.
+The following table lists the configurable parameters of the swift chart and their default values.
 
 
 | Parameter                 | Description                                                   | Default          |
 | --------------------------| --------------------------------------------------------------| -----------------|
 | `replicaCount`            | Number of swift replicas to create (only 1 is supported)      | `1`              |
 | `swift.image`             | swift container image                                         | `appscode/swift` |
-| `swift.tag`               | swift container image tag                                     | `0.5.1`          |
+| `swift.tag`               | swift container image tag                                     | `0.7.3`          |
 | `imagePullSecrets`        | Specify image pull secrets                                    | `nil` (does not add image pull secrets to deployed pods) |
 | `imagePullPolicy`         | Image pull policy                                             | `IfNotPresent`   |
 | `logLevel`                | Log level for proxy                                           | `3`              |
 | `nodeSelector`            | Node labels for pod assignment                                | `{}`             |
-| `rbac.create`             | install required rbac service account, roles and rolebindings | `false`          |
-| `rbac.serviceAccountName` | ServiceAccount swift will use (ignored if rbac.create=true)   | `default`        |
+| `rbac.create`             | If `true`, create and use RBAC resources                      | `true`           |
+| `serviceAccount.create`   | If `true`, create a new service account                       | `true`           |
+| `serviceAccount.name`     | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | `` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
@@ -69,7 +72,7 @@ By default the chart will not install the recommended RBAC roles and rolebinding
 
 You need to have the flag `--authorization-mode=RBAC` on the api server. See the following document for how to enable [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/).
 
-To determine if your cluster supports RBAC, run the the following command:
+To determine if your cluster supports RBAC, run the following command:
 
 ```console
 $ kubectl api-versions | grep rbac

@@ -1,12 +1,25 @@
 replicaCount: 1
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.2.7
+  tag: v0.5.1
   pullPolicy: IfNotPresent
 env:
   open:
-    # storage backend, can be one of: local, amazon, google
+    # storage backend, can be one of: local, alibaba, amazon, google, microsoft
     STORAGE: local
+    # oss bucket to store charts for alibaba storage backend
+    STORAGE_ALIBABA_BUCKET:
+    # prefix to store charts for alibaba storage backend
+    STORAGE_ALIBABA_PREFIX:
+    # oss endpoint to store charts for alibaba storage backend
+    STORAGE_ALIBABA_ENDPOINT:
+    # server side encryption algorithm for alibaba storage backend, can be one
+    # of: AES256 or KMS
+    STORAGE_ALIBABA_SSE:
     # s3 bucket to store charts for amazon storage backend
     STORAGE_AMAZON_BUCKET:
     # prefix to store charts for amazon storage backend
@@ -15,14 +28,22 @@ env:
     STORAGE_AMAZON_REGION:
     # alternative s3 endpoint
     STORAGE_AMAZON_ENDPOINT:
+    # server side encryption algorithm
+    STORAGE_AMAZON_SSE:
     # gcs bucket to store charts for google storage backend
     STORAGE_GOOGLE_BUCKET:
     # prefix to store charts for google storage backend
     STORAGE_GOOGLE_PREFIX:
+    # container to store charts for microsoft storage backend
+    STORAGE_MICROSOFT_CONTAINER:
+    # prefix to store charts for microsoft storage backend
+    STORAGE_MICROSOFT_PREFIX:
     # form field which will be queried for the chart file content
     CHART_POST_FORM_FIELD_NAME: chart
     # form field which will be queried for the provenance file content
     PROV_POST_FORM_FIELD_NAME: prov
+    # levels of nested repos for multitenancy. The default depth is 0 (singletenant server)
+    DEPTH: 0
     # show debug messages
     DEBUG: false
     # output structured logs as json
@@ -35,6 +56,12 @@ env:
     ALLOW_OVERWRITE: false
     # absolute url for .tgzs in index.yaml
     CHART_URL:
+    # allow anonymous GET operations when auth is used
+    AUTH_ANONYMOUS_GET: false
+    # sets the base context path
+    CONTEXT_PATH:
+    # parallel scan limit for the repo indexer
+    INDEX_LIMIT: 0
   secret:
     # username for basic http authentication
     BASIC_AUTH_USER:
@@ -52,24 +79,46 @@ replica:
 service:
   type: ClusterIP
   externalPort: 8080
-  internalPort: 8080
+  nodePort:
   annotations: {}
-    # foo.io/bar: "true"
-resources:
-  limits:
-    cpu: 100m
-    memory: 128Mi
-  requests:
-    cpu: 80m
-    memory: 64Mi
+
+resources: {}
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 80m
+#    memory: 64Mi
+
+probes:
+  liveness:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
 persistence:
-  Enabled: false
-  AccessMode: ReadWriteOnce
-  Size: 8Gi
+  enabled: false
+  accessMode: ReadWriteOnce
+  size: 8Gi
   ## A manually managed Persistent Volume and Claim
-  ## Requires Persistence.Enabled: true
+  ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
-  # ExistingClaim:
+  # existingClaim:
 
   ## Chartmuseum data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -78,7 +127,7 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # StorageClass: "-"
+  # storageClass: "-"
 
 ## Ingress for load balancer
 ingress:

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "traefik.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "traefik.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -14,6 +14,12 @@ data:
     {{- if .Values.debug.enabled }}
     debug = true
     {{- end }}
+    {{- if .Values.sendAnonymousUsage }}
+    sendAnonymousUsage = true
+    {{- end }}
+    {{- if .Values.ssl.insecureSkipVerify }}
+    InsecureSkipVerify = true
+    {{- end }}
     {{- if .Values.ssl.enabled }}
     defaultEntryPoints = ["http","https"]
     {{- else }}
@@ -22,6 +28,13 @@ data:
     [entryPoints]
       [entryPoints.http]
       address = ":80"
+      {{- if .Values.whiteListSourceRange }}
+      {{ template "traefik.whiteListSourceRange" . }}
+      {{- end }}
+      {{- if .Values.proxyProtocol.enabled }}
+        [entryPoints.http.proxyProtocol]
+        {{ template "traefik.trustedips" . }}
+      {{- end }}
       compress = {{ .Values.gzip.enabled }}
         {{- if .Values.ssl.enforced }}
         [entryPoints.http.redirect]
@@ -30,7 +43,14 @@ data:
         {{- end }}
       {{- if .Values.ssl.enabled }}
       [entryPoints.https]
+      {{- if .Values.whiteListSourceRange }}
+      {{ template "traefik.whiteListSourceRange" . }}
+      {{- end }}
       address = ":443"
+      {{- if .Values.proxyProtocol.enabled }}
+        [entryPoints.https.proxyProtocol]
+        {{ template "traefik.trustedips" . }}
+      {{- end }}
       compress = {{ .Values.gzip.enabled }}
         [entryPoints.https.tls]
           [[entryPoints.https.tls.certificates]]
@@ -38,6 +58,9 @@ data:
           KeyFile = "/ssl/tls.key"
       {{- else }}
       [entryPoints.httpn]
+      {{- if .Values.whiteListSourceRange }}
+      {{ template "traefik.whiteListSourceRange" . }}
+      {{- end }}
       address = ":8880"
       compress = {{ .Values.gzip.enabled }}
       {{- end }}
@@ -74,10 +97,19 @@ data:
     {{- if .Values.acme.logging }}
     acmeLogging = true
     {{- end }}
+    {{- if eq .Values.acme.challengeType "dns-01" }}
+      [acme.dnsChallenge]
+      provider = "{{ .Values.acme.dnsProvider.name }}"
+    {{- else if eq .Values.acme.challengeType "http-01" }}
+      [acme.httpChallenge]
+      entryPoint = "http"
     {{- end }}
-    {{- if .Values.dashboard.enabled }}
+    {{- end }}
+    {{- if or .Values.dashboard.enabled .Values.metrics.prometheus.enabled .Values.metrics.statsd.enabled .Values.metrics.datadog.enabled }}
     [web]
     address = ":8080"
+    {{- end }}
+    {{- if .Values.dashboard.enabled }}
       {{- if .Values.dashboard.auth }}
       {{- if .Values.dashboard.auth.basic }}
       [web.auth.basic]

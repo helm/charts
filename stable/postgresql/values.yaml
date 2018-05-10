@@ -22,6 +22,13 @@ imageTag: "9.6.2"
 ## Default: random 10 character string
 # postgresPassword:
 
+## Inject postgresPassword via a volume mount instead of environment variable
+usePasswordFile: false
+
+## Use Existing secret instead of creating one
+## It must have a postgres-password key containing the desired password
+# existingSecret: 'secret'
+
 ## Create a database
 ## Default: the postgres user
 # postgresDatabase:
@@ -31,7 +38,17 @@ imageTag: "9.6.2"
 ## ref: https://www.postgresql.org/docs/current/static/app-initdb.html
 # postgresInitdbArgs:
 
-## Persist data to a persitent volume
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
+## Specify runtime config parameters as a dict, using camelCase, e.g.
+## {"sharedBuffers": "500MB"}
+## ref: https://www.postgresql.org/docs/current/static/runtime-config.html
+# postgresConfig:
+
+## Persist data to a persistent volume
 persistence:
   enabled: true
 
@@ -51,6 +68,7 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
   subPath: "postgresql-db"
+  mountPath: /var/lib/postgresql/data/pgdata
 
   # annotations: {}
 
@@ -88,6 +106,9 @@ service:
   type: ClusterIP
   port: 5432
   externalIPs: []
+  ## Manually set NodePort value
+  ## Requires service.type: NodePort
+  # nodePort:
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.

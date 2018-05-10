@@ -73,7 +73,7 @@ Once the Chart has been merged, the release job will automatically run in the CI
 
 Whether you are a user or contributor, official support channels include:
 
-- GitHub issues: https://github.com/kubenetes/charts/issues
+- GitHub issues: https://github.com/kubernetes/charts/issues
 - Slack: Helm Users - #Helm-users room in the [Kubernetes Slack](http://slack.kubernetes.io/)
 - Slack: Helm Developers - #Helm-dev room in the [Kubernetes Slack](http://slack.kubernetes.io/)
 

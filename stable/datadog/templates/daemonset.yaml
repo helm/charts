@@ -28,7 +28,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.datadog.resources | indent 12 }}
         ports:
         - containerPort: 8125
           {{- if .Values.daemonset.useHostPort }}
@@ -48,29 +48,54 @@ spec:
           protocol: TCP
         {{- end }}
         env:
-          - name: API_KEY
+          - name: DD_API_KEY
             valueFrom:
               secretKeyRef:
                 name: {{ template "datadog.fullname" . }}
                 key: api-key
-          - name: LOG_LEVEL
+          {{- if .Values.datadog.logLevel }}
+          - name: DD_LOG_LEVEL
             value: {{ .Values.datadog.logLevel | quote }}
-          - name: SD_BACKEND
-            value: docker
-          - name: KUBERNETES_LEADER_CANDIDATE
+          {{- end }}
+          {{- if .Values.datadog.nonLocalTraffic }}
+          - name: NON_LOCAL_TRAFFIC # agent5
+            value: {{ .Values.datadog.nonLocalTraffic | quote }}
+          - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC # agent6
+            value: {{ .Values.datadog.nonLocalTraffic | quote }}
+          {{- end }}
+          {{- if .Values.datadog.tags }}
+          - name: DD_TAGS
+            value: {{ .Values.datadog.tags | quote }}
+          {{- end }}
+          {{- if .Values.datadog.apmEnabled }}
+          - name: DD_APM_ENABLED
+            value: {{ .Values.datadog.apmEnabled | quote }}
+          {{- end }}
+          - name: KUBERNETES_LEADER_CANDIDATE # agent5
+            value: {{ .Values.datadog.leaderElection | quote}}
+          - name: DD_LEADER_ELECTION  # agent6
             value: {{ .Values.datadog.leaderElection | quote}}
           {{- if .Values.datadog.leaderElection }}
-          - name: KUBERNETES_LEADER_LEASE_DURATION
+          - name: KUBERNETES_LEADER_LEASE_DURATION # agent5
             value: {{ default "600" .Values.datadog.leaderLeaseDuration | quote }}
+          - name: DD_LEADER_LEASE_DURATION # agent6
+            value: {{ default "60" .Values.datadog.leaderLeaseDuration | quote }}
           {{- end }}
-          - name: NON_LOCAL_TRAFFIC
-            value: {{ default "" .Values.datadog.nonLocalTraffic | quote }}
-          - name: TAGS
-            value: {{ default "" .Values.datadog.tags | quote }}
-          - name: DD_APM_ENABLED
-            value: {{ default "" .Values.datadog.apmEnabled | quote }}
+          {{- if .Values.datadog.collectEvents }}
+          - name: DD_COLLECT_KUBERNETES_EVENTS # agent6
+            value: {{.Values.datadog.collectEvents | quote}}
+          {{- end }}
+          - name: SD_BACKEND  # agent5
+            value: docker
           - name: KUBERNETES
             value: "yes"
+          {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
+          - name: DD_KUBERNETES_KUBELET_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          {{- end }}
+
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
 {{- end }}
@@ -84,18 +109,34 @@ spec:
           - name: cgroups
             mountPath: /host/sys/fs/cgroup
             readOnly: true
+          {{- if .Values.datadog.confd }}
           - name: confd
             mountPath: /conf.d
             readOnly: true
-          - name: autoconf
-            mountPath: /etc/dd-agent/conf.d/auto_conf
-            readOnly: true
+          {{- end }}
+          {{- if .Values.datadog.checksd }}
           - name: checksd
             mountPath: /checks.d
             readOnly: true
+          {{- end }}
+          {{- if .Values.datadog.autoconf }}
+          - name: autoconf
+            {{- if hasSuffix "-alpine" .Values.image.tag }}
+            mountPath: /opt/datadog-agent/agent/conf.d/auto_conf
+            {{- else }}
+            mountPath: /etc/dd-agent/conf.d/auto_conf
+            {{- end }}
+            readOnly: true
+          {{- end }}
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
 {{- end }}
+        livenessProbe:
+          exec:
+            command:
+            - ./probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 5
       volumes:
         - hostPath:
             path: /var/run/docker.sock
@@ -106,15 +147,21 @@ spec:
         - hostPath:
             path: /sys/fs/cgroup
           name: cgroups
+        {{- if .Values.datadog.confd }}
         - name: confd
           configMap:
             name: {{ template "datadog.confd.fullname" . }}
+        {{- end }}
+        {{- if .Values.datadog.checksd }}
         - name: checksd
           configMap:
             name: {{ template "datadog.checksd.fullname" . }}
+        {{- end }}
+        {{- if .Values.datadog.autoconf }}
         - name: autoconf
           configMap:
             name: {{ template "datadog.autoconf.fullname" . }}
+        {{- end }}
 {{- if .Values.datadog.volumes }}
 {{ toYaml .Values.datadog.volumes | indent 8 }}
 {{- end }}

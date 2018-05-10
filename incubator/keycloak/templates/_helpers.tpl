@@ -95,3 +95,14 @@ Create environment variables for database configuration.
   value: {{ .Values.keycloak.persistence.dbName | quote }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "keycloak.serviceAccountName" -}}
+  {{- if .Values.serviceAccount.create -}}
+      {{ default (include "keycloak.fullname" .) .Values.serviceAccount.name }}
+  {{- else -}}
+      {{ default "default" .Values.serviceAccount.name }}
+  {{- end -}}
+{{- end -}}

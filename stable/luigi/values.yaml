@@ -1,0 +1,85 @@
+# Default values for luigi.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  repository: axiom/docker-luigi
+  tag: 2.7.2-alpine
+  pullPolicy: IfNotPresent
+
+service:
+  name: luigi
+  type: LoadBalancer
+  externalPort: 80
+
+  # Luigi config: these values should mattch the luigi documentation
+  # https://luigi.readthedocs.io/en/stable/configuration.html
+  config: |
+    [core]
+    logging_conf_file=/etc/luigi/logging.cfg
+
+    [scheduler]
+    record_task_history=true
+    state-path=/luigi/state/luigi-state.pickle
+
+    [task_history]
+    db_connection=mysql://luigi-mysql/luigidb
+
+# creates a persistent volume claim for
+# luigi state pickel
+persistence:
+  enabled: false
+  size: 1G
+  accessMode: ReadWriteOnce
+
+# Ingress for ui access for use with authentication like oauth-proxy
+# depending on the authentication you use. You may only need one ingress.
+ingressUI:
+  enabled: false
+  path: /
+  # Used to create an Ingress record.
+  # hosts:
+  # - chart-example.local
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: "true"
+  # tls:
+  # Secrets must be manually created in the namespace.
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - chart-example.local
+
+
+# Ingress for api access viahttps and whatever authentication you use
+ingressAPI:
+  enabled: false
+  path: /
+  # Used to create an Ingress record.
+  # hosts:
+  # - chart-example.local
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: "true"
+  # tls:
+  # Secrets must be manually created in the namespace.
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+mysql:
+  mysqlDatabase: luigidb
+  mysqlAllowEmptyPassword: true
+  persistence:
+    enabled: false

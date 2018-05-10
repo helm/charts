@@ -1,0 +1,86 @@
+image: gcr.io/google-containers/fluentd-elasticsearch
+imageTag: v2.0.4
+
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is 'latest'
+## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+imagePullPolicy: IfNotPresent
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  limits:
+    cpu: 100m
+    memory: 500Mi
+  requests:
+    cpu: 100m
+    memory: 200Mi
+
+elasticsearch:
+  host: 'elasticsearch-client'
+  port: 9200
+  buffer_chunk_limit: 2M
+  buffer_queue_limit: 8
+
+rbac:
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+annotations: {}
+  # prometheus.io/scrape: "true"
+  # prometheus.io/port: "24231"
+
+tolerations: {}
+  # - key: node-role.kubernetes.io/master
+  #   operator: Exists
+  #   effect: NoSchedule
+
+configMaps:
+  output.conf: |
+    # Enriches records with Kubernetes metadata
+    <filter kubernetes.**>
+      @type kubernetes_metadata
+    </filter>
+
+    <match **>
+      @id elasticsearch
+      @type elasticsearch
+      @log_level info
+      include_tag_key true
+      host "#{ENV['OUTPUT_HOST']}"
+      port "#{ENV['OUTPUT_PORT']}"
+      logstash_format true
+      <buffer>
+        @type file
+        path /var/log/fluentd-buffers/kubernetes.system.buffer
+        flush_mode interval
+        retry_type exponential_backoff
+        flush_thread_count 2
+        flush_interval 5s
+        retry_forever
+        retry_max_interval 30
+        chunk_limit_size "#{ENV['OUTPUT_BUFFER_CHUNK_LIMIT']}"
+        queue_limit_length "#{ENV['OUTPUT_BUFFER_QUEUE_LIMIT']}"
+        overflow_action block
+      </buffer>
+    </match>
+
+# fluentdcustomconfig: |
+#   # add fluentd custom configs here
+
+# extraVolumes:
+#   - name: es-certs
+#     secret:
+#       defaultMode: 420
+#       secretName: es-certs
+# extraVolumeMounts:
+#   - name: es-certs
+#     mountPath: /certs
+#     readOnly: true

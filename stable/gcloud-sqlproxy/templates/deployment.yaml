@@ -1,4 +1,4 @@
-{{- if and .Values.serviceAccountKey (ne .Values.cloudsql.instance "PROJECT:REGION:INSTANCE") }}
+{{- if and .Values.serviceAccountKey (ne (index .Values.cloudsql.instances 0).instance "instance") }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -22,25 +22,24 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         command: ["/cloud_sql_proxy", "--dir=/cloudsql",
-                  "-instances={{ .Values.cloudsql.instance }}=tcp:0.0.0.0:{{ .Values.cloudsql.port }}",
+                  "-instances={{- range .Values.cloudsql.instances -}}
+                                {{ .project }}:{{ .region }}:{{ .instance }}=tcp:0.0.0.0:{{ .port }},
+                              {{- end }}",
                   "-credential_file=/secrets/cloudsql/credentials.json"]
         ports:
-        - name: sqlproxy
-          containerPort: {{ .Values.cloudsql.port }}
+        {{- range .Values.cloudsql.instances }}
+        - name: {{ .instance }}
+          containerPort: {{ .port }}
+        {{- end }}
         volumeMounts:
         - name: cloudsql-oauth-credentials
           mountPath: /secrets/cloudsql
-        - name: ssl-certs
-          mountPath: /etc/ssl/certs
         - name: cloudsql
           mountPath: /cloudsql
       volumes:
       - name: cloudsql-oauth-credentials
         secret:
           secretName: {{ template "gcloud-sqlproxy.fullname" . }}
-      - name: ssl-certs
-        hostPath:
-          path: /etc/ssl/certs
       - name: cloudsql
         emptyDir: {}
       nodeSelector:

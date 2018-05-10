@@ -1,7 +1,10 @@
 # Default values for datadog.
 image:
-  repository: datadog/docker-dd-agent
-  tag: latest
+  # This chart is compatible with different images, please choose one
+  repository: datadog/agent               # Agent6
+  # repository: datadog/dogstatsd         # Standalone DogStatsD6
+  # repository: datadog/docker-dd-agent   # Agent5
+  tag: 6.1.2  # Use 6.1.2-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
 
 # NB! Normally you need to keep Datadog DaemonSet enabled!
@@ -48,7 +51,8 @@ deployment:
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
 ##
-kubeStateMetrics.enabled: true
+kubeStateMetrics:
+  enabled: true
 
 datadog:
   ## You'll need to set this to your Datadog API key before the agent will run.
@@ -62,6 +66,8 @@ datadog:
 
   ## Set logging verbosity.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
+  ## Note: For Agent6 (image `datadog/agent`) the valid log levels are
+  ## trace, debug, info, warn, error, critical, and off
   ##
   logLevel: WARNING
 
@@ -114,19 +120,19 @@ datadog:
   ##
   # leaderLeaseDuration: 600
 
-  ## Provide additonal service definitions
+  ## Provide additional service definitions
   ## Each key will become a file in /conf.d/auto_conf
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
   ##
-  autoconf:
-    kubernetes_state.yaml: |-
-      docker_images:
-        - kube-state-metrics
-      init_config:
-      instances:
-        - kube_state_url: http://%%host%%:%%port%%/metrics
+  # autoconf:
+  #   kubernetes_state.yaml: |-
+  #     docker_images:
+  #       - kube-state-metrics
+  #     init_config:
+  #     instances:
+  #       - kube_state_url: http://%%host%%:%%port%%/metrics
 
-  ## Provide additonal service definitions
+  ## Provide additional service definitions
   ## Each key will become a file in /conf.d
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
   ##
@@ -137,7 +143,7 @@ datadog:
   #       - host: "name"
   #         port: "6379"
 
-  ## Provide additonal service checks
+  ## Provide additional service checks
   ## Each key will become a file in /checks.d
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
   ##

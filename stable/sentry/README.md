@@ -30,7 +30,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release --wait stable/sentry
 ```
 
-> **Note**: We have to use the --wait flag for initial creation because the database creationg takes longer than the default 300 seconds
+> **Note**: We have to use the --wait flag for initial creation because the database creation takes longer than the default 300 seconds
 
 The command deploys Sentry on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
@@ -53,34 +53,52 @@ $ kubectl delete job/sentry-db-init job/sentry-user-create
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Sentry chart and their default values.
+The following table lists the configurable parameters of the Sentry chart and their default values.
 
-| Parameter                            | Description                                | Default                                                    |
-| -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
-| `image.repository`                   | Sentry image                               | `library/sentry:{VERSION}`                                 |
-| `image.tag`                          | Sentry image tag                           | `8.17`                                                     |
-| `imagePullPolicy`                    | Image pull policy                          | `IfNotPresent`                                             |
-| `web.replicacount`                   | Amount of web pods to run                  | `1`                                                        |
-| `user.email`                         | Username for default admin                 | `admin@sentry.local`                                       |
-| `email.from_address`                 | Email notifications are from               | `smtp`                                                     |
-| `email.host`                         | SMTP host for sending email                | `smtp`                                                     |
-| `email.port`                         | SMTP port                                  | `25`                                                       |
-| `email.user`                         | SMTP user                                  | `nil`                                                      |
-| `email.password`                     | SMTP password                              | `nil`                                                      |
-| `email.use_tls`                      | SMTP TLS for security                      | `false`                                                    |
-| `email.enable_replies`               | Allow email replies                        | `false`                                                    |
-| `service.type`                       | Kubernetes service type                    | `LoadBalancer`                                             |
-| `service.name`                       | Kubernetes service name                    | `sentry`                                                   |
-| `service.externalPort`               | Kubernetes external service port           | `9000`                                                     |
-| `service.internalPort`               | Kubernetes internal service port           | `9000`                                                     |
-| `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
-| `ingress.annotations`                | Ingress annotations                        | `{}`                                                       |
-| `ingress.hostname`                   | URL to address your Sentry installation    | `sentry.local`                                             |
-| `ingress.tls`                        | Ingress TLS configuration                  | `[]`                                                       |
-| `persistence.enabled`                | Enable persistence using PVC               | `true`                                                     |
-| `persistence.storageClass`           | PVC Storage Class                          | `nil` (uses alpha storage class annotation)                |
-| `persistence.accessMode`             | PVC Access Mode                            | `ReadWriteOnce`                                            |
-| `persistence.size`                   | PVC Storage Request                        | `10Gi`                                                     |
+| Parameter                            | Description                                 | Default                                                    |
+| -------------------------------      | -------------------------------             | ---------------------------------------------------------- |
+| `image.repository`                   | Sentry image                                | `library/sentry:{VERSION}`                                 |
+| `image.tag`                          | Sentry image tag                            | `8.17`                                                     |
+| `imagePullPolicy`                    | Image pull policy                           | `IfNotPresent`                                             |
+| `web.replicacount`                   | Amount of web pods to run                   | `1`                                                        |
+| `web.resources.limits`               | Web resource limits                         | `{cpu: 500m, memory: 500Mi}`                               |
+| `web.resources.requests`             | Web resource requests                       | `{cpu: 300m, memory: 300Mi}`                               |
+| `web.env`                            | Additional web environment variables        | `[{name: GITHUB_APP_ID}, {name: GITHUB_API_SECRET}]`       |
+| `web.nodeSelector`                   | Node labels for web pod assignment          | `{}`                                                       |
+| `web.affinity`                       | Affinity settings for web pod assignment    | `{}`                                                       |
+| `web.tolerations`                    | Toleration labels for web pod assignment    | `[]`                                                       |
+| `cron.replicacount`                  | Amount of cron pods to run                  | `1`                                                        |
+| `cron.resources.limits`              | Cron resource limits                        | `{cpu: 200m, memory: 200Mi}`                               |
+| `cron.resources.requests`            | Cron resource requests                      | `{cpu: 100m, memory: 100Mi}`                               |
+| `cron.nodeSelector`                  | Node labels for cron pod assignment         | `{}`                                                       |
+| `cron.affinity`                      | Affinity settings for cron pod assignment   | `{}`                                                       |
+| `cron.tolerations`                   | Toleration labels for cron pod assignment   | `[]`                                                       |
+| `worker.replicacount`                | Amount of worker pods to run                | `2`                                                        |
+| `worker.resources.limits`            | Worker resource limits                      | `{cpu: 300m, memory: 500Mi}`                               |
+| `worker.resources.requests`          | Worker resource requests                    | `{cpu: 100m, memory: 100Mi}`                               |
+| `worker.nodeSelector`                | Node labels for worker pod assignment       | `{}`                                                       |
+| `worker.affinity`                    | Affinity settings for worker pod assignment | `{}`                                                       |
+| `worker.tolerations`                 | Toleration labels for worker pod assignment | `[]`                                                       |
+| `user.email`                         | Username for default admin                  | `admin@sentry.local`                                       |
+| `email.from_address`                 | Email notifications are from                | `smtp`                                                     |
+| `email.host`                         | SMTP host for sending email                 | `smtp`                                                     |
+| `email.port`                         | SMTP port                                   | `25`                                                       |
+| `email.user`                         | SMTP user                                   | `nil`                                                      |
+| `email.password`                     | SMTP password                               | `nil`                                                      |
+| `email.use_tls`                      | SMTP TLS for security                       | `false`                                                    |
+| `email.enable_replies`               | Allow email replies                         | `false`                                                    |
+| `service.type`                       | Kubernetes service type                     | `LoadBalancer`                                             |
+| `service.name`                       | Kubernetes service name                     | `sentry`                                                   |
+| `service.externalPort`               | Kubernetes external service port            | `9000`                                                     |
+| `service.internalPort`               | Kubernetes internal service port            | `9000`                                                     |
+| `ingress.enabled`                    | Enable ingress controller resource          | `false`                                                    |
+| `ingress.annotations`                | Ingress annotations                         | `{}`                                                       |
+| `ingress.hostname`                   | URL to address your Sentry installation     | `sentry.local`                                             |
+| `ingress.tls`                        | Ingress TLS configuration                   | `[]`                                                       |
+| `persistence.enabled`                | Enable persistence using PVC                | `true`                                                     |
+| `persistence.storageClass`           | PVC Storage Class                           | `nil` (uses alpha storage class annotation)                |
+| `persistence.accessMode`             | PVC Access Mode                             | `ReadWriteOnce`                                            |
+| `persistence.size`                   | PVC Storage Request                         | `10Gi`                                                     |
 
 Dependent charts can also have values overwritten. Preface values with postgresql.* or redis.*
 
@@ -109,4 +127,4 @@ See the [Configuration](#configuration) section to configure the PVC or to disab
 
 ## Ingress
 
-This chart provides support for Ingress resource. If you have available an Ingress Controller such as Nginx or Traefik you maybe want to set up `ingress.enabled` to true and choose a `ingress.hostname` for the URL. Then, you should be able to access the installation using that address.
+This chart provides support for Ingress resource. If you have an available Ingress Controller such as Nginx or Traefik you maybe want to set `ingress.enabled` to true and choose an `ingress.hostname` for the URL. Then, you should be able to access the installation using that address.

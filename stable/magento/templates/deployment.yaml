@@ -1,4 +1,4 @@
-{{- if include "magento.host" . -}}
+{{- if and (include "magento.host" .) (or .Values.mariadb.enabled .Values.externalDatabase.host) -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -14,39 +14,70 @@ spec:
       labels:
         app: {{ template "magento.fullname" . }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "magento.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: MARIADB_HOST
+        {{- if .Values.mariadb.enabled }}
           value: {{ template "magento.mariadb.fullname" . }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.host | quote }}
+        {{- end }}
         - name: MARIADB_PORT_NUMBER
+        {{- if .Values.mariadb.enabled }}
           value: "3306"
-        - name: MARIADB_PASSWORD
+        {{- else }}
+          value: {{ .Values.externalDatabase.port | quote }}
+        {{- end }}
+        - name: MAGENTO_DATABASE_NAME
+        {{- if .Values.mariadb.enabled }}
+          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.database | quote }}
+        {{- end }}
+        - name: MAGENTO_DATABASE_USER
+        {{- if .Values.mariadb.enabled }}
+          value: {{ .Values.mariadb.mariadbUser | quote }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.user | quote }}
+        {{- end }}
+        - name: MAGENTO_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
+              {{- if .Values.mariadb.enabled }}
               name: {{ template "magento.mariadb.fullname" . }}
-              key: mariadb-root-password
+              key: mariadb-password
+              {{- else }}
+              name: {{ template "magento.fullname" . }}-externaldb
+              key: db-password
+              {{- end }}
         - name: MAGENTO_HOST
           value: {{ include "magento.host" . | quote }}
         - name: MAGENTO_USERNAME
-          value: {{ default "" .Values.magentoUsername | quote }}
+          value: {{ .Values.magentoUsername | quote }}
         - name: MAGENTO_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "magento.fullname" . }}
               key: magento-password
         - name: MAGENTO_EMAIL
-          value: {{ default "" .Values.magentoEmail | quote }}
+          value: {{ .Values.magentoEmail | quote }}
         - name: MAGENTO_ADMINURI
-          value: {{ default "" .Values.magentoAdminUri | quote }}
+          value: {{ .Values.magentoAdminUri | quote }}
         - name: MAGENTO_FIRSTNAME
-          value: {{ default "" .Values.magentoFirstName | quote }}
+          value: {{ .Values.magentoFirstName | quote }}
         - name: MAGENTO_LASTNAME
-          value: {{ default "" .Values.magentoLastName | quote }}
+          value: {{ .Values.magentoLastName | quote }}
         - name: MAGENTO_MODE
-          value: {{ default "" .Values.magentoMode | quote }}
+          value: {{ .Values.magentoMode | quote }}
         ports:
         - name: http
           containerPort: 80
@@ -59,7 +90,7 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "magento.host" . | quote }}
-          initialDelaySeconds: 420
+          initialDelaySeconds: 1000
           timeoutSeconds: 5
           failureThreshold: 6
         readinessProbe:

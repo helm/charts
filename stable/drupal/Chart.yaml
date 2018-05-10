@@ -1,6 +1,6 @@
 name: drupal
-version: 0.11.3
-appVersion: 8.4.4
+version: 0.11.17
+appVersion: 8.5.3
 description: One of the most versatile open source content management systems.
 keywords:
 - drupal

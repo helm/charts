@@ -1,0 +1,68 @@
+# Default values for cert-manager.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+
+image:
+  repository: quay.io/jetstack/cert-manager-controller
+  tag: v0.2.5
+  pullPolicy: IfNotPresent
+
+createCustomResource: true
+
+certificateResourceShortNames: ["cert", "certs"]
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# Optional additional arguments
+extraArgs: []
+  # Use this flag to set a namespace that cert-manager will use to store
+  # supporting resources required for each ClusterIssuer (default is kube-system)
+  # - --cluster-resource-namespace=kube-system
+
+resources: {}
+  # requests:
+  #   cpu: 10m
+  #   memory: 32Mi
+
+podAnnotations: {}
+
+nodeSelector: {}
+
+ingressShim:
+  enabled: true
+
+  # Optional additional arguments for ingress-shim
+  extraArgs: []
+    # Use these flags to specify the default Issuer/ClusterIssuer
+    # (IMPORTANT: You need to create this Issuer/ClusterIssuer resource yourself)
+    # - --default-issuer-name=letsencrypt-prod
+    # - --default-issuer-kind=ClusterIssuer
+
+  resources: {}
+    # requests:
+    #   cpu: 10m
+    #   memory: 32Mi
+
+  image:
+    repository: quay.io/jetstack/cert-manager-ingress-shim
+
+    # Defaults to image.tag.
+    # You should only change this if you know what you are doing!
+    # tag: v0.2.5
+
+    pullPolicy: IfNotPresent
+
+# This is used by the static manifest generator in order to create a static
+# namespace manifest for the namespace that cert-manager is being installed
+# within. It should **not** be used if you are using Helm for deployment.
+createNamespaceResource: false

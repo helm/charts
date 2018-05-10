@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kubeless.fullname" . }}-zoo
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  ports:
+  - port: 2888
+    name: peer
+  - port: 3888
+    name: leader-election
+  clusterIP: None
+  selector:
+    kubeless: zookeeper
+    app: {{ template "kubeless.name"  . }}
+    release: {{ .Release.Name | quote }}

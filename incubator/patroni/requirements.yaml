@@ -1,9 +1,9 @@
 dependencies:
 - name: etcd
-  version: 0.2.1
+  version: 0.3.6
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-  condition: Etcd.DeployChart
+  condition: etcd.deployChart
 - name: zookeeper
   version: 0.2.2
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-  condition: Zookeeper.DeployChart
+  condition: zooKeeper.deployChart

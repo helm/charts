@@ -1,5 +1,6 @@
 name: datadog
-version: 0.10.3
+version: 0.11.2
+appVersion: 6.1.2
 description: DataDog Agent
 keywords:
 - monitoring
@@ -9,7 +10,8 @@ home: https://www.datadoghq.com
 icon: https://datadog-live.imgix.net/img/dd_logo_70x75.png
 sources:
 - https://app.datadoghq.com/account/settings#agent/kubernetes
-- https://github.com/DataDog/docker-dd-agent
+- https://github.com/DataDog/datadog-agent    # agent6
+- https://github.com/DataDog/docker-dd-agent  # agent5
 maintainers:
 - name: hkaj
   email: haissam@datadoghq.com

@@ -35,7 +35,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Sumokube chart and their default values.
+The following table lists the configurable parameters of the Sumokube chart and their default values.
 
 |      Parameter              |          Description               |                         Default           |
 |-----------------------------|------------------------------------|-------------------------------------------|
@@ -55,6 +55,7 @@ The following tables lists the configurable parameters of the Sumokube chart and
 | `resources.requests.memory` | Memory resource requests           | 128Mi                                      |
 | `resources.limits.memory`   | Memory resource limits             | 256Mi                                      |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6)            | []    |
+| `daemonset.updateStrategy`  | Strategy for applying template changes (requires Kubernetes >= 1.6)            | []    |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
