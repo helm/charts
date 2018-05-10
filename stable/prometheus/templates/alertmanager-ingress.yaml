@@ -15,6 +15,9 @@ metadata:
     component: "{{ .Values.alertmanager.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- range $key, $value := .Values.alertmanager.ingress.extraLabels }}
+    {{ $key }}: {{ $value }}
+{{- end }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
   rules:
