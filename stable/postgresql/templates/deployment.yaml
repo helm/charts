@@ -105,7 +105,7 @@ spec:
         imagePullPolicy: {{ default "" .Values.metrics.imagePullPolicy | quote }}
         env:
         - name: DATA_SOURCE_NAME
-          value: postgresql://postgres@127.0.0.1:5432?sslmode=disable
+          value: postgresql://{{ default "postgres" .Values.postgresUser }}@127.0.0.1:5432?sslmode=disable
         ports:
         - name: metrics
           containerPort: 9187
