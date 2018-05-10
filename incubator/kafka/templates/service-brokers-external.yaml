@@ -15,10 +15,10 @@ metadata:
     dns.alpha.kubernetes.io/internal: "{{ $root.Release.Name }}.{{ $root.Values.external.domain }}"
   name: {{ $root.Release.Name }}-{{ $i }}-external
   labels:
-    app: {{ include "kafka.name" $root | quote }}
-    chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
-    release: {{ $root.Release.Name | quote }}
-    heritage: {{ $root.Release.Service | quote }}
+    app: {{ include "kafka.name" $root }}
+    chart: {{ $root.Chart.Name }}-{{ $root.Chart.Version }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
     pod: {{ $responsiblePod | quote }}
 spec:
   type: NodePort
@@ -29,8 +29,8 @@ spec:
       nodePort: {{ $externalListenerPort }}
       protocol: TCP
   selector:
-    app: {{ include "kafka.name" $root | quote }}
-    release: {{ $root.Release.Name | quote }}
+    app: {{ include "kafka.name" $root }}
+    release: {{ $root.Release.Name }}
     pod: {{ $responsiblePod | quote }}
   {{- end }}
 {{- end }}
