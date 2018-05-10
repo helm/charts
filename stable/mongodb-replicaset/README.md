@@ -65,6 +65,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `livenessProbe`                     | Liveness probe configuration                                              | See below                                           |
 | `readinessProbe`                    | Readiness probe configuration                                             | See below                                           |
 | `extraVars`                         | Set environment variables for the main container                          | `{}`                                                |
+| `extraLabels`                       | Additional labels to add to resources                                     | `{}`                                                |
 
 *MongoDB config file*
 
