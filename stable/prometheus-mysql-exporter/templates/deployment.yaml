@@ -20,7 +20,7 @@ spec:
         release: {{ .Release.Name }}
       annotations:
       {{- if .Values.cloudsqlproxy.enabled }}
-        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        checksum/config: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
         {{- end }}
@@ -33,8 +33,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-          - name: DATA_SOURCE_NAME
-            value: {{ .Values.datasource }}
+            - name: DATA_SOURCE_NAME
+              value: {{ .Values.datasource }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
           livenessProbe:
@@ -78,5 +78,5 @@ spec:
       volumes:
         - name: cloudsql-proxy-sa-credentials
           secret:
-            secretName: {{ template "prometheus-mysql-exporter.cloudsqlsecret" . }}
+            secretName: {{ template "prometheus-mysql-exporter.fullname" . }}-cloudsqlsecret
     {{- end }}
