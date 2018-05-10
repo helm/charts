@@ -38,16 +38,16 @@ spec:
         image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
         imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
         command:
-          - "python"
-          - "train_distributed.py"
+        - "python"
+        - "train_distributed.py"
 {{- if gt (int .Values.worker.gpuCount) 0 }}
-          - --num_gpus
-          - "{{ .Values.worker.gpuCount }}"
+        - --num_gpus
+        - "{{ .Values.worker.gpuCount }}"
 {{- end }}
-          - --learning_rate
-          - {{ $lr | quote }}
-          - --batch_size
-          - {{ $batchsize | quote }}
+        - --learning_rate
+        - {{ $lr | quote }}
+        - --batch_size
+        - {{ $batchsize | quote }}
         env:
         - name: WORKER_HOSTS
           valueFrom:

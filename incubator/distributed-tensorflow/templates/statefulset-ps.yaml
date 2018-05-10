@@ -38,12 +38,12 @@ spec:
         image: "{{ .Values.ps.image.repository }}:{{ .Values.ps.image.tag }}"
         imagePullPolicy: {{ .Values.ps.image.pullPolicy }}
         command:
-          - "python"
-          - "train_distributed.py"
-          - --learning_rate
-          - {{ $lr | quote }}
-          - --batch_size
-          - {{ $batchsize | quote }}
+        - "python"
+        - "train_distributed.py"
+        - --learning_rate
+        - {{ $lr | quote }}
+        - --batch_size
+        - {{ $batchsize | quote }}
         env:
         - name: WORKER_HOSTS
           valueFrom:

@@ -12,7 +12,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: {{ template "distributed-tensorflow.chart" . }}
-    app: {{ template "distributed-tensorflow.fullname" . }}
+    app: {{ template "distributed-tensorflow.name" . }}
 data:
   ps.hostList: "
     {{- range $i, $none := until (int $psNum) }}

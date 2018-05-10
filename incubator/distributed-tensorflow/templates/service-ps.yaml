@@ -10,10 +10,10 @@ metadata:
 spec:
   clusterIP: None
   ports:
-    - port: {{ .Values.ps.port }}
-      targetPort: {{ .Values.ps.port }}
-      protocol: TCP
-      name: ps
+  - port: {{ .Values.ps.port }}
+    targetPort: {{ .Values.ps.port }}
+    protocol: TCP
+    name: ps
   selector:
     app: {{ template "distributed-tensorflow.name" . }}
     release: {{ .Release.Name }}
