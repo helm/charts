@@ -30,6 +30,7 @@ spec:
       targetPort: 9121
       name: metrics
     {{- end }}
+  publishNotReadyAddresses: true
   selector:
-      app: {{ template "redis-auto-cluster.name" . }}
-      release: {{ .Release.Name }}
+    app: {{ template "redis-auto-cluster.name" . }}
+    release: {{ .Release.Name }}
