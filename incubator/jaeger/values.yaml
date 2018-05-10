@@ -87,6 +87,8 @@ agent:
     useHostPort: false
   service:
     annotations: {}
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
     type: ClusterIP
     # zipkinThriftPort :accept zipkin.thrift over compact thrift protocol
     zipkinThriftPort: 5775
@@ -119,6 +121,8 @@ collector:
   replicaCount: 1
   service:
     annotations: {}
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
     type: ClusterIP
     # tchannelPort: used by jaeger-agent to send spans in jaeger.thrift format
     tchannelPort: 14267
@@ -151,6 +155,8 @@ query:
   service:
     annotations: {}
     type: ClusterIP
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
     # queryPort: externally accessible port for UI and API
     queryPort: 80
     # targetPort: the internal port the UI and API are exposed on
@@ -214,6 +220,8 @@ hotrod:
     annotations: {}
     name: hotrod
     type: ClusterIP
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
     externalPort: 80
     internalPort: 8080
   ingress:
