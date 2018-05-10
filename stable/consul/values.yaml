@@ -42,8 +42,10 @@ DisableHostNodeId: false
 ## default 'dc1'
 # DatacenterName: dc1
 
-## Encrypt Gossip traffic
-EncryptGossip: true
+## Encrypt Gossip Traffic
+Gossip:
+  Encrypt: true
+  Create: true
 
 ## predefined value for gossip key.
 ## Will use a generated random alpha numeric if not provided
@@ -92,6 +94,12 @@ ui:
 uiService:
   enabled: true
   type: "NodePort"
+
+ConsulConfig: []
+#  - type: secret
+#    name: consul-defaults
+#  - type: configMap
+#    name: consul-defaults
 
 ## Create an Ingress for the Web UI
 uiIngress:
