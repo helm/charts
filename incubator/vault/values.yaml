@@ -4,7 +4,7 @@
 replicaCount: 3
 image:
   repository: vault
-  tag: 0.9.0
+  tag: 0.10.1
   pullPolicy: IfNotPresent
 consulAgent:
   repository: consul
@@ -65,6 +65,16 @@ affinity: |
             app: {{ template "vault.fullname" . }}
             release: {{ .Release.Name }}
 podAnnotations: {}
+
+## Sample for unsealing vault on startup
+## if automation saves your unseal keys to a k8s secret on deploy
+## writing a script to do this would be trivial and solves the
+## issues of scaling up if deployed in HA.
+# lifecycle: |
+#   postStart:
+#     exec:
+#       command: ["./unseal -s my-unseal-keys"]
+
 vault:
   # Only used to enable dev mode. When in dev mode, the rest of this config
   # section below is not used to configure Vault. See
@@ -91,6 +101,8 @@ vault:
         address: '[::]:8200'
         cluster_address: '[::]:8201'
         tls_disable: true
+        tls_prefer_server_cipher_suites: true
+        tls_cipher_suites: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA
         # tls_cert_file: /vault/tls/server.crt
         # tls_key_file: /vault/tls/server.key
     # See https://www.vaultproject.io/docs/configuration/storage/ for storage backends
