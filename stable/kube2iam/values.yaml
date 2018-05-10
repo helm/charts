@@ -4,6 +4,10 @@ extraArgs: {}
 #   api-server: ...
 #   api-token: ...
 
+extraEnv: {}
+#    http_proxy: http://example.com:8080
+#    NO_PROXY: localhost,127.0.0.1
+
 host:
   ip: $(HOST_IP)
   iptables: false
