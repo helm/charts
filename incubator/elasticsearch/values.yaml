@@ -99,4 +99,4 @@ data:
 
 ## Install Default RBAC roles and bindings
 rbac:
-  create: false
+  create: true
