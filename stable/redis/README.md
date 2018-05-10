@@ -185,7 +185,7 @@ By default, the chart persists both data and configuration. If you wish to persi
 1. Install the chart
 
 ```bash
-$ helm install --set persistence.existingClaim=PVC_NAME redis
+$ helm install --set persistence.existingClaim=PVC_NAME stable/redis
 ```
 
 ## Metrics
