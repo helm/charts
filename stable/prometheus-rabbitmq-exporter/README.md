@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install incubator/prometheus-rabbitmq-exporter
+$ helm install stable/prometheus-rabbitmq-exporter
 ```
 
 ## Introduction
@@ -14,14 +14,14 @@ This chart bootstraps a [rabbitmq_exporter](https://github.com/kbudde/rabbitmq_e
 
 ## Prerequisites
 
-- Kubernetes 1.6+ with Beta APIs enabled
+- Kubernetes 1.8+ with Beta APIs enabled
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release incubator/prometheus-rabbitmq-exporter
+$ helm install --name my-release stable/prometheus-rabbitmq-exporter
 ```
 
 The command deploys prometheus-rabbitmq-exporter on the Kubernetes cluster in the default configuration.
@@ -66,11 +66,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
   --set "rabbitmq.url=http://myrabbit:15672" \
-    incubator/prometheus-rabbitmq-exporter
+    stable/prometheus-rabbitmq-exporter
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml incubator/prometheus-rabbitmq-exporter
+$ helm install --name my-release -f values.yaml stable/prometheus-rabbitmq-exporter
 ```

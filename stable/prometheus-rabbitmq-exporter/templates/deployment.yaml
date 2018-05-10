@@ -26,22 +26,22 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-          - name: RABBIT_URL
-            value: "{{ .Values.rabbitmq.url }}"
-          - name: RABBIT_USER
-            value: "{{ .Values.rabbitmq.user }}"
-          - name: RABBIT_PASSWORD
-            value: "{{ .Values.rabbitmq.password }}"
-          - name: PUBLISH_PORT
-            value: "{{ .Values.service.internalPort }}"
-          - name: LOG_LEVEL
-            value: "{{ .Values.loglevel }}"
-          - name: RABBIT_CAPABILITIES
-            value: "{{ .Values.rabbitmq.capabilities }}"
-          - name: INCLUDE_QUEUES
-            value: "{{ .Values.rabbitmq.include_queues }}"
-          - name: SKIP_QUEUES
-            value: "{{ .Values.rabbitmq.skip_queues }}"
+            - name: RABBIT_URL
+              value: "{{ .Values.rabbitmq.url }}"
+            - name: RABBIT_USER
+              value: "{{ .Values.rabbitmq.user }}"
+            - name: RABBIT_PASSWORD
+              value: "{{ .Values.rabbitmq.password }}"
+            - name: PUBLISH_PORT
+              value: "{{ .Values.service.internalPort }}"
+            - name: LOG_LEVEL
+              value: "{{ .Values.loglevel }}"
+            - name: RABBIT_CAPABILITIES
+              value: "{{ .Values.rabbitmq.capabilities }}"
+            - name: INCLUDE_QUEUES
+              value: "{{ .Values.rabbitmq.include_queues }}"
+            - name: SKIP_QUEUES
+              value: "{{ .Values.rabbitmq.skip_queues }}"
           ports:
             - containerPort: {{ .Values.service.internalPort }}
           livenessProbe:
