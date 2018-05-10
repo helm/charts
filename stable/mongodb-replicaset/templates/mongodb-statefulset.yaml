@@ -6,6 +6,9 @@ metadata:
     chart: {{ template "mongodb-replicaset.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
   name: {{ template "mongodb-replicaset.fullname" . }}
 spec:
   selector:
@@ -19,6 +22,9 @@ spec:
       labels:
         app: {{ template "mongodb-replicaset.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 8 }}
+{{- end }}
       annotations:
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
