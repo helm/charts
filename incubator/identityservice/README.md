@@ -29,7 +29,7 @@ Create an AKS Linux cluster in the Azure portal or add Identity Service to an ex
 In the cluster, install the following if they are not already installed :
 
 * A Kubernetes supported ingress controller (eg: [nginx](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress) , [GCE](https://github.com/kubernetes/ingress-gce/blob/master/README.md))
-* TLS termination (eg. [cert-manager](https://github.com/kubernetes/charts/tree/master/stable/cert-manager) or installed TLS Certificate)
+* TLS termination (eg: install [cert-manager](https://github.com/kubernetes/charts/tree/master/stable/cert-manager) or install TLS Certificate)
 
 For detailed instructions on these installations refer to the  [Azure AKS Documentation](https://docs.microsoft.com/en-us/azure/aks/ingress)
 
