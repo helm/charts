@@ -185,3 +185,11 @@ ldap:
   #   start_tls = false
   #   ssl_skip_verify = false
   #   bind_dn = "uid=%s,ou=users,dc=myorg,dc=com"
+
+## Grafana's SMTP configuration
+## NOTE: To enable, grafana.ini must be configured with smtp.enabled
+## ref: http://docs.grafana.org/installation/configuration/#smtp
+smtp:
+  # `existingSecret` is a reference to an existing secret containing the smtp configuration
+  # for Grafana in keys `user` and `password`.
+  existingSecret: ""

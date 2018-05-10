@@ -65,4 +65,4 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ldap.config  `            | Grafana's LDAP configuration    | `""` |
 | `annotations`              | Deployment annotations | `{}` |
 | `podAnnotations`           | Pod annotations | `{}` |
-
+| `smtp.existingSecret`      | The name of an existing secret containing the SMTP credentials, this must have the keys `user` and `password`. | `""` |
