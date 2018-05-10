@@ -13,58 +13,58 @@ spec:
   serviceName: redis-cluster
   selector:
     matchLabels:
-      role: redis-node
+      role: redis-cluster-node
       app: {{ template "redis-auto-cluster.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        role: redis-node
+        role: redis-cluster-node
         app: {{ template "redis-auto-cluster.name" . }}
         chart: {{ template "redis-auto-cluster.chart" . }}
         release: {{ .Release.Name }}
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . |  sha256sum | trunc 63 }}
     spec:
       terminationGracePeriodSeconds: 15
-{{- if .Values.nodePool }}
+      {{- with .Values.nodeSelector }}
       nodeSelector:
-        cloud.google.com/gke-nodepool: {{ .Values.nodePool }}
-{{- end }}
-{{- if .Values.podAntiAffinity }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- if .Values.antiAffinity }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - topologyKey: "kubernetes.io/hostname"
-            labelSelector:
-              matchLabels:
-                app: {{ template "redis-auto-cluster.name" . }}
-                chart: {{ template "redis-auto-cluster.chart" . }}
-                release: {{ .Release.Name }}
-{{- end }}
-{{- if .Values.tolerations }}
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  role: redis-cluster-node
+                  app: {{ template "redis-auto-cluster.name" . }}
+                  release: {{ .Release.Name }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 6 -}}
-{{- end }}
-{{- if .Values.tuning }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- if .Values.tuning }}
       initContainers:
-      - name: init-sysctl
-        image: busybox
-        command:
-        - "/bin/sh"
-        - "-c"
-        - "sysctl -w net.core.somaxconn=65535"
-        securityContext:
-          privileged: true
-      - name: disable-thp
-        image: busybox
-        volumeMounts:
-        - name: host-sys
-          mountPath: /host-sys
-        command:
-        - "/bin/sh"
-        - "-c"
-        - "echo never > /host-sys/kernel/mm/transparent_hugepage/enabled"
-{{- end }}
+        - name: init-sysctl
+          image: busybox
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "sysctl -w net.core.somaxconn=65535"
+          securityContext:
+            privileged: true
+        - name: disable-thp
+          image: busybox
+          volumeMounts:
+            - name: host-sys
+              mountPath: /host-sys
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "echo never > /host-sys/kernel/mm/transparent_hugepage/enabled"
+      {{- end }}
       containers:
         - name: redis
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -73,7 +73,7 @@ spec:
           - "redis-server"
           args:
           - "/conf/redis.conf"
-          - --cluster-announce-ip
+          - "--cluster-announce-ip"
           - "$(MY_POD_IP)"
           env:
           - name: MY_POD_IP
@@ -109,46 +109,46 @@ spec:
               cpu: 100m
               memory: {{ .Values.shards.sizeGb }}Gi
           volumeMounts:
-          - name: config
-            mountPath: /conf
-            readOnly: false
-          - name: data
-            mountPath: /data
-            readOnly: false
-{{- if .Values.metrics.enabled }}
+            - name: config
+              mountPath: /conf
+              readOnly: false
+            - name: data
+              mountPath: /data
+              readOnly: false
+        {{- if .Values.metrics.enabled }}
         - name: metrics
           image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
           env:
-          - name: REDIS_ALIAS
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
+            - name: REDIS_ALIAS
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           ports:
-          - name: metrics
-            containerPort: 9121
-  {{- if .Values.metrics.resources }}
+            - name: metrics
+              containerPort: 9121
+          {{- if .Values.metrics.resources }}
           resources:
-  {{ toYaml .Values.metrics.resources | indent 12 }}
-{{- end }}
-{{- end }}
+{{ toYaml .Values.metrics.resources | indent 12 }}
+        {{- end }}
+        {{- end }}
       volumes:
-      - name: host-sys
-        hostPath:
-          path: /sys
-      - name: config
-        configMap:
-          name: {{ .Release.Name }}-config
-          items:
-          - key: redis.conf
-            path: redis.conf
+        - name: host-sys
+          hostPath:
+            path: /sys
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-config
+            items:
+              - key: redis.conf
+                path: redis.conf
   volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: {{ mul .Values.shards.sizeGb 3 }}Gi
-      storageClassName: {{ .Values.persistence.storageClassName }}
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ mul .Values.shards.sizeGb 3 }}Gi
+        storageClassName: {{ .Values.persistence.storageClassName }}

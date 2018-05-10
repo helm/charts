@@ -6,13 +6,14 @@ shards:
   replicationFactor: 1
   sizeGb: 1
 
-nodePool: ""
+nodeSelector: {}
+
 tolerations: []
 
 persistence:
   storageClassName: standard
 
-podAntiAffinity: false
+antiAffinity: false
 
 image:
   repository: redis
