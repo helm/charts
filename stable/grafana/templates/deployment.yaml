@@ -108,6 +108,18 @@ spec:
                   name: {{ template "grafana.fullname" . }}
                   key: plugins
             {{- end }}
+            {{- if .Values.smtp.existingSecret }}
+            - name: GF_SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.smtp.existingSecret }}
+                  key: user
+            - name: GF_SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.smtp.existingSecret }}
+                  key: password
+            {{- end }}
 {{- range $key, $value := .Values.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
@@ -150,7 +162,7 @@ spec:
             {{- if .Values.ldap.existingSecret }}
             secretName: {{ .Values.ldap.existingSecret }}
             {{- else }}
-            secretName: {{ template "grafana.fullname" . }}            
+            secretName: {{ template "grafana.fullname" . }}
             {{- end }}
             items:
               - key: ldap-toml
@@ -162,4 +174,4 @@ spec:
       {{- else }}
           emptyDir: {}
       {{- end -}}
-        
+
