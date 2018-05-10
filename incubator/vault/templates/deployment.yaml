@@ -34,6 +34,10 @@ spec:
         {{- else }}
         command: ["vault", "server", "-config", "/vault/config/config.json"]
         {{- end }}
+        {{- if .Values.lifecycle }}
+        lifecycle:
+{{ tpl .Values.lifecycle . | indent 10 }}
+        {{- end }}
         ports:
         - containerPort: {{ .Values.service.port }}
           name: api
