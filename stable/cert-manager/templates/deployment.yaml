@@ -47,7 +47,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
 {{- if .Values.ingressShim.enabled }}
         - name: ingress-shim
-          image: "{{ .Values.ingressShim.image.repository }}:{{ default .Values.ingressShim.image.tag .Values.image.tag }}"
+          image: "{{ .Values.ingressShim.image.repository }}:{{ default .Values.image.tag .Values.ingressShim.image.tag }}"
           imagePullPolicy: {{ .Values.ingressShim.image.pullPolicy }}
         {{- if .Values.ingressShim.extraArgs }}
           args:
