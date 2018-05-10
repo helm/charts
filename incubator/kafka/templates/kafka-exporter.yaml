@@ -5,15 +5,15 @@ metadata:
   name: {{ template "kafka.fullname" . }}-exporter
   labels:
     app: "{{ template "kafka.name" . }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: {{ template "kafka.name" . }}-exporter
-      release: {{ .Release.Name | quote }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       annotations:
@@ -23,7 +23,7 @@ spec:
 {{- end }}
       labels:
         app: {{ template "kafka.name" . }}-exporter
-        release: {{ .Release.Name | quote }}
+        release: {{ .Release.Name }}
     spec:
       containers:
       - image: "{{ .Values.prometheus.kafka.image }}:{{ .Values.prometheus.kafka.imageTag }}"

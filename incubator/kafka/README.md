@@ -64,7 +64,7 @@ following configurable parameters:
 | `kafkaHeapOptions`             | Kafka broker JVM heap options                                                                                   | `-Xmx1G-Xms1G`                                                       |
 | `logSubPath`                   | Subpath under `persistence.mountPath` where kafka logs will be placed.                                          | `logs`                                                     |
 | `schedulerName`                | Name of Kubernetes scheduler (other than the default)                                                           | `nil`                                                      |
-| `affinity`                     | Pod scheduling preferences                                                                                      | `{}`                                                       |
+| `affinity`                     | Defines affinities and anti-affinities for pods as defined in: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity preferences                                                                                      | `{}`                                                       |
 | `tolerations`                  | List of node tolerations for the pods. https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/  | `[]`                                                       |
 | `external.enabled`             | If True, exposes Kafka brokers via NodePort (PLAINTEXT by default)                                              | `false`                                                    |
 | `external.servicePort`         | TCP port configured at external services (one per pod) to relay from NodePort to the external listener port.    | '19092'                                                    |
@@ -113,6 +113,7 @@ following configurable parameters:
 | `zookeeper.imagePullPolicy`    | Zookeeper Container pull policy                                                                                 | `IfNotPresent`                                             |
 | `zookeeper.url`                | URL of Zookeeper Cluster (unneeded if installing Zookeeper Chart)                                               | `""`                                                       |
 | `zookeeper.port`               | Port of Zookeeper Cluster                                                                                       | `2181`                                                     |
+| `zookeeper.affinity`                     | Defines affinities and anti-affinities for pods as defined in: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity preferences                                                                                      | `{}`
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 

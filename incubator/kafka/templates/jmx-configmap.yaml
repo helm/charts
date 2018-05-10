@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "kafka.fullname" . }}-metrics
+  name: {{ include "kafka.fullname" . }}-metrics
   labels:
-    app: "{{ template "kafka.name" . }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ include "kafka.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 data:
   jmx-kafka-prometheus.yml: |+
 {{- if .Values.jmx.configMap.overrideConfig }}

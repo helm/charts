@@ -2,14 +2,14 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "kafka.fullname" . }}
+  name: {{ include "kafka.fullname" . }}
   labels:
-    app: {{ include "kafka.name" . | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    app: {{ include "kafka.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
-  serviceName: {{ template "kafka.fullname" . }}-headless
+  serviceName: {{ include "kafka.fullname" . }}-headless
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
@@ -22,8 +22,8 @@ spec:
         prometheus.io/port: {{ .Values.prometheus.jmx.port | quote }}
 {{- end }}
       labels:
-        app: {{ include "kafka.name" . | quote }}
-        release: {{ .Release.Name | quote }}
+        app: {{ include "kafka.name" . }}
+        release: {{ .Release.Name }}
     spec:
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
@@ -85,7 +85,7 @@ spec:
         - name: jmx-config
           mountPath: /etc/jmx-kafka
       {{- end }}
-      - name: {{ template "kafka.name" . }}-broker
+      - name: {{ include "kafka.name" . }}-broker
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         livenessProbe:
@@ -176,7 +176,7 @@ spec:
           {{- if .Values.jmx.configMap.overrideName }}
           name: {{ .Values.jmx.configMap.overrideName }}
           {{- else }}
-          name: {{ template "kafka.fullname" . }}-metrics
+          name: {{ include "kafka.fullname" . }}-metrics
           {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
