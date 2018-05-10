@@ -26,4 +26,5 @@ spec:
     release: {{ .Release.Name }}
     jaeger-infra: query-pod
   type: {{ .Values.query.service.type }}
+{{- template "loadBalancerSourceRanges" .Values.query }}
 {{- end -}}

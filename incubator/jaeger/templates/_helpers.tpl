@@ -133,3 +133,15 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $host := printf "%s-agent" (include "jaeger.agent.name" .) -}}
 {{- default $host .Values.hotrod.tracing.host -}}
 {{- end -}}
+
+{{/*
+Configure list of IP CIDRs allowed access to load balancer (if supported)
+*/}}
+{{- define "loadBalancerSourceRanges" -}}
+{{- if .service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
+{{- end -}}

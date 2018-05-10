@@ -26,4 +26,5 @@ spec:
     component: hotrod
     release: {{ .Release.Name }}
     jaeger-infra: hotrod-instance
+{{- template "loadBalancerSourceRanges" .Values.hotrod }}
 {{- end -}}
