@@ -99,7 +99,7 @@ The configuration parameters in this section control the resources requested and
 | collation        | Default collation for SQL Server                                                               | `SQL_Latin1_General_CP1_CI_AS`   |
 | lcid             | Default languages for SQL Server                                                               | `1033`                           |
 | hadr             | Enable Availability Group                                                                      | `0`                              |
-| persistence.enabled | Presist the Data and Log files for SQL Server                                               | `false`                          |
+| persistence.enabled | Persist the Data and Log files for SQL Server                                               | `false`                          |
 | persistence.existingDataClaim | Identify an existing Claim to be used for the Data Directory                      | `Commented Out`                  |
 | persistence.existingLogClaim  | Identify an existing Claim to be used for the Log Directory                       | `Commented Out`                  |
 | persistence.existingBackupClaim | Identify an existing Claim to be used for the SQL Database Backups              | `Commented Out`                  |
