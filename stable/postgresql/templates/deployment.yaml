@@ -62,7 +62,7 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "postgresql.fullname" . }}
+              name: {{ template "postgresql.secretName" . }}
               key: postgres-password
         {{- end }}
         - name: POD_IP
@@ -129,16 +129,15 @@ spec:
       {{- end }}
       {{- if and .Values.metrics.enabled .Values.metrics.customMetrics }}
       - name: custom-metrics
-        secret:
-          secretName: {{ template "postgresql.fullname" . }}
-          items:
-            - key: custom-metrics.yaml
-              path: custom-metrics.yaml
+        valueFrom:
+          configMapKeyRef:
+            name: {{ template "postgresql.fullname" . }}
+            key: custom-metrics.yaml
       {{- end }}
       {{- if .Values.usePasswordFile }}
       - name: password-file
         secret:
-          secretName: {{ template "postgresql.fullname" . }}
+          secretName: {{ template "postgresql.secretName" . }}
           items:
             - key: postgres-password
               path: postgres-password
