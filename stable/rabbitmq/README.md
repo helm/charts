@@ -51,7 +51,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `image.pullPolicy`          | Image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
 | `image.pullSecrets`         | Specify docker-ragistry secret names as an array        | `nil`                                                    |
 | `image.debug`               | Specify if debug values should be set                   | `false`                                                  |
-| `rbacEnabled`               | Specify if rbac is enabled in your cluster              | `false`                                                  |
+| `rbacEnabled`               | Specify if rbac is enabled in your cluster              | `true`                                                  |
 | `rabbitmq.username`         | RabbitMQ application username                           | `user`                                                   |
 | `rabbitmq.password`         | RabbitMQ application password                           | _random 10 character long alphanumeric string_           |
 | `rabbitmq.erlangCookie`     | Erlang cookie                                           | _random 32 character long alphanumeric string_           |
@@ -62,7 +62,6 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.configuration`    | rabbitmq.conf content                                   | see values.yaml                                                 |
 | `serviceType`               | Kubernetes Service type                                 | `ClusterIP`                                              |
 | `persistence.enabled`       | Use a PVC to persist data                               | `true`                                                   |
-| `persistence.existingClaim` | Use an existing PVC to persist data                     | `nil`                                                    |
 | `persistence.storageClass`  | Storage class of backing PVC                            | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                     | `ReadWriteOnce`                                          |
 | `persistence.size`          | Size of data volume                                     | `8Gi`                                                    |

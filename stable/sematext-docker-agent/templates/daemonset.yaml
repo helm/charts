@@ -51,8 +51,6 @@ spec:
             name: docker-sock
           - mountPath: /etc/localtime
             name: localtime
-          - mountPath: /rootfs
-            name: rootfs
             readOnly: true
         securityContext:
           privileged: true
@@ -63,7 +61,4 @@ spec:
         - name: localtime
           hostPath:
             path: /etc/localtime
-        - name: rootfs
-          hostPath:
-            path: /
 {{- end }}
