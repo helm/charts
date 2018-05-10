@@ -1,6 +1,7 @@
 {{- if .Values.uiIngress.enabled -}}
 {{- $releaseName := .Release.Name -}}
 {{- $servicePort := .Values.HttpPort -}}
+{{- $serviceName := printf "%s-%s" (include "consul.fullname" .) "ui" -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -21,7 +22,7 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: {{ printf "%s-%s" $releaseName "consul-ui" | trunc 63 }}
+              serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
   {{- end -}}
   {{- if .Values.uiIngress.tls }}
