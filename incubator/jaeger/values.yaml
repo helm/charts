@@ -109,6 +109,8 @@ agent:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  useHostNetwork: false
+  dnsPolicy: ClusterFirst
 
 collector:
   enabled: true
