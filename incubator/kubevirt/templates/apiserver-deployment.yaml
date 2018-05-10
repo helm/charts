@@ -7,6 +7,10 @@ metadata:
 {{ include "labels.standard" . | indent 4 }}
     component: "virt-api-server"
 spec:
+  selector:
+    matchLabels:
+{{ include "selectors.standard" . | indent 6 }}
+      component: "virt-api-server"
   replicas: 1
   template:
     metadata:

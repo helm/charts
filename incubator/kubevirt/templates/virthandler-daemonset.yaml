@@ -7,6 +7,10 @@ metadata:
 {{ include "labels.standard" . | indent 4 }}
     component: "virt-handler"
 spec:
+  selector:
+    matchLabels:
+{{ include "selectors.standard" . | indent 6 }}
+      component: "virt-handler"
   template:
     metadata:
       name: {{ template "kubevirt.fullname" . }}-virt-handler
