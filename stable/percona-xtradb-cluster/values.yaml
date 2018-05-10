@@ -35,7 +35,7 @@ replicas: 3
 # set to "127.0.0.1" to deny remote root.
 allowRootFrom: "%"
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 persistence:
   enabled: false
   ## percona data Persistent Volume Storage Class
