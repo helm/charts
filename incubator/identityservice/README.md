@@ -82,8 +82,6 @@ For detailed instructions, refer to the  [Azure SQL Server Documentation](https:
 
 Identity Service requires verification of emails when a user first registers. We use the SendGrid email service for this. Install SendGrid in your Azure account or use an existing installation and copy the **SendGrid API Key** for use later on. For detailed instructions, refer to the  [Azure Send Grid Documentation](https://docs.microsoft.com/en-us/azure/sendgrid-dotnet-how-to-send-email)
 
-### Helm repository
-
 ### Install the chart
 
 Install the chart with the following command , the parameters shown are all mandatory (replace the placeholder text with your own data) :
