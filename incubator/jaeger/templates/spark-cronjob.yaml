@@ -29,11 +29,11 @@ spec:
             release: {{ .Release.Name }}
             jaeger-infra: spark-instance
             {{- if .Values.spark.podLabels }}
-            {{ toYaml .Values.spark.podLabels | indent 12 }}
+{{ toYaml .Values.spark.podLabels | indent 12 }}
             {{- end }}
         spec:
           nodeSelector:
-            {{ toYaml .Values.spark.nodeSelector | indent 12 }}
+{{ toYaml .Values.spark.nodeSelector | indent 12 }}
           containers:
           - name: {{ template "jaeger.fullname" . }}-spark
             image: {{ .Values.spark.image }}:{{ .Values.spark.tag }}
@@ -79,7 +79,7 @@ spec:
                   key: es.username
             {{- end }}
             resources:
-            {{ toYaml .Values.spark.resources | indent 10 }}
+{{ toYaml .Values.spark.resources | indent 14 }}
           restartPolicy: OnFailure
 {{- end -}}
 {{- end -}}
