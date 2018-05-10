@@ -355,7 +355,7 @@ data:
           enabled: false
         s3:
           enabled: true
-          endpoint: http://{{ .Release.Name }}-minio-svc:9000
+          endpoint: http://{{ .Release.Name }}-minio:9000
         {{ end }}
       gate:
         host: {{ template "fullname" . }}-gate
