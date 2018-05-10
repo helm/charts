@@ -73,7 +73,7 @@ spec:
           {{- end }}
           {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
-              value: {{ $value }}
+              value: "{{ $value }}"
           {{- end }}
           livenessProbe:
             httpGet:
