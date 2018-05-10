@@ -22,7 +22,7 @@ service:
   type: ClusterIP
   port: 3306
 
-rootValues:
+rootUser:
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb#setting-the-root-password-on-first-run
   ##
