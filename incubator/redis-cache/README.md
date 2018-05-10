@@ -92,7 +92,7 @@ $kubectl exec -i -t rd-dev-0 -c redis -- redis-cli -h rd-dev-2.rd-dev.default -p
 
 Kill the master
 ```
-$kubeclt delete po/rd-dev-0
+$kubectl delete po/rd-dev-0
 pod "rd-dev-0" deleted
 ```
 
