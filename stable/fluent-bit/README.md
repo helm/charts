@@ -55,8 +55,8 @@ The following tables lists the configurable parameters of the Fluent-Bit chart a
 | `parsers.regex`                    | List of regex parsers | `NULL` |
 | `parsers.json`                     | List of json parsers | `NULL` |
 | **General**                   |
-| `annotations`                      | Optional deamon set annotations            | `NULL`                |
-| `podAnnotations`                   | Optional pod annotations                   | `NULL`                |
+| `annotations`                      | Optional deamonset set annotations        | `NULL`                |
+| `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
