@@ -76,6 +76,36 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       {{- if .Values.affinity }}
+      {{- if .Values.consulAgent.join }}
+      - name: {{ .Chart.Name }}-consul-agent
+        image: "{{ .Values.consulAgent.repository }}:{{ .Values.consulAgent.tag }}"
+        imagePullPolicy: {{ .Values.consulAgent.pullPolicy }}
+        securityContext:
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - name: consul-data
+          mountPath: /etc/consul
+        {{- if .Values.consulAgent.gossipKeySecretName }}
+        - name: consul-gossip-key
+          mountPath: /etc/consul/secrets
+          readOnly: true
+        {{- end }}
+        command:
+          - "/bin/sh"
+          - "-ec"
+          - |
+            {{- if .Values.consulAgent.gossipKeySecretName }}
+            if [ -e /etc/consul/secrets/gossip-key ]; then
+              echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
+              GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
+            fi
+            {{- end }}
+
+            exec /bin/consul agent \
+              $GOSSIP_KEY \
+              -join={{- .Values.consulAgent.join }} \
+              -data-dir=/etc/consul
+      {{- end }}
       affinity:
 {{ tpl .Values.affinity . | indent 8 }}
       {{- end }}
@@ -90,3 +120,12 @@ spec:
           secret:
             secretName: {{ .secretName }}
         {{- end }}
+        {{- if .Values.consulAgent.join }}
+        - name: consul-data
+          emptyDir: {}
+        {{- end}}
+        {{- if .Values.consulAgent.gossipKeySecretName }}
+        - name: consul-gossip-key
+          secret:
+            secretName: {{ .Values.consulAgent.gossipKeySecretName }}
+        {{- end}}
