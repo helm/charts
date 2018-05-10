@@ -41,3 +41,25 @@ Create chart name and version as used by the chart label.
 {{- define "postgresql.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Return the appropriate name of the secret containing password
+*/}}
+{{- define "postgresql.password.secret" -}}
+{{- if typeIs "map[string]interface {}" .Values.postgresPassword -}}
+{{-   printf "%s"  .Values.postgresPassword.secret -}}
+{{- else -}}
+{{-   include "postgresql.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the appropriate name of the key in secret containing password
+*/}}
+{{- define "postgresql.password.key" -}}
+{{- if typeIs "map[string]interface {}" .Values.postgresPassword -}}
+{{-   default "postgres-password" .Values.postgresPassword.key -}}
+{{- else -}}
+{{-   printf "postgres-password" -}}
+{{- end -}}
+{{- end -}}

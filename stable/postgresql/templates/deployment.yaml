@@ -62,8 +62,8 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "postgresql.fullname" . }}
-              key: postgres-password
+              name: {{ template "postgresql.password.secret" . }}
+              key: {{ template "postgresql.password.key" . }}
         {{- end }}
         - name: POD_IP
           valueFrom: { fieldRef: { fieldPath: status.podIP } }
@@ -138,9 +138,9 @@ spec:
       {{- if .Values.usePasswordFile }}
       - name: password-file
         secret:
-          secretName: {{ template "postgresql.fullname" . }}
+          secretName: {{ template "postgresql.password.secret" . }}
           items:
-            - key: postgres-password
+            - key: {{ template "postgresql.password.key" . }}
               path: postgres-password
       {{- end }}
       {{- if .Values.imagePullSecrets }}
