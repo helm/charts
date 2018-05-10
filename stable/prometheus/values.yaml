@@ -71,6 +71,10 @@ alertmanager:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
+    ## alertmanager Ingress additional labels
+    ##
+    extraLabels: {}
+
     ## alertmanager Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##
@@ -478,6 +482,10 @@ server:
     annotations: {}
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
+
+    ## Prometheus server Ingress additional labels
+    ##
+    extraLabels: {}
 
     ## Prometheus server Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled

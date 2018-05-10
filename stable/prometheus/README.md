@@ -103,6 +103,7 @@ Parameter | Description | Default
 `alertmanager.configMapOverrideName` | Prometheus alertmanager ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}` and setting this value will prevent the default alertmanager ConfigMap from being generated | `""`
 `alertmanager.ingress.enabled` | If true, alertmanager Ingress will be created | `false`
 `alertmanager.ingress.annotations` | alertmanager Ingress annotations | `{}`
+`alertmanager.ingress.extraLabels` | alertmanager Ingress additional labels | `{}`
 `alertmanager.ingress.hosts` | alertmanager Ingress hostnames | `[]`
 `alertmanager.ingress.tls` | alertmanager Ingress TLS configuration (YAML) | `[]`
 `alertmanager.nodeSelector` | node labels for alertmanager pod assignment | `{}`
@@ -216,6 +217,7 @@ Parameter | Description | Default
 `server.configMapOverrideName` | Prometheus server ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.server.configMapOverrideName}}` and setting this value will prevent the default server ConfigMap from being generated | `""`
 `server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`
+`server.ingress.extraLabels` | Prometheus server Ingress additional labels | `{}`
 `server.ingress.hosts` | Prometheus server Ingress hostnames | `[]`
 `server.ingress.tls` | Prometheus server Ingress TLS configuration (YAML) | `[]`
 `server.nodeSelector` | node labels for Prometheus server pod assignment | `{}`
