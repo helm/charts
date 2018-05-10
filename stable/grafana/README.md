@@ -42,6 +42,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `service.labels`           | Custom labels                       | `{}`
 | `ingress.enabled`          | Enables Ingress | `false` |
 | `ingress.annotations`      | Ingress annotations | `{}` |
+| `ingress.labels`           | Custom labels                       | `{}`
 | `ingress.hosts`            | Ingress accepted hostnames | `[]` |
 | `ingress.tls`              | Ingress TLS configuration | `[]` |
 | `resources`                | CPU/Memory resource requests/limits | `{}` |
