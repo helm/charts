@@ -17,19 +17,25 @@ data:
         Name             tail
         Path             /var/log/containers/*.log
         Parser           docker
-        Tag              kube.*
+        Tag              {{ .Values.filter.kubeTag }}.*
         Refresh_Interval 5
         Mem_Buf_Limit    5MB
         Skip_Long_Lines  On
 
     [FILTER]
-        Name             kubernetes
-        Match            kube.*
-        Kube_URL         {{ .Values.filter.kubeURL }}
-        Kube_CA_File     {{ .Values.filter.kubeCAFile }}
-        Kube_Token_File  {{ .Values.filter.kubeTokenFile }}
+        Name                kubernetes
+        Match               {{ .Values.filter.kubeTag }}.*
+        Kube_URL            {{ .Values.filter.kubeURL }}
+        Kube_CA_File        {{ .Values.filter.kubeCAFile }}
+        Kube_Token_File     {{ .Values.filter.kubeTokenFile }}
 {{- if .Values.filter.mergeJSONLog }}
-        Merge_JSON_Log   On
+        Merge_JSON_Log      On
+{{- end }}
+{{- if .Values.filter.enableParser }}
+        K8S-Logging.Parser  On
+{{- end }}
+{{- if .Values.filter.enableExclude }}
+        K8S-Logging.Exclude On
 {{- end }}
 {{ if eq .Values.backend.type "test" }}
     [OUTPUT]
@@ -51,9 +57,12 @@ data:
         Port  {{ .Values.backend.es.port }}
         Logstash_Format On
         Retry_Limit False
-        Index {{ .Values.backend.es.index }}
         Type  {{ .Values.backend.es.type }}
+{{- if .Values.backend.es.logstash_prefix }}
         Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
+{{ else if .Values.backend.es.index }}
+        Index {{ .Values.backend.es.index }}
+{{- end }}
 {{- if .Values.backend.es.http_user }}
         HTTP_User {{ .Values.backend.es.http_user }}
         HTTP_Passwd {{ .Values.backend.es.http_passwd }}
@@ -79,4 +88,39 @@ data:
 {{- end }}
         Format {{ .Values.backend.http.format }}
 {{- end }}
+  parsers.conf: |-
+{{- if .Values.parsers.regex }}
+{{- range .Values.parsers.regex }}
+    [PARSER]
+        Name        {{ .name }}
+        Format      regex
+        Regex       {{ .regex }}
+{{- if .timeKey }}
+        Time_Key    {{ .timeKey }}
+{{- end }}
+{{- if .timeFormat }}
+        Time_Format {{ .timeFormat }}
+{{- end }}
+{{ end }}
+{{- end }}
+{{- if .Values.parsers.json }}
+{{- range .Values.parsers.json }}
+    [PARSER]
+        Name        {{ .name }}
+        Format      json
+{{- if .timeKeep }}
+        Time_Keep    {{ .timeKeep }}
+{{- end }}
+{{- if .timeKey }}
+        Time_Key    {{ .timeKey }}
+{{- end }}
+{{- if .timeFormat }}
+        Time_Format {{ .timeFormat }}
+{{- end }}
+{{- if .decodeFieldAs  }}
+        Decode_Field_As {{ .decodeFieldAs }} {{ .decodeField | default "log" }}
+{{- end }}
+{{ end }}
+{{- end }}
+
 {{- end -}}
