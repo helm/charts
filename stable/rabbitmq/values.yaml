@@ -86,12 +86,8 @@ rabbitmq:
 serviceType: ClusterIP
 
 persistence:
+  ## this enables PVC templates that will create one per pod
   enabled: false
-
-  ## A manually managed Persistent Volume and Claim
-  ## Requires persistence.enabled: true
-  ## If defined, PVC must be created manually before volume will be bound
-  # existingClaim:
 
   ## rabbitmq data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>

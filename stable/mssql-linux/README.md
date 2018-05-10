@@ -53,7 +53,7 @@ svc/mymssql-mssql-linux   ClusterIP   10.104.152.61   <none>        1433/TCP   9
 
 ### SA Password Retrieval
 
-The sa password is a randonmized in the secret.yaml file.  To retrieve the password, perform the following steps once you install the helm chart.
+The sa password is a randomized in the secret.yaml file.  To retrieve the password, perform the following steps once you install the helm chart.
 
 ```console
 $ printf $(kubectl get secret --namespace default mymssql-mssql-linux-secret -o jsonpath="{.data.sapassword}" | base64 --decode);echo
@@ -209,7 +209,6 @@ To change the language of the MSSQL installation, change the `lcid` key in the `
 1>select substring(convert(varchar(30),serverproperty('Collation')),1,30), substring(convert(varchar(20),serverproperty('lcid')),1,20);
 2>go
 ```
-
 ## Master database files
 
 As part of this chart the `master` database is configured to be installed based in the `/mssql-data/master`.
