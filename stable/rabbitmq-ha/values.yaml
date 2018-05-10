@@ -216,6 +216,10 @@ podAntiAffinity: soft
 ##
 customConfigMap: false
 
+## Add additional labels to all resources
+##
+extraLabels: {}
+
 ## Create default Secret
 ##
 customSecret: false
