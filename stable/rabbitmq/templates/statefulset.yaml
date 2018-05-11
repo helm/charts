@@ -54,9 +54,6 @@ spec:
          - bash
          - -ec
          - |
-            #create the var/lib/rabbitmq directory under the bitnami folder
-            mkdir -p /opt/bitnami/rabbitmq/var/lib/rabbitmq/
-
             #persist the erlang cookie in both places for server and cli tools
             echo $RABBITMQ_ERL_COOKIE > /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
             cp /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie /root
@@ -80,7 +77,7 @@ spec:
           - name: config-volume
             mountPath: /opt/bitnami/rabbitmq/conf
           - name: data
-            mountPath: /bitnami/rabbitmq
+            mountPath: /opt/bitnami/rabbitmq/var/lib/rabbitmq/
         ports:
         - name: epmd
           containerPort: 4369
