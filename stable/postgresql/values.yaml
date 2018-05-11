@@ -25,6 +25,10 @@ imageTag: "9.6.2"
 ## Inject postgresPassword via a volume mount instead of environment variable
 usePasswordFile: false
 
+## Use Existing secret instead of creating one
+## It must have a postgres-password key containing the desired password
+# existingSecret: 'secret'
+
 ## Create a database
 ## Default: the postgres user
 # postgresDatabase:
