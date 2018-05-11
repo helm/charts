@@ -36,6 +36,8 @@ resources: {}
 
 podAnnotations: {}
 
+podLabels: {}
+
 nodeSelector: {}
 
 ingressShim:

@@ -12,9 +12,22 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "cert-manager.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- $fullname := printf "%s-%s" $name .Release.Name -}}
-{{- default $fullname .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- if ne $name .Release.Name -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s" $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+{{- end -}}
+
+{{/* Generate basic labels */}}
+{{- define "cert-manager.labels" }}
+app: {{ template "cert-manager.name" . }}
+heritage: {{.Release.Service }}
+release: {{.Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels }}
+{{- end }}
+{{- end }}
 
 {{/*
 Create chart name and version as used by the chart label.

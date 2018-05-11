@@ -74,6 +74,7 @@ The following table lists the configurable parameters of the cert-manager chart 
 | `ingressShim.image.tag` | Image tag for ingress-shim. Defaults to `image.tag` if empty | `` |
 | `ingressShim.image.pullPolicy` | Image pull policy for ingress-shim | `IfNotPresent` |
 | `podAnnotations` | Annotations to add to the cert-manager pod | `{}` |
+| `podLabels` | Labels to add to the cert-manager pod | `{}` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
