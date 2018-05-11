@@ -209,10 +209,10 @@ web:
 
   ## Annotations for the web nodes.
   ## Ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-  annotations: []
+  annotations: {}
   # annotations:
-  #  - key1: "value1"
-  #  - key2: "value2"
+  #   key1: "value1"
+  #   key2: "value2"
 
   ## Tolerations for the web nodes.
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
