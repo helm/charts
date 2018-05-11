@@ -117,6 +117,8 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+## annotations for rabbitmq pods
+podAnnotations: {}
 
 ## Configure the ingress resource that allows you to access the
 ## Wordpress installation. Set up the URL
