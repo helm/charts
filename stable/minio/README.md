@@ -70,12 +70,12 @@ The command removes all the Kubernetes components associated with the chart and 
 Configuration
 -------------
 
-The following tables lists the configurable parameters of the Minio chart and their default values.
+The following table lists the configurable parameters of the Minio chart and their default values.
 
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository                    | `minio/minio`                                           |
-| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-03-12T21-25-28Z`|
+| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-04-27T23-33-52Z`|
 | `image.pullPolicy`         | Image pull policy                   | `IfNotPresent`                                          |
 | `ingress.enabled`          | Enables Ingress                     | `false`                                                 |
 | `ingress.annotations`      | Ingress annotations                 | `{}`                                                    |
@@ -104,6 +104,11 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `defaultBucket.policy`     | Bucket policy                       | `none`                                                  |
 | `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                 |
 | `azuregateway.enabled`     | Use minio as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
+| `gcsgateway.enabled`       | Use minio as a [Google Cloud Storage gateway](https://docs.minio.io/docs/minio-gateway-for-gcs)| `false`  |
+| `gcsgateway.gcsKeyJson`    | credential json file of service account key | `""`
+      |
+| `gcsgateway.projectId`     | Google cloud project id             | `""`
+      |
 
 Some of the parameters above map to the env variables defined in the [Minio DockerHub image](https://hub.docker.com/r/minio/minio/).
 

@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "3.9.0"
+imageTag: "3.10.0"
 
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -77,7 +77,7 @@ concourse:
   ##
   containerPlacementStrategy: random
 
-  ## An URL pointing to the Docker registry to use to fetch Docker images.
+  ## A URL pointing to the Docker registry to use to fetch Docker images.
   ## If unset, this will default to the Docker default
   ##
   # dockerRegistry:
@@ -342,6 +342,11 @@ worker:
   #               values:
   #                 - "true"
 
+  ## Whether the workers should be forced to run on separate nodes.
+  ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
+  hardAntiAffinity: false
+
   ## Tolerations for the worker nodes.
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
@@ -456,6 +461,10 @@ credentialManager:
     ## Teams to create namespaces for to hold secrets.
     teams:
       - main
+
+    ## When true, namespaces are not deleted when the release is deleted.
+
+    keepNamespaces: true
 
   ## Configuration for AWS SSM as the Credential Manager. Supported in Concourse 3.9.0.
   ##

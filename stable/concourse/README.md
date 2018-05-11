@@ -68,7 +68,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
-| `imageTag` | Concourse image version | `3.9.0` |
+| `imageTag` | Concourse image version | `3.10.0` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
 | `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.atcPort` | Concourse ATC listen port | `8080` |
@@ -80,7 +80,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `concourse.resourceCacheCleanupInterval` | The interval on which to check for and release old caches of resource versions | `30s` |
 | `concourse.baggageclaimDriver` | The filesystem driver used by baggageclaim | `naive` |
 | `concourse.containerPlacementStrategy` | The selection strategy for placing containers onto workers | `random` |
-| `concourse.dockerRegistry` | An URL pointing to the Docker registry to use to fetch Docker images | `nil` |
+| `concourse.dockerRegistry` | A URL pointing to the Docker registry to use to fetch Docker images | `nil` |
 | `concourse.insecureDockerRegistry` | Docker registry(ies) (comma separated) to allow connecting to even if not secure | `nil` |
 | `concourse.encryption.enabled` | Enable encryption of pipeline configuration | `false` |
 | `concourse.basicAuth.enabled` | Enable basic auth for the "main" Concourse team| `true` |
@@ -116,7 +116,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
 | `web.metrics.prometheus.enabled` | Enable Prometheus metrics exporter | `false` |
-| `web.metrics.prometheus.port` | Port for exporting Prometeus metrics | `9391` |
+| `web.metrics.prometheus.port` | Port for exporting Prometheus metrics | `9391` |
 | `worker.nameOverride` | Override the Concourse Worker components name | `nil` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
@@ -129,6 +129,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
 | `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
 | `worker.podManagementPolicy` | `OrderedReady` or `Parallel` (requires Kubernetes >= 1.7) | `Parallel` |
+| `worker.hardAntiAffinity` | Should the workers be forced (as opposed to preferred) to be on different nodes? | `false` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.storageClass` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
@@ -140,7 +141,8 @@ The following table lists the configurable parameters of the Concourse chart and
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
 | `credentialManager.kubernetes.enabled` | Enable Kubernetes Secrets Credential Manager | `true` |
 | `credentialManager.kubernetes.namespacePrefix` | Prefix for namespaces to look for secrets in | `.Release.Name-` |
-| `credentialManager.kubernetes.teams` | Teams to allow secret access when rbac is enabled | `["main"]` |
+| `credentialManager.kubernetes.teams` | Teams to create namespaces for to hold secrets | `["main"]` |
+| `credentialManager.kubernetes.keepNamespaces` | Don't delete namespaces when the release is deleted | `true` |
 | `credentialManager.ssm.enabled` | Use AWS SSM as a Credential Manager | `false` |
 | `credentialManager.ssm.region` | AWS Region to use for SSM | `nil` |
 | `credentialManager.ssm.pipelineSecretsTemplate` | Pipeline secrets template | `nil` |
@@ -316,7 +318,9 @@ Pipelines usually need credentials to do things. Concourse supports the use of a
 
 #### Kubernetes Secrets
 
-By default, this chart will use Kubernetes Secrets as a credential manager. For a given Concourse *team*, a pipeline will look for secrets in a namespace named `[namespacePrefix][teamName]`. The namespace prefix is the release name hyphen by default, and can be overridden with the value `credentialManager.kubernetes.namespacePrefix`. The service account used by Concourse must have `get` access to secrets in that namespace. When `rbac.create` is true, this access is granted for each team listed under `credentialManager.kubernetes.teams`.
+By default, this chart will use Kubernetes Secrets as a credential manager. For a given Concourse *team*, a pipeline will look for secrets in a namespace named `[namespacePrefix][teamName]`. The namespace prefix is the release name hyphen by default, and can be overridden with the value `credentialManager.kubernetes.namespacePrefix`. Each team listed under `credentialManager.kubernetes.teams` will have a namespace created for it, and the namespace will remain after deletion of the release unless you set `credentialManager.kubernetes.keepNamespace` to `false`. By default, a namespace will be created for the `main` team.
+
+The service account used by Concourse must have `get` access to secrets in that namespace. When `rbac.create` is true, this access is granted for each team listed under `credentialManager.kubernetes.teams`.
 
 Here are some examples of the lookup heuristics, given release name `concourse`:
 

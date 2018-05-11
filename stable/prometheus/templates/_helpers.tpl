@@ -113,9 +113,64 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Return the appropriate apiVersion for networkpolicy.
 */}}
 {{- define "prometheus.networkPolicy.apiVersion" -}}
-{{- if and (ge .Capabilities.KubeVersion.Minor "4") (le .Capabilities.KubeVersion.Minor "6") -}}
+{{- if semverCompare ">=1.4-0, <1.7-0" .Capabilities.KubeVersion.GitVersion -}}
 {{- print "extensions/v1beta1" -}}
-{{- else if ge .Capabilities.KubeVersion.Minor "7" -}}
+{{- else if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion -}}
 {{- print "networking.k8s.io/v1" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use for the alertmanager component
+*/}}
+{{- define "prometheus.serviceAccountName.alertmanager" -}}
+{{- if .Values.serviceAccounts.alertmanager.create -}}
+    {{ default (include "prometheus.alertmanager.fullname" .) .Values.serviceAccounts.alertmanager.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccounts.alertmanager.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use for the kubeStateMetrics component
+*/}}
+{{- define "prometheus.serviceAccountName.kubeStateMetrics" -}}
+{{- if .Values.serviceAccounts.kubeStateMetrics.create -}}
+    {{ default (include "prometheus.kubeStateMetrics.fullname" .) .Values.serviceAccounts.kubeStateMetrics.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccounts.kubeStateMetrics.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use for the nodeExporter component
+*/}}
+{{- define "prometheus.serviceAccountName.nodeExporter" -}}
+{{- if .Values.serviceAccounts.nodeExporter.create -}}
+    {{ default (include "prometheus.nodeExporter.fullname" .) .Values.serviceAccounts.nodeExporter.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccounts.nodeExporter.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use for the pushgateway component
+*/}}
+{{- define "prometheus.serviceAccountName.pushgateway" -}}
+{{- if .Values.serviceAccounts.pushgateway.create -}}
+    {{ default (include "prometheus.pushgateway.fullname" .) .Values.serviceAccounts.pushgateway.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccounts.pushgateway.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use for the server component
+*/}}
+{{- define "prometheus.serviceAccountName.server" -}}
+{{- if .Values.serviceAccounts.server.create -}}
+    {{ default (include "prometheus.server.fullname" .) .Values.serviceAccounts.server.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccounts.server.name }}
 {{- end -}}
 {{- end -}}
