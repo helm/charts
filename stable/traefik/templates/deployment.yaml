@@ -86,7 +86,7 @@ spec:
         - mountPath: /ssl
           name: ssl
         {{- end }}
-        {{- if .Values.acme.enabled }}
+        {{- if and .Values.acme.enabled (not .Values.consul.enabled) }}
         - mountPath: /acme
           name: acme
         {{- end }}
@@ -127,7 +127,7 @@ spec:
       {{- end }}
       {{- if .Values.acme.enabled }}
       - name: acme
-      {{- if .Values.acme.persistence.enabled }}
+      {{- if and .Values.acme.persistence.enabled (not .Values.consul.enabled) }}
         persistentVolumeClaim:
           claimName: {{ .Values.acme.persistence.existingClaim | default (printf "%s-acme" (include "traefik.fullname" .)) }}
       {{- else }}

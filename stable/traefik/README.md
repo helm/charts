@@ -124,6 +124,8 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
 | `acme.persistence.existingClaim`| An Existing PVC name                                                 | `nil`                                     |
 | `acme.persistence.size`         | Minimum size of the volume requested                                 | `1Gi`                                     |
+| `consul.enabled`                | Use Consul as configuration backend                                  | `false`                                   |
+| `consul.endpoint`               | Consul endpoint                                                      | `consul:8500`                             |
 | `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
 | `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
 | `dashboard.service.annotations` | Annotations for the Traefik dashboard Service definition, specified as a map | None                |
@@ -173,11 +175,7 @@ $ helm install --name my-release --namespace kube-system --values values.yaml st
 
 ### Clustering / High Availability
 
-Currently it is possible to specify the number of `replicas` but the implementation is naive.
-
-**Full Traefik clustering with leader election is not yet supported.**
-
-It is heavily advised to not set a value for `replicas` if you also have Let's Encrypt configured. While setting `replicas` will work for many cases, since no leader is elected it has the consequence that each node will end up requesting Let's Encrypt certificates if this is also configured. This will quickly cut into the very modest rate limit that Let's Encrypt enforces.
+It is possible to specify the number of `replicas` for HA purposes. When used with Let's Encrypt configured, it is strongly advised to use a KV configuration backend to store the ACME configuration (simple Consul implementation is supported for now). Without a KV configuration backend, there is no clustering and no leader election. Without a leader each replica will end up requesting Let's Encrypt certificates. This will quickly cut into the very modest rate limit that Let's Encrypt enforces.
 
 [Basic auth](https://docs.traefik.io/toml/#api-backend) can be specified via `dashboard.auth.basic` as a map of usernames to passwords as below.
 See the linked Traefik documentation for accepted passwords encodings.
