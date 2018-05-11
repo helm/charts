@@ -8,6 +8,7 @@ metadata:
     chart: {{ template "redis.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    role: metrics
   annotations:
 {{ toYaml .Values.metrics.annotations | indent 4 }}
 spec:
