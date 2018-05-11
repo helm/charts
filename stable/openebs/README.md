@@ -16,12 +16,12 @@ This chart bootstraps OpenEBS deployment on a [Kubernetes](http://kubernetes.io)
 
 ## Installing OpenEBS 
 ```
-helm install incubator/openebs
+helm install stable/openebs
 ```
 
 ## Installing OpenEBS with the release name `my-release`:
 ```
-helm install --name `my-release` incubator/openebs
+helm install --name `my-release` stable/openebs
 ```
 
 ## To uninstall/delete the `my-release` deployment:
@@ -56,7 +56,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```shell
-helm install --name `my-release` -f values.yaml incubator/openebs
+helm install --name `my-release` -f values.yaml stable/openebs
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
