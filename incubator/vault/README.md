@@ -72,7 +72,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 If you are using the consul storage for vault, you might want a local
 consul agent to handle health checks.  By setting `consulAgent.join`
 to your consul server, an agent will be started in the vault pod.  In
-this case, you should configure vault to connect to console over
+this case, you should configure vault to connect to consul over
 `localhost`.  For example:
 
 ```yaml
