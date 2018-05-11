@@ -40,6 +40,9 @@ domainFilters: []
 # Filter sources managed by external-dns via annotation using label selector semantics (default: all sources)
 annotationFilter: ""
 
+# Registry to use for ownership (txt or noop)
+registry: "txt"
+
 # When using the TXT registry, a name that identifies this instance of ExternalDNS
 txtOwnerId: ""
 
