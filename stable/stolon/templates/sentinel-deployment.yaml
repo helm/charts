@@ -3,22 +3,28 @@ kind: Deployment
 metadata:
   name: {{ template "stolon.fullname" . }}-sentinel
   labels:
-    app: {{ template "stolon.name" . }}-sentinel
+    app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    component: sentinel
 spec:
-  serviceName: {{ template "stolon.fullname" . }}
   replicas: {{ .Values.sentinel.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "stolon.fullname" . }}-sentinel
+      app: {{ template "stolon.name" . }}
       release: {{ .Release.Name }}
+      component: sentinel
+      stolon-cluster: {{ template "stolon.fullname" . }}
+      stolon-sentinel: "true"
   template:
     metadata:
       labels:
-        app: {{ template "stolon.name" . }}-sentinel
+        app: {{ template "stolon.name" . }}
         release: {{ .Release.Name }}
+        component: sentinel
+        stolon-cluster: {{ template "stolon.fullname" . }}
+        stolon-sentinel: "true"
     spec:
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       containers:
@@ -38,7 +44,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: STSENTINEL_CLUSTER_NAME
-              value: {{ template "stolon.clusterName" .}}
+              value: {{ template "stolon.fullname" . }}
             - name: STSENTINEL_STORE_BACKEND
               value: {{ .Values.store.backend | quote}}
             {{- if eq .Values.store.backend "kubernetes" }}

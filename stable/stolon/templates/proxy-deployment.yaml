@@ -3,24 +3,27 @@ kind: Deployment
 metadata:
   name: {{ template "stolon.fullname" . }}-proxy
   labels:
-    app: {{ template "stolon.name" . }}-proxy
+    app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    component: proxy
 spec:
-  serviceName: {{ template "stolon.fullname" . }}
   replicas: {{ .Values.proxy.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "stolon.fullname" . }}-proxy
+      app: {{ template "stolon.name" . }}
       release: {{ .Release.Name }}
+      component: proxy
+      stolon-cluster: {{ template "stolon.fullname" . }}
   template:
     metadata:
       labels:
-        app: {{ template "stolon.name" . }}-proxy
+        app: {{ template "stolon.name" . }}
         release: {{ .Release.Name }}
+        component: proxy
+        stolon-cluster: {{ template "stolon.fullname" . }}
     spec:
-      serviceName: {{ template "stolon.fullname" . }}-proxy
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       containers:
         - name: {{ template "stolon.fullname" . }}-proxy
@@ -39,7 +42,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: STPROXY_CLUSTER_NAME
-              value: {{ template "stolon.clusterName" . }}
+              value: {{ template "stolon.fullname" . }}
             - name: STPROXY_STORE_BACKEND
               value: {{ .Values.store.backend | quote}}
             {{- if eq .Values.store.backend "kubernetes" }}

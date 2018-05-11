@@ -65,7 +65,7 @@ keeper:
     ports:
       keeper:
         port: 5432
-        targetPort: keeper
+        targetPort: 5432
         protocol: TCP
   ## configure ssl for client access
   # create certificates according to these instructions: https://www.postgresql.org/docs/9.6/static/ssl-tcp.html
@@ -84,7 +84,7 @@ proxy:
     ports:
       proxy:
         port: 5432
-        targetPort: proxy
+        targetPort: 5432
         protocol: TCP
   affinity: {}
   nodeSelector: {}

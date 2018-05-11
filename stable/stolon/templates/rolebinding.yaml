@@ -14,5 +14,5 @@ roleRef:
   name: {{ template "stolon.fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ template "stolon.fullname" . }}
+  name: {{ template "stolon.serviceAccountName" . }}
 {{- end -}}

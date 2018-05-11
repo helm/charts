@@ -3,22 +3,27 @@ kind: StatefulSet
 metadata:
   name: {{ template "stolon.fullname" . }}-keeper
   labels:
-    app: {{ template "stolon.name" . }}-keeper
+    app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    component: keeper
 spec:
-  serviceName: {{ template "stolon.fullname" . }}
+  serviceName: {{ template "stolon.fullname" . }}-keeper
   replicas: {{ .Values.keeper.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "stolon.fullname" . }}-keeper
+      app: {{ template "stolon.name" . }}
       release: {{ .Release.Name }}
+      component: keeper
+      stolon-cluster: {{ template "stolon.fullname" . }}
   template:
     metadata:
       labels:
-        app: {{ template "stolon.name" . }}-keeper
+        app: {{ template "stolon.name" . }}
         release: {{ .Release.Name }}
+        component: keeper
+        stolon-cluster: {{ template "stolon.fullname" . }}
     spec:
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       terminationGracePeriodSeconds: 10
@@ -44,7 +49,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: STKEEPER_CLUSTER_NAME
-              value: {{ template "stolon.clusterName" . }}
+              value: {{ template "stolon.fullname" . }}
             - name: STKEEPER_STORE_BACKEND
               value: {{ .Values.store.backend | quote}}
             {{- if eq .Values.store.backend "kubernetes" }}
