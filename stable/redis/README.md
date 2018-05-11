@@ -153,6 +153,7 @@ $ helm install --name my-release -f values.yaml stable/redis
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
 > **Note for minikube users**: Current versions of minikube (v0.24.1 at the time of writing) provision `hostPath` persistent volumes that are only writable by root. Using chart defaults cause pod failure for the Redis pod as it attempts to write to the `/bitnami` directory. Consider installing Redis with `--set persistence.enabled=false`. See minikube issue [1990](https://github.com/kubernetes/minikube/issues/1990) for more information.
 
 ## NetworkPolicy
