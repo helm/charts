@@ -36,8 +36,8 @@ Create the name of the service account
 */}}
 {{- define "grafana.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "grafana.fullname" .) .Values.rbac.serviceAccountName }}
+    {{ default (include "grafana.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.rbac.serviceAccountName }}
+    {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
