@@ -28,9 +28,11 @@ metrics:
   # resources: {}
   # podAnnotations: {}
   service:
+    type: ClusterIP
     annotations: {}
   #   prometheus.io/scrape: "true"
   #   prometheus.io/port: "9121"
+    loadBalancerIP:
   image:
     registry: docker.io
     repository: oliver006/redis_exporter
@@ -49,9 +51,6 @@ metrics:
 
   ## Metrics exporter pod Annotation and Labels
   # podLabels: {}
-
-  service:
-    type: ClusterIP
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
