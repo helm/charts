@@ -219,7 +219,11 @@ podAntiAffinity: soft
 
 ## Create default configMap
 ##
-customConfigMap: false
+existingConfigMap: false
+
+## Add additional labels to all resources
+##
+extraLabels: {}
 
 ## Role Based Access
 ## Ref: https://kubernetes.io/docs/admin/authorization/rbac/

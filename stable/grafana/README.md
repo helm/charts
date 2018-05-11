@@ -42,6 +42,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `service.labels`           | Custom labels                       | `{}`
 | `ingress.enabled`          | Enables Ingress | `false` |
 | `ingress.annotations`      | Ingress annotations | `{}` |
+| `ingress.labels`           | Custom labels                       | `{}`
 | `ingress.hosts`            | Ingress accepted hostnames | `[]` |
 | `ingress.tls`              | Ingress TLS configuration | `[]` |
 | `resources`                | CPU/Memory resource requests/limits | `{}` |
@@ -51,9 +52,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.enabled`      | Use persistent volume to store data | `false` |
 | `persistence.size`         | Size of persistent volume claim | `10Gi` |
 | `persistence.existingClaim`| Use an existing PVC to persist data | `nil` |
-| `persistence.storageClass` | Type of persistent volume claim | `generic` |
+| `persistence.storageClassName` | Type of persistent volume claim | `nil` |
 | `persistence.accessModes`  | Persistence access modes | `[]` |
 | `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""` |
+| `schedulerName`            | Alternate scheduler name | `nil` |
 | `env`                      | Extra environment variables passed to pods | `{}` |
 | `datasource`               | Configure grafana datasources | `{}` |
 | `dashboardProviders`       | Configure grafana dashboard providers | `{}` |
@@ -63,4 +65,4 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ldap.config  `            | Grafana's LDAP configuration    | `""` |
 | `annotations`              | Deployment annotations | `{}` |
 | `podAnnotations`           | Pod annotations | `{}` |
-
+| `smtp.existingSecret`      | The name of an existing secret containing the SMTP credentials, this must have the keys `user` and `password`. | `""` |

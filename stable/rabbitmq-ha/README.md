@@ -66,7 +66,6 @@ and their default values.
 |          Parameter                 |                       Description                               |                         Default                          |
 |------------------------------------|-----------------------------------------------------------------|----------------------------------------------------------|
 | `customConfigMap`                  | Use a custom ConfigMap                                          | `false`                                                  |
-| `customSecret`                     | Use a custom Secret                                             | `false`                                                  |
 | `image.pullPolicy`                 | Image pull policy                                               | `Always` if `image` tag is `latest`, else `IfNotPresent` |
 | `image.repository`                 | RabbitMQ container image repository                             | `rabbitmq`                                               |
 | `image.tag`                        | RabbitMQ container image tag                                    | `3.7-alpine`                                             |
@@ -122,8 +121,8 @@ and their default values.
 | `secret.overrideName`      | Override secret name for password & erlang cookie                | ``                                                       |
 | `serviceAccount.create`            | Create service account                                          | `true`                                                   |
 | `serviceAccount.name`              | Service account name to use                                     | _name of the release_                                    |
-| `service.annotations`              | Annotations to add to service                                   | `none`                                                   |
-| `service.clusterIP`                | IP address to assign to service                                 | `""`                                                     |
+| `service.annotations`              | Annotations to add to the service                               | `{}`                                                     |
+| `service.clusterIP`                | IP address to assign to the service                             | `""`                                                     |
 | `service.externalIPs`              | Service external IP addresses                                   | `[]`                                                     |
 | `service.loadBalancerIP`           | IP address to assign to load balancer (if supported)            | `""`                                                     |
 | `service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`                                                     |
@@ -131,6 +130,7 @@ and their default values.
 | `tolerations`                      | Toleration labels for pod assignment                            | `[]`                                                     |
 | `terminationGracePeriodSeconds`    | Duration pod needs to terminate gracefully                      | `10`                                                     |
 | `updateStrategy`                   | Statefulset update strategy                                     | `OnDelete`                                               |
+| `extraLabels`                      | Labels to add to the Resources                                  | `{}`                                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
