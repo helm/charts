@@ -54,10 +54,13 @@ spec:
             - name: STPROXY_DEBUG
               value: {{ .Values.debug | quote}}
           ports:
-            - containerPort: {{ .Values.ports.internalPort }}
+{{- range $key, $value := .Values.ports }}
+            - name: {{ $key }}
+{{ toYaml $value | indent 14 }}
+{{- end }}
           readinessProbe:
             tcpSocket:
-              port: {{ .Values.ports.internalPort }}
+              port: {{ .Values.ports.stolon.containerPort }}
             initialDelaySeconds: 10
             timeoutSeconds: 5
 {{- with .Values.proxy.nodeSelector }}

@@ -52,35 +52,21 @@ consul:
     enabled: false
 
 ports:
-  internalPort: 5432
-  externalPort: 5432
-
-sentinel:
-  replicaCount: 2
-  resources: {}
-  service:
-    type: ClusterIP
-  affinity: {}
-  nodeSelector: {}
-  tolerations: []
-
-proxy:
-  replicaCount: 2
-  resources: {}
-  service:
-    type: ClusterIP
-  affinity: {}
-  nodeSelector: {}
-  tolerations: []
+  stolon:
+    containerPort: 5432
+    protocol: TCP
 
 keeper:
   replicaCount: 2
   resources: {}
   service:
     type: ClusterIP
-  affinity: {}
-  nodeSelector: {}
-  tolerations: []
+    annotations: {}
+    ports:
+      keeper:
+        port: 5432
+        targetPort: keeper
+        protocol: TCP
   ## configure ssl for client access
   # create certificates according to these instructions: https://www.postgresql.org/docs/9.6/static/ssl-tcp.html
   # to enable encrypted traffic, servert.crt and server.key are required, by that name.
@@ -88,6 +74,28 @@ keeper:
   clientSsl:
     enabled: false
     certs_secret_name: pg-cert-secret
+
+proxy:
+  replicaCount: 2
+  resources: {}
+  service:
+    type: ClusterIP
+    annotations: {}
+    ports:
+      proxy:
+        port: 5432
+        targetPort: proxy
+        protocol: TCP
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+
+sentinel:
+  replicaCount: 2
+  resources: {}
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
 
 slowQueries:
   enabled: false

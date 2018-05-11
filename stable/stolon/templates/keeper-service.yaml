@@ -7,8 +7,8 @@ metadata:
     chart: {{ template "stolon.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- with .Values.keeper.service.annotations }}
   annotations:
+{{- with .Values.keeper.service.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
@@ -24,9 +24,10 @@ spec:
   type: {{ .Values.keeper.service.type }}
 {{- end }}
   ports:
-    - name: {{ template "stolon.fullname" . }}-keeper
-      port: {{ .Values.ports.externalPort }}
-      targetPort: {{ .Values.ports.internalPort }}
+  {{- range $key, $value := .Values.keeper.service.ports }}
+    - name: {{ $key }}
+{{ toYaml $value | indent 6 }}
+{{- end }}
   selector:
     app: {{ template "stolon.fullname" . }}-keeper
     release: {{ .Release.Name }}

@@ -65,7 +65,10 @@ spec:
             - name: STKEEPER_DEBUG
               value: {{ .Values.debug | quote}}
           ports:
-            - containerPort: {{ .Values.ports.internalPort }}
+{{- range $key, $value := .Values.ports }}
+            - name: {{ $key }}
+{{ toYaml $value | indent 14 }}
+{{- end }}
           volumeMounts:
           - name: stolon-data
             mountPath: /stolon-data

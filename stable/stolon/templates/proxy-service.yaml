@@ -7,16 +7,27 @@ metadata:
     chart: {{ template "stolon.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- with .Values.proxy.service.annotations }}
   annotations:
+{{- with .Values.proxy.service.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
+{{- if (or (eq .Values.proxy.service.type "ClusterIP" "") (empty .Values.proxy.service.type)) }}
+  type: ClusterIP
+  {{- if .Values.proxy.service.clusterIP }}
+  clusterIP: {{ .Values.proxy.service.clusterIP }}
+  {{end}}
+{{- else if eq .Values.proxy.service.type "LoadBalancer" }}
   type: {{ .Values.proxy.service.type }}
+  loadBalancerIP: {{ default "" .Values.proxy.service.loadBalancerIP }}
+{{- else }}
+  type: {{ .Values.proxy.service.type }}
+{{- end }}
   ports:
-    - name: {{ template "stolon.fullname" . }}
-      port: {{ .Values.ports.externalPort }}
-      targetPort: {{ .Values.ports.internalPort }}
+  {{- range $key, $value := .Values.proxy.service.ports }}
+    - name: {{ $key }}
+{{ toYaml $value | indent 6 }}
+{{- end }}
   selector:
     app: {{ template "stolon.fullname" . }}-proxy
     release: {{ .Release.Name }}
