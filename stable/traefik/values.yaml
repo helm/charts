@@ -1,11 +1,18 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.5.3
+imageTag: 1.5.4
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 loadBalancerIP:
 # loadBalancerSourceRanges: []
+whiteListSourceRange: []
+externalTrafficPolicy: Cluster
 replicas: 1
+
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
+
 cpuRequest: 100m
 memoryRequest: 20Mi
 cpuLimit: 100m
@@ -127,6 +134,7 @@ acme:
   ## certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
     enabled: true
+    annotations: {}
     ## acme data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
