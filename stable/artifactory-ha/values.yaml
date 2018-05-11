@@ -78,7 +78,22 @@ artifactory:
   membershipPort: 10017
   externalPort: 8081
   internalPort: 8081
+  ## The following settings are to configure the frequency of the liveness and readiness probes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 180
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
 
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 60
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
   persistence:
     redundancy: 3
     mountPath: "/var/opt/jfrog/artifactory"
@@ -204,6 +219,22 @@ nginx:
   internalPortHttp: 80
   externalPortHttps: 443
   internalPortHttps: 443
+  ## The following settings are to configure the frequency of the liveness and readiness probes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 100
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 60
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
   ## The SSL secret that will be used by the Nginx pod
   # tlsSecretName: chart-example-tls
   env:

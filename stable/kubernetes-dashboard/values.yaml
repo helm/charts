@@ -71,6 +71,10 @@ ingress:
   #   nginx.ingress.kubernetes.io/secure-backends: "true"
   #   kubernetes.io/tls-acme: 'true'
 
+  ## Kubernetes Dashboard Ingress path
+  ##
+  path: /
+
   ## Kubernetes Dashboard Ingress hostnames
   ## Must be provided if Ingress is enabled
   ##
