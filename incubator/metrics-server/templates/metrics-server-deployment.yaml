@@ -15,7 +15,7 @@ spec:
         app: {{ template "metrics-server.name" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: metrics-server
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "metrics-server.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
       - name: metrics-server
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
