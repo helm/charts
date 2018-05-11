@@ -36,7 +36,7 @@ To install the chart with the release name `my-release`:
 Auto-discovery finds ASGs tags as below and automatically manages them based on the min and max size specified in the ASG. `cloudProvider=aws` only.
 
 1) tag the ASGs with _key_ `k8s.io/cluster-autoscaler/enabled` and _key_ `kubernetes.io/cluster/<YOUR CLUSTER NAME>`
-1) verify the [IAM Permissions](#IAM)
+1) verify the [IAM Permissions](#iam)
 1) set `autoDiscovery.clusterName=<YOUR CLUSTER NAME>`
 
 ```console
@@ -66,7 +66,7 @@ $ helm install stable/cluster-autoscaler \
 
 Without autodiscovery, specify an array of elements each containing ASG name, min size, max size. The sizes specified here will be applied to the ASG, assuming IAM permissions are correctly configured.
 
-1) verify the [IAM Permissions](#IAM Permissions)
+1) verify the [IAM Permissions](#iam)
 1) Either provide a yaml file setting `autoscalingGroups` (see values.yaml) or use `--set` e.g.:
 
 ```console
@@ -131,7 +131,7 @@ Parameter | Description | Default
 `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]`
 
 
-Specify each parameter you'd like to override using a YAML file as described above in the [installation](#Installing the Chart) section or by using the `--set key=value[,key=value]` argument to `helm install`. For example, to change the region and [expander](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders):
+Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section or by using the `--set key=value[,key=value]` argument to `helm install`. For example, to change the region and [expander](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders):
 
 ```console
 $ helm install stable/cluster-autoscaler --name my-release \
