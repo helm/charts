@@ -10,6 +10,12 @@ To use, add the `kubernetes.io/ingress.class: nginx` annotation to your Ingress 
 $ helm install stable/nginx-ingress
 ```
 
+If the kubernetes cluster has RBAC enabled, then run:
+
+```console
+helm install stable/nginx-ingress --set rbac.create=true
+```
+
 ## Introduction
 
 This chart bootstraps an nginx-ingress deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
