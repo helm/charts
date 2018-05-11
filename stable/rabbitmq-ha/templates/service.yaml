@@ -43,11 +43,11 @@ spec:
     {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
     - name: stomp-tcp
       protocol: TCP
-      port: 1883
+      port: 61613
       targetPort: stomp-tcp
     - name: stomp-ssl
       protocol: TCP
-      port: 8883
+      port: 61614
       targetPort: stomp-ssl
     {{- end }}
     {{- if .Values.rabbitmqWebSTOMPPlugin.enabled }}
@@ -59,11 +59,11 @@ spec:
     {{- if .Values.rabbitmqMQTTPlugin.enabled }}
     - name: mqtt-tcp
       protocol: TCP
-      port: 61613
+      port: 1883
       targetPort: mqtt-tcp
     - name: mqtt-ssl
       protocol: TCP
-      port: 61614
+      port: 8883
       targetPort: mqtt-ssl
     {{- end }}
     {{- if .Values.rabbitmqWebMQTTPlugin.enabled }}
