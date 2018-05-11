@@ -17,6 +17,8 @@ spec:
     matchLabels:
       app: {{ template "grafana.name" . }}
       release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.deploymentStrategy }}
   template:
     metadata:
       labels:
@@ -27,6 +29,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+{{- end }}
 {{- if .Values.dashboards }}
       initContainers:
         - name: download-dashboards
@@ -105,6 +110,18 @@ spec:
                   name: {{ template "grafana.fullname" . }}
                   key: plugins
             {{- end }}
+            {{- if .Values.smtp.existingSecret }}
+            - name: GF_SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.smtp.existingSecret }}
+                  key: user
+            - name: GF_SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.smtp.existingSecret }}
+                  key: password
+            {{- end }}
             {{- if .Values.database.existingSecret }}
             - name: GF_DATABASE_USER
               valueFrom:
@@ -115,12 +132,16 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.database.existingSecret }}
-                  key: password
             {{- end }}
 {{- range $key, $value := .Values.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
 {{- end }}
+          {{- if .Values.envFromSecret }}
+          envFrom:
+            - secretKeyRef:
+                name: {{ .Values.envFromSecret }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /api/health

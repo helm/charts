@@ -63,6 +63,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ldap.config  `                       | Grafana's LDAP configuration    | `""` |
 | `annotations`                         | Deployment annotations | `{}` |
 | `podAnnotations`                      | Pod annotations | `{}` |
+| `smtp.existingSecret`                 | The name of an existing secret containing the SMTP credentials, this must have the keys `user` and `password`. | `""` |
 | `database.existingSecret`             | The name of an existing secret containing database credentials, this must have the keys `user` and `password | `""` |
 | `database.cloudSQL.enabled`           | Use a Google CloudSQL Proxy for database access | `false` |
 | `database.cloudSQL.image.repository`  | CloudSQL proxy image repository | `gcr.io/cloudsql-docker/gce-proxy` |
