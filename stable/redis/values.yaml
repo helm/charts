@@ -27,7 +27,8 @@ metrics:
   enabled: false
   # resources: {}
   # podAnnotations: {}
-  # targetServiceAnnotations:
+  service:
+    annotations: {}
   #   prometheus.io/scrape: "true"
   #   prometheus.io/port: "9121"
   image:
