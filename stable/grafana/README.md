@@ -58,6 +58,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""` |
 | `schedulerName`            | Alternate scheduler name | `nil` |
 | `env`                      | Extra environment variables passed to pods | `{}` |
+| `envFromSecret`            | The name of a Kubenretes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
 | `datasource`               | Configure grafana datasources | `{}` |
 | `dashboardProviders`       | Configure grafana dashboard providers | `{}` |
 | `dashboards`               | Dashboards to import | `{}` |
