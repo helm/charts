@@ -8,10 +8,9 @@ image:
   tag: 4.0.0-rc.1
   pullPolicy: IfNotPresent
 
-## Override the name or fullname of the chart
+## Override the name of the chart
 ##
 nameOverride: ""
-fullnameOverride: ""
 
 ## Redash global envrionment variables - applied to both server and worker containers
 ## Add any environment variables from https://redash.io/help-onpremise/setup/settings-environment-variables.html
