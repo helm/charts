@@ -78,19 +78,19 @@ spec:
             - name: SONARQUBE_JDBC_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "postgresql.fullname" .}}
+                  name: {{- if .Values.postgresql.enabled }} {{ template "postgresql.fullname" .}} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
                   key: postgres-password
             - name: SONARQUBE_JDBC_URL
               value: "jdbc:postgresql://{{ template "postgresql.hostname" . }}:{{- .Values.postgresql.service.port -}}/{{- .Values.postgresql.postgresDatabase -}}"
           livenessProbe:
             httpGet:
-              path: /
+              path: /sessions/new
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: /
+              path: /sessions/new
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}

@@ -66,6 +66,7 @@ and their default values.
 |          Parameter                 |                       Description                               |                         Default                          |
 |------------------------------------|-----------------------------------------------------------------|----------------------------------------------------------|
 | `customConfigMap`                  | Use a custom ConfigMap                                          | `false`                                                  |
+| `customSecret`                     | Use a custom Secret                                             | `false`                                                  |
 | `image.pullPolicy`                 | Image pull policy                                               | `Always` if `image` tag is `latest`, else `IfNotPresent` |
 | `image.repository`                 | RabbitMQ container image repository                             | `rabbitmq`                                               |
 | `image.tag`                        | RabbitMQ container image tag                                    | `3.7-alpine`                                             |
@@ -73,6 +74,7 @@ and their default values.
 | `persistentVolume.accessMode`      | Persistent volume access modes                                  | `[ReadWriteOnce]`                                        |
 | `persistentVolume.annotations`     | Persistent volume annotations                                   | `{}`                                                     |
 | `persistentVolume.enabled`         | If `true`, persistent volume claims are created                 | `false`                                                  |
+| `persistentVolume.name`            | Persistent volume name                                          | `data`                                                   |
 | `persistentVolume.size`            | Persistent volume size                                          | `8Gi`                                                    |
 | `persistentVolume.storageClass`    | Persistent volume storage class                                 | `-`                                                      |
 | `podAntiAffinity`                  | Pod antiaffinity, `hard` or `soft`                              | `hard`                                                   |
@@ -103,14 +105,16 @@ and their default values.
 | `serviceAccount.name`              | Service account name to use                                     | _name of the release_                                    |
 | `replicaCount`                     | Number of replica                                               | `3`                                                      |
 | `resources`                        | CPU/Memory resource requests/limits                             | `{}`                                                     |
-| `service.annotations`              | Annotations to add to service                                   | `none`                                                   |
-| `service.clusterIP`                | IP address to assign to service                                 | `""`                                                     |
+| `service.annotations`              | Annotations to add to the service                               | `{}`                                                     |
+| `service.clusterIP`                | IP address to assign to the service                             | `""`                                                     |
 | `service.externalIPs`              | Service external IP addresses                                   | `[]`                                                     |
 | `service.loadBalancerIP`           | IP address to assign to load balancer (if supported)            | `""`                                                     |
 | `service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`                                                     |
 | `service.type`                     | Type of service to create                                       | `ClusterIP`                                              |
 | `tolerations`                      | Toleration labels for pod assignment                            | `[]`                                                     |
+| `terminationGracePeriodSeconds`    | Duration pod needs to terminate gracefully                      | `10`                                                     |
 | `updateStrategy`                   | Statefulset update strategy                                     | `OnDelete`                                               |
+| `extraLabels`                      | Labels to add to the Resources                                  | `{}`                                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -175,3 +179,7 @@ Then, install the chart with the above configuration:
 ```
 $ helm install --name my-release --set customConfigMap=true stable/rabbitmq-ha
 ```
+
+### Custom Secret
+
+Similar to custom ConfigMap, `customSecret` can be used to override the default secret.yaml provided.

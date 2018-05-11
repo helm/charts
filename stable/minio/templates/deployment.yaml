@@ -46,15 +46,6 @@ spec:
               {{- if and .Values.persistence.enabled .Values.persistence.subPath }}
               subPath: "{{ .Values.persistence.subPath }}"
               {{- end }}
-            - name: minio-server-config
-              mountPath: {{ default "/root/.minio/config.json" .Values.configPath | quote }}
-              subPath: config.json
-            - name: minio-server-config
-              mountPath: /root/.minio/initialize
-              subPath: initialize
-            - name: podinfo
-              mountPath: /podinfo
-              readOnly: false
             {{- if .Values.gcsgateway.enabled }}
             - name: minio-user
               mountPath: "/etc/credentials"
@@ -97,12 +88,6 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
-        - name: podinfo
-          downwardAPI:
-            items:
-              - path: "labels"
-                fieldRef:
-                  fieldPath: metadata.labels
         - name: export
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
@@ -110,9 +95,6 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
-        - name: minio-server-config
-          configMap:
-            name: {{ template "minio.fullname" . }}
         - name: minio-user
           secret:
             secretName: {{ template "minio.fullname" . }}
