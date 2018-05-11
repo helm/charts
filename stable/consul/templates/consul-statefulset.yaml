@@ -129,7 +129,7 @@ spec:
           - |
             IP=$(hostname -i)
 
-            {{- if .Values.EncryptGossip }}
+            {{- if .Values.Gossip.Encrypt }}
             if [ -e /etc/consul/secrets/gossip-key ]; then
               echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
               GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
@@ -175,7 +175,7 @@ spec:
               -bind=0.0.0.0 \
               -advertise=${IP} \
               ${PEERS} \
-            {{- if .Values.EncryptGossip }}
+            {{- if .Values.Gossip.Encrypt }}
               ${GOSSIP_KEY} \
             {{- end }}
               -client=0.0.0.0 \

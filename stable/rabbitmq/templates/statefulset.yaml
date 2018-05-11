@@ -19,6 +19,10 @@ spec:
       labels:
         app: {{ template "rabbitmq.name" . }}
         release: "{{ .Release.Name }}"
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -142,10 +146,29 @@ spec:
               path: rabbitmq.conf
             - key: enabled_plugins
               path: enabled_plugins
+      {{- if not .Values.persistence.enabled }}
         - name: data
-        {{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-             claimName: {{ .Values.persistence.existingClaim | default (include "rabbitmq.fullname" .) }}
-        {{- else }}
           emptyDir: {}
-        {{- end -}}
+  {{- else }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          app: {{ template "rabbitmq.name" . }}
+          chart: {{ template "rabbitmq.chart" .  }}
+          release: "{{ .Release.Name }}"
+          heritage: "{{ .Release.Service }}"
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote }}
+        resources:
+            requests:
+              storage: {{ .Values.persistence.size | quote }}
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+  {{- end }}
