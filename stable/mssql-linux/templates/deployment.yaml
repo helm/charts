@@ -49,6 +49,8 @@ spec:
               value: /mssql-data/master/master.mdf
             - name: MSSQL_MASTER_LOG_FILE
               value: /mssql-data/master/mastlog.ldf
+            - name: MSSQL_ENABLE_HADR
+              value: "{{ .Values.hadr }}"
           ports:
             - name: mssql
               containerPort: {{ .Values.service.port }}
