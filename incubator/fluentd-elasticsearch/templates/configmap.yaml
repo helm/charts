@@ -13,7 +13,3 @@ data:
   {{ $key }}: |-
 {{ $value | indent 4 }}
 {{- end }}
-
-{{ if .Values.fluentdcustomconfig }}
-  custom.conf: {{ toYaml .Values.fluentdcustomconfig | indent 2 }}
-{{ end }}

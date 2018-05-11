@@ -425,9 +425,6 @@ configMaps:
       </buffer>
     </match>
 
-# fluentdcustomconfig: |
-#   # add fluentd custom configs here
-
 # extraVolumes:
 #   - name: es-certs
 #     secret:
