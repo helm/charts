@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         app: {{ template "mongodb.name" . }}
+        release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.nodeSelector }}
       nodeSelector:

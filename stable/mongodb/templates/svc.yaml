@@ -18,3 +18,4 @@ spec:
 {{- end }}
   selector:
     app: {{ template "mongodb.name" . }}
+    release: "{{ .Release.Name }}"
