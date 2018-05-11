@@ -49,6 +49,9 @@ metrics:
   ## Metrics exporter pod Annotation and Labels
   # podLabels: {}
 
+  service:
+    type: ClusterIP
+
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
   ##
@@ -69,6 +72,13 @@ usePassword: true
 password:
 ## Use existing secret (ignores previous password)
 # existingSecret:
+
+## Persist data to a persistent volume
+persistence: {}
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
 
 ##
 ## Redis Master parameters
@@ -209,6 +219,8 @@ slave:
   # extraFlags: []
   ## Comma-separated list of Redis commands to disable
   # disableCommands: ""
+
+  affinity: {}
 
   ## Redis slave Liveness Probe
   # livenessProbe:
