@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "metrics-server.fullname" . }}
+  namespace: kube-system
+  labels:
+    app: {{ template "metrics-server.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "metrics-server.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: metrics-server
+      containers:
+      - name: metrics-server
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - /metrics-server
+        - --source=kubernetes.summary_api:''
