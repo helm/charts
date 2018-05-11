@@ -4,6 +4,7 @@ edition:
   value: Express
 collation: SQL_Latin1_General_CP1_CI_AS
 lcid: 1033
+hadr: 0
 # Override sapassword in templates/secret.yaml
 # sapassword: "MyStrongPassword1234"
 image:
