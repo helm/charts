@@ -1,5 +1,7 @@
 replicas: 1
 
+deploymentStrategy: RollingUpdate
+
 image:
   repository: grafana/grafana
   tag: 5.0.4
