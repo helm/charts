@@ -191,6 +191,7 @@ spec:
             # In case of container restart, attempt this at-most-once.
             cp change_master_to.sql.in change_master_to.sql.orig
             mysql -h 127.0.0.1 --verbose<<EOF
+            STOP SLAVE IO_THREAD;
             $(<change_master_to.sql.orig),
             MASTER_HOST='{{ template "fullname" . }}-0.{{ template "fullname" . }}',
             MASTER_USER='${MYSQL_REPLICATION_USER}',
