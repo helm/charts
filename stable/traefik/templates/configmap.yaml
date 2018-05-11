@@ -28,6 +28,9 @@ data:
     [entryPoints]
       [entryPoints.http]
       address = ":80"
+      {{- if .Values.whiteListSourceRange }}
+      {{ template "traefik.whiteListSourceRange" . }}
+      {{- end }}
       {{- if .Values.proxyProtocol.enabled }}
         [entryPoints.http.proxyProtocol]
         {{ template "traefik.trustedips" . }}
@@ -40,6 +43,9 @@ data:
         {{- end }}
       {{- if .Values.ssl.enabled }}
       [entryPoints.https]
+      {{- if .Values.whiteListSourceRange }}
+      {{ template "traefik.whiteListSourceRange" . }}
+      {{- end }}
       address = ":443"
       {{- if .Values.proxyProtocol.enabled }}
         [entryPoints.https.proxyProtocol]
@@ -52,6 +58,9 @@ data:
           KeyFile = "/ssl/tls.key"
       {{- else }}
       [entryPoints.httpn]
+      {{- if .Values.whiteListSourceRange }}
+      {{ template "traefik.whiteListSourceRange" . }}
+      {{- end }}
       address = ":8880"
       compress = {{ .Values.gzip.enabled }}
       {{- end }}

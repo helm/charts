@@ -1,6 +1,7 @@
 name: locust
 description: A modern load testing framework
-version: 0.1.2
+version: 0.1.4
+appVersion: 0.7.5
 maintainers:
   - name: Vincent De Smet
     email: vincent.drl@gmail.com

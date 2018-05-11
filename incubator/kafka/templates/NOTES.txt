@@ -59,3 +59,12 @@ associated resources to become healthy.
 {{ printf "%s:%d" $externalFqdn $externalListenerPort | indent 2 }}
   {{- end }}
 {{- end }}
+
+{{ if .Values.prometheus.jmx.enabled }}
+To view JMX configuration (pull request/updates to improve defaults are encouraged):
+  {{ if .Values.jmx.configMap.overrideName }}
+  kubectl -n {{ .Release.Namespace }} describe configmap {{ .Values.jmx.configMap.overrideName }}
+  {{ else }}
+  kubectl -n {{ .Release.Namespace }} describe configmap {{ include "kafka.fullname" . }}-metrics
+  {{- end }}
+{{- end }}

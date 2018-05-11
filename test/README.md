@@ -21,7 +21,7 @@ The static analysis currently:
 
 #### Procedure
 
-Pull requests testing is run via the [Kuberentes Test Infrastructure](https://github.com/kubernetes/test-infra).
+Pull requests testing is run via the [Kubernetes Test Infrastructure](https://github.com/kubernetes/test-infra).
 
 The configuration of the Pull Request trigger is [in the config.json](https://github.com/kubernetes/test-infra/blob/827797c54b48295045698465b437f463ca9276c2/jobs/config.json#L10285).
 
@@ -72,3 +72,13 @@ to update the public repositories. The procedure is as follows:
    - Run `helm package` on each chart
    - Recreate the index using `helm repo index`
    - Upload the repository using `gsutil rsync`
+
+The Jenkins instance doing the syncing is running in a GCP project
+`kubernetes-charts-ci` in the default namespace of the GKE cluster named
+jenkins in us-west1-a.
+
+To access the Jenkins interface:
+```shell
+gcloud container clusters get-credentials --project kubernetes-charts-ci --zone us-west1-a jenkins
+helm status sync
+```

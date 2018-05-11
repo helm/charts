@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "grafana.fullname" . }}-dashboards-json
+  labels:
+    app: {{ template "grafana.name" . }}
+    chart: {{ template "grafana.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{- if .Values.dashboards }}
+  {{- range $key, $value := .Values.dashboards }}
+    {{- if hasKey $value "json" }}
+  {{ $key }}.json: |
+{{ $value.json | indent 4 }}
+    {{- end }}
+  {{- end }}
+{{- end -}}
