@@ -31,11 +31,11 @@ spec:
           args:
             - dask-worker
             - {{ template "dask.fullname" . }}-scheduler:{{ .Values.scheduler.servicePort }}
-          {{- if .Values.worker.limits }}
+          {{- if .Values.worker.resources.limits }}
             - --nthreads
-            - {{ default .Values.worker.limits.cpu .Values.workers.default_resources.cpu | quote }}
+            - {{ .Values.worker.resources.limits.cpu | default .Values.worker.default_resources.cpu | quote }}
             - --memory-limit
-            - {{ default .Values.worker.limits.memory .Values.workers.default_resources.memory | quote }}
+            - {{ .Values.worker.resources.limits.memory | default .Values.worker.default_resources.memory | quote }}
           {{- end }}
             - --no-bokeh
           ports:
