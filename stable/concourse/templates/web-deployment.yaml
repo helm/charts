@@ -14,6 +14,8 @@ spec:
       labels:
         app: {{ template "concourse.web.fullname" . }}
         release: "{{ .Release.Name }}"
+      annotations:
+{{ toYaml .Values.web.annotations | indent 8 }}
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.web.fullname" . }}{{ else }}{{ .Values.rbac.webServiceAccountName }}{{ end }}
       tolerations:
