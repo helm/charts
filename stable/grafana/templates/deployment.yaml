@@ -17,6 +17,8 @@ spec:
     matchLabels:
       app: {{ template "grafana.name" . }}
       release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.deploymentStrategy }}
   template:
     metadata:
       labels:
@@ -27,6 +29,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+{{- end }}
 {{- if .Values.dashboards }}
       initContainers:
         - name: download-dashboards
@@ -55,6 +60,9 @@ spec:
             - name: config
               mountPath: "/etc/grafana/grafana.ini"
               subPath: grafana.ini
+            - name: ldap
+              mountPath: "/etc/grafana/ldap.toml"
+              subPath: ldap.toml
 {{- if .Values.dashboards }}
   {{- range $key, $value := .Values.dashboards }}
     {{ if hasKey $value "json" }}
@@ -102,6 +110,18 @@ spec:
                   name: {{ template "grafana.fullname" . }}
                   key: plugins
             {{- end }}
+            {{- if .Values.smtp.existingSecret }}
+            - name: GF_SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.smtp.existingSecret }}
+                  key: user
+            - name: GF_SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.smtp.existingSecret }}
+                  key: password
+            {{- end }}
 {{- range $key, $value := .Values.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
@@ -114,10 +134,10 @@ spec:
             httpGet:
               path: /api/health
               port: 3000
-              initialDelaySeconds: 60
-              timeoutSeconds: 30
-              failureThreshold: 10
-              periodSeconds: 10
+            initialDelaySeconds: 60
+            timeoutSeconds: 30
+            failureThreshold: 10
+            periodSeconds: 10
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
@@ -139,6 +159,16 @@ spec:
         - name: dashboards-json
           configMap:
             name: {{ template "grafana.fullname" . }}-dashboards-json
+        - name: ldap
+          secret:
+            {{- if .Values.ldap.existingSecret }}
+            secretName: {{ .Values.ldap.existingSecret }}
+            {{- else }}
+            secretName: {{ template "grafana.fullname" . }}
+            {{- end }}
+            items:
+              - key: ldap-toml
+                path: ldap.toml
         - name: storage
       {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
@@ -146,3 +176,4 @@ spec:
       {{- else }}
           emptyDir: {}
       {{- end -}}
+

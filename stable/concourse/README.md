@@ -106,6 +106,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
+| `web.annotations`| Concourse Web deployment annotations | `nil` |
 | `web.tolerations` | Tolerations for the web nodes | `[]` |
 | `web.service.type` | Concourse Web service type | `ClusterIP` |
 | `web.service.annotations` | Concourse Web Service annotations | `nil` |
@@ -116,7 +117,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
 | `web.metrics.prometheus.enabled` | Enable Prometheus metrics exporter | `false` |
-| `web.metrics.prometheus.port` | Port for exporting Prometeus metrics | `9391` |
+| `web.metrics.prometheus.port` | Port for exporting Prometheus metrics | `9391` |
 | `worker.nameOverride` | Override the Concourse Worker components name | `nil` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
@@ -129,6 +130,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
 | `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
 | `worker.podManagementPolicy` | `OrderedReady` or `Parallel` (requires Kubernetes >= 1.7) | `Parallel` |
+| `worker.hardAntiAffinity` | Should the workers be forced (as opposed to preferred) to be on different nodes? | `false` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.storageClass` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |

@@ -43,6 +43,7 @@ Parameter | Description | Default
 --- | --- | ---
 `affinity` | affinity configuration for pod assignment | `{}`
 `extraArgs` | Additional container arguments | `{}`
+`extraEnv` | Additional container environment variables | `{}`
 `host.ip` | IP address of host | `$(HOST_IP)`
 `host.iptables` | Add iptables rule | `false`
 `host.interface` | Host interface for proxying AWS metadata | `docker0`
@@ -56,7 +57,7 @@ Parameter | Description | Default
 `resources` | pod resource requests & limits | `{}`
 `updateStrategy` | Strategy for DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 `verbose` | Enable verbose output | `false`
-`tolerations` | List of node taints to tolerate (requires Kubernetes 1.6+) | `[]`          
+`tolerations` | List of node taints to tolerate (requires Kubernetes 1.6+) | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
