@@ -28,7 +28,7 @@ spec:
             ordinal=${BASH_REMATCH[1]}
             [[ $ordinal -eq 0 ]] && exit 0
 
-            # If data aleready exists, delete and proceed to clone.
+            # If data already exists, delete and proceed to clone.
             [[ -d /var/lib/mysql/mysql ]] && rm -fr /var/lib/mysql/*
 
             # Clone data from previous peer.
