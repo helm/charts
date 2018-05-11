@@ -13,6 +13,12 @@ service:
   internalPort: 443
   nodePort: 32085
   # loadBalancerIP: 10.0.0.1
+
+  ## Here annotations can be added to the openvpn service
+  # annotations:
+  #   external-dns.alpha.kubernetes.io/hostname: vpn.example.com
+  annotations: {}
+
 resources:
   limits:
     cpu: 300m
