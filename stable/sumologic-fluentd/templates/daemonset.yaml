@@ -143,6 +143,10 @@ spec:
             - name: TIME_KEY
               value: {{ quote .Values.sumologic.timeKey }}
             {{- end }}
+            {{- if quote .Values.sumologic.addTimeStamp }}
+            - name: ADD_TIMESTAMP
+              value: {{ quote .Values.sumologic.addTimeStamp }}
+            {{- end }}
             {{- if quote .Values.sumologic.verifySsl }}
             - name: VERIFY_SSL
               value: {{ quote .Values.sumologic.verifySsl }}

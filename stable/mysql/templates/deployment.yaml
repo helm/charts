@@ -13,6 +13,10 @@ spec:
       labels:
         app: {{ template "mysql.fullname" . }}
     spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       initContainers:
       - name: "remove-lost-found"
         image: "busybox:1.25.0"
