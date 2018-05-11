@@ -98,7 +98,7 @@ The configuration parameters in this section control the resources requested and
 | service.port     | Service Port                                                                                   | `1433`                           |
 | collation        | Default collation for SQL Server                                                               | `SQL_Latin1_General_CP1_CI_AS`   |
 | lcid             | Default languages for SQL Server                                                               | `1033`                           |
-| persistence.enabled | Persist the Data and Log files for SQL Server                                               | `false`                          |
+| hadr             | Enable Availability Group                                                                      | `0`                              |
 | persistence.enabled | Persist the Data and Log files for SQL Server                                               | `false`                          |
 | persistence.existingDataClaim | Identify an existing Claim to be used for the Data Directory                      | `Commented Out`                  |
 | persistence.existingLogClaim  | Identify an existing Claim to be used for the Log Directory                       | `Commented Out`                  |
@@ -207,5 +207,19 @@ To change the language of the MSSQL installation, change the `lcid` key in the `
 
 ```sql
 1>select substring(convert(varchar(30),serverproperty('Collation')),1,30), substring(convert(varchar(20),serverproperty('lcid')),1,20);
+2>go
+```
+## Master database files
+
+As part of this chart the `master` database is configured to be installed based in the `/mssql-data/master`.
+
+## HADR
+
+As part of this chart you can enable your SQL Server container for Availability Groups.  As an administrator, you will need to configure additional settings once this options is enabled.  For more information on Availability Group(s) [click here](https://docs.microsoft.com/en-us/sql/database-engine/availability-groups/windows/overview-of-always-on-availability-groups-sql-server?view=sql-server-2017) for more information.
+
+### Query to determine if HADR is enabled
+
+```sql
+1>SELECT SERVERPROPERTY ('IsHadrEnabled');
 2>go
 ```
