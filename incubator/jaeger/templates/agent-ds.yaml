@@ -26,6 +26,10 @@ spec:
 {{ toYaml .Values.agent.podLabels | indent 8 }}
 {{- end }}
     spec:
+      {{- if .Values.agent.useHostNetwork }}
+      hostNetwork: true
+      {{- end }}
+      dnsPolicy: {{ .Values.agent.dnsPolicy }}
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
       containers:
