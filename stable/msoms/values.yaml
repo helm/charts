@@ -34,5 +34,4 @@ nodeSelector:
   beta.kubernetes.io/os: linux
 
 # optional tolerations to handle custom taints
-# tolerations:
-# - operator: "Exists"
+tolerations: []
