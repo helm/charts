@@ -111,8 +111,8 @@ spec:
 {{- end }}
           {{- if .Values.envFromSecret }}
           envFrom:
-          - secretKeyRef:
-              name: {{ .Values.envFromSecret }}
+            - secretKeyRef:
+                name: {{ .Values.envFromSecret }}
           {{- end }}
           livenessProbe:
             httpGet:
