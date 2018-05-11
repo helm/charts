@@ -157,7 +157,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `rbac.apiVersion` | RBAC version | `v1beta1` |
 | `rbac.webServiceAccountName` | Name of the service account to use for web pods if `rbac.create` is `false` | `default` |
 | `rbac.workerServiceAccountName` | Name of the service account to use for workers if `rbac.create` is `false` | `default` |
-| `secrets.create` | Create the secret resource from the following values. *See [Secrets](#Secrets)* | `true` |
+| `secrets.create` | Create the secret resource from the following values. *See [Secrets](#secrets)* | `true` |
 | `secrets.hostKey` | Concourse Host Private Key | *See [values.yaml](values.yaml)* |
 | `secrets.hostKeyPub` | Concourse Host Public Key | *See [values.yaml](values.yaml)* |
 | `secrets.sessionSigningKey` | Concourse Session Signing Private Key | *See [values.yaml](values.yaml)* |
@@ -211,7 +211,7 @@ printf "%s" "concourse" > basic-auth-username
 printf "%s" "$(openssl rand -base64 24)" > basic-auth-password
 ```
 
-You'll also need to create/copy secret values for optional features. See [templates/secrets.yaml](templates/secrets.yaml) for possible values. In the example below, we are not using the [PostgreSQL](#PostgreSQL) chart dependency, and so we must set a `postgresql-uri` secret.
+You'll also need to create/copy secret values for optional features. See [templates/secrets.yaml](templates/secrets.yaml) for possible values. In the example below, we are not using the [PostgreSQL](#postgresql) chart dependency, and so we must set a `postgresql-uri` secret.
 
 ```console
 # copy a posgres URI to clipboard and paste it to file
@@ -309,7 +309,7 @@ You can also bring your own PostgreSQL. To do so, set `postgresql.enabled` to fa
 
 1. Set `secrets.postgresqlUri` in your values
 
-2. Set `postgresql-uri` in your release's secrets as described in [Secrets](#Secrets).
+2. Set `postgresql-uri` in your release's secrets as described in [Secrets](#secrets).
 
 The only way to completely avoid putting secrets in Helm is to bring your own PostgreSQL, and use option 2 above.
 
