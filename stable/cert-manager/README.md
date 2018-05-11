@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the cert-manager chart 
 | `createCustomResource` | Create CRD/TPR with this release | `true` |
 | `certificateResourceShortNames` | Custom aliases for Certificate CRD | `["cert", "certs"]` |
 | `extraArgs` | Optional flags for cert-manager | `[]` |
+| `extraEnv` | Optional environment variables for cert-manager (eg. `VAULT_CAPATH`) | `[]` |
 | `rbac.create` | If `true`, create and use RBAC resources | `true`
 | `serviceAccount.create` | If `true`, create a new service account | `true`
 | `serviceAccount.name` | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | ``
