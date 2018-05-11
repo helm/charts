@@ -331,9 +331,9 @@ defaultBackend:
 
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:
-  create: false
-  createRole: false
-  createClusterRole: false
+  create: true
+  createRole: true
+  createClusterRole: true
   serviceAccountName: default
 
 ## Optional array of imagePullSecrets containing private registry credentials
