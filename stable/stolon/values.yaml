@@ -39,6 +39,7 @@ replicationUsername: "repluser"
 ## backend could be one of the following: consul, etcdv2, etcdv3, or kubernetes (experimental)
 store:
   installConsul: true
+  installEtcd: false
   backend: "consul"
   endpoints: "http://stolon-consul:8500"
 
