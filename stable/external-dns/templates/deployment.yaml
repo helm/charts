@@ -35,6 +35,7 @@ spec:
           {{- end }}
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
+            - --registry={{ .Values.registry }}
           {{- if .Values.txtOwnerId }}
             - --txt-owner-id={{ .Values.txtOwnerId }}
           {{- end }}
