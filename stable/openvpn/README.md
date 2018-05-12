@@ -14,18 +14,33 @@ helm install stable/openvpn
 Wait for the external load balancer IP to become available.  Check service status via: `kubectl get svc`
 
 Please be aware that certificate generation is variable and may take some time (minutes).
-Check pod status via:
+Check pod status, replacing `$HELM_RELEASE` with the name of your release, via:
 
 ```bash
-POD_NAME=$(kubectl get pods -l type=openvpn -o jsonpath='{.items[0].metadata.name}') \
-&& kubectl log $POD_NAME --follow
+POD_NAME=$(kubectl get pods -l "app=openvpn,release=$HELM_RELEASE" -o jsonpath='{.items[0].metadata.name}') \
+&& kubectl log "$POD_NAME" --follow
 ```
 
 When all components of the openvpn chart have started use the following script to generate a client key:
 
-```shell
-kubectl -n <namespace> exec -it <pod_name> /etc/openvpn/setup/newClientCert.sh <key_name> <external-ip>
-kubectl -n <namespace> exec -it <pod_name> /etc/openvpn/setup/newClientCert.sh <key_name> > <key_name>.ovpn
+
+```bash
+#!/bin/bash
+
+if [ $# -ne 3 ]
+then
+  echo "Usage: $0 <CLIENT_KEY_NAME> <NAMESPACE> <HELM_RELEASE>"
+  exit
+fi
+
+KEY_NAME=$1
+NAMESPACE=$2
+HELM_RELEASE=$3
+POD_NAME=$(kubectl get pods -n "$NAMESPACE" -l "app=openvpn,release=$HELM_RELEASE" -o jsonpath='{.items[0].metadata.name}')
+SERVICE_NAME=$(kubectl get svc -n "$NAMESPACE" -l "app=openvpn,release=$HELM_RELEASE" -o jsonpath='{.items[0].metadata.name}')
+SERVICE_IP=$(kubectl get svc -n "$NAMESPACE" "$SERVICE_NAME" -o go-template='{{range $k, $v := (index .status.loadBalancer.ingress 0)}}{{$v}}{{end}}')
+kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/newClientCert.sh "$KEY_NAME" "$SERVICE_IP"
+kubectl -n "$NAMESPACE" exec -it "$POD_NAME" cat "/etc/openvpn/certs/pki/$KEY_NAME.ovpn" > "$KEY_NAME.ovpn"
 ```
 
 The entire list of helper scripts can be found on [templates/config-openvpn.yaml](templates/config-openvpn.yaml)
