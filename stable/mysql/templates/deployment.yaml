@@ -13,6 +13,10 @@ spec:
       labels:
         app: {{ template "mysql.fullname" . }}
     spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       initContainers:
       - name: "remove-lost-found"
         image: "busybox:1.25.0"
@@ -99,6 +103,10 @@ spec:
         - name: configurations
           mountPath: /etc/mysql/conf.d
         {{- end }}
+        {{- if .Values.initializationFiles }}
+        - name: migrations
+          mountPath: /docker-entrypoint-initdb.d
+        {{- end }}
         {{- if .Values.ssl.enabled }}
         - name: certificates
           mountPath: /ssl
@@ -107,7 +115,12 @@ spec:
       {{- if .Values.configurationFiles }}
       - name: configurations
         configMap:
-          name: {{ template "mysql.fullname" . }}
+          name: {{ template "mysql.fullname" . }}-configuration
+      {{- end }}
+      {{- if .Values.initializationFiles }}
+      - name: migrations
+        configMap:
+          name: {{ template "mysql.fullname" . }}-initialization
       {{- end }}
       {{- if .Values.ssl.enabled }}
       - name: certificates
