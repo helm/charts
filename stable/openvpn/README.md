@@ -67,7 +67,7 @@ Parameter | Description | Default
 `resources.limits.cpu`         | OpenVPN cpu limit                                                    | `300m`
 `resources.limits.memory`      | OpenVPN memory limit                                                 | `128Mi`
 `persistence.enabled`          | Use a PVC to persist configuration                                   | `true`
-`persistence.subPath`          | Subdirectory of the volume to mount at                               | `openvpn`
+`persistence.subPath`          | Subdirectory of the volume to mount at                               | `nil`
 `persistence.existingClaim`    | Provide an existing PersistentVolumeClaim                            | `nil`
 `persistence.storageClass`     | Storage class of backing PVC                                         | `nil`
 `persistence.accessMode`       | Use volume as ReadOnly or ReadWrite                                  | `ReadWriteOnce`
