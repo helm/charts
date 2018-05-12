@@ -32,7 +32,7 @@ helm install -n locust-nymph --set master.config.target-host=http://site.example
 | `service.type`               | k8s service type exposing master   | `NodePort`                                            |
 | `service.nodePort`           | Port on cluster to expose master   | `0`                                                   |
 | `service.annotations`        | KV containing custom annotations   | `{}`                                                    |
-| `service.extra_labels`       | KV containing extra labels         | `{}`                                                    |
+| `service.extraLabels`        | KV containing extra labels         | `{}`                                                    |
 | `master.config.target-host`  | locust target host                 | `http://site.example.com`                             |
 | `worker.config.locust-script`| locust script to run               | `/locust-tasks/tasks.py`                              |
 | `worker.replicaCount`        | Number of workers to run           | `2`                                                   |
