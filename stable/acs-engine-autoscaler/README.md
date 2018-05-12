@@ -116,7 +116,8 @@ Parameter | Description | Default
 `spareagents`| [OPTIONAL] Number of agents per pool that should always remain up. | 1
 `idlethreshold`| [OPTIONAL] Maximum duration (in seconds) an agent can stay idle before being deleted. | 1800 (30 minutes)
 `overprovision`| [OPTIONAL] Number of extra agents to create when scaling out. | 0
-Specify each parameter you'd like to override using a YAML file as described above in the [installation](#Installing the Chart) section.
+
+Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section.
 
 
 ## Credentials
