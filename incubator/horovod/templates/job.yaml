@@ -80,28 +80,28 @@ spec:
 {{ toYaml .Values.volumeMounts | indent 8 }}
 {{- end }}
         command: 
-          - /horovod/generated/run.sh
+        - /horovod/generated/run.sh
         args:
 {{ toYaml .Values.master.args | indent 10 }}         
         resources:
 {{ toYaml .Values.master.resources | indent 10 }}
       initContainers:
-        - name: wait-workers
-          image: "{{ .Values.master.image.repository }}:{{ .Values.master.image.tag }}"
-          imagePullPolicy: {{ .Values.master.image.pullPolicy }}
-          env:
-          - name: SSHPORT
-            value: "{{ .Values.ssh.port }}"
-          {{- if .Values.master.env }}            
-          {{- range $key, $value := .Values.master.env }}
-            - name: "{{ $key }}"
-              value: "{{ $value }}"
-          {{- end }}
-          {{- end }}
-          command: 
-            - /horovod/generated/waitWorkersReady.sh
-          args:
-            - /horovod/generated/hostfile
-          volumeMounts:
-          - name: {{ template "horovod.fullname" . }}-cm
-            mountPath: /horovod/generated
+      - name: wait-workers
+        image: "{{ .Values.master.image.repository }}:{{ .Values.master.image.tag }}"
+        imagePullPolicy: {{ .Values.master.image.pullPolicy }}
+        env:
+        - name: SSHPORT
+          value: "{{ .Values.ssh.port }}"
+        {{- if .Values.master.env }}            
+        {{- range $key, $value := .Values.master.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+        {{- end }}
+        {{- end }}
+        command: 
+        - /horovod/generated/waitWorkersReady.sh
+        args:
+        - /horovod/generated/hostfile
+        volumeMounts:
+        - name: {{ template "horovod.fullname" . }}-cm
+          mountPath: /horovod/generated

@@ -66,12 +66,12 @@ spec:
         image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
         imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
         env:
-         - name: SSHPORT
-           value: "{{ .Values.ssh.port }}"
+        - name: SSHPORT
+          value: "{{ .Values.ssh.port }}"
        {{- if .Values.master.env }}            
        {{- range $key, $value := .Values.master.env }}
-         - name: "{{ $key }}"
-           value: "{{ $value }}"
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
        {{- end }}
        {{- end }}
 {{- if .Values.worker.privileged }}
@@ -90,11 +90,11 @@ spec:
 {{ toYaml .Values.volumeMounts | indent 8 }}
 {{- end }}
         command: 
-          - /horovod/generated/run.sh
+        - /horovod/generated/run.sh
         readinessProbe:
           exec:
             command:
-              - /horovod/generated/check.sh
+            - /horovod/generated/check.sh
           initialDelaySeconds: 1
           periodSeconds: 2
         resources:
