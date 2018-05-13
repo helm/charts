@@ -39,6 +39,7 @@ spec:
           - key: master.run
             path: run.sh
             mode: 365
+      {{- if .Values.ssh.useSecrets }}
       - name: {{ template "horovod.fullname" . }}-secret
         secret:
           secretName: {{ template "horovod.fullname" . }}
@@ -48,6 +49,7 @@ spec:
             path: id_rsa
           - key: host-key-pub
             path: authorized_keys
+      {{- end }}
 {{- if .Values.volumes }}
 {{ toYaml .Values.volumes | indent  6 }}
 {{- end }}
@@ -73,9 +75,11 @@ spec:
         volumeMounts:
         - name: {{ template "horovod.fullname" . }}-cm
           mountPath: /horovod/generated
+        {{- if .Values.ssh.useSecrets }}
         - name: {{ template "horovod.fullname" . }}-secret
           readOnly: true
           mountPath: "/etc/secret-volume"
+        {{- end }}
 {{- if .Values.volumeMounts }}
 {{ toYaml .Values.volumeMounts | indent 8 }}
 {{- end }}
@@ -105,3 +109,8 @@ spec:
         volumeMounts:
         - name: {{ template "horovod.fullname" . }}-cm
           mountPath: /horovod/generated
+        {{- if .Values.ssh.useSecrets }}
+        - name: {{ template "horovod.fullname" . }}-secret
+          readOnly: true
+          mountPath: "/etc/secret-volume"
+        {{- end }}

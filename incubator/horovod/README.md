@@ -96,6 +96,7 @@ chart and their default values.
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | `ssh.port` | The ssh port | `22` |
+| `ssh.useSecrets` | Determine if using the secrets for ssh | `false` |
 | `worker.number`|  The worker's number | `5` |
 | `worker.image.repository` | horovod worker image | `cheyang/horovod` |
 | `worker.image.pullPolicy` | `pullPolicy` for the worker | `IfNotPresent` |
