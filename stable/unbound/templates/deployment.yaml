@@ -38,6 +38,9 @@ spec:
         - name: "dns-udp"
           containerPort: {{ .Values.unbound.serverPort }}
           protocol: "UDP"
+        - name: "dns-tcp"
+          containerPort: {{ .Values.unbound.serverPort }}
+          protocol: "TCP"
         volumeMounts:
         - name: "unbound-conf"
           mountPath: "/etc/unbound/"
@@ -49,7 +52,6 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 2
         readinessProbe:
-          exec:
           httpGet:
             path: "/healthz"
             port: 8080
