@@ -70,6 +70,10 @@ spec:
         env:
         - name: SSHPORT
           value: "{{ .Values.ssh.port }}"
+       {{- if .Values.ssh.useSecrets }}
+        - name: USESECRETS
+          value: "{{ .Values.ssh.useSecrets }}"
+       {{- end }}
        {{- if .Values.master.env }}            
        {{- range $key, $value := .Values.master.env }}
         - name: "{{ $key }}"

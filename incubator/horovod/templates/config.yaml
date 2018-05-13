@@ -28,8 +28,10 @@ data:
      rm -f /root/.ssh/config
      touch /root/.ssh/config
 
-     ln -s /etc/secret-volume/id_rsa /root/.ssh/id_rsa
-     ln -s /etc/secret-volume/authorized_keys /root/.ssh/authorized_keys
+     if [ "$USESECRETS" == "true" ];then
+        ln -s /etc/secret-volume/id_rsa /root/.ssh/id_rsa
+        ln -s /etc/secret-volume/authorized_keys /root/.ssh/authorized_keys
+     fi
 
      if [ -n "$SSHPORT" ]; then
         echo "Port $SSHPORT" > /root/.ssh/config
@@ -54,6 +56,11 @@ data:
     }
 
     function runCheckSSH() {
+      if [ "$USESECRETS" == "true" ];then
+        ln -s /etc/secret-volume/id_rsa /root/.ssh/id_rsa
+        ln -s /etc/secret-volume/authorized_keys /root/.ssh/authorized_keys
+      fi
+      
       for i in `cat $1`;do
         if [[ "$i" != *"master" ]];then
           retry 30 ssh -o ConnectTimeout=2 -q $i exit
@@ -94,8 +101,10 @@ data:
      rm -f /root/.ssh/config
      touch /root/.ssh/config
 
-     ln -s /etc/secret-volume/id_rsa /root/.ssh/id_rsa
-     ln -s /etc/secret-volume/authorized_keys /root/.ssh/authorized_keys
+     if [ "$USESECRETS" == "true" ];then
+        ln -s /etc/secret-volume/id_rsa /root/.ssh/id_rsa
+        ln -s /etc/secret-volume/authorized_keys /root/.ssh/authorized_keys
+     fi
 
      if [ -n "$SSHPORT" ]; then
         echo "Port $SSHPORT" > /root/.ssh/config
