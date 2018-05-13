@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - name: http
+    port: {{ .Values.service.port }}
+    protocol: TCP
+    targetPort: 8080
+  {{- if and (eq "NodePort" .Values.service.type) .Values.service.nodePort }}
+    nodePort: {{ .Values.service.nodePort }}
+  {{- end }}
+  selector:
+    name: {{ template "fullname" . }}
+  sessionAffinity: None

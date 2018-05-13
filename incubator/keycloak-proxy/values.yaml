@@ -1,0 +1,43 @@
+
+image: jboss/keycloak-proxy
+imageTag: 3.4.0.Final
+imagePullPolicy: IfNotPresent
+
+service:
+  ## ServiceType
+  ## ref: https://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+  type: ClusterIP
+
+  ## Optional static port assignment for service type NodePort.
+  # nodePort: 30000
+
+  ## HTTP listen port.
+  port: 80
+
+## Ingress configuration.
+## ref: https://kubernetes.io/docs/user-guide/ingress/
+ingress:
+  enabled: true
+
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    ingress.bluemix.net/rewrite-path: "serviceName=monocular-monocular-ui rewrite=/ui;serviceName=monocular-monocular-api rewrite=/"
+
+  ## List of hosts for the ingress
+  hosts:
+    - monocular-zcp.ghama.io
+
+  ## TLS configuration
+  tls:
+    enabled: true
+    existingSecret: "monocular-tls"
+
+config:
+  targetUrl: http://monocular-monocular-ui
+  realm: zcp
+  realmPublicKey: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiwJG249ll0vpZF5bJLkxRkZgY+jTQn/VNmfOUKVch/Rxu07oZIrGWlboLrgvrQ/RVRPyPkMx5kf/1elxwCvvHmefuibsJKk2nvQIGEtNl6kQ3k2myGlkmrrMgiAoYQIWzu8nTI1RKcUb52HKhZ9PMdb5msOrpxUnKQVU9eyp6NrcV4UaUp1MOG7f63u7Sx9VGbhOXJyHfUIFMvLAVsubObrEZW4Qd8bSGz0s/sN1sxBjXAiKsVOQma7JlU9mY3VVHls+vS9iBvy/e9TpZFBmo8F7ijm8gSnMWyhhhm4vkE8Zq7KK6bo0JTNt+ciqGrI8kEm8yde6QSqo2iAZDzV+BQIDAQAB"
+  authServerUrl: http://keycloak.cberry.xyz/auth
+  resource: monocular
+  secret: "6fc8b5e3-8dab-4724-87a1-0ce516508d67"
+  constraints:
+    - {pattern: "/*", rolesAllowed: ["admin"]}
