@@ -10,11 +10,11 @@ metadata:
 spec:
   type: {{ .Values.serviceType }}
   {{- if eq .Values.serviceType "LoadBalancer" }}
-  loadBalancerIP: {{ default "" .Values.ghostLoadBalancerIP }}
+  loadBalancerIP: {{ .Values.ghostLoadBalancerIP }}
   {{- end }}
   ports:
   - name: http
-    port: {{ default "80" .Values.ghostPort }}
+    port: {{ .Values.ghostPort }}
     targetPort: http
   selector:
     app: {{ template "ghost.fullname" . }}
