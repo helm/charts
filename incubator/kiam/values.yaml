@@ -141,7 +141,7 @@ server:
   ## Base ARN for IAM roles
   ## If not specified use EC2 metadata service to detect ARN prefix
   ##
-  roleBaseArn: null
+  roleBaseArn: "arn:aws:iam::0123456789:role/"
   ## Pod cache settings
   ##
   cache:
