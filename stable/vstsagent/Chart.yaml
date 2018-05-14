@@ -17,3 +17,5 @@ sources:
 maintainers:
 - name: Bram vd Klinkenberg
   email: bramvandenklinkenberg@gmail.com
+tillerVersion: ">2.8.0"
+kubeVersion: ">1.7.7"

@@ -1,20 +1,54 @@
-vsts:
-  image:
-    name: microsoft/vsts-agent
-    tag: latest
-    pullPolicy: IfNotPresent
+# Default values for vstsagent.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
 
-  secret:
-    account: <base64 encoded vsts account name (e.g. account name is my-vsts-project if the url is https://my-vsts-project.visualstudio.com)
-    token: <base64 encode personal access token>
+replicaCount: 1
 
-  agentpool:
-    name: <agentpool name>
+image:
+  repository: microsoft/vsts-agent
+  tag: latest
+  pullPolicy: IfNotPresent
 
-  resources:
-    requests:
-      memory: "64Mi"
-      cpu: "100m"
-    limits:
-      memory: "128Mi"
-      cpu: "200m"
+secret:
+  account: 
+  # <base64 encoded vsts account name (e.g. account name is my-vsts-project if the url is https://my-vsts-project.visualstudio.com)
+  token: 
+  # <base64 encode personal access token>
+
+agentpool:
+  name:
+
+  #service:
+  #type: ClusterIP
+  #port: 80
+
+  #ingress:
+  #enabled: false
+  #annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    #path: /
+    #hosts:
+    #- chart-example.local
+    #tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
