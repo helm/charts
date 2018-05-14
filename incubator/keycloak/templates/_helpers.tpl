@@ -40,17 +40,6 @@ Create a default fully qualified app name for the postgres requirement.
 {{- end -}}
 
 {{/*
-Create the name for the tls secret.
-*/}}
-{{- define "keycloak.tlsSecret" -}}
-{{- if .Values.keycloak.ingress.tls.existingSecret -}}
-  {{- .Values.keycloak.ingress.tls.existingSecret -}}
-{{- else -}}
-  {{- template "keycloak.fullname" . -}}-tls
-{{- end -}}
-{{- end -}}
-
-{{/*
 Create the name for the database secret.
 */}}
 {{- define "keycloak.externalDbSecret" -}}

@@ -72,14 +72,11 @@ Parameter | Description | Default
 `keycloak.service.type` | The service type | `ClusterIP`
 `keycloak.service.port` | The service port | `80`
 `keycloak.service.nodePort` | The node port used if the service is of type `NodePort` | `""`
-`keycloak.ingress.enabled` | If true, an ingress is be created | `false`
-`keycloak.ingress.path` | The ingress path | `/`
-`keycloak.ingress.annotations` | Annotations for the ingress | `{}`
-`keycloak.ingress.hosts` | A list of hosts for the ingress | `[keycloak.example.com]`
-`keycloak.ingress.tls.enabled` | If true, tls is enabled for the ingress | `false`
-`keycloak.ingress.tls.existingSecret` | If tls is enabled, uses an existing secret with this name; otherwise a secret is created | `false`
-`keycloak.ingress.tls.secretContents` | Contents for the tls secret | `{}`
-`keycloak.ingress.tls.secretAnnotations` | Annotations for the newly created tls secret | `{}`
+`keycloak.ingress.enabled` | if `true`, an ingress is created | `false`
+`keycloak.ingress.annotations` | annotations for the ingress | `{}`
+`keycloak.ingress.path` | if `true`, an ingress is created | `/`
+`keycloak.ingress.hosts` | a list of ingress hosts | `[keycloak.example.com]`
+`keycloak.ingress.tls` | a list of [IngressTLS](https://v1-9.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#ingresstls-v1beta1-extensions) items | `[]`
 `keycloak.persistence.deployPostgres` | If true, the PostgreSQL chart is installed | `true`
 `keycloak.persistence.existingSecret` | Name of an existing secret to be used for the database password (if `keycloak.persistence.deployPostgres=false`). Otherwise a new secret is created | `""`
 `keycloak.persistence.existingSecretKey` | The key for the database password in the existing secret (if `keycloak.persistence.deployPostgres=false`) | `password`

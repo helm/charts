@@ -153,11 +153,10 @@ keycloak:
       - keycloak.example.com
 
     ## TLS configuration
-    tls:
-      enabled: false
-      existingSecret: ""
-      secretContents: {}
-      secretAnnotations: {}
+    tls: []
+    # - hosts:
+    #     - keycloak.example.com
+    #   secretName: tls-keycloak
 
   ## Persistence configuration
   persistence:

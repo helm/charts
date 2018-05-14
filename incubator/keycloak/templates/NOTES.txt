@@ -10,7 +10,7 @@ Keycloak can be accessed:
 * From outside the cluster:
 
 {{- range .Values.keycloak.ingress.hosts }}
-  - http{{ if $.Values.keycloak.ingress.tls.enabled }}s{{ end }}://{{ . }}
+  - http{{ if $.Values.keycloak.ingress.tls }}s{{ end }}://{{ . }}
 {{- end }}
 
 {{- else }}

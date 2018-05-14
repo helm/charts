@@ -14,13 +14,15 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-{{- if $ingress.tls.enabled }}
+{{- if $ingress.tls }}
   tls:
+  {{- range $ingress.tls }}
     - hosts:
-      {{- range $ingress.hosts }}
+      {{- range .hosts }}
         - {{ . }}
       {{- end }}
-      secretName: {{ template "keycloak.tlsSecret" . }}
+      secretName: {{ .secretName }}
+  {{- end }}
 {{- end }}
   rules:
   {{- range $ingress.hosts }}
