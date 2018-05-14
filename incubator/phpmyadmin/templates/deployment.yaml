@@ -31,16 +31,23 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: DATABASE_PORT_NUMBER
-              value: "{{ required "please set phpmyadmin.dbport" .Values.phpmyadmin.dbport }}"
+              value: "{{ .Values.phpmyadmin.dbport }}"
             {{- if .Values.phpmyadmin.dbsuffix }}
             - name: DATABASE_HOST
               value: "{{ template "db.fullname" . }}"
             {{- else }} 
             - name: DATABASE_HOST
-              value: "{{ required "please set phpmyadmin.dbhost" .Values.phpmyadmin.dbhost }}"
+              value: "{{ .Values.phpmyadmin.dbhost }}"
             {{- end }}
+            {{- if and (not .Values.phpmyadmin.dbsuffix) (not .Values.phpmyadmin.dbhost)}}
+            - name: PHPMYADMIN_ALLOW_NO_PASSWORD
+              value: "true"
+            - name: PHPMYADMIN_ALLOW_ARBITRARY_SERVER
+              value: "true"
+            {{- else }}
             - name: PHPMYADMIN_ALLOW_NO_PASSWORD
               value: "false"
+            {{- end }}
           ports:
             - name: http
               containerPort: 80
