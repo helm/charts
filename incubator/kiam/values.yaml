@@ -70,6 +70,9 @@ agent:
     caFileName: ca.pem
     certFileName: agent.pem
     keyFileName: agent-key.pem
+    ## If true, use sample TLS data.
+    ##
+    useSampleData: true
 
 server:
   ## Logging settings
@@ -131,6 +134,10 @@ server:
     caFileName: ca.pem
     certFileName: server.pem
     keyFileName: server-key.pem
+    ## If true, use sample TLS data.
+    ##
+    useSampleData: true
+
   ## Base ARN for IAM roles
   ## If not specified use EC2 metadata service to detect ARN prefix
   ##

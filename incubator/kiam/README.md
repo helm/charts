@@ -70,6 +70,7 @@ Parameter | Description | Default
 `agent.tls.keyFileName` | Agent private key file name | `agent-key.pem`
 `agent.tls.mountPath` | Agent TLS certificates and keys mount path | `/etc/kiam/tls`
 `agent.tls.secretName` | Agent TLS secret name | `kiam-agent-tls`
+`agent.tls.useSampleData` | Whether or not to use the sample TLS data in `agent/server-tls` | `true`
 `agent.tolerations` | Tolerations to be applied to agent pods | `[]`
 `agent.updateStrategy` | Strategy for agent DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 `rbac.create` | If `true`, create & use RBAC resources | `false`
@@ -100,6 +101,7 @@ Parameter | Description | Default
 `server.tls.keyFileName` | Server private key file name | `server-key.pem`
 `server.tls.mountPath` | Server TLS certificates and keys mount path | `/etc/kiam/tls`
 `server.tls.secretName` | Server TLS secret name | `kiam-server-tls`
+`server.tls.useSampleData` | Whether or not to use the sample TLS data in `sample/server-tls` | `true`
 `server.tolerations` | Tolerations to be applied to server pods | `[]`
 `server.updateStrategy` | Strategy for server DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 
