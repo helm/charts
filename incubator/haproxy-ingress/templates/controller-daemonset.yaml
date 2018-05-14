@@ -1,0 +1,50 @@
+apiVersion: apps/v1beta2
+kind: DaemonSet
+metadata:
+  labels:
+    app: {{ template "haproxy-ingress.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.controller.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "haproxy-ingress.controller.fullname" . }}
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "haproxy-ingress.name" . }}
+      component: "{{ .Values.controller.name }}"
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "haproxy-ingress.name" . }}
+        component: "{{ .Values.controller.name }}"
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ if eq .Values.serviceAccount.name "" }}{{ template "haproxy-ingress.fullname" . }}{{ else }}"{{ .Values.serviceAccount.name }}"{{ end }}
+      containers:
+        - name: {{ template "haproxy-ingress.controller.fullname" . }}
+          image:  "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
+          imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
+          args:
+            - --default-backend-service={{ .Release.Namespace }}/{{ .Values.defaultBackend.service.name }}
+            - --configmap={{ .Release.Namespace }}/{{ template "haproxy-ingress.fullname" . }}
+            - --sort-backends
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+            - name: stat
+              containerPort: 1936
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
