@@ -13,7 +13,7 @@ $ helm install incubator/kiam
 This chart bootstraps a [kiam](https://github.com/uswitch/kiam) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
-  - Kubernetes 1.4+ with Beta APIs enabled
+  - Kubernetes 1.8+ with Beta APIs enabled
 
 ## Installing the Chart
 

@@ -7,7 +7,6 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "kiam.fullname" . }}-server
-  namespace: {{ .Release.Namespace }}
 spec:
   clusterIP: None
   selector:

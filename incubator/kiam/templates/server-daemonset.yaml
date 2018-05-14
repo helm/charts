@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
   labels:
@@ -7,14 +7,18 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "kiam.fullname" . }}-server
-  namespace: {{ .Release.Namespace }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "kiam.name" . }}
+      role: server
+      {{- if .Values.server.podLabels }}
+{{ toYaml .Values.server.podLabels | indent 6 }}
+      {{- end }}
   template:
     metadata:
-      annotations:
-        prometheus.io/scrape: {{ quote .Values.server.prometheus.scrape }}
-        prometheus.io/port: {{ quote .Values.server.prometheus.port }}
       {{- if .Values.server.podAnnotations }}
+      annotations:
 {{ toYaml .Values.server.podAnnotations | indent 8 }}
       {{- end }}
       labels:
@@ -119,7 +123,5 @@ spec:
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
         {{- end }}
-{{- if and (eq .Capabilities.KubeVersion.Major "1") (gt .Capabilities.KubeVersion.Minor "5") }}
   updateStrategy:
     type: {{ .Values.server.updateStrategy }}
-{{- end }}
