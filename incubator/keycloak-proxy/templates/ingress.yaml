@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "fullname" . }}-ingress
 {{- if .Values.ingress.annotations }}
   annotations:
 {{ toYaml .Values.ingress.annotations | indent 4 }}
@@ -17,7 +17,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "fullname" $ }}
+          serviceName: {{ template "fullname" $ }}-service
           servicePort: http
   {{- end }}
 {{- if .Values.ingress.tls.enabled }}

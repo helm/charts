@@ -25,4 +25,4 @@ spec:
       - name: proxy-config
         configMap:
           defaultMode: 420
-          name: {{ template "fullname" . }}
+          name: {{ template "fullname" . }}-configmap

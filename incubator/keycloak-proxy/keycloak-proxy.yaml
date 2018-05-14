@@ -1,0 +1,126 @@
+---
+# Source: keycloak-proxy/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-proxy-configmap
+  labels:
+    chart: "keycloak-proxy-0.0.1"
+data:
+  proxy.json: |
+    {
+       "target-url":"http://monocular-monocular-ui",
+       "bind-address":"0.0.0.0",
+       "http-port":"8080",
+       "applications":[
+          {
+             "base-path":"/",
+             "adapter-config":{
+                "realm":"zcp",
+                "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiwJG249ll0vpZF5bJLkxRkZgY+jTQn/VNmfOUKVch/Rxu07oZIrGWlboLrgvrQ/RVRPyPkMx5kf/1elxwCvvHmefuibsJKk2nvQIGEtNl6kQ3k2myGlkmrrMgiAoYQIWzu8nTI1RKcUb52HKhZ9PMdb5msOrpxUnKQVU9eyp6NrcV4UaUp1MOG7f63u7Sx9VGbhOXJyHfUIFMvLAVsubObrEZW4Qd8bSGz0s/sN1sxBjXAiKsVOQma7JlU9mY3VVHls+vS9iBvy/e9TpZFBmo8F7ijm8gSnMWyhhhm4vkE8Zq7KK6bo0JTNt+ciqGrI8kEm8yde6QSqo2iAZDzV+BQIDAQAB",
+                "auth-server-url":"http://keycloak.cberry.xyz/auth",
+                "ssl-required":"external",
+                "resource":"monocular",
+                "credentials": {
+                  "secret": "6fc8b5e3-8dab-4724-87a1-0ce516508d67"
+                }
+             },
+             "constraints":[
+               {
+                  "pattern":"/*",
+                  "roles-allowed":[
+                    "user"
+                  ]
+               }
+             ],
+             "proxy-address-forwarding": true
+          }
+       ]
+    }
+
+
+---
+# Source: keycloak-proxy/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-proxy-service
+  labels:
+    chart: "keycloak-proxy-0.0.1"
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    name: keycloak-proxy
+  sessionAffinity: None
+
+---
+# Source: keycloak-proxy/templates/deployment.yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: keycloak-proxy
+  labels:
+    chart: "keycloak-proxy-0.0.1"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: keycloak-proxy
+    spec:
+      containers:
+      - name: keycloak-proxy
+        image: jboss/keycloak-proxy:3.4.0.Final
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /opt/jboss/conf
+          name: proxy-config
+      volumes:
+      - name: proxy-config
+        configMap:
+          defaultMode: 420
+          name: keycloak-proxy-configmap
+
+---
+# Source: keycloak-proxy/templates/ingress.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: keycloak-proxy-ingress
+  annotations:
+    ingress.bluemix.net/rewrite-path: serviceName=monocular-monocular-ui rewrite=/ui;serviceName=monocular-monocular-api
+      rewrite=/
+
+  labels:
+    chart: "keycloak-proxy-0.0.1"
+spec:
+  rules:
+  - host: monocular-zcp.ghama.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: keycloak-proxy-service
+          servicePort: http
+  tls:
+  - hosts:
+      - monocular-zcp.ghama.io
+    secretName: monocular-tls
+---
+# Source: keycloak-proxy/templates/NOTES.txt
+1. Keycloak Proxy can be accessed:
+
+   * Within your cluster, at the following DNS name at port 80:
+
+     keycloak-proxy.keycloak-proxy.svc.cluster.local
+
+   * From outside the cluster:
+       - https://monocular-zcp.ghama.io

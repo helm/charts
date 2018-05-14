@@ -46,6 +46,14 @@ Parameter | Description | Default
 `imageRepository` | Keycloak Proxy image repository | `jboss/keycloak-proxy`
 `imageTag` | Keycloak Proxy image version | `3.4.0.Final`
 `imagePullPolicy` | Keycloak Proxy image pull policy | `IfNotPresent`
+`service.type` | The service type | `ClusterIP`
+`service.port` | The service port | `80`
+`service.nodePort` | The service nodePort | `""`
+`ingress.enabled` | If true, an ingress is be created | `false`
+`ingress.annotations` | Annotations for the ingress | `{}`
+`ingress.hosts` | A list of hosts for the ingresss | `[keycloak-proxy.example.com]`
+`ingress.tls.enabled` | If true, tls is enabled for the ingress | `false`
+`ingress.tls.existingSecret` | A list of hosts for the ingress | `false`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
