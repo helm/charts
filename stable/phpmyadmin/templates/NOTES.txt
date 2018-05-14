@@ -20,3 +20,15 @@
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl port-forward $POD_NAME 8080:80
 {{- end }}
+
+##### HOW TO LOG IN 
+{{ if or (.Values.phpmyadmin.dbsuffix) (.Values.phpmyadmin.dbhost)}}
+PHPMYADMIN has been configured to connect to a database in {{ if .Values.phpmyadmin.dbsuffix}}{{template "db.fullname" .}}{{ else }}{{.Values.phpmyadmin.dbhost}}{{end}}
+{{if .Values.phpmyadmin.dbport}}with port {{.Values.phpmyadmin.dbport}} {{end }}
+Please login using a database username and password. 
+{{ else }}
+PHPMYADMIN has not been configure to point to a specific database. Please provide the db host, username and password at log in or upgrade the release with 
+a specific database
+$ helm upgrade {{.Release.Name}} stable/phpmyadmin --set phpmyadmin.dbhost=mydb 
+
+{{end}}
