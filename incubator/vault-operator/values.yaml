@@ -1,7 +1,8 @@
+## Default values for the image
 name: vault-operator
 image:
   repository: quay.io/coreos/vault-operator
-  tag: v0.1.9
+  tag: 0.1.9
   pullPolicy: Always
 
 ## Install Default RBAC roles and bindings
@@ -12,12 +13,12 @@ rbac:
 ## Service account names and whether to create them
 serviceAccount:
   create: true
-  name:
+  name: vault-operator
 
 resources:
   cpu: 100m
   memory: 128Mi
-## Node labels for etcd-operator pod assignment
+## Node labels for vault-operator pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
 ## additional command arguments go here; will be translated to `--key=value` form
@@ -48,9 +49,9 @@ livenessProbe:
 etcd-operator:
   enabled: false
   customResources:
-    createEtcdClusterCRD: false
-    createBackupCrd: false
-    createRestoreCRD: false
+    createEtcdClusterCRD: true
+    createBackupCrd: true
+    createRestoreCRD: true
   deployments:
     etcdOperator: true
     backupOperator: true
