@@ -1,4 +1,3 @@
-{{- if gt (len .Values.daemonset.config.outputs.influxdb.urls) 0 }}
 {{- if .Values.daemonset.enabled -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -11,6 +10,8 @@ metadata:
 spec:
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-ds.yaml") . | sha256sum }}
       labels:
         app: {{ template "fullname" . }}-ds
     spec:
@@ -60,5 +61,4 @@ spec:
       - name: config
         configMap:
           name: {{ template "fullname" . }}-ds
-{{- end -}}
 {{- end -}}
