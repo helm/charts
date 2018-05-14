@@ -24,6 +24,8 @@ rules:
       - persistentvolumeclaims
       - persistentvolumes
       - endpoints
+      - secrets
+      - configmaps
     verbs:
       - list
       - watch
