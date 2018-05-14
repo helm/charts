@@ -30,7 +30,7 @@ spec:
             failureThreshold: 5
             httpGet:
               path: /
-              port: {{ .Values.service.internalPort }}
+              port: 8080
               scheme: HTTP
             initialDelaySeconds: 50
             periodSeconds: 10
@@ -40,14 +40,14 @@ spec:
             failureThreshold: 10
             httpGet:
               path: /
-              port: {{ .Values.service.internalPort }}
+              port: 8080
               scheme: HTTP
             initialDelaySeconds: 50
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 2
           ports:
-            - containerPort: {{ .Values.service.internalPort }}
+            - containerPort: 8080
               name: {{ .Values.service.portName }}
               protocol: {{ .Values.service.protocol }}
           resources:

@@ -11,7 +11,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.externalPort }}
-      targetPort: {{ .Values.service.internalPort }}
+      targetPort: 8080
       protocol: {{ .Values.service.protocol }}
       name: {{ .Values.service.portName }}
   selector:

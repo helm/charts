@@ -16,7 +16,6 @@ service:
   protocol: TCP
   type: NodePort
   externalPort: 80
-  internalPort: 8080
 
 ingress:
   enabled: false
