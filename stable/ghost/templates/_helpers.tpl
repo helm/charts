@@ -49,8 +49,12 @@ Gets the host to be used for this application.
 If not using ClusterIP, or if a host or LoadBalancerIP is not defined, the value will be empty.
 */}}
 {{- define "ghost.host" -}}
-{{- $host := index .Values (printf "%sHost" .Chart.Name) | default "" -}}
+{{- if .Values.ghostHost -}}
+{{- $host := printf "%s%s" .Values.ghostHost .Values.ghostPath -}}
 {{- default (include "ghost.serviceIP" .) $host -}}
+{{- else -}}
+{{- default (include "ghost.serviceIP" .) "" -}}
+{{- end -}}
 {{- end -}}
 
 {{/*

@@ -47,12 +47,13 @@ The following table lists the configurable parameters of the Ghost chart and the
 
 | Parameter                     | Description                                                   | Default                                                  |
 |-------------------------------|---------------------------------------------------------------|----------------------------------------------------------|
-| `image.registry`              | Ghost image registry                                          | `docker.io`                                             |
-| `image.repository`            | Ghost Image name                                              | `bitnami/ghost`                                      |
-| `image.tag`                   | Ghost Image tag                                               | `{VERSION}`                                             |
-| `image.pullPolicy`            | Image pull policy                                             | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`           | Specify image pull secrets                                    | `nil`                                                   |
+| `image.registry`              | Ghost image registry                                          | `docker.io`                                              |
+| `image.repository`            | Ghost Image name                                              | `bitnami/ghost`                                          |
+| `image.tag`                   | Ghost Image tag                                               | `{VERSION}`                                              |
+| `image.pullPolicy`            | Image pull policy                                             | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`           | Specify image pull secrets                                    | `nil`                                                    |
 | `ghostHost`                   | Ghost host to create application URLs                         | `nil`                                                    |
+| `ghostPath`                   | Ghost path to create application URLs                         | `nil`                                                    |
 | `ghostPort`                   | Ghost port to create application URLs along with host         | `80`                                                     |
 | `ghostLoadBalancerIP`         | `loadBalancerIP` for the Ghost Service                        | `nil`                                                    |
 | `ghostUsername`               | User of the application                                       | `user@example.com`                                       |
