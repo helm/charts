@@ -88,7 +88,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.extraFlags`                        | Redis master additional command line flags                                                                     | []                                                   |
 | `master.nodeSelector`                      | Redis master Node labels for pod assignment                                                                    | {"beta.kubernetes.io/arch": "amd64"}                 |
 | `master.tolerations`                       | Toleration labels for Redis master pod assignment                                                              | []                                                   |
-| `master.service.type`                      | Kubernetes Service type (redis master)                                                                         | `LoadBalancer`                                       |
+| `master.service.type`                      | Kubernetes Service type (redis master)                                                                         | `ClusterIP`                                          |
 | `master.service.annotations`               | annotations for redis master service                                                                           | {}                                                   |
 | `master.service.loadBalancerIP`            | loadBalancerIP if redis master service type is `LoadBalancer`                                                  | `nil`                                                |
 | `master.securityContext.enabled`           | Enable security context (redis master pod)                                                                     | `true`                                               |
@@ -132,6 +132,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.securityContext.fsGroup`            | Group ID for the container (redis slave pod)                                                                   | `master.securityContext.fsGroup`                     |
 | `slave.securityContext.runAsUser`          | User ID for the container (redis slave pod)                                                                    | `master.securityContext.runAsUser`                   |
 | `slave.resources`                          | Redis slave CPU/Memory resource requests/limits                                                                | `master.resources`                                   |
+| `slave.affinity`                          | Enable node/pod affinity for slaves                                                                | {}                                   |
 
 The above parameters map to the env variables defined in [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis). For more information please refer to the [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis) image documentation.
 
@@ -152,6 +153,7 @@ $ helm install --name my-release -f values.yaml stable/redis
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
 > **Note for minikube users**: Current versions of minikube (v0.24.1 at the time of writing) provision `hostPath` persistent volumes that are only writable by root. Using chart defaults cause pod failure for the Redis pod as it attempts to write to the `/bitnami` directory. Consider installing Redis with `--set persistence.enabled=false`. See minikube issue [1990](https://github.com/kubernetes/minikube/issues/1990) for more information.
 
 ## NetworkPolicy
@@ -184,7 +186,7 @@ By default, the chart persists both data and configuration. If you wish to persi
 1. Install the chart
 
 ```bash
-$ helm install --set persistence.existingClaim=PVC_NAME redis
+$ helm install --set persistence.existingClaim=PVC_NAME stable/redis
 ```
 
 ## Metrics

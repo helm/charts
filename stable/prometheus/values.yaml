@@ -71,6 +71,10 @@ alertmanager:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
+    ## alertmanager Ingress additional labels
+    ##
+    extraLabels: {}
+
     ## alertmanager Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##
@@ -103,6 +107,11 @@ alertmanager:
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   persistentVolume:
     ## If true, alertmanager will create/use a Persistent Volume Claim
@@ -307,7 +316,9 @@ kubeStateMetrics:
       prometheus.io/scrape: "true"
     labels: {}
 
-    clusterIP: ""
+    # Exposed as a headless service:
+    # https://kubernetes.io/docs/concepts/services-networking/service/#headless-services
+    clusterIP: None
 
     ## List of IP addresses at which the kube-state-metrics service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -397,7 +408,9 @@ nodeExporter:
       prometheus.io/scrape: "true"
     labels: {}
 
-    clusterIP: ""
+    # Exposed as a headless service:
+    # https://kubernetes.io/docs/concepts/services-networking/service/#headless-services
+    clusterIP: None
 
     ## List of IP addresses at which the node-exporter service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -474,7 +487,11 @@ server:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## Prometheus server Ingress hostnames with optinal path
+    ## Prometheus server Ingress additional labels
+    ##
+    extraLabels: {}
+
+    ## Prometheus server Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
@@ -506,6 +523,11 @@ server:
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   persistentVolume:
     ## If true, Prometheus server will create/use a Persistent Volume Claim
@@ -627,7 +649,7 @@ pushgateway:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## pushgateway Ingress hostnames with optinal path
+    ## pushgateway Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
@@ -719,6 +741,17 @@ serverFiles:
   rules: {}
 
   prometheus.yml:
+    global:
+      ## How frequently to scrape targets by default
+      ##
+      scrape_interval: 1m
+      ## How long until a scrape request times out
+      ##
+      scrape_timeout: 10s
+      ## How frequently to evaluate rules
+      ##
+      evaluation_interval: 1m
+
     rule_files:
       - /etc/config/rules
       - /etc/config/alerts
