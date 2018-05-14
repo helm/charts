@@ -193,6 +193,15 @@ spec:
 ```
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## ExternalDNS Service configuration
+
+Add an [ExternalDNS](https://github.com/kubernetes-incubator/external-dns) annotation to the LoadBalancer service:
+
+```yaml
+annotations:
+  external-dns.alpha.kubernetes.io/hostname: kubernetes-example.com.
+```
+
 ## AWS L7 ELB with SSL Termination
 
 Annotate the controller as shown in the [nginx-ingress l7 patch](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/provider/aws/service-l7.yaml):

@@ -107,7 +107,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `ingress.enabled`                           | Create an ingress for Nexus         | `true`                                  |
 | `ingress.annotations`                       | Annotations to enhance ingress configuration  | `{}`                          |
 | `ingress.tls.enabled`                       | Enable TLS                          | `false`                                 |
-| `ingress.tls.secretName`                    | Name of the secret storing TLS cert | `nexus-tls`                             |
+| `ingress.tls.secretName`                    | Name of the secret storing TLS cert, `false` to use the Ingress' default certificate | `nexus-tls`                             |
 
 If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables need to be configured
 
@@ -196,5 +196,5 @@ To see how to use Nexus with different tools like Docker, Maven, Python, and so 
 - [Nexus Usage](https://github.com/travelaudience/kubernetes-nexus#usage)
 
 ### Disaster Recovery
-In a disaster recovery scenario, the latest backup made by the nexus-backup container should be restored. In order to achieve this please follow the procedure described bellow:
+In a disaster recovery scenario, the latest backup made by the nexus-backup container should be restored. In order to achieve this please follow the procedure described below:
 - [Restore Backups](https://github.com/travelaudience/kubernetes-nexus#restore)
