@@ -102,7 +102,7 @@ The following configurations are required for Single Sign-On.
 
 ### Basic Config
 
-[Keycloak Proxy](https://www.keycloak.org/docs/3.3/server_installation/topics/proxy.html)
+Please refer to [Keycloak Proxy](https://www.keycloak.org/docs/3.3/server_installation/topics/proxy.html) for more information.
 
 Key | Value
 --- | ---
@@ -110,7 +110,7 @@ Key | Value
 
 ### Adapter Config
 
-[Adapter Config](https://www.keycloak.org/docs/3.3/securing_apps/topics/oidc/java/java-adapter-config.html)
+Please refer to [Adapter Config](https://www.keycloak.org/docs/3.3/securing_apps/topics/oidc/java/java-adapter-config.html) for more information.
 
 Key | Value
 --- | ---
@@ -123,7 +123,7 @@ Key | Value
 
 ### Constraint Config
 
-[Keycloak Proxy](https://www.keycloak.org/docs/3.3/server_installation/topics/proxy.html)
+Please refer to [Keycloak Proxy](https://www.keycloak.org/docs/3.3/server_installation/topics/proxy.html) for more information.
 
 Key | Value
 --- | ---
