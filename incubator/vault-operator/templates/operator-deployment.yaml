@@ -22,7 +22,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - etcd-operator
+        - vault-operator
 {{- range $key, $value := .Values.commandArgs }}
         - "--{{ $key }}={{ $value }}"
 {{- end }}
