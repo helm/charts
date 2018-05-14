@@ -7,16 +7,6 @@ image:
   tag: 0.10.1
   pullPolicy: IfNotPresent
 
-deployment:
-  ## Deployment annotations
-  annotations: {}
-  #   name: value
-  replicas:
-  ## Replicas annotations
-    annotations: {}
-  ##    Read more about kube2iam to provide access to s3 https://github.com/jtblin/kube2iam
-  #     iam.amazonaws.com/role: role-arn
-
 consulAgent:
   repository: consul
   tag: 1.0.7
@@ -75,7 +65,13 @@ affinity: |
           matchLabels:
             app: {{ template "vault.fullname" . }}
             release: {{ .Release.Name }}
+
+## Deployment annotations
+annotations: {}
+
 podAnnotations: {}
+##    Read more about kube2iam to provide access to s3 https://github.com/jtblin/kube2iam
+#     iam.amazonaws.com/role: role-arn
 
 ## Sample for unsealing vault on startup
 ## if automation saves your unseal keys to a k8s secret on deploy

@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-{{ toYaml .Values.deployment.annotations | indent 4 }}
+{{ toYaml .Values.annotations | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
@@ -21,7 +21,7 @@ spec:
         app: {{ template "vault.name" . }}
         release: {{ .Release.Name }}
       annotations:
-{{ toYaml .Values.deployment.replicas.annotations | indent 8 }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
