@@ -18,7 +18,8 @@ $ helm install --name my-release stable/stolon
 ```
 
 ## Backend
-Consul is the default (and suggested) backend. etcdv2, etcdv3, and kubernetes (experimental) can also be used as a backend, but be sure to update `values.yaml` accordingly.
+
+Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also be used as the store backend.
 
 ## Configuration
 
@@ -28,35 +29,34 @@ Consul is the default (and suggested) backend. etcdv2, etcdv3, and kubernetes (e
 | `image.tag`                             | `stolon` image tag                             | `v0.10.0-pg9.6`                                              |
 | `image.pullPolicy`                      | Image pull policy                              | `Always`                                                     |
 | `debug`                                 | Debug mode                                     | `false`                                                      |
-| `persistence.enabled`                   | Use a PVC to persist data                      | `false`                                                      |
-| `persistence.storageClassName`          | Storage class name of backing PVC              | `default`                                                    |
-| `persistence.accessMode`                | Use volume as ReadOnly or ReadWrite            | `["ReadWriteOnce"]`                                          |
+| `persistence.enabled`                   | Use a PVC to persist data                      | `true`                                                       |
+| `persistence.storageClassName`          | Storage class name of backing PVC              | `""`                                                         |
+| `persistence.accessModes`               | Perisistent volumes access modes               | `["ReadWriteOnce"]`                                          |
 | `persistence.size`                      | Size of data volume                            | `10Gi`                                                       |
 | `rbac.create`                           | Specifies if RBAC resources should be created  | `true`                                                       |
 | `serviceAccount.create`                 | Specifies if ServiceAccount should be created  | `true`                                                       |
-| `serviceAccount.name  `                 | Name of the generated serviceAccount           | Defaults to fullname template                                |
-| `replicationUsername`                   | Repl username                                  | `repluser`                                                   |
-| `replicationPassword`                   | Repl password                                  | random 40 characters                                         |
-| `superuserUsername`                     | Postgres Superuser name                        | `stolon`                                                     |
-| `superuserPassword`                     | Postgres Superuser password                    | random 40 characters                                         |
-| `store.backend`                         | Store backend to use (etcd/consul/kubernetes)  | `consul`                                                     |
-| `store.endpoints`                       | Store backend endpoints                        | `http://stolon-consul:8500`                                  |
+| `serviceAccount.name`                   | Name of the generated serviceAccount           | Defaults to fullname template                                |
+| `superuserUsername`                     | Postgres superuser username                    | `stolon`                                                     |
+| `superuserPassword`                     | Postgres superuser password                    | random 40 characters                                         |
+| `replicationUsername`                   | Replication username                           | `repluser`                                                   |
+| `replicationPassword`                   | Replication password                           | random 40 characters                                         |
+| `store.backend`                         | Store backend (kubernetes/consul/etcd)         | `kubernetes`                                                 |
+| `store.endpoints`                       | Store backend endpoints                        | `nil`                                                        |
 | `store.kubeResourceKind`                | Kubernetes resource kind (only for kubernetes) | `configmap`                                                  |
-| `sentinel.replicaCount`                 | Number of sentinel nodes                       | `2`                                                          |
-| `sentinel.resources`                    | Sentinel resource requests/limit               | `{}`                                                         |
-| `sentinel.affinity`                     | Affinity settings for sentinel pod assignment  | `{}`                                                         |
-| `sentinel.nodeSelector`                 | Node labels for sentinel pod assignment        | `{}`                                                         |
-| `sentinel.tolerations`                  | Toleration labels for sentinel pod assignment  | `[]`                                                         |
-| `proxy.replicaCount`                    | Number of proxy nodes                          | `2`                                                          |
-| `proxy.resources`                       | Proxy resource requests/limit                  | `{}`                                                         |
-| `proxy.affinity`                        | Affinity settings for proxy pod assignment     | `{}`                                                         |
-| `proxy.nodeSelector`                    | Node labels for proxy pod assignment           | `{}`                                                         |
-| `proxy.tolerations`                     | Toleration labels for proxy pod assignment     | `[]`                                                         |
 | `keeper.replicaCount`                   | Number of keeper nodes                         | `2`                                                          |
 | `keeper.resources`                      | Keeper resource requests/limit                 | `{}`                                                         |
-| `keeper.affinity`                       | Affinity settings for keeper pod assignment    | `{}`                                                         |
 | `keeper.nodeSelector`                   | Node labels for keeper pod assignment          | `{}`                                                         |
+| `keeper.affinity`                       | Affinity settings for keeper pod assignment    | `{}`                                                         |
 | `keeper.tolerations`                    | Toleration labels for keeper pod assignment    | `[]`                                                         |
-| `keeper.client_ssl.enabled`             | Enable ssl encryption                          | `false`                                                      |
-| `keeper.client_ssl.certs_secret_name`   | The secret for server.crt and server.key       | `pg-cert-secret`                                             |
-
+| `keeper.clientSsl.enabled`              | Enable ssl encryption                          | `false`                                                      |
+| `keeper.clientSsl.certsSecretName`      | The secret for server.crt and server.key       | `pg-cert-secret`                                             |
+| `proxy.replicaCount`                    | Number of proxy nodes                          | `2`                                                          |
+| `proxy.resources`                       | Proxy resource requests/limit                  | `{}`                                                         |
+| `proxy.nodeSelector`                    | Node labels for proxy pod assignment           | `{}`                                                         |
+| `proxy.affinity`                        | Affinity settings for proxy pod assignment     | `{}`                                                         |
+| `proxy.tolerations`                     | Toleration labels for proxy pod assignment     | `[]`                                                         |
+| `sentinel.replicaCount`                 | Number of sentinel nodes                       | `2`                                                          |
+| `sentinel.resources`                    | Sentinel resource requests/limit               | `{}`                                                         |
+| `sentinel.nodeSelector`                 | Node labels for sentinel pod assignment        | `{}`                                                         |
+| `sentinel.affinity`                     | Affinity settings for sentinel pod assignment  | `{}`                                                         |
+| `sentinel.tolerations`                  | Toleration labels for sentinel pod assignment  | `[]`                                                         |

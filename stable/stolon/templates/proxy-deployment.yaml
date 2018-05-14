@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "stolon.fullname" . }}-proxy
   labels:
-    app: {{ template "stolon.name" . }}
+    app: stolon-proxy
     chart: {{ template "stolon.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,14 +12,14 @@ spec:
   replicas: {{ .Values.proxy.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "stolon.name" . }}
+      app: stolon-proxy
       release: {{ .Release.Name }}
       component: proxy
       stolon-cluster: {{ template "stolon.fullname" . }}
   template:
     metadata:
       labels:
-        app: {{ template "stolon.name" . }}
+        app: stolon-proxy
         release: {{ .Release.Name }}
         component: proxy
         stolon-cluster: {{ template "stolon.fullname" . }}

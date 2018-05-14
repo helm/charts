@@ -30,7 +30,7 @@ spec:
 {{ toYaml $value | indent 6 }}
 {{- end }}
   selector:
-    app: {{ template "stolon.name" . }}
+    app: stolon-proxy
     release: {{ .Release.Name }}
     component: proxy
     stolon-cluster: {{ template "stolon.fullname" . }}

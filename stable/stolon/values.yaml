@@ -23,33 +23,24 @@ rbac:
 
 serviceAccount:
   create: true
-  # The name of the ServiceAccount to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template
   # name: my-name
 
 superuserUsername: "stolon"
+
+## password for the superuser (default is 40 random chars)
+# superuserPassword: ""
+
 replicationUsername: "repluser"
 
 ## password for the replication user (default is 40 random chars)
 # replicationPassword: "replPassword"
 
-## password for the superuser (default is 40 random chars)
-# superuserPassword: ""
-
 ## backend could be one of the following: consul, etcdv2, etcdv3, or kubernetes (experimental)
 store:
-  installConsul: true
-  installEtcd: false
-  backend: "consul"
-  endpoints: "http://stolon-consul:8500"
-
-## Update to customize backend store
-consul:
-  Replicas: 1
-  ui:
-    enabled: false
-  uiService:
-    enabled: false
+  backend: kubernetes
+#  endpoints: "http://stolon-consul:8500"
+  kubeResourceKind: configmap
 
 ports:
   stolon:
@@ -67,13 +58,16 @@ keeper:
         port: 5432
         targetPort: 5432
         protocol: TCP
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
   ## configure ssl for client access
   # create certificates according to these instructions: https://www.postgresql.org/docs/9.6/static/ssl-tcp.html
   # to enable encrypted traffic, servert.crt and server.key are required, by that name.
   # the use of ** Client Certificates ** is not supported
   clientSsl:
     enabled: false
-    certs_secret_name: pg-cert-secret
+    certsSecretName: pg-cert-secret
 
 proxy:
   replicaCount: 2
@@ -86,15 +80,15 @@ proxy:
         port: 5432
         targetPort: 5432
         protocol: TCP
-  affinity: {}
   nodeSelector: {}
+  affinity: {}
   tolerations: []
 
 sentinel:
   replicaCount: 2
   resources: {}
-  affinity: {}
   nodeSelector: {}
+  affinity: {}
   tolerations: []
 
 slowQueries:

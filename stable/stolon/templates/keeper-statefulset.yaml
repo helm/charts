@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: {{ template "stolon.fullname" . }}-keeper
   labels:
-    app: {{ template "stolon.name" . }}
+    app: stolon-keeper
     chart: {{ template "stolon.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -13,14 +13,14 @@ spec:
   replicas: {{ .Values.keeper.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "stolon.name" . }}
+      app: stolon-keeper
       release: {{ .Release.Name }}
       component: keeper
       stolon-cluster: {{ template "stolon.fullname" . }}
   template:
     metadata:
       labels:
-        app: {{ template "stolon.name" . }}
+        app: stolon-keeper
         release: {{ .Release.Name }}
         component: keeper
         stolon-cluster: {{ template "stolon.fullname" . }}
@@ -54,7 +54,7 @@ spec:
               value: {{ .Values.store.backend | quote}}
             {{- if eq .Values.store.backend "kubernetes" }}
             - name: STKEEPER_KUBE_RESOURCE_KIND
-              value: {{ default "configmap" .Values.store.kubeResourceKind  | quote}}
+              value: {{ .Values.store.kubeResourceKind  | quote}}
             {{- else }}
             - name: STKEEPER_STORE_ENDPOINTS
               value: {{ .Values.store.endpoints | quote}}
@@ -79,11 +79,22 @@ spec:
             mountPath: /stolon-data
           - name: stolon-secrets
             mountPath: /etc/secrets/stolon
+{{- with .Values.keeper.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.keeper.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.keeper.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
       volumes:
         - name: stolon-secrets
           secret:
             secretName: {{ template "stolon.fullname" . }}
-
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:

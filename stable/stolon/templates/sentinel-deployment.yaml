@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "stolon.fullname" . }}-sentinel
   labels:
-    app: {{ template "stolon.name" . }}
+    app: stolon-sentinel
     chart: {{ template "stolon.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,7 +12,7 @@ spec:
   replicas: {{ .Values.sentinel.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "stolon.name" . }}
+      app: stolon-sentinel
       release: {{ .Release.Name }}
       component: sentinel
       stolon-cluster: {{ template "stolon.fullname" . }}
@@ -20,7 +20,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "stolon.name" . }}
+        app: stolon-sentinel
         release: {{ .Release.Name }}
         component: sentinel
         stolon-cluster: {{ template "stolon.fullname" . }}
@@ -49,7 +49,7 @@ spec:
               value: {{ .Values.store.backend | quote}}
             {{- if eq .Values.store.backend "kubernetes" }}
             - name: STSENTINEL_KUBE_RESOURCE_KIND
-              value: {{ default "configmap" .Values.store.kubeResourceKind  | quote}}
+              value: {{ .Values.store.kubeResourceKind  | quote}}
             {{- else }}
             - name: STSENTINEL_STORE_ENDPOINTS
               value: {{ .Values.store.endpoints | quote}}
