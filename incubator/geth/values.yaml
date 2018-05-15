@@ -1,5 +1,5 @@
 image:
-  repository: "arilot/go-ethereum"
+  repository: "arilot/geth"
   tag: "alpine"
   pullPolicy: IfNotPresent
 
