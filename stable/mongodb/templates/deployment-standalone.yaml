@@ -1,3 +1,4 @@
+{{- if not .Values.replicaSet.enabled }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -26,9 +27,11 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "mongodb.fullname" . }}
-        image: {{ template "mongodb.image" . }}
-        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.imagePullPolicy | quote }}
         env:
+        - name: NAMI_LOG_LEVEL
+          value: "trace8"
         {{- if .Values.usePassword }}
         - name: MONGODB_ROOT_PASSWORD
           valueFrom:
@@ -69,6 +72,11 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /bitnami/mongodb
+        {{- if .Values.configmap }}
+        - name: config
+          mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
+          subPath: mongodb.conf
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:
@@ -80,3 +88,9 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+      {{- if .Values.configmap }}
+      - name: config
+        configMap:
+          name: {{ template "mongodb.fullname" . }}
+      {{- end }}
+ {{- end -}}

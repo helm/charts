@@ -51,7 +51,7 @@ mongodbExtraFlags: []
 ## Kubernetes service type
 service:
   type: ClusterIP
-  
+
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
   ##
@@ -61,7 +61,7 @@ port: 27017
 
 replicaSet:
   ## Whether to create a MongoDB replica set for high availability or not
-  enabled: false
+  enabled: true
   ## Name of the replica set
   ##
   name: rs0
@@ -69,7 +69,7 @@ replicaSet:
   ## Key used for replica set authentication
   ##
   # key: key
-
+  
   ## Number of replicas per each node type
   ## 
   replicas:
