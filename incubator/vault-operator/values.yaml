@@ -66,8 +66,6 @@ etcd-operator:
   etcdOperator:
     image:
       tag: v0.9.2
-    commandArgs:
-      cluster-wide: true
   backupOperator:
     image:
       tag: v0.9.2
