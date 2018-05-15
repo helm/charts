@@ -17,9 +17,7 @@ For more information on Keycloak and its capabilities, see its [documentation](h
 
 ## Prerequisites Details
 
-Keycloak Proxy basically works with Keycloak service.
-So you need install a [Keycloak](https://github.com/kubernetes/charts/tree/master/incubator/keycloak).
-If you already have a Keycloak environment, you can use it.
+Keycloak Proxy is designed primarily for Keycloak, an OpenID Connect identity provider. But it also works with other OpenID Connect identity providers.
 
 ## Installing the Chart
 
