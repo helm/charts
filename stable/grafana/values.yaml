@@ -21,6 +21,11 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+chownImage:
+  repository: busybox
+  tag: latest
+  pullPolicy: IfNotPresent
+
 downloadDashboardsImage:
   repository: appropriate/curl
   tag: latest
