@@ -1,5 +1,6 @@
 ## Default values for the image
 name: vault-operator
+replicaCount: 1
 image:
   repository: quay.io/coreos/vault-operator
   tag: 0.1.9
@@ -13,7 +14,7 @@ rbac:
 ## Service account names and whether to create them
 serviceAccount:
   create: true
-  name: vault-operator
+  name: vault-operator-sa
 
 resources:
   cpu: 100m
