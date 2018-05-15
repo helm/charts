@@ -50,7 +50,19 @@ The following table lists the configurable parameters of the vault-operator char
 
 | Parameter                                         | Description                                                          | Default                                        |
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
+| `name`                                            | name of the deployment                                               | `vault-operator`                               |
+| `replicaCount`                                    | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
+| `image.repository`                                | vault-operator container image                                       | `quay.io/coreos/vault-operator`                |
+| `image.tag`                                       | vault-operator container image tag                                   | `0.1.9`                                        |
+| `image.pullPolicy`                                | vault-operator container image pull policy                           | `Always`                                       |
 | `rbac.create`                                     | install required RBAC service account, roles and rolebindings        | `true`                                         |
+| `rbac.apiVersion`                                 | RBAC api version `v1alpha1|v1beta1`                                  | `v1beta1`                                      |
+| `serviceAccount.create`                           | create a new service account for the vault-operator                  | `true`                                         |
+| `serviceAccount.name`                             | Name of the service account resource when RBAC is enabled            | `vault-operator-sa`                            |
+| `resources.cpu`                                   | CPU limit per vault-operator pod                                     | `100m`                                         |
+| `resources.memory`                                | Memory limit per vault-operator pod                                  | `128mi`                                        |
+| `nodeSelector`                                    | Node labels for vault-operator pod assignment                        | `{}`                                           |
+| `commandArgs`                                     | Additional command arguments                                         | `{}`                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
