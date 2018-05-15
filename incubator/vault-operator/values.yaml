@@ -48,10 +48,6 @@ livenessProbe:
 ###
 etcd-operator:
   enabled: false
-  customResources:
-    createEtcdClusterCRD: true
-    createBackupCrd: true
-    createRestoreCRD: true
   deployments:
     etcdOperator: true
     backupOperator: true

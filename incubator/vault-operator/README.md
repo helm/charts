@@ -14,10 +14,11 @@ This chart bootstraps a vault-operator and allows the deployment of vault cluste
 
 Official project documentation found [here](https://github.com/coreos/vault-operator)
 
-## Prerequisites
+## Pre-requisites
 
 - Kubernetes 1.8+
 - __Suggested:__ RBAC setup for the Kubernetes cluster
+- [`etcd-operator`](https://github.com/kubernetes/charts/tree/master/stable/etcd-operator)
 
 ## Installing the Chart
 
@@ -25,6 +26,12 @@ To install the chart with the release name `my-release`:
 
 ```bash
 $ helm install incubator/vault-operator --name my-release
+```
+
+If you do not want to deploy the `etcd-operator` manually, you can deploy it at the same time as when you deploy the `vault-operator`:
+
+```bash
+$ helm install incubator/vault-operator --name my-release --set etcd-operator.enabled=true
 ```
 
 ## Uninstalling the Chart
@@ -39,7 +46,7 @@ The command removes all the Kubernetes components EXCEPT the persistent volume.
 
 ## Configuration
 
-The following table lists the configurable parameters of the etcd-operator chart and their default values.
+The following table lists the configurable parameters of the vault-operator chart and their default values.
 
 | Parameter                                         | Description                                                          | Default                                        |
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
@@ -63,30 +70,60 @@ By default the chart will install the recommended RBAC roles and rolebindings.
 
 To determine if your cluster supports this running the following:
 
-```console
+```bash
 $ kubectl api-versions | grep rbac
 ```
 
 You also need to have the following parameter on the api server. See the following document for how to enable [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/)
 
-```
+```bash
 --authorization-mode=RBAC
 ```
 
 If the output contains "beta" or both "alpha" and "beta" you can may install rbac by default, if not, you may turn RBAC off as described below.
 
-### RBAC role/rolebinding creation
+### RBAC Role/RoleBinding Creation
 
 RBAC resources are enabled by default. To disable RBAC do the following:
 
-```console
+```bash
 $ helm install --name my-release incubator/vault-operator --set rbac.create=false
 ```
 
-### Changing RBAC manifest apiVersion
+### Changing RBAC Manifest apiVersion
 
 By default the RBAC resources are generated with the "v1beta1" apiVersion. To use "v1alpha1" do the following:
 
-```console
+```bash
 $ helm install --name my-release incubator/vault-operator --set rbac.install=true,rbac.apiVersion=v1alpha1
+```
+
+## Creating a Vault
+
+### Deploy a CRD
+
+```yaml
+apiVersion: "vault.security.coreos.com/v1alpha1"
+kind: "VaultService"
+metadata:
+  name: "example"
+spec:
+  nodes: 2
+  version: "0.9.1-0"
+```
+
+### Initialize Vault
+
+```bash
+kubectl -n <namespace> get vault example -o jsonpath='{.status.vaultStatus.sealed[0]}' | xargs -0 -I {} kubectl -n <namespace> port-forward {} 8200
+vault init
+```
+
+### Unseal the Vault
+
+Repeat as many times as nodes created. Run the `vault unseal` command three times.
+
+```bash
+kubectl -n <namespace> get vault example -o jsonpath='{.status.vaultStatus.sealed[0]}' | xargs -0 -I {} kubectl -n <namespace> port-forward {} 8200
+vault unseal
 ```
