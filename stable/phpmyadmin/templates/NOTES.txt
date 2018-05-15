@@ -1,34 +1,36 @@
 1. Get the application URL by running these commands:
 {{- if .Values.ingress.enabled }}
-  You should be able to access your new Phpmyadmin installation through
+  You should be able to access your new PhpMyAdmin installation through
   http{{ if $.Values.ingress.tls }}s{{ end }}://{{ if $.Values.ingress.host }}{{.Values.ingress.host}}{{else}}your-cluster-ip{{end}}{{ $.Values.ingress.path }}
   {{if not $.Values.ingress.host}}
   Find out your cluster ip address by running:
   $ kubectl cluster-info
   {{end}}
-{{- else if contains "NodePort" .Values.phpmyadmin.service_type }}
+{{- else if contains "NodePort" .Values.phpmyadmin.serviceType }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "phpmyadmin.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
-{{- else if contains "LoadBalancer" .Values.phpmyadmin.service_type }}
+{{- else if contains "LoadBalancer" .Values.phpmyadmin.serviceType }}
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
            You can watch the status of by running 'kubectl get svc -w {{ template "phpmyadmin.fullname" . }}'
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "phpmyadmin.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.service.port }}
-{{- else if contains "ClusterIP" .Values.phpmyadmin.service_type }}
+{{- else if contains "ClusterIP" .Values.phpmyadmin.serviceType }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "phpmyadmin.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl port-forward $POD_NAME 8080:80
 {{- end }}
 
-##### HOW TO LOG IN 
-{{ if or (.Values.phpmyadmin.dbsuffix) (.Values.phpmyadmin.dbhost)}}
-PHPMYADMIN has been configured to connect to a database in {{ if .Values.phpmyadmin.dbsuffix}}{{template "db.fullname" .}}{{ else }}{{.Values.phpmyadmin.dbhost}}{{end}}
-{{if .Values.phpmyadmin.dbport}}with port {{.Values.phpmyadmin.dbport}} {{end }}
+2. How to log in
+{{ if or (.Values.phpmyadmin.dbSuffix) (.Values.phpmyadmin.dbHost)}}
+PhpMyAdmin has been configured to connect to a database in {{ if .Values.phpmyadmin.dbSuffix}}{{template "db.fullname" .}}{{ else }}{{.Values.phpmyadmin.dbHost}}{{end}}
+{{if .Values.phpmyadmin.dbPort}}with port {{.Values.phpmyadmin.dbPort}} {{end }}
 Please login using a database username and password. 
 {{ else }}
-PHPMYADMIN has not been configure to point to a specific database. Please provide the db host, username and password at log in or upgrade the release with 
+PhpMyAdmin has not been configure to point to a specific database. Please provide the db host, username and password at log in or upgrade the release with 
 a specific database
-$ helm upgrade {{.Release.Name}} stable/phpmyadmin --set phpmyadmin.dbhost=mydb 
-
+$ helm upgrade {{.Release.Name}} stable/phpmyadmin --set phpmyadmin.dbHost=mydb 
 {{end}}
+
+** Please be patient while the chart is being deployed **
+

@@ -36,5 +36,14 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "db.fullname" -}}
-{{- printf "%s-%s" .Release.Name .Values.phpmyadmin.dbsuffix | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" .Release.Name .Values.phpmyadmin.dbSuffix | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{/*
+Return the proper image name
+*/}}
+{{- define "phpmyadmin.image" -}}
+{{- $registryName :=  .Values.image.registry -}}
+{{- $repositoryName := .Values.image.repository -}}
+{{- $tag := .Values.image.tag -}}
+{{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}

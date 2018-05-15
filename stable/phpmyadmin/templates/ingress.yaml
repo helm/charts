@@ -1,6 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "phpmyadmin.fullname" . -}}
-{{- $servicePort := .Values.phpmyadmin.service_port -}}
+{{- $servicePort := .Values.phpmyadmin.servicePort -}}
 {{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress

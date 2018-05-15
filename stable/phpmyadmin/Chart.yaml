@@ -11,6 +11,6 @@ icon: https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/PhpMyAdmin_logo.
 sources:
 - https://github.com/bitnami/bitnami-docker-phpmyadmin
 maintainers:
-- name: Bitnami
+- name: bitnami-bot
   email: containers@bitnami.com
 engine: gotpl

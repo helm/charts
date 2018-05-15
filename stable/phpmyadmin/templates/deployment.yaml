@@ -27,19 +27,19 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ template "phpmyadmin.image" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: DATABASE_PORT_NUMBER
-              value: "{{ .Values.phpmyadmin.dbport }}"
-            {{- if .Values.phpmyadmin.dbsuffix }}
+              value: "{{ .Values.phpmyadmin.dbPort }}"
+            {{- if .Values.phpmyadmin.dbSuffix }}
             - name: DATABASE_HOST
               value: "{{ template "db.fullname" . }}"
             {{- else }} 
             - name: DATABASE_HOST
-              value: "{{ .Values.phpmyadmin.dbhost }}"
+              value: "{{ .Values.phpmyadmin.dbHost }}"
             {{- end }}
-            {{- if and (not .Values.phpmyadmin.dbsuffix) (not .Values.phpmyadmin.dbhost)}}
+            {{- if and (not .Values.phpmyadmin.dbSuffix) (not .Values.phpmyadmin.dbHost)}}
             - name: PHPMYADMIN_ALLOW_NO_PASSWORD
               value: "true"
             - name: PHPMYADMIN_ALLOW_ARBITRARY_SERVER
