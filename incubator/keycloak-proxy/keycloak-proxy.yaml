@@ -1,0 +1,96 @@
+---
+# Source: keycloak-proxy/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-proxy-configmap
+  labels:
+    chart: "keycloak-proxy-0.0.1"
+data:
+  proxy.json: |
+    {
+       "target-url":"http://url-to-the-target-server.example.com",
+       "bind-address":"0.0.0.0",
+       "http-port":"8080",
+       "applications":[
+          {
+             "base-path":"/",
+             "adapter-config":{
+                "realm":"REALM_NAME",
+                "realm-public-key": "REALM_PUBLIC_KEY",
+                "auth-server-url":"http://url-to-keycloak.example.com/auth",
+                "ssl-required":"external",
+                "resource":"CLIENT_ID",
+                "credentials": {
+                  "secret": "CLIENT_SECRET"
+                }
+             },
+             "constraints":[
+               {
+                  "pattern":"/*",
+                  "roles-allowed":[
+                    "admin"
+                  ]
+               }
+             ],
+             "proxy-address-forwarding": true
+          }
+       ]
+    }
+
+---
+# Source: keycloak-proxy/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-proxy-service
+  labels:
+    chart: "keycloak-proxy-0.0.1"
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    name: keycloak-proxy
+  sessionAffinity: None
+
+---
+# Source: keycloak-proxy/templates/deployment.yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: keycloak-proxy
+  labels:
+    chart: "keycloak-proxy-0.0.1"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak-proxy
+  template:
+    metadata:
+      labels:
+        name: keycloak-proxy
+    spec:
+      containers:
+      - name: keycloak-proxy
+        image: jboss/keycloak-proxy:3.4.0.Final
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /opt/jboss/conf
+          name: proxy-config
+      volumes:
+      - name: proxy-config
+        configMap:
+          defaultMode: 420
+          name: keycloak-proxy-configmap
+
+---
+# Source: keycloak-proxy/templates/ingress.yaml
+

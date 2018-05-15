@@ -30,3 +30,13 @@ ingress:
   tls:
     enabled: false
     existingSecret: ""
+
+configmap:
+  targetUrl: http://url-to-the-target-server.example.com
+  realm: REALM_NAME
+  realmPublicKey: REALM_PUBLIC_KEY
+  authServerUrl: http://url-to-keycloak.example.com/auth
+  resource: CLIENT_ID
+  secret: CLIENT_SECRET
+  pattern: /*
+  rolesAllowed: admin

@@ -6,4 +6,32 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 data:
   proxy.json: |
-{{ .Files.Get "proxy.json" | indent 4 }}
+    {
+       "target-url":"{{ .Values.configmap.targetUrl }}",
+       "bind-address":"0.0.0.0",
+       "http-port":"8080",
+       "applications":[
+          {
+             "base-path":"/",
+             "adapter-config":{
+                "realm":"{{ .Values.configmap.realm }}",
+                "realm-public-key": "{{ .Values.configmap.realmPublicKey }}",
+                "auth-server-url":"{{ .Values.configmap.authServerUrl }}",
+                "ssl-required":"external",
+                "resource":"{{ .Values.configmap.resource }}",
+                "credentials": {
+                  "secret": "{{ .Values.configmap.secret }}"
+                }
+             },
+             "constraints":[
+               {
+                  "pattern":"{{ .Values.configmap.pattern }}",
+                  "roles-allowed":[
+                    "{{ .Values.configmap.rolesAllowed }}"
+                  ]
+               }
+             ],
+             "proxy-address-forwarding": true
+          }
+       ]
+    }
