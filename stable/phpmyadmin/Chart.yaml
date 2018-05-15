@@ -1,4 +1,4 @@
-name: rabbitmq
+name: phpmyadmin
 version: 0.1.0
 appVersion: 4.8.0
 description: PhpMyAdmin is an mysql admininstration frontend
