@@ -31,7 +31,7 @@ phpmyadmin:
   ## please note that this setting preceeds dbhost
   # dbsuffix: mariadb
   # dbhost: foo
-  
+
 ingress:
   enabled: false
   annotations: {}
