@@ -28,7 +28,7 @@ spec:
       containers:
       - name: {{ template "mongodb.fullname" . }}
         image: "{{ .Values.image.registry }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.imagePullPolicy | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: NAMI_LOG_LEVEL
           value: "trace8"
