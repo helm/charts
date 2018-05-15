@@ -40,28 +40,30 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Fluentd elasticsearch chart and their default values.
 
-| Parameter                          | Description                                | Default                                                    |
-| ---------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
-| `annotations`                      | Optional daemonset annotations            | `NULL`                                                     |
-| `configMaps`                       | Fluentd configmaps                         | `output.conf`                                              |
-| `elasticsearch.host`               | Elstaicsearch Host                         | `elasticsearch-client`                                     |
-| `elasticsearch.port`               | Elasticsearch Port                         | `9200`                                                     |
-| `elasticsearch.buffer_chunk_limit` | Elasticsearch buffer chunk limit           | `2M`                                                       |
-| `elasticsearch.buffer_queue_limit` | Elasticsearch buffer queue limit           | `8`                                                        |
-| `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
-| `extraVolume`                      | Extra volume                               |                                                            | 
-| `fluentdcustomconfig`              | Optional custom configmaps                 | `NULL`                                                     |
-| `image`                            | Image                                      | `gcr.io/google-containers/fluentd-elasticsearch`           |
-| `imageTag`                         | Image tag                                  | `v2.0.4                                                    |
-| `imagePullPolicy`                  | Image pull policy                          | `Always` if `imageTag` is `imagePullPolicy`                |
-| `rbac.create`                      | RBAC                                       | `true`                                                     |
-| `resources.limits.cpu`             | CPU limit                                  | `100m`                                                     |
-| `resources.limits.memory`          | Memory limit                               | `500Mi`                                                    |
-| `resources.requests.cpu`           | CPU request                                | `100m`                                                     |
-| `resources.requests.memory`        | Memory request                             | `200Mi`                                                    |
-| `serviceAccount.create`            | Specifies whether a service account should be created.| `true`                                          |
-| `serviceAccount.name`              | Name of the service account.               |                                                            |   
-| `tolerations`                      | Optional daemonset tolerations             | `NULL`                                                     |
+|             Parameter              |                                         Description                                          |                     Default                      |
+| ---------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `annotations`                      | Optional daemonset annotations                                                               | `NULL`                                           |
+| `configMaps`                       | Fluentd configmaps                                                                           | `output.conf`                                    |
+| `elasticsearch.host`               | Elstaicsearch Host                                                                           | `elasticsearch-client`                           |
+| `elasticsearch.port`               | Elasticsearch Port                                                                           | `9200`                                           |
+| `elasticsearch.buffer_chunk_limit` | Elasticsearch buffer chunk limit                                                             | `2M`                                             |
+| `elasticsearch.buffer_queue_limit` | Elasticsearch buffer queue limit                                                             | `8`                                              |
+| `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |                                                  |
+| `extraVolume`                      | Extra volume                                                                                 |                                                  |
+| `fluentdcustomconfig`              | Optional custom configmaps                                                                   | `NULL`                                           |
+| `image`                            | Image                                                                                        | `gcr.io/google-containers/fluentd-elasticsearch` |
+| `imageTag`                         | Image tag                                                                                    | `v2.0.4                                          |
+| `imagePullPolicy`                  | Image pull policy                                                                            | `Always` if `imageTag` is `imagePullPolicy`      |
+| `rbac.create`                      | RBAC                                                                                         | `true`                                           |
+| `resources.limits.cpu`             | CPU limit                                                                                    | `100m`                                           |
+| `resources.limits.memory`          | Memory limit                                                                                 | `500Mi`                                          |
+| `resources.requests.cpu`           | CPU request                                                                                  | `100m`                                           |
+| `resources.requests.memory`        | Memory request                                                                               | `200Mi`                                          |
+| `service.port`                     | The service port                                                                             | `24231`                                          |
+| `service.type`                     | Service type (ClusterIP, NodePort or LoadBalancer)                                           | `ClusterIP`                                      |
+| `serviceAccount.create`            | Specifies whether a service account should be created.                                       | `true`                                           |
+| `serviceAccount.name`              | Name of the service account.                                                                 |                                                  |
+| `tolerations`                      | Optional daemonset tolerations                                                               | `NULL`                                           |
 
 
 
