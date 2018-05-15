@@ -90,6 +90,7 @@ nexusBackup:
 
 ingress:
   enabled: false
+  path: /
   annotations: {}
   # # NOTE: Can't use 'false' due to https://github.com/jetstack/kube-lego/issues/173.
   # kubernetes.io/ingress.allow-http: true
