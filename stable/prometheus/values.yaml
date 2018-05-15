@@ -444,6 +444,10 @@ server:
   ## Maybe same with Ingress host name
   baseURL: ""
 
+  ## This flag controls access to the administrative HTTP API which includes functionality such as deleting time
+  ## series. This is disabled by default.
+  enableAdminApi: false
+
   ## Additional Prometheus server container arguments
   ##
   extraArgs: {}
