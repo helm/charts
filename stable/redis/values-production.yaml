@@ -23,9 +23,12 @@ metrics:
   enabled: true
   # resources: {}
   # podAnnotations: {}
-  # targetServiceAnnotations:
+  service:
+    type: ClusterIP
+    annotations: {}
   #   prometheus.io/scrape: "true"
   #   prometheus.io/port: "9121"
+    loadBalancerIP:
   image:
     registry: docker.io
     repository: oliver006/redis_exporter
