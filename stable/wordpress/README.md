@@ -48,8 +48,8 @@ The following table lists the configurable parameters of the WordPress chart and
 | Parameter                            | Description                                | Default                                                    |
 | ------------------------------------ | ------------------------------------------ | ---------------------------------------------------------- |
 | `image.registry`                     | WordPress image registry                   | `docker.io`                                                |
-| `image.repository`                   | WordPress Image name                       | `bitnami/wordpress`                                        |
-| `image.tag`                          | WordPress Image tag                        | `{VERSION}`                                                |
+| `image.repository`                   | WordPress image name                       | `bitnami/wordpress`                                        |
+| `image.tag`                          | WordPress image tag                        | `{VERSION}`                                                |
 | `image.pullPolicy`                   | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
 | `image.pullSecrets`                  | Specify image pull secrets                 | `nil`                                                      |
 | `wordpressUsername`                  | User of the application                    | `user`                                                     |
@@ -90,6 +90,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                     | `nil`                                                      |
 | `ingress.secrets[0].key`             | TLS Secret Key                             | `nil`                                                      |
 | `persistence.enabled`                | Enable persistence using PVC               | `true`                                                     |
+| `persistence.existingClaim`          | Enable persistence using an existing PVC   | `nil`                                                      |
 | `persistence.storageClass`           | PVC Storage Class                          | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | PVC Access Mode                            | `ReadWriteOnce`                                            |
 | `persistence.size`                   | PVC Storage Request                        | `10Gi`                                                     |
@@ -115,6 +116,24 @@ $ helm install --name my-release -f values.yaml stable/wordpress
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Production and horizontal scaling
+
+The following repo contains the recommended production settings for wordpress capture in an alternative [values file](values-production.yaml). Please read carefully the comments in the values-production.yaml file to set up your environment appropriately.
+
+To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then:
+
+```console
+$ 
+$ helm install --name my-release -f ./values-production.yaml stable/wordpress
+$ kubectl scale deployment my-wp-deployment --replicas=3 
+```
+To use the /admin portal and to ensure you can scale wordpress you need to provide a ReadWriteMany PVC, if you dont have a provisioner for this type of storage, we recommend that you install the nfs provisioner and map it to a RWO volume.
+
+```console
+$ helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
+$ helm install --name my-release -f values-production.yaml --set persitence.storageClass=nfs stable/wordpress
+```
+
 ## Persistence
 
 The [Bitnami WordPress](https://github.com/bitnami/bitnami-docker-wordpress) image stores the WordPress data and configurations at the `/bitnami` path of the container.
@@ -138,7 +157,7 @@ Note also if you disable MariaDB per above you MUST supply values for the `exter
 This chart provides support for ingress resources. If you have an
 ingress controller installed on your cluster, such as [nginx-ingress](https://kubeapps.com/charts/stable/nginx-ingress)
 or [traefik](https://kubeapps.com/charts/stable/traefik) you can utilize
-the ingress controller to service your WordPress application.
+the ingress controller to serve your WordPress application.
 
 To enable ingress integration, please set `ingress.enabled` to `true`
 
@@ -195,11 +214,11 @@ wrj2wDbCDCFmfqnSJ+dKI3vFLlEz44sAV8jX/kd4Y6ZTQhlLbYc=
 -----END RSA PRIVATE KEY-----
 ````
 
-If you are going to use helm to manage the certificates, please copy
+If you are going to use Helm to manage the certificates, please copy
 these values into the `certificate` and `key` values for a given
 `ingress.secrets` entry.
 
-If you are going are going to manage TLS secrets outside of helm, please
+If you are going are going to manage TLS secrets outside of Helm, please
 know that you can create a TLS secret by doing the following:
 
 ```

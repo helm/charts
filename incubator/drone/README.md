@@ -51,18 +51,28 @@ The following table lists the configurable parameters of the drone charts and th
 | `ingress.tls`               | Ingress TLS configuration                                                                     | `[]`                        |
 | `server.host`               | Drone **server** scheme and hostname                                                          | `(internal hostname)`       |
 | `server.env`                | Drone **server** environment variables                                                        | `(default values)`          |
+| `server.envSecrets`         | Drone **server** secret environment variables                                                 | `(default values)`          |
+| `server.annotations`        | Drone **server** annotations                                                                  | `{}`                        |
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
+| `server.schedulerName`      | Drone **server** alternate scheduler name                                                     | `nil`                       |
 | `server.afinity`            | Drone **server** scheduling preferences                                                       | `{}`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
 | `agent.replicas`            | Drone **agent** replicas                                                                      | `1`                         |
+| `agent.annotations`         | Drone **agent** annotations                                                                   | `{}`                        |
 | `agent.resources`           | Drone **agent** pod resource requests & limits                                                | `{}`                        |
+| `agent.schedulerName`       | Drone **agent** alternate scheduler name                                                      | `nil`                       |
 | `agent.afinity`             | Drone **agent** scheduling preferences                                                        | `{}`                        |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
 | `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |
+| `dind.env`                  | **DinD** environment variables                                                                | `nil`                       |
 | `persistence.enabled`       | Use a PVC to persist data                                                                     | `true`                      |
 | `persistence.existingClaim` | Use an existing PVC to persist data                                                           | `nil`                       |
 | `persistence.storageClass`  | Storage class of backing PVC                                                                  | `nil`                       |
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                                                           | `ReadWriteOnce`             |
 | `persistence.size`          | Size of data volume                                                                           | `1Gi`                       |
 | `sharedSecret`              | Drone server and agent shared secret (Note: The Default random value changes on every `helm upgrade` causing a rolling update of server and agents) | `(random value)`            |
+| `rbac.create`               | Specifies whether RBAC resources should be created.                                           | `true`                      |
+| `rbac.apiVersion`           | RBAC API version                                                                              | `v1`                        |
+| `serviceAccount.create`     | Specifies whether a ServiceAccount should be created.                                         | `true`                      |
+| `serviceAccount.name`       | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template. | `(fullname template)` |
