@@ -9,7 +9,10 @@ resources:
   requests:
     memory: 512Mi
     cpu: 500m
-
+secContext:
+  # Security context settings
+  runAsUser: 1000
+  fsGroup: 2000
 # Most of these map to environment variables. See Minecraft for details:
 # https://hub.docker.com/r/itzg/minecraft-server/
 minecraftServer:
