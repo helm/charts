@@ -12,6 +12,10 @@ spec:
   replicas: {{ default 3 .Values.Replicas }}
   updateStrategy:
     type: RollingUpdate
+  selector:
+    matchLabels:
+      release: {{ .Release.Name | quote }}
+      component: "{{ .Release.Name }}-{{ .Values.Component }}"
   template:
     metadata:
       name: "{{ template "consul.fullname" . }}"
@@ -107,6 +111,11 @@ spec:
         - name: gossip-key
           mountPath: /etc/consul/secrets
           readOnly: true
+        {{ range .Values.ConsulConfig }}
+        - name: userconfig-{{ .name }}
+          readOnly: true
+          mountPath: /etc/consul/userconfig/{{ .name }}
+        {{ end }}
         livenessProbe:
           exec:
             command:
@@ -120,7 +129,7 @@ spec:
           - |
             IP=$(hostname -i)
 
-            {{- if .Values.EncryptGossip }}
+            {{- if .Values.Gossip.Encrypt }}
             if [ -e /etc/consul/secrets/gossip-key ]; then
               echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
               GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
@@ -144,6 +153,9 @@ spec:
             done
 
             exec /bin/consul agent \
+            {{- range .Values.ConsulConfig }}
+              -config-dir /etc/consul/userconfig/{{ .name }} \
+            {{- end}}
             {{- if .Values.uiService.enabled }}
               -ui \
             {{- end }}
@@ -163,7 +175,7 @@ spec:
               -bind=0.0.0.0 \
               -advertise=${IP} \
               ${PEERS} \
-            {{- if .Values.EncryptGossip }}
+            {{- if .Values.Gossip.Encrypt }}
               ${GOSSIP_KEY} \
             {{- end }}
               -client=0.0.0.0 \
@@ -173,6 +185,15 @@ spec:
       - name: gossip-key
         secret:
           secretName: {{ template "consul.fullname" . }}-gossip-key
+      {{ range .Values.ConsulConfig }}
+      - name: userconfig-{{ .name }}
+        {{ .type }}:
+          {{- if (eq .type "configMap") }}
+          name: {{ .name }}
+          {{- else if (eq .type "secret") }}
+          secretName: {{ .name }}
+          {{- end}}
+      {{ end }}
   volumeClaimTemplates:
   - metadata:
       name: datadir

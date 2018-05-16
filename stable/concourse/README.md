@@ -106,6 +106,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
+| `web.annotations`| Concourse Web deployment annotations | `nil` |
 | `web.tolerations` | Tolerations for the web nodes | `[]` |
 | `web.service.type` | Concourse Web service type | `ClusterIP` |
 | `web.service.annotations` | Concourse Web Service annotations | `nil` |
@@ -116,7 +117,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
 | `web.metrics.prometheus.enabled` | Enable Prometheus metrics exporter | `false` |
-| `web.metrics.prometheus.port` | Port for exporting Prometeus metrics | `9391` |
+| `web.metrics.prometheus.port` | Port for exporting Prometheus metrics | `9391` |
 | `worker.nameOverride` | Override the Concourse Worker components name | `nil` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
@@ -129,6 +130,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
 | `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
 | `worker.podManagementPolicy` | `OrderedReady` or `Parallel` (requires Kubernetes >= 1.7) | `Parallel` |
+| `worker.hardAntiAffinity` | Should the workers be forced (as opposed to preferred) to be on different nodes? | `false` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.storageClass` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
@@ -155,7 +157,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `rbac.apiVersion` | RBAC version | `v1beta1` |
 | `rbac.webServiceAccountName` | Name of the service account to use for web pods if `rbac.create` is `false` | `default` |
 | `rbac.workerServiceAccountName` | Name of the service account to use for workers if `rbac.create` is `false` | `default` |
-| `secrets.create` | Create the secret resource from the following values. *See [Secrets](#Secrets)* | `true` |
+| `secrets.create` | Create the secret resource from the following values. *See [Secrets](#secrets)* | `true` |
 | `secrets.hostKey` | Concourse Host Private Key | *See [values.yaml](values.yaml)* |
 | `secrets.hostKeyPub` | Concourse Host Public Key | *See [values.yaml](values.yaml)* |
 | `secrets.sessionSigningKey` | Concourse Session Signing Private Key | *See [values.yaml](values.yaml)* |
@@ -209,7 +211,7 @@ printf "%s" "concourse" > basic-auth-username
 printf "%s" "$(openssl rand -base64 24)" > basic-auth-password
 ```
 
-You'll also need to create/copy secret values for optional features. See [templates/secrets.yaml](templates/secrets.yaml) for possible values. In the example below, we are not using the [PostgreSQL](#PostgreSQL) chart dependency, and so we must set a `postgresql-uri` secret.
+You'll also need to create/copy secret values for optional features. See [templates/secrets.yaml](templates/secrets.yaml) for possible values. In the example below, we are not using the [PostgreSQL](#postgresql) chart dependency, and so we must set a `postgresql-uri` secret.
 
 ```console
 # copy a posgres URI to clipboard and paste it to file
@@ -307,7 +309,7 @@ You can also bring your own PostgreSQL. To do so, set `postgresql.enabled` to fa
 
 1. Set `secrets.postgresqlUri` in your values
 
-2. Set `postgresql-uri` in your release's secrets as described in [Secrets](#Secrets).
+2. Set `postgresql-uri` in your release's secrets as described in [Secrets](#secrets).
 
 The only way to completely avoid putting secrets in Helm is to bring your own PostgreSQL, and use option 2 above.
 
