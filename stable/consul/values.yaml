@@ -78,12 +78,19 @@ maxUnavailable: 1
 #         values:
 #         - true
 
-## Anti-Affinity setting. The default "hard" will use pod anti-affinity that is
-## requiredDuringSchedulingIgnoredDuringExecution to ensure 2 services don't
-## end up on the same node. Setting this to "soft" will use
-## preferredDuringSchedulingIgnoredDuringExecution. If set to anything else,
-## no anti-affinity rules will be configured.
-antiAffinity: "hard"
+## Affinity settings
+affinity: |
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 1
+      podAffinityTerm:
+        topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchExpressions:
+          - key: component
+            operator: In
+            values:
+            - "{{ .Release.Name }}-{{ .Values.Component }}"
 
 ## Enable Consul Web UI
 ##
