@@ -7,6 +7,9 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
 spec:
   serviceName: {{ template "rabbitmq-ha.fullname" . }}-discovery
   replicas: {{ .Values.replicaCount }}
@@ -17,6 +20,9 @@ spec:
       labels:
         app: {{ template "rabbitmq-ha.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 8 }}
+{{- end }}
       annotations:
         {{- if not .Values.customConfigMap }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
