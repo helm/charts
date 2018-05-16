@@ -49,12 +49,16 @@ their default values.
 | `secrets.htpasswd`          | Htpasswd authentication                                                                    | `nil`           |
 | `secrets.s3.accessKey`      | Access Key for S3 configuration                                                            | `nil`           |
 | `secrets.s3.secretKey`      | Secret Key for S3 configuration                                                            | `nil`           |
+| `secrets.swift.username`    | Username for Swift configuration                                                           | `nil`           |
+| `secrets.swift.password`    | Password for Swift configuration                                                           | `nil`           |
 | `haSharedSecret`            | Shared secret for Registry                                                                 | `nil`           |
 | `configData`                | Configuration hash for docker                                                              | `nil`           |
 | `s3.region`                 | S3 region                                                                                  | `nil`           |
 | `s3.bucket`                 | S3 bucket name                                                                             | `nil`           |
 | `s3.encrypt`                | Store images in encrypted format                                                           | `nil`           |
 | `s3.secure`                 | Use HTTPS                                                                                  | `nil`           |
+| `swift.authurl`             | Swift authurl                                                                              | `nil`           |
+| `swift.container`           | Swift container                                                                            | `nil`           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
