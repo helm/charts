@@ -7,15 +7,18 @@ metadata:
     chart: {{ template "stolon.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+{{- with .Values.keeper.service.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   clusterIP: None
   ports:
-  {{- range $key, $value := .Values.proxy.service.ports }}
+  {{- range $key, $value := .Values.keeper.service.ports }}
     - name: {{ $key }}
 {{ toYaml $value | indent 6 }}
 {{- end }}
   selector:
-    app: stolon-keeper
+    app: {{ template "stolon.name" . }}
     release: {{ .Release.Name }}
-    component: keeper
-    stolon-cluster: {{ template "stolon.fullname" . }}
+    component: stolon-keeper

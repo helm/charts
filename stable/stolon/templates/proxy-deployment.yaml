@@ -3,30 +3,30 @@ kind: Deployment
 metadata:
   name: {{ template "stolon.fullname" . }}-proxy
   labels:
-    app: stolon-proxy
+    app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: proxy
 spec:
   replicas: {{ .Values.proxy.replicaCount }}
   selector:
     matchLabels:
-      app: stolon-proxy
+      app: {{ template "stolon.name" . }}
       release: {{ .Release.Name }}
-      component: proxy
-      stolon-cluster: {{ template "stolon.fullname" . }}
   template:
     metadata:
       labels:
-        app: stolon-proxy
+        app: {{ template "stolon.name" . }}
         release: {{ .Release.Name }}
-        component: proxy
+        component: stolon-proxy
         stolon-cluster: {{ template "stolon.fullname" . }}
+      annotations:
+{{- with .Values.proxy.annotations }}
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
-      serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       containers:
-        - name: {{ template "stolon.fullname" . }}-proxy
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
@@ -54,6 +54,8 @@ spec:
             {{- end }}
             - name: STPROXY_LISTEN_ADDRESS
               value: {{ default "0.0.0.0" .Values.proxy.listenAddress | quote }}
+            - name: STPROXY_METRICS_LISTEN_ADDRESS
+              value: "0.0.0.0:8080"
             - name: STPROXY_DEBUG
               value: {{ .Values.debug | quote}}
           ports:

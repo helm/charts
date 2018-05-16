@@ -26,7 +26,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | Parameter                               | Description                                    | Default                                                      |
 | --------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ |
 | `image.repository`                      | `stolon` image repository                      | `sorintlab/stolon`                                           |
-| `image.tag`                             | `stolon` image tag                             | `v0.10.0-pg9.6`                                              |
+| `image.tag`                             | `stolon` image tag                             | `master-pg9.6`                                               |
 | `image.pullPolicy`                      | Image pull policy                              | `Always`                                                     |
 | `debug`                                 | Debug mode                                     | `false`                                                      |
 | `persistence.enabled`                   | Use a PVC to persist data                      | `true`                                                       |

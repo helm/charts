@@ -1,6 +1,6 @@
 image:
   repository: sorintlab/stolon
-  tag: v0.10.0-pg9.6
+  tag: master-pg9.6
   pullPolicy: IfNotPresent
 
 debug: false
@@ -45,10 +45,12 @@ store:
 ports:
   stolon:
     containerPort: 5432
-    protocol: TCP
+  metrics:
+    containerPort: 8080
 
 keeper:
   replicaCount: 2
+  annotations: {}
   resources: {}
   service:
     type: ClusterIP
@@ -71,9 +73,11 @@ keeper:
 
 proxy:
   replicaCount: 2
+  annotations: {}
   resources: {}
   service:
     type: ClusterIP
+#    loadBalancerIP: ""
     annotations: {}
     ports:
       proxy:
@@ -86,6 +90,7 @@ proxy:
 
 sentinel:
   replicaCount: 2
+  annotations: {}
   resources: {}
   nodeSelector: {}
   affinity: {}

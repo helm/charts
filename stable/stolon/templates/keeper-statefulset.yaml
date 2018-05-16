@@ -3,32 +3,33 @@ kind: StatefulSet
 metadata:
   name: {{ template "stolon.fullname" . }}-keeper
   labels:
-    app: stolon-keeper
+    app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: keeper
 spec:
-  serviceName: {{ template "stolon.fullname" . }}-keeper
+  serviceName: {{ template "stolon.fullname" . }}-keeper-headless
   replicas: {{ .Values.keeper.replicaCount }}
   selector:
     matchLabels:
-      app: stolon-keeper
+      app: {{ template "stolon.name" . }}
       release: {{ .Release.Name }}
-      component: keeper
-      stolon-cluster: {{ template "stolon.fullname" . }}
   template:
     metadata:
       labels:
-        app: stolon-keeper
+        app: {{ template "stolon.name" . }}
         release: {{ .Release.Name }}
-        component: keeper
+        component: stolon-keeper
         stolon-cluster: {{ template "stolon.fullname" . }}
+      annotations:
+{{- with .Values.keeper.annotations }}
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       terminationGracePeriodSeconds: 10
       containers:
-        - name: {{ template "stolon.fullname" . }}-keeper
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
@@ -67,6 +68,8 @@ spec:
               value: {{ .Values.superuserUsername | quote}}
             - name: STKEEPER_PG_SU_PASSWORDFILE
               value: "/etc/secrets/stolon/pg_su_password"
+            - name: STKEEPER_METRICS_LISTEN_ADDRESS
+              value: "0.0.0.0:8080"
             - name: STKEEPER_DEBUG
               value: {{ .Values.debug | quote}}
           ports:
@@ -75,7 +78,7 @@ spec:
 {{ toYaml $value | indent 14 }}
 {{- end }}
           volumeMounts:
-          - name: stolon-data
+          - name: data
             mountPath: /stolon-data
           - name: stolon-secrets
             mountPath: /etc/secrets/stolon
@@ -98,7 +101,7 @@ spec:
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
-        name: stolon-data
+        name: data
       spec:
         accessModes:
   {{- range .Values.persistence.accessModes }}

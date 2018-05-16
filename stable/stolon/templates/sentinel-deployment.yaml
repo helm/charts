@@ -3,32 +3,31 @@ kind: Deployment
 metadata:
   name: {{ template "stolon.fullname" . }}-sentinel
   labels:
-    app: stolon-sentinel
+    app: {{ template "stolon.name" . }}
     chart: {{ template "stolon.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: sentinel
 spec:
   replicas: {{ .Values.sentinel.replicaCount }}
   selector:
     matchLabels:
-      app: stolon-sentinel
+      app: {{ template "stolon.name" . }}
       release: {{ .Release.Name }}
-      component: sentinel
-      stolon-cluster: {{ template "stolon.fullname" . }}
-      stolon-sentinel: "true"
   template:
     metadata:
       labels:
-        app: stolon-sentinel
+        app: {{ template "stolon.name" . }}
         release: {{ .Release.Name }}
-        component: sentinel
+        component: stolon-sentinel
         stolon-cluster: {{ template "stolon.fullname" . }}
-        stolon-sentinel: "true"
+      annotations:
+{{- with .Values.keeper.annotations }}
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       containers:
-        - name: {{ template "stolon.fullname" . }}-sentinel
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
@@ -54,6 +53,8 @@ spec:
             - name: STSENTINEL_STORE_ENDPOINTS
               value: {{ .Values.store.endpoints | quote}}
             {{- end }}
+            - name: STSENTINEL_METRICS_LISTEN_ADDRESS
+              value: "0.0.0.0:8080"
             - name: STSENTINEL_DEBUG
               value: {{ .Values.debug | quote}}
 {{- with .Values.sentinel.nodeSelector }}
