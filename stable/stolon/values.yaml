@@ -1,6 +1,6 @@
 image:
   repository: sorintlab/stolon
-  tag: master-pg9.6
+  tag: master-pg10
   pullPolicy: IfNotPresent
 
 debug: false
@@ -42,6 +42,8 @@ store:
 #  endpoints: "http://stolon-consul:8500"
   kubeResourceKind: configmap
 
+pgParameters: {}
+
 ports:
   stolon:
     containerPort: 5432
@@ -63,13 +65,6 @@ keeper:
   nodeSelector: {}
   affinity: {}
   tolerations: []
-  ## configure ssl for client access
-  # create certificates according to these instructions: https://www.postgresql.org/docs/9.6/static/ssl-tcp.html
-  # to enable encrypted traffic, servert.crt and server.key are required, by that name.
-  # the use of ** Client Certificates ** is not supported
-  clientSsl:
-    enabled: false
-    certsSecretName: pg-cert-secret
 
 proxy:
   replicaCount: 2
@@ -95,7 +90,3 @@ sentinel:
   nodeSelector: {}
   affinity: {}
   tolerations: []
-
-slowQueries:
-  enabled: false
-  minDuration: 300

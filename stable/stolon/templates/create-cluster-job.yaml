@@ -45,6 +45,6 @@ spec:
           - --store-endpoints={{ .Values.store.endpoints }}
           {{- end }}
           - --yes
-          - '{  "initMode": "new"{{- if or .Values.keeper.clientSsl.enabled .Values.slowQueries.enabled }}, "pgParameters": { {{- if .Values.keeper.clientSsl.enabled }} "ssl": "on", "ssl_cert_file": "/etc/secrets/ssl/server.crt", "ssl_key_file": "/etc/secrets/ssl/server.key"{{- end }}{{- if and .Values.keeper.clientSsl.enabled .Values.slowQueries.enabled }},{{- end }}{{ if .Values.slowQueries.enabled }} "log_min_duration_statement" :  "{{ .Values.slowQueries.minDuration }}" {{ end }} }{{- end}} }'
+          - '{"initMode":"new"{{- if .Values.pgParameters }},"pgParameters":{{ with .Values.pgParameters }}{{ toJson . }}{{- end }}{{- end }}}'
 {{ end }}
 

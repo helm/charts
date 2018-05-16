@@ -26,7 +26,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | Parameter                               | Description                                    | Default                                                      |
 | --------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ |
 | `image.repository`                      | `stolon` image repository                      | `sorintlab/stolon`                                           |
-| `image.tag`                             | `stolon` image tag                             | `master-pg9.6`                                               |
+| `image.tag`                             | `stolon` image tag                             | `master-pg10`                                               |
 | `image.pullPolicy`                      | Image pull policy                              | `Always`                                                     |
 | `debug`                                 | Debug mode                                     | `false`                                                      |
 | `persistence.enabled`                   | Use a PVC to persist data                      | `true`                                                       |
@@ -43,13 +43,12 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `store.backend`                         | Store backend (kubernetes/consul/etcd)         | `kubernetes`                                                 |
 | `store.endpoints`                       | Store backend endpoints                        | `nil`                                                        |
 | `store.kubeResourceKind`                | Kubernetes resource kind (only for kubernetes) | `configmap`                                                  |
+| `pgParameters`                          | [`postgresql.conf`][pgconf] options used during cluster creation | `{}`                                       |
 | `keeper.replicaCount`                   | Number of keeper nodes                         | `2`                                                          |
 | `keeper.resources`                      | Keeper resource requests/limit                 | `{}`                                                         |
 | `keeper.nodeSelector`                   | Node labels for keeper pod assignment          | `{}`                                                         |
 | `keeper.affinity`                       | Affinity settings for keeper pod assignment    | `{}`                                                         |
 | `keeper.tolerations`                    | Toleration labels for keeper pod assignment    | `[]`                                                         |
-| `keeper.clientSsl.enabled`              | Enable ssl encryption                          | `false`                                                      |
-| `keeper.clientSsl.certsSecretName`      | The secret for server.crt and server.key       | `pg-cert-secret`                                             |
 | `proxy.replicaCount`                    | Number of proxy nodes                          | `2`                                                          |
 | `proxy.resources`                       | Proxy resource requests/limit                  | `{}`                                                         |
 | `proxy.nodeSelector`                    | Node labels for proxy pod assignment           | `{}`                                                         |
@@ -60,3 +59,6 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `sentinel.nodeSelector`                 | Node labels for sentinel pod assignment        | `{}`                                                         |
 | `sentinel.affinity`                     | Affinity settings for sentinel pod assignment  | `{}`                                                         |
 | `sentinel.tolerations`                  | Toleration labels for sentinel pod assignment  | `[]`                                                         |
+
+
+[pgconf]: https://github.com/postgres/postgres/blob/master/src/backend/utils/misc/postgresql.conf.sample
