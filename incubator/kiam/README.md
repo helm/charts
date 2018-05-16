@@ -45,6 +45,11 @@ The following table lists the configurable parameters of the kiam chart and thei
 
 Parameter | Description | Default
 --- | --- | ---
+`agent.enabled` | If true, create agent | `true`
+`agent.name` | Agent container name | `agent`
+`agent.image.repository` | Agent image | `quay.io/uswitch/kiam`
+`agent.image.tag` | Agent image tag | `v2.7`
+`agent.image.pullPolicy` | Agent image pull policy | `IfNotPresent`
 `agent.dnsPolicy` | Agent pod DNS policy | `ClusterFirstWithHostNet`
 `agent.extraArgs` | Additional agent container arguments | `{}`
 `agent.extraEnv` | Additional agent container environment variables | `{}`
@@ -53,9 +58,6 @@ Parameter | Description | Default
 `agent.host.iptables` | Add iptables rule | `false`
 `agent.host.interface` | Agent's host interface for proxying AWS metadata | `cali+`
 `agent.host.port` | Agent's listening port | `8181`
-`agent.image.repository` | Agent image | `quay.io/uswitch/kiam`
-`agent.image.tag` | Agent image tag | `v2.5`
-`agent.image.pullPolicy` | Agent image pull policy | `IfNotPresent`
 `agent.log.jsonOutput` | Whether or not to output agent log in JSON format | `true`
 `agent.log.level` | Agent log level (`debug`, `info`, `warn` or `error`) | `info`
 `agent.nodeSelector` | Node labels for agent pod assignment | `{}`
@@ -73,16 +75,16 @@ Parameter | Description | Default
 `agent.tls.useSampleData` | Whether or not to use the sample TLS data in `agent/server-tls` | `true`
 `agent.tolerations` | Tolerations to be applied to agent pods | `[]`
 `agent.updateStrategy` | Strategy for agent DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
-`rbac.create` | If `true`, create & use RBAC resources | `false`
-`rbac.serviceAccountName` | Existing service account to use (ignored if `rbac.create=true`) | `default`
+`server.enabled` | If true, create server | `true`
+`server.name` | Server container name | `server`
+`server.image.repository` | Server image | `quay.io/uswitch/kiam`
+`server.image.tag` | Server image tag | `v2.7`
+`server.image.pullPolicy` | Server image pull policy | `Always`
 `server.assumeRoleArn` | IAM role for the server to assume before processing requests | `null`
 `server.cache.syncInterval` | Pod cache synchronization interval | `1m`
 `server.extraArgs` | Additional server container arguments | `{}`
 `server.extraEnv` | Additional server container environment variables | `{}`
 `server.extraHostPathMounts` | Additional server container hostPath mounts | `[]`
-`server.image.repository` | Server image | `quay.io/uswitch/kiam`
-`server.image.tag` | Server image tag | `v2.5`
-`server.image.pullPolicy` | Server image pull policy | `Always`
 `server.log.jsonOutput` | Whether or not to output server log in JSON format | `true`
 `server.log.level` | Server log level (`debug`, `info`, `warn` or `error`) | `info`
 `server.nodeSelector` | Node labels for server pod assignment | `{}`
@@ -104,6 +106,11 @@ Parameter | Description | Default
 `server.tls.useSampleData` | Whether or not to use the sample TLS data in `sample/server-tls` | `true`
 `server.tolerations` | Tolerations to be applied to server pods | `[]`
 `server.updateStrategy` | Strategy for server DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
+`rbac.create` | If `true`, create & use RBAC resources | `true`
+`serviceAccounts.agent.create` | If true, create the agent service account | `true`
+`serviceAccounts.agent.name` | Name of the agent service account to use or create | `{{ kiam.agent.fullname }}`
+`serviceAccounts.server.create` | If true, create the server service account | `true`
+`serviceAccounts.server.name` | Name of the server service account to use or create | `{{ kiam.server.fullname }}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

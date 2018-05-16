@@ -1,17 +1,20 @@
+{{- if .Values.server.enabled -}}
 apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
   labels:
     app: {{ template "kiam.name" . }}
     chart: {{ template "kiam.chart" . }}
+    component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "kiam.fullname" . }}-server
+  name: {{ template "kiam.server.fullname" . }}
 spec:
   selector:
     matchLabels:
       app: {{ template "kiam.name" . }}
-      role: server
+      component: "{{ .Values.server.name }}"
+      release: {{ .Release.Name }}
       {{- if .Values.server.podLabels }}
 {{ toYaml .Values.server.podLabels | indent 6 }}
       {{- end }}
@@ -23,12 +26,13 @@ spec:
       {{- end }}
       labels:
         app: {{ template "kiam.name" . }}
-        role: server
+        component: "{{ .Values.server.name }}"
+        release: {{ .Release.Name }}
       {{- if .Values.server.podLabels }}
 {{ toYaml .Values.server.podLabels | indent 8 }}
       {{- end }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "kiam.fullname" . }}-server{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "kiam.serviceAccountName.server" . }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
@@ -45,7 +49,7 @@ spec:
             path: {{ .hostPath }}
       {{- end }}
       containers:
-        - name: kiam
+        - name: {{ template "kiam.name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           command:
@@ -125,3 +129,5 @@ spec:
         {{- end }}
   updateStrategy:
     type: {{ .Values.server.updateStrategy }}
+
+{{- end }}

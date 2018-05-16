@@ -1,19 +1,26 @@
+{{- if .Values.server.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
   labels:
     app: {{ template "kiam.name" . }}
     chart: {{ template "kiam.chart" . }}
+    component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "kiam.fullname" . }}-server
+  name: {{ template "kiam.server.fullname" . }}
 spec:
   clusterIP: None
   selector:
     app: {{ template "kiam.name" . }}
-    role: server
+    component: "{{ .Values.server.name }}"
+    release: {{ .Release.Name }}
+    {{- if .Values.server.podLabels }}
+{{ toYaml .Values.server.podLabels | indent 4 }}
+    {{- end }}
   ports:
   - name: grpc
     port: {{ .Values.server.service.port }}
     targetPort: {{ .Values.server.service.targetPort }}
     protocol: TCP
+{{- end }}

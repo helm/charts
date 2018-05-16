@@ -1,17 +1,20 @@
+{{- if .Values.agent.enabled -}}
 apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
   labels:
     app: {{ template "kiam.name" . }}
     chart: {{ template "kiam.chart" . }}
+    component: "{{ .Values.agent.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "kiam.fullname" . }}-agent
+  name: {{ template "kiam.agent.fullname" . }}
 spec:
   selector:
     matchLabels:
       app: {{ template "kiam.name" . }}
-      role: agent
+      component: "{{ .Values.agent.name }}"
+      release: {{ .Release.Name }}
       {{- if .Values.agent.podLabels }}
 {{ toYaml .Values.agent.podLabels | indent 6 }}
       {{- end }}
@@ -23,13 +26,15 @@ spec:
       {{- end }}
       labels:
         app: {{ template "kiam.name" . }}
-        role: agent
+        component: "{{ .Values.agent.name }}"
+        release: {{ .Release.Name }}
       {{- if .Values.agent.podLabels }}
 {{ toYaml .Values.agent.podLabels | indent 8 }}
       {{- end }}
     spec:
       hostNetwork: true
       dnsPolicy: {{ .Values.agent.dnsPolicy }}
+      serviceAccountName: {{ template "kiam.serviceAccountName.agent" . }}
     {{- if .Values.agent.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
@@ -49,7 +54,7 @@ spec:
             path: {{ .hostPath }}
       {{- end }}
       containers:
-        - name: kiam
+        - name: {{ template "kiam.name" . }}-{{ .Values.agent.name }}
         {{- if .Values.agent.host.iptables }}
           securityContext:
             privileged: true
@@ -71,7 +76,7 @@ spec:
             - --cert={{ .Values.agent.tls.mountPath }}/{{ .Values.agent.tls.certFileName }}
             - --key={{ .Values.agent.tls.mountPath }}/{{ .Values.agent.tls.keyFileName }}
             - --ca={{ .Values.agent.tls.mountPath }}/{{ .Values.agent.tls.caFileName }}
-            - --server-address={{ template "kiam.fullname" . }}-server:{{ .Values.server.service.port }}
+            - --server-address={{ template "kiam.server.fullname" . }}:{{ .Values.server.service.port }}
             - --prometheus-listen-addr=0.0.0.0:{{ .Values.agent.prometheus.port }}
             - --prometheus-sync-interval={{ .Values.agent.prometheus.syncInterval }}
           {{- range $key, $value := .Values.agent.extraArgs }}
@@ -112,3 +117,4 @@ spec:
         {{- end }}
   updateStrategy:
     type: {{ .Values.agent.updateStrategy }}
+{{- end }}

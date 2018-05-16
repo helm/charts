@@ -1,6 +1,19 @@
 extraArgs: {}
 
 agent:
+  ## If false, agent will not be installed
+  ##
+  enabled: true
+
+  ## agent container name
+  ##
+  name: agent
+
+  image:
+    repository: quay.io/uswitch/kiam
+    tag: v2.7
+    pullPolicy: IfNotPresent
+
   ## Logging settings
   ##
   log:
@@ -24,10 +37,6 @@ agent:
   ## Labels to be added to pods
   ##
   podLabels: {}
-  image:
-    repository: quay.io/uswitch/kiam
-    tag: v2.7
-    pullPolicy: IfNotPresent
   ## Strategy for DaemonSet updates (requires Kubernetes 1.6+)
   ## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   ##
@@ -75,6 +84,19 @@ agent:
     useSampleData: true
 
 server:
+  ## If false, server will not be installed
+  ##
+  enabled: true
+
+  ## server container name
+  ##
+  name: server
+
+  image:
+    repository: quay.io/uswitch/kiam
+    tag: v2.7
+    pullPolicy: IfNotPresent
+
   ## Logging settings
   ##
   log:
@@ -89,10 +111,6 @@ server:
   ## Annotations to be added to pods
   ##
   podAnnotations: {}
-  image:
-    repository: quay.io/uswitch/kiam
-    tag: v2.7
-    pullPolicy: Always
   ## Strategy for DaemonSet updates (requires Kubernetes 1.6+)
   ## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   ##
@@ -154,10 +172,13 @@ server:
   sessionDuration: 15m
 
 rbac:
-  ## If true, create & use RBAC resources
-  ##
-  create: false
+  # Specifies whether RBAC resources should be created
+  create: true
 
-  ## Ignored if rbac.create is true
-  ##
-  serviceAccountName: default
+serviceAccounts:
+  agent:
+    create: true
+    name:
+  server:
+    create: true
+    name:
