@@ -132,6 +132,7 @@ collector:
     httpPort: 14268
     # can accept Zipkin spans in JSON or Thrift
     zipkinPort: 9411
+    healthCheckPort: 14269
   resources: {}
     # limits:
     #   cpu: 1
