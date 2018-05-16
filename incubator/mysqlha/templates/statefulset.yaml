@@ -278,7 +278,6 @@ spec:
           name: {{ template "fullname" . }}
       - name: scripts
         emptyDir: {}
-{{- end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
