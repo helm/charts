@@ -39,7 +39,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 
 | Parameter                                   | Description                               | Default                                    |
 | ------------------------------------------  | ----------------------------------------  | -------------------------------------------|
-| `image.repository`                          | image repoistory                          | `sonarqube`                                |
+| `image.repository`                          | image repository                          | `sonarqube`                                |
 | `image.tag`                                 | `sonarqube` image tag.                    | 6.5                                        |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
 | `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
