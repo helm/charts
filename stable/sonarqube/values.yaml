@@ -92,6 +92,12 @@ plugins:
 #   sonar.security.realm=LDAP
 #   ldap.url=ldaps://organization.com
 
+# A certificate for java keystore, can be provided using a multiline YAML string.
+# For example:
+# sonarJavaCertificate: |
+#   -----BEGIN CERTIFICATE-----
+#   -----END CERTIFICATE-----
+
 ## Configuration values for the postgresql dependency
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
