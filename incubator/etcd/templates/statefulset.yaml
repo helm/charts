@@ -41,12 +41,10 @@ spec:
         - containerPort: {{ .Values.clientPort }}
           name: client
         resources:
-          requests:
-            cpu: "{{ .Values.cpu }}"
-            memory: "{{ .Values.memory }}"
+{{ toYaml .Values.resources | indent 10 }}          
         env:
         - name: INITIAL_CLUSTER_SIZE
-          value: {{ default 3 .Values.replicas | quote }}
+          value: {{ .Values.replicas | quote }}
         - name: SET_NAME
           value: {{ template "etcd.fullname" . }}
         volumeMounts:
