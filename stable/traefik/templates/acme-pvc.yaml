@@ -1,4 +1,4 @@
-{{- if and .Values.acme.enabled .Values.acme.persistence.enabled (not .Values.acme.persistence.existingClaim) }}
+{{- if and .Values.acme.enabled .Values.acme.persistence.enabled (not .Values.acme.persistence.existingClaim) (not .Values.consul.enabled) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:

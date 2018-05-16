@@ -150,6 +150,9 @@ acme:
     ## If defined, PVC must be created manually before volume will be bound
     ##
     # existingClaim:
+consul:
+  enabled: false
+  endpoint: consul:8500
 dashboard:
   enabled: false
   domain: traefik.example.com
