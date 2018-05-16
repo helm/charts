@@ -27,39 +27,10 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
-      {{- if eq .Values.antiAffinity "hard" }}
+    {{- if .Values.affinity }}
       affinity:
-        {{- if .Values.nodeAffinity }}
-        nodeAffinity:
-{{ toYaml .Values.nodeAffinity | indent 10 }}
-        {{- end }}
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: component
-                operator: In
-                values:
-                - "{{ .Release.Name }}-{{ .Values.Component }}"
-            topologyKey: kubernetes.io/hostname
-      {{- else if eq .Values.antiAffinity "soft" }}
-      affinity:
-        {{- if .Values.nodeAffinity }}
-        nodeAffinity:
-{{ toYaml .Values.nodeAffinity | indent 10 }}
-        {{- end }}
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            podAffinityTerm:
-              topologyKey: kubernetes.io/hostname
-              labelSelector:
-                matchExpressions:
-                - key: component
-                  operator: In
-                  values:
-                  - "{{ .Release.Name }}-{{ .Values.Component }}"
-      {{- end }}
+{{ tpl .Values.affinity . | indent 8 }}
+    {{- end }}
       containers:
       - name: "{{ template "consul.fullname" . }}"
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
