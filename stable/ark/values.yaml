@@ -46,7 +46,7 @@ podAnnotations:
 kubectl:
   image:
     repository: claranet
-    tag: gcloud-kubectl-docker
+    tag: gcloud-kubectl-docker:1.0.0
 
 tolerations:
 
