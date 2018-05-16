@@ -155,6 +155,7 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: mysql-replication-password
+        {{- if .Values.mysqlha.mysqlMetricsUser }}
         - name: MYSQL_METRICS_USER
           value: {{ .Values.mysqlha.mysqlMetricsUser }}
         - name: MYSQL_METRICS_PASSWORD
@@ -162,6 +163,7 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: mysql-metrics-password
+        {{- end }}
         ports:
         - name: xtrabackup
           containerPort: 3307
