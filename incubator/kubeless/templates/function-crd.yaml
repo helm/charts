@@ -3,6 +3,8 @@ description: Kubernetes Native Serverless Framework
 kind: CustomResourceDefinition
 metadata:
   name: functions.kubeless.io
+  annotations:
+    kubeless.io/namespace: {{ .Release.Namespace }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
 spec:
