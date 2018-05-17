@@ -78,5 +78,5 @@ spec:
       volumes:
         - name: cloudsql-proxy-sa-credentials
           secret:
-            secretName: {{ template "prometheus-mysql-exporter.fullname" . }}-cloudsqlsecret
+            secretName: {{ template "prometheus-mysql-exporter.cloudsqlsecret" . }}
     {{- end }}

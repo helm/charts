@@ -30,3 +30,10 @@ Create chart name and version as used by the chart label.
 {{- define "prometheus-mysql-exporter.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Secret name for cloudsql credentials
+*/}}
+{{- define "prometheus-mysql-exporter.cloudsqlsecret" -}}
+{{ template "prometheus-mysql-exporter.fullname" . }}-cloudsqlsecret
+{{- end -}}
