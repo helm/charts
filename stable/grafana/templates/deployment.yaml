@@ -17,6 +17,8 @@ spec:
     matchLabels:
       app: {{ template "grafana.name" . }}
       release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.deploymentStrategy }}
   template:
     metadata:
       labels:
@@ -27,6 +29,10 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      serviceAccountName: {{ template "grafana.serviceAccountName" . }}
+{{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+{{- end }}
 {{- if .Values.dashboards }}
       initContainers:
         - name: download-dashboards
@@ -105,10 +111,27 @@ spec:
                   name: {{ template "grafana.fullname" . }}
                   key: plugins
             {{- end }}
+            {{- if .Values.smtp.existingSecret }}
+            - name: GF_SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.smtp.existingSecret }}
+                  key: user
+            - name: GF_SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.smtp.existingSecret }}
+                  key: password
+            {{- end }}
 {{- range $key, $value := .Values.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
 {{- end }}
+          {{- if .Values.envFromSecret }}
+          envFrom:
+            - secretKeyRef:
+                name: {{ .Values.envFromSecret }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /api/health
@@ -147,7 +170,7 @@ spec:
             {{- if .Values.ldap.existingSecret }}
             secretName: {{ .Values.ldap.existingSecret }}
             {{- else }}
-            secretName: {{ template "grafana.fullname" . }}            
+            secretName: {{ template "grafana.fullname" . }}
             {{- end }}
             items:
               - key: ldap-toml
@@ -159,4 +182,4 @@ spec:
       {{- else }}
           emptyDir: {}
       {{- end -}}
-        
+
