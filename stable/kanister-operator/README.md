@@ -53,7 +53,7 @@ Parameter | Description | Default
 `image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `resources` | k8s pod resources | `None`
 
-Specify each parameter you'd like to override using a YAML file as described above in the [installation](#Installing the Chart) section.
+Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section.
 
 You can also specify any non-array parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
