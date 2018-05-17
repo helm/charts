@@ -51,7 +51,7 @@ Parameter | Description | Default
 `image.repository` | controller container image repository | `kanisterio/controller`
 `image.tag` | controller container image tag | `v0.2.0`
 `image.pullPolicy` | controller container image pull policy | `IfNotPresent`
-`resources` | k8s pod resorces | `None`
+`resources` | k8s pod resources | `None`
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#Installing the Chart) section.
 
