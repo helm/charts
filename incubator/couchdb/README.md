@@ -69,7 +69,7 @@ deletes the release.
 
 ## Configuration
 
-The following tables list the most commonly configured parameters of the
+The following table lists the most commonly configured parameters of the
 CouchDB chart and their default values:
 
 |           Parameter             |             Description                               |                Default                 |
