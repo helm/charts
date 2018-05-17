@@ -56,6 +56,7 @@ Parameter | Description | Default
 `service.externalPort` | external port for the service | `443`
 `service.internalPort` | internal port for the service | `4180`
 `service.externalIPs` | external IP addresses | None:
+`service.loadBalancerIP` | Load Balancer IP address (to use with service.type LoadBalancer) | None:
 `service.type` | type of service | `ClusterIP`
 `service.annotations` | Kubernetes service annotations | None:
 `tolerations` | List of node taints to tolerate | `[]`

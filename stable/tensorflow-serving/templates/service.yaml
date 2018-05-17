@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "tensorflow-serving.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "tensorflow-serving.chart" . }}
+    app: {{ template "tensorflow-serving.name" . }}
+spec:
+  type: {{ .Values.serviceType }}
+  ports:
+    - name: serving
+      port: 9090
+      targetPort: serving
+  selector:
+    release: {{ .Release.Name | quote }}
+    app: {{ template "tensorflow-serving.name" . }}

@@ -1,4 +1,3 @@
-{{ $user := .Values.securityContext.runAsUser }}
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
@@ -7,6 +6,9 @@ metadata:
     chart: {{ template "mongodb-replicaset.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
   name: {{ template "mongodb-replicaset.fullname" . }}
 spec:
   selector:
@@ -20,6 +22,9 @@ spec:
       labels:
         app: {{ template "mongodb-replicaset.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/script: {{ include (print $.Template.BasePath "/mongodb-init-configmap.yaml") . | sha256sum }}
         checksum/config: {{ include (print $.Template.BasePath "/mongodb-mongodb-configmap.yaml") . | sha256sum }}
@@ -30,6 +35,8 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
         - name: copy-config
           image: busybox
@@ -50,6 +57,7 @@ spec:
 
             {{- if .Values.auth.enabled }}
               cp /keydir-readonly/key.txt /data/configdb/key.txt
+              chmod 600 /data/configdb/key.txt
             {{- end }}
           volumeMounts:
             - name: workdir
@@ -113,29 +121,14 @@ spec:
               mountPath: /data/configdb
             - name: datadir
               mountPath: /data/db
-        - name: permissions
-          image: busybox
-          command:
-            - "sh"
-          args:
-            - "-c"
-            - |
-              set -e
-              set -x
-
-              chown -R '{{ $user }}:{{ $user }}' /data/configdb /data/db
-          volumeMounts:
-            - name: configdir
-              mountPath: /data/configdb
-            - name: datadir
-              mountPath: /data/db
       containers:
         - name: {{ template "mongodb-replicaset.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-          securityContext:
-            runAsUser: {{ $user }}
-            allowPrivilegeEscalation: false
+        {{- if .Values.extraVars }}
+          env:
+{{ toYaml .Values.extraVars | indent 12 }}
+        {{- end }}
           ports:
             - name: peer
               containerPort: 27017
@@ -148,7 +141,7 @@ spec:
             - --dbpath=/data/db
             - --replSet={{ .Values.replicaSetName }}
             - --port=27017
-            - --bind_ip_all
+            - --bind_ip=0.0.0.0
           {{- if .Values.auth.enabled }}
             - --auth
             - --keyFile=/data/configdb/key.txt

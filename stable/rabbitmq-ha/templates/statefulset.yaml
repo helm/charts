@@ -7,6 +7,9 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
 spec:
   serviceName: {{ template "rabbitmq-ha.fullname" . }}-discovery
   replicas: {{ .Values.replicaCount }}
@@ -17,12 +20,15 @@ spec:
       labels:
         app: {{ template "rabbitmq-ha.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 8 }}
+{{- end }}
       annotations:
         {{- if not .Values.customConfigMap }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- end }}
     spec:
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
       initContainers:
         - name: copy-rabbitmq-config
@@ -33,7 +39,7 @@ spec:
               mountPath: /configmap
             - name: config
               mountPath: /etc/rabbitmq
-            - name: data
+            - name: {{ .Values.persistentVolume.name }}
               mountPath: /var/lib/rabbitmq
       containers:
         - name: {{ .Chart.Name }}
@@ -48,7 +54,7 @@ spec:
               containerPort: 5672
             - name: http
               protocol: TCP
-              containerPort: 15672
+              containerPort: {{ .Values.rabbitmqManagerPort }}
             {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
             - name: stomp-tcp
               protocol: TCP
@@ -85,15 +91,17 @@ spec:
               command:
                 - rabbitmqctl
                 - status
-            initialDelaySeconds: 30
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             exec:
               command:
                 - rabbitmqctl
                 - status
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           env:
             - name: MY_POD_NAME
               valueFrom:
@@ -129,7 +137,7 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
-            - name: data
+            - name: {{ .Values.persistentVolume.name }}
               mountPath: /var/lib/rabbitmq
             - name: config
               mountPath: /etc/rabbitmq
@@ -176,12 +184,12 @@ spec:
         - name: cert
           secret:
             defaultMode: 420
-            secretName: {{ template "rabbitmq-ha.fullname" . }}-cert
+            secretName: {{ .Values.rabbitmqCert.existingSecret | default (printf "%s-cert" (include "rabbitmq-ha.fullname" . )) }}
         {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
-        name: data
+        name: {{ .Values.persistentVolume.name }}
         annotations:
         {{- range $key, $value := .Values.persistentVolume.annotations }}
           {{ $key }}: {{ $value }}
