@@ -18,6 +18,16 @@ spec:
         name: {{ template "redis-ha.fullname" . }}-server
         redis-node: "true"
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: redis-role
+                operator: In
+                values:
+                - slave
+            topologyKey: "kubernetes.io/hostname"
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
