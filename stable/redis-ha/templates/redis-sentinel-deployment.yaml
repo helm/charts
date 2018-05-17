@@ -14,6 +14,16 @@ spec:
         component: sentinel
         name: {{ template "redis-ha.fullname" . }}-sentinel
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: name
+                operator: In
+                values:
+                - {{ template "redis-ha.fullname" . }}-sentinel
+            topologyKey: "kubernetes.io/hostname"
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
