@@ -27,9 +27,12 @@ metrics:
   enabled: false
   # resources: {}
   # podAnnotations: {}
-  # targetServiceAnnotations:
+  service:
+    type: ClusterIP
+    annotations: {}
   #   prometheus.io/scrape: "true"
   #   prometheus.io/port: "9121"
+    loadBalancerIP:
   image:
     registry: docker.io
     repository: oliver006/redis_exporter
@@ -69,6 +72,13 @@ usePassword: true
 password:
 ## Use existing secret (ignores previous password)
 # existingSecret:
+
+## Persist data to a persistent volume
+persistence: {}
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
 
 ##
 ## Redis Master parameters
@@ -209,6 +219,8 @@ slave:
   # extraFlags: []
   ## Comma-separated list of Redis commands to disable
   # disableCommands: ""
+
+  affinity: {}
 
   ## Redis slave Liveness Probe
   # livenessProbe:

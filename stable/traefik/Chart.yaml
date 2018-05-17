@@ -8,12 +8,18 @@ keywords:
 - ingress
 - acme
 - letsencrypt
-home: http://traefik.io/
+home: https://traefik.io/
 sources:
 - https://github.com/containous/traefik
 - https://github.com/krancour/charts/tree/master/traefik
 maintainers:
 - name: krancour
   email: kent.rancourt@microsoft.com
+- name: emilevauge
+  email: emile@vauge.com
+- name: dtomcej
+  email: daniel.tomcej@gmail.com
+- name: ldez
+  email: ludovic@containo.us
 engine: gotpl
 icon: http://traefik.io/traefik.logo.png
