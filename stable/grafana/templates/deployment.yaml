@@ -129,7 +129,7 @@ spec:
 {{- end }}
           {{- if .Values.envFromSecret }}
           envFrom:
-            - secretKeyRef:
+            - secretRef:
                 name: {{ .Values.envFromSecret }}
           {{- end }}
           livenessProbe:
