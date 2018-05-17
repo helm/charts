@@ -19,8 +19,8 @@ worker:
   number: 3
   podManagementPolicy: Parallel
   image:
-    repository: cheyang/horovod
-    tag: gpu-tf-1.6.0
+    repository: uber/horovod
+    tag: 0.12.1-tf1.8.0-py3.5
     pullPolicy: IfNotPresent
   # resources:
   #   limits:
@@ -30,8 +30,8 @@ worker:
 
 master:
   image:
-    repository: cheyang/horovod
-    tag: gpu-tf-1.6.0
+    repository: uber/horovod
+    tag: 0.12.1-tf1.8.0-py3.5
     pullPolicy: IfNotPresent
   # args:
   #  - "mpiexec -n 3 --hostfile /horovod/generated/hostfile --mca orte_keep_fqdn_hostnames t --allow-run-as-root --display-map --tag-output --timestamp-output sh -c 'LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-9.0/targets/x86_64-linux/lib/stubs python /examples/tensorflow_mnist.py'"

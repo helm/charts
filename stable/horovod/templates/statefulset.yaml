@@ -99,11 +99,13 @@ spec:
 {{- end }}
         command: 
         - /horovod/generated/run.sh
+{{- if .Values.ssh.useSecrets }}
         readinessProbe:
           exec:
             command:
             - /horovod/generated/check.sh
           initialDelaySeconds: 1
           periodSeconds: 2
+{{- end }}
         resources:
 {{ toYaml .Values.worker.resources | indent 10 }}

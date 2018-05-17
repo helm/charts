@@ -29,8 +29,8 @@ worker:
   number: 3
   podManagementPolicy: Parallel
   image:
-    repository: cheyang/horovod
-    tag: gpu-tf-1.6.0
+    repository: uber/horovod
+    tag: 0.12.1-tf1.8.0-py3.5
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -40,8 +40,8 @@ worker:
 
 master:
   image:
-    repository: cheyang/horovod
-    tag: gpu-tf-1.6.0
+    repository: uber/horovod
+    tag: 0.12.1-tf1.8.0-py3.5
     pullPolicy: IfNotPresent
   args:
     - "mpiexec -n ${WORKERS} --hostfile /kubeflow/openmpi/assets/hostfile --mca orte_keep_fqdn_hostnames t --allow-run-as-root --display-map --tag-output --timestamp-output sh -c 'python /examples/tensorflow_mnist.py'"
@@ -54,14 +54,14 @@ worker:
   number: 3
   podManagementPolicy: Parallel
   image:
-    repository: cheyang/horovod
-    tag: gpu-tf-1.6.0
+    repository: uber/horovod
+    tag: 0.12.1-tf1.8.0-py3.5
     pullPolicy: IfNotPresent
 
 master:
   image:
-    repository: cheyang/horovod
-    tag: gpu-tf-1.6.0
+    repository: uber/horovod
+    tag: 0.12.1-tf1.8.0-py3.5
     pullPolicy: IfNotPresent
   args:
     - "mpiexec -n 3 --hostfile /horovod/generated/hostfile --mca orte_keep_fqdn_hostnames t --allow-run-as-root --display-map --tag-output --timestamp-output sh -c 'LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-9.0/targets/x86_64-linux/lib/stubs python /examples/tensorflow_mnist.py'"
@@ -98,13 +98,13 @@ chart and their default values.
 | `ssh.port` | The ssh port | `22` |
 | `ssh.useSecrets` | Determine if using the secrets for ssh | `false` |
 | `worker.number`|  The worker's number | `5` |
-| `worker.image.repository` | horovod worker image | `cheyang/horovod` |
+| `worker.image.repository` | horovod worker image | `uber/horovod` |
 | `worker.image.pullPolicy` | `pullPolicy` for the worker | `IfNotPresent` |
-| `worker.image.tag` | `tag` for the worker | `gpu-tf-1.6.0` |
+| `worker.image.tag` | `tag` for the worker | `0.12.1-tf1.8.0-py3.5` |
 | `worker.resources`| worker's pod resource requests & limits| `{}`|
 | `worker.env` | worker's environment varaibles | `{}` |
-| `master.image.repository` | horovod master image | `cheyang/horovod` |
-| `master.image.tag` | `tag` for the master | `gpu-tf-1.6.0` |
+| `master.image.repository` | horovod master image | `uber/horovod` |
+| `master.image.tag` | `tag` for the master | `0.12.1-tf1.8.0-py3.5` |
 | `master.image.pullPolicy` | image pullPolicy for the master image| `IfNotPresent` |
 | `master.args` | master's args | `{}` |
 | `master.resources`| master's pod resource requests & limits| `{}`|
