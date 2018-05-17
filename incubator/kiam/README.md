@@ -19,7 +19,7 @@ This chart bootstraps a [kiam](https://github.com/uswitch/kiam) deployment on a 
 
 In order for the chart to configure kiam correctly during the installation process you should have created and installed TLS certificates and private keys as described [here](https://github.com/uswitch/kiam/blob/master/docs/TLS.md).
 
-> **Tip**: The `hosts` field in the kiam server certificate should include the value _release-name_-_server-container-name_:_server-service-port_, e.g. `my-release-server:443`
+> **Tip**: The `hosts` field in the kiam server certificate should include the value _release-name_-server:_server-service-port_, e.g. `my-release-server:443`
 
 Define values `agent.tlsFiles.ca`, `agent.tlsFiles.cert`, `agent.tlsFiles.key`, `server.tlsFiles.ca`, `server.tlsFiles.cert` and `agent.tlsFiles.key` to be the base64-encoded contents (.e.g. using the `base64` command) of the generated PEM files.
 For example

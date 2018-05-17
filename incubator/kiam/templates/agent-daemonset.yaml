@@ -8,7 +8,7 @@ metadata:
     component: "{{ .Values.agent.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "kiam.agent.fullname" . }}
+  name: {{ template "kiam.fullname" . }}-agent
 spec:
   selector:
     matchLabels:
@@ -44,7 +44,7 @@ spec:
       volumes:
         - name: tls
           secret:
-            secretName: {{ template "kiam.agent.fullname" . }}
+            secretName: {{ template "kiam.fullname" . }}-agent
         - name: xtables
           hostPath:
             path: /run/xtables.lock
@@ -76,7 +76,7 @@ spec:
             - --cert=/etc/kiam/tls/cert
             - --key=/etc/kiam/tls/key
             - --ca=/etc/kiam/tls/ca
-            - --server-address={{ template "kiam.server.fullname" . }}:{{ .Values.server.service.port }}
+            - --server-address={{ template "kiam.fullname" . }}-server:{{ .Values.server.service.port }}
             - --prometheus-listen-addr=0.0.0.0:{{ .Values.agent.prometheus.port }}
             - --prometheus-sync-interval={{ .Values.agent.prometheus.syncInterval }}
           {{- range $key, $value := .Values.agent.extraArgs }}

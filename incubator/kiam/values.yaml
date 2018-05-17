@@ -76,9 +76,9 @@ agent:
   ## Base64-encoded PEM values for agent's CA certificate(s), certificate and private key
   ##
   tlsFiles:
-    ca: null
-    cert: null
-    key: null
+    ca:
+    cert:
+    key:
 
 server:
   ## If false, server will not be installed
@@ -147,9 +147,9 @@ server:
   ## Base64-encoded PEM values for server's CA certificate(s), certificate and private key
   ##
   tlsFiles:
-    ca: null
-    cert: null
-    key: null
+    ca:
+    cert:
+    key:
 
   ## Base ARN for IAM roles
   ## If not specified use EC2 metadata service to detect ARN prefix

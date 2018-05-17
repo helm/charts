@@ -8,7 +8,7 @@ metadata:
     component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "kiam.server.fullname" . }}
+  name: {{ template "kiam.fullname" . }}-server
 spec:
   clusterIP: None
   selector:

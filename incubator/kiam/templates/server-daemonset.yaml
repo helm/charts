@@ -8,7 +8,7 @@ metadata:
     component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "kiam.server.fullname" . }}
+  name: {{ template "kiam.fullname" . }}-server
 spec:
   selector:
     matchLabels:
@@ -42,7 +42,7 @@ spec:
       volumes:
         - name: tls
           secret:
-            secretName: {{ template "kiam.server.fullname" . }}
+            secretName: {{ template "kiam.fullname" . }}-server
       {{- range .Values.server.extraHostPathMounts }}
         - name: {{ .name }}
           hostPath:
