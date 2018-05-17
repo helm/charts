@@ -12,6 +12,10 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
 spec:
+{{- if .Values.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.service.externalIPs | indent 4 }}
+{{- end }}
   ports:
     - name: openvpn
       port: {{ .Values.service.externalPort }}
