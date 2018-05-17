@@ -14,6 +14,7 @@ sources:
 - https://docs.microsoft.com/nl-nl/vsts/build-release/?view=vsts
 - https://docs.microsoft.com/nl-nl/vsts/build-release/actions/agents/v2-linux?view=vsts
 - https://github.com/Microsoft/vsts-agent
+- https://hub.docker.com/r/microsoft/vsts-agent/
 maintainers:
 - name: Bram vd Klinkenberg
   email: bramvandenklinkenberg@gmail.com
