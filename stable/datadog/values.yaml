@@ -4,7 +4,7 @@ image:
   repository: datadog/agent               # Agent6
   # repository: datadog/dogstatsd         # Standalone DogStatsD6
   # repository: datadog/docker-dd-agent   # Agent5
-  tag: 6.1.2  # Use 6.1.2-jmx to enable jmx fetch collection
+  tag: 6.2.0  # Use 6.2.0-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
 
 # NB! Normally you need to keep Datadog DaemonSet enabled!
