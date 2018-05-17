@@ -9,7 +9,7 @@ metadata:
     app: {{ template "etcd.name" . }}
 spec:
   serviceName: {{ template "etcd.fullname" . }}
-  replicas: {{ default 3 .Values.replicas }}
+  replicas: {{ .Values.replicas }}
   template:
     metadata:
       name: {{ template "etcd.fullname" . }}
