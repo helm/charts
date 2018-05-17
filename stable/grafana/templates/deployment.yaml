@@ -29,6 +29,7 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      serviceAccountName: {{ template "grafana.serviceAccountName" . }}
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
@@ -128,7 +129,7 @@ spec:
 {{- end }}
           {{- if .Values.envFromSecret }}
           envFrom:
-            - secretKeyRef:
+            - secretRef:
                 name: {{ .Values.envFromSecret }}
           {{- end }}
           livenessProbe:
