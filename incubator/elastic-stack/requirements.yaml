@@ -17,7 +17,7 @@ dependencies:
   version: ^0.1.1
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   condition: nginx-ldapauth-proxy.enabled
-- name: curator
-  version: ^0.1.0
-  repository: https://quay.io/application/samsung_cnct/curator
-  condition: curator.enabled
+- name: elasticsearch-curator
+  version: ^0.2.0
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  condition: elasticsearch-curator.enabled

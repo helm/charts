@@ -15,5 +15,5 @@ fluentd:
 nginx-ldapauth-proxy:
   enabled: false
 
-curator:
+elasticsearch-curator:
   enabled: false
