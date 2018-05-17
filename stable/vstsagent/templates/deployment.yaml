@@ -50,12 +50,3 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ template "vstsagent.fullname" . }}
-type: Opaque
-data:
-  VSTS_ACCOUNT: {{ .Values.secret.account }}
-  VSTS_TOKEN: {{ .Values.secret.token }}
