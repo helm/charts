@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "kubeless.fullname" . }}-ui
+  name: {{ include "kubeless.fullname" . }}-ui
   labels:
 {{ include "labels.standard" . | indent 4 }}
-    controller: {{ template "kubeless.fullname" . }}-ui
+    controller: {{ include "kubeless.fullname" . }}-ui
 spec:
   ports:
   - name: {{ .Values.ui.service.name }}
@@ -14,7 +14,7 @@ spec:
     targetPort: 3000
   selector:
     component: ui
-    app: {{ template "kubeless.name"  . }}
+    app: {{ include "kubeless.name"  . }}
     release: {{ .Release.Name | quote }}
   sessionAffinity: None
   type: {{ .Values.ui.service.type }}

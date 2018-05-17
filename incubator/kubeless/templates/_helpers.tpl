@@ -22,7 +22,7 @@ labels.standard prints the standard Helm labels.
 The standard labels are frequently used in metadata.
 */ -}}
 {{- define "labels.standard" -}}
-app: {{ template "kubeless.name" . }}
+app: {{ include "kubeless.name" . }}
 heritage: {{ .Release.Service | quote }}
 release: {{ .Release.Name | quote }}
 chart: {{ .Chart.Name }}-{{ .Chart.Version }}

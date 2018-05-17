@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "kubeless.fullname" . }}-ui
+  name: {{ include "kubeless.fullname" . }}-ui
   labels:
 {{ include "labels.standard" . | indent 4 }}
     component: ui
@@ -12,7 +12,7 @@ spec:
     metadata:
       labels:
         component: ui
-        app: {{ template "kubeless.name"  . }}
+        app: {{ include "kubeless.name"  . }}
         release: {{ .Release.Name | quote }}
     spec:
 {{- if .Values.rbac.create }}
