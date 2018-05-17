@@ -107,12 +107,16 @@ spec:
             value: "{{ .Values.cloudflare.email }}"
         {{- end }}
         {{- $root := . -}}
-        {{- range $key, $value := .Values.extraEnv }}
-          - name: {{ $key }}
+        {{- range .Values.extraEnv }}
+          - name: {{ .name }}
             valueFrom:
+          {{- if .valueFrom }}
+{{ toYaml .valueFrom | indent 14 }}
+          {{- else }}
               secretKeyRef:
                 name: {{ template "external-dns.fullname" $root }}
-                key: {{ $key }}
+                key: {{ .name }}
+          {{- end }}
         {{- end }}
           livenessProbe:
             httpGet:
