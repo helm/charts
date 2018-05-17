@@ -24,6 +24,9 @@ spec:
         app: {{ template "prometheus.name" . }}
         component: "{{ .Values.nodeExporter.name }}"
         release: {{ .Release.Name }}
+{{- if .Values.nodeExporter.pod.labels }}
+{{ toYaml .Values.nodeExporter.pod.labels | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.nodeExporter" . }}
       containers:
