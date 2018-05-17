@@ -5,7 +5,7 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v1.1.5"
+ImageTag: "v2.0.0"
 ImagePullPolicy: "Always"
 Replicas: 3
 MaxUnavailable: 1
@@ -33,6 +33,9 @@ NetworkPolicy:
   AllowExternal: true
 Service:
   type: ClusterIP
+PodManagementPolicy: Parallel
+UpdateStrategy:
+  type: RollingUpdate
 Secure:
   Enabled: false
   RequestCertsImage: "cockroachdb/cockroach-k8s-request-cert"

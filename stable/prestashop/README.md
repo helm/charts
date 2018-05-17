@@ -47,8 +47,11 @@ The following table lists the configurable parameters of the PrestaShop chart an
 
 |               Parameter               |                 Description                 |                         Default                          |
 |---------------------------------------|---------------------------------------------|----------------------------------------------------------|
-| `image`                               | PrestaShop image                            | `bitnami/prestashop:{VERSION}`                           |
-| `imagePullPolicy`                     | Image pull policy                           | `Always` if `image` tag is `latest`, else `IfNotPresent` |
+| `image.registry`                      | PrestaShop image registry                   | `docker.io`                                              |
+| `image.repository`                    | PrestaShop image name                       | `bitnami/prestashop`                                     |
+| `image.tag`                           | PrestaShop image tag                        | `{VERSION}`                                              |
+| `image.pullPolicy`                    | Image pull policy                           | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`                   | Specify image pull secrets                  | `nil`                                                    |
 | `prestashopHost`                      | PrestaShop host to create application URLs  | `nil`                                                    |
 | `prestashopLoadBalancerIP`            | `loadBalancerIP` for the PrestaShop Service | `nil`                                                    |
 | `prestashopUsername`                  | User of the application                     | `user@example.com`                                       |
@@ -66,8 +69,8 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `externalDatabase.port`               | SMTP protocol [`ssl`, `none`]               | `3306`                                                   |
 | `externalDatabase.user`               | Existing username in the external db        | `bn_prestashop`                                          |
 | `externalDatabase.password`           | Password for the above username             | `nil`                                                    |
-| `externalDatabase.database`           | Name of the existing database                | `bitnami_prestashop`                                     |
-| `mariadb.enabled`                     | Wheter to use or not the mariadb chart      | `true`                                                   |
+| `externalDatabase.database`           | Name of the existing database               | `bitnami_prestashop`                                     |
+| `mariadb.enabled`                     | Whether to use the MariaDB chart            | `true`                                                   |
 | `mariadb.mariadbDatabase`             | Database name to create                     | `bitnami_prestashop`                                     |
 | `mariadb.mariadbUser`                 | Database user to create                     | `bn_prestashop`                                          |
 | `mariadb.mariadbPassword`             | Password for the database                   | `nil`                                                    |

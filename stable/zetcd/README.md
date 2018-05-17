@@ -24,7 +24,7 @@ $ helm install stable/zetcd --name my-release
 ```
 
 __Note__: By default etcd-operator is installed with zetcd. `cluster.enabled` is set on install but it will have no effect.
-Before you create an zetcd deployment, the TPR must be installed by the operator, so this option is ignored during helm installs. Alternatively, the release can be upgraded after install to launch the etcd cluster pods.
+Before you create a zetcd deployment, the TPR must be installed by the operator, so this option is ignored during helm installs. Alternatively, the release can be upgraded after install to launch the etcd cluster pods.
 
 ## Uninstalling the Chart
 
@@ -58,7 +58,10 @@ The following table lists the configurable parameters of the zetcd chart and the
 | `nodeSelector`                                    | Node labels for pod assignment                               |`{}`                                     |
 | `etcd.operatorEnabled`                            | Whether to use etcd-operator to launch a cluster                    | `true`                                        |
 | `etcd.endpoints`                                  | Existing etcd endpoints to be used when etcd-operator is disabled                    | `localhost:2379`                                        |
-
+| `etcd.tls.existingSecret`                                 | Name of the secret containing certificate, key and CA certificate          |                           |
+| `etcd.tls.ca`                                     | Key in TLS secret that contains CA certificate                             |                           |
+| `etcd.tls.cert`                                   | Key in TLS secret that contains client certificate                         |                           |
+| `etcd.tls.key`                                    | Key in TLS secret that contains private key                                |                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

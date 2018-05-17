@@ -4,6 +4,10 @@ extraArgs: {}
 #   api-server: ...
 #   api-token: ...
 
+extraEnv: {}
+#    http_proxy: http://example.com:8080
+#    NO_PROXY: localhost,127.0.0.1
+
 host:
   ip: $(HOST_IP)
   iptables: false
@@ -36,6 +40,8 @@ affinity: {}
 podAnnotations: {}
 
 podLabels: {}
+
+probe: true
 
 rbac:
   ## If true, create & use RBAC resources
