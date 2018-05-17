@@ -7,10 +7,10 @@ image:
   tag: 1.1.0
   pullPolicy: IfNotPresent
 service:
-  name: openvpn
   type: LoadBalancer
   externalPort: 443
   internalPort: 443
+  externalIPs: []
   nodePort: 32085
   # loadBalancerIP: 10.0.0.1
 
@@ -28,6 +28,7 @@ resources:
     memory: 128Mi
 persistence:
   enabled: true
+  # subPath: openvpn
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
