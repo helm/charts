@@ -6,8 +6,3 @@ Add an `iam.amazonaws.com/role` annotation to your pods with the role you want t
 Use `curl` to verify the pod's role from within:
 
   curl http://169.254.169.254/latest/meta-data/iam/security-credentials/
-
-By default sample sample agent and server TLS data are installed.
-For production use you should create and install you own TLS data. Instructions here:
-
-  https://github.com/uswitch/kiam/blob/master/docs/TLS.md

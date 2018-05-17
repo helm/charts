@@ -44,7 +44,7 @@ spec:
       volumes:
         - name: tls
           secret:
-            secretName: {{ .Values.agent.tls.secretName | default (printf "%s-agent-tls" (include "kiam.fullname" .)) }}
+            secretName: {{ template "kiam.agent.fullname" . }}
         - name: xtables
           hostPath:
             path: /run/xtables.lock
@@ -73,9 +73,9 @@ spec:
             {{- end }}
             - --level={{ .Values.agent.log.level }}
             - --port={{ .Values.agent.host.port }}
-            - --cert={{ .Values.agent.tls.mountPath }}/{{ .Values.agent.tls.certFileName }}
-            - --key={{ .Values.agent.tls.mountPath }}/{{ .Values.agent.tls.keyFileName }}
-            - --ca={{ .Values.agent.tls.mountPath }}/{{ .Values.agent.tls.caFileName }}
+            - --cert=/etc/kiam/tls/cert
+            - --key=/etc/kiam/tls/key
+            - --ca=/etc/kiam/tls/ca
             - --server-address={{ template "kiam.server.fullname" . }}:{{ .Values.server.service.port }}
             - --prometheus-listen-addr=0.0.0.0:{{ .Values.agent.prometheus.port }}
             - --prometheus-sync-interval={{ .Values.agent.prometheus.syncInterval }}
@@ -96,7 +96,7 @@ spec:
               value: {{ quote $value }}
           {{- end }}
           volumeMounts:
-            - mountPath: {{ .Values.agent.tls.mountPath }}
+            - mountPath: /etc/kiam/tls
               name: tls
             - mountPath: /var/run/xtables.lock
               name: xtables

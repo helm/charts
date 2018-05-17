@@ -73,15 +73,12 @@ agent:
     #   hostPath: /usr/share/ca-certificates
     #   readOnly: true
 
-  tls:
-    mountPath: "/etc/kiam/tls"
-    secretName: kiam-agent-tls
-    caFileName: ca.pem
-    certFileName: agent.pem
-    keyFileName: agent-key.pem
-    ## If true, use sample TLS data.
-    ##
-    useSampleData: true
+  ## Base64-encoded PEM values for agent's CA certificate(s), certificate and private key
+  ##
+  tlsFiles:
+    ca: null
+    cert: null
+    key: null
 
 server:
   ## If false, server will not be installed
@@ -146,20 +143,18 @@ server:
   service:
     port: 443
     targetPort: 443
-  tls:
-    mountPath: "/etc/kiam/tls"
-    secretName: kiam-server-tls
-    caFileName: ca.pem
-    certFileName: server.pem
-    keyFileName: server-key.pem
-    ## If true, use sample TLS data.
-    ##
-    useSampleData: true
+
+  ## Base64-encoded PEM values for server's CA certificate(s), certificate and private key
+  ##
+  tlsFiles:
+    ca: null
+    cert: null
+    key: null
 
   ## Base ARN for IAM roles
   ## If not specified use EC2 metadata service to detect ARN prefix
   ##
-  roleBaseArn: "arn:aws:iam::0123456789:role/"
+  roleBaseArn: null
   ## Pod cache settings
   ##
   cache:
