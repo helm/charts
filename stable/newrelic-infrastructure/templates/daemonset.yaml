@@ -93,7 +93,7 @@ spec:
             items:
             - key: newrelic-infra.yml
               path: newrelic-infra.yml
-         {{- end }}
+        {{- end }}
       {{- if $.Values.nodeSelector }}
       nodeSelector:
 {{ toYaml $.Values.nodeSelector | indent 8 }}
