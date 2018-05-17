@@ -1,0 +1,57 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "inbucket.name" . }}
+    chart: {{ template "inbucket.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "inbucket.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "inbucket.name" . }}
+      release: {{ .Release.Name | quote }}
+  template:
+    metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "inbucket.name" . }}
+        release: {{ .Release.Name | quote }}
+    spec:
+      containers:
+        - name: {{ template "inbucket.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          env:
+          {{- range $key, $value := .Values.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 10080
+              protocol: TCP
+            - name: smtp
+              containerPort: 10025
+              protocol: TCP
+            - name: pop3
+              containerPort: 10110
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: smtp
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+          readinessProbe:
+            tcpSocket:
+              port: smtp
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
