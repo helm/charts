@@ -55,7 +55,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `server.annotations`        | Drone **server** annotations                                                                  | `{}`                        |
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
 | `server.schedulerName`      | Drone **server** alternate scheduler name                                                     | `nil`                       |
-| `server.affinity`            | Drone **server** scheduling preferences                                                       | `{}`                        |
+| `server.affinity`           | Drone **server** scheduling preferences                                                       | `{}`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
 | `agent.replicas`            | Drone **agent** replicas                                                                      | `1`                         |
 | `agent.annotations`         | Drone **agent** annotations                                                                   | `{}`                        |
