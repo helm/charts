@@ -1,6 +1,12 @@
 image:
   repository: sorintlab/stolon
-  tag: master-pg10
+  tag: v0.10.0-pg10
+  pullPolicy: IfNotPresent
+
+# used by create-cluster-job when store.backend is etcd
+etcdImage:
+  repository: k8s.gcr.io/etcd-amd64
+  tag: 2.2.5
   pullPolicy: IfNotPresent
 
 debug: false
@@ -36,7 +42,7 @@ replicationUsername: "repluser"
 ## password for the replication user (default is 40 random chars)
 # replicationPassword: "replPassword"
 
-## backend could be one of the following: consul, etcdv2, etcdv3, or kubernetes (experimental)
+## backend could be one of the following: consul, etcdv2, etcdv3 or kubernetes
 store:
   backend: kubernetes
 #  endpoints: "http://stolon-consul:8500"
