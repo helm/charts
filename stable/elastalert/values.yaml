@@ -23,7 +23,7 @@ elasticsearch:
   # elasticsearch port
   port: 80
   # whether or not to connect to es_host using TLS
-  useSsl: False
+  useSsl: "False"
 
 # rule configurations e.g. (http://elastalert.readthedocs.io/en/latest/)
 rules: {}
