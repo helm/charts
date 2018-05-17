@@ -25,6 +25,7 @@ service:
   # foo.io/bar: "true"
 ingress:
   enabled: false
+  path: /
   # Used to create an Ingress record.
   hosts:
     - chart-example.local
@@ -65,6 +66,10 @@ secrets:
 #   s3:
 #     accessKey: ""
 #     secretKey: ""
+# Secrets for Swift username and password
+#   swift:
+#     username: ""
+#     password: ""
 
 # Options for s3 storage type:
 # s3:
@@ -72,6 +77,11 @@ secrets:
 #  bucket: my-bucket
 #  encrypt: false
 #  secure: true
+
+# Options for swift storage type:
+# swift:
+#  authurl: http://swift.example.com/
+#  container: my-container
 
 configData:
   version: 0.1
