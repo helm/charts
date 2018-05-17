@@ -2,6 +2,22 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+rbac:
+  # Specifies whether rbac resources must be created.
+  create: true
+  # The API version to use while creating the rbac resources. Use `kubectl api-versions | grep rbac` to find which abi versions are supported for your cluster.
+  apiVersion: v1beta1
+  # Create a cluster role binding with the existing role, do not create a new one. If left blank, a new cluster role is created.
+  roleRef:
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # If create if false and a name is not specified, the default service account is used for the cluster role binding.
+  name:
+
 server:
   # server.enabled is the toggle to run GoCD Server. Change to false for Agent Only Deployment.
   enabled: true
@@ -30,11 +46,14 @@ server:
 
   healthCheck:
     # server.healthCheck.initialDelaySeconds is the initial delays in seconds to start the health checks
-    initialDelaySeconds: 180
+    initialDelaySeconds: 90
     # server.healthCheck.periodSeconds is the health check interval duration
-    periodSeconds: 5
+    periodSeconds: 15
+    # server.healthCheck.failureThreshold is the number of unsuccessful attempts made to the GoCD server health check endpoint before the container is restarted (for liveness) or marked as unready (for readiness)
+    failureThreshold: 10
   env:
-    # server.env.goServerSystemProperties is the GoCD Server system properties
+    # server.env.goServerSystemProperties is a list of Java system properties, which needs to be provided to the GoCD Server, typically prefixed with -D unless otherwise stated.
+    # Example: "-Xmx4096mb -Dfoo=bar"
     goServerSystemProperties:
     #  server.env.extraEnvVars is the list of environment variables passed to GoCD Server
     extraEnvVars:
@@ -53,30 +72,43 @@ server:
     # server.service.nodeHttpPort is the GoCD Server Service Node HTTPS port
     nodeHttpsPort:
   ingress:
-    # server.ingress.enabled is the toggle to enable GoCD Server Ingress
-    enabled: false
+    # server.ingress.enabled is the toggle to enable/disable GoCD Server Ingress
+    enabled: true
     # server.ingress.hosts is used to create an Ingress record.
 #    hosts:
 #      - foo.go.cd
 
   persistence:
-    # server.persistence.enabled is the toggle for server volume persistence. Change to true if a persistent volume is available and configured manually.
-    enabled: false
+    # server.persistence.enabled is the toggle for server volume persistence.
+    enabled: true
     accessMode: "ReadWriteOnce"
-    size: 1Gi
-    storageClass:
-    ExistingClaim:
+    # The storage space that should be claimed from the persistent volume
+    size: 2Gi
+    # If defined, storageClassName: <storageClass>
+    # If set to "-", storageClassName: "", which disables dynamic provisioning
+    # If undefined (the default) or set to null, no storageClassName spec is
+    # set, choosing 'standard' storage class available with the default provisioner (gcd-pd on GKE, hostpath on minikube, etc).
+
+#    storageClass: "-"
+
+    # A manually managed Persistent Volume and Claim
+    # If defined, PVC must be created manually before volume will be bound
+    existingClaim:
+    # To choose a suitable persistent volume from available static persistent volumes, selectors are used.
     pvSelector:
 #      matchLabels:
 #        volume-type: ssd
     subpath:
+      # godata is where the config, db, plugins are stored
       godata: godata
+      # homego can be used for storing and mounting secrets
       homego: homego
+      # custom entrypoint scripts that should be run before starting the GoCD server inside the container.
       dockerEntryPoint: scripts
 
 agent:
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
-  replicaCount: 1
+  replicaCount: 0
   image:
     # agent.image.repository is the GoCD Agent image name
     repository: "gocd/gocd-agent-alpine-3.6"
@@ -106,8 +138,16 @@ agent:
     enabled: false
     accessMode: "ReadWriteOnce"
     size: 1Gi
-    storageClass:
-    ExistingClaim:
+    # If defined, storageClassName: <storageClass>
+    # If set to "-", storageClassName: "", which disables dynamic provisioning
+    # If undefined (the default) or set to null, no storageClassName spec is
+    # set, choosing 'standard' storage class available with the default provisioner (gcd-pd on GKE, hostpath on minikube, etc).
+
+#   storageClass: "-"
+
+    # A manually managed Persistent Volume and Claim
+    # If defined, PVC must be created manually before volume will be bound
+    existingClaim:
     pvSelector:
 #      matchLabels:
 #        app: godata-gocd-agent
@@ -119,7 +159,7 @@ agent:
    # agent.healthCheck.enable is the toggle for GoCD agent health checks
     enabled: false
     # agent.healthCheck.initialDelaySeconds is the initial delays in seconds to start the health checks
-    initialDelaySeconds: 180
+    initialDelaySeconds: 60
     # agent.healthCheck.periodSeconds is the health check interval duration
     periodSeconds: 60
     # agent.healthCheck.failureThreshold is the health check failure threshold of GoCD agent

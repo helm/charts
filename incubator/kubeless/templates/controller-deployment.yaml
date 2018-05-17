@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kubeless.fullname" . }}-controller-manager
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    kubeless: controller
+spec:
+  selector:
+    matchLabels:
+      kubeless: controller
+  replicas: {{ .Values.controller.deployment.replicaCount }}
+  template:
+    metadata:
+      labels:
+        kubeless: controller
+        app: {{ template "kubeless.name"  . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: controller
+        image: "{{ .Values.controller.deployment.image.repository }}:{{ .Values.controller.deployment.image.tag }}"
+        imagePullPolicy: {{ .Values.controller.deployment.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.controller.resources | indent 10 }}
+{{- if .Values.rbac.create }}
+      serviceAccountName: controller-acct
+{{- end }}

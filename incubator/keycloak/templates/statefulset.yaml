@@ -21,6 +21,13 @@ spec:
         app: {{ template "keycloak.name" . }}
         release: "{{ .Release.Name }}"
     spec:
+      {{- if .Values.keycloak.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.keycloak.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      serviceAccountName: {{ template "keycloak.serviceAccountName" . }}
     {{- if .Values.keycloak.persistence.deployPostgres }}
       initContainers:
         - name: wait-for-postgresql

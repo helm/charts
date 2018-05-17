@@ -1,6 +1,6 @@
 # SuiteCRM
 
-[SuiteCRM](https://www.suitecrm.com) SuiteCRM is a completely open source enterprise-grade Customer Relationship Management (CRM) application. SuiteCRM is a software fork of the popular customer relationship management (CRM) system SugarCRM.
+[SuiteCRM](https://www.suitecrm.com) is a completely open source enterprise-grade Customer Relationship Management (CRM) application. SuiteCRM is a software fork of the popular customer relationship management (CRM) system SugarCRM.
 
 ## TL;DR;
 
@@ -43,33 +43,46 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the SuiteCRM chart and their default values.
+The following table lists the configurable parameters of the SuiteCRM chart and their default values.
 
-|              Parameter              |                Description                |                   Default                   |
-|-------------------------------------|-------------------------------------------|---------------------------------------------|
-| `imageTag`                          | `bitnami/suitecrm` image tag.             | SuiteCRM image version                      |
-| `imagePullPolicy`                   | Image pull policy.                        | `IfNotPresent`                              |
-| `suitecrmHost`                      | SuiteCRM host to create application URLs  | `nil`                                       |
-| `suitecrmLoadBalancerIP`            | `loadBalancerIP` for the SuiteCRM Service | `nil`                                       |
-| `suitecrmUsername`                  | User of the application                   | `user`                                      |
-| `suitecrmPassword`                  | Application password                      | _random 10 character alphanumeric string_   |
-| `suitecrmEmail`                     | Admin email                               | `user@example.com`                          |
-| `suitecrmLastName`                  | Last name                                 | `Last`                                      |
-| `suitecrmSmtpHost`                  | SMTP host                                 | `nil`                                       |
-| `suitecrmSmtpPort`                  | SMTP port                                 | `nil`                                       |
-| `suitecrmSmtpUser`                  | SMTP user                                 | `nil`                                       |
-| `suitecrmSmtpPassword`              | SMTP password                             | `nil`                                       |
-| `suitecrmSmtpProtocol`              | SMTP protocol [`ssl`, `tls`]              | `nil`                                       |
-| `mariadb.mariadbRootPassword`       | MariaDB admin password                    | `nil`                                       |
-| `serviceType`                       | Kubernetes Service type                   | `LoadBalancer`                              |
-| `persistence.enabled`               | Enable persistence using PVC              | `true`                                      |
-| `persistence.apache.storageClass`   | PVC Storage Class for apache volume       | `nil` (uses alpha storage class annotation) |
-| `persistence.apache.accessMode`     | PVC Access Mode for apache volume         | `ReadWriteOnce`                             |
-| `persistence.apache.size`           | PVC Storage Request for apache volume     | `1Gi`                                       |
-| `persistence.suitecrm.storageClass` | PVC Storage Class for SuiteCRM volume     | `nil` (uses alpha storage class annotation) |
-| `persistence.suitecrm.accessMode`   | PVC Access Mode for SuiteCRM volume       | `ReadWriteOnce`                             |
-| `persistence.suitecrm.size`         | PVC Storage Request for SuiteCRM volume   | `8Gi`                                       |
-| `resources`                         | CPU/Memory resource requests/limits       | Memory: `512Mi`, CPU: `300m`                |
+|              Parameter              |                Description                |                          Default                        |
+|-------------------------------------|-------------------------------------------|-------------------------------------------------------- |
+| `image.registry`                    | SuiteCRM image registry                   | `docker.io`                                             |
+| `image.repository`                  | SuiteCRM image name                       | `bitnami/suitecrm`                                      |
+| `image.tag`                         | SuiteCRM image tag                        | `{VERSION}`                                             |
+| `image.pullPolicy`                  | Image pull policy                         | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`                 | Specify image pull secrets                | `nil`                                                   |
+| `suitecrmHost`                      | SuiteCRM host to create application URLs  | `nil`                                                   |
+| `suitecrmLoadBalancerIP`            | `loadBalancerIP` for the SuiteCRM Service | `nil`                                                   |
+| `suitecrmUsername`                  | User of the application                   | `user`                                                  |
+| `suitecrmPassword`                  | Application password                      | _random 10 character alphanumeric string_               |
+| `suitecrmEmail`                     | Admin email                               | `user@example.com`                                      |
+| `suitecrmLastName`                  | Last name                                 | `Last`                                                  |
+| `suitecrmSmtpHost`                  | SMTP host                                 | `nil`                                                   |
+| `suitecrmSmtpPort`                  | SMTP port                                 | `nil`                                                   |
+| `suitecrmSmtpUser`                  | SMTP user                                 | `nil`                                                   |
+| `suitecrmSmtpPassword`              | SMTP password                             | `nil`                                                   |
+| `suitecrmSmtpProtocol`              | SMTP protocol [`ssl`, `tls`]              | `nil`                                                   |
+| `allowEmptyPassword`                | Allow DB blank passwords                  | `yes`                                                   |
+| `externalDatabase.host`             | Host of the external database             | `nil`                                                   |
+| `externalDatabase.port`             | Port of the external database             | `3306`                                                  |
+| `externalDatabase.user`             | Existing username in the external db      | `bn_suitecrm`                                           |
+| `externalDatabase.password`         | Password for the above username           | `nil`                                                   |
+| `externalDatabase.database`         | Name of the existing database             | `bitnami_suitecrm`                                      |
+| `mariadb.enabled`                   | Whether to use the MariaDB chart          | `true`                                                  |
+| `mariadb.mariadbDatabase`           | Database name to create                   | `bitnami_suitecrm`                                      |
+| `mariadb.mariadbUser`               | Database user to create                   | `bn_suitecrm`                                           |
+| `mariadb.mariadbPassword`           | Password for the database                 | `nil`                                                   |
+| `mariadb.mariadbRootPassword`       | MariaDB admin password                    | `nil`                                                   |
+| `serviceType`                       | Kubernetes Service type                   | `LoadBalancer`                                          |
+| `persistence.enabled`               | Enable persistence using PVC              | `true`                                                  |
+| `persistence.apache.storageClass`   | PVC Storage Class for apache volume       | `nil` (uses alpha storage class annotation)             |
+| `persistence.apache.accessMode`     | PVC Access Mode for apache volume         | `ReadWriteOnce`                                         |
+| `persistence.apache.size`           | PVC Storage Request for apache volume     | `1Gi`                                                   |
+| `persistence.suitecrm.storageClass` | PVC Storage Class for SuiteCRM volume     | `nil` (uses alpha storage class annotation)             |
+| `persistence.suitecrm.accessMode`   | PVC Access Mode for SuiteCRM volume       | `ReadWriteOnce`                                         |
+| `persistence.suitecrm.size`         | PVC Storage Request for SuiteCRM volume   | `8Gi`                                                   |
+| `resources`                         | CPU/Memory resource requests/limits       | Memory: `512Mi`, CPU: `300m`                            |
 
 The above parameters map to the env variables defined in [bitnami/suitecrm](http://github.com/bitnami/bitnami-docker-suitecrm). For more information please refer to the [bitnami/suitecrm](http://github.com/bitnami/bitnami-docker-suitecrm) image documentation.
 
@@ -95,7 +108,7 @@ $ helm install --name my-release \
     stable/suitecrm
 ```
 
-The above command sets the SuiteCRM administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the SuiteCRM administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 

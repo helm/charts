@@ -1,0 +1,24 @@
+{{- if and .Values.vaultAddress .Values.vaultToken .Values.vaultRootMountPath }}
+vaultingkube is getting provisioned in your cluster. After a few minutes, you can run the following to verify.
+
+To verify that vaultingkube has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "vaultingkube.name" . }}"
+
+To verify that vaultingkube is synchronizing run:
+
+  kubectl logs --namespace={{ .Release.Namespace }} -f deployment/{{ template "vaultingkube.fullname" . }}
+
+{{- else -}}
+##############################################################################
+####  ERROR: You are missing required values in the values.yaml file.     ####
+##############################################################################
+
+This deployment will be incomplete until all the required fields in the values.yaml file have been provided.
+
+To update, run:
+
+    helm upgrade {{ .Release.Name }} \
+    --set vaultAddress=YOUR-VAULT-ADDRESS,vaultToken=YOUR-VAULT-TOKEN,vaultRootMountPath=YOUR-VAULT-ROOT-MOUNT-PATH stable/vaultingkube
+
+{{- end }}

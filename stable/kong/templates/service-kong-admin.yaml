@@ -2,6 +2,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "kong.fullname" . }}-admin
+  annotations:
+    {{- range $key, $value := .Values.admin.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
   labels:
     app: {{ template "kong.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -14,13 +18,8 @@ spec:
   {{- end }}
   ports:
   - name: kong-admin
-  {{- if .Values.admin.https }}
-    port: {{ .Values.admin.https.servicePort }}
-    targetPort: {{ .Values.admin.https.containerPort }}
-  {{- else if .Values.admin.http }}
-    port: {{ .Values.admin.http.servicePort }}
-    targetPort: {{ .Values.admin.http.containerPort }}
-  {{- end }}
+    port: {{ .Values.admin.servicePort }}
+    targetPort: {{ .Values.admin.containerPort }}
   {{- if (and (eq .Values.admin.type "NodePort") (not (empty .Values.admin.nodePort))) }}
     nodePort: {{ .Values.admin.nodePort }}
   {{- end }}

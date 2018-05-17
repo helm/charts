@@ -16,6 +16,11 @@ labels: {}
 #   scheduler.alpha.kubernetes.io/critical-pod: ''
 annotations: {}
 
+## Here annotations can be added for the heapster Pod
+# podAnnotations:
+#   prometheus.io/scrape: "true"
+podAnnotations: {}
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
@@ -25,7 +30,7 @@ service:
   type: ClusterIP
   externalPort: 8082
   internalPort: 8082
-  ## This allows an overide of the heapster service name
+  ## This allows an override of the heapster service name
   ## Default: {{ .Chart.Name }}
   # nameOverride:
 
@@ -35,6 +40,12 @@ service:
   #   kubernetes.io/name: "Heapster"
   labels:
 
+  ## Here annotations can be added to the heapster service
+  # annotations:
+  #   prometheus.io/path: /metrics
+  #   prometheus.io/port: "8082"
+  #   prometheus.io/scrape: "true"
+  annotations: {}
 resources:
   limits:
     cpu: 100m

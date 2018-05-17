@@ -60,6 +60,7 @@ $ helm install --name artifactory \
 ```
 Get more details on configuring Artifactory in the [official documentation](https://www.jfrog.com/confluence/).
 
+
 ### Customizing Database password
 You can override the specified database password (set in [values.yaml](values.yaml)), by passing it as a parameter in the install command line
 ```bash
@@ -73,7 +74,7 @@ You can customise other parameters in the same way, by passing them on `helm ins
 $ helm delete --purge artifactory
 ```
 This will completely delete your Artifactory Pro deployment.  
-**IMPORTANT:** This will also delete your data volumes. You will loose all data!
+**IMPORTANT:** This will also delete your data volumes. You will lose all data!
 
 
 ### Custom Docker registry for your images
@@ -90,7 +91,7 @@ $ helm install --name artifactory --set imagePullSecrets=regsecret stable/artifa
 
 ## Configuration
 
-The following tables lists the configurable parameters of the artifactory chart and their default values.
+The following table lists the configurable parameters of the artifactory chart and their default values.
 
 |         Parameter         |           Description             |                         Default                          |
 |---------------------------|-----------------------------------|----------------------------------------------------------|
@@ -99,11 +100,23 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `artifactory.replicaCount`            | Replica count for Artifactory deployment| `1`                                                |
 | `artifactory.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                                           |
 | `artifactory.image.repository`    | Container image                   | `docker.bintray.io/jfrog/artifactory-pro`                |
-| `artifactory.image.version`       | Container tag                     |  `5.8.3`                                         |
+| `artifactory.image.version`       | Container tag                     |  `5.10.1`                                         |
 | `artifactory.service.name`| Artifactory service name to be set in Nginx configuration | `artifactory` |
 | `artifactory.service.type`| Artifactory service type | `ClusterIP` |
 | `artifactory.externalPort` | Artifactory service external port | `8081`   |
 | `artifactory.internalPort` | Artifactory service internal port | `8081`   |
+| `artifactory.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
+| `artifactory.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 180                                                   |
+| `artifactory.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
+| `artifactory.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                                                    |
+| `artifactory.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `artifactory.livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
+| `artifactory.readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                        |
+| `artifactory.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 60                                                    |
+| `artifactory.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                   |
+| `artifactory.readinessProbe.timeoutSeconds`      | When the probe times out                  | 10                                                    |
+| `artifactory.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `artifactory.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
 | `artifactory.persistence.mountPath` | Artifactory persistence volume mount path | `"/var/opt/jfrog/artifactory"`   |
 | `artifactory.persistence.enabled` | Artifactory persistence volume enabled | `true`   |
 | `artifactory.persistence.accessMode` | Artifactory persistence volume access mode | `ReadWriteOnce`   |
@@ -120,17 +133,31 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `ingress.hosts`             | Artifactory Ingress hostnames       | `[]` |
 | `ingress.tls`               | Artifactory Ingress TLS configuration (YAML) | `[]` |
 | `nginx.name` | Nginx name | `nginx`   |
-| `nginx.enabled` | Deploy nginx server | `false`   |
+| `nginx.enabled` | Deploy nginx server | `true`   |
 | `nginx.replicaCount` | Nginx replica count | `1`   |
 | `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`                |
-| `nginx.image.version`       | Container tag                     | `5.8.3`                                                |
+| `nginx.image.version`       | Container tag                     | `5.10.1`                                                |
 | `nginx.image.pullPolicy`    | Container pull policy                   | `IfNotPresent`                |
 | `nginx.service.type`| Nginx service type | `LoadBalancer` |
 | `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |  |
+| `nginx.loadBalancerIP`| Provide Static IP to configure with Nginx |  |
 | `nginx.externalPortHttp` | Nginx service external port | `80`   |
 | `nginx.internalPortHttp` | Nginx service internal port | `80`   |
 | `nginx.externalPortHttps` | Nginx service external port | `443`   |
 | `nginx.internalPortHttps` | Nginx service internal port | `443`   |
+| `nginx.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
+| `nginx.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 60                                                   |
+| `nginx.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
+| `nginx.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                                                    |
+| `nginx.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 10 |
+| `nginx.livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 1|
+| `nginx.readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                        |
+| `nginx.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 60                                                   |
+| `nginx.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                   |
+| `nginx.readinessProbe.timeoutSeconds`      | When the probe times out                  | 10                                                    |
+| `nginx.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 10 |
+| `nginx.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 1 |
+| `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |    |
 | `nginx.env.artUrl` | Nginx Environment variable Artifactory URL | `"http://artifactory:8081/artifactory"`   |
 | `nginx.env.ssl` | Nginx Environment enable ssl | `true`   |
 | `nginx.persistence.mountPath` | Nginx persistence volume mount path | `"/var/opt/jfrog/nginx"`   |
@@ -144,7 +171,17 @@ The following tables lists the configurable parameters of the artifactory chart 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
-### Ingress TLS
+### Ingress and TLS
+To get Helm to create an ingress object with a hostname, add these two lines to your Helm command:
+```
+helm install --name artifactory \
+  --set ingress.enabled=true \
+  --set ingress.hosts[0]="artifactory.company.com" \
+  --set artifactory.service.type=NodePort \
+  --set nginx.enabled=false \
+  stable/artifactory
+```
+
 If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
 
 To manually configure TLS, first create/retrieve a key & certificate pair for the address(es) you wish to protect. Then create a TLS secret in the namespace:
@@ -166,7 +203,8 @@ Include the secret's name, along with the desired hostnames, in the Artifactory 
     ##
     hosts:
       - artifactory.domain.com
-
+    annotations:
+      kubernetes.io/tls-acme: "true"
     ## Artifactory Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ##

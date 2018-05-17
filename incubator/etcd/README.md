@@ -33,22 +33,25 @@ $ helm install --name my-release incubator/etcd
 
 ## Configuration
 
-The following tables lists the configurable parameters of the etcd chart and their default values.
+The following table lists the configurable parameters of the etcd chart and their default values.
 
-| Parameter               | Description                        | Default                                                    |
-| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `Name`                  | Spark master name                  | `etcd`                                                     |
-| `Image`                 | Container image name               | `k8s.gcr.io/etcd-amd64`                      |
-| `ImageTag`              | Container image tag                | `2.2.5`                                                    |
-| `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
-| `Replicas`              | k8s statefulset replicas           | `3`                                                        |
-| `Component`             | k8s selector key                   | `etcd`                                                     |
-| `Cpu`                   | container requested cpu            | `100m`                                                     |
-| `Memory`                | container requested memory         | `512Mi`                                                    |
-| `ClientPort`            | k8s service port                   | `2379`                                                     |
-| `PeerPorts`             | Container listening port           | `2380`                                                     |
-| `Storage`               | Persistent volume size             | `1Gi`                                                      |
-| `StorageClass`          | Persistent volume storage class    | `anything`                                                 |
+| Parameter               | Description                          | Default                                            |
+| ----------------------- | ------------------------------------ | -------------------------------------------------- |
+| `Name`                  | Spark master name                    | `etcd`                                             |
+| `Image`                 | Container image name                 | `k8s.gcr.io/etcd-amd64`                            |
+| `ImageTag`              | Container image tag                  | `2.2.5`                                            |
+| `ImagePullPolicy`       | Container pull policy                | `Always`                                           |
+| `Replicas`              | k8s statefulset replicas             | `3`                                                |
+| `Component`             | k8s selector key                     | `etcd`                                             |
+| `Cpu`                   | container requested cpu              | `100m`                                             |
+| `Memory`                | container requested memory           | `512Mi`                                            |
+| `ClientPort`            | k8s service port                     | `2379`                                             |
+| `PeerPorts`             | Container listening port             | `2380`                                             |
+| `Storage`               | Persistent volume size               | `1Gi`                                              |
+| `StorageClass`          | Persistent volume storage class      | `anything`                                         |
+| `Affinity`              | Affinity settings for pod assignment | `{}`                                               |
+| `NodeSelector`          | Node labels for pod assignment       | `{}`                                               |
+| `Tolerations`           | Toleration labels for pod assignment | `[]`                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

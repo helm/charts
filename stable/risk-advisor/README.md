@@ -1,7 +1,7 @@
 # risk-advisor
 Risk advisor module for Kubernetes. This project is licensed under the terms of the Apache 2.0 license.
 
-It allows you to check how the cluster state would change it the request of creating provided pods was accepted by Kubernetes.
+It allows you to check how the cluster state would change if the request of creating provided pods was accepted by Kubernetes.
 
 ## TL;DR
 
@@ -13,7 +13,7 @@ $ helm install stable/risk-advisor
 This is a tool for operators of large Kubernetes cluster to help them foresee how adding new pods to the cluster will change the cluster state, especially which nodes will they be scheduled on and if there's enough resources in the cluster.
 
 ## Prerequisites
-  - Kuberentes 1.5, no guarantees for other versions, however it should work properly
+  - Kubernetes 1.5, no guarantees for other versions, however it should work properly
 
 ## Installing the Chart
 
@@ -35,7 +35,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the aws-cluster-autoscaler chart and their default values.
+The following table lists the configurable parameters of the aws-cluster-autoscaler chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---

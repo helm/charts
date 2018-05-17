@@ -13,6 +13,14 @@ service:
   ## Add annotations to service
   # annotations: {}
   type: ClusterIP
+  ## Add IP Cluster
+  # clusterIP: ""
+  ## Add external IPs that route to one or more cluster nodes
+  # externalIPs: []
+  ## Specify LoadBalancer IP (only allow on some cloud provider)
+  # loadBalancerIP: ""
+  ## Allow source IPs to access on service (if empty, any access allow)
+  # loadBalancerSourceRanges: []
 
 ## Persist data to a persistent volume
 ##
@@ -60,7 +68,8 @@ setDefaultUser:
     username: "admin"
 
     ## User password
-    ## Default: (Randomly generated 10 characters of Ascii)
+    ## single quotes must be escaped (\')
+    ## Default: (Randomly generated 10 characters of AlphaNum)
     # password:
 
     ## User privileges
@@ -89,7 +98,7 @@ env:
   # - name: INFLUXDB_DB
   #   value: "demo"
 
-## Change InfluxDB configuration paramaters below:
+## Change InfluxDB configuration parameters below:
 ## Defaults are indicated
 ## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
 config:

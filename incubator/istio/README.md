@@ -1,5 +1,7 @@
 # Istio
 
+**This chart has been deprecated as of version 0.2.12-chart4 and will not be updated. Please use the upstream charts found [here](https://github.com/istio/istio/tree/master/install/kubernetes/helm/istio) instead.**
+
 [Istio](https://istio.io/), Istio is an open platform that provides a uniform way to connect, manage, and secure microservices. Istio supports managing traffic flows between microservices, enforcing access policies, and aggregating telemetry data, all without requiring changes to the microservice code.
 
 ## TL;DR;
@@ -104,7 +106,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Istio chart and their default values.
+The following table lists the configurable parameters of the Istio chart and their default values.
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 

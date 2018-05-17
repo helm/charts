@@ -1,0 +1,36 @@
+{{- if .Values.external.enabled }}
+  {{- $fullName := include "kafka.fullname" . }}
+  {{- $replicas := .Values.replicas | int }}
+  {{- $servicePort := .Values.external.servicePort }}
+  {{- $root := . }}
+  {{- range $i, $e := until $replicas }}
+    {{- $externalListenerPort := add $root.Values.external.firstListenerPort $i }}
+    {{- $responsiblePod := printf "%s-%d" (printf "%s" $fullName) $i }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    ## ref: https://github.com/kubernetes/kops/blob/master/dns-controller/pkg/watchers/annotations.go#L21
+    dns.alpha.kubernetes.io/internal: "{{ $root.Release.Name }}.{{ $root.Values.external.domain }}"
+  name: {{ $root.Release.Name }}-{{ $i }}-external
+  labels:
+    app: {{ include "kafka.name" $root }}
+    chart: {{ $root.Chart.Name }}-{{ $root.Chart.Version }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+    pod: {{ $responsiblePod | quote }}
+spec:
+  type: NodePort
+  ports:
+    - name: external-broker
+      port: {{ $servicePort }}
+      targetPort: {{ $externalListenerPort }}
+      nodePort: {{ $externalListenerPort }}
+      protocol: TCP
+  selector:
+    app: {{ include "kafka.name" $root }}
+    release: {{ $root.Release.Name }}
+    pod: {{ $responsiblePod | quote }}
+  {{- end }}
+{{- end }}

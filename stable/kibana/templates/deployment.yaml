@@ -23,6 +23,12 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.commandline.args }}
+        args:
+          - "/bin/bash"
+          - "/usr/local/bin/kibana-docker"
+{{ toYaml .Values.commandline.args | indent 10 }}
+        {{- end }}
         env:
         {{- range $key, $value := .Values.env }}
         - name: "{{ $key }}"
@@ -42,6 +48,10 @@ spec:
         #     port: {{ .Values.service.internalPort }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+    {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+    {{- end }}
     {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
