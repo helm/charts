@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "kubeless.fullname" . }}-controller
+  name: {{ template "kubeless.fullname" . }}-controller-manager
   labels:
 {{ include "labels.standard" . | indent 4 }}
     kubeless: controller

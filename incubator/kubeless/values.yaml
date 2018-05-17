@@ -8,8 +8,8 @@ controller:
   deployment:
     replicaCount: 1
     image:
-      repository: bitnami/kubeless-controller
-      tag: v0.3.1
+      repository: bitnami/kubeless-controller-manager
+      tag: v1.0.0-alpha.2
       pullPolicy: IfNotPresent
   ## Kubeless Controller resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -22,6 +22,104 @@ controller:
     #   cpu: 500m
     #   memory: 512Mi
 
+## Kubeless configuration
+config:
+  builderImage: kubeless/function-image-builder
+  builderImagePullSecret: ""
+  deploymentTemplate: '{}'
+  enableBuildStep: "false"
+  functionRegistryTLSVerify: "true"
+  provisionImage: kubeless/unzip@sha256:f162c062973cca05459834de6ed14c039d45df8cdb76097f50b028a1621b3697
+  provisionImagePullSecret: ""
+  runtimeImages: |-
+    [
+      {
+        "ID": "python",
+        "versions": [
+          {
+            "name": "python27",
+            "version": "2.7",
+            "runtimeImage": "kubeless/python@sha256:07cfb0f3d8b6db045dc317d35d15634d7be5e436944c276bf37b1c630b03add8",
+            "initImage": "python:2.7"
+          },
+          {
+            "name": "python34",
+            "version": "3.4",
+            "runtimeImage": "kubeless/python@sha256:f19640c547a3f91dbbfb18c15b5e624029b4065c1baf2892144e07c36f0a7c8f",
+            "initImage": "python:3.4"
+          },
+          {
+            "name": "python36",
+            "version": "3.6",
+            "runtimeImage": "kubeless/python@sha256:0c9f8f727d42625a4e25230cfe612df7488b65f283e7972f84108d87e7443d72",
+            "initImage": "python:3.6"
+          }
+        ],
+        "depName": "requirements.txt",
+        "fileNameSuffix": ".py"
+      },
+      {
+        "ID": "nodejs",
+        "versions": [
+          {
+            "name": "node6",
+            "version": "6",
+            "runtimeImage": "kubeless/nodejs@sha256:0a8a72af4cc3bfbfd4fe9bd309cbf486e7493d0dc32a691673b3f0d3fae07487",
+            "initImage": "node:6.10"
+          },
+          {
+            "name": "node8",
+            "version": "8",
+            "runtimeImage": "kubeless/nodejs@sha256:76ee28dc7e3613845fface2d1c56afc2e6e2c6d6392c724795a7ccc2f5e60582",
+            "initImage": "node:8"
+          }
+        ],
+        "depName": "package.json",
+        "fileNameSuffix": ".js"
+      },
+      {
+        "ID": "ruby",
+        "versions": [
+          {
+            "name": "ruby24",
+            "version": "2.4",
+            "runtimeImage": "kubeless/ruby@sha256:0dce29c0eb2a246f7d825b6644eeae7957b26f2bfad2b7987f2134cc7b350f2f",
+            "initImage": "bitnami/ruby:2.4"
+          }
+        ],
+        "depName": "Gemfile",
+        "fileNameSuffix": ".rb"
+      },
+      {
+        "ID": "php",
+        "versions": [
+          {
+            "name": "php72",
+            "version": "7.2",
+            "runtimeImage": "kubeless/php@sha256:b605bb6b5ae3b1a2a93570939296618904259d7767a14002fa9733e66d59849b",
+            "initImage": "composer:1.6"
+          }
+        ],
+        "depName": "composer.json",
+        "fileNameSuffix": ".php"
+      },
+      {
+        "ID": "go",
+        "compiled": true,
+        "versions": [
+          {
+            "name": "go1.10",
+            "version": "1.10",
+            "runtimeImage": "kubeless/go@sha256:e2fd49f09b6ff8c9bac6f1592b3119ea74237c47e2955a003983e08524cb3ae5",
+            "initImage": "kubeless/go-init@sha256:d0812c4e8351bfd95d0574efd23613cff2664d6a57af4ed0a20ebc651382d476"
+          }
+        ],
+        "depName": "Gopkg.toml",
+        "fileNameSuffix": ".go"
+      }
+    ]
+
+
 ## UI configuration
 ui:
   enabled: false
@@ -30,7 +128,7 @@ ui:
     ui:
       image:
         repository: bitnami/kubeless-ui
-        tag: v0.1.0
+        tag: latest
         pullPolicy: IfNotPresent
     proxy:
       image:
@@ -42,41 +140,3 @@ ui:
     name: ui-port
     type: NodePort
     externalPort: 3000
-
-## Zookeeper configuration
-zookeeper:
-  statefulSet:
-    replicaCount: 1
-    image:
-      repository: bitnami/zookeeper
-      tag: 3.4.10-r6
-      pullPolicy: IfNotPresent
-  ## Zookeeper server resource requests and limits
-  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  resources: {}
-    # limits:
-    #   cpu: 500m
-    #   memory: 512Mi
-    # requests:
-    #   cpu: 500m
-    #   memory: 512Mi
-
-## Kafka configuration
-kafka:
-  statefulSet:
-    replicaCount: 1
-    image:
-      repository: bitnami/kafka
-      tag: 1.0.0-r2
-      pullPolicy: IfNotPresent
-  ## Kafka server resource requests and limits
-  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  resources: {}
-    # limits:
-    #   cpu: 500m
-    #   memory: 512Mi
-    # requests:
-    #   cpu: 500m
-    #   memory: 512Mi
