@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 4.9.4
+  tag: 4.9.5
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -129,7 +129,7 @@ mariadb:
     size: 8Gi
 
 ## Kubernetes configuration
-## For minikube, set this to NodePort, elsewhere use LoadBalancer
+## For minikube, set this to NodePort, elsewhere use LoadBalancer or ClusterIP
 ##
 serviceType: LoadBalancer
 ##
@@ -222,6 +222,10 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  ##
+  ## If you want to reuse an existing claim, you can pass the name of the PVC using
+  ## the existingClaim variable
+  # existingClaim: your-claim
   accessMode: ReadWriteOnce
   size: 10Gi
 
