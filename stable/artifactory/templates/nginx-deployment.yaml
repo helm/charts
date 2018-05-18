@@ -55,6 +55,9 @@ spec:
               - '/bin/sh'
               - '-c'
               - >
+                if [ -f /tmp/replicator-nginx.conf ]; then
+                cp -fv /tmp/replicator-nginx.conf /etc/nginx/conf.d/replicator-nginx.conf;
+                fi;
                 if [ -f /tmp/ssl/*.crt ]; then
                 rm -rf /var/opt/jfrog/nginx/ssl/example.*;
                 cp -fv /tmp/ssl/* /var/opt/jfrog/nginx/ssl;
@@ -78,9 +81,17 @@ spec:
         ports:
         - containerPort: {{ .Values.nginx.internalPortHttp }}
         - containerPort: {{ .Values.nginx.internalPortHttps }}
+        {{- if eq .Values.artifactory.type "egde" }}
+        - containerPort: {{ .Values.nginx.internalPortReplicator }}
+        {{- end }}
         volumeMounts:
         - name: nginx-volume
           mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
+        {{- if eq .Values.artifactory.type "egde" }}
+        - name: replicator-nginx-config
+          mountPath: "/tmp/replicator-nginx.conf"
+          subPath: replicator-nginx.conf
+        {{- end }}
         {{- if .Values.nginx.tlsSecretName }}
         - name: ssl-secret-volume
           mountPath: "/tmp/ssl"
@@ -110,6 +121,11 @@ spec:
           successThreshold: {{ .Values.nginx.livenessProbe.successThreshold }}
         {{- end }}
       volumes:
+      {{- if eq .Values.artifactory.type "egde" }}
+      - name: replicator-nginx-config
+        configMap:
+          name: {{ template "artifactory.fullname" . }}-replicator-nginx-config
+      {{- end}}
       - name: nginx-volume
       {{- if .Values.nginx.persistence.enabled }}
         persistentVolumeClaim:

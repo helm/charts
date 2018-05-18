@@ -27,11 +27,13 @@ ingress:
 # Artifactory
 artifactory:
   name: artifactory
+  # Artifactory type can be oss/pro/edge node. Default type is Artifactory Pro
+  type: pro
   replicaCount: 1
   image:
     # repository: "docker.bintray.io/jfrog/artifactory-oss"
     repository: "docker.bintray.io/jfrog/artifactory-pro"
-    version: 5.10.1
+    version: 6.0.0
     pullPolicy: IfNotPresent
   service:
     name: artifactory
@@ -39,6 +41,8 @@ artifactory:
     annotations: {}
   externalPort: 8081
   internalPort: 8081
+  internalPortReplicator: 6061
+  externalPortReplicator: 6061
   ## The following settings are to configure the frequency of the liveness and readiness probes
   livenessProbe:
     enabled: true
@@ -88,6 +92,8 @@ artifactory:
   #  xms: "1g"
   #  xmx: "2g"
   #  other: ""
+  replicator:
+    publicUrl:
 
 # Nginx
 nginx:
@@ -110,10 +116,15 @@ nginx:
     annotations: {}
     ## Provide static ip address
     loadBalancerIP:
+  # Name of ConfigMap for Distribution Cert
+  distributionCerts:
   externalPortHttp: 80
   internalPortHttp: 80
   externalPortHttps: 443
   internalPortHttps: 443
+  internalPortReplicator: 6061
+  externalPortReplicator: 6061
+  uid: 1030
   ## The following settings are to configure the frequency of the liveness and readiness probes
   livenessProbe:
     enabled: true
@@ -166,6 +177,7 @@ nginx:
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
 postgresql:
+  enabled: true
   postgresUser: "artifactory"
   postgresPassword: "artifactory"
   postgresDatabase: "artifactory"
@@ -173,3 +185,12 @@ postgresql:
     enabled: true
   service:
     port: 5432
+
+## If NOT using the PostgreSQL in this chart (postgresql.enabled=false),
+## you must specify the following database details
+database:
+  type:
+  host:
+  port:
+  user:
+  password:
