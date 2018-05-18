@@ -1,4 +1,3 @@
-
 image: jboss/keycloak-proxy
 imageTag: 3.4.0.Final
 imagePullPolicy: IfNotPresent
