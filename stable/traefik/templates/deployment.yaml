@@ -13,6 +13,11 @@ spec:
     matchLabels:
       app: {{ template "traefik.name" . }}
       release: {{ .Release.Name }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
   template:
     metadata:
       annotations:
