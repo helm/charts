@@ -38,3 +38,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "metrics-server.service.fullname" -}}
 {{- .Values.service.nameOverride | default .Chart.Name }}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "metrics-server.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "metrics-server.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
