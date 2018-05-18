@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `affinity`                        | Affinity settings                        | See values.yaml                     |
 | `service.annotations`             | Annotations for service                  | `{}`                                |
 | `annotations`                     | Annotations for deployment               | `{}`                                |
+| `ingress.labels`                  | Labels for ingress                       | `{}`                                |
 | `podAnnotations`                  | Annotations for pods                     | `{}`                                |
 | `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |
 | `consulAgent.repository`          | Container image for consul agent         | `consul`                            |
