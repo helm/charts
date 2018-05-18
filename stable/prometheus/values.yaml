@@ -387,6 +387,11 @@ nodeExporter:
   ##
   podAnnotations: {}
 
+  ## Labels to be added to node-exporter pods
+  ##
+  pod:
+    labels: {}
+
   ## node-exporter resource limits & requests
   ## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -443,6 +448,10 @@ server:
   ## External URL which can access alertmanager
   ## Maybe same with Ingress host name
   baseURL: ""
+
+  ## This flag controls access to the administrative HTTP API which includes functionality such as deleting time
+  ## series. This is disabled by default.
+  enableAdminApi: false
 
   ## Additional Prometheus server container arguments
   ##
