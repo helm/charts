@@ -16,7 +16,6 @@ This chart bootstraps a [Kubeless](https://github.com/kubeless/kubeless) and a [
 ## Prerequisites
 
 - Kubernetes 1.7+ with Beta APIs enabled
-- PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
 
@@ -94,7 +93,3 @@ The [Kubeless UI](https://github.com/kubeless/kubeless-ui) component is disabled
 ```bash
 $ helm install --name my-release --set ui.enabled=true --namespace kubeless incubator/kubeless
 ```
-
-## Persistence
-
-The Kafka and Zookeeper images stores the data and configurations at the `/bitnami/kafka` and `/bitnami/zookeeper` path of the container.
