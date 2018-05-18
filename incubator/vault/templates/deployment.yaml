@@ -7,6 +7,8 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
@@ -18,12 +20,8 @@ spec:
       labels:
         app: {{ template "vault.name" . }}
         release: {{ .Release.Name }}
-{{- if .Values.podAnnotations }}
       annotations:
-      {{- range $key, $value := .Values.podAnnotations }}
-        {{ $key }}: {{ $value | quote }}
-      {{- end }}
-{{- end }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
     spec:
       containers:
       - name: {{ .Chart.Name }}

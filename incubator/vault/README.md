@@ -58,6 +58,9 @@ The following table lists the configurable parameters of the Vault chart and the
 | `resources.limits.cpu`            | Container requested CPU                  | `nil`                               |
 | `resources.limits.memory`         | Container requested memory               | `nil`                               |
 | `affinity`                        | Affinity settings                        | See values.yaml                     |
+| `service.annotations`             | Annotations for service                  | `{}`                                |
+| `annotations`                     | Annotations for deployment               | `{}`                                |
+| `podAnnotations`                  | Annotations for pods                     | `{}`                                |
 | `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |
 | `consulAgent.repository`          | Container image for consul agent         | `consul`                            |
 | `consulAgent.tag`                 | Container image tag for consul agent     | `1.0.6`                             |
