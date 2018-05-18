@@ -29,7 +29,7 @@ $ helm install --name artifactory --set artifactory.image.repository=docker.bint
 
 ### Deploying Artifactory with replicator enabled
 ```bash
-## By default it Artifactory replicator is disabled. To enable it use the following
+## Artifactory replicator is disabled by default. To enable it use the following:
 $ helm install --name artifactory --set artifactory.replicator.enabled=true stable/artifactory
 ```
 
