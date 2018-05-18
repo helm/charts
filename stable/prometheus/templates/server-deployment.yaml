@@ -25,6 +25,9 @@ spec:
         component: "{{ .Values.server.name }}"
         release: {{ .Release.Name }}
     spec:
+{{- if .Values.server.schedulerName }}
+      schedulerName: "{{ .Values.server.schedulerName }}"
+{{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.server" . }}
       {{- if .Values.initChownData.enabled }}
       initContainers:
@@ -79,6 +82,9 @@ spec:
           {{- end }}
           {{- if .Values.server.baseURL }}
             - --web.external-url={{ .Values.server.baseURL }}
+          {{- end }}
+          {{- if .Values.server.enableAdminApi }}
+            - --web.enable-admin-api
           {{- end }}
           ports:
             - containerPort: 9090
