@@ -35,8 +35,6 @@ spec:
             - "-ec"
             - |
               exec gosu stolon stolon-proxy
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
           env:
             - name: POD_NAME
               valueFrom:
@@ -64,6 +62,8 @@ spec:
             - name: {{ $key }}
 {{ toYaml $value | indent 14 }}
 {{- end }}
+          resources:
+{{ toYaml .Values.proxy.resources | indent 12 }}
           readinessProbe:
             tcpSocket:
               port: {{ .Values.ports.stolon.containerPort }}

@@ -36,8 +36,6 @@ spec:
             - "-ec"
             - |
               exec gosu stolon stolon-sentinel
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
           env:
             - name: POD_NAME
               valueFrom:
@@ -58,6 +56,8 @@ spec:
               value: "0.0.0.0:8080"
             - name: STSENTINEL_DEBUG
               value: {{ .Values.debug | quote}}
+          resources:
+{{ toYaml .Values.sentinel.resources | indent 12 }}
 {{- with .Values.sentinel.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

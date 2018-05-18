@@ -78,6 +78,8 @@ spec:
             - name: {{ $key }}
 {{ toYaml $value | indent 14 }}
 {{- end }}
+          resources:
+{{ toYaml .Values.keeper.resources | indent 12 }}
           volumeMounts:
           - name: data
             mountPath: /stolon-data
