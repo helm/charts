@@ -47,26 +47,26 @@ The following table lists the configurable parameters of the Phpmyadmin chart an
 | `image.registry`                     | PhpMyAdmin image registry                 | `docker.io`                                             |
 | `image.repository`                   | PhpMyAdmin Image name                     | `bitnami/phpmyadmin`                                     |
 | `image.tag`                          | PhpMyAdmin Image tag                      | `{VERSION}`                                             |
-| `image.pullPolicy`                   | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullPolicy`                   | Image pull policy                        |   `IfNotPresent` |
 | `image.pullSecrets`                  | Specify image pull secrets               | `nil`                                                   |
-| `phpmyadmin.serviceType`            | type of service for PhpMyAdmin frontend             | `ClusterIP`                                                  |
-| `phpmyadmin.servicePort`        | port to expose service                   | `80`                                                   |
-| `phpmyadmin.dbPort`            | database port to use to connect                  | `3360`                                     |
-| `phpmyadmin.dbSuffix`                | Database suffix if included in the same release                  | `nil`                                          |
-| `phpmyadmin.dbHost`            | database host to connect to               | `nil`          |
+| `service.type`            | type of service for PhpMyAdmin frontend             | `ClusterIP`                                                  |
+| `service.port`        | port to expose service                   | `80`                                                   |
+| `db.port`            | database port to use to connect                  | `3360`                                     |
+| `db.suffix`                | Database suffix if included in the same release                  | `nil`                                          |
+| `db.host`            | database host to connect to               | `nil`          |
 | `ingress.annotations`            | ingress annotations              | `{}`          |
 | `ingress.path`            | path to access frontend               | `/`          |
 | `ingress.host`            | ingress host               | `nil`          |
 | `ingress.tls`            | tls for ingress               | `[]`          |
 | `resources`                          | CPU/Memory resource requests/limits      | `{}`      |
 
-The above parameters map to the env variables defined in [bitnami/phpmyadmin](http://github.com/bitnami/bitnami-docker-Phpmyadmin). For more information please refer to the [bitnami/phpmyadmin](http://github.com/bitnami/bitnami-docker-Phpmyadmin) image documentation.
+For more information please refer to the [bitnami/phpmyadmin](http://github.com/bitnami/bitnami-docker-Phpmyadmin) image documentation.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
 $ helm install --name my-release \
-  --set phpmyadmin.dbHost=mymariadb,phpmyadmin.dbPort=3306 stable/phpmyadmin
+  --set db.host=mymariadb,db.port=3306 stable/phpmyadmin
 ```
 
 The above command sets the PhpMyAdmin to connect to a database in `mymariadb` host and `3306` port respectively. 

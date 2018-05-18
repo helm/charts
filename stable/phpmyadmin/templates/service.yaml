@@ -8,9 +8,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  type: {{ .Values.phpmyadmin.serviceType }}
+  type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.phpmyadmin.servicePort }}
+    - port: {{ .Values.service.port }}
       targetPort: http
       protocol: TCP
       name: http

@@ -31,15 +31,15 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: DATABASE_PORT_NUMBER
-              value: "{{ .Values.phpmyadmin.dbPort }}"
-            {{- if .Values.phpmyadmin.dbSuffix }}
+              value: "{{ .Values.db.port }}"
+            {{- if .Values.db.suffix }}
             - name: DATABASE_HOST
               value: "{{ template "phpmyadmin.dbfullname" . }}"
             {{- else }} 
             - name: DATABASE_HOST
-              value: "{{ .Values.phpmyadmin.dbHost }}"
+              value: "{{ .Values.db.host }}"
             {{- end }}
-            {{- if and (not .Values.phpmyadmin.dbSuffix) (not .Values.phpmyadmin.dbHost)}}
+            {{- if and (not .Values.db.suffix) (not .Values.db.host)}}
             - name: PHPMYADMIN_ALLOW_NO_PASSWORD
               value: "true"
             - name: PHPMYADMIN_ALLOW_ARBITRARY_SERVER
@@ -55,6 +55,7 @@ spec:
             - name: https
               containerPort: 443
               protocol: TCP
+          {{- if .Values.probesEnabled }}
           livenessProbe:
             httpGet:
               path: /
@@ -63,5 +64,6 @@ spec:
             httpGet:
               path: /
               port: http
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

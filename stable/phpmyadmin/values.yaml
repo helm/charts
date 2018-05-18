@@ -6,9 +6,6 @@ image:
   repository: bitnami/phpmyadmin
   tag: 4.8.0
   ## Specify a imagePullPolicy
-  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-  ##
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -18,19 +15,20 @@ image:
   #   - myRegistrKeySecretName
 
 ## User of the application
-## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
+## ref: https://github.com/bitnami/bitnami-docker-phpmyadmin#environment-variables
 ##
+service:
+  type: ClusterIP
+  port: 80
 
-phpmyadmin:
-  serviceType: ClusterIP
-  servicePort: 80
+db:
   ## using default mysql port explicitly
-  dbPort: 3306
+  port: 3306
   ## if you are deploying it as part of a release, and the db is also in the release
   ## you can pass a suffix that will be used to find the DB in releasename-dbSuffix
   ## please note that this setting preceeds dbHost
-  # dbSuffix: mariadb
-  # dbHost: foo
+  # suffix: mariadb
+  # host: foo
 
 ingress:
   enabled: false
@@ -44,6 +42,10 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+
+## Enable liveness and readiness probes
+probesEnabled: true
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
