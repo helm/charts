@@ -23,7 +23,7 @@ elasticsearch:
   # elasticsearch port
   port: 80
   # whether or not to connect to es_host using TLS
-  useSsl: False
+  useSsl: "False"
 
 # Command and args override for container e.g. (https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/)
 # command: ["YOUR_CUSTOM_COMMAND"]
