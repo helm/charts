@@ -92,7 +92,7 @@ data:
     entryPoint = "https"
     onHostRule = true
     {{- if .Values.acme.staging }}
-    caServer = "https://acme-staging.api.letsencrypt.org/directory"
+    caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
     {{- end }}
     {{- if .Values.acme.logging }}
     acmeLogging = true
