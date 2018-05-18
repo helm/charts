@@ -36,8 +36,8 @@ tolerations: []
 proxyProtocol:
   enabled: false
   # trustedIPs is required when enabled
-  trustedIPs:
-  # - 10.0.0.0/8
+  # trustedIPs:
+  #   - 10.0.0.0/8
 ssl:
   enabled: false
   enforced: false
@@ -153,18 +153,18 @@ acme:
 dashboard:
   enabled: false
   domain: traefik.example.com
-  service:
+  # service:
     # annotations:
     #   key: value
-  ingress:
+  # ingress:
     # annotations:
     #   key: value
     # labels:
     #   key: value
-  auth:
+  # auth:
     # basic:
     #   username: password
-  statistics:
+  # statistics:
     ## Number of recent errors to show in the ‘Health’ tab
     # recentErrors:
 service:
