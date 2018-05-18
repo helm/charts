@@ -1,0 +1,77 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "distributor.fullname" . }}
+  labels:
+    app: {{ template "distribution.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.distributor.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.distributor.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "distribution.name" . }}
+        component: "{{ .Values.distributor.name }}"
+        release: {{ .Release.Name }}
+    spec:
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
+      initContainers:
+      - name: "prepare-data"
+        image: "{{ .Values.initContainerImage }}"
+        imagePullPolicy: {{ .Values.distributor.image.pullPolicy }}
+        command:
+        - '/bin/sh'
+        - '-c'
+        - >
+          mkdir -pv {{ .Values.distributor.persistence.mountPath }}/etc/security;
+          cp -fv /tmp/security/token {{ .Values.distributor.persistence.mountPath }}/etc/security/token;
+          chmod 400 {{ .Values.distributor.persistence.mountPath }}/etc/security/token;
+          chown -R 1020:1020 {{ .Values.distributor.persistence.mountPath }}
+        volumeMounts:
+        - name: distributor-data
+          mountPath: {{ .Values.distributor.persistence.mountPath | quote }}
+        - name: distributor-token
+          mountPath: "/tmp/security/token"
+          subPath: token
+      containers:
+      - name: {{ .Values.distributor.name }}
+        image: '{{ .Values.distributor.image.repository }}:{{ .Values.distributor.image.version }}'
+        imagePullPolicy: {{ .Values.distributor.image.imagePullPolicy }}
+        env:
+        - name: DEFAULT_JAVA_OPTS
+          value: '-Ddistribution.home={{ .Values.distributor.persistence.mountPath }} -Dfile.encoding=UTF8 -Dcom.sun.management.jmxremote.authenticate=false
+                  -Dcom.sun.management.jmxremote.ssl=false -Duser.timezone=UTC
+                  -Xms{{ .Values.distributor.resources.requests.memory | trunc 1 }}g
+                  -Xmx{{ .Values.distributor.resources.limits.memory | trunc 1 }}g
+                  -Dspring.profiles.active=production'
+        - name: redis_connectionString
+          value: 'redis://:{{ .Values.redis.redisPassword }}@{{ .Release.Name }}-redis:6379'
+        - name: BT_SERVER_URL
+          value: 'http://{{ include "distribution.fullname" . }}:{{ .Values.distribution.internalPort }}'
+        volumeMounts:
+        - name: distributor-data
+          mountPath: {{ .Values.distributor.persistence.mountPath | quote }}
+        resources:
+          requests:
+            memory: "{{ .Values.distributor.resources.requests.memory }}"
+            cpu: "{{ .Values.distributor.resources.requests.cpu }}"
+          limits:
+            memory: "{{ .Values.distributor.resources.limits.memory }}"
+            cpu: "{{ .Values.distributor.resources.limits.cpu }}"
+      volumes:
+      - name: distributor-token
+        configMap:
+          name: {{ template "distributor.fullname" . }}-token
+      - name: distributor-data
+      {{- if .Values.distributor.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.distributor.persistence.existingClaim }}{{ .Values.distributor.persistence.existingClaim }}{{- else }}{{ template "distributor.fullname" . }}{{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

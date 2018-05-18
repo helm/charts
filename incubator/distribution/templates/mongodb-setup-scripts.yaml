@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "distribution.fullname" . }}-setup-script
+  labels:
+    app: {{ template "distribution.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  setup.sh: |
+    #!/bin/sh
+    # Setup script to create MongoDB users
+
+    errorExit () {
+      echo; echo "ERROR: $1"; echo; exit 1
+    }
+
+    echo "Waiting for mongodb to come up"
+    until mongo --host {{ .Release.Name }}-mongodb --port 27017 --eval "db.adminCommand('ping')" > /dev/null 2>&1; do
+    echo "Waiting for db availability"
+    sleep 1
+    done
+    echo "DB ready. Configuring..."
+    mongo --host {{ .Release.Name }}-mongodb --port 27017 < /scripts/createMongoDBUsers.js || errorExit "DB user setup failed"
+    echo "DB config done"
+
+  createMongoDBUsers.js: |
+    // Creating default admin user
+    var adminUser = {
+        user: "{{ .Values.mongodb.db.adminUser }}",
+        pwd: "{{ .Values.mongodb.db.adminPassword }}",
+        roles: ["root"],
+        customData: {
+            createdBy: "JFrog Distribution installer"
+        }
+    }
+    db.getSiblingDB("admin").createUser(adminUser)
+    // Creating default app user
+    var distributionUser = {
+        user: "{{ .Values.mongodb.db.distributionUser }}",
+        pwd: "{{ .Values.mongodb.db.distributionPassword }}",
+        roles: ["dbOwner"],
+        customData: {
+            createdBy: "JFrog Distribution installer"
+        }
+    }
+    // Authenticating as admin to create user
+    var loginOutput = db.getSiblingDB("admin").auth(adminUser.user,adminUser.pwd)
+    db.getSiblingDB("{{ .Values.mongodb.db.distributionUser }}").createUser(distributionUser)
+    // Check if user exists before creation
+    function createUserDB(dbName, dbUser) {
+        db.getSiblingDB(dbName).getUser(dbUser.user) || db.getSiblingDB(dbName).createUser(dbUser);
+    }
+    createUserDB("{{ .Values.mongodb.db.name }}", distributionUser);
+

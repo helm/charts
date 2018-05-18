@@ -1,0 +1,110 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "distribution.fullname" . }}
+  labels:
+    app: {{ template "distribution.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.distribution.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.distribution.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "distribution.name" . }}
+        component: "{{ .Values.distribution.name }}"
+        release: {{ .Release.Name }}
+    spec:
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
+      initContainers:
+      - name: "init-data"
+        image: "{{ .Values.initContainerImage }}"
+        command:
+        - '/bin/sh'
+        - '-c'
+        - >
+          until nc -z -w 2 {{ .Release.Name }}-mongodb 27017 && echo {{ .Release.Name }}-mongodb ok; do sleep 2; done
+      containers:
+      - name: {{ .Values.distribution.name }}
+        image: '{{ .Values.distribution.image.repository }}:{{ .Values.distribution.image.version }}'
+        imagePullPolicy: {{ .Values.distribution.image.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.distribution.internalPort }}
+          protocol: TCP
+        env:
+        - name: DEFAULT_JAVA_OPTS
+          value: '-Ddistribution.home={{ .Values.distribution.persistence.mountPath }} -Dcom.sun.management.jmxremote.authenticate=false
+                  -Dcom.sun.management.jmxremote.ssl=false -Duser.timezone=UTC
+                  -Xms{{ .Values.distribution.resources.requests.memory | trunc 1 }}g
+                  -Xmx{{ .Values.distribution.resources.limits.memory | trunc 1 }}g
+                  -Dspring.profiles.active=production'
+        - name: mongo_connectionString
+        {{- if .Values.mongodb.mongodbUsername }}
+          value: 'mongodb://{{ .Values.mongodb.db.distributionUser }}:{{ .Values.mongodb.db.distributionPassword }}@{{ .Release.Name }}-mongodb:27017/{{ .Values.mongodb.db.name }}'
+        {{- else }}
+          value: 'mongodb://{{ .Release.Name }}-mongodb:27017/{{ .Values.mongodb.db.name }}'
+        {{- end }}
+        - name: audit_mongo_connectionString
+        {{- if .Values.mongodb.mongodbUsername }}
+          value: 'mongodb://{{ .Values.mongodb.db.distributionUser }}:{{ .Values.mongodb.db.distributionPassword }}@{{ .Release.Name }}-mongodb:27017audit?maxpoolsize=500'
+        {{- else }}
+          value: 'mongodb://{{ .Release.Name }}-mongodb:27017/audit?maxpoolsize=500'
+        {{- end }}
+        - name: redis_connectionString
+          value: 'redis://:{{ .Values.redis.redisPassword }}@{{ .Release.Name }}-redis:6379'
+        - name: BT_ARTIFACTORY_URL
+          value: {{ .Values.distribution.env.artifactoryUrl | quote }}
+        - name: BT_SERVER_URL
+          value: {{ .Values.distribution.env.btServerUrl | quote }}
+        {{- if .Values.distribution.env.artifactoryEdge1Url }}
+        - name: artifactory_edge_1_url
+          value: {{ .Values.distribution.env.artifactoryEdge1Url }}
+        {{- end }}
+        {{- if .Values.distribution.env.artifactoryEdge2Url }}
+        - name: artifactory_edge_2_url
+          value: {{ .Values.distribution.env.artifactoryEdge2Url }}
+        {{- end }}
+        {{- if .Values.distribution.env.artifactoryEdge3Url }}
+        - name: artifactory_edge_3_url
+          value: {{ .Values.distribution.env.artifactoryEdge3Url }}
+        {{- end }}
+        {{- if .Values.distribution.env.artifactoryCi1Url }}
+        - name: artifactory_ci_1_url
+          value: {{ .Values.distribution.env.artifactoryCi1Url }}
+        {{- end }}
+        volumeMounts:
+        - name: distribution-data
+          mountPath: {{ .Values.distribution.persistence.mountPath | quote }}
+        resources:
+          requests:
+            memory: "{{ .Values.distribution.resources.requests.memory }}"
+            cpu: "{{ .Values.distribution.resources.requests.cpu }}"
+          limits:
+            memory: "{{ .Values.distribution.resources.limits.memory }}"
+            cpu: "{{ .Values.distribution.resources.limits.cpu }}"
+        readinessProbe:
+          httpGet:
+            path: /api/v1/system/ping
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          failureThreshold: 10
+        livenessProbe:
+          httpGet:
+            path: /api/v1/system/ping
+            port: 8080
+          initialDelaySeconds: 180
+          periodSeconds: 10
+      volumes:
+      - name: distribution-data
+      {{- if .Values.distribution.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.distribution.persistence.existingClaim }}{{ .Values.distribution.persistence.existingClaim }}{{- else }}{{ template "distribution.fullname" . }}{{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
