@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kibana.fullname" . }}
+  labels:
+    app: {{ template "kibana.name" . }}
+    chart: {{ template "kibana.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  plugins: |
+{{- range $plugin := .Values.plugins }}
+    {{ $plugin }}
+{{- end }}
+  launch_kibana: |
+    #!/usr/bin/env bash
+    set -euf -o pipefail
+    if [[ -f /tmp/plugins ]]; then
+      while read plugin; do
+        /usr/share/kibana/bin/kibana-plugin install "${plugin}"
+      done < /tmp/plugins
+    fi
+    /usr/local/bin/kibana-docker "$@"
