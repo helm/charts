@@ -1,6 +1,6 @@
 name: keycloak-proxy
 version: 0.0.1
-appVersion: 3.4.0.Final
+appVersion: 3.4.2.Final
 description: 'Keycloak Proxy supports Single Sign-On with Keycloak'
 keywords:
 - authentication
