@@ -27,10 +27,10 @@ By default it will run Artifactory-Pro to run Artifactory-Oss use following comm
 $ helm install --name artifactory --set artifactory.image.repository=docker.bintray.io/jfrog/artifactory-oss stable/artifactory
 ```
 
-### Deploying Artifactory Edge
+### Deploying Artifactory with replicator enabled
 By default it will run Artifactory-Pro to run Artifactory-edge use following command:
 ```bash
-$ helm install --name artifactory --set artifactory.type=edge stable/artifactory
+$ helm install --name artifactory --set artifactory.replicator.enabled=true stable/artifactory
 ```
 
 ### Accessing Artifactory
@@ -118,7 +118,6 @@ The following table lists the configurable parameters of the artifactory chart a
 |---------------------------|-----------------------------------|----------------------------------------------------------|
 | `imagePullSecrets`        | Docker registry pull secret       |                                                          |
 | `artifactory.name` | Artifactory name | `artifactory`   |
-| `artifactory.type` | Artifactory type it can be 'oss/pro/edge' | `pro`   |
 | `artifactory.replicaCount`            | Replica count for Artifactory deployment| `1`                                                |
 | `artifactory.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                                           |
 | `artifactory.image.repository`    | Container image                   | `docker.bintray.io/jfrog/artifactory-pro`                |
@@ -152,6 +151,8 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.javaOpts.xms`              | Artifactory java Xms size           |      |
 | `artifactory.javaOpts.xmx`              | Artifactory java Xms size           |      |
 | `artifactory.javaOpts.other`            | Artifactory additional java options |      |
+| `artifactory.replicator.enabled`            | Enable Artifactory Replicator | `false`  |
+| `artifactory.distributionCerts`            | Name of ConfigMap for Artifactory Distribution Certificate  | `false`  |
 | `artifactory.replicator.publicUrl`            | Artifactory Replicator Public URL |      |
 | `ingress.enabled`           | If true, Artifactory Ingress will be created | `false` |
 | `ingress.annotations`       | Artifactory Ingress annotations     | `{}` |

@@ -19,7 +19,7 @@ spec:
     targetPort: {{ .Values.artifactory.internalPort }}
     protocol: TCP
     name: {{ .Release.Name }}
-  {{- if eq .Values.artifactory.type "edge" }}
+  {{- if .Values.artifactory.replicator.enabled }}
   - port: {{ .Values.artifactory.externalPortReplicator }}
     targetPort: {{ .Values.artifactory.internalPortReplicator }}
     protocol: TCP

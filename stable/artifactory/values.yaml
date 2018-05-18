@@ -27,8 +27,6 @@ ingress:
 # Artifactory
 artifactory:
   name: artifactory
-  # Artifactory type can be oss/pro/edge node. Default type is Artifactory Pro
-  type: pro
   replicaCount: 1
   image:
     # repository: "docker.bintray.io/jfrog/artifactory-oss"
@@ -92,8 +90,12 @@ artifactory:
   #  xms: "1g"
   #  xmx: "2g"
   #  other: ""
+  ## Artifactory Replicator
   replicator:
+    enabled: false
     publicUrl:
+  # Name of ConfigMap for Distribution Cert
+  distributionCerts:
 
 # Nginx
 nginx:
@@ -116,8 +118,6 @@ nginx:
     annotations: {}
     ## Provide static ip address
     loadBalancerIP:
-  # Name of ConfigMap for Distribution Cert
-  distributionCerts:
   externalPortHttp: 80
   internalPortHttp: 80
   externalPortHttps: 443

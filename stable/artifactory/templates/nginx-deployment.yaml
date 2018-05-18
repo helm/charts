@@ -81,13 +81,13 @@ spec:
         ports:
         - containerPort: {{ .Values.nginx.internalPortHttp }}
         - containerPort: {{ .Values.nginx.internalPortHttps }}
-        {{- if eq .Values.artifactory.type "edge" }}
+        {{- if .Values.artifactory.replicator.enabled }}
         - containerPort: {{ .Values.nginx.internalPortReplicator }}
         {{- end }}
         volumeMounts:
         - name: nginx-volume
           mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
-        {{- if eq .Values.artifactory.type "edge" }}
+        {{- if .Values.artifactory.replicator.enabled }}
         - name: replicator-nginx-config
           mountPath: "/tmp/replicator-nginx.conf"
           subPath: replicator-nginx.conf
@@ -121,7 +121,7 @@ spec:
           successThreshold: {{ .Values.nginx.livenessProbe.successThreshold }}
         {{- end }}
       volumes:
-      {{- if eq .Values.artifactory.type "edge" }}
+      {{- if .Values.artifactory.replicator.enabled }}
       - name: replicator-nginx-config
         configMap:
           name: {{ template "artifactory.fullname" . }}-replicator-nginx-config

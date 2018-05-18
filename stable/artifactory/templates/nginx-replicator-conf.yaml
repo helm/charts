@@ -1,4 +1,4 @@
-{{- if eq .Values.artifactory.type "edge" -}}
+{{- if .Values.artifactory.replicator.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
