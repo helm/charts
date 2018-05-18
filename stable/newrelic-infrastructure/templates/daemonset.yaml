@@ -1,9 +1,5 @@
 {{- if and .Values.licenseKey .Values.cluster }}
-{{- if semverCompare "< 1.9-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: apps/v1beta2
-{{- else -}}
-apiVersion: apps/v1
-{{- end }}
 kind: DaemonSet
 metadata:
   labels: {{ include "newrelic.labels" . | indent 4 }}
