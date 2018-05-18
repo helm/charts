@@ -83,3 +83,5 @@ serviceAccount:
 nodeSelector: {}
 
 tolerations: []
+
+updateStrategy: RollingUpdate
