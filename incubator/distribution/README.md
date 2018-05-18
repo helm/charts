@@ -13,7 +13,9 @@ This chart will do the following:
 * Deploy a distribution.
 
 ## Requirements
-- A running Kubernetes cluster on GCP
+- A running Kubernetes cluster
+  - Dynamic storage provisioning enabled
+  - Default StorageClass set to allow services using the default StorageClass for persistent storage
 - A running Artifactory Enterprise Plus
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) installed and setup to use the cluster
 - [Helm](https://helm.sh/) installed and setup to use the cluster (helm init)
