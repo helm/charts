@@ -50,13 +50,13 @@ spec:
         - name: ETCD_HOST
           value: {{ .Values.etcd.host | quote }}
         {{- end }}
-        {{- else if .Values.zooKeeper.enable }}
-        {{- if .Values.zooKeeper.deployChart }}
+        {{- else if .Values.zookeeper.enable }}
+        {{- if .Values.zookeeper.deployChart }}
         - name: ZOOKEEPER_HOSTS
-          value: {{(printf "'hs-zk-%s:2181'" .Release.Name | trunc 63)}}
+          value: {{(printf "'zk-%s-headless:2181'" .Release.Name | trunc 63)}}
         {{- else }}
         - name: ZOOKEEPER_HOSTS
-          value: {{ .Values.zooKeeper.hosts | quote }}
+          value: {{ .Values.zookeeper.hosts | quote }}
         {{- end }}
         {{- end }}
         - name: SCOPE
