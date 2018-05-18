@@ -104,7 +104,7 @@ nginx:
   replicaCount: 1
   image:
     repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
-    version: 5.10.1
+    version: 6.0.0
     pullPolicy: IfNotPresent
   service:
     ## For minikube, set this to NodePort, elsewhere use LoadBalancer
@@ -145,7 +145,7 @@ nginx:
   ## The SSL secret that will be used by the Nginx pod
   # tlsSecretName: chart-example-tls
   env:
-#    artUrl: "http://artifactory:8081/artifactory"
+    # artUrl: "http://artifactory:8081/artifactory"
     ssl: true
   persistence:
     mountPath: "/var/opt/jfrog/nginx"
