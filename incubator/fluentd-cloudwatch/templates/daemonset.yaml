@@ -31,8 +31,8 @@ spec:
               mountPath: /etc/fluentd
       containers:
       - name: {{ template "fluentd-cloudwatch.fullname" . }}
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         #hostNetwork: {{ default false .Values.hostNetwork }}
         env:
         - name: AWS_REGION

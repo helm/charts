@@ -1,11 +1,10 @@
-image: fluent/fluentd-kubernetes-daemonset
-imageTag: v0.12.33-cloudwatch
-
+image:
+  repository: fluent/fluentd-kubernetes-daemonset
+  tag: v0.12.33-cloudwatch
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
-imagePullPolicy: IfNotPresent
-
+  pullPolicy: IfNotPresent
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
