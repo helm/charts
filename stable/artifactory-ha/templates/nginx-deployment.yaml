@@ -131,7 +131,7 @@ spec:
       {{- if .Values.artifactory.replicator.enabled }}
       - name: replicator-nginx-config
         configMap:
-          name: {{ template "artifactory.fullname" . }}-replicator-nginx-config
+          name: {{ template "artifactory-ha.fullname" . }}-replicator-nginx-config
       {{- end}}
       - name: nginx-volume
       {{- if .Values.nginx.persistence.enabled }}
