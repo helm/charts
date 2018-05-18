@@ -11,9 +11,9 @@ $ helm install incubator/keycloak-proxy
 
 ## Introduction
 
-This chart bootstraps a [Keycloak Proxy](https://www.keycloak.org/docs/3.3/server_installation/topics/proxy.html) Deployment on a [Kubernetes](https://kubernetes.io) cluster
+This chart bootstraps a [Keycloak Proxy](https://www.keycloak.org/docs/latest/server_installation/index.html#_proxy) Deployment on a [Kubernetes](https://kubernetes.io) cluster
 using the [Helm](https://helm.sh) package manager. It provisions a fully featured Keycloak Proxy installation.
-For more information on Keycloak and its capabilities, see its [documentation](https://www.keycloak.org/docs/3.3/server_installation/topics/proxy.html) and [Docker Hub repository](https://hub.docker.com/r/jboss/keycloak-proxy/).
+For more information on Keycloak and its capabilities, see its [documentation](https://www.keycloak.org/docs/latest/server_installation/index.html#_proxy) and [Docker Hub repository](https://hub.docker.com/r/jboss/keycloak-proxy/).
 
 ## Prerequisites Details
 
@@ -72,7 +72,7 @@ $ helm install --name keycloak-proxy -f values.yaml incubator/keycloak-proxy
 ## Proxy Configuration
 
 The following configurations which are located in a configmap are required to request authentication and authorization.
-Please refer to [Keycloak Proxy](https://www.keycloak.org/docs/3.3/server_installation/topics/proxy.html) and [Adapter Config](https://www.keycloak.org/docs/3.3/securing_apps/topics/oidc/java/java-adapter-config.html) for more information.
+Please refer to [Keycloak Proxy](https://www.keycloak.org/docs/latest/server_installation/index.html#_proxy) and [Adapter Config](https://www.keycloak.org/docs/latest/securing_apps/index.html#_java_adapter_config) for more information.
 
 ```
 apiVersion: v1
