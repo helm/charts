@@ -49,8 +49,8 @@ data:
 
             chunked_transfer_encoding on;
 
-{{- if and .Values.proxy.ldapHost .Values.secrets.ldapBindPassword }}
             location / {
+{{- if and .Values.proxy.ldapHost .Values.secrets.ldapBindPassword }}
                 auth_ldap "{{ .Values.proxy.authName }}";
                 auth_ldap_servers ldapserver;
                 proxy_pass                       http://backend-server;
@@ -58,8 +58,8 @@ data:
                 proxy_set_header  X-Real-IP      $remote_addr; # pass on real client's IP
                 proxy_set_header  Authorization  ""; # see https://github.com/dotcloud/docker-registry/issues/170
                 proxy_read_timeout               900;
-            }
 {{- end }}
+            }
 
             location /_ping {
                 auth_basic off;
