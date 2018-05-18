@@ -1,0 +1,118 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "mission-control.fullname" . }}
+  labels:
+    app: {{ template "mission-control.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.missionControl.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.missionControl.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "mission-control.name" . }}
+        component: {{ .Values.missionControl.name }}
+        release: {{ .Release.Name }}
+    spec:
+    {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.global.imagePullSecrets }}
+    {{- end }}
+      initContainers:
+      - name: init-data
+        image: "{{ .Values.initContainerImage }}"
+        command:
+        - 'sh'
+        - '-c'
+        - >
+          until nc -z -w 2 {{ .Release.Name }}-mongodb 27017 && echo mongodb ok && \
+                nc -z -w 2 {{ .Release.Name }}-elasticsearch 9200 && echo elasticsearch ok;
+            do sleep 2;
+          done
+      containers:
+      - name: {{ .Values.missionControl.name }}
+        image: {{ .Values.missionControl.image }}:{{ .Values.missionControl.version }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: SPRING_DATA_MONGODB_HOST
+          value: '{{ .Release.Name }}-mongodb'
+        - name: SPRING_DATA_MONGODB_PORT
+          value: '27017'
+        - name: SPRING_DATA_MONGODB_USERNAME
+          value: '{{ index .Values "mongodb" "db" "mcUser" }}'
+        - name: SPRING_DATA_MONGODB_PASSWORD
+          value: '{{ index .Values "mongodb" "db" "mcPassword" }}'
+        - name: INSIGHT_URL
+          value: "http://{{ template "insight-server.fullname" . }}:{{ .Values.insightServer.internalHttpPort }}"
+        - name: INSIGHT_SSL_URL
+          value: "https://{{ template "insight-server.fullname" . }}:{{ .Values.insightServer.internalHttpsPort }}"
+        - name: POD_RESTART_TIME
+          value: "{{ .Values.podRestartTime }}"
+        - name: SERVER_INTERNAL_SSL_KEY_STORE_PASSWORD
+          value: "18f85c331f5e3cd4"
+        - name: SERVER_INTERNAL_SSL_TRUST_STORE_PASSWORD
+          value: "18f85c331f5e3cd4"
+        - name: ARTIFACTORY_CLIENT_CONNECTIONTIMEOUT
+          value: '20'
+        - name: XRAY_CLIENT_CONNECTIONTIMEOUT
+          value: '20'
+        - name: JENKINS_CLIENT_CONNECTIONTIMEOUT
+          value: '20'
+        - name: GIT_CLIENT_CONNECTIONTIMEOUT
+          value: '20'
+        - name: INSIGHT_CLIENT_CONNECTIONTIMEOUT
+          value: '20'
+        - name: MC_URL
+          value: "{{ .Values.missionControl.missionControlUrl }}"
+        - name: JAVA_OPTIONS
+          value: "{{ .Values.missionControl.javaOpts.other }} -Xms{{ .Values.missionControl.javaOpts.xms }} -Xmx{{ .Values.missionControl.javaOpts.xmx }}"
+        ports:
+        - containerPort: {{ .Values.missionControl.internalPort }}
+          protocol: TCP
+        volumeMounts:
+        - name: mission-control-data
+          mountPath: {{ .Values.missionControl.persistence.mountPath | quote }}
+        - name: mission-control-certs
+          mountPath: /tmp/jfmc-keystore.jks-b64
+          subPath: jfmc-keystore.jks-b64
+        - name: mission-control-certs
+          mountPath: /tmp/jfmc-truststore.jks-b64
+          subPath: jfmc-truststore.jks-b64
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - '/bin/sh'
+              - '-c'
+              - >
+                until [ -f /tmp/jfmc-keystore.jks-b64 ] && [ -f /tmp/jfmc-truststore.jks-b64 ]; do sleep 1; done;
+                mkdir -p /var/opt/jfrog/mission-control/etc/security;
+                base64 -d /tmp/jfmc-keystore.jks-b64 > /var/opt/jfrog/mission-control/etc/security/jfmc-keystore.jks;
+                base64 -d /tmp/jfmc-truststore.jks-b64 > /var/opt/jfrog/mission-control/etc/security/jfmc-truststore.jks
+        resources:
+          requests:
+            memory: "{{ .Values.missionControl.resources.requests.memory }}"
+            cpu: "{{ .Values.missionControl.resources.requests.cpu }}"
+          limits:
+            memory: "{{ .Values.missionControl.resources.limits.memory }}"
+            cpu: "{{ .Values.missionControl.resources.limits.cpu }}"
+        livenessProbe:
+          httpGet:
+            path: /api/v3/ping
+            port: 8080
+          periodSeconds: 10
+          initialDelaySeconds: 240
+      volumes:
+      - name: mission-control-data
+      {{- if .Values.missionControl.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.missionControl.persistence.existingClaim }}{{ .Values.missionControl.persistence.existingClaim }}{{ else }}{{ template "mission-control.fullname" . }}{{ end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: mission-control-certs
+        configMap:
+          name: {{ template "mission-control.fullname" . }}-certs

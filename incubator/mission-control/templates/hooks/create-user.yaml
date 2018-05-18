@@ -1,0 +1,43 @@
+{{- if .Values.mongodb.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-create-user"
+  labels:
+    app: {{ template "mission-control.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: mongodb
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "mission-control.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      restartPolicy: OnFailure
+      containers:
+      - name: post-install-job
+        image: "mvertes/alpine-mongo:{{ .Values.mongodb.image.tag }}-0"
+        command:
+        - 'sh'
+        - '-c'
+        - 'sh /scripts/setup.sh'
+        volumeMounts:
+        - name: mongodb-setup
+          mountPath: "/scripts"
+      volumes:
+      - name: mongodb-setup
+        configMap:
+          name: {{ template "mission-control.fullname" . }}-setup-script
+{{- end }}

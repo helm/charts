@@ -1,0 +1,70 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "insight-scheduler.fullname" . }}
+  labels:
+    app: {{ template "mission-control.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.insightScheduler.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.insightScheduler.replicaCount }}
+  template:
+    metadata:
+      name: {{ .Values.insightScheduler.name }}
+      labels:
+        app: {{ template "mission-control.name" . }}
+        component: "{{ .Values.insightScheduler.name }}"
+        release: {{ .Release.Name }}
+    spec:
+    {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.global.imagePullSecrets }}
+    {{- end }}
+      initContainers:
+      - name: init-data
+        image: "{{ .Values.initContainerImage }}"
+        command:
+        - 'sh'
+        - '-c'
+        - >
+          until nc -z -w 2 {{ .Release.Name }}-mongodb 27017 && echo mongodb ok;
+            do sleep 2;
+          done;
+          sleep 10
+      containers:
+      - name: {{ .Values.insightScheduler.name }}
+        image: {{ .Values.insightScheduler.image }}:{{ .Values.insightScheduler.version }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: CORE_URL
+          value: 'http://{{ template "insight-server.fullname" . }}:{{ .Values.insightServer.internalHttpPort }}'
+        - name: JFI_HOME
+          value: '/var/cloudbox'
+        - name: JFI_HOME_SCHEDULER
+          value: '/var/cloudbox/scheduler'
+        - name: MONGO_URL
+          value: '{{ .Release.Name }}-mongodb:27017'
+        - name: MONGODB_USERNAME
+          value: '{{ index .Values "mongodb" "db" "insightUser" }}'
+        - name: MONGODB_PASSWORD
+          value: '{{ index .Values "mongodb" "db" "insightPassword" }}'
+        - name: JFMC_SCHEDULER_MONGO_DB
+          value: '{{ index .Values "mongodb" "db" "insightSchedulerDb" }}'
+        ports:
+        - containerPort: {{ .Values.insightScheduler.internalPort }}
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /schedulerservice/api/status
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "{{ .Values.insightScheduler.resources.requests.memory }}"
+            cpu: "{{ .Values.insightScheduler.resources.requests.cpu }}"
+          limits:
+            memory: "{{ .Values.insightScheduler.resources.limits.memory }}"
+            cpu: "{{ .Values.insightScheduler.resources.limits.cpu }}"

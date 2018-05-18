@@ -1,0 +1,114 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "insight-server.fullname" . }}
+  labels:
+    app: {{ template "mission-control.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.insightServer.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.insightServer.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "mission-control.name" . }}
+        component: {{ .Values.insightServer.name }}
+        release: {{ .Release.Name }}
+    spec:
+    {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.global.imagePullSecrets }}
+    {{- end }}
+      initContainers:
+      - name: init-data
+        image: "{{ .Values.initContainerImage }}"
+        command:
+        - 'sh'
+        - '-c'
+        - >
+          until nc -z -w 2 {{ .Release.Name }}-mongodb 27017 && echo mongodb ok && \
+                nc -z -w 2 {{ .Release.Name }}-elasticsearch 9200 && echo elasticsearch ok;
+            do sleep 2;
+          done;
+          sleep 10
+      containers:
+      - name: {{ .Values.insightServer.name }}
+        image: {{ .Values.insightServer.image }}:{{ .Values.insightServer.version }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: CORE_URL
+          value: 'http://{{ template "insight-server.fullname" . }}:{{ .Values.insightServer.internalHttpPort }}'
+        - name: EXECUTOR_URL
+          value: 'http://{{ template "insight-executor.fullname" . }}:{{ .Values.insightExecutor.internalPort }}/executorservice'
+        - name: SCHEDULER_URL
+          value: 'http://{{ template "insight-scheduler.fullname" . }}:{{ .Values.insightScheduler.internalPort }}/schedulerservice'
+        - name: MONGO_URL
+          value: '{{ .Release.Name }}-mongodb:27017'
+        - name: MONGODB_USERNAME
+          value: '{{ index .Values "mongodb" "db" "insightUser" }}'
+        - name: MONGODB_PASSWORD
+          value: '{{ index .Values "mongodb" "db" "insightPassword" }}'
+        - name: MONGODB_ADMIN_USERNAME
+          value: '{{ index .Values "mongodb" "db" "adminUser" }}'
+        - name: MONGODB_ADMIN_PASSWORD
+          value: '{{ index .Values "mongodb" "db" "adminPassword" }}'
+        - name: JFMC_URL
+          value: 'http://{{ template "mission-control.fullname" . }}:{{ .Values.missionControl.internalPort }}'
+        - name: ELASTIC_SEARCH_URL
+          value: 'http://{{ .Release.Name }}-elasticsearch:9200'
+        - name: ELASTIC_CLUSTER_NAME
+          value: 'es-cluster'
+        - name: ELASTIC_SEARCH_USERNAME
+          value: 'elastic'
+        - name: ELASTIC_SEARCH_PASSWORD
+          value: 'changeme'
+        - name: ELASTIC_COMMUNICATION_NODE_URL
+          value: '{{ .Release.Name }}-elasticsearch:9300'
+        - name: JFI_HOME
+          value: '/var/cloudbox'
+        - name: JFI_HOME_CORE
+          value: '/var/cloudbox/core'
+        - name: JFMC_MISSION_CONTROL_CERT
+          value: "/var/cloudbox/core/_MASTER_/data/contexts/security/jfmc.crt"
+        - name: JFMC_INSIGHT_SERVER_CERT
+          value: "/var/cloudbox/core/_MASTER_/data/contexts/security/insight.crt"
+        - name: JFMC_INSIGHT_SERVER_KEY
+          value: "/var/cloudbox/core/_MASTER_/data/contexts/security/insight.key"
+        - name: JFMC_INSIGHT_SERVER_PORT
+          value: "{{ .Values.insightServer.internalHttpPort }}"
+        - name: JFMC_INSIGHT_SERVER_SSL_PORT
+          value: "{{ .Values.insightServer.internalHttpsPort }}"
+        ports:
+        - containerPort: {{ .Values.insightServer.internalHttpPort }}
+          protocol: TCP
+        - containerPort: {{ .Values.insightServer.internalHttpsPort }}
+          protocol: TCP
+        volumeMounts:
+        - name: mission-control-certs
+          mountPath: /var/cloudbox/core/_MASTER_/data/contexts/security/insight.key
+          subPath: insight.key
+        - name: mission-control-certs
+          mountPath: /var/cloudbox/core/_MASTER_/data/contexts/security/insight.crt
+          subPath: insight.crt
+        - name: mission-control-certs
+          mountPath: /var/cloudbox/core/_MASTER_/data/contexts/security/jfmc.crt
+          subPath: jfmc.crt
+        livenessProbe:
+          httpGet:
+            path: /api/status
+            port: 8082
+          initialDelaySeconds: 300
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "{{ .Values.insightServer.resources.requests.memory }}"
+            cpu: "{{ .Values.insightServer.resources.requests.cpu }}"
+          limits:
+            memory: "{{ .Values.insightServer.resources.limits.memory }}"
+            cpu: "{{ .Values.insightServer.resources.limits.cpu }}"
+      volumes:
+      - name: mission-control-certs
+        configMap:
+          name: {{ template "mission-control.fullname" . }}-certs
