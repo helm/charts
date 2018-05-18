@@ -23,7 +23,7 @@
 
 2. How to log in
 {{ if or (.Values.phpmyadmin.dbSuffix) (.Values.phpmyadmin.dbHost)}}
-PhpMyAdmin has been configured to connect to a database in {{ if .Values.phpmyadmin.dbSuffix}}{{template "db.fullname" .}}{{ else }}{{.Values.phpmyadmin.dbHost}}{{end}}
+PhpMyAdmin has been configured to connect to a database in {{ if .Values.phpmyadmin.dbSuffix}}{{template "phpmyadmin.dbfullname" .}}{{ else }}{{.Values.phpmyadmin.dbHost}}{{end}}
 {{if .Values.phpmyadmin.dbPort}}with port {{.Values.phpmyadmin.dbPort}} {{end }}
 Please login using a database username and password. 
 {{ else }}
