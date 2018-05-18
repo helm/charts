@@ -49,7 +49,7 @@ spec:
       - name: {{ .Values.artifactory.name }}
         image: "{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}"
         imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
-        {{- if eq .Values.artifactory.type "egde" }}
+        {{- if eq .Values.artifactory.type "edge" }}
         lifecycle:
           postStart:
             exec:
@@ -109,23 +109,23 @@ spec:
       {{- if .Values.artifactory.javaOpts.xmx }}
           -Xmx{{ .Values.artifactory.javaOpts.xmx }}
       {{- end}}
-      {{- if eq .Values.artifactory.type "egde" }}
+      {{- if eq .Values.artifactory.type "edge" }}
           -Dartifactory.releasebundle.feature.enabled=true
       {{- end }}
             "
-        {{- if eq .Values.artifactory.type "egde" }}
+        {{- if eq .Values.artifactory.type "edge" }}
         - name: START_LOCAL_REPLICATOR
           value: "true"
         {{- end }}
         ports:
         - containerPort: {{ .Values.artifactory.internalPort }}
-        {{- if eq .Values.artifactory.type "egde" }}
+        {{- if eq .Values.artifactory.type "edge" }}
         - containerPort: {{ .Values.artifactory.internalPortReplicator }}
         {{- end }}
         volumeMounts:
         - name: artifactory-volume
           mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
-      {{- if eq .Values.artifactory.type "egde" }}
+      {{- if eq .Values.artifactory.type "edge" }}
       {{- if .Values.artifactory.distributionCerts }}
         - name: distribution-certs
           mountPath: "/tmp/access/etc/keys"
@@ -159,7 +159,7 @@ spec:
           successThreshold: {{ .Values.artifactory.livenessProbe.successThreshold }}
         {{- end }}
       volumes:
-      {{- if eq .Values.artifactory.type "egde" }}
+      {{- if eq .Values.artifactory.type "edge" }}
       {{- if .Values.artifactory.distributionCerts }}
       - name: distribution-certs
         configMap:
