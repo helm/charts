@@ -66,7 +66,6 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `tolerations`                      | Optional daemonset tolerations                                                               | `NULL`                                           |
 
 
-
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
