@@ -29,6 +29,7 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      serviceAccountName: {{ template "grafana.serviceAccountName" . }}
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
@@ -45,6 +46,11 @@ spec:
             - name: storage
               mountPath: "/var/lib/grafana"
               subPath: {{ .Values.persistence.subPath }}
+          {{- range .Values.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
 {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -128,7 +134,7 @@ spec:
 {{- end }}
           {{- if .Values.envFromSecret }}
           envFrom:
-            - secretKeyRef:
+            - secretRef:
                 name: {{ .Values.envFromSecret }}
           {{- end }}
           livenessProbe:
@@ -181,4 +187,9 @@ spec:
       {{- else }}
           emptyDir: {}
       {{- end -}}
+      {{- range .Values.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+      {{- end }}
 
