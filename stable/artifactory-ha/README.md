@@ -314,7 +314,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.persistence.awsS3.path`                | AWS S3 path in bucket               | `artifactory-ha/filestore`   |
 | `artifactory.javaOpts.other` | Artifactory extra java options (for all nodes) | `-Dartifactory.locking.provider.type=db` |
 | `artifactory.replicator.enabled`            | Enable Artifactory Replicator | `false`  |
-| `artifactory.distributionCerts`            | Name of ConfigMap for Artifactory Distribution Certificate  | `false`  |
+| `artifactory.distributionCerts`            | Name of ConfigMap for Artifactory Distribution Certificate  | ``  |
 | `artifactory.replicator.publicUrl`            | Artifactory Replicator Public URL |      |
 | `artifactory.primary.resources.requests.memory` | Artifactory primary node initial memory request  |                     |
 | `artifactory.primary.resources.requests.cpu`    | Artifactory primary node initial cpu request     |                     |
