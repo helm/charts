@@ -42,7 +42,7 @@ The following table lists the configurable parameters of the Keycloak chart and 
 Parameter | Description | Default
 --- | --- | ---
 `imageRepository` | Keycloak Proxy image repository | `jboss/keycloak-proxy`
-`imageTag` | Keycloak Proxy image version | `3.4.0.Final`
+`imageTag` | Keycloak Proxy image version | `3.4.2.Final`
 `imagePullPolicy` | Keycloak Proxy image pull policy | `IfNotPresent`
 `service.type` | The service type | `ClusterIP`
 `service.port` | The service port | `80`
