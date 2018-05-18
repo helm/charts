@@ -62,7 +62,7 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `image` | The `SchemaRegistry` image repository | `confluentinc/cp-schema-registry` |
-| `imageTag` | The `SchemaRegistry` image tag | `4.0.0` |
+| `imageTag` | The `SchemaRegistry` image tag | `4.0.1` |
 | `imagePullPolicy` | Image Pull Policy | `IfNotPresent` |
 | `replicaCount` | The number of `SchemaRegistry` Pods in the Deployment | `1` |
 | `configurationOverrides` | `SchemaRegistry` [configuration setting](https://github.com/confluentinc/schema-registry/blob/master/docs/config.rst#configuration-options) overrides in the dictionary format `setting.name: value` | `{}` |
