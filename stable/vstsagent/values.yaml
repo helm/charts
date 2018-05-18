@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: microsoft/vsts-agent
-  tag: ubuntu-16.04
+  tag: ubuntu-16.04-standard
   pullPolicy: IfNotPresent
 
 secret:
