@@ -249,7 +249,7 @@ spec:
           periodSeconds: 5
           failureThreshold: 2
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml .Values.Resources | indent 10 }}
         env:
         - name: STATEFULSET_NAME
           value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
