@@ -1,5 +1,7 @@
 name: minecraft
-version: 0.2.0
+version: 0.2.1
+appVersion: 1.12.2
+home: https://minecraft.net/
 description: Minecraft server
 keywords:
 - game

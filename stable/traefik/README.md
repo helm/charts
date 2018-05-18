@@ -1,6 +1,6 @@
 # Traefik
 
-[Traefik](http://traefik.io/) is a modern HTTP reverse proxy and load balancer made to deploy
+[Traefik](https://traefik.io/) is a modern HTTP reverse proxy and load balancer made to deploy
 microservices with ease.
 
 ## Introduction
@@ -81,17 +81,20 @@ release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Traefik chart and their default values.
+The following table lists the configurable parameters of the Traefik chart and their default values.
 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
 | `fullnameOverride`              | Override the full resource names                                     | `{release-name}-traefik (or traefik if release-name is traefik`|
 | `image`                         | Traefik image name                                                   | `traefik`                                 |
-| `imageTag`                      | The version of the official Traefik image to use                     | `1.5.3`                                  |
+| `imageTag`                      | The version of the official Traefik image to use                     | `1.5.4`                                  |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
 | `loadBalancerIP`                | An available static IP you have reserved on your cloud platform      | None                                      |
-| `loadBalancerSourceRanges`      | list of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
+| `loadBalancerSourceRanges`      | List of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
+| `whiteListSourceRange`          | Enable IP whitelisting at the entrypoint level.                      | `false`                                   |
+| `externalTrafficPolicy`         | Set the externalTrafficPolicy in the Service to either Cluster or Local | `Cluster`                              |
 | `replicas`                      | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
+| `podDisruptionBudget`                  | Pod disruption budget             | `{}` |
 | `cpuRequest`                    | Initial share of CPU requested per Traefik pod                       | `100m`                                    |
 | `memoryRequest`                 | Initial share of memory requested per Traefik pod                    | `20Mi`                                    |
 | `cpuLimit`                      | CPU limit per Traefik pod                                            | `200m`                                    |
@@ -101,10 +104,11 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `affinity`                      | Affinity settings                                                    | `{}`                                      |
 | `tolerations`                   | List of node taints to tolerate                                      | `[]`                                      |
 | `proxyProtocol.enabled`         | Enable PROXY protocol support.                                       | `false`                                   |
-| `proxyProtocol.trustedIPs`      | List of proxy IPs (CIDR ranges) trusted to accurately convey the end-user IP. | `[]`                              |
+| `proxyProtocol.trustedIPs`      | List of PROXY IPs (CIDR ranges) trusted to accurately convey the end-user IP. | `[]`                              |
 | `debug.enabled`                 | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
+| `ssl.insecureSkipVerify`        | Whether to verify certs on SSL connections                           | `false`                                   |
 | `ssl.defaultCert`               | Base64 encoded default certificate                                    | A self-signed certificate                 |
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
@@ -113,8 +117,9 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `acme.dnsProvider.$name`        | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. See [here](#example-aws-route-53). | `{}`                     |
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
-| `acme.logging`                  | display debug log messages from the acme client library              | `false`                                   |
+| `acme.logging`                  | Display debug log messages from the ACME client library              | `false`                                   |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
+| `acme.persistence.annotations`  | PVC annotations                                                      | `{}`                                      |
 | `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `nil` (uses alpha storage class annotation) |
 | `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
 | `acme.persistence.existingClaim`| An Existing PVC name                                                 | `nil`                                     |
@@ -235,10 +240,10 @@ acme:
 
 ### Proxy Protocol
 
-In situations where Traefik lives behind an Internet-facing loadbalancer (like an AWS ELB) and you still want it to see the actual source IP of the visitor instead of the internal IP of the loadbalancer, you can enable the loadbalancer to use the Proxy protocol to talk to Traefik. This effectively makes the loadbalancer transparant, as Traefik will still get the actual visitor IP address for each request. This only works if Traefik knows it's receiving traffic via the Proxy Protocol and the loadbalancer IP addresses need to be whitelisted as well.
+In situations where Traefik lives behind an Internet-facing loadbalancer (like an AWS ELB) and you still want it to see the actual source IP of the visitor instead of the internal IP of the loadbalancer, you can enable the loadbalancer to use the Proxy protocol to talk to Traefik. This effectively makes the loadbalancer transparent, as Traefik will still get the actual visitor IP address for each request. This only works if Traefik knows it's receiving traffic via the Proxy Protocol and the loadbalancer IP addresses need to be whitelisted as well.
 
 How to set this up on AWS is described in the Kubernetes documentation [here](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-protocol-support-on-aws), it can easily be done by adding an annotation to the Service definition.
 
 **Caution**
 
-If only one of the components (either the loadbalancer or traefik) is set to use the Proxy protocol and the other is not, this will break badly as they will not be able to communicate with each other.
+If only one of the components (either the loadbalancer or Traefik) is set to use the Proxy protocol and the other is not, this will break badly as they will not be able to communicate with each other.

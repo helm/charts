@@ -50,6 +50,10 @@ spec:
           image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
           imagePullPolicy: "{{ .Values.Master.ImagePullPolicy }}"
           command: [ "sh", "/var/jenkins_config/apply_config.sh" ]
+          {{- if .Values.Master.InitContainerEnv }}
+          env:
+{{ toYaml .Values.Master.InitContainerEnv | indent 12 }}
+          {{- end }}
           volumeMounts:
             -
               mountPath: /var/jenkins_home
@@ -75,9 +79,11 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
+            {{- if .Values.Master.InstallPlugins }}
             -
-              mountPath: /usr/share/jenkins/ref/plugins/
+              mountPath: /var/jenkins_plugins
               name: plugin-dir
+            {{- end }}
             -
               mountPath: /usr/share/jenkins/ref/secrets/
               name: secrets-dir
@@ -105,6 +111,9 @@ spec:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
             {{- end }}
+            {{- if .Values.Master.ContainerEnv }}
+{{ toYaml .Values.Master.ContainerEnv | indent 12 }}
+            {{- end }}
           ports:
             - containerPort: {{ .Values.Master.ContainerPort }}
               name: http
@@ -120,6 +129,8 @@ spec:
               path: /login
               port: http
             initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout }}
+            timeoutSeconds: 5
+            failureThreshold: {{ .Values.Master.HealthProbeLivenessFailureThreshold }}
           readinessProbe:
             httpGet:
               path: /login
@@ -160,10 +171,12 @@ spec:
               name: jenkins-jobs
               readOnly: true
             {{- end }}
+            {{- if .Values.Master.InstallPlugins }}
             -
               mountPath: /usr/share/jenkins/ref/plugins/
               name: plugin-dir
               readOnly: false
+            {{- end }}
             -
               mountPath: /usr/share/jenkins/ref/secrets/
               name: secrets-dir
@@ -190,8 +203,10 @@ spec:
         configMap:
           name: {{ template "jenkins.fullname" . }}-jobs
       {{- end }}
+      {{- if .Values.Master.InstallPlugins }}
       - name: plugin-dir
         emptyDir: {}
+      {{- end }}
       - name: secrets-dir
         emptyDir: {}
       - name: jenkins-home

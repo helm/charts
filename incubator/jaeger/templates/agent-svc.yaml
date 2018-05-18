@@ -38,4 +38,5 @@ spec:
     component: agent
     release: {{ .Release.Name }}
     jaeger-infra: agent-instance
+{{- template "loadBalancerSourceRanges" .Values.agent }}
 {{- end -}}
