@@ -28,8 +28,8 @@ $ helm install --name artifactory --set artifactory.image.repository=docker.bint
 ```
 
 ### Deploying Artifactory with replicator enabled
-By default it will run Artifactory-Pro to run Artifactory-edge use following command:
 ```bash
+## By default it Artifactory replicator is disabled. To enable it use the following
 $ helm install --name artifactory --set artifactory.replicator.enabled=true stable/artifactory
 ```
 
