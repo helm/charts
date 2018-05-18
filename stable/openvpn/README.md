@@ -86,6 +86,23 @@ to disable this behaviour set `openvpn.OVPN_K8S_POD_NETWORK` and `openvpn.OVPN_K
 #### Note: As configured the chart will create a route for a large 10.0.0.0/8 network that may cause issues if that is your local network.  If so tweak this value to something more restrictive.  This route is added, because GKE generates pods with IPs in this range.
 
 ### Certificates
+
 New certificates are generated with each deployment.
 If persistence is enabled certificate data will be persisted across pod restarts.
 Otherwise new client certs will be needed after each deployment or pod restart.
+
+### Important values
+* service.externalPort: 443 - external LoadBalancer port
+* service.internalPort: 443 - port of openVPN port
+* service.nodePort: 32085 - certain node port for NodePort service type
+* openvpn.OVPN_NETWORK: 10.240.0.0 - Network allocated for openvpn clients (default: 10.240.0.0).
+* openvpn.OVPN_SUBNET:  255.255.0.0 - Network subnet allocated for openvpn client (default: 255.255.0.0).
+* openvpn.OVPN_PROTO: tcp - Protocol used by openvpn tcp or udp (default: tcp).
+* openvpn.OVPN_K8S_POD_NETWORK: "10.0.0.0" - Kubernetes pod network (optional).
+* openvpn.OVPN_K8S_POD_SUBNET: "255.0.0.0" - Kubernetes pod network subnet (optional).
+* openvpn.dhcpOptionDomain: true - Push a `dhcp-option DOMAIN` config
+* openvpn.redirectGateway: true - Redirect all client traffic through VPN
+* openvpn.conf: "" - Arbitrary lines appended to the end of the server configuration file
+
+#### Note: As configured the chart will create a route for a large 10.0.0.0/8 network that may cause issues if that is your local network.  If so tweak this value to something more restrictive.  This route is added, because GKE generates pods with IPs in this range.
+
