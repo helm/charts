@@ -107,6 +107,14 @@ env: {}
 ## This can be useful for auth tokens, etc
 envFromSecret: ""
 
+## Additional grafana server secret mounts
+# Defines additional mounts with secrets. Secrets must be manually created in the namespace.
+extraSecretMounts: []
+  # - name: secret-files
+  #   mountPath: /etc/secrets
+  #   secretName: grafana-secret-files
+  #   readOnly: true
+
 # Pass the plugins you want installed as a comma separated list.
 # plugins: "digrich-bubblechart-panel,grafana-clock-panel"
 plugins: ""
