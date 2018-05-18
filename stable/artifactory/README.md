@@ -8,7 +8,7 @@
 ## Chart Details
 This chart will do the following:
 
-* Deploy Artifactory-Pro (or OSS if set custom image)
+* Deploy Artifactory-Pro/Artifactory-Edge (or OSS if set custom image)
 * Deploy a PostgreSQL database using the stable/postgresql chart
 * Deploy an optional Nginx server
 * Optionally expose Artifactory with Ingress [Ingress documentation](https://kubernetes.io/docs/concepts/services-networking/ingress/)
@@ -25,6 +25,12 @@ $ helm install --name artifactory stable/artifactory
 By default it will run Artifactory-Pro to run Artifactory-Oss use following command:
 ```bash
 $ helm install --name artifactory --set artifactory.image.repository=docker.bintray.io/jfrog/artifactory-oss stable/artifactory
+```
+
+### Deploying Artifactory Edge
+By default it will run Artifactory-Pro to run Artifactory-edge use following command:
+```bash
+$ helm install --name artifactory --set artifactory.type=edge stable/artifactory
 ```
 
 ### Accessing Artifactory
@@ -76,6 +82,21 @@ $ helm delete --purge artifactory
 This will completely delete your Artifactory Pro deployment.  
 **IMPORTANT:** This will also delete your data volumes. You will lose all data!
 
+## Create Distribution Cert for Artifactory Edge
+```bash
+# Create private.key and root.crt
+$ openssl req -newkey rsa:2048 -nodes -keyout private.key -x509 -days 365 -out root.crt
+```
+
+Once Created, Use it to create ConfigMap
+```bash
+# Create ConfigMap distribution-certs
+$ kubectl create configmap distribution-certs --from-file=private.key=private.key --from-file=root.crt=root.crt
+```
+Pass it to `helm`
+```bash
+$ helm install --name artifactory --set artifactory.distributionCerts=distribution-certs stable/artifactory
+```
 
 ### Custom Docker registry for your images
 If you need to pull your Docker images from a private registry, you need to create a
@@ -97,6 +118,7 @@ The following table lists the configurable parameters of the artifactory chart a
 |---------------------------|-----------------------------------|----------------------------------------------------------|
 | `imagePullSecrets`        | Docker registry pull secret       |                                                          |
 | `artifactory.name` | Artifactory name | `artifactory`   |
+| `artifactory.type` | Artifactory type it can be 'oss/pro/edge' | `pro`   |
 | `artifactory.replicaCount`            | Replica count for Artifactory deployment| `1`                                                |
 | `artifactory.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                                           |
 | `artifactory.image.repository`    | Container image                   | `docker.bintray.io/jfrog/artifactory-pro`                |
@@ -105,6 +127,8 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.service.type`| Artifactory service type | `ClusterIP` |
 | `artifactory.externalPort` | Artifactory service external port | `8081`   |
 | `artifactory.internalPort` | Artifactory service internal port | `8081`   |
+| `artifactory.internalPortReplicator` | Replicator service internal port | `6061`   |
+| `artifactory.externalPortReplicator` | Replicator service external port | `6061`   |
 | `artifactory.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
 | `artifactory.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 180                                                   |
 | `artifactory.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
@@ -145,6 +169,8 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.internalPortHttp` | Nginx service internal port | `80`   |
 | `nginx.externalPortHttps` | Nginx service external port | `443`   |
 | `nginx.internalPortHttps` | Nginx service internal port | `443`   |
+| `nginx.internalPortReplicator` | Replicator service internal port | `6061`   |
+| `nginx.externalPortReplicator` | Replicator service external port | `6061`   |
 | `nginx.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
 | `nginx.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 60                                                   |
 | `nginx.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
