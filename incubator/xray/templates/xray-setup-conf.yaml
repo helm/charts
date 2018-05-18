@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "xray.fullname" . }}-setup
+  labels:
+    app: {{ template "xray.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  setup.sh: |
+    #!/bin/sh
+    # Setup script for Xray microservice
+
+    SCRIPTS_DIR=/scripts
+    XRAYCONFIGPATH={{ .Values.common.xrayConfigPath }}
+    XRAY_CONFIG_DIR=${XRAYCONFIGPATH}/config
+    XRAY_CONFIG_FILE=${XRAY_CONFIG_DIR}/xray_config.yaml
+
+    echo "Creating directories"
+    mkdir -pv ${XRAY_CONFIG_DIR}
+
+    # Wait for DBs to be ready
+    echo "Waiting for DBs..."
+    sleep 20
+
+    # Prepare Xray config
+    echo "Preparing Xray config (${XRAY_CONFIG_FILE})"
+    if [ -f ${XRAY_CONFIG_FILE} ]; then
+      echo "Config exist. Backing it up..."
+      cp -vf ${XRAY_CONFIG_FILE} ${XRAY_CONFIG_FILE}-$(date +%Y%m%d-%H%M%S)
+    fi
+
+    cp -vf ${SCRIPTS_DIR}/xray_config.yaml ${XRAY_CONFIG_FILE}
+
+  xray_config.yaml: |
+    # Generated Xray config
+    ---
+        ver:            1.0
+        XrayServerPort: "{{ .Values.server.internalPort }}"
+        mqBaseUrl:      "{{ template "xray.rabbitmq.url" . }}"
+        mongoUrl:       "{{ template "xray.mongodb.url" . }}"
+        postgresqlUrl:  "{{ template "xray.postgresql.url" . }}"
+        stdOutEnabled:  {{ .Values.common.stdOutEnabled }}
+        skipEntLicCheckForCloud: true
+      {{- if .Values.common.stagingMode.enabled }}
+        useStagingPublicKey:  true
+        jxrayUrl:             https://jxray.jfrog.info/
+        storeUser:            {{ .Values.common.stagingMode.storeUser }}
+        storePassword:        {{ .Values.common.stagingMode.storePassword }}
+      {{- end }}
+    # End generated config
+
