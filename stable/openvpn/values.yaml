@@ -57,6 +57,8 @@ openvpn:
   OVPN_K8S_POD_SUBNET: "255.0.0.0"
   # Push a `dhcp-option DOMAIN` config
   dhcpOptionDomain: true
+  # Redirect all client traffic through VPN
+  redirectGateway: true
   # Arbitrary lines appended to the end of the server configuration file
   # conf: |
   #  max-clients 100
