@@ -31,12 +31,14 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if and .Values.proxy.ldapHost .Values.secrets.ldapBindPassword }}
           env:
             - name: LDAP_BIND_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "nginx-ldapauth-proxy.fullname" . }}
                   key: ldapBindPassword
+{{- end }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
           livenessProbe:

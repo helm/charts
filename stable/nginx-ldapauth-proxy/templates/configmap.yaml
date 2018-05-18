@@ -64,8 +64,8 @@ data:
             location /_ping {
                 auth_basic off;
                 root   /usr/share/nginx/html;
+                stub_status on;
             }
-
         }
 
     }
