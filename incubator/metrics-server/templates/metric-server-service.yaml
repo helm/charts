@@ -5,14 +5,14 @@ metadata:
   namespace: kube-system
   labels:
     app: {{ template "metrics-server.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
+    chart: {{ template "metrics-server.chart" . }}
     release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: 443
   selector:
     app: {{ template "metrics-server.name" . }}
     release: {{ .Release.Name }}
-  ports:
-  - port: 443
-    protocol: TCP
-    targetPort: 443

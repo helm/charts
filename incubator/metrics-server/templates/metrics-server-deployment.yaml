@@ -1,13 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "metrics-server.fullname" . }}
   namespace: kube-system
   labels:
     app: {{ template "metrics-server.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
+    chart: {{ template "metrics-server.chart" . }}
     release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   template:
     metadata:
@@ -17,9 +17,9 @@ spec:
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "metrics-server.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
-      - name: metrics-server
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command:
-        - /metrics-server
-        - --source=kubernetes.summary_api:''
+        - name: metrics-server
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /metrics-server
+            - --source=kubernetes.summary_api:''

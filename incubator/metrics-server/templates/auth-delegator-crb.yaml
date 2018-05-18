@@ -5,15 +5,15 @@ metadata:
   name: metrics-server:system:auth-delegator
   labels:
     app: {{ template "metrics-server.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
+    chart: {{ template "metrics-server.chart" . }}
     release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: system:auth-delegator
 subjects:
-- kind: ServiceAccount
-  name: {{ template "metrics-server.fullname" . }}
-  namespace: kube-system
+  - kind: ServiceAccount
+    name: {{ template "metrics-server.fullname" . }}
+    namespace: kube-system
 {{- end -}}

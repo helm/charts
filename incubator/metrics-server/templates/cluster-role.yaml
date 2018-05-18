@@ -5,26 +5,26 @@ metadata:
   name: system:metrics-server
   labels:
     app: {{ template "metrics-server.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
+    chart: {{ template "metrics-server.chart" . }}
     release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 rules:
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  - nodes
-  - namespaces
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - "extensions"
-  resources:
-  - deployments
-  verbs:
-  - get
-  - list
-  - watch
+  - apiGroups:
+    - ""
+    resources:
+      - pods
+      - nodes
+      - namespaces
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+    - "extensions"
+    resources:
+      - deployments
+    verbs:
+      - get
+      - list
+      - watch
 {{- end -}}
