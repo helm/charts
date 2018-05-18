@@ -31,7 +31,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ template "mongodb.name" . }}-arbiter
-          image: "{{ .Values.image.registry }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          image: {{ template "mongodb.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
           - containerPort: {{ .Values.port }}

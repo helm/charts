@@ -4,14 +4,14 @@ image:
   registry: docker.io
   ## Bitnami MongoDB image name
   ##
-  name: bitnami/mongodb
+  repository: bitnami/mongodb
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
   tag: 3.6.4
 
   ## Specify a imagePullPolicy
-  ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+  ## 'Always' if image.tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
   pullPolicy: Always
@@ -169,8 +169,8 @@ configmap:
 #      enabled: true
 #      pathPrefix: /opt/bitnami/mongodb/tmp
 #  # replica set options
-#  replication:
-#    replSetName: replicaset
+#  #replication:
+#  #  replSetName: replicaset
 #  # process management options
 #  processManagement:
 #     fork: false
@@ -181,4 +181,4 @@ configmap:
 #  # security options
 #  security:
 #    authorization: enabled
-#    keyFile: /opt/bitnami/mongodb/conf/keyfile
+#    #keyFile: /opt/bitnami/mongodb/conf/keyfile
