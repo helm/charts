@@ -36,6 +36,7 @@ The following table lists the configurable parameters of the VSTS chart and thei
 
 | Parameter                | Description                   | Default                                                                                                                    |
 | ------------------------ | ----------------------------  | -------------------------------------------------------------------------------------------------------------------------- |
+| `image.tag`              |  Tag of the image             | ubuntu-16.04 (Check https://hub.docker.com/r/microsoft/vsts-agent/ for other tags)                                         |
 | `secret.account`         |  vsts account name            | None, needs to be provided. Must be base64 encoded (base64 -w 0).E.g. myproject when the url is myproject.visualstudio.com |
 | `secret.token`           |  vsts personal access token   | None, needs to be provided. Must be base64 encoded (base64 -w 0)                                                           |
 | `agentpool.name`         |  vsts agentpool name          | None, needs to be provided.                                                                                                |
