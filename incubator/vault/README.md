@@ -58,6 +58,9 @@ The following table lists the configurable parameters of the Vault chart and the
 | `resources.limits.cpu`            | Container requested CPU                  | `nil`                               |
 | `resources.limits.memory`         | Container requested memory               | `nil`                               |
 | `affinity`                        | Affinity settings                        | See values.yaml                     |
+| `service.annotations`             | Annotations for service                  | `{}`                                |
+| `annotations`                     | Annotations for deployment               | `{}`                                |
+| `podAnnotations`                  | Annotations for pods                     | `{}`                                |
 | `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |
 | `consulAgent.repository`          | Container image for consul agent         | `consul`                            |
 | `consulAgent.tag`                 | Container image tag for consul agent     | `1.0.6`                             |
@@ -72,7 +75,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 If you are using the consul storage for vault, you might want a local
 consul agent to handle health checks.  By setting `consulAgent.join`
 to your consul server, an agent will be started in the vault pod.  In
-this case, you should configure vault to connect to console over
+this case, you should configure vault to connect to consul over
 `localhost`.  For example:
 
 ```yaml
