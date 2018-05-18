@@ -15,7 +15,9 @@ data:
              "base-path":"/",
              "adapter-config":{
                 "realm":"{{ .Values.configmap.realm }}",
+                {{- if .Values.configmap.realmPublicKey }}
                 "realm-public-key": "{{ .Values.configmap.realmPublicKey }}",
+                {{- end }}
                 "auth-server-url":"{{ .Values.configmap.authServerUrl }}",
                 "ssl-required":"external",
                 "resource":"{{ .Values.configmap.resource }}",

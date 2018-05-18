@@ -34,7 +34,7 @@ ingress:
 configmap:
   targetUrl: http://url-to-the-target-server.example.com
   realm: REALM_NAME
-  realmPublicKey: REALM_PUBLIC_KEY
+  realmPublicKey: 
   authServerUrl: http://url-to-keycloak.example.com/auth
   resource: CLIENT_ID
   secret: CLIENT_SECRET
