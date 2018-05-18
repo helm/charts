@@ -152,6 +152,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.javaOpts.xms`              | Artifactory java Xms size           |      |
 | `artifactory.javaOpts.xmx`              | Artifactory java Xms size           |      |
 | `artifactory.javaOpts.other`            | Artifactory additional java options |      |
+| `artifactory.replicator.publicUrl`            | Artifactory Replicator Public URL |      |
 | `ingress.enabled`           | If true, Artifactory Ingress will be created | `false` |
 | `ingress.annotations`       | Artifactory Ingress annotations     | `{}` |
 | `ingress.hosts`             | Artifactory Ingress hostnames       | `[]` |
