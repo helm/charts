@@ -171,8 +171,8 @@ controller:
     healthCheckNodePort: 0
 
     targetPorts:
-      http: 80
-      https: 443
+      http: http
+      https: https
 
     type: LoadBalancer
 
