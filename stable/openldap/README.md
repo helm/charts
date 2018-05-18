@@ -1,7 +1,7 @@
 # OpenLDAP Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.6+
+* Kubernetes 1.8+
 * PV support on the underlying infrastructure
 
 ## Chart Details
@@ -14,7 +14,7 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release incubator/openldap
+$ helm install --name my-release stable/openldap
 ```
 
 ## Configuration
@@ -51,7 +51,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml incubator/openldap
+$ helm install --name my-release -f values.yaml stable/openldap
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

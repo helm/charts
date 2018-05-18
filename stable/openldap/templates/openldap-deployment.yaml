@@ -1,6 +1,3 @@
-#
-# A Deployment spec for openldap slapd
-#
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
