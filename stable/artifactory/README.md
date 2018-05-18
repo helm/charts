@@ -152,7 +152,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.javaOpts.xmx`              | Artifactory java Xms size           |      |
 | `artifactory.javaOpts.other`            | Artifactory additional java options |      |
 | `artifactory.replicator.enabled`            | Enable Artifactory Replicator | `false`  |
-| `artifactory.distributionCerts`            | Name of ConfigMap for Artifactory Distribution Certificate  | `false`  |
+| `artifactory.distributionCerts`            | Name of ConfigMap for Artifactory Distribution Certificate  | ``  |
 | `artifactory.replicator.publicUrl`            | Artifactory Replicator Public URL |      |
 | `ingress.enabled`           | If true, Artifactory Ingress will be created | `false` |
 | `ingress.annotations`       | Artifactory Ingress annotations     | `{}` |
