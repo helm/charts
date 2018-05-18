@@ -14,7 +14,7 @@ This chart bootstraps a [Phpmyadmin](https://github.com/bitnami/bitnami-docker-p
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.8+ with Beta APIs enabled
 
 ## Installing the Chart
 

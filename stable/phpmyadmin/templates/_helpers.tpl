@@ -32,12 +32,13 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Create a default fully qualified app name.
+Create a fully qualified database name if the database is part of the same release than phpmyadmin.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "db.fullname" -}}
 {{- printf "%s-%s" .Release.Name .Values.phpmyadmin.dbSuffix | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
 {{/*
 Return the proper image name
 */}}
