@@ -22,6 +22,7 @@ data:
             server {{ .Values.proxy.host}}:{{ .Values.proxy.port }};
         }
 
+{{- if and .Values.proxy.ldapHost .Values.secrets.ldapBindPassword }}
         ldap_server ldapserver {
             url ldap://{{ .Values.proxy.ldapHost }}:{{ .Values.proxy.ldapPort }}/{{ .Values.proxy.ldapDN }}?uid?sub?(&({{ .Values.proxy.ldapFilter}}));
             binddn "{{ .Values.proxy.ldapBindDN }}";
@@ -34,6 +35,7 @@ data:
             require valid_user;
             satisfy all;
         }
+{{- end }}
 
         server {
 
@@ -47,6 +49,7 @@ data:
 
             chunked_transfer_encoding on;
 
+{{- if and .Values.proxy.ldapHost .Values.secrets.ldapBindPassword }}
             location / {
                 auth_ldap "{{ .Values.proxy.authName }}";
                 auth_ldap_servers ldapserver;
@@ -56,6 +59,7 @@ data:
                 proxy_set_header  Authorization  ""; # see https://github.com/dotcloud/docker-registry/issues/170
                 proxy_read_timeout               900;
             }
+{{- end }}
 
             location /_ping {
                 auth_basic off;

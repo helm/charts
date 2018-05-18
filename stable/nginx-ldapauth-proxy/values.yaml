@@ -17,7 +17,7 @@ proxy:
   port: 443
   host: "kubernetes.default.svc.cluster.local"
   authName: "Auth Required"
-  ldapHost: "ldap.example.com"
+  ldapHost: ""
   ldapPort: 389
   ldapGroup: "memberUid"
   ldapDN: "dc=example,dc=com"
