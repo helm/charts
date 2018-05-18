@@ -59,6 +59,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `schedulerName`            | Alternate scheduler name | `nil` |
 | `env`                      | Extra environment variables passed to pods | `{}` |
 | `envFromSecret`            | The name of a Kubenretes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
+| `extraSecretMounts`        | Additional grafana server secret mounts | `[]` |
 | `datasource`               | Configure grafana datasources | `{}` |
 | `dashboardProviders`       | Configure grafana dashboard providers | `{}` |
 | `dashboards`               | Dashboards to import | `{}` |
