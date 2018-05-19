@@ -43,6 +43,11 @@ keycloak:
   nodeSelector: {}
   tolerations: []
 
+  livenessInitialDelaySeconds: 120
+  livenessTimeoutSeconds: 5
+  readinessInitialDelaySeconds: 30
+  readinessTimeoutSeconds: 1
+
   resources: {}
     # limits:
     #   cpu: "100m"
