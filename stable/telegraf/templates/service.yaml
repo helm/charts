@@ -5,6 +5,7 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-s
   labels:
+    app: {{ template "fullname" . }}-s
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   type: {{ .Values.single.service.type }}
@@ -34,6 +35,13 @@ spec:
   - port: {{ trimPrefix ":" $value.service_address | int64 }}
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
     name: "webhooks"
+    {{- end }}
+  {{- end }}
+  {{- range $key, $value := .Values.single.config.outputs }}
+    {{- if eq $key "prometheus_client" }}
+  - port: {{ trimPrefix ":" $value.listen | int64 }}
+    targetPort: {{ trimPrefix ":" $value.listen | int64 }}
+    name: "prometheus"
     {{- end }}
   {{- end }}
   selector:

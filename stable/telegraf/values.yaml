@@ -38,11 +38,11 @@ daemonset:
       logfile: ""
       hostname: "$HOSTNAME"
       omit_hostname: false
-    outputs:
-      influxdb:
-        urls: []
+    outputs: {}
+##      influxdb:
+##        urls: []
           # - "http://influxdb-influxdb.tick:8086"
-        database: "telegraf"
+##        database: "telegraf"
 ##        retention_policy: ""
 ##        write_consistency: "any"
 ##        timeout: "5s"
@@ -106,6 +106,9 @@ daemonset:
 ##        server: "localhost:4150"
 ##        topic: "telegraf"
 ##        data_format: "influx"
+##      prometheus_client:
+##        listen: ":9273"
+##        path: "/metrics"
     inputs:
       cpu:
         percpu: true
@@ -169,11 +172,11 @@ single:
       logfile: ""
       hostname: "telegraf-polling-service"
       omit_hostname: false
-    outputs:
-      influxdb:
-        urls: []
+    outputs: {}
+##      influxdb:
+##        urls: []
           # - "http://influxdb-influxdb.tick:8086"
-        database: "telegraf"
+##        database: "telegraf"
 ##        retention_policy: ""
 ##        write_consistency: "any"
 ##        timeout: "5s"
@@ -237,11 +240,14 @@ single:
 ##        server: "localhost:4150"
 ##        topic: "telegraf"
 ##        data_format: "influx"
-    inputs:
-      cpu:
-        percpu: false
-        totalcpu: true
-      system:
+##      prometheus_client:
+##        listen: ":9273"
+##        path: "/metrics"
+    inputs: {}
+##      cpu:
+##        percpu: false
+##        totalcpu: true
+##      system:
 ##      aerospike:
 ##        servers:
 ##          - "localhost:3000"
@@ -333,10 +339,10 @@ single:
 ##      haproxy:
 ##        servers:
 ##          - "http://myhaproxy.com:1936/haproxy?stats"
-      influxdb:
-        urls:
-          - "http://influxdb-influxdb.tick:8086/debug/vars"
-        timeout: "5s"
+##      influxdb:
+##        urls:
+##          - "http://influxdb-influxdb.tick:8086/debug/vars"
+##        timeout: "5s"
 ##      lustre2:
 ##        ost_procfiles:
 ##          - "/proc/fs/lustre/obdfilter/*/stats"
@@ -430,12 +436,12 @@ single:
 ##        databases:
 ##          - "app_production"
 ##          - "testing"
-      prometheus:
-        urls:
-          - "https://kubernetes.default:443/metrics"
-        name_prefix: "prom_"
-        bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
-        insecure_skip_verify: true
+##      prometheus:
+##        urls:
+##          - "https://kubernetes.default:443/metrics"
+##        name_prefix: "prom_"
+##        bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+##        insecure_skip_verify: true
 ##        ssl_ca: /path/to/cafile
 ##        ssl_cert: /path/to/certfile
 ##        ssl_key: /path/to/keyfile
@@ -480,12 +486,12 @@ single:
 ##        write_timeout: "10s"
 ##        max_body_size: 0
 ##        max_line_size: 0
-      statsd:
-        service_address: ":8125"
-        percentiles:
-          - 50
-          - 95
-          - 99
-        metric_separator: "_"
-        allowed_pending_messages: 10000
-        percentile_limit: 1000
+##      statsd:
+##        service_address: ":8125"
+##        percentiles:
+##          - 50
+##          - 95
+##          - 99
+##        metric_separator: "_"
+##        allowed_pending_messages: 10000
+##        percentile_limit: 1000
