@@ -8,7 +8,7 @@ image:
 elasticsearch:
   host: ""
   port: 9200
-  
+
   # Elasticsearch connection timeout, in seconds
   timeoutSeconds: 10
 
@@ -27,7 +27,7 @@ elastalert:
   # Default silence duration
   defaultSilenceMinutes: 240
 
-# Emails can be sent when a user acks or triages an issue. 
+# Emails can be sent when a user acks or triages an issue.
 smtp:
   host: ""
   port: 25
@@ -61,7 +61,7 @@ commandPrefix: "!"
 # Currently only smtp is supported for initiating a triage workflow.
 triageTarget: smtp
 
-# Allow all Slack users to search the Elasticsearch cluster for any data. 
+# Allow all Slack users to search the Elasticsearch cluster for any data.
 # CAUTION: Disable this when this bot is exposed to a public Slack community and the cluster contains sensitive data.
 searchEnabled: true
 
