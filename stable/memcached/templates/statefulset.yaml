@@ -19,6 +19,10 @@ spec:
         heritage: "{{ .Release.Service }}"
     spec:
       affinity:
+{{- if .Values.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml .Values.nodeAffinity | indent 10 }}
+{{- end }}
         podAntiAffinity:
         {{- if eq .Values.AntiAffinity "hard" }}
           requiredDuringSchedulingIgnoredDuringExecution:
