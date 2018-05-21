@@ -76,7 +76,6 @@ minecraftServer:
   # If you adjust this, you may need to adjust resources.requests above to match.
   jvmOpts: "-Xmx512M -Xms512M"
   serviceType: LoadBalancer
-  
   rcon:
     # If you enable this, make SURE to change your password below.
     enabled: false
@@ -97,3 +96,4 @@ persistence:
     # Set this to false if you don't care to persist state between restarts.
     enabled: true
     Size: 1Gi
+
