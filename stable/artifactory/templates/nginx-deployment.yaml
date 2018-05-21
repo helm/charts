@@ -68,6 +68,7 @@ spec:
                     -e 's,server_name .*,server_name ~(?<repo>.+)\\.{{ template "artifactory.fullname" . }} {{ template "artifactory.fullname" . }};,g' \
                     /etc/nginx/conf.d/artifactory.conf;
                 fi;
+                sed -i 's,\(proxy_pass .*\),proxy_http_version  1.1;\n    \1,g' /etc/nginx/conf.d/artifactory.conf;
                 sleep 5; nginx -s reload; touch /var/log/nginx/conf.done
         env:
         - name: ART_BASE_URL
