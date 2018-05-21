@@ -10,6 +10,10 @@ resources:
     memory: 512Mi
     cpu: 500m
 
+secContext:
+  #Securiyt context settings
+  runAsUser: 1000
+  fsGroup: 2000
 # Most of these map to environment variables. See Minecraft for details:
 # https://hub.docker.com/r/itzg/minecraft-server/
 minecraftServer:
@@ -73,6 +77,7 @@ minecraftServer:
   jvmOpts: "-Xmx512M -Xms512M"
   serviceType: LoadBalancer
 
+  
   rcon:
     # If you enable this, make SURE to change your password below.
     enabled: false
@@ -93,3 +98,4 @@ persistence:
     # Set this to false if you don't care to persist state between restarts.
     enabled: true
     Size: 1Gi
+
