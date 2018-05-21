@@ -11,7 +11,7 @@ resources:
     cpu: 500m
 
 secContext:
-  #Securiyt context settings
+  # Securiyt context settings
   runAsUser: 1000
   fsGroup: 2000
 # Most of these map to environment variables. See Minecraft for details:
@@ -76,7 +76,6 @@ minecraftServer:
   # If you adjust this, you may need to adjust resources.requests above to match.
   jvmOpts: "-Xmx512M -Xms512M"
   serviceType: LoadBalancer
-
   
   rcon:
     # If you enable this, make SURE to change your password below.
@@ -98,4 +97,3 @@ persistence:
     # Set this to false if you don't care to persist state between restarts.
     enabled: true
     Size: 1Gi
-
