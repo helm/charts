@@ -72,8 +72,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
           - name: config-storage
-            mountPath: /opt/couchdb/etc/default.d/chart.ini
-            subPath: chart.ini
+            mountPath: /opt/couchdb/etc/default.d
           - name: database-storage
             mountPath: /opt/couchdb/data
         - name: couchdb-statefulset-assembler
