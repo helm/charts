@@ -168,6 +168,17 @@ dashboards: {}
 #    local-dashboard:
 #      url: https://example.com/repository/test.json
 
+## Reference to external ConfigMap per provider. Use provider name as key and ConfiMap name as value.
+## A provider dashboards must be defined either by external ConfigMaps or in values.yaml, not in both.
+## ConfigMap data example:
+##
+## data:
+##   example-dashboard.json: |
+##     RAW_JSON
+##
+dashboardsConfigMaps: {}
+#  default: ""
+
 ## Grafana's primary configuration
 ## NOTE: values in map will be converted to ini format
 ## ref: http://docs.grafana.org/installation/configuration/

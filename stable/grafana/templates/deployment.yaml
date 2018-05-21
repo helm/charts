@@ -80,6 +80,12 @@ spec:
     {{- end }}
   {{- end }}
 {{- end -}}
+{{- if .Values.dashboardsConfigMaps }}
+  {{- range keys .Values.dashboardsConfigMaps }}
+            - name: dashboards-{{ . }}
+              mountPath: "/var/lib/grafana/dashboards/{{ . }}"
+  {{- end }}
+{{- end }}
 {{- if .Values.datasources }}
             - name: config
               mountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
@@ -174,6 +180,13 @@ spec:
         - name: dashboards-{{ . }}
           configMap:
             name: {{ template "grafana.fullname" $ }}-dashboards-{{ . }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.dashboardsConfigMaps }}
+          {{- range $provider, $name := .Values.dashboardsConfigMaps }}
+        - name: dashboards-{{ $provider }}
+          configMap:
+            name: {{ $name }}
           {{- end }}
         {{- end }}
         - name: ldap
