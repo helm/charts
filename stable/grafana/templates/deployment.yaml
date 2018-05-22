@@ -17,6 +17,8 @@ spec:
     matchLabels:
       app: {{ template "grafana.name" . }}
       release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.deploymentStrategy }}
   template:
     metadata:
       labels:
@@ -27,6 +29,7 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+      serviceAccountName: {{ template "grafana.serviceAccountName" . }}
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
@@ -124,6 +127,11 @@ spec:
             - name: "{{ $key }}"
               value: "{{ $value }}"
 {{- end }}
+          {{- if .Values.envFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.envFromSecret }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /api/health

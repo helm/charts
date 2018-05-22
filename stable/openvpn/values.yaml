@@ -7,12 +7,18 @@ image:
   tag: 1.1.0
   pullPolicy: IfNotPresent
 service:
-  name: openvpn
   type: LoadBalancer
   externalPort: 443
   internalPort: 443
+  externalIPs: []
   nodePort: 32085
   # loadBalancerIP: 10.0.0.1
+
+  ## Here annotations can be added to the openvpn service
+  # annotations:
+  #   external-dns.alpha.kubernetes.io/hostname: vpn.example.com
+  annotations: {}
+
 resources:
   limits:
     cpu: 300m
@@ -22,6 +28,7 @@ resources:
     memory: 128Mi
 persistence:
   enabled: true
+  # subPath: openvpn
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
