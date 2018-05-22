@@ -35,7 +35,7 @@ spec:
           volumeMounts:
             - mountPath: /opt/sonarqube/extensions
               name: sonarqube
-              subPath: extensions
+              subPath: {{ .Values.persistence.extensionsSubpath | default "extensions" }}
             - name: install-plugins
               mountPath: /tmp/scripts/
           resources:
@@ -98,7 +98,7 @@ spec:
           volumeMounts:
             - mountPath: /opt/sonarqube/conf
               name: sonarqube
-              subPath: conf
+              subPath: {{ .Values.persistence.confSubpath | default "conf" }}
             - mountPath: /tmp-script/
               name: startup
             {{- if .Values.sonarProperties }}
@@ -107,10 +107,10 @@ spec:
             {{- end}}
             - mountPath: /opt/sonarqube/data
               name: sonarqube
-              subPath: data
+              subPath: {{ .Values.persistence.dataSubpath | default "data" }}
             - mountPath: /opt/sonarqube/extensions
               name: sonarqube
-              subPath: extensions
+              subPath: {{ .Values.persistence.extensionsSubpath | default "extensions" }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
