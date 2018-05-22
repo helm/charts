@@ -3,10 +3,10 @@ apiVersion: "extensions/v1beta1"
 kind: "Deployment"
 metadata:
   labels:
-    app: {{ template "fleet.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+    app: {{ template "fleet.name" . }}
+    chart: {{ template "fleet.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   name: {{ template "fleet.fullname" . }}
 spec:
   replicas: {{ default 2 .Values.deployment.replicas }}

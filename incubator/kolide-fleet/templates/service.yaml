@@ -8,10 +8,10 @@ metadata:
 {{ end }}
     {{ if eq .Values.service.type "LoadBalancer" }}service.beta.kubernetes.io/external-traffic: "OnlyLocal"{{ end }}
   labels:
-    app: {{ template "fleet.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+    app: {{ template "fleet.name" . }}
+    chart: {{ template "fleet.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   name: {{ template "fleet.fullname" . }}
 spec:
   selector:
