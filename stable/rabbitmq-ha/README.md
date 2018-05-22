@@ -95,7 +95,7 @@ and their default values.
 | `rabbitmqCert.enabled`             | Mount a Secret container certificates                           | `false`                                                  |
 | `rabbitmqCert.cacertfile`          | base64 encoded CA certificate (overwrites existing Secret)      | ``                                                       |
 | `rabbitmqCert.certfile`            | base64 encoded server certificate (overwrites existing Secret)  | ``                                                       |
-| `rabbitmqCert.existingSecret`      | Use existing Certificates secret                 | `""`                                                       |
+| `rabbitmqCert.existingSecret`      | Name of an existing `Secret` to mount for amqps                  | `""`                                                       |
 | `rabbitmqCert.keyfile`             | base64 encoded server private key (overwrites existing Secret)  | ``                                                       |
 | `rabbitmqEpmdPort`                 | EPMD port used for cross cluster replication                    | `4369`                                                   |
 | `rabbitmqErlangCookie`             | Erlang cookie                                                   | _random 32 character long alphanumeric string_           |
@@ -116,7 +116,7 @@ and their default values.
 | `rabbitmqWebSTOMPPlugin.enabled`   | Enable STOMP over websocket plugin                              | `false`                                                  |
 | `rbac.create`                      | If true, create & use RBAC resources                            | `true`                                                   |
 | `replicaCount`                     | Number of replica                                               | `3`                                                      |
-| `resources`                        | CPU/Memory resource requests/limits                             | `{}`                                                     |
+| `resources`                        | CPU/Memory resource requests/limits                             | `{}`
 | `serviceAccount.create`            | Create service account                                          | `true`                                                   |
 | `serviceAccount.name`              | Service account name to use                                     | _name of the release_                                    |
 | `service.annotations`              | Annotations to add to the service                               | `{}`                                                     |
@@ -196,8 +196,8 @@ $ helm install --name my-release --set customConfigMap=true stable/rabbitmq-ha
 
 ### Custom Secret
 
-Similar to custom ConfigMap, `secret.existing` and `secret.overrideName` can be used to override the default secret.yaml provided, and
-`rabbitmqCert.secret.existing` and `rabbitmqCert.secret.overrideName` can be used to override the default certificates.
+Similar to custom ConfigMap, `existingSecret` can be used to override the default secret.yaml provided, and
+`rabbitmqCert.existingSecret` can be used to override the default certificates.
 
 ### Prometheus Monitoring & Alerts
 
