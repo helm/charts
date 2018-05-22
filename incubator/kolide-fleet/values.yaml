@@ -81,4 +81,3 @@ resources:
   limits:
     # cpu: "100m"
     # memory: "512Mi"
-
