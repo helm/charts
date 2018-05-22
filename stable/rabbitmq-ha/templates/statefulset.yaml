@@ -123,7 +123,7 @@ spec:
             - name: RABBITMQ_ERLANG_COOKIE
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secret.overrideName | default (printf "%s" (include "rabbitmq-ha.fullname" . )) }}
+                  name: {{ template "rabbitmq-ha.secretName" . }}
                   key: rabbitmq-erlang-cookie
             {{- if .Values.rabbitmqHipeCompile }}
             - name: RABBITMQ_HIPE_COMPILE
@@ -134,7 +134,7 @@ spec:
             - name: RABBITMQ_DEFAULT_PASS
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secret.overrideName | default (printf "%s" (include "rabbitmq-ha.fullname" . )) }}
+                  name: {{ template "rabbitmq-ha.secretName" . }}
                   key: rabbitmq-password
             - name: RABBITMQ_DEFAULT_VHOST
               value: {{ .Values.rabbitmqVhost | quote }}
@@ -163,7 +163,7 @@ spec:
             - name: RABBIT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secret.overrideName | default (printf "%s" (include "rabbitmq-ha.fullname" . )) }}
+                  name: {{ template "rabbitmq-ha.secretName" . }}
                   key: rabbitmq-password
             {{- range $key, $value := .Values.prometheus.exporter.env }}
             - name: {{ $key }}
@@ -211,7 +211,7 @@ spec:
         - name: cert
           secret:
             defaultMode: 420
-            secretName: {{ .Values.rabbitmqCert.secret.overrideName | default (printf "%s-cert" (include "rabbitmq-ha.fullname" . )) }}
+            secretName: {{ template "rabbitmq-ha.certSecretName" . }}
         {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:

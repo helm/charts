@@ -41,13 +41,8 @@ rabbitmqHipeCompile: false
 rabbitmqCert:
   enabled: false
 
-  secret:
-    ## Use existing secret, this chart will not create a secret.  It must be created outside of this chart
-    existing: false
-
-    ## Allows overriding secret name, Defaults to: {{ template "rabbitmq-ha.fullname" . }}-cert
-    overrideName: ""
-
+  # Specifies an existing secret to be used for SSL Certs
+  existingSecret: ""
 
   ## Create a new secret using these values
   cacertfile: |
@@ -271,12 +266,8 @@ readinessProbe:
   timeoutSeconds: 3
   periodSeconds: 5
 
-secret:
-  ## Use existing secret, this chart will not create a secret.  It must be created outside of this chart
-  existing: false
-
-  ## Allows overriding secret name, Defaults to: {{ template "rabbitmq-ha.fullname" . }}
-  overrideName: ""
+# Specifies an existing secret to be used
+existingSecret: "" 
 
 prometheus:
   ## Configures Prometheus Exporter to expose and scrape stats.

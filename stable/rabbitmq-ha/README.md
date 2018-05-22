@@ -66,6 +66,7 @@ and their default values.
 |          Parameter                 |                       Description                               |                         Default                          |
 |------------------------------------|-----------------------------------------------------------------|----------------------------------------------------------|
 | `customConfigMap`                  | Use a custom ConfigMap                                          | `false`                                                  |
+| `existingSecret`      | Use an existing secret for password & erlang cookie                 | `""`                                                       |
 | `image.pullPolicy`                 | Image pull policy                                               | `Always` if `image` tag is `latest`, else `IfNotPresent` |
 | `image.repository`                 | RabbitMQ container image repository                             | `rabbitmq`                                               |
 | `image.tag`                        | RabbitMQ container image tag                                    | `3.7-alpine`                                             |
@@ -94,9 +95,8 @@ and their default values.
 | `rabbitmqCert.enabled`             | Mount a Secret container certificates                           | `false`                                                  |
 | `rabbitmqCert.cacertfile`          | base64 encoded CA certificate (overwrites existing Secret)      | ``                                                       |
 | `rabbitmqCert.certfile`            | base64 encoded server certificate (overwrites existing Secret)  | ``                                                       |
+| `rabbitmqCert.existingSecret`      | Use existing Certificates secret                 | `""`                                                       |
 | `rabbitmqCert.keyfile`             | base64 encoded server private key (overwrites existing Secret)  | ``                                                       |
-| `rabbitmqCert.secret.existing`      | Use existing Certificates secret                 | `false`                                                       |
-| `rabbitmqCert.secret.overrideName`      | Override Certificate Secret Name                 | ``                                                       |
 | `rabbitmqEpmdPort`                 | EPMD port used for cross cluster replication                    | `4369`                                                   |
 | `rabbitmqErlangCookie`             | Erlang cookie                                                   | _random 32 character long alphanumeric string_           |
 | `rabbitmqHipeCompile`              | Precompile parts of RabbitMQ using HiPE                         | `false`                                                  |
@@ -117,8 +117,6 @@ and their default values.
 | `rbac.create`                      | If true, create & use RBAC resources                            | `true`                                                   |
 | `replicaCount`                     | Number of replica                                               | `3`                                                      |
 | `resources`                        | CPU/Memory resource requests/limits                             | `{}`                                                     |
-| `secret.existing`      | Use an existing secret for password & erlang cookie                 | `true`                                                       |
-| `secret.overrideName`      | Override secret name for password & erlang cookie                | ``                                                       |
 | `serviceAccount.create`            | Create service account                                          | `true`                                                   |
 | `serviceAccount.name`              | Service account name to use                                     | _name of the release_                                    |
 | `service.annotations`              | Annotations to add to the service                               | `{}`                                                     |
