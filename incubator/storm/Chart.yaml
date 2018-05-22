@@ -1,0 +1,6 @@
+name: storm
+version: 1.0.0
+appVersion: 1.1.1
+description: A Helm chart for Apache Storm
+home: http://storm.apache.org/
+icon: http://storm.apache.org/images/logo.png
