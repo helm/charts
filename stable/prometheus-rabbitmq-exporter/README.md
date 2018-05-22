@@ -51,7 +51,7 @@ The following tables lists the configurable parameters and their default values.
 | `service.externalPort`   | public service port                                                    | `9419`                    |
 | `resources`              | cpu/memory resource requests/limits                                    | {}                        |
 | `loglevel`               | exporter log level                                                     | {}                        |
-| `rabbitmq.url`           | rabbitm managment url                                                  | `http://myrabbit:15672`   |
+| `rabbitmq.url`           | rabbitm management url                                                  | `http://myrabbit:15672`   |
 | `rabbitmq.user`          | rabbitm user login                                                     | `guest`                   |
 | `rabbitmq.password`      | rabbitm password login                                                 | `guest`                   |
 | `rabbitmq.capabilities`  | comma-separated list of capabilities supported by the RabbitMQ server  | `bert,no_sort`            |
