@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "hubot.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "hubot.name" . }}
+    chart: {{ template "hubot.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{ toYaml .Values.hubot.config | indent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "hubot.fullname" . }}-scripts
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "hubot.name" . }}
+    chart: {{ template "hubot.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{ toYaml .Values.hubot.scripts | indent 2 }}
