@@ -41,24 +41,29 @@ The following table lists the configurable parameters of the Keycloak chart and 
 
 Parameter | Description | Default
 --- | --- | ---
-`imageRepository` | Keycloak Proxy image repository | `jboss/keycloak-proxy`
-`imageTag` | Keycloak Proxy image version | `3.4.2.Final`
-`imagePullPolicy` | Keycloak Proxy image pull policy | `IfNotPresent`
+`image.repository` | Keycloak Proxy image repository | `jboss/keycloak-proxy`
+`image.tag` | Keycloak Proxy image version | `3.4.2.Final`
+`image.pullPolicy` | Keycloak Proxy image pull policy | `IfNotPresent`
 `service.type` | The service type | `ClusterIP`
 `service.port` | The service port | `80`
 `service.nodePort` | The service nodePort | `""`
 `ingress.enabled` | If true, an ingress is be created | `false`
 `ingress.annotations` | Annotations for the ingress | `{}`
+`ingress.path` | Path for backend | `/`
 `ingress.hosts` | A list of hosts for the ingresss | `[keycloak-proxy.example.com]`
-`ingress.tls.enabled` | If true, tls is enabled for the ingress | `false`
-`ingress.tls.existingSecret` | If tls is enabled, uses an existing secret with this name | `""`
+`ingress.tls.secretName` | If tls is enabled, uses an existing secret with this name | `""`
+`ingress.tls.hosts` | A list of hosts for   | `""`
+`resources` | CPU/Memory resource requests/limits | `{}`
+`nodeSelector` | Node labels for pod assignment | `{}`
+`tolerations` | Tolerations for pod assignment | `[]`
+`affinity` | Node/Pod affinities | `{}`
 `configmap.targetUrl` | The URL this server is proxying | `http://url-to-the-target-server.example.com`
 `configmap.realm` | Name of the realm | `REALM_NAME`
 `configmap.realmPublicKey` | PEM format of the realm public key. You can obtain this from the administration console. This is OPTIONAL and it’s not recommended to set it. If not set, the adapter will download this from Keycloak and it will always re-download it when needed (eg. Keycloak rotate it’s keys). However if realm-public-key is set, then adapter will never download new keys from Keycloak, so when Keycloak rotate it’s keys, adapter will break | `""`
 `configmap.authServerUrl` | The base URL of the Keycloak server. All other Keycloak pages and REST service endpoints are derived from this. It is usually of the form https://host:port/auth | `http://url-to-keycloak.example.com/auth`
 `configmap.resource` | The client-id of the application. Each application has a client-id that is used to identify the application | `CLIENT_ID`
 `configmap.secret` | Specify the credentials of the application. This is an object notation where the key is the credential type and the value is the value of the credential type. Currently password and jwt is supported. This is REQUIRED only for clients with 'Confidential' access type | `CLIENT_SECRET`
-`configmap.pattern` | URL pattern to match relative to the base-path of the application. Must start with '/' REQUIRED. You may only have one wildcard and it must come at the end of the pattern | `/*`
+`configmap.pattern` | URL pattern to match relative to the base-path of the application. Must start with '/' REQUIRED. You may only have one wildcard and it must come at the end of the pattern | `/admin`
 `configmap.rolesAllowed` | Array of strings of roles allowed to access this url pattern | `admin`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

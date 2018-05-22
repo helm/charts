@@ -1,41 +1,19 @@
-1. Keycloak Proxy can be accessed:
-
-   * Within your cluster, at the following DNS name at port {{ .Values.service.port }}:
-
-     {{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
-
+1. Get the application URL by running these commands:
 {{- if .Values.ingress.enabled }}
-
-   * From outside the cluster:
-
-    {{- range .Values.ingress.hosts }}
-       - http{{ if $.Values.ingress.tls.enabled }}s{{ end }}://{{ . }}
-    {{- end }}
-
-{{- else }}
-
-   * From outside the cluster, run these commands in the same shell:
-
-  {{- if contains "NodePort" .Values.service.type }}
-
-     export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }}-service)
-     export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-     echo http://$NODE_IP:$NODE_PORT
-
-  {{- else if contains "LoadBalancer" .Values.service.type }}
-
-      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-            You can watch the status of by running 'kubectl get svc -w {{ template "fullname" . }}-service'
-
-     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }}-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-     echo http://$SERVICE_IP:{{ .Values.service.port }}
-
-  {{- else if contains "ClusterIP" .Values.service.type }}
-
-     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l name={{ template "fullname" . }},release={{ .Release.Name }} -o jsonpath="{.items[0].metadata.name}")
-     echo "Visit http://127.0.0.1:8080 to use Keycloak Proxy"
-     kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080
-
-  {{- end }}
-
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "keycloak-proxy.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ template "keycloak-proxy.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "keycloak-proxy.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.service.port }}
+{{- else if contains "ClusterIP" .Values.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "keycloak-proxy.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080
 {{- end }}

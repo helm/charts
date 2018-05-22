@@ -1,9 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}-configmap
+  name: {{ template "keycloak-proxy.fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "keycloak-proxy.name" . }}
+    chart: {{ template "keycloak-proxy.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 data:
   proxy.json: |
     {
@@ -15,9 +18,9 @@ data:
              "base-path":"/",
              "adapter-config":{
                 "realm":"{{ .Values.configmap.realm }}",
-                {{- if .Values.configmap.realmPublicKey }}
+              {{- if .Values.configmap.realmPublicKey }}
                 "realm-public-key": "{{ .Values.configmap.realmPublicKey }}",
-                {{- end }}
+              {{- end }}
                 "auth-server-url":"{{ .Values.configmap.authServerUrl }}",
                 "ssl-required":"external",
                 "resource":"{{ .Values.configmap.resource }}",
