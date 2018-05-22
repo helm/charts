@@ -144,7 +144,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.image`                            | Image for Jaeger Agent              |  jaegertracing/jaeger-agent            |
 | `agent.pullPolicy`                       | Agent image pullPolicy              |  IfNotPresent                          |
 | `agent.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`       |
-| `agent.tag`                              | Image tag/version                   |  0.6                                   |
 | `agent.service.annotations`              | Annotations for Agent SVC           |  nil                                   |
 | `agent.service.binaryPort`               | jaeger.thrift over binary thrift    |  6832                                  |
 | `agent.service.compactPort`              | jaeger.thrift over compact thrift   |  6831                                  |
@@ -169,7 +168,6 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.service.tchannelPort`         | Jaeger Agent port for thrift        |  14267                                 |
 | `collector.service.type`                 | Service type                        |  ClusterIP                             |
 | `collector.service.zipkinPort`           | Zipkin port for JSON/thrift HTTP    |  9411                                  |
-| `collector.tag`                          | Image tag/version                   |  0.6                                   |
 | `elasticsearch.cluster.name`             | Elasticsearch cluster name          |  "tracing"                             |
 | `elasticsearch.data.persistence.enabled` | To enable storage persistence       |  false (Highly recommended to enable)  |
 | `elasticsearch.image.tag`                | Elasticsearch image tag             |  "5.4"                                 |
@@ -188,12 +186,10 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.service.queryPort`                | External accessible port            |  80                                    |
 | `query.service.targetPort`               | Internal Query UI port              |  16686                                 |
 | `query.service.type`                     | Service type                        |  ClusterIP                             |
-| `query.tag`                              | Image tag/version                   |  0.6                                   |
 | `schema.annotations`                     | Annotations for the schema job      |  nil                                   |
 | `schema.image`                           | Image to setup cassandra schema     |  jaegertracing/jaeger-cassandra-schema |
 | `schema.mode`                            | Schema mode (prod or test)          |  prod                                  |
 | `schema.pullPolicy`                      | Schema image pullPolicy             |  IfNotPresent                          |
-| `schema.tag`                             | Image tag/version                   |  0.6                                   |
 | `spark.enabled`                          | Enables the dependencies job        |  false                                 |
 | `spark.image`                            | Image for the dependencies job      |  jaegertracing/spark-dependencies      |
 | `spark.pullPolicy`                       | Image pull policy of the deps image |  Always                                |
@@ -212,6 +208,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.elasticsearch.user`             | Provisioned elasticsearch user      |  elastic                               |
 | `storage.elasticsearch.nodesWanOnly`     | Only access specified es host       |  false                                 |
 | `storage.type`                           | Storage type (ES or Cassandra)      |  cassandra                             |
+| `tag`                                    | Image tag/version                   |  1.4.1                                 |
 
 For more information about some of the tunable parameters that Cassandra provides, please visit the helm chart for [cassandra](https://github.com/kubernetes/charts/tree/master/incubator/cassandra) and the official [website](http://cassandra.apache.org/) at apache.org.
 
