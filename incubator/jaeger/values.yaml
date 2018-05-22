@@ -6,6 +6,8 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
+tag: 1.4.1
+
 storage:
   # allowed values (cassandra, elasticsearch)
   type: cassandra
@@ -46,7 +48,6 @@ cassandra:
 schema:
   annotations: {}
   image: jaegertracing/jaeger-cassandra-schema
-  tag: 1.2.0
   pullPolicy: IfNotPresent
   # Acceptable values are test and prod. Default is for production use.
   mode: prod
@@ -77,7 +78,6 @@ agent:
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-agent
-  tag: 1.2.0
   pullPolicy: IfNotPresent
   collector:
     host: null
@@ -116,7 +116,6 @@ collector:
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-collector
-  tag: 1.2.0
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
@@ -149,7 +148,6 @@ query:
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-query
-  tag: 1.2.0
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
