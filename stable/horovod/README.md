@@ -12,7 +12,7 @@ This chart bootstraps Horovod which is a Distributed TensorFlow Framework on a K
 
 ## Build Docker Image
 
-You can download [offical Horovod Dockerfile](https://github.com/uber/horovod/blob/master/Dockerfile), then modify it according to your requirement, e.g. select a different CUDA, TensorFlow or Python version.
+You can download [official Horovod Dockerfile](https://github.com/uber/horovod/blob/master/Dockerfile), then modify it according to your requirement, e.g. select a different CUDA, TensorFlow or Python version.
 
 ```
 # mkdir horovod-docker
@@ -102,10 +102,10 @@ chart and their default values.
 | `worker.image.pullPolicy` | `pullPolicy` for the worker | `IfNotPresent` |
 | `worker.image.tag` | `tag` for the worker | `0.12.1-tf1.8.0-py3.5` |
 | `worker.resources`| worker's pod resource requests & limits| `{}`|
-| `worker.env` | worker's environment varaibles | `{}` |
+| `worker.env` | worker's environment variables | `{}` |
 | `master.image.repository` | horovod master image | `uber/horovod` |
 | `master.image.tag` | `tag` for the master | `0.12.1-tf1.8.0-py3.5` |
 | `master.image.pullPolicy` | image pullPolicy for the master image| `IfNotPresent` |
 | `master.args` | master's args | `{}` |
 | `master.resources`| master's pod resource requests & limits| `{}`|
-| `master.env` | master's environment varaibles | `{}` |
+| `master.env` | master's environment variables | `{}` |
