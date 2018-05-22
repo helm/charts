@@ -75,6 +75,7 @@ spec:
                 {{- end }}
                 {{- if .Values.artifactory.distributionCerts }}
                 mkdir -p {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys/trusted;
+                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access;
                 cp -fv /tmp/access/etc/keys/private.key {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
                 cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
                 cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys/trusted;

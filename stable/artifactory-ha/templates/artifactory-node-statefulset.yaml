@@ -67,6 +67,12 @@ spec:
               - '/bin/sh'
               - '-c'
               - >
+                {{- if .Values.artifactory.replicator.enabled }}
+                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access;
+                mkdir -p {{ .Values.artifactory.persistence.mountPath }}/replicator/etc;
+                cp -fv /tmp/replicator/replicator.yaml {{ .Values.artifactory.persistence.mountPath }}/replicator/etc/replicator.yaml;
+                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/replicator;
+                {{- end }}
                 {{- if .Values.artifactory.distributionCerts }}
                 mkdir -p {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys/trusted;
                 chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access;
@@ -123,6 +129,10 @@ spec:
           -Dartifactory.releasebundle.feature.enabled=true
       {{- end }}
             "
+        {{- if .Values.artifactory.replicator.enabled }}
+        - name: START_LOCAL_REPLICATOR
+          value: "true"
+        {{- end }}
         - name: ARTIFACTORY_MASTER_KEY
           valueFrom:
             secretKeyRef:

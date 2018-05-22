@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 data:
-  replicator.yaml: |
+  replicator.yaml: |-
     externalUrl: {{ .Values.artifactory.replicator.publicUrl }}
     internalUrl: http://localhost:6061
     listenPort: 6061
