@@ -32,9 +32,9 @@
 {{- end }}
 
 2. How to log in
-{{ if or (.Values.db.suffix) (.Values.db.host)}}
+{{ if or (.Values.db.chartName) (.Values.db.host)}}
 
-phpMyAdmin has been configured to connect to a database in {{ if .Values.db.suffix}}{{template "phpmyadmin.dbfullname" .}}{{ else }}{{.Values.db.host}}{{end}}
+phpMyAdmin has been configured to connect to a database in {{ if .Values.db.chartName}}{{template "phpmyadmin.dbfullname" .}}{{ else }}{{.Values.db.host}}{{end}}
 {{if .Values.db.port}}with port {{.Values.db.port}} {{end }}
 Please login using a database username and password. 
 

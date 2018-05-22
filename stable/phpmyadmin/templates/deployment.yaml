@@ -32,14 +32,14 @@ spec:
           env:
             - name: DATABASE_PORT_NUMBER
               value: "{{ .Values.db.port }}"
-            {{- if .Values.db.suffix }}
+            {{- if .Values.db.chartName }}
             - name: DATABASE_HOST
               value: "{{ template "phpmyadmin.dbfullname" . }}"
             {{- else }} 
             - name: DATABASE_HOST
               value: "{{ .Values.db.host }}"
             {{- end }}
-            {{- if and (not .Values.db.suffix) (not .Values.db.host)}}
+            {{- if and (not .Values.db.chartName) (not .Values.db.host)}}
             - name: PHPMYADMIN_ALLOW_NO_PASSWORD
               value: "true"
             - name: PHPMYADMIN_ALLOW_ARBITRARY_SERVER
