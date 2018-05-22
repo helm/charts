@@ -267,7 +267,7 @@ readinessProbe:
   periodSeconds: 5
 
 # Specifies an existing secret to be used
-existingSecret: "" 
+existingSecret: ""
 
 prometheus:
   ## Configures Prometheus Exporter to expose and scrape stats.
