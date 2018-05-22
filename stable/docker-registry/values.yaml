@@ -15,7 +15,7 @@ image:
   repository: registry
   tag: 2.6.2
   pullPolicy: IfNotPresent
-# imagePullSecrets: 
+# imagePullSecrets:
     # - docker
 service:
   name: registry
