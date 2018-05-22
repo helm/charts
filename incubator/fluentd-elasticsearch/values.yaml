@@ -42,11 +42,11 @@ tolerations: {}
   #   operator: Exists
   #   effect: NoSchedule
 
-service:
-  type: ClusterIP
-  ports:
-    - name: "monitor-agent"
-      port: 24231
+service: {}
+  # type: ClusterIP
+  # ports:
+  #   - name: "monitor-agent"
+  #     port: 24231
 
 configMaps:
   system.conf: |-

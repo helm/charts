@@ -58,8 +58,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `resources.limits.memory`          | Memory limit                                                                                 | `500Mi`                                          |
 | `resources.requests.cpu`           | CPU request                                                                                  | `100m`                                           |
 | `resources.requests.memory`        | Memory request                                                                               | `200Mi`                                          |
-| `service.port`                     | The service port                                                                             | `24231`                                          |
-| `service.type`                     | Service type (ClusterIP, NodePort or LoadBalancer)                                           | `ClusterIP`                                      |
+| `service`                          | Service definition                                                                           | `{}`                                             |
 | `serviceAccount.create`            | Specifies whether a service account should be created.                                       | `true`                                           |
 | `serviceAccount.name`              | Name of the service account.                                                                 |                                                  |
 | `tolerations`                      | Optional daemonset tolerations                                                               | `NULL`                                           |
