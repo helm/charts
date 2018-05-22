@@ -8,6 +8,14 @@ image:
   tag: v1.8.3
   pullPolicy: IfNotPresent
 
+replicaCount: 1
+
+deploymentStrategy:
+  rollingUpdate:
+    maxSurge: 0
+    maxUnavailable: 1
+  type: RollingUpdate
+
 ## Here labels can be added to the kubernets dashboard deployment
 ##
 labels: {}

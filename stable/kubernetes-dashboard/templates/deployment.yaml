@@ -12,12 +12,9 @@ metadata:
 {{ toYaml .Values.labels | indent 4 }}
 {{- end }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   strategy:
-    rollingUpdate:
-      maxSurge: 0
-      maxUnavailable: 1
-    type: RollingUpdate
+{{ toYaml .Values.deploymentStrategy | indent 4 }}
   template:
     metadata:
       labels:
