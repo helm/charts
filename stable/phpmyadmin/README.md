@@ -1,6 +1,6 @@
-# PhpMyAdmin
+# phpMyAdmin
 
-[Phpmyadmin](https://www.phpmyadmin.net/) is a free and open source administration tool for MySQL and MariaDB. As a portable web application written primarily in PHP, it has become one of the most popular MySQL administration tools, especially for web hosting services.
+[phpMyAdmin](https://www.phpmyadmin.net/) is a free and open source administration tool for MySQL and MariaDB. As a portable web application written primarily in PHP, it has become one of the most popular MySQL administration tools, especially for web hosting services.
 
 ## TL;DR
 
@@ -10,7 +10,7 @@ $ helm install stable/phpmyadmin
 
 ## Introduction
 
-This chart bootstraps a [Phpmyadmin](https://github.com/bitnami/bitnami-docker-phpmyadmin) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [phpMyAdmin](https://github.com/bitnami/bitnami-docker-phpmyadmin) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
@@ -54,6 +54,7 @@ The following table lists the configurable parameters of the Phpmyadmin chart an
 | `db.port`            | database port to use to connect                  | `3360`                                     |
 | `db.suffix`                | Database suffix if included in the same release                  | `nil`                                          |
 | `db.host`            | database host to connect to               | `nil`          |
+| `ingress.enabled`            | ingress resource to be added              | `false`          |
 | `ingress.annotations`            | ingress annotations              | `{}`          |
 | `ingress.path`            | path to access frontend               | `/`          |
 | `ingress.host`            | ingress host               | `nil`          |
@@ -69,7 +70,7 @@ $ helm install --name my-release \
   --set db.host=mymariadb,db.port=3306 stable/phpmyadmin
 ```
 
-The above command sets the PhpMyAdmin to connect to a database in `mymariadb` host and `3306` port respectively. 
+The above command sets the phpMyAdmin to connect to a database in `mymariadb` host and `3306` port respectively. 
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 

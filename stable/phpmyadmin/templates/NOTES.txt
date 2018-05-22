@@ -1,7 +1,7 @@
 
 1. Get the application URL by running these commands:
 {{- if .Values.ingress.enabled }}
-  You should be able to access your new PhpMyAdmin installation through
+  You should be able to access your new phpMyAdmin installation through
   http{{ if $.Values.ingress.tls }}s{{ end }}://{{ if $.Values.ingress.host }}{{.Values.ingress.host}}{{else}}your-cluster-ip{{end}}{{ $.Values.ingress.path }}
   {{if not $.Values.ingress.host}}
   
@@ -34,13 +34,13 @@
 2. How to log in
 {{ if or (.Values.db.suffix) (.Values.db.host)}}
 
-PhpMyAdmin has been configured to connect to a database in {{ if .Values.db.suffix}}{{template "phpmyadmin.dbfullname" .}}{{ else }}{{.Values.db.host}}{{end}}
+phpMyAdmin has been configured to connect to a database in {{ if .Values.db.suffix}}{{template "phpmyadmin.dbfullname" .}}{{ else }}{{.Values.db.host}}{{end}}
 {{if .Values.db.port}}with port {{.Values.db.port}} {{end }}
 Please login using a database username and password. 
 
 {{ else }}
-PhpMyAdmin has not been configure to point to a specific database. Please provide the db host, username and password at log in or upgrade the release with 
-a specific database:
+phpMyAdmin has not been configure to point to a specific database. Please provide the db host,
+username and password at log in or upgrade the release with a specific database:
 
 $ helm upgrade {{.Release.Name}} stable/phpmyadmin --set db.host=mydb 
 
