@@ -34,6 +34,8 @@ their default values.
 | `image.repository`           | Container image to use                                | `quay.io/pires/docker-elasticsearch-curator` |
 | `image.tag`                  | Container image tag to deploy                         | `5.4.1`                                      |
 | `cronjob.schedule`           | Schedule for the CronJob                              | `0 1 * * *`                                  |
+| `cronjob.annotations`        | Annotations to add to the cronjob                     | {}                                           |
+| `pod.annotations`            | Annotations to add to the pod                         | {}                                           |
 | `config.elasticsearch.hosts` | Array of Elasticsearch hosts to curate                | - CHANGEME.host                              |
 | `config.elasticsearch.port`  | Elasticsearch port to connect too                     | 9200                                         |
 | `configMaps.action_file_yml` | Contents of the Curator action_file.yml               | See values.yaml                              |

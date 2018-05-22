@@ -7,6 +7,8 @@ metadata:
     chart: {{ template "elasticsearch-curator.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations: 
+{{ toYaml .Values.cronjob.annotations | indent 4 }}
 spec:
   schedule: "{{ .Values.cronjob.schedule }}"
   jobTemplate:
@@ -16,6 +18,8 @@ spec:
           labels:
             app: {{ template "elasticsearch-curator.name" . }}
             release: {{ .Release.Name }}
+          annotations: 
+{{ toYaml .Values.pod.annotations | indent 12 }}
         spec:
           volumes:
             - name: config-volume
