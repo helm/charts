@@ -44,19 +44,20 @@ spec:
                   -Xmx{{ .Values.distribution.resources.limits.memory | trunc 1 }}g
                   -Dspring.profiles.active=production'
         - name: mongo_connectionString
-        {{- if .Values.mongodb.mongodbUsername }}
-          value: 'mongodb://{{ .Values.mongodb.db.distributionUser }}:{{ .Values.mongodb.db.distributionPassword }}@{{ .Release.Name }}-mongodb:27017/{{ .Values.mongodb.db.name }}'
-        {{- else }}
-          value: 'mongodb://{{ .Release.Name }}-mongodb:27017/{{ .Values.mongodb.db.name }}'
-        {{- end }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "distribution.fullname" . }}-mongo-connection
+              key: mongo_connectionString
         - name: audit_mongo_connectionString
-        {{- if .Values.mongodb.mongodbUsername }}
-          value: 'mongodb://{{ .Values.mongodb.db.distributionUser }}:{{ .Values.mongodb.db.distributionPassword }}@{{ .Release.Name }}-mongodb:27017audit?maxpoolsize=500'
-        {{- else }}
-          value: 'mongodb://{{ .Release.Name }}-mongodb:27017/audit?maxpoolsize=500'
-        {{- end }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "distribution.fullname" . }}-mongo-connection
+              key: audit_mongo_connectionString
         - name: redis_connectionString
-          value: 'redis://:{{ .Values.redis.redisPassword }}@{{ .Release.Name }}-redis:6379'
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "distribution.fullname" . }}-redis-connection
+              key: redis_connectionString
         - name: BT_ARTIFACTORY_URL
           value: {{ .Values.distribution.env.artifactoryUrl | quote }}
         - name: BT_SERVER_URL

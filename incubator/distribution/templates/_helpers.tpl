@@ -40,3 +40,38 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Set the final MongoDB connection URL
+*/}}
+{{- define "mongodb.url" -}}
+{{- $mongoDatabase :=  .Values.mongodb.db.name -}}
+{{- if .Values.mongodb.mongodbUsername }}
+{{- $mongoUser :=  .Values.mongodb.db.distributionUser -}}
+{{- $mongoPassword :=  .Values.mongodb.db.distributionPassword -}}
+{{- printf "%s://%s:%s@%s-%s/%s "  "mongodb" $mongoUser $mongoPassword .Release.Name "mongodb:27017" $mongoDatabase | b64enc | quote -}}
+{{- else -}}
+{{- printf "%s://%s-%s/%s" "mongodb" .Release.Name "mongodb:27017" $mongoDatabase | b64enc | quote -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Set the final MongoDB audit URL
+*/}}
+{{- define "mongodb.audit.url" -}}
+{{- if .Values.mongodb.mongodbUsername }}
+{{- $mongoUser :=  .Values.mongodb.db.distributionUser -}}
+{{- $mongoPassword :=  .Values.mongodb.db.distributionPassword -}}
+{{- printf "%s://%s:%s@%s-%s/%s "  "mongodb" $mongoUser $mongoPassword .Release.Name "mongodb:27017" "audit?maxpoolsize=500" | b64enc | quote -}}
+{{- else -}}
+{{- printf "%s://%s-%s/%s" "mongodb" .Release.Name "mongodb:27017" "audit?maxpoolsize=500" | b64enc | quote -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Set the final Redis connection URL
+*/}}
+{{- define "redis.url" -}}
+{{- $redisPassword :=  .Values.redis.redisPassword -}}
+{{- printf "%s://:%s@%s-%s" "redis" $redisPassword .Release.Name "redis:6379" | b64enc | quote -}}
+{{- end -}}

@@ -51,7 +51,10 @@ spec:
                   -Xmx{{ .Values.distributor.resources.limits.memory | trunc 1 }}g
                   -Dspring.profiles.active=production'
         - name: redis_connectionString
-          value: 'redis://:{{ .Values.redis.redisPassword }}@{{ .Release.Name }}-redis:6379'
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "distribution.fullname" . }}-redis-connection
+              key: redis_connectionString
         - name: BT_SERVER_URL
           value: 'http://{{ include "distribution.fullname" . }}:{{ .Values.distribution.internalPort }}'
         volumeMounts:
