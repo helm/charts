@@ -3,7 +3,6 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
   name: {{ template "kubevirt.fullname" . }}-apiserver
-  namespace: {{ .Values.kubevirt.namespace }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
 rules:
@@ -28,7 +27,6 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
   name: {{ template "kubevirt.fullname" . }}-apiserver
-  namespace: {{ .Values.kubevirt.namespace }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
 roleRef:
@@ -38,13 +36,11 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: {{ template "kubevirt.serviceAccountName.apiserver" . }}
-    namespace: {{ .Values.kubevirt.namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
   name: {{ template "kubevirt.fullname" . }}-apiserver
-  namespace: {{ .Values.kubevirt.namespace }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
 rules:
@@ -81,7 +77,6 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
   name: {{ template "kubevirt.fullname" . }}-apiserver
-  namespace: {{ .Values.kubevirt.namespace }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
 roleRef:
@@ -91,5 +86,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: {{ template "kubevirt.serviceAccountName.apiserver" . }}
-    namespace: {{ .Values.kubevirt.namespace }}
 {{- end -}}

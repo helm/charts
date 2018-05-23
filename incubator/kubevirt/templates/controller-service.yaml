@@ -2,7 +2,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "kubevirt.fullname" . }}-controller
-  namespace: {{ .Values.kubevirt.namespace }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
     component: "virt-api-server"

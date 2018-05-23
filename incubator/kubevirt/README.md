@@ -41,10 +41,9 @@ The following tables lists the configurable parameters of the kubevirt chart and
 
 Parameter | Description | Default
 --- | --- | ---
-| `kubevirt.repository` | KubeVirt containers repository | `kubevirt`
-| `kubevirt.tag` | KubeVirt containers tag | `v0.4.1`
-| `kubevirt.pullPolicy` | Image pull policy | `IfNotPresent`
-| `kubevirt.namespace` | Specifies what namespace to use for KubeVirt deploy | `kube-system`
+| `kubevirt.image.repository` | KubeVirt containers repository | `kubevirt`
+| `kubevirt.image.tag` | KubeVirt containers tag | `v0.4.1`
+| `kubevirt.image.pullPolicy` | Image pull policy | `IfNotPresent`
 | `rbac.create` | Specifies whether RBAC resources should be created | `true`
 | `serviceAccount.apiserver.create` | Specifies whether the apiserver ServiceAccount should be created | `true`
 | `serviceAccount.apiserver.name` | The name of the apiserver ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `kubevirt-apiserver`

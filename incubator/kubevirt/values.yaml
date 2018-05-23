@@ -1,8 +1,8 @@
 kubevirt:
-  repository: "kubevirt"
-  tag: "v0.4.1"
-  pullPolicy: IfNotPresent
-  namespace: "kube-system"
+  image:
+    repository: "kubevirt"
+    tag: "v0.4.1"
+    pullPolicy: IfNotPresent
 
 rbac:
   # Specifies whether RBAC resources should be created

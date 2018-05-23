@@ -2,7 +2,6 @@ apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
   name: {{ template "kubevirt.fullname" . }}-virt-handler
-  namespace: {{ .Values.kubevirt.namespace }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
     component: "virt-handler"
@@ -25,8 +24,8 @@ spec:
           ports:
             - containerPort: 8185
               hostPort: 8185
-          image: "{{ .Values.kubevirt.repository }}/virt-handler:{{ .Values.kubevirt.tag }}"
-          imagePullPolicy: {{ .Values.kubevirt.pullPolicy }}
+          image: "{{ .Values.kubevirt.image.repository }}/virt-handler:{{ .Values.kubevirt.image.tag }}"
+          imagePullPolicy: {{ .Values.kubevirt.image.pullPolicy }}
           command:
             - "/virt-handler"
             - "-v"

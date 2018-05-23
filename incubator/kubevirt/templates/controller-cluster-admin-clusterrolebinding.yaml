@@ -3,7 +3,6 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
   name: {{ template "kubevirt.fullname" . }}-controller-cluster-admin
-  namespace: {{ .Values.kubevirt.namespace }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
 roleRef:
@@ -13,5 +12,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: {{ template "kubevirt.serviceAccountName.controller" . }}
-    namespace: {{ .Values.kubevirt.namespace }}
 {{- end -}}
