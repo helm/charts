@@ -131,7 +131,7 @@ deletes the release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Service Tensorflow Serving
+The following table lists the configurable parameters of the Service Tensorflow Serving
 chart and their default values.
 
 | Parameter | Description | Default |
