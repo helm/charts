@@ -21,7 +21,7 @@ $ helm install --name my-release incubator/kubernetes-vault --set vault.address=
 
 ## Configuration
 
-The following tables lists the configurable parameters of the consul chart and their default values.
+The following table lists the configurable parameters of the consul chart and their default values.
 
 | Parameter                   | Description                                             | Default                                                    |
 | --------------------------  | ----------------------------------                      | ---------------------------------------------------------- |
