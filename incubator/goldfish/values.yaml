@@ -49,4 +49,4 @@ config:
   disable_mlock: 1
 
 secrets:
-  vault-token: replace-me-please
+  vault-token:
