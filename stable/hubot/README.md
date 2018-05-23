@@ -82,3 +82,45 @@ $ helm install --name my-release -f values.yaml stable/hubot
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Specific hubot settings
+
+#### Config
+
+With the `hubot.config` parameter you can provide a hash that will be used as environment variables by hubot. These environment variables will be picked by hubot's scripts.
+
+For instance:
+
+```
+hubot:
+  config:
+    HUBOT_STANDUP_PREPEND: '@channel'
+```
+
+#### Scripts
+
+In addition, you can add your own scripts, which will be created in the scripts folder, with `.js` or `.coffee` format. See [Hubot Scripting](https://hubot.github.com/docs/scripting/).
+
+By default, this chart adds a health endpoint so Kubernetes can probe the pod.
+
+```
+hubot:
+  scripts:
+    health.coffee: |
+      # Description
+      #   A hubot script that exposes a health endpoint
+      module.exports = (robot) ->
+        robot.router.get '/health', (req, res) -> res.status(200).end()
+```
+
+You can follow the same format for creating your own hubot scripts
+```
+hubot:
+  scripts:
+    hithere.coffee: |
+      # Description
+      #   A hubot script that is an example for this chart
+      module.exports = (robot) ->
+        robot.respond /hi my bot/i, (msg) ->
+          msg.send 'Hi there my human'
+```
