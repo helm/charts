@@ -10,6 +10,7 @@ keywords:
   - slack
   - hubot
   - chatbot
+icon: https://i.imgur.com/UIkAW9t.png
 maintainers:
   - name: MindDoc
     email: development@minddoc.com
