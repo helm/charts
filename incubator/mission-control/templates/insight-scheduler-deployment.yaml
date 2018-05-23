@@ -18,9 +18,9 @@ spec:
         component: "{{ .Values.insightScheduler.name }}"
         release: {{ .Release.Name }}
     spec:
-    {{- if .Values.global.imagePullSecrets }}
+    {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecrets }}
+      - name: {{ .Values.imagePullSecrets }}
     {{- end }}
       initContainers:
       - name: init-data
@@ -47,11 +47,14 @@ spec:
         - name: MONGO_URL
           value: '{{ .Release.Name }}-mongodb:27017'
         - name: MONGODB_USERNAME
-          value: '{{ index .Values "mongodb" "db" "insightUser" }}'
+          value: '{{ .Values.mongodb.db.insightUser }}'
         - name: MONGODB_PASSWORD
-          value: '{{ index .Values "mongodb" "db" "insightPassword" }}'
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mission-control.fullname" . }}-mongodb-cred
+              key: insightPassword
         - name: JFMC_SCHEDULER_MONGO_DB
-          value: '{{ index .Values "mongodb" "db" "insightSchedulerDb" }}'
+          value: '{{ .Values.mongodb.db.insightSchedulerDb }}'
         ports:
         - containerPort: {{ .Values.insightScheduler.internalPort }}
           protocol: TCP

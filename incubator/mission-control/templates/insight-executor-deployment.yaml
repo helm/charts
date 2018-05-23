@@ -17,9 +17,9 @@ spec:
         component: "{{ .Values.insightExecutor.name }}"
         release: {{ .Release.Name }}
     spec:
-    {{- if .Values.global.imagePullSecrets }}
+    {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecrets }}
+      - name: {{ .Values.imagePullSecrets }}
     {{- end }}
       containers:
       - name: {{ .Values.insightExecutor.name }}

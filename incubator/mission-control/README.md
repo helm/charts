@@ -54,7 +54,7 @@ The following table lists the configurable parameters of the distribution chart 
 |------------------------------|-----------------------------------|-------------------------------------------------------|
 | `initContainerImage`           | Init Container Image       |     `alpine:3.6`                                           |
 | `imagePullPolicy`           | Container pull policy      |                   `IfNotPresent`                                    |
-| `global.imagePullSecrets`           | Docker registry pull secret       |                                                       |
+| `imagePullSecrets`           | Docker registry pull secret       |                                                       |
 | `mongodb.enabled`                   | Enable Mongodb                      | `true`                              |
 | `mongodb.image.tag`                   | Mongodb docker image tag                     | `3.6.3`                              |
 | `mongodb.image.pullPolicy`                   | Mongodb Container pull policy                      | `IfNotPresent`                              |
@@ -78,6 +78,9 @@ The following table lists the configurable parameters of the distribution chart 
 | `elasticsearch.persistence.existingClaim`   | Use an existing PVC to persist data               | `nil`                        |
 | `elasticsearch.persistence.storageClass`    | Storage class of backing PVC                      | `generic`                    |
 | `elasticsearch.persistence.size`       | Elasticsearch persistence volume size             | `50Gi`                         |
+| `elasticsearch.env.clusterName`                  | Elasticsearch Cluster Name                   | `es-cluster`                              |
+| `elasticsearch.env.esUsername`                   | Elasticsearch User Name    | `elastic`                          |
+| `elasticsearch.env.esPassword`                   | Elasticsearch User Name    | `changeme`                              |
 | `missionControl.name`                   | Mission Control name                     | `mission-control`                              |
 | `missionControl.replicaCount`       | Mission Control replica count                       | `1`  |
 | `missionControl.image`       | Container image                      | `docker.jfrog.io/jfrog/mission-control`  |

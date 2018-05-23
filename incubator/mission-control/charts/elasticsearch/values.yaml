@@ -6,8 +6,7 @@
 # Common
 initContainerImage: "alpine:3.6"
 imagePullPolicy: IfNotPresent
-global:
-  imagePullSecrets:
+imagePullSecrets:
 
 replicaCount: 1
 image:

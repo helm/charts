@@ -15,9 +15,9 @@ spec:
         app: {{ template "elasticsearch.name" . }}
         release: {{ .Release.Name }}
     spec:
-    {{- if .Values.global.imagePullSecrets }}
+    {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecrets }}
+      - name: {{ .Values.imagePullSecrets }}
     {{- end }}
       initContainers:
       - name: init-data
@@ -53,7 +53,10 @@ spec:
         - name: ELASTIC_SEARCH_USERNAME
           value: {{ .Values.env.esUsername }}
         - name: ELASTIC_SEARCH_PASSWORD
-          value: {{ .Values.env.esPassword }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "elasticsearch.fullname" . }}
+              key: esPassword
         lifecycle:
           postStart:
             exec:

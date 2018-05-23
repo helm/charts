@@ -17,9 +17,9 @@ spec:
         component: {{ .Values.missionControl.name }}
         release: {{ .Release.Name }}
     spec:
-    {{- if .Values.global.imagePullSecrets }}
+    {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecrets }}
+      - name: {{ .Values.imagePullSecrets }}
     {{- end }}
       initContainers:
       - name: init-data
@@ -42,9 +42,12 @@ spec:
         - name: SPRING_DATA_MONGODB_PORT
           value: '27017'
         - name: SPRING_DATA_MONGODB_USERNAME
-          value: '{{ index .Values "mongodb" "db" "mcUser" }}'
+          value: '{{ .Values.mongodb.db.mcUser }}'
         - name: SPRING_DATA_MONGODB_PASSWORD
-          value: '{{ index .Values "mongodb" "db" "mcPassword" }}'
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mission-control.fullname" . }}-mongodb-cred
+              key: mcPassword
         - name: INSIGHT_URL
           value: "http://{{ template "insight-server.fullname" . }}:{{ .Values.insightServer.internalHttpPort }}"
         - name: INSIGHT_SSL_URL

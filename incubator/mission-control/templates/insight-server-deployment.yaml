@@ -17,9 +17,9 @@ spec:
         component: {{ .Values.insightServer.name }}
         release: {{ .Release.Name }}
     spec:
-    {{- if .Values.global.imagePullSecrets }}
+    {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecrets }}
+      - name: {{ .Values.imagePullSecrets }}
     {{- end }}
       initContainers:
       - name: init-data
@@ -47,23 +47,29 @@ spec:
         - name: MONGO_URL
           value: '{{ .Release.Name }}-mongodb:27017'
         - name: MONGODB_USERNAME
-          value: '{{ index .Values "mongodb" "db" "insightUser" }}'
+          value: '{{ .Values.mongodb.db.insightUser }}'
         - name: MONGODB_PASSWORD
-          value: '{{ index .Values "mongodb" "db" "insightPassword" }}'
+          value: '{{ .Values.mongodb.db.insightPassword }}'
         - name: MONGODB_ADMIN_USERNAME
-          value: '{{ index .Values "mongodb" "db" "adminUser" }}'
+          value: '{{ .Values.mongodb.db.adminUser }}'
         - name: MONGODB_ADMIN_PASSWORD
-          value: '{{ index .Values "mongodb" "db" "adminPassword" }}'
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mission-control.fullname" . }}-mongodb-cred
+              key: adminPassword
         - name: JFMC_URL
           value: 'http://{{ template "mission-control.fullname" . }}:{{ .Values.missionControl.internalPort }}'
         - name: ELASTIC_SEARCH_URL
           value: 'http://{{ .Release.Name }}-elasticsearch:9200'
         - name: ELASTIC_CLUSTER_NAME
-          value: 'es-cluster'
+          value: '{{ .Values.elasticsearch.env.clusterName }}'
         - name: ELASTIC_SEARCH_USERNAME
-          value: 'elastic'
+          value: '{{ .Values.elasticsearch.env.esUsername }}'
         - name: ELASTIC_SEARCH_PASSWORD
-          value: 'changeme'
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-elasticsearch
+              key: esPassword
         - name: ELASTIC_COMMUNICATION_NODE_URL
           value: '{{ .Release.Name }}-elasticsearch:9300'
         - name: JFI_HOME
