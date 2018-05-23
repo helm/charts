@@ -60,7 +60,7 @@ spec:
                 chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
                 {{- if .Values.artifactory.replicator.enabled }}
                 mkdir -p {{ .Values.artifactory.persistence.mountPath }}/replicator/etc;
-                cp -fv /tmp/replicator/replicator.yaml {{ .Values.artifactory.persistence.mountPath }}replicator/etc/replicator.yaml;
+                cp -fv /tmp/replicator/replicator.yaml {{ .Values.artifactory.persistence.mountPath }}/replicator/etc/replicator.yaml;
                 chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/replicator;
                 {{- end }}
                 {{- if .Values.artifactory.distributionCerts }}
