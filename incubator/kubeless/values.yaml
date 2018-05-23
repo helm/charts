@@ -9,7 +9,7 @@ controller:
     replicaCount: 1
     image:
       repository: bitnami/kubeless-controller-manager
-      tag: v1.0.0-alpha.2
+      tag: v1.0.0-alpha.3
       pullPolicy: IfNotPresent
   ## Kubeless Controller resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -35,6 +35,7 @@ config:
     [
       {
         "ID": "python",
+        "compiled": false,
         "versions": [
           {
             "name": "python27",
@@ -60,6 +61,7 @@ config:
       },
       {
         "ID": "nodejs",
+        "compiled": false,
         "versions": [
           {
             "name": "node6",
@@ -79,11 +81,12 @@ config:
       },
       {
         "ID": "ruby",
+        "compiled": false,
         "versions": [
           {
             "name": "ruby24",
             "version": "2.4",
-            "runtimeImage": "kubeless/ruby@sha256:0dce29c0eb2a246f7d825b6644eeae7957b26f2bfad2b7987f2134cc7b350f2f",
+            "runtimeImage": "kubeless/ruby@sha256:01665f1a32fe4fab4195af048627857aa7b100e392ae7f3e25a44bd296d6f105",
             "initImage": "bitnami/ruby:2.4"
           }
         ],
@@ -92,11 +95,12 @@ config:
       },
       {
         "ID": "php",
+        "compiled": false,
         "versions": [
           {
             "name": "php72",
             "version": "7.2",
-            "runtimeImage": "kubeless/php@sha256:b605bb6b5ae3b1a2a93570939296618904259d7767a14002fa9733e66d59849b",
+            "runtimeImage": "kubeless/php@sha256:9b86066b2640bedcd88acb27f43dfaa2b338f0d74d9d91131ea781402f7ec8ec",
             "initImage": "composer:1.6"
           }
         ],
@@ -111,11 +115,39 @@ config:
             "name": "go1.10",
             "version": "1.10",
             "runtimeImage": "kubeless/go@sha256:e2fd49f09b6ff8c9bac6f1592b3119ea74237c47e2955a003983e08524cb3ae5",
-            "initImage": "kubeless/go-init@sha256:d0812c4e8351bfd95d0574efd23613cff2664d6a57af4ed0a20ebc651382d476"
+            "initImage": "kubeless/go-init@sha256:983b3f06452321a2299588966817e724d1a9c24be76cf1b12c14843efcdff502"
           }
         ],
         "depName": "Gopkg.toml",
         "fileNameSuffix": ".go"
+      },
+      {
+        "ID": "dotnetcore",
+        "compiled": false,
+        "versions": [
+          {
+            "name": "dotnetcore2.0",
+            "version": "2.0",
+            "runtimeImage": "allantargino/kubeless-dotnetcore@sha256:0ba7f27a37ff7a789de5b485d64b70be5f6767228357d843d4eb3a492c32f1ed",
+            "initImage": "allantargino/aspnetcore-build@sha256:12bb717ed47d24c0bde5d454841d0bdc3b9fd90f1e6ad24d08ac02eba40ccc8b"
+          }
+        ],
+        "depName": "project.csproj",
+        "fileNameSuffix": ".cs"
+      },
+      {
+        "ID": "java",
+        "compiled": true,
+        "versions": [
+          {
+            "name": "java1.8",
+            "version": "1.8",
+            "runtimeImage": "kubeless/java@sha256:debf9502545f4c0e955eb60fabb45748c5d98ed9365c4a508c07f38fc7fefaac",
+            "initImage": "kubeless/java-init@sha256:7e5e4376d3ab76c336d4830c9ed1b7f9407415feca49b8c2bf013e279256878f"
+          }
+        ],
+        "depName": "pom.xml",
+        "fileNameSuffix": ".java"
       }
     ]
 
