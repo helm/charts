@@ -32,7 +32,8 @@ db:
 
 ingress:
   enabled: false
-  annotations: {}
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   ## path you want to map the phpmyadmin interface to
