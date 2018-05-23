@@ -62,6 +62,8 @@ Master:
   CLI: false
   # Kubernetes service type for the JNLP slave service
   # SETTING THIS TO "LoadBalancer" IS A HUGE SECURITY RISK: https://github.com/kubernetes/charts/issues/1341
+  # Kubernetes namespace where Jenkins slaves will be created
+  #SlaveKubernetesNamespace: jnk-slave-namespace
   SlaveListenerServiceType: ClusterIP
   SlaveListenerServiceAnnotations: {}
   LoadBalancerSourceRanges:
