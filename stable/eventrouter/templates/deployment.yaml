@@ -8,20 +8,21 @@ spec:
   selector:
     matchLabels:
       app: {{ template "eventrouter.name" . }}
+      release: {{ .Release.Name }}    
   template:
     metadata:
       labels:
         app: {{ template "eventrouter.name" . }}
-        release: {{.Release.Name }}    
+        release: {{ .Release.Name }}    
     spec:
       containers:
-      - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        volumeMounts:
-        - name: config-volume
-          mountPath: /etc/eventrouter
-        resources:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: config-volume
+            mountPath: /etc/eventrouter
+          resources:
 {{ toYaml .Values.resources | indent 10 }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
