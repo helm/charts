@@ -72,6 +72,10 @@ persistence:
   # storageClass: "-"
   # accessMode: ReadWriteOnce
   # size: 10Gi
+  ## Can override volume mounts subpath
+  # dataSubpath: my/sonar/data
+  # confSubpath: my/sonar/conf
+  # extensionsSubpath: my/sonar/extensions
 
 # List of plugins to install.
 # For example:
