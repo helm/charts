@@ -21,6 +21,16 @@ accounts:
 # Settings for notifications via email
 # For more info visit:
 #   https://www.spinnaker.io/setup/features/notifications/#email
+
+kubeConfig:
+  # Use this when you want to register arbitrary clusters with Spinnaker
+  # Upload your ~/kube/.config to a secret
+  enabled: false
+  secretName: my-kubeconfig
+  secretKey: config
+  # List of contexts from the kubeconfig to make available to Spinnaker
+  contexts: []
+
 mail:
   enabled: false
   host: smtp.example.org
