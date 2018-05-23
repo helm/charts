@@ -12,6 +12,10 @@ spec:
     matchLabels:
       app: {{ template "prometheus-node-exporter.name" . }}
       release: {{ .Release.Name }}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1      
   template:
     metadata:
       labels:
@@ -30,6 +34,9 @@ spec:
             - --path.procfs=/host/proc
             - --path.sysfs=/host/sys
             - --web.listen-address=0.0.0.0:{{ .Values.service.port }}
+{{- if .Values.extraArgs }}
+{{ toYaml .Values.extraArgs | indent 12 }}
+{{- end }}
           ports:
             - name: metrics
               containerPort: {{ .Values.service.targetPort }}
