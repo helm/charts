@@ -135,7 +135,7 @@ spec:
             httpGet:
               path: /login
               port: http
-            initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout }}
+            initialDelaySeconds: {{ .Values.Master.HealthProbesReadinessTimeout }}
 {{- end }}
           resources:
             requests:
