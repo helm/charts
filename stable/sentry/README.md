@@ -12,9 +12,9 @@ $ helm install --wait stable/sentry
 
 This chart bootstraps a [Sentry](https://sentry.io/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-It also packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) and [Redis](https://github.com/kubernetes/charts/tree/master/stable/redis) which are required for Sentry.
+It also optionally packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) and [Redis](https://github.com/kubernetes/charts/tree/master/stable/redis) which are required for Sentry.
 
-> **Warning**: This chart does not yet allow for you to specify your own database host or redis host.
+To disable packaged PostgreSQL just set `postgresql.enabled` to `false` and set `postgresql.postgresHost`.
 
 ## Prerequisites
 
@@ -55,32 +55,33 @@ $ kubectl delete job/sentry-db-init job/sentry-user-create
 
 The following tables lists the configurable parameters of the Sentry chart and their default values.
 
-| Parameter                            | Description                                | Default                                                    |
-| -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
-| `image.repository`                   | Sentry image                               | `library/sentry:{VERSION}`                                 |
-| `image.tag`                          | Sentry image tag                           | `8.17`                                                     |
-| `imagePullPolicy`                    | Image pull policy                          | `IfNotPresent`                                             |
-| `web.replicacount`                   | Amount of web pods to run                  | `1`                                                        |
-| `user.email`                         | Username for default admin                 | `admin@sentry.local`                                       |
-| `email.from_address`                 | Email notifications are from               | `smtp`                                                     |
-| `email.host`                         | SMTP host for sending email                | `smtp`                                                     |
-| `email.port`                         | SMTP port                                  | `25`                                                       |
-| `email.user`                         | SMTP user                                  | `nil`                                                      |
-| `email.password`                     | SMTP password                              | `nil`                                                      |
-| `email.use_tls`                      | SMTP TLS for security                      | `false`                                                    |
-| `email.enable_replies`               | Allow email replies                        | `false`                                                    |
-| `service.type`                       | Kubernetes service type                    | `LoadBalancer`                                             |
-| `service.name`                       | Kubernetes service name                    | `sentry`                                                   |
-| `service.externalPort`               | Kubernetes external service port           | `9000`                                                     |
-| `service.internalPort`               | Kubernetes internal service port           | `9000`                                                     |
-| `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
-| `ingress.annotations`                | Ingress annotations                        | `{}`                                                       |
-| `ingress.hostname`                   | URL to address your Sentry installation    | `sentry.local`                                             |
-| `ingress.tls`                        | Ingress TLS configuration                  | `[]`                                                       |
-| `persistence.enabled`                | Enable persistence using PVC               | `true`                                                     |
-| `persistence.storageClass`           | PVC Storage Class                          | `nil` (uses alpha storage class annotation)                |
-| `persistence.accessMode`             | PVC Access Mode                            | `ReadWriteOnce`                                            |
-| `persistence.size`                   | PVC Storage Request                        | `10Gi`                                                     |
+| Parameter                       | Description                             | Default                                                    |
+| ------------------------------- | -------------------------------         | ---------------------------------------------------------- |
+| `image.repository`              | Sentry image                            | `library/sentry:{VERSION}`                                 |
+| `image.tag`                     | Sentry image tag                        | `8.17`                                                     |
+| `imagePullPolicy`               | Image pull policy                       | `IfNotPresent`                                             |
+| `web.replicacount`              | Amount of web pods to run               | `1`                                                        |
+| `user.email`                    | Username for default admin              | `admin@sentry.local`                                       |
+| `email.from_address`            | Email notifications are from            | `smtp`                                                     |
+| `email.host`                    | SMTP host for sending email             | `smtp`                                                     |
+| `email.port`                    | SMTP port                               | `25`                                                       |
+| `email.user`                    | SMTP user                               | `nil`                                                      |
+| `email.password`                | SMTP password                           | `nil`                                                      |
+| `email.use_tls`                 | SMTP TLS for security                   | `false`                                                    |
+| `email.enable_replies`          | Allow email replies                     | `false`                                                    |
+| `service.type`                  | Kubernetes service type                 | `LoadBalancer`                                             |
+| `service.name`                  | Kubernetes service name                 | `sentry`                                                   |
+| `service.externalPort`          | Kubernetes external service port        | `9000`                                                     |
+| `service.internalPort`          | Kubernetes internal service port        | `9000`                                                     |
+| `service.annotations`           | kubernetes service annotations          | `nil`                                                      |
+| `ingress.enabled`               | Enable ingress controller resource      | `false`                                                    |
+| `ingress.annotations`           | Ingress annotations                     | `{}`                                                       |
+| `ingress.hostname`              | URL to address your Sentry installation | `sentry.local`                                             |
+| `ingress.tls`                   | Ingress TLS configuration               | `[]`                                                       |
+| `persistence.enabled`           | Enable persistence using PVC            | `true`                                                     |
+| `persistence.storageClass`      | PVC Storage Class                       | `nil` (uses alpha storage class annotation)                |
+| `persistence.accessMode`        | PVC Access Mode                         | `ReadWriteOnce`                                            |
+| `persistence.size`              | PVC Storage Request                     | `10Gi`                                                     |
 
 Dependent charts can also have values overwritten. Preface values with postgresql.* or redis.*
 
