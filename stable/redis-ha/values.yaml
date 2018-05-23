@@ -21,8 +21,17 @@ resources:
 nodeSelector: {}
 tolerations: []
 
+## Affinity per Pod type
+affinity:
+  servers: {}
+  sentinels: {}
+
+## Additional labels to set on all resources
+extraLabels: {}
+# mylabel: myvalue
+
 ## Redis image version
-redis_image: quay.io/smile/redis:4.0.8r0
+image: kumina/redis-ha-k8s:4.0.9-r0-5
 ## replicas number for each component
 replicas:
   servers: 3
@@ -50,3 +59,26 @@ auth: false
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/redis-ha/templates/redis-auth-secret.yaml
 ##
 ## redisPassword:
+
+## When persistent volumes are required, set these
+persistentVolume:
+  enabled: false
+  # storageClass: "-"
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
+  annotations: {}
+
+## Redis specific configuration options
+redis:
+  ## Configures redis with AUTH (requirepass & masterauth conf params)
+  auth: false
+  # Max memory to use for each redis instance. Default is unlimited.
+  maxMemory: ""
+  # Max memory policy to use for each redis instance. Default is volatile-lru.
+  maxMemoryPolicy: ""
+  # Determines if scheduled RDB backups are created. Default is false.
+  # Please note that local (on-disk) RDBs will still be created when re-syncing with a new slave. The only way to prevent this is to enable diskless replication.
+  rdbBackups: "false"
+  # When enabled, directly sends the RDB over the wire to slaves, without using the disk as intermediate storage. Default is false.
+  disklessReplication: "false"

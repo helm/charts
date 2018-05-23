@@ -5,6 +5,9 @@ metadata:
   name: {{ template "redis-ha.fullname" . }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
+  {{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+  {{- end }}
 rules:
 - apiGroups:
     - ""
