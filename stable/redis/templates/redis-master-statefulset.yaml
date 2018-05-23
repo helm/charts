@@ -1,4 +1,8 @@
+{{- if .Capabilities.APIVersions.Has "apps/v1beta2" }}
 apiVersion: apps/v1beta2
+{{- else }}
+apiVersion: apps/v1beta1
+{{- end }}
 kind: StatefulSet
 metadata:
   name: {{ template "redis.fullname" . }}-master
