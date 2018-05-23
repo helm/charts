@@ -1,8 +1,19 @@
 version: 2
 jobs:
-  build:
+  lint-scripts:
     docker:
-     - image: gcr.io/kubernetes-charts-ci/test-image:v2.0.0-alpha.9
+      - image: koalaman/shellcheck-alpine
+    steps:
+      - checkout
+      - run:
+          name: lint
+          command: |
+            shellcheck -x test/build.sh
+            shellcheck -x test/e2e.sh
+            shellcheck -x test/helm-test-e2e.sh
+  lint-charts:
+    docker:
+      - image: gcr.io/kubernetes-charts-ci/test-image:v2.0.0
     steps:
       - checkout
       - run:
@@ -11,3 +22,9 @@ jobs:
             git remote add k8s https://github.com/kubernetes/charts
             git fetch k8s master
             chart_test.sh --config test/.testenv --no-install
+workflows:
+  version: 2
+  lint:
+    jobs:
+      - lint-scripts
+      - lint-charts
