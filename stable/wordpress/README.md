@@ -86,7 +86,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `ingress.hosts[0].tls`               | Utilize TLS backend in ingress             | `false`                                                    |
 | `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                  | `wordpress.local-tls-secret`                               |
 | `ingress.hosts[0].annotations`       | Annotations for this host's ingress record | `[]`                                                       |
-| `ingress.hosts[0].labels`            | Labels for this host's ingress records     | `{}`                                                       |
+| `ingress.hosts[0].extraLabels`       | Labels for this host's ingress records     | `{}`                                                       |
 | `ingress.secrets[0].name`            | TLS Secret Name                            | `nil`                                                      |
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                     | `nil`                                                      |
 | `ingress.secrets[0].key`             | TLS Secret Key                             | `nil`                                                      |

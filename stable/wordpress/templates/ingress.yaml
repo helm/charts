@@ -9,8 +9,8 @@ metadata:
     chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
     release: "{{ $.Release.Name }}"
     heritage: "{{ $.Release.Service }}"
-    {{- if .labels }}
-{{ toYaml .labels | indent 4 }}
+    {{- if .extraLabels }}
+{{ toYaml .extraLabels | indent 4 }}
     {{- end }}
   annotations:
     {{- if .tls }}

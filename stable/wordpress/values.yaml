@@ -195,7 +195,8 @@ ingress:
     #  kubernetes.io/ingress.class: nginx
     #  kubernetes.io/tls-acme: true
 
-    labels: {}
+    ## Ingress extraLabels
+    extraLabels: {}
 
   secrets:
   ## If you're providing your own certificates, please use this to add the certificates as secrets
