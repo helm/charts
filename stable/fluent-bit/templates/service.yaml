@@ -11,6 +11,7 @@ spec:
   ports:
   - port: {{ .Values.metrics.service.port }}
     targetPort: metrics
+    name: metrics
   selector:
     app: {{ template "fluent-bit.fullname" . }}
 {{- end }}
