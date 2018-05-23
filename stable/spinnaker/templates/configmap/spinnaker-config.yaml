@@ -71,13 +71,24 @@ data:
     kubernetes:
       enabled: ${providers.kubernetes.enabled:false}
       accounts:
-        - name: ${providers.kubernetes.primaryCredentials.name}
-          serviceAccount: true
+        {{- if .Values.kubeConfig.enabled }}
+        {{- range $index, $context := .Values.kubeConfig.contexts }}
+        - name: {{ $context }}
+          kubeconfigFile: /tmp/kube/config
+          context: {{ $context }}
           dockerRegistries:
-          {{- range $index, $account := .Values.accounts }}
+          {{- range $index, $account := $.Values.accounts }}
           - accountName: {{ $account.name }}
           {{ end }}
-
+        {{ end }}
+        {{- else }}
+        - name: local
+          serviceAccount: true
+          dockerRegistries:
+            {{- range $index, $account := .Values.accounts }}
+            - accountName: {{ $account.name }}
+            {{- end }}
+        {{- end }}
     dockerRegistry:
       {{ if .Values.accounts }}
       enabled: true
@@ -235,13 +246,24 @@ data:
     kubernetes:
       enabled: true
       accounts:
+        {{- if .Values.kubeConfig.enabled }}
+        {{- range $index, $context := .Values.kubeConfig.contexts }}
+        - name: {{ $context }}
+          kubeconfigFile: /tmp/kube/{{ $.Values.kubeConfig.secretKey }}
+          context: {{ $context }}
+          dockerRegistries:
+          {{- range $index, $account := $.Values.accounts }}
+          - accountName: {{ $account.name }}
+          {{ end }}
+        {{ end }}
+        {{- else }}
         - name: local
           serviceAccount: true
           dockerRegistries:
             {{- range $index, $account := .Values.accounts }}
             - accountName: {{ $account.name }}
             {{- end }}
-
+        {{- end }}
     dockerRegistry:
       enabled: true
       accounts:
