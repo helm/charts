@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   labels: {{ include "eventrouter.labels" . | indent 4 }}
@@ -23,7 +23,7 @@ spec:
           - name: config-volume
             mountPath: /etc/eventrouter
           resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
