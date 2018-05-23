@@ -69,6 +69,11 @@ The following table lists the configurable parameters of the Kubeless chart and 
 | `ui.service.name`                        | Service name                               | `ui-port`                             |
 | `ui.service.type`                        | Kubernetes service name                    | `NodePort`                            |
 | `ui.service.externalPort`                | Service external port                      | `3000`                                |
+| `ui.ingress.enabled`                     | Kubeless UI ingress switch                 | `false`                               |
+| `ui.ingress.annotations`                 | Kubeless UI ingress annotations            | `{}`                                  |
+| `ui.ingress.path`                        | Kubeless UI ingress path                   | `{}`                                  |
+| `ui.ingress.hosts`                       | Kubeless UI ingress hosts                  | `[chart-example.local]`               |
+| `ui.ingress.tls`                         | Kubeless UI ingress TLS                    | `[]`                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
