@@ -266,7 +266,7 @@ readinessProbe:
   timeoutSeconds: 3
   periodSeconds: 5
 
-# Specifies an existing secret to be used
+# Specifies an existing secret to be used for RMQ password and Erlang Cookie
 existingSecret: ""
 
 prometheus:
