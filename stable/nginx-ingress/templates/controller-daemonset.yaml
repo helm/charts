@@ -169,7 +169,7 @@ spec:
       affinity:
 {{ toYaml .Values.controller.affinity | indent 8 }}
     {{- end }}
-      serviceAccountName: {{ if or .Values.rbac.create .Values.rbac.createRole .Values.rbac.createClusterRole }}{{ template "nginx-ingress.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "nginx-ingress.serviceAccountName" . }}
       terminationGracePeriodSeconds: 60
 {{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumes) }}
       volumes:
