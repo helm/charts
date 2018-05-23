@@ -6,6 +6,7 @@ image:
   repository: vault
   tag: 0.10.1
   pullPolicy: IfNotPresent
+
 consulAgent:
   repository: consul
   tag: 1.0.7
@@ -21,14 +22,14 @@ consulAgent:
   #
   # Optionally override the agent's http port
   HttpPort: 8500
+
 service:
   name: vault
   type: ClusterIP
   externalPort: 8200
   port: 8200
-  annotations: {}
   # clusterIP: None
-  # annotations:
+  annotations: {}
   #   cloud.google.com/load-balancer-type: "Internal"
 ingress:
   enabled: false
@@ -64,7 +65,13 @@ affinity: |
           matchLabels:
             app: {{ template "vault.fullname" . }}
             release: {{ .Release.Name }}
+
+## Deployment annotations
+annotations: {}
+
 podAnnotations: {}
+##    Read more about kube2iam to provide access to s3 https://github.com/jtblin/kube2iam
+#     iam.amazonaws.com/role: role-arn
 
 ## Sample for unsealing vault on startup
 ## if automation saves your unseal keys to a k8s secret on deploy
