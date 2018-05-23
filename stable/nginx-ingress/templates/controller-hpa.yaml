@@ -1,6 +1,10 @@
 {{- if eq .Values.controller.kind "Deployment" }}
 {{- if .Values.controller.autoscaling.enabled }}
+{{- if .Values.controller.autoscaling.targetMemUtilizationValue }}
+apiVersion: autoscaling/v2beta1
+{{- else }}
 apiVersion: autoscaling/v1
+{{- end }}
 kind: HorizontalPodAutoscaler
 metadata:
   labels:
@@ -17,6 +21,19 @@ spec:
     name: {{ template "nginx-ingress.controller.fullname" . }}
   minReplicas: {{ .Values.controller.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.controller.autoscaling.maxReplicas }}
+{{- if not .Values.controller.autoscaling.targetMemUtilizationValue }}
   targetCPUUtilizationPercentage: {{ .Values.controller.autoscaling.targetCPUUtilizationPercentage }}
+{{- end }}
+{{- if .Values.controller.autoscaling.targetMemUtilizationValue }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: {{ .Values.controller.autoscaling.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageValue: {{ .Values.controller.autoscaling.targetMemUtilizationValue }}
+{{- end }}
 {{- end }}
 {{- end }}

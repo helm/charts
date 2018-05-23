@@ -144,6 +144,7 @@ controller:
   #  minReplicas: 1
   #  maxReplicas: 11
   #  targetCPUUtilizationPercentage: 50
+  #  targetMemUtilizationValue: 100Mi
 
   ## Override NGINX template
   customTemplate:
