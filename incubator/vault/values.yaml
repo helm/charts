@@ -105,7 +105,7 @@ vault:
     #   mountPath: /vault/tls
   #
   # Configure additional environment variables for the Vault containers
-  # extraEnv:
+  extraEnv: {}
   #   - name: VAULT_API_ADDR
   #     value: "https://vault.internal.domain.name:8200"
   readiness:
