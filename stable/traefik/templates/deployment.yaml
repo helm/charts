@@ -17,7 +17,7 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-      {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
+      {{- if and (.Values.tolerations) (semverCompare "<1.6-0" .Capabilities.KubeVersion.GitVersion) }}
         scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
       {{- end }}
       {{- range $key, $value := .Values.deployment.podAnnotations }}
@@ -134,7 +134,7 @@ spec:
         emptyDir: {}
       {{- end }}
       {{- end }}
-      {{- if and (.Values.tolerations) (ge .Capabilities.KubeVersion.Minor "6") }}
+      {{- if and (.Values.tolerations) (semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion) }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}
       {{- end }}
