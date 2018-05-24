@@ -14,7 +14,7 @@ This chart bootstraps a [RabbitMQ](https://github.com/bitnami/bitnami-docker-rab
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.8+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
