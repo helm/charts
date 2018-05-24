@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<configuration monitorInterval="60" shutdownHook="disable">
+<properties>
+    <property name="pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} %c{1.} %t [%p] %msg%n</property>
+</properties>
+<appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+        <PatternLayout>
+            <pattern>${pattern}</pattern>
+        </PatternLayout>
+    </Console>
+    <Console name="STDERR" target="SYSTEM_ERR">
+        <PatternLayout>
+            <pattern>${pattern}</pattern>
+        </PatternLayout>
+    </Console>
+    <RollingFile name="A1" immediateFlush="false"
+                 fileName="${sys:storm.log.dir}/${sys:logfile.name}"
+                 filePattern="${sys:storm.log.dir}/${sys:logfile.name}.%i.gz">
+        <PatternLayout>
+            <pattern>${pattern}</pattern>
+        </PatternLayout>
+        <Policies>
+            <SizeBasedTriggeringPolicy size="100 MB"/> <!-- Or every 100 MB -->
+        </Policies>
+        <DefaultRolloverStrategy max="9"/>
+    </RollingFile>
+    <RollingFile name="WEB-ACCESS" immediateFlush="false"
+                 fileName="${sys:storm.log.dir}/access-web-${sys:daemon.name}.log"
+                 filePattern="${sys:storm.log.dir}/access-web-${sys:daemon.name}.log.%i.gz">
+        <PatternLayout>
+            <pattern>${pattern}</pattern>
+        </PatternLayout>
+        <Policies>
+            <SizeBasedTriggeringPolicy size="100 MB"/> <!-- Or every 100 MB -->
+        </Policies>
+        <DefaultRolloverStrategy max="9"/>
+    </RollingFile>
+    <RollingFile name="THRIFT-ACCESS" immediateFlush="false"
+                 fileName="${sys:storm.log.dir}/access-${sys:logfile.name}"
+                 filePattern="${sys:storm.log.dir}/access-${sys:logfile.name}.%i.gz">
+    <PatternLayout>
+        <pattern>${pattern}</pattern>
+    </PatternLayout>
+        <Policies>
+            <SizeBasedTriggeringPolicy size="100 MB"/> <!-- Or every 100 MB -->
+        </Policies>
+        <DefaultRolloverStrategy max="9"/>
+    </RollingFile>
+    <RollingFile name="METRICS"
+                 fileName="${sys:storm.log.dir}/${sys:logfile.name}.metrics"
+                 filePattern="${sys:storm.log.dir}/${sys:logfile.name}.metrics.%i.gz">
+        <PatternLayout>
+            <pattern>${patternMetrics}</pattern>
+        </PatternLayout>
+        <Policies>
+            <SizeBasedTriggeringPolicy size="2 MB"/>
+        </Policies>
+        <DefaultRolloverStrategy max="9"/>
+    </RollingFile>
+    <Syslog name="syslog" format="RFC5424" charset="UTF-8" host="localhost" port="514"
+            protocol="UDP" appName="[${sys:daemon.name}]" mdcId="mdc" includeMDC="true"
+            facility="LOCAL5" enterpriseNumber="18060" newLine="true" exceptionPattern="%rEx{full}"
+            messageId="[${sys:user.name}:S0]" id="storm" immediateFlush="true" immediateFail="true"/>
+</appenders>
+<loggers>
+
+    <Logger name="org.apache.storm.logging.filters.AccessLoggingFilter" level="info" additivity="false">
+        <AppenderRef ref="WEB-ACCESS"/>
+        <AppenderRef ref="syslog"/>
+    </Logger>
+    <Logger name="org.apache.storm.logging.ThriftAccessLogger" level="info" additivity="false">
+        <AppenderRef ref="THRIFT-ACCESS"/>
+        <AppenderRef ref="syslog"/>
+    </Logger>
+    <Logger name="org.apache.storm.metric.LoggingClusterMetricsConsumer" level="info" additivity="false">
+        <appender-ref ref="METRICS"/>
+    </Logger>
+    <root level="info"> <!-- We log everything -->
+        <appender-ref ref="STDERR"/>
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="A1"/>
+        <appender-ref ref="syslog"/>
+    </root>
+</loggers>
+</configuration>
