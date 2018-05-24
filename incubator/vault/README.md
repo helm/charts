@@ -54,12 +54,13 @@ The following table lists the configurable parameters of the Vault chart and the
 | `vault.dev`                       | Use Vault in dev mode                    | true (set to false in production)   |
 | `vault.customSecrets`             | Custom secrets available to Vault        | `[]`                                |
 | `vault.config`                    | Vault configuration                      | No default backend                  |
-| `replicaCount`                    | k8s replicas                             | `1`                                 |
+| `replicaCount`                    | k8s replicas                             | `3`                                 |
 | `resources.limits.cpu`            | Container requested CPU                  | `nil`                               |
 | `resources.limits.memory`         | Container requested memory               | `nil`                               |
 | `affinity`                        | Affinity settings                        | See values.yaml                     |
 | `service.annotations`             | Annotations for service                  | `{}`                                |
 | `annotations`                     | Annotations for deployment               | `{}`                                |
+| `ingress.labels`                  | Labels for ingress                       | `{}`                                |
 | `podAnnotations`                  | Annotations for pods                     | `{}`                                |
 | `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |
 | `consulAgent.repository`          | Container image for consul agent         | `consul`                            |

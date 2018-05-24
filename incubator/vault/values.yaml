@@ -33,6 +33,7 @@ service:
   #   cloud.google.com/load-balancer-type: "Internal"
 ingress:
   enabled: false
+  labels: {}
   # Used to create Ingress record (should used with service.type: ClusterIP).
   # hosts:
   #  - chart-example.local
