@@ -14,4 +14,10 @@ data:
     if [ -e /tmp/conf/sonar.properties ]; then
       cp /tmp/conf/sonar.properties /opt/sonarqube/conf/sonar.properties
     fi
+    {{- if .Values.sonarJavaCertificate }}
+    cat > certificate.cer <<- EOL
+{{ .Values.sonarJavaCertificate | indent 4 }}
+    EOL
+    keytool -importcert -file certificate.cer -keystore $JAVA_HOME/jre/lib/security/cacerts -alias "ldap-tls" -storepass changeit -noprompt
+    {{- end}}
     /opt/sonarqube/bin/run.sh
