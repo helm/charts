@@ -11,11 +11,11 @@ instructions for your platform.
 
 ### Installing the Chart
 
-To install the chart with the release name `my-release`:
+To install the chart with the release name `my-storm`:
 
 ```bash
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/storm
+$ helm install --name my-storm incubator/storm
 ```
 
 ## Configuration
