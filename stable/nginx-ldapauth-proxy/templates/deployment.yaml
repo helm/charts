@@ -19,7 +19,7 @@ spec:
         app: {{ template "nginx-ldapauth-proxy.name" . }}
         release: {{ .Release.Name }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print .Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
     {{- if .Values.image.pullSecrets }}
       {{- range $pullSecret := .Values.image.pullSecrets }}
