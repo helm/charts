@@ -21,6 +21,11 @@ In order for the chart to configure kiam correctly during the installation proce
 
 > **Tip**: The `hosts` field in the kiam server certificate should include the value _release-name_-server:_server-service-port_, e.g. `my-release-server:443`
 
+> If you don't include the exact hostname used by the kiam agent to connect to the server, you'll see a warning (which is really an error) in the agent logs similar to the following, and your pods will fail to obtain credentials:
+```json
+{"level":"warning","msg":"error finding role for pod: rpc error: code = Unavailable desc = there is no connection available","pod.ip":"100.120.0.2","time":"2018-05-24T04:11:25Z"}
+```
+
 Define values `agent.tlsFiles.ca`, `agent.tlsFiles.cert`, `agent.tlsFiles.key`, `server.tlsFiles.ca`, `server.tlsFiles.cert` and `agent.tlsFiles.key` to be the base64-encoded contents (.e.g. using the `base64` command) of the generated PEM files.
 For example
 
