@@ -54,7 +54,7 @@ spec:
               containerPort: 5672
             - name: http
               protocol: TCP
-              containerPort: {{ .Values.rabbitmqManagerPort }}
+              containerPort: 15672
             {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
             - name: stomp-tcp
               protocol: TCP
