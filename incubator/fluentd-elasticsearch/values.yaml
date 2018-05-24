@@ -1,10 +1,10 @@
-image: gcr.io/google-containers/fluentd-elasticsearch
-imageTag: v2.0.4
-
+image:
+  repository: gcr.io/google-containers/fluentd-elasticsearch
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
-imagePullPolicy: IfNotPresent
+  tag: v2.0.4
+  pullPolicy: IfNotPresent
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

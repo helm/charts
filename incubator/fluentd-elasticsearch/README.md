@@ -50,9 +50,9 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `elasticsearch.buffer_queue_limit` | Elasticsearch buffer queue limit           | `8`                                                        |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                            | 
-| `image`                            | Image                                      | `gcr.io/google-containers/fluentd-elasticsearch`           |
-| `imageTag`                         | Image tag                                  | `v2.0.4                                                    |
-| `imagePullPolicy`                  | Image pull policy                          | `Always` if `imageTag` is `imagePullPolicy`                |
+| `image.repository`                 | Image                                      | `gcr.io/google-containers/fluentd-elasticsearch`               |
+| `image.tag`                        | Image tag                                  | `v2.0.4                                                    |
+| `image.pullPolicy`                 | Image pull policy                          | `Always` if `image.tag` is `imagePullPolicy`                |
 | `rbac.create`                      | RBAC                                       | `true`                                                     |
 | `resources.limits.cpu`             | CPU limit                                  | `100m`                                                     |
 | `resources.limits.memory`          | Memory limit                               | `500Mi`                                                    |

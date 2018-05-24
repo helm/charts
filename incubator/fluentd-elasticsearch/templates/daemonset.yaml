@@ -4,7 +4,7 @@ metadata:
   name: {{ template "fluentd-elasticsearch.fullname" . }}
   labels:
     app: {{ template "fluentd-elasticsearch.fullname" . }}
-    version: {{ .Values.imageTag }}
+    version: {{ .Values.image.tag }}
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -14,18 +14,18 @@ spec:
   selector:
     matchLabels:
       app: {{ template "fluentd-elasticsearch.fullname" . }}
-      version: {{ .Values.imageTag }}
+      version: {{ .Values.image.tag }}
       chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
       heritage: "{{ .Release.Service }}"
   template:
     metadata:
       labels:
         app: {{ template "fluentd-elasticsearch.fullname" . }}
-        version: {{ .Values.imageTag }}
+        version: {{ .Values.image.tag }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         heritage: "{{ .Release.Service }}"
         kubernetes.io/cluster-service: "true"
-        version: {{ .Values.imageTag }}
+        version: {{ .Values.image.tag }}
       # This annotation ensures that fluentd does not get evicted if the node
       # supports critical pod annotation based priority scheme.
       # Note that this does not guarantee admission on the nodes (#40573).
@@ -39,7 +39,7 @@ spec:
       serviceAccountName: {{ template "fluentd-elasticsearch.fullname" . }}
       containers:
       - name: {{ template "fluentd-elasticsearch.fullname" . }}
-        image:  "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
         - name: FLUENTD_ARGS
