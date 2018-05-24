@@ -13,6 +13,9 @@ service:
   annotations:
   # May be used in example for internal load balancing in GCP:
   # cloud.google.com/load-balancer-type: Internal
+  loadBalancerSourceRanges:
+  - 0.0.0.0/0
+  # loadBalancerIP: 1.2.3.4
 ingress:
   enabled: false
   # Used to create an Ingress record.
