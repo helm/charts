@@ -103,6 +103,15 @@ The following tables list the configurable parameters of the acs-engine-autoscal
 
 Parameter | Description | Default
 --- | --- | ---
+`image.repository` | Image repository | `wbuchwalter/kubernetes-acs-engine-autoscaler` |
+`image.tag` | Image tag. Possible values listed [here](https://hub.docker.com/r/wbuchwalter/kubernetes-acs-engine-autoscaler/tags/).| `2.1.1`|
+`image.pullPolicy` | Image pull policy | `IfNotPresent` |
+`podAnnotations` | Pod annotations | `{}` |
+`deploymentAnnotations` | Deployment annotations | `{}` |
+`resources` | CPU/Memory resource requests/limits | `{}` |
+`nodeSelector` | Node labels for pod assignment | `{}` |
+`tolerations` | Toleration labels for pod assignment | `[]` |
+`affinity` | Affinity settings for pod assignment | `{}` |
 `resourcegroup`| Name of the resource group containing the cluster | None. You *must* supply one.
 `azurespappid`| An Azure service principal id | None. You *must* supply one.
 `azurespsecret`| An Azure service principal secret | None. You *must* supply one.
