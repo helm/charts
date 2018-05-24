@@ -36,7 +36,7 @@ The following tables lists the configurable parameters of the openldap chart and
 | `env`                           | List of key value pairs as env variables to be sent to the docker image. See https://github.com/osixia/docker-openldap for available ones | `[see values.yaml]`  |
 | `adminPassword`                 | Password for admin user. Unset to auto-generate the password  | `admin`            |
 | `configPassword`                | Password for config user. Unset to auto-generate the password | `config`           |
-| `customLdifFiles`               | Custom ldif files to seed the LDAP server. List of filename -> data pairs | ``     |
+| `customLdifFiles`               | Custom ldif files to seed the LDAP server. List of filename -> data pairs | None   |
 | `persistence.enabled`           | Whether to use PersistentVolumes or not                       | `false`            |
 | `persistence.storageClass`      | Storage class for PersistentVolumes.                          | `<unset>`          |
 | `persistence.accessMode`        | Access mode for PersistentVolumes                             | `ReadWriteOnce`    |
