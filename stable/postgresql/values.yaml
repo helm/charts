@@ -128,3 +128,7 @@ networkPolicy:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+## Annotations for the deployment and nodes.
+deploymentAnnotations: {}
+podAnnotations: {}

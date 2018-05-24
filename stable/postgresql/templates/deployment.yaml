@@ -7,6 +7,10 @@ metadata:
     chart: {{ template "postgresql.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.deploymentAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   template:
   selector:
@@ -18,6 +22,10 @@ spec:
       labels:
         app: {{ template "postgresql.name" . }}
         release: {{ .Release.Name }}
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.affinity }}
       affinity:
