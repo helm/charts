@@ -1,0 +1,20 @@
+{{- if .Values.elasticsearch.host -}}
+The Elastabot application has been deployed. If the pod enounters crash-
+looping you might have missed the step to set the Slack secrets. Review the 
+chart's README.md for more information.
+
+If successfully configured to reach the Slack community with the specific bot token,
+and if Elastabot is successfully connecting to your Elasticsearch service, 
+then you are ready to start communicating with the bot. Send the bot !help to see 
+usage instructions in Slack. 
+
+{{- else -}}
+Warning: Elastabot is not usable in the current configuration state.
+
+The elasticsearch.host and elasticsearch.port values must be correctly defined
+in order for this deployment to be created. By default, no Elasticsearch service
+endpoint is provided.
+
+Additionally, the Slack secrets must be applied so that the application can connect
+to Slack as a bot.
+{{- end -}}
