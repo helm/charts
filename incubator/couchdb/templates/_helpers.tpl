@@ -31,6 +31,6 @@ Create a random string if the supplied key does not exist
 {{- if . -}}
 {{- . | b64enc | quote -}}
 {{- else -}}
-{{- randAlphaNum 10 | b64enc | quote -}}
+{{- randAlphaNum 20 | b64enc | quote -}}
 {{- end -}}
 {{- end -}}
