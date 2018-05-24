@@ -126,14 +126,14 @@ spec:
 {{- if .Values.Master.HealthProbes }}
           livenessProbe:
             httpGet:
-              path: /login
+              path: "{{ default "" .Values.Master.JenkinsUriPrefix }}/login"
               port: http
             initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout }}
             timeoutSeconds: 5
             failureThreshold: {{ .Values.Master.HealthProbeLivenessFailureThreshold }}
           readinessProbe:
             httpGet:
-              path: /login
+              path: "{{ default "" .Values.Master.JenkinsUriPrefix }}/login"
               port: http
             initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout }}
 {{- end }}
