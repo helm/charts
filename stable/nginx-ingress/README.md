@@ -47,7 +47,7 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.13.0`
+`controller.image.tag` | controller container image tag | `0.14.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
@@ -137,8 +137,9 @@ Parameter | Description | Default
 `defaultBackend.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
 `imagePullSecrets` | name of Secret resource containing private registry credentials | `nil`
-`rbac.create` | If true, create & use RBAC resources | `false`
-`rbac.serviceAccountName` | ServiceAccount to be used (ignored if rbac.create=true) | `default`
+`rbac.create` | if `true`, create & use RBAC resources | `true`
+`serviceAccount.create` | if `true`, create a service account | ``
+`serviceAccount.name` | The name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
 `tcp` | TCP service key:value pairs | `{}`
 `udp` | UDP service key:value pairs | `{}`
@@ -192,6 +193,15 @@ spec:
       interval: 30s
 ```
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## ExternalDNS Service configuration
+
+Add an [ExternalDNS](https://github.com/kubernetes-incubator/external-dns) annotation to the LoadBalancer service:
+
+```yaml
+annotations:
+  external-dns.alpha.kubernetes.io/hostname: kubernetes-example.com.
+```
 
 ## AWS L7 ELB with SSL Termination
 

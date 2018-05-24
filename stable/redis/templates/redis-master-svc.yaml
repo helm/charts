@@ -11,9 +11,6 @@ metadata:
 {{- if .Values.master.service.annotations }}
 {{ toYaml .Values.master.service.annotations | indent 4 }}
 {{- end }}
-{{- if .Values.metrics.enabled }}
-{{ toYaml .Values.metrics.targetServiceAnnotations | indent 4 }}
-{{- end }}
 spec:
   type: {{ .Values.master.service.type }}
   {{ if eq .Values.master.service.type "LoadBalancer" -}} {{ if .Values.master.service.loadBalancerIP -}}
@@ -24,11 +21,6 @@ spec:
   - name: redis
     port: 6379
     targetPort: redis
-  {{- if .Values.metrics.enabled }}
-  - name: metrics
-    port: 9121
-    targetPort: metrics
-  {{- end }}
   selector:
     app: {{ template "redis.name" . }}
     release: "{{ .Release.Name }}"

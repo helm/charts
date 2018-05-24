@@ -15,12 +15,15 @@ You will need a service token which you can get from [cloud.weave.works](https:/
 To install the chart:
 
 ```console
-$ helm install --name weave-cloud --namespace kube-system --set ServiceToken=<YOUR_WEAVE_CLOUD_SERVICE_TOKEN> stable/weave-cloud
+$ helm install --name weave-cloud \
+--namespace weave \
+--set token=<YOUR_WEAVE_CLOUD_SERVICE_TOKEN> \
+stable/weave-cloud
 ```
 
 To view the pods installed:
 ```console
-$ kubectl get pods -n kube-system -l weave-cloud-component
+$ kubectl get pods -n weave
 ```
 
 To upgrade the chart:
@@ -33,15 +36,23 @@ $ helm upgrade --reuse-values weave-cloud stable/weave-cloud
 To uninstall/delete the `weave-cloud` chart:
 
 ```console
-$ helm delete weave-cloud
+$ helm delete --purge weave-cloud
+```
+
+Delete the `weave` namespace:
+
+```console
+$ kubectl delete namespace weave
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Weave Cloud Agents chart and their default values.
+The following table lists the configurable parameters of the Weave Cloud Agents chart and their default values.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `ServiceToken` | Weave Cloud service token | _none_ _(**must be set**)_ |
+| `token` | Weave Cloud service token | _none_ _(**must be set**)_ |
+| `rbac.create` | If `true`, create and use RBAC resources | `true` |
+| `serviceAccount.create` | If `true`, create a new service account | `true` |

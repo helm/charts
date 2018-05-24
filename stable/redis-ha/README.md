@@ -69,14 +69,13 @@ The following table lists the configurable parameters of the Redis chart and the
 | `tolerations`                    | Toleration labels for pod assignment                  | []                                                        |
 | `servers.serviceType`            | Set to "LoadBalancer" to enable access from the VPC   | ClusterIP                                                 |
 | `servers.annotations`            | See Appliance mode                                    | ``                                                        |
+| `rbac.create`                    |  whether RBAC resources should be created                                                                                    | true                                                      |
 | `serviceAccount.create`                    | If true, create & use RBAC resources        | `false`                                                   |
+| `serviceAccount.name`            | service account to be used.  If not set and serviceAccount.create is `true` a name is generated using the fullname template. | ``                    
 | `redis.maxMemory`               | Sets the maximum memory redis can allocate            | "" (This defaults to the maximum memory allowed)          |
 | `redis.maxMemoryPolicy`        | Sets the max memory policy used by redis              | "" (This defaults to volatile-lru)                        |
 | `redis.rdbBackups`              | Determines if scheduled RDB backups will be created   | `false`                                                   |
 | `redis.disklessReplication`     | Directly sends the RDB over the wire to slaves, without using the disk as intermediate storage| `false`           |
-
-
-
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/ghost
-  tag: 1.22.3
+  tag: 1.22.7
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -22,13 +22,14 @@ image:
 volumePermissions:
   image:
     name: busybox
-    tag: 1.27.1
+    tag: 1.28.3
 #    pullPolicy:
 
-## Ghost host to create application URLs
+## Ghost host and path to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
 ##
 # ghostHost:
+ghostPath: /
 
 ## Ghost port to create application URLs along with host.
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
@@ -38,7 +39,7 @@ ghostPort: 80
 ## loadBalancerIP for the Ghost Service (optional, cloud specific)
 ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
 ##
-# ghostLoadBalancerIP:
+ghostLoadBalancerIP: ""
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
@@ -161,3 +162,19 @@ resources:
   requests:
     memory: 512Mi
     cpu: 300m
+
+## Configure ingress resource
+## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - ghost.local
+  tls: []
+  #  - secretName: ghost-tls
+  #    hosts:
+  #      - ghost.local
