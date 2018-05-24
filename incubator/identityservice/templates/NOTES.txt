@@ -1,0 +1,5 @@
+Identity Service has been started in your Kubernetes cluster.
+You can access the UI dashboard in a web browser at :
+https://{{.Values.host}}/identitysvc
+When you first open the UI dashboard follow the instructions to complete the configuration
+

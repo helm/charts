@@ -1,0 +1,9 @@
+dbServerName: none
+dbName: none
+dbUserName: none
+dbPassword: none
+sendgridKey: none
+adminEmail: none
+serviceName: identityservice
+serviceType: ClusterIP
+host: example.com
