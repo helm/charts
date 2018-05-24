@@ -22,7 +22,7 @@ nodeSelector: {}
 tolerations: []
 
 ## Redis image version
-redis_image: quay.io/bzumhagen/kube-redis-ha:4.0.9-1
+redis_image: quay.io/bzumhagen/kube-redis-ha:4.0.9-2
 ## replicas number for each component
 replicas:
   servers: 3

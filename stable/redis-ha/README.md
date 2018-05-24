@@ -81,7 +81,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install \
-  --set redis_image=quay.io/bzumhagen/kube-redis-ha:4.0.9-1 \
+  --set redis_image=quay.io/bzumhagen/kube-redis-ha:4.0.9-2 \
     stable/redis-ha
 ```
 
@@ -116,4 +116,3 @@ To see the pod roles, run the following:
 ```bash
 $ kubectl get pods -L redis-role
 ```
-
