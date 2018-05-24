@@ -77,6 +77,9 @@ data:
       {{- if .Values.kubernetes.labelSelector }}
     labelselector = {{ .Values.kubernetes.labelSelector | quote }}
       {{- end}}
+      {{- if .Values.kubernetes.ingressClass }}
+    ingressClass = {{ .Values.kubernetes.ingressClass | quote }}
+      {{- end}}
     {{- end}}
     {{- if .Values.accessLogs.enabled }}
     [accessLog]
