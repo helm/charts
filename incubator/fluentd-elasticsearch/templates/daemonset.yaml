@@ -52,6 +52,10 @@ spec:
           value: {{ .Values.elasticsearch.buffer_chunk_limit | quote }}
         - name: OUTPUT_BUFFER_QUEUE_LIMIT
           value: {{ .Values.elasticsearch.buffer_queue_limit | quote }}
+        - name: K8S_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -65,7 +69,7 @@ spec:
           readOnly: true
         - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
           mountPath: /etc/fluent/config.d
-{{- if .Values.extraVolumeMounts }}          
+{{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 8 }}
 {{- end }}
       terminationGracePeriodSeconds: 30
@@ -83,7 +87,7 @@ spec:
       - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
         configMap:
           name: {{ template "fluentd-elasticsearch.fullname" . }}
-{{- if .Values.extraVolumes }}          
+{{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
 {{- if .Values.tolerations }}
