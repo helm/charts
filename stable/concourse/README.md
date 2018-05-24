@@ -110,6 +110,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.tolerations` | Tolerations for the web nodes | `[]` |
 | `web.service.type` | Concourse Web service type | `ClusterIP` |
 | `web.service.annotations` | Concourse Web Service annotations | `nil` |
+| `web.service.loadBalancerSourceRanges` | Concourse Web Service Load Balancer Source IP ranges | `nil` |
 | `web.service.atcNodePort` | Sets the nodePort for atc when using `NodePort` | `nil` |
 | `web.service.tsaNodePort` | Sets the nodePort for tsa when using `NodePort` | `nil` |
 | `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |

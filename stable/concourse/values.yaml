@@ -237,6 +237,16 @@ web:
     # annotations:
     #   prometheus.io/probe: "true"
     #   prometheus.io/probe_path: "/"
+    #
+    #   ## When using web.service.type: LoadBalancer, enable HTTPS with an ACM cert
+    #   service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:eu-west-1:123456789:certificate/abc123-abc123-abc123-abc123"
+    #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+    #   service.beta.kubernetes.io/aws-load-balancer-backend-port: "atc"
+    #   service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    #
+    # ## When using web.service.type: LoadBalancer, whitelist the load balancer to particular IPs
+    # loadBalancerSourceRanges:
+    #   - 192.168.1.10/32
 
   # When using web.service.type: NodePort, sets the nodePort for atc
   #  atcNodePort: 30150
