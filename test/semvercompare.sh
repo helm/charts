@@ -16,6 +16,8 @@
 semvercompareOldVer=""
 semvercompareNewVer=""
 
+semverIgnoreRegex="(README\.md)"
+
 # Verify that the semver for the chart was increased
 semvercompare() {
   printf "\nChecking the Chart version has increased for the chart at ${1}\n"
@@ -28,6 +30,14 @@ semvercompare() {
   ## If the chart is new git cannot checkout the chart. In that case return
   if [ $? -ne 0 ]; then
     echo "Unable to find Chart on master. New chart detected."
+    return
+  fi
+
+  # If the only files change are files we've whitelisted to allow changes
+  # without a semver bump, then return.
+  local non_whitelist_files=$(git diff HEAD~1 --name-only | grep -Ev "$semverIgnoreRegex" | wc -l)
+  if [ "$non_whitelist_files" -eq 0 ]; then
+    echo "No semver change required."
     return
   fi
 
