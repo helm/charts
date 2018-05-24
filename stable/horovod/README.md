@@ -90,7 +90,7 @@ deletes the release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Horovod
+The following table lists the configurable parameters of the Horovod
 chart and their default values.
 
 | Parameter | Description | Default |
