@@ -64,6 +64,10 @@ service:
   type: ClusterIP
   clusterIP: None
   port: 9000
+  annotations: {}
+    # prometheus.io/scrape: 'true'
+    # prometheus.io/path:   '/minio/prometheus/metrics'
+    # prometheus.io/port:   '9000'
 
 ingress:
   enabled: false
