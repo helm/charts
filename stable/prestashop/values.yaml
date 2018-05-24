@@ -184,4 +184,3 @@ readinessProbe:
   timeoutSeconds: 3
   failureThreshold: 6
   successThreshold: 1
-  
