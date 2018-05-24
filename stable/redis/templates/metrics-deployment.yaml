@@ -54,7 +54,11 @@ spec:
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
+              {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+              {{- else }}
               name: {{ template "redis.fullname" . }}
+              {{- end }}
               key: redis-password
         {{- end }}
         ports:
