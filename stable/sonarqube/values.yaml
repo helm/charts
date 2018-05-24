@@ -42,9 +42,11 @@ nodeSelector: {}
 readinessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
+  timeoutSeconds: 1
   failureThreshold: 6
 livenessProbe:
   initialDelaySeconds: 60
+  timeoutSeconds: 1
   periodSeconds: 30
 
 # Set extra env variables. Like proxy settings.
