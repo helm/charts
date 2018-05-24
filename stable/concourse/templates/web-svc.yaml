@@ -17,6 +17,12 @@ metadata:
     {{- end }}
 spec:
   type: {{ .Values.web.service.type }}
+  {{ if .Values.web.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- range .Values.web.service.loadBalancerSourceRanges }}
+    - {{ . }}
+    {{- end }}
+  {{ end }}
   ports:
     - name: atc
       port: {{ .Values.concourse.atcPort }}
