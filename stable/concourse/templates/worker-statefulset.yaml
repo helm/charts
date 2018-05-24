@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         app: {{ template "concourse.worker.fullname" . }}
+        release: "{{ .Release.Name }}"
       annotations:
         {{- range $key, $value := .Values.worker.annotations }}
         {{ $key }}: {{ $value | quote }}
@@ -77,7 +78,7 @@ spec:
                     done
           env:
             - name: CONCOURSE_TSA_HOST
-          {{- if semverCompare "^3.10" .Values.imageTag }}
+          {{- if semverCompare "^3.10.x" .Values.imageTag }}
               value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.tsaPort}}"
           {{- else }}
               value: {{ template "concourse.web.fullname" . }}
@@ -116,6 +117,14 @@ spec:
 {{ toYaml .Values.worker.additionalAffinities | indent 8 }}
 {{- end }}
         podAntiAffinity:
+          {{- if .Values.worker.hardAntiAffinity }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: {{ template "concourse.worker.fullname" . }}
+                release: {{ .Release.Name | quote }}
+            topologyKey: kubernetes.io/hostname
+          {{- else }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
             podAffinityTerm:
@@ -124,6 +133,7 @@ spec:
                 matchLabels:
                   app: {{ template "concourse.worker.fullname" . }}
                   release: {{ .Release.Name | quote }}
+          {{- end }}
       volumes:
         - name: concourse-keys
           secret:
