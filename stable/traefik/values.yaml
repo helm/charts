@@ -33,6 +33,7 @@ tolerations: []
   # namespaces:
   # - default
   # labelSelector:
+  # ingressClass:
 proxyProtocol:
   enabled: false
   # trustedIPs is required when enabled

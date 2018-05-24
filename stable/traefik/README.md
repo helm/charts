@@ -138,6 +138,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
 | `kubernetes.namespaces`         | List of Kubernetes namespaces to watch                               | All namespaces                            |
 | `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch (e.g `realm=public`)| No label filter                           |
+| `kubernetes.ingressClass`       | Value of `kubernetes.io/ingress.class` annotation to watch - must start with `traefik` if set | None             |
 | `accessLogs.enabled`            | Whether to enable Traefik's access logs                              | `false`                                   |
 | `accessLogs.filePath`           | The path to the log file. Logs to stdout if omitted                  | None                                      |
 | `accessLogs.format`             | What format the log entries should be in. Either `common` or `json`  | `common`                                  |
