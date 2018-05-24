@@ -56,6 +56,16 @@ spec:
             - name: http
               containerPort: 8088
               protocol: TCP
+          env:
+          {{- range $key, $value := .Values.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+        {{- if .Values.envFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.envFromSecret }}
+        {{- end }}
     {{- with .Values.resources }}
           resources:
 {{ toYaml . | indent 12 }}
