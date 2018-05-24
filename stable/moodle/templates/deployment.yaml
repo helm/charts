@@ -86,7 +86,7 @@ spec:
           containerPort: 80
         - name: https
           containerPort: 443
-          {{- if .Values.livenessProbe.enabled }}
+        {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /login/index.php
