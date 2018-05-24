@@ -4,7 +4,7 @@ metadata:
   name: {{ template "xray-indexer.fullname" . }}
   labels:
     app: {{ template "xray.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "xray.chart" . }}
     component: {{ .Values.indexer.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}

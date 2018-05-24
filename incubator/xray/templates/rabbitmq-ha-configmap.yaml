@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-rabbitmq-ha
+  name: {{ template "xray.fullname" . }}-rabbitmq-ha
   labels:
     app: {{ template "xray.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "xray.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 data:

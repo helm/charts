@@ -4,7 +4,7 @@ metadata:
   name: {{ template "xray.fullname" . }}-setup
   labels:
     app: {{ template "xray.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "xray.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 data:

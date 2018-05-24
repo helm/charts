@@ -4,7 +4,7 @@ metadata:
   name: {{ template "xray-persist.fullname" . }}
   labels:
     app: {{ template "xray.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "xray.chart" . }}
     component: {{ .Values.persist.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}

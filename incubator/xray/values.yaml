@@ -17,7 +17,7 @@ postgresql:
   enabled: true
   postgresDatabase: "xraydb"
   postgresUser: "xray"
-  postgresPassword: "xray"
+  postgresPassword:
   service:
     port: 5432
   persistence:
@@ -53,9 +53,9 @@ mongodb:
   ## This is critical to protect against OOMKill by Kubernetes!
   mongodbExtraFlags:
   - "--wiredTigerCacheSizeGB=6"
-  mongodbRootPassword: password
+  mongodbRootPassword:
   mongodbUsername: xray
-  mongodbPassword: password
+  mongodbPassword:
   mongodbDatabase: xray
 #  livenessProbe:
 #    initialDelaySeconds: 60
@@ -71,7 +71,7 @@ mongodb:
 rabbitmq-ha:
   replicaCount: 1
   rabbitmqUsername: "guest"
-  rabbitmqPassword: "guest"
+  rabbitmqPassword:
   customConfigMap: true
   rabbitmqErlangCookie: XRAYRABBITMQCLUSTER
   rabbitmqMemoryHighWatermark: 500MB
@@ -104,8 +104,6 @@ common:
   ## Pass it to helm with '--set common.masterKey=${MASTER_KEY}'
   ## IMPORTANT: You should NOT use the example masterKey for a production deployment!
   masterKey: FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-  storage:
-    sizeLimit: 10Gi
   resources:
     requests:
       memory: "256Mi"
@@ -126,6 +124,9 @@ analysis:
   externalPort: 7000
   service:
     type: ClusterIP
+  ## Container storage limit
+  storage:
+    sizeLimit: 10Gi
 
 indexer:
   name: xray-indexer
@@ -134,6 +135,9 @@ indexer:
   externalPort: 7002
   service:
     type: ClusterIP
+  ## Container storage limit
+  storage:
+    sizeLimit: 10Gi
 
 persist:
   name: xray-persist
@@ -142,6 +146,9 @@ persist:
   externalPort: 7003
   service:
     type: ClusterIP
+  ## Container storage limit
+  storage:
+    sizeLimit: 10Gi
 
 server:
   name: xray-server
@@ -151,6 +158,9 @@ server:
   service:
     type: LoadBalancer
     name: xray
+  ## Container storage limit
+  storage:
+    sizeLimit: 10Gi
   # Whitelist IPs allowed to LoadBalancer type services
   # Example: loadBalancerSourceRanges={82.82.190.51/32,141.141.8.8/32}
   loadBalancerSourceRanges: []

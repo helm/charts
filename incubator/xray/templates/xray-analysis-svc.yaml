@@ -4,7 +4,7 @@ metadata:
   name: {{ template "xray-analysis.fullname" . }}
   labels:
     app: {{ template "xray.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "xray.chart" . }}
     component: {{ .Values.analysis.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}

@@ -4,7 +4,7 @@ metadata:
   name: {{ template "xray-indexer.fullname" . }}
   labels:
     app: {{ template "xray.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "xray.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     component: {{ .Values.indexer.name }}
@@ -90,7 +90,7 @@ spec:
       volumes:
       - name: data-volume
         emptyDir:
-          sizeLimit: {{ .Values.common.storage.sizeLimit }}
+          sizeLimit: {{ .Values.indexer.storage.sizeLimit }}
       - name: config-volume
         emptyDir:
           sizeLimit: 1Gi
