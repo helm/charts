@@ -1,0 +1,27 @@
+{{ if .Values.sasl.scram.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "schema-registry.fullname" . }}
+  labels:
+    app: {{ include "schema-registry.name" . | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+
+data:
+  kafka_client_jaas.conf: |-
+    // Info for Schema Registry to connect to Zookeeper
+    Client {
+        org.apache.zookeeper.server.auth.DigestLoginModule required
+        username="$ZOOKEEPER_CLIENT_USER"
+        password="$ZOOKEEPER_CLIENT_PASSWORD";
+    };
+
+    // Info for third-party clients to connect to Kafka
+    KafkaClient {
+        org.apache.kafka.common.security.scram.ScramLoginModule required
+        username="$SCRAM_CLIENT_USER"
+        password="$SCRAM_CLIENT_PASSWORD";
+    };
+{{- end }}

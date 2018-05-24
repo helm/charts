@@ -117,7 +117,11 @@ mariadb:
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
 ##
+## Use serviceLoadBalancerIP to request a specific static IP,
+## otherwise leave blank
+##
 serviceType: LoadBalancer
+# serviceLoadBalancerIP:
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
