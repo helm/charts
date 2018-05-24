@@ -33,6 +33,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `replicas`                 | Number of nodes | `1` |
+| `deploymentStrategy`       | Deployment strategy | `RollingUpdate` |
 | `image.repository`         | Image repository | `grafana/grafana` |
 | `image.tag`                | Image tag. (`Must be >= 5.0.0`) Possible values listed [here](https://hub.docker.com/r/grafana/grafana/tags/).| `5.0.4`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
@@ -57,6 +58,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""` |
 | `schedulerName`            | Alternate scheduler name | `nil` |
 | `env`                      | Extra environment variables passed to pods | `{}` |
+| `envFromSecret`            | The name of a Kubenretes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
+| `extraSecretMounts`        | Additional grafana server secret mounts | `[]` |
 | `datasource`               | Configure grafana datasources | `{}` |
 | `dashboardProviders`       | Configure grafana dashboard providers | `{}` |
 | `dashboards`               | Dashboards to import | `{}` |
