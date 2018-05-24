@@ -46,8 +46,8 @@ spec:
     spec:
       containers:
         - name: {{ template "tensorflow-inception.fullname" . }}
-          image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-          imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command:
           - "/bin/sh"
           - "-c"

@@ -27,8 +27,8 @@ The following table lists the configurable parameters of the TensorFlow inceptio
 
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `image`          | Container image name               | `quay.io/lachie83/inception_serving`                              |
-| `imageTag`       | Container image tag                | `latest`                                                          |
+| `image.repository`      | Container image name               | `quay.io/lachie83/inception_serving`                              |
+| `image.tag`       | Container image tag                | `latest`                                                          |
 | `replicas`       | k8s deployment replicas            | `1`                                                               |
 | `component`      | k8s selector key                   | `tensorflow-inception`                                            |
 | `resources`      | Set the resource to be allocated and allowed for the Pods                   | `{}`                                            |
