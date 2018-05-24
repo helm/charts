@@ -1,5 +1,5 @@
-apiVersion: apps/v1beta2
-kind: Deployment
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: {{ template "nexus.fullname" . }}
   labels:
@@ -108,6 +108,13 @@ spec:
           {{- end }}
         {{- if .Values.nexusBackup.enabled }}
         - name: nexus-backup
+          annotations:
+            {{- range $key, $value := .Values.ingress.annotations }}
+            {{ $key }}: {{ $value | quote }}
+            {{- end }}
+      {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 12 }}
+      {{- end }}
           image: {{ .Values.nexusBackup.imageName }}:{{ .Values.nexusBackup.imageTag }}
           imagePullPolicy: {{ .Values.nexusBackup.imagePullPolicy }}
           env:
@@ -146,17 +153,34 @@ spec:
           secret:
             secretName: {{ template "nexus.proxy-ks.name" . }}
         {{- end }}
+        {{- if not .Values.persistence.enabled }}
         - name: nexus-data
-          {{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (printf "%s-%s" (include "nexus.fullname" .) "data") }}
-          {{- else }}
           emptyDir: {}
           {{- end }}
+        {{- if not .Values.nexusBackup.persistence.enabled }}
         - name: nexus-backup
-          {{- if and .Values.nexusBackup.enabled (.Values.nexusBackup.persistence.enabled) }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.nexusBackup.persistence.existingClaim | default (printf "%s-%s" (include "nexus.fullname" .) "backup") }}
-          {{- else }}
           emptyDir: {}
           {{- end }}
+{{- if or .Values.persistence.enabled .Values.nexusBackup.persistence.enabled }}
+  volumeClaimTemplates:
+{{- if .Values.persistence.enabled }}
+  - metadata:
+      name: nexus-data
+    spec:
+      accessModes:
+        - {{ default "ReadWriteOnce" .Values.persistence.accessMode | quote }}
+      resources:
+        requests:
+          storage: {{ default "8Gi" .Values.persistence.storageSize }}
+{{- end }}
+{{- if and .Values.nexusBackup.enabled .Values.nexusBackup.persistence.enabled }}
+  - metadata:
+      name: nexus-backup
+    spec:
+      accessModes:
+        - {{ default "ReadWriteOnce" .Values.nexusBackup.persistence.accessMode | quote }}
+      resources:
+        requests:
+          storage: {{ default "8Gi" .Values.nexusBackup.persistence.storageSize }}
+{{- end }}
+{{- end }}
