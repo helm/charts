@@ -89,6 +89,7 @@ spec:
           containerPort: 80
         - name: https
           containerPort: 443
+        {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /login
@@ -96,9 +97,13 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "prestashop.host" . | quote }}
-          initialDelaySeconds: 120
-          timeoutSeconds: 5
-          failureThreshold: 6
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /login
@@ -106,9 +111,12 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "prestashop.host" . | quote }}
-          initialDelaySeconds: 30
-          timeoutSeconds: 3
-          periodSeconds: 5
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
