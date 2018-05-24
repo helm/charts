@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<configuration monitorInterval="60" shutdownHook="disable">
+<properties>
+    <property name="pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} %c{1.} %t [%p] %msg%n</property>
+    <property name="patternNoTime">%msg%n</property>
+    <property name="patternMetrics">%d %-8r %m%n</property>
+</properties>
+<appenders>
+    <RollingFile name="A1"
+		fileName="${sys:workers.artifacts}/${sys:storm.id}/${sys:worker.port}/${sys:logfile.name}"
+		filePattern="${sys:workers.artifacts}/${sys:storm.id}/${sys:worker.port}/${sys:logfile.name}.%i.gz">
+        <PatternLayout>
+            <pattern>${pattern}</pattern>
+        </PatternLayout>
+        <Policies>
+            <SizeBasedTriggeringPolicy size="100 MB"/> <!-- Or every 100 MB -->
+        </Policies>
+        <DefaultRolloverStrategy max="9"/>
+    </RollingFile>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+        <PatternLayout>
+            <pattern>${pattern}</pattern>
+        </PatternLayout>
+    </Console>
+    <Console name="STDERR" target="SYSTEM_ERR">
+        <PatternLayout>
+            <pattern>${pattern}</pattern>
+        </PatternLayout>
+    </Console>
+    <RollingFile name="METRICS"
+		fileName="${sys:workers.artifacts}/${sys:storm.id}/${sys:worker.port}/${sys:logfile.name}.metrics"
+		filePattern="${sys:workers.artifacts}/${sys:storm.id}/${sys:worker.port}/${sys:logfile.name}.metrics.%i.gz">
+        <PatternLayout>
+            <pattern>${patternMetrics}</pattern>
+        </PatternLayout>
+        <Policies>
+            <SizeBasedTriggeringPolicy size="2 MB"/>
+        </Policies>
+        <DefaultRolloverStrategy max="9"/>
+    </RollingFile>
+    <Syslog name="syslog" format="RFC5424" charset="UTF-8" host="localhost" port="514"
+        protocol="UDP" appName="[${sys:storm.id}:${sys:worker.port}]" mdcId="mdc" includeMDC="true"
+        facility="LOCAL5" enterpriseNumber="18060" newLine="true" exceptionPattern="%rEx{full}"
+        messageId="[${sys:user.name}:${sys:logging.sensitivity}]" id="storm" immediateFail="true" immediateFlush="true"/>
+</appenders>
+<loggers>
+    <root level="info"> <!-- We log everything -->
+        <appender-ref ref="A1"/>
+        <appender-ref ref="syslog"/>
+    </root>
+    <Logger name="org.apache.storm.metric.LoggingMetricsConsumer" level="info" additivity="false">
+        <appender-ref ref="METRICS"/>
+    </Logger>
+    <Logger name="STDERR" level="INFO">
+        <appender-ref ref="STDERR"/>
+        <appender-ref ref="syslog"/>
+    </Logger>
+    <Logger name="STDOUT" level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="syslog"/>
+    </Logger>
+</loggers>
+</configuration>

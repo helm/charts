@@ -1,0 +1,56 @@
+{{- if .Values.ui.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "storm.ui.fullname" . }}
+  labels:
+    app: {{ template "storm.ui.name" . }}
+    chart: {{ template "storm.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.ui.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "storm.ui.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        app: {{ template "storm.ui.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+      - name: init-{{ template "storm.zookeeper.fullname" . }}
+        image: busybox
+        command: ["sh", "-c", "until nslookup {{ template "storm.zookeeper.fullname" . }}; do echo waiting for {{ template "storm.zookeeper.fullname" . }}; sleep 2; done;"]
+      - name: init-{{ template "storm.nimbus.fullname" . }}
+        image: busybox
+        command: ["sh", "-c", "until nslookup {{ template "storm.nimbus.fullname" . }}; do echo waiting for {{ template "storm.nimbus.fullname" . }}; sleep 2; done;"]
+      - name: init-{{ template "storm.supervisor.fullname" . }}
+        image: busybox
+        command: ["sh", "-c", "until nslookup {{ template "storm.supervisor.fullname" . }}; do echo waiting for {{ template "storm.supervisor.fullname" . }}; sleep 2; done;"]
+      containers:
+      - name: {{ .Values.ui.service.name }}
+        image: "{{ .Values.ui.image.repository }}:{{ .Values.ui.image.tag }}"
+        imagePullPolicy: {{ .Values.ui.image.pullPolicy }}
+        command: ["storm", "ui"]
+        ports:
+        - containerPort: {{ .Values.ui.service.port }}
+        resources:
+{{ toYaml .Values.ui.resources | indent 10 }}
+        volumeMounts:
+          - mountPath: "/conf"
+            name: storm-configmap
+          - mountPath: "/log4j2"
+            name: storm-logging-config
+      volumes:
+        - name: storm-configmap
+          configMap:
+            name: {{ template "storm.ui.fullname" . }}
+        - name: storm-logging-config
+          configMap:
+            name: {{ template "storm.logging.name" . }}
+{{- end -}}

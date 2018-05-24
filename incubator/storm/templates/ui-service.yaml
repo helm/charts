@@ -1,0 +1,20 @@
+{{- if .Values.ui.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "storm.ui.fullname" . }}
+  labels:
+    chart: {{ template "storm.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.ui.service.type }}
+  ports:
+  - protocol: TCP
+    port: {{ .Values.ui.service.port }}
+    name: {{ .Values.ui.service.name }}
+
+  selector:
+    app: {{ template "storm.ui.name" . }}
+    release: {{ .Release.Name }}
+{{- end -}}

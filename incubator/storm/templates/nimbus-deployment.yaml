@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "storm.nimbus.fullname" . }}
+  labels:
+    app: {{ template "storm.nimbus.name" . }}
+    chart: {{ template "storm.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.nimbus.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "storm.nimbus.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        app: {{ template "storm.nimbus.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+      - name: init-{{ template "storm.zookeeper.fullname" . }}
+        image: busybox
+        command: ["sh", "-c", "until nslookup {{ template "storm.zookeeper.fullname" . }}; do echo waiting for {{ template "storm.zookeeper.fullname" . }}; sleep 2; done;"]
+      containers:
+      - name: {{ .Values.nimbus.service.name }}
+        image: "{{ .Values.nimbus.image.repository }}:{{ .Values.nimbus.image.tag }}"
+        imagePullPolicy: {{ .Values.nimbus.image.pullPolicy }}
+        command: ["storm", "nimbus"]
+        ports:
+        - containerPort: {{ .Values.nimbus.service.port }}
+        resources:
+{{ toYaml .Values.nimbus.resources | indent 10 }}
+        volumeMounts:
+          - mountPath: "/conf"
+            name: storm-configmap
+          - mountPath: "/log4j2"
+            name: storm-logging-config
+      volumes:
+        - name: storm-configmap
+          configMap:
+            name: {{ template "storm.nimbus.fullname" . }}
+        - name: storm-logging-config
+          configMap:
+            name: {{ template "storm.logging.name" . }}
