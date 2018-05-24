@@ -27,6 +27,7 @@ spec:
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args:
             - --host-interface={{ .Values.host.interface }}
+            - --node=$(NODE_NAME)
           {{- if .Values.host.iptables }}
             - --host-ip={{ .Values.host.ip }}
           {{- end }}
@@ -47,6 +48,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
           {{- if and .Values.aws.secret_key .Values.aws.access_key }}
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
