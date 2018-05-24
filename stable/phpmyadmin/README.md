@@ -24,7 +24,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/phpmyadmin
 ```
 
-The command deploys Phpmyadmin on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys phpMyAdmin on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -40,16 +40,16 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following table lists the configurable parameters of the Phpmyadmin chart and their default values.
+The following table lists the configurable parameters of the phpMyAdmin chart and their default values.
 
 |              Parameter               |               Description                |                         Default                         |
 |--------------------------------------|------------------------------------------|---------------------------------------------------------|
-| `image.registry`                     | PhpMyAdmin image registry                 | `docker.io`                                             |
-| `image.repository`                   | PhpMyAdmin Image name                     | `bitnami/phpmyadmin`                                     |
-| `image.tag`                          | PhpMyAdmin Image tag                      | `{VERSION}`                                             |
+| `image.registry`                     | phpMyAdmin image registry                 | `docker.io`                                             |
+| `image.repository`                   | phpMyAdmin Image name                     | `bitnami/phpmyadmin`                                     |
+| `image.tag`                          | phpMyAdmin Image tag                      | `{VERSION}`                                             |
 | `image.pullPolicy`                   | Image pull policy                        |   `IfNotPresent` |
 | `image.pullSecrets`                  | Specify image pull secrets               | `nil`                                                   |
-| `service.type`            | type of service for PhpMyAdmin frontend             | `ClusterIP`                                                  |
+| `service.type`            | type of service for phpMyAdmin frontend             | `ClusterIP`                                                  |
 | `service.port`        | port to expose service                   | `80`                                                   |
 | `db.port`            | database port to use to connect                  | `3360`                                     |
 | `db.chartName`                | Database suffix if included in the same release                  | `nil`                                          |
