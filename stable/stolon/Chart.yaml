@@ -1,0 +1,12 @@
+name: stolon
+version: 0.1.0
+appVersion: 0.10.0
+description: Stolon - PostgreSQL cloud native High Availability.
+home: https://github.com/sorintlab/stolon
+icon: https://i.imgur.com/tIW8sAW.png
+sources:
+  - https://github.com/sorintlab/stolon
+maintainers:
+  - name: rtluckie
+    email: rluckie@cisco.com
+engine: gotpl
