@@ -8,3 +8,6 @@ sources:
 - https://github.com/heptiolabs/eventrouter
 keywords:
 - eventrouter
+maintainers:
+  - name: gianrubio
+    email: gianrubio@gmail.com

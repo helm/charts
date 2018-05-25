@@ -20,3 +20,5 @@ The following table lists the configurable parameters of the eventrouter chart a
 | `rbac.create`           | If `true`, create and use RBAC resources                                                                                    | `true`                             |
 | `serviceAccount.name`   | Service account to be used. If not set and serviceAccount.create is `true`, a name is generated using the fullname template | ``                                 |
 | `serviceAccount.create` | If true, create a new service account                                                                                       | `true`                             |
+| `tolerations`           | List of node taints to tolerate                                                                                             | `[]`                               |
+| `nodeSelector`          | node labels for pod assignment                                                                                              | `{}`                               |

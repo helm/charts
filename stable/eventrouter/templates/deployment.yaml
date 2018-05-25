@@ -19,8 +19,8 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
-        - name: config-volume
-          mountPath: /etc/eventrouter
+          - name: config-volume
+            mountPath: /etc/eventrouter
         resources:
 {{ toYaml .Values.resources | indent 10 }}
     {{- if .Values.nodeSelector }}
