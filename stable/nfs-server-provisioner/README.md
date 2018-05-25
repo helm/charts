@@ -49,7 +49,7 @@ deletes the release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the kibana chart and
+The following table lists the configurable parameters of the kibana chart and
 their default values.
 
 | Parameter                      | Description                                                                                                     | Default                                                  |
@@ -109,7 +109,7 @@ replica to provision storage - which is likely never a desired outcome.
 
 ## Recommended Persistence Configuration Examples
 
-The following is a recommended configration example when another storage class
+The following is a recommended configuration example when another storage class
 exists to provide persistence:
 
     persistence:
