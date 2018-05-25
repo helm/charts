@@ -51,7 +51,7 @@ $ helm install --name my-release --set createAdminSecret=false incubator/couchdb
 ```
 
 This Helm chart deploys CouchDB on the Kubernetes cluster in a default
-configuration. The [configuration](#configuration) section lists 
+configuration. The [configuration](#configuration) section lists
 the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
@@ -89,7 +89,7 @@ A variety of other parameters are also configurable. See the comments in the
 |---------------------------------|----------------------------------------|
 | `adminUsername`                 | admin                                  |
 | `adminPassword`                 | auto-generated                         |
-| `cookieAuthSecret               | auto-generated                         |
+| `cookieAuthSecret`              | auto-generated                         |
 | `helperImage.repository`        | kocolosk/couchdb-statefulset-assembler |
 | `helperImage.tag`               | 0.1.0                                  |
 | `helperImage.pullPolicy`        | IfNotPresent                           |
