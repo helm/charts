@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ template "portus.configmap" . }}"
+  name: "{{ template "portus.fullname" . }}"
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app: "{{ template "portus.name" . }}"
+    chart: {{ template "portus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: portus
 data:
   config.yml: |
     # This file contains the default values for the configuration of this

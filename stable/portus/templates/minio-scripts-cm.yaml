@@ -3,6 +3,12 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-minio-scripts
+  labels:
+    app: "{{ template "portus.name" . }}"
+    chart: {{ template "portus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: minio
 data:
   create-bucket.sh: |-
     mc config host add {{.Release.Name}}-minio http://{{ template "minio.svc" . }}:9000 {{ .Values.minio.accessKey }} {{ .Values.minio.secretKey }} S3v4

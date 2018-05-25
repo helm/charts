@@ -5,6 +5,9 @@ metadata:
   name: "{{ .Release.Name }}-create-bucket"
   labels:
     app: "{{ template "portus.name" . }}"
+    chart: {{ template "portus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     component: minio
   annotations:
     "helm.sh/hook": post-install

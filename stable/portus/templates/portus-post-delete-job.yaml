@@ -2,9 +2,12 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ .Release.Name }}-delete-jobs"
+  name: "{{ template "portus.fullname" . }}-delete-jobs"
   labels:
-    app: {{ template "portus.name" . }}
+    app: "{{ template "portus.name" . }}"
+    chart: {{ template "portus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     component: portus
   annotations:
     "helm.sh/hook": post-delete

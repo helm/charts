@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: "{{ template "portus.fullname" . }}"
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app: "{{ template "portus.name" . }}"
+    chart: {{ template "portus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: portus
 {{- if .Values.portus.service.annotations }}
   annotations:
 {{ toYaml .Values.portus.service.annotations | indent 4 }}

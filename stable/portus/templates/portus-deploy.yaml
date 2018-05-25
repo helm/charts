@@ -3,11 +3,11 @@ kind: Deployment
 metadata:
   name: "{{ template "portus.fullname" . }}"
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app: "{{ template "portus.name" . }}"
-    component: "portus"
+    chart: {{ template "portus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: portus
 spec:
   replicas: {{ .Values.portus.replicaCount }}
  {{- if .Values.updateStrategy }}
@@ -51,51 +51,51 @@ spec:
         - name: MARIADB_SERVICE_HOST
           valueFrom:
             secretKeyRef:
-              name: {{ template "portus.secret-db" . }}
+              name: "{{ template "portus.fullname" . }}-db"
               key: hostname
         - name: MARIADB_USER
           valueFrom:
             secretKeyRef:
-              name: {{ template "portus.secret-db" . }}
+              name: "{{ template "portus.fullname" . }}-db"
               key: username
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "portus.secret-db" . }}
+              name: "{{ template "portus.fullname" . }}-db"
               key: password
         - name: MARIADB_DATABASE
           valueFrom:
             secretKeyRef:
-              name: {{ template "portus.secret-db" . }}
+              name: "{{ template "portus.fullname" . }}-db"
               key: db-name
         {{- end }}
         - name: PORTUS_PORTUS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "portus.secret" . }}
+              name: {{ template "portus.fullname" . }}
               key: password
         - name: PORTUS_SECRET_KEY_BASE
           valueFrom:
             secretKeyRef:
-              name: {{ template "portus.secret" . }}
+              name: {{ template "portus.fullname" . }}
               key: secret-key-base
         {{- if .Values.portus.config.email.smtp.enabled }}
         - name: PORTUS_EMAIL_SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "portus.secret" . }}
+              name: {{ template "portus.fullname" . }}
               key: smtp-password
         - name: PORTUS_EMAIL_SMTP_USER_NAME
           valueFrom:
             secretKeyRef:
-              name: {{ template "portus.secret" . }}
+              name: {{ template "portus.fullname" . }}
               key: smtp-user-name
         {{- end }}
         {{- if .Values.portus.config.ldap.enabled }}
         - name: PORTUS_LDAP_AUTHENTICATION_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "portus.secret" . }}
+              name: {{ template "portus.fullname" . }}
               key: ldap-bind-password
         {{- end }}
         ports:
@@ -141,7 +141,7 @@ spec:
             path: portus.key
       - name: config
         configMap:
-          name: {{ template "portus.configmap" . }}
+          name: {{ template "portus.fullname" . }}
           items:
           - key: config.yml
             path: config.yml
