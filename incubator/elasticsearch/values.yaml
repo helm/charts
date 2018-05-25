@@ -1,7 +1,7 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "5.4"
+appVersion: "6.1.1"
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
