@@ -1,0 +1,20 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "nifi.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "nifi.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  rules:
+  - host: {{ .Values.ingress.domain }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "nifi.name" . }}-headless
+          servicePort: {{ .Values.nifi.properties.httpPort }}
+{{- end -}}

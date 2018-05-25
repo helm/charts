@@ -1,0 +1,16 @@
+apiVersion: v1
+name: nifi
+home: https://nifi.apache.org/
+version: 0.0.1
+appVersion: 1.6.0
+description: A Helm chart built to install NiFI on a K8S cluster
+keywords:
+- analytics
+- data
+sources:
+- https://github.com/apache/nifi
+maintainers:
+- name: William Hearn
+  email: william.hearn@canada.ca
+engine: gotpl
+icon: https://svn.apache.org/repos/asf/nifi/site/trunk/images/niFi-logo-horizontal-scaled.png
