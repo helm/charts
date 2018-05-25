@@ -1,3 +1,4 @@
+{{- if .Values.distributor.token }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,3 +11,4 @@ metadata:
 data:
   token: |
     {{ .Values.distributor.token }}
+{{- end }}

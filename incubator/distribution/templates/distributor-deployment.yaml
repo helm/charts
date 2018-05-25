@@ -34,16 +34,20 @@ spec:
         - '/bin/sh'
         - '-c'
         - >
+          {{- if .Values.distributor.token }}
           mkdir -pv {{ .Values.distributor.persistence.mountPath }}/etc/security;
           cp -fv /tmp/security/token {{ .Values.distributor.persistence.mountPath }}/etc/security/token;
           chmod 400 {{ .Values.distributor.persistence.mountPath }}/etc/security/token;
+          {{- end }}
           chown -R 1020:1020 {{ .Values.distributor.persistence.mountPath }}
         volumeMounts:
         - name: distributor-data
           mountPath: {{ .Values.distributor.persistence.mountPath | quote }}
+        {{- if .Values.distributor.token }}
         - name: distributor-token
           mountPath: "/tmp/security/token"
           subPath: token
+        {{- end }}
       containers:
       - name: {{ .Values.distributor.name }}
         image: '{{ .Values.distributor.image.repository }}:{{ .Values.distributor.image.version }}'
@@ -72,9 +76,11 @@ spec:
         resources:
 {{ toYaml .Values.distributor.resources | indent 10 }}
       volumes:
+      {{- if .Values.distributor.token }}
       - name: distributor-token
         configMap:
           name: {{ template "distributor.fullname" . }}-token
+      {{- end }}
       - name: distributor-data
       {{- if .Values.distributor.persistence.enabled }}
         persistentVolumeClaim:
