@@ -117,85 +117,85 @@ The following table lists the configurable parameters of the artifactory chart a
 |         Parameter         |           Description             |                         Default                          |
 |---------------------------|-----------------------------------|----------------------------------------------------------|
 | `imagePullSecrets`        | Docker registry pull secret       |                                                          |
-| `artifactory.name` | Artifactory name | `artifactory`   |
-| `artifactory.replicaCount`            | Replica count for Artifactory deployment| `1`                                                |
-| `artifactory.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                                           |
-| `artifactory.image.repository`    | Container image                   | `docker.bintray.io/jfrog/artifactory-pro`                |
-| `artifactory.image.version`       | Container tag                     |  `5.10.1`                                         |
-| `artifactory.service.name`| Artifactory service name to be set in Nginx configuration | `artifactory` |
-| `artifactory.service.type`| Artifactory service type | `ClusterIP` |
-| `artifactory.externalPort` | Artifactory service external port | `8081`   |
-| `artifactory.internalPort` | Artifactory service internal port | `8081`   |
-| `artifactory.internalPortReplicator` | Replicator service internal port | `6061`   |
-| `artifactory.externalPortReplicator` | Replicator service external port | `6061`   |
-| `artifactory.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
-| `artifactory.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 180                                                   |
-| `artifactory.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
-| `artifactory.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                                                    |
+| `artifactory.name`        | Artifactory name                  | `artifactory`                                            |
+| `artifactory.replicaCount`            | Replica count for Artifactory deployment| `1`                                    |
+| `artifactory.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                              |
+| `artifactory.image.repository`    | Container image                   | `docker.bintray.io/jfrog/artifactory-pro`        |
+| `artifactory.image.version`       | Container tag                     |  `5.10.1`                                        |
+| `artifactory.service.name`| Artifactory service name to be set in Nginx configuration | `artifactory`                    |
+| `artifactory.service.type`| Artifactory service type | `ClusterIP`                                                       |
+| `artifactory.externalPort` | Artifactory service external port | `8081`                                                  |
+| `artifactory.internalPort` | Artifactory service internal port | `8081`                                                  |
+| `artifactory.internalPortReplicator` | Replicator service internal port | `6061`                                         |
+| `artifactory.externalPortReplicator` | Replicator service external port | `6061`                                         |
+| `artifactory.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`    |
+| `artifactory.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 180                       |
+| `artifactory.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                        |
+| `artifactory.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                        |
 | `artifactory.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
 | `artifactory.livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
-| `artifactory.readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                        |
-| `artifactory.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 60                                                    |
-| `artifactory.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                   |
-| `artifactory.readinessProbe.timeoutSeconds`      | When the probe times out                  | 10                                                    |
+| `artifactory.readinessProbe.enabled`             | would you like a readinessProbe to be enabled           |  `true`     |
+| `artifactory.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 60                        |
+| `artifactory.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                        |
+| `artifactory.readinessProbe.timeoutSeconds`      | When the probe times out                  | 10                        |
 | `artifactory.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
 | `artifactory.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
-| `artifactory.persistence.mountPath` | Artifactory persistence volume mount path | `"/var/opt/jfrog/artifactory"`   |
-| `artifactory.persistence.enabled` | Artifactory persistence volume enabled | `true`   |
-| `artifactory.persistence.accessMode` | Artifactory persistence volume access mode | `ReadWriteOnce`   |
-| `artifactory.persistence.size` | Artifactory persistence volume size | `20Gi`   |
-| `artifactory.resources.requests.memory` | Artifactory initial memory request  |      |
-| `artifactory.resources.requests.cpu`    | Artifactory initial cpu request     |      |
-| `artifactory.resources.limits.memory`   | Artifactory memory limit            |      |
-| `artifactory.resources.limits.cpu`      | Artifactory cpu limit               |      |
-| `artifactory.javaOpts.xms`              | Artifactory java Xms size           |      |
-| `artifactory.javaOpts.xmx`              | Artifactory java Xms size           |      |
-| `artifactory.javaOpts.other`            | Artifactory additional java options |      |
-| `artifactory.replicator.enabled`            | Enable Artifactory Replicator | `false`  |
-| `artifactory.distributionCerts`            | Name of ConfigMap for Artifactory Distribution Certificate  | ``  |
-| `artifactory.replicator.publicUrl`            | Artifactory Replicator Public URL |      |
-| `ingress.enabled`           | If true, Artifactory Ingress will be created | `false` |
-| `ingress.annotations`       | Artifactory Ingress annotations     | `{}` |
-| `ingress.hosts`             | Artifactory Ingress hostnames       | `[]` |
-| `ingress.tls`               | Artifactory Ingress TLS configuration (YAML) | `[]` |
-| `nginx.name` | Nginx name | `nginx`   |
-| `nginx.enabled` | Deploy nginx server | `true`   |
-| `nginx.replicaCount` | Nginx replica count | `1`   |
-| `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`                |
-| `nginx.image.version`       | Container tag                     | `5.10.1`                                                |
-| `nginx.image.pullPolicy`    | Container pull policy                   | `IfNotPresent`                |
-| `nginx.service.type`| Nginx service type | `LoadBalancer` |
+| `artifactory.persistence.mountPath` | Artifactory persistence volume mount path | `"/var/opt/jfrog/artifactory"`         |
+| `artifactory.persistence.enabled` | Artifactory persistence volume enabled | `true`                                      |
+| `artifactory.persistence.accessMode` | Artifactory persistence volume access mode | `ReadWriteOnce`                      |
+| `artifactory.persistence.size` | Artifactory persistence volume size | `20Gi`                                            | 
+| `artifactory.resources.requests.memory` | Artifactory initial memory request                  |                          |
+| `artifactory.resources.requests.cpu`    | Artifactory initial cpu request     |                                          |
+| `artifactory.resources.limits.memory`   | Artifactory memory limit            |                                          |
+| `artifactory.resources.limits.cpu`      | Artifactory cpu limit               |                                          |
+| `artifactory.javaOpts.xms`              | Artifactory java Xms size           |                                          |
+| `artifactory.javaOpts.xmx`              | Artifactory java Xms size           |                                          |
+| `artifactory.javaOpts.other`            | Artifactory additional java options |                                          |
+| `artifactory.replicator.enabled`            | Enable Artifactory Replicator | `false`                                    |
+| `artifactory.distributionCerts`            | Name of ConfigMap for Artifactory Distribution Certificate  | ``            |
+| `artifactory.replicator.publicUrl`            | Artifactory Replicator Public URL |                                      |
+| `ingress.enabled`           | If true, Artifactory Ingress will be created | `false`                                     |
+| `ingress.annotations`       | Artifactory Ingress annotations     | `{}`                                                 |
+| `ingress.hosts`             | Artifactory Ingress hostnames       | `[]`                                                 |
+| `ingress.tls`               | Artifactory Ingress TLS configuration (YAML) | `[]`                                        |
+| `nginx.name` | Nginx name | `nginx`                                                                                      |
+| `nginx.enabled` | Deploy nginx server | `true`                                                                           |
+| `nginx.replicaCount` | Nginx replica count | `1`                                                                         |
+| `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`        |
+| `nginx.image.version`       | Container tag                     | `5.10.1`                                               |
+| `nginx.image.pullPolicy`    | Container pull policy                   | `IfNotPresent`                                   |
+| `nginx.service.type`| Nginx service type | `LoadBalancer`                                                                |
 | `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |  |
-| `nginx.loadBalancerIP`| Provide Static IP to configure with Nginx |  |
-| `nginx.externalPortHttp` | Nginx service external port | `80`   |
-| `nginx.internalPortHttp` | Nginx service internal port | `80`   |
-| `nginx.externalPortHttps` | Nginx service external port | `443`   |
-| `nginx.internalPortHttps` | Nginx service internal port | `443`   |
-| `nginx.internalPortReplicator` | Replicator service internal port | `6061`   |
-| `nginx.externalPortReplicator` | Replicator service external port | `6061`   |
-| `nginx.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
-| `nginx.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 60                                                   |
-| `nginx.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
-| `nginx.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                                                    |
+| `nginx.loadBalancerIP`| Provide Static IP to configure with Nginx |                                                      |
+| `nginx.externalPortHttp` | Nginx service external port | `80`                                                            |
+| `nginx.internalPortHttp` | Nginx service internal port | `80`                                                            |
+| `nginx.externalPortHttps` | Nginx service external port | `443`                                                          |
+| `nginx.internalPortHttps` | Nginx service internal port | `443`                                                          |
+| `nginx.internalPortReplicator` | Replicator service internal port | `6061`                                               |
+| `nginx.externalPortReplicator` | Replicator service external port | `6061`                                               |
+| `nginx.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`          |
+| `nginx.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 60                              |
+| `nginx.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                              |
+| `nginx.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                              |
 | `nginx.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 10 |
 | `nginx.livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 1|
-| `nginx.readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                        |
-| `nginx.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 60                                                   |
-| `nginx.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                   |
-| `nginx.readinessProbe.timeoutSeconds`      | When the probe times out                  | 10                                                    |
+| `nginx.readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`          |
+| `nginx.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 60                              |
+| `nginx.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                              |
+| `nginx.readinessProbe.timeoutSeconds`      | When the probe times out                  | 10                              |
 | `nginx.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 10 |
 | `nginx.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 1 |
-| `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |    |
-| `nginx.env.artUrl` | Nginx Environment variable Artifactory URL | `"http://artifactory:8081/artifactory"`   |
-| `nginx.env.ssl` | Nginx Environment enable ssl | `true`   |
-| `nginx.persistence.mountPath` | Nginx persistence volume mount path | `"/var/opt/jfrog/nginx"`   |
-| `nginx.persistence.enabled` | Nginx persistence volume enabled | `true`   |
-| `nginx.persistence.accessMode` | Nginx persistence volume access mode | `ReadWriteOnce`   |
-| `nginx.persistence.size` | Nginx persistence volume size | `5Gi`   |
-| `nginx.resources.requests.memory` | Nginx initial memory request  |     |
-| `nginx.resources.requests.cpu`    | Nginx initial cpu request     |     |
-| `nginx.resources.limits.memory`   | Nginx memory limit            |     |
-| `nginx.resources.limits.cpu`      | Nginx cpu limit               |     |
+| `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |                                                 |
+| `nginx.env.artUrl` | Nginx Environment variable Artifactory URL | `"http://artifactory:8081/artifactory"`                |
+| `nginx.env.ssl` | Nginx Environment enable ssl | `true`                                                                  |
+| `nginx.persistence.mountPath` | Nginx persistence volume mount path | `"/var/opt/jfrog/nginx"`                           |
+| `nginx.persistence.enabled` | Nginx persistence volume enabled | `true`                                                  |
+| `nginx.persistence.accessMode` | Nginx persistence volume access mode | `ReadWriteOnce`                                  |
+| `nginx.persistence.size` | Nginx persistence volume size | `5Gi`                                                         |
+| `nginx.resources.requests.memory` | Nginx initial memory request  |                                                      |
+| `nginx.resources.requests.cpu`    | Nginx initial cpu request     |                                                      |
+| `nginx.resources.limits.memory`   | Nginx memory limit            |                                                      |
+| `nginx.resources.limits.cpu`      | Nginx cpu limit               |                                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
