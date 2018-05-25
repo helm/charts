@@ -1,0 +1,18 @@
+# Connecting to Rancher
+
+Rancher should now be accessible. Browse to `https://whatever.fqdn.is.set.to`
+
+## Connecting to a `localhost` Rancher Server
+
+By default Rancher is listening on `rancher.localhost` for connections. This default is handy if you want to run it on your local workstation. You will need to set up a `hosts` entry to connect.
+
+* Windows - `c:\windows\system32\drivers\etc\hosts`
+* Mac - `/etc/hosts`
+
+127.0.0.1 rancher.local
+
+Then browse to https://rancher.localhost
+
+## What's next
+
+Check out our docs at https://rancher.com/docs/rancher/v2.x/en/

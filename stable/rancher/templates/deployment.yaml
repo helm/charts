@@ -1,0 +1,58 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: rancher
+spec:
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        app: rancher
+    spec:
+      serviceAccountName: rancher-admin
+      containers:
+      - image: rancher/rancher:{{ .Values.rancher_image_tag }}
+        name: rancher-server
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        - containerPort: 443
+          protocol: TCP
+        args:
+{{- if eq .Values.ingress.tls "publicCA" }}
+        # Clear ca certs for public trusted CAs
+        - "--no-cacerts"
+{{- end }}
+{{- if eq .Values.ingress.tls "letsEncrypt" }}
+        # Clear ca certs for letsEncrypt trusted CA
+        - "--no-cacerts"
+{{- end }}
+{{- if .Values.debug }}
+        - "--debug"
+{{- end }}
+        - "--http-listen-port=80"
+        - "--https-listen-port=443"
+        livenessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 30
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+{{- if eq .Values.ingress.tls "privateCA" }}
+        # Pass CA cert into rancher for private CA
+        volumeMounts:
+        - mountPath: /etc/rancher/ssl
+          name: tls-rancher-server-volume
+          readOnly: true
+      volumes:
+      - name: tls-rancher-server-volume
+        secret:
+          defaultMode: 420
+          secretName: tls-rancher-server
+{{- end }}

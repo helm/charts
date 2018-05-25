@@ -1,0 +1,69 @@
+# Add debug flag to Rancher server
+debug: false
+
+# Fully qualified name to reach your Rancher server
+hostname: rancher.localhost
+
+### Ingress ###
+# - Rancher Self-Signed (passthrough)
+# The Default is to set passthrough so rancher uses its self-signed certs.
+# Your web browser will complain, but Rancher will still work.
+#
+# ingress.tls=rancher
+#
+# - Public CA signed certs.
+# If you have your own certs and a DNS entry, you can add the certs to the
+# rancher-system namespace as the "tls-rancher" k8s secret.
+#
+# Combine server followed intermediate certs into tls.crt.
+# Copy private key into tls.key.
+# Use kubectl to create the secret
+#
+# kubectl -n rancher-system create secret generic tls-rancher \
+# --from-file=tls.crt --from-file=tls.key
+#
+# hostname=your.domain.name.com 
+# ingress.tls=publicCA
+#
+# - Private CA signed certs
+# You can add your own private CA signed certs. Create the secret like above but
+# also add your CA Cert to `tls-rancher-server` secret.
+#
+# Copy the CA cert into a file named `cacerts.pem` and use `kubectl` to create
+# the secret.
+#
+# kubectl -n rancher-system create secret generic tls-rancher-server \
+# --from-file=cacerts.pem
+#
+# hostname=your.domain.name.com 
+# ingress.tls=privateCA
+#
+# - LetsEncrypt
+# Lets Encrypt will require the Rancher Server(ingress) to be accessible from
+# the internet and a Public DNS record that points to the Rancher Server.
+#
+# This will install stable/cert-manager to manage the ssl cert renewal.
+#
+# hostname=your.domain.name.com
+# ingress.tls=letsEncrypt
+# letsEncrypt.email=<your email>
+# letsEncrypt.environment=<staging | prod>
+#
+ingress:
+  tls: rancher
+
+### LetsEncrypt config ###
+# ProTip: The prod environment only allows you to register a name 5 times a week.
+#         Use staging until you have your config right.
+letsEncrypt:
+  email: none@example.com
+  environment: staging # staging or prod. Use staging until you get your config right.
+
+# rancher/rancher image tag. https://hub.docker.com/r/rancher/rancher/tags/
+rancher_image_tag: v2.0.2
+
+# Number of Rancher server replicas.
+replicas: 1
+
+# Set pod resource requests/limits for Rancher.
+resources: {}

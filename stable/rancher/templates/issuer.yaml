@@ -1,0 +1,18 @@
+{{- if eq .Values.ingress.tls "letsEncrypt" -}}
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+  name: rancher-letsencrypt-{{ .Values.letsEncrypt.environment }}
+spec:
+  acme:
+{{- if eq .Values.letsEncrypt.environment "prod" }}
+    server: https://acme-v01.api.letsencrypt.org/directory
+{{- end }}
+{{- if eq .Values.letsEncrypt.environment "staging" }}
+    server: https://acme-staging.api.letsencrypt.org/directory
+{{- end }}
+    email: {{ .Values.letsEncrypt.email }}
+    privateKeySecretRef:
+      name: rancher-letsencrypt-{{ .Values.letsEncrypt.environment }}
+    http01: {}
+{{- end -}}

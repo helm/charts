@@ -1,0 +1,19 @@
+{{- if eq .Values.ingress.tls "letsEncrypt" -}}
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: rancher
+spec:
+  secretName: tls-rancher
+  issuerRef:
+    name: rancher-letsencrypt-{{ .Values.letsEncrypt.environment }}
+  commonName: {{ .Values.hostname }}
+  dnsNames:
+  - {{ .Values.hostname }}
+  acme:
+    config:
+    - http01:
+        ingressClass: nginx
+      domains:
+      - {{ .Values.hostname }}
+{{- end -}}
