@@ -34,13 +34,14 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Node Exporter chart and their default values.
+The following table lists the configurable parameters of the Node Exporter chart and their default values.
 
 |        Parameter        |                                                          Description                                                          |                 Default                 |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
 | `image.repository`      | Image repository                                                                                                              | `quay.io/prometheus/node-exporter`      |
 | `image.tag`             | Image tag                                                                                                                     | `v0.15.2`                               |
 | `image.pullPolicy`      | Image pull policy                                                                                                             | `IfNotPresent`                          |
+| `extraArgs`             | Additional container arguments                                                                                              | `[]`                                                                     |
 | `resources`             | CPU/Memory resource requests/limits                                                                                           | `{}`                                    |
 | `service.type`          | Service type                                                                                                                  | `ClusterIP`                             |
 | `service.port`          | The service port                                                                                                              | `9100`                                  |

@@ -5,17 +5,19 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v1.1.5"
+ImageTag: "v2.0.0"
 ImagePullPolicy: "Always"
 Replicas: 3
 MaxUnavailable: 1
 Component: "cockroachdb"
 GrpcPort: 26257
 HttpPort: 8080
-Resources:
-  requests:
-    cpu: "100m"
-    memory: "512Mi"
+# Uncomment the following resources definitions or pass them from command line
+# to control the cpu and memory resources allocated by the Kubernetes cluster
+Resources: {}
+  # requests:
+  #   cpu: "100m"
+  #   memory: "512Mi"
 Storage: "1Gi"
 ## Persistent Volume Storage Class for database data
 ## If defined, storageClassName: <StorageClass>
@@ -33,6 +35,9 @@ NetworkPolicy:
   AllowExternal: true
 Service:
   type: ClusterIP
+PodManagementPolicy: Parallel
+UpdateStrategy:
+  type: RollingUpdate
 Secure:
   Enabled: false
   RequestCertsImage: "cockroachdb/cockroach-k8s-request-cert"
