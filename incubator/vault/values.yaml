@@ -2,6 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 3
+## The name of the secret to use if pulling images from a private registry.
+# imagePullSecret:
 image:
   repository: vault
   tag: 0.10.1
