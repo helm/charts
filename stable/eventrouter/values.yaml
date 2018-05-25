@@ -3,7 +3,7 @@
 image:
   repository: gcr.io/heptio-images/eventrouter
   tag: v0.2
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 resources: {}
   # limits:
   #  cpu: 100m

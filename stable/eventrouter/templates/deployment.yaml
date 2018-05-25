@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   labels: {{ include "eventrouter.labels" . | indent 4 }}
@@ -8,11 +8,12 @@ spec:
   selector:
     matchLabels:
       app: {{ template "eventrouter.name" . }}
+      release: {{ .Release.Name }}    
   template:
     metadata:
       labels:
         app: {{ template "eventrouter.name" . }}
-        release: {{.Release.Name }}    
+        release: {{ .Release.Name }}    
     spec:
       containers:
       - name: {{ .Chart.Name }}
