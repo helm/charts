@@ -34,7 +34,7 @@ serviceAccount:
   name:
 
 livenessProbe:
-  enabled: false
+  enabled: true
 
 annotations: {}
   # prometheus.io/scrape: "true"
