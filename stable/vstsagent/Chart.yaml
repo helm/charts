@@ -19,4 +19,4 @@ maintainers:
 - name: Bram vd Klinkenberg
   email: bramvandenklinkenberg@gmail.com
 tillerVersion: ">2.8.0"
-kubeVersion: ">1.8"
+kubeVersion: ">1.8-0"
