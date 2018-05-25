@@ -31,6 +31,12 @@ service:
   # clusterIP: None
   annotations: {}
   #   cloud.google.com/load-balancer-type: "Internal"
+  #
+  # An example using type:loadbalancer and AWS internal ELB on kops
+  # type: LoadBalancer
+  # annotations:
+  #   dns.alpha.kubernetes.io/internal: vault.internal.domain.name
+  #   service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
 ingress:
   enabled: false
   labels: {}
@@ -97,6 +103,11 @@ vault:
   customSecrets: []
     # - secretName: vault-tls
     #   mountPath: /vault/tls
+  #
+  # Configure additional environment variables for the Vault containers
+  extraEnv: {}
+  #   - name: VAULT_API_ADDR
+  #     value: "https://vault.internal.domain.name:8200"
   readiness:
     readyIfSealed: false
     readyIfStandby: true
