@@ -33,10 +33,10 @@ spec:
             - mountPath: /opt/jboss/conf
               name: proxy-config
       volumes:
-      - name: proxy-config
-        configMap:
-          defaultMode: 420
-          name: {{ template "keycloak-proxy.fullname" . }}
+        - name: proxy-config
+          configMap:
+            defaultMode: 420
+            name: {{ template "keycloak-proxy.fullname" . }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
