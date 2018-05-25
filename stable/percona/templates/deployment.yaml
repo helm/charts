@@ -26,14 +26,14 @@ spec:
           mountPath: /var/lib/mysql
       containers:
       - name: {{ template "percona.fullname" . }}
-        image: "mysql:{{ .Values.imageTag }}"
+        image: "percona:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
         {{- if .Values.mysqlAllowEmptyPassword }}
         - name: MYSQL_ALLOW_EMPTY_PASSWORD
-          value: "true"
+          value: "yes"
         {{- else }}
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:

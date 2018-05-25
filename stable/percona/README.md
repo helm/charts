@@ -1,6 +1,6 @@
 # Percona
 
-[Percona Server](https://MySQL.org) for MySQL® is a free, fully compatible, enhanced, open source drop-in replacement for MySQL that provides superior performance, scalability and instrumentation. With over 3,000,000 downloads, Percona Server for MySQL's self-tuning algorithms and support for extremely high-performance hardware delivers excellent performance and reliability. 
+[Percona Server](https://www.percona.com/software/mysql-database/percona-server) for MySQL® is a free, fully compatible, enhanced, open source drop-in replacement for MySQL that provides superior performance, scalability and instrumentation. With over 3,000,000 downloads, Percona Server for MySQL's self-tuning algorithms and support for extremely high-performance hardware delivers excellent performance and reliability. 
 
 Notable users include Netflix, Amazon Web Services, Alcatel-Lucent, and Smug Mug.
 
@@ -50,11 +50,12 @@ The following table lists the configurable parameters of the Percona chart and t
 | -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
 | `imageTag`                 | `percona` image tag.                 | Most recent release                                        |
 | `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`                                             |
-| `perconaRootPassword`        | Password for the `root` user.      | `nil`                                                      |
-| `perconaUser`                | Username of new user to create.    | `nil`                                                      |
-| `perconaPassword`            | Password for the new user.         | `nil`                                                      |
-| `perconaDatabase`            | Name for new database to create.   | `nil`                                                      |
-| `persistence.enabled`      | Create a volume to store data      | false                                                       |
+| `mysqlRootPassword`        | Password for the `root` user.      | `nil`                                                      |
+| `mysqlUser`                | Username of new user to create.    | `nil`                                                      |
+| `mysqlPassword`            | Password for the new user.         | `nil`                                                      |
+| `mysqlDatabase`            | Name for new database to create.   | `nil`                                                      |
+| `mysqlAllowEmptyPassword`  | Allows empty password, insecure  . | `nil`                                                      |
+| `persistence.enabled`      | Create a volume to store data      | false                                                      |
 | `persistence.size`         | Size of persistent volume claim    | 8Gi RW                                                     |
 | `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
@@ -68,7 +69,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set mysqlLRootPassword=secretpassword,mysqlUser=my-user,mysqlPassword=my-password,mysqlDatabase=my-database \
+  --set mysqlRootPassword=secretpassword,mysqlUser=my-user,mysqlPassword=my-password,mysqlDatabase=my-database \
     stable/percona
 ```
 
