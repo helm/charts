@@ -31,7 +31,8 @@ spec:
                 name: {{ template "minio.fullname" . }}
       containers:
       - name: minio-mc
-        image: minio/mc
+        image: "{{ .Values.mcImage.repository }}:{{ .Values.mcImage.tag }}"
+        imagePullPolicy: {{ .Values.mcImage.pullPolicy }}
         command: ["/bin/sh", "/config/initialize"]
         env:
           - name: MINIO_ENDPOINT
