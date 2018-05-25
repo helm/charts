@@ -22,6 +22,12 @@ spec:
 {{ toYaml .Values.nginx.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
   ports:
+  {{- if .Values.artifactory.replicator.enabled }}
+  - port: {{ .Values.nginx.externalPortReplicator }}
+    targetPort: {{ .Values.nginx.internalPortReplicator }}
+    protocol: TCP
+    name: replicator
+  {{- end }}
   - port: {{ .Values.nginx.externalPortHttp }}
     targetPort: {{ .Values.nginx.internalPortHttp }}
     protocol: TCP
