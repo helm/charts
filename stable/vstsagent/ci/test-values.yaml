@@ -1,0 +1,9 @@
+secret:
+  account: YWNzLWt1YmVybmV0ZXMtbnM= 
+  # <base64 encoded vsts account name (e.g. account name is my-vsts-project if the url is https://my-vsts-project.visualstudio.com)
+  token: ZzdkeGlxeGlycml3eHV5Z3Fta3pxcnRhZXF6ZmRqbmk2djNqa2JvN296dmJmMngzNW92cQ==
+  # <base64 encode personal access token>
+
+agentpool:
+  name: vsts-agent-helm
+
