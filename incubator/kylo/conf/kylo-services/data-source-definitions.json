@@ -1,0 +1,218 @@
+[{
+		"processorType": "datatransformation.template",
+		"datasourcePropertyKeys": [
+			"schema",
+			"table"
+		],
+		"datasourceType": "HiveDatasource",
+		"connectionType": "SOURCE",
+		"identityString": "${schema}.${table}"
+	},
+	{
+		"processorType": "org.apache.nifi.jms.processors.ConsumeJMS",
+		"datasourcePropertyKeys": [
+			"Destination Name"
+		],
+		"datasourceType": "JMSDatasource",
+		"connectionType": "SOURCE"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.kafka.pubsub.ConsumeKafka",
+		"datasourcePropertyKeys": [
+			"Topic Name(s)"
+		],
+		"datasourceType": "KafkaDatasource",
+		"connectionType": "SOURCE"
+	},
+	{
+		"processorType": "org.apache.nifi.amqp.processors.ConsumeAMQP",
+		"datasourcePropertyKeys": [
+			"Queue"
+		],
+		"datasourceType": "JMSDatasource",
+		"connectionType": "SOURCE"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.standard.FetchFile",
+		"datasourcePropertyKeys": [
+			"File to Fetch"
+		],
+		"datasourceType": "DirectoryDatasource",
+		"connectionType": "SOURCE"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.hadoop.FetchHDFS",
+		"datasourcePropertyKeys": [
+			"HDFS Filename"
+		],
+		"datasourceType": "HDFSDatasource",
+		"connectionType": "SOURCE"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.aws.s3.FetchS3Object",
+		"datasourcePropertyKeys": [
+			"Bucket",
+			"Object Key"
+		],
+		"datasourceType": "S3Datasource",
+		"connectionType": "SOURCE"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.standard.FetchSFTP",
+		"datasourcePropertyKeys": [
+			"Hostname",
+			"Remote File"
+		],
+		"datasourceType": "FTPDatasource",
+		"connectionType": "SOURCE"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.standard.GetFile",
+		"datasourcePropertyKeys": ["Input Directory", "File Filter"],
+		"datasourceType": "DirectoryDatasource",
+		"connectionType": "SOURCE",
+		"identityString": "${Input Directory}/${File Filter}",
+		"description": " Directory or File source"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.standard.GetFTP",
+		"datasourcePropertyKeys": [
+			"Hostname",
+			"RemotePath",
+			"Path Filter Regex",
+			"File Filter Regex"
+		],
+		"datasourceType": "FTPDatasource",
+		"connectionType": "SOURCE",
+		"title": "${Hostname}"
+	},
+	{
+		"processorType": "org.apache.nifi.hbase.GetHBase",
+		"datasourcePropertyKeys": [
+			"HBase Client Service",
+			"Table Name"
+		],
+		"datasourceType": "HBaseDatasource",
+		"connectionType": "SOURCE",
+		"title": "${Table Name}"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.hadoop.GetHDFS",
+		"datasourcePropertyKeys": [
+			"Directory",
+			"File Filter Regex"
+		],
+		"datasourceType": "HDFSDatasource",
+		"connectionType": "SOURCE",
+		"title": "${Directory}"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.standard.GetHTTP",
+		"datasourcePropertyKeys": [
+			"URL",
+			"File Name"
+		],
+		"datasourceType": "HTTPDatasource",
+		"connectionType": "SOURCE"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.standard.GetJMSQueue",
+		"datasourcePropertyKeys": [
+			"URL",
+			"Destination Name"
+		],
+		"connectionType": "SOURCE",
+		"datasourceType": "JMSDatasource",
+		"title": "Queue: ${Destination Name}"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.standard.GetJMSTopic",
+		"datasourcePropertyKeys": [
+			"URL",
+			"Destination Name"
+		],
+		"datasourceType": "JMSDatasource",
+		"connectionType": "SOURCE",
+		"title": "${Destination Name}",
+		"identityString": "Topic: ${Destination Name}"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.kafka.GetKafka",
+		"datasourcePropertyKeys": [
+			"ZooKeeper Connection String",
+			"Topic Name"
+		],
+		"datasourceType": "KafkaDatasource",
+		"connectionType": "SOURCE",
+		"title": "${Topic Name}"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.standard.GetSFTP",
+		"datasourcePropertyKeys": [
+			"Hostname",
+			"File Filter Regex",
+			"Path Filter Regex"
+		],
+		"datasourceType": "FTPDatasource",
+		"connectionType": "SOURCE",
+		"title": "${Hostname}"
+	},
+	{
+		"processorType": "com.thinkbiganalytics.nifi.v2.ingest.GetTableData",
+		"datasourcePropertyKeys": ["Source Table", "Source Database Connection"],
+		"datasourceType": "DatabaseDatasource",
+		"connectionType": "SOURCE",
+		"identityString": "${Source Table} - ${Source Database Connection}",
+		"title": "${Source Table}"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.standard.ListenHTTP",
+		"datasourcePropertyKeys": [
+			"Base Path"
+		],
+		"datasourceType": "HTTPDatasource",
+		"connectionType": "SOURCE"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.aws.s3.ListS3",
+		"datasourcePropertyKeys": [
+			"Bucket",
+			"Region"
+		],
+		"datasourceType": "S3Datasource",
+		"connectionType": "SOURCE"
+	},
+	{
+		"processorType": "com.thinkbiganalytics.nifi.v2.ingest.MergeTable",
+		"datasourcePropertyKeys": ["Target schema", "Target table"],
+		"datasourceType": "HiveDatasource",
+		"connectionType": "DESTINATION",
+		"identityString": "${Target schema}.${Target table}"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.standard.PutFile",
+		"datasourcePropertyKeys": [
+			"Directory"
+		],
+		"datasourceType": "DirectoryDatasource",
+		"connectionType": "DESTINATION",
+		"title": "${Directory}"
+	},
+	{
+		"processorType": "org.apache.nifi.processors.hadoop.PutHDFS",
+		"datasourcePropertyKeys": [
+			"Directory"
+		],
+		"datasourceType": "HDFSDatasource",
+		"connectionType": "DESTINATION",
+		"title": "${Directory}"
+	},
+	{
+		"processorType": "com.thinkbiganalytics.nifi.v2.sqoop.core.ImportSqoop",
+		"datasourcePropertyKeys": [
+			"Source Table"
+		],
+		"datasourceType": "DatabaseDatasource",
+		"connectionType": "SOURCE"
+	}
+]

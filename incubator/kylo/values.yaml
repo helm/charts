@@ -1,0 +1,366 @@
+# Default values for Kylo.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+## Kubernetes configuration
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+## Use ClusterIP if your setup includes ingress controller
+##
+serviceType: LoadBalancer
+
+loadBalancer:
+  enabled: true
+
+# JVM configuration
+jvm:
+  memory: 2g
+
+probe:
+  initialDelaySeconds: 30
+  timeoutSeconds: 15
+
+# busybox image is used to tail nifi logs. This allows us to setup a container
+# for tailing nifi-app log, nifi-user log, and nifi-bootstrap log. This makes it more
+# convenient to view the different logs.
+sidecar:
+  image: busybox
+
+##
+## ref:  https://github.com/apache/nifi/tree/master/nifi-docker/dockerhub#standalone-instance-two-way-ssl
+##
+tls:
+  enabled: false
+  keystorePath: /opt/certs/keystore.jks
+  keystoreType: JKS
+  keystorePassword: QKZv1hSWAFQYZ+WU1jjF5ank+l4igeOfQRp+OSbkkrs
+  truststorePath: /opt/certs/truststore.jks
+  truststore_Password: rHkWR1gDNW3R9hgbeRsT3OM3Ue0zwGtQqcFKJD2EXWE
+  truststore_Type: JKS
+  initialAdminIdentity: 'CN=Random User, O=Apache, OU=NiFi, C=US'
+
+##
+## ref: https://github.com/apache/nifi/tree/master/nifi-docker/dockerhub#standalone-instance-ldap
+##
+ldap:
+  enabled: false
+  authenticationStrategy: 'SIMPLE'
+  manager_DN: 'cn=admin,dc=example,dc=org'
+  manager_Password: 'password'
+  userSearchBase: 'dc=example,dc=org'
+  userSearchFilter: 'cn={0}'
+  identityStrategy: 'USE_DN'
+  url: 'ldap://ldap:389'
+  tlsKeystore: ''
+  tlsKeystorePassword: ''
+  tlsKeystoreType: ''
+  tlsTruststore: ''
+  tlsTruststorePassword: ''
+  tlsTruststoreType: ''
+  tlsProtocol: ''
+
+## ActiveMQ configuration
+activemq:
+  image:
+    repository: govcloud/docker-kylo
+    pullPolicy: Always
+    tag: "activemq"
+
+  ## Configure Persistence Volumes / Claims
+  persistence:
+    enabled: true
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
+    ## NiFi data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    annotations: {}
+    accessMode: ReadWriteOnce
+    size: 8Gi
+    volumes:
+    #  - name: nothing
+    #    emptyDir: {}
+    mounts:
+    #  - mountPath: /var/nothing
+    #    name: nothing
+    #    readOnly: true
+
+## Elasticsearch configuration
+elasticsearch:
+  image:
+    repository: govcloud/docker-kylo
+    pullPolicy: Always
+    tag: "elasticsearch"
+
+  ## Configure Persistence Volumes / Claims
+  persistence:
+    enabled: true
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
+    ## NiFi data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    annotations: {}
+    accessMode: ReadWriteOnce
+    size: 8Gi
+    volumes:
+    #  - name: nothing
+    #    emptyDir: {}
+    mounts:
+    #  - mountPath: /var/nothing
+    #    name: nothing
+    #    readOnly: true
+
+## Kylo configuration
+kylo:
+  services:
+    image:
+      repository: govcloud/docker-kylo
+      pullPolicy: Always
+      tag: "services"
+  ui:
+    image:
+      repository: govcloud/docker-kylo
+      pullPolicy: Always
+      tag: "ui"
+
+  activeDirectory:
+    enabled: false
+
+  ## Configure Ingress resource that allow you to access the Drupal installation
+  ## Set up the URL
+  ## ref: http://kubernetes.io/docs/user-guide/ingress/
+  ##
+  ingress:
+    enabled: enabled
+    domain: kylo.inno.cloud.statcan.ca
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    # hosts:
+    #  - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  ## Configure Persistence Volumes / Claims
+  persistence:
+    enabled: true
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
+    ## NiFi data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    annotations: {}
+    accessMode: ReadWriteOnce
+    size: 8Gi
+    volumes:
+    #  - name: nothing
+    #    emptyDir: {}
+    mounts:
+    #  - mountPath: /var/nothing
+    #    name: nothing
+    #    readOnly: true
+
+## MySQL configuration
+mysql:
+  image:
+    repository: mariadb
+    pullPolicy: Always
+    tag: "10.3"
+
+  ## Configure Persistence Volumes / Claims
+  persistence:
+    enabled: true
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
+    ## NiFi data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    annotations: {}
+    accessMode: ReadWriteOnce
+    size: 8Gi
+    volumes:
+    #  - name: nothing
+    #    emptyDir: {}
+    mounts:
+    #  - mountPath: /var/nothing
+    #    name: nothing
+    #    readOnly: true
+
+## NiFi configuration
+nifi:
+  properties:
+    isNode: true
+    httpPort: 8080
+    clusterPort: 6007
+    provenanceStorage: "8 GB"
+    siteToSite:
+      secure: false
+      port: 10000
+    ui:
+      banner: NiFi
+
+  replicas: 1
+
+  image:
+    repository: govcloud/docker-kylo
+    pullPolicy: Always
+    tag: "nifi"
+    version: "1.6.0"
+
+  ## Configure Ingress resource that allow you to access the Drupal installation
+  ## Set up the URL
+  ## ref: http://kubernetes.io/docs/user-guide/ingress/
+  ##
+  ingress:
+    enabled: enabled
+    domain: nifi.inno.cloud.statcan.ca
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    # hosts:
+    #  - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  web:
+    httpPort: ''
+    httpHost: ''
+    httpsPort: ''
+    httpsHost: ''
+    proxyHost: ''
+  remote:
+    inputHost: ''
+    inputSocketPort: ''
+
+  ## Configure Persistence Volumes / Claims
+  persistence:
+    enabled: false
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
+    ## NiFi data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    annotations: {}
+    accessMode: ReadWriteOnce
+    size: 8Gi
+    volumes:
+    #  - name: nothing
+    #    emptyDir: {}
+    mounts:
+    #  - mountPath: /var/nothing
+    #    name: nothing
+    #    readOnly: true
+
+    ## Storage Capacities for persistent volumes
+    # Storage capacity for the 'data' directory, which is used to hold things such as the flow.xml.gz, configuration, state, etc.
+    dataStorage: 1Gi
+    # Storage capacity for the FlowFile repository
+    flowfileRepoStorage: 10Gi
+    # Storage capacity for the Content repository
+    contentRepoStorage: 10Gi
+    # Storage capacity for the Provenance repository. When changing this, one should also change the properties.provenanceStorage value above, also.
+    provenanceRepoStorage: 10Gi
+    # Storage capacity for nifi logs
+    logStorage: 5Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+################################################################################
+## Zookeeper
+################################################################################
+
+zookeeper:
+  ## If true, install the Zookeeper chart
+  ## ref: https://github.com/kubernetes/charts/tree/master/incubator/zookeeper
+  enabled: true
+
+  # Number of ZooKeeper replicas
+  servers: 1
+
+  ## Configure Zookeeper resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources:
+    limits:
+      memory: "256Mi"
+    requests:
+      memory: "128Mi"
+
+  antiAffinity: "soft"
+
+  ## The JVM heap size to allocate to Zookeeper
+  heap: "128m"
+
+  ## The amount of PV storage allocated to each Zookeeper pod in the statefulset
+  storage: "2Gi"
+
+  ## Specify a Zookeeper imagePullPolicy
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  imagePullPolicy: "Always"
+
+  ## If the Zookeeper Chart is disabled a URL and port are required to connect
+  url: ""
+  port: 2181

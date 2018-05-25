@@ -1,0 +1,20 @@
+{{- if .Values.kylo.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "kylo.name" . }}-kylo
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kylo.name" . }}-kylo
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  rules:
+  - host: {{ .Values.kylo.ingress.domain }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "kylo.name" . }}-kylo-ui
+          servicePort: {{ .Values.nifi.properties.httpPort }}
+{{- end -}}

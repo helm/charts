@@ -1,0 +1,36 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "kylo.fullname" . }}-activemq
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kylo.fullname" . }}-activemq
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+    - name: "5601"
+      port: 5601
+      targetPort: 5601
+    - name: "61616"
+      port: 61616
+      targetPort: 61616
+    - name: "5672"
+      port: 5672
+      targetPort: 5672
+    - name: "61613"
+      port: 61613
+      targetPort: 61613
+    - name: "1883"
+      port: 1883
+      targetPort: 1883
+    - name: "61614"
+      port: 61614
+      targetPort: 61614
+    - name: "8161"
+      port: 8161
+      targetPort: 8161
+  selector:
+    app: {{ template "kylo.fullname" . }}-activemq
+    release: {{ .Release.Name }}

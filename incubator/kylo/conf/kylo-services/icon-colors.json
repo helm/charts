@@ -1,0 +1,41 @@
+[{
+		"name": "Purple",
+		"color": "#AB47BC"
+	},
+	{
+		"name": "Orange",
+		"color": "#FFCA28"
+	},
+	{
+		"name": "Deep Orange",
+		"color": "#FF8A65"
+	},
+	{
+		"name": "Red",
+		"color": "#FF5252"
+	},
+	{
+		"name": "Blue",
+		"color": "#90CAF9"
+	},
+	{
+		"name": "Green",
+		"color": "#66BB6A"
+	},
+	{
+		"name": "Blue Grey",
+		"color": "#90A4AE"
+	},
+	{
+		"name": "Teal",
+		"color": "#80CBC4"
+	},
+	{
+		"name": "Pink",
+		"color": "#F06292"
+	},
+	{
+		"name": "Yellow",
+		"color": "#FFF176"
+	}
+]
