@@ -20,53 +20,48 @@ You can download [official Horovod Dockerfile](https://github.com/uber/horovod/b
 # docker build -t horovod:latest horovod-docker
 ```
 
-## Define the values.yaml
-
-To deploy Horovod with GPU, you can create `values.yaml` like
+## Prepare ssh keys
 
 ```
+# Setup ssh key
+export SSH_KEY_DIR=`mktemp -d`
+cd $SSH_KEY_DIR
+yes | ssh-keygen -N "" -f id_rsa
+```
+
+## Create the values.yaml
+
+To deploy Horovod with GPU, you can create `values.yaml` like below
+
+```
+# cat << EOF > ~/values.yaml
+ssh:
+  useSecrets: true
+  hostKey: |-
+$(cat $SSH_KEY_DIR/id_rsa | sed 's/^/    /g')
+
+  hostKeyPub: |-
+$(cat $SSH_KEY_DIR/id_rsa.pub | sed 's/^/    /g')
+
+resources:
+  limits:
+    nvidia.com/gpu: 1
+  requests:
+    nvidia.com/gpu: 1
+
 worker:
-  number: 3
-  podManagementPolicy: Parallel
+  number: 2
   image:
     repository: uber/horovod
     tag: 0.12.1-tf1.8.0-py3.5
-    pullPolicy: IfNotPresent
-  resources:
-    limits:
-      nvidia.com/gpu: 1
-    requests:
-      nvidia.com/gpu: 1
-
 master:
   image:
     repository: uber/horovod
     tag: 0.12.1-tf1.8.0-py3.5
-    pullPolicy: IfNotPresent
   args:
-    - "mpiexec -n ${WORKERS} --hostfile /kubeflow/openmpi/assets/hostfile --mca orte_keep_fqdn_hostnames t --allow-run-as-root --display-map --tag-output --timestamp-output sh -c 'python /examples/tensorflow_mnist.py'"
+    - "mpirun -np 3 --hostfile /horovod/generated/hostfile --mca orte_keep_fqdn_hostnames t --allow-run-as-root --display-map --tag-output --timestamp-output sh -c 'python /examples/tensorflow_mnist.py'"
+EOF
 ```
-
-To deploy Horovod without GPU, you can create `values.yaml` like 
-
-```
-worker:
-  number: 3
-  podManagementPolicy: Parallel
-  image:
-    repository: uber/horovod
-    tag: 0.12.1-tf1.8.0-py3.5
-    pullPolicy: IfNotPresent
-
-master:
-  image:
-    repository: uber/horovod
-    tag: 0.12.1-tf1.8.0-py3.5
-    pullPolicy: IfNotPresent
-  args:
-    - "mpiexec -n 3 --hostfile /horovod/generated/hostfile --mca orte_keep_fqdn_hostnames t --allow-run-as-root --display-map --tag-output --timestamp-output sh -c 'LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-9.0/targets/x86_64-linux/lib/stubs python /examples/tensorflow_mnist.py'"
-```
-
 
 
 ## Installing the Chart
@@ -74,7 +69,7 @@ master:
 To install the chart with the release name `mnist`:
 
 ```bash
-$ helm install --values values.yaml --name mnist incubator/horovod
+$ helm install --values ~/values.yaml --name mnist stable/horovod
 ```
 
 ## Uninstalling the Chart
