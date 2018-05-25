@@ -13,7 +13,7 @@ spec:
   - name: {{ .instance }}
     protocol: TCP
     port: {{ .port }}
-    targetPort: {{ .instance }}
+    targetPort: {{ .instanceShortName | default (.instance | trunc 15) }}
   {{- end }}
   selector:
     app: {{ template "gcloud-sqlproxy.fullname" . }}
