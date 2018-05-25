@@ -76,6 +76,9 @@ The following tables lists the configurable parameters of the Fluent-Bit chart a
 | `resources.requests.memory`        | Memory request                             | `200Mi`                                           |
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
+| `metrics.enabled`                  | Specifies whether a service for metrics should be exposed | `false`                            |
+| `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
+| `metrics.service.type`             | Service type for metrics                   | `ClusterIP`                                       |
 | | | |
 
 
