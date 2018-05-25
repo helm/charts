@@ -1,5 +1,6 @@
 name: gcloud-endpoints
 version: 0.1.0
+appVersion: 1
 description: Develop, deploy, protect and monitor your APIs with Google Cloud Endpoints.
 keywords:
 - google
