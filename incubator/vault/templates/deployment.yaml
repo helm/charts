@@ -128,9 +128,13 @@ spec:
         {{- if .Values.consulAgent.join }}
         - name: consul-data
           emptyDir: {}
-        {{- end}}
+        {{- end }}
         {{- if .Values.consulAgent.gossipKeySecretName }}
         - name: consul-gossip-key
           secret:
             secretName: {{ .Values.consulAgent.gossipKeySecretName }}
-        {{- end}}
+        {{- end }}
+      {{- if .Values.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret }}
+      {{- end }}
