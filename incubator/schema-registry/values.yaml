@@ -89,3 +89,9 @@ kafka:
   ## Install only a single Zookeeper pod in the StatefulSet
   zookeeper:
     servers: 1
+
+ingress:
+  enabled: false
+  annotations: {}
+  hostname: ""
+  labels: {}
