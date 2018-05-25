@@ -133,7 +133,7 @@ Set the final MongoDB connection URL
 {{- else -}}
 {{- $mongoDatabase := .Values.mongodb.mongodbDatabase -}}
 {{- $mongoUser := .Values.mongodb.mongodbUsername -}}
-{{- $mongoPassword := default (randAlphaNum 10) .Values.mongodb.mongodbPassword -}}
+{{- $mongoPassword := .Values.mongodb.mongodbPassword -}}
 {{- printf "%s//%s:%s@%s-%s%s%s" "mongodb" $mongoUser $mongoPassword .Release.Name "mongodb:27017?authSource=" $mongoDatabase "&authMechanism=SCRAM-SHA-1" -}}
 {{- end -}}
 {{- end -}}
@@ -147,7 +147,7 @@ Set the final PostgreSQL connection URL
 {{- else -}}
 {{- $postgresDatabase := .Values.postgresql.postgresDatabase -}}
 {{- $postgresUser := .Values.postgresql.postgresUser -}}
-{{- $postgresPassword := default (randAlphaNum 10) .Values.postgresql.postgresPassword -}}
+{{- $postgresPassword := .Values.postgresql.postgresPassword -}}
 {{- printf "%s://%s:%s@%s-%s/%s%s" "postgres" $postgresUser $postgresPassword .Release.Name "postgresql:5432" $postgresDatabase "?sslmode=disable" -}}
 {{- end -}}
 {{- end -}}
@@ -160,7 +160,7 @@ Set the final RabbitMQ connection URL
 {{- .Values.global.mqBaseUrl -}}
 {{- else -}}
 {{- $rabbitmqUser := (index .Values "rabbitmq-ha" "rabbitmqUsername") -}}
-{{- $rabbitmqPassword := default (randAlphaNum 10) (index .Values "rabbitmq-ha" "rabbitmqPassword") -}}
+{{- $rabbitmqPassword := (index .Values "rabbitmq-ha" "rabbitmqPassword") -}}
 {{- printf "%s://%s:%s@%s-%s" "amqp" $rabbitmqUser $rabbitmqPassword .Release.Name "rabbitmq-ha:5672/" -}}
 {{- end -}}
 {{- end -}}
