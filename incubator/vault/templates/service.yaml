@@ -16,7 +16,7 @@ spec:
   {{- if .Values.service.clusterIP }}
   clusterIP: {{ .Values.service.clusterIP }}
   {{- end }}
-  {{- if .Values.service.loadBalancerSourceRanges }}
+  {{- if eq .Values.service.type "LoadBalancer" }}
   loadBalancerSourceRanges:
     {{- range .Values.service.loadBalancerSourceRanges }}
     - {{ . }}
