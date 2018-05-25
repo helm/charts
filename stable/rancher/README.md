@@ -1,6 +1,6 @@
 # rancher
 
-Chart for installing Rancher Server on a Kubernetes cluster.
+Chart for installing Rancher Server to manage Kubernetes clusters across providers.
 
 Rancher Resources:
 
@@ -149,8 +149,10 @@ kubectl -n rancher-system create secret generic tls-rancher-server --from-file=c
 
 | Option | Default Value | Description |
 | --- | --- | --- |
-| `resources` | {} | `{}` - rancher pod resource requests & limits |
-| `rancher_image_tag` | same as chart version | `string` - rancher/rancher image tag |
+| `imagePullSecrets` | [] | `list` - list of names of Secret resource containing private registry credentials |
+| `resources` | {} | `map` - rancher pod resource requests & limits |
+| `rancherImage` | "rancher/rancher" | `string` - rancher image source |
+| `rancherImageTag` | same as chart version | `string` - rancher/rancher image tag |
 
 ## HA
 
@@ -159,6 +161,23 @@ The default install runs Rancher with 1 replica.  Scale up after launching or us
 ## Hostname
 
 The default install sets `rancher.localhost` as the fully qualified domain name to access Rancher. Use the `hostname=` option to set it for your environment.
+
+## Private or Air Gap Registry
+
+You can point to a private registry for an "Air Gap" install.
+
+### Create Registry Secret
+
+Create a Registry secret in the `rancher-system` namespace. Check out the instructions here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+
+### Registry Options
+
+Add the `rancherImage` to point to your private registry image and `imagePullSecrets` to your install command.
+
+```shell
+--set rancherImage=private.reg.org:5000/rancher \
+--set imagePullSecrets[0].name=secretName
+```
 
 ## Connecting to Rancher
 

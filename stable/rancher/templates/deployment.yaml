@@ -1,18 +1,28 @@
 kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
-  name: rancher
+  name: {{ template "rancher.fullname" . }}
+  labels:
+    app: {{ template "rancher.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicas }}
   template:
     metadata:
       labels:
-        app: rancher
+        app: {{ template "rancher.fullname" . }}
+        release: {{ .Release.Name }}
     spec:
-      serviceAccountName: rancher-admin
+      serviceAccountName: {{ template "rancher.fullname" . }}
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 6 }}
+{{- end }}
       containers:
-      - image: rancher/rancher:{{ .Values.rancher_image_tag }}
-        name: rancher-server
+      - image: {{ .Values.rancherImage }}:{{ .Values.rancherImageTag }}
+        name: {{ template "rancher.name" . }}
         ports:
         - containerPort: 80
           protocol: TCP

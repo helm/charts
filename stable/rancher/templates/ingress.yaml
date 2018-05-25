@@ -1,7 +1,12 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: rancher-ingress
+  name: {{ template "rancher.fullname" . }}
+  labels:
+    app: {{ template "rancher.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
   annotations:
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
@@ -16,7 +21,7 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: rancher-service
+          serviceName: {{ template "rancher.fullname" . }}
 {{- if eq .Values.ingress.tls "rancher" }}
           servicePort: 443
 {{- else }}
