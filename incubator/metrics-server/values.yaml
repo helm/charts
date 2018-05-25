@@ -12,4 +12,4 @@ serviceAccount:
 image:
   repository: gcr.io/google_containers/metrics-server-amd64
   tag: v0.2.1
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
