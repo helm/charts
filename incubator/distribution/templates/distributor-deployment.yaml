@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "distributor.fullname" . }}
@@ -10,11 +10,16 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.distributor.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "distribution.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.distributor.name }}
   template:
     metadata:
       labels:
         app: {{ template "distribution.name" . }}
-        component: "{{ .Values.distributor.name }}"
+        component: {{ .Values.distributor.name }}
         release: {{ .Release.Name }}
     spec:
     {{- if .Values.imagePullSecrets }}
@@ -47,8 +52,12 @@ spec:
         - name: DEFAULT_JAVA_OPTS
           value: '-Ddistribution.home={{ .Values.distributor.persistence.mountPath }} -Dfile.encoding=UTF8 -Dcom.sun.management.jmxremote.authenticate=false
                   -Dcom.sun.management.jmxremote.ssl=false -Duser.timezone=UTC
-                  -Xms{{ .Values.distributor.resources.requests.memory | trunc 1 }}g
-                  -Xmx{{ .Values.distributor.resources.limits.memory | trunc 1 }}g
+                  {{- if .Values.distributor.javaOpts.xms }}
+                  -Xms{{ .Values.distributor.javaOpts.xms }}
+                  {{- end}}
+                  {{- if .Values.distributor.javaOpts.xmx }}
+                  -Xmx{{ .Values.distributor.javaOpts.xmx }}
+                  {{- end}}
                   -Dspring.profiles.active=production'
         - name: redis_connectionString
           valueFrom:
@@ -61,12 +70,7 @@ spec:
         - name: distributor-data
           mountPath: {{ .Values.distributor.persistence.mountPath | quote }}
         resources:
-          requests:
-            memory: "{{ .Values.distributor.resources.requests.memory }}"
-            cpu: "{{ .Values.distributor.resources.requests.cpu }}"
-          limits:
-            memory: "{{ .Values.distributor.resources.limits.memory }}"
-            cpu: "{{ .Values.distributor.resources.limits.cpu }}"
+{{ toYaml .Values.distributor.resources | indent 10 }}
       volumes:
       - name: distributor-token
         configMap:

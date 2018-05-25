@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "distribution.fullname" . }}
@@ -10,11 +10,16 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.distribution.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "distribution.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.distribution.name }}
   template:
     metadata:
       labels:
         app: {{ template "distribution.name" . }}
-        component: "{{ .Values.distribution.name }}"
+        component: {{ .Values.distribution.name }}
         release: {{ .Release.Name }}
     spec:
     {{- if .Values.imagePullSecrets }}
@@ -40,8 +45,12 @@ spec:
         - name: DEFAULT_JAVA_OPTS
           value: '-Ddistribution.home={{ .Values.distribution.persistence.mountPath }} -Dcom.sun.management.jmxremote.authenticate=false
                   -Dcom.sun.management.jmxremote.ssl=false -Duser.timezone=UTC
-                  -Xms{{ .Values.distribution.resources.requests.memory | trunc 1 }}g
-                  -Xmx{{ .Values.distribution.resources.limits.memory | trunc 1 }}g
+                  {{- if .Values.distribution.javaOpts.xms }}
+                  -Xms{{ .Values.distribution.javaOpts.xms }}
+                  {{- end}}
+                  {{- if .Values.distribution.javaOpts.xmx }}
+                  -Xmx{{ .Values.distribution.javaOpts.xmx }}
+                  {{- end}}
                   -Dspring.profiles.active=production'
         - name: mongo_connectionString
           valueFrom:
@@ -82,12 +91,7 @@ spec:
         - name: distribution-data
           mountPath: {{ .Values.distribution.persistence.mountPath | quote }}
         resources:
-          requests:
-            memory: "{{ .Values.distribution.resources.requests.memory }}"
-            cpu: "{{ .Values.distribution.resources.requests.cpu }}"
-          limits:
-            memory: "{{ .Values.distribution.resources.limits.memory }}"
-            cpu: "{{ .Values.distribution.resources.limits.cpu }}"
+{{ toYaml .Values.distribution.resources | indent 10 }}
         readinessProbe:
           httpGet:
             path: /api/v1/system/ping
