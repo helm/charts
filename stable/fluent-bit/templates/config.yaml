@@ -12,6 +12,11 @@ data:
         Daemon       Off
         Log_Level    info
         Parsers_File parsers.conf
+{{- if .Values.metrics.enabled }}
+        HTTP_Server  On
+        HTTP_Listen  0.0.0.0
+        HTTP_Port    2020
+{{- end }}
 
     [INPUT]
         Name             tail

@@ -8,6 +8,13 @@ image:
     tag: 0.13.0
   pullPolicy: Always
 
+# When enabled, exposes json and prometheus metrics on {{ .Release.Name }}-metrics service
+metrics:
+  enabled: false
+  service:
+    port: 2020
+    type: ClusterIP
+
 backend:
   type: forward
   forward:
