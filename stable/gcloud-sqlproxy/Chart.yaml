@@ -1,5 +1,5 @@
 name: gcloud-sqlproxy
-version: 0.3.3
+version: 0.3.4
 appVersion: 1.11
 description: Google Cloud SQL Proxy
 keywords:
