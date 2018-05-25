@@ -19,6 +19,7 @@ cpuLimit: 100m
 memoryLimit: 30Mi
 debug:
   enabled: false
+deploymentStrategy: {}
 nodeSelector: {}
   # key: value
 affinity: {}
