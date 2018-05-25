@@ -26,6 +26,12 @@ spec:
 {{ toYaml .Values.env | indent 10 }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.metrics.enabled }}
+        ports:
+          - name: metrics
+            containerPort: 2020
+            protocol: TCP
+{{- end }}
         volumeMounts:
         - name: varlog
           mountPath: /var/log
