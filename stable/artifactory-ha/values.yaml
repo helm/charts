@@ -59,7 +59,7 @@ artifactory:
   name: artifactory-ha
   image:
     repository: "docker.bintray.io/jfrog/artifactory-pro"
-    version: 5.10.1
+    version: 6.0.0
     pullPolicy: IfNotPresent
   ## Artifactory requires a unique master key
   ## You can generate one with the command:
@@ -78,6 +78,9 @@ artifactory:
   membershipPort: 10017
   externalPort: 8081
   internalPort: 8081
+  internalPortReplicator: 6061
+  externalPortReplicator: 6061
+  uid: 1030
   ## The following settings are to configure the frequency of the liveness and readiness probes
   livenessProbe:
     enabled: true
@@ -157,6 +160,12 @@ artifactory:
   ## This will be passed to all cluster members. Primary and member nodes.
   javaOpts:
     other: "-Dartifactory.locking.provider.type=db"
+  ## Artifactory Replicator
+  replicator:
+    enabled: false
+    publicUrl:
+  # Name of ConfigMap for Distribution Cert
+  distributionCerts:
 
   ## Type specific configurations.
   ## There is a difference between the primary and the member nodes.
@@ -202,7 +211,7 @@ nginx:
   replicaCount: 1
   image:
     repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
-    version: 5.10.1
+    version: 6.0.0
     pullPolicy: IfNotPresent
   service:
     ## For minikube, set this to NodePort, elsewhere use LoadBalancer
@@ -219,6 +228,8 @@ nginx:
   internalPortHttp: 80
   externalPortHttps: 443
   internalPortHttps: 443
+  internalPortReplicator: 6061
+  externalPortReplicator: 6061
   ## The following settings are to configure the frequency of the liveness and readiness probes
   livenessProbe:
     enabled: true
@@ -239,7 +250,7 @@ nginx:
   # tlsSecretName: chart-example-tls
   env:
     ssl: true
-#    artUrl: "http://artifactory:8081/artifactory"
+    # artUrl: "http://artifactory:8081/artifactory"
   persistence:
     mountPath: "/var/opt/jfrog/nginx"
     enabled: false
