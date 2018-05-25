@@ -23,7 +23,7 @@ Without the PAT, account name and agentpool filled in either the values.yaml or 
 ## Installing the Chart
 Since this chart is not available yet in the Helm repo you have to run it locally. Go to the vsts directory and run the command below
 ```bash
-$ helm install --name vsts .
+helm install --name vsts --set vsts.secret.account=<bas64 encoded account name>,vsts.secret.token=<base64 encoded token>,vsts.agentpool.name=<naam> .
 ```
 
 ## Uninstalling
