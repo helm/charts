@@ -1,5 +1,4 @@
 {{- if .Values.daemonset.enabled }}
-{{- if .Values.datadog.apiKey }}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -172,5 +171,4 @@ spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
   updateStrategy:
     type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
-{{ end }}
 {{ end }}
