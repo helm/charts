@@ -31,6 +31,10 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
         - "-e"
+{{- if .Values.plugins }}
+        - "--plugin"
+        - {{ .Values.plugins | join "," | quote }}
+{{- end }}
         env:
         - name: POD_NAMESPACE
           valueFrom:
