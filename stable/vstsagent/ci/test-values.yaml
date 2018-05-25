@@ -1,7 +1,7 @@
 secret:
   account: YWNzLWt1YmVybmV0ZXMtbnM= 
   # <base64 encoded vsts account name (e.g. account name is my-vsts-project if the url is https://my-vsts-project.visualstudio.com)
-  token: ZzdkeGlxeGlycml3eHV5Z3Fta3pxcnRhZXF6ZmRqbmk2djNqa2JvN296dmJmMngzNW92cQ==
+  token: ejQ3anZ3ZXhhc2dpc2N0d2llZDRubm5vd3FpM2hiaWplM3V6Z2lsd2Z1dGI2dXVta3V2YQo=Z
   # <base64 encode personal access token>
 
 agentpool:
