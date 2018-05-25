@@ -10,8 +10,8 @@ resources:
     memory: 512Mi
     cpu: 500m
 
-secContext:
-  # Securiyt context settings
+securityContext:
+  # Security context settings
   runAsUser: 1000
   fsGroup: 2000
 # Most of these map to environment variables. See Minecraft for details:
