@@ -22,9 +22,9 @@ spec:
         app: {{ template "locust.fullname" . }}
         component: "master"
     spec:
-    {{- if .Values.image.imagePullSecrets }}
+    {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
-      - name: {{ .Values.image.imagePullSecrets }}
+      - name: {{ .Values.image.pullSecrets }}
     {{- end }}
       containers:
       - name: locust

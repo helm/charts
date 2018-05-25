@@ -29,7 +29,7 @@ helm install -n locust-nymph --set master.config.target-host=http://site.example
 | `Name`                       | Locust master name                      | `locust`                                              |
 | `image.repository`           | Locust container image name             | `quay.io/honestbee/locust`                            |
 | `image.tag`                  | Locust Container image tag              | `0.7.5`                                               |
-| `image.imagePullSecrets`     | Locust Container image registry secret  | `None`                                                |
+| `image.pullSecrets`          | Locust Container image registry secret  | `None`                                                |
 | `service.type`               | k8s service type exposing master        | `NodePort`                                            |
 | `service.nodePort`           | Port on cluster to expose master        | `0`                                                   |
 | `service.annotations`        | KV containing custom annotations        | `{}`                                                  |
