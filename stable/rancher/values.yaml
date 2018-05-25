@@ -27,7 +27,7 @@ imagePullSecrets: []
 # kubectl -n rancher-system create secret generic tls-rancher \
 # --from-file=tls.crt --from-file=tls.key
 #
-# hostname=your.domain.name.com 
+# hostname=your.domain.name.com
 # ingress.tls=publicCA
 #
 # - Private CA signed certs
@@ -40,7 +40,7 @@ imagePullSecrets: []
 # kubectl -n rancher-system create secret generic tls-rancher-server \
 # --from-file=cacerts.pem
 #
-# hostname=your.domain.name.com 
+# hostname=your.domain.name.com
 # ingress.tls=privateCA
 #
 # - LetsEncrypt
@@ -62,7 +62,7 @@ ingress:
 #         Use staging until you have your config right.
 letsEncrypt:
   email: none@example.com
-  environment: staging # staging or prod. Use staging until you get your config right.
+  environment: staging
 
 # Override rancher image location for Air Gap installs
 rancherImage: rancher/rancher
