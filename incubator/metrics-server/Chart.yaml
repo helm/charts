@@ -9,5 +9,5 @@ home: https://github.com/kubernetes-incubator/metrics-server
 sources:
 - https://github.com/kubernetes-incubator/metrics-server
 maintainers:
-- name: Ole Markus With
+- name: olemarkus
   email: o.with@sportradar.com
