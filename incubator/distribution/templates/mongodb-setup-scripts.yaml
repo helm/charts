@@ -4,7 +4,7 @@ metadata:
   name: {{ template "distribution.fullname" . }}-setup-script
   labels:
     app: {{ template "distribution.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "distribution.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 data:

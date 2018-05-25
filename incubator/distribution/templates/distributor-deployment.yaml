@@ -4,7 +4,7 @@ metadata:
   name: {{ template "distributor.fullname" . }}
   labels:
     app: {{ template "distribution.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "distribution.chart" . }}
     component: {{ .Values.distributor.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}

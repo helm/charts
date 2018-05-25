@@ -75,3 +75,10 @@ Set the final Redis connection URL
 {{- $redisPassword :=  .Values.redis.redisPassword -}}
 {{- printf "%s://:%s@%s-%s" "redis" $redisPassword .Release.Name "redis:6379" | b64enc | quote -}}
 {{- end -}}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "distribution.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}

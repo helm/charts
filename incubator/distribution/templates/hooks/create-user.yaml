@@ -5,7 +5,7 @@ metadata:
   name: "{{ .Release.Name }}-create-user"
   labels:
     app: {{ template "distribution.fullname" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "distribution.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     component: mongodb
@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         app: {{ template "distribution.name" . }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        chart: {{ template "distribution.chart" . }}
         heritage: {{ .Release.Service }}
         release: {{ .Release.Name }}
     spec:
