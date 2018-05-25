@@ -1,0 +1,4 @@
+Stolon cluster installed and initialized.
+
+To get superuser password run
+    PGPASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "stolon.fullname" . }} -o jsonpath="{.data.pg_su_password}" | base64 --decode; echo)
