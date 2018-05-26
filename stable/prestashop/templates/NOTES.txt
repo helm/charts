@@ -8,7 +8,7 @@
 This deployment will be incomplete until you configure PrestaShop with a resolvable
 host. To configure PrestaShop with the URL of your service:
 
-1. Get the PrestaShop URL by running:
+1. Get the PrestaShop URL by running:  
 
   {{- if contains "NodePort" .Values.serviceType }}
 
@@ -42,6 +42,17 @@ host. To configure PrestaShop with the URL of your service:
 {{- end }}
 
 {{- else -}}
+
+{{- if .Values.ingress.enabled }}
+1. Get the PrestaShop URL
+
+{{- range .Values.ingress.hosts }}
+  echo Store URL : {{ if .tls }}https{{ else }}http{{ end }}://{{ .name }}/
+  echo Admin URL : {{ if .tls }}https{{ else }}http{{ end }}://{{ .name }}/administration
+{{- end }}
+
+{{- else -}}
+
 1. Get the PrestaShop URL by running:
 
 {{- if eq .Values.serviceType "ClusterIP" }}
@@ -53,6 +64,8 @@ host. To configure PrestaShop with the URL of your service:
 
   echo Store URL : http://{{ include "prestashop.host" . }}/
   echo Admin URL : http://{{ include "prestashop.host" . }}/administration
+{{- end }}
+
 {{- end }}
 
 2. Get your PrestaShop login credentials by running:
