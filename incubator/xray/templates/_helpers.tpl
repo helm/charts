@@ -134,7 +134,7 @@ Set the final MongoDB connection URL
 {{- $mongoDatabase := .Values.mongodb.mongodbDatabase -}}
 {{- $mongoUser := .Values.mongodb.mongodbUsername -}}
 {{- $mongoPassword := .Values.mongodb.mongodbPassword -}}
-{{- printf "%s//%s:%s@%s-%s%s%s" "mongodb" $mongoUser $mongoPassword .Release.Name "mongodb:27017?authSource=" $mongoDatabase "&authMechanism=SCRAM-SHA-1" -}}
+{{- printf "%s://%s:%s@%s-%s%s%s" "mongodb" $mongoUser $mongoPassword .Release.Name "mongodb:27017/?authSource=" $mongoDatabase "&authMechanism=SCRAM-SHA-1" -}}
 {{- end -}}
 {{- end -}}
 
