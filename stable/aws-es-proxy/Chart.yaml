@@ -1,0 +1,17 @@
+name: aws-es-proxy
+version: 1.0.0
+apiVersion: v1
+appVersion: 0.8
+home: https://github.com/abutaha/aws-es-proxy
+description: An webapp sitting between your HTTP client (browser, curl, etc...) and Amazon Elasticsearch service
+keywords:
+- amazon-elasticsearch-service
+- aws-iam
+- reverse-proxy
+- request-signing
+maintainers:
+- name: mumoshu
+  email: ykuoka@gmail.com
+sources:
+- https://github.com/abutaha/aws-es-proxy
+engine: gotpl
