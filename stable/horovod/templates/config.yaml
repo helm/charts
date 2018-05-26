@@ -59,8 +59,8 @@ data:
       rm -f /root/.ssh/config
       touch /root/.ssh/config
 
-      if [ -n "$SSH_PORT" ]; then
-        echo "Port $SSH_PORT" > /root/.ssh/config
+      if [ -n "$SSHPORT" ]; then
+        echo "Port $SSHPORT" > /root/.ssh/config
         echo "StrictHostKeyChecking no" >> /root/.ssh/config
       fi
     }
