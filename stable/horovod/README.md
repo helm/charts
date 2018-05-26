@@ -31,10 +31,11 @@ yes | ssh-keygen -N "" -f id_rsa
 
 ## Create the values.yaml
 
-To deploy Horovod with GPU, you can create `values.yaml` like below
+To run Horovod with GPU, you can create `values.yaml` like below
 
 ```
 # cat << EOF > ~/values.yaml
+---
 ssh:
   useSecrets: true
   hostKey: |-
@@ -63,6 +64,44 @@ master:
 EOF
 ```
 
+For most cases, the overlay network impacts the horovod performance greatly, so we should apply `Host Network` solution. To run Horovod with Host Network and GPU, you can create `values.yaml` like below
+
+
+```
+# cat << EOF > ~/values.yaml
+---
+useHostNetwork: true
+
+ssh:
+  useSecrets: true
+  port: 32222
+  hostKey: |-
+$(cat $SSH_KEY_DIR/id_rsa | sed 's/^/    /g')
+
+  hostKeyPub: |-
+$(cat $SSH_KEY_DIR/id_rsa.pub | sed 's/^/    /g')
+
+resources:
+  limits:
+    nvidia.com/gpu: 1
+  requests:
+    nvidia.com/gpu: 1
+
+worker:
+  number: 2
+  image:
+    repository: uber/horovod
+    tag: 0.12.1-tf1.8.0-py3.5
+master:
+  image:
+    repository: uber/horovod
+    tag: 0.12.1-tf1.8.0-py3.5
+  args:
+    - "mpirun -np 3 --hostfile /horovod/generated/hostfile --mca orte_keep_fqdn_hostnames t --allow-run-as-root --display-map --tag-output --timestamp-output sh -c 'python /examples/tensorflow_mnist.py'"
+EOF
+```
+
+> notice: the difference is that you should set `useHostNetwork` as true, then set another ssh port rather than `22`
 
 ## Installing the Chart
 
@@ -90,17 +129,17 @@ chart and their default values.
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
+| `useHostNetwork`  | Host network    | `false` |
 | `ssh.port` | The ssh port | `22` |
 | `ssh.useSecrets` | Determine if using the secrets for ssh | `false` |
 | `worker.number`|  The worker's number | `5` |
 | `worker.image.repository` | horovod worker image | `uber/horovod` |
 | `worker.image.pullPolicy` | `pullPolicy` for the worker | `IfNotPresent` |
 | `worker.image.tag` | `tag` for the worker | `0.12.1-tf1.8.0-py3.5` |
-| `worker.resources`| worker's pod resource requests & limits| `{}`|
+| `resources`| pod resource requests & limits| `{}`|
 | `worker.env` | worker's environment variables | `{}` |
 | `master.image.repository` | horovod master image | `uber/horovod` |
 | `master.image.tag` | `tag` for the master | `0.12.1-tf1.8.0-py3.5` |
 | `master.image.pullPolicy` | image pullPolicy for the master image| `IfNotPresent` |
 | `master.args` | master's args | `{}` |
-| `master.resources`| master's pod resource requests & limits| `{}`|
 | `master.env` | master's environment variables | `{}` |
