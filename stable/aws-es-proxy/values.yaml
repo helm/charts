@@ -1,0 +1,66 @@
+# aws-es-proxy specific coniguration
+config:
+  # awsSecretAccessKey: "XXXXXXX"
+  # awsAccessKeyID: "XXXXXXXX"
+  endpoint: https://test-es-somerandomvalue.eu-west-1.es.amazonaws.com
+  pretty: false
+  verbose: false
+
+image:
+  repository: "abutaha/aws-es-proxy"
+  tag: "0.8"
+  pullPolicy: "IfNotPresent"
+
+# Optionally specify an array of imagePullSecrets.
+# Secrets must be manually created in the namespace.
+# ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+# imagePullSecrets:
+  # - name: myRegistryKeySecretName
+
+extraArgs: {}
+  # -log-to-file
+  # -no-sign-reqs
+
+service:
+  type: ClusterIP
+  port: 9200
+  annotations: {}
+
+ingress:
+  enabled: false
+  path: /
+  # Used to create an Ingress record.
+  # hosts:
+    # - chart-example.local
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: "true"
+  # tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 300Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 300Mi
+
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+# affinity: {}
+
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+podAnnotations: {}
+podLabels: {}
+replicaCount: 1

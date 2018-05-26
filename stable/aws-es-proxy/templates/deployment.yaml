@@ -1,0 +1,83 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "aws-es-proxy.name" . }}
+    chart: {{ template "aws-es-proxy.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "aws-es-proxy.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "aws-es-proxy.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/secret: {{ toYaml .Values.config | sha256sum }}
+    {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "aws-es-proxy.name" . }}
+        release: "{{ .Release.Name }}"
+      {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+      {{- end }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+          - ./aws-es-proxy
+        {{- range $key, $value := .Values.extraArgs }}
+          {{- if $value }}
+          - -{{ $key }}={{ $value }}
+          {{- else }}
+          - -{{ $key }}
+          {{- end }}
+        {{- end }}
+          - -listen
+          - 0.0.0.0:9200
+          - -endpoint
+          - {{ required "endpoint is required" .Values.config.endpoint }}
+        {{- if .Values.config.pretty }}
+          - -pretty
+        {{- end }}
+        {{- if .Values.config.verbose }}
+          - -verbose
+        {{- end }}
+        envFrom:
+        - secretRef:
+            name: {{ template "aws-es-proxy.fullname" . }}
+        ports:
+          - containerPort: 9200
+            name: http
+            protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /_cluster/health
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /_cluster/health
+            port: http
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
