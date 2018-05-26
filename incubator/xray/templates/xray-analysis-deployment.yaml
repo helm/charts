@@ -68,12 +68,7 @@ spec:
         securityContext:
           allowPrivilegeEscalation: false
         resources:
-          requests:
-            memory: "{{ .Values.common.resources.requests.memory }}"
-            cpu: "{{ .Values.common.resources.requests.cpu }}"
-          limits:
-            memory: "{{ .Values.common.resources.limits.memory }}"
-            cpu: "{{ .Values.common.resources.limits.cpu }}"
+{{ toYaml .Values.analysis.resources | indent 10 }}
         readinessProbe:
           httpGet:
             path: /debug/pprof/

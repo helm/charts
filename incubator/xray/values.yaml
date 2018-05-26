@@ -42,13 +42,13 @@ mongodb:
     pullPolicy: Always
   persistence:
     size: 100Gi
-  resources:
-    requests:
-      memory: "12Gi"
-      cpu: "200m"
-    limits:
-      memory: "12Gi"
-      cpu: "2"
+  # resources:
+  #  requests:
+  #    memory: "12Gi"
+  #    cpu: "200m"
+  #  limits:
+  #    memory: "12Gi"
+  #    cpu: "2"
   ## Make sure the --wiredTigerCacheSizeGB is no more than half the memory limit!
   ## This is critical to protect against OOMKill by Kubernetes!
   mongodbExtraFlags:
@@ -75,13 +75,13 @@ rabbitmq-ha:
   customConfigMap: true
   rabbitmqErlangCookie: XRAYRABBITMQCLUSTER
   rabbitmqMemoryHighWatermark: 500MB
-  resources:
-    requests:
-      memory: "250Mi"
-      cpu: "100m"
-    limits:
-      memory: "550Mi"
-      cpu: "200m"
+  # resources:
+  #  requests:
+  #    memory: "250Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "550Mi"
+  #    cpu: "200m"
   persistentVolume:
     enabled: true
     size: 20Gi
@@ -104,13 +104,6 @@ common:
   ## Pass it to helm with '--set common.masterKey=${MASTER_KEY}'
   ## IMPORTANT: You should NOT use the example masterKey for a production deployment!
   masterKey: FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-  resources:
-    requests:
-      memory: "256Mi"
-      cpu: "100m"
-    limits:
-      memory: "1Gi"
-      cpu: "1"
 
 # For setting up external services, must pass the connection URL for them
 global:
@@ -127,6 +120,13 @@ analysis:
   ## Container storage limit
   storage:
     sizeLimit: 10Gi
+  resources: {}
+  #  requests:
+  #    memory: "1Gi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "2Gi"
+  #    cpu: "1"
 
 indexer:
   name: xray-indexer
@@ -138,6 +138,13 @@ indexer:
   ## Container storage limit
   storage:
     sizeLimit: 10Gi
+  resources: {}
+  #  requests:
+  #    memory: "1Gi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "2Gi"
+  #    cpu: "1"
 
 persist:
   name: xray-persist
@@ -149,6 +156,13 @@ persist:
   ## Container storage limit
   storage:
     sizeLimit: 10Gi
+  resources: {}
+  #  requests:
+  #    memory: "1Gi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "2Gi"
+  #    cpu: "1"
 
 server:
   name: xray-server
@@ -164,10 +178,10 @@ server:
   # Whitelist IPs allowed to LoadBalancer type services
   # Example: loadBalancerSourceRanges={82.82.190.51/32,141.141.8.8/32}
   loadBalancerSourceRanges: []
-  resources:
-    requests:
-      memory: "1Gi"
-      cpu: "100m"
-    limits:
-      memory: "2Gi"
-      cpu: "1"
+  resources: {}
+  #  requests:
+  #    memory: "1Gi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "2Gi"
+  #    cpu: "1"
