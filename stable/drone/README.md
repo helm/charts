@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install incubator/drone
+$ helm install stable/drone
 ```
 
 ## Installing the Chart
@@ -13,7 +13,7 @@ $ helm install incubator/drone
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/drone
+$ helm install --name my-release stable/drone
 ```
 
 ## Uninstalling the Chart
