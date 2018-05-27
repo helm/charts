@@ -5,7 +5,7 @@ strategy:
     maxUnavailable: 0
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.5.2
+  tag: v0.7.0
   pullPolicy: IfNotPresent
 env:
   open:
@@ -38,6 +38,14 @@ env:
     STORAGE_MICROSOFT_CONTAINER:
     # prefix to store charts for microsoft storage backend
     STORAGE_MICROSOFT_PREFIX:
+    # container to store charts for openstack storage backend
+    STORAGE_OPENSTACK_CONTAINER:
+    # prefix to store charts for openstack storage backend
+    STORAGE_OPENSTACK_PREFIX:
+    # region of openstack container
+    STORAGE_OPENSTACK_REGION:
+    # path to a CA cert bundle for your openstack endpoint
+    STORAGE_OPENSTACK_CACERT:
     # form field which will be queried for the chart file content
     CHART_POST_FORM_FIELD_NAME: chart
     # form field which will be queried for the provenance file content
@@ -48,6 +56,8 @@ env:
     DEBUG: false
     # output structured logs as json
     LOG_JSON: true
+    # disable use of index-cache.yaml
+    DISABLE_STATEFILES: false
     # disable Prometheus metrics
     DISABLE_METRICS: true
     # disable all routes prefixed with /api
@@ -62,6 +72,12 @@ env:
     CONTEXT_PATH:
     # parallel scan limit for the repo indexer
     INDEX_LIMIT: 0
+    # cache store, can be one of: redis (leave blank for inmemory cache)
+    CACHE:
+    # address of Redis service (host:port)
+    CACHE_REDIS_ADDR:
+    # Redis database to be selected after connect
+    CACHE_REDIS_DB: 0
   secret:
     # username for basic http authentication
     BASIC_AUTH_USER:
@@ -69,6 +85,8 @@ env:
     BASIC_AUTH_PASS:
     # GCP service account json file
     GOOGLE_CREDENTIALS_JSON:
+    # Redis requirepass server configuration
+    CACHE_REDIS_PASSWORD:
 deployment:
   ## Chartmuseum Deployment annotations
   annotations: {}
