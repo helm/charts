@@ -84,9 +84,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-          {{- range $key, $value := .Values.controller.extraEnvs }}
-            - name: {{ $key | upper | replace "." "_" }}
-              value: {{ $value }}
+          {{- if .Values.controller.extraEnvs }}
+{{ toYaml .Values.controller.extraEnvs | indent 12 }}
           {{- end }}
           livenessProbe:
             httpGet:
@@ -170,7 +169,7 @@ spec:
       affinity:
 {{ toYaml .Values.controller.affinity | indent 8 }}
     {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "nginx-ingress.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "nginx-ingress.serviceAccountName" . }}
       terminationGracePeriodSeconds: 60
 {{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumes) }}
       volumes:
@@ -186,6 +185,4 @@ spec:
 {{- if .Values.controller.extraVolumes }}
 {{ toYaml .Values.controller.extraVolumes | indent 6}}
 {{- end }}
-  updateStrategy:
-{{ toYaml .Values.controller.updateStrategy | indent 4 }}
 {{- end }}

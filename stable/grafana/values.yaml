@@ -1,14 +1,37 @@
+rbac:
+  create: true
+  pspEnabled: true
+serviceAccount:
+  create: true
+  name:
+
 replicas: 1
+
+deploymentStrategy: RollingUpdate
 
 image:
   repository: grafana/grafana
-  tag: 5.0.4
+  tag: 5.1.2
   pullPolicy: IfNotPresent
+
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 downloadDashboardsImage:
   repository: appropriate/curl
   tag: latest
   pullPolicy: IfNotPresent
+
+## Pod Annotations
+# podAnnotations: {}
+
+## Deployment annotations
+# annotations: {}
+
 ## Expose the grafana service to be accessed from outside the cluster (LoadBalancer service).
 ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -17,12 +40,14 @@ service:
   type: ClusterIP
   port: 80
   annotations: {}
+  labels: {}
 
 ingress:
   enabled: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  labels: {}
   path: /
   hosts:
     - chart-example.local
@@ -70,9 +95,25 @@ persistence:
 adminUser: admin
 # adminPassword: strongpassword
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## Extra environment variables that will be pass onto deployment pods
 env: {}
+
+## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
+## This can be useful for auth tokens, etc
+envFromSecret: ""
+
+## Additional grafana server secret mounts
+# Defines additional mounts with secrets. Secrets must be manually created in the namespace.
+extraSecretMounts: []
+  # - name: secret-files
+  #   mountPath: /etc/secrets
+  #   secretName: grafana-secret-files
+  #   readOnly: true
 
 # Pass the plugins you want installed as a comma separated list.
 # plugins: "digrich-bubblechart-panel,grafana-clock-panel"
@@ -119,6 +160,8 @@ dashboards: {}
 #    gnetId: 2
 #    revision: 2
 #    datasource: Prometheus
+#  local-dashboard:
+#    url: https://example.com/repository/test.json
 
 ## Grafana's primary configuration
 ## NOTE: values in map will be converted to ini format
@@ -135,3 +178,39 @@ grafana.ini:
     mode: console
   grafana_net:
     url: https://grafana.net
+## LDAP Authentication can be enabled with the following values on grafana.ini
+## NOTE: Grafana will fail to start if the value for ldap.toml is invalid
+  # auth.ldap:
+  #   enabled: true
+  #   allow_sign_up: true
+  #   config_file: /etc/grafana/ldap.toml
+
+## Grafana's LDAP configuration
+## Templated by the template in _helpers.tpl
+## NOTE: To enable the grafana.ini must be configured with auth.ldap.enabled
+## ref: http://docs.grafana.org/installation/configuration/#auth-ldap
+## ref: http://docs.grafana.org/installation/ldap/#configuration
+ldap:
+  # `existingSecret` is a reference to an existing secret containing the ldap configuration
+  # for Grafana in a key `ldap-toml`.
+  existingSecret: ""
+  # `config` is the content of `ldap.toml` that will be stored in the created secret
+  config: ""
+  # config: |-
+  #   verbose_logging = true
+
+  #   [[servers]]
+  #   host = "my-ldap-server"
+  #   port = 636
+  #   use_ssl = true
+  #   start_tls = false
+  #   ssl_skip_verify = false
+  #   bind_dn = "uid=%s,ou=users,dc=myorg,dc=com"
+
+## Grafana's SMTP configuration
+## NOTE: To enable, grafana.ini must be configured with smtp.enabled
+## ref: http://docs.grafana.org/installation/configuration/#smtp
+smtp:
+  # `existingSecret` is a reference to an existing secret containing the smtp configuration
+  # for Grafana in keys `user` and `password`.
+  existingSecret: ""
