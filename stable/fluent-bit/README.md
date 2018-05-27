@@ -25,7 +25,7 @@ $ helm install --name my-release stable/fluent-bit --set on_minikube=true
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Fluent-Bit chart and the default values.
+The following table lists the configurable parameters of the Fluent-Bit chart and the default values.
 
 | Parameter                  | Description                        | Default                 |
 | -----------------------    | ---------------------------------- | ----------------------- |
