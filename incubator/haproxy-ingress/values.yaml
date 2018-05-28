@@ -1,8 +1,6 @@
 # Enable RBAC
 rbac:
   create: true
-  createClusterRole: true
-  createRole: true
 
 # Create ServiceAccount
 serviceAccount:
