@@ -63,7 +63,6 @@ airflow:
 workers:
   serviceAccountName: "default"
   replicas: 1
-  
   resources: {}
     # limits:
     #   cpu: "1"
