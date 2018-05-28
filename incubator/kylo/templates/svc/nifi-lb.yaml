@@ -1,4 +1,4 @@
-{{- if .Values.loadBalancer.enabled -}}
+{{- if .Values.nifi.loadBalancer.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:

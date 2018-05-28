@@ -6,29 +6,23 @@
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
 ## Use ClusterIP if your setup includes ingress controller
-##
 serviceType: LoadBalancer
 
-loadBalancer:
-  enabled: true
-
-# JVM configuration
-jvm:
-  memory: 2g
-
+## Probes
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
 probe:
   initialDelaySeconds: 30
   timeoutSeconds: 15
 
-# busybox image is used to tail nifi logs. This allows us to setup a container
-# for tailing nifi-app log, nifi-user log, and nifi-bootstrap log. This makes it more
-# convenient to view the different logs.
+# Sidecar that is used to tail NiFi logs. Allows for the set up containers for tailing:
+# nifi-app
+# nifi-user
+# nifi-bootstrap
 sidecar:
   image: busybox
 
-##
+## Two Way SSL
 ## ref:  https://github.com/apache/nifi/tree/master/nifi-docker/dockerhub#standalone-instance-two-way-ssl
-##
 tls:
   enabled: false
   keystorePath: /opt/certs/keystore.jks
@@ -39,9 +33,8 @@ tls:
   truststore_Type: JKS
   initialAdminIdentity: 'CN=Random User, O=Apache, OU=NiFi, C=US'
 
-##
+## LDAP
 ## ref: https://github.com/apache/nifi/tree/master/nifi-docker/dockerhub#standalone-instance-ldap
-##
 ldap:
   enabled: false
   authenticationStrategy: 'SIMPLE'
@@ -234,7 +227,16 @@ nifi:
     ui:
       banner: NiFi
 
+  # JVM configuration
+  jvm:
+    memory: 2g
+
+  # Number of NiFi replicas
   replicas: 1
+
+  # Load Balancer for NiFi cluster
+  loadBalancer:
+    enabled: true
 
   image:
     repository: govcloud/docker-kylo
@@ -259,12 +261,15 @@ nifi:
     #    hosts:
     #      - chart-example.local
 
+  # NiFi web settings
   web:
     httpPort: ''
     httpHost: ''
     httpsPort: ''
     httpsHost: ''
     proxyHost: ''
+
+  # NiFi remote settings
   remote:
     inputHost: ''
     inputSocketPort: ''
@@ -310,7 +315,6 @@ nifi:
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-##
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -323,10 +327,16 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
 
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 tolerations: []
 
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
 ################################################################################
@@ -334,7 +344,7 @@ affinity: {}
 ################################################################################
 
 zookeeper:
-  ## If true, install the Zookeeper chart
+  ## Zookeeper chart
   ## ref: https://github.com/kubernetes/charts/tree/master/incubator/zookeeper
   enabled: true
 
@@ -351,16 +361,16 @@ zookeeper:
 
   antiAffinity: "soft"
 
-  ## The JVM heap size to allocate to Zookeeper
+  ## JVM heap size for Zookeeper
   heap: "128m"
 
-  ## The amount of PV storage allocated to each Zookeeper pod in the statefulset
+  ## PV storage amount allocated to each Zookeeper pod in the statefulset
   storage: "2Gi"
 
   ## Specify a Zookeeper imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   imagePullPolicy: "Always"
 
-  ## If the Zookeeper Chart is disabled a URL and port are required to connect
+  ## If Zookeeper Chart is disabled a URL and port are required to connect
   url: ""
   port: 2181
