@@ -49,12 +49,12 @@ configFile: |-
 
 ## Extra environment variables that will be passed onto deployment pod
 ##
-env: {}
+extraEnv: {}
 
 ## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
-## This can be useful for auth tokens, etc
+## This can be useful for secret keys, etc
 ##
-envFromSecret: ""
+extraEnvFromSecret: ""
 
 persistence:
 
