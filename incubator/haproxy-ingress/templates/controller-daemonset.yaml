@@ -23,7 +23,7 @@ spec:
         component: "{{ .Values.controller.name }}"
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ if eq .Values.serviceAccount.name "" }}{{ template "haproxy-ingress.fullname" . }}{{ else }}"{{ .Values.serviceAccount.name }}"{{ end }}
+      serviceAccountName: {{ template "haproxy-ingress.serviceAccountName" . }}
       containers:
         - name: {{ template "haproxy-ingress.controller.fullname" . }}
           image:  "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
