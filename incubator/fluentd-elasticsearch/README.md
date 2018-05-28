@@ -11,8 +11,8 @@ $ helm install incubator/fluentd-elasticsearch
 ## Introduction
 
 This chart bootstraps a [Fluentd](https://www.fluentd.org/) daemonset on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
-Its meant to be a drop in replacement for fluentd-gcp on GKE which sends logs to Googles Stackdriver service but can be also used anywhere else where Elasticsearch logbackend is needed.
-The used Docker image also contains Googles detect exeptions (for Java multiline stacktraces), Prometheus exporter, Kubernetes metadata filter & Systemd plugins.
+It's mean to be a drop in replacement for fluentd-gcp on GKE which sends logs to Google's Stackdriver service, but can also be used in other places where logging to ElasticSearch is required.
+The used Docker image also contains Google's detect exceptions (for Java multiline stacktraces), Prometheus exporter, Kubernetes metadata filter & Systemd plugins.
 
 ## Prerequisites
 
