@@ -171,7 +171,7 @@ dind:
   #  env:
   #    DRONE_DEBUG: "false"
 
-  ## Allowing costom command and args to DinD
+  ## Allowing custom command and args to DinD
   ## ref: https://discourse.drone.io/t/docker-mtu-problem/1207
   ##
   #  command: '["/bin/sh"]'
