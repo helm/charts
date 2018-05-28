@@ -17,8 +17,8 @@ __NOTE:__ Operators will typically wish to install this component into the `NiFi
 To install the chart with the release name `nifi`:
 
 ```bash
-$ helm repo add govcloud https://govcloud.github.io/charts
-$ helm install govcloud/nifi --name nifi --namespace nifi
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+$ helm install --name nifi --namespace nifi incubator/nifi
 ```
 
 If you do not specify a name, helm will select a name for you.
@@ -39,11 +39,11 @@ The following tables lists the configurable parameters of the Traefik chart and 
 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
-| `nifi.image.repository`         | NiFi image name                                                      | `govcloud/docker-nifi`                    |
+| `nifi.image.repository`         | NiFi image name                                                      | `apache/nifi`                             |
 | `nifi.image.tag`                | The version of the official Traefik image to use                     | `1.6.0`                                   |
 | `nifi.image.pullPolicy`         | The image pull policy                                                | `Always`                                  |
 | `nifi.replicas`                 | The number of replicas to be assigned                                | `1`                                       |
-| `ingress.domain`                | The domain name                                                      | `nifi.k8s.cloud.statcan.ca`               |
+| `ingress.domain`                | The domain name                                                      | `nifi.example.com`                        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
