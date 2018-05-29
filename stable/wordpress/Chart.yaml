@@ -1,6 +1,6 @@
 name: wordpress
-version: 1.0.7
-appVersion: 4.9.6
+version: 1.0.8
+appVersion: 4.9.6-ol-7
 description: Web publishing platform for building blogs and websites.
 icon: https://bitnami.com/assets/stacks/wordpress/img/wordpress-stack-220x234.png
 keywords:
