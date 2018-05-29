@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `image.registry`                        | MongoDB image registry                                                                       | `docker.io`                                              |
 | `image.repository`                      | MongoDB Image name                                                                           | `bitnami/mongodb`                                        |
 | `image.tag`                             | MongoDB Image tag                                                                            | `{VERSION}`                                              |
-| `image.pullPolicy`                      | Image pull policy                                                                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullPolicy`                      | Image pull policy                                                                            | `Always`                                                 |
 | `image.pullSecrets`                     | Specify image pull secrets                                                                   | `nil`                                                    |
 | `usePassword`                           | Enable password authentication                                                               | `true`                                                   |
 | `existingSecret`                        | Existing secret with MongoDB credentials                                                     | `nil`                                                    |
@@ -90,8 +90,6 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `readinessProbe.successThreshold`       | Minimum consecutive successes for the probe to be considered successful after having failed. | `1`                                                      |
 | `configmap`                             | MongoDB configuration file to be used                                                        | `nil`                                                    |
 
-The above parameters map to the env variables defined in [bitnami/mongodb](http://github.com/bitnami/bitnami-docker-mongodb). For more information please refer to the [bitnami/mongodb](http://github.com/bitnami/bitnami-docker-mongodb) image documentation.
-
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
@@ -112,10 +110,20 @@ $ helm install --name my-release -f values.yaml stable/mongodb
 
 ## Replication
 
-In order to set up a MongoDB replica set with primary, secondary and arbiter nodes you can use the values-production.yaml file.
+You can start the MongoDB chart in replica set mode with the following command:
 
 ```bash
-$ helm install --name my-release -f values-production.yaml stable/mongodb
+$ helm install --name my-release stable/mongodb --set replication.enabled=true
+```
+## Production settings and horizontal scaling
+
+The following repo contains the recommended production settings for MongoDB server in an alternative [values file](values-production.yaml). Please read carefully the comments in the values-production.yaml file to set up your environment appropriately.
+
+To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then scale the secondary nodes stateful set:
+
+```console 
+$ helm install --name my-release -f ./values-production.yaml stable/mongodb
+$ kubectl scale statefulset my-mongodb-secondaries-statefulset --replicas=3 
 ```
 
 ## Persistence

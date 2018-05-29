@@ -8,10 +8,9 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 3.6.4
+  tag: 3.6.5
 
   ## Specify a imagePullPolicy
-  ## 'Always' if image.tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
   pullPolicy: Always
@@ -51,13 +50,13 @@ mongodbExtraFlags: []
 ## Kubernetes service type
 service:
   type: ClusterIP
+  port: 27017
 
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
   ##
   # nodePort:
 
-port: 27017
 
 replicaSet:
   ## Whether to create a MongoDB replica set for high availability or not
@@ -135,12 +134,14 @@ persistence:
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
 livenessProbe:
+  enabled: true
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 6
   successThreshold: 1
 readinessProbe:
+  enabled: true
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5

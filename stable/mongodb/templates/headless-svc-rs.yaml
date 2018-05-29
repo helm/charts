@@ -13,7 +13,7 @@ spec:
   clusterIP: None
   ports:
   - name: mongodb
-    port: {{ .Values.port }}
+    port: {{ .Values.service.port }}
   selector:
     app: {{ template "mongodb.name" . }}
     release: {{ .Release.Name }}

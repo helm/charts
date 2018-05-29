@@ -34,7 +34,7 @@ spec:
           image: {{ template "mongodb.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - containerPort: {{ .Values.port }}
+          - containerPort: {{ .Values.service.port }}
             name: mongodb
           env:
           - name: MONGODB_REPLICA_SET_MODE
@@ -57,20 +57,32 @@ spec:
             {{- end }}
           - name: MONGODB_EXTRA_FLAGS
             value: {{ default "" .Values.mongodbExtraFlags | join " " }}
+          {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             exec:
               command:
                 - mongo
                 - --eval
                 - "db.adminCommand('ping')"
-{{ toYaml .Values.livenessProbe | indent 12 }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             exec:
               command:
                 - mongo
                 - --eval
                 - "db.adminCommand('ping')"
-{{ toYaml .Values.readinessProbe | indent 12 }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          {{- end }}
           volumeMounts:
           {{- if .Values.configmap }}
             - name: config
