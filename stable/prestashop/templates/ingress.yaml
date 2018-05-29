@@ -3,9 +3,9 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | trimSuffix "-" -}}"
+  name: {{ template "prestashop.fullname" . }}
   labels:
-    app: {{ template "fullname" $ }}
+    app: {{ template "prestashop.fullname" . }}
     chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
     release: "{{ $.Release.Name }}"
     heritage: "{{ $.Release.Service }}"
@@ -23,8 +23,8 @@ spec:
       paths:
         - path: {{ default "/" .path }}
           backend:
-            serviceName: {{ template "fullname" $ }}
-            servicePort: 80
+            serviceName: {{ template "prestashop.fullname" . }}
+            servicePort: http
 {{- if .tls }}
   tls:
   - hosts:
