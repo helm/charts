@@ -136,7 +136,7 @@ fi
 
 # Install and initialize helm/tiller
 readonly HELM_URL=https://storage.googleapis.com/kubernetes-helm
-readonly HELM_TARBALL=helm-v2.8.2-linux-amd64.tar.gz
+readonly HELM_TARBALL=helm-v2.9.1-linux-amd64.tar.gz
 readonly INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
 
 pushd /opt
