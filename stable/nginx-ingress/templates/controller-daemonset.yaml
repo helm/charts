@@ -156,6 +156,10 @@ spec:
 {{- if .Values.controller.extraContainers }}
 {{ toYaml .Values.controller.extraContainers | indent 8}}
 {{- end }}
+{{- if .Values.controller.initContainers }}
+      initContainers:
+{{ toYaml .Values.controller.initContainers | indent 8}}
+{{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}
       nodeSelector:
