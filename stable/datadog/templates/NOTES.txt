@@ -8,10 +8,10 @@ No further action should be required.
 
 {{- else -}}
 ##############################################################################
-####               ERROR: You did not set a datadog.apiKey.               ####
+####               WARN: You did not set a datadog.apiKey.               ####
 ##############################################################################
 
-This deployment will be incomplete until you get your API key from Datadog. 
+This deployment will be incomplete until you get your API key from Datadog.
 One can sign up for a free Datadog trial at https://app.datadoghq.com/signup
 
 Once registered you can request an API key at:

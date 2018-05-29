@@ -1,5 +1,4 @@
 {{- if .Values.deployment.enabled }}
-{{- if .Values.datadog.apiKey }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -136,5 +135,4 @@ spec:
 {{ toYaml .Values.datadog.volumes | indent 8 }}
 {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
-{{ end }}
 {{ end }}
