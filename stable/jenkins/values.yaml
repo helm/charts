@@ -158,7 +158,8 @@ Agent:
   #   containerPort: 80
   #   hostPort: 8080
   # Liveness probe for the agents
-  # Jenkins master monitors agents and restarts them if they don't connect in less than 100s
+  # Jenkins master monitors agents and restarts them if they don't connect in less than
+  # ConnectAndReadTimeout above (default 100s).
   # If your agent has additional requirements to be considered alive, put them here
   LivenessProbe:
     enabled: false
