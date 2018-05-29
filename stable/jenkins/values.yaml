@@ -153,6 +153,25 @@ Agent:
   # - type: Secret
   #   secretName: mysecret
   #   mountPath: /var/myapp/mysecret
+  ports:
+  # - name: http
+  #   containerPort: 80
+  #   hostPort: 8080
+  # Liveness probe for the agents
+  # Jenkins master monitors agents and restarts them if they don't connect in less than 100s
+  # If your agent has additional requirements to be considered alive, put them here
+  LivenessProbe:
+    enabled: false
+    execAction: "cat /etc/os-release"
+    initialDelay: 10
+    period: 5
+    timeout: 1
+    thresholds:
+      success: 1
+      failure: 1
+  # Enable/disable an EmptyDir as custom workspace volume for the agent
+  # Use this if you don't want the agent to inherit the master-provided workspace
+  UseCustomWorkspaceVolume: false
   NodeSelector: {}
   # Key Value selectors. Ex:
   # jenkins-agent: v1

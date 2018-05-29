@@ -46,7 +46,7 @@ data:
                   {{- $_ := set $local "first" false }}
                 {{- end }}</nodeSelector>
               <nodeUsageMode>NORMAL</nodeUsageMode>
-              <customWorkspaceVolumeEnabled>false</customWorkspaceVolumeEnabled>
+              <customWorkspaceVolumeEnabled>{{ .Values.Agent.UseCustomWorkspaceVolume }}</customWorkspaceVolumeEnabled>
               <workspaceVolume class="org.csanchez.jenkins.plugins.kubernetes.volumes.workspace.EmptyDirWorkspaceVolume">
                 <memory>false</memory>
               </workspaceVolume>
@@ -93,15 +93,25 @@ data:
                 </org.csanchez.jenkins.plugins.kubernetes.PodEnvVar>
 {{- end }}
               </envVars>
-              <ports/>
+              <ports>
+{{- range $index, $port := .Values.Agent.ports }}
+                <org.csanchez.jenkins.plugins.kubernetes.PortMapping>
+{{- range $key, $value := $port }}
+                  <{{ $key }}>{{ $value }}</{{ $key }}>
+{{- end }}
+                </org.csanchez.jenkins.plugins.kubernetes.PortMapping>
+{{- end }}
+              </ports>
+{{- if and .Values.Agent.LivenessProbe .Values.Agent.LivenessProbe.enabled }}
               <livenessProbe>
-                <execArgs></execArgs>
-                <timeoutSeconds>0</timeoutSeconds>
-                <initialDelaySeconds>0</initialDelaySeconds>
-                <failureThreshold>0</failureThreshold>
-                <periodSeconds>0</periodSeconds>
-                <successThreshold>0</successThreshold>
+                <execArgs>{{ .Values.Agent.LivenessProbe.execAction }}</execArgs>
+                <timeoutSeconds>{{ .Values.Agent.LivenessProbe.timeout }}</timeoutSeconds>
+                <initialDelaySeconds>{{ .Values.Agent.LivenessProbe.initialDelay }}</initialDelaySeconds>
+                <periodSeconds>{{ .Values.Agent.LivenessProbe.period }}</periodSeconds>
+                <failureThreshold>{{ .Values.Agent.LivenessProbe.thresholds.failure }}</failureThreshold>
+                <successThreshold>{{ .Values.Agent.LivenessProbe.thresholds.success }}</successThreshold>
               </livenessProbe>
+{{- end }}
               <annotations/>
               <imagePullSecrets>
 {{- range $index, $secret := .Values.Agent.imagePullSecrets }}
