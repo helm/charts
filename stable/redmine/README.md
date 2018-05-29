@@ -51,39 +51,42 @@ helm install --name my-release stable/redmine --set databaseType.mariadb=false,d
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Redmine chart and their default values.
+The following table lists the configurable parameters of the Redmine chart and their default values.
 
-| Parameter | Description | Default |
-| --------- | ----------- | ------- |
-| `image` | Redmine image | `bitnami/redmine:{VERSION}` |
-| `imagePullPolicy` | Image pull policy | `IfNotPresent` |
-| `redmineUsername` | User of the application | `user` |
-| `redminePassword` | Application password | _random 10 character long alphanumeric string_ |
-| `redmineEmail` | Admin email | `user@example.com` |
-| `redmineLanguage` | Redmine default data language | `en` |
-| `extraVars` | Environment variables, passed to redmine | `nil` |
-| `smtpHost` | SMTP host | `nil` |
-| `smtpPort` | SMTP port | `nil` |
-| `smtpUser` | SMTP user | `nil` |
-| `smtpPassword` | SMTP password | `nil` |
-| `smtpTls` | Use TLS encryption with SMTP | `nil` |
-| `databaseType.postgresql` | Select postgresql database | `false` |
-| `databaseType.mariadb` | Select mariadb database | `true` |
-| `mariadb.mariadbRootPassword` | MariaDB admin password | `nil` |
-| `postgresql.postgresqlPassword` | PostgreSQL admin password | `nil` |
-| `serviceType` | Kubernetes Service type | `LoadBalancer` |
-| `serviceLoadBalancerSourceRanges` | An array of load balancer sources | `0.0.0.0/0` |
-| `ingress.enabled` | Enable or disable the ingress | `false` |
-| `ingress.hostname` | The virtual host name | `redmine.cluster.local` |
-| `ingress.annotations` | An array of service annotations | `nil` |
-| `ingress.tls[i].secretName | The secret kubernetes.io/tls | `nil` |
-| `ingress.tls[i].hosts[j] | The virtual host name | `nil` |
-| `networkPolicyApiVersion` | The kubernetes network API version | `extensions/v1beta1` |
-| `persistence.enabled` | Enable persistence using PVC | `true` |
-| `persistence.existingClaim` | The name of an existing PVC | `nil` |
-| `persistence.storageClass` | PVC Storage Class | `nil` (uses alpha storage class annotation) |
-| `persistence.accessMode` | PVC Access Mode | `ReadWriteOnce` |
-| `persistence.size` | PVC Storage Request | `8Gi` |
+|            Parameter              |              Description                 |                          Default                        | 
+| --------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
+| `image.registry`                  | Redmine image registry                   | `docker.io`                                             |
+| `image.repository`                | Redmine image name                       | `bitnami/redmine`                                       |
+| `image.tag`                       | Redmine image tag                        | `{VERSION}`                                             |
+| `image.pullPolicy`                | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`               | Specify image pull secrets               | `nil`                                                   |
+| `redmineUsername`                 | User of the application                  | `user`                                                  |
+| `redminePassword`                 | Application password                     | _random 10 character long alphanumeric string_          |
+| `redmineEmail`                    | Admin email                              | `user@example.com`                                      |
+| `redmineLanguage`                 | Redmine default data language            | `en`                                                    |
+| `extraVars`                       | Environment variables, passed to redmine | `nil`                                                   |
+| `smtpHost`                        | SMTP host                                | `nil`                                                   |
+| `smtpPort`                        | SMTP port                                | `nil`                                                   |
+| `smtpUser`                        | SMTP user                                | `nil`                                                   |
+| `smtpPassword`                    | SMTP password                            | `nil`                                                   |
+| `smtpTls`                         | Use TLS encryption with SMTP             | `nil`                                                   |
+| `databaseType.postgresql`         | Select postgresql database               | `false`                                                 |
+| `databaseType.mariadb`            | Select mariadb database                  | `true`                                                  |
+| `mariadb.mariadbRootPassword`     | MariaDB admin password                   | `nil`                                                   |
+| `postgresql.postgresqlPassword`   | PostgreSQL admin password                | `nil`                                                   |
+| `serviceType`                     | Kubernetes Service type                  | `LoadBalancer`                                          |
+| `serviceLoadBalancerSourceRanges` | An array of load balancer sources        | `0.0.0.0/0`                                             |
+| `ingress.enabled`                 | Enable or disable the ingress            | `false`                                                 |
+| `ingress.hostname`                | The virtual host name                    | `redmine.cluster.local`                                 |
+| `ingress.annotations`             | An array of service annotations          | `nil`                                                   |
+| `ingress.tls[i].secretName`       | The secret kubernetes.io/tls             | `nil`                                                   |
+| `ingress.tls[i].hosts[j]`         | The virtual host name                    | `nil`                                                   |
+| `networkPolicyApiVersion`         | The kubernetes network API version       | `extensions/v1beta1`                                    |
+| `persistence.enabled`             | Enable persistence using PVC             | `true`                                                  |
+| `persistence.existingClaim`       | The name of an existing PVC              | `nil`                                                   |
+| `persistence.storageClass`        | PVC Storage Class                        | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`          | PVC Access Mode                          | `ReadWriteOnce`                                         |
+| `persistence.size`                | PVC Storage Request                      | `8Gi`                                                   |
 
 The above parameters map to the env variables defined in [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine). For more information please refer to the [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine) image documentation.
 
@@ -95,7 +98,7 @@ $ helm install --name my-release \
     stable/redmine
 ```
 
-The above command sets the Redmine administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the Redmine administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
@@ -113,16 +116,15 @@ Persistent Volume Claims are used to keep the data across deployments. This is k
 
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
 
-
 ### Existing PersistentVolumeClaims
 
-The following example includes two PVCs, one for redmine and another for Maria DB.
+The following example includes two PVCs, one for Redmine and another for MariaDB.
 
 1. Create the PersistentVolume
 1. Create the PersistentVolumeClaim
 1. Create the directory, on a worker
 1. Install the chart
+
 ```bash
 $ helm install --name test --set persistence.existingClaim=PVC_REDMINE,mariadb.persistence.existingClaim=PVC_MARIADB  redmine
 ```
-

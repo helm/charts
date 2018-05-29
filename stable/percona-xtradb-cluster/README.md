@@ -48,7 +48,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Percona chart and their default values.
+The following table lists the configurable parameters of the Percona chart and their default values.
 
 | Parameter                  | Description                        | Default                                                    |
 | -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
@@ -66,6 +66,7 @@ The following tables lists the configurable parameters of the Percona chart and 
 | `persistence.size`         | Size of persistent volume claim    | 8Gi RW                                                     |
 | `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
+| `nodeSelector`             | Node labels for pod assignment     | `{}`							|
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                              |
 | `configFiles` | files to write to /etc/mysql/conf.d | see values.yaml |
 | `logTail` | if set to true runs a container to tail /var/log/mysqld.log in the pod | true |
@@ -94,7 +95,7 @@ $ helm install --name my-release -f values.yaml stable/percona-xtradb-cluster
 
 ## Persistence
 
-The [Percona XtraDB Cluster DockerHub image](https://hub.docker.com/r/percona/percona-xtradb-cluster/) image stores the MySQL data and configurations at the `/var/lib/mysql` path of the container.
+The [Percona XtraDB Cluster DockerHub image](https://hub.docker.com/r/percona/percona-xtradb-cluster/) stores the MySQL data and configurations at the `/var/lib/mysql` path of the container.
 
 By default, an emptyDir volume is mounted at that location.
 

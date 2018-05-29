@@ -1,10 +1,10 @@
 # kanister-operator
 
-[kanister-operator](https://github.com/kanisterio/kanister) is a Kubernetes operator for Kanister framework.
+[kanister-operator](https://github.com/kanisterio/kanister) is a Kubernetes operator for the Kanister framework.
 
 Kanister is a framework that enables application-level data management on Kubernetes. It allows domain experts to capture application specific data management tasks via blueprints, which can be easily shared and extended. The framework takes care of the tedious details surrounding execution on Kubernetes and presents a homogeneous operational experience across applications at scale.
 
-## TL;DR;
+## TL;DR
 
 ```console
 $ helm install stable/kanister-operator
@@ -47,13 +47,13 @@ Parameter | Description | Default
 --- | --- | ---
 `rbac.create` | all required roles and SA will be created | `true`
 `serviceAccount.create`| specify if SA will be created | `true`
-`serviceAccount.name`| porvided service account name will be used | `None`
+`serviceAccount.name`| provided service account name will be used | `None`
 `image.repository` | controller container image repository | `kanisterio/controller`
 `image.tag` | controller container image tag | `v0.2.0`
 `image.pullPolicy` | controller container image pull policy | `IfNotPresent`
-`resources` | k8s pod resorces | `None`
+`resources` | k8s pod resources | `None`
 
-Specify each parameter you'd like to override using a YAML file as described above in the [installation](#Installing the Chart) section.
+Specify each parameter you'd like to override using a YAML file as described above in the [installation](#installing-the-chart) section.
 
 You can also specify any non-array parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

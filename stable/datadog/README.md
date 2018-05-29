@@ -35,13 +35,13 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Datadog chart and their default values.
+The following table lists the configurable parameters of the Datadog chart and their default values.
 
 |             Parameter       |            Description             |                    Default                |
 |-----------------------------|------------------------------------|-------------------------------------------|
 | `datadog.apiKey`            | Your Datadog API key               |  `Nil` You must provide your own key      |
 | `image.repository`          | The image repository to pull from  | `datadog/docker-dd-agent`                 |
-| `image.tag`                 | The image tag to pull              | `latest`                                  |
+| `image.tag`                 | The image tag to pull              | `6.2.0`                                  |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
