@@ -14,7 +14,7 @@
 # limitations under the License.
 
 # Install Helm
-HELM_LATEST_VERSION="v2.8.2"
+HELM_LATEST_VERSION="v2.9.1"
 
 wget http://storage.googleapis.com/kubernetes-helm/helm-${HELM_LATEST_VERSION}-linux-amd64.tar.gz
 tar -xvf helm-${HELM_LATEST_VERSION}-linux-amd64.tar.gz
