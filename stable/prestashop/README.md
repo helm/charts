@@ -76,15 +76,15 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `mariadb.mariadbPassword`             | Password for the database                                                                    | `nil`                                                    |
 | `mariadb.mariadbRootPassword`         | MariaDB admin password                                                                       | `nil`                                                    |
 | `serviceType`                         | Kubernetes Service type                                                                      | `LoadBalancer`                                           |
-| `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
-| `ingress.hosts[0].name`              | Hostname to your prestashop installation    | `prestashop.local`                                          |
-| `ingress.hosts[0].path`              | Path within the url structure              | `/`                                                        |
-| `ingress.hosts[0].tls`               | Utilize TLS backend in ingress             | `false`                                                    |
-| `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                  | `prestashop.local-tls-secret`                               |
-| `ingress.hosts[0].annotations`       | Annotations for this host's ingress record | `[]`                                                       |
-| `ingress.secrets[0].name`            | TLS Secret Name                            | `nil`                                                      |
-| `ingress.secrets[0].certificate`     | TLS Secret Certificate                     | `nil`                                                      |
-| `ingress.secrets[0].key`             | TLS Secret Key                             | `nil`                                                      |
+| `ingress.enabled`                     | Enable ingress controller resource                                                           | `false`                                                  |
+| `ingress.hosts[0].name`               | Hostname to your prestashop installation                                                     | `prestashop.local`                                       |
+| `ingress.hosts[0].path`               | Path within the url structure                                                                | `/`                                                      |
+| `ingress.hosts[0].tls`                | Utilize TLS backend in ingress                                                               | `false`                                                  |
+| `ingress.hosts[0].tlsSecret`          | TLS Secret (certificates)                                                                    | `prestashop.local-tls-secret`                            |
+| `ingress.hosts[0].annotations`        | Annotations for this host's ingress record                                                   | `[]`                                                     |
+| `ingress.secrets[0].name`             | TLS Secret Name                                                                              | `nil`                                                    |
+| `ingress.secrets[0].certificate`      | TLS Secret Certificate                                                                       | `nil`                                                    |
+| `ingress.secrets[0].key`              | TLS Secret Key                                                                               | `nil`                                                    |
 | `persistence.enabled`                 | Enable persistence using PVC                                                                 | `true`                                                   |
 | `persistence.apache.storageClass`     | PVC Storage Class for Apache volume                                                          | `nil` (uses alpha storage class annotation)              |
 | `persistence.apache.accessMode`       | PVC Access Mode for Apache volume                                                            | `ReadWriteOnce`                                          |
