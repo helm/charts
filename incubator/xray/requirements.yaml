@@ -4,7 +4,7 @@ dependencies:
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: postgresql.enabled
 - name: rabbitmq-ha
-  version: 1.3.1
+  version: 1.5.2
   repository: https://kubernetes-charts.storage.googleapis.com/
 - name: mongodb
   version: 2.0.5
