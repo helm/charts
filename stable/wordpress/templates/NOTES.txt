@@ -4,7 +4,9 @@
 
   You should be able to access your new WordPress installation through
 
-  http://{{- .Values.ingress.hostname }}/admin
+  {{- range .Values.ingress.hosts }}
+  {{ if .tls }}https{{ else }}http{{ end }}://{{ .name }}/admin
+  {{- end }}
   
 {{- else if contains "LoadBalancer" .Values.serviceType }}
 

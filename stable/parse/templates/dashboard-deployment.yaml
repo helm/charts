@@ -18,10 +18,16 @@ spec:
         release: "{{ .Release.Name }}"
         component: "dashboard"
     spec:
+      {{- if .Values.dashboard.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.dashboard.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "parse.fullname" . }}
-        image: "{{ .Values.dashboard.image }}"
-        imagePullPolicy: {{ .Values.dashboard.imagePullPolicy | quote }}
+        image: "{{ .Values.dashboard.image.registry }}/{{ .Values.dashboard.image.repository }}:{{ .Values.dashboard.image.tag }}"
+        imagePullPolicy: {{ .Values.dashboard.image.pullPolicy | quote }}
         env:
         - name: PARSE_DASHBOARD_USER
           value: {{ .Values.dashboard.username }}

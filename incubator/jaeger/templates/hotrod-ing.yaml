@@ -1,0 +1,36 @@
+{{- if .Values.hotrod.enabled -}}
+{{- if .Values.hotrod.ingress.enabled -}}
+{{- $serviceName := include "jaeger.fullname" . -}}
+{{- $servicePort := .Values.hotrod.service.externalPort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "jaeger.fullname" . }}-hotrod
+  labels:
+    app: {{ template "jaeger.name" . }}
+    jaeger-infra: hotrod-ingress
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: hotrod
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.hotrod.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.hotrod.ingress.annotations | indent 4 }}
+{{- end }}
+spec:
+  rules:
+    {{- range $host := .Values.hotrod.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $serviceName }}-hotrod
+              servicePort: {{ $servicePort }}
+    {{- end -}}
+  {{- if .Values.hotrod.ingress.tls }}
+  tls:
+{{ toYaml .Values.hotrod.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}
+{{- end -}}

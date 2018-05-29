@@ -5,11 +5,11 @@
 
      You can watch the status by running:
 
-         $ kubectl get svc {{ template "fullname" . }} --namespace {{ .Release.Namespace }} -w
+         $ kubectl get svc {{ template "traefik.fullname" . }} --namespace {{ .Release.Namespace }} -w
 
      Once 'EXTERNAL-IP' is no longer '<pending>':
 
-         $ kubectl describe svc {{ template "fullname" . }} --namespace {{ .Release.Namespace }} | grep Ingress | awk '{print $3}'
+         $ kubectl describe svc {{ template "traefik.fullname" . }} --namespace {{ .Release.Namespace }} | grep Ingress | awk '{print $3}'
 
 2. Configure DNS records corresponding to Kubernetes ingress resources to point to the load balancer IP/hostname found in step 1
 {{- end }}
@@ -22,7 +22,7 @@
 {{- else }}
 1. Traefik has been started. You can find out the port numbers being used by traefik by running:
 
-          $ kubectl describe svc {{ template "fullname" . }} --namespace {{ .Release.Namespace }}
+          $ kubectl describe svc {{ template "traefik.fullname" . }} --namespace {{ .Release.Namespace }}
 
 {{- end }}
 

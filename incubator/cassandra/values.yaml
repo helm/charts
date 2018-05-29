@@ -4,6 +4,9 @@ image:
   repo: "cassandra"
   tag: "3"
   pullPolicy: IfNotPresent
+  ## Specify ImagePullSecrets for Pods
+  ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+  # pullSecrets: myregistrykey
 
 ## Specify a service type
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -37,7 +40,7 @@ resources:
     memory: 4Gi
     cpu: 2
 
-## Change cassandra configuration paramaters below:
+## Change cassandra configuration parameters below:
 ## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/configuration/configCassandra_yaml.html
 ## Recommended max heap size is 1/2 of system memory
 ## Recommeneed heap new size is 1/4 of max heap size
@@ -52,9 +55,12 @@ config:
   endpoint_snitch: SimpleSnitch
   max_heap_size: 2048M
   heap_new_size: 512M
+  start_rpc: false
   ports:
     cql: 9042
     thrift: 9160
+    # If a JVM Agent is in place
+    # agent: 61621
 
 ## Configure node selector. Edit code below for adding selector to pods
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -65,3 +71,22 @@ config:
 ## Additional pod labels
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
+
+## Additional pod-level settings
+podSettings:
+  # Change this to give pods more time to properly leave the cluster when not using persistent storage.
+  terminationGracePeriodSeconds: 30
+
+podManagementPolicy: OrderedReady
+updateStrategy:
+  type: OnDelete
+
+## Pod Security Context
+securityContext:
+  enabled: false
+  fsGroup: 999
+  runAsUser: 999
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}

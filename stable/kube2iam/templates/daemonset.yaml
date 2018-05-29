@@ -27,21 +27,31 @@ spec:
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args:
             - --host-interface={{ .Values.host.interface }}
+            - --node=$(NODE_NAME)
           {{- if .Values.host.iptables }}
             - --host-ip={{ .Values.host.ip }}
           {{- end }}
             - --iptables={{ .Values.host.iptables }}
           {{- range $key, $value := .Values.extraArgs }}
+            {{- if $value }}
             - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
           {{- end }}
           {{- if .Values.verbose }}
             - --verbose
           {{- end }}
+            - --app-port={{ .Values.host.port }}
           env:
             - name: HOST_IP
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
           {{- if and .Values.aws.secret_key .Values.aws.access_key }}
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
@@ -58,8 +68,24 @@ spec:
             - name: AWS_DEFAULT_REGION
               value: {{ .Values.aws.region }}
           {{- end }}
+          {{- range $name, $value := .Values.extraEnv }}
+            - name: {{ $name }}
+              value: {{ quote $value }}
+          {{- end }}
           ports:
-            - containerPort: 8181
+            - containerPort: {{ .Values.host.port }}
+        {{- if .Values.probe }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.host.port }}
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 1
+        {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
         {{- if .Values.host.iptables }}
@@ -71,10 +97,14 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube2iam.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
-{{- if and (eq .Capabilities.KubeVersion.Major "1") (gt .Capabilities.KubeVersion.Minor "5") }}
+{{- if semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion }}
   updateStrategy:
     type: {{ .Values.updateStrategy }}
 {{- end }}

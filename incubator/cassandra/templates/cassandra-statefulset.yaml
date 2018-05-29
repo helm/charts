@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ template "cassandra.fullname" . }}
   labels:
-    app: {{ template "cassandra.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "cassandra.name" . }}
+    chart: {{ template "cassandra.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   clusterIP: None
   type: {{ .Values.service.type }}
@@ -26,31 +26,50 @@ spec:
   - name: thrift
     port: {{ default 9160 .Values.config.ports.thrift }}
     targetPort: {{ default 9160 .Values.config.ports.thrift }}
+  {{- if .Values.config.ports.agent }}
+  - name: agent
+    port: {{ .Values.config.ports.agent }}
+    targetPort: {{ .Values.config.ports.agent }}
+  {{- end }}
   selector:
-    app: {{ template "cassandra.fullname" . }}
+    app: {{ template "cassandra.name" . }}
+    release: {{ .Release.Name }}
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: {{ template "cassandra.fullname" . }}
   labels:
-    app: {{ template "cassandra.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "cassandra.name" . }}
+    chart: {{ template "cassandra.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   serviceName: {{ template "cassandra.fullname" . }}
   replicas: {{ .Values.config.cluster_size }}
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
   template:
     metadata:
       labels:
-        app: {{ template "cassandra.fullname" . }}
+        app: {{ template "cassandra.name" . }}
+        release: {{ .Release.Name }}
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
     spec:
 {{- if .Values.selector }}
 {{ toYaml .Values.selector | indent 6 }}
+{{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
 {{- end }}
       containers:
       - name: {{ template "cassandra.fullname" . }}
@@ -75,6 +94,8 @@ spec:
           value: {{ default "DC1" .Values.config.dc_name | quote }}
         - name: CASSANDRA_RACK
           value: {{ default "RAC1" .Values.config.rack_name | quote }}
+        - name: CASSANDRA_START_RPC
+          value: {{ default "false" .Values.config.start_rpc | quote }}
         - name: POD_IP
           valueFrom:
             fieldRef:
@@ -100,9 +121,24 @@ spec:
           containerPort: {{ default 9042 .Values.config.ports.cql }}
         - name: thrift
           containerPort: {{ default 9160 .Values.config.ports.thrift }}
+        {{- if .Values.config.ports.agent }}
+        - name: agent
+          containerPort: {{ .Values.config.ports.agent }}
+        {{- end }}
         volumeMounts:
         - name: data
           mountPath: /var/lib/cassandra
+        {{- if not .Values.persistence.enabled }}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "exec nodetool decommission"]
+        {{- end }}
+      terminationGracePeriodSeconds: {{ default 30 .Values.podSettings.terminationGracePeriodSeconds }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecrets }}
+      {{- end }}
 {{- if not .Values.persistence.enabled }}
       volumes:
       - name: data
@@ -112,10 +148,10 @@ spec:
   - metadata:
       name: data
       labels:
-        app: {{ template "cassandra.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        app: {{ template "cassandra.name" . }}
+        chart: {{ template "cassandra.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
     spec:
       accessModes:
         - {{ .Values.persistence.accessMode | quote }}

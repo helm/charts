@@ -12,6 +12,7 @@ imageTag: "5.7.14"
 ## Create a database user
 ##
 # mysqlUser:
+## Default: random 10 character string
 # mysqlPassword:
 
 ## Allow unauthenticated access, uncomment to enable
@@ -28,7 +29,31 @@ imageTag: "5.7.14"
 ##
 imagePullPolicy: IfNotPresent
 
-## Persist data to a persitent volume
+# Optionally specify an array of imagePullSecrets.
+# Secrets must be manually created in the namespace.
+# ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+# imagePullSecrets:
+  # - name: myRegistryKeySecretName
+
+## Node selector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+## Persist data to a persistent volume
 persistence:
   enabled: true
   ## database data Persistent Volume Storage Class
@@ -55,3 +80,40 @@ configurationFiles:
 #  mysql.cnf: |-
 #    [mysqld]
 #    skip-name-resolve
+#    ssl-ca=/ssl/ca.pem
+#    ssl-cert=/ssl/server-cert.pem
+#    ssl-key=/ssl/server-key.pem
+
+# Custom mysql init SQL files used to initialize the database
+initializationFiles:
+#  first-db.sql: |-
+#    CREATE DATABASE IF NOT EXISTS first DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+#  second-db.sql: |-
+#    CREATE DATABASE IF NOT EXISTS second DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+
+## Configure the service
+## ref: http://kubernetes.io/docs/user-guide/services/
+service:
+  ## Specify a service type
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
+  type: ClusterIP
+  port: 3306
+  # nodePort: 32000
+
+ssl:
+  enabled: false
+  secret: mysql-ssl-certs
+  certificates:
+#  - name: mysql-ssl-certs
+#    ca: |-
+#      -----BEGIN CERTIFICATE-----
+#      ...
+#      -----END CERTIFICATE-----
+#    cert: |-
+#      -----BEGIN CERTIFICATE-----
+#      ...
+#      -----END CERTIFICATE-----
+#    key: |-
+#      -----BEGIN RSA PRIVATE KEY-----
+#      ...
+#      -----END RSA PRIVATE KEY-----

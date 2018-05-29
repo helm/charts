@@ -1,11 +1,10 @@
-image: fluent/fluentd-kubernetes-daemonset
-imageTag: v0.12.33-cloudwatch
-
+image:
+  repository: fluent/fluentd-kubernetes-daemonset
+  tag: v0.12.33-cloudwatch
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
-imagePullPolicy: IfNotPresent
-
+  pullPolicy: IfNotPresent
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -20,10 +19,24 @@ resources:
 
 # hostNetwork: false
 
+## Add tolerations if specified
+tolerations: []
+#   - key: node-role.kubernetes.io/master
+#     operator: Exists
+#     effect: NoSchedule
+
 annotations: {}
 
 awsRegion: us-east-1
+awsRole:
 logGroupName: kubernetes
+
+rbac:
+  ## If true, create and use RBAC resources
+  create: false
+
+  ## Ignored if rbac.create is true
+  serviceAccountName: default
 
 fluentdConfig: |
   <match fluent.**>

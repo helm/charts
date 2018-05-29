@@ -11,7 +11,6 @@ host. To configure Ghost with the URL of your service:
   {{- if contains "NodePort" .Values.serviceType }}
 
   export APP_HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  export APP_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "ghost.fullname" . }} -o jsonpath="{.spec.ports[0].nodePort}")
 
   {{- else if contains "LoadBalancer" .Values.serviceType }}
 
@@ -19,27 +18,33 @@ host. To configure Ghost with the URL of your service:
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "ghost.fullname" . }}'
 
   export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "ghost.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
-  export APP_PORT={{ default "80" .Values.ghostPort  }}
   {{- end }}
 
 2. Complete your Ghost deployment by running:
 
   helm upgrade {{ .Release.Name }} \
-    --set ghostHost=$APP_HOST,ghostPort=$APP_PORT stable/ghost
+    --set serviceType={{ .Values.serviceType }},ghostHost=$APP_HOST stable/ghost
 {{- else -}}
 1. Get the Ghost URL by running:
 
 {{- if eq .Values.serviceType "ClusterIP" }}
 
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "ghost.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-  echo Blog URL  :  http://127.0.0.1:{{ default "80" .Values.ghostPort }}/
-  echo Admin URL : http://127.0.0.1:{{ default "80" .Values.ghostPort }}/ghost
+  echo Blog URL  : http://127.0.0.1:{{ default "80" .Values.ghostPort }}{{ .Values.ghostPath }}
+  echo Admin URL : http://127.0.0.1:{{ default "80" .Values.ghostPort }}{{ .Values.ghostPath }}ghost
   kubectl port-forward $POD_NAME {{ default "80" .Values.ghostPort }}:2368
+
+{{- else if eq .Values.serviceType "NodePort" }}
+  export APP_HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  export APP_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "ghost.fullname" . }})
+
+  echo Blog URL  : http://$APP_HOST:$APP_PORT{{ .Values.ghostPath }}
+  echo Admin URL : http://$APP_HOST:$APP_PORT{{ .Values.ghostPath }}ghost
 
 {{- else }}
 
-  echo Blog URL  : http://{{ include "ghost.host" . }}:{{ default "80" .Values.ghostPort }}/
-  echo Admin URL : http://{{ include "ghost.host" . }}:{{ default "80" .Values.ghostPort }}/ghost
+  echo Blog URL  : http://{{ include "ghost.host" . }}
+  echo Admin URL : http://{{ include "ghost.host" . }}ghost
 {{- end }}
 
 2. Get your Ghost login credentials by running:

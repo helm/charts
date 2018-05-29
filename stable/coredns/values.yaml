@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: coredns/coredns
-  tag: "011"
+  tag: "1.0.6"
   pullPolicy: IfNotPresent
 
 resources:
@@ -29,13 +29,16 @@ isClusterService: true
 # serviceType specifies type of service to be created for this chart.
 serviceType: "ClusterIP"
 
+# cluster IP to use
+# clusterIP: ""
+
 # serviceProtocol specifies the protocol on which to expose the CoreDNS service.
 # Can be one of three options: "UDPNTCP" (default), "UDP" or "TCP"
 serviceProtocol: "UDPNTCP"
 
-# middleware configuration of CoreDNS refer to https://github.com/coredns/coredns/tree/master/middleware
-# for all specific details. set enabled to true/false to enable/disable a middleware.
-middleware:
+# plugn configuration of CoreDNS refer to https://github.com/coredns/coredns/tree/master/plugin
+# for all specific details. set enabled to true/false to enable/disable a plugin.
+plugins:
   kubernetes:
     enabled: true
     clusterCidr: "10.3.0.0/24"
@@ -49,7 +52,6 @@ middleware:
     file: "stdout"
   log:
     enabled: false
-    file: "stdout"
   health:
     enabled: true
   proxy:

@@ -1,0 +1,61 @@
+# Default values for cert-manager.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+
+image:
+  repository: quay.io/jetstack/cert-manager-controller
+  tag: v0.3.0
+  pullPolicy: IfNotPresent
+
+createCustomResource: true
+
+# Override the namespace used to store DNS provider credentials etc. for ClusterIssuer
+# resources. By default, the same namespace as cert-manager is deployed within is
+# used. This namespace will not be automatically created by the Helm chart.
+clusterResourceNamespace: ""
+
+leaderElection:
+  # Override the namespace used to store the ConfigMap for leader election
+  namespace: ""
+
+certificateResourceShortNames: ["cert", "certs"]
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# Optional additional arguments
+extraArgs: []
+  # Use this flag to set a namespace that cert-manager will use to store
+  # supporting resources required for each ClusterIssuer (default is kube-system)
+  # - --cluster-resource-namespace=kube-system
+
+resources: {}
+  # requests:
+  #   cpu: 10m
+  #   memory: 32Mi
+
+podAnnotations: {}
+
+podLabels: {}
+
+nodeSelector: {}
+
+ingressShim: {}
+  # defaultIssuerName: ""
+  # defaultIssuerKind: ""
+  # defaultACMEChallengeType: ""
+  # defaultACMEDNS01ChallengeProvider: ""
+
+# This is used by the static manifest generator in order to create a static
+# namespace manifest for the namespace that cert-manager is being installed
+# within. It should **not** be used if you are using Helm for deployment.
+createNamespaceResource: false

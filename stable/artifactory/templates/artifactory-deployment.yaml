@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "artifactory.artifactory.fullname" . }}
+  name: {{ template "artifactory.fullname" . }}
   labels:
     app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.artReplicaCount }}
+  replicas: {{ .Values.artifactory.replicaCount }}
   template:
     metadata:
       labels:
@@ -17,43 +17,89 @@ spec:
         component: "{{ .Values.artifactory.name }}"
         release: {{ .Release.Name }}
     spec:
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
       initContainers:
       - name: "remove-lost-found"
         image: "{{ .Values.initContainerImage }}"
         imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
         command:
-        - "rm"
-        - "-rf"
-        - "{{ .Values.artifactory.persistence.mountPath }}/lost+found"
+        - 'sh'
+        - '-c'
+        - 'rm -rfv {{ .Values.artifactory.persistence.mountPath }}/lost+found'
         volumeMounts:
         - mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
           name: artifactory-volume
+      - name: "wait-for-db"
+        image: "{{ .Values.initContainerImage }}"
+        command:
+        - 'sh'
+        - '-c'
+        - 'until nc -z -w 2 {{ .Release.Name }}-postgresql {{ .Values.postgresql.service.port }} && echo database ok; do sleep 2; done'
       containers:
       - name: {{ .Values.artifactory.name }}
         image: "{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}"
         imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
         env:
         - name: DB_TYPE
-          value: {{ .Values.database.env.type }}
+          value: 'postgresql'
         - name: DB_USER
-          value: {{ .Values.database.env.user }}
+          value: {{.Values.postgresql.postgresUser | quote }}
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "artifactory.fullname" . }}
-              key: artifactory-database-password
+              name: {{ .Release.Name }}-postgresql
+              key: postgres-password
         - name: DB_HOST
-          value: {{ template "artifactory.database.name" . }}
+          value: {{ .Release.Name }}-postgresql
+        - name: EXTRA_JAVA_OPTIONS
+          value: "
+      {{- if .Values.artifactory.javaOpts.other }}
+          {{ .Values.artifactory.javaOpts.other }}
+      {{- end}}
+      {{- if .Values.artifactory.javaOpts.xms }}
+          -Xms{{ .Values.artifactory.javaOpts.xms }}
+      {{- end}}
+      {{- if .Values.artifactory.javaOpts.xmx }}
+          -Xmx{{ .Values.artifactory.javaOpts.xmx }}
+      {{- end}}
+            "
         ports:
         - containerPort: {{ .Values.artifactory.internalPort }}
         volumeMounts:
-        - mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
-          name: artifactory-volume
+        - name: artifactory-volume
+          mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
+        resources:
+{{ toYaml .Values.artifactory.resources | indent 10 }}
+        {{- if .Values.artifactory.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: '/artifactory/webapp/#/login'
+            port: 8081
+          initialDelaySeconds: {{ .Values.artifactory.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.artifactory.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.artifactory.readinessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.artifactory.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.artifactory.readinessProbe.successThreshold }}
+        {{- end }}
+        {{- if .Values.artifactory.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: '/artifactory/webapp/#/login'
+            port: 8081
+          initialDelaySeconds: {{ .Values.artifactory.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.artifactory.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.artifactory.livenessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.artifactory.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.artifactory.livenessProbe.successThreshold }}
+        {{- end }}
       volumes:
       - name: artifactory-volume
       {{- if .Values.artifactory.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "artifactory.artifactory.fullname" . }}
+          claimName: {{ .Values.artifactory.persistence.existingClaim | default (include "artifactory.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

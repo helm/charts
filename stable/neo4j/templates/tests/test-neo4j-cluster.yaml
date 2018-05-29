@@ -9,6 +9,7 @@ metadata:
     app: {{ template "neo4j.name" . }}
   annotations:
     "helm.sh/hook": test-success
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
 spec:
   containers:
     - name: {{ .Release.Name }}-ui-test
@@ -16,6 +17,10 @@ spec:
       env:
         - name: "STATEFULSET_NAME"
           value: "{{ template "neo4j.fullname" . }}"
+        - name: "CORE_REPLICAS"
+          value: "{{ .Values.core.numberOfServers }}"
+        - name: "NAMESPACE"
+          value: {{ .Release.Namespace }}
         - name: NEO4J_SECRETS_PASSWORD
           valueFrom:
             secretKeyRef:

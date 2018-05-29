@@ -13,6 +13,10 @@ spec:
       labels:
         app: {{ template "mysql.fullname" . }}
     spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       initContainers:
       - name: "remove-lost-found"
         image: "busybox:1.25.0"
@@ -24,6 +28,10 @@ spec:
           {{- if .Values.persistence.subPath }}
           subPath: {{ .Values.persistence.subPath }}
           {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}          
       containers:
       - name: {{ template "mysql.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -64,8 +72,11 @@ spec:
             - -c
             - "mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD}"
             {{- end }}
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
         readinessProbe:
           exec:
             command:
@@ -77,8 +88,11 @@ spec:
             - -c
             - "mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD}"
             {{- end }}
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         volumeMounts:
         - name: data
           mountPath: /var/lib/mysql
@@ -89,11 +103,29 @@ spec:
         - name: configurations
           mountPath: /etc/mysql/conf.d
         {{- end }}
+        {{- if .Values.initializationFiles }}
+        - name: migrations
+          mountPath: /docker-entrypoint-initdb.d
+        {{- end }}
+        {{- if .Values.ssl.enabled }}
+        - name: certificates
+          mountPath: /ssl
+        {{- end }}
       volumes:
       {{- if .Values.configurationFiles }}
       - name: configurations
         configMap:
-          name: {{ template "mysql.fullname" . }}
+          name: {{ template "mysql.fullname" . }}-configuration
+      {{- end }}
+      {{- if .Values.initializationFiles }}
+      - name: migrations
+        configMap:
+          name: {{ template "mysql.fullname" . }}-initialization
+      {{- end }}
+      {{- if .Values.ssl.enabled }}
+      - name: certificates
+        secret:
+          secretName: {{ .Values.ssl.secret }}
       {{- end }}
       - name: data
       {{- if .Values.persistence.enabled }}

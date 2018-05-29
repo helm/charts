@@ -1,0 +1,43 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "webpagetest.fullname" . }}
+  labels:
+    app: {{ template "webpagetest.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "webpagetest.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "webpagetest.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SERVER_URL
+              value: "http://{{- .Values.agent.server -}}/work/"
+            - name: LOCATION
+              value: {{ .Values.agent.location }}
+            {{- if .Values.agent.shaper }}
+            - name: SHAPER
+              value: {{ .Values.agent.shaper }}
+            {{- end }}
+            {{- if .Values.agent.key }}
+            - name: KEY
+              value: {{ .Values.agent.key }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}

@@ -1,7 +1,7 @@
 # Default values for sumologic-fluentd.
 image:
   name: sumologic/fluentd-kubernetes-sumologic
-  tag: v1.4
+  tag: v1.14
   pullPolicy: IfNotPresent
 
 ## Annotations to add to the DaemonSet's Pods
@@ -26,6 +26,19 @@ sumologic:
   ## The source of fluentd logs, either file or systemd
   fluentdSource: file
 
+  ## A directory of user-defined fluentd configuration files, which must be in the "*.conf" directory
+  ## in the container (Default "/fluentd/conf.d/user")
+  fluentdUserConfigDir: ""
+
+  ## Provide user-defined fluentd configuration files
+  ## Each key will become a file in `fluentdUserConfigDir`
+  ##
+  # fluentdUserConfig:
+  #   source.systemd.conf: |-
+  #     <source>
+  #        ...
+  #     </source>
+
   ## How frequently to push logs to SumoLogic (default 5s)
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
   # flushInterval: 5
@@ -35,6 +48,9 @@ sumologic:
 
   ## Set the _sourceName metadata field in SumoLogic. (Default "%{namespace}.%{pod}.%{container}")
   sourceName: ""
+
+  ## Set the _sourceHost metadata field in SumoLogic. (Default Nil)
+  sourceHost: ""
 
   ## Set the _sourceCategory metadata field in SumoLogic. (Default "%{namespace}/%{pod_name}")
   sourceCategory: ""
@@ -51,7 +67,7 @@ sumologic:
   ## Include or exclude Kubernetes metadata such as namespace and pod_name if
   ## using json log format. (default true)
   kubernetesMeta: true
-  
+
   ## A ruby regex for containers. All matching containers will be excluded
   ## from Sumo Logic. The logs will still be sent to FluentD
   ## ref: http://rubular.com/
@@ -80,35 +96,64 @@ sumologic:
   ## ref: http://rubular.com/
   excludePodRegex: ""
 
-  ## A ruby regex for systemd units. All matching facilities will be excluded from 
+  ## A ruby regex for systemd units. All matching facilities will be excluded from
   ## Sumo Logic. The logs will still be sent to FluentD
   ## ref: http://rubular.com/
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
   excludeFacilityRegex: ""
-  
+
   ## A ruby regex for syslog priorities, which are integers represented as
-  ## strings. All matching priorities will be excluded from 
+  ## strings. All matching priorities will be excluded from
   ## Sumo Logic. The logs will still be sent to FluentD
   ## ref: http://rubular.com/
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
   excludePriorityRegex: ""
 
-  ## A ruby regex for systemd units. All matching hosts will be excluded from 
+  ## A ruby regex for systemd units. All matching hosts will be excluded from
   ## Sumo Logic. The logs will still be sent to FluentD
   ## ref: http://rubular.com/
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
   excludeUnitRegex: ""
 
+  ## The field name for json formatted sources that should be used as the time
+  ## ref: https://docs.fluentd.org/v0.12/articles/formatter_json#time_key-(string,-optional,-defaults-to-%E2%80%9Ctime%E2%80%9D)
+  # timeKey:
+
+  ## Option to control adding timestamp to logs. (Default true)
+  addTimeStamp: true
+
   ## Fluentd command line options
   ## ref: http://docs.fluentd.org/v0.12/articles/command-line-option
   fluentdOpt: ""
 
+  ## Verify SumoLogic HTTPS certificates (Default true)
+  verifySsl: true
+
+  ## The regular expression for the "concat" plugin to use when merging multi-line messages
+  ## (Default "/^\w{3} \d{1,2}, \d{4}/", i.e. Julian dates)
+  multilineStartRegexp: ""
+
+  ## Start to read the logs from the head of file, not bottom.
+  ## Only applies to containers log files. See in_tail doc for more information (Default true)
+  readFromHead: true
+
+  ## The character to use to delimit lines within the final concatenated message.
+  ## Most multi-line messages contain a newline at the end of each line (Default Nil)
+  concatSeparator: ""
+
+  ## Define the path to the Kubernetes Audit Log (Default "/mnt/log/kube-apiserver-audit.log")
+  ## ref: https://kubernetes.io/docs/tasks/debug-application-cluster/audit/
+  auditLogPath: ""
+
+## Note: Requires Kubernetes 1.8+ to enable this feature via hostPath volume type
 ## By default, the daemonset will store position files, for logs tailed, in an
-## emptyDir. If you have a directory, on the host, to store pos files, specify
-## it here.
+## emptyDir. If you have already have a directory on the host for storing pos files,
+## specify it here. Otherwise, it can create the directory for you by setting the type
+## to "DirectoryOrCreate".
 persistence:
   enabled: false
   hostPath: /var/run/fluentd-pos
+  createPath: false
 
 resources:
   requests:
@@ -124,4 +169,3 @@ rbac:
 
   ## Ignored if rbac.create is true
   serviceAccountName: default
-

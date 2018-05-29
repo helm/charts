@@ -14,9 +14,9 @@ metadata:
     app: {{ template "coredns.fullname" . }}
     {{- end }}
   annotations:
-    {{- if .Values.middleware.prometheus.enabled }}
+    {{- if .Values.plugins.prometheus.enabled }}
     prometheus.io/scrape: "true"
-    prometheus.io/port: {{ .Values.middleware.prometheus.port | quote }}
+    prometheus.io/port: {{ .Values.plugins.prometheus.port | quote }}
     {{- end }}
 spec:
   selector:
@@ -25,8 +25,8 @@ spec:
   {{- else }}
     app: {{ template "coredns.fullname" . }}
   {{- end }}
-  {{- if .Values.isClusterService }}
-  clusterIP: {{ .Values.middleware.kubernetes.clusterIP }}
+  {{- if .Values.clusterIP }}
+  clusterIP: {{ .Values.clusterIP }}
   {{- end }}
   ports:
   {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "UDP") }}
@@ -39,9 +39,9 @@ spec:
     port: 53
     protocol: TCP
   {{- end }}
-  {{- if .Values.middleware.prometheus.enabled }}
+  {{- if .Values.plugins.prometheus.enabled }}
   - name: metrics
-    port: {{ .Values.middleware.prometheus.port }}
+    port: {{ .Values.plugins.prometheus.port }}
     protocol: TCP
   {{- end }}
   type: {{ default "ClusterIP" .Values.serviceType }}
