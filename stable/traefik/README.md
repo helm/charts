@@ -1,6 +1,6 @@
 # Traefik
 
-[Traefik](http://traefik.io/) is a modern HTTP reverse proxy and load balancer made to deploy
+[Traefik](https://traefik.io/) is a modern HTTP reverse proxy and load balancer made to deploy
 microservices with ease.
 
 ## Introduction
@@ -87,7 +87,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
 | `fullnameOverride`              | Override the full resource names                                     | `{release-name}-traefik (or traefik if release-name is traefik`|
 | `image`                         | Traefik image name                                                   | `traefik`                                 |
-| `imageTag`                      | The version of the official Traefik image to use                     | `1.5.4`                                  |
+| `imageTag`                      | The version of the official Traefik image to use                     | `1.6.2`                                   |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
 | `loadBalancerIP`                | An available static IP you have reserved on your cloud platform      | None                                      |
 | `loadBalancerSourceRanges`      | List of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
@@ -138,6 +138,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
 | `kubernetes.namespaces`         | List of Kubernetes namespaces to watch                               | All namespaces                            |
 | `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch (e.g `realm=public`)| No label filter                           |
+| `kubernetes.ingressClass`       | Value of `kubernetes.io/ingress.class` annotation to watch - must start with `traefik` if set | None             |
 | `accessLogs.enabled`            | Whether to enable Traefik's access logs                              | `false`                                   |
 | `accessLogs.filePath`           | The path to the log file. Logs to stdout if omitted                  | None                                      |
 | `accessLogs.format`             | What format the log entries should be in. Either `common` or `json`  | `common`                                  |
@@ -177,7 +178,7 @@ Currently it is possible to specify the number of `replicas` but the implementat
 
 **Full Traefik clustering with leader election is not yet supported.**
 
-It is heavily advised to not set a value for `replicas` if you also have Let's Encrypt configured. While setting `replicas` will work for many cases, since no leader is elected it has the consequence that each node will end up requesting Let's Encrypt certificates if this is also configured. This will quickly cut into the very modest rate limit that Let's Encrypt enforces.
+It is heavily advised to not set a value for `replicas` if you also have Let's Encrypt configured. While setting `replicas` will work for many cases, since no leader is elected it has the consequence that each node will end up requesting Let's Encrypt certificates if this is also configured. This will quickly cut into the very modest rate limit that Let's Encrypt enforces. Also, if using challenges, the challenges may fail, as the challenge request may hit a pod without the challenge certificate.
 
 [Basic auth](https://docs.traefik.io/toml/#api-backend) can be specified via `dashboard.auth.basic` as a map of usernames to passwords as below.
 See the linked Traefik documentation for accepted passwords encodings.

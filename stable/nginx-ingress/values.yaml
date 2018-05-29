@@ -144,6 +144,7 @@ controller:
   #  minReplicas: 1
   #  maxReplicas: 11
   #  targetCPUUtilizationPercentage: 50
+  #  targetMemoryUtilizationPercentage: 50
 
   ## Override NGINX template
   customTemplate:
@@ -171,8 +172,8 @@ controller:
     healthCheckNodePort: 0
 
     targetPorts:
-      http: 80
-      https: 443
+      http: http
+      https: https
 
     type: LoadBalancer
 
@@ -331,10 +332,11 @@ defaultBackend:
 
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:
-  create: false
-  createRole: false
-  createClusterRole: false
-  serviceAccountName: default
+  create: true
+
+serviceAccount:
+  create: true
+  name:
 
 ## Optional array of imagePullSecrets containing private registry credentials
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/

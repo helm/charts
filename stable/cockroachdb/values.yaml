@@ -12,10 +12,12 @@ MaxUnavailable: 1
 Component: "cockroachdb"
 GrpcPort: 26257
 HttpPort: 8080
-Resources:
-  requests:
-    cpu: "100m"
-    memory: "512Mi"
+# Uncomment the following resources definitions or pass them from command line
+# to control the cpu and memory resources allocated by the Kubernetes cluster
+Resources: {}
+  # requests:
+  #   cpu: "100m"
+  #   memory: "512Mi"
 Storage: "1Gi"
 ## Persistent Volume Storage Class for database data
 ## If defined, storageClassName: <StorageClass>

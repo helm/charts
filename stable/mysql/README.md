@@ -46,7 +46,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 
 | Parameter                            | Description                               | Default                                              |
 | ------------------------------------ | ----------------------------------------- | ---------------------------------------------------- |
-| `imageTag`                           | `mysql` image tag.                        | Most recent release                                  |
+| `image`                              | `mysql` image repository.                 | `mysql`                                              |
+| `imageTag`                           | `mysql` image tag.                        | `5.7.14`                                              |
 | `imagePullPolicy`                    | Image pull policy                         | `IfNotPresent`                                       |
 | `mysqlRootPassword`                  | Password for the `root` user.             | Random 10 characters                                 |
 | `mysqlUser`                          | Username of new user to create.           | `nil`                                                |
@@ -82,6 +83,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `ssl.certificates[0].ca`             | CA certificate                            | `nil`                                                |
 | `ssl.certificates[0].cert`           | Server certificate (public key)           | `nil`                                                |
 | `ssl.certificates[0].key`            | Server key (private key)                  | `nil`                                                |
+| `imagePullSecrets`                   | Name of Secret resource containing private registry credentials | `nil`                          |
 | `initializationFiles`                | List of SQL files which are run after the container started        | `nil`                       |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
