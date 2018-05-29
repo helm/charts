@@ -21,7 +21,7 @@ set -o xtrace
 
 # Install and initialize helm/tiller
 readonly HELM_URL=https://storage.googleapis.com/kubernetes-helm
-readonly HELM_TARBALL=helm-v2.8.2-linux-amd64.tar.gz
+readonly HELM_TARBALL=helm-v2.9.1-linux-amd64.tar.gz
 
 wget -q "$HELM_URL/$HELM_TARBALL" -P "$WORKSPACE"
 tar xzfv "$WORKSPACE/$HELM_TARBALL" -C "$WORKSPACE"
