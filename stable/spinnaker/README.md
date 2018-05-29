@@ -33,3 +33,27 @@ $ helm install --name my-release -f values.yaml stable/spinnaker
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Adding Kubernetes Clusters to Spinnaker
+
+By default, installing the chart only registers the local cluster as a deploy target
+for Spinnaker. If you want to add arbitrary clusters need to do the following:
+
+1. Upload your kubeconfig to a secret with the key `config` in the cluster you are installing Spinnaker to.
+
+    ```shell
+    $ kubectl create secret generic --from-file=$HOME/.kube/config my-kubeconfig
+    ```
+
+1. Set the following values of the chart:
+
+    ```yaml
+    kubeConfig:
+      enabled: true
+      secretName: my-kubeconfig
+      secretKey: config
+      contexts:
+      # Names of contexts available in the uploaded kubeconfig
+      - my-context
+    ```
+
