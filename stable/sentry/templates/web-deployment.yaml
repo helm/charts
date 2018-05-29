@@ -28,6 +28,10 @@ spec:
       tolerations:
 {{ toYaml .Values.web.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.imagePullSecrets.name }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets.name }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}-web
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
