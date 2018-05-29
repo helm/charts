@@ -60,7 +60,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                                                                  |
 | `Master.LoadBalancerIP`           | Optional fixed external IP           | Not set                                                                      |
 | `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
-| `Master.BuildInfoProxyPort`       | Open a port, for Artifactory plugin  | Not set                                                                      |
+| `Master.ExtraPorts`               | Open extra ports, for other uses     | Not set                                                                      |
 | `Master.CustomConfigMap`          | Use a custom ConfigMap               | `false`                                                                      |
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
