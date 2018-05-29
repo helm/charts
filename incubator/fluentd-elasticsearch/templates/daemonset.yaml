@@ -14,8 +14,6 @@ spec:
   selector:
     matchLabels:
       app: {{ template "fluentd-elasticsearch.fullname" . }}
-      version: {{ .Values.image.tag }}
-      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
       heritage: "{{ .Release.Service }}"
   template:
     metadata:
