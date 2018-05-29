@@ -45,6 +45,16 @@ spec:
               key: {{ $name | quote }}
 {{- end }}
 {{- end }}
+{{- if (and (eq .Values.env.open.STORAGE "openstack") (.Values.openstack.secret.enabled)) }}
+{{ $secretName := .Values.openstack.secret.name }}
+{{- range $name := .Values.openstack.secret.envKeys }}
+        - name: {{ $name | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secretName }}
+              key: {{ $name | quote }}
+{{- end }}
+{{- end }}
         args:
         - --port=8080
 {{- if eq .Values.env.open.STORAGE "local" }}
@@ -67,6 +77,12 @@ spec:
         volumeMounts:
         - mountPath: /storage
           name: storage-volume
+{{- end }}
+{{- if (and (eq .Values.env.open.STORAGE "openstack") (not (empty .Values.env.open.STORAGE_OPENSTACK_CACERT))) }}
+        volumeMounts:
+        - mountPath: {{ .Values.env.open.STORAGE_OPENSTACK_CACERT }}
+          name: openstack-ca-bundle
+          subPath: {{ base .Values.env.open.STORAGE_OPENSTACK_CACERT }}
 {{- end }}
 {{- if  .Values.gcp.secret.enabled }}
         volumeMounts:
@@ -91,6 +107,7 @@ spec:
     {{- end }}
 
       volumes:
+      {{- if (eq .Values.env.open.STORAGE "local") }}
       - name: storage-volume
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
@@ -98,6 +115,21 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+      {{- end }}
+      {{- if (and (eq .Values.env.open.STORAGE "openstack") (not (empty .Values.env.open.STORAGE_OPENSTACK_CACERT))) }}
+      - name: openstack-ca-bundle
+        secret:
+      {{- if .Values.openstack.secret.enabled}}
+          secretName: {{ .Values.openstack.secret.name }}
+          items:
+          - key: {{ .Values.openstack.secret.CABundleKey }}
+      {{- else }}
+          secretName: {{ include "chartmuseum.fullname" . }}
+          items:
+          - key: OS_CA_BUNDLE
+      {{- end }}
+            path: {{ base .Values.env.open.STORAGE_OPENSTACK_CACERT }}
+      {{- end }}
       {{ if .Values.gcp.secret.enabled }}
       - name: {{ include "chartmuseum.fullname" . }}-gcp
         secret:

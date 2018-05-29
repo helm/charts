@@ -372,12 +372,55 @@ env:
     STORAGE_OPENSTACK_CONTAINER: mycontainer
     STORAGE_OPENSTACK_PREFIX:
     STORAGE_OPENSTACK_REGION: YOURREGION
+    # If your openstack API has a private/self-signed CA
+    # Put a path to a file here and dump you CA chain in ca_bundle below
+    STORAGE_OPENSTACK_CACERT: /etc/openstack.crt
+
   secret:
-    OS_AUTH_URL: https://myauth.url.com/v2.0/
-    OS_TENANT_ID: yourtenantid
+    OS_AUTH_URL: https://myauth.url.com/v3
+    OS_PROJECT_NAME: yourprojectname
+    OS_DOMAIN_NAME: yourdomainname
     OS_USERNAME: yourusername
     OS_PASSWORD: yourpassword
+openstack:
+  secret:
+    enabled: false
+  CABundle: |
+    -----BEGIN CERTIFICATE-----
+    MIIFDzCCAvegAwIBAgIQMdvrBUH6dJRHHWPHRG1FsDANBgkqhkiG9w0BAQsFADAa
+    ...
+    ...
+    -----END CERTIFICATE-----
 ```
+
+If you don't want to include sensitive data in tiller, you can create your own secret file for openstack and use it with those values:
+```yaml
+env:
+  open:
+    STORAGE: openstack
+    STORAGE_OPENSTACK_CONTAINER: mycontainer
+    STORAGE_OPENSTACK_PREFIX:
+    STORAGE_OPENSTACK_REGION: YOURREGION
+    # If your openstack API has a private/self-signed CA
+    # Put a path to a file here and dump you CA chain in OS_CA_BUNDLE below
+    STORAGE_OPENSTACK_CACERT: /etc/openstack.crt
+
+openstack:
+  secret:
+    enabled: true
+    name: mysecret
+    # Those are all the keys that will be passed as corresponding environment variables from your secret
+    envKeys:
+      - OS_AUTH_URL
+      - OS_PROJECT_NAME
+      - OS_DOMAIN_NAME
+      - OS_USERNAME
+      - OS_PASSWORD
+    # This is the key that contains your own CA bundle
+    #  if STORAGE_OPENSTACK_CACERT is set, the value of the caBundleKey in your secret will be mounted under the STORAGE_OPENSTACK_CACERT path
+    CABundleKey: OS_CA_BUNDLE
+```
+
 
 Run command to install
 
