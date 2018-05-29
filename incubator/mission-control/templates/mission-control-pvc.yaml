@@ -5,9 +5,9 @@ metadata:
   name: {{ template "mission-control.fullname" . }}
   labels:
     app: {{ template "mission-control.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    chart: {{ template "mission-control.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   accessModes:
     - {{ .Values.missionControl.persistence.accessMode | quote }}

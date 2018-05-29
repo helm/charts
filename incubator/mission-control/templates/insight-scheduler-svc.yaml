@@ -6,8 +6,8 @@ metadata:
     role: {{ .Values.insightScheduler.service.name }}
   labels:
     app: {{ template "mission-control.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.insightScheduler.name }}"
+    chart: {{ template "mission-control.chart" . }}
+    component: {{ .Values.insightScheduler.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
@@ -19,5 +19,5 @@ spec:
     protocol: TCP
   selector:
     app: {{ template "mission-control.name" . }}
-    component: "{{ .Values.insightScheduler.name }}"
+    component: {{ .Values.insightScheduler.name }}
     release: {{ .Release.Name }}

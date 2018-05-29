@@ -4,7 +4,7 @@ metadata:
   name: {{ template "insight-scheduler.fullname" . }}
   labels:
     app: {{ template "mission-control.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "mission-control.chart" . }}
     component: {{ .Values.insightScheduler.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -15,7 +15,7 @@ spec:
       name: {{ .Values.insightScheduler.name }}
       labels:
         app: {{ template "mission-control.name" . }}
-        component: "{{ .Values.insightScheduler.name }}"
+        component: {{ .Values.insightScheduler.name }}
         release: {{ .Release.Name }}
     spec:
     {{- if .Values.imagePullSecrets }}

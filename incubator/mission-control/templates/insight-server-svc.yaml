@@ -4,8 +4,8 @@ metadata:
   name: {{ template "insight-server.fullname" . }}
   labels:
     app: {{ template "mission-control.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.insightServer.name }}"
+    chart: {{ template "mission-control.chart" . }}
+    component: {{ .Values.insightServer.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
@@ -21,5 +21,5 @@ spec:
     protocol: TCP
   selector:
     app: {{ template "mission-control.name" . }}
-    component: "{{ .Values.insightServer.name }}"
+    component: {{ .Values.insightServer.name }}
     release: {{ .Release.Name }}

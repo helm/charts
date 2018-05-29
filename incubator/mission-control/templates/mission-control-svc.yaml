@@ -4,8 +4,8 @@ metadata:
   name: {{ template "mission-control.fullname" . }}
   labels:
     app: {{ template "mission-control.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.missionControl.name }}"
+    chart: {{ template "mission-control.chart" . }}
+    component: {{ .Values.missionControl.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
@@ -17,5 +17,5 @@ spec:
     protocol: TCP
   selector:
     app: {{ template "mission-control.name" . }}
-    component: "{{ .Values.missionControl.name }}"
+    component: {{ .Values.missionControl.name }}
     release: {{ .Release.Name }}
