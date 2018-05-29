@@ -10,7 +10,5 @@ keywords:
 sources:
   - https://github.com/rancher/rancher
 maintainers:
-  - name: jgreat
-    email: jason.greathouse@rancher.com
-  - name: billmaxwell
-    email: bill.maxwell@rancher.com
+  - name: Rancher Labs
+    email: charts@rancher.com
