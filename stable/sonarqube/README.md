@@ -39,12 +39,14 @@ The following table lists the configurable parameters of the Sonarqube chart and
 
 | Parameter                                   | Description                               | Default                                    |
 | ------------------------------------------  | ----------------------------------------  | -------------------------------------------|
-| `image.repository`                          | image repoistory                          | `sonarqube`                                |
+| `image.repository`                          | image repository                          | `sonarqube`                                |
 | `image.tag`                                 | `sonarqube` image tag.                    | 6.5                                        |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
 | `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
 | `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
 | `service.annotations`                       | Kubernetes service annotations            | None                                       |
+| `service.loadBalancerSourceRanges`          | Kubernetes service LB Allowed inbound IP addresses | 0.0.0.0/0                            |
+| `service.loadBalancerIP`                    | Kubernetes service LB Optional fixed external IP   | None                                       |
 | `persistence.enabled`                       | Flag for enabling persistent storage      | false                                      |
 | `persistence.storageClass`                  | Storage class to be used                  | "-"                                        |
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |

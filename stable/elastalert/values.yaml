@@ -13,7 +13,7 @@ image:
   # docker image
   repository: jertel/elastalert-docker
   # docker image tag
-  tag: 0.1.29
+  tag: 0.1.30
   pullPolicy: IfNotPresent
 resources: {}
 
@@ -23,7 +23,11 @@ elasticsearch:
   # elasticsearch port
   port: 80
   # whether or not to connect to es_host using TLS
-  useSsl: False
+  useSsl: "False"
+
+# Command and args override for container e.g. (https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/)
+# command: ["YOUR_CUSTOM_COMMAND"]
+# args: ["YOUR", "CUSTOM", "ARGS"]
 
 # rule configurations e.g. (http://elastalert.readthedocs.io/en/latest/)
 rules: {}

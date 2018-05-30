@@ -62,7 +62,7 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `image` | The `SchemaRegistry` image repository | `confluentinc/cp-schema-registry` |
-| `imageTag` | The `SchemaRegistry` image tag | `4.0.0` |
+| `imageTag` | The `SchemaRegistry` image tag | `4.0.1` |
 | `imagePullPolicy` | Image Pull Policy | `IfNotPresent` |
 | `replicaCount` | The number of `SchemaRegistry` Pods in the Deployment | `1` |
 | `configurationOverrides` | `SchemaRegistry` [configuration setting](https://github.com/confluentinc/schema-registry/blob/master/docs/config.rst#configuration-options) overrides in the dictionary format `setting.name: value` | `{}` |
@@ -83,3 +83,6 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `kafka.enabled` | If `true`, install Kafka/Zookeeper alongside the `SchemaRegistry`. This is intended for testing and argument-less helm installs of this chart only and should not be used in Production. | `true` |
 | `kafka.replicas` | The number of Kafka Pods to install as part of the `StatefulSet` if `kafka.Enabled` is `true`| `1` |
 | `kafka.zookeeper.servers` | The number of Zookeeper Pods to install as part of the `StatefulSet` if `kafka.Enabled` is `true`| `1` |
+| `ingress.enabled` | Enable Ingress? | `false`
+| `ingress.hostname` | set hostname for ingress | `""`
+| `ingress.annotations` | set annotations for ingress | `{}`

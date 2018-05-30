@@ -10,7 +10,7 @@ $ helm install stable/prometheus-postgres-exporter
 
 ## Introduction
 
-This chart bootstraps a prometheus [postgres exporter](http://github.com/prometheus/postgres_exporter) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a prometheus [postgres exporter](https://github.com/wrouesnel/postgres_exporter) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Installing the Chart
 
@@ -39,7 +39,7 @@ The following tables lists the configurable parameters of the postgres Exporter 
 | Parameter                       | Description                                | Default                                                    |
 | ------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
 | `image`                         | Image                                      | `wrouesnel/postgres_exporter`                      |
-| `imageTag`                      | Image tag                                  | `v0.4.4`                                      |
+| `imageTag`                      | Image tag                                  | `v0.4.6`                                      |
 | `imagePullPolicy`               | Image pull policy                          | `IfNotPresent` |
 | `service.type`      | Service type |  `ClusterIP` | 
 | `service.port`                      | The service port                               | `80`                                     |
