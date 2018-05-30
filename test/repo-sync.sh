@@ -75,12 +75,12 @@ cd ${INCUBATOR_REPO_DIR}
   fi
   for dir in `ls ../incubator`;do
     echo "Building and packaging ${dir}"
-    helm dep build ../stable/$dir
+    helm dep build ../incubator/$dir
     ret=$?
     if [ $ret -ne 0 ]; then
       echo "Problem building dependencies. Skipping packaging of ${dir}"
     else
-      helm package ../stable/$dir
+      helm package ../incubator/$dir
     fi
   done
   helm repo index --url ${INCUBATOR_REPO_URL} --merge ./index.yaml .
