@@ -5,8 +5,9 @@ image:
   repository: sentry
   tag: "8.20"
   pullPolicy: IfNotPresent
-  # imagePullSecrets:
-  #   name:
+  # Add the secret name to pull from a private registry.
+  imagePullSecrets:
+    name:
 
 # How many web UI instances to run
 web:
