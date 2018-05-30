@@ -28,9 +28,9 @@ spec:
       tolerations:
 {{ toYaml .Values.web.tolerations | indent 8 }}
       {{- end }}
-      {{- if .Values.imagePullSecrets.name }}
+      {{- if .Values.image.imagePullSecrets.name }}
       imagePullSecrets:
-      - name: {{ .Values.imagePullSecrets.name }}
+      - name: {{ .Values.image.imagePullSecrets.name }}
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}-web
