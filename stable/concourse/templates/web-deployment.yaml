@@ -259,6 +259,9 @@ spec:
             - name: CONCOURSE_PROMETHEUS_BIND_PORT
               value: {{ .Values.web.metrics.prometheus.port | quote }}
             {{- end }}
+{{- if .Values.web.env }}
+{{ toYaml .Values.web.env | indent 12 }}
+{{- end }}
           ports:
             - name: atc
               containerPort: {{ .Values.concourse.atcPort }}
