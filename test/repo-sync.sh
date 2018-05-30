@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 # Copyright 2016 The Kubernetes Authors All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,11 +37,28 @@ STABLE_REPO_DIR=stable-repo
 mkdir -p ${STABLE_REPO_DIR}
 cd ${STABLE_REPO_DIR}
   gsutil cp gs://kubernetes-charts/index.yaml .
+  ret=$?
+  if [ $ret -ne 0 ]; then
+    echo "Exiting because unable to copy index locally. Not safe to proceed."
+    exit 1
+  fi
+
   for dir in `ls ../stable`;do
+    echo "Building and packaging ${dir}"
     helm dep build ../stable/$dir
-    helm package ../stable/$dir
+    ret=$?
+    if [ $ret -ne 0 ]; then
+      echo "Problem building dependencies. Skipping packaging of ${dir}"
+    else
+      helm package ../stable/$dir
+    fi
   done
   helm repo index --url ${STABLE_REPO_URL} --merge ./index.yaml .
+  ret=$?
+  if [ $ret -ne 0 ]; then
+    echo "Exiting because unable to update index. Not safe to push update."
+    exit 1
+  fi
   gsutil -m rsync ./ gs://kubernetes-charts/
 cd ..
 ls -l ${STABLE_REPO_DIR}
@@ -51,11 +68,27 @@ INCUBATOR_REPO_DIR=incubator-repo
 mkdir -p ${INCUBATOR_REPO_DIR}
 cd ${INCUBATOR_REPO_DIR}
   gsutil cp gs://kubernetes-charts-incubator/index.yaml .
+  ret=$?
+  if [ $ret -ne 0 ]; then
+    echo "Exiting because unable to copy index locally. Not safe to proceed."
+    exit 1
+  fi
   for dir in `ls ../incubator`;do
-    helm dep build ../incubator/$dir
-    helm package ../incubator/$dir
+    echo "Building and packaging ${dir}"
+    helm dep build ../stable/$dir
+    ret=$?
+    if [ $ret -ne 0 ]; then
+      echo "Problem building dependencies. Skipping packaging of ${dir}"
+    else
+      helm package ../stable/$dir
+    fi
   done
   helm repo index --url ${INCUBATOR_REPO_URL} --merge ./index.yaml .
+  ret=$?
+  if [ $ret -ne 0 ]; then
+    echo "Exiting because unable to update index. Not safe to push update."
+    exit 1
+  fi
   gsutil -m rsync ./ gs://kubernetes-charts-incubator/
 cd ..
 ls -l ${INCUBATOR_REPO_DIR}
