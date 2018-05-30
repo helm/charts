@@ -117,13 +117,17 @@ $ helm install --name my-release stable/mongodb --set replication.enabled=true
 ```
 ## Production settings and horizontal scaling
 
-The following repo contains the recommended production settings for MongoDB server in an alternative [values file](values-production.yaml). Please read carefully the comments in the values-production.yaml file to set up your environment appropriately.
+The [values-production.yaml](values-production.yaml) file consists a configuration to deploy a scalable MongoDB deployment for production environments. We recommend that you base your production configuration on this template and adjust the parameters appropriately.
 
-To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then scale the secondary nodes stateful set:
+```console
+$ curl -O https://raw.githubusercontent.com/kubernetes/charts/master/stable/mongodb/values-production.yaml
+$ helm install --name my-release -f ./values-production.yaml stable/mongodb
+```
+
+To horizontally scale this chart, run the following command to scale the number of secondary nodes in your MongoDB replica set.
 
 ```console 
-$ helm install --name my-release -f ./values-production.yaml stable/mongodb
-$ kubectl scale statefulset my-mongodb-secondaries-statefulset --replicas=3 
+$ kubectl scale statefulset my-release-mongodb-secondary --replicas=3 
 ```
 
 ## Persistence
