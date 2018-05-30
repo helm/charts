@@ -13,7 +13,7 @@ jobs:
           command: test/circle/lint.sh
   sync:
     docker:
-      - image: circleci/python:3.6.4
+      - image: google/cloud-sdk
     steps:
       - checkout
       - run:
