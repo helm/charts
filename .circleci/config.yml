@@ -1,13 +1,36 @@
 version: 2
 jobs:
-   build:
-     docker:
-       - image: circleci/python:3.6.4
-     steps:
-       - checkout
-       - run:
-           name: install tools
-           command: test/circle/install.sh
-       - run: 
-           name: lint
-           command: test/circle/lint.sh
+  build:
+    docker:
+      - image: circleci/python:3.6.4
+    steps:
+      - checkout
+      - run:
+          name: install tools
+          command: test/circle/install.sh
+      - run:
+          name: lint
+          command: test/circle/lint.sh
+  sync:
+    docker:
+      - image: circleci/python:3.6.4
+    steps:
+      - checkout
+      - run:
+          name: sync
+          command: test/repo-sync.sh
+workflows:
+  version: 2
+  test:
+    jobs:
+      - build
+  sync:
+    triggers:
+      - schedule:
+          cron: "23,53 * * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - sync
