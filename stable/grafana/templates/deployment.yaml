@@ -128,17 +128,6 @@ spec:
                   name: {{ .Values.smtp.existingSecret }}
                   key: password
             {{- end }}
-            {{- if .Values.database.existingSecret }}
-            - name: GF_DATABASE_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.database.existingSecret }}
-                  key: user
-            - name: GF_DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.database.existingSecret }}
-            {{- end }}
 {{- range $key, $value := .Values.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
@@ -162,12 +151,12 @@ spec:
             periodSeconds: 10
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-    {{- if .Values.database.cloudSQL.enabled  }}
+    {{- if .Values.cloudSQL.enabled  }}
         - name: {{ .Chart.Name }}-cloudsql-proxy
-          image: "{{ .Values.database.cloudSQL.image.repository }}:{{ .Values.database.cloudSQL.image.tag }}"
-          imagePullPolicy: {{ .Values.database.cloudSQL.image.pullPolicy }}
+          image: "{{ .Values.cloudSQL.image.repository }}:{{ .Values.cloudSQL.image.tag }}"
+          imagePullPolicy: {{ .Values.cloudSQL.image.pullPolicy }}
           command: ["/cloud_sql_proxy",
-                    {{ printf "\"-instances=%v=tcp:%v\"," .Values.database.cloudSQL.instanceConnectionName .Values.database.cloudSQL.port }}
+                    {{ printf "\"-instances=%v=tcp:%v\"," .Values.cloudSQL.instanceConnectionName .Values.cloudSQL.port }}
                     "-credential_file=/secrets/cloudsql/credentials.json"]
           volumeMounts:
             - name: cloudsql-instance-credentials
@@ -210,10 +199,10 @@ spec:
       {{- else }}
           emptyDir: {}
       {{- end -}}
-      {{- if .Values.database.cloudSQL.enabled  }}
+      {{- if .Values.cloudSQL.enabled  }}
         - name: cloudsql-instance-credentials
           secret:
-            secretName: {{ .Values.database.cloudSQL.existingSecret }}
+            secretName: {{ .Values.cloudSQL.existingSecret }}
       {{- end }}
       {{- range .Values.extraSecretMounts }}
         - name: {{ .name }}
