@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "3.10.0"
+imageTag: "3.13.0"
 
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -295,6 +295,23 @@ web:
     prometheus:
       enabled: false
       port: 9391
+
+    ## Enable the datadog metrics?
+    ##
+    datadog:
+      enabled: false
+
+      ## Datadog agent host to expose metrics
+      agentHost: 127.0.0.1
+
+      ## Use IP of node the pod is scheduled on, overrides `agentHost`
+      agentHostUseHostIP: false
+
+      ## Datadog agent port to expose metrics
+      agentPort: 8125
+
+      ## Optional prefix for all metrics to easily find them in Datadog
+      # prefix: concoursedev
 
 ## Configuration values for Concourse Worker components.
 ##
