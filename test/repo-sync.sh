@@ -18,6 +18,7 @@ HELM_URL=https://storage.googleapis.com/kubernetes-helm
 HELM_TARBALL=helm-v2.9.1-linux-amd64.tar.gz
 STABLE_REPO_URL=https://kubernetes-charts.storage.googleapis.com/
 INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
+apt-get install -y wget
 wget --user-agent=wget-ci-sync -q ${HELM_URL}/${HELM_TARBALL}
 tar xzfv ${HELM_TARBALL}
 PATH=`pwd`/linux-amd64/:$PATH
