@@ -189,8 +189,7 @@ gcp:
     # Secret key that holds the json value.
     key: credentials.json
 
-# Adding secrets to tiller is not a great option, so If you want to use an existing
-# secret that contains the openstack parameters, you can use the following entries
+# Openstack section to specify a custom CA bundle for your API or use a standalone secret file
 openstack:
   # Custom CA certificates for your openstack API
   CABundle:
