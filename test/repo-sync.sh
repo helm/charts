@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 # Copyright 2016 The Kubernetes Authors All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,14 @@ HELM_URL=https://storage.googleapis.com/kubernetes-helm
 HELM_TARBALL=helm-v2.9.1-linux-amd64.tar.gz
 STABLE_REPO_URL=https://kubernetes-charts.storage.googleapis.com/
 INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
-wget -q ${HELM_URL}/${HELM_TARBALL}
+wget --user-agent=wget-ci-sync -q ${HELM_URL}/${HELM_TARBALL}
 tar xzfv ${HELM_TARBALL}
 PATH=`pwd`/linux-amd64/:$PATH
 helm init --client-only
 helm repo add incubator ${INCUBATOR_REPO_URL}
 
 # Authenticate before uploading to Google Cloud Storage
+SERVICE_ACCOUNT_JSON=$(echo $SYNC_CREDS | base64 --decode)
 cat > sa.json <<EOF
 $SERVICE_ACCOUNT_JSON
 EOF
