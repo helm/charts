@@ -82,3 +82,14 @@ chartmuseum-0.4.5
 {{- define "chartmuseum.chartref" -}}
 {{- replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "chartmuseum.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "chartmuseum.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}

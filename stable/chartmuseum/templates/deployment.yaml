@@ -89,7 +89,9 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-
+    {{- if or .Values.serviceAccount.name .Values.serviceAccount.create }}
+      serviceAccountName: {{ .Values.serviceAccount.name | default (include "chartmuseum.serviceAccountName" .) }}
+    {{- end }}
       volumes:
       - name: storage-volume
       {{- if .Values.persistence.enabled }}
