@@ -1,13 +1,18 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "storm.nimbus.fullname" . }}
   labels:
+    app: {{ template "storm.nimbus.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.nimbus.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "storm.nimbus.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       annotations:

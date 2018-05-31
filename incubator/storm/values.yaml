@@ -16,6 +16,9 @@ nimbus:
   resources:
     limits:
       cpu: 100m
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 supervisor:
   replicaCount: 3
@@ -29,6 +32,9 @@ supervisor:
   resources:
     limits:
       cpu: 200m
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 ui:
   enabled: true
@@ -44,6 +50,10 @@ ui:
   resources:
     limits:
       cpu: 100m
+  ingress:
+    enabled: false
+    annotations: {}
+    tls: []
 
 zookeeper:
   enabled: true
