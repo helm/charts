@@ -32,6 +32,16 @@ data:
         annotations:
           description: RabbitMQ {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod}}`}} is down
           summary: RabbitMQ Node Is Down
+      - alert: RabbitMqClusterNotAllNodesRunning
+        expr: sum(rabbitmq_up{service="{{ template "rabbitmq-ha.fullname" . }}"}) by (service) < {{ .Values.replicaCount }}
+        for: 5m
+        labels:
+          installed_by: {{ .Release.Name }}
+          severity: critical
+          team: devops
+        annotations:
+          description: Some RabbitMQ Cluster Nodes Are Down in Service {{`{{ $labels.namespace }}`}}/{{`{{ $labels.service}}`}}
+          summary: Some RabbitMQ Cluster Nodes Are Down in Service {{`{{ $labels.namespace }}`}}/{{`{{ $labels.service}}`}}
       - alert: RabbitMqDiskSpaceAlarm
         expr: rabbitmq_node_disk_free_alarm{service="{{ template "rabbitmq-ha.fullname" . }}"} == 1
         for: 1m
