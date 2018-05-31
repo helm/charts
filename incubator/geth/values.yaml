@@ -1,6 +1,6 @@
 image:
   repository: "arilot/geth"
-  tag: "alpine"
+  tag: "latest"
   pullPolicy: IfNotPresent
 
 rpcPort: 8545
@@ -9,7 +9,7 @@ rpcApi: "net,eth,personal,web3"
 rpcVhosts: "*"
 wsApi: "net,eth,personal,web3"
 wsOrigins: "*"
-networkId: 1
+networkId: 3
 syncMode: "fast"
 
 persistence:
@@ -28,7 +28,7 @@ persistence:
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-resources: {}
-#  requests:
-#    memory: 512Mi
-#    cpu: 300m
+resources:
+  limit:
+    memory: 1000Mi
+    cpu: 300m
