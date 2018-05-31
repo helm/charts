@@ -1,6 +1,6 @@
 name: elasticsearch
 home: https://www.elastic.co/products/elasticsearch
-version: 0.6.1
+version: 1.0.0
 appVersion: 6.1.1
 description: Flexible and powerful open source, distributed real-time search and analytics
   engine.
@@ -17,3 +17,5 @@ maintainers:
   email: christian@jetstack.io
 - name: icereval
   email: michael.haselton@gmail.com
+- name: rendhalver
+  email: pete.brown@powerhrg.com

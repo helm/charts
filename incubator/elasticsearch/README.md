@@ -4,6 +4,7 @@ This chart uses a standard Docker image of Elasticsearch (hub.docker.com/r/black
 Elasticsearch does not communicate with the Kubernetes API, hence no need for RBAC permissions.
 
 ## Warning for previous users
+If you are currently using an earlier version of this Chart you will need to redeploy your clusters. The discovery method used here is incompatible with using RBAC.
 If you are upgrading to Elasticsearch 6 from the 5.5 version used in this chart before, please note that your cluster needs to do a full cluster restart.
 The simplest way to do that is to delete the installation (keep the PVs) and install this chart again with the new version.
 If you want to avoid doing that upgrade to Elasticsearch 5.6 first before moving on to Elasticsearch 6.0.
