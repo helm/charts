@@ -14,8 +14,8 @@ dependencies:
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   condition: fluentd.enabled
 - name: nginx-ldapauth-proxy
-  version: ^0.1.1
-  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  version: ^0.1.0
+  repository: https://kubernetes-charts.storage.googleapis.com/
   condition: nginx-ldapauth-proxy.enabled
 - name: elasticsearch-curator
   version: ^0.2.0
