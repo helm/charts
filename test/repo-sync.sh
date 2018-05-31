@@ -1,12 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Copyright 2016 The Kubernetes Authors. All rights reserved.
+# Copyright 2018 The Kubernetes Authors. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,25 +23,30 @@ readonly HELM_URL=https://storage.googleapis.com/kubernetes-helm
 readonly HELM_TARBALL=helm-v2.9.1-linux-amd64.tar.gz
 readonly STABLE_REPO_URL=https://kubernetes-charts.storage.googleapis.com/
 readonly INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
+readonly GCS_BUCKET=gs://kubernetes-charts
 
 main() {
     setup_helm_client
     authenticate
 
+    local exit_code=0
+
     if ! sync_repo stable; then
-        echo "ERROR: Not all stable charts could be packaged and synced!"
+        log_error "Not all stable charts could be packaged and synced!"
+        exit_code=1
     fi
     if ! sync_repo incubator; then
-        echo "ERROR: Not all incubator charts could be packaged and synced!"
+        log_error "Not all incubator charts could be packaged and synced!"
+        exit_code=1
     fi
+
+    return "$exit_code"
 }
 
 setup_helm_client() {
     echo "Setting up Helm client..."
 
-    apt-get update
-    apt-get install -y wget
-    wget --user-agent=wget-ci-sync -q "$HELM_URL/$HELM_TARBALL"
+    curl --user-agent curl-ci-sync -sSL -o "$HELM_TARBALL" "$HELM_URL/$HELM_TARBALL"
     tar xzfv "$HELM_TARBALL"
 
     PATH="$(pwd)/linux-amd64/:$PATH"
@@ -58,30 +63,44 @@ authenticate() {
 sync_repo() {
     local repo_dir="${1?Specify repo dir}"
     local sync_dir="${repo_dir}-sync"
+    local index_dir="${repo_dir}-index"
 
     echo "Syncing repo '$repo_dir'..."
 
     mkdir -p "$sync_dir"
-    gsutil cp gs://kubernetes-charts/index.yaml "$sync_dir"
+    if ! gsutil cp "$GCS_BUCKET/index.yaml" "$index_dir/index.yaml"; then
+        log_error "Exiting because unable to copy index locally. Not safe to proceed."
+        exit 1
+    fi
 
     local exit_code=0
 
     for dir in "$repo_dir"/*; do
-        if ! helm dependency build "$dir"; then
-            echo "ERROR: Chart dependencies for '$dir' could not be built!" >&2
+        if helm dependency build "$dir"; then
+            helm package --destination "$sync_dir" "$dir"
+        else
+            log_error "Problem building dependencies. Skipping packaging of '$dir'."
             exit_code=1
-        elif ! helm package --destination "$sync_dir" "$dir"; then
-            exit_code=1
-            echo "ERROR: Chart '$dir' could not be packaged!" >&2
         fi
     done
 
-    helm repo index --url "$sync_dir" --merge "$sync_dir"/index.yaml "$sync_dir"
-    gsutil -m rsync "$sync_dir" gs://kubernetes-charts/
+    if helm repo index --url "$sync_dir" --merge "$index_dir/index.yaml" "$sync_dir"; then
+        gsutil -m rsync "$sync_dir" "$GCS_BUCKET"
+
+        # Make sure index.yaml is synced last
+        gsutil cp "$index_dir/index.yaml" "$GCS_BUCKET"
+    else
+        log_error "Exiting because unable to update index. Not safe to push update."
+        exit 1
+    fi
 
     ls -l "$sync_dir"
 
     return "$exit_code"
+}
+
+log_error() {
+    printf '\e[31mERROR: %s\n\e[39m' "$1" >&2
 }
 
 main
