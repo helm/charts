@@ -10,6 +10,7 @@ rpcVhosts: "*"
 wsApi: "net,eth,personal,web3"
 wsOrigins: "*"
 networkId: 3
+testnet: true
 syncMode: "fast"
 
 persistence:
