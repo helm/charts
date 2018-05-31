@@ -128,6 +128,8 @@ serviceAccount:
   create: false
   # name:
 
+securityContext: {}
+
 nodeSelector: {}
 
 tolerations: []

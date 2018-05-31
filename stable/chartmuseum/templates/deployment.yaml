@@ -92,6 +92,10 @@ spec:
     {{- if or .Values.serviceAccount.name .Values.serviceAccount.create }}
       serviceAccountName: {{ .Values.serviceAccount.name | default (include "chartmuseum.serviceAccountName" .) }}
     {{- end }}
+    {{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       volumes:
       - name: storage-volume
       {{- if .Values.persistence.enabled }}
