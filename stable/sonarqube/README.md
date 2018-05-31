@@ -52,12 +52,19 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
 | `persistence.size`                          | Size of the volume                        | `10Gi`                                     |
 | `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
-| `postgresql.enabled`                        | Set to `false` to use external server     | `true`                                     |
+| `database.type`                             |Set to "mysql" to use mysql database       | `postgresql`|
+| `postgresql.enabled`                        | Set to `false` to use external server / mysql database     | `true`                                     |
 | `postgresql.postgresServer`                 | Hostname of the external Postgresql server| `null`                                     |
 | `postgresql.postgresUser`                   | Postgresql database user                  | `sonarUser`                                |
 | `postgresql.postgresPassword`               | Postgresql database password              | `sonarPass`                                |
 | `postgresql.postgresDatabase`               | Postgresql database name                  | `sonarDB`                                  |
-| `postgresql.service.port`                | Postgresql port                              | `5432`                                     |
+| `postgresql.service.port`                   | Postgresql port                           | `5432`                                     |
+| `mysql.enabled`                             | Set to `false` to use external server / postgresql database        | `false`                                     |
+| `mysql.mysqlServer`                         | Hostname of the external Mysql server     | `null`                                     |
+| `mysql.mysqlUser`                           | Mysql database user                       | `sonarUser`                                |
+| `mysql.mysqlPassword`                       | Mysql database password                   | `sonarPass`                                |
+| `mysql.mysqlDatabase`                       | Mysql database name                       | `sonarDB`                                  |
+| `mysql.service.port`                        | Mysql port                                | `3306`                                     |
 | `resources`                                 | Sonarqube Pod resource requests & limits  | `{}`                                       |
 | `affinity`                                  | Node / Pod affinities                     | `{}`                                       |
 | `nodeSelector`                              | Node labels for pod assignment            | `{}`                                       |
@@ -65,6 +72,6 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `plugins.install`                           | List of plugins to install                | `[]`                                       |
 | `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |
 
-You can also configure values for the PostgreSQL database via the Postgresql [README.md](https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md).
+You can also configure values for the PostgreSQL / MySQL database via the Postgresql [README.md](https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md) / MySQL [README.md](https://github.com/kubernetes/charts/blob/master/stable/mysql/README.md)
 
 For overriding variables see: [Customizing the chart](https://docs.helm.sh/using_helm/#customizing-the-chart-before-installing)
