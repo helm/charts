@@ -74,14 +74,27 @@ spec:
               value: {{ $value }}
             {{- end }}
             - name: SONARQUBE_JDBC_USERNAME
-              value: {{.Values.postgresql.postgresUser | quote }}
+              {{- if eq .Values.database.type "postgresql" }}
+              value: {{ .Values.postgresql.postgresUser | quote }}
+              {{- else if eq .Values.database.type "mysql" }}
+              value: {{ .Values.mysql.mysqlUser | quote }}
+              {{- end }}
             - name: SONARQUBE_JDBC_PASSWORD
               valueFrom:
                 secretKeyRef:
+                  {{- if eq .Values.database.type "postgresql" }}
                   name: {{- if .Values.postgresql.enabled }} {{ template "postgresql.fullname" .}} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
                   key: postgres-password
+                  {{- else if eq .Values.database.type "mysql" }}
+                  name: {{- if .Values.mysql.enabled }} {{ template "mysql.fullname" .}} {{- else }} {{ template "sonarqube.fullname" . }} {{- end }}
+                  key: mysql-password
+                  {{- end }}
             - name: SONARQUBE_JDBC_URL
+              {{- if eq .Values.database.type "postgresql" }}
               value: "jdbc:postgresql://{{ template "postgresql.hostname" . }}:{{- .Values.postgresql.service.port -}}/{{- .Values.postgresql.postgresDatabase -}}"
+              {{- else if eq .Values.database.type "mysql" }}
+              value: "jdbc:mysql://{{ .Release.Name }}-mysql:{{ .Values.mysql.service.port }}/{{ .Values.mysql.mysqlDatabase }}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true"
+              {{- end }}
           livenessProbe:
             httpGet:
               path: /sessions/new
