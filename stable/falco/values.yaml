@@ -38,9 +38,9 @@ falco:
   # The location of the rules file(s). This can contain one or more paths to
   # separate rules files.
   rulesFile:
-     - /etc/falco/falco_rules.yaml
-     - /etc/falco/falco_rules.local.yaml
-     - /etc/falco/rules.d
+    - /etc/falco/falco_rules.yaml
+    - /etc/falco/falco_rules.local.yaml
+    - /etc/falco/rules.d
 
   # Whether to output events in json or text
   jsonOutput: false
