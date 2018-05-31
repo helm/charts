@@ -45,6 +45,7 @@ If using a dedicated namespace(recommended) then make sure the namespace
 exists with:
 
 ```
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 $ kubectl create ns kafka
 $ helm install --name my-kafka --set global.namespace=kafka incubator/kafka
 ```
