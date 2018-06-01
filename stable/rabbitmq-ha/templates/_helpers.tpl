@@ -34,3 +34,17 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Generate chart secret name
+*/}}
+{{- define "rabbitmq-ha.secretName" -}}
+{{ default (include "rabbitmq-ha.fullname" .) .Values.existingSecret }}
+{{- end -}}
+
+{{/*
+Generate chart ssl secret name
+*/}}
+{{- define "rabbitmq-ha.certSecretName" -}}
+{{ default (include "rabbitmq-ha.fullname" .) .Values.rabbitmqCert.existingSecret }}
+{{- end -}}

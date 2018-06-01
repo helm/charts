@@ -24,9 +24,13 @@ spec:
 {{ toYaml .Values.extraLabels | indent 8 }}
 {{- end }}
       annotations:
-        {{- if not .Values.customConfigMap }}
+        {{- if not .Values.existingConfigMap }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- end }}
+{{- if and .Values.prometheus.exporter.enabled  (not .Values.prometheus.operator.enabled) }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.prometheus.exporter.port | quote }}
+{{- end }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
@@ -119,7 +123,7 @@ spec:
             - name: RABBITMQ_ERLANG_COOKIE
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "rabbitmq-ha.fullname" . }}
+                  name: {{ template "rabbitmq-ha.secretName" . }}
                   key: rabbitmq-erlang-cookie
             {{- if .Values.rabbitmqHipeCompile }}
             - name: RABBITMQ_HIPE_COMPILE
@@ -130,7 +134,7 @@ spec:
             - name: RABBITMQ_DEFAULT_PASS
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "rabbitmq-ha.fullname" . }}
+                  name: {{ template "rabbitmq-ha.secretName" . }}
                   key: rabbitmq-password
             - name: RABBITMQ_DEFAULT_VHOST
               value: {{ .Values.rabbitmqVhost | quote }}
@@ -145,6 +149,29 @@ spec:
             - name: cert
               mountPath: /etc/cert
             {{- end }}
+        {{ if .Values.prometheus.exporter.enabled }}
+        - name: {{ .Chart.Name }}-exporter
+          image: {{ .Values.prometheus.exporter.image.repository }}:{{ .Values.prometheus.exporter.image.tag }}
+          imagePullPolicy: {{ .Values.prometheus.exporter.image.pullPolicy }}
+          ports:
+          - name: exporter
+            protocol: TCP
+            containerPort: {{ .Values.prometheus.exporter.port }}
+          env:
+            - name: RABBIT_USER
+              value: {{ .Values.rabbitmqUsername | quote }}
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rabbitmq-ha.secretName" . }}
+                  key: rabbitmq-password
+            {{- range $key, $value := .Values.prometheus.exporter.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.prometheus.exporter.resources | indent 12 }}
+        {{ end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -184,7 +211,7 @@ spec:
         - name: cert
           secret:
             defaultMode: 420
-            secretName: {{ .Values.rabbitmqCert.existingSecret | default (printf "%s-cert" (include "rabbitmq-ha.fullname" . )) }}
+            secretName: {{ template "rabbitmq-ha.certSecretName" . }}
         {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:

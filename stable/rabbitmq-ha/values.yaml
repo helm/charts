@@ -41,8 +41,8 @@ rabbitmqHipeCompile: false
 rabbitmqCert:
   enabled: false
 
-  ## Specify an existing secret to use
-  existingSecret: |
+  # Specifies an existing secret to be used for SSL Certs
+  existingSecret: ""
 
   ## Create a new secret using these values
   cacertfile: |
@@ -214,15 +214,11 @@ podAntiAffinity: soft
 
 ## Create default configMap
 ##
-customConfigMap: false
+existingConfigMap: false
 
 ## Add additional labels to all resources
 ##
 extraLabels: {}
-
-## Create default Secret
-##
-customSecret: false
 
 ## Role Based Access
 ## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
@@ -269,3 +265,57 @@ readinessProbe:
   initialDelaySeconds: 10
   timeoutSeconds: 3
   periodSeconds: 5
+
+# Specifies an existing secret to be used for RMQ password and Erlang Cookie
+existingSecret: ""
+
+prometheus:
+  ## Configures Prometheus Exporter to expose and scrape stats.
+  exporter:
+    enabled: false
+    env: {}
+    image:
+      repository: kbudde/rabbitmq-exporter
+      tag: v0.28.0
+      pullPolicy: IfNotPresent
+
+    ## Port Prometheus scrapes for metrics
+    port: 9090
+
+    ## Allow overriding of container resources
+    resources: {}
+     # limits:
+     #   cpu: 200m
+     #   memory: 1Gi
+     # requests:
+     #   cpu: 100m
+     #   memory: 100Mi
+
+  ## Prometheus is using Operator.  Setting to true will create Operator specific resources like ServiceMonitors and Alerts
+  operator:
+    ## Are you using Prometheus Operator? [Blog Post](https://coreos.com/blog/the-prometheus-operator.html)
+    enabled: true
+
+    ## Configures Alerts, which will be setup via Prometheus Operator / ConfigMaps.
+    alerts:
+      ## Prometheus exporter must be enabled as well
+      enabled: true
+
+      ## Selector must be configured to match Prometheus Install, defaulting to whats done by Prometheus Operator
+      ## See [CoreOS Prometheus Chart](https://github.com/coreos/prometheus-operator/tree/master/helm)
+      selector:
+        role: alert-rules
+      labels: {}
+
+    serviceMonitor:
+      ## Interval at which Prometheus scrapes RabbitMQ Exporter
+      interval: 10s
+
+      # Namespace Prometheus is installed in
+      namespace: monitoring
+
+      ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
+      ## [Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65)
+      ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
+      selector:
+        prometheus: kube-prometheus
