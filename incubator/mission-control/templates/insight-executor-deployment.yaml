@@ -45,12 +45,7 @@ spec:
           initialDelaySeconds: 180
           periodSeconds: 10
         resources:
-          requests:
-            memory: "{{ .Values.insightExecutor.resources.requests.memory }}"
-            cpu: "{{ .Values.insightExecutor.resources.requests.cpu }}"
-          limits:
-            memory: "{{ .Values.insightExecutor.resources.limits.memory }}"
-            cpu: "{{ .Values.insightExecutor.resources.limits.cpu }}"
+{{ toYaml .Values.insightExecutor.resources | indent 10 }}
       volumes:
       - name: insight-executor-data
       {{- if .Values.insightExecutor.persistence.enabled }}

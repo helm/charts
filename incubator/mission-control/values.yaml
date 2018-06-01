@@ -21,13 +21,13 @@ mongodb:
     pullPolicy: IfNotPresent
   persistence:
     size: 50Gi
-  resources:
-    requests:
-      memory: "2Gi"
-      cpu: "100m"
-    limits:
-      memory: "2Gi"
-      cpu: "250m"
+  resources: {}
+  #  requests:
+  #    memory: "2Gi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "2Gi"
+  #    cpu: "250m"
   ## Make sure the --wiredTigerCacheSizeGB is no more than half the memory limit!
   ## This is critical to protect against OOMKill by Kubernetes!
   mongodbExtraFlags:
@@ -50,13 +50,13 @@ elasticsearch:
   enabled: true
   persistence:
     size: 50Gi
-  resources:
-    requests:
-      memory: "2Gi"
-      cpu: "100m"
-    limits:
-      memory: "3Gi"
-      cpu: "250m"
+  resources: {}
+  #  requests:
+  #    memory: "2Gi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "3Gi"
+  #    cpu: "250m"
   env:
     clusterName: "es-cluster"
     esUsername: "elastic"
@@ -94,15 +94,15 @@ missionControl:
   ## IMPORTANT: keep javaOpts.xmx no higher than resources.limits.memory
   javaOpts:
     other: "-server -XX:+UseG1GC -Dfile.encoding=UTF8"
-    xms: "1g"
-    xmx: "2g"
-  resources:
-    requests:
-      memory: "2Gi"
-      cpu: "100m"
-    limits:
-      memory: "3Gi"
-      cpu: "1"
+    xms:
+    xmx:
+  resources: {}
+  #  requests:
+  #    memory: "2Gi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "3Gi"
+  #    cpu: "1"
   service:
     type: LoadBalancer
   internalPort: 8080
@@ -121,13 +121,13 @@ insightServer:
   internalHttpPort: 8082
   externalHttpsPort: 8091
   internalHttpsPort: 8091
-  resources:
-    requests:
-      memory: "500Mi"
-      cpu: "100m"
-    limits:
-      memory: "1Gi"
-      cpu: "1"
+  resources: {}
+  #  requests:
+  #    memory: "500Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "1Gi"
+  #    cpu: "1"
 
 insightScheduler:
   replicaCount: 1
@@ -138,13 +138,13 @@ insightScheduler:
     type: ClusterIP
   externalPort: 8080
   internalPort: 8080
-  resources:
-    requests:
-      memory: "500Mi"
-      cpu: "100m"
-    limits:
-      memory: "3Gi"
-      cpu: "1"
+  resources: {}
+  #  requests:
+  #    memory: "500Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "3Gi"
+  #    cpu: "1"
 
 insightExecutor:
   replicaCount: 1
@@ -175,10 +175,10 @@ insightExecutor:
   externalPort: 8080
   internalPort: 8080
 
-  resources:
-    requests:
-      memory: "500Mi"
-      cpu: "100m"
-    limits:
-      memory: "3Gi"
-      cpu: "1"
+  resources: {}
+  #  requests:
+  #    memory: "500Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "3Gi"
+  #    cpu: "1"

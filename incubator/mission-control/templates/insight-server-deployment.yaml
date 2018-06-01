@@ -108,12 +108,7 @@ spec:
           initialDelaySeconds: 300
           periodSeconds: 10
         resources:
-          requests:
-            memory: "{{ .Values.insightServer.resources.requests.memory }}"
-            cpu: "{{ .Values.insightServer.resources.requests.cpu }}"
-          limits:
-            memory: "{{ .Values.insightServer.resources.limits.memory }}"
-            cpu: "{{ .Values.insightServer.resources.limits.cpu }}"
+{{ toYaml .Values.insightServer.resources | indent 10 }}
       volumes:
       - name: mission-control-certs
         configMap:

@@ -65,9 +65,4 @@ spec:
           initialDelaySeconds: 120
           periodSeconds: 10
         resources:
-          requests:
-            memory: "{{ .Values.insightScheduler.resources.requests.memory }}"
-            cpu: "{{ .Values.insightScheduler.resources.requests.cpu }}"
-          limits:
-            memory: "{{ .Values.insightScheduler.resources.limits.memory }}"
-            cpu: "{{ .Values.insightScheduler.resources.limits.cpu }}"
+{{ toYaml .Values.insightScheduler.resources | indent 10 }}

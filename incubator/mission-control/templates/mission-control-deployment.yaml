@@ -71,7 +71,7 @@ spec:
         - name: MC_URL
           value: "{{ .Values.missionControl.missionControlUrl }}"
         - name: JAVA_OPTIONS
-          value: "{{ .Values.missionControl.javaOpts.other }} -Xms{{ .Values.missionControl.javaOpts.xms }} -Xmx{{ .Values.missionControl.javaOpts.xmx }}"
+          value: "{{ .Values.missionControl.javaOpts.other }} {{- if .Values.missionControl.javaOpts.xms }}-Xms{{ .Values.missionControl.javaOpts.xms }}{{- end }}  {{- if .Values.missionControl.javaOpts.xmx }}-Xmx{{ .Values.missionControl.javaOpts.xmx }} {{- end }}"
         ports:
         - containerPort: {{ .Values.missionControl.internalPort }}
           protocol: TCP
@@ -96,12 +96,7 @@ spec:
                 base64 -d /tmp/jfmc-keystore.jks-b64 > /var/opt/jfrog/mission-control/etc/security/jfmc-keystore.jks;
                 base64 -d /tmp/jfmc-truststore.jks-b64 > /var/opt/jfrog/mission-control/etc/security/jfmc-truststore.jks
         resources:
-          requests:
-            memory: "{{ .Values.missionControl.resources.requests.memory }}"
-            cpu: "{{ .Values.missionControl.resources.requests.cpu }}"
-          limits:
-            memory: "{{ .Values.missionControl.resources.limits.memory }}"
-            cpu: "{{ .Values.missionControl.resources.limits.cpu }}"
+{{ toYaml .Values.missionControl.resources | indent 10 }}
         livenessProbe:
           httpGet:
             path: /api/v3/ping
