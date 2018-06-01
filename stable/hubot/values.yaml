@@ -8,7 +8,7 @@ replicaCount: 1
 
 image:
   repository: minddocdev/hubot
-  tag: latest
+  tag: 0.1.9
   pullPolicy: Always
 
 service:
