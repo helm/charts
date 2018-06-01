@@ -66,7 +66,7 @@ and their default values.
 |          Parameter                 |                       Description                               |                         Default                          |
 |------------------------------------|-----------------------------------------------------------------|----------------------------------------------------------|
 | `customConfigMap`                  | Use a custom ConfigMap                                          | `false`                                                  |
-| `customSecret`                     | Use a custom Secret                                             | `false`                                                  |
+| `existingSecret`      | Use an existing secret for password & erlang cookie                 | `""`                                                       |
 | `image.pullPolicy`                 | Image pull policy                                               | `Always` if `image` tag is `latest`, else `IfNotPresent` |
 | `image.repository`                 | RabbitMQ container image repository                             | `rabbitmq`                                               |
 | `image.tag`                        | RabbitMQ container image tag                                    | `3.7-alpine`                                             |
@@ -78,10 +78,24 @@ and their default values.
 | `persistentVolume.size`            | Persistent volume size                                          | `8Gi`                                                    |
 | `persistentVolume.storageClass`    | Persistent volume storage class                                 | `-`                                                      |
 | `podAntiAffinity`                  | Pod antiaffinity, `hard` or `soft`                              | `hard`                                                   |
+| `prometheus.exporter.enabled`      | Configures Prometheus Exporter to expose and scrape stats       | `true`                                                   |
+| `prometheus.exporter.env`          | Environment variables to set for Exporter container             | `{}`                                                   |
+| `prometheus.exporter.image.repository`   | Prometheus Exporter repository                              | `kbudde/rabbitmq-exporter`                                                   |
+| `prometheus.exporter.image.tag`   | Image Tag                          | `latest`                  |
+| `prometheus.exporter.image.pullPolicy`   | Image Pull Policy                          | `IfNotPresent`                  |
+| `prometheus.exporter.port`        | Port Prometheus scrapes for metrics                      | `9090`        |
+| `prometheus.exporter.resources`   | Resource Limits for Prometheus Exporter                  | `{}`                                                   |
+| `prometheus.operator.enabled`      | Are you using Prometheus Operator?  [Blog Post](https://coreos.com/blog/the-prometheus-operator.html)                       | `true`                                  |
+| `prometheus.operator.alerts.enabled`         | Create default Alerts for RabbitMQ       | `true`                                                   |
+| `prometheus.operator.alerts.selector`        | Selector to find ConfigMaps and create Prometheus Alerts    | `alert-rules`                                                   |
+| `prometheus.operator.alerts.labels`          | Labels to add to Alerts                         | `{}`         |
+| `prometheus.operator.serviceMonitor.interval`           | How often Prometheus Scrapes metrics                       | `10s`                                                   |
+| `prometheus.operator.serviceMonitor.namespace`                  | Namespace which Prometheus is installed                              | `monitoring`                                                   |
+| `prometheus.operator.serviceMonitor.selector`                  | Label Selector for Prometheus to find ServiceMonitors                     | `{ prometheus: kube-prometheus }`                                                   |
 | `rabbitmqCert.enabled`             | Mount a Secret container certificates                           | `false`                                                  |
-| `rabbitmqCert.existingSecret`      | Name of an existing `Secret` to mount for amqps                 | ``                                                       |
 | `rabbitmqCert.cacertfile`          | base64 encoded CA certificate (overwrites existing Secret)      | ``                                                       |
 | `rabbitmqCert.certfile`            | base64 encoded server certificate (overwrites existing Secret)  | ``                                                       |
+| `rabbitmqCert.existingSecret`      | Name of an existing `Secret` to mount for amqps                  | `""`                                                       |
 | `rabbitmqCert.keyfile`             | base64 encoded server private key (overwrites existing Secret)  | ``                                                       |
 | `rabbitmqEpmdPort`                 | EPMD port used for cross cluster replication                    | `4369`                                                   |
 | `rabbitmqErlangCookie`             | Erlang cookie                                                   | _random 32 character long alphanumeric string_           |
@@ -101,10 +115,10 @@ and their default values.
 | `rabbitmqWebSTOMPPlugin.config`    | STOMP over websocket configuration                              | ``                                                       |
 | `rabbitmqWebSTOMPPlugin.enabled`   | Enable STOMP over websocket plugin                              | `false`                                                  |
 | `rbac.create`                      | If true, create & use RBAC resources                            | `true`                                                   |
+| `replicaCount`                     | Number of replica                                               | `3`                                                      |
+| `resources`                        | CPU/Memory resource requests/limits                             | `{}`
 | `serviceAccount.create`            | Create service account                                          | `true`                                                   |
 | `serviceAccount.name`              | Service account name to use                                     | _name of the release_                                    |
-| `replicaCount`                     | Number of replica                                               | `3`                                                      |
-| `resources`                        | CPU/Memory resource requests/limits                             | `{}`                                                     |
 | `service.annotations`              | Annotations to add to the service                               | `{}`                                                     |
 | `service.clusterIP`                | IP address to assign to the service                             | `""`                                                     |
 | `service.externalIPs`              | Service external IP addresses                                   | `[]`                                                     |
@@ -182,4 +196,9 @@ $ helm install --name my-release --set customConfigMap=true stable/rabbitmq-ha
 
 ### Custom Secret
 
-Similar to custom ConfigMap, `customSecret` can be used to override the default secret.yaml provided.
+Similar to custom ConfigMap, `existingSecret` can be used to override the default secret.yaml provided, and
+`rabbitmqCert.existingSecret` can be used to override the default certificates.
+
+### Prometheus Monitoring & Alerts
+
+Prometheus and its features can be enabled by setting `prometheus.enabled` to `true`.  See values.yaml for more details and configuration options
