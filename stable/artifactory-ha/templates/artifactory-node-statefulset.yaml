@@ -60,6 +60,27 @@ spec:
       - name: {{ .Values.artifactory.name }}
         image: '{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}'
         imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - '/bin/sh'
+              - '-c'
+              - >
+                {{- if .Values.artifactory.replicator.enabled }}
+                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access;
+                mkdir -p {{ .Values.artifactory.persistence.mountPath }}/replicator/etc;
+                cp -fv /tmp/replicator/replicator.yaml {{ .Values.artifactory.persistence.mountPath }}/replicator/etc/replicator.yaml;
+                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/replicator;
+                {{- end }}
+                {{- if .Values.artifactory.distributionCerts }}
+                mkdir -p {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys/trusted;
+                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access;
+                cp -fv /tmp/access/etc/keys/private.key {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
+                cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
+                cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys/trusted;
+                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access/etc;
+                {{- end }}
         env:
       {{- if .Values.postgresql.enabled }}
         - name: DB_TYPE
@@ -104,7 +125,14 @@ spec:
       {{- if .Values.artifactory.node.javaOpts.xmx }}
           -Xmx{{ .Values.artifactory.node.javaOpts.xmx }}
       {{- end}}
+      {{- if .Values.artifactory.replicator.enabled }}
+          -Dartifactory.releasebundle.feature.enabled=true
+      {{- end }}
             "
+        {{- if .Values.artifactory.replicator.enabled }}
+        - name: START_LOCAL_REPLICATOR
+          value: "true"
+        {{- end }}
         - name: ARTIFACTORY_MASTER_KEY
           valueFrom:
             secretKeyRef:
@@ -141,6 +169,14 @@ spec:
           mountPath: "/artifactory_extra_conf/binarystore.xml"
           subPath: binarystore.xml
       {{- end }}
+      {{- if .Values.artifactory.distributionCerts }}
+        - name: distribution-certs
+          mountPath: "/tmp/access/etc/keys"
+      {{- end }}
+      {{- if .Values.artifactory.replicator.enabled }}
+        - name: replicator-config
+          mountPath: "/tmp/replicator/replicator.yaml"
+      {{- end }}
         resources:
 {{ toYaml .Values.artifactory.node.resources | indent 10 }}
         {{- if .Values.artifactory.readinessProbe.enabled }}
@@ -169,6 +205,16 @@ spec:
       - name: binarystore-xml
         configMap:
           name: {{ template "artifactory-ha.fullname" . }}-bs
+      {{- if .Values.artifactory.distributionCerts }}
+      - name: distribution-certs
+        configMap:
+          name: {{ .Values.artifactory.distributionCerts }}
+      {{- end }}
+      {{- if .Values.artifactory.replicator.enabled }}
+      - name: replicator-config
+        configMap:
+          name: {{ template "artifactory-ha.fullname" . }}-replicator-config
+      {{- end }}
       {{- if eq .Values.artifactory.persistence.type "nfs" }}
       - name: artifactory-ha-data
         persistentVolumeClaim:

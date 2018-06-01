@@ -69,7 +69,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Init script
 
-There is an script (`init_superset.sh`) which is called at the entrypoint point of the container. It initialzes the db and creates an user account. You can configure the content with `initFile`. E.g. in order to change admin password and load examples:
+There is a script (`init_superset.sh`) which is called at the entrypoint of the container. It initialzes the db and creates an user account. You can configure the content with `initFile`. E.g. in order to change admin password and load examples:
 
 ```yaml
 initFile: |-
