@@ -89,8 +89,10 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- if or .Values.serviceAccount.name .Values.serviceAccount.create }}
-      serviceAccountName: {{ .Values.serviceAccount.name | default (include "chartmuseum.serviceAccountName" .) }}
+    {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ include "chartmuseum.fullname" . }}
+    {{- else if .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
     {{- end }}
     {{- with .Values.securityContext }}
       securityContext:
