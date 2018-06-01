@@ -150,16 +150,17 @@ datadog:
   # checksd:
   #   service.py: |-
 
-  ## dd-agent resource requests and limits
+  ## datadog-agent resource requests and limits
+  ## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 200m
+      memory: 256Mi
     limits:
-      cpu: 256m
-      memory: 512Mi
+      cpu: 200m
+      memory: 256Mi
 
 rbac:
   ## If true, create & use RBAC resources
