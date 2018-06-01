@@ -19,6 +19,9 @@ spec:
         app: {{ template "kibana.name" . }}
         release: "{{ .Release.Name }}"
     spec:
+      {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
