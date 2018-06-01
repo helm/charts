@@ -92,7 +92,7 @@ spec:
         args:
 {{ toYaml .Values.master.args | indent 10 }}         
         resources:
-{{ toYaml .Values.master.resources | indent 10 }}
+{{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.ssh.useSecrets }}
       initContainers:
       - name: wait-workers
