@@ -170,6 +170,10 @@ spec:
 {{ toYaml .Values.daemonset.tolerations | indent 8 }}
       {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      {{- if .Values.daemonset.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
+      {{- end }}
   updateStrategy:
     type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
 {{ end }}
