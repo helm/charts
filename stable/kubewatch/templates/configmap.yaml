@@ -12,5 +12,13 @@ data:
     handler:
       slack:
 {{ toYaml .Values.slack | indent 8 }}
+      hipchat:
+{{ toYaml .Values.hipchat | indent 8 }}
+      mattermost:
+{{ toYaml .Values.mattermost | indent 8 }}
+      flock:
+{{ toYaml .Values.flock | indent 8 }}
+      webhook:
+{{ toYaml .Values.webhook | indent 8 }}
     resource:
 {{ toYaml .Values.resourcesToWatch | indent 6 }}
