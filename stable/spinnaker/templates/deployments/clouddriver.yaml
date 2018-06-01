@@ -33,6 +33,10 @@ spec:
               name: {{ template "fullname" . }}-spinnaker-config
             - mountPath: /tmp/registry
               name: {{ template "fullname" . }}-registry
+            {{- if .Values.kubeConfig.enabled }}
+            - mountPath: /tmp/kube
+              name: {{ template "fullname" . }}-kubeconfig
+            {{- end }}
           readinessProbe:
             httpGet:
               path: /health
@@ -46,3 +50,8 @@ spec:
         - name: {{ template "fullname" . }}-registry
           secret:
             secretName: {{ template "fullname" . }}-registry
+        {{- if .Values.kubeConfig.enabled }}
+        - name: {{ template "fullname" . }}-kubeconfig
+          secret:
+            secretName: {{ .Values.kubeConfig.secretName }}
+        {{- end }}
