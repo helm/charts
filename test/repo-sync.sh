@@ -22,7 +22,8 @@ readonly HELM_URL=https://storage.googleapis.com/kubernetes-helm
 readonly HELM_TARBALL=helm-v2.9.1-linux-amd64.tar.gz
 readonly STABLE_REPO_URL=https://kubernetes-charts.storage.googleapis.com/
 readonly INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
-readonly GCS_BUCKET=gs://kubernetes-charts
+readonly GCS_BUCKET_STABLE=gs://kubernetes-charts
+readonly GCS_BUCKET_INCUBATOR=gs://kubernetes-charts-incubator
 
 main() {
     setup_helm_client
@@ -30,11 +31,11 @@ main() {
 
     local exit_code=0
 
-    if ! sync_repo stable; then
+    if ! sync_repo stable "$GCS_BUCKET_STABLE"; then
         log_error "Not all stable charts could be packaged and synced!"
         exit_code=1
     fi
-    if ! sync_repo incubator; then
+    if ! sync_repo incubator "$GCS_BUCKET_INCUBATOR"; then
         log_error "Not all incubator charts could be packaged and synced!"
         exit_code=1
     fi
@@ -61,13 +62,14 @@ authenticate() {
 
 sync_repo() {
     local repo_dir="${1?Specify repo dir}"
+    local bucket="${2?Specify repo bucket}"
     local sync_dir="${repo_dir}-sync"
     local index_dir="${repo_dir}-index"
 
     echo "Syncing repo '$repo_dir'..."
 
     mkdir -p "$sync_dir"
-    if ! gsutil cp "$GCS_BUCKET/index.yaml" "$index_dir/index.yaml"; then
+    if ! gsutil cp "$bucket/index.yaml" "$index_dir/index.yaml"; then
         log_error "Exiting because unable to copy index locally. Not safe to proceed."
         exit 1
     fi
@@ -84,10 +86,10 @@ sync_repo() {
     done
 
     if helm repo index --url "$sync_dir" --merge "$index_dir/index.yaml" "$sync_dir"; then
-        gsutil -m rsync "$sync_dir" "$GCS_BUCKET"
+        gsutil -m rsync "$sync_dir" "$bucket"
 
         # Make sure index.yaml is synced last
-        gsutil cp "$index_dir/index.yaml" "$GCS_BUCKET"
+        gsutil cp "$index_dir/index.yaml" "$bucket"
     else
         log_error "Exiting because unable to update index. Not safe to push update."
         exit 1
