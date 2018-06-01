@@ -108,4 +108,4 @@ spec:
           periodSeconds: 2
 {{- end }}
         resources:
-{{ toYaml .Values.worker.resources | indent 10 }}
+{{ toYaml .Values.resources | indent 10 }}
