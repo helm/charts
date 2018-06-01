@@ -38,28 +38,22 @@ The following table lists the configurable parameters of the kibana chart and th
 
 Parameter | Description | Default
 --- | --- | ---
-`affinity` | node/pod affinities | None
-`env` | Environment variables to configure Kibana | `{}`
-`image.pullPolicy` | Image pull policy | `IfNotPresent`
-`image.repository` | Image repository | `kibana`
-`image.tag` | Image tag | `6.0.0`
-`image.pullSecrets` |Specify image pull secrets | `nil`
-`commandline.args` | add additional commandline args | `nil`
-`ingress.enabled` | Enables Ingress | `false`
-`ingress.annotations` | Ingress annotations | None:
-`ingress.hosts` | Ingress accepted hostnames | None:
-`ingress.tls` | Ingress TLS configuration | None:
-`nodeSelector` | node labels for pod assignment | `{}`
-`podAnnotations` | annotations to add to each pod | `{}`
 `replicaCount` | desired number of pods | `1`
-`resources` | pod resource requests & limits | `{}`
-`service.externalPort` | external port for the service | `443`
-`service.internalPort` | internal port for the service | `4180`
-`service.externalIPs` | external IP addresses | None:
-`service.loadBalancerIP` | Load Balancer IP address (to use with service.type LoadBalancer) | None:
-`service.type` | type of service | `ClusterIP`
-`service.annotations` | Kubernetes service annotations | None:
-`tolerations` | List of node taints to tolerate | `[]`
+`image.repository` | Image repository | `docker.elastic.co/kibana/kibana-oss"`
+`image.tag` | Image tag | `6.2.4`
+`image.pullPolicy` | Image pull policy | `IfNotPresent`
+`image.pullSecrets` |Specify image pull secrets | `nil`
+`ingress.enabled` | Enables Ingress | `false`
+`ingress.annotations` | Ingress annotations | `{}`
+`ingress.hosts` | Ingress accepted hostnames | `[]`
+`ingress.tls` | Ingress TLS configuration | `[]`
+`nodeSelector` | node labels for pod assignment | `{}`
+`tolerations` | tolerations pod assignment | `{}`
+`affinity` | node/pod affinities | `{}`
+`annotations` | annotations to add to each pod | `{}`
+`env` | Environment variables to configure Kibana | `{}`
+`args` | add additional commandline args | `nil`
+`plugins`| plugins that should be installed | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -1,64 +1,73 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
+  name: {{ template "kibana.fullname" . }}
   labels:
     app: {{ template "kibana.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: {{ .Release.Service }}
+    chart: {{ template "kibana.chart" . }}
     release: {{ .Release.Name }}
-  name: {{ template "kibana.fullname" . }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "kibana.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
-    {{- if .Values.podAnnotations }}
-      annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
-    {{- end }}
       labels:
         app: {{ template "kibana.name" . }}
-        release: "{{ .Release.Name }}"
+        release: {{ .Release.Name }}
+      annotations:
+{{- with .Values.annotations }}
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       containers:
-      - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- if .Values.commandline.args }}
-        args:
-          - "/bin/bash"
-          - "/usr/local/bin/kibana-docker"
-{{ toYaml .Values.commandline.args | indent 10 }}
-        {{- end }}
-        env:
-        {{- range $key, $value := .Values.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
-        {{- end }}
-        ports:
-        - containerPort: {{ .Values.service.internalPort }}
-          name: {{ template "kibana.name" . }}
-          protocol: TCP
-        # livenessProbe:
-        #   httpGet:
-        #     path: /ping
-        #     port: {{ .Values.service.internalPort }}
-        # readinessProbe:
-        #   httpGet:
-        #     path: /ping
-        #     port: {{ .Values.service.internalPort }}
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
-    {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-{{ toYaml .Values.image.pullSecrets | indent 8 }}
-    {{- end }}
-    {{- if .Values.affinity }}
-      affinity:
-{{ toYaml .Values.affinity | indent 8 }}
-    {{- end }}
-    {{- if .Values.nodeSelector }}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["bash", "/usr/local/bin/launch_kibana"]
+{{- if .Values.args }}
+          args:
+{{ toYaml .Values.args | indent 12 }}
+{{- end }}
+          env:
+{{- range $key, $value := .Values.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+{{- end }}
+          ports:
+{{- range $key, $value := .Values.ports }}
+            - name: {{ $key }}
+{{ toYaml $value | indent 14 }}
+{{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - name: {{ template "kibana.name" . }}
+              mountPath: "/usr/local/bin/launch_kibana"
+              subPath: launch_kibana
+            - name: {{ template "kibana.name" . }}
+              mountPath: "/tmp/plugins"
+              subPath: plugins
+{{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-    {{- end }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      volumes:
+        - name: {{ template "kibana.name" . }}
+          configMap:
+            name: {{ template "kibana.fullname" . }}
