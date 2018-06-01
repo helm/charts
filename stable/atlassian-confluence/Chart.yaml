@@ -1,0 +1,11 @@
+apiVersion: v1
+version: 0.1.0
+appVersion: 6.9.0
+description: Enterprise Wiki Collaboration Platform.
+name: atlassian-confluence
+keywords:
+- atlassian
+- confluence
+home: https://www.atlassian.com/software/confluence
+sources:
+- https://bitbucket.org/atlassian/docker-atlassian-confluence-server
