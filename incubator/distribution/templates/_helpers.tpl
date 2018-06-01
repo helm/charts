@@ -56,26 +56,18 @@ Set the final MongoDB connection URL
 */}}
 {{- define "mongodb.url" -}}
 {{- $mongoDatabase :=  .Values.mongodb.db.name -}}
-{{- if .Values.mongodb.mongodbUsername }}
 {{- $mongoUser := .Values.mongodb.db.distributionUser -}}
 {{- $mongoPassword := .Values.mongodb.db.distributionPassword -}}
-{{- printf "%s://%s:%s@%s-%s/%s " "mongodb" $mongoUser $mongoPassword .Release.Name "mongodb:27017" $mongoDatabase | b64enc | quote -}}
-{{- else -}}
-{{- printf "%s://%s-%s/%s" "mongodb" .Release.Name "mongodb:27017" $mongoDatabase | b64enc | quote -}}
-{{- end -}}
+{{- printf "%s://%s:%s@%s-%s/%s" "mongodb" $mongoUser $mongoPassword .Release.Name "mongodb:27017" $mongoDatabase | b64enc | quote -}}
 {{- end -}}
 
 {{/*
 Set the final MongoDB audit URL
 */}}
 {{- define "mongodb.audit.url" -}}
-{{- if .Values.mongodb.mongodbUsername }}
 {{- $mongoUser := .Values.mongodb.db.distributionUser -}}
 {{- $mongoPassword := .Values.mongodb.db.distributionPassword -}}
-{{- printf "%s://%s:%s@%s-%s/%s " "mongodb" $mongoUser $mongoPassword .Release.Name "mongodb:27017" "audit?maxpoolsize=500" | b64enc | quote -}}
-{{- else -}}
-{{- printf "%s://%s-%s/%s" "mongodb" .Release.Name "mongodb:27017" "audit?maxpoolsize=500" | b64enc | quote -}}
-{{- end -}}
+{{- printf "%s://%s:%s@%s-%s/%s" "mongodb" $mongoUser $mongoPassword .Release.Name "mongodb:27017" "audit?maxpoolsize=500" | b64enc | quote -}}
 {{- end -}}
 
 {{/*
