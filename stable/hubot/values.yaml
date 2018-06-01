@@ -9,7 +9,7 @@ replicaCount: 1
 image:
   repository: minddocdev/hubot
   tag: 0.1.9
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 service:
   type: NodePort
