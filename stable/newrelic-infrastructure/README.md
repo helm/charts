@@ -6,19 +6,20 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 
 ## Configuration
 
-| Parameter          | Description                                                  | Default                    |
-| ------------------ | ------------------------------------------------------------ | -------------------------- |
-| `cluster`          | The cluster name for the Kubernetes cluster.                 | ``                         |
-| `config`           | A `newrelic.yml` file if you wish to provide.                | ` `                        |
-| `image.name`       | The container to pull.                                       | `newrelic/infrastructure`  |
-| `image.pullPolicy` | The pull policy.                                             | `IfNotPresent`             |
-| `image.tag`        | The version of the container to pull.                        | `1.0.0-beta1.0`            |
-| `licenseKey`       | The license key for your New Relic Account.                  | ``                         |
-| `resources`        | Any resources you wish to assign to the pod.                 | See Resources below        |
-| `verboseLog`       | Should the agent log verbosely. (Boolean)                    | `false`                    |
-| `nodeSelector`     | Node label to use for scheduling                             | `nil`                      |
-| `tolerations`      | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`                      |
-| `updateStrategy`   | Strategy for DaemonSet updates (requires Kubernetes >= 1.6)  | `RollingUpdate`            |
+| Parameter               | Description                                                  | Default                    |
+| ----------------------- | ------------------------------------------------------------ | -------------------------- |
+| `cluster`               | The cluster name for the Kubernetes cluster.                 | ``                         |
+| `config`                | A `newrelic.yml` file if you wish to provide.                | ` `                        |
+| `image.name`            | The container to pull.                                       | `newrelic/infrastructure`  |
+| `image.pullPolicy`      | The pull policy.                                             | `IfNotPresent`             |
+| `image.tag`             | The version of the container to pull.                        | `1.0.0-beta1.0`            |
+| `licenseKey`            | The license key for your New Relic Account.                  | ``                         |
+| `resources`             | Any resources you wish to assign to the pod.                 | See Resources below        |
+| `verboseLog`            | Should the agent log verbosely. (Boolean)                    | `false`                    |
+| `nodeSelector`          | Node label to use for scheduling                             | `nil`                      |
+| `tolerations`           | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`                      |
+| `updateStrategy`        | Strategy for DaemonSet updates (requires Kubernetes >= 1.6)  | `RollingUpdate`            |
+| `daemonSetApiVersion`   | API Version used for DaemonSet (change for Kubernetes <=1.8) | `apps/v1`                  |
 
 ## Resources
 
