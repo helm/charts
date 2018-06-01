@@ -28,6 +28,9 @@ spec:
       tolerations:
 {{ toYaml .Values.worker.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.worker.schedulerName }}
+      schedulerName: "{{ .Values.worker.schedulerName }}"
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}-workers
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
