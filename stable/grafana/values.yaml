@@ -214,3 +214,19 @@ smtp:
   # `existingSecret` is a reference to an existing secret containing the smtp configuration
   # for Grafana in keys `user` and `password`.
   existingSecret: ""
+
+# use Google Cloud Platform Cloud SQL proxy
+cloudSQL:
+  enabled: false
+  image:
+    repository: gcr.io/cloudsql-docker/gce-proxy
+    tag: 1.11
+    pullPolicy: IfNotPresent
+  # Cloud SQL instance identifier
+  # ref: https://cloud.google.com/sql/docs/postgres/connect-kubernetes-engine#4_get_your_instance_connection_name
+  instanceConnectionName: ""
+  # port that proxy will listen on
+  port: 5432
+  # `existingSecret` is a reference to an existing secret containing the CloudSQL instance credentials
+  # for Grafana in a key `credentials.json`.
+  existingSecret: ""

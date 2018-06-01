@@ -29,7 +29,6 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `replicas`                 | Number of nodes | `1` |
@@ -69,3 +68,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | `annotations`              | Deployment annotations | `{}` |
 | `podAnnotations`           | Pod annotations | `{}` |
 | `smtp.existingSecret`      | The name of an existing secret containing the SMTP credentials, this must have the keys `user` and `password`. | `""` |
+| `cloudSQL.enabled`           | Use a Google CloudSQL Proxy for database access | `false` |
+| `cloudSQL.image.repository`  | CloudSQL proxy image repository | `gcr.io/cloudsql-docker/gce-proxy` |
+| `cloudSQL.image.tag`         | CloudSQL proxy image tag. Possible values listed [here](https://console.cloud.google.com/gcr/images/cloudsql-docker/GLOBAL/gce-proxy?gcrImageListsize=50).| `1.11`|
+| `cloudSQL.image.pullPolicy`  | CloudSQL proxy image pull policy | `IfNotPresent` |
+| `cloudSQL.instanceConnectionName`  | CloudSQL database instance connection name | `""` |
+| `cloudSQL.port`              | CloudSQL proxy listening port | `5432` |
+| `cloudSQL.existingSecret`    | The name of an existing secret containing CloudSQL database instance credentials, this must have the key `credentials.json` | `""` |
