@@ -41,8 +41,8 @@ spec:
               path: /health
               port: http
           volumeMounts:
-          - name: {{ template "hubot.fullname" . }}-scripts
-            mountPath: {{ .Values.hubot.scriptsFolder }}
+            - name: {{ template "hubot.fullname" . }}-scripts
+              mountPath: {{ .Values.hubot.scriptsFolder }}
           envFrom:
             - secretRef:
                 name: {{ template "hubot.fullname" . }}
