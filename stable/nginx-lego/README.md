@@ -4,7 +4,7 @@
 
 [nginx-lego](https://github.com/jetstack/kube-lego/tree/master/examples/nginx) is a chart for an [`nginx` ingress](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx) with optional support for automatically generating `SSL` cert for the managed routes.
 
-To use this ingress contoller add the following annotations to the `ingress` resources you would like to route through it:
+To use this ingress controller add the following annotations to the `ingress` resources you would like to route through it:
 
 ```yaml
 apiVersion: extensions/v1beta1
