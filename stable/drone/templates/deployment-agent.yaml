@@ -86,6 +86,10 @@ spec:
         volumeMounts:
           - name: docker-graph-storage
             mountPath: /var/lib/docker
+{{- if .Values.agent.initContainers }}
+      initContainers:
+{{ toYaml .Values.agent.initContainers | indent 8 }}
+{{- end }}
       volumes:
       - name: docker-graph-storage
         emptyDir: {}

@@ -56,12 +56,14 @@ The following table lists the configurable parameters of the drone charts and th
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
 | `server.schedulerName`      | Drone **server** alternate scheduler name                                                     | `nil`                       |
 | `server.affinity`           | Drone **server** scheduling preferences                                                       | `{}`                        |
+| `server.initContainers`     | [initContaier](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) setup that may be necessary for running certain images (e.g, elasticsearch requires `vm.max_map_count`) | `{}` |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
 | `agent.replicas`            | Drone **agent** replicas                                                                      | `1`                         |
 | `agent.annotations`         | Drone **agent** annotations                                                                   | `{}`                        |
 | `agent.resources`           | Drone **agent** pod resource requests & limits                                                | `{}`                        |
 | `agent.schedulerName`       | Drone **agent** alternate scheduler name                                                      | `nil`                       |
 | `agent.affinity`            | Drone **agent** scheduling preferences                                                        | `{}`                        |
+| `agent.initContainers`      | [initContaier](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) setup that may be necessary for running certain images (e.g, elasticsearch requires `vm.max_map_count`) | `{}` |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
 | `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |
