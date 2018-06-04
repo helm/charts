@@ -6,8 +6,8 @@ metadata:
   labels:
     app: {{ template "mediawiki.fullname" . }}
     chart: {{ template "mediawiki.chart" . }}
-    release: {{ $.Release.Name | quote }}
-    heritage: {{ $.Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   accessModes:
     - {{ .Values.persistence.mediawiki.accessMode | quote }}
