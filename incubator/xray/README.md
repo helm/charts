@@ -134,85 +134,85 @@ $ helm install -n xray --set postgresql.enabled=false,global.postgresqlUrl=${XRA
 
 The following table lists the configurable parameters of the artifactory chart and their default values.
 
-|         Parameter            |           Description             |                         Default                       |
-|------------------------------|-----------------------------------|-------------------------------------------------------|
-| `imagePullSecrets`           | Docker registry pull secret       |                                                       |
-| `imagePullPolicy`       | Container pull policy                | `IfNotPresent`                             |
-| `initContainerImage`       | Init container image                | `alpine:3.6`                             |
-| `replicaCount`       | Replica count for Xray services                | `1`                             |
-| `postgresql.enabled`              | Use enclosed PostgreSQL as database        | `true`                                  |
-| `postgresql.postgresDatabase`     | PostgreSQL database name                   | `xraydb`                           |
-| `postgresql.postgresUser`         | PostgreSQL database user                   | `xray`                           |
-| `postgresql.postgresPassword`     | PostgreSQL database password               | `xray`                                       |
-| `postgresql.persistence.enabled`  | PostgreSQL use persistent storage          | `true`                                  |
-| `postgresql.persistence.size`     | PostgreSQL persistent storage size         | `50Gi`                                  |
-| `postgresql.persistence.existingClaim`  | PostgreSQL use existing persistent storage          | ``                                  |
-| `postgresql.service.port`         | PostgreSQL database port                   | `5432`                                  |
-| `postgresql.resources.requests.memory`    | PostgreSQL initial memory request  |                                         |
-| `postgresql.resources.requests.cpu`       | PostgreSQL initial cpu request     |                                         |
-| `postgresql.resources.limits.memory`      | PostgreSQL memory limit            |                                         |
-| `postgresql.resources.limits.cpu`         | PostgreSQL cpu limit               |                                         |
-| `mongodb.enabled`                   | Enable Mongodb                      | `true`                              |
-| `mongodb.image.tag`                   | Mongodb docker image tag                     | `3.6.3`                              |
-| `mongodb.image.pullPolicy`                   | Mongodb Container pull policy                      | `IfNotPresent`                              |
-| `mongodb.persistence.enabled`    | Mongodb persistence volume enabled          | `true`                          |
-| `mongodb.persistence.existingClaim`   | Use an existing PVC to persist data               | `nil`                        |
-| `mongodb.persistence.storageClass`    | Storage class of backing PVC                      | `generic`                    |
-| `mongodb.persistence.size`       | Mongodb persistence volume size             | `50Gi`                         |
-| `mongodb.livenessProbe.initialDelaySeconds` | Mongodb delay before liveness probe is initiated                                                     | ``                                                       |
-| `mongodb.readinessProbe.initialDelaySeconds`| Mongodb delay before readiness probe is initiated                                                    | ``                                                       |
-| `mongodb.mongodbExtraFlags`                 | MongoDB additional command line flags                                                        | `["--wiredTigerCacheSizeGB=1"]`                                                       |
-| `mongodb.mongodbDatabase`                   | Mongodb Database for Xray                    | `xray`                              |
-| `mongodb.mongodbRootPassword`                   | Mongodb Database Password for root user                     | `password`                              |
-| `mongodb.mongodbUsername`                   | Mongodb Database Xray User                     | `admin`                              |
-| `mongodb.mongodbPassword`                   | Mongodb Database Password for Xray User                     | `password`                              |
-| `rabbitmq-ha.replicaCount`                     | RabbitMQ Number of replica                                               | `1`                                                      |
-| `rabbitmq-ha.rabbitmqUsername`                 | RabbitMQ application username                                   | `guest`                                                  |
-| `rabbitmq-ha.rabbitmqPassword`                 | RabbitMQ application password                                   | `guest`          |
-| `rabbitmq-ha.customConfigMap`                  | RabbitMQ Use a custom ConfigMap                                          | `true`                                                  |
-| `rabbitmq-ha.rabbitmqErlangCookie`             | RabbitMQ Erlang cookie                                                   | `XRAYRABBITMQCLUSTER`          |
-| `rabbitmq-ha.rabbitmqMemoryHighWatermark`      | RabbitMQ Memory high watermark                                           | `500MB`                                                  |
-| `rabbitmq-ha.persistentVolume.enabled`         | If `true`, persistent volume claims are created                 | `true`                                                  |
-| `rabbitmq-ha.persistentVolume.size`            | RabbitMQ Persistent volume size                                          | `20Gi`                                                    |
-| `rabbitmq-ha.rbac.create`                      | If true, create & use RBAC resources                            | `false`                                                   |
-| `common.xrayVersion`          | Xray image tag                  | `2.1.0`                                    |
-| `common.xrayConfigPath`          | Xray config path                 | `/var/opt/jfrog/xray/data`                                    |
-| `common.xrayUserId`          | Xray User Id                  | `1035`                                    |
-| `common.xrayGroupId`          | Xray Group Id                 | `1035`                                    |
-| `common.stdOutEnabled`          | Xray enable standard output                 | `true`                                    |
-| `common.stagingMode.enabled`          | Xray staging mode                 | `false`                                    |
-| `common.masterKey`          | Xray Master Key Can be generated with `openssl rand -hex 32` | `FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF`                                    |
-| `global.mongoUrl`          | Xray external MongoDB URL                 | ` `  |
-| `global.postgresqlUrl`          | Xray external PostgresSQL URL        | ` `  |
-| `analysis.name`                   | Xray Analysis name                     | `xray-analysis`                              |
-| `analysis.image`                   | Xray Analysis container image                 | `docker.bintray.io/jfrog/xray-analysis`                              |
-| `analysis.internalPort`                   | Xray Analysis internal port                     | `7000`                              |
-| `analysis.externalPort`                   | Xray Analysis external port                      | `7000`                              |
-| `analysis.service.type`                   | Xray Analysis service type                     | `ClusterIP`                              |
-| `analysis.storage.sizeLimit`                   | Xray Analysis storage size limit                     | `10Gi`                              |
-| `analysis.resources`                   | Xray Analysis resources                     | `{}`                              |
-| `indexer.name`                   | Xray Indexer name                     | `xray-indexer`                              |
-| `indexer.image`                   | Xray Indexer container image                 | `docker.bintray.io/jfrog/xray-indexer`                              |
-| `indexer.internalPort`                   | Xray Indexer internal port                     | `7002`                              |
-| `indexer.externalPort`                   | Xray Indexer external port                      | `7002`                              |
-| `indexer.service.type`                   | Xray Indexer service type                     | `ClusterIP`                              |
-| `indexer.storage.sizeLimit`                   | Xray Indexer storage size limit                     | `10Gi`                              |
-| `indexer.resources`                   | Xray Indexer resources                     | `{}`                              |
-| `persist.name`                   | Xray Persist name                     | `xray-persist`                              |
-| `persist.image`                   | Xray Persist container image                 | `docker.bintray.io/jfrog/xray-persist`                              |
-| `persist.internalPort`                   | Xray Persist internal port                     | `7003`                              |
-| `persist.externalPort`                   | Xray Persist external port                      | `7003`                              |
-| `persist.service.type`                   | Xray Persist service type                     | `ClusterIP`                              |
-| `persist.storage.sizeLimit`                   | Xray Persist storage size limit                     | `10Gi`                              |
-| `persist.resources`                   | Xray Persist resources                     | `{}`                              |
-| `server.name`                   | Xray server name                     | `xray-server`                              |
-| `server.image`                   | Xray server container image                 | `docker.bintray.io/jfrog/xray-server`                              |
-| `server.internalPort`                   | Xray server internal port                     | `8000`                              |
-| `server.externalPort`                   | Xray server external port                      | `80`                              |
-| `server.service.name`                   | Xray server service name                     | `xray`                              |
-| `server.service.type`                   | Xray server service type                     | `LoadBalancer`                              |
-| `server.storage.sizeLimit`              | Xray server storage size limit                     | `10Gi`                              |
-| `server.resources`                   | Xray server resources                     | `{}`                              |
+|         Parameter            |                    Description                   |           Default                  |
+|------------------------------|--------------------------------------------------|------------------------------------|
+| `imagePullSecrets`           | Docker registry pull secret                      |                                    |
+| `imagePullPolicy`            | Container pull policy                            | `IfNotPresent`                     |
+| `initContainerImage`         | Init container image                             | `alpine:3.6`                       |
+| `replicaCount`               | Replica count for Xray services                  | `1`                                |
+| `postgresql.enabled`              | Use enclosed PostgreSQL as database        | `true`                              |
+| `postgresql.postgresDatabase`     | PostgreSQL database name                   | `xraydb`                            |
+| `postgresql.postgresUser`         | PostgreSQL database user                   | `xray`                              |
+| `postgresql.postgresPassword`     | PostgreSQL database password               | `xray`                              |
+| `postgresql.persistence.enabled`  | PostgreSQL use persistent storage          | `true`                              |
+| `postgresql.persistence.size`     | PostgreSQL persistent storage size         | `50Gi`                              |
+| `postgresql.persistence.existingClaim`  | PostgreSQL use existing persistent storage          | ` `                  |
+| `postgresql.service.port`         | PostgreSQL database port                   | `5432`                              |
+| `postgresql.resources.requests.memory`    | PostgreSQL initial memory request  |                                     |
+| `postgresql.resources.requests.cpu`       | PostgreSQL initial cpu request     |                                     |
+| `postgresql.resources.limits.memory`      | PostgreSQL memory limit            |                                     |
+| `postgresql.resources.limits.cpu`         | PostgreSQL cpu limit               |                                     |
+| `mongodb.enabled`                         | Enable Mongodb                     | `true`                              |
+| `mongodb.image.tag`                       | Mongodb docker image tag           | `3.6.3`                             |
+| `mongodb.image.pullPolicy`                | Mongodb Container pull policy      | `IfNotPresent`                      |
+| `mongodb.persistence.enabled`    | Mongodb persistence volume enabled          | `true`                              |
+| `mongodb.persistence.existingClaim`   | Use an existing PVC to persist data               | `nil`                    |
+| `mongodb.persistence.storageClass`    | Storage class of backing PVC                      | `generic`                |
+| `mongodb.persistence.size`            | Mongodb persistence volume size             | `50Gi`                         |
+| `mongodb.livenessProbe.initialDelaySeconds` | Mongodb delay before liveness probe is initiated   | ` `               |
+| `mongodb.readinessProbe.initialDelaySeconds`| Mongodb delay before readiness probe is initiated  | ` `               |
+| `mongodb.mongodbExtraFlags`                 | MongoDB additional command line flags | `["--wiredTigerCacheSizeGB=1"]`|
+| `mongodb.mongodbDatabase`                   | Mongodb Database for Xray                       | `xray`               |
+| `mongodb.mongodbRootPassword`                  | Mongodb Database Password for root user      | `password`           |
+| `mongodb.mongodbUsername`                      | Mongodb Database Xray User                   | `admin`              |
+| `mongodb.mongodbPassword`                      | Mongodb Database Password for Xray User      | `password`           |
+| `rabbitmq-ha.replicaCount`                     | RabbitMQ Number of replica                   | `1`                  |
+| `rabbitmq-ha.rabbitmqUsername`                 | RabbitMQ application username                | `guest`              |
+| `rabbitmq-ha.rabbitmqPassword`                 | RabbitMQ application password                | `guest`              |
+| `rabbitmq-ha.customConfigMap`                  | RabbitMQ Use a custom ConfigMap              | `true`               |
+| `rabbitmq-ha.rabbitmqErlangCookie`             | RabbitMQ Erlang cookie                       | `XRAYRABBITMQCLUSTER`|
+| `rabbitmq-ha.rabbitmqMemoryHighWatermark`      | RabbitMQ Memory high watermark               | `500MB`              |
+| `rabbitmq-ha.persistentVolume.enabled`         | If `true`, persistent volume claims are created | `true`            |
+| `rabbitmq-ha.persistentVolume.size`            | RabbitMQ Persistent volume size              | `20Gi`               |
+| `rabbitmq-ha.rbac.create`                      | If true, create & use RBAC resources         | `false`              |
+| `common.xrayVersion`                           | Xray image tag                               | `2.1.0`              |
+| `common.xrayConfigPath`                        | Xray config path                   | `/var/opt/jfrog/xray/data`     |
+| `common.xrayUserId`                            | Xray User Id                                 | `1035`               |
+| `common.xrayGroupId`                           | Xray Group Id                                | `1035`               |
+| `common.stdOutEnabled`                         | Xray enable standard output                  | `true`               |
+| `common.stagingMode.enabled`                   | Xray staging mode                            | `false`              |
+| `common.masterKey`  | Xray Master Key Can be generated with `openssl rand -hex 32` | `FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF` |
+| `global.mongoUrl`                              | Xray external MongoDB URL                    | ` `                  |
+| `global.postgresqlUrl`                         | Xray external PostgresSQL URL                | ` `                  |
+| `analysis.name`                                | Xray Analysis name                           | `xray-analysis`      |
+| `analysis.image`                               | Xray Analysis container image                | `docker.bintray.io/jfrog/xray-analysis` |
+| `analysis.internalPort`                        | Xray Analysis internal port                  | `7000`               |
+| `analysis.externalPort`                        | Xray Analysis external port                  | `7000`               |
+| `analysis.service.type`                        | Xray Analysis service type                   | `ClusterIP`          |
+| `analysis.storage.sizeLimit`                   | Xray Analysis storage size limit             | `10Gi`               |
+| `analysis.resources`                           | Xray Analysis resources                      | `{}`                 |
+| `indexer.name`                                 | Xray Indexer name                            | `xray-indexer`       |
+| `indexer.image`                                | Xray Indexer container image                 | `docker.bintray.io/jfrog/xray-indexer`  |
+| `indexer.internalPort`                         | Xray Indexer internal port                   | `7002`               |
+| `indexer.externalPort`                         | Xray Indexer external port                   | `7002`               |
+| `indexer.service.type`                         | Xray Indexer service type                    | `ClusterIP`          |
+| `indexer.storage.sizeLimit`                    | Xray Indexer storage size limit              | `10Gi`               |
+| `indexer.resources`                            | Xray Indexer resources                       | `{}`                 |
+| `persist.name`                                 | Xray Persist name                            | `xray-persist`       |
+| `persist.image`                                | Xray Persist container image                 | `docker.bintray.io/jfrog/xray-persist`  |
+| `persist.internalPort`                         | Xray Persist internal port                   | `7003`               |
+| `persist.externalPort`                         | Xray Persist external port                   | `7003`               |
+| `persist.service.type`                         | Xray Persist service type                    | `ClusterIP`          |
+| `persist.storage.sizeLimit`                    | Xray Persist storage size limit              | `10Gi`               |
+| `persist.resources`                            | Xray Persist resources                       | `{}`                 |
+| `server.name`                                  | Xray server name                             | `xray-server`        |
+| `server.image`                                 | Xray server container image                  | `docker.bintray.io/jfrog/xray-server`   |
+| `server.internalPort`                          | Xray server internal port                    | `8000`               |
+| `server.externalPort`                          | Xray server external port                    | `80`                 |
+| `server.service.name`                          | Xray server service name                     | `xray`               |
+| `server.service.type`                          | Xray server service type                     | `LoadBalancer`       |
+| `server.storage.sizeLimit`                     | Xray server storage size limit               | `10Gi`               |
+| `server.resources`                             | Xray server resources                        | `{}`                 |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
