@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "keycloak.fullname" . }}-test
+  labels:
+    app: {{ template "keycloak.name" . }}
+    chart: {{ template "keycloak.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: {{ .Chart.Name }}-test
+      image: "{{ .Values.test.image.repository }}:{{ .Values.test.image.tag }}"
+      imagePullPolicy: {{ .Values.test.image.pullPolicy }}
+      command:
+        - python3
+        - /tests/test.py
+      env:
+        - name: KEYCLOAK_USER
+          value: {{ .Values.keycloak.username }}
+        - name: KEYCLOAK_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "keycloak.fullname" . }}-http
+              key: password
+      volumeMounts:
+        - name: tests
+          mountPath: /tests
+  volumes:
+    - name: tests
+      configMap:
+        name: {{ template "keycloak.fullname" . }}-test
+  restartPolicy: Never
