@@ -21,6 +21,6 @@ Return the proper image name
 {{- define "mongodb.image" -}}
 {{- $registryName :=  .Values.image.registry -}}
 {{- $repositoryName := .Values.image.repository -}}
-{{- $tag := .Values.image.tag | quote | trimPrefix "\"" | trimSuffix "\"" -}}
+{{- $tag := .Values.image.tag | quote | trimAll "\"" -}}
 {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
