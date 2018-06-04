@@ -24,17 +24,28 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
+            - name: ui
               containerPort: 80
-              protocol: TCP
+            - name: rec-plaintext
+              containerPort: 2003
+            - name: rec-pickle
+              containerPort: 2004
+            - name: agg-plaintext
+              containerPort: 2023
+            - name: agg-pickle
+              containerPort: 2024
+            - name: statsd
+              containerPort: 8125
+            - name: statsd-admin
+              containerPort: 8126
           livenessProbe:
             httpGet:
               path: /
-              port: http
+              port: ui
           readinessProbe:
             httpGet:
               path: /
-              port: http
+              port: ui
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

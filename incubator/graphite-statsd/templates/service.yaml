@@ -10,10 +10,20 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+    - name: ui
+      port: {{ .Values.service.port }}
+    - name: rec-plaintext
+      port: 2003
+    - name: rec-pickle
+      port: 2004
+    - name: agg-plaintext
+      port: 2023
+    - name: agg-pickle
+      port: 2024
+    - name: statsd
+      port: 8125
+    - name: statsd-admin
+      port: 8126
   selector:
     app: {{ template "graphite-statsd.name" . }}
     release: {{ .Release.Name }}
