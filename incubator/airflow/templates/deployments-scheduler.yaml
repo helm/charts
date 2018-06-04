@@ -56,7 +56,10 @@ spec:
             - name: dags-data
               mountPath: {{ .Values.airflow.dag_path }}
           {{- end }}
-          args: ["scheduler", "-n", "{{ .Values.airflow.scheduler_num_runs }}" {{- if .Values.airflow.scheduler_do_pickle }} , "-p" {{- end }}]
+          args: ["scheduler",
+            "-n", "{{ .Values.airflow.scheduler_num_runs }}",
+            {{- if .Values.airflow.scheduler_do_pickle }} "-p" {{- end }}
+          ]
       volumes:
         - name: dags-data
         {{- if .Values.persistence.enabled }}
