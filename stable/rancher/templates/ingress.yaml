@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "rancher.fullname" . }}
+  labels:
+    app: {{ template "rancher.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"
+{{- if eq .Values.ingress.tls "rancher" }}
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"  # Enable ssl-passthrough to backend.
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"  # Force redirect to ssl.
+{{- end }}
+spec:
+  rules:
+  - host: {{ .Values.hostname }}  # hostname to access rancher server
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "rancher.fullname" . }}
+{{- if eq .Values.ingress.tls "rancher" }}
+          servicePort: 443
+{{- else }}
+          servicePort: 80
+  tls:
+  - hosts:
+    - {{ .Values.hostname }}
+    secretName: tls-rancher
+{{- end }}
