@@ -120,6 +120,11 @@ master:
   #   requests:
   #     memory: 256Mi
   #     cpu: 100m
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
+
 
   ## Redis Master Liveness Probe
   livenessProbe:
@@ -249,6 +254,11 @@ slave:
   ## Redis slave labels and tolerations for pod assignment
   # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
   # tolerations: []
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   ## Redis slave pod Annotation and Labels
   # podLabels: {}
