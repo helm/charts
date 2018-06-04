@@ -13,7 +13,7 @@ spec:
       release: "{{ .Release.Name }}"
       role: master
       app: {{ template "redis.name" . }}
-  serviceName: "redis-master"  
+  serviceName: "redis-master"
   template:
     metadata:
       labels:
@@ -46,6 +46,9 @@ spec:
       {{- if .Values.master.tolerations }}
       tolerations:
 {{ toYaml .Values.master.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.master.schedulerName }}
+      schedulerName: "{{ .Values.master.schedulerName }}"
       {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
