@@ -14,8 +14,8 @@ This chart will do the following:
 
 ## Requirements
 - A running Kubernetes cluster
-  - Dynamic storage provisioning enabled
-  - Default StorageClass set to allow services using the default StorageClass for persistent storage
+- Dynamic storage provisioning enabled
+- Default StorageClass set to allow services using the default StorageClass for persistent storage
 - A running Artifactory Enterprise Plus
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) installed and setup to use the cluster
 - [Helm](https://helm.sh/) installed and setup to use the cluster (helm init)
@@ -70,7 +70,7 @@ The following table lists the configurable parameters of the distribution chart 
 | `distribution.image.repository`       | Container image                      | `docker.jfrog.io/jf-distribution`  |
 | `distribution.image.version`          | Container image tag                  | `1.0.0`                                    |
 | `distribution.service.type`   | Distribution service type                                  | `LoadBalancer`                   |
-| `distribution.externalPort`   | Distribution service external port                         | `8080`                        |
+| `distribution.externalPort`   | Distribution service external port                         | `80`                        |
 | `distribution.internalPort`   | Distribution service internal port                         | `8080`                        |
 | `distribution.env.artifactoryUrl`                   | Distribution Environment Artifactory URL               | ` `                                  |
 | `distribution.persistence.mountPath`  | Distribution persistence volume mount path       | `"/jf-distribution"`  |
@@ -92,7 +92,6 @@ The following table lists the configurable parameters of the distribution chart 
 | `distributor.persistence.size`       | Distributor persistence volume size             | `50Gi`                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
-
 
 ## Useful links
 - https://www.jfrog.com/confluence/display/EP/Getting+Started

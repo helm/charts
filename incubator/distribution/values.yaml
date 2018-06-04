@@ -69,7 +69,7 @@ distribution:
     version: 1.0.0
     imagePullPolicy: IfNotPresent
   internalPort: 8080
-  externalPort: 8080
+  externalPort: 80
   env:
     artifactoryUrl:
     btServerUrl:
