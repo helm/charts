@@ -62,6 +62,10 @@ Parameter | Description | Default
 `keycloak.tolerations` | Node taints to tolerate | `[]`
 `keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
 `keycloak.preStartScript` | Custom script to run before Keycloak starts up | ``
+`keycloak.livenessInitialDelaySeconds` | Liveness Probe `initialDelaySeconds` | `120`
+`keycloak.livenessTimeoutSeconds` | Liveness Probe `timeoutSeconds` | `5`
+`keycloak.readinessInitialDelaySeconds` | Readiness Probe `initialDelaySeconds` | `30`
+`keycloak.readinessTimeoutSeconds` | Readiness Probe `timeoutSeconds` | `1`
 `keycloak.cli.nodeIdentifier` | WildFly CLI script for setting the node identifier | See `values.yaml`
 `keycloak.cli.logging` | WildFly CLI script for logging configuration | See `values.yaml`
 `keycloak.cli.reverseProxy` | WildFly CLI script for reverse proxy configuration | See `values.yaml`
