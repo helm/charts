@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `resources.requests.memory`        | Memory request                             | `200Mi`                                                    |
 | `serviceAccount.create`            | Specifies whether a service account should be created.| `true`                                          |
 | `serviceAccount.name`              | Name of the service account.               |                                                            |   
+| `livenessProbe.enabled`            | Wether to enable livenessProbe             | `true`                                                    |   
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                                     |
 
 
