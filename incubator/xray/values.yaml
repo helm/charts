@@ -5,7 +5,7 @@
 
 # Common
 replicaCount: 1
-imagePullPolicy: Always
+imagePullPolicy: IfNotPresent
 initContainerImage: "alpine:3.6"
 imagePullSecrets:
 
@@ -39,9 +39,9 @@ mongodb:
   enabled: true
   image:
     tag: 3.6.3
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
   persistence:
-    size: 100Gi
+    size: 50Gi
   # resources:
   #  requests:
   #    memory: "12Gi"
@@ -52,7 +52,7 @@ mongodb:
   ## Make sure the --wiredTigerCacheSizeGB is no more than half the memory limit!
   ## This is critical to protect against OOMKill by Kubernetes!
   mongodbExtraFlags:
-  - "--wiredTigerCacheSizeGB=6"
+  - "--wiredTigerCacheSizeGB=1"
   mongodbRootPassword: password
   mongodbUsername: xray
   mongodbPassword: password

@@ -22,7 +22,7 @@ data:
 
     # Wait for DBs to be ready
     echo "Waiting for DBs..."
-    sleep 20
+    sleep 40
 
     # Prepare Xray config
     echo "Preparing Xray config (${XRAY_CONFIG_FILE})"
