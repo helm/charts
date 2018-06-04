@@ -3,8 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: {{ template "haproxy-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.defaultBackend.name }}"
+    chart: {{ template "haproxy-ingress.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ .Values.defaultBackend.name }}
@@ -13,13 +12,11 @@ spec:
   selector:
     matchLabels:
       app: {{ template "haproxy-ingress.name" . }}
-      component: "{{ .Values.defaultBackend.name }}"
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "haproxy-ingress.name" . }}
-        component: "{{ .Values.defaultBackend.name }}"
         release: {{ .Release.Name }}
     spec:
       containers:

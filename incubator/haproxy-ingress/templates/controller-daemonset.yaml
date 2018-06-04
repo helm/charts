@@ -3,10 +3,9 @@ kind: DaemonSet
 metadata:
   labels:
     app: {{ template "haproxy-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.controller.name }}"
-    heritage: {{ .Release.Service }}
+    chart: {{ template "haproxy-ingress.chart" . }}
     release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   name: {{ template "haproxy-ingress.controller.fullname" . }}
 spec:
   updateStrategy:
@@ -14,13 +13,11 @@ spec:
   selector:
     matchLabels:
       app: {{ template "haproxy-ingress.name" . }}
-      component: "{{ .Values.controller.name }}"
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "haproxy-ingress.name" . }}
-        component: "{{ .Values.controller.name }}"
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "haproxy-ingress.serviceAccountName" . }}

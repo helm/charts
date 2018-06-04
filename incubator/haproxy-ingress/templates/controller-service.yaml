@@ -10,10 +10,9 @@ metadata:
 {{ toYaml .Values.controller.service.labels | indent 4 }}
 {{- end }}
     app: {{ template "haproxy-ingress.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.controller.name }}"
-    heritage: {{ .Release.Service }}
+    chart: {{ template "haproxy-ingress.chart" . }}
     release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   name: {{ template "haproxy-ingress.controller.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
@@ -35,6 +34,5 @@ spec:
       {{- end }}
   selector:
     app: {{ template "haproxy-ingress.name" . }}
-    component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.controller.service.type }}"
