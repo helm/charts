@@ -44,6 +44,12 @@ airflow:
   ##   1 will have the scheduler quit after each refresh, but kubernetes will restart it
   scheduler_num_runs: "-1"
   ##
+  ## Set scheduler_do_pickle to toggle whether to have the scheduler
+  ## attempt to pickle the DAG object to send over to the workers,
+  ## instead of letting workers run their version of the code.
+  ## See the Airflow documentation for the --do_pickle argument: https://airflow.apache.org/cli.html#scheduler
+  scheduler_do_pickle: true
+  ##
   ## how many replicas for web server
   ## For the moment, we recommend to leave this value to 1, since the webserver instance performs
   ## the 'initdb' operation, starting more replicas will cause all the web containers to execute
