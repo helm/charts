@@ -9,8 +9,6 @@ metadata:
     app: {{ template "etcd-operator.name" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  annotations:
-    "helm.sh/hook": "pre-install"
 spec:
   replicas: {{ .Values.etcdOperator.replicaCount }}
   template:
