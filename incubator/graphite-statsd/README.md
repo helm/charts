@@ -11,15 +11,6 @@ Please also see https://hub.docker.com/r/graphiteapp/graphite-statsd/
 - [Prerequisites](#prerequisites)
 - [Configuration](#configuration)
 - [Installation](#installation)
-  - [Using with Amazon S3](#using-with-amazon-s3)
-    - [permissions grant with access keys](#permissions-grant-with-access-keys)
-    - [permissions grant with IAM instance profile](#permissions-grant-with-iam-instance-profile)
-    - [permissions grant with IAM assumed role](#permissions-grant-with-iam-assumed-role)
-  - [Using with Google Cloud Storage](#using-with-google-cloud-storage)
-  - [Using with Microsoft Azure Blob Storage](#using-with-microsoft-azure-blob-storage)
-  - [Using with Alibaba Cloud OSS Storage](#using-with-alibaba-cloud-oss-storage)
-  - [Using with local filesystem storage](#using-with-local-filesystem-storage)
-    - [Example storage class](#example-storage-class)
 - [Uninstall](#uninstall)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
