@@ -1,6 +1,6 @@
 name: datadog
-version: 0.13.0
-appVersion: 6.2.0
+version: 0.13.1
+appVersion: 6.2.1
 description: DataDog Agent
 keywords:
 - monitoring
