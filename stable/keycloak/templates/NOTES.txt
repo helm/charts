@@ -1,6 +1,3 @@
-*********************************************************************
-* NOTE: This chart has been DEPRECATED. Please use stable/keycloak. *
-*********************************************************************
 
 Keycloak can be accessed:
 

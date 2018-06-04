@@ -1,5 +1,5 @@
 name: keycloak
-version: 0.6.0
+version: 1.0.0
 appVersion: 3.4.3.Final
 description: Open Source Identity and Access Management For Modern Applications and Services
 keywords:
@@ -8,5 +8,8 @@ home: http://www.keycloak.org/
 icon: http://www.keycloak.org/resources/images/keycloak_logo_480x108.png
 sources:
   - https://github.com/jboss-dockerfiles/keycloak
-# The chart has been moved to stable.
-deprecated: true
+maintainers:
+  - name: nexeck
+    email: marcel@beck.im
+  - name: unguiculus
+    email: unguiculus@gmail.com

@@ -1,16 +1,11 @@
 # Keycloak
 
-****
-**NOTE: This chart has been DEPRECATED. Please use stable/keycloak.**
-****
-
 [Keycloak](http://www.keycloak.org/) is an open source identity and access management for modern applications and services.
 
 ## TL;DR;
 
 ```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install incubator/keycloak
+$ helm install stable/keycloak
 ```
 
 ## Introduction
@@ -29,7 +24,7 @@ By default, the PostgreSQL chart requires PV support on underlying infrastructur
 To install the chart with the release name `keycloak`:
 
 ```console
-$ helm install --name keycloak incubator/keycloak
+$ helm install --name keycloak stable/keycloak
 ```
 
 ## Uninstalling the Chart
@@ -106,7 +101,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name keycloak -f values.yaml incubator/keycloak
+$ helm install --name keycloak -f values.yaml stable/keycloak
 ```
 
 ### Database Setup
