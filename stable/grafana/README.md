@@ -69,3 +69,5 @@ The command removes all the Kubernetes components associated with the chart and 
 | `annotations`              | Deployment annotations | `{}` |
 | `podAnnotations`           | Pod annotations | `{}` |
 | `smtp.existingSecret`      | The name of an existing secret containing the SMTP credentials, this must have the keys `user` and `password`. | `""` |
+| `adminUser`           | Username for admin user | `admin` |
+| `adminPassword`           | Password for admin user | Random alphanumeric string |
