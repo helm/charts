@@ -2,10 +2,11 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "ark.fullname" . }}
-  release: {{ .Release.Name }}
-  app: {{ template "ark.name" . }}
-  chart: {{ template "ark.chart" . }}
-  heritage: {{ .Release.Service }}
+  labels:
+    release: {{ .Release.Name }}
+    app: {{ template "ark.name" . }}
+    chart: {{ template "ark.chart" . }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: 1
   template:
@@ -38,7 +39,7 @@ spec:
             - name: plugins
               mountPath: /plugins
           {{- if (or (eq .Values.configuration.cloudprovider "aws") (eq .Values.configuration.cloudprovider "gcp")) }}
-            - name: cloud-credentials
+            - name: {{ .Values.secret.name }}
               mountPath: /credentials
           env:
             - name: {{ .Values.configuration.credentials }}
@@ -52,10 +53,5 @@ spec:
         {{- end }}
         - name: plugins
           emptyDir: {}
-      {{- if eq .Values.configuration.cloudprovider "azure" }}
-      nodeSelector:
-        beta.kubernetes.io/os: linux
-{{ toYaml .Values.nodeSelector | indent 8 }}
-      {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
