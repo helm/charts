@@ -1,6 +1,6 @@
 {{- if .Values.deployments.backupOperator }}
 ---
-apiVersion: apps/v1beta1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "etcd-backup-operator.fullname" . }}
@@ -9,6 +9,8 @@ metadata:
     app: {{ template "etcd-backup-operator.name" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": "pre-install"
 spec:
   replicas: {{ .Values.backupOperator.replicaCount }}
   template:

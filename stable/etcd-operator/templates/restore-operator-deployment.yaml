@@ -1,6 +1,6 @@
 {{- if .Values.deployments.restoreOperator }}
 ---
-apiVersion: apps/v1beta1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "etcd-restore-operator.fullname" . }}
@@ -9,6 +9,8 @@ metadata:
     app: {{ template "etcd-restore-operator.name" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": "pre-install"
 spec:
   replicas: {{ .Values.restoreOperator.replicaCount }}
   template:
