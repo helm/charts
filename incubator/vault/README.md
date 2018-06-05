@@ -65,6 +65,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `annotations`                     | Annotations for deployment               | `{}`                                |
 | `ingress.labels`                  | Labels for ingress                       | `{}`                                |
 | `podAnnotations`                  | Annotations for pods                     | `{}`                                |
+| `sidecarContainers`               | Additional container that should be added to the vault pod   | `[]`            |
 | `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |
 | `consulAgent.repository`          | Container image for consul agent         | `consul`                            |
 | `consulAgent.tag`                 | Container image tag for consul agent     | `1.0.7`                             |

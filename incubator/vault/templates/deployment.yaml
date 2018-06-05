@@ -114,6 +114,9 @@ spec:
       affinity:
 {{ tpl .Values.affinity . | indent 8 }}
       {{- end }}
+{{- if .Values.sidecarContainers }}
+{{ toYaml .Values.sidecarContainers | indent 6 }}
+{{- end }}
       volumes:
         - name: vault-config
           configMap:

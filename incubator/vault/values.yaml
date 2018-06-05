@@ -25,6 +25,11 @@ consulAgent:
   # Optionally override the agent's http port
   HttpPort: 8500
 
+sidecarContainers: []
+  ## Additional containers to be added to the Vault pod
+  # - name: vault-unsealer
+  #   image: vault-unsealer:latest
+
 service:
   name: vault
   type: ClusterIP
