@@ -4,5 +4,11 @@ kind: ConfigMap
 metadata:
   name: {{ template "jenkins.fullname" . }}-jobs
 data:
-{{ .Values.Master.Jobs | indent 2 }}
-{{- end -}}
+{{- $files := .Files }}
+{{- range $index, $value := .Values.Master.Jobs }}
+{{- with $value }}
+{{ .Name | indent 2 }}: |-
+{{ $files.Get .File | indent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}
