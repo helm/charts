@@ -33,7 +33,8 @@ spec:
         - '/bin/sh'
         - '-c'
         - >
-          until nc -z -w 2 {{ .Release.Name }}-mongodb 27017 && echo {{ .Release.Name }}-mongodb ok; do sleep 2; done
+          until nc -z -w 2 {{ .Release.Name }}-mongodb 27017 && echo {{ .Release.Name }}-mongodb ok; do sleep 2; done;
+          until nc -z -w 2 {{ .Release.Name }}-redis {{ .Values.redis.master.port }} && echo {{ .Release.Name }}-redis ok; do sleep 2; done;
       containers:
       - name: {{ .Values.distribution.name }}
         image: '{{ .Values.distribution.image.repository }}:{{ .Values.distribution.image.version }}'

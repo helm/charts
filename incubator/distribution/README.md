@@ -54,13 +54,13 @@ The following table lists the configurable parameters of the distribution chart 
 | `mongodb.readinessProbe.initialDelaySeconds`| Mongodb delay before readiness probe is initiated                                                    | `30`                                                       |
 | `mongodb.mongodbExtraFlags`                 | MongoDB additional command line flags                                                        | `["--wiredTigerCacheSizeGB=1"]`                                                       |
 | `mongodb.usePassword`                       | Enable password authentication                                                               | `false`                                                   |
-| `mongodb.db.name`                   | Mongodb Database for distribution                    | `bintray`                              |
-| `mongodb.db.adminUser`                   | Mongodb Database Admin User                     | `admin`                              |
-| `mongodb.db.adminPassword`                   | Mongodb Database Password for Admin user                     | `password`                              |
-| `mongodb.db.distributionUser`                   | Mongodb Database Mission Control User                     | `distribution`                              |
-| `mongodb.db.distributionPassword`                   | Mongodb Database Password for Mission Control user                     | `password`                              |
+| `mongodb.mongodbDatabase`                   | Mongodb Database for distribution                    | `bintray`                              |
+| `mongodb.mongodbRootPassword`                   | Mongodb Database Password for root user                     | `password`                              |
+| `mongodb.mongodbUsername`                   | Mongodb Database Mission Control User                     | `distribution`                              |
+| `mongodb.mongodbPassword`                   | Mongodb Database Password for Mission Control user                     | `password`                              |
 | `redis.enabled`                   | Enable Redis                      | `true`                              |
 | `redis.redisPassword`               | Redis password                                    | `password`          |
+| `redis.master.port`                 | Redis Port                                    | `6379`          |
 | `redis.persistence.enabled`         | Use a PVC to persist data                         | `true`                       |
 | `redis.persistence.existingClaim`   | Use an existing PVC to persist data               | `nil`                        |
 | `redis.persistence.storageClass`    | Storage class of backing PVC                      | `generic`                    |
