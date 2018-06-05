@@ -18,7 +18,7 @@ data:
       minutes: {{ .Values.bufferTimeMins }}
     es_host: {{ .Values.elasticsearch.host }}
     es_port: {{ .Values.elasticsearch.port }}
-    writeback_index: elastalert_status
+    writeback_index: {{ .Values.writebackIndex }}
     use_ssl: {{ .Values.elasticsearch.useSsl }}
     alert_time_limit:
       days: 2
