@@ -31,16 +31,46 @@ data:
       cp -vf ${XRAY_CONFIG_FILE} ${XRAY_CONFIG_FILE}-$(date +%Y%m%d-%H%M%S)
     fi
 
+    # Creating Mongodb URL
+    {{- if .Values.mongodb.enabled }}
+    MONGODB_URL="mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@{{ .Release.Name }}-mongodb:27017/?authSource=${MONGODB_DATABASE}&authMechanism=SCRAM-SHA-1"
+    {{- else }}
+    MONGODB_URL="${MONGODB_URL}"
+    {{- end }}
+
+    # Creating PostgreSQL URL
+    {{- if .Values.postgresql.enabled }}
+    POSTGRESS_URL="postgres://${POSTGRES_USER}:${POSTGRESS_PASSWORD}@{{ .Release.Name }}-postgresql:5432/${POSTGRESS_DB}?sslmode=disable"
+    {{- else }}
+    POSTGRESS_URL="${POSTGRESS_URL}"
+    {{- end }}
+
+    echo ${RABBITMQ_USER} ${RABBITMQ_DEFAULT_PASS}
+    # Creating Rabbitmq-Ha URL
+    if [[ RABBITMQ_DEFAULT_PASS == *['`!'@#\$%^\&*()_+]* ]]
+    then
+      echo "It contains one of those"
+    fi
+    RABBITMQ_URL="amqp://${RABBITMQ_USER}:${RABBITMQ_DEFAULT_PASS}@{{ .Release.Name }}-rabbitmq-ha:5672/"
+
     cp -vf ${SCRIPTS_DIR}/xray_config.yaml ${XRAY_CONFIG_FILE}
+
+    echo ${RABBITMQ_URL} ${MONGODB_URL} ${POSTGRESS_URL}
+    # Preparing xray_config.yaml
+    sed -i -r "s,RABBITMQ_URL,${RABBITMQ_URL}," ${XRAY_CONFIG_FILE}
+    sed -i -r "s,MONGODB_URL,${MONGODB_URL}," ${XRAY_CONFIG_FILE}
+    sed -i -r "s,POSTGRESS_URL,${POSTGRESS_URL}," ${XRAY_CONFIG_FILE}
+
+    cat ${XRAY_CONFIG_FILE}
 
   xray_config.yaml: |
     # Generated Xray config
     ---
         ver:            1.0
         XrayServerPort: "{{ .Values.server.internalPort }}"
-        mqBaseUrl:      "{{ template "xray.rabbitmq.url" . }}"
-        mongoUrl:       "{{ template "xray.mongodb.url" . }}"
-        postgresqlUrl:  "{{ template "xray.postgresql.url" . }}"
+        mqBaseUrl:      "RABBITMQ_URL"
+        mongoUrl:       "MONGODB_URL"
+        postgresqlUrl:  "POSTGRESS_URL"
         stdOutEnabled:  {{ .Values.common.stdOutEnabled }}
         skipEntLicCheckForCloud: true
       {{- if .Values.common.stagingMode.enabled }}

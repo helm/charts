@@ -17,7 +17,7 @@ postgresql:
   enabled: true
   postgresDatabase: "xraydb"
   postgresUser: "xray"
-  postgresPassword: "xray"
+  postgresPassword:
   service:
     port: 5432
   persistence:
@@ -53,9 +53,9 @@ mongodb:
   ## This is critical to protect against OOMKill by Kubernetes!
   mongodbExtraFlags:
   - "--wiredTigerCacheSizeGB=1"
-  mongodbRootPassword: password
+  mongodbRootPassword:
   mongodbUsername: xray
-  mongodbPassword: password
+  mongodbPassword:
   mongodbDatabase: xray
 #  livenessProbe:
 #    initialDelaySeconds: 60
@@ -71,7 +71,7 @@ mongodb:
 rabbitmq-ha:
   replicaCount: 1
   rabbitmqUsername: "guest"
-  rabbitmqPassword: "guest"
+  rabbitmqPassword:
   customConfigMap: true
   rabbitmqErlangCookie: XRAYRABBITMQCLUSTER
   rabbitmqMemoryHighWatermark: 500MB
@@ -109,6 +109,7 @@ common:
 global:
   mongoUrl:
   postgresqlUrl:
+
 
 analysis:
   name: xray-analysis

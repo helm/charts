@@ -125,47 +125,6 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
-Set the final MongoDB connection URL
-*/}}
-{{- define "xray.mongodb.url" -}}
-{{- if .Values.global.mongoUrl -}}
-{{- .Values.global.mongoUrl -}}
-{{- else -}}
-{{- $mongoDatabase := .Values.mongodb.mongodbDatabase -}}
-{{- $mongoUser := .Values.mongodb.mongodbUsername -}}
-{{- $mongoPassword := .Values.mongodb.mongodbPassword -}}
-{{- printf "%s://%s:%s@%s-%s%s%s" "mongodb" $mongoUser $mongoPassword .Release.Name "mongodb:27017/?authSource=" $mongoDatabase "&authMechanism=SCRAM-SHA-1" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Set the final PostgreSQL connection URL
-*/}}
-{{- define "xray.postgresql.url" -}}
-{{- if .Values.global.postgresqlUrl -}}
-{{- .Values.global.postgresqlUrl -}}
-{{- else -}}
-{{- $postgresDatabase := .Values.postgresql.postgresDatabase -}}
-{{- $postgresUser := .Values.postgresql.postgresUser -}}
-{{- $postgresPassword := .Values.postgresql.postgresPassword -}}
-{{- printf "%s://%s:%s@%s-%s/%s%s" "postgres" $postgresUser $postgresPassword .Release.Name "postgresql:5432" $postgresDatabase "?sslmode=disable" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Set the final RabbitMQ connection URL
-*/}}
-{{- define "xray.rabbitmq.url" -}}
-{{- if .Values.global.mqBaseUrl -}}
-{{- .Values.global.mqBaseUrl -}}
-{{- else -}}
-{{- $rabbitmqUser := (index .Values "rabbitmq-ha" "rabbitmqUsername") -}}
-{{- $rabbitmqPassword := (index .Values "rabbitmq-ha" "rabbitmqPassword") -}}
-{{- printf "%s://%s:%s@%s-%s" "amqp" $rabbitmqUser $rabbitmqPassword .Release.Name "rabbitmq-ha:5672/" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "xray.chart" -}}

@@ -32,6 +32,47 @@ spec:
       initContainers:
       - name: init-wait
         image: {{ .Values.initContainerImage | quote }}
+        env:
+        {{- if .Values.mongodb.enabled }}
+        - name: MONGODB_USER
+          value: {{ .Values.mongodb.mongodbUsername }}
+        - name: MONGODB_DATABASE
+          value: {{ .Values.mongodb.mongodbDatabase }}
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-mongodb
+              key: mongodb-password
+        {{- else }}
+        - name: MONGODB_URL
+          value: {{ .Values.global.mongoUrl }}
+        {{- end }}
+        {{- if .Values.postgresql.enabled }}
+        - name: POSTGRES_USER
+          value: {{ .Values.postgresql.postgresUser }}
+        - name: POSTGRESS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-postgresql
+              key: postgres-password
+        - name: POSTGRESS_DB
+          value: {{ .Values.postgresql.postgresDatabase }}
+        {{- else }}
+        - name: POSTGRESS_URL
+          value: {{ .Values.global.postgresqlUrl }}
+        {{- end }}
+        - name: RABBITMQ_USER
+          value: {{ index .Values "rabbitmq-ha" "rabbitmqUsername" }}
+        - name: RABBITMQ_ERLANG_COOKIE
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-rabbitmq-ha
+              key: rabbitmq-erlang-cookie
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-rabbitmq-ha
+              key: rabbitmq-password
         command:
         - '/bin/sh'
         - '-c'
