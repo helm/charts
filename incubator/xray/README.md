@@ -143,7 +143,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `postgresql.enabled`              | Use enclosed PostgreSQL as database        | `true`                              |
 | `postgresql.postgresDatabase`     | PostgreSQL database name                   | `xraydb`                            |
 | `postgresql.postgresUser`         | PostgreSQL database user                   | `xray`                              |
-| `postgresql.postgresPassword`     | PostgreSQL database password               | `xray`                              |
+| `postgresql.postgresPassword`     | PostgreSQL database password               | ``                              |
 | `postgresql.persistence.enabled`  | PostgreSQL use persistent storage          | `true`                              |
 | `postgresql.persistence.size`     | PostgreSQL persistent storage size         | `50Gi`                              |
 | `postgresql.persistence.existingClaim`  | PostgreSQL use existing persistent storage          | ` `                  |
@@ -163,9 +163,9 @@ The following table lists the configurable parameters of the artifactory chart a
 | `mongodb.readinessProbe.initialDelaySeconds`| Mongodb delay before readiness probe is initiated  | ` `               |
 | `mongodb.mongodbExtraFlags`                 | MongoDB additional command line flags | `["--wiredTigerCacheSizeGB=1"]`|
 | `mongodb.mongodbDatabase`                   | Mongodb Database for Xray                       | `xray`               |
-| `mongodb.mongodbRootPassword`                  | Mongodb Database Password for root user      | `password`           |
+| `mongodb.mongodbRootPassword`                  | Mongodb Database Password for root user      | ``           |
 | `mongodb.mongodbUsername`                      | Mongodb Database Xray User                   | `admin`              |
-| `mongodb.mongodbPassword`                      | Mongodb Database Password for Xray User      | `password`           |
+| `mongodb.mongodbPassword`                      | Mongodb Database Password for Xray User      | ``           |
 | `rabbitmq-ha.replicaCount`                     | RabbitMQ Number of replica                   | `1`                  |
 | `rabbitmq-ha.rabbitmqUsername`                 | RabbitMQ application username                | `guest`              |
 | `rabbitmq-ha.rabbitmqPassword`                 | RabbitMQ application password                | `guest`              |
