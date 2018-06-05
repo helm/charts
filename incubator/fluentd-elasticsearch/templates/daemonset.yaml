@@ -67,6 +67,11 @@ spec:
           readOnly: true
         - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
           mountPath: /etc/fluent/config.d
+        ports:          
+{{- range $port := .Values.service.ports }}
+          - name: {{ $port.name }}
+            containerPort: {{ $port.port }}
+{{- end }}          
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 8 }}
 {{- end }}
