@@ -22,6 +22,12 @@ data:
   {{- end }}
 
     exec /opt/jboss/docker-entrypoint.sh -b 0.0.0.0 {{ .Values.keycloak.startParams }}{{- if $highAvailability }} --server-config standalone-ha.xml{{ end }}
+
+  {{- with .Values.keycloak.postStartScript }}
+    echo 'Running custom post-start script...'
+{{ . | indent 4 }}
+  {{- end }}
+
     exit "$?"
 
   keycloak.cli: |
