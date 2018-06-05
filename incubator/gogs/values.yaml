@@ -9,9 +9,10 @@ serviceType: NodePort
 
 replicaCount: 1
 
-image: gogs/gogs
-imageTag: 0.11.29
-imagePullPolicy: IfNotPresent
+image:
+  repository: gogs/gogs
+  tag: 0.11.29
+  pullPolicy: IfNotPresent
 
 service:
   ## Override the components name (defaults to service).
