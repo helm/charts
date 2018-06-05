@@ -122,8 +122,6 @@ spec:
         readinessProbe:
           exec:
             command: [ "/bin/sh", "-c", "nodetool status | grep -E \"^UN\\s+${POD_IP}\"" ]
-          tcpSocket:
-            port: kafka
           {{- if not .Values.readinessProbe }}
           initialDelaySeconds: 90
           periodSeconds: 30
