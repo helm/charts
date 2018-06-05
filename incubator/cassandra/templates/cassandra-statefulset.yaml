@@ -103,13 +103,43 @@ spec:
         livenessProbe:
           exec:
             command: [ "/bin/sh", "-c", "nodetool status" ]
+          {{- if not .Values.livenessProbe }}
           initialDelaySeconds: 90
           periodSeconds: 30
+          {{- else }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 90}}
+          {{- if .Values.livenessProbe.periodSeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          {{- end }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds | default 30}}
+          {{- if .Values.livenessProbe.successThreshold }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          {{- end }}
+          {{- if .Values.livenessProbe.failureThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- end }}
         readinessProbe:
           exec:
             command: [ "/bin/sh", "-c", "nodetool status | grep -E \"^UN\\s+${POD_IP}\"" ]
+          tcpSocket:
+            port: kafka
+          {{- if not .Values.readinessProbe }}
           initialDelaySeconds: 90
           periodSeconds: 30
+          {{- else }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 90}}
+          {{- if .Values.readinessProbe.periodSeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          {{- end }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds | default 30}}
+          {{- if .Values.readinessProbe.successThreshold }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          {{- end }}
+          {{- if .Values.readinessProbe.failureThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          {{- end }}
+          {{- end }}
         ports:
         - name: intra
           containerPort: 7000
