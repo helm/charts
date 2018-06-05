@@ -29,18 +29,12 @@ main() {
     setup_helm_client
     authenticate
 
-    local exit_code=0
-
     if ! sync_repo stable "$GCS_BUCKET_STABLE"; then
         log_error "Not all stable charts could be packaged and synced!"
-        exit_code=1
     fi
     if ! sync_repo incubator "$GCS_BUCKET_INCUBATOR"; then
         log_error "Not all incubator charts could be packaged and synced!"
-        exit_code=1
     fi
-
-    return "$exit_code"
 }
 
 setup_helm_client() {
