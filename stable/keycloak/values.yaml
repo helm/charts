@@ -26,6 +26,9 @@ keycloak:
   ## Custom script that is run before Keycloak is started.
   preStartScript:
 
+  ## Params to start command e.g. -Dkeycloak.import= to load a realm
+  startParams:
+
   ## Username for the initial Keycloak admin user
   username: keycloak
 
