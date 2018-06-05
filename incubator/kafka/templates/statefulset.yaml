@@ -81,16 +81,83 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
 {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
     {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
 
       containers:
+
+{{- if .Values.exporters.jmx.enabled }}
+        - name: jmx-exporter
+          image: "{{ .Values.exporters.jmx.image.repository }}:{{ .Values.exporters.jmx.image.tag }}"
+          imagePullPolicy: {{ .Values.exporters.jmx.image.pullPolicy }}
+          ports:
+  {{- range $key, $port := .Values.exporters.jmx.ports }}
+            - name: {{ $key }}
+{{ toYaml $port | indent 14 }}
+  {{- end }}
+          livenessProbe:
+{{ toYaml .Values.exporters.jmx.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.exporters.jmx.readinessProbe | indent 12 }}
+          env:
+            - name: SERVICE_PORT
+              value: {{ .Values.exporters.jmx.ports.jmxxp.containerPort | quote }}
+          {{- with .Values.exporters.jmx.env }}
+            {{- range $key, $value := . }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.exporters.jmx.resources | indent 12 }}
+          volumeMounts:
+            - name: config-jmx-exporter
+              mountPath: /opt/jmx_exporter/config.yml
+              subPath: config.yml
+{{- end }}
+
+{{- if .Values.exporters.kafka.enabled }}
+        - name: kafka-exporter
+          image: "{{ .Values.exporters.kafka.image.repository }}:{{ .Values.exporters.kafka.image.tag }}"
+          imagePullPolicy: {{ .Values.exporters.kafka.image.pullPolicy }}
+          command: ["/bin/sh", "-euxc"]
+          ## Delay start of kafka-exporter to give kafka enough time to come online.
+          args:
+            - >-
+              sleep {{ .Values.exporters.kafka.initialContainerDelaySeconds }}
+              && exec /bin/kafka_exporter \
+                --kafka.server=$(hostname -f):{{ .Values.service.ports.client.port }} \
+                --web.listen-address=:{{ .Values.exporters.kafka.ports.kafkaxp.containerPort }} \
+                --web.telemetry-path={{ .Values.exporters.kafka.path | quote }} \
+                --log.level={{ .Values.exporters.kafka.config.logLevel }} \
+                --topic.filter={{ .Values.exporters.kafka.config.topicFilter | squote }}
+          ports:
+  {{- range $key, $port := .Values.exporters.kafka.ports }}
+            - name: {{ $key }}
+{{ toYaml $port | indent 14 }}
+  {{- end }}
+          livenessProbe:
+{{ toYaml .Values.exporters.kafka.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.exporters.kafka.readinessProbe | indent 12 }}
+          env:
+          {{- range $key, $value := .Values.exporters.kafka.env }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.exporters.kafka.resources | indent 12 }}
+{{- end }}
 
         - name: kafka
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -158,73 +225,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
-
-{{- if .Values.exporters.jmx.enabled }}
-        - name: jmx-exporter
-          image: "{{ .Values.exporters.jmx.image.repository }}:{{ .Values.exporters.jmx.image.tag }}"
-          imagePullPolicy: {{ .Values.exporters.jmx.image.pullPolicy }}
-          ports:
-  {{- range $key, $port := .Values.exporters.jmx.ports }}
-            - name: {{ $key }}
-{{ toYaml $port | indent 14 }}
-  {{- end }}
-          livenessProbe:
-{{ toYaml .Values.exporters.jmx.livenessProbe | indent 12 }}
-          readinessProbe:
-{{ toYaml .Values.exporters.jmx.readinessProbe | indent 12 }}
-          env:
-            - name: SERVICE_PORT
-              value: {{ .Values.exporters.jmx.ports.jmxxp.containerPort | quote }}
-          {{- with .Values.exporters.jmx.env }}
-            {{- range $key, $value := . }}
-            - name: {{ $key | upper | replace "." "_" }}
-              value: {{ $value | quote }}
-            {{- end }}
-          {{- end }}
-          resources:
-{{ toYaml .Values.exporters.jmx.resources | indent 12 }}
-          volumeMounts:
-            - name: config-jmx-exporter
-              mountPath: /opt/jmx_exporter/config.yml
-              subPath: config.yml
-{{- end }}
-
-{{- if .Values.exporters.kafka.enabled }}
-        - name: kafka-exporter
-          image: "{{ .Values.exporters.kafka.image.repository }}:{{ .Values.exporters.kafka.image.tag }}"
-          imagePullPolicy: {{ .Values.exporters.kafka.image.pullPolicy }}
-          command: ["/bin/sh", "-euxc"]
-          ## Delay start of kafka-exporter to give kafka enough time to come online.
-          args:
-            - >-
-              sleep {{ .Values.exporters.kafka.initialContainerDelaySeconds }}
-              && exec /bin/kafka_exporter \
-                --kafka.server=$(hostname -f):{{ .Values.service.ports.client.port }} \
-                --web.listen-address=:{{ .Values.exporters.kafka.ports.kafkaxp.containerPort }} \
-                --web.telemetry-path={{ .Values.exporters.kafka.path | quote }} \
-                --log.level={{ .Values.exporters.kafka.config.logLevel }} \
-                --topic.filter={{ .Values.exporters.kafka.config.topicFilter | squote }}
-          ports:
-  {{- range $key, $port := .Values.exporters.kafka.ports }}
-            - name: {{ $key }}
-{{ toYaml $port | indent 14 }}
-  {{- end }}
-          livenessProbe:
-{{ toYaml .Values.exporters.kafka.livenessProbe | indent 12 }}
-          readinessProbe:
-{{ toYaml .Values.exporters.kafka.readinessProbe | indent 12 }}
-          env:
-          {{- range $key, $value := .Values.exporters.kafka.env }}
-            - name: {{ $key | upper | replace "." "_" }}
-              value: {{ $value | quote }}
-          {{- end }}
-          resources:
-{{ toYaml .Values.exporters.kafka.resources | indent 12 }}
-{{- end }}
-    {{- with .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
 
       volumes:
       {{- if not .Values.persistence.enabled }}
