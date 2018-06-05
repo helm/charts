@@ -46,7 +46,7 @@ Return the proper image name
 Return the proper image name
 */}}
 {{- define "metrics.image" -}}
-{{- $registryName :=  .Values.metrics.image.registry -}}
+{{- $registryName :=  .Values.metrics.mage.registry -}}
 {{- $repositoryName := .Values.metrics.image.repository -}}
 {{- $tag := .Values.metrics.image.tag -}}
 {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
