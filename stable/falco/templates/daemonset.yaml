@@ -50,6 +50,8 @@ spec:
               readOnly: true
             - mountPath: /etc/falco
               name: config-volume
+            - mountPath: /etc/falco/rules.d
+              name: rules-volume
       volumes:
         - name: dshm
           emptyDir:
@@ -82,6 +84,9 @@ spec:
                 path: falco_rules.yaml
               - key: falco_rules.local.yaml
                 path: falco_rules.local.yaml
+        - name: rules-volume
+          configMap:
+            name: {{ template "falco.fullname" . }}-rules
 
   updateStrategy:
     type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}

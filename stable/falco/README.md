@@ -89,3 +89,65 @@ $ helm install --name my-release -f values.yaml stable/falco
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Loading custom rules
+
+Falco ships with a nice default ruleset. Is a good starting point but sooner or later we are going to need to add custom rules which fits our needs.
+
+A few days ago [we published several rules](https://github.com/draios/falco-extras) for well known container images.
+
+So the question is: How we can load custom rules in our Falco deployment?
+
+```bash
+$ helm install --name falco stable/falco
+```
+
+When deploying Falco using this chart, a configmap which holds rules was created and mounted in our containers, so we can edit it:
+
+```bash
+$ kubectl edit configmap falco-rules
+```
+
+Note that configmap name is composed with deployment name and '-rules' suffix.
+
+And we add the data section:
+
+```yaml
+data:
+  rules-traefik.yaml: |
+    - macro: traefik_consider_syscalls
+      condition: (evt.num < 0)
+
+    - macro: app_traefik
+      condition: container and container.image startswith "traefik"
+
+    # Restricting listening ports to selected set
+
+    - list: traefik_allowed_inbound_ports_tcp
+      items: [443, 80, 8080]
+
+    - rule: Unexpected inbound tcp connection traefik
+      desc: Detect inbound traffic to traefik using tcp on a port outside of expected set
+      condition: inbound and evt.rawres >= 0 and not fd.sport in (traefik_allowed_inbound_ports_tcp) and app_traefik
+      output: Inbound network connection to traefik on unexpected port (command=%proc.cmdline pid=%proc.pid connection=%fd.name sport=%fd.sport user=%user.name %container.info image=%container.image)
+      priority: NOTICE
+
+    # Restricting spawned processes to selected set
+
+    - list: traefik_allowed_processes
+      items: ["traefik"]
+
+    - rule: Unexpected spawned process traefik
+      desc: Detect a process started in a traefik container outside of an expected set
+      condition: spawned_process and not proc.name in (traefik_allowed_processes) and app_traefik
+      output: Unexpected process spawned in traefik container (command=%proc.cmdline pid=%proc.pid user=%user.name %container.info image=%container.image)
+      priority: NOTICE
+```
+
+And the configmap is updated with the rules-traefik.yaml key.  Next step is to refresh our pods, and we will see in the logs something like:
+
+```bash
+Tue Jun  5 15:08:57 2018: Loading rules from file /etc/falco/rules.d/rules-traefik.yaml:
+```
+
+Finally our new file has been loaded and is ready to help us.
