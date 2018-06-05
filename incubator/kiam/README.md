@@ -70,12 +70,13 @@ Parameter | Description | Default
 `agent.enabled` | If true, create agent | `true`
 `agent.name` | Agent container name | `agent`
 `agent.image.repository` | Agent image | `quay.io/uswitch/kiam`
-`agent.image.tag` | Agent image tag | `v2.7`
+`agent.image.tag` | Agent image tag | `v2.8`
 `agent.image.pullPolicy` | Agent image pull policy | `IfNotPresent`
 `agent.dnsPolicy` | Agent pod DNS policy | `ClusterFirstWithHostNet`
 `agent.extraArgs` | Additional agent container arguments | `{}`
 `agent.extraEnv` | Additional agent container environment variables | `{}`
 `agent.extraHostPathMounts` | Additional agent container hostPath mounts | `[]`
+`agent.gatewayTimeoutCreation` | Agent's timeout when creating the kiam gateway | `50ms`
 `agent.host.ip` | IP address of host | `$(HOST_IP)`
 `agent.host.iptables` | Add iptables rule | `false`
 `agent.host.interface` | Agent's host interface for proxying AWS metadata | `cali+`
@@ -96,8 +97,9 @@ Parameter | Description | Default
 `agent.updateStrategy` | Strategy for agent DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 `server.enabled` | If true, create server | `true`
 `server.name` | Server container name | `server`
+`server.gatewayTimeoutCreation` | Server's timeout when creating the kiam gateway | `50ms`
 `server.image.repository` | Server image | `quay.io/uswitch/kiam`
-`server.image.tag` | Server image tag | `v2.7`
+`server.image.tag` | Server image tag | `v2.8`
 `server.image.pullPolicy` | Server image pull policy | `Always`
 `server.assumeRoleArn` | IAM role for the server to assume before processing requests | `null`
 `server.cache.syncInterval` | Pod cache synchronization interval | `1m`

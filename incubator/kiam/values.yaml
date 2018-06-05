@@ -11,7 +11,7 @@ agent:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v2.7
+    tag: v2.8
     pullPolicy: IfNotPresent
 
   ## Logging settings
@@ -76,6 +76,10 @@ agent:
     #   hostPath: /usr/share/ca-certificates
     #   readOnly: true
 
+  ## Timeout when creating the kiam gateway
+  ##
+  gatewayTimeoutCreation: 50ms
+
   ## Base64-encoded PEM values for agent's CA certificate(s), certificate and private key
   ##
   tlsFiles:
@@ -94,7 +98,7 @@ server:
 
   image:
     repository: quay.io/uswitch/kiam
-    tag: v2.7
+    tag: v2.8
     pullPolicy: IfNotPresent
 
   ## Logging settings
@@ -149,6 +153,10 @@ server:
   service:
     port: 443
     targetPort: 443
+
+  ## Timeout when creating the kiam gateway
+  ##
+  gatewayTimeoutCreation: 50ms
 
   ## Base64-encoded PEM values for server's CA certificate(s), certificate and private key
   ##
