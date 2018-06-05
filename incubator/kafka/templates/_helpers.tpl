@@ -41,6 +41,13 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Generate the Kafka connect string.
+*/}}
+{{- define "kafka.connect" }}
+{{ template "kafka.fullname" . }}:{{ .Values.service.ports.client.port }}
+{{- end -}}
+
+{{/*
 Generate the Zookeeper connect string. If zookeeper is installed as part of this chart, use k8s
 service discovery, else use user-provided connect string.
 */}}
