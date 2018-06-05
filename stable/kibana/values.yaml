@@ -46,6 +46,9 @@ ingress:
     #   hosts:
     #     - chart-example.local
 
+# service account that will run the pod. Leave commented to use the default service account.
+# serviceAccountName: kibana
+
 resources: {}
   # limits:
   #   cpu: 100m

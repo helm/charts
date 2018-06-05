@@ -5,6 +5,12 @@
 useHostNetwork: false
 useHostPID: false
 
+resources: {}
+  # limits:
+  #   nvidia.com/gpu: 1
+  # requests:
+  #   nvidia.com/gpu: 1
+
 ssh:
   port: 22
   useSecrets: false
@@ -22,11 +28,6 @@ worker:
     repository: uber/horovod
     tag: 0.12.1-tf1.8.0-py3.5
     pullPolicy: IfNotPresent
-  # resources:
-  #   limits:
-  #     nvidia.com/gpu: 1
-  #   requests:
-  #     nvidia.com/gpu: 1
 
 master:
   image:
