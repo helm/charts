@@ -109,6 +109,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
 | `ssl.insecureSkipVerify`        | Whether to verify certs on SSL connections                           | `false`                                   |
+| `ssl.tlsMinVersion`             | Minimum TLS version for https entrypoint                             | None                                      |
 | `ssl.defaultCert`               | Base64 encoded default certificate                                    | A self-signed certificate                 |
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
