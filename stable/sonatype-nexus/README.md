@@ -5,7 +5,7 @@
 ## Introduction
 
 This chart bootstraps a Nexus OSS deployment on a cluster using Helm.
-This setup is best configuted in [GCP](https://cloud.google.com/) since:
+This setup is best configured in [GCP](https://cloud.google.com/) since:
 - [google cloud storage](https://cloud.google.com/storage/) is used for backups
 - [GCE Ingress controller](https://github.com/kubernetes/ingress/blob/master/docs/faq/gce.md) is used for using a pre-allocated static IP in GCE.
 
