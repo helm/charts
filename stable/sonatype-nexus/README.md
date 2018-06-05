@@ -80,7 +80,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.readinessProbe.failureThreshold`     | Number of attempts before failure   | 6                                       |
 | `nexusProxy.port`                           | Port for exposing Nexus             | `8080`                                  |
 | `nexusProxy.imageName`                      | Proxy image                         | `quay.io/travelaudience/docker-nexus-proxy` |
-| `nexusProxy.imageTag`                       | Proxy image verion                  | `2.1.0`                                 |
+| `nexusProxy.imageTag`                       | Proxy image version                 | `2.1.0`                                 |
 | `nexusProxy.imagePullPolicy`                | Proxy image pull policy             | `IfNotPresent`                          |
 | `nexusProxy.env.nexusHttpHost`              | Nexus url to access Nexus           | `nil`                                   |
 | `nexusProxy.env.nexusDockerHost`            | Containers url to be used with docker | `nil`                                 |
