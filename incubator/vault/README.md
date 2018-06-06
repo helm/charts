@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `resources.limits.cpu`            | Container requested CPU                  | `nil`                               |
 | `resources.limits.memory`         | Container requested memory               | `nil`                               |
 | `affinity`                        | Affinity settings                        | See values.yaml                     |
+| `service.loadBalancerSourceRanges`| IP whitelist for service type loadbalancer   | `[]`                            |
 | `service.annotations`             | Annotations for service                  | `{}`                                |
 | `annotations`                     | Annotations for deployment               | `{}`                                |
 | `ingress.labels`                  | Labels for ingress                       | `{}`                                |
