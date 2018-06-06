@@ -10,6 +10,6 @@ home: http://storm.apache.org/
 sources:
   - https://github.com/apache/storm
 maintainers:
-  - name: Allison Richardet
+  - name: arichardet
     email: richardeta@objectcomputing.com
 icon: http://storm.apache.org/images/logo.png
