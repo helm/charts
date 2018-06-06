@@ -133,7 +133,8 @@ falco:
   #     enabled: true
   #     keep_alive: false
   #     program: "\"curl -d @- -X POST --header 'Content-Type: application/json' --header 'Authorization: authentication_token' url \""
-  gcsccIntegration:
+integrations:
+  gcscc:
     enabled: false
     webhookUrl: http://sysdig-gcscc-connector.default.svc.cluster.local:8080/events
     webhookAuthenticationToken: b27511f86e911f20b9e0f9c8104b4ec4
