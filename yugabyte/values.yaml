@@ -1,0 +1,42 @@
+# Default values for yugabyte.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+Component: "yugabytedb"
+Image:
+  repository: "yugabytedb/yugabyte"
+  tag: latest
+  pullPolicy: IfNotPresent
+
+persistentVolume:
+  count: 2
+  storage: 100Mi
+  storageClass: null
+
+PodManagementPolicy: Parallel
+
+Services:
+  - name: "yb-masters"
+    label: "yb-master"
+    replicas: 3
+    ports:
+      ui: "7000"
+      rpc-port: "7100"
+    hasLoadBalancer: true
+
+  - name: "yb-tservers"
+    label: "yb-tserver"
+    replicas: 3
+    ports:
+      ui: "9000"
+      rpc-port: "7100"
+      yql-port: "9042"
+      yedis-port: "6379"
+    hasLoadBalancer: false
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

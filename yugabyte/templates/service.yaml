@@ -1,0 +1,154 @@
+# Since we cannot reference .Values inside the loop we just create a root
+# variable to store the root object.
+{{- $root := . -}}
+
+{{- range .Values.Services }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .name }}
+  labels:
+    app: {{ .label }}
+    heritage: {{ $root.Release.Service | quote }}
+    release: {{ $root.Release.Name | quote }}
+    chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+    component: "{{ $root.Release.Name }}-{{ $root.Values.Component }}"
+spec:
+  clusterIP: None
+  ports:
+    {{- range $label, $port := .ports }}
+    - name: {{ $label | quote }}
+      port: {{ $port }}
+    {{- end}}
+  selector:
+    app: {{ .label }}
+
+{{- if .hasLoadBalancer }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .label }}-ui"
+  labels:
+    app: {{ .label }}
+    heritage: {{ $root.Release.Service | quote }}
+    release: {{ $root.Release.Name | quote }}
+    chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+    component: "{{ $root.Release.Name }}-{{ $root.Values.Component }}"
+spec:
+  clusterIP:
+  ports:
+    - name: ui
+      port: 7000
+  selector:
+    app: {{ .label }}
+  type: LoadBalancer
+{{- end }}
+
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ .label }}
+  labels:
+    app: {{ .label }}
+    heritage: {{ $root.Release.Service | quote }}
+    release: {{ $root.Release.Name | quote }}
+    chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+    component: "{{ $root.Release.Name }}-{{ $root.Values.Component }}"
+spec:
+  serviceName: {{ .name }}
+  podManagementPolicy: {{ $root.Values.PodManagementPolicy }}
+  replicas: {{ .replicas }}
+  volumeClaimTemplates:
+    {{- range $index := until (int ($root.Values.persistentVolume.count )) }}
+    - metadata:
+        name: datadir{{ $index }}
+        labels:
+          heritage: {{ $root.Release.Service | quote }}
+          release: {{ $root.Release.Name | quote }}
+          chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+          component: "{{ $root.Release.Name }}-{{ $root.Values.Component }}"
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        {{- if $root.Values.persistentVolume.storageClass }}
+        storageClassName: {{ $root.Values.persistentVolume.storageClass }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ $root.Values.persistentVolume.storage }}
+    {{- end }}
+
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ .label }}
+  template:
+    metadata:
+      labels:
+        app: {{ .label }}
+        heritage: {{ $root.Release.Service | quote }}
+        release: {{ $root.Release.Name | quote }}
+        chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+        component: "{{ $root.Release.Name }}-{{ $root.Values.Component }}"
+    spec:
+      {{- if $root.Values.nodeSelector }}
+      nodeSelector:
+      {{ toYaml $root.Values.nodeSelector | indent 8 }}
+      {{- end }}
+      affinity:
+        # Set the anti-affinity selector scope to YB masters.
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ .label }}
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: {{ .label }}
+        image: "{{ $root.Values.Image.repository }}:{{ $root.Values.Image.tag }}"
+        imagePullPolicy: {{ $root.Values.Image.pullPolicy }}
+        metadata:
+          labels:
+            heritage: {{ $root.Release.Service | quote }}
+            release: {{ $root.Release.Name | quote }}
+            chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
+            component: "{{ $root.Release.Name }}-{{ $root.Values.Component }}"
+        command:
+        {{ if eq .name "yb-masters" }}
+          - "/home/yugabyte/bin/yb-master"
+          - "--fs_data_dirs={{range $index := until (int ($root.Values.persistentVolume.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
+          - "--master_addresses=yb-masters.default.svc.cluster.local:7100"
+          - "--master_replication_factor={{ .replicas }}"
+        {{ else }}
+          - "/home/yugabyte/bin/yb-tserver"
+          - "--fs_data_dirs={{range $index := until (int ($root.Values.persistentVolume.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
+          - "--tserver_master_addrs=yb-masters.default.svc.cluster.local:7100"
+          - "--tserver_master_replication_factor={{ .replicas }}"
+        {{ end }}
+        ports:
+          {{- range $label, $port := .ports }}
+          - containerPort: {{ $port }}
+            name: {{ $label | quote }}
+          {{- end}}
+        volumeMounts:
+          {{- range $index := until (int ($root.Values.persistentVolume.count)) }}
+          - name: datadir{{ $index }}
+            mountPath: /mnt/disk{{ $index }}
+          {{- end }}
+      volumes:
+        {{- range $index := until (int ($root.Values.persistentVolume.count)) }}
+        - name: datadir{{ $index }}
+          hostPath:
+            path: /mnt/disks/ssd{{ $index }}
+        {{- end }}
+{{- end }}
