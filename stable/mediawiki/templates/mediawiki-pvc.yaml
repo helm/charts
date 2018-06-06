@@ -5,9 +5,9 @@ metadata:
   name: {{ template "mediawiki.fullname" . }}-mediawiki
   labels:
     app: {{ template "mediawiki.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    chart: {{ template "mediawiki.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   accessModes:
     - {{ .Values.persistence.mediawiki.accessMode | quote }}
@@ -18,7 +18,7 @@ spec:
 {{- if (eq "-" .Values.persistence.mediawiki.storageClass) }}
   storageClassName: ""
 {{- else }}
-  storageClassName: "{{ .Values.persistence.mediawiki.storageClass }}"
+  storageClassName: {{ .Values.persistence.mediawiki.storageClass | quote }}
 {{- end }}
 {{- end }}
 {{- end -}}
