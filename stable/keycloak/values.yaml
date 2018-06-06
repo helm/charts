@@ -23,6 +23,9 @@ keycloak:
     fsGroup: 1000
     runAsNonRoot: true
 
+  ## Additional init containers, e. g. for providing custom themes
+  extraInitContainers: []
+
   ## Custom script that is run before Keycloak is started.
   preStartScript:
 

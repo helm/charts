@@ -29,8 +29,9 @@ spec:
         - name: {{ . }}
       {{- end}}
     {{- end }}
-    {{- if .Values.keycloak.persistence.deployPostgres }}
+    {{- if or .Values.keycloak.persistence.deployPostgres .Values.keycloak.extraInitContainers }}
       initContainers:
+      {{- if .Values.keycloak.persistence.deployPostgres }}
         - name: wait-for-postgresql
           image: "{{ .Values.init.image.repository }}:{{ .Values.init.image.tag }}"
           imagePullPolicy: {{ .Values.init.image.pullPolicy }}
@@ -43,6 +44,10 @@ spec:
               done;
 
               echo 'PostgreSQL OK ✓'
+      {{- end }}
+      {{- if .Values.keycloak.extraInitContainers }}
+{{ toYaml .Values.keycloak.extraInitContainers | indent 8 }}
+      {{- end }}
     {{- end }}
       containers:
         - name: {{ .Chart.Name }}
