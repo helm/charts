@@ -53,6 +53,9 @@ data:
       {{- end }}
       compress = {{ .Values.gzip.enabled }}
         [entryPoints.https.tls]
+          {{- if .Values.ssl.tlsMinVersion }}
+          minVersion = "{{ .Values.ssl.tlsMinVersion }}"
+          {{- end }}
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
@@ -76,6 +79,9 @@ data:
       {{- end}}
       {{- if .Values.kubernetes.labelSelector }}
     labelselector = {{ .Values.kubernetes.labelSelector | quote }}
+      {{- end}}
+      {{- if .Values.kubernetes.ingressClass }}
+    ingressClass = {{ .Values.kubernetes.ingressClass | quote }}
       {{- end}}
     {{- end}}
     {{- if .Values.accessLogs.enabled }}

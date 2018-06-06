@@ -87,7 +87,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
 | `fullnameOverride`              | Override the full resource names                                     | `{release-name}-traefik (or traefik if release-name is traefik`|
 | `image`                         | Traefik image name                                                   | `traefik`                                 |
-| `imageTag`                      | The version of the official Traefik image to use                     | `1.6.0`                                  |
+| `imageTag`                      | The version of the official Traefik image to use                     | `1.6.2`                                   |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
 | `loadBalancerIP`                | An available static IP you have reserved on your cloud platform      | None                                      |
 | `loadBalancerSourceRanges`      | List of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
@@ -109,6 +109,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
 | `ssl.insecureSkipVerify`        | Whether to verify certs on SSL connections                           | `false`                                   |
+| `ssl.tlsMinVersion`             | Minimum TLS version for https entrypoint                             | None                                      |
 | `ssl.defaultCert`               | Base64 encoded default certificate                                    | A self-signed certificate                 |
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
@@ -138,6 +139,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
 | `kubernetes.namespaces`         | List of Kubernetes namespaces to watch                               | All namespaces                            |
 | `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch (e.g `realm=public`)| No label filter                           |
+| `kubernetes.ingressClass`       | Value of `kubernetes.io/ingress.class` annotation to watch - must start with `traefik` if set | None             |
 | `accessLogs.enabled`            | Whether to enable Traefik's access logs                              | `false`                                   |
 | `accessLogs.filePath`           | The path to the log file. Logs to stdout if omitted                  | None                                      |
 | `accessLogs.format`             | What format the log entries should be in. Either `common` or `json`  | `common`                                  |
