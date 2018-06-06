@@ -21,6 +21,10 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       restartPolicy: Never
+      {{- if .Values.image.imagePullSecrets.name }}
+      imagePullSecrets:
+      - name: {{ .Values.image.imagePullSecrets.name }}
+      {{- end }}
       containers:
       - name: user-create-job
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
