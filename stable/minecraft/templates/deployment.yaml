@@ -15,8 +15,8 @@ spec:
         app: {{ template "minecraft.fullname" . }}
     spec:
       securityContext:
-        runAsUser: {{ .Values.secContext.runAsUser }}
-        fsGroup: {{ .Values.secContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
       containers:
       - name: {{ template "minecraft.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
