@@ -41,8 +41,8 @@ Parameter | Description | Default
 `confluence.reverseProxyPort` | Port of the server. | `443`
 `confluence.reverseProxyScheme` | `http` or `https`. | `https`
 `confluence.javaHeapSize` | JavaVM heap size passed as `-Xmx` and `-Xms`. | `1024m`
-`confluence.javaMemoryOptions` | JavaVM memory options. | `-XX:MaxMetaSpaceSize=300m -XX:DirectMemorySize=10m`
-`confluence.javaOptions` | JavaVM options. | ``
+`confluence.javaMemoryOptions` | JavaVM memory options. | see [values.yaml](values.yaml)
+`confluence.javaOptions` | JavaVM options. | `nil`
 `synchrony.javaHeapSize` | JavaVM heap size for Synchrony. | `0m` (disable Synchrony)
 `persistence.enabled` | Create a persistent volume to store data. | `true`
 `persistence.size` | Size of a persistent volume. | `8Gi`
@@ -127,3 +127,6 @@ To upgrade to a more recent version of Confluence:
 ```sh
 helm upgrade atlassian-confluence
 ```
+
+Confluence will automatically upgrade the database on boot up.
+Note that upgrading requires a valid license.
