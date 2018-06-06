@@ -51,6 +51,7 @@ Parameter | Description | Default
 `keycloak.image.pullSecrets`| Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods) |
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
 `keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
+`keycloak.extraInitContainers`| Additional init containers, e. g. for providing themes, etc. | `[]`
 `keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak | `[]`
 `keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes | `[]`
 `keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes | `[]`
@@ -142,7 +143,7 @@ See also:
 * https://github.com/jboss-dockerfiles/keycloak/blob/master/server/cli/databases/postgres/change-database.cli
 * https://github.com/jboss-dockerfiles/keycloak/blob/master/server/cli/databases/mysql/change-database.cli
 
-### Configuring additional environment variables:
+### Configuring Additional Environment Variables
 
 ```yaml
 keycloak:
@@ -153,6 +154,47 @@ keycloak:
       value: DEBUG
     - name: CACHE_OWNERS:
       value"3"
+```
+
+### Providing a Custom Theme
+
+One option is certainly to provide a custom Keycloak image that includes the theme. However, if you prefer to stick with the
+official Keycloak image, you can use an init container as theme provider.
+
+Create your own theme and package it up into a Docker image.
+
+```docker
+FROM busybox
+COPY my_theme /my_theme
+```
+
+In combination with an `emptyDir` that is shared with the Keycloak container, configure an init container that runs
+your theme image and copies the theme over to the right place where Keycloak will pick it up automatically.
+
+```yaml
+keycloak:
+  extraInitContainers:
+    - name: theme-provider
+      image: myuser/mytheme:1
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+      args:
+        - -c
+        - |
+          echo "Copying theme..."
+          cp -R /mytheme/* /theme
+      volumeMounts:
+        - name: theme
+          mountPath: /theme
+
+  extraVolumeMounts:
+    - name: theme
+      mountPath: /opt/jboss/keycloak/themes/mytheme
+
+  extraVolumes:
+    - name: theme
+      emptyDir: {}
 ```
 
 ### WildFly Configuration
