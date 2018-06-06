@@ -45,8 +45,9 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Kafka Trigger
 
-Kubeless supports triggering functions via kafka events. More info here: https://kubeless.io/docs/use-existing-kafka/.
-To support this `rbac.create: true`, `kafkaTrigger.enabled: true`, `kafkaTrigger.env.kafkaBrokers: <your_kafka_brokers>` must be set.
+Kubeless supports triggering functions via Kafka events. More info here: https://kubeless.io/docs/use-existing-kafka/.
+An existing Kafka cluster needs to be accessible to kubeless -- if you like, you may look into setting Kafka up via the [Kafka chart](https://github.com/kubernetes/charts/tree/master/incubator/kafka). Once Kafka is running,
+to enable the Kafka trigger you must congifure the following values: `rbac.create: true`, `kafkaTrigger.enabled: true`, `kafkaTrigger.env.kafkaBrokers: <your_kafka_brokers>`.
 
 ## Configuration
 
