@@ -1,0 +1,15 @@
+---
+# Genie network admission controller service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    role: genie-network-admission-controller
+  name: genie-network-admission-controller
+  namespace: kube-system
+spec:
+  ports:
+    - port: 443
+      targetPort: 8000
+  selector:
+    role: genie-network-admission-controller

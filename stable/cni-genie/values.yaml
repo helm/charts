@@ -1,0 +1,9 @@
+# ServiceToken: ""
+
+# By default, complete genie package will be installed including
+# multi networking support (along with admission controller) and network policy controller
+# In case network policy controller is not needed, set 'includePolicy' flag to false
+
+imagePullPolicy: IfNotPresent
+
+includePolicy: true

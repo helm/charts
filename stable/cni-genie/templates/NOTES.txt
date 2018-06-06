@@ -1,0 +1,6 @@
+After helm install, Verify all genie pods are running using below command.
+By default 3 genie pods will be in running state
+
+  kubectl get pods --all-namespaces | grep genie
+
+If you need help or have any question, join our Slack to chat to us – https://cni-genie.slack.com

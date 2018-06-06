@@ -1,0 +1,156 @@
+# Install CNI-Genie plugin on each slave node.
+kind: DaemonSet
+apiVersion: extensions/v1beta1
+metadata:
+  name: genie-plugin
+  namespace: kube-system
+  labels:
+    k8s-app: genie
+spec:
+  selector:
+    matchLabels:
+      k8s-app: genie
+  template:
+    metadata:
+      labels:
+        k8s-app: genie
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+        scheduler.alpha.kubernetes.io/tolerations: |
+          [
+            {
+              "key": "dedicated",
+              "value": "master",
+              "effect": "NoSchedule"
+            },
+            {
+              "key": "CriticalAddonsOnly",
+              "operator": "Exists"
+            }
+          ]
+    spec:
+      hostNetwork: true
+      hostPID: true
+      serviceAccountName: genie-plugin
+      containers:
+        # Create a container with install.sh that
+        # Installs required 00-genie.conf and genie binary
+        # on slave node.
+        - name: install-cni
+          image: quay.io/huawei-cni-genie/genie-plugin:latest
+          imagePullPolicy: {{.Values.imagePullPolicy }}
+          command: ["/launch.sh"]
+          env:
+            - name: CNI_NETWORK_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: genie-config
+                  key: cni_genie_network_config
+            - name: KUBERNETES_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - mountPath: /host/opt/cni/bin
+              name: cni-bin-dir
+            - mountPath: /host/etc/cni/net.d
+              name: cni-net-dir
+      volumes:
+        - name: cni-bin-dir
+          hostPath:
+            path: /opt/cni/bin
+        - name: cni-net-dir
+          hostPath:
+            path: /etc/cni/net.d
+---
+# Genie network admission controller daemonset configuration
+# Genie network admission controller pods will run only in master nodes
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: genie-network-admission-controller
+  namespace: kube-system
+spec:
+  template:
+    metadata:
+      labels:
+        role: genie-network-admission-controller
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+    spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+        - key: CriticalAddonsOnly
+          operator: Exists
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
+      hostNetwork: true
+      serviceAccountName: genie-plugin
+      containers:
+        - name: genie-network-admission-controller
+          image: quay.io/huawei-cni-genie/genie-admission-controller:latest
+          imagePullPolicy: {{.Values.imagePullPolicy }}
+          ports:
+            - containerPort: 8000
+---
+{{- if .Values.includePolicy }}
+# Daemonset configuration for geine network policy
+kind: DaemonSet
+apiVersion: extensions/v1beta1
+metadata:
+  name: genie-policy-controller
+  namespace: kube-system
+  labels:
+    k8s-app: genie-policy
+spec:
+  selector:
+    matchLabels:
+      k8s-app: genie-policy
+  template:
+    metadata:
+      labels:
+        k8s-app: genie-policy
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+        scheduler.alpha.kubernetes.io/tolerations: |
+          [
+            {
+              "key": "dedicated",
+              "value": "master",
+              "effect": "NoSchedule"
+            },
+            {
+              "key": "CriticalAddonsOnly",
+              "operator": "Exists"
+            }
+          ]
+    spec:
+      hostNetwork: true
+      hostPID: true
+      serviceAccountName: genie-policy
+      containers:
+        - name: policy-engine
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          image: quay.io/huawei-cni-genie/genie-policy-controller:latest
+          imagePullPolicy: {{.Values.imagePullPolicy }}
+          command:
+            - /genie-policy
+          args:
+            - -kubeconfig=/etc/kubernetes/admin.conf
+            - -logtostderr=true
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: etc-kubernetes
+              mountPath: /etc/kubernetes
+              readOnly: true
+      volumes:
+        - name: etc-kubernetes
+          hostPath:
+            path: /etc/kubernetes
+{{- end }}
