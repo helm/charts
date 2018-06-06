@@ -1,6 +1,6 @@
 name: grafana
-version: 1.10.1
-appVersion: 5.1.2
+version: 1.10.2
+appVersion: 5.1.3
 kubeVersion: "^1.8.0-0"
 description: The leading tool for querying and visualizing time series and metrics.
 home: https://grafana.net
@@ -8,7 +8,7 @@ icon: https://raw.githubusercontent.com/grafana/grafana/master/public/img/logo_t
 sources:
   - https://github.com/grafana/grafana
 maintainers:
-  - name: Ming Hsieh
+  - name: zanhsieh
     email: zanhsieh@gmail.com
   - name: rtluckie
     email: rluckie@cisco.com
