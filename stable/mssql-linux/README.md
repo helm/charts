@@ -101,15 +101,18 @@ The configuration parameters in this section control the resources requested and
 | hadr             | Enable Availability Group                                                                      | `0`                              |
 | persistence.enabled | Persist the Data and Log files for SQL Server                                               | `false`                          |
 | persistence.existingDataClaim | Identify an existing Claim to be used for the Data Directory                      | `Commented Out`                  |
-| persistence.existingLogClaim  | Identify an existing Claim to be used for the Log Directory                       | `Commented Out`                  |
+| persistence.existingTransactionLogClaim  | Identify an existing Claim to be used for the Log Directory            | `Commented Out`                  |
 | persistence.existingBackupClaim | Identify an existing Claim to be used for the SQL Database Backups              | `Commented Out`                  |
+| persistence.existingMasterClaim | Identify an existing Claim to be used for the Master Database log & file        | `Commented Out`                  |
 | persistence.storageClass      | Storage Class to be used                                                          | `Commented Out`                  |
 | persistence.dataAccessMode    | Data Access Mode to be used for the Data Directory                                | `ReadWriteOnce`                  |
 | persistence.dataSize          | PVC Size for Data Directory                                                       | `1Gi`                            |
 | persistence.logAccessMode     | Data Access Mode to be used for the Log Directory                                 | `ReadWriteOnce`                  |
 | persistence.logSize           | PVC Size for Log Directory                                                        | `1Gi`                            |
-| persistence.backupAccessMode     | Data Access Mode to be used for the Backup Directory                           | `ReadWriteOnce`                  |
-| persistence.backupSize           | PVC Size for Backup Directory                                                  | `1Gi`                            |
+| persistence.backupAccessMode  | Data Access Mode to be used for the Backup Directory                              | `ReadWriteOnce`                  |
+| persistence.backupSize        | PVC Size for Backup Directory                                                     | `1Gi`                            |
+| persistence.masterAccessMode  | Data Access Mode to be used for the Master Database                               | `ReadWriteOnce`                  |
+| persistence.masterSize        | PVC Size for Master Database                                                      | `1Gi`                            |
 
 > 1 - [Please read password requirements](https://docs.microsoft.com/en-us/sql/relational-databases/security/password-policy)
 
@@ -157,8 +160,9 @@ Persistence in this chart can be enabled by specifying `persistence.enabled=true
 persistence:
   enabled: true
   # existingDataClaim:
-  # existingLogClaim:
+  # existingTransactionLogClaim:
   # existingBackupClaim:
+  # existingMasterClaim:
   # storageClass: "-"
   dataAccessMode: ReadWriteOnce
   dataSize: 1Gi
@@ -166,6 +170,8 @@ persistence:
   logSize: 1Gi
   backupAccessMode: ReadWriteOnce
   backupLogSize: 1Gi
+  masterAccessMode: ReadWriteOnce
+  masterSize: 1Gi
 ```
 
 * Example 2 - Enable persistence in values.yaml with existing claim
@@ -175,15 +181,18 @@ persistence:
 persistence:
   enabled: true
   existingDataClaim: pvc-mssql-data
-  existingLogClaim: pvc-mssql-log
+  existingTransactionLogClaim: pvc-mssql-log
   existingBackupClaim: pvc-mssql-backup
+  existingMasterClaim: pvc-mssql-master
   # storageClass: "-"
-  dataAccessMode: ReadWriteOnce
-  dataSize: 1Gi
-  logAccessMode: ReadWriteOnce
-  logSize: 1Gi
-  backupAccessMode: ReadWriteOnce
-  backupLogSize: 1Gi
+  # dataAccessMode: ReadWriteOnce
+  # dataSize: 1Gi
+  # logAccessMode: ReadWriteOnce
+  # logSize: 1Gi
+  # backupAccessMode: ReadWriteOnce
+  # backupLogSize: 1Gi
+  # masterAccessMode: ReadWriteOnce
+  # masterSize: 1Gi
 ```
 
 ## SQL Server for Linux Editions
