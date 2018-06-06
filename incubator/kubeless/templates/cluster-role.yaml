@@ -51,7 +51,6 @@ rules:
   - functions
   - httptriggers
   - cronjobtriggers
-  {{ if .Values.kafkaTrigger.enabled }}- kafkatriggers {{ end }}
   verbs:
   - get
   - list
