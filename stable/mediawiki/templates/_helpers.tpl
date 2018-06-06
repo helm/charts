@@ -26,7 +26,8 @@ Create chart name and version as used by the chart label.
 Return the proper Mediawiki image name
 */}}
 {{- define "mediawiki.image" -}}
-{{- printf "%s/%s:%s" .Values.image.registry .Values.image.repository .Values.image.tag -}}
+{{- $tag := .Values.image.tag | toString -}}
+{{- printf "%s/%s:%s" .Values.image.registry .Values.image.repository $tag -}}
 {{- end -}}
 
 {{/*
