@@ -68,6 +68,16 @@ validate_chart_yaml() {
   done
 }
 
+# Check if all values are mentionned in a file
+var_checker() {
+  for var in $(grep -R '.Values' ${1}/templates/ | sed 's/.*\.Values\.\([a-zA-Z.]*\).*/\1/g' | uniq); do
+    if ! grep --quiet "${var}" ${1}/README.md; then
+      echo "Error: ${var} is not present in README.md"
+      exitCode=1
+    fi
+  done
+}
+
 # include the semvercompare function
 curDir="$(dirname "$0")"
 source "$curDir/../semvercompare.sh"
@@ -101,6 +111,8 @@ for directory in ${CHANGED_FOLDERS}; do
 
     semvercompare ${directory}
 
+    var_checker ${directory}
+
     # Check for the existence of the NOTES.txt file. This is required for charts
     # in this repo.
     if [ ! -f ${directory}/templates/NOTES.txt ]; then
@@ -113,4 +125,3 @@ for directory in ${CHANGED_FOLDERS}; do
 done
 
 exit $exitCode
-
