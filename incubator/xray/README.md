@@ -107,7 +107,7 @@ For this, pass the parameter: `global.mongoUrl=${XRAY_MONGODB_CONN_URL}`.
 # MongoDB user: xray
 # MongoDB password: password1_X
 
-$ export XRAY_MONGODB_CONN_URL='mongodb://xray:password1_X@custom-mongodb.local:27017/?authSource=xray&authMechanism=SCRAM-SHA-1'
+$ export XRAY_MONGODB_CONN_URL='mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@custom-mongodb.local:27017/?authSource=${MONGODB_DATABSE}&authMechanism=SCRAM-SHA-1'
 $ helm install -n xray --set global.mongoUrl=${XRAY_MONGODB_CONN_URL} incubator/xray
 ```
 
@@ -126,7 +126,7 @@ For this, pass the parameters: `postgresql.enabled=false` and `global.postgresql
 # PostgreSQL user: xray
 # PostgreSQL password: password2_X
 
-$ export XRAY_POSTGRESQL_CONN_URL='postgres://xray:password2_X@custom-postgresql.local:5432/xraydb?sslmode=disable'
+$ export XRAY_POSTGRESQL_CONN_URL='postgres://${POSTGRESQL_USER}:${POSTGRESQL_PASSWORD}@custom-postgresql.local:5432/${POSTGRESQL_DATABASE}?sslmode=disable'
 $ helm install -n xray --set postgresql.enabled=false,global.postgresqlUrl=${XRAY_POSTGRESQL_CONN_URL} incubator/xray
 ```
 
