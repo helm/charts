@@ -33,8 +33,19 @@ spec:
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
-{{- if .Values.dashboards }}
       initContainers:
+{{- /* Since grafana 5.1.0 the files need to be owned by user id 472 */ -}}
+{{- /* http://docs.grafana.org/installation/docker/#migration-from-a-previous-version-of-the-docker-container-to-5-1-or-later */ -}}
+{{- if semverCompare ">= 5.1.0" .Values.image.tag }}
+        - name: chown
+          image: "{{ .Values.chownImage.repository }}:{{ .Values.chownImage.tag }}"
+          command: ["chown", "-R", "472:472", "/var/lib/grafana"]
+          volumeMounts:
+          - name: storage
+            mountPath: "/var/lib/grafana"
+            subPath: {{ .Values.persistence.subPath }}
+{{- end }}
+{{- if .Values.dashboards }}
         - name: download-dashboards
           image: "{{ .Values.downloadDashboardsImage.repository }}:{{ .Values.downloadDashboardsImage.tag }}"
           imagePullPolicy: {{ .Values.downloadDashboardsImage.pullPolicy }}
