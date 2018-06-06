@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `service.nodePort`                  | Port to bind to for NodePort service type                                                    | `nil`                                                    |
 | `persistence.enabled`               | Use a PVC to persist data                                                                    | `true`                                                   |
 | `persistence.storageClass`          | Storage class of backing PVC                                                                 | `nil` (uses alpha storage class annotation)              |
+| `persistence.existingClaim`         | Use an existing PVC                                                                      | `nil` (uses dynamic provisioning)              |
 | `persistence.accessMode`            | Use volume as ReadOnly or ReadWrite                                                          | `ReadWriteOnce`                                          |
 | `persistence.size`                  | Size of data volume                                                                          | `8Gi`                                                    |
 | `nodeSelector`                      | Node labels for pod assignment                                                               | {}                                                       |
