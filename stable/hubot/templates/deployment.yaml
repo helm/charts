@@ -2,7 +2,6 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "hubot.fullname" . }}
-  namespace: {{ .Values.namespace }}
   labels:
     app: {{ template "hubot.name" . }}
     chart: {{ template "hubot.chart" . }}
