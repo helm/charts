@@ -160,13 +160,6 @@ keycloak:
       value"3"
 ```
 
-### Setting a Custom Realm
-
-A realm can be added by creating a secret or configmap for the realm .json file and then supplying this into the chart. 
-It could be mounted using extraVolumeMounts and then specified in startParams using -Dimport. 
-Alternatively, the file could be added to the image (set in keycloak.image) and then referenced by -Dimport.
-Or commands can be run to configure a realm using kcadm.sh in postStartScript.
-
 ### WildFly Configuration
 
 WildFly can be configured via its [command line interface (CLI)](https://docs.jboss.org/author/display/WFLY/Command+Line+Interface).
