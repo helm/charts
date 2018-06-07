@@ -3,7 +3,7 @@ description: Apache Kafka is publish-subscribe messaging rethought as a distribu
   commit log.
 name: kafka
 version: 0.7.3
-appVersion: 4.0.1
+appVersion: 4.0.2
 keywords:
 - kafka
 - zookeeper
