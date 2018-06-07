@@ -1,6 +1,6 @@
 {{- if eq .Values.service.type "ClusterIP" "NodePort" }}
 Minio can be accessed via port {{ .Values.service.port }} on the following DNS name from within your cluster:
-{{ template "minio.fullname" . }}-svc.{{ .Release.Namespace }}.svc.{{ .Values.kubernetes_cluster_name }}
+{{ template "minio.fullname" . }}-svc.{{ .Release.Namespace }}.svc.{{ .Values.kubernetesClusterName }}
 
 To access Minio from localhost, run the below commands:
 

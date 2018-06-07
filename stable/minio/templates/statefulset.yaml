@@ -34,7 +34,7 @@ spec:
           args:
             - server
             {{- range $i := until $nodeCount }}
-            - http://{{ template "minio.fullname" $ }}-{{ $i }}.{{ template "minio.fullname" $ }}.{{ $.Release.Namespace }}.svc.{{ .Values.kubernetes_cluster_name }}{{ $.Values.mountPath }}
+            - http://{{ template "minio.fullname" $ }}-{{ $i }}.{{ template "minio.fullname" $ }}.{{ $.Release.Namespace }}.svc.{{ .Values.kubernetesClusterName }}{{ $.Values.mountPath }}
             {{- end }}
             {{- end }}
           volumeMounts:

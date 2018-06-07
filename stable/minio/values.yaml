@@ -20,7 +20,7 @@ mode: standalone
 
 ## Kubernetes cluster name
 ##
-kubernetes_cluster_name: cluster.local
+kubernetesClusterName: cluster.local
 
 ## Set default accesskey, secretkey, Minio config file path, volume mount path and
 ## number of nodes (only used for Minio distributed mode)
