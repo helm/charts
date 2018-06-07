@@ -25,10 +25,14 @@ consulAgent:
   # Optionally override the agent's http port
   HttpPort: 8500
 
-sidecarContainers: []
-  ## Additional containers to be added to the Vault pod
+sidecarContainer:
+  #enabled: true
+  ## Additional container to be added to the Vault pod
   # - name: vault-unsealer
   #   image: vault-unsealer:latest
+  customSecrets: []
+    # - secretName: unseal-keys
+    #   mountPath: /vault/keys
 
 service:
   name: vault

@@ -78,9 +78,15 @@ spec:
         - name: {{ .secretName }}
           mountPath: {{ .mountPath }}
         {{- end }}
-{{- if .Values.sidecarContainers }}
-{{ toYaml .Values.sidecarContainers | indent 6 }}
-{{- end }}
+      {{- if .Values.sidecarContainer.enabled }}
+      - name: {{ .name }}
+        image: {{ .image }}
+        volumeMounts:
+        {{- range .Values.sidecarContainer.customSecrets }}
+        - name: {{ .secretName }}
+          mountPath: {{ .mountPath }}
+        {{- end }}        
+      {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       {{- if .Values.affinity }}
@@ -124,6 +130,11 @@ spec:
         - name: vault-root
           emptyDir: {}
         {{- range .Values.vault.customSecrets }}
+        - name: {{ .secretName }}
+          secret:
+            secretName: {{ .secretName }}
+        {{- end }}
+        {{- range .Values.sidecarContainer.customSecrets }}
         - name: {{ .secretName }}
           secret:
             secretName: {{ .secretName }}
