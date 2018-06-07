@@ -79,7 +79,7 @@ sync_repo() {
         fi
     done
 
-    if helm repo index --url "$sync_dir" --merge "$index_dir/index.yaml" "$sync_dir"; then
+    if helm repo index --url "$bucket" --merge "$index_dir/index.yaml" "$sync_dir"; then
         # Move updated index.yaml to sync folder so we don't push the old one again
         mv -f "$sync_dir/index.yaml" "$index_dir/index.yaml"
 
