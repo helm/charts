@@ -35,7 +35,11 @@ spec:
             - containerPort: 9091
           readinessProbe:
             httpGet:
+            {{- if (index .Values "pushgateway" "extraArgs" "web.route-prefix") }}
+              path: /{{ index .Values "pushgateway" "extraArgs" "web.route-prefix" }}/#/status
+            {{- else }}
               path: /#/status
+            {{- end }}
               port: 9091
             initialDelaySeconds: 10
             timeoutSeconds: 10
