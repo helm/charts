@@ -1,0 +1,33 @@
+{{- if .Values.service.ingress.enabled -}}
+{{- $releaseName := .Release.Name -}}
+{{- $serviceName := default "gitea" .Values.service.nameOverride -}}
+{{- $fullName := include "gitea.fullname" . -}}
+{{- $httpPort := .Values.service.httpPort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "gitea.fullname" . }}
+  labels:
+    app: {{ template "gitea.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    {{- range $key, $value := .Values.service.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+    {{- range .Values.service.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $httpPort }}
+    {{- end -}}
+{{- if .Values.service.ingress.tls }}
+  tls:
+{{ toYaml .Values.service.ingress.tls | indent 4 }}
+{{- end -}}
+{{- end -}}

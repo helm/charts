@@ -1,0 +1,64 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "gitea.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "gitea.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "gitea.fullname" . }}
+    spec:
+      initContainers:
+        - name: copy-app-ini
+          image: alpine:3.7
+          command: ["/bin/sh"]
+          args: ["-c", "cp /config/* /config-rw/ ; chmod 777 /config-rw/*"]
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: config-rw
+              mountPath: /config-rw
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 3000
+            - containerPort: {{ .Values.service.sshPort | int }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+          env:
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config-rw
+              mountPath: /etc/gitea/conf
+      volumes:
+        - name: config
+          configMap:
+            name: {{ template "gitea.fullname" . }}-config
+        - name: config-rw
+          emptyDir: {}
+        - name: data
+      {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "gitea.fullname" . }}
+      {{- else }}
+          emptyDir: {}
+      {{- end -}}
