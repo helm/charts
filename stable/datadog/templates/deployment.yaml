@@ -135,6 +135,14 @@ spec:
 {{- if .Values.datadog.volumes }}
 {{ toYaml .Values.datadog.volumes | indent 8 }}
 {{- end }}
+      {{- if .Values.deployment.tolerations }}
+      tolerations:
+{{ toYaml .Values.deployment.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.deployment.affinity }}
+      affinity:
+{{ toYaml .Values.deployment.affinity | indent 8 }}
+      {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
 {{ end }}
 {{ end }}
