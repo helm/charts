@@ -105,7 +105,15 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-
+    {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ include "chartmuseum.fullname" . }}
+    {{- else if .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+    {{- end }}
+    {{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       {{- if (or (eq .Values.env.open.STORAGE "local") (eq .Values.env.open.STORAGE "openstack") (eq .Values.env.open.STORAGE "google"))}}
       volumes:
       {{- if (eq .Values.env.open.STORAGE "local") }}

@@ -48,68 +48,70 @@ kubectl create -f /path/to/storage_class.yaml
 The following table lists common configurable parameters of the chart and
 their default values. See values.yaml for all available options. 
 
-|       Parameter                        |           Description                                    |                         Default                     |
+|       Parameter                        |           Description                       |                         Default                     |
 |----------------------------------------|----------------------------------------------------------|-----------------------------------------------------|
-| `image.pullPolicy`                     | Container pull policy                                    | `IfNotPresent`                                      |
-| `image.repository`                     | Container image to use                                   | `chartmuseum/chartmuseum`                           |
-| `image.tag`                            | Container image tag to deploy                            | `v0.5.2`                                            |
-| `persistence.accessMode`               | Access mode to use for PVC                               | `ReadWriteOnce`                                     |
-| `persistence.enabled`                  | Whether to use a PVC for persistent storage              | `false`                                             |
-| `persistence.size`                     | Amount of space to claim for PVC                         | `8Gi`                                               |
-| `persistence.storageClass`             | Storage Class to use for PVC                             | `-`                                                 |
-| `replicaCount`                         | k8s replicas                                             | `1`                                                 |
-| `resources.limits.cpu`                 | Container maximum CPU                                    | `100m`                                              |
-| `resources.limits.memory`              | Container maximum memory                                 | `128Mi`                                             |
-| `resources.requests.cpu`               | Container requested CPU                                  | `80m`                                               |
-| `resources.requests.memory`            | Container requested memory                               | `64Mi`                                              |
-| `nodeSelector`                         | Map of node labels for pod assignment                    | `{}`                                                |
-| `tolerations`                          | List of node taints to tolerate                          | `[]`                                                |
-| `affinity`                             | Map of node/pod affinities                               | `{}`                                                |
-| `env.open.STORAGE`                     | Storage Backend to use                                   | `local`                                             |
-| `env.open.ALIBABA_BUCKET`              | Bucket to store charts in for Alibaba                    | ``                                                  |
-| `env.open.ALIBABA_PREFIX`              | Prefix to store charts under for Alibaba                 | ``                                                  |
-| `env.open.ALIBABA_ENDPOINT`            | Alternative Alibaba endpoint                             | ``                                                  |
-| `env.open.ALIBABA_SSE`                 | Server side encryption algorithm to use                  | ``                                                  |
-| `env.open.AMAZON_BUCKET`               | Bucket to store charts in for AWS                        | ``                                                  |
-| `env.open.AMAZON_ENDPOINT`             | Alternative AWS endpoint                                 | ``                                                  |
-| `env.open.AMAZON_PREFIX`               | Prefix to store charts under for AWS                     | ``                                                  |
-| `env.open.AMAZON_REGION`               | Region to use for bucket access for AWS                  | ``                                                  |
-| `env.open.AMAZON_SSE`                  | Server side encryption algorithm to use                  | ``                                                  |
-| `env.open.GOOGLE_BUCKET`               | Bucket to store charts in for GCP                        | ``                                                  |
-| `env.open.GOOGLE_PREFIX`               | Prefix to store charts under for GCP                     | ``                                                  |
-| `env.open.STORAGE_MICROSOFT_CONTAINER` | Container to store charts under for MS                   | ``                                                  |
-| `env.open.STORAGE_MICROSOFT_PREFIX`    | Prefix to store charts under for MS                      | ``                                                  |
-| `env.open.STORAGE_OPENSTACK_CONTAINER` | Container to store charts for openstack                  | ``                                                  |
-| `env.open.STORAGE_OPENSTACK_PREFIX`    | Prefix to store charts for openstack                     | ``                                                  |
-| `env.open.STORAGE_OPENSTACK_REGION`    | Region of openstack container                            | ``                                                  |
-| `env.open.STORAGE_OPENSTACK_CACERT`    | Path to a CA cert bundle for openstack                   | ``                                                  |
-| `env.open.CHART_POST_FORM_FIELD_NAME`  | Form field to query for chart file content               | ``                                                  |
-| `env.open.PROV_POST_FORM_FIELD_NAME`   | Form field to query for chart provenance                 | ``                                                  |
-| `env.open.DEPTH`                       | levels of nested repos for multitenancy.                 | `0`                                                 |
-| `env.open.DEBUG`                       | Show debug messages                                      | `false`                                             |
-| `env.open.LOG_JSON`                    | Output structured logs in JSON                           | `true`                                              |
-| `env.open.DISABLE_STATEFILES`          | Disable use of index-cache.yaml                          | `false`                                             |
-| `env.open.DISABLE_METRICS`             | Disable Prometheus metrics                               | `true`                                              |
-| `env.open.DISABLE_API`                 | Disable all routes prefixed with /api                    | `true`                                              |
-| `env.open.ALLOW_OVERWRITE`             | Allow chart versions to be re-uploaded                   | `false`                                             |
-| `env.open.CHART_URL`                   | Absolute url for .tgzs in index.yaml                     | ``                                                  |
-| `env.open.AUTH_ANONYMOUS_GET`          | Allow anon GET operations when auth is used              | `false`                                             |
-| `env.open.CONTEXT_PATH`                | Set the base context path                                | ``                                                  |
-| `env.open.INDEX_LIMIT`                 | Parallel scan limit for the repo indexer                 | ``                                                  |
-| `env.open.CACHE`                       | Cache store, can be one of: redis                        | ``                                                  |
-| `env.open.CACHE_REDIS_ADDR`            | Address of Redis service (host:port)                     | ``                                                  |
-| `env.open.CACHE_REDIS_DB`              | Redis database to be selected after connect              | `0`                                                 |
-| `env.secret.BASIC_AUTH_USER`           | Username for basic HTTP authentication                   | ``                                                  |
-| `env.secret.BASIC_AUTH_PASS`           | Password for basic HTTP authentication                   | ``                                                  |
-| `env.secret.CACHE_REDIS_PASSWORD`      | Redis requirepass server configuration                   | ``                                                  |
-| `gcp.secret.enabled`                   | Flag for the GCP service account                         | `false`                                             |
-| `gcp.secret.name`                      | Secret name for the GCP json file                        | ``                                                  |
-| `gcp.secret.key`                       | Secret key for te GCP json file                          | `credentials.json`                                  |
+| `image.pullPolicy`                     | Container pull policy                       | `IfNotPresent`                                      |
+| `image.repository`                     | Container image to use                      | `chartmuseum/chartmuseum`                           |
+| `image.tag`                            | Container image tag to deploy               | `v0.5.2`                                            |
+| `persistence.accessMode`               | Access mode to use for PVC                  | `ReadWriteOnce`                                     |
+| `persistence.enabled`                  | Whether to use a PVC for persistent storage | `false`                                             |
+| `persistence.size`                     | Amount of space to claim for PVC            | `8Gi`                                               |
+| `persistence.storageClass`             | Storage Class to use for PVC                | `-`                                                 |
+| `replicaCount`                         | k8s replicas                                | `1`                                                 |
+| `resources.limits.cpu`                 | Container maximum CPU                       | `100m`                                              |
+| `resources.limits.memory`              | Container maximum memory                    | `128Mi`                                             |
+| `resources.requests.cpu`               | Container requested CPU                     | `80m`                                               |
+| `resources.requests.memory`            | Container requested memory                  | `64Mi`                                              |
+| `serviceAccount.create`                | If true, create the service account         | `false`                                             |
+| `serviceAccount.name`                  | Name of the serviceAccount to create or use | `{{ chartmuseum.fullname }}`                        |
+| `securityContext`                      | Map of securityContext for the pod          | `{}`                                                |
+| `nodeSelector`                         | Map of node labels for pod assignment       | `{}`                                                |
+| `tolerations`                          | List of node taints to tolerate             | `[]`                                                |
+| `affinity`                             | Map of node/pod affinities                  | `{}`                                                |
+| `env.open.STORAGE`                     | Storage Backend to use                      | `local`                                             |
+| `env.open.ALIBABA_BUCKET`              | Bucket to store charts in for Alibaba       | ``                                                  |
+| `env.open.ALIBABA_PREFIX`              | Prefix to store charts under for Alibaba    | ``                                                  |
+| `env.open.ALIBABA_ENDPOINT`            | Alternative Alibaba endpoint                | ``                                                  |
+| `env.open.ALIBABA_SSE`                 | Server side encryption algorithm to use     | ``                                                  |
+| `env.open.AMAZON_BUCKET`               | Bucket to store charts in for AWS           | ``                                                  |
+| `env.open.AMAZON_ENDPOINT`             | Alternative AWS endpoint                    | ``                                                  |
+| `env.open.AMAZON_PREFIX`               | Prefix to store charts under for AWS        | ``                                                  |
+| `env.open.AMAZON_REGION`               | Region to use for bucket access for AWS     | ``                                                  |
+| `env.open.AMAZON_SSE`                  | Server side encryption algorithm to use     | ``                                                  |
+| `env.open.GOOGLE_BUCKET`               | Bucket to store charts in for GCP           | ``                                                  |
+| `env.open.GOOGLE_PREFIX`               | Prefix to store charts under for GCP        | ``                                                  |
+| `env.open.STORAGE_MICROSOFT_CONTAINER` | Container to store charts under for MS      | ``                                                  |
+| `env.open.STORAGE_MICROSOFT_PREFIX`    | Prefix to store charts under for MS         | ``                                                  |
+| `env.open.STORAGE_OPENSTACK_CONTAINER` | Container to store charts for openstack     | ``                                                  |
+| `env.open.STORAGE_OPENSTACK_PREFIX`    | Prefix to store charts for openstack        | ``                                                  |
+| `env.open.STORAGE_OPENSTACK_REGION`    | Region of openstack container               | ``                                                  |
+| `env.open.STORAGE_OPENSTACK_CACERT`    | Path to a CA cert bundle for openstack      | ``                                                  |
+| `env.open.CHART_POST_FORM_FIELD_NAME`  | Form field to query for chart file content  | ``                                                  |
+| `env.open.PROV_POST_FORM_FIELD_NAME`   | Form field to query for chart provenance    | ``                                                  |
+| `env.open.DEPTH`                       | levels of nested repos for multitenancy.    | `0`                                                 |
+| `env.open.DEBUG`                       | Show debug messages                         | `false`                                             |
+| `env.open.LOG_JSON`                    | Output structured logs in JSON              | `true`                                              |
+| `env.open.DISABLE_STATEFILES`          | Disable use of index-cache.yaml             | `false`                                             |
+| `env.open.DISABLE_METRICS`             | Disable Prometheus metrics                  | `true`                                              |
+| `env.open.DISABLE_API`                 | Disable all routes prefixed with /api       | `true`                                              |
+| `env.open.ALLOW_OVERWRITE`             | Allow chart versions to be re-uploaded      | `false`                                             |
+| `env.open.CHART_URL`                   | Absolute url for .tgzs in index.yaml        | ``                                                  |
+| `env.open.AUTH_ANONYMOUS_GET`          | Allow anon GET operations when auth is used | `false`                                             |
+| `env.open.CONTEXT_PATH`                | Set the base context path                   | ``                                                  |
+| `env.open.INDEX_LIMIT`                 | Parallel scan limit for the repo indexer    | ``                                                  |
+| `env.open.CACHE`                       | Cache store, can be one of: redis           | ``                                                  |
+| `env.open.CACHE_REDIS_ADDR`            | Address of Redis service (host:port)        | ``                                                  |
+| `env.open.CACHE_REDIS_DB`              | Redis database to be selected after connect | `0`                                                 |
+| `env.secret.BASIC_AUTH_USER`           | Username for basic HTTP authentication      | ``                                                  |
+| `env.secret.BASIC_AUTH_PASS`           | Password for basic HTTP authentication      | ``                                                  |
+| `env.secret.CACHE_REDIS_PASSWORD`      | Redis requirepass server configuration      | ``                                                  |
+| `gcp.secret.enabled`                   | Flag for the GCP service account            | `false`                                             |
+| `gcp.secret.name`                      | Secret name for the GCP json file           | ``                                                  |
+| `gcp.secret.key`                       | Secret key for te GCP json file             | `credentials.json`                                  |
 | `openstack.secret.enabled`             | Flag for custom openstack secret file                    | `false`                                             |
 | `openstack.secret.name`                | Secret name for openstack secret file                    | ``                                                  |
 | `openstack.secret.enKeys`              | Keys in the secret file to load as env variables         | `[OS_AUTH_URL,OS_PROJECT_NAME,OS_DOMAIN_NAME,OS_USERNAME,OS_PASSWORD]` |
 | `openstack.secret.CABundleKey`         | Key in the secret file that contains a custom CA bundle  | `OS_CA_BUNDLE`                                      |
-
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
