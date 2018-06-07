@@ -29,10 +29,10 @@ main() {
     setup_helm_client
     authenticate
 
-    if ! sync_repo stable "$GCS_BUCKET_STABLE"; then
+    if ! sync_repo stable "$GCS_BUCKET_STABLE" "$STABLE_REPO_URL"; then
         log_error "Not all stable charts could be packaged and synced!"
     fi
-    if ! sync_repo incubator "$GCS_BUCKET_INCUBATOR"; then
+    if ! sync_repo incubator "$GCS_BUCKET_INCUBATOR" "$INCUBATOR_REPO_URL"; then
         log_error "Not all incubator charts could be packaged and synced!"
     fi
 }
@@ -57,6 +57,7 @@ authenticate() {
 sync_repo() {
     local repo_dir="${1?Specify repo dir}"
     local bucket="${2?Specify repo bucket}"
+    local repo_url="${3?Specify repo url}"
     local sync_dir="${repo_dir}-sync"
     local index_dir="${repo_dir}-index"
 
@@ -79,7 +80,7 @@ sync_repo() {
         fi
     done
 
-    if helm repo index --url "$bucket" --merge "$index_dir/index.yaml" "$sync_dir"; then
+    if helm repo index --url "$repo_url" --merge "$index_dir/index.yaml" "$sync_dir"; then
         # Move updated index.yaml to sync folder so we don't push the old one again
         mv -f "$sync_dir/index.yaml" "$index_dir/index.yaml"
 
