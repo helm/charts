@@ -6,7 +6,7 @@ metadata:
     chart: {{ template "haproxy-ingress.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  name: {{ template "haproxy-ingress.controller.fullname" . }}
+  name: {{ template "haproxy-ingress.fullname" . }}
 spec:
   updateStrategy:
     type: RollingUpdate
@@ -22,7 +22,7 @@ spec:
     spec:
       serviceAccountName: {{ template "haproxy-ingress.serviceAccountName" . }}
       containers:
-        - name: {{ template "haproxy-ingress.controller.fullname" . }}
+        - name: {{ template "haproxy-ingress.fullname" . }}
           image:  "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
           imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
           args:

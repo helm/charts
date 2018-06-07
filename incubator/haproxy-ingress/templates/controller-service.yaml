@@ -13,7 +13,7 @@ metadata:
     chart: {{ template "haproxy-ingress.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  name: {{ template "haproxy-ingress.controller.fullname" . }}
+  name: {{ template "haproxy-ingress.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
   clusterIP: "{{ .Values.controller.service.clusterIP }}"
