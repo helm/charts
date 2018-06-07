@@ -10,42 +10,42 @@ metadata:
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
-      metadata:
-        labels:
-          app: {{ template "tomcat.name" . }}
-          release: {{ .Release.Name }}
-      spec:
-         volumes:
-         - name: app-volume
-           emptyDir: {}
-         containers:
-         - name: war
-           image: {{ .Values.image.webarchive.repository }}:{{ .Values.image.webarchive.tag }}
-           imagePullPolicy: {{ .Values.image.pullPolicy }}
-           volumeMounts:
-           - name: app-volume
-             mountPath: /app
-         - name: {{ .Chart.Name }}
-           image: {{ .Values.image.tomcat.repository }}:{{ .Values.image.tomcat.tag }}
-           imagePullPolicy: {{ .Values.image.pullPolicy }}
-           volumeMounts:
-           - name: app-volume
-             mountPath: {{ .Values.deploy.directory }}
-         ports:
-         - containerPort: {{ .Values.service.internalPort }}
-           hostPort: 8009
-         livenessProbe:
-           tcpSocket:
-             port: 8080
-           initialDelaySeconds: 15
-           periodSeconds: 20  
-         readinessProbe:
-           httpGet:
-             path: /
-             port: 8080
-           initialDelaySeconds: 15
-           periodSeconds: 30  
-         resources:
+    metadata:
+      labels:
+        app: {{ template "tomcat.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      volumes:
+      - name: app-volume
+        emptyDir: {}
+      containers:
+      - name: war
+        image: {{ .Values.image.webarchive.repository }}:{{ .Values.image.webarchive.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+        - name: app-volume
+          mountPath: /app
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.tomcat.repository }}:{{ .Values.image.tomcat.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+        - name: app-volume
+          mountPath: {{ .Values.deploy.directory }}
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+          hostPort: 8009
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20  
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 30  
+        resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
