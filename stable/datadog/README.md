@@ -59,9 +59,10 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `kubeStateMetrics.enabled`  | If true, create kube-state-metrics | `true`                                    |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
+| `daemonset.nodeSelector`    | Node selectors                     | `nil`                                     |
+| `daemonset.affinity`        | Node affinities                    | `nil`                                     |
 | `daemonset.useHostNetwork`  | If true, use the host's network    | `nil`                                     |
 | `daemonset.useHostPort`     | If true, use the same ports for both host and container  | `nil`               |
-| `daemonset.nodeSelector`    | Node labels for pod assignment     | `{}`                                      |
 | `datadog.leaderElection`    | Adds the leader Election feature   | `false`                                   |
 | `datadog.leaderLeaseDuration`| The duration for which a leader stays elected.| `nil`                         |
 | `deployment.affinity`       | Node / Pod affinities              | `{}`                                      |
