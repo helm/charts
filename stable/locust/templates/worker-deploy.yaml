@@ -23,7 +23,7 @@ spec:
     spec:
     {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
-      - name: {{ .Values.image.pullSecrets }}
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
     {{- end }}
       containers:
       - name: locust
