@@ -169,6 +169,10 @@ spec:
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.daemonset.affinity }}
+      affinity:
+{{ toYaml .Values.daemonset.affinity | indent 8 }}
+      {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       {{- if .Values.daemonset.nodeSelector }}
       nodeSelector:
