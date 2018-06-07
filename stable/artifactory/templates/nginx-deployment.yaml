@@ -69,7 +69,7 @@ spec:
                     /etc/nginx/conf.d/artifactory.conf;
                 fi;
                 if ! grep -q 'proxy_http_version' /etc/nginx/conf.d/artifactory.conf; then
-                sed -i 's,\(proxy_pass .*\),proxy_http_version  1.1;\n    \1,g' /etc/nginx/conf.d/artifactory.conf;
+                sed -i 's,\(proxy_next_upstream .*\),proxy_http_version  1.1;\n    \1,g' /etc/nginx/conf.d/artifactory.conf;
                 fi;
                 sleep 5; nginx -s reload; touch /var/log/nginx/conf.done
         env:
