@@ -84,6 +84,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `ingress.annotations`      | Ingress annotations                 | `{}`                                                    |
 | `ingress.hosts`            | Ingress accepted hostnames          | `[]`                                                    |
 | `ingress.tls`              | Ingress TLS configuration           | `[]`                                                    |
+| `kubernetesClusterName`    | Name of the Kubernetes cluster      | `cluster.local`                                         |
 | `mode`                     | Minio server mode (`standalone`, `shared` or `distributed`)| `standalone`                     |
 | `replicas`                 | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 16 | `4`    |
 | `accessKey`                | Default access key (5 to 20 characters) | `AKIAIOSFODNN7EXAMPLE`                              |
