@@ -134,7 +134,7 @@ spec:
             fieldRef:
               fieldPath: status.podIP
         - name: KAFKA_HEAP_OPTS
-          value: {{ .Values.heapOptions }}
+          value: {{ .Values.kafkaHeapOptions }}
         {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
         - name: KAFKA_ZOOKEEPER_CONNECT
           value: {{ include "zookeeper.url" . | quote }}

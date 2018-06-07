@@ -25,6 +25,10 @@ elasticsearch:
   # whether or not to connect to es_host using TLS
   useSsl: "False"
 
+# Command and args override for container e.g. (https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/)
+# command: ["YOUR_CUSTOM_COMMAND"]
+# args: ["YOUR", "CUSTOM", "ARGS"]
+
 # rule configurations e.g. (http://elastalert.readthedocs.io/en/latest/)
 rules: {}
   # deadman_slack: |-
