@@ -185,3 +185,13 @@ ui:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
+
+## Kafka Trigger configuration Configuration
+kafkaTrigger:
+  enabled: false
+  deployment:
+    image:
+      repository: bitnami/kafka-trigger-controller
+      tag: v1.0.0-alpha.3
+      pullPolicy: IfNotPresent
+  kafkaBrokers: localhost:9092
