@@ -57,7 +57,7 @@ Parameter | Description | Default
 `controller.extraContainers` | Sidecar containers to add to the controller pod. See [LemonLDAP::NG controller](https://github.com/lemonldap-ng-controller/lemonldap-ng-controller) as example | `{}`
 `controller.extraVolumeMounts` | Additional volumeMounts to the controller main container | `{}`
 `controller.extraVolumes` | Additional volumes to the controller pod | `{}`
-`controller.initContainers` | Containers, which are run before the app containers are started | `{}`
+`controller.initContainers` | Containers, which are run before the app containers are started | `[]`
 `controller.ingressClass` | name of the ingress class to route through this controller | `nginx`
 `controller.scope.enabled` | limit the scope of the ingress controller | `false` (watch all namespaces)
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)
