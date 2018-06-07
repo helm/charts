@@ -15,9 +15,6 @@ spec:
     app: {{ template "kiam.name" . }}
     component: "{{ .Values.server.name }}"
     release: {{ .Release.Name }}
-    {{- if .Values.server.podLabels }}
-{{ toYaml .Values.server.podLabels | indent 4 }}
-    {{- end }}
   ports:
   - name: grpc
     port: {{ .Values.server.service.port }}

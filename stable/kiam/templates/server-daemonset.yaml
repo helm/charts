@@ -15,9 +15,6 @@ spec:
       app: {{ template "kiam.name" . }}
       component: "{{ .Values.server.name }}"
       release: {{ .Release.Name }}
-      {{- if .Values.server.podLabels }}
-{{ toYaml .Values.server.podLabels | indent 6 }}
-      {{- end }}
   template:
     metadata:
       {{- if .Values.server.podAnnotations }}
