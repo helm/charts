@@ -66,8 +66,6 @@ Parameter | Description | Default
 `keycloak.tolerations` | Node taints to tolerate | `[]`
 `keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
 `keycloak.preStartScript` | Custom script to run before Keycloak starts up | ``
-`keycloak.postStartScript` | Custom script to run after Keycloak starts up | ``
-`keycloak.startParams` | Parameters to the start command | ``
 `keycloak.livenessProbe.initialDelaySeconds` | Liveness Probe `initialDelaySeconds` | `120`
 `keycloak.livenessProbe.timeoutSeconds` | Liveness Probe `timeoutSeconds` | `5`
 `keycloak.readinessProbe.initialDelaySeconds` | Readiness Probe `initialDelaySeconds` | `30`
