@@ -37,9 +37,11 @@ daemonset:
   # tolerations: []
 
   ## Allow the DaemonSet to schedule on selected nodes
+  # Ref: https://kubernetes.io/docs/user-guide/node-selection/
   # nodeSelector: {}
 
   ## Allow the DaemonSet to schedule ussing affinity rules
+  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   # affinity: {}
 
   ## Allow the DaemonSet to perform a rolling update on helm update
