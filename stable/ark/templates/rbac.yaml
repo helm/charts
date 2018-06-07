@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: ark
+  name: {{ template "ark.fullname" . }}-server
   labels:
     chart: {{ template "ark.chart" . }}
     heritage: {{ .Release.Service }}
@@ -20,15 +20,15 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  annotations:
-    rbac.authorization.kubernetes.io/autoupdate: "true"
+  name: {{ template "ark.fullname" . }}-hook
   labels:
     kubernetes.io/bootstrapping: rbac-defaults
     chart: {{ template "ark.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     app: {{ template "ark.name" . }}
-  name: deploy-ark
+  annotations:
+    rbac.authorization.kubernetes.io/autoupdate: "true"
 rules:
   - apiGroups: ['ark.heptio.com']
     verbs: ["*"]
@@ -37,7 +37,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: deploy-ark
+  name: {{ template "ark.fullname" . }}-hook
   labels:
     chart: {{ template "ark.chart" . }}
     heritage: {{ .Release.Service }}
@@ -46,7 +46,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: deploy-ark
+  name: {{ template "ark.fullname" . }}-hook
 subjects:
   - kind: ServiceAccount
     name: {{ template "ark.hookServiceAccount" . }}

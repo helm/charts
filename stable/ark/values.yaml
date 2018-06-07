@@ -1,31 +1,18 @@
-# Default values for ark
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-configuration:
-  # cloudprovider and bucket are always needed
-  cloudprovider: ChangeMe
-  bucket: ChangeMe
-  # region is aws only
-  region: ChangeMe
-  # apitimeout is azure only
-  apitimeout: ChangeMe
-  # credentials not needed if kube2iam is enabled
-  credentials: ChangeMe
-  # following are default values
-  backupSyncPeriod: 60m
-  gcSyncPeriod: 60m
-  scheduleSyncPeriod: 1m
-  restoreOnlyMode: false
-
 image:
   repository: gcr.io/heptio-images/ark
-  tag: v0.8.1
+  tag: v0.8.2
   pullPolicy: IfNotPresent
 
-# this must be created manually before helm install, see README
-secret:
-  name: cloud-credentials
+# A docker image with kubectl installed
+kubectl:
+  image:
+    repository: claranet/gcloud-kubectl-docker
+    tag: 1.0.0
+    pullPolicy: IfNotPresent
+
+# Only kube2iam: change the AWS_ACCOUNT_ID and HEPTIO_ARK_ROLE_NAME
+podAnnotations: {}
+#  iam.amazonaws.com/role: arn:aws:iam::<AWS_ACCOUNT_ID>:role/<HEPTIO_ARK_ROLE_NAME>
 
 rbac:
   create: true
@@ -38,17 +25,35 @@ serviceAccount:
     create: true
     name:
 
-# Only kube2iam: change the AWS_ACCOUNT_ID and HEPTIO_ARK_ROLE_NAME
-#podAnnotations:
-#  iam.amazonaws.com/role: arn:aws:iam::<AWS_ACCOUNT_ID>:role/<HEPTIO_ARK_ROLE_NAME>
-
-# A docker image with kubectl installed
-kubectl:
-  image:
-    repository: claranet/gcloud-kubectl-docker
-    tag: 1.0.0
-    secret:
-
 tolerations: []
 
 nodeSelector: {}
+
+## Parameters for the ' default' Config resource
+## See https://heptio.github.io/ark/v0.8.1/config-definition
+configuration:
+  persistentVolumeProvider: {}
+  #  name:
+  #  config:
+  #    region:
+  #    apiTimeout:
+
+  backupStorageProvider:
+    name:
+    bucket:
+    config: {}
+    #  region:
+    #  s3ForcePathStyle:
+    #  s3Url:
+    #  kmsKeyId:
+
+  backupSyncPeriod: 60m
+  gcSyncPeriod: 60m
+  scheduleSyncPeriod: 1m
+  resourcePriorities: []
+  restoreOnlyMode: false
+
+credentials:
+  existingSecret:
+  useSecret: true
+  secretContents: {}

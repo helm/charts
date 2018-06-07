@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: delete-ark-config
+  name: {{ template "ark.fullname" . }}-delete-config
   labels:
     chart: {{ template "ark.chart" . }}
     heritage: {{ .Release.Service }}
@@ -10,27 +10,29 @@ metadata:
   annotations:
     "helm.sh/hook": pre-delete
     "helm.sh/hook-delete-policy": hook-succeeded
-    "helm.sh/hook-weight": "2"
 spec:
   template:
     metadata:
-      name: delete-ark-config
+      labels:
+        release: {{ .Release.Name }}
+        app: {{ template "ark.name" . }}
     spec:
       restartPolicy: Never
       containers:
         - name: delete-ark-config
-          image: {{ required "A docker image with kubectl" .Values.kubectl.image.repository }}:{{ required "A docker image with kubectl" .Values.kubectl.image.tag }}
-          imagePullPolicy: Always
-          command: ["kubectl", "delete", "-f", "/tmp/"]
-          {{- if .Values.kubectl.image.secret }}
-          imagePullSecrets:
-            - name: {{ .Values.kubectl.image.secret }}
-          {{- end }}
+          image: "{{ .Values.kubectl.image.repository }}:{{ .Values.kubectl.image.tag }}"
+          imagePullPolicy: {{ .Values.kubectl.image.pullPolicy }}
+          command:
+            - kubectl
+          args:
+            - delete
+            - -f
+            - /config
           volumeMounts:
             - name: ark-config
-              mountPath: /tmp
+              mountPath: /config
       volumes:
         - name: ark-config
           configMap:
-            name: ark-config
+            name: {{ template "ark.fullname" . }}
       serviceAccountName: {{ template "ark.hookServiceAccount" . }}

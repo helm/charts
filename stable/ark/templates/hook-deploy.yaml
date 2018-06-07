@@ -1,7 +1,8 @@
+{{- if and .Values.configuration.backupStorageProvider.name .Values.configuration.backupStorageProvider.bucket -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: deploy-ark-config
+  name: {{ template "ark.fullname" . }}-create-config
   labels:
     chart: {{ template "ark.chart" . }}
     heritage: {{ .Release.Service }}
@@ -13,23 +14,27 @@ metadata:
 spec:
   template:
     metadata:
-      name: deploy-ark-config
+      labels:
+        release: {{ .Release.Name }}
+        app: {{ template "ark.name" . }}
     spec:
       restartPolicy: Never
       containers:
-        - name: deploy-ark-config
-          image: {{ required "A docker image with kubectl" .Values.kubectl.image.repository }}:{{ required "A docker image with kubectl" .Values.kubectl.image.tag }}
-          imagePullPolicy: Always
-          command: ["kubectl", "create", "-f", "/tmp/"]
-          {{- if .Values.kubectl.image.secret }}
-          imagePullSecrets:
-            - name: {{ .Values.kubectl.image.secret }}
-          {{- end }}
+        - name: create-ark-config
+          image: "{{ .Values.kubectl.image.repository }}:{{ .Values.kubectl.image.tag }}"
+          imagePullPolicy: {{ .Values.kubectl.image.pullPolicy }}
+          command:
+            - kubectl
+          args:
+            - create
+            - -f
+            - /config
           volumeMounts:
             - name: ark-config
-              mountPath: /tmp
+              mountPath: /config
       volumes:
         - name: ark-config
           configMap:
-            name: ark-config
+            name: {{ template "ark.fullname" . }}
       serviceAccountName: {{ template "ark.hookServiceAccount" . }}
+{{- end -}}

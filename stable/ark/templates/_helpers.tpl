@@ -36,7 +36,7 @@ Create the name of the service account to use for creating or deleting the ark c
 */}}
 {{- define "ark.hookServiceAccount" -}}
 {{- if .Values.serviceAccount.hook.create -}}
-    {{ default "hook-sa" .Values.serviceAccount.hook.name }}
+    {{ default (printf "%s-%s" (include "ark.fullname" .) "hook") .Values.serviceAccount.hook.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.hook.name }}
 {{- end -}}
@@ -47,8 +47,19 @@ Create the name of the service account to use for creating or deleting the ark s
 */}}
 {{- define "ark.serverServiceAccount" -}}
 {{- if .Values.serviceAccount.server.create -}}
-    {{ default (include "ark.fullname" .) .Values.serviceAccount.server.name }}
+    {{ default (printf "%s-%s" (include "ark.fullname" .) "server") .Values.serviceAccount.server.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.server.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name for the credentials secret.
+*/}}
+{{- define "ark.secretName" -}}
+{{- if .Values.credentials.existingSecret -}}
+  {{- .Values.credentials.existingSecret -}}
+{{- else -}}
+  {{- template "ark.fullname" . -}}
 {{- end -}}
 {{- end -}}
