@@ -110,7 +110,7 @@ securityContext: {}
 env: {}
 
 ## Create secrets out-of-band from Helm like this:
-## 
+##
 ## $ kubectl create secret generic envoy --from-file=./some-secret.txt
 ##
 secretMounts: {}
@@ -128,7 +128,7 @@ files:
       access_log_path: /dev/stdout
       address:
         socket_address: { address: 0.0.0.0, port_value: 9901 }
-    
+
     static_resources:
       listeners:
       - name: listener_0
