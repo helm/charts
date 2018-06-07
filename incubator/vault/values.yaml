@@ -26,7 +26,7 @@ consulAgent:
   HttpPort: 8500
 
 sidecarContainer:
-  #enabled: true
+  # enabled: true
   ## Additional container to be added to the Vault pod
   # - name: vault-unsealer
   #   image: vault-unsealer:latest
