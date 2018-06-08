@@ -33,7 +33,7 @@ spec:
 {{ toYaml .Values.query.nodeSelector | indent 8 }}
       containers:
       - name: {{ template "jaeger.query.name" . }}
-        image: {{ .Values.query.image }}:{{ .Values.query.tag }}
+        image: {{ .Values.query.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.query.pullPolicy }}
         env:
           - name: SPAN_STORAGE_TYPE

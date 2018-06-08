@@ -9,13 +9,14 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    app: {{ template "etcd.name" . }}
 spec:
   ports:
-  - port: {{ .Values.PeerPort }}
+  - port: {{ .Values.peerPort }}
     name: etcd-server
-  - port: {{ .Values.ClientPort }}
+  - port: {{ .Values.clientPort }}
     name: etcd-client
   clusterIP: None
   selector:
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    app: {{ template "etcd.name" . }}
+    release: {{ .Release.Name | quote }}

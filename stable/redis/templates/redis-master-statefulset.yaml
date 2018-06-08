@@ -13,7 +13,7 @@ spec:
       release: "{{ .Release.Name }}"
       role: master
       app: {{ template "redis.name" . }}
-  serviceName: "redis-master"  
+  serviceName: "redis-master"
   template:
     metadata:
       labels:
@@ -46,6 +46,9 @@ spec:
       {{- if .Values.master.tolerations }}
       tolerations:
 {{ toYaml .Values.master.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.master.schedulerName }}
+      schedulerName: "{{ .Values.master.schedulerName }}"
       {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
@@ -118,6 +121,12 @@ spec:
       - name: "redis-data"
         emptyDir: {}
   {{- else }}
+    {{- if .Values.persistence.existingClaim }}
+      volumes:
+      - name: "redis-data"
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim }}
+    {{- else }}
   volumeClaimTemplates:
     - metadata:
         name: redis-data
@@ -142,4 +151,5 @@ spec:
         storageClassName: {{ .Values.master.persistence.storageClass | quote }}
       {{- end }}
       {{- end }}
+    {{- end }}
   {{- end }}
