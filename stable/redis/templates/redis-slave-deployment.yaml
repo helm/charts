@@ -42,6 +42,9 @@ spec:
       tolerations:
 {{ toYaml (.Values.slave.tolerations | default .Values.master.tolerations) | indent 8 }}
       {{- end }}
+      {{- if .Values.slave.schedulerName }}
+      schedulerName: "{{ .Values.slave.schedulerName }}"
+      {{- end }}
     {{- with .Values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
