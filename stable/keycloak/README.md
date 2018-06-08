@@ -217,10 +217,12 @@ Then in our values.yaml we mount this with:
 And specify it as an import parameter:
 
 ```$yaml
--Dkeycloak.import=/realm/realm.json
+  extraParams: -Dkeycloak.import=/realm/realm.json
 ```
 
 Alternatively, the file could be added to the image (set in keycloak.image) and then referenced by -Dimport.
+
+After startup the web admin console for the realm should be available on the path /auth/admin/<realm name>/console/
 
 ### WildFly Configuration
 
