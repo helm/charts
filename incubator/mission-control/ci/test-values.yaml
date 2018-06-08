@@ -1,0 +1,8 @@
+# CI values for Mission-control.
+
+
+mongodb:
+  db:
+    adminPassword: password
+    mcPassword: password
+    insightPassword: password

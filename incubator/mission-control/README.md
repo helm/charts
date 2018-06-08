@@ -50,83 +50,83 @@ helm upgrade mission-control incubator/mission-control
 
 The following table lists the configurable parameters of the distribution chart and their default values.
 
-|         Parameter            |           Description             |                         Default                       |
-|------------------------------|-----------------------------------|-------------------------------------------------------|
-| `initContainerImage`           | Init Container Image       |     `alpine:3.6`                                           |
-| `imagePullPolicy`           | Container pull policy      |                   `IfNotPresent`                                    |
-| `imagePullSecrets`           | Docker registry pull secret       |                                                       |
-| `mongodb.enabled`                   | Enable Mongodb                      | `true`                              |
-| `mongodb.image.tag`                   | Mongodb docker image tag                     | `3.6.3`                              |
-| `mongodb.image.pullPolicy`                   | Mongodb Container pull policy                      | `IfNotPresent`                              |
-| `mongodb.persistence.enabled`    | Mongodb persistence volume enabled          | `true`                          |
-| `mongodb.persistence.existingClaim`   | Use an existing PVC to persist data               | `nil`                        |
-| `mongodb.persistence.storageClass`    | Storage class of backing PVC                      | `generic`                    |
-| `mongodb.persistence.size`       | Mongodb persistence volume size             | `50Gi`                         |
-| `mongodb.livenessProbe.initialDelaySeconds` | Mongodb delay before liveness probe is initiated                                                     | `40`                                                       |
-| `mongodb.readinessProbe.initialDelaySeconds`| Mongodb delay before readiness probe is initiated                                                    | `30`                                                       |
-| `mongodb.mongodbExtraFlags`                 | MongoDB additional command line flags                                                        | `["--wiredTigerCacheSizeGB=1"]`                                                       |
-| `mongodb.usePassword`                       | Enable password authentication                                                               | `false`                                                   |
-| `mongodb.db.adminUser`                   | Mongodb Database Admin User                     | `admin`                              |
-| `mongodb.db.adminPassword`                   | Mongodb Database Password for Admin user                     | `password`                              |
-| `mongodb.db.mcUser`                   | Mongodb Database Mission Control User                     | `mission_platform`                              |
-| `mongodb.db.mcPassword`                   | Mongodb Database Password for Mission Control user                     | `password`                              |
-| `mongodb.db.insightUser`                   | Mongodb Database Insight User                     | `jfrog_insight`                              |
-| `mongodb.db.insightPassword`                   | Mongodb Database password for Insight User                     | `password`                              |
-| `mongodb.db.insightSchedulerDb`                   | Mongodb Database for Scheduler                    | `insight_scheduler`                              |
-| `elasticsearch.enabled`                   | Enable Elasticsearch                      | `true`                              |
-| `elasticsearch.persistence.enabled`    | Elasticsearch persistence volume enabled          | `true`                          |
-| `elasticsearch.persistence.existingClaim`   | Use an existing PVC to persist data               | `nil`                        |
-| `elasticsearch.persistence.storageClass`    | Storage class of backing PVC                      | `generic`                    |
-| `elasticsearch.persistence.size`       | Elasticsearch persistence volume size             | `50Gi`                         |
-| `elasticsearch.env.clusterName`                  | Elasticsearch Cluster Name                   | `es-cluster`                              |
-| `elasticsearch.env.esUsername`                   | Elasticsearch User Name    | `elastic`                          |
-| `elasticsearch.env.esPassword`                   | Elasticsearch User Name    | `changeme`                              |
-| `missionControl.name`                   | Mission Control name                     | `mission-control`                              |
-| `missionControl.replicaCount`       | Mission Control replica count                       | `1`  |
-| `missionControl.image`       | Container image                      | `docker.jfrog.io/jfrog/mission-control`  |
-| `missionControl.version`          | Container image tag                  | `3.0.0`                                    |
-| `missionControl.service.type`   | Mission Control service type                                  | `LoadBalancer`                   |
-| `missionControl.externalPort`   | Mission Control service external port                         | `8080`                        |
-| `missionControl.internalPort`   | Mission Control service internal port                         | `8080`                        |
-| `missionControl.missionControlUrl`    | Mission Control URL               | ` `                                  |
-| `missionControl.persistence.mountPath`     | Mission Control persistence volume mount path  | `"/var/opt/jfrog/mission-control"`  |
-| `missionControl.persistence.storageClass`  | Storage class of backing PVC                   | `nil (uses alpha storage class annotation)`|
-| `missionControl.persistence.existingClaim` | Provide an existing PersistentVolumeClaim    | `nil`                        |
-| `missionControl.persistence.enabled`    | Mission Control persistence volume enabled      | `true`                       |
-| `missionControl.persistence.accessMode` | Mission Control persistence volume access mode  | `ReadWriteOnce`              |
-| `missionControl.persistence.size`       | Mission Control persistence volume size         | `100Gi`                      |
-| `missionControl.javaOpts.other`         | Mission Control JAVA_OPTIONS                    | `-server -XX:+UseG1GC -Dfile.encoding=UTF8` |
-| `missionControl.javaOpts.xms`           | Mission Control JAVA_OPTIONS -Xms               | `1g`                         |
-| `missionControl.javaOpts.xmx`           | Mission Control JAVA_OPTIONS -Xmx               | `2g`                         |
-| `insightServer.name`                    | Insight Server name                             | `insight-server`             |
-| `insightServer.replicaCount`       | Insight Server replica count                       | `1`  |
-| `insightServer.image`       | Container image                      | `docker.jfrog.io/jfrog/insight-server`  |
-| `insightServer.version`          | Container image tag                  | `3.0.0`                                    |
-| `insightServer.service.type`   | Insight Server service type                                  | `ClusterIP`                   |
-| `insightServer.externalHttpPort`   | Insight Server service external port                         | `8082`                        |
-| `insightServer.internalHttpPort`   | Insight Server service internal port                         | `8082`                        |
-| `insightServer.externalHttpsPort`   | Insight Server service external port                         | `8091`                        |
-| `insightServer.internalHttpsPort`   | Insight Server service internal port                         | `8091`                        |
-| `insightScheduler.name`                   | Insight Scheduler name                     | `insight-scheduler`                              |
-| `insightScheduler.replicaCount`       | Insight Scheduler replica count                       | `1`  |
-| `insightScheduler.image`       | Container image                      | `docker.jfrog.io/jfrog/insight-scheduler`  |
-| `insightScheduler.version`          | Container image tag                  | `3.0.0`                                    |
-| `insightScheduler.service.type`   | Insight Scheduler service type                                  | `ClusterIP`                   |
-| `insightScheduler.externalPort`   | Insight Scheduler service external port                         | `8080`                        |
-| `insightScheduler.internalPort`   | Insight Scheduler service internal port                         | `8080`                        |
-| `insightExecutor.name`                   | Insight Executor name                     | `insight-scheduler`                              |
-| `insightExecutor.replicaCount`       | Insight Executor replica count                       | `1`  |
-| `insightExecutor.image`       | Container image                      | `docker.jfrog.io/jfrog/insight-executor`  |
-| `insightExecutor.version`          | Container image tag                  | `3.0.0`                                    |
-| `insightExecutor.service.type`   | Insight Executor service type                                  | `ClusterIP`                   |
-| `insightExecutor.externalPort`   | Insight Executor service external port                         | `8080`                        |
-| `insightExecutor.internalPort`   | Insight Executor service internal port                         | `8080`                        |
-| `insightExecutor.persistence.mountPath`  | Insight Executor persistence volume mount path       | `"/var/cloudbox"`  |
-| `insightExecutor.persistence.enabled`    | Insight Executor persistence volume enabled          | `true`                          |
-| `insightExecutor.persistence.storageClass` | Storage class of backing PVC | `nil (uses alpha storage class annotation)`   |
-| `insightExecutor.persistence.existingClaim` | Provide an existing PersistentVolumeClaim | `nil`   |
-| `insightExecutor.persistence.accessMode` | Insight Executor persistence volume access mode      | `ReadWriteOnce`                 |
-| `insightExecutor.persistence.size`       | Insight Executor persistence volume size             | `100Gi`                         |
+|         Parameter                            |           Description                           |          Default                      |
+|----------------------------------------------|-------------------------------------------------|---------------------------------------|
+| `initContainerImage`                         | Init Container Image                            | `alpine:3.6`                          |
+| `imagePullPolicy`                            | Container pull policy                           | `IfNotPresent`                        |
+| `imagePullSecrets`                           | Docker registry pull secret                     |                                       |
+| `mongodb.enabled`                            | Enable Mongodb                                  | `true`                                |
+| `mongodb.image.tag`                          | Mongodb docker image tag                        | `3.6.3`                               |
+| `mongodb.image.pullPolicy`                   | Mongodb Container pull policy                   | `IfNotPresent`                        |
+| `mongodb.persistence.enabled`                | Mongodb persistence volume enabled              | `true`                                |
+| `mongodb.persistence.existingClaim`          | Use an existing PVC to persist data             | `nil`                                 |
+| `mongodb.persistence.storageClass`           | Storage class of backing PVC                    | `generic`                             |
+| `mongodb.persistence.size`                   | Mongodb persistence volume size                 | `50Gi`                                |
+| `mongodb.livenessProbe.initialDelaySeconds`  | Mongodb delay before liveness probe is initiated   | `40`                               |
+| `mongodb.readinessProbe.initialDelaySeconds` | Mongodb delay before readiness probe is initiated  | `30`                               |
+| `mongodb.mongodbExtraFlags`                  | MongoDB additional command line flags           | `["--wiredTigerCacheSizeGB=1"]`       |
+| `mongodb.usePassword`                        | Enable password authentication                  | `false`                               |
+| `mongodb.db.adminUser`                       | Mongodb Database Admin User                     | `admin`                               |
+| `mongodb.db.adminPassword`                   | Mongodb Database Password for Admin user        | ` `                                   |
+| `mongodb.db.mcUser`                          | Mongodb Database Mission Control User           | `mission_platform`                    |
+| `mongodb.db.mcPassword`                      | Mongodb Database Password for Mission Control user | ` `                                |
+| `mongodb.db.insightUser`                     | Mongodb Database Insight User                   | `jfrog_insight`                       |
+| `mongodb.db.insightPassword`                 | Mongodb Database password for Insight User      | ` `                                   |
+| `mongodb.db.insightSchedulerDb`              | Mongodb Database for Scheduler                  | `insight_scheduler`                   |
+| `elasticsearch.enabled`                      | Enable Elasticsearch                            | `true`                                |
+| `elasticsearch.persistence.enabled`          | Elasticsearch persistence volume enabled        | `true`                                |
+| `elasticsearch.persistence.existingClaim`    | Use an existing PVC to persist data             | `nil`                                 |
+| `elasticsearch.persistence.storageClass`     | Storage class of backing PVC                    | `generic`                             |
+| `elasticsearch.persistence.size`             | Elasticsearch persistence volume size           | `50Gi`                                |
+| `elasticsearch.env.clusterName`              | Elasticsearch Cluster Name                      | `es-cluster`                          |
+| `elasticsearch.env.esUsername`               | Elasticsearch User Name                         | `elastic`                             |
+| `elasticsearch.env.esPassword`               | Elasticsearch User Name                         | `changeme`                            |
+| `missionControl.name`                        | Mission Control name                            | `mission-control`                     |
+| `missionControl.replicaCount`                | Mission Control replica count                   | `1`                                   |
+| `missionControl.image`                       | Container image                                 | `docker.jfrog.io/jfrog/mission-control`     |
+| `missionControl.version`                     | Container image tag                             | `3.0.0`                               |
+| `missionControl.service.type`                | Mission Control service type                    | `LoadBalancer`                        |
+| `missionControl.externalPort`                | Mission Control service external port           | `80`                                  |
+| `missionControl.internalPort`                | Mission Control service internal port           | `8080`                                |
+| `missionControl.missionControlUrl`           | Mission Control URL                             | ` `                                   |
+| `missionControl.persistence.mountPath`       | Mission Control persistence volume mount path   | `"/var/opt/jfrog/mission-control"`    |
+| `missionControl.persistence.storageClass`    | Storage class of backing PVC                    | `nil (uses alpha storage class annotation)` |
+| `missionControl.persistence.existingClaim`   | Provide an existing PersistentVolumeClaim       | `nil`                                 |
+| `missionControl.persistence.enabled`         | Mission Control persistence volume enabled      | `true`                                |
+| `missionControl.persistence.accessMode`      | Mission Control persistence volume access mode  | `ReadWriteOnce`                       |
+| `missionControl.persistence.size`            | Mission Control persistence volume size         | `100Gi`                               |
+| `missionControl.javaOpts.other`              | Mission Control JAVA_OPTIONS                    | `-server -XX:+UseG1GC -Dfile.encoding=UTF8` |
+| `missionControl.javaOpts.xms`                | Mission Control JAVA_OPTIONS -Xms               | `1g`                                  |
+| `missionControl.javaOpts.xmx`                | Mission Control JAVA_OPTIONS -Xmx               | `2g`                                  |
+| `insightServer.name`                         | Insight Server name                             | `insight-server`                      |
+| `insightServer.replicaCount`                 | Insight Server replica count                    | `1`                                   |
+| `insightServer.image`                        | Container image                                 | `docker.jfrog.io/jfrog/insight-server`|
+| `insightServer.version`                      | Container image tag                             | `3.0.0`                               |
+| `insightServer.service.type`                 | Insight Server service type                     | `ClusterIP`                           |
+| `insightServer.externalHttpPort`             | Insight Server service external port            | `8082`                                |
+| `insightServer.internalHttpPort`             | Insight Server service internal port            | `8082`                                |
+| `insightServer.externalHttpsPort`            | Insight Server service external port            | `8091`                                |
+| `insightServer.internalHttpsPort`            | Insight Server service internal port            | `8091`                                |
+| `insightScheduler.name`                      | Insight Scheduler name                          | `insight-scheduler`                   |
+| `insightScheduler.replicaCount`              | Insight Scheduler replica count                 | `1`                                   |
+| `insightScheduler.image`                     | Container image                                 | `docker.jfrog.io/jfrog/insight-scheduler`  |
+| `insightScheduler.version`                   | Container image tag                             | `3.0.0`                               |
+| `insightScheduler.service.type`              | Insight Scheduler service type                  | `ClusterIP`                           |
+| `insightScheduler.externalPort`              | Insight Scheduler service external port         | `8080`                                |
+| `insightScheduler.internalPort`              | Insight Scheduler service internal port         | `8080`                                |
+| `insightExecutor.name`                       | Insight Executor name                           | `insight-scheduler`                   |
+| `insightExecutor.replicaCount`               | Insight Executor replica count                  | `1`                                   |
+| `insightExecutor.image`                      | Container image                                 | `docker.jfrog.io/jfrog/insight-executor`   |
+| `insightExecutor.version`                    | Container image tag                             | `3.0.0`                               |
+| `insightExecutor.service.type`               | Insight Executor service type                   | `ClusterIP`                           |
+| `insightExecutor.externalPort`               | Insight Executor service external port          | `8080`                                |
+| `insightExecutor.internalPort`               | Insight Executor service internal port          | `8080`                                |
+| `insightExecutor.persistence.mountPath`      | Insight Executor persistence volume mount path  | `"/var/cloudbox"`                     |
+| `insightExecutor.persistence.enabled`        | Insight Executor persistence volume enabled     | `true`                                |
+| `insightExecutor.persistence.storageClass`   | Storage class of backing PVC                    | `nil (uses alpha storage class annotation)`|
+| `insightExecutor.persistence.existingClaim`  | Provide an existing PersistentVolumeClaim       | `nil`                                 |
+| `insightExecutor.persistence.accessMode`     | Insight Executor persistence volume access mode | `ReadWriteOnce`                       |
+| `insightExecutor.persistence.size`           | Insight Executor persistence volume size        | `100Gi`                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

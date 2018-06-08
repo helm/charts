@@ -35,11 +35,11 @@ mongodb:
   usePassword: false
   db:
     adminUser: admin
-    adminPassword: password
+    adminPassword:
     mcUser: mission_platform
-    mcPassword: password
+    mcPassword:
     insightUser: jfrog_insight
-    insightPassword: password
+    insightPassword:
     insightSchedulerDb: insight_scheduler
   livenessProbe:
     initialDelaySeconds: 40
@@ -60,7 +60,7 @@ elasticsearch:
   env:
     clusterName: "es-cluster"
     esUsername: "elastic"
-    esPassword: "changeme"
+    esPassword:
 
 podRestartTime:
 
@@ -106,7 +106,7 @@ missionControl:
   service:
     type: LoadBalancer
   internalPort: 8080
-  externalPort: 8080
+  externalPort: 80
 
 
 insightServer:
