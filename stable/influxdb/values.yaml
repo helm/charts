@@ -38,6 +38,8 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  ## If true, the PVC will not be deleted when chart is deleted
+  # keep: false
   accessMode: ReadWriteOnce
   size: 8Gi
 
