@@ -54,6 +54,8 @@ The following table lists the configurable parameters of the Vault chart and the
 | `image.tag`                       | Container image tag to deploy            | `0.10.1`                            |
 | `vault.dev`                       | Use Vault in dev mode                    | true (set to false in production)   |
 | `vault.extraEnv`                  | Extra env vars for Vault pods            | `{}`                                |
+| `vault.extraContainers`           | Sidecar containers to add to the vault pod | `{}`                              |
+| `vault.extraVolumes`              | Additional volumes to the controller pod | `{}`                                |
 | `vault.customSecrets`             | Custom secrets available to Vault        | `[]`                                |
 | `vault.config`                    | Vault configuration                      | No default backend                  |
 | `replicaCount`                    | k8s replicas                             | `3`                                 |
@@ -65,8 +67,6 @@ The following table lists the configurable parameters of the Vault chart and the
 | `annotations`                     | Annotations for deployment               | `{}`                                |
 | `ingress.labels`                  | Labels for ingress                       | `{}`                                |
 | `podAnnotations`                  | Annotations for pods                     | `{}`                                |
-| `sidecarContainer`                | Additional container that should be added to the vault pod   | `disabled`      |
-| `sidecarContainer.customSecrets`  | Custom secrets available in the sidecar  | `[]`                                |
 | `consulAgent.join`                | If set, start start a consul agent       | `nil`                               |
 | `consulAgent.repository`          | Container image for consul agent         | `consul`                            |
 | `consulAgent.tag`                 | Container image tag for consul agent     | `1.0.7`                             |
