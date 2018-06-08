@@ -23,6 +23,10 @@ spec:
   {{- if .Values.loadBalancerIP }}
   loadBalancerIP: {{ .Values.loadBalancerIP }}
   {{- end }}
+  {{- if .Values.externalIP }}
+  externalIPs: 
+    - {{ .Values.externalIP }}
+  {{- end }}
   {{- if .Values.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
     {{- range $cidr := .Values.loadBalancerSourceRanges }}

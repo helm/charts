@@ -1,0 +1,17 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fluent-bit.fullname" . }}-metrics
+  labels:
+    app: {{ template "fluent-bit.fullname" . }}
+spec:
+  type: {{ .Values.metrics.service.type}}
+  sessionAffinity: None
+  ports:
+  - port: {{ .Values.metrics.service.port }}
+    targetPort: metrics
+    name: metrics
+  selector:
+    app: {{ template "fluent-bit.fullname" . }}
+{{- end }}

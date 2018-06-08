@@ -1,0 +1,24 @@
+{{- $workerNum := .Values.worker.number -}}
+{{- $workerPort := .Values.worker.port -}}
+{{- $psNum := .Values.ps.number -}}
+{{- $psPort := .Values.ps.port -}}
+{{- $tfService := include "distributed-tensorflow.fullname" . }}
+{{- $releaseName := .Release.Name -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "distributed-tensorflow.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "distributed-tensorflow.chart" . }}
+    app: {{ template "distributed-tensorflow.name" . }}
+data:
+  ps.hostList: "
+    {{- range $i, $none := until (int $psNum) }}
+      {{- if gt $i 0}},{{- end }}{{ $releaseName }}-ps-{{ $i }}.{{ $tfService }}-ps:{{ $psPort }}
+    {{- end }}"
+  worker.hostList: "
+    {{- range $i, $none := until (int $workerNum) }}
+       {{- if gt $i 0}},{{- end }}{{ $releaseName }}-worker-{{ $i }}.{{ $tfService }}-worker:{{ $workerPort }}
+    {{- end }}"

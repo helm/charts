@@ -48,7 +48,7 @@ Return the proper image name
 {{- define "redis.image" -}}
 {{- $registryName :=  .Values.image.registry -}}
 {{- $repositoryName := .Values.image.repository -}}
-{{- $tag := .Values.image.tag -}}
+{{- $tag := .Values.image.tag | toString -}}
 {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
 
@@ -58,11 +58,11 @@ Return the proper image name (for the metrics image)
 {{- define "metrics.image" -}}
 {{- $registryName :=  .Values.metrics.image.registry -}}
 {{- $repositoryName := .Values.metrics.image.repository -}}
-{{- $tag := .Values.metrics.image.tag -}}
+{{- $tag := .Values.metrics.image.tag | toString -}}
 {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
 
-{{/* 
+{{/*
 Return slave readiness probe
 */}}
 {{- define "redis.slave.readinessProbe" -}}
