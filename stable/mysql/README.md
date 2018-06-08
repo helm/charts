@@ -65,11 +65,16 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3 |
 | `persistence.enabled`                | Create a volume to store data             | true                                                 |
 | `persistence.size`                   | Size of persistent volume claim           | 8Gi RW                                               |
-| `nodeSelector`                       | Node labels for pod assignment            | {}                                                   |
 | `persistence.storageClass`           | Type of persistent volume claim           | nil  (uses alpha storage class annotation)           |
 | `persistence.accessMode`             | ReadWriteOnce or ReadOnly                 | ReadWriteOnce                                        |
 | `persistence.existingClaim`          | Name of existing persistent volume        | `nil`                                                |
 | `persistence.subPath`                | Subdirectory of the volume to mount       | `nil`                                                |
+| `nodeSelector`                       | Node labels for pod assignment            | {}                                                   |
+| `metrics.enabled`                    | Start a side-car prometheus exporter      | `false`                                              |
+| `metrics.image`                      | Exporter image                            | `prom/mysqld-exporter`                               |
+| `metrics.imageTag`                   | Exporter image                            | `v0.10.0`                                            |
+| `metrics.imagePullPolicy`            | Exporter image pull policy                | `IfNotPresent`                                       |
+| `metrics.resources`                  | Exporter resource requests/limit          | `nil`                                                |
 | `resources`                          | CPU/Memory resource requests/limits       | Memory: `256Mi`, CPU: `100m`                         |
 | `configurationFiles`                 | List of mysql configuration files         | `nil`                                                |
 | `ssl.enabled`                        | Setup and use SSL for MySQL connections   | `false`                                              |
