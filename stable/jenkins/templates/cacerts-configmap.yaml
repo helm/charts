@@ -1,0 +1,13 @@
+{{- if .Values.Master.CACerts }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "jenkins.fullname" . }}-cacerts
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Master.Name }}"
+data:
+{{ toYaml .Values.Master.CACerts | indent 2 }}
+{{- end }}

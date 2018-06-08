@@ -92,7 +92,7 @@ spec:
           image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
           imagePullPolicy: "{{ .Values.Master.ImagePullPolicy }}"
           {{- if .Values.Master.UseSecurity }}
-          args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
+          args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin", "-Djavax.net.ssl.trustStore=$JENKINS_HOME/.keystore/cacerts" ]
           {{- end }}
           env:
             - name: JAVA_OPTS
@@ -181,6 +181,12 @@ spec:
               mountPath: /usr/share/jenkins/ref/secrets/
               name: secrets-dir
               readOnly: false
+            {{- if .Values.Master.CACerts }}
+            -
+              mountPath: /usr/share/ca-certificates/additional
+              name: cacerts-dir
+              readOnly: true
+            {{- end }}
       volumes:
 {{- if .Values.Persistence.volumes }}
 {{ toYaml .Values.Persistence.volumes | indent 6 }}
@@ -216,6 +222,11 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+      {{- if .Values.Master.CACerts }}
+      - name: cacerts-dir
+        configMap:
+          name: {{ template "jenkins.fullname" . }}-cacerts
+      {{- end }}
 {{- if .Values.Master.ImagePullSecret }}
       imagePullSecrets:
       - name: {{ .Values.Master.ImagePullSecret }}

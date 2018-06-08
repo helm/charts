@@ -64,6 +64,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
 | `Master.InitScripts`              | List of Jenkins init scripts         | Not set                                                                      |
+| `Master.CACerts`                  | Collection of private certs          | `{}`                                                                         |
 | `Master.CredentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set                                                  |
 | `Master.SecretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                                                           |
 | `Master.Jobs`                     | Jenkins XML job configs              | Not set                                                                      |
@@ -202,6 +203,8 @@ jenkins:
     RunAsUser: 1000
     FsGroup: 1000
 ```
+
+**Note:** Running Jenkins as a non-root user will break the ability to add private certs to the OS and Java cert stores. At the moment the only way to handle this is to rebuild the Jenkins container from a base image that already has the private certs applied to the cert stores. Inspection of the `initcacert.groovy` script in the `templates/config.yaml` file can provide more information on adding private certs to the cert stores.
 
 Docs taken from https://github.com/jenkinsci/docker/blob/master/Dockerfile:
 _Jenkins is run with user `jenkins`, uid = 1000. If you bind mount a volume from the host or a data container,ensure you use the same uid_

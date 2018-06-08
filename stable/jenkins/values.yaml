@@ -101,6 +101,16 @@ Master:
   #   test: |-
   #     <<xml here>>
   CustomConfigMap: false
+
+  CACerts: {}
+# Add a series of CA certificate the certificate stores. This is a dictionary so
+# you can add multiple certs here. Each cert is stored as a unique file based on
+# the dictionary key. Certs are added to both the OS cert store and the Java
+# cert store.
+#
+#  <filename>: |
+#      <cert contents>
+
   # Node labels and tolerations for pod assignment
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
