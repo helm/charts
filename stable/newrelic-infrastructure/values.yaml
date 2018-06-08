@@ -85,3 +85,6 @@ nodeSelector: {}
 tolerations: []
 
 updateStrategy: RollingUpdate
+
+# Use extensions/v1beta1 here when using Kubernetes 1.8 or older
+daemonSetApiVersion: apps/v1
