@@ -71,7 +71,7 @@ mongodb:
 rabbitmq-ha:
   replicaCount: 1
   rabbitmqUsername: "guest"
-  rabbitmqPassword: "guest"
+  rabbitmqPassword:
   customConfigMap: true
   rabbitmqErlangCookie: XRAYRABBITMQCLUSTER
   rabbitmqMemoryHighWatermark: 500MB
