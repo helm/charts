@@ -1,0 +1,12 @@
+{{- if .Values.hazelcast.configurationFiles }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hazelcast-configuration
+  namespace: default
+data:
+{{- range $key, $val := .Values.hazelcast.configurationFiles }}
+  {{ $key }}: |-
+{{ $val | indent 4}}
+{{- end }}
+{{- end -}}
