@@ -75,6 +75,8 @@ artifactory:
   license:
     secret:
     dataKey:
+  ## Create configMap with artifactory.config.import.xml and security.import.xml and pass name of configMap in following parameter
+  configMapName:
   membershipPort: 10017
   externalPort: 8081
   internalPort: 8081
