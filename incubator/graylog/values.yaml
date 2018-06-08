@@ -11,12 +11,15 @@ image:
 timezone: UTC
 batchSize: 5000
 
-# Used to create all secrets
+# Used to create all secrets: http://docs.graylog.org/en/2.3/pages/installation/manual_setup.html#configuration
 secrets:
-# NOTE: Must escape any commas in this string
-  # mongo: mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]
-  # passwordSecret: passwordSecret
-  # rootPasword: passwordSecret
+  # Mongo connection string: https://docs.mongodb.com/manual/reference/connection-string/
+  # NOTE: Must escape any commas in this string
+  mongo: mongodb://r1.example.net:27017,r2.example.net:27017/
+  # WARNING: Change this password with `pwgen -N 1 -s 96`
+  passwordSecret: ""
+  # WARNING: Change this password with `echo -n yourpassword | shasum -a 256`
+  rootPasword: ""
 
 master:
   resources: {}
