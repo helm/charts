@@ -32,9 +32,9 @@ mongodb:
   ## This is critical to protect against OOMKill by Kubernetes!
   mongodbExtraFlags:
   - "--wiredTigerCacheSizeGB=1"
-  mongodbRootPassword:
+  mongodbRootPassword: password
   mongodbUsername: distribution
-  mongodbPassword:
+  mongodbPassword: password
   mongodbDatabase: bintray
   livenessProbe:
     initialDelaySeconds: 40
@@ -46,7 +46,7 @@ mongodb:
 ##
 redis:
   enabled: true
-  redisPassword:
+  redisPassword: "password"
   persistence:
     enabled: true
     size: 10Gi

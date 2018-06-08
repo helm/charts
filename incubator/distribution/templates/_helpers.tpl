@@ -57,7 +57,7 @@ Set the final MongoDB connection URL
 {{- define "mongodb.url" -}}
 {{- $mongoDatabase :=  .Values.mongodb.mongodbDatabase -}}
 {{- $mongoUser := .Values.mongodb.mongodbUsername -}}
-{{- $mongoPassword := .Values.mongodb.mongodbPassword -}}
+{{- $mongoPassword := required "A valid .Values.mongodb.mongodbPassword entry required!" .Values.mongodb.mongodbPassword -}}
 {{- printf "%s://%s:%s@%s-%s/%s" "mongodb" $mongoUser $mongoPassword .Release.Name "mongodb:27017" $mongoDatabase | b64enc | quote -}}
 {{- end -}}
 
@@ -66,7 +66,7 @@ Set the final MongoDB audit URL
 */}}
 {{- define "mongodb.audit.url" -}}
 {{- $mongoUser := .Values.mongodb.mongodbUsername -}}
-{{- $mongoPassword := .Values.mongodb.mongodbPassword -}}
+{{- $mongoPassword := required "A valid .Values.mongodb.mongodbPassword entry required!" .Values.mongodb.mongodbPassword -}}
 {{- printf "%s://%s:%s@%s-%s/%s" "mongodb" $mongoUser $mongoPassword .Release.Name "mongodb:27017" "audit?maxpoolsize=500" | b64enc | quote -}}
 {{- end -}}
 
@@ -74,7 +74,7 @@ Set the final MongoDB audit URL
 Set the final Redis connection URL
 */}}
 {{- define "redis.url" -}}
-{{- $redisPassword := .Values.redis.redisPassword -}}
+{{- $redisPassword := required "A valid .Values.redis.redisPassword entry required!" .Values.redis.redisPassword -}}
 {{- $redisPort := .Values.redis.master.port -}}
 {{- printf "%s://:%s@%s-%s:%g" "redis" $redisPassword .Release.Name "redis" $redisPort | b64enc | quote -}}
 {{- end -}}
