@@ -11,14 +11,14 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "kiam.fullname" . }}-server
 rules:
-- apiGroups:
-  - ""
-  resources:
-  - namespaces
-  - pods
-  verbs:
-  - watch
-  - get
-  - list
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+      - pods
+    verbs:
+      - watch
+      - get
+      - list
 {{- end -}}
 {{- end -}}

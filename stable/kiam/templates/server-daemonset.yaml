@@ -97,27 +97,27 @@ spec:
           livenessProbe:
             exec:
               command:
-              - /health
-              - --cert=/etc/kiam/tls/cert
-              - --key=/etc/kiam/tls/key
-              - --ca=/etc/kiam/tls/ca
-              - --server-address=localhost:{{ .Values.server.service.targetPort }}
-              - --server-address-refresh=2s
-              - --timeout=5s
-              - --gateway-timeout-creation={{ .Values.server.gatewayTimeoutCreation }}
+                - /health
+                - --cert=/etc/kiam/tls/cert
+                - --key=/etc/kiam/tls/key
+                - --ca=/etc/kiam/tls/ca
+                - --server-address=localhost:{{ .Values.server.service.targetPort }}
+                - --server-address-refresh=2s
+                - --timeout=5s
+                - --gateway-timeout-creation={{ .Values.server.gatewayTimeoutCreation }}
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 10
           readinessProbe:
             exec:
               command:
-              - /health
-              - --cert=/etc/kiam/tls/cert
-              - --key=/etc/kiam/tls/key
-              - --ca=/etc/kiam/tls/ca
-              - --server-address=localhost:{{ .Values.server.service.targetPort }}
-              - --server-address-refresh=2s
-              - --timeout=5s
+                - /health
+                - --cert=/etc/kiam/tls/cert
+                - --key=/etc/kiam/tls/key
+                - --ca=/etc/kiam/tls/ca
+                - --server-address=localhost:{{ .Values.server.service.targetPort }}
+                - --server-address-refresh=2s
+                - --timeout=5s
             initialDelaySeconds: 3
             periodSeconds: 10
             timeoutSeconds: 10
@@ -127,5 +127,4 @@ spec:
         {{- end }}
   updateStrategy:
     type: {{ .Values.server.updateStrategy }}
-
 {{- end }}

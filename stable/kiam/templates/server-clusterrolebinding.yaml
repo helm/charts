@@ -15,8 +15,8 @@ roleRef:
   kind: ClusterRole
   name: {{ template "kiam.fullname" . }}-server
 subjects:
-- kind: ServiceAccount
-  name: {{ template "kiam.serviceAccountName.server" . }}
-  namespace: {{ .Release.Namespace }}
+  - kind: ServiceAccount
+    name: {{ template "kiam.serviceAccountName.server" . }}
+    namespace: {{ .Release.Namespace }}
 {{- end -}}
 {{- end }}
