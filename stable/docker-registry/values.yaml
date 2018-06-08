@@ -16,7 +16,7 @@ image:
   tag: 2.6.2
   pullPolicy: IfNotPresent
 # imagePullSecrets:
-    # - docker
+    # - name: docker
 service:
   name: registry
   type: ClusterIP
