@@ -41,17 +41,24 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `image`                         | Image                                      | `wrouesnel/postgres_exporter`                      |
 | `imageTag`                      | Image tag                                  | `v0.4.6`                                      |
 | `imagePullPolicy`               | Image pull policy                          | `IfNotPresent` |
-| `service.type`      | Service type |  `ClusterIP` | 
+| `service.type`      | Service type |  `ClusterIP` |
 | `service.port`                      | The service port                               | `80`                                     |
 | `service.targetPort`                      | The target port of the container                               | `9187`                                        |
 | `resources`          |                                  |                    `{}`                                  |
 | `config.datasource`                 | Postgresql datasource configuration                      |                                     |
-| `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) | 
+| `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) |
 | `serviceAccount.create`         | Specifies whether a service account should be created.| `true` |
 | `serviceAccount.name`           | Name of the service account.|        |
 | `tolerations`                   | Add tolerations                            | `[]`  |
 | `nodeSelector`                    | node labels for pod assignment | `{}`  |
 | `affinity`                       |     node/pod affinities | `{}` |
+| `cloudSQL.enabled`                | Use a Google Cloud SQL proxy | `false`
+| `cloudSQL.image.repository`       | Image for Google Cloud SQL proxy | `gcr.io/cloudsql-docker/gce-proxy`
+| `cloudSQL.image.tag`              | Image tag for Google Cloud SQL proxy | `1.11`
+| `cloudSQL.image.pullPolicy`       | Image pull policy for Google Cloud SQL proxy | `IfNotPresent`
+| `cloudSQL.instanceConnectionName` | Google Cloud SQL instance identifier | `""`
+| `cloudSQL.port`                   | Google Cloud SQL proxy listen port | `5432`
+| `cloudSQL.existingSecret`         | Reference to an existing secret containing Google Cloud SQL instance credentials | `""`
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

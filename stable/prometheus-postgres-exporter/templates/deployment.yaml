@@ -26,7 +26,7 @@ spec:
         - name: {{ .Chart.Name }}
           args:
           - "--extend.query-path=/etc/config.yaml"
-          env:          
+          env:
             - name: DATA_SOURCE_NAME
               valueFrom:
                 secretKeyRef:
@@ -52,6 +52,18 @@ spec:
             - name: queries
               mountPath: /etc/config.yaml
               subPath: config.yaml
+    {{- if .Values.cloudSQL.enabled  }}
+        - name: {{ .Chart.Name }}-cloudsql-proxy
+          image: "{{ .Values.cloudSQL.image.repository }}:{{ .Values.cloudSQL.image.tag }}"
+          imagePullPolicy: {{ .Values.cloudSQL.image.pullPolicy }}
+          command: ["/cloud_sql_proxy",
+                    {{ printf "\"-instances=%v=tcp:%v\"," .Values.cloudSQL.instanceConnectionName .Values.cloudSQL.port }}
+                    "-credential_file=/secrets/cloudsql/credentials.json"]
+          volumeMounts:
+            - name: cloudsql-instance-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+    {{- end }}
      {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -69,3 +81,8 @@ spec:
           defaultMode: 420
           name: {{ template "prometheus-postgres-exporter.fullname" . }}
         name: queries
+    {{- if .Values.cloudSQL.enabled  }}
+      - name: cloudsql-instance-credentials
+        secret:
+          secretName: {{ .Values.cloudSQL.existingSecret }}
+    {{- end }}
