@@ -1,0 +1,22 @@
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "graylog.fullname" . }}
+  labels:
+    app: {{ template "graylog.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    {{- range $key, $value := .Values.master.ingress.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+  - host: {{ .Values.master.host }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "graylog.fullname" . }}
+          servicePort: {{ .Values.master.service.port }}
