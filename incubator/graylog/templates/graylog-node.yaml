@@ -1,0 +1,85 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "graylog.fullname" . }}-node
+  labels:
+    app: {{ template "graylog.name" . }}-node
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: graylog-node
+spec:
+  replicas: {{ .Values.nodes.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "graylog.name" . }}-node
+      role: graylog-node
+  template:
+    metadata:
+      labels:
+        app: {{ template "graylog.name" . }}-node
+        role: graylog-node
+    spec:
+      containers:
+      - name: graylog
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.nodes.resources | indent 10 }}
+        ports:
+        - containerPort: {{ .Values.nodes.apiService.port }}
+          name: api
+          protocol: TCP
+        {{- range $port := .Values.nodes.inputService.ports }}
+        - name: {{ $port.name }}
+          containerPort: {{ $port.containerPort }}
+          protocol: {{ $port.protocol }}
+        {{- end }}
+        env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: "GRAYLOG_ELASTICSEARCH_HOSTS"
+          value: {{ .Values.elasticsearch.hosts | quote }}
+        - name: "GRAYLOT_ELASTICSEARCH_DISCOVERY_ENABLED"
+          value: {{ .Values.elasticsearch.discovery | quote }}
+        - name: "GRAYLOG_ELASTICSEARCH_COMPRESSION_ENABLED"
+          value: {{ .Values.elasticsearch.compression | quote }}
+{{- if .Values.nodes.javaOpts }}
+        - name: "GRAYLOG_SERVER_JAVA_OPTS"
+          value: {{ .Values.nodes.javaOpts }}
+{{- end }}
+        - name: "GRAYLOG_MONGODB_URI"
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "graylog.fullname" . }}
+              key:  mongodb_uri
+        - name: "GRAYLOG_ROOT_TIMEZONE"
+          value: {{ .Values.timezone | quote }}
+        - name: "GRAYLOG_IS_MASTER"
+          value: "false"
+        - name: "GRAYLOG_WEB_ENABLE"
+          value: "false"
+        - name: "GRAYLOG_OUTPUT_BATCH_SIZE"
+          value: {{ .Values.batchSize | quote }}
+        - name: "GRAYLOG_WEB_ENDPOINT_URI"
+          value: "https://{{ .Values.master.host }}/api/"
+        - name: "GRAYLOG_REST_LISTEN_URI"
+          value: "http://0.0.0.0:{{ .Values.nodes.apiService.port }}/api/"
+        - name: "GRAYLOG_WEB_LISTEN_URI"
+          value: "http://{{ template "graylog.fullname" . }}:{{ .Values.master.service.port }}"
+        - name: "GRAYLOG_PASSWORD_SECRET"
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "graylog.fullname" . }}
+              key: password_secret
+        - name: "GRAYLOG_ROOT_PASSWORD_SHA2"
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "graylog.fullname" . }}
+              key: root_password
