@@ -6,18 +6,18 @@ slack:
   # and invite the bot to your channel using: /join @botname
   token: "XXXX"
 
-#hipchat:
-#  room: ""
-#  token: ""
-#  url: ""
-#mattermost:
-#  channel: ""
-#  url: ""
-#  username: ""
-#flock:
-#  url: ""
-#webhook:
-#  url: ""
+# hipchat:
+#   room: ""
+#   token: ""
+#   url: ""
+# mattermost:
+#   channel: ""
+#   url: ""
+#   username: ""
+# flock:
+#   url: ""
+# webhook:
+#   url: ""
 
 # Resources to watch
 resourcesToWatch:
