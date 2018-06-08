@@ -1,5 +1,5 @@
 {{- if and .Values.licenseKey .Values.cluster }}
-apiVersion: apps/v1
+apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
   labels: {{ include "newrelic.labels" . | indent 4 }}
