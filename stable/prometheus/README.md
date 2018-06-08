@@ -171,6 +171,7 @@ Parameter | Description | Default
 `nodeExporter.extraConfigmapMounts` | Additional node-exporter configMap mounts | `[]`
 `nodeExporter.nodeSelector` | node labels for node-exporter pod assignment | `{}`
 `nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
+`nodeExporter.pod.labels` | labels to be added to node-exporter pods | `{}`
 `nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `{}`
 `nodeExporter.securityContext` | securityContext for containers in pod | `{}`
@@ -184,7 +185,7 @@ Parameter | Description | Default
 `pushgateway.enabled` | If true, create pushgateway | `true`
 `pushgateway.name` | pushgateway container name | `pushgateway`
 `pushgateway.image.repository` | pushgateway container image repository | `prom/pushgateway`
-`pushgateway.image.tag` | pushgateway container image tag | `v0.4.0`
+`pushgateway.image.tag` | pushgateway container image tag | `v0.5.1`
 `pushgateway.image.pullPolicy` | pushgateway container image pull policy | `IfNotPresent`
 `pushgateway.extraArgs` | Additional pushgateway container arguments | `{}`
 `pushgateway.ingress.enabled` | If true, pushgateway Ingress will be created | `false`

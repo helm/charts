@@ -27,9 +27,12 @@ metrics:
   enabled: false
   # resources: {}
   # podAnnotations: {}
-  # targetServiceAnnotations:
+  service:
+    type: ClusterIP
+    annotations: {}
   #   prometheus.io/scrape: "true"
   #   prometheus.io/port: "9121"
+    loadBalancerIP:
   image:
     registry: docker.io
     repository: oliver006/redis_exporter
@@ -48,9 +51,6 @@ metrics:
 
   ## Metrics exporter pod Annotation and Labels
   # podLabels: {}
-
-  service:
-    type: ClusterIP
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
@@ -120,6 +120,11 @@ master:
   #   requests:
   #     memory: 256Mi
   #     cpu: 100m
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
+
 
   ## Redis Master Liveness Probe
   livenessProbe:
@@ -249,6 +254,11 @@ slave:
   ## Redis slave labels and tolerations for pod assignment
   # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
   # tolerations: []
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   ## Redis slave pod Annotation and Labels
   # podLabels: {}

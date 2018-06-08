@@ -20,7 +20,7 @@ This chart bootstraps a [Redis](https://github.com/bitnami/bitnami-docker-redis)
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.8+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -71,7 +71,9 @@ The following table lists the configurable parameters of the Redis chart and the
 | `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
 | `metrics.podLabels`                        | Additional labels for Metrics exporter pod                                                                     | {}                                                   |
 | `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | {}                                                   |
-| `metrics.targetServiceAnnotations`         | Annotations for the services to monitor  (redis master and redis slave service)                                | {}                                                   |
+| `master.service.type`                      | Kubernetes Service type (redis metrics)                                                                        | `LoadBalancer`                                       |
+| `metrics.service.annotations`              | Annotations for the services to monitor  (redis master and redis slave service)                                | {}                                                   |
+| `metrics.service.loadBalancerIP`           | loadBalancerIP if redis metrics service type is `LoadBalancer`                                                 | `nil`                                                |
 | `metrics.resources`                        | Exporter resource requests/limit                                                                               | Memory: `256Mi`, CPU: `100m`                         |
 | `persistence.existingClaim`                | Provide an existing PersistentVolumeClaim                                                                      | `nil`                                                |
 | `master.persistence.enabled`               | Use a PVC to persist data (master node)                                                                        | `true`                                               |
@@ -88,6 +90,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.extraFlags`                        | Redis master additional command line flags                                                                     | []                                                   |
 | `master.nodeSelector`                      | Redis master Node labels for pod assignment                                                                    | {"beta.kubernetes.io/arch": "amd64"}                 |
 | `master.tolerations`                       | Toleration labels for Redis master pod assignment                                                              | []                                                   |
+| `master.schedulerName`                     | Name of an alternate scheduler                                                                                 | `nil`                                                |
 | `master.service.type`                      | Kubernetes Service type (redis master)                                                                         | `ClusterIP`                                          |
 | `master.service.annotations`               | annotations for redis master service                                                                           | {}                                                   |
 | `master.service.loadBalancerIP`            | loadBalancerIP if redis master service type is `LoadBalancer`                                                  | `nil`                                                |
@@ -128,6 +131,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded. (redis slave pod)   | `master.readinessProbe.failureThreshold`             |
 | `slave.podLabels`                          | Additional labels for Redis slave pod                                                                          | `master.podLabels`                                   |
 | `slave.podAnnotations`                     | Additional annotations for Redis slave pod                                                                     | `master.podAnnotations`                              |
+| `slave.schedulerName`                      | Name of an alternate scheduler                                                                                 | `nil`                                                |
 | `slave.securityContext.enabled`            | Enable security context (redis slave pod)                                                                      | `master.securityContext.enabled`                     |
 | `slave.securityContext.fsGroup`            | Group ID for the container (redis slave pod)                                                                   | `master.securityContext.fsGroup`                     |
 | `slave.securityContext.runAsUser`          | User ID for the container (redis slave pod)                                                                    | `master.securityContext.runAsUser`                   |

@@ -387,6 +387,11 @@ nodeExporter:
   ##
   podAnnotations: {}
 
+  ## Labels to be added to node-exporter pods
+  ##
+  pod:
+    labels: {}
+
   ## node-exporter resource limits & requests
   ## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -635,7 +640,7 @@ pushgateway:
   ##
   image:
     repository: prom/pushgateway
-    tag: v0.4.0
+    tag: v0.5.1
     pullPolicy: IfNotPresent
 
   ## Additional pushgateway container arguments
@@ -723,7 +728,7 @@ pushgateway:
 ##
 alertmanagerFiles:
   alertmanager.yml:
-    global:
+    global: {}
       # slack_api_url: ''
 
     receivers:
