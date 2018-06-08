@@ -25,7 +25,7 @@ $ helm install --name my-release stable/fluent-bit --set on_minikube=true
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Fluent-Bit chart and the default values.
+The following table lists the configurable parameters of the Fluent-Bit chart and the default values.
 
 | Parameter                  | Description                        | Default                 |
 | -----------------------    | ---------------------------------- | ----------------------- |
@@ -76,6 +76,10 @@ The following tables lists the configurable parameters of the Fluent-Bit chart a
 | `resources.requests.memory`        | Memory request                             | `200Mi`                                           |
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
+| `metrics.enabled`                  | Specifies whether a service for metrics should be exposed | `false`                            |
+| `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
+| `metrics.service.type`             | Service type for metrics                   | `ClusterIP`                                       |
+| `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
 | | | |
 
 
