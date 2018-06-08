@@ -15,10 +15,10 @@ sources:
 - https://github.com/confluentinc/cp-docker-images
 - https://github.com/apache/kafka
 maintainers:
-- name: Faraaz Khan
+- name: faraazkhan
   email: faraaz@rationalizeit.us
-- name: Marc Villacorta
+- name: h0tbird
   email: marc.villacorta@gmail.com
-- name: Ben Goldberg
+- name: benjigoldberg
   email: ben@spothero.com
 icon: https://kafka.apache.org/images/logo.png
