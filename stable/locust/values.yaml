@@ -4,7 +4,7 @@ image:
   repository: quay.io/honestbee/locust
   tag: 0.7.5
   pullPolicy: IfNotPresent
-  pullSecrets:
+  pullSecrets: []
 
 service:
   name: master-web
