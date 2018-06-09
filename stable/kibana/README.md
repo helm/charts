@@ -39,6 +39,7 @@ The following table lists the configurable parameters of the kibana chart and th
 Parameter | Description | Default
 --- | --- | ---
 `affinity` | node/pod affinities | None
+`config` | Kibana configuration properties (can be set through the `env` parameter too) | None
 `env` | Environment variables to configure Kibana | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `kibana`

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kibana.fullname" . }}
+  labels:
+    app: {{ template "kibana.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  config: |
+    # Default Kibana configuration from kibana-docker.
+    server.name: kibana
+    server.host: "0"
+    
+    # Custom config properties
+    {{- with .Values.config }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
