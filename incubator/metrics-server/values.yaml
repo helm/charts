@@ -9,6 +9,10 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
+apiService:
+  # Specifies if the v1beta1.metrics.k8s.io should be created
+  create: true
+
 image:
   repository: gcr.io/google_containers/metrics-server-amd64
   tag: v0.2.1
