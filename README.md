@@ -21,7 +21,7 @@ If not already created, you can create a new kubernetes cluster by running the b
 gcloud container clusters create yugabyte --zone us-west1-b
 ```
 #### Creating node pool to use
-If not created already, you can create a new node pool 
+If not created already, you can create a new node pool
 ```
 gcloud container node-pools create node-pool-8cpu-2ssd \
       --cluster=yugabyte \
