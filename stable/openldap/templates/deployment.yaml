@@ -33,9 +33,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: ldap-port
-              containerPort: 389
+              containerPort: {{ .Values.service.ldapPort }}
             - name: ssl-ldap-port
-              containerPort: 636
+              containerPort: {{ .Values.service.sslLdapPort }}
           envFrom:
             - configMapRef:
                 name: {{ template "openldap.fullname" . }}-env
