@@ -1,6 +1,7 @@
 # Drone.io
 
 [Drone](http://readme.drone.io/) is a Continuous Integration platform built on container technology.
+**NOTE: this chart has been DEPRECATED. Please see stable/drone.**
 
 ## TL;DR;
 
