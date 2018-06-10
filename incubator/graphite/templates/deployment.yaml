@@ -1,0 +1,65 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "graphite.fullname" . }}
+  labels:
+    app: {{ template "graphite.name" . }}
+    chart: {{ template "graphite.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ template "graphite.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "graphite.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+      - name: create-syncdb
+        image: {{ .Values.image.repository }}
+        command: [ "sh", "-c", "test -f /opt/graphite/storage/graphite.db || /usr/bin/expect /usr/local/bin/django_admin_init.exp"]
+        volumeMounts:
+          - name: {{ template "graphite.fullname" . }}
+            mountPath: /opt/graphite/storage/
+      containers:
+      - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        name: {{ .Chart.Name }}
+        ports:
+        - containerPort: 80
+          name: graphite-gui
+        - containerPort: 2003
+          name: graphite-plain
+        - containerPort: 2004
+          name: graphite-pickle
+        volumeMounts:
+          - name: graphite-conf
+            mountPath: /opt/graphite/conf/
+          - name: {{ template "graphite.fullname" . }}
+            mountPath: /opt/graphite/storage/
+      volumes:
+        - name: graphite-conf
+          configMap:
+            name: graphite-conf
+        - name: {{ template "graphite.fullname" . }}
+          persistentVolumeClaim:
+            claimName: {{ template "graphite.fullname" . }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

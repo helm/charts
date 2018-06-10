@@ -1,0 +1,15 @@
+apiVersion: v1
+version: 0.1.0
+appVersion: "0.9.15"
+description: Graphite metrics server
+name: graphite
+home: https://graphiteapp.org/
+keywords:
+- metrics
+sources:
+- https://github.com/graphite-project
+- https://github.com/hopsoft/docker-graphite-statsd
+maintainers:
+- name: André Bauer
+  email: monotek23@gmail.com
+icon: https://graphiteapp.org/img/graphite-logo_color.png
