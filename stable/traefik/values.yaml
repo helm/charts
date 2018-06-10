@@ -59,6 +59,16 @@ acme:
   email: admin@example.com
   staging: true
   logging: false
+  # Configure a Let's Encrypt certificate to be managed by default.
+  # This is the only way to request wildcard certificates (works only with dns challenge).
+  domains:
+    enabled: false
+    # Main domain the certificate should be generated for.
+    main: "*.example.com"
+    # Alternative domain names this certificate can have.
+    sans:
+      # - "test1.example.com"
+      # - "test2.example.com"
   ## ACME challenge type: "tls-sni-01", "http-01" or "dns-01"
   ## Note the chart's default of tls-sni-01 has been DEPRECATED and (except in
   ## certain circumstances) DISABLED by Let's Encrypt. It remains as a default
