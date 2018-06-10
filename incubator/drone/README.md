@@ -70,16 +70,13 @@ The following table lists the configurable parameters of the drone charts and th
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
 | `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |
 | `dind.env`                  | **DinD** environment variables                                                                | `nil`                       |
-<<<<<<< HEAD
 | `dind.command`              | **DinD** custom command instead of default entry point                                        | `nil`                       |
 | `dind.args`                 | **DinD** arguments for custom command or entry point                                          | `nil`                       |
-=======
 | `cloudSqlProxy.enabled`     | Enable or disable **Cloud Sql Proxy**                                                         | `false`                       |
 | `cloudSqlProxy.instancename`| **Cloud Sql Proxy** instance name                                                             | `nil`                       |
 | `cloudSqlProxy.port`        | **Cloud Sql Proxy** port                                                                      | `nil`                       |
-| `cloudSqlProxy.credential.name`  | service account credential name for **Cloud Sql Proxy**                                  | `nil`                       |
-| `cloudSqlProxy.credential.jsonKeyName` | service account credential jsonkey name for **Cloud Sql Proxy**                    | `nil`                       |
->>>>>>> added cloud sql proxy container
+| `cloudSqlProxy.credential.name`  | service account credential name in google cloud for **Cloud Sql Proxy**                  | `nil`                       |
+| `cloudSqlProxy.credential.jsonKeyName` | service account credential jsonkey name in google cloud for **Cloud Sql Proxy**    | `nil`                       |
 | `persistence.enabled`       | Use a PVC to persist data                                                                     | `true`                      |
 | `persistence.existingClaim` | Use an existing PVC to persist data                                                           | `nil`                       |
 | `persistence.storageClass`  | Storage class of backing PVC                                                                  | `nil`                       |
