@@ -1,9 +1,16 @@
 MySQL can be accessed via port 3306 on the following DNS name from within your cluster:
 {{ template "mysql.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
+{{- if .Values.existingSecret }}
+If you have not already created the mysql password secret:
+
+   kubectl create secret generic {{ .Values.existingSecret }} --namespace {{ .Release.Namespace }} --from-file=./mysql-root-password --from-file=./mysql-password
+{{ else }}
+
 To get your root password run:
 
     MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mysql.fullname" . }} -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo)
+{{- end }}
 
 To connect to your database:
 
