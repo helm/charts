@@ -66,9 +66,17 @@ airflow:
   pod_disruption_budget:
     maxUnavailable: 1
 
+##
+## Workers configuration
 workers:
+  ##
+  ## Service account name
   serviceAccountName: "default"
+  ##
+  ## Number of workers pod to launch
   replicas: 1
+  ##
+  ## Custom resource configuration
   resources: {}
     # limits:
     #   cpu: "1"
@@ -76,9 +84,11 @@ workers:
     # requests:
     #   cpu: "0.5"
     #   memory: "512Mi"
-
+  ##
+  ## Celery worker configuration
   celery:
-    # instances per worker
+    ##
+    ## number of parallel celery tasks per worker
     instances: 1
 
 
@@ -129,7 +139,7 @@ ingress:
     ## request to have been be at the root.
     ## That's why we need a reverse proxy/load balancer that is able to strip the path
     ## NOTE: do NOT keep trailing slash. For root configuration, set and empty string
-    path: /
+    path: ""
     ##
     ## hostname for flower
     host: ""
@@ -166,7 +176,7 @@ ingress:
 
 
 ##
-## Storage configuration
+## Storage configuration for DAGs
 persistence:
   ##
   ## enable persistance storage
@@ -190,35 +200,11 @@ persistence:
 ## EXPERIMENTAL
 dags:
   ##
-  ## pickle_dag: send DAG using pickle from the scheduler to the worker
-  pickle_dag: true
-  ##
-  ## Force a requirements.txt file to be present at the root of the image so these Python packages
-  ## will be installed
-  ## Should be a multiline text respecting the requirements.txt format (pip compatible)
-  requirements: |
-    yaml
-  ##
-  ## Use of git-sync: beware when using git-sync and airflow. If the scheduler reloads a dag in the
-  ## middle of a dagrun then the dagrun will actually start using the new version of the dag in the
-  ## middle of execution.
-  ## This is a known issue with airflow and it means it's unsafe in general to use a git-sync
-  ## like solution with airflow without:
-  ## - using explicit locking, ie never pull down a new dag if a dagrun is in progress
-  ## - make dags immutable, never modify your dag always make a new one
-  git_sync_enabled: false
-  ##
   ## url to clone the git repository
   git_repo:
   ##
   ## branch name to clone
   git_branch: master
-  ##
-  ## poll interval in seconds between two refreshes
-  poll_interval_sec: 60
-  ##
-  ## print debug logs
-  git_sync_debug: false
 
 
 ##

@@ -1,11 +1,10 @@
 airflow:
   image:
-    ## Test with stibbons31/docker-airflow-dev to allow airflow 'web' to mount other that root
+    ## Test with stibbons31/docker-airflow-dev to allow mounting to other that root path
     repository: stibbons31/docker-airflow-dev
     tag: 2.0dev
     pull_policy: IfNotPresent
   service:
-    # Minikube is happier with NodePort
     type: NodePort
   web_replicas: 1
   config:
@@ -15,9 +14,7 @@ airflow:
 workers:
   serviceAccountName: "default"
   replicas: 1
-
   celery:
-    # instances per worker
     instances: 1
 
 ingress:
@@ -28,14 +25,10 @@ ingress:
     annotations:
       traefik.frontend.rule.type: PathPrefix
       kubernetes.io/ingress.class: traefik
-  # check with the value documentation to see why "/flower" won't work as expected when using
-  # minikube without ingress
-  # To have Flower working fine, you need to instantiate Traefik
   flower:
     path: "/airflow/flower"
     host: "minikube"
     annotations:
-      # Use PathPrefixStrip because Flower does not respond to other than /
       traefik.frontend.rule.type: PathPrefixStrip
       kubernetes.io/ingress.class: traefik
 
