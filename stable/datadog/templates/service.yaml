@@ -16,6 +16,9 @@ spec:
   - port: 8125
     name: dogstatsdport
     protocol: UDP
+  {{- if .Values.dogstatsd.nodePort }}
+    nodePort: {{ .Values.dogstatsd.nodePort }}
+  {{- end }}
   {{- if .Values.datadog.apmEnabled }}
   - port: 8126
     name: traceport
