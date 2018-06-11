@@ -62,6 +62,10 @@ deployment:
   # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
 
+  # If you're using a NodePort-type service and need a fixed port, set this parameter.
+  # dogstatsdNodePort: 8125
+  # traceNodePort: 8126
+
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
 ##
