@@ -4,9 +4,10 @@ Jenkins master and slave cluster utilizing the Jenkins Kubernetes plugin
 
 * https://wiki.jenkins-ci.org/display/JENKINS/Kubernetes+Plugin
 
-Inspired by the awesome work of Carlos Sanchez <carlos@apache.org>
+Inspired by the awesome work of Carlos Sanchez <mailto:carlos@apache.org>
 
 ## Chart Details
+
 This chart will do the following:
 
 * 1 x Jenkins Master with port 8080 exposed on an external LoadBalancer
@@ -22,15 +23,16 @@ $ helm install --name my-release stable/jenkins
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Jenkins chart and their default values.
+The following tables list the configurable parameters of the Jenkins chart and their default values.
 
 ### Jenkins Master
-
 | Parameter                         | Description                          | Default                                                                      |
 | --------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------- |
+| `nameOverride`                    | Override the resource name prefix    | `jenkins`                                                                    |
+| `fullnameOverride`                | Override the full resource names     | `jenkins-{release-name}` (or `jenkins` if release-name is `jenkins`)         |
 | `Master.Name`                     | Jenkins master name                  | `jenkins-master`                                                             |
 | `Master.Image`                    | Master image name                    | `jenkinsci/jenkins`                                                          |
-| `Master.ImageTag`                 | Master image tag                     | `2.46.1`                                                                     |
+| `Master.ImageTag`                 | Master image tag                     | `lts`                                                                     |
 | `Master.ImagePullPolicy`          | Master image pull policy             | `Always`                                                                     |
 | `Master.ImagePullSecret`          | Master image pull secret             | Not set                                                                      |
 | `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
@@ -38,6 +40,8 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 | `Master.Cpu`                      | Master requested cpu                 | `200m`                                                                       |
 | `Master.Memory`                   | Master requested memory              | `256Mi`                                                                      |
+| `Master.InitContainerEnv`         | Environment variables for Init Container                                 | Not set                                  |
+| `Master.ContainerEnv`             | Environment variables for Jenkins Container                              | Not set                                  |
 | `Master.RunAsUser`                | uid that jenkins runs with           | `0`                                                                          |
 | `Master.FsGroup`                  | uid that will be used for persistent volume | `0`                                                                   |
 | `Master.ServiceAnnotations`       | Service annotations                  | `{}`                                                                         |
@@ -46,8 +50,13 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.NodePort`                 | k8s node port                        | Not set                                                                      |
 | `Master.HealthProbes`             | Enable k8s liveness and readiness probes | `true`                                                                   |
 | `Master.HealthProbesTimeout`      | Set the timeout for the liveness and readiness probes | `120`                                                       |
+| `Master.HealthProbeLivenessFailureThreshold` | Set the failure threshold for the liveness probe | `12`                                                       |
 | `Master.ContainerPort`            | Master listening port                | `8080`                                                                       |
 | `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |
+| `Master.DisabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`                                                                      |
+| `Master.CSRF.DefaultCrumbIssuer.Enabled` | Enable the default CSRF Crumb issuer | `true`                                                                      |
+| `Master.CSRF.DefaultCrumbIssuer.ProxyCompatability` | Enable proxy compatibility | `true`                                                                      |
+| `Master.CLI`                      | Enable CLI over remoting             | `false`                                                                      |
 | `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                                                                  |
 | `Master.LoadBalancerIP`           | Optional fixed external IP           | Not set                                                                      |
 | `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
@@ -61,6 +70,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.InstallPlugins`           | List of Jenkins plugins to install   | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
 | `Master.ScriptApproval`           | List of groovy functions to approve  | Not set                                                                      |
 | `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
+| `Master.Affinity`                 | Affinity settings                    | `{}`                                                                         |
 | `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
 | `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `extensions/v1beta1`                                                         |
@@ -117,8 +127,7 @@ the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ p
 
     kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
 
-
-Install helm chart with network policy enabled: 
+Install helm chart with network policy enabled:
 
     $ helm install stable/jenkins --set NetworkPolicy.Enabled=true
 
@@ -141,12 +150,12 @@ It is possible to mount several volumes using `Persistence.volumes` and `Persist
 | `Persistence.volumes`       | Additional volumes              | `nil`           |
 | `Persistence.mounts`        | Additional mounts               | `nil`           |
 
-
 #### Existing PersistentVolumeClaim
 
 1. Create the PersistentVolume
 1. Create the PersistentVolumeClaim
 1. Install the chart
+
 ```bash
 $ helm install --name my-release --set Persistence.ExistingClaim=PVC_NAME stable/jenkins
 ```
@@ -157,7 +166,7 @@ When creating a new parent chart with this chart as a dependency, the `CustomCon
 It also allows for providing additional xml configuration files that will be copied into `/var/jenkins_home`. In the parent chart's values.yaml,
 set the `jenkins.Master.CustomConfigMap` value to true like so
 
-```
+```yaml
 jenkins:
   Master:
     CustomConfigMap: true
@@ -182,11 +191,12 @@ If running upon a cluster with RBAC enabled you will need to do the following:
 ## Run Jenkins as non root user
 
 The default settings of this helm chart let Jenkins run as root user with uid `0`.
-Due to security reasons you may want to run Jenkins as a non root user. 
-Fortunately the default jenkins docker image `jenkins/jenkins` contains a user `jenkins` with uid `1000` that can be used for this purpose.  
+Due to security reasons you may want to run Jenkins as a non root user.
+Fortunately the default jenkins docker image `jenkins/jenkins` contains a user `jenkins` with uid `1000` that can be used for this purpose.
 
 Simply use the following settings to run Jenkins as `jenkins` user with uid `1000`.
-```
+
+```yaml
 jenkins:
   Master:
     RunAsUser: 1000
@@ -194,4 +204,31 @@ jenkins:
 ```
 
 Docs taken from https://github.com/jenkinsci/docker/blob/master/Dockerfile:
-*Jenkins is run with user `jenkins`, uid = 1000. If you bind mount a volume from the host or a data container,ensure you use the same uid*
+_Jenkins is run with user `jenkins`, uid = 1000. If you bind mount a volume from the host or a data container,ensure you use the same uid_
+
+## Running behind a forward proxy
+
+The master pod uses an Init Container to install plugins etc. If you are behind a corporate proxy it may be useful to set `Master.InitContainerEnv` to add environment variables such as `http_proxy`, so that these can be downloaded.
+
+Additionally, you may want to add env vars for the Jenkins container, and the JVM (`Master.JavaOpts`).
+
+```yaml
+Master:
+  InitContainerEnv:
+    - name: http_proxy
+      value: "http://192.168.64.1:3128"
+    - name: https_proxy
+      value: "http://192.168.64.1:3128"
+    - name: no_proxy
+      value: ""
+  ContainerEnv:
+    - name: http_proxy
+      value: "http://192.168.64.1:3128"
+    - name: https_proxy
+      value: "http://192.168.64.1:3128"
+  JavaOpts: >-
+    -Dhttp.proxyHost=192.168.64.1
+    -Dhttp.proxyPort=3128
+    -Dhttps.proxyHost=192.168.64.1
+    -Dhttps.proxyPort=3128
+```

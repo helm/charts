@@ -1,3 +1,8 @@
+{{- if and (ne "yes" .Values.acceptLicenseAgreement) (contains "enterprise" .Values.imageTag)}}
+####   ERROR: You did not accept the Neo4j Enterprise License. ####
+####   ERROR: Please set acceptLicenseAgreement to yes.        ####
+###################################################################
+{{- else }}
 We'll need to wait a few seconds for the Neo4j cluster to form.
 We need to see this line in all of our pods' logs:
 
@@ -13,7 +18,7 @@ kubectl run -it --rm cypher-shell \
     --image=neo4j:3.2.3-enterprise \
     --restart=Never \
     --namespace {{ .Release.Namespace }} \
-    --command -- ./bin/cypher-shell -u neo4j -p <password> --a {{ printf "%s-%s" .Release.Name .Values.name | trunc 56 }}.default.svc.cluster.local "call dbms.cluster.overview()"
+    --command -- ./bin/cypher-shell -u neo4j -p <password> --a {{ printf "%s-%s" .Release.Name .Values.name | trunc 56 }}.{{ printf "%s" .Release.Namespace }}.svc.cluster.local "call dbms.cluster.overview()"
 
 This will print out the addresses of the members of the cluster.
 
@@ -23,3 +28,4 @@ If you didn't set a password, one will be auto generated.
 You can find the base64 encoded version of the password by running the following command:
 
 kubectl get secrets {{ template "neo4j.secrets.fullname" . }} -o yaml
+{{- end}}

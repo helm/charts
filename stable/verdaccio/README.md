@@ -47,7 +47,7 @@ deletes the release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Verdaccio chart
+The following table lists the configurable parameters of the Verdaccio chart
 and their default values.
 
 | Parameter                          | Description                                                     | Default                                                  |
@@ -83,7 +83,7 @@ $ helm install --name my-release \
     stable/verdaccio
 ```
 
-The above command sets the a service type LoadBalancer.
+The above command sets the service type LoadBalancer.
 
 Alternatively, a YAML file that specifies the values for the above parameters
 can be provided while installing the chart. For example,

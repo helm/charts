@@ -66,10 +66,17 @@ spec:
           mountPath: /plugins
         securityContext:
           privileged: true
+{{- if .Values.core.sidecarContainers }}
+{{ toYaml .Values.core.sidecarContainers | indent 6 }}
+{{- end }}
 {{- if .Values.readReplica.initContainers }}
       initContainers:
-{{ toYaml .Values.readReplica.initContainers | indent 6}}
+{{ toYaml .Values.readReplica.initContainers | indent 6 }}
 {{- end }}
       volumes:
         - name: plugins
           emptyDir: {}
+{{- if .Values.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecret }}
+{{- end -}}

@@ -25,13 +25,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
-Create the name for our kafka configmap.
-*/}}
-{{- define "kafka.configmap" -}}
-{{- printf "%s-configmap-%d" (include "kafka.fullname" .) .Release.Revision -}}
-{{- end -}}
-
-{{/*
 Form the Zookeeper URL. If zookeeper is installed as part of this chart, use k8s service discovery,
 else use user-provided URL
 */}}
@@ -40,6 +33,8 @@ else use user-provided URL
 {{- if .Values.zookeeper.enabled -}}
 {{- printf "%s:%s" (include "kafka.zookeeper.fullname" .) $port }}
 {{- else -}}
-{{- printf "%s:%s" .Values.zookeeper.url $port }}
+{{- $zookeeperConnect := printf "%s:%s" .Values.zookeeper.url $port }}
+{{- $zookeeperConnectOverride := index .Values "configurationOverrides" "zookeeper.connect" }}
+{{- default $zookeeperConnect $zookeeperConnectOverride }}
 {{- end -}}
 {{- end -}}

@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ template "postgresql.fullname" . }}
   labels:
-    app: {{ template "postgresql.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "postgresql.name" . }}
+    chart: {{ template "postgresql.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 {{- if .Values.metrics.enabled }}
   annotations:
     prometheus.io/scrape: "true"
@@ -15,6 +15,11 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
+  {{- if .Values.metrics.enabled }}
+  - name: metrics
+    port: 9187
+    targetPort: metrics
+  {{- end }}
   - name: postgresql
     port: {{ .Values.service.port }}
     targetPort: postgresql
@@ -26,4 +31,5 @@ spec:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
 {{- end }}
   selector:
-    app: {{ template "postgresql.fullname" . }}
+    app: {{ template "postgresql.name" . }}
+    release: {{ .Release.Name }}
