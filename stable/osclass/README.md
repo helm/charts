@@ -81,8 +81,8 @@ The following table lists the configurable parameters of the Osclass chart and t
 | `externalDatabase.password`        | Password for the above username          | `nil`                                                   |
 | `externalDatabase.database`        | Name of the existing database            | `bitnami_osclass`                                       |
 | `mariadb.enabled`                  | Whether to use the MariaDB chart         | `true`                                                  |
-| `mariadb.mariadbDatabase`          | Database name to create                  | `bitnami_osclass`                                       |
-| `mariadb.mariadbUser`              | Database user to create                  | `bn_osclass`                                            |
+| `mariadb.db.name`          | Database name to create                  | `bitnami_osclass`                                       |
+| `mariadb.db.user`              | Database user to create                  | `bn_osclass`                                            |
 | `mariadb.mariadbPassword`          | Password for the database                | `nil`                                                   |
 | `mariadb.mariadbRootPassword`      | MariaDB admin password                   | `nil`                                                   |
 | `mariadb.persistence.enabled`      | Enable MariaDB persistence using PVC     | `true`                                                  |
