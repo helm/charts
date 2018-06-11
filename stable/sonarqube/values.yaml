@@ -95,9 +95,14 @@ plugins:
 #   sonar.security.realm=LDAP
 #   ldap.url=ldaps://organization.com
 
-## Configuration values for the postgresql dependency
+## Configuration value to select database type
+## Option to use "postgresql" or "mysql" database type, by default "postgresql" is choosen
+## Set the "enable" field to true of the database type you select (if you want to use internal database) and false of the one you don't select
+database:
+  type: "postgresql"
+
+## Configuration values for postgresql dependency
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
-##
 postgresql:
   # Enable to deploy the PostgreSQL chart
   enabled: true
@@ -110,3 +115,19 @@ postgresql:
   # Specify the TCP port that PostgreSQL should use
   service:
     port: 5432
+
+## Configuration values for the mysql dependency
+## ref: https://github.com/kubernetes/charts/blob/master/stable/mysql/README.md
+##
+mysql:
+  # Enable to deploy the mySQL chart
+  enabled: false
+  # To use an external mySQL instance, set enabled to false and uncomment
+  # the line below:
+  # mysqlServer: ""
+  mysqlUser: "sonarUser"
+  mysqlPassword: "sonarPass"
+  mysqlDatabase: "sonarDB"
+  # Specify the TCP port that mySQL should use
+  service:
+    port: 3306

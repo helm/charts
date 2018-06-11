@@ -15,6 +15,9 @@ metrics:
     port: 2020
     type: ClusterIP
 
+# When enabled, fluent-bit will keep track of tailing offsets across pod restarts.
+trackOffsets: false
+
 backend:
   type: forward
   forward:
