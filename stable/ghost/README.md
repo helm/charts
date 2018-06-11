@@ -66,7 +66,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `externalDatabase.password`   | Password for the above username                               | `nil`                                                    |
 | `externalDatabase.database`   | Name of the existing database                                 | `bitnami_ghost`                                          |
 | `mariadb.enabled`             | Whether or not to install MariaDB (disable if using external) | `true`                                                   |
-| `mariadb.mariadbRootPassword` | MariaDB admin password                                        | `nil`                                                    |
+| `mariadb.rootUser.password` | MariaDB admin password                                        | `nil`                                                    |
 | `mariadb.db.name`     | MariaDB Database name to create                               | `bitnami_ghost`                                          |
 | `mariadb.db.user`         | MariaDB Database user to create                               | `bn_ghost`                                               |
 | `mariadb.db.password`     | MariaDB Password for user                                     | _random 10 character long alphanumeric string_           |
