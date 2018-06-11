@@ -108,3 +108,69 @@ $ kubectl port-forward vault-pod 8200
 $ export VAULT_ADDR=http://127.0.0.1:8200
 $ vault status
 ```
+
+### TLS config
+
+This is example of running Vault with Kubernetes generated TLS certificate:
+
+1. Create `CertificateSigningRequest` according to [documentation](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/),
+    some useful hosts entries to add:
+   - `127.0.0.1` for running Vault commands inside the pod,
+   - `*.<namespace>.pod.cluster.local` for direct Pod to Pod communication,
+   - `<release>.<namespace>.svc.cluster.local` for communication within cluster,
+
+1. Create `Secret` holding certificate and private key PEM:
+
+```yaml
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: vault-tls
+data:
+  tls.crt: ${BASE64_ENCODED_CRT}
+  tls.key: ${BASE64_ENCODED_PRIVATE_KEY}
+```
+
+1. Set up minimal `values.yml` configuration:
+
+```yaml
+vault:
+  podDNSAsClusterAddr: true
+  extraEnv:
+  - name: VAULT_ADDR
+    value: https://127.0.0.1:8200
+  - name: VAULT_CAPATH
+    value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+  customSecrets:
+  - secretName: vault-tls
+    mountPath: /vault/tls
+  config:
+    listener:
+      tcp:
+        tls_disable: false
+        tls_cert_file: /vault/tls/tls.crt
+        tls_key_file: /vault/tls/tls.key
+        
+# ingress:
+#  enable: true
+#  annotations:
+#    kubernetes.io/ingress.class: "nginx"
+#    nginx.ingress.kubernetes.io/secure-backends: "true"
+```
+
+### HA unseal script
+
+Script for easier HA mode Vault unsealing:
+```bash
+#!/bin/sh
+set -e
+release=$1
+namespace=$(helm status vault -o json | jq -r '.namespace')
+read -rsp 'Vault Unseal Key: ' key
+echo
+for pod in $(kubectl -n ${namespace} get pods -l release=${release} -o json | jq -r '.items[] | select(.status.phase == "Running" and (.status.containerStatuses | any(.name == "vault" and (.ready | not)))) | .metadata.name')
+do
+    kubectl -n ${namespace} exec -ti ${pod} -c vault vault operator unseal "${key}"
+done
+```
