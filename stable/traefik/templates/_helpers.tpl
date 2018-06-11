@@ -51,13 +51,21 @@ Create the block for whiteListSourceRange.
 {{- end -}}
 
 {{/*
-Create the block for acme.domains.sans.
+Create the block for acme.domains.
 */}}
-{{- define "traefik.acme.domains.sans" -}}
+{{- define "traefik.acme.domains" -}}
+{{- range $idx, $value := .Values.acme.domains.domainsList }}
+    {{- if $value.main }}
+    [[acme.domains]]
+       main = {{- range $mainIdx, $mainValue := $value }} {{ $mainValue | quote }}{{- end -}}
+    {{- end -}}
+{{- if $value.sans }}
        sans = [
-	   {{- range $idx, $domains := .Values.acme.domains.sans }}
-	     {{- if $idx }}, {{ end }}
+  {{- range $sansIdx, $domains := $value.sans }}
+			 {{- if $sansIdx }}, {{ end }}
 	     {{- $domains | quote }}
-	   {{- end -}}
-         ]
+  {{- end -}}
+	     ]
+	{{- end -}}
+{{- end -}}
 {{- end -}}
