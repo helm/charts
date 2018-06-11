@@ -72,7 +72,7 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `mariadb.db.name`           | Database name to create                   | `bitnami_opencart`                                       |
 | `mariadb.db.user`               | Database user to create                   | `bn_opencart`                                            | 
 | `mariadb.db.password`           | Password for the database                 | `nil`                                                    |
-| `mariadb.mariadbRootPassword`       | MariaDB admin password                    | `nil`                                                    |
+| `mariadb.rootUser.password`       | MariaDB admin password                    | `nil`                                                    |
 | `serviceType`                       | Kubernetes Service type                   | `LoadBalancer`                                           |
 | `persistence.enabled`               | Enable persistence using PVC              | `true`                                                   |
 | `persistence.apache.storageClass`   | PVC Storage Class for Apache volume       | `nil` (uses alpha storage class annotation)              |
