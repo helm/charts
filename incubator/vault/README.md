@@ -54,6 +54,8 @@ The following table lists the configurable parameters of the Vault chart and the
 | `image.tag`                       | Container image tag to deploy            | `0.10.1`                            |
 | `vault.dev`                       | Use Vault in dev mode                    | true (set to false in production)   |
 | `vault.extraEnv`                  | Extra env vars for Vault pods            | `{}`                                |
+| `vault.extraContainers`           | Sidecar containers to add to the vault pod | `{}`                              |
+| `vault.extraVolumes`              | Additional volumes to the controller pod | `{}`                                |
 | `vault.customSecrets`             | Custom secrets available to Vault        | `[]`                                |
 | `vault.config`                    | Vault configuration                      | No default backend                  |
 | `replicaCount`                    | k8s replicas                             | `3`                                 |
