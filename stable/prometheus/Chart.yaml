@@ -1,10 +1,14 @@
 name: prometheus
 <<<<<<< HEAD
+<<<<<<< HEAD
 version: 6.7.2
 appVersion: 2.2.1
 =======
 version: 4.6.18
 >>>>>>> bump chart version
+=======
+version: 4.6.18
+>>>>>>> 2f0e13511628ed3ccb61e250391892888064622b
 description: Prometheus is a monitoring system and time series database.
 home: https://prometheus.io/
 icon: https://raw.githubusercontent.com/prometheus/prometheus.github.io/master/assets/prometheus_logo-cb55bb5c346.png

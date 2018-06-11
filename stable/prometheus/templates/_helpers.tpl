@@ -122,6 +122,7 @@ Return the appropriate apiVersion for networkpolicy.
 
 {{/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 Create the name of the service account to use for the alertmanager component
 */}}
 {{- define "prometheus.serviceAccountName.alertmanager" -}}
@@ -175,10 +176,15 @@ Create the name of the service account to use for the server component
     {{ default "default" .Values.serviceAccounts.server.name }}
 {{- end -}}
 =======
+=======
+>>>>>>> 2f0e13511628ed3ccb61e250391892888064622b
 Combines global server params and prometheus.yml into the final startup config file.
 */}}
 {{- define "prometheus.server.config" -}}
 {{- $global_config := dict "global" .Values.server.global | toYaml -}}
 {{- index .Values.serverFiles "prometheus.yml" | printf "%s\n%s" $global_config -}}
+<<<<<<< HEAD
 >>>>>>> IMPROVEMENT: pass parameters from chart to Prometheus server config
+=======
+>>>>>>> 2f0e13511628ed3ccb61e250391892888064622b
 {{- end -}}

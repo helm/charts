@@ -11,6 +11,7 @@ metadata:
   name: {{ template "prometheus.server.fullname" . }}
 data:
 <<<<<<< HEAD
+<<<<<<< HEAD
 {{- $root := . -}}
 {{- range $key, $value := .Values.serverFiles }}
   {{ $key }}: |
@@ -45,6 +46,8 @@ data:
 {{- end -}}
 {{- end -}}
 =======
+=======
+>>>>>>> 2f0e13511628ed3ccb61e250391892888064622b
   alerts: {{ .Values.serverFiles.alerts | quote }}
   rules: {{ .Values.serverFiles.rules | quote }}
   prometheus.yml: {{ include "prometheus.server.config" . | toYaml | indent 2 | trim }}

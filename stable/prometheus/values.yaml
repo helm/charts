@@ -450,10 +450,13 @@ server:
   baseURL: ""
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   ## This flag controls access to the administrative HTTP API which includes functionality such as deleting time
   ## series. This is disabled by default.
   enableAdminApi: false
 =======
+=======
+>>>>>>> 2f0e13511628ed3ccb61e250391892888064622b
   ## Prometheus global scraping configuration
   ##
   global:
@@ -466,7 +469,10 @@ server:
     ## How frequently to evaluate rules
     ##
     evaluation_interval: 1m
+<<<<<<< HEAD
 >>>>>>> IMPROVEMENT: pass parameters from chart to Prometheus server config
+=======
+>>>>>>> 2f0e13511628ed3ccb61e250391892888064622b
 
   ## Additional Prometheus server container arguments
   ##
