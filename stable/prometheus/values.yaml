@@ -449,9 +449,30 @@ server:
   ## Maybe same with Ingress host name
   baseURL: ""
 
+<<<<<<< HEAD
+<<<<<<< HEAD
   ## This flag controls access to the administrative HTTP API which includes functionality such as deleting time
   ## series. This is disabled by default.
   enableAdminApi: false
+=======
+=======
+>>>>>>> 2f0e13511628ed3ccb61e250391892888064622b
+  ## Prometheus global scraping configuration
+  ##
+  global:
+    ## How frequently to scrape targets by default
+    ##
+    scrape_interval: 1m
+    ## How long until a scrape request times out
+    ##
+    scrape_timeout: 10s
+    ## How frequently to evaluate rules
+    ##
+    evaluation_interval: 1m
+<<<<<<< HEAD
+>>>>>>> IMPROVEMENT: pass parameters from chart to Prometheus server config
+=======
+>>>>>>> 2f0e13511628ed3ccb61e250391892888064622b
 
   ## Additional Prometheus server container arguments
   ##
