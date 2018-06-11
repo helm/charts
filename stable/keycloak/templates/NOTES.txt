@@ -3,7 +3,7 @@ Keycloak can be accessed:
 
 * Within your cluster, at the following DNS name at port {{ .Values.keycloak.service.port }}:
 
-  {{ template "keycloak.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  {{ template "keycloak.fullname" . }}-http.{{ .Release.Namespace }}.svc.cluster.local
 
 {{- if .Values.keycloak.ingress.enabled }}
 
