@@ -150,11 +150,11 @@ See also:
 keycloak:
   extraEnv:
     - name: KEYCLOAK_LOGLEVEL
-      value: : DEBUG
+      value: DEBUG
     - name: WILDFLY_LOGLEVEL
       value: DEBUG
     - name: CACHE_OWNERS:
-      value"3"
+      value: "3"
 ```
 
 ### Providing a Custom Theme
@@ -199,30 +199,28 @@ keycloak:
 ```
 ### Setting a Custom Realm
 
-A realm can be added by creating a secret or configmap for the realm .json file and then supplying this into the chart. 
-It could be mounted using extraVolumeMounts and then specified in extraArgs using -Dimport.
-First we could create a Secret from a json file using `kubectl create secret generic realm-secret --from-file=realm.json`
-Then in our values.yaml we mount this with:
+A realm can be added by creating a secret or configmap for the realm json file and then supplying this into the chart. 
+It could be mounted using `extraVolumeMounts` and then specified in `extraArgs` using `-Dimport`.
+First we could create a Secret from a json file using `kubectl create secret generic realm-secret --from-file=realm.json` which we need to reference in `values.yaml`:
 
 ```yaml
+keycloak:
   extraVolumes:
-  - name: realm-secret
-    secret:
-      secretName: realm-secret
+    - name: realm-secret
+      secret:
+        secretName: realm-secret
+      
   extraVolumeMounts:
     - name: realm-secret
       mountPath: "/realm/"
       readOnly: true
-```
-And specify it as an import parameter:
 
-```$yaml
   extraArgs: -Dkeycloak.import=/realm/realm.json
 ```
 
-Alternatively, the file could be added to the image (set in keycloak.image) and then referenced by -Dimport.
+Alternatively, the file could be added to a custom image (set in `keycloak.image`) and then referenced by `-Dimport`.
 
-After startup the web admin console for the realm should be available on the path /auth/admin/<realm name>/console/
+After startup the web admin console for the realm should be available on the path /auth/admin/\<realm name>/console/
 
 ### WildFly Configuration
 
