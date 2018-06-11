@@ -1,7 +1,13 @@
 # Elasticsearch Helm Chart
 
-This chart is based on the [centerforopenscience/elasticsearch](https://hub.docker.com/r/centerforopenscience/elasticsearch/) image which comes with Fabric8's great [kubernetes discovery plugin](https://github.com/fabric8io/elasticsearch-cloud-kubernetes) for Elasticsearch.
- 
+This chart uses a standard Docker image of Elasticsearch (hub.docker.com/r/blacktop/elasticsearch) and uses a service pointing to the master's transport port for service discovery.
+Elasticsearch does not communicate with the Kubernetes API, hence no need for RBAC permissions.
+
+## Warning for previous users
+If you are upgrading to Elasticsearch 6 from the 5.5 version used in this chart before, please note that your cluster needs to do a full cluster restart.
+The simplest way to do that is to delete the installation (keep the PVs) and install this chart again with the new version.
+If you want to avoid doing that upgrade to Elasticsearch 5.6 first before moving on to Elasticsearch 6.0.
+
 ## Prerequisites Details
 
 * Kubernetes 1.6+
@@ -60,6 +66,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `image.tag`                          | Container image tag                                                 | `5.4`                                |
 | `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                      |
+| `cluster.kubernetesDomain`           | Kubernetes cluster domain name                                      | `cluster.local`                      |
+| `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                              |
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                 |
 | `cluster.env`                        | Cluster environment variables                                       | `{}`                                 |
 | `client.name`                        | Client component name                                               | `client`                             |
@@ -93,7 +101,6 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.podAnnotations`                | Data StatefulSet annotations                                        | `{}`                                 |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                               |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                               |
-| `rbac.create`                        | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
