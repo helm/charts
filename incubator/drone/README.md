@@ -66,6 +66,8 @@ The following table lists the configurable parameters of the drone charts and th
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
 | `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |
 | `dind.env`                  | **DinD** environment variables                                                                | `nil`                       |
+| `dind.command`              | **DinD** custom command instead of default entry point                                        | `nil`                       |
+| `dind.args`                 | **DinD** arguments for custom command or entry point                                          | `nil`                       |
 | `persistence.enabled`       | Use a PVC to persist data                                                                     | `true`                      |
 | `persistence.existingClaim` | Use an existing PVC to persist data                                                           | `nil`                       |
 | `persistence.storageClass`  | Storage class of backing PVC                                                                  | `nil`                       |
