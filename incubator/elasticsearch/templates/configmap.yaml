@@ -60,7 +60,7 @@ data:
     gateway.recover_after_master_nodes: ${RECOVER_AFTER_MASTER_NODES:2}
     gateway.recover_after_data_nodes: ${RECOVER_AFTER_DATA_NODES:1}
 {{- if .Values.cluster.config }}
-{{ toYaml .Values.cluster.config | indent 4 }}
+{{ .Values.cluster.config | indent 4 }}
 {{- end }}
 {{- if hasPrefix "2." .Values.image.tag }}
   logging.yml: |-
