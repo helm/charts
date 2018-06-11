@@ -25,15 +25,15 @@ airflow:
   # image
   #   repository: stibbons31/docker-airflow-dev
   #   tag: 2.0dev
-  ## Airflow 2.0 allows changing the value ingress.web.path (see bellow). In version < 2.0,
-  ## changing the mount point of the web server won't have any effect.
+  ## Airflow 2.0 allows changing the value ingress.web.path and ingress.flower.path (see bellow).
+  ## In version < 2.0, changing these paths won't have any effect.
   image:
     ##
     ## docker-airflow image
     repository: puckel/docker-airflow
     ##
     ## image tag
-    tag: 1.9.0-2
+    tag: 1.9.0-4
     ##
     ## Image pull policy
     ## values: Always or IfNotPresent
@@ -144,7 +144,9 @@ ingress:
     ## hostname for flower
     host: ""
     ##
-    ## Annotation for the Flower endpoint  ##
+    ## Annotation for the Flower endpoint
+    ##
+    ## ==== SKIP THE FOLLOWING BLOCK IF YOU HAVE FLOWER > JANUARY 2018 =============================
     ## Please note their is a small difference between the way Airflow Web server and Flower handles
     ## URL prefixes in HTTP requests:
     ## Flower wants HTTP header to behave like there was no URL prefix, and but still generates
@@ -167,11 +169,13 @@ ingress:
     ##                proxy_set_header Host $host;
     ##              }
     ##            }
+    ## ==== IF YOU HAVE FLOWER > JANUARY 2018, NO MORE NEED TO STRIP THE PREFIX ====================
     annotations:
       ##
       ## NOTE: it is important here to have your reverse proxy strip the path/rewrite the URL
       ## Example for Traefik:
-      # traefik.frontend.rule.type: PathPrefixStrip
+      # traefik.frontend.rule.type: PathPrefix       ## Flower >= Jan 2018
+      # traefik.frontend.rule.type: PathPrefixStrip  ## Flower < Jan 2018
       # kubernetes.io/ingress.class: traefik
 
 

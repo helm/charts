@@ -1,12 +1,15 @@
 Congratulations. You have just deployed Apache Airflow
 
-1. Get the Artifactory URL by running these commands:
+{{- if .Values.ingress.enabled }}
+URL to Airflow and Flower:
 
-   {{- if .Values.ingress.enabled }}
-    - Web UI: http://{{ .Values.ingress.web.host }}{{ .Values.ingress.web.path }}
-    - Flower: http://{{ .Values.ingress.flower.host }}{{ .Values.ingress.flower.path }}
+    - Web UI: http://{{ .Values.ingress.web.host }}{{ .Values.ingress.web.path }}/
+    - Flower: http://{{ .Values.ingress.flower.host }}{{ .Values.ingress.flower.path }}/
 
-   {{- else if contains "NodePort" .Values.airflow.service.type }}
+{{- else if contains "NodePort" .Values.airflow.service.type }}
+
+1. Get the Airflow URL by running these commands:
+
    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "airflow.fullname" . }})
    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
    echo http://$NODE_IP:$NODE_PORT/
@@ -23,6 +26,5 @@ Congratulations. You have just deployed Apache Airflow
    echo http://127.0.0.1:{{ .Values.airflow.externalPortHttp }}
    kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.airflow.externalPortHttp }}:{{ .Values.airflow.internalPortHttp }}
 
-   {{- end }}
-
 2. Open Airflow in your web browser
+{{- end }}

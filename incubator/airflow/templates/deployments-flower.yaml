@@ -59,7 +59,7 @@ spec:
           args: ["flower"]
           livenessProbe:
             httpGet:
-              path: "/"
+              path: "{{ .Values.ingress.flower.path }}/"
               port: flower
             initialDelaySeconds: 60
             periodSeconds: 60
