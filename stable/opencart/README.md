@@ -69,10 +69,10 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `externalDatabase.password`         | Password for the above username           | `nil`                                                    |
 | `externalDatabase.database`         | Name of the existing database             | `bitnami_opencart`                                       |
 | `mariadb.enabled`                   | Whether to use MariaDB chart              | `true`                                                   |
-| `mariadb.mariadbDatabase`           | Database name to create                   | `bitnami_opencart`                                       |
-| `mariadb.mariadbUser`               | Database user to create                   | `bn_opencart`                                            | 
-| `mariadb.mariadbPassword`           | Password for the database                 | `nil`                                                    |
-| `mariadb.mariadbRootPassword`       | MariaDB admin password                    | `nil`                                                    |
+| `mariadb.db.name`           | Database name to create                   | `bitnami_opencart`                                       |
+| `mariadb.db.user`               | Database user to create                   | `bn_opencart`                                            | 
+| `mariadb.db.password`           | Password for the database                 | `nil`                                                    |
+| `mariadb.rootUser.password`       | MariaDB admin password                    | `nil`                                                    |
 | `serviceType`                       | Kubernetes Service type                   | `LoadBalancer`                                           |
 | `persistence.enabled`               | Enable persistence using PVC              | `true`                                                   |
 | `persistence.apache.storageClass`   | PVC Storage Class for Apache volume       | `nil` (uses alpha storage class annotation)              |
