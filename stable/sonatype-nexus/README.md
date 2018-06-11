@@ -5,7 +5,7 @@
 ## Introduction
 
 This chart bootstraps a Nexus OSS deployment on a cluster using Helm.
-This setup is best configuted in [GCP](https://cloud.google.com/) since:
+This setup is best configured in [GCP](https://cloud.google.com/) since:
 - [google cloud storage](https://cloud.google.com/storage/) is used for backups
 - [GCE Ingress controller](https://github.com/kubernetes/ingress/blob/master/docs/faq/gce.md) is used for using a pre-allocated static IP in GCE.
 
@@ -80,7 +80,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.readinessProbe.failureThreshold`     | Number of attempts before failure   | 6                                       |
 | `nexusProxy.port`                           | Port for exposing Nexus             | `8080`                                  |
 | `nexusProxy.imageName`                      | Proxy image                         | `quay.io/travelaudience/docker-nexus-proxy` |
-| `nexusProxy.imageTag`                       | Proxy image verion                  | `2.1.0`                                 |
+| `nexusProxy.imageTag`                       | Proxy image version                 | `2.1.0`                                 |
 | `nexusProxy.imagePullPolicy`                | Proxy image pull policy             | `IfNotPresent`                          |
 | `nexusProxy.env.nexusHttpHost`              | Nexus url to access Nexus           | `nil`                                   |
 | `nexusProxy.env.nexusDockerHost`            | Containers url to be used with docker | `nil`                                 |

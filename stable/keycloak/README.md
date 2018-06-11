@@ -51,6 +51,7 @@ Parameter | Description | Default
 `keycloak.image.pullSecrets`| Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods) |
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
 `keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
+`keycloak.extraInitContainers`| Additional init containers, e. g. for providing themes, etc. | `[]`
 `keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak | `[]`
 `keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes | `[]`
 `keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes | `[]`
@@ -61,6 +62,7 @@ Parameter | Description | Default
 `keycloak.tolerations` | Node taints to tolerate | `[]`
 `keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
 `keycloak.preStartScript` | Custom script to run before Keycloak starts up | ``
+`keycloak.extraArgs` | Additional arguments to the start command | ``
 `keycloak.livenessProbe.initialDelaySeconds` | Liveness Probe `initialDelaySeconds` | `120`
 `keycloak.livenessProbe.timeoutSeconds` | Liveness Probe `timeoutSeconds` | `5`
 `keycloak.readinessProbe.initialDelaySeconds` | Readiness Probe `initialDelaySeconds` | `30`
@@ -142,18 +144,83 @@ See also:
 * https://github.com/jboss-dockerfiles/keycloak/blob/master/server/cli/databases/postgres/change-database.cli
 * https://github.com/jboss-dockerfiles/keycloak/blob/master/server/cli/databases/mysql/change-database.cli
 
-### Configuring additional environment variables:
+### Configuring Additional Environment Variables
 
 ```yaml
 keycloak:
   extraEnv:
     - name: KEYCLOAK_LOGLEVEL
-      value: : DEBUG
+      value: DEBUG
     - name: WILDFLY_LOGLEVEL
       value: DEBUG
     - name: CACHE_OWNERS:
-      value"3"
+      value: "3"
 ```
+
+### Providing a Custom Theme
+
+One option is certainly to provide a custom Keycloak image that includes the theme. However, if you prefer to stick with the
+official Keycloak image, you can use an init container as theme provider.
+
+Create your own theme and package it up into a Docker image.
+
+```docker
+FROM busybox
+COPY my_theme /my_theme
+```
+
+In combination with an `emptyDir` that is shared with the Keycloak container, configure an init container that runs
+your theme image and copies the theme over to the right place where Keycloak will pick it up automatically.
+
+```yaml
+keycloak:
+  extraInitContainers:
+    - name: theme-provider
+      image: myuser/mytheme:1
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+      args:
+        - -c
+        - |
+          echo "Copying theme..."
+          cp -R /mytheme/* /theme
+      volumeMounts:
+        - name: theme
+          mountPath: /theme
+
+  extraVolumeMounts:
+    - name: theme
+      mountPath: /opt/jboss/keycloak/themes/mytheme
+
+  extraVolumes:
+    - name: theme
+      emptyDir: {}
+```
+### Setting a Custom Realm
+
+A realm can be added by creating a secret or configmap for the realm json file and then supplying this into the chart. 
+It could be mounted using `extraVolumeMounts` and then specified in `extraArgs` using `-Dimport`.
+First we could create a Secret from a json file using `kubectl create secret generic realm-secret --from-file=realm.json` which we need to reference in `values.yaml`:
+
+```yaml
+keycloak:
+  extraVolumes:
+    - name: realm-secret
+      secret:
+        secretName: realm-secret
+      
+  extraVolumeMounts:
+    - name: realm-secret
+      mountPath: "/realm/"
+      readOnly: true
+
+  extraArgs: -Dkeycloak.import=/realm/realm.json
+```
+
+Alternatively, the file could be added to a custom image (set in `keycloak.image`) and then referenced by `-Dimport`.
+
+After startup the web admin console for the realm should be available on the path /auth/admin/\<realm name>/console/
 
 ### WildFly Configuration
 

@@ -53,6 +53,9 @@ data:
       {{- end }}
       compress = {{ .Values.gzip.enabled }}
         [entryPoints.https.tls]
+          {{- if .Values.ssl.tlsMinVersion }}
+          minVersion = "{{ .Values.ssl.tlsMinVersion }}"
+          {{- end }}
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
