@@ -235,7 +235,7 @@ postgresql:
   # uri:
   ##
   ### PostgreSQL User to create.
-  postgresUser: airflow
+  postgresUser: postgres
   ##
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
@@ -250,6 +250,12 @@ postgresql:
     ##
     ## Enable PostgreSQL persistence using Persistent Volume Claims.
     enabled: true
+    ##
+    ## Persistant class
+    # storageClass: classname
+    ##
+    ## Access mode:
+    accessMode: ReadWriteOnce
 
 
 ## Configuration values for the Redis dependency.
@@ -261,8 +267,29 @@ redis:
   enabled: true
   ##
   ## Redis password
-  redisPassword: redis
-  persistence:
+  password: airflow
+  ##
+  ## Master configuration
+  master:
     ##
-    ## Use a PVC to persist data
-    enabled: true
+    ## Image configuration
+    # image:
+      ##
+      ## docker registry secret names (list)
+      # pullSecrets: nil
+    ##
+    ## Configure persistance
+    persistence:
+      ##
+      ## Use a PVC to persist data.
+      enabled: false
+      ##
+      ## Persistant class
+      # storageClass: classname
+      ##
+      ## Access mode:
+      accessMode: ReadWriteOnce
+  ##
+  ## Disable cluster management by default.
+  cluster:
+    enabled: false
