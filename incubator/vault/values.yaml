@@ -4,6 +4,10 @@
 replicaCount: 3
 ## The name of the secret to use if pulling images from a private registry.
 # imagePullSecret:
+replicaCount: 1
+maxUnavailable: 1
+# Allow to create all missing pods
+maxSurge: "100%"
 image:
   repository: vault
   tag: 0.10.1
@@ -34,10 +38,8 @@ service:
   #  - 130.211.204.2/32
   externalPort: 8200
   port: 8200
+  clusterPort: 8201
   # clusterIP: None
-  annotations: {}
-  #   cloud.google.com/load-balancer-type: "Internal"
-  #
   # An example using type:loadbalancer and AWS internal ELB on kops
   # type: LoadBalancer
   # annotations:
@@ -79,6 +81,7 @@ affinity: |
             app: {{ template "vault.fullname" . }}
             release: {{ .Release.Name }}
 
+
 ## Deployment annotations
 annotations: {}
 
@@ -101,23 +104,33 @@ vault:
   # https://www.vaultproject.io/intro/getting-started/dev-server.html for more
   # information.
   dev: true
+  logLevel: info
+  podDNSAsClusterAddr: false
   # Allows the mounting of various custom secrets th enable production vault
   # configurations. The comments show an example usage for mounting a TLS
   # secret. The two fields required are a secretName indicating the name of
   # the Kubernetes secret (created outside of this chart), and the mountPath
   # at which it should be mounted in the Vault container.
+  extraEnv:
+  - name: VAULT_ADDR
+    value: http://127.0.0.1:8200
+  # - name: VAULT_CAPATH
+  #   value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
   customSecrets: []
-    # - secretName: vault-tls
-    #   mountPath: /vault/tls
-  #
-  # Configure additional environment variables for the Vault containers
-  extraEnv: {}
-  #   - name: VAULT_API_ADDR
-  #     value: "https://vault.internal.domain.name:8200"
-  readiness:
-    readyIfSealed: false
-    readyIfStandby: true
-    readyIfUninitialized: true
+  # - secretName: vault-tls
+  #   mountPath: /vault/tls
+  annotations: []
+  # - key: example-key
+  #   value: example-value
+  labels: {}
+  readinessParams:
+    # https://www.vaultproject.io/api/system/health.html
+    standbycode: "200"
+    #  standbyok: "false"
+    #  activecode: "200"
+    #  standbycode: "429"
+    #  sealedcode: "503"
+    #  uninitcode: "501"
   config:
     # A YAML representation of a final vault config.json file.
     # See https://www.vaultproject.io/docs/configuration/ for more information.
