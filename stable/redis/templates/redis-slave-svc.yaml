@@ -9,8 +9,8 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-{{- if .Values.master.service.annotations }}
-{{ toYaml .Values.master.service.annotations | indent 4 }}
+{{- if .Values.slave.service.annotations }}
+{{ toYaml .Values.slave.service.annotations | indent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.slave.service.type }}
