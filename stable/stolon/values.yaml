@@ -1,6 +1,6 @@
 image:
   repository: sorintlab/stolon
-  tag: v0.10.0-pg10
+  tag: v0.11.0-pg10
   pullPolicy: IfNotPresent
 
 # used by create-cluster-job when store.backend is etcd
@@ -34,13 +34,13 @@ serviceAccount:
 
 superuserUsername: "stolon"
 
-## password for the superuser
-superuserPassword: "superuserPassword"
+## password for the superuser (REQUIRED)
+# superuserPassword: "superuserPassword"
 
 replicationUsername: "repluser"
 
-## password for the replication user
-replicationPassword: "replicationPassword"
+## password for the replication user (REQUIRED)
+# replicationPassword: "replicationPassword"
 
 ## backend could be one of the following: consul, etcdv2, etcdv3 or kubernetes
 store:
