@@ -25,7 +25,7 @@ To install the chart with the release name `my-release`:
 $ # edit secrets/aws_access_key_id and secrets/aws_access_key_id with the key/password of a AWS user with a policy to access  Cloudwatch
 $ helm install --name my-release incubator/fluentd-cloudwatch
 $ # or add a role to aws with the correct policy to add to cloud watch
-$ helm install --name my-release incubator/fluentd-cloudwatch --set awsRole=roll_name_here
+$ helm install --name my-release incubator/fluentd-cloudwatch --set awsRole=role_name_here
 ```
 
 The command deploys Fluentd Cloudwatch on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
