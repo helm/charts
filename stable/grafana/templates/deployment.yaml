@@ -59,6 +59,36 @@ spec:
       {{- end}}
       {{- end }}
       containers:
+{{- if .Values.sidecar.dashboards.enabled }}
+        - name: {{ template "grafana.name" . }}-sc-dashboard
+          image: "{{ .Values.sidecar.image }}"
+          imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+          env:
+            - name: LABEL
+              value: "{{ .Values.sidecar.dashboards.label }}"
+            - name: FOLDER
+              value: "{{ .Values.sidecar.dashboards.folder }}"
+          resources:
+{{ toYaml .Values.sidecar.resources | indent 12 }}
+          volumeMounts:
+            - name: sc-dashboard-volume
+              mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
+{{- end}}
+{{- if .Values.sidecar.datasources.enabled }}
+        - name: {{ template "grafana.name" . }}-sc-datasources
+          image: "{{ .Values.sidecar.image }}"
+          imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+          env:
+            - name: LABEL
+              value: "{{ .Values.sidecar.datasources.label }}"
+            - name: FOLDER
+              value: "/etc/grafana/provisioning/datasources"
+          resources:
+{{ toYaml .Values.sidecar.resources | indent 12 }}
+          volumeMounts:
+            - name: sc-datasources-volume
+              mountPath: "/etc/grafana/provisioning/datasources"
+{{- end}}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -88,6 +118,16 @@ spec:
               mountPath: "/etc/grafana/provisioning/dashboards/dashboardproviders.yaml"
               subPath: dashboardproviders.yaml
 {{- end }}
+{{- if .Values.sidecar.dashboards.enabled }}
+            - name: sc-dashboard-volume
+              mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
+            - name: sc-dashboard-provider
+              mountPath: "/etc/grafana/provisioning/dashboards"
+{{- end}}
+{{- if .Values.sidecar.datasources.enabled }}
+            - name: sc-datasources-volume
+              mountPath: "/etc/grafana/provisioning/datasources"
+{{- end}}
             - name: storage
               mountPath: "/var/lib/grafana"
               subPath: {{ .Values.persistence.subPath }}
@@ -185,6 +225,17 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.existingClaim | default (include "grafana.fullname" .) }}
       {{- else }}
+          emptyDir: {}
+      {{- end -}}
+      {{- if .Values.sidecar.dashboards.enabled }}
+        - name: sc-dashboard-volume
+          emptyDir: {}
+        - name: sc-dashboard-provider
+          configMap:
+            name: {{ template "grafana.fullname" . }}-config-dashboards
+      {{- end }}
+      {{- if .Values.sidecar.datasources.enabled }}
+        - name: sc-datasources-volume
           emptyDir: {}
       {{- end -}}
       {{- range .Values.extraSecretMounts }}
