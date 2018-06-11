@@ -18,7 +18,11 @@ spec:
       app: {{ template "grafana.name" . }}
       release: {{ .Release.Name }}
   strategy:
+{{- if eq .Values.replicas 1.0 }}
     type: {{ .Values.deploymentStrategy }}
+{{- else }}
+    type: Recreate
+{{- end }}
   template:
     metadata:
       labels:
