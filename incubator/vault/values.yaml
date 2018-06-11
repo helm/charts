@@ -24,7 +24,6 @@ consulAgent:
   #
   # Optionally override the agent's http port
   HttpPort: 8500
-
 service:
   name: vault
   type: ClusterIP
@@ -114,6 +113,18 @@ vault:
   extraEnv: {}
   #   - name: VAULT_API_ADDR
   #     value: "https://vault.internal.domain.name:8200"
+  extraContainers: {}
+  ## Additional containers to be added to the Vault pod
+  # - name: vault-sidecar
+  #   image: vault-sidecar:latest
+  #   volumeMounts:
+  #   - name: some-mount
+  #     mountPath: /some/path
+  extraVolumes: {}
+  ## Additional volumes to the vault pod.
+  # - name: extra-volume
+  #   secret:
+  #     secretName: some-secret
   readiness:
     readyIfSealed: false
     readyIfStandby: true
