@@ -72,12 +72,8 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 | `mariadb.enabled`                   | Whether to use the MariaDB chart          | `true`                                                  |
 | `mariadb.db.name`           | Database name to create                   | `bitnami_suitecrm`                                      |
 | `mariadb.db.user`               | Database user to create                   | `bn_suitecrm`                                           |
-<<<<<<< HEAD
 | `mariadb.db.password`           | Password for the database                 | `nil`                                                   |
-=======
-| `mariadb.mariadbPassword`           | Password for the database                 | `nil`                                                   |
->>>>>>> 9b5ae3fb5b4107bdab802aa8cd4f594e84e2e51d
-| `mariadb.mariadbRootPassword`       | MariaDB admin password                    | `nil`                                                   |
+| `mariadb.rootUser.password`       | MariaDB admin password                    | `nil`                                                   |
 | `serviceType`                       | Kubernetes Service type                   | `LoadBalancer`                                          |
 | `persistence.enabled`               | Enable persistence using PVC              | `true`                                                  |
 | `persistence.apache.storageClass`   | PVC Storage Class for apache volume       | `nil` (uses alpha storage class annotation)             |
