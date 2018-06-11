@@ -1,3 +1,4 @@
+{{- if and .Values.configuration.backupStorageProvider.name .Values.configuration.backupStorageProvider.bucket -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -36,3 +37,4 @@ spec:
           configMap:
             name: {{ template "ark.fullname" . }}
       serviceAccountName: {{ template "ark.hookServiceAccount" . }}
+{{- end -}}
