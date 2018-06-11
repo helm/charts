@@ -10,10 +10,12 @@ metadata:
 spec:
   replicas: 1
   strategy:
+    # Kill the scheduler as soon as possible. It will restart quickly with all the workers,
+    # minimizing the time they are not synchronized.
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
+      maxSurge: 0
+      maxUnavailable: 100%
   selector:
     matchLabels:
       app: {{ template "airflow.name" . }}-scheduler
@@ -28,6 +30,22 @@ spec:
         release: {{ .Release.Name }}
     spec:
       restartPolicy: Always
+      {{- if .Values.dags.init_container }}
+      initContainers:
+        - name: git-clone
+          image: alpine/git # Any image with git will do
+          command:
+          - /usr/local/git/git-clone.sh
+          args:
+          - "{{ .Values.dags.git.url }}"
+          - "{{ .Values.dags.git.ref }}"
+          - "/dags"
+          volumeMounts:
+          - name: git-clone
+            mountPath: /usr/local/git
+          - name: dags-data
+            mountPath: /dags
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}-scheduler
           image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
@@ -51,15 +69,38 @@ spec:
                 secretKeyRef:
                   name: {{ template "airflow.fullname" . }}
                   key: redisPassword
-          {{- if .Values.persistence.enabled }}
           volumeMounts:
+          {{- if .Values.persistence.enabled }}
             - name: dags-data
-              mountPath: {{ .Values.airflow.dag_path }}
+              mountPath: {{ .Values.dags.path }}
+          {{- else if .Values.dags.init_container }}
+            - name: dags-data
+              mountPath: {{ .Values.dags.path }}
+            - name: scripts
+              mountPath: /usr/local/scripts
           {{- end }}
-          args: ["scheduler",
-            "-n", "{{ .Values.airflow.scheduler_num_runs }}",
-            {{- if .Values.airflow.scheduler_do_pickle }} "-p" {{- end }}
-          ]
+          args:
+            - "bash"
+            - "-c"
+          {{- if and ( .Values.dags.init_container ) ( .Values.dags.init_container.install_requirements ) }}
+            - >
+              echo 'waiting 10s...' &&
+              sleep 10 &&
+              echo 'installing requirements...' &&
+              /usr/local/scripts/install-requirements.sh &&
+              echo "executing initdb" &&
+              airflow initdb &&
+              echo "executing scheduler" &&
+              airflow scheduler -n {{ .Values.airflow.scheduler_num_runs }} {{- if .Values.airflow.scheduler_do_pickle }} -p {{- end }}
+          {{- else }}
+            - >
+              echo 'waiting 10s...' &&
+              sleep 10 &&
+              echo "executing initdb" &&
+              airflow initdb &&
+              echo "executing scheduler" &&
+              airflow scheduler -n {{ .Values.airflow.scheduler_num_runs }} {{- if .Values.airflow.scheduler_do_pickle }} -p {{- end }}
+          {{- end }}
       volumes:
         - name: dags-data
         {{- if .Values.persistence.enabled }}
@@ -67,4 +108,14 @@ spec:
             claimName: {{ .Values.persistence.existingClaim | default (include "airflow.fullname" .) }}
         {{- else }}
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.dags.init_container }}
+        - name: scripts
+          configMap:
+            name: {{ template "airflow.fullname" . }}-scripts
+            defaultMode: 0755
+        - name: git-clone
+          configMap:
+            name: {{ template "airflow.fullname" . }}-git-clone
+            defaultMode: 0755
         {{- end }}

@@ -13,6 +13,7 @@ metadata:
 spec:
   serviceName: "{{ template "airflow.fullname" . }}-worker"
   updateStrategy:
+    ## Kill the workers as soon as possible, the scheduler will restart the failed job later
     type: RollingUpdate
   ## Use experimental burst mode for faster StatefulSet scaling
   ##   https://github.com/kubernetes/kubernetes/commit/c2c5051adf096ffd48bf1dcf5b11cb47e464ecdd
@@ -34,6 +35,22 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       serviceAccountName: {{ .Values.workers.serviceAccountName }}
+      {{- if .Values.dags.init_container }}
+      initContainers:
+        - name: git-clone
+          image: alpine/git # Any image with git will do
+          command:
+          - /usr/local/git/git-clone.sh
+          args:
+          - "{{ .Values.dags.git.url }}"
+          - "{{ .Values.dags.git.ref }}"
+          - "/dags"
+          volumeMounts:
+          - name: git-clone
+            mountPath: /usr/local/git
+          - name: dags-data
+            mountPath: /dags
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}-worker
           imagePullPolicy: {{ .Values.airflow.image.pull_policy }}
@@ -57,14 +74,34 @@ spec:
                 secretKeyRef:
                   name: {{ template "airflow.fullname" . }}
                   key: redisPassword
-          {{- if .Values.persistence.enabled }}
           volumeMounts:
+          {{- if .Values.persistence.enabled }}
             - name: dags-data
-              mountPath: {{ .Values.airflow.dag_path }}
+              mountPath: {{ .Values.dags.path }}
+          {{- else if .Values.dags.init_container }}
+            - name: dags-data
+              mountPath: {{ .Values.dags.path }}
+            - name: scripts
+              mountPath: /usr/local/scripts
           {{- end }}
-          ## volumes:
-          ##     - /localpath/to/dags:/usr/local/airflow/dags
-          args: ["worker"]
+          args:
+            - "bash"
+            - "-c"
+          {{- if and ( .Values.dags.init_container ) ( .Values.dags.init_container.install_requirements ) }}
+            - >
+              echo 'waiting 60s...' &&
+              sleep 60 &&
+              echo 'installing requirements...' &&
+              /usr/local/scripts/install-requirements.sh &&
+              echo 'executing worker...' &&
+              airflow worker
+          {{- else }}
+            - >
+              echo 'waiting 60s...' &&
+              sleep 60 &&
+              echo 'executing worker...' &&
+              airflow worker
+          {{- end }}
           ports:
             - name: wlog
               containerPort: 8793
@@ -78,4 +115,14 @@ spec:
               claimName: {{ .Values.persistence.existingClaim | default (include "airflow.fullname" .) }}
         {{- else }}
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.dags.init_container }}
+        - name: scripts
+          configMap:
+            name: {{ template "airflow.fullname" . }}-scripts
+            defaultMode: 0755
+        - name: git-clone
+          configMap:
+            name: {{ template "airflow.fullname" . }}-git-clone
+            defaultMode: 0755
         {{- end }}

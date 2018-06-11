@@ -13,10 +13,6 @@ airflow:
   service:
     type: ClusterIP
   ##
-  ## mount path for persistent volume.
-  ## Note that this location is referred to in airflow.cfg, so if you change it, you must update airflow.cfg accordingly.
-  dag_path: /usr/local/airflow/dags
-  ##
   ## set the max number of retries during container initialization
   init_retry_loop:
   ##
@@ -141,6 +137,11 @@ ingress:
     ## NOTE: do NOT keep trailing slash. For root configuration, set and empty string
     path: ""
     ##
+    ## Configure the liveness path. Keep to "/" for Flower >= jan 2018.
+    ## For previous version, enter the same path than in the 'path' key
+    ## NOTE: keep the trailing slash.
+    liveness_path: /
+    ##
     ## hostname for flower
     host: ""
     ##
@@ -201,15 +202,23 @@ persistence:
 
 ##
 ## Configure DAGs deployment and update
-## EXPERIMENTAL
 dags:
   ##
-  ## url to clone the git repository
-  git_repo:
-  ##
-  ## branch name to clone
-  git_branch: master
-
+  ## mount path for persistent volume.
+  ## Note that this location is referred to in airflow.cfg, so if you change it, you must update airflow.cfg accordingly.
+  path: /usr/local/airflow/dags
+  git:
+    ##
+    ## url to clone the git repository
+    url:
+    ##
+    ## branch name, tag or sha1 to reset to
+    ref: master
+  init_container:
+    ## Fetch the source code when the pods starts
+    enabled: false
+    ## install requirements.txt dependencies automatically
+    install_requirements: true
 
 ##
 ## Configuration values for the postgresql dependency.

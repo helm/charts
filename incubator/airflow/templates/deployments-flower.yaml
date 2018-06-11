@@ -13,7 +13,7 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 4
+      maxSurge: 1
       maxUnavailable: 0
   selector:
     matchLabels:
@@ -59,7 +59,7 @@ spec:
           args: ["flower"]
           livenessProbe:
             httpGet:
-              path: "{{ .Values.ingress.flower.path }}/"
+              path: "{{ .Values.ingress.flower.liveness_path }}/"
               port: flower
             initialDelaySeconds: 60
             periodSeconds: 60
