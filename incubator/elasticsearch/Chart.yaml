@@ -11,7 +11,7 @@ sources:
 - https://github.com/giantswarm/kubernetes-elastic-stack
 - https://github.com/GoogleCloudPlatform/elasticsearch-docker
 maintainers:
-- name: Christian Simon
+- name: simonswine
   email: christian@jetstack.io
-- name: Michael Haselton
+- name: icereval
   email: michael.haselton@gmail.com
