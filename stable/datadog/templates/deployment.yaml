@@ -83,8 +83,16 @@ spec:
           - name: confd
             mountPath: /conf.d
             readOnly: true
+          {{- else if .Values.datadog.confd }}
+          - name: confd
+            mountPath: /conf.d
+            readOnly: true
           {{- end }}
-          {{- if .Values.datadog.deploy_checksd  }}
+          {{- if .Values.datadog.deploy_checksd }}
+          - name: checksd
+            mountPath: /checks.d
+            readOnly: true
+          {{- else if .Values.datadog.checksd }}
           - name: checksd
             mountPath: /checks.d
             readOnly: true
@@ -117,15 +125,23 @@ spec:
         - hostPath:
             path: /sys/fs/cgroup
           name: cgroups
-        {{- if .Values.datadog.deploy_confd  }}
+        {{- if .Values.datadog.deploy_confd }}
         - name: confd
           configMap:
-            name: {{ if .Values.datadog.deploy_confd }}{{ template "datadog.deploy_confd.fullname" . }}{{ else }}{{ template "datadog.confd.fullname" . }}{{ end }}
+            name: {{ template "datadog.deploy_confd.fullname" . }}
+        {{- else if .Values.datadog.confd }}
+        - name: confd
+          configMap:
+            name: {{ template "datadog.confd.fullname" . }}
         {{- end }}
-        {{- if .Values.datadog.deploy_checksd  }}
+        {{- if .Values.datadog.deploy_checksd }}
         - name: checksd
           configMap:
-            name: {{ if .Values.datadog.deploy_checksd }}{{ template "datadog.deploy_checksd.fullname" . }}{{ else }}{{ template "datadog.checksd.fullname" . }}{{ end }}
+            name: {{ template "datadog.deploy_checksd.fullname" . }}
+        {{- else if .Values.datadog.checksd }}
+        - name: checksd
+          configMap:
+            name: {{ template "datadog.checksd.fullname" . }}
         {{- end }}
         {{- if .Values.datadog.autoconf }}
         - name: autoconf
