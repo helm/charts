@@ -16,8 +16,8 @@ spec:
       name: {{ template "datadog.fullname" . }}
       annotations:
         checksum/autoconf-config: {{ toYaml .Values.datadog.autoconf | sha256sum }}
-        checksum/confd-config: {{ toYaml .Values.datadog.confd | sha256sum }}
-        checksum/checksd-config: {{ toYaml .Values.datadog.checksd | sha256sum }}
+        checksum/confd-config: {{ if .Values.datadog.deploy_confd }}{{ toYaml .Values.datadog.deploy_confd | sha256sum }}{{ else }}{{ toYaml .Values.datadog.confd | sha256sum }}{{ end }}
+        checksum/checksd-config: {{ if .Values.datadog.deploy_checksd }}{{ toYaml .Values.datadog.deploy_checksd | sha256sum }}{{ else }}{{ toYaml .Values.datadog.checksd | sha256sum }}{{ end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -79,12 +79,12 @@ spec:
           - name: cgroups
             mountPath: /host/sys/fs/cgroup
             readOnly: true
-          {{- if .Values.datadog.confd }}
+          {{- if .Values.datadog.deploy_confd }}
           - name: confd
             mountPath: /conf.d
             readOnly: true
           {{- end }}
-          {{- if .Values.datadog.checksd }}
+          {{- if .Values.datadog.deploy_checksd  }}
           - name: checksd
             mountPath: /checks.d
             readOnly: true
@@ -117,15 +117,15 @@ spec:
         - hostPath:
             path: /sys/fs/cgroup
           name: cgroups
-        {{- if .Values.datadog.confd }}
+        {{- if .Values.datadog.deploy_confd  }}
         - name: confd
           configMap:
-            name: {{ template "datadog.confd.fullname" . }}
+            name: {{ if .Values.datadog.deploy_confd }}{{ template "datadog.deploy_confd.fullname" . }}{{ else }}{{ template "datadog.confd.fullname" . }}{{ end }}
         {{- end }}
-        {{- if .Values.datadog.checksd }}
+        {{- if .Values.datadog.deploy_checksd  }}
         - name: checksd
           configMap:
-            name: {{ template "datadog.checksd.fullname" . }}
+            name: {{ if .Values.datadog.deploy_checksd }}{{ template "datadog.deploy_checksd.fullname" . }}{{ else }}{{ template "datadog.checksd.fullname" . }}{{ end }}
         {{- end }}
         {{- if .Values.datadog.autoconf }}
         - name: autoconf

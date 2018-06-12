@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "datadog.deploy_confd.fullname" . }}
+  labels:
+    app: {{ template "datadog.deploy_confd.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    checksum/confd-config: {{ toYaml .Values.datadog.deploy_confd | sha256sum }}
+data:
+{{- if .Values.datadog.deploy_confd }}
+{{ toYaml .Values.datadog.deploy_confd | indent 2 }}
+{{- end -}}
