@@ -50,6 +50,8 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.autoconf`          | Additional Datadog service discovery configurations | `nil`                    |
 | `datadog.checksd`           | Additional Datadog service checks  | `nil`                                     |
 | `datadog.confd`             | Additional Datadog service configurations | `nil`                              |
+| `datadog.deploy_checksd`    | Additional Datadog service checks specific to kind:Deployment. Overrides `datadog.checksd` if set. | `nil`                                     |
+| `datadog.deploy_confd`      | Additional Datadog service configurations specific to kind:Deployment. Overrides `datadog.confd` if set. | `nil`                              |
 | `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
 | `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
 | `resources.requests.cpu`    | CPU resource requests              | `100m`                                    |
