@@ -1,5 +1,3 @@
-NOTE: this chart has been DEPRECATED. Please see stable/drone.
-
 {{- if hasKey .Values.server.env "DRONE_PROVIDER" }}
 *********************************************************************************
 ***        PLEASE BE PATIENT: drone may take a few minutes to install         ***
