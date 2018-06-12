@@ -34,7 +34,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the postgres Exporter chart and their default values.
+The following table lists the configurable parameters of the postgres Exporter chart and their default values.
 
 | Parameter                       | Description                                | Default                                                    |
 | ------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
@@ -52,6 +52,7 @@ The following tables lists the configurable parameters of the postgres Exporter 
 | `tolerations`                   | Add tolerations                            | `[]`  |
 | `nodeSelector`                    | node labels for pod assignment | `{}`  |
 | `affinity`                       |     node/pod affinities | `{}` |
+| `annotations`                    | Deployment annotations | `{}` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

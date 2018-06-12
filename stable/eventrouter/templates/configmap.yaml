@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "eventrouter.fullname" . }}
+  labels: {{ include "eventrouter.labels" . | indent 4 }}
+data:
+apiVersion: v1
+data:
+  config.json: |- 
+    {
+      "sink": "glog"
+    }
