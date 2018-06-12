@@ -56,8 +56,12 @@ spec:
               - '/bin/sh'
               - '-c'
               - >
-                [ -d {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys ] &&
+                {{- if .Values.artifactory.configMapName }}
+                cp -Lrf /bootstrap/* /artifactory_extra_conf/;
+                {{- end }}
+                if [ -d {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys ]; then
                 chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
+                fi;
                 {{- if .Values.artifactory.replicator.enabled }}
                 mkdir -p {{ .Values.artifactory.persistence.mountPath }}/replicator/etc;
                 cp -fv /tmp/replicator/replicator.yaml {{ .Values.artifactory.persistence.mountPath }}/replicator/etc/replicator.yaml;
@@ -129,6 +133,15 @@ spec:
         - name: distribution-certs
           mountPath: "/tmp/access/etc/keys"
       {{- end }}
+      {{- if .Values.artifactory.configMapName }}
+        - name: bootstrap-config
+          mountPath: "/bootstrap/"
+      {{- end }}
+      {{- if .Values.artifactory.license.secret }}
+        - name: artifactory-license
+          mountPath: "/artifactory_extra_conf/artifactory.lic"
+          subPath: {{ .Values.artifactory.license.dataKey }}
+      {{- end }}
       {{- if .Values.artifactory.replicator.enabled }}
         - name: replicator-config
           mountPath: "/tmp/replicator/replicator.yaml"
@@ -168,6 +181,16 @@ spec:
       - name: replicator-config
         configMap:
           name: {{ template "artifactory.fullname" . }}-replicator-config
+      {{- end }}
+      {{- if .Values.artifactory.configMapName }}
+      - name: bootstrap-config
+        configMap:
+          name: {{ .Values.artifactory.configMapName }}
+      {{- end}}
+      {{- if .Values.artifactory.license.secret }}
+      - name: artifactory-license
+        secret:
+          secretName: {{ .Values.artifactory.license.secret }}
       {{- end }}
       - name: artifactory-volume
       {{- if .Values.artifactory.persistence.enabled }}

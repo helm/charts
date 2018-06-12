@@ -33,6 +33,17 @@ artifactory:
     repository: "docker.bintray.io/jfrog/artifactory-pro"
     version: 6.0.0
     pullPolicy: IfNotPresent
+
+  ## Artifactory license secret.
+  ## If artifactory.license.secret is passed, it will be mounted as
+  ## ARTIFACTORY_HOME/etc/artifactory.lic and loaded at run time.
+  ## The dataKey should be the name of the secret data key created.
+  license:
+    secret:
+    dataKey:
+  ## Create configMap with artifactory.config.import.xml and security.import.xml and pass name of configMap in following parameter
+  configMapName:
+
   service:
     name: artifactory
     type: ClusterIP
@@ -41,6 +52,7 @@ artifactory:
   internalPort: 8081
   internalPortReplicator: 6061
   externalPortReplicator: 6061
+  uid: 1030
   ## The following settings are to configure the frequency of the liveness and readiness probes
   livenessProbe:
     enabled: true
@@ -124,7 +136,6 @@ nginx:
   internalPortHttps: 443
   internalPortReplicator: 6061
   externalPortReplicator: 6061
-  uid: 1030
   ## The following settings are to configure the frequency of the liveness and readiness probes
   livenessProbe:
     enabled: true

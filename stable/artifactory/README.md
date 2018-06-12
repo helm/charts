@@ -98,6 +98,73 @@ Pass it to `helm`
 $ helm install --name artifactory --set artifactory.distributionCerts=distribution-certs stable/artifactory
 ```
 
+##### Kubernetes Secret
+You can deploy the Artifactory license as a [Kubernetes secret](https://kubernetes.io/docs/concepts/configuration/secret/).
+Prepare a text file with the license written in it.
+```bash
+# Create the Kubernetes secret (assuming the local license file is 'art.lic')
+$ kubectl create secret generic artifactory-license --from-file=./art.lic
+
+# Pass the license to helm
+$ helm install --name artifactory --set artifactory.license.secret=artifactory-license,artifactory.license.dataKey=art.lic stable/artifactory
+```
+**NOTE:** You have to keep passing the license secret parameters as `--set artifactory.license.secret=artifactory-license,artifactory.license.dataKey=art.lic` on all future calls to `helm install` and `helm upgrade`!
+
+## Bootstrapping Artifactory
+**IMPORTANT:** Bootstrapping Artifactory needs license. Pass license as shown in above section.
+
+* User guide to [bootstrap Artifactory Global Configuration](https://www.jfrog.com/confluence/display/RTF/Configuration+Files#ConfigurationFiles-BootstrappingtheGlobalConfiguration)
+* User guide to [bootstrap Artifactory Security Configuration](https://www.jfrog.com/confluence/display/RTF/Configuration+Files#ConfigurationFiles-BootstrappingtheSecurityConfiguration)
+
+Create `bootstrap-config.yaml` with artifactory.config.import.xml and security.import.xml as shown below:
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-release-bootstrap-config
+data:
+  artifactory.config.import.xml: |
+    <config contents>
+  security.import.xml: |
+    <config contents>
+```
+
+Create configMap in Kubernetes:
+```bash
+$ kubectl apply -f bootstrap-config.yaml
+```
+# Pass the configMap to helm
+```bash
+$ helm install --name artifactory --set artifactory.license.secret=artifactory-license,artifactory.license.dataKey=art.lic,artifactory.configMapName=my-release-bootstrap-config stable/artifactory
+```
+
+### Use an external Database
+There are cases where you will want to use a different database and not the enclosed **PostgreSQL**.
+See more details on [configuring the database](https://www.jfrog.com/confluence/display/RTF/Configuring+the+Database)
+> The official Artifactory Docker images include the PostgreSQL database driver.
+> For other database types, you will have to add the relevant database driver to Artifactory's tomcat/lib 
+
+This can be done with the following parameters
+```bash
+# Make sure your Artifactory Docker image has the MySQL database driver in it
+...
+--set postgresql.enabled=false \
+--set database.type=mysql \
+--set database.host=${DB_HOST} \
+--set database.port=${DB_PORT} \
+--set database.user=${DB_USER} \
+--set database.password=${DB_PASSWORD} \
+...
+```
+**NOTE:** You must set `postgresql.enabled=false` in order for the chart to use the `database.*` parameters. Without it, they will be ignored!
+
+### Deleting Artifactory
+To delete the Artifactory.
+```bash
+$ helm delete --purge artifactory
+```
+This will completely delete your Artifactory HA cluster.  
+
 ### Custom Docker registry for your images
 If you need to pull your Docker images from a private registry, you need to create a
 [Kubernetes Docker registry secret](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) and pass it to helm
