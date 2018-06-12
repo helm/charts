@@ -32,9 +32,9 @@ spec:
         - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: ORANGEHRM_DATABASE_NAME
-          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+          value: {{ .Values.mariadb.db.name | quote }}
         - name: ORANGEHRM_DATABASE_USER
-          value: {{ .Values.mariadb.mariadbUser | quote }}
+          value: {{ .Values.mariadb.db.user | quote }}
         - name: ORANGEHRM_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
