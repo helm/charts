@@ -45,6 +45,11 @@ spec:
                   name: {{ template "grafana.server.fullname" . }}-config
                   key: grafana-install-plugins
             {{- end }}
+          {{- if .Values.server.persistentVolume.enabled }}
+          fs:
+            securityContext:
+              fsGroup: 472
+          {{- end }}
           ports:
             - containerPort: 3000
           readinessProbe:
