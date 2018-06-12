@@ -24,7 +24,6 @@ spec:
     - 'projected'
     - 'secret'
     - 'downwardAPI'
-    - 'persistentVolumeClaim'
   hostNetwork: false
   hostIPC: false
   hostPID: false
