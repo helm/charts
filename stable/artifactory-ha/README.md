@@ -27,6 +27,12 @@ To install the chart with the release name `artifactory-ha`:
 $ helm install --name artifactory-ha stable/artifactory-ha
 ```
 
+### Deploying Artifactory with replicator enabled
+```bash
+## Artifactory replicator is disabled by default. To enable it use the following:
+$ helm install --name artifactory --set artifactory.replicator.enabled=true stable/artifactory-ha
+```
+
 ### Accessing Artifactory
 **NOTE:** It might take a few minutes for Artifactory's public IP to become available, and the nodes to complete initial setup.
 Follow the instructions outputted by the install command to get the Artifactory IP and URL to access it.
@@ -73,6 +79,22 @@ $ helm install --name artifactory-ha \
 > Artifactory java memory parameters can (and should) also be set to match the allocated resources with `artifactory.[primary|node].javaOpts.xms` and `artifactory.[primary|node].javaOpts.xmx`.
 
 Get more details on configuring Artifactory in the [official documentation](https://www.jfrog.com/confluence/).
+
+## Create Distribution Certificates for Artifactory Enterprise Plus
+```bash
+# Create private.key and root.crt
+$ openssl req -newkey rsa:2048 -nodes -keyout private.key -x509 -days 365 -out root.crt
+```
+
+Once Created, Use it to create ConfigMap
+```bash
+# Create ConfigMap distribution-certs
+$ kubectl create configmap distribution-certs --from-file=private.key=private.key --from-file=root.crt=root.crt
+```
+Pass it to `helm`
+```bash
+$ helm install --name artifactory --set artifactory.distributionCerts=distribution-certs stable/artifactory-ha
+```
 
 ### Artifactory storage
 Artifactory HA support a wide range of storage back ends. You can see more details on [Artifactory HA storage options](https://www.jfrog.com/confluence/display/RTF/HA+Installation+and+Setup#HAInstallationandSetup-SettingUpYourStorageConfiguration)
@@ -255,6 +277,8 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.service.pool`   | Artifactory instances to be in the load balancing pool. `members` or `all` | `members`    |
 | `artifactory.externalPort`   | Artifactory service external port                         | `8081`                        |
 | `artifactory.internalPort`   | Artifactory service internal port                         | `8081`                        |
+| `artifactory.internalPortReplicator` | Replicator service internal port | `6061`   |
+| `artifactory.externalPortReplicator` | Replicator service external port | `6061`   |
 | `artifactory.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
 | `artifactory.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 180                                                   |
 | `artifactory.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
@@ -289,6 +313,9 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.persistence.awsS3.credential`          | AWS S3 AWS_SECRET_ACCESS_KEY        |                              |
 | `artifactory.persistence.awsS3.path`                | AWS S3 path in bucket               | `artifactory-ha/filestore`   |
 | `artifactory.javaOpts.other` | Artifactory extra java options (for all nodes) | `-Dartifactory.locking.provider.type=db` |
+| `artifactory.replicator.enabled`            | Enable Artifactory Replicator | `false`  |
+| `artifactory.distributionCerts`            | Name of ConfigMap for Artifactory Distribution Certificate  | ``  |
+| `artifactory.replicator.publicUrl`            | Artifactory Replicator Public URL |      |
 | `artifactory.primary.resources.requests.memory` | Artifactory primary node initial memory request  |                     |
 | `artifactory.primary.resources.requests.cpu`    | Artifactory primary node initial cpu request     |                     |
 | `artifactory.primary.resources.limits.memory`   | Artifactory primary node memory limit            |                     |
@@ -321,6 +348,8 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.internalPortHttp` | Nginx service internal port | `80`   |
 | `nginx.externalPortHttps` | Nginx service external port | `443`   |
 | `nginx.internalPortHttps` | Nginx service internal port | `443`   |
+| `nginx.internalPortReplicator` | Replicator service internal port | `6061`   |
+| `nginx.externalPortReplicator` | Replicator service external port | `6061`   |
 | `nginx.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
 | `nginx.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 100                                                   |
 | `nginx.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
@@ -404,5 +433,6 @@ Include the secret's name, along with the desired hostnames, in the Artifactory 
 
 
 ## Useful links
-- https://www.jfrog.com
+- https://www.jfrog.com/confluence/display/EP/Getting+Started
+- https://www.jfrog.com/confluence/display/RTF/Installing+Artifactory
 - https://www.jfrog.com/confluence/

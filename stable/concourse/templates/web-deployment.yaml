@@ -39,6 +39,16 @@ spec:
             - "--aws-ssm-region"
             - "$(CONCOURSE_AWS_SSM_REGION)"
             {{- end }}
+            {{- if .Values.web.metrics.datadog.enabled }}
+            - "--datadog-agent-host"
+            - "$(CONCOURSE_DATADOG_AGENT_HOST)"
+            - "--datadog-agent-port"
+            - "$(CONCOURSE_DATADOG_AGENT_PORT)"
+            {{- if .Values.web.metrics.datadog.prefix }}
+            - "--datadog-prefix"
+            - {{ .Values.web.metrics.datadog.prefix }}
+            {{- end }}
+            {{- end }}
           env:
             - name: CONCOURSE_TSA_HOST_KEY
               value: "/concourse-keys/host_key"
@@ -258,6 +268,18 @@ spec:
               value: "0.0.0.0"
             - name: CONCOURSE_PROMETHEUS_BIND_PORT
               value: {{ .Values.web.metrics.prometheus.port | quote }}
+            {{- end }}
+            {{- if .Values.web.metrics.datadog.enabled }}
+            - name: CONCOURSE_DATADOG_AGENT_HOST
+            {{- if .Values.web.metrics.datadog.agentHostUseHostIP }}
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            {{- else }}
+              value: {{ .Values.web.metrics.datadog.agentHost | quote }}
+            {{- end }}
+            - name: CONCOURSE_DATADOG_AGENT_PORT
+              value: {{ .Values.web.metrics.datadog.agentPort | quote }}
             {{- end }}
           ports:
             - name: atc
