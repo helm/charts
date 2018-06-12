@@ -1,0 +1,87 @@
+{{- if hasKey .Values.server.env "DRONE_PROVIDER" }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "drone.fullname" . }}-server
+  labels:
+    app: {{ template "drone.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+{{- if .Values.server.annotations }}
+{{ toYaml .Values.server.annotations | indent 8 }}
+{{- end }}
+      labels:
+        app: {{ template "drone.name" . }}
+        release: "{{ .Release.Name }}"
+        component: server
+    spec:
+{{- if .Values.server.schedulerName }}
+      schedulerName: "{{ .Values.server.schedulerName }}"
+{{- end }}
+{{- if .Values.server.affinity }}
+      affinity:
+{{ toYaml .Values.server.affinity | indent 8 }}
+{{- end }}
+      serviceAccountName: {{ template "drone.serviceAccountName" . }}
+      containers:
+      - name: {{ template "drone.fullname" . }}-server
+        image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
+        imagePullPolicy: {{ .Values.images.server.pullPolicy }}
+        env:
+          - name: DRONE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "drone.fullname" . }}
+                key: secret
+          {{- range $secret, $keys := .Values.server.envSecrets }}
+          {{- range $keys }}
+          - name: {{ . }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $secret }}
+                key: {{ . | quote }}
+          {{- end }}
+          {{- end }}
+          - name: DRONE_HOST
+          {{- if hasKey .Values.server "host" }}
+            value: "{{ .Values.server.host }}"
+          {{- else }}
+            value: "http://{{ template "drone.fullname" . }}"
+          {{- end }}
+          {{- range $key, $value := .Values.server.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+        - name: grpc
+          containerPort: 9000
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        resources:
+{{ toYaml .Values.server.resources | indent 10 }}
+        volumeMounts:
+          - name: data
+            mountPath: /var/lib/drone
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "drone.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
+{{ end }}
