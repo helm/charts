@@ -15,5 +15,5 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: {{ template "signalfx-agent.serviceAccountName" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ template "signalfx-agent.namespace" . }}
 {{- end -}}
