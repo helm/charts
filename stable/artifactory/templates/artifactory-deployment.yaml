@@ -99,7 +99,7 @@ spec:
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "artifactory-ha.fullname" . }}
+              name: {{ template "artifactory.fullname" . }}
               key: db-password
       {{- end }}
         - name: EXTRA_JAVA_OPTIONS
