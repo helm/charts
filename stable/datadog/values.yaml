@@ -160,12 +160,26 @@ datadog:
   #     instances:
   #       - host: "name"
   #         port: "6379"
+  
+  ## If set, below will be applied to a kind:Deployment instead of above.
+  ##
+  # deploy_confd:
+  #   redisdb.yaml: |-
+  #     init_config:
+  #     instances:
+  #       - host: "name2"
+  #         port: "6379"
 
   ## Provide additional service checks
   ## Each key will become a file in /checks.d
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
   ##
   # checksd:
+  #   service.py: |-
+  
+  ## If set, below will be applied to a kind:Deployment instead of above.
+  ##
+  # deploy_checksd:
   #   service.py: |-
 
   ## datadog-agent resource requests and limits
