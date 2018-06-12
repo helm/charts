@@ -126,6 +126,12 @@ datadog:
       instances:
         - host: "outside-k8s.example.com"
           port: 6379
+  deploy_confd:
+    http_check.yaml: |-
+      init_config:
+      instances:
+        - host: "public-site.example.com"
+          port: 80
 ```
 
 ### Leader election
