@@ -45,6 +45,13 @@ spec:
           value: {{ template "parse.mongodb.fullname" . }}
         - name: MONGODB_PORT
           value: "27017"
+        {{- if .Values.mongodb.usePassword }}
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "parse.mongodb.fullname" . }}
+              key: mongodb-root-password
+        {{- end }}
         ports:
         - name: server-http
           containerPort: {{ .Values.server.port }}
