@@ -1,4 +1,4 @@
-{{- if .Values.deployment.enabled }}
+{{- if .Values.fakeEventGenerator.enabled }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -9,7 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas:  {{ .Values.deployment.replicas }}
+  replicas:  {{ .Values.fakeEventGenerator.replicas }}
   template:
     metadata:
       labels:

@@ -23,7 +23,7 @@ rbac:
   # Ignored if rbac.create is true
   serviceAccountName: default
 
-deployment:
+fakeEventGenerator:
   enabled: false
   replicas: 1
 
