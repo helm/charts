@@ -15,9 +15,9 @@ sources:
   - https://app.sysdigcloud.com/#/settings/user
   - https://github.com/draios/sysdig
 maintainers:
-  - name: Lachlan Evenson
+  - name: lachie83
     email: lachlan@deis.com
-  - name: Jorge Salamero
+  - name: bencer
     email: jorge.salamero@sysdig.com
-  - name: Néstor Salceda
+  - name: nestorsalceda
     email: nestor.salceda@sysdig.com
