@@ -52,6 +52,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `tolerations`                   | Add tolerations                            | `[]`  |
 | `nodeSelector`                    | node labels for pod assignment | `{}`  |
 | `affinity`                       |     node/pod affinities | `{}` |
+| `annotations`                    | Deployment annotations | `{}` |
 | `cloudSQL.enabled`                | Use a Google Cloud SQL proxy | `false`
 | `cloudSQL.image.repository`       | Image for Google Cloud SQL proxy | `gcr.io/cloudsql-docker/gce-proxy`
 | `cloudSQL.image.tag`              | Image tag for Google Cloud SQL proxy | `1.11`

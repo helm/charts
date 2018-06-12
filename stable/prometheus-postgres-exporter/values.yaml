@@ -140,6 +140,8 @@ tolerations: []
 
 affinity: {}
 
+annotations: {}
+
 # use Google Cloud Platform Cloud SQL proxy
 cloudSQL:
   enabled: false
