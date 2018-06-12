@@ -190,7 +190,7 @@ nginx:
 postgresql:
   enabled: true
   postgresUser: "artifactory"
-  postgresPassword: "artifactory"
+  postgresPassword:
   postgresDatabase: "artifactory"
   persistence:
     enabled: true
