@@ -1,6 +1,6 @@
 name: stolon
 version: 0.2.0
-appVersion: 0.10.0
+appVersion: 0.11.0
 description: Stolon - PostgreSQL cloud native High Availability.
 home: https://github.com/sorintlab/stolon
 icon: https://i.imgur.com/tIW8sAW.png
