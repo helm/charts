@@ -10,8 +10,7 @@ $ helm install stable/keycloak
 
 ## Introduction
 
-This chart bootstraps a [Keycloak](http://www.keycloak.org/) StatefulSet on a [Kubernetes](https://kubernetes.io) cluster
-using the [Helm](https://helm.sh) package manager. It provisions a fully featured Keycloak installation.
+This chart bootstraps a [Keycloak](http://www.keycloak.org/) StatefulSet on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager. It provisions a fully featured Keycloak installation.
 For more information on Keycloak and its capabilities, see its [documentation](http://www.keycloak.org/documentation.html).
 
 ## Prerequisites Details
@@ -42,22 +41,23 @@ The following table lists the configurable parameters of the Keycloak chart and 
 Parameter | Description | Default
 --- | --- | ---
 `init.image.repository` | Init image repository | `alpine`
-`init.image.tag` | Init image tag | `3.6`
+`init.image.tag` | Init image tag | `3.7`
 `init.image.pullPolicy` | Init image pull policy | `IfNotPresent`
 `keycloak.replicas` | The number of Keycloak replicas | `1`
 `keycloak.image.repository` | The Keycloak image repository | `jboss/keycloak`
 `keycloak.image.tag` | The Keycloak image tag | `3.4.3.Final`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
-`keycloak.image.pullSecrets`| Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods) |
+`keycloak.image.pullSecrets` | Image pull secrets | `[]`
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
 `keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
-`keycloak.extraInitContainers`| Additional init containers, e. g. for providing themes, etc. | `[]`
-`keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak | `[]`
-`keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes | `[]`
-`keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes | `[]`
+`keycloak.extraInitContainers` | Additional init containers, e. g. for providing themes, etc. Passed through the `tpl` funtion and thus to be configured a string | `""`
+`keycloak.extraContainers` | Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy. Passed through the `tpl` funtion and thus to be configured a string | `""`
+`keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak. Passed through the `tpl` funtion and thus to be configured a string | `""`
+`keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes. Passed through the `tpl` funtion and thus to be configured a string | `""`
+`keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes. Passed through the `tpl` funtion and thus to be configured a string | `""`
 `keycloak.podDisruptionBudget` | Pod disruption budget | `{}`
 `keycloak.resources` | Pod resource requests and limits | `{}`
-`keycloak.affinity` | Pod affinity | ``
+`keycloak.affinity` | Pod affinity. Passed through the `tpl` funtion and thus to be configured a string | `Hard node and soft zone anti-affinity`
 `keycloak.nodeSelector` | Node labels for pod assignment | `{}`
 `keycloak.tolerations` | Node taints to tolerate | `[]`
 `keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
@@ -90,7 +90,7 @@ Parameter | Description | Default
 `keycloak.persistence.dbHost` | The database host name (if `deployPostgres=false`) | `mykeycloak`
 `keycloak.persistence.dbPort` | The database host port (if `deployPostgres=false`) | `5432`
 `keycloak.persistence.dbUser` |The database user (if `deployPostgres=false`) | `keycloak`
-`keycloak.persistence.dbPassword` |The database password (if `deployPostgres=false`) | `keycloak`
+`keycloak.persistence.dbPassword` |The database password (if `deployPostgres=false`) | `""`
 `postgresql.postgresUser` | The PostgreSQL user (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
 `postgresql.postgresPassword` | The PostgreSQL password (if `keycloak.persistence.deployPostgres=true`) | `""`
 `postgresql.postgresDatabase` | The PostgreSQL database (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
@@ -106,17 +106,27 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 $ helm install --name keycloak -f values.yaml stable/keycloak
 ```
 
+### Usage of the `tpl` Function
+
+The `tpl` function allows us to pass string values from `values.yaml` through the templating engine. It is used for the following values:
+
+* `keycloak.extraInitContainers`
+* `keycloak.extraContainers`
+* `keycloak.extraEnv`
+* `keycloak.affinity`
+* `keycloak.extraVolumeMounts`
+* `keycloak.extraVolumes`
+
+It is important that these values be configured as strings. Otherwise, installation will fail. See example for Google Cloud Proxy or default affinity configuration in `values.yaml`.
+
 ### Database Setup
 
 By default, the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) chart is deployed and used as database.
-Please refer to this chart for additional PostgreSQL configuration options. If PostgreSQL is disabled, Keycloak uses an embedded H2
-database which is only suitable for testing with a single replica.
+Please refer to this chart for additional PostgreSQL configuration options. If PostgreSQL is disabled, Keycloak uses an embedded H2 database which is only suitable for testing with a single replica.
 
 #### Using an External Database
 
-The Keycloak Docker image supports PostgreSQL and MySQL. The password for the database user is read from a Kubernetes secret. It
-is possible to specify an existing secret that is not managed with this chart. The key in the secret the password is read
-from may be specified as well (defaults to `password`).
+The Keycloak Docker image supports PostgreSQL and MySQL. The password for the database user is read from a Kubernetes secret. It is possible to specify an existing secret that is not managed with this chart. The key in the secret the password is read from may be specified as well (defaults to `password`).
 
 ```yaml
 keycloak:
@@ -159,8 +169,7 @@ keycloak:
 
 ### Providing a Custom Theme
 
-One option is certainly to provide a custom Keycloak image that includes the theme. However, if you prefer to stick with the
-official Keycloak image, you can use an init container as theme provider.
+One option is certainly to provide a custom Keycloak image that includes the theme. However, if you prefer to stick with the official Keycloak image, you can use an init container as theme provider.
 
 Create your own theme and package it up into a Docker image.
 
@@ -169,8 +178,7 @@ FROM busybox
 COPY my_theme /my_theme
 ```
 
-In combination with an `emptyDir` that is shared with the Keycloak container, configure an init container that runs
-your theme image and copies the theme over to the right place where Keycloak will pick it up automatically.
+In combination with an `emptyDir` that is shared with the Keycloak container, configure an init container that runs your theme image and copies the theme over to the right place where Keycloak will pick it up automatically.
 
 ```yaml
 keycloak:
@@ -199,18 +207,18 @@ keycloak:
 ```
 ### Setting a Custom Realm
 
-A realm can be added by creating a secret or configmap for the realm json file and then supplying this into the chart. 
-It could be mounted using `extraVolumeMounts` and then specified in `extraArgs` using `-Dimport`.
+A realm can be added by creating a secret or configmap for the realm json file and then supplying this into the chart.
+It could be mounted using `extraVolumeMounts` and then specified in `extraArgs` using `-Dkeycloak.import`.
 First we could create a Secret from a json file using `kubectl create secret generic realm-secret --from-file=realm.json` which we need to reference in `values.yaml`:
 
 ```yaml
 keycloak:
-  extraVolumes:
+  extraVolumes: |
     - name: realm-secret
       secret:
         secretName: realm-secret
-      
-  extraVolumeMounts:
+
+  extraVolumeMounts: |
     - name: realm-secret
       mountPath: "/realm/"
       readOnly: true
@@ -218,9 +226,52 @@ keycloak:
   extraArgs: -Dkeycloak.import=/realm/realm.json
 ```
 
-Alternatively, the file could be added to a custom image (set in `keycloak.image`) and then referenced by `-Dimport`.
+Alternatively, the file could be added to a custom image (set in `keycloak.image`) and then referenced by `-Dkeycloak.import`.
 
-After startup the web admin console for the realm should be available on the path /auth/admin/\<realm name>/console/
+After startup the web admin console for the realm should be available on the path /auth/admin/\<realm name>/console/.
+
+### Using Google Cloud SQL Proxy
+
+Depending on your environment you may need a local proxy to connect to the database. This is, e. g., the case for Google Kubernetes Engine when using Google Cloud SQL. Create the secret for the credentials as documented [here](https://cloud.google.com/sql/docs/postgres/connect-kubernetes-engine) and configure the proxy as a sidecar.
+
+Because `keycloak.extraContainers` is a string that is passed through the `tpl` function, it is possible to create custom values and use them in the string.
+
+```yaml
+
+# Custom values for Google Cloud SQL
+gcloudsql:
+  project: my-project
+  region: europe-west1
+  instance: my-instance
+
+keycloak:
+  extraContainers: |
+    - name: cloudsql-proxy
+      image: gcr.io/cloudsql-docker/gce-proxy:1.11
+      command:
+        - /cloud_sql_proxy
+      args:
+        - -instances={{ .Values.cloudsql.project }}:{{ .Values.cloudsql.region }}:{{ .Values.cloudsql.instance }}=tcp:5432=tcp:5432
+        - -credential_file=/secrets/cloudsql/credentials.json
+      volumeMounts:
+        - name: cloudsql-creds
+          mountPath: /secrets/cloudsql
+          readOnly: true
+
+  extraVolumes: |
+    - name: cloudsql-creds
+      secret:
+        secretName: cloudsql-instance-credentials
+
+  persistence:
+    deployPostgres: false
+    dbVendor: POSTGRES
+    dbName: postgres
+    dbHost: 127.0.0.1
+    dbPort: 5432
+    dbUser: myuser
+    dbPassword: mypassword
+```
 
 ### WildFly Configuration
 
@@ -228,20 +279,19 @@ WildFly can be configured via its [command line interface (CLI)](https://docs.jb
 This chart uses the official Keycloak Docker image and customizes the installation running CLI scripts at server startup.
 
 In order to make further customization easier, the CLI commands are separated by their concerns into smaller scripts.
-Everything is in `values.yaml` and can be overridden. Additional CLI commands may be added via `keycloak.cli.custom`,
-which is empty by default.
+Everything is in `values.yaml` and can be overridden. Additional CLI commands may be added via `keycloak.cli.custom`, which is empty by default.
 
 ### High Availability and Clustering
 
-For high availability, Keycloak should be run with multiple replicas (`keycloak.replicas > 1`). WildFly uses Infinispan
-for caching. These caches can be replicated across all instances forming a cluster. If `keycloak.replicas > 1`, the
-WildFly CLI script `keycloak.cli.discovery` adds JGroups' [JDBC_PING](http://www.jgroups.org/javadoc/org/jgroups/protocols/JDBC_PING.html)
-for cluster discovery and Keycloak is started with `--server-config standalone-ha.xml`.
+For high availability, Keycloak should be run with multiple replicas (`keycloak.replicas > 1`).
+WildFly uses Infinispan for caching. These caches can be replicated across all instances forming a cluster.
+If `keycloak.replicas > 1`, the WildFly CLI script `keycloak.cli.discovery` adds JGroups' [JDBC_PING](http://www.jgroups.org/javadoc/org/jgroups/protocols/JDBC_PING.html) for cluster discovery and Keycloak is started with `--server-config standalone-ha.xml`.
 
 ## Why StatefulSet?
 
-The chart sets node identifiers to the system property `jboss.node.name` which is in fact the pod name. Node identifiers
-must not be longer than 23 characters. This can be problematic because pod names are quite long. We would have to truncate
-the chart's fullname to six characters because pods get a 17-character suffix (e. g. `-697f8b7655-mf5ht`). Using a
-StatefulSet allows us to truncate to 20 characters leaving room for up to 99 replicas, which is much better.
+The chart sets node identifiers to the system property `jboss.node.name` which is in fact the pod name.
+Node identifiers must not be longer than 23 characters.
+This can be problematic because pod names are quite long.
+We would have to truncate the chart's fullname to six characters because pods get a 17-character suffix (e. g. `-697f8b7655-mf5ht`).
+Using a StatefulSet allows us to truncate to 20 characters leaving room for up to 99 replicas, which is much better.
 Additionally, we get stable values for `jboss.node.name` which can be advantageous for cluster discovery.
