@@ -3,7 +3,7 @@
 
 {{- if .Values.Master.HostName }}
 
-2. Visit http://{{ .Values.Master.HostName }}
+2. Visit http://{{ .Values.Master.HostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}
 {{- else }}
 2. Get the Jenkins URL to visit by running these commands in the same shell:
 {{- if contains "NodePort" .Values.Master.ServiceType }}
