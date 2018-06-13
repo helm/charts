@@ -13,6 +13,8 @@ keywords:
 maintainers:
 - name: compleatang
   email: casey@monax.io
+- name: Bitnami
+  email: containers@bitnami.com
 sources:
 - https://github.com/bitnami/bitnami-docker-kubewatch
 engine: gotpl
