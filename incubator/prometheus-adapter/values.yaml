@@ -1,4 +1,3 @@
-
 # Default values for k8s-prometheus-adapter..
 image:
   repository: directxman12/k8s-prometheus-adapter-amd64
