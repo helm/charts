@@ -1,4 +1,4 @@
-Congratulations. You have just deployed JFrog Artifactory Pro!
+Congratulations. You have just deployed JFrog Artifactory!
 
 1. Get the Artifactory URL by running these commands:
 
