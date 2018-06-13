@@ -23,11 +23,9 @@ spec:
     spec:
       securityContext:
 {{ toYaml .Values.keycloak.securityContext | indent 8 }}
-    {{- if .Values.keycloak.image.pullSecrets }}
+    {{- with .Values.keycloak.image.pullSecrets }}
       imagePullSecrets:
-      {{- range .Values.keycloak.image.pullSecrets }}
-        - name: {{ . }}
-      {{- end}}
+{{ toYaml . | indent 8 }}
     {{- end }}
     {{- if or .Values.keycloak.persistence.deployPostgres .Values.keycloak.extraInitContainers }}
       initContainers:
@@ -46,7 +44,7 @@ spec:
               echo 'PostgreSQL OK ✓'
       {{- end }}
       {{- if .Values.keycloak.extraInitContainers }}
-{{ toYaml .Values.keycloak.extraInitContainers | indent 8 }}
+{{ tpl .Values.keycloak.extraInitContainers . | indent 8 }}
       {{- end }}
     {{- end }}
       containers:
@@ -81,13 +79,13 @@ spec:
 {{ include "keycloak.externalDbConfig" . | indent 12 }}
           {{- end }}
 {{- with .Values.keycloak.extraEnv }}
-{{ toYaml . | indent 12 }}
+{{ tpl . $ | indent 12 }}
 {{- end }}
           volumeMounts:
             - name: scripts
               mountPath: /scripts
 {{- with .Values.keycloak.extraVolumeMounts }}
-{{ toYaml . | indent 12 }}
+{{ tpl . $ | indent 12 }}
 {{- end }}
           ports:
             - name: http
@@ -107,9 +105,12 @@ spec:
             timeoutSeconds: {{ .Values.keycloak.readinessProbe.timeoutSeconds }}
           resources:
 {{ toYaml .Values.keycloak.resources | indent 12 }}
+{{- with .Values.keycloak.extraContainers }}
+{{ tpl . $ | indent 8 }}
+{{- end }}
     {{- with .Values.keycloak.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+{{ tpl . $ | indent 8 }}
     {{- end }}
     {{- with .Values.keycloak.nodeSelector }}
       nodeSelector:
@@ -126,5 +127,5 @@ spec:
             name: {{ template "keycloak.fullname" . }}
             defaultMode: 0555
 {{- with .Values.keycloak.extraVolumes }}
-{{ toYaml . | indent 8 }}
+{{ tpl . $ | indent 8 }}
 {{- end }}
