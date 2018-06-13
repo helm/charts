@@ -187,7 +187,7 @@ such port at a time, setting the range at every Kafka pod is a reasonably safe c
 
 * Topic creation is not automated
 * Only supports storage options that have backends for persistent volume claims (tested mostly on AWS)
-* There must not exist a service called `kafka` in the same namespace
+* KAFKA_PORT will be created as an envvar and brokers will fail to start when there is a service named `kafka` in the same namespace. We work around this be unsetting that envvar `unset KAFKA_PORT`.
 
 [brokerconfigs]: https://kafka.apache.org/documentation/#brokerconfigs
 
