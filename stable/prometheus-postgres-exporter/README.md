@@ -52,6 +52,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `tolerations`                   | Add tolerations                            | `[]`  |
 | `nodeSelector`                    | node labels for pod assignment | `{}`  |
 | `affinity`                       |     node/pod affinities | `{}` |
+| `annotations`                    | Deployment annotations | `{}` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
