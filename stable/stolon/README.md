@@ -26,7 +26,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | Parameter                               | Description                                    | Default                                                      |
 | --------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ |
 | `image.repository`                      | `stolon` image repository                      | `sorintlab/stolon`                                           |
-| `image.tag`                             | `stolon` image tag                             | `v0.10.0-pg10`                                               |
+| `image.tag`                             | `stolon` image tag                             | `v0.11.0-pg10`                                               |
 | `image.pullPolicy`                      | `stolon` image pull policy                     | `IfNotPresent`                                               |
 | `etcdImage.repository`                  | `etcd` image repository                        | `k8s.gcr.io/etcd-amd64`                                      |
 | `etcdImage.tag`                         | `etcd` image tag                               | `2.2.5`                                                      |
@@ -47,6 +47,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `store.endpoints`                       | Store backend endpoints                        | `nil`                                                        |
 | `store.kubeResourceKind`                | Kubernetes resource kind (only for kubernetes) | `configmap`                                                  |
 | `pgParameters`                          | [`postgresql.conf`][pgconf] options used during cluster creation | `{}`                                       |
+| `ports`                                 | Ports to expose on pods                        | `{"stolon":{"containerPort": 5432},"metrics":{"containerPort": 8080}}`|
 | `keeper.replicaCount`                   | Number of keeper nodes                         | `2`                                                          |
 | `keeper.resources`                      | Keeper resource requests/limit                 | `{}`                                                         |
 | `keeper.nodeSelector`                   | Node labels for keeper pod assignment          | `{}`                                                         |
