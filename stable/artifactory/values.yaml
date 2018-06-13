@@ -31,14 +31,28 @@ artifactory:
   image:
     # repository: "docker.bintray.io/jfrog/artifactory-oss"
     repository: "docker.bintray.io/jfrog/artifactory-pro"
-    version: 5.10.1
+    version: 6.0.0
     pullPolicy: IfNotPresent
+
+  ## Artifactory license secret.
+  ## If artifactory.license.secret is passed, it will be mounted as
+  ## ARTIFACTORY_HOME/etc/artifactory.lic and loaded at run time.
+  ## The dataKey should be the name of the secret data key created.
+  license:
+    secret:
+    dataKey:
+  ## Create configMap with artifactory.config.import.xml and security.import.xml and pass name of configMap in following parameter
+  configMapName:
+
   service:
     name: artifactory
     type: ClusterIP
     annotations: {}
   externalPort: 8081
   internalPort: 8081
+  internalPortReplicator: 6061
+  externalPortReplicator: 6061
+  uid: 1030
   ## The following settings are to configure the frequency of the liveness and readiness probes
   livenessProbe:
     enabled: true
@@ -88,6 +102,12 @@ artifactory:
   #  xms: "1g"
   #  xmx: "2g"
   #  other: ""
+  ## Artifactory Replicator
+  replicator:
+    enabled: false
+    publicUrl:
+  # Name of ConfigMap for Distribution Cert
+  distributionCerts:
 
 # Nginx
 nginx:
@@ -96,7 +116,7 @@ nginx:
   replicaCount: 1
   image:
     repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
-    version: 5.10.1
+    version: 6.0.0
     pullPolicy: IfNotPresent
   service:
     ## For minikube, set this to NodePort, elsewhere use LoadBalancer
@@ -114,6 +134,8 @@ nginx:
   internalPortHttp: 80
   externalPortHttps: 443
   internalPortHttps: 443
+  internalPortReplicator: 6061
+  externalPortReplicator: 6061
   ## The following settings are to configure the frequency of the liveness and readiness probes
   livenessProbe:
     enabled: true
@@ -134,7 +156,7 @@ nginx:
   ## The SSL secret that will be used by the Nginx pod
   # tlsSecretName: chart-example-tls
   env:
-#    artUrl: "http://artifactory:8081/artifactory"
+    # artUrl: "http://artifactory:8081/artifactory"
     ssl: true
   persistence:
     mountPath: "/var/opt/jfrog/nginx"
@@ -166,10 +188,20 @@ nginx:
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
 postgresql:
+  enabled: true
   postgresUser: "artifactory"
-  postgresPassword: "artifactory"
+  postgresPassword:
   postgresDatabase: "artifactory"
   persistence:
     enabled: true
   service:
     port: 5432
+
+## If NOT using the PostgreSQL in this chart (postgresql.enabled=false),
+## you must specify the following database details
+database:
+  type:
+  host:
+  port:
+  user:
+  password:
