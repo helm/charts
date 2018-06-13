@@ -11,12 +11,13 @@ keycloak:
     repository: jboss/keycloak
     tag: 3.4.3.Final
     pullPolicy: IfNotPresent
+
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     ##
-    # pullSecrets:
-    #   - myRegistrKeySecretName
+    pullSecrets: []
+    #  - myRegistrKeySecretName
 
   securityContext:
     runAsUser: 1000
@@ -24,7 +25,10 @@ keycloak:
     runAsNonRoot: true
 
   ## Additional init containers, e. g. for providing custom themes
-  extraInitContainers: []
+  extraInitContainers: |
+
+  ## Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy
+  extraContainers: |
 
   ## Custom script that is run before Keycloak is started.
   preStartScript:
@@ -45,7 +49,23 @@ keycloak:
     # WILDFLY_LOGLEVEL: DEBUG
     # CACHE_OWNERS: 2
 
-  podAntiAffinity: soft
+  affinity: |
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app:  {{ template "keycloak.name" . }}
+              release: "{{ .Release.Name }}"
+          topologyKey: kubernetes.io/hostname
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app:  {{ template "keycloak.name" . }}
+                release: "{{ .Release.Name }}"
+            topologyKey: failure-domain.beta.kubernetes.io/zone
+
   nodeSelector: {}
   tolerations: []
 
@@ -100,10 +120,6 @@ keycloak:
       /subsystem=jgroups/stack=tcp/protocol=JDBC_PING/property=clear_table_on_view_change:add(value=true)
       /subsystem=jgroups/stack=tcp/protocol=JDBC_PING/property=break_on_coord_rsp:add(value=true)
 
-      # Statements must be adapted for PostgreSQL. Additionally, we add a 'creation_timestamp' column.
-      /subsystem=jgroups/stack=tcp/protocol=JDBC_PING/property=initialize_sql:add(value="CREATE TABLE IF NOT EXISTS JGROUPSPING (own_addr varchar(200) NOT NULL, creation_timestamp timestamp NOT NULL, cluster_name varchar(200) NOT NULL, ping_data bytea, constraint PK_JGROUPSPING PRIMARY KEY (own_addr, cluster_name))")
-      /subsystem=jgroups/stack=tcp/protocol=JDBC_PING/property=insert_single_sql:add(value="INSERT INTO JGROUPSPING (own_addr, creation_timestamp, cluster_name, ping_data) values (?, NOW(), ?, ?)")
-
       /subsystem=jgroups/stack=tcp/protocol=MERGE3:add()
       /subsystem=jgroups/stack=tcp/protocol=FD_SOCK:add(socket-binding="jgroups-tcp-fd")
       /subsystem=jgroups/stack=tcp/protocol=FD:add()
@@ -122,13 +138,17 @@ keycloak:
       /interface=private:write-attribute(name=nic, value=eth0)
       /interface=private:undefine-attribute(name=inet-address)
 
+    postgresql: |
+      # Statements must be adapted for PostgreSQL. Additionally, we add a 'creation_timestamp' column.
+      /subsystem=jgroups/stack=tcp/protocol=JDBC_PING/property=initialize_sql:add(value="CREATE TABLE IF NOT EXISTS JGROUPSPING (own_addr varchar(200) NOT NULL, creation_timestamp timestamp NOT NULL, cluster_name varchar(200) NOT NULL, ping_data bytea, constraint PK_JGROUPSPING PRIMARY KEY (own_addr, cluster_name))")
+      /subsystem=jgroups/stack=tcp/protocol=JDBC_PING/property=insert_single_sql:add(value="INSERT INTO JGROUPSPING (own_addr, creation_timestamp, cluster_name, ping_data) values (?, NOW(), ?, ?)")
+
     # Custom CLI script
     custom: ""
 
-
   ## Add additional volumes and mounts, e. g. for custom themes
-  extraVolumes: []
-  extraVolumeMounts: []
+  extraVolumes: |
+  extraVolumeMounts: |
 
   podDisruptionBudget: {}
     # maxUnavailable: 1
@@ -185,7 +205,7 @@ keycloak:
     existingSecretKey: password
 
     # The database vendor. Can be either "POSTGRES" or "MYSQL"
-    dbVendor: H2
+    dbVendor: POSTGRES
 
     dbName: keycloak
     dbHost: mykeycloak
@@ -193,7 +213,7 @@ keycloak:
     dbUser: keycloak
 
     # Only used if no existing secret is specified. In this case a new secret is created
-    dbPassword: keycloak
+    dbPassword: ""
 
 postgresql:
   ### PostgreSQL User to create.
