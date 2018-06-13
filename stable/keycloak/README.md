@@ -50,14 +50,14 @@ Parameter | Description | Default
 `keycloak.image.pullSecrets` | Image pull secrets | `[]`
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
 `keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
-`keycloak.extraInitContainers`| Additional init containers, e. g. for providing themes, etc. | `[]`
-`keycloak.extraContainers`| Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy | `[]`
-`keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak | `[]`
-`keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes | `[]`
-`keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes | `[]`
+`keycloak.extraInitContainers` | Additional init containers, e. g. for providing themes, etc. Passed through the `tpl` funtion and thus to be configured a string | `""`
+`keycloak.extraContainers` | Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy. Passed through the `tpl` funtion and thus to be configured a string | `""`
+`keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak. Passed through the `tpl` funtion and thus to be configured a string | `""`
+`keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes. Passed through the `tpl` funtion and thus to be configured a string | `""`
+`keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes. Passed through the `tpl` funtion and thus to be configured a string | `""`
 `keycloak.podDisruptionBudget` | Pod disruption budget | `{}`
 `keycloak.resources` | Pod resource requests and limits | `{}`
-`keycloak.affinity` | Pod affinity | `Hard node and soft zone anti-affinity`
+`keycloak.affinity` | Pod affinity. Passed through the `tpl` funtion and thus to be configured a string | `Hard node and soft zone anti-affinity`
 `keycloak.nodeSelector` | Node labels for pod assignment | `{}`
 `keycloak.tolerations` | Node taints to tolerate | `[]`
 `keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
@@ -105,6 +105,19 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 ```bash
 $ helm install --name keycloak -f values.yaml stable/keycloak
 ```
+
+### Usage of the `tpl` Function
+
+The `tpl` function allows us to pass string values from `values.yaml` through the templating engine. It is used for the following values:
+
+* `keycloak.extraInitContainers`
+* `keycloak.extraContainers`
+* `keycloak.extraEnv`
+* `keycloak.affinity`
+* `keycloak.extraVolumeMounts`
+* `keycloak.extraVolumes`
+
+It is important that these values be configured as strings. Otherwise, installation will fail. See example for Google Cloud Proxy or default affinity configuration in `values.yaml`.
 
 ### Database Setup
 
@@ -200,12 +213,12 @@ First we could create a Secret from a json file using `kubectl create secret gen
 
 ```yaml
 keycloak:
-  extraVolumes:
+  extraVolumes: |
     - name: realm-secret
       secret:
         secretName: realm-secret
 
-  extraVolumeMounts:
+  extraVolumeMounts: |
     - name: realm-secret
       mountPath: "/realm/"
       readOnly: true
@@ -217,26 +230,35 @@ Alternatively, the file could be added to a custom image (set in `keycloak.image
 
 After startup the web admin console for the realm should be available on the path /auth/admin/\<realm name>/console/.
 
-### Using Google's Cloud SQL Proxy
+### Using Google Cloud SQL Proxy
 
 Depending on your environment you may need a local proxy to connect to the database. This is, e. g., the case for Google Kubernetes Engine when using Google Cloud SQL. Create the secret for the credentials as documented [here](https://cloud.google.com/sql/docs/postgres/connect-kubernetes-engine) and configure the proxy as a sidecar.
 
+Because `keycloak.extraContainers` is a string that is passed through the `tpl` function, it is possible to create custom values and use them in the string.
+
 ```yaml
+
+# Custom values for Google Cloud SQL
+gcloudsql:
+  project: my-project
+  region: europe-west1
+  instance: my-instance
+
 keycloak:
-  extraContainers:
+  extraContainers: |
     - name: cloudsql-proxy
       image: gcr.io/cloudsql-docker/gce-proxy:1.11
       command:
         - /cloud_sql_proxy
       args:
-        - -instances=my-gcp-project:europe-west-1:my-instance=tcp:5432
+        - -instances={{ .Values.cloudsql.project }}:{{ .Values.cloudsql.region }}:{{ .Values.cloudsql.instance }}=tcp:5432=tcp:5432
         - -credential_file=/secrets/cloudsql/credentials.json
       volumeMounts:
         - name: cloudsql-creds
           mountPath: /secrets/cloudsql
           readOnly: true
 
-  extraVolumes:
+  extraVolumes: |
     - name: cloudsql-creds
       secret:
         secretName: cloudsql-instance-credentials

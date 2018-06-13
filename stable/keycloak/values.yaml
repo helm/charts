@@ -25,10 +25,10 @@ keycloak:
     runAsNonRoot: true
 
   ## Additional init containers, e. g. for providing custom themes
-  extraInitContainers: []
+  extraInitContainers: |
 
   ## Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy
-  extraContainers: []
+  extraContainers: |
 
   ## Custom script that is run before Keycloak is started.
   preStartScript:
@@ -147,8 +147,8 @@ keycloak:
     custom: ""
 
   ## Add additional volumes and mounts, e. g. for custom themes
-  extraVolumes: []
-  extraVolumeMounts: []
+  extraVolumes: |
+  extraVolumeMounts: |
 
   podDisruptionBudget: {}
     # maxUnavailable: 1
