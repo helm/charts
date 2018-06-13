@@ -53,13 +53,14 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `image.pullPolicy`                        | MariaDB image pull policy                           | `Always` if `imageTag` is `latest`, else `IfNotPresent`           |
 | `image.pullSecrets`                       | Specify image pull secrets                          | `nil` (does not add image pull secrets to deployed pods)          |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
-| `service.port`                            | MySQL service port                                  | `3306`                                                            |
-| `root.password`                           | Password for the `root` user                        | _random 10 character alphanumeric string_                         |
+| `service.port`                            | MySQL service port                                  | `3306`                                                             |
+| `rootUser.password`                       | Password for the `root` user                        | _random 10 character alphanumeric string_                         |
+| `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
 | `db.user`                                 | Username of new user to create                      | `nil`                                                             |
 | `db.password`                             | Password for the new user                           | _random 10 character alphanumeric string if `db.user` is defined_ |
 | `db.name`                                 | Name for new database to create                     | `my_database`                                                     |
-| `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                            |
-| `replication.user`                        | MariaDB replication user                            | `replicator`                                                      |
+| `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                             |
+| `replication.user`                        | MariaDB replication user                            | `replicator`                                                       |
 | `replication.password`                    | MariaDB replication user password                   | _random 10 character alphanumeric string_                         |
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
 | `master.persistence.enabled`              | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
