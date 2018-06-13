@@ -1,7 +1,7 @@
 {{- if .Values.external.enabled }}
   {{- $fullName := include "kafka.fullname" . }}
-  {{- $replicas := .Values.replicas | int }}
-  {{- $servicePort := .Values.external.servicePort }}
+  {{- $replicas := .Values.replicaCount | int }}
+  {{- $servicePort := .Values.external.service.port }}
   {{- $root := . }}
   {{- range $i, $e := until $replicas }}
     {{- $externalListenerPort := add $root.Values.external.firstListenerPort $i }}
@@ -12,24 +12,23 @@ kind: Service
 metadata:
   annotations:
     ## ref: https://github.com/kubernetes/kops/blob/master/dns-controller/pkg/watchers/annotations.go#L21
-    dns.alpha.kubernetes.io/internal: "{{ $root.Release.Name }}.{{ $root.Values.external.domain }}"
+    dns.alpha.kubernetes.io/internal: "{{ $root.Values.external.service.dnsShortname }}.{{ $root.Values.external.domain }}"
   name: {{ $root.Release.Name }}-{{ $i }}-external
   labels:
-    app: {{ include "kafka.name" $root }}
-    chart: {{ $root.Chart.Name }}-{{ $root.Chart.Version }}
+    app: {{ template "kafka.name" $root }}
+    chart: {{ template "kafka.chart" $root }}
     release: {{ $root.Release.Name }}
     heritage: {{ $root.Release.Service }}
-    pod: {{ $responsiblePod | quote }}
 spec:
   type: NodePort
   ports:
-    - name: external-broker
+    - name: external
       port: {{ $servicePort }}
       targetPort: {{ $externalListenerPort }}
       nodePort: {{ $externalListenerPort }}
       protocol: TCP
   selector:
-    app: {{ include "kafka.name" $root }}
+    app: {{ template "kafka.name" $root }}
     release: {{ $root.Release.Name }}
     pod: {{ $responsiblePod | quote }}
   {{- end }}

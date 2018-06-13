@@ -1,0 +1,19 @@
+{{- if and .Values.exporters.jmx.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-jmx-exporter
+  labels:
+    app: {{ template "kafka.name" . }}
+    chart: {{ template "kafka.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  config.yml: |-
+    hostPort: 127.0.0.1:{{ .Values.env.KAFKA_JMX_PORT }}
+    lowercaseOutputName: {{ .Values.exporters.jmx.config.lowercaseOutputName }}
+    rules:
+{{ .Values.exporters.jmx.config.rules | toYaml | indent 6 }}
+    ssl: false
+    startDelaySeconds: {{ .Values.exporters.jmx.config.startDelaySeconds }}
+{{- end }}

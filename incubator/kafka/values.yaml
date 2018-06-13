@@ -1,35 +1,54 @@
-# ------------------------------------------------------------------------------
-# Kafka:
-# ------------------------------------------------------------------------------
 
-## The StatefulSet installs 3 pods by default
-replicas: 3
+replicaCount: 3
 
-## The kafka image repository
-image: "confluentinc/cp-kafka"
+podDisruptionBudget:
+  maxUnavailable: 1
 
-## The kafka image tag
-imageTag: "4.0.1-1"
+image:
+  repository: confluentinc/cp-kafka
+  tag: 4.0.1
+  pullPolicy: IfNotPresent
 
-## Specify a imagePullPolicy
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-imagePullPolicy: "IfNotPresent"
+## Client service.
+service:
+  type: ClusterIP
+  annotations: {}
+    ## AWS example for use with LoadBalancer service type.
+    # external-dns.alpha.kubernetes.io/hostname: kafka.cluster.local
+    # service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    # service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+  ports:
+    client:
+      port: 9092
+      targetPort: client
+      protocol: TCP
+
+ports:
+  client:
+    containerPort: 9092
+    protocol: TCP
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
-  #   cpu: 200m
-  #   memory: 1536Mi
+  #   cpu: 100m
+  #   memory: 1024Mi
   # requests:
   #   cpu: 100m
   #   memory: 1024Mi
-kafkaHeapOptions: "-Xmx1G -Xms1G"
 
-## The StatefulSet Update Strategy which Kafka will use when changes are applied.
-## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+## OnDelete requires you to manually delete each pod when making updates.
+## This approach is at the moment safer than RollingUpdate because replication
+## may be incomplete when replication source pod is killed.
+##
+## ref: http://blog.kubernetes.io/2017/09/kubernetes-statefulsets-daemonsets.html
 updateStrategy:
-  type: "OnDelete"
+  type: OnDelete
 
 ## Start and stop pods in Parallel or OrderedReady (one-by-one.)  Note - Can not change after first release.
 ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy
@@ -40,69 +59,73 @@ podManagementPolicy: OrderedReady
 rbac:
   enabled: false
 
-## The name of the storage class which the cluster should use.
-# storageClass: default
-
-## The subpath within the Kafka container's PV where logs will be stored.
-## This is combined with `persistence.mountPath`, to create, by default: /opt/kafka/data/logs
-logSubPath: "logs"
-
-## Use an alternate scheduler, e.g. "stork".
-## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
-##
-# schedulerName:
-
 ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ## By default we don't set affinity
 affinity: {}
-## Alternatively, this typical example defines:
-## antiAffinity (to keep Kafka pods on separate pods)
-## and affinity (to encourage Kafka pods to be collocated with Zookeeper pods)
-# affinity:
-#   podAntiAffinity:
-#     requiredDuringSchedulingIgnoredDuringExecution:
-#     - labelSelector:
-#         matchExpressions:
-#         - key: app
-#           operator: In
-#           values:
-#           - kafka
-#       topologyKey: "kubernetes.io/hostname"
-#   podAffinity:
-#     preferredDuringSchedulingIgnoredDuringExecution:
-#      - weight: 50
-#        podAffinityTerm:
-#          labelSelector:
-#            matchExpressions:
-#            - key: app
-#              operator: In
-#              values:
-#                - zookeeper
-#          topologyKey: "kubernetes.io/hostname"
+  # podAntiAffinity:
+  #   preferredDuringSchedulingIgnoredDuringExecution:
+  #     - weight: 50
+  #       podAffinityTerm:
+  #         topologyKey: failure-domain.beta.kubernetes.io/zone
+  #         labelSelector:
+  #           matchLabels:
+  #             release: kafka
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     - weight: 40
+  #       topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           release: kafka
 
 ## Node labels for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
 
+podAnnotations: {}
+  # prometheus.io/scrape: "true"
+  # prometheus.io/path: "/metrics"
+  # prometheus.io/port: "9404"  # or "9308"
+
+podLabels: {}
+  # team: "developers"
+  # service: "kafka"
+
+## Liveness probe config.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+##
+livenessProbe:
+  exec:
+    command:
+      - sh
+      - -ec
+      - /usr/bin/jps | /bin/grep -q SupportedKafka
+  initialDelaySeconds: 30
+  # periodSeconds: 10
+  # timeoutSeconds: 5
+  # failureThreshold: 3
+  # successThreshold: 1
+
 ## Readiness probe config.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 ##
 readinessProbe:
+  tcpSocket:
+    port: client
   initialDelaySeconds: 30
-  periodSeconds: 10
-  timeoutSeconds: 5
-  successThreshold: 1
-  failureThreshold: 3
+  # periodSeconds: 10
+  # timeoutSeconds: 5
+  # failureThreshold: 3
+  # successThreshold: 1
 
 ## Period to wait for broker graceful shutdown (sigterm) before pod is killed (sigkill)
 ## ref: https://kubernetes-v1-4.github.io/docs/user-guide/production-pods/#lifecycle-hooks-and-termination-notice
 ## ref: https://kafka.apache.org/10/documentation.html#brokerconfigs controlled.shutdown.*
 terminationGracePeriodSeconds: 60
 
-# Tolerations for nodes that have taints on them.
-# Useful if you want to dedicate nodes to just run kafka
-# https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+## Tolerations for nodes that have taints on them.
+## Useful if you want to dedicate nodes to just run kafka
+## https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 tolerations: []
 # tolerations:
 # - key: "key"
@@ -110,22 +133,68 @@ tolerations: []
 #   value: "value"
 #   effect: "NoSchedule"
 
+securityContext: {}
+
+persistence:
+  enabled: true
+  ## kafka data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  ## The size of the PersistentVolume to allocate to each Kafka Pod in the StatefulSet. For
+  ## production servers this number should likely be much larger.
+  ##
+  size: 1Gi
+  ## The location within the Kafka container where the PV will mount its storage and Kafka will
+  ## store its logs.
+  ##
+  mountPath: /opt/kafka/data
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName: stork
+
+## The subpath within the Kafka container's PV where logs will be stored.
+## This is combined with `persistence.mountPath`, to create, by default: /opt/kafka/data/logs
+logSubPath: "logs"
+
 ## External access.
 ##
 external:
   enabled: false
-  servicePort: 19092
   firstListenerPort: 31090
   domain: cluster.local
-  init:
-    image: "lwolf/kubectl_deployer"
-    imageTag: "0.4"
-    imagePullPolicy: "IfNotPresent"
+  service:
+    dnsShortname: kafka
+    port: 19092
+
+## Init container. Adds pod labels.
+##
+init:
+  image: "lwolf/kubectl_deployer"
+  imageTag: "0.4"
+  imagePullPolicy: "IfNotPresent"
+
+## rackAwareness requires at least Kubernetes 1.9.
+## refs:
+## - https://github.com/Yolean/kubernetes-kafka/pull/41
+## - https://github.com/kubernetes/kubernetes/issues/19367#issuecomment-371278421
+## - https://github.com/kubernetes/kubernetes/issues/31984#issuecomment-253682845
+## - https://github.com/kubernetes/kubernetes/issues/62078
+## - https://issues.apache.org/jira/browse/KAFKA-1215
+rackAwareness:
+  enabled: false
 
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
 ## here in map format, as defined in the official docs.
-## ref: https://kafka.apache.org/documentation/#brokerconfigs
 ##
+## ref: https://kafka.apache.org/documentation/#brokerconfigs
 configurationOverrides:
   "offsets.topic.replication.factor": 3
   # "auto.leader.rebalance.enable": true
@@ -144,142 +213,168 @@ configurationOverrides:
   # "listener.security.protocol.map": |-
   #   PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
 
-## A collection of additional ports to expose on brokers (formatted as normal containerPort yaml)
-# Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar
-additionalPorts: {}
+env:
+  KAFKA_HEAP_OPTS: "-Xmx1G -Xms1G"
+  KAFKA_JMX_PORT: 1099
 
-## Persistence configuration. Specify if and how to persist data to a persistent volume.
-##
-persistence:
-  enabled: true
+exporters:
 
-  ## The size of the PersistentVolume to allocate to each Kafka Pod in the StatefulSet. For
-  ## production servers this number should likely be much larger.
-  ##
-  size: "1Gi"
-
-  ## The location within the Kafka container where the PV will mount its storage and Kafka will
-  ## store its logs.
-  ##
-  mountPath: "/opt/kafka/data"
-
-  ## Kafka data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  # storageClass:
-
-jmx:
-  ## Rules to apply to the Prometheus JMX Exporter.  Note while lots of stats have been cleaned and exposed,
-  ## there are still more stats to clean up and expose, others will never get exposed.  They keep lots of duplicates
-  ## that can be derived easily.  The configMap in this chart cleans up the metrics it exposes to be in a Prometheus
-  ## format, eg topic, broker are labels and not part of metric name. Improvements are gladly accepted and encouraged.
-  configMap:
-
-    ## Allows disabling the default configmap, note a configMap is needed
-    enabled: true
-
-    ## Allows setting values to generate confimap
-    ## To allow all metrics through (warning its crazy excessive) comment out below `overrideConfig` and set
-    ## `whitelistObjectNames: []`
-    overrideConfig: {}
-      # jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:5555/jmxrmi
-      # lowercaseOutputName: true
-      # lowercaseOutputLabelNames: true
-      # ssl: false
-      # rules:
-      # - pattern: ".*"
-
-    ## If you would like to supply your own ConfigMap for JMX metrics, supply the name of that
-    ## ConfigMap as an `overrideName` here.
-    overrideName: ""
-
-  ## Port the jmx metrics are exposed in native jmx format, not in Prometheus format
-  port: 5555
-
-  ## JMX Whitelist Objects, can be set to control which JMX metrics are exposed.  Only whitelisted
-  ## values will be exposed via JMX Exporter.  They must also be exposed via Rules.  To expose all metrics
-  ## (warning its crazy excessive and they aren't formatted in a prometheus style) (1) `whitelistObjectNames: []`
-  ## (2) commented out above `overrideConfig`.
-  whitelistObjectNames:  # []
-  - kafka.controller:*
-  - kafka.server:*
-  - java.lang:*
-  - kafka.network:*
-  - kafka.log:*
-
-## Prometheus Exporters / Metrics
-##
-prometheus:
-  ## Prometheus JMX Exporter: exposes the majority of Kafkas metrics
   jmx:
     enabled: false
-
-    ## The image to use for the metrics collector
-    image: solsson/kafka-prometheus-jmx-exporter@sha256
-
-    ## The image tag to use for the metrics collector
-    imageTag: a23062396cd5af1acdf76512632c20ea6be76885dfc20cd9ff40fb23846557e8
-
-    ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
-    interval: 10s
-
-    ## Port jmx-exporter exposes Prometheus format metrics to scrape
-    port: 5556
-
+    image:
+      repository: sscaling/jmx-prometheus-exporter
+      tag: 0.3.0
+      pullPolicy: IfNotPresent
+    config:
+      ## ref: https://github.com/prometheus/jmx_exporter/blob/master/example_configs/kafka-0-8-2.yml
+      lowercaseOutputName: false
+      startDelaySeconds: 30
+      rules:
+        - pattern : kafka.cluster<type=(.+), name=(.+), topic=(.+), partition=(.+)><>Value
+          name: kafka_cluster_$1_$2
+          labels:
+            topic: "$3"
+            partition: "$4"
+        - pattern : kafka.log<type=Log, name=(.+), topic=(.+), partition=(.+)><>Value
+          name: kafka_log_$1
+          labels:
+            topic: "$2"
+            partition: "$3"
+        - pattern : kafka.controller<type=(.+), name=(.+)><>(Count|Value)
+          name: kafka_controller_$1_$2
+        - pattern : kafka.network<type=(.+), name=(.+)><>Value
+          name: kafka_network_$1_$2
+        - pattern : kafka.network<type=(.+), name=(.+)PerSec, request=(.+)><>Count
+          name: kafka_network_$1_$2_total
+          labels:
+            request: "$3"
+        - pattern : kafka.network<type=(.+), name=(\w+), networkProcessor=(.+)><>Count
+          name: kafka_network_$1_$2
+          labels:
+            request: "$3"
+          type: COUNTER
+        - pattern : kafka.network<type=(.+), name=(\w+), request=(\w+)><>Count
+          name: kafka_network_$1_$2
+          labels:
+            request: "$3"
+        - pattern : kafka.network<type=(.+), name=(\w+)><>Count
+          name: kafka_network_$1_$2
+        - pattern : kafka.server<type=(.+), name=(.+)PerSec\w*, topic=(.+)><>Count
+          name: kafka_server_$1_$2_total
+          labels:
+            topic: "$3"
+        - pattern : kafka.server<type=(.+), name=(.+)PerSec\w*><>Count
+          name: kafka_server_$1_$2_total
+          type: COUNTER
+        - pattern : kafka.server<type=(.+), name=(.+), clientId=(.+), topic=(.+), partition=(.*)><>(Count|Value)
+          name: kafka_server_$1_$2
+          labels:
+            clientId: "$3"
+            topic: "$4"
+            partition: "$5"
+        - pattern : kafka.server<type=(.+), name=(.+), topic=(.+), partition=(.*)><>(Count|Value)
+          name: kafka_server_$1_$2
+          labels:
+            topic: "$3"
+            partition: "$4"
+        - pattern : kafka.server<type=(.+), name=(.+), topic=(.+)><>(Count|Value)
+          name: kafka_server_$1_$2
+          labels:
+            topic: "$3"
+          type: COUNTER
+        - pattern : kafka.server<type=(.+), name=(.+), clientId=(.+), brokerHost=(.+), brokerPort=(.+)><>(Count|Value)
+          name: kafka_server_$1_$2
+          labels:
+            clientId: "$3"
+            broker: "$4:$5"
+        - pattern : kafka.server<type=(.+), name=(.+), clientId=(.+)><>(Count|Value)
+          name: kafka_server_$1_$2
+          labels:
+            clientId: "$3"
+        - pattern : kafka.server<type=(.+), name=(.+)><>(Count|Value)
+          name: kafka_server_$1_$2
+        - pattern : kafka.(\w+)<type=(.+), name=(.+)PerSec\w*><>Count
+          name: kafka_$1_$2_$3_total
+        - pattern : kafka.(\w+)<type=(.+), name=(.+)PerSec\w*, topic=(.+)><>Count
+          name: kafka_$1_$2_$3_total
+          labels:
+            topic: "$4"
+          type: COUNTER
+        - pattern : kafka.(\w+)<type=(.+), name=(.+)PerSec\w*, topic=(.+), partition=(.+)><>Count
+          name: kafka_$1_$2_$3_total
+          labels:
+            topic: "$4"
+            partition: "$5"
+          type: COUNTER
+        - pattern : kafka.(\w+)<type=(.+), name=(.+)><>(Count|Value)
+          name: kafka_$1_$2_$3_$4
+          type: COUNTER
+        - pattern : kafka.(\w+)<type=(.+), name=(.+), (\w+)=(.+)><>(Count|Value)
+          name: kafka_$1_$2_$3_$6
+          labels:
+            "$4": "$5"
+    env: {}
     resources: {}
-      # limits:
-      #   cpu: 200m
-      #   memory: 1Gi
-      # requests:
-      #   cpu: 100m
-      #   memory: 100Mi
+    path: /metrics
+    targetPort:
+    ports:
+      jmxxp:
+        containerPort: 9404
+        protocol: TCP
+    livenessProbe:
+      tcpSocket:
+        port: jmxxp
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      timeoutSeconds: 60
+      failureThreshold: 8
+      successThreshold: 1
+    readinessProbe:
+      tcpSocket:
+        port: jmxxp
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      timeoutSeconds: 60
+      failureThreshold: 8
+      successThreshold: 1
 
-  ## Prometheus Kafka Exporter: exposes complimentary metrics to JMX Exporter
   kafka:
+  ## refs:
+  ## - https://github.com/danielqsj/kafka_exporter
+  ## - https://hub.docker.com/r/danielqsj/kafka-exporter/
+  ## - https://www.datadoghq.com/blog/monitoring-kafka-performance-metrics/
     enabled: false
-
-    ## The image to use for the metrics collector
-    image: danielqsj/kafka-exporter
-
-    ## The image tag to use for the metrics collector
-    imageTag: v1.0.1
-
-    ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
-    interval: 10s
-
-    ## Port kafka-exporter exposes for Prometheus to scrape metrics
-    port: 9308
-
-    ## Resource limits
+    image:
+      repository: danielqsj/kafka-exporter
+      tag: v1.0.1
+      pullPolicy: IfNotPresent
+    config:
+      topicFilter: ".*"
+      logLevel: info
+    env: {}
     resources: {}
-#      limits:
-#        cpu: 200m
-#        memory: 1Gi
-#      requests:
-#        cpu: 100m
-#        memory: 100Mi
-
-  operator:
-    ## Are you using Prometheus Operator?
-    enabled: false
-
-    serviceMonitor:
-      # Namespace Prometheus is installed in
-      namespace: monitoring
-
-      ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
-      ## [Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65)
-      ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
-      selector:
-        prometheus: kube-prometheus
-
-# ------------------------------------------------------------------------------
-# Zookeeper:
-# ------------------------------------------------------------------------------
+    path: /metrics
+    initialContainerDelaySeconds: 60
+    ports:
+      kafkaxp:
+        containerPort: 9308
+        protocol: TCP
+    livenessProbe:
+      tcpSocket:
+        port: kafkaxp
+      initialDelaySeconds: 60
+      periodSeconds: 15
+      timeoutSeconds: 60
+      failureThreshold: 8
+      successThreshold: 1
+    readinessProbe:
+      tcpSocket:
+        port: kafkaxp
+      initialDelaySeconds: 60
+      periodSeconds: 15
+      timeoutSeconds: 60
+      failureThreshold: 8
+      successThreshold: 1
 
 zookeeper:
   ## If true, install the Zookeeper chart alongside Kafka
@@ -290,29 +385,26 @@ zookeeper:
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   resources: ~
 
-  ## The JVM heap size to allocate to Zookeeper
-  heap: "1G"
-
   persistence:
-    enabled: false
-    ## The amount of PV storage allocated to each Zookeeper pod in the statefulset
-    # size: "2Gi"
+    ## The size of the PersistentVolume to allocate to each Zookeeper Pod in the StatefulSet. For
+    ## production servers this number should likely be much larger.
+    size: 2Gi
 
-  ## Specify a Zookeeper imagePullPolicy
+  env:
+    ## The JVM heap size.
+    ZK_HEAP_SIZE: 2G
+
+  ## Specify Zookeeper image pull policy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-  imagePullPolicy: "IfNotPresent"
+  image:
+    repository: confluentinc/cp-kafka
+    tag: 4.0.0
+    pullPolicy: IfNotPresent
 
-  ## If the Zookeeper Chart is disabled a URL and port are required to connect
-  url: ""
-  port: 2181
+  ports:
+    client:
+      containerPort: 2181
 
-  ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
-  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-  ## By default we don't set affinity:
-  affinity: {}  # Criteria by which pod label-values influence scheduling for zookeeper pods.
-  # podAntiAffinity:
-  #   requiredDuringSchedulingIgnoredDuringExecution:
-  #     - topologyKey: "kubernetes.io/hostname"
-  #       labelSelector:
-  #         matchLabels:
-  #           release: zookeeper
+  ## Kafka's "zookeeper.connect" string. Most useful when Zookeeper subchart is disabled and a
+  ## discrete zookeeper is to be used.
+  # connect: zookeeper:2181/kafka

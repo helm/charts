@@ -4,16 +4,20 @@ kind: StatefulSet
 metadata:
   name: {{ include "kafka.fullname" . }}
   labels:
-    app: {{ include "kafka.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "kafka.name" . }}
+    chart: {{ template "kafka.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  serviceName: {{ include "kafka.fullname" . }}-headless
+  serviceName: {{ template "kafka.fullname" . }}-headless
   podManagementPolicy: {{ .Values.podManagementPolicy }}
+  selector:
+    matchLabels:
+      app: {{ template "kafka.name" . }}
+      release: {{ .Release.Name }}
   updateStrategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
-  replicas: {{ default 3 .Values.replicas }}
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
 {{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.operator.enabled) }}
@@ -22,178 +26,233 @@ spec:
         prometheus.io/port: {{ .Values.prometheus.jmx.port | quote }}
 {{- end }}
       labels:
-        app: {{ include "kafka.name" . }}
+        app: {{ template "kafka.name" . }}
         release: {{ .Release.Name }}
+      {{- if .Values.podLabels }}
+        ## Custom pod labels
+        {{- range $key, $value := .Values.podLabels }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+      annotations:
+      {{- if .Values.podAnnotations }}
+        ## Custom pod annotations
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
     spec:
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
 {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ .Release.Name }}
 {{- end }}
-    {{- if .Values.external.enabled }}
+{{- if .Values.external.enabled }}
+
       ## ref: https://github.com/Yolean/kubernetes-kafka/blob/master/kafka/50kafka.yml
       initContainers:
-      - name: init-ext
-        image: "{{ .Values.external.init.image }}:{{ .Values.external.init.imageTag }}"
-        imagePullPolicy: "{{ .Values.external.init.imagePullPolicy }}"
-        command:
-          - sh
-          - -euxc
-          - "kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} pod=${POD_NAME}"
-        env:
-          - name: POD_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-    {{- end }}
-{{- if .Values.tolerations }}
+        - name: init
+          image: "{{ .Values.init.image }}:{{ .Values.init.imageTag }}"
+          imagePullPolicy: "{{ .Values.init.imagePullPolicy }}"
+          command:
+            - sh
+            - -euxc
+            - >
+              kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} pod=${POD_NAME};
+            {{- if .Values.rackAwareness.enabled }}
+              ZONE=$(kubectl get node ${NODE_NAME} -o go-template=$'{{"{{"}}index .metadata.labels "failure-domain.beta.kubernetes.io/zone"{{"}}"}}\n');
+              kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} zone=${ZONE};
+            {{- end }}
+              sleep 5  ## Give time for new labels to settle before starting non-init containers that depend on them.
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+{{- end }}
+    {{- with .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
-{{- end }}
-{{- if .Values.affinity }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
       affinity:
-{{ toYaml .Values.affinity | indent 8 }}
-{{- end }}
-{{- if .Values.nodeSelector }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-{{- end }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
       containers:
-      {{- if .Values.prometheus.jmx.enabled }}
-      - name: metrics
-        image: "{{ .Values.prometheus.jmx.image }}:{{ .Values.prometheus.jmx.imageTag }}"
-        command:
-        - java
-        - -XX:+UnlockExperimentalVMOptions
-        - -XX:+UseCGroupMemoryLimitForHeap
-        - -XX:MaxRAMFraction=1
-        - -XshowSettings:vm
-        - -jar
-        - jmx_prometheus_httpserver.jar
-        - {{ .Values.prometheus.jmx.port | quote }}
-        - /etc/jmx-kafka/jmx-kafka-prometheus.yml
-        ports:
-        - containerPort: {{ .Values.prometheus.jmx.port }}
-        resources:
-{{ toYaml .Values.prometheus.jmx.resources | indent 10 }}
-        volumeMounts:
-        - name: jmx-config
-          mountPath: /etc/jmx-kafka
-      {{- end }}
-      - name: {{ include "kafka.name" . }}-broker
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
-        livenessProbe:
-          exec:
-            command:
-              - sh
-              - -ec
-              - /usr/bin/jps | /bin/grep -q SupportedKafka
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
-        readinessProbe:
-          tcpSocket:
-            port: kafka
-          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
-          successThreshold: {{ .Values.readinessProbe.successThreshold }}
-          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
-        ports:
-        - containerPort: 9092
-          name: kafka
-        {{- if .Values.external.enabled }}
-          {{- $replicas := .Values.replicas | int }}
-          {{- $root := . }}
-          {{- range $i, $e := until $replicas }}
-        - containerPort: {{ add $root.Values.external.firstListenerPort $i }}
-          name: external-{{ $i }}
+
+{{- if .Values.exporters.jmx.enabled }}
+        - name: jmx-exporter
+          image: "{{ .Values.exporters.jmx.image.repository }}:{{ .Values.exporters.jmx.image.tag }}"
+          imagePullPolicy: {{ .Values.exporters.jmx.image.pullPolicy }}
+          ports:
+  {{- range $key, $port := .Values.exporters.jmx.ports }}
+            - name: {{ $key }}
+{{ toYaml $port | indent 14 }}
+  {{- end }}
+          livenessProbe:
+{{ toYaml .Values.exporters.jmx.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.exporters.jmx.readinessProbe | indent 12 }}
+          env:
+            - name: SERVICE_PORT
+              value: {{ .Values.exporters.jmx.ports.jmxxp.containerPort | quote }}
+          {{- with .Values.exporters.jmx.env }}
+            {{- range $key, $value := . }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+            {{- end }}
           {{- end }}
-        {{- end }}
-        {{- if .Values.prometheus.jmx.enabled }}
-        - containerPort: {{ .Values.jmx.port }}
-          name: jmx
-        {{- end }}
-        {{- if .Values.additionalPorts }}
-{{ toYaml .Values.additionalPorts | indent 8 }}
-        {{- end }}
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
-        env:
-        {{- if .Values.prometheus.jmx.enabled }}
-        - name: JMX_PORT
-          value: "{{ .Values.jmx.port }}"
-        {{- end }}
-        - name: POD_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
-        - name: KAFKA_HEAP_OPTS
-          value: {{ .Values.kafkaHeapOptions }}
-        {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
-        - name: KAFKA_ZOOKEEPER_CONNECT
-          value: {{ include "zookeeper.url" . | quote }}
-        {{- end }}
-        {{- if not (hasKey .Values.configurationOverrides "log.dirs") }}
-        - name: KAFKA_LOG_DIRS
-          value: {{ printf "%s/%s" .Values.persistence.mountPath .Values.logSubPath | quote }}
-        {{- end }}
-        {{- range $key, $value := .Values.configurationOverrides }}
-        - name: {{ printf "KAFKA_%s" $key | replace "." "_" | upper | quote }}
-          value: {{ $value | quote }}
-        {{- end }}
-        {{- if .Values.jmx.port }}
-        - name: KAFKA_JMX_PORT
-          value: "{{ .Values.jmx.port }}"
-        {{- end }}
-        # This is required because the Downward API does not yet support identification of
-        # pod numbering in statefulsets. Thus, we are required to specify a command which
-        # allows us to extract the pod ID for usage as the Kafka Broker ID.
-        # See: https://github.com/kubernetes/kubernetes/issues/31218
-        command:
-        - sh
-        - -exc
-        - |
-          export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
-          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
-          exec /etc/confluent/docker/run
-        volumeMounts:
-        - name: datadir
-          mountPath: {{ .Values.persistence.mountPath | quote }}
+          resources:
+{{ toYaml .Values.exporters.jmx.resources | indent 12 }}
+          volumeMounts:
+            - name: config-jmx-exporter
+              mountPath: /opt/jmx_exporter/config.yml
+              subPath: config.yml
+{{- end }}
+
+{{- if .Values.exporters.kafka.enabled }}
+        - name: kafka-exporter
+          image: "{{ .Values.exporters.kafka.image.repository }}:{{ .Values.exporters.kafka.image.tag }}"
+          imagePullPolicy: {{ .Values.exporters.kafka.image.pullPolicy }}
+          command: ["/bin/sh", "-euxc"]
+          ## Delay start of kafka-exporter to give kafka enough time to come online.
+          args:
+            - >-
+              sleep {{ .Values.exporters.kafka.initialContainerDelaySeconds }}
+              && exec /bin/kafka_exporter \
+                --kafka.server=$(hostname -f):{{ .Values.service.ports.client.port }} \
+                --web.listen-address=:{{ .Values.exporters.kafka.ports.kafkaxp.containerPort }} \
+                --web.telemetry-path={{ .Values.exporters.kafka.path | quote }} \
+                --log.level={{ .Values.exporters.kafka.config.logLevel }} \
+                --topic.filter={{ .Values.exporters.kafka.config.topicFilter | squote }}
+          ports:
+  {{- range $key, $port := .Values.exporters.kafka.ports }}
+            - name: {{ $key }}
+{{ toYaml $port | indent 14 }}
+  {{- end }}
+          livenessProbe:
+{{ toYaml .Values.exporters.kafka.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.exporters.kafka.readinessProbe | indent 12 }}
+          env:
+          {{- range $key, $value := .Values.exporters.kafka.env }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.exporters.kafka.resources | indent 12 }}
+{{- end }}
+
+        - name: kafka
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # This is required because the Downward API does not yet support identification of
+          # pod numbering in statefulsets. Thus, we are required to specify a command which
+          # allows us to extract the pod ID for usage as the Kafka Broker ID.
+          # See: https://github.com/kubernetes/kubernetes/issues/31218
+          command:
+            - sh
+            - -exc
+            - |
+              unset KAFKA_PORT || true
+              export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
+              export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:{{ .Values.ports.client.containerPort }}{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
+              /etc/confluent/docker/run
+          ports:
+            {{- if .Values.external.enabled }}
+              {{- $replicas := .Values.replicaCount | int }}
+              {{- $root := . }}
+              {{- range $i, $e := until $replicas }}
+            - name: external-{{ $i }}
+              containerPort: {{ add $root.Values.external.firstListenerPort $i }}
+              {{- end }}
+            {{- end }}
+            - name: jmx
+              containerPort: {{ .Values.env.KAFKA_JMX_PORT }}
+{{- range $key, $port := .Values.ports }}
+            - name: {{ $key }}
+{{ toYaml $port | indent 14 }}
+{{- end }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          env:
+          {{- range $key, $value := .Values.env }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+          {{- end }}
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
+            - name: KAFKA_ZOOKEEPER_CONNECT
+              value: {{ include "zookeeper.connect" . | quote }}
+            {{- end }}
+            {{- if not (hasKey .Values.configurationOverrides "log.dirs") }}
+            - name: KAFKA_LOG_DIRS
+              value: {{ printf "%s/%s" .Values.persistence.mountPath .Values.logSubPath | quote }}
+            {{- end }}
+            {{- range $key, $value := .Values.configurationOverrides }}
+            - name: {{ printf "KAFKA_%s" $key | replace "." "_" | upper | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- if .Values.rackAwareness.enabled }}
+            - name: KAFKA_BROKER_RACK
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['zone']
+            {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: {{ .Values.persistence.mountPath }}
+
       volumes:
       {{- if not .Values.persistence.enabled }}
-      - name: datadir
-        emptyDir: {}
+        - name: data
+          emptyDir: {}
       {{- end }}
-      {{- if .Values.prometheus.jmx.enabled }}
-      - name: jmx-config
-        configMap:
-          {{- if .Values.jmx.configMap.overrideName }}
-          name: {{ .Values.jmx.configMap.overrideName }}
-          {{- else }}
-          name: {{ include "kafka.fullname" . }}-metrics
-          {{- end }}
+      {{- if .Values.exporters.jmx.enabled }}
+        - name: config-jmx-exporter
+          configMap:
+            name: {{ .Release.Name }}-jmx-exporter
       {{- end }}
-      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-  {{- if .Values.persistence.enabled }}
+  terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+
+{{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
-  - metadata:
-      name: datadir
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: {{ .Values.persistence.size }}
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
       {{- if .Values.persistence.storageClass }}
-      {{- if (eq "-" .Values.persistence.storageClass) }}
-      storageClassName: ""
-      {{- else }}
-      storageClassName: "{{ .Values.persistence.storageClass }}"
+        {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+        {{- end }}
       {{- end }}
-      {{- end }}
-  {{- end }}
+{{- end }}
