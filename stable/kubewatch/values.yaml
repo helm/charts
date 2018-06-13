@@ -6,6 +6,19 @@ slack:
   # and invite the bot to your channel using: /join @botname
   token: "XXXX"
 
+# hipchat:
+#   room: ""
+#   token: ""
+#   url: ""
+# mattermost:
+#   channel: ""
+#   url: ""
+#   username: ""
+# flock:
+#   url: ""
+# webhook:
+#   url: ""
+
 # Resources to watch
 resourcesToWatch:
   deployment: true
@@ -18,9 +31,9 @@ resourcesToWatch:
   persistentvolume: false
 
 image:
-  repository: "tuna/kubewatch"
-  tag: "v0.0.3"
-  pullPolicy: "IfNotPresent"
+  repository: "bitnami/kubewatch"
+  tag: "0.0.4"
+  pullPolicy: "Always"
 
 rbac:
   # If true, create & use RBAC resources
