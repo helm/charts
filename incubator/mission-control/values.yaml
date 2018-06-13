@@ -64,6 +64,19 @@ elasticsearch:
 
 podRestartTime:
 
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
 missionControl:
   replicaCount: 1
   name: mission-control
@@ -103,6 +116,12 @@ missionControl:
   #  limits:
   #    memory: "3Gi"
   #    cpu: "1"
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
   service:
     type: LoadBalancer
   internalPort: 8080
@@ -128,6 +147,11 @@ insightServer:
   #  limits:
   #    memory: "1Gi"
   #    cpu: "1"
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
 
 insightScheduler:
   replicaCount: 1
@@ -145,6 +169,11 @@ insightScheduler:
   #  limits:
   #    memory: "3Gi"
   #    cpu: "1"
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
 
 insightExecutor:
   replicaCount: 1
@@ -182,3 +211,8 @@ insightExecutor:
   #  limits:
   #    memory: "3Gi"
   #    cpu: "1"
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}

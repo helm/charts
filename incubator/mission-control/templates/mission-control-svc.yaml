@@ -12,8 +12,8 @@ spec:
   type: {{ .Values.missionControl.service.type }}
   ports:
   - name: http
-    port: {{ .Values.missionControl.internalPort }}
-    targetPort: {{ .Values.missionControl.externalPort }}
+    port: {{ .Values.missionControl.externalPort }}
+    targetPort: {{ .Values.missionControl.internalPort }}
     protocol: TCP
   selector:
     app: {{ template "mission-control.name" . }}

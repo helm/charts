@@ -109,6 +109,18 @@ spec:
           periodSeconds: 10
         resources:
 {{ toYaml .Values.insightServer.resources | indent 10 }}
+    {{- with .Values.insightServer.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.insightServer.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.insightServer.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       volumes:
       - name: mission-control-certs
         configMap:

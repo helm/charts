@@ -46,6 +46,18 @@ spec:
           periodSeconds: 10
         resources:
 {{ toYaml .Values.insightExecutor.resources | indent 10 }}
+    {{- with .Values.insightExecutor.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.insightExecutor.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.insightExecutor.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       volumes:
       - name: insight-executor-data
       {{- if .Values.insightExecutor.persistence.enabled }}

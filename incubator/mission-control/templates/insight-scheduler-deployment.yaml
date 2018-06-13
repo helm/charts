@@ -66,3 +66,15 @@ spec:
           periodSeconds: 10
         resources:
 {{ toYaml .Values.insightScheduler.resources | indent 10 }}
+    {{- with .Values.insightScheduler.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.insightScheduler.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.insightScheduler.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

@@ -2,7 +2,11 @@ Congratulations. You have just deployed JFrog Mission Control!
 
 1. Get the JFrog Mission Control URL by running these commands:
 
-   {{- if contains "NodePort" .Values.missionControl.service.type }}
+   {{- if .Values.ingress.enabled }}
+   {{- range .Values.ingress.hosts }}
+     http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
+   {{- end }}
+   {{- else if contains "NodePort" .Values.missionControl.service.type }}
    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "mission-control.fullname" . }})
    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
    echo http://$NODE_IP:$NODE_PORT/
