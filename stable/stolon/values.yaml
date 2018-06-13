@@ -30,17 +30,17 @@ rbac:
 serviceAccount:
   create: true
   # The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template
-  # name: my-name
+  name:
 
 superuserUsername: "stolon"
 
 ## password for the superuser (REQUIRED)
-# superuserPassword: "superuserPassword"
+superuserPassword:
 
 replicationUsername: "repluser"
 
 ## password for the replication user (REQUIRED)
-# replicationPassword: "replicationPassword"
+replicationPassword:
 
 ## backend could be one of the following: consul, etcdv2, etcdv3 or kubernetes
 store:
