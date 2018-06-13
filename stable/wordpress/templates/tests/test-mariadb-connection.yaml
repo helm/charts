@@ -16,9 +16,9 @@ spec:
       - name: MARIADB_PORT
         value: "3306"
       - name: WORDPRESS_DATABASE_NAME
-        value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+        value: {{ default "" .Values.mariadb.db.name | quote }}
       - name: WORDPRESS_DATABASE_USER
-        value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+        value: {{ default "" .Values.mariadb.db.user | quote }}
       - name: WORDPRESS_DATABASE_PASSWORD
         valueFrom:
           secretKeyRef:

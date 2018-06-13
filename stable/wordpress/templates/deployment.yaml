@@ -45,13 +45,13 @@ spec:
         {{- end }}
         - name: WORDPRESS_DATABASE_NAME
         {{- if .Values.mariadb.enabled }}
-          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+          value: {{ .Values.mariadb.db.name | quote }}
         {{- else }}
           value: {{ .Values.externalDatabase.database | quote }}
         {{- end }}
         - name: WORDPRESS_DATABASE_USER
         {{- if .Values.mariadb.enabled }}
-          value: {{ .Values.mariadb.mariadbUser | quote }}
+          value: {{ .Values.mariadb.db.user | quote }}
         {{- else }}
           value: {{ .Values.externalDatabase.user | quote }}
         {{- end }}
