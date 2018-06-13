@@ -11,7 +11,7 @@ metadata:
     kubernetes.io/cluster-service: "true"
     kubernetes.io/name: "CoreDNS"
     {{- else }}
-    app: {{ template "coredns.fullname" . }}
+    app: {{ template "coredns.name" . }}
     {{- end }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
@@ -20,7 +20,7 @@ spec:
   {{- if .Values.isClusterService }}
     k8s-app: {{ .Chart.Name | quote }}
   {{- else }}
-    app: {{ template "coredns.fullname" . }}
+    app: {{ template "coredns.name" . }}
   {{- end }}
   {{- if .Values.service.clusterIP }}
   clusterIP: {{ .Values.service.clusterIP }}
