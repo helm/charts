@@ -49,7 +49,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.ServicePort`              | k8s service port                     | `8080`                                                                       |
 | `Master.NodePort`                 | k8s node port                        | Not set                                                                      |
 | `Master.HealthProbes`             | Enable k8s liveness and readiness probes | `true`                                                                   |
-| `Master.HealthProbesTimeout`      | Set the timeout for the liveness and readiness probes | `120`                                                       |
+| `Master.HealthProbesLivenessTimeout`      | Set the timeout for the liveness probe | `120`                                                       |
+| `Master.HealthProbesReadinessTimeout` | Set the timeout for the readiness probe | `60`                                                       |
 | `Master.HealthProbeLivenessFailureThreshold` | Set the failure threshold for the liveness probe | `12`                                                       |
 | `Master.ContainerPort`            | Master listening port                | `8080`                                                                       |
 | `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |

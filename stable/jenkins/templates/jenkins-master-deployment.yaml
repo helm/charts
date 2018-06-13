@@ -128,14 +128,14 @@ spec:
             httpGet:
               path: /login
               port: http
-            initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout }}
+            initialDelaySeconds: {{ .Values.Master.HealthProbesLivenessTimeout }}
             timeoutSeconds: 5
             failureThreshold: {{ .Values.Master.HealthProbeLivenessFailureThreshold }}
           readinessProbe:
             httpGet:
               path: /login
               port: http
-            initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout }}
+            initialDelaySeconds: {{ .Values.Master.HealthProbesReadinessTimeout }}
 {{- end }}
           resources:
             requests:
