@@ -2,9 +2,11 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+namespace: kube-system
+
 image:
   repository: keelhq/keel
-  tag: 0.8.3
+  tag: 0.9.2
   pullPolicy: IfNotPresent
 
 # Polling is enabled by default,
