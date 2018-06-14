@@ -187,6 +187,9 @@ persistence:
   ## enable persistance storage
   enabled: false
   ##
+  ## Existing claim to use
+  existingclaim: nil
+  ##
   ## Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
