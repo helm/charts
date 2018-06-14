@@ -98,6 +98,8 @@ artifactory:
     periodSeconds: 10
     successThreshold: 1
   persistence:
+    enabled: true
+    local: false
     redundancy: 3
     mountPath: "/var/opt/jfrog/artifactory"
     enabled: true
@@ -172,6 +174,10 @@ artifactory:
   ## Customising their resources and java parameters is done here.
   primary:
     name: artifactory-ha-primary
+    persistence:
+      ## Set existingClaim to true or false
+      ## If true, you must prepare a PVC with the name
+      existingClaim: false
     ## Resources for the primary node
     resources: {}
     #  requests:
@@ -188,6 +194,10 @@ artifactory:
     #  other:
   node:
     name: artifactory-ha-member
+    persistence:
+      ## Set existingClaim to true or false
+      ## If true, you must prepare a PVC with the name
+      existingClaim: false
     replicaCount: 2
     ## Resources for the member nodes
     resources: {}
