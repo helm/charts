@@ -39,6 +39,7 @@ spec:
         fsGroup: {{ .Values.master.securityContext.fsGroup }}
         runAsUser: {{ .Values.master.securityContext.runAsUser }}
       {{- end }}
+      serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
       {{- if .Values.master.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.master.nodeSelector | indent 8 }}
