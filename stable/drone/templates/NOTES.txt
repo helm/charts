@@ -50,7 +50,7 @@ control provider:
       --set server.env.DRONE_ORGS="my-github-org" \
       --set server.env.DRONE_GITHUB_CLIENT="github-oauth2-client-id" \
       --set server.envSecrets.drone-server-secrets[0]=DRONE_GITHUB_SECRET \
-      incubator/drone
+      stable/drone
 
 Currently supported providers:
 
