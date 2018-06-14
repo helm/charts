@@ -60,7 +60,7 @@ service:
 
 replicaSet:
   ## Whether to create a MongoDB replica set for high availability or not
-  enabled: false
+  enabled: true
   ## Name of the replica set
   ##
   name: rs0
@@ -68,7 +68,7 @@ replicaSet:
   ## Key used for replica set authentication
   ##
   # key: key
-
+  
   ## Number of replicas per each node type
   ##
   replicas:
@@ -170,8 +170,8 @@ configmap:
 #      enabled: true
 #      pathPrefix: /opt/bitnami/mongodb/tmp
 #  # replica set options
-#  #replication:
-#  #  replSetName: replicaset
+#  replication:
+#    replSetName: replicaset
 #  # process management options
 #  processManagement:
 #     fork: false
@@ -182,4 +182,4 @@ configmap:
 #  # security options
 #  security:
 #    authorization: enabled
-#    #keyFile: /opt/bitnami/mongodb/conf/keyfile
+#    keyFile: /opt/bitnami/mongodb/conf/keyfile
