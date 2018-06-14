@@ -1,3 +1,4 @@
+{{- if not .Values.replicaSet.enabled }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -69,6 +70,11 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /bitnami/mongodb
+        {{- if .Values.configmap }}
+        - name: config
+          mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
+          subPath: mongodb.conf
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:
@@ -80,3 +86,9 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+      {{- if .Values.configmap }}
+      - name: config
+        configMap:
+          name: {{ template "mongodb.fullname" . }}
+      {{- end }}
+ {{- end -}}
