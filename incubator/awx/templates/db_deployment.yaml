@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.dbName }}
+  labels:
+    app: {{ .Values.app }}
+    role: {{ .Values.dbRole }}
+spec:
+  replicas: {{ .Values.dbReplicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app }}
+        role: {{ .Values.dbRole }}
+    spec:
+      containers:
+      - name: {{ .Values.dbContainername }}
+        image: {{ .Values.dbImage }}
+        ports:
+        - name: {{ .Values.dbContainername }}
+          containerPort: {{ .Values.dbPort }}
+        env:
+        - name: POSTGRES_USER
+          value: {{ .Values.dbUser }}
+        - name: POSTGRES_PASSWORD
+          value: {{ .Values.dbPassword }}
+        - name: POSTGRES_DB
+          value: {{ .Values.dbDatabaseName }}
+        - name: PGDATA
+          value: {{ .Values.dbPersistence.mountPath }}{{ .Values.dbPersistence.subPath }}
+        volumeMounts:
+        - name: {{ .Values.dbPersistence.name }}
+          mountPath: {{ .Values.dbPersistence.mountPath }}
+      volumes:
+      - name: {{ .Values.dbPersistence.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.dbPersistence.existingClaim }}

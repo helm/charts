@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.queueName }}
+  labels:
+    app: {{ .Values.app }}
+    role: {{ .Values.queueRole }}
+spec:
+  replicas: {{ .Values.queueReplicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app }}
+        role: {{ .Values.queueRole }}
+    spec:
+      containers:
+      - name: {{ .Values.queueContainerName | quote  }}
+        image: {{ .Values.queueImage | quote }}
+        env:
+        - name: RABBITMQ_DEFAULT_VHOST
+          value: {{ .Values.queueVhost | quote }}
+        ports:
+        - containerPort: {{ .Values.queueNodePort }}

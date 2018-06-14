@@ -1,0 +1,18 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.dbName }}
+  labels:
+    app: {{ .Values.app }}
+    role: {{ .Values.dbPersistence.role }}
+    billingType: {{ .Values.dbPersistence.billingType }}
+{{- if .Values.dbPersistence.annotations }}
+  annotations:
+{{ toYaml .Values.dbPersistence.annotations | indent 4 }}
+{{- end }}
+spec:
+  accessModes:
+    - {{ .Values.dbPersistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.dbPersistence.size | quote }}

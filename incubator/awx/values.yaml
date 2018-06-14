@@ -1,0 +1,195 @@
+########### Start of common value ###########
+
+
+## AWX app name
+app: "awx"
+
+## AWX secret key
+secret_key: "aabbcc"
+
+
+########### End of common value ###########
+
+
+
+
+########### Start of DB value ###########
+
+
+## DB POD name
+dbName: "awx-db"
+
+## DB role label
+dbRole: "database"
+
+## DB replicas
+dbReplicas: 1
+
+## DB container name
+dbContainername: "postgres"
+
+## DB image and tag
+dbImage: "postgres:9.6.2"
+
+## DB username
+dbUser: "awx"
+
+## DB user password
+dbPassword: "awxpass"
+
+## DB name
+dbDatabaseName: "awx"
+
+## DB port
+dbPort: 5432
+
+## Persist data to a persistent volume
+dbPersistence:
+  ## A manually managed Persistent Volume and Claim
+  ## If defined, PVC must be created manually before volume will be bound
+  existingClaim: "awx-db"
+
+  ## DB PV access mode. If you select file storage(NAS), you must set "ReadWriteMany". If you select block storage(ISCSI), you must set "ReadWriteOnce". It is based on IBM Cloud.
+  accessMode: ReadWriteOnce
+
+  ## DB PV size. You can set at least 20GB. It is based on IBM Cloud.
+  size: 20Gi
+
+  ## DB PV mount path and sub-path (with DB file).
+  mountPath: "/var/lib/postgresql/data"
+  subPath: "/pgdata"
+
+  ## DB persistence name and role
+  name: "data-volume"
+  role: "db-pvc"
+
+  ## DB PV hourly payment method. It is charged in the IBM Cloud.
+  billingType: "hourly"
+
+  ## DB PV Storage-Class selection. Storage class is defined as follows: "ibmc-(block or file)-(bronze or silver or gold)".
+  annotations: { volume.beta.kubernetes.io/storage-class: "ibmc-block-bronze"  }
+
+
+########### End of DB value ###########
+
+
+
+
+########### Start of queue value ###########
+
+
+## Queue name
+queueName: "awx-queue"
+
+## Queue role label
+queueRole: "queue"
+
+## Queue replicas
+queueReplicas: 1
+
+## Queue image and tag
+queueImage: rabbitmq:3
+
+## Queue Container name
+queueContainerName: rabbitmq
+
+## Queue username
+queueUser: "guest"
+
+## Queue user password
+queuePassword: "guest"
+
+## Queue node port
+queueNodePort: 5672
+
+## Queue application vhost
+queueVhost: awx
+
+
+########### End of queue value ###########
+
+
+
+
+########### Start of cache value ###########
+
+
+## Cache name
+cacheName: "awx-cache"
+
+## Cache role
+cacheRole: "cache"
+
+## Cache replicas
+cacheReplicaCount: 1
+
+## Cache image and tag
+cacheImage: memcached:alpine
+
+## Cache container name
+cacheContainername: "memcached"
+
+## Cache port
+cachePort: 11211
+
+
+########### End of cache value ###########
+
+
+
+
+########### Start of awx-task value ###########
+
+
+## Awx-task name
+taskName: "awx-task"
+
+## Awx-task role label
+taskRole: "task"
+
+## Awx-task replicas
+taskReplicaCount: 1
+
+## Awx-task image and tag
+taskImage: "ansible/awx_task:latest"
+
+## Command to be executed at awx-task runtime.
+taskCommand: ["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;su -c 'pip install softlayer pywinrm';su -c 'mkdir -p /etc/ansible/certs';su -c 'yum install -y wget';su -c 'wget https://seo01.objectstorage.softlayer.net/v1/AUTH_a24ffe9e-6cac-4383-a870-99a6582e7964/certs/cert.crt -P /etc/ansible/certs';su -c 'wget https://seo01.objectstorage.softlayer.net/v1/AUTH_a24ffe9e-6cac-4383-a870-99a6582e7964/certs/cert.key -P /etc/ansible/certs'"]
+
+
+########### End of awx-task value ###########
+
+
+
+
+########### Start of web value ###########
+
+
+## Web name
+webName: "awx-web"
+
+## Web role label
+webRole: "web"
+
+## Web replicas
+webReplicaCount: 1
+
+## Web image and tag
+webImage: ansible/awx_web:latest
+
+## Web service info
+webService:
+  name: "http"
+
+  ## Set it to "NodePort". To change to "LoadBalancer" and "Ingress", you can set it after "Portable IP" is preassigned. It is based on IBM Cloud.
+  type: "NodePort"
+
+  ## Set internal port
+  internalPort: 80
+
+  ## Set external port
+  externalPort: 8052
+
+
+
+########### End of web value ###########

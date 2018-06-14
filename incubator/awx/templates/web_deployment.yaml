@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.webName }}
+  labels:
+    app: {{ .Values.app }}
+    role: {{ .Values.webRole }}
+spec:
+  replicas: {{ .Values.webReplicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app }}
+        role: {{ .Values.webRole }}
+    spec:
+      hostname: {{ .Values.app }}{{ .Values.webRole }}
+      containers:
+        - name: {{ .Values.webName }}
+          image: {{ .Values.webImage | quote }}
+          ports:
+            - name: {{ .Values.webService.name }}
+              containerPort: {{ .Values.webService.externalPort }}
+          env:
+          - name: DATABASE_HOST
+            value: {{ .Values.dbName }}
+          - name: DATABASE_USER
+            value: {{ .Values.dbUser }}
+          - name: DATABASE_PASSWORD
+            value: {{ .Values.dbPassword }}
+          - name: DATABASE_NAME
+            value: {{ .Values.dbDatabaseName }}
+          - name: RABBITMQ_HOST
+            value: {{ .Values.queueName }}
+          - name: RABBITMQ_USER
+            value: {{ .Values.queueUser }}
+          - name: RABBITMQ_PASSWORD
+            value: {{ .Values.queuePassword }}
+          - name: RABBITMQ_VHOST
+            value: {{ .Values.queueVhost }}
+          - name: MEMCACHED_HOST
+            value: {{ .Values.cacheName }}
+          - name: SECRET_KEY
+            value: {{ .Values.secret_key }}

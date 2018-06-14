@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.cacheName }}
+  labels:
+    app: {{ .Values.app }}
+    role: {{ .Values.cacheRole }}
+spec:
+  replicas: {{ .Values.cacheReplicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app }}
+        role: {{ .Values.cacheRole }}
+    spec:
+      containers:
+      - name: {{ .Values.cacheContainername }}
+        image: {{ .Values.cacheImage | quote }}
+        ports:
+        - name: {{ .Values.cacheContainername }}
+          containerPort: {{ .Values.cachePort }}

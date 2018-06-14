@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.taskName }}
+  labels:
+    app: {{ .Values.app }}
+    role: {{ .Values.taskRole }}
+spec:
+  replicas: {{ .Values.taskReplicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app }}
+        role: {{ .Values.taskRole }}
+    spec:
+      hostname: {{ .Values.app }}
+      containers:
+        - name: {{ .Values.taskName }}
+          image: {{ .Values.taskImage }}
+          env:
+            - name: DATABASE_HOST
+              value: {{ .Values.dbName }}
+            - name: DATABASE_USER
+              value: {{ .Values.dbUser }}
+            - name: DATABASE_PASSWORD
+              value: {{ .Values.dbPassword }}
+            - name: DATABASE_NAME
+              value: {{ .Values.dbDatabaseName }}
+            - name: RABBITMQ_HOST
+              value: {{ .Values.queueName }}
+            - name: RABBITMQ_USER
+              value: {{ .Values.queueUser }}
+            - name: RABBITMQ_PASSWORD
+              value: {{ .Values.queuePassword }}
+            - name: RABBITMQ_VHOST
+              value: {{ .Values.queueVhost }}
+            - name: MEMCACHED_HOST
+              value: {{ .Values.cacheName }}
+            - name: SECRET_KEY
+              value: {{ .Values.secret_key }}
+          lifecycle:
+            postStart:
+              exec:
+                command:
+{{ toYaml .Values.taskCommand | indent 18 }}
