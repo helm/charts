@@ -39,7 +39,9 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 | `Master.Cpu`                      | Master requested cpu                 | `200m`                                                                       |
+| `Master.CpuLimit`                 | Master cpu limit                     | `1000m`                                                                      |
 | `Master.Memory`                   | Master requested memory              | `256Mi`                                                                      |
+| `Master.MemoryLimit`              | Master memory limit                  | `1024Mi`                                                                     |
 | `Master.InitContainerEnv`         | Environment variables for Init Container                                 | Not set                                  |
 | `Master.ContainerEnv`             | Environment variables for Jenkins Container                              | Not set                                  |
 | `Master.RunAsUser`                | uid that jenkins runs with           | `0`                                                                          |
