@@ -11,8 +11,6 @@ secret_key: "aabbcc"
 ########### End of common value ###########
 
 
-
-
 ########### Start of DB value ###########
 
 
@@ -67,12 +65,10 @@ dbPersistence:
   billingType: "hourly"
 
   ## DB PV Storage-Class selection. Storage class is defined as follows: "ibmc-(block or file)-(bronze or silver or gold)".
-  annotations: { volume.beta.kubernetes.io/storage-class: "ibmc-block-bronze"  }
+  annotations: {volume.beta.kubernetes.io/storage-class: "ibmc-block-bronze"}
 
 
 ########### End of DB value ###########
-
-
 
 
 ########### Start of queue value ###########
@@ -109,8 +105,6 @@ queueVhost: awx
 ########### End of queue value ###########
 
 
-
-
 ########### Start of cache value ###########
 
 
@@ -136,8 +130,6 @@ cachePort: 11211
 ########### End of cache value ###########
 
 
-
-
 ########### Start of awx-task value ###########
 
 
@@ -158,8 +150,6 @@ taskCommand: ["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/pa
 
 
 ########### End of awx-task value ###########
-
-
 
 
 ########### Start of web value ###########
@@ -189,7 +179,6 @@ webService:
 
   ## Set external port
   externalPort: 8052
-
 
 
 ########### End of web value ###########
