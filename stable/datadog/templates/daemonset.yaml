@@ -95,6 +95,12 @@ spec:
               fieldRef:
                 fieldPath: status.hostIP
           {{- end }}
+          {{- if .Values.daemonset.logs.enabled }}
+          - name: DD_LOGS_ENABLED
+            value: "true"
+          - name: DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL
+            value: {{ .Values.daemonset.logs.collectAllContainers | quote }}
+          {{- end }}
 
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
@@ -128,6 +134,12 @@ spec:
             {{- end }}
             readOnly: true
           {{- end }}
+          {{- if .Values.daemonset.logs.enabled }}
+          - name: pointerdir
+            mountPath: /opt/datadog-agent/run
+            readOnly: false
+          {{- end }}
+
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
 {{- end }}
@@ -161,6 +173,12 @@ spec:
         - name: autoconf
           configMap:
             name: {{ template "datadog.autoconf.fullname" . }}
+        {{- end }}
+        {{- if .Values.daemonset.logs.enabled }}
+        - name: pointerdir
+          hostPath:
+            path: /opt/datadog-agent/run
+            type: "{{ if .Values.daemonset.logs.managePointerDirectory }}DirectoryOrCreate{{ else }}Directory{{ end }}"
         {{- end }}
 {{- if .Values.datadog.volumes }}
 {{ toYaml .Values.datadog.volumes | indent 8 }}

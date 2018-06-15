@@ -63,6 +63,9 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `daemonset.affinity`        | Node affinities                    | `nil`                                     |
 | `daemonset.useHostNetwork`  | If true, use the host's network    | `nil`                                     |
 | `daemonset.useHostPort`     | If true, use the same ports for both host and container  | `nil`               |
+| `daemonset.logs.enabled`    | If true, enable log collection from the node | `false`                         |
+| `daemonset.logs.collect_all_containers` | If true, collect logs from all containers on the node | `true`     |
+| `daemonset.logs.manage_pointer_directory` | If true, set `type` to `DirectoryOrCreate` otherwise `type` is `Directory` | `true`     |
 | `datadog.leaderElection`    | Adds the leader Election feature   | `false`                                   |
 | `datadog.leaderLeaseDuration`| The duration for which a leader stays elected.| `nil`                         |
 | `deployment.affinity`       | Node / Pod affinities              | `{}`                                      |
