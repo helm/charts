@@ -91,8 +91,8 @@ spec:
               echo 'waiting 60s...' &&
               sleep 60 &&
               echo 'installing requirements...' &&
-              mkdir -p {{ .Values.dags.path }}/.local/bin &&
-              export PATH={{ .Values.dags.path }}/.local/bin:$PATH &&
+              mkdir -p /usr/local/airflow/.local/bin &&
+              export PATH=/usr/local/airflow/.local/bin:$PATH &&
               /usr/local/scripts/install-requirements.sh &&
               echo 'executing webserver...' &&
               airflow webserver
@@ -100,8 +100,8 @@ spec:
             - >
               echo 'waiting 60s...' &&
               sleep 60 &&
-              mkdir -p {{ .Values.dags.path }}/.local/bin &&
-              export PATH={{ .Values.dags.path }}/.local/bin:$PATH &&
+              mkdir -p /usr/local/airflow/.local/bin &&
+              export PATH=/usr/local/airflow/.local/bin:$PATH &&
               echo 'executing webserver...' &&
               airflow webserver
           {{- end }}

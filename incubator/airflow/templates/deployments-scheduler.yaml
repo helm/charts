@@ -88,8 +88,8 @@ spec:
               sleep 10 &&
               echo 'installing requirements...' &&
               /usr/local/scripts/install-requirements.sh &&
-              mkdir -p {{ .Values.dags.path }}/.local/bin &&
-              export PATH={{ .Values.dags.path }}/.local/bin:$PATH &&
+              mkdir -p /usr/local/airflow/.local/bin &&
+              export PATH=/usr/local/airflow/.local/bin:$PATH &&
               echo "executing initdb" &&
               airflow initdb &&
               echo "executing scheduler" &&
@@ -98,8 +98,8 @@ spec:
             - >
               echo 'waiting 10s...' &&
               sleep 10 &&
-              mkdir -p {{ .Values.dags.path }}/.local/bin &&
-              export PATH={{ .Values.dags.path }}/.local/bin:$PATH &&
+              mkdir -p /usr/local/airflow/.local/bin &&
+              export PATH=/usr/local/airflow/.local/bin:$PATH &&
               echo "executing initdb" &&
               airflow initdb &&
               echo "executing scheduler" &&
