@@ -26,6 +26,11 @@ spec:
 {{ toYaml .Values.extraLabels | indent 8 }}
 {{- end }}
       annotations:
+        checksum/script: {{ include (print $.Template.BasePath "/mongodb-init-configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/mongodb-mongodb-configmap.yaml") . | sha256sum }}
+        checksum/ca: {{ include (print $.Template.BasePath "/mongodb-ca-secret.yaml") . | sha256sum }}
+        checksum/admin: {{ include (print $.Template.BasePath "/mongodb-admin-secret.yaml") . | sha256sum }}
+        checksum/key: {{ include (print $.Template.BasePath "/mongodb-keyfile-secret.yaml") . | sha256sum }}
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
@@ -142,8 +147,10 @@ spec:
             - --keyFile=/data/configdb/key.txt
           {{- end }}
           {{- if .Values.tls.enabled }}
-            - --ssl
+            - --sslMode=requireSSL
+              # Should be the same as init/on-start.sh line 57
             - --sslCAFile=/data/configdb/tls.crt
+              # Should be the same as init/on-start.sh line 61
             - --sslPEMKeyFile=/work-dir/mongo.pem
           {{- end }}
           livenessProbe:
@@ -189,9 +196,23 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+    {{- if .Values.affinity }}
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- else }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "app"
+                    operator: In
+                    values:
+                    - {{ template "mongodb-replicaset.name" . }}
+                  - key: "release"
+                    operator: In
+                    values:
+                    - {{ .Release.Name }}
+              topologyKey: "kubernetes.io/hostname"
     {{- end }}
     {{- with .Values.tolerations }}
       tolerations:

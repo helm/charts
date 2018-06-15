@@ -89,6 +89,24 @@ tls:
 
 # Entries for the MongoDB config file
 configmap:
+  # Below is hard coded in init/on-start.sh and mongod cli
+  # storage:
+  #   dbPath: /data/db
+  # net:
+  #   port: 27017
+  #   ssl:
+  #     mode: requireSSL
+  #     CAFile: /data/configdb/tls.crt
+  #     PEMKeyFile: /work-dir/mongo.pem
+
+  # Below is ignored, since the alternative flags is specified in init/on-start.sh and mongod
+  # replication:
+  #   replSetName: rs0
+  # security:
+  #   authorization: enabled
+  #   # By default, use SCRAM for internal Authentication
+  #   # SCRAM key file
+  #   keyFile: /data/configdb/key.txt
 
 # Readiness probe
 readinessProbe:
