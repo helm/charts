@@ -53,20 +53,32 @@ spec:
         ports:
         - name: mongodb
           containerPort: 27017
+        {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
             command:
             - mongo
             - --eval
             - "db.adminCommand('ping')"
-{{ toYaml .Values.livenessProbe | indent 10 }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           exec:
             command:
             - mongo
             - --eval
             - "db.adminCommand('ping')"
-{{ toYaml .Values.readinessProbe | indent 10 }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
         volumeMounts:
         - name: data
           mountPath: /bitnami/mongodb
