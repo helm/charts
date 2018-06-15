@@ -33,7 +33,7 @@ service:
 ingress:
   enabled: false
   hosts: []
-    #- chart-example.local
+     # - chart-example.local
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -41,7 +41,7 @@ ingress:
     # Secrets must be manually created in the namespace.
     # - secretName: chart-example-tls
     #   hosts:
-    #     - chart-example.local  
+    #     - chart-example.local
 
 podAnnotations: {}
 
