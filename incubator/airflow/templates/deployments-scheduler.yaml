@@ -87,9 +87,9 @@ spec:
               echo 'waiting 10s...' &&
               sleep 10 &&
               echo 'installing requirements...' &&
-              /usr/local/scripts/install-requirements.sh &&
               mkdir -p /usr/local/airflow/.local/bin &&
               export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              /usr/local/scripts/install-requirements.sh &&
               echo "executing initdb" &&
               airflow initdb &&
               echo "executing scheduler" &&
