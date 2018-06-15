@@ -12,7 +12,7 @@ This chart adds the DataDog Agent to all nodes in your cluster via a DaemonSet. 
 
 ## Installing the Chart
 
-To install the chart with the release name `my-release`, retrieve your DataDog API key from your [Agent Installation Instructions](https://app.datadoghq.com/account/settings#agent/kubernetes) and run:
+To install the chart with the release name `my-release`, retrieve your Datadog API key from your [Agent Installation Instructions](https://app.datadoghq.com/account/settings#agent/kubernetes) and run:
 
 ```bash
 $ helm install --name my-release \
