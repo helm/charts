@@ -96,9 +96,15 @@ requests the logs from each workers individually.
 This requires to expose a port (8793) and ensure the pod DNS is accessible to the web server pod,
 which is why StatefulSet is for.
 
+### Local binaries
+
+Please note a folder `~/.local/bin` will be automatically created and added to the PATH so that
+Bash operators can use command line tools installed by `pip install --user` for instance.
+
 ## DAGs Deployment
 
 Several options are provided for synchronizing your Airflow DAGs.
+
 
 ### Mount a Shared Persistent Volume
 

@@ -91,6 +91,7 @@ spec:
               echo "executing initdb" &&
               airflow initdb &&
               echo "executing scheduler" &&
+              export PATH={{ .Values.dags.path }}/.local/bin:$PATH &&
               airflow scheduler -n {{ .Values.airflow.scheduler_num_runs }}
           {{- else }}
             - >
@@ -99,6 +100,7 @@ spec:
               echo "executing initdb" &&
               airflow initdb &&
               echo "executing scheduler" &&
+              export PATH={{ .Values.dags.path }}/.local/bin:$PATH &&
               airflow scheduler -n {{ .Values.airflow.scheduler_num_runs }}
           {{- end }}
       volumes:
