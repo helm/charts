@@ -95,10 +95,6 @@ common:
   xrayUserId: 1035
   xrayGroupId: 1035
   stdOutEnabled: true
-  stagingMode:
-    enabled: false
-    storeUser:
-    storePassword:
   ## Xray requires a unique master key
   ## You can generate one with the command:
   ## 'openssl rand -hex 32'

@@ -76,11 +76,5 @@ data:
         postgresqlUrl:  "POSTGRESS_URL"
         stdOutEnabled:  {{ .Values.common.stdOutEnabled }}
         skipEntLicCheckForCloud: true
-      {{- if .Values.common.stagingMode.enabled }}
-        useStagingPublicKey:  true
-        jxrayUrl:             https://jxray.jfrog.info/
-        storeUser:            {{ .Values.common.stagingMode.storeUser }}
-        storePassword:        {{ .Values.common.stagingMode.storePassword }}
-      {{- end }}
     # End generated config
 

@@ -180,7 +180,6 @@ The following table lists the configurable parameters of the artifactory chart a
 | `common.xrayUserId`                            | Xray User Id                                 | `1035`               |
 | `common.xrayGroupId`                           | Xray Group Id                                | `1035`               |
 | `common.stdOutEnabled`                         | Xray enable standard output                  | `true`               |
-| `common.stagingMode.enabled`                   | Xray staging mode                            | `false`              |
 | `common.masterKey`  | Xray Master Key Can be generated with `openssl rand -hex 32` | `FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF` |
 | `global.mongoUrl`                              | Xray external MongoDB URL                    | ` `                  |
 | `global.postgresqlUrl`                         | Xray external PostgresSQL URL                | ` `                  |
