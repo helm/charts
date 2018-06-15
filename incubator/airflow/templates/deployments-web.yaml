@@ -109,8 +109,8 @@ spec:
             httpGet:
               path: "{{ .Values.ingress.web.path }}/health"
               port: web
-            ## Keep 3 minutes the delay to allow clean wait of postgres and redis containers
-            initialDelaySeconds: 180
+            ## Keep 6 minutes the delay to allow clean wait of postgres and redis containers
+            initialDelaySeconds: 360
             periodSeconds: 60
             timeoutSeconds: 1
             successThreshold: 1
