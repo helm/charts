@@ -35,7 +35,7 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       serviceAccountName: {{ .Values.workers.serviceAccountName }}
-      {{- if .Values.dags.init_container }}
+      {{- if .Values.dags.init_container.enabled }}
       initContainers:
         - name: git-clone
           image: alpine/git # Any image with git will do

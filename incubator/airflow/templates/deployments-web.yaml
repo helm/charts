@@ -30,7 +30,7 @@ spec:
         release: {{ .Release.Name }}
     spec:
       restartPolicy: Always
-      {{- if .Values.dags.init_container }}
+      {{- if .Values.dags.init_container.enabled }}
       initContainers:
         - name: git-clone
           image: alpine/git # Any image with git will do
