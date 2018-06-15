@@ -78,6 +78,9 @@ spec:
         - name: {{ .secretName }}
           mountPath: {{ .mountPath }}
         {{- end }}
+{{- if .Values.vault.extraContainers }}
+{{ toYaml .Values.vault.extraContainers | indent 6}}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       {{- if .Values.affinity }}
@@ -125,6 +128,9 @@ spec:
           secret:
             secretName: {{ .secretName }}
         {{- end }}
+{{- if .Values.vault.extraVolumes }}
+{{ toYaml .Values.vault.extraVolumes | indent 8}}
+{{- end }}
         {{- if .Values.consulAgent.join }}
         - name: consul-data
           emptyDir: {}
