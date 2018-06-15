@@ -13,6 +13,9 @@ data:
 {{- if .Values.controller.headers }}
   proxy-set-headers: {{ .Release.Namespace }}/{{ template "nginx-ingress.fullname" . }}-custom-headers
 {{- end }}
+{{- if .Values.controller.hideHeaders }}
+  hide-headers: {{ .Values.controller.hideHeaders }}
+{{- end }}
 {{- if .Values.controller.config }}
 {{ toYaml .Values.controller.config | indent 2 }}
 {{- end }}
