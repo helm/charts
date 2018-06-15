@@ -91,18 +91,18 @@ spec:
               echo 'waiting 60s...' &&
               sleep 60 &&
               echo 'installing requirements...' &&
-              /usr/local/scripts/install-requirements.sh &&
-              echo 'executing webserver...' &&
               mkdir -p {{ .Values.dags.path }}/.local/bin &&
               export PATH={{ .Values.dags.path }}/.local/bin:$PATH &&
+              /usr/local/scripts/install-requirements.sh &&
+              echo 'executing webserver...' &&
               airflow webserver
           {{- else }}
             - >
               echo 'waiting 60s...' &&
               sleep 60 &&
-              echo 'executing webserver...' &&
               mkdir -p {{ .Values.dags.path }}/.local/bin &&
               export PATH={{ .Values.dags.path }}/.local/bin:$PATH &&
+              echo 'executing webserver...' &&
               airflow webserver
           {{- end }}
           livenessProbe:

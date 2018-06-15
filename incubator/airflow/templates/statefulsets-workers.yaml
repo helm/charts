@@ -92,18 +92,18 @@ spec:
               echo 'waiting 60s...' &&
               sleep 60 &&
               echo 'installing requirements...' &&
-              /usr/local/scripts/install-requirements.sh &&
-              echo 'executing worker...' &&
               mkdir -p {{ .Values.dags.path }}/.local/bin &&
               export PATH={{ .Values.dags.path }}/.local/bin:$PATH &&
+              /usr/local/scripts/install-requirements.sh &&
+              echo 'executing worker...' &&
               airflow worker
           {{- else }}
             - >
               echo 'waiting 60s...' &&
               sleep 60 &&
-              echo 'executing worker...' &&
               mkdir -p {{ .Values.dags.path }}/.local/bin &&
               export PATH={{ .Values.dags.path }}/.local/bin:$PATH &&
+              echo 'executing worker...' &&
               airflow worker
           {{- end }}
           ports:
