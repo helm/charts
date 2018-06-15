@@ -10,6 +10,7 @@ keywords:
 - Nginx
 - Ansible AWX
 home: https://github.com/ansible/awx
+icon: https://www.ansible.com/hubfs/2017_Images/BrandPage/Brand-Assets/Tower/Ansible_RH_AnsibleTower_RGB_RedWhite.svg?t=1528996684045
 sources:
 - https://github.com/Najeongho/charts/tree/master/incubator/awx
 maintainers:
