@@ -242,7 +242,7 @@ Keycloak can be configured using the kcadm cli. For example, SSL for master real
       /opt/jboss/keycloak/bin/kcadm.sh update realms/master -s sslRequired=NONE --no-config --server http://localhost:8080/auth --realm master --user admin --password admin &>> /opt/jboss/postStartLog;
       echo Stopping postStartScript >> /opt/jboss/postStartLog;
 ```
-Here the keycloak admin user is admin/admin. The sleep is necessary as hook can be executed before keycloak is fully started, in which case kcadm will error with 'Connection refused'. In this example the script logs could be checked by doing 'kubectl exec -it <pod> -- /bin/bash' for the pod and 'more postStartLog'. 
+Here the keycloak admin user is admin/admin. The sleep is necessary as hook can be executed before keycloak is fully started, in which case kcadm will error with `Connection refused`. In this example the script logs could be checked by doing `kubectl exec -it <pod> -- /bin/bash` for the pod and `more postStartLog`. 
 
 ### Using Google Cloud SQL Proxy
 
