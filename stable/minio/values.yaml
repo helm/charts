@@ -18,6 +18,10 @@ mcImage:
 ##
 mode: standalone
 
+## Kubernetes cluster name
+##
+kubernetesClusterName: cluster.local
+
 ## Set default accesskey, secretkey, Minio config file path, volume mount path and
 ## number of nodes (only used for Minio distributed mode)
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
