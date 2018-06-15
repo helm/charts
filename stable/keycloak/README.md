@@ -242,7 +242,13 @@ Keycloak can be configured using the kcadm cli. For example, SSL for master real
       /opt/jboss/keycloak/bin/kcadm.sh update realms/master -s sslRequired=NONE --no-config --server http://localhost:8080/auth --realm master --user admin --password admin &>> /opt/jboss/postStartLog;
       echo Stopping postStartScript >> /opt/jboss/postStartLog;
 ```
-Here the keycloak admin user is admin/admin. The sleep is necessary as hook can be executed before keycloak is fully started, in which case kcadm will error with `Connection refused`. In this example the script logs could be checked by doing `kubectl exec -it <pod> -- /bin/bash` for the pod and `more postStartLog`. 
+Here the keycloak admin user is admin/admin. The sleep is necessary as hook can be executed before keycloak is fully started, in which case kcadm will error with `Connection refused`. In this example the script logs could be checked by doing `kubectl exec -it <pod> -- /bin/bash` for the pod and `more postStartLog`.
+
+This approach can also be used to set redirectUris or webOrigins for a client. Get the json configuration for the client from an export, create a secret for it and mount it using `extraVolumes` and `extraVolumeMounts`. Then the client can be updated with:
+
+`/opt/jboss/keycloak/bin/kcadm.sh update clients/<ID> -f /client/activiti-client.json -s 'redirectUris=[URLs]' -s 'webOrigins=[<URLs>] --server http://localhost:8080/auth --realm master --user admin --password admin`
+
+Here <ID> is the client's ID (a generated UUID) and <URLs> are double-quoted, comma-separated URLs. See the [documentation](https://www.keycloak.org/docs/3.3/server_admin/topics/admin-cli.html) for more admin cli commands. 
 
 ### Using Google Cloud SQL Proxy
 
