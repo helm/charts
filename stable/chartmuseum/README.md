@@ -62,6 +62,9 @@ their default values. See values.yaml for all available options.
 | `resources.limits.memory`              | Container maximum memory                    | `128Mi`                                             |
 | `resources.requests.cpu`               | Container requested CPU                     | `80m`                                               |
 | `resources.requests.memory`            | Container requested memory                  | `64Mi`                                              |
+| `serviceAccount.create`                | If true, create the service account         | `false`                                             |
+| `serviceAccount.name`                  | Name of the serviceAccount to create or use | `{{ chartmuseum.fullname }}`                        |
+| `securityContext`                      | Map of securityContext for the pod          | `{}`                                                |
 | `nodeSelector`                         | Map of node labels for pod assignment       | `{}`                                                |
 | `tolerations`                          | List of node taints to tolerate             | `[]`                                                |
 | `affinity`                             | Map of node/pod affinities                  | `{}`                                                |

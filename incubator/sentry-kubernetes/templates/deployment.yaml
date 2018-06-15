@@ -26,6 +26,13 @@ spec:
               secretKeyRef:
                 name: {{ template "sentry-kubernetes.fullname" . }}
                 key: sentry.dsn
+          - name: ENVIRONMENT
+            value: {{ .Values.sentry.environment }}
+          - name: RELEASE
+            valueFrom:
+              resourceFieldRef:
+                containerName: {{ .Chart.Name }}
+                resource: image
         resources:
 {{ toYaml .Values.resources | indent 10 }}
     {{- if .Values.nodeSelector }}
