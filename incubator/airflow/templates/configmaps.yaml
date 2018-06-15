@@ -20,6 +20,7 @@ data:
   FERNET_KEY: "{{ .Values.airflow.fernet_key }}"
   DO_WAIT_INITDB: "false"
   ## Custom Airflow settings
+  AIRFLOW__CORE__DONOT_PICKLE: "{{ .Values.dags.donot_pickle }}"
   AIRFLOW__CELERY__FLOWER_URL_PREFIX: "{{ .Values.ingress.flower.path }}"
   AIRFLOW__CELERY__WORKER_CONCURRENCY: "{{ .Values.workers.celery.instances }}"
   AIRFLOW__CORE__DAGS_FOLDER: "{{ .Values.dags.path }}"

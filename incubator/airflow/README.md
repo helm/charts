@@ -157,7 +157,6 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `airflow.image.tag`                        | Airflow docker tag                                      | `1.9.0-5`                                                  |
 | `airflow.image.pull_policy`                | Image pull policy                                       | `IfNotPresent`                                             |
 | `airflow.scheduler_num_runs`               | -1 to loop indefinitively, 1 to restart after each exec |                                                            |
-| `airflow.scheduler_do_pickle`              | should the scheduler use pickles DAG code               | `true`                                                     |
 | `airflow.web_replicas`                     | how many replicas for web server                        | `1`                                                        |
 | `airflow.config`                           | custom airflow configuration env variables              | `{}`                                                       |
 | `airflow.pod_disruption_budget`            | control pod disruption budget                           | `{'maxUnavailable': 1}`                                    |
@@ -178,6 +177,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `persistance.storageClass`                 | Persistent Volume Storage Class                         | (undefined)                                                |
 | `persistance.accessMode`                   | PVC access mode                                         | `ReadWriteOnce`                                            |
 | `persistance.size`                         | Persistant storage size request                         | `1Gi`                                                      |
+| `dags.donot_pickle`                        | should the scheduler disable DAG pickling               | `false`                                                    |
 | `dags.path`                                | mount path for persistent volume                        | `/usr/local/airflow/dags`                                  |
 | `dags.init_container.enabled`              | Fetch the source code when the pods starts              | `false`                                                    |
 | `dags.init_container.install_requirements` | auto install requirements.txt deps                      | `true`                                                     |
