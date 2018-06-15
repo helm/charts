@@ -88,10 +88,8 @@ spec:
           {{- end }}
         - name: SSL
           value: "{{ .Values.nginx.env.ssl }}"
-        {{- if .Values.nginx.env.skipAutoConfigUpdate }}
         - name: SKIP_AUTO_UPDATE_CONFIG
-          value: {{ .Values.nginx.env.skipAutoConfigUpdate }}
-        {{- end }}
+          value: "{{ .Values.nginx.env.skipAutoConfigUpdate }}"
         ports:
         - containerPort: {{ .Values.nginx.internalPortHttp }}
         - containerPort: {{ .Values.nginx.internalPortHttps }}
