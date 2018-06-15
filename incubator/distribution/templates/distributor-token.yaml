@@ -1,0 +1,14 @@
+{{- if .Values.distributor.token }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "distributor.fullname" . }}-token
+  labels:
+    app: {{ template "distribution.name" . }}
+    chart: {{ template "distribution.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  token: |
+    {{ .Values.distributor.token }}
+{{- end }}

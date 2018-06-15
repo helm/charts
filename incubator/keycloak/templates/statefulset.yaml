@@ -92,14 +92,14 @@ spec:
             httpGet:
               path: /auth/
               port: http
-            initialDelaySeconds: 120
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.keycloak.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.keycloak.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
               path: /auth/
               port: http
-            initialDelaySeconds: 30
-            timeoutSeconds: 1
+            initialDelaySeconds: {{ .Values.keycloak.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.keycloak.readinessProbe.timeoutSeconds }}
           resources:
 {{ toYaml .Values.keycloak.resources | indent 12 }}
     {{- with .Values.keycloak.affinity }}
