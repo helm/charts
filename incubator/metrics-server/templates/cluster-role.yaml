@@ -19,12 +19,4 @@ rules:
       - get
       - list
       - watch
-  - apiGroups:
-    - "extensions"
-    resources:
-      - deployments
-    verbs:
-      - get
-      - list
-      - watch
 {{- end -}}
