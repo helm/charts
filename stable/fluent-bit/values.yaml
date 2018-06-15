@@ -8,6 +8,16 @@ image:
     tag: 0.13.0
   pullPolicy: Always
 
+# When enabled, exposes json and prometheus metrics on {{ .Release.Name }}-metrics service
+metrics:
+  enabled: false
+  service:
+    port: 2020
+    type: ClusterIP
+
+# When enabled, fluent-bit will keep track of tailing offsets across pod restarts.
+trackOffsets: false
+
 backend:
   type: forward
   forward:

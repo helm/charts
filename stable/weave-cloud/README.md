@@ -2,7 +2,7 @@
 
 > ***NOTE: This chart is for Kubernetes version 1.6 and later.***
 
-Weave Cloud is a add-on to Kubernetes which provides Continuous Delivery, along with hosted Prometheus Monitoring and a visual dashboard for exploring & debugging microservices.
+Weave Cloud is an add-on to Kubernetes which provides Continuous Delivery, along with hosted Prometheus Monitoring and a visual dashboard for exploring & debugging microservices.
 
 This package contains the agents which connect your cluster to Weave Cloud.
 

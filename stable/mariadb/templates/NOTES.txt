@@ -7,7 +7,7 @@ Tip:
 
 Services:
 
-  echo Master: {{ template "master.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+  echo Master: {{ template "mariadb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
 {{- if .Values.replication.enabled }}
   echo Slave:  {{ template "slave.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
 {{- end }}
@@ -25,7 +25,7 @@ To connect to your database
 
   2. To connect to master service (read/write):
 
-      mysql -h {{ template "master.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local -uroot -p {{ .Values.db.name }}
+      mysql -h {{ template "mariadb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local -uroot -p {{ .Values.db.name }}
 
 {{- if .Values.replication.enabled }}
 

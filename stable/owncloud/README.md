@@ -69,11 +69,11 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `externalDatabase.database`         | Name of the existing database             | `bitnami_owncloud`                                      |
 | `externalDatabase.user`             | Existing username in the external db      | `bn_owncloud`                                           |
 | `externalDatabase.password`         | Password for the above username           | `nil`                                                   |
-| `mariadb.mariadbDatabase`           | Database name to create                   | `bitnami_owncloud`                                      |
+| `mariadb.db.name`           | Database name to create                   | `bitnami_owncloud`                                      |
 | `mariadb.enabled`                   | Whether to use the MariaDB chart          | `true`                                                  |
-| `mariadb.mariadbPassword`           | Password for the database                 | `nil`                                                   |
-| `mariadb.mariadbUser`               | Database user to create                   | `bn_owncloud`                                           |
-| `mariadb.mariadbRootPassword`       | MariaDB admin password                    | `nil`                                                   |
+| `mariadb.db.password`           | Password for the database                 | `nil`                                                   |
+| `mariadb.db.user`               | Database user to create                   | `bn_owncloud`                                           |
+| `mariadb.rootUser.password`       | MariaDB admin password                    | `nil`                                                   |
 | `serviceType`                       | Kubernetes Service type                   | `LoadBalancer`                                          |
 | `persistence.enabled`               | Enable persistence using PVC              | `true`                                                  |
 | `persistence.apache.storageClass`   | PVC Storage Class for Apache volume       | `nil` (uses alpha storage class annotation)             |
