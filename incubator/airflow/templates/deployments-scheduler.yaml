@@ -73,7 +73,7 @@ spec:
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
-          {{- else if .Values.dags.init_container }}
+          {{- else if .Values.dags.init_container.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
             - name: scripts
@@ -82,7 +82,7 @@ spec:
           args:
             - "bash"
             - "-c"
-          {{- if and ( .Values.dags.init_container ) ( .Values.dags.init_container.install_requirements ) }}
+          {{- if and ( .Values.dags.init_container.enabled ) ( .Values.dags.init_container.install_requirements ) }}
             - >
               echo 'waiting 10s...' &&
               sleep 10 &&
@@ -113,7 +113,7 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
-        {{- if .Values.dags.init_container }}
+        {{- if .Values.dags.init_container.enabled }}
         - name: scripts
           configMap:
             name: {{ template "airflow.fullname" . }}-scripts
