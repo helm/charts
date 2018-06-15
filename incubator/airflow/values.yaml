@@ -109,7 +109,7 @@ ingress:
     ## You can use the following one:
     ##  stibbons31/docker-airflow-dev:2.0dev
     ##
-    ## if web is '/airflow':
+    ## if path is '/airflow':
     ##  - UI will be accessible at 'http://mycompany.com/airflow/admin'
     ##  - Healthcheck is at 'http://mycompany.com/airflow/health'
     ##  - api is at 'http://mycompany.com/airflow/api'
