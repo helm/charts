@@ -44,6 +44,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 
 
 =======
+
 | Parameter                          | Description                                | Default                                                    |
 | ---------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
 | `annotations`                      | Optional daemonset annotations             | `NULL`                                                     |
