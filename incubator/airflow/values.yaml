@@ -192,7 +192,7 @@ persistence:
   enabled: false
   ##
   ## Existing claim to use
-  existingclaim: nil
+  existingClaim: nil
   ##
   ## Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
