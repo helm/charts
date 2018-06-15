@@ -392,6 +392,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
 | `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |    |
 | `nginx.env.ssl`                   | Nginx Environment enable ssl               | `true`                                  |
+| `nginx.env.skipAutoConfigUpdate`  | Nginx Environment to disable auto configuration update | `false`                     |
 | `nginx.resources.requests.memory` | Nginx initial memory request               | `250Mi`                                 |
 | `nginx.resources.requests.cpu`    | Nginx initial cpu request                  | `100m`                                  |
 | `nginx.resources.limits.memory`   | Nginx memory limit                         | `250Mi`                                 |
