@@ -34,11 +34,7 @@ keycloak:
   preStartScript:
 
   ## Custom script that is run after Keycloak is started
-  postStartScript: |
-      echo Starting postStartScript and sleeping 30 >> /opt/jboss/postStartLog;
-      sleep 30;
-      /opt/jboss/keycloak/bin/kcadm.sh update realms/master -s sslRequired=NONE --no-config --server http://localhost:8080/auth --realm master --user admin --password admin &>> /opt/jboss/postStartLog;
-      echo Stopping postStartScript >> /opt/jboss/postStartLog;
+  postStartScript:
 
   ## Additional arguments to start command e.g. -Dkeycloak.import= to load a realm
   extraArgs:
