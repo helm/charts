@@ -44,7 +44,7 @@ spec:
               sed -i "s/<<<DB_TYPE>>>/${DB_TYPE}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
               sed -i "s/<<<DB_DATASOURCE>>>/${DB_DATASOURCE}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
 
-              {{- if .Values.config.intermediate | quote }}
+              {{- if .Values.config.intermediate }}
               echo ">\033[0;33m Adding Parent CA (typically a Root CA) values to $FABRIC_CA_HOME/fabric-ca-server-config.yaml \033[0m"
               sed -i "s/<<<PARENT_ADMIN>>>/${PARENT_CA_ADMIN}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
               sed -i "s/<<<PARENT_ADMINPW>>>/${PARENT_CA_PASSWORD}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml

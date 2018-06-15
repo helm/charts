@@ -310,7 +310,7 @@ data:
     intermediate:
       parentserver:
         {{- if .Values.config.intermediate }}
-        url: http://<<<PARENT_ADMIN>>>:<<<PARENT_ADMINPW>>>@{{ .Values.config.intermediate.parent.url | quote }}:{{ .Values.config.intermediate.parent.port | quote }}
+        url: http://<<<PARENT_ADMIN>>>:<<<PARENT_ADMINPW>>>@{{ .Values.config.intermediate.parent.url }}:{{ .Values.config.intermediate.parent.port }}
         {{- else}}
         url:
         {{- end}}

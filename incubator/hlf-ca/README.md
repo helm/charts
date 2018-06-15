@@ -25,20 +25,17 @@ This CA can then be used to register and enroll identities for clients, admins a
 To install the chart with the release name `org1-ca`:
 
 ```bash
-$ helm install --name org1-ca incubator/hlf-ca
+$ helm install incubator/hlf-ca --name org1-ca
 ```
 
 The command deploys the Hyperledger Fabric CA on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
-
-> **Tip**: List all releases using `helm list`
 
 ### Custom parameters
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install --name org1-ca \
-  --set adminUsername=ca-admin,adminPassword=secretpassword
+$ helm install incubator/hlf-ca --name org1-ca --set adminUsername=ca-admin,adminPassword=secretpassword
 ```
 
 The above command creates a CA Admin user named `ca-admin` with password `secretpassword`.
@@ -54,7 +51,7 @@ $ helm install incubator/hlf-ca --name org1-ca -f my-values.yaml
 When updating the chart, make sure you provide the `adminPassword`, otherwise `helm update` will generate a new random (and invalid) password.
 
 ```bash
-$ export CA_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} rca-hlf-ca -o jsonpath="{.data.CA_PASSWORD}" | base64 --decode; echo)
+$ export CA_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} org1-ca-hlf-ca -o jsonpath="{.data.CA_PASSWORD}" | base64 --decode; echo)
 $ helm upgrade org1-ca incubator/hlf-ca --set adminPassword=$CA_PASSWORD
 ```
 
