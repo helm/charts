@@ -246,7 +246,7 @@ Here the keycloak admin user is admin/admin. The sleep is necessary as hook can 
 
 This approach can also be used to set redirectUris or webOrigins for a client. Get the json configuration for the client from an export, create a secret for it and mount it using `extraVolumes` and `extraVolumeMounts`. Then the client can be updated with:
 
-`/opt/jboss/keycloak/bin/kcadm.sh update clients/<ID> -f /client/activiti-client.json -s 'redirectUris=[URLs]' -s 'webOrigins=[<URLs>] --server http://localhost:8080/auth --realm master --user admin --password admin`
+`/opt/jboss/keycloak/bin/kcadm.sh update clients/<ID> -f /client/activiti-client.json -s 'redirectUris=[URLs]' -s 'webOrigins=[<URLs>] --server http://localhost:8080/auth --realm <realm> --user <user> --password <password>`
 
 Here <ID> is the client's ID (a generated UUID) and <URLs> are double-quoted, comma-separated URLs. See the [documentation](https://www.keycloak.org/docs/3.3/server_admin/topics/admin-cli.html) for more admin cli commands. 
 
