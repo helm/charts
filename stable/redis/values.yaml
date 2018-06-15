@@ -221,6 +221,9 @@ master:
   ## https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
   statefulset:
     updateStrategy: onDelete
+    ## Partition update strategy
+    ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
+    # rollingUpdatePartition:
 
 
 ##
