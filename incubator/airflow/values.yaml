@@ -214,6 +214,11 @@ dags:
   ## mount path for persistent volume.
   ## Note that this location is referred to in airflow.cfg, so if you change it, you must update airflow.cfg accordingly.
   path: /usr/local/airflow/dags
+  ##
+  ## Set to True to prevent pickling DAGs from scheduler to workers
+  donot_pickle: false
+  ##
+  ## Configure Git repository to fetch DAGs
   git:
     ##
     ## url to clone the git repository
