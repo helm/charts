@@ -20,9 +20,8 @@
   kubectl exec -it {{ .Release.Name }}-yb-tserver-0 bin/cqlsh
 
 6. Cleanup YugaByte Pods
-  helm delete <namespace>
-  NOTE: You need to manually delete the statefulset and persistent volume
+  helm delete <namespace> --purge
+  NOTE: You need to manually delete the persistent volume
   {{- range .Values.Services }}
-  kubectl delete statefulset {{ $root.Release.Name }}-{{.name}}
   kubectl delete pvc -l app={{ $root.Release.Name }}-{{.label}}
   {{- end }}
