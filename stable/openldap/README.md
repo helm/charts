@@ -71,7 +71,7 @@ Deleting the Deployment will not delete associated Persistent Volumes if persist
 Do the following after deleting the chart release to clean up orphaned Persistent Volumes.
 
 ```bash
-$ kubectl delete pvc -l app=${RELEASE-NAME}
+$ kubectl delete pvc -l release=${RELEASE-NAME}
 ```
 
 ## Custom Secret
