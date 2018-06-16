@@ -6,7 +6,7 @@ replicaCount: 1
 image:
   # From repository https://github.com/osixia/docker-openldap
   repository: osixia/openldap
-  tag: 1.2.0
+  tag: 1.2.1
   pullPolicy: IfNotPresent
 
 # Spcifies an existing secret to be used for admin and config user passwords
