@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/redis
-  tag: 4.0.9
+  tag: 4.0.10
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -23,9 +23,12 @@ metrics:
   enabled: true
   # resources: {}
   # podAnnotations: {}
-  # targetServiceAnnotations:
+  service:
+    type: ClusterIP
+    annotations: {}
   #   prometheus.io/scrape: "true"
   #   prometheus.io/port: "9121"
+    loadBalancerIP:
   image:
     registry: docker.io
     repository: oliver006/redis_exporter

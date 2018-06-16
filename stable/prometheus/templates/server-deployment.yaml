@@ -83,6 +83,9 @@ spec:
           {{- if .Values.server.baseURL }}
             - --web.external-url={{ .Values.server.baseURL }}
           {{- end }}
+          {{- if .Values.server.enableAdminApi }}
+            - --web.enable-admin-api
+          {{- end }}
           ports:
             - containerPort: 9090
           readinessProbe:

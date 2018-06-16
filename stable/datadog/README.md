@@ -40,8 +40,8 @@ The following table lists the configurable parameters of the Datadog chart and t
 |             Parameter       |            Description             |                    Default                |
 |-----------------------------|------------------------------------|-------------------------------------------|
 | `datadog.apiKey`            | Your Datadog API key               |  `Nil` You must provide your own key      |
-| `image.repository`          | The image repository to pull from  | `datadog/docker-dd-agent`                 |
-| `image.tag`                 | The image tag to pull              | `latest`                                  |
+| `image.repository`          | The image repository to pull from  | `datadog/agent`                           |
+| `image.tag`                 | The image tag to pull              | `6.2.1`                                   |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
@@ -59,10 +59,14 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `kubeStateMetrics.enabled`  | If true, create kube-state-metrics | `true`                                    |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
+| `daemonset.nodeSelector`    | Node selectors                     | `nil`                                     |
+| `daemonset.affinity`        | Node affinities                    | `nil`                                     |
 | `daemonset.useHostNetwork`  | If true, use the host's network    | `nil`                                     |
 | `daemonset.useHostPort`     | If true, use the same ports for both host and container  | `nil`               |
 | `datadog.leaderElection`    | Adds the leader Election feature   | `false`                                   |
 | `datadog.leaderLeaseDuration`| The duration for which a leader stays elected.| `nil`                         |
+| `deployment.affinity`       | Node / Pod affinities              | `{}`                                      |
+| `deployment.tolerations`    | List of node taints to tolerate    | `[]`                                      |
 | `kube-state-metrics.rbac.create`| If true, create & use RBAC resources for kube-state-metrics | `true`       |
 | `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
 
