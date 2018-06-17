@@ -56,7 +56,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.size`         | Size of data volume                             | `8Gi`                                                        |
 | `resources`                | CPU/Memory resource requests/limits             | Memory: `256Mi`, CPU: `50m`   / Memory: `500Mi`, CPU: `500m` |
 | `service.port`             | TCP port                                        | `9000`                                                       |
-| `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                  |
+| `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`  
+| `namespace`                | Namespace for superset                          | `default`                                                  |
 | `nodeSelector`             | Node labels for pod assignment                  | {}                                                           |
 | `tolerations`              | Toleration labels for pod assignment            | []                                                           |
 | `livenessProbe`            | Parameter for liveness probe                    | See [values.yaml](./values.yaml)                             |

@@ -5,6 +5,9 @@
 
 replicaCount: 1
 
+## Set namespace
+namespace: default
+
 ## Set default image, imageTag, and imagePullPolicy.
 image:
   repository: "amancevice/superset"
