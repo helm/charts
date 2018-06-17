@@ -21,6 +21,10 @@ spec:
         app: {{ template "locust.fullname" . }}
         component: worker
     spec:
+    {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+    {{- end }}
       containers:
       - name: locust
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
