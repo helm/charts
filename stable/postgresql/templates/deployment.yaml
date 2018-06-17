@@ -12,7 +12,6 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
-  template:
   selector:
     matchLabels:
       app: {{ template "postgresql.name" . }}
