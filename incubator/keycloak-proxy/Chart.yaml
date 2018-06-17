@@ -1,0 +1,16 @@
+apiVersion: v1
+appVersion: "3.4.2.Final"
+description: Keycloak Proxy supports Single Sign-On with Keycloak
+name: keycloak-proxy
+version: 0.0.1
+keywords:
+- authentication
+- sso
+- reverseproxy
+home: https://www.keycloak.org/docs/3.3/server_installation/topics/proxy.html
+icon: http://www.keycloak.org/resources/images/keycloak_logo_480x108.png
+sources:
+  - https://github.com/jboss-dockerfiles/keycloak/tree/master/proxy
+maintainers:
+  - name: yunsangjun
+    email: ysj188cm@gmail.com

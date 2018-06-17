@@ -47,6 +47,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `configFile`               | Content of [`superset_config.py`](https://superset.incubator.apache.org/installation.html)                     | See values.yaml](./values.yaml)              |
 | `initFile`                 | Content of init shell script                    | See [values.yaml](./values.yaml)                             |
 | `replicas`                 | Number of replicas of superset                  | `1`                                                          |
+| `extraEnv`                      | Extra environment variables passed to pods      | `{}`                                                          |
+| `extraEnvFromSecret`            | The name of a Kubernetes secret (must be manually created in the same namespace) containing values to be added to the environment | `""`                                                          |
 | `persistence.enabled`      | Enable persistence                              | `false`                                                      |
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `""`                                                         |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                  |
@@ -69,7 +71,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Init script
 
-There is an script (`init_superset.sh`) which is called at the entrypoint point of the container. It initialzes the db and creates an user account. You can configure the content with `initFile`. E.g. in order to change admin password and load examples:
+There is a script (`init_superset.sh`) which is called at the entrypoint of the container. It initialzes the db and creates an user account. You can configure the content with `initFile`. E.g. in order to change admin password and load examples:
 
 ```yaml
 initFile: |-

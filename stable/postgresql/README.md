@@ -87,6 +87,8 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 | `probes.readiness.initialDelay`     | Readiness probe initial delay          | `5`                                                        |
 | `probes.readiness.timeoutSeconds`   | Readiness probe timeout seconds        | `3`                                                        |
 | `probes.readiness.failureThreshold` | Readiness probe failure threshold      | `5`                                                        |
+| `podAnnotations`           | Annotations for the postgresql pod              | {}                                                         |
+| `deploymentAnnotations`    | Annotations for the postgresql deployment       | {}                                                         |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
 
