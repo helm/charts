@@ -19,6 +19,7 @@ service:
   internalPort: 443
   externalIPs: []
   nodePort: 32085
+  # LoadBalancerSourceRanges: 0.0.0.0/0
   # loadBalancerIP: 10.0.0.1
 
   ## Here annotations can be added to the openvpn service
