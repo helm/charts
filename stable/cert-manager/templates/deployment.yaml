@@ -79,3 +79,10 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+{{- if .Values.podDnsPolicy }}
+      dnsPolicy: {{ .Values.podDnsPolicy }}
+{{- end }}
+{{- if .Values.podDnsConfig }}
+      dnsConfig:
+{{ toYaml .Values.podDnsConfig | indent 8 }}
+{{- end }}
