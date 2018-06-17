@@ -129,6 +129,16 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+# Override default liveness & readiness probes
+probes:
+  liveness:
+    initialDelay: "60"
+    timeoutSeconds: "5"
+    failureThreshold: "6"
+  readiness:
+    initialDelay: "5"
+    timeoutSeconds: "3"
+    failureThreshold: "5"
 ## Annotations for the deployment and nodes.
 deploymentAnnotations: {}
 podAnnotations: {}
