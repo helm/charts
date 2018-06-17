@@ -2,7 +2,6 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "keel.fullname" . }}
-  namespace: kube-system
   labels:
     app: {{ template "keel.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
