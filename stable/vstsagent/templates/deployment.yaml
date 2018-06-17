@@ -1,0 +1,52 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "vstsagent.fullname" . }}
+  labels:
+    app: {{ template "vstsagent.name" . }}
+    chart: {{ template "vstsagent.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "vstsagent.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "vstsagent.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: VSTS_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "vstsagent.fullname" . }}
+                  key: VSTS_ACCOUNT
+            - name: VSTS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "vstsagent.fullname" . }}
+                  key: VSTS_TOKEN
+            - name: VSTS_POOL
+              value: {{ .Values.agentpool.name }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
