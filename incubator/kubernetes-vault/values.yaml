@@ -5,16 +5,29 @@
 replicaCount: 3
 image:
   repository: boostport/kubernetes-vault
-  tag: v0.4.8
+  tag: v0.5.2
   pullPolicy: Always
 app: kubernetes-vault
 service:
   dummyPort: 80
-vault:
-  address: http://vault:8200
-  token: change-this-value
-  vaultCertBackend: intermediate-ca
-  vaultCertRole: kubernetes-vault
+
+# Maps directly to https://github.com/Boostport/kubernetes-vault#configuration
+configMap:
+  vault:
+    addr: http://vault:8200
+    token: change-this-value
+  kubernetes:
+    service: "{{ template \"fullname\" . }}"
+    watchNamespace: ${KUBERNETES_NAMESPACE}
+    serviceNamespace: ${KUBERNETES_NAMESPACE}
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  name: ""
+
 resources:
   limits:
     cpu: 100m
@@ -22,4 +35,3 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
-
