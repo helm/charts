@@ -193,3 +193,12 @@ kubectl create secret generic mysql-ssl-certs \
   --from-file=server-key.pem=./ssl/server-private-key.pem
 ```
 > **Note**: `ca.pem`, `server-cert.pem`, and `server-key.pem` **must** be used as the key names in this generic secret.
+
+If you are using a certificate your configurationFiles must include the three ssl lines under [mysqld]
+
+```
+[mysqld]
+    ssl-ca=/ssl/ca.pem
+    ssl-cert=/ssl/server-cert.pem
+    ssl-key=/ssl/server-key.pem
+```
