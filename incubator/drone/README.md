@@ -43,9 +43,6 @@ The following table lists the configurable parameters of the drone charts and th
 | `images.dind.repository`    | Docker **dind** image                                                                         | `docker.io/library/docker`  |
 | `images.dind.tag`           | Docker **dind** image tag                                                                     | `17.12.0-ce-dind`           |
 | `images.dind.pullPolicy`    | Docker **dind** image pull policy                                                             | `IfNotPresent`              |
-| `images.cloudSqlProxy.repository`    | Docker **cloudSqlProxy** image                                                       | `gcr.io/cloudsql-docker/gce-proxy` |
-| `images.cloudSqlProxy.tag`           | Docker **cloudSqlProxy** image tag                                                   | `1.11`                           |
-| `images.cloudSqlProxy.pullPolicy`    | Docker **cloudSqlProxy** image pull policy                                           | `IfNotPresent`              |
 | `service.httpPort`          | Drone's Web GUI HTTP port                                                                     | `80`                        |
 | `service.nodePort`          | If `service.type` is `NodePort` and this is non-empty, sets the http node port of the service | `32015`                     |
 | `service.type`              | Service type (ClusterIP, NodePort or LoadBalancer)                                            | `ClusterIP`                 |
@@ -72,11 +69,6 @@ The following table lists the configurable parameters of the drone charts and th
 | `dind.env`                  | **DinD** environment variables                                                                | `nil`                       |
 | `dind.command`              | **DinD** custom command instead of default entry point                                        | `nil`                       |
 | `dind.args`                 | **DinD** arguments for custom command or entry point                                          | `nil`                       |
-| `cloudSqlProxy.enabled`     | Enable or disable **Cloud Sql Proxy**                                                         | `false`                       |
-| `cloudSqlProxy.instancename`| **Cloud Sql Proxy** instance name                                                             | `nil`                       |
-| `cloudSqlProxy.port`        | **Cloud Sql Proxy** port                                                                      | `nil`                       |
-| `cloudSqlProxy.credential.name`  | service account credential name in google cloud for **Cloud Sql Proxy**                  | `nil`                       |
-| `cloudSqlProxy.credential.jsonKeyName` | service account credential jsonkey name in google cloud for **Cloud Sql Proxy**    | `nil`                       |
 | `persistence.enabled`       | Use a PVC to persist data                                                                     | `true`                      |
 | `persistence.existingClaim` | Use an existing PVC to persist data                                                           | `nil`                       |
 | `persistence.storageClass`  | Storage class of backing PVC                                                                  | `nil`                       |
