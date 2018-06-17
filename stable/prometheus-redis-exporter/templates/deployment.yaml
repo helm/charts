@@ -21,6 +21,7 @@ spec:
         app: {{ template "prometheus-redis-exporter.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "prometheus-redis-exporter.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
