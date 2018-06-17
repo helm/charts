@@ -72,7 +72,7 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `smtpTls`                         | Use TLS encryption with SMTP             | `nil`                                                   |
 | `databaseType.postgresql`         | Select postgresql database               | `false`                                                 |
 | `databaseType.mariadb`            | Select mariadb database                  | `true`                                                  |
-| `mariadb.mariadbRootPassword`     | MariaDB admin password                   | `nil`                                                   |
+| `mariadb.rootUser.password`     | MariaDB admin password                   | `nil`                                                   |
 | `postgresql.postgresqlPassword`   | PostgreSQL admin password                | `nil`                                                   |
 | `serviceType`                     | Kubernetes Service type                  | `LoadBalancer`                                          |
 | `serviceLoadBalancerSourceRanges` | An array of load balancer sources        | `0.0.0.0/0`                                             |
