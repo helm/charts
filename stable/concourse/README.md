@@ -182,7 +182,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.gitlabAuthClientSecret` | Application client secret for GitLab OAuth | `nil` |
 | `secrets.genericOauthClientId` | Application client ID for Generic OAuth | `nil` |
 | `secrets.genericOauthClientSecret` | Application client secret for Generic OAuth | `nil` |
-| `secrets.postgresqlUri` | PostgreSQL connection URI when `postgres.enabled` is `false` | `nil` |
+| `secrets.postgresqlUri` | PostgreSQL connection URI when `postgresql.enabled` is `false` | `nil` |
 | `secrets.vaultCaCert` | CA certificate   use to verify the vault server SSL cert. | `nil` |
 | `secrets.vaultClientToken` | Vault periodic client token | `nil` |
 | `secrets.vaultAppRoleId` | Vault AppRole RoleID | `nil` |
