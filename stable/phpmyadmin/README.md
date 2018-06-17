@@ -55,7 +55,7 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 | `db.chartName`                | Database suffix if included in the same release                  | `nil`                                          |
 | `db.host`            | database host to connect to               | `nil`          |
 | `ingress.enabled`            | ingress resource to be added              | `false`          |
-| `ingress.annotations`            | ingress annotations              | `ingress.kubernetes.io/rewrite-target: /`          |
+| `ingress.annotations`            | ingress annotations              | `{ingress.kubernetes.io/rewrite-target: /,    nginx.ingress.kubernetes.io/rewrite-target: /}`          |
 | `ingress.path`            | path to access frontend               | `/`          |
 | `ingress.host`            | ingress host               | `nil`          |
 | `ingress.tls`            | tls for ingress               | `[]`          |

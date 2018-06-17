@@ -13,7 +13,7 @@ image:
   repository: sunshinekitty/vaultingkube
   # Image version
   # ref: https://hub.docker.com/r/sunshinekitty/vaultingkube/tags/
-  tag: v0.1.0
+  tag: v0.1.1
   # Specify a imagePullPolicy
   # Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   # ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
