@@ -17,6 +17,10 @@ metadata:
 spec:
   template:
     metadata:
+{{- if .Values.agent.podAnnotations }}
+      annotations:
+{{ toYaml .Values.agent.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "jaeger.name" . }}
         component: agent

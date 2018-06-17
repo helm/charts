@@ -106,6 +106,7 @@ agent:
     #   cpu: 256m
     #   memory: 128Mi
   nodeSelector: {}
+  podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
@@ -140,6 +141,7 @@ collector:
     #   cpu: 500m
     #   memory: 512Mi
   nodeSelector: {}
+  podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
@@ -184,6 +186,7 @@ query:
     #    cpu: 256m
     #    memory: 128Mi
   nodeSelector: {}
+  podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
