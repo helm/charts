@@ -5,7 +5,7 @@ metadata:
   name: {{ template "artifactory-ha.fullname" . }}-replicator-nginx-config
   labels:
     app: {{ template "artifactory-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "artifactory-ha.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 data:
