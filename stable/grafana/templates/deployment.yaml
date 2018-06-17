@@ -134,6 +134,11 @@ spec:
             - name: storage
               mountPath: "/var/lib/grafana"
               subPath: {{ .Values.persistence.subPath }}
+          {{- range .Values.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
           ports:
             - name: service
               containerPort: {{ .Values.service.port }}
