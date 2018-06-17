@@ -20,6 +20,10 @@ spec:
     type: Recreate
   template:
     metadata:
+{{- if .Values.query.podAnnotations }}
+      annotations:
+{{ toYaml .Values.query.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "jaeger.name" . }}
         component: query
