@@ -1,5 +1,5 @@
 name: prometheus
-version: 6.7.3
+version: 6.7.4
 appVersion: 2.2.1
 description: Prometheus is a monitoring system and time series database.
 home: https://prometheus.io/
@@ -16,3 +16,4 @@ maintainers:
   - name: gianrubio
     email: gianrubio@gmail.com
 engine: gotpl
+tillerVersion: ">=2.8.0"
