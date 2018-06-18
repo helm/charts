@@ -12,6 +12,14 @@ service:
   type: ClusterIP
   port: 7050
 
+persistence:
+  annotations: {}
+  accessModes:
+    - ReadWriteOnce
+  size: 1Gi
+  ## If unset or "", use "default" storage class.
+  storageClass: ""
+
 ##################################
 ## Further configuration options #
 ##################################
@@ -35,14 +43,6 @@ secrets:
   ## This should contain the Certificate of the Orderer Organisation admin
   ## This is necessary to successfully run the orderer
   adminCert: hlf--ord-admincert
-
-persistence:
-  annotations: {}
-  accessModes:
-    - ReadWriteOnce
-  size: 1Gi
-  ## If unset or "", use "default" storage class.
-  storageClass: ""
 
 resources: {}
   ## We usually recommend not to specify default resources and to leave this as a conscious

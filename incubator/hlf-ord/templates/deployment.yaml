@@ -18,7 +18,7 @@ spec:
       volumes:
         - name: {{ include "hlf-ord.fullname" . }}-pv
           persistentVolumeClaim:
-           claimName: {{ include "hlf-ord.fullname" . }}-pvc
+           claimName: {{ include "hlf-ord.fullname" . }}
         - name: genesis
           secret:
             secretName: {{ .Values.secrets.genesis }}
@@ -57,7 +57,7 @@ spec:
               while [ ! -f ${ORDERER_GENERAL_LOCALMSPDIR}/signcerts/cert.pem ];
               do
                 echo ">\033[0;35m fabric-ca-client enroll -d -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${ORDERER_GENERAL_LOCALMSPDIR} \033[0m"
-                fabric-ca-client enroll -d -u http://${CA_ADMIN}:${CA_PASSWORD}@{CA_ADDRESS} -M ${ORDERER_GENERAL_LOCALMSPDIR}
+                fabric-ca-client enroll -d -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${ORDERER_GENERAL_LOCALMSPDIR}
 
                 if [ ! -f ${ORDERER_GENERAL_LOCALMSPDIR}/signcerts/cert.pem ]
                 then
@@ -79,8 +79,8 @@ spec:
               # Create TLS certificate for Orderer
               if [ ! -f ${ORDERER_GENERAL_TLS_PRIVATEKEY} ]
               then
-                echo ">\033[0;35m fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_ADMIN}:${CA_PASSWORD}@http://${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-ord.fullname" . }} \033[0m"
-                fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_ADMIN}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-ord.fullname" . }}
+                echo ">\033[0;35m fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_USERNAME}:${CA_PASSWORD}@http://${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-ord.fullname" . }} \033[0m"
+                fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-ord.fullname" . }}
 
                 mkdir -p $(dirname $ORDERER_GENERAL_TLS_PRIVATEKEY)
                 cp /tmp/tls/keystore/* $ORDERER_GENERAL_TLS_PRIVATEKEY

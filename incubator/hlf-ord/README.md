@@ -49,10 +49,10 @@ The command deploys the Hyperledger Fabric Orderer on the Kubernetes cluster in 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install incubator/hlf-ord --name ord1 --set adminUsername=ca-admin,adminPassword=secretpassword
+$ helm install incubator/hlf-ord --name ord1 --set caUsername=ord1,caPassword=secretpassword
 ```
 
-The above command creates a CA Admin user named `ca-admin` with password `secretpassword`.
+The above command specifies (but does not register/enroll) an Orderer username of `ord1` with password `secretpassword`.
 
 Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the defualt values.yaml. For example,
 
@@ -81,7 +81,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following table lists the configurable parameters of the Hyperledger Fabric CA chart and default values.
+The following table lists the configurable parameters of the Hyperledger Fabric Orderer chart and default values.
 
 | Parameter                          | Description                                     | Default                                                    |
 | ---------------------------------- | ------------------------------------------------ | ---------------------------------------------------------- |
@@ -98,9 +98,9 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `caUsername`                       | Username for registering/enrolling with CA       | `ord1`                                                     |
 | `caPassword`                       | Password for registering/enrolling with CA       | Random 24 alphanumeric characters                          |
 | `ord.type`                         | Type of Orderer (`solo` or `kafka`)              | `solo`                                                     |
+| `ord.mspID`                        | ID of MSP the Orderer belongs to                 | `OrdererMSP`                                               |
 | `secrets.genesis`                  | Secret containing Genesis Block for orderer      | `hlf--genesis`                                             |
 | `secrets.adminCert`                | Secret containing Orderer Org admin certificate  | `hlf--ord-admincert`                                       |
-| `ord.mspID`                        | ID of MSP the Orderer belongs to                 | `OrdererMSP`                                               |
 | `resources`                        | CPU/Memory resource requests/limits              | `{}`                                                       |
 | `nodeSelector`                     | Node labels for pod assignment                   | `{}`                                                       |
 | `tolerations`                      | Toleration labels for pod assignment             | `[]`                                                       |
