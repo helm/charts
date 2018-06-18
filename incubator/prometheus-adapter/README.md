@@ -56,13 +56,16 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `tls.certificate`               | Public key of the APIService (ignored if tls.enable=false)                      | ``                                          |
 | `prometheus.url`                | Url of where we can find the Prometheus service                                 | `http://prometheus.default.svc`             |
 | `prometheus.port`               | Port of where we can find the Prometheus service                                | `9090`                                      |
+| `metricsRelistInterval`         | Interval at which to re-list the set of all available metrics from Prometheus   | `30s`                                       |
+| `rateInterval`                  | Period of time used to calculate rate metrics from cumulative metrics           | `5m`                                        |
+| `logLevel`                      | Log level                                                                       | `10`                                        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
 $ helm install --name my-release \
-  --set awsRegion=us-east-1 \
-    incubator/prometheus-adapter
+  --set logLevel=1 \
+ incubator/prometheus-adapter
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
