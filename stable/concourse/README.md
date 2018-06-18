@@ -124,6 +124,11 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.metrics.datadog.agentHostUseHostIP` | Use node's IP as host to export Datadog metrics to. Overrides `web.metrics.datadog.agentHost` | `127.0.0.1` |
 | `web.metrics.datadog.agentPort` | Port to export Datadog metrics to | `8125` |
 | `web.metrics.datadog.prefix` | prefix for all Datadog metrics to easily find them in Datadog | `nil` |
+| `web.metrics.influxdb.enabled` | Enable influxdb metrics exporter | `false` |
+| `web.metrics.influxdb.url` | Url for exporting influxdb metrics | `http://127.0.0.1:8086` |
+| `web.metrics.influxdb.database` | Influxdb database name | `concourse` |
+| `web.metrics.influxdb.insecure_skip_verify` | Skip TLS verify when connecting to influxdb | `false` |
+| `web.metrics.influxdb.username` | Username used to authenticate with influxdb | `nil` |
 | `worker.nameOverride` | Override the Concourse Worker components name | `nil` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
@@ -189,6 +194,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.vaultAppRoleSecretId` | Vault AppRole SecretID | `nil` |
 | `secrets.vaultClientCert` | Vault Client Certificate | `nil` |
 | `secrets.vaultClientKey` | Vault Client Key | `nil` |
+| `secrets.influxdbPassword` | Password used to authenticate with influxdb | `nil` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
