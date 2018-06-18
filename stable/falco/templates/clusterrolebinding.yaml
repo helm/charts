@@ -11,7 +11,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
 subjects:
   - kind: ServiceAccount
-    name: {{ template "falco.fullname" .}}
+    name: {{ template "falco.serviceAccountName" .}}
     namespace: default
 roleRef:
   kind: ClusterRole
