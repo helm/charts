@@ -12,7 +12,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "tomcat.name" . }}
-      chart: {{ template "tomcat.chart" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
