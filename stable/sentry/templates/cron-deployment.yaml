@@ -28,9 +28,9 @@ spec:
       tolerations:
 {{ toYaml .Values.cron.tolerations | indent 8 }}
       {{- end }}
-      {{- if .Values.image.imagePullSecrets.name }}
+      {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
-      - name: {{ .Values.image.imagePullSecrets.name }}
+{{ toYaml .Values.image.imagePullSecrets | indent 8 }}
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}-cron

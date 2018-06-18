@@ -21,9 +21,9 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       restartPolicy: Never
-      {{- if .Values.image.imagePullSecrets.name }}
+      {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
-      - name: {{ .Values.image.imagePullSecrets.name }}
+{{ toYaml .Values.image.imagePullSecrets | indent 8 }}
       {{- end }}
       containers:
       - name: user-create-job
