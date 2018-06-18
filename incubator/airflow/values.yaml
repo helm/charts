@@ -37,7 +37,15 @@ airflow:
   ##
   ## Set scheduler_num_runs to control how the schduler behaves:
   ##   -1 will let him looping indefinitively but it will never update the DAG
-  ##   1 will have the scheduler quit after each refresh, but kubernetes will restart it
+  ##   1 will have the scheduler quit after each refresh, but kubernetes will restart it.
+  ##
+  ## A long running scheduler process, at least with the CeleryExecutor, ends up not scheduling
+  ## some tasks. We still don’t know the exact cause, unfortunately. Airflow has a built-in
+  ## workaround in the form of the `num_runs` flag.
+  ## Airflow runs with num_runs set to 5.
+  ##
+  ## If set to a value != -1, you will see your scheduler regularly restart. This is its normal
+  ## behavior under these conditions.
   scheduler_num_runs: "-1"
   ##
   ## Set scheduler_do_pickle to toggle whether to have the scheduler
