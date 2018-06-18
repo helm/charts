@@ -375,5 +375,3 @@ insightExecutor:
   tolerations: []
 
   affinity: {}
-
-
