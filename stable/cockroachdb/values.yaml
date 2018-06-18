@@ -5,19 +5,19 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v1.1.4"
+ImageTag: "v2.0.0"
 ImagePullPolicy: "Always"
-BootstrapImage: "cockroachdb/cockroach-k8s-init"
-BootstrapImageTag: "0.2"
 Replicas: 3
 MaxUnavailable: 1
 Component: "cockroachdb"
 GrpcPort: 26257
 HttpPort: 8080
-Resources:
-  requests:
-    cpu: "100m"
-    memory: "512Mi"
+# Uncomment the following resources definitions or pass them from command line
+# to control the cpu and memory resources allocated by the Kubernetes cluster
+Resources: {}
+  # requests:
+  #   cpu: "100m"
+  #   memory: "512Mi"
 Storage: "1Gi"
 ## Persistent Volume Storage Class for database data
 ## If defined, storageClassName: <StorageClass>
@@ -33,3 +33,18 @@ ClusterDomain: "cluster.local"
 NetworkPolicy:
   Enabled: false
   AllowExternal: true
+Service:
+  type: ClusterIP
+PodManagementPolicy: Parallel
+UpdateStrategy:
+  type: RollingUpdate
+Secure:
+  Enabled: false
+  RequestCertsImage: "cockroachdb/cockroach-k8s-request-cert"
+  RequestCertsImageTag: "0.3"
+  ServiceAccount:
+    # Specifies whether a service account should be created.
+    Create: true
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated.
+    Name:
