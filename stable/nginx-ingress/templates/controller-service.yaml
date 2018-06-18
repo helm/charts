@@ -35,7 +35,7 @@ spec:
   healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
 {{- end }}
   ports:
-    {{- if not (.Values.controller.service.loadBalancerDisableHTTP) }}
+    {{- if .Values.controller.service.enableHTTP }}
     - name: http
       port: 80
       protocol: TCP
@@ -44,7 +44,7 @@ spec:
       nodePort: {{ .Values.controller.service.nodePorts.http }}
       {{- end }}
     {{- end }}
-    {{- if not (.Values.controller.service.loadBalancerDisableHTTPS) }}
+    {{- if .Values.controller.service.enableHTTPS }}
     - name: https
       port: 443
       protocol: TCP
