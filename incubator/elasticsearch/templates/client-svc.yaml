@@ -31,4 +31,4 @@ spec:
     {{range $rangeList := .Values.client.loadBalancerSourceRanges}}
     - {{ $rangeList }}
     {{end}}
-{{end}}
+{{- end}}
