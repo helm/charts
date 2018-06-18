@@ -51,12 +51,10 @@ The following table lists the configurable parameters of the Graphite chart and 
 | `affinity`                               | Affinity                            | `{}`                                   |
 
 
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install --name graphite \
-    --set cassandra.config.rack_name=rack2 \
-    incubator/Graphite
+$ helm install --name graphite --set ingress.enabled=false incubator/graphite
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart.
