@@ -64,7 +64,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `service`                          | Service definition                         | `{}`                                                       |
 | `serviceAccount.create`            | Specifies whether a service account should be created.| `true`                                          |
 | `serviceAccount.name`              | Name of the service account.               |                                                            |   
-| `livenessProbe.enabled`            | Wether to enable livenessProbe             | `true`                                                    |   
+| `livenessProbe.enabled`            | Whether to enable livenessProbe             | `true`                                                    |   
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                                     |
 
 
