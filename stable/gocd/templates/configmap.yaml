@@ -46,7 +46,7 @@ data:
         "properties": [
           {
             "key": "Image",
-            "value": "gocd/gocd-agent-docker-dind:v18.2.0"
+            "value": "gocd/gocd-agent-docker-dind:v{{ .Chart.AppVersion }}"
           },
           {
             "key": "PodConfiguration",
