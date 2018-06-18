@@ -28,7 +28,7 @@ $ helm install stable/etcd-operator --name my-release
 ```
 
 __Note__: If you set `cluster.enabled` on install, it will have no effect.
-Before you create an etcd cluster, the TPR must be installed by the operator, so this option is ignored during helm installs, but can be used in upgrades.
+Before you create an etcd cluster, the CRD must be installed by the operator, so this option is ignored during helm installs, but can be used in upgrades.
 
 ## Uninstalling the Chart
 
@@ -39,11 +39,6 @@ $ helm delete my-release
 ```
 
 The command removes all the Kubernetes components EXCEPT the persistent volume.
-
-## Updating
-Updating the TPR resource will not result in the cluster being update until `kubectl apply` for
-TPRs is fixed see [kubernetes/issues/29542](https://github.com/kubernetes/kubernetes/issues/29542)
-Work around options are documented [here](https://github.com/coreos/etcd-operator#resize-an-etcd-cluster)
 
 ## Configuration
 
