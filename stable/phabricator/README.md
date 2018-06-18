@@ -47,8 +47,11 @@ The following table lists the configurable parameters of the Phabricator chart a
 
 |               Parameter                |                 Description                  |                         Default                          |
 |----------------------------------------|----------------------------------------------|----------------------------------------------------------|
-| `image`                                | Phabricator image                            | `bitnami/phabricator:{VERSION}`                          |
-| `imagePullPolicy`                      | Image pull policy                            | `Always` if `image` tag is `latest`, else `IfNotPresent` |
+| `image.registry`                       | Phabricator image registry                   | `docker.io`                                              |
+| `image.repository`                     | Phabricator image name                       | `bitnami/phabricator`                                    |
+| `image.tag`                            | Phabricator image tag                        | `{VERSION}`                                              |
+| `image.pullPolicy`                     | Image pull policy                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`                    | Specify image pull secrets                   | `nil`                                                    |
 | `phabricatorHost`                      | Phabricator host to create application URLs  | `nil`                                                    |
 | `phabricatorLoadBalancerIP`            | `loadBalancerIP` for the Phabricator Service | `nil`                                                    |
 | `phabricatorUsername`                  | User of the application                      | `user`                                                   |
@@ -61,7 +64,7 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `smtpUser`                             | SMTP user                                    | `nil`                                                    |
 | `smtpPassword`                         | SMTP password                                | `nil`                                                    |
 | `smtpProtocol`                         | SMTP protocol [`ssl`, `tls`]                 | `nil`                                                    |
-| `mariadb.mariadbRootPassword`          | MariaDB admin password                       | `nil`                                                    |
+| `mariadb.rootUser.password`          | MariaDB admin password                       | `nil`                                                    |
 | `serviceType`                          | Kubernetes Service type                      | `LoadBalancer`                                           |
 | `persistence.enabled`                  | Enable persistence using PVC                 | `true`                                                   |
 | `persistence.apache.storageClass`      | PVC Storage Class for Apache volume          | `nil` (uses alpha storage class annotation)              |

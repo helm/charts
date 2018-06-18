@@ -15,12 +15,13 @@ spec:
     metadata:
       labels:
         app: {{ template "concourse.worker.fullname" . }}
+        release: "{{ .Release.Name }}"
       annotations:
         {{- range $key, $value := .Values.worker.annotations }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
     spec:
-    {{- with .Values.nodeSelector }}
+    {{- with .Values.worker.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
@@ -77,9 +78,13 @@ spec:
                     done
           env:
             - name: CONCOURSE_TSA_HOST
+          {{- if semverCompare "^3.10.x" .Values.imageTag }}
+              value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.tsaPort}}"
+          {{- else }}
               value: {{ template "concourse.web.fullname" . }}
             - name: CONCOURSE_TSA_PORT
               value: {{ .Values.concourse.tsaPort | quote }}
+          {{- end }}
             - name: CONCOURSE_GARDEN_DOCKER_REGISTRY
               value: {{ .Values.concourse.dockerRegistry | quote }}
             - name: CONCOURSE_GARDEN_INSECURE_DOCKER_REGISTRY
@@ -112,6 +117,14 @@ spec:
 {{ toYaml .Values.worker.additionalAffinities | indent 8 }}
 {{- end }}
         podAntiAffinity:
+          {{- if .Values.worker.hardAntiAffinity }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: {{ template "concourse.worker.fullname" . }}
+                release: {{ .Release.Name | quote }}
+            topologyKey: kubernetes.io/hostname
+          {{- else }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
             podAffinityTerm:
@@ -120,6 +133,7 @@ spec:
                 matchLabels:
                   app: {{ template "concourse.worker.fullname" . }}
                   release: {{ .Release.Name | quote }}
+          {{- end }}
       volumes:
         - name: concourse-keys
           secret:
@@ -153,7 +167,7 @@ spec:
         - name: concourse-work-dir
           emptyDir: {}
   {{- end }}
-{{- if and (eq .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "7") }}
+{{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
   updateStrategy:
     type: {{ .Values.worker.updateStrategy }}
 {{- end }}

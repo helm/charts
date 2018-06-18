@@ -89,7 +89,7 @@ spec:
             value: docker
           - name: KUBERNETES
             value: "yes"
-          {{- if (semverCompare ">=1" .Capabilities.KubeVersion.Major) and (semverCompare ">=7" .Capabilities.KubeVersion.Minor) }}
+          {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
           - name: DD_KUBERNETES_KUBELET_HOST
             valueFrom:
               fieldRef:
@@ -131,6 +131,12 @@ spec:
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
 {{- end }}
+        livenessProbe:
+          exec:
+            command:
+            - ./probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 5
       volumes:
         - hostPath:
             path: /var/run/docker.sock
@@ -163,7 +169,15 @@ spec:
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.daemonset.affinity }}
+      affinity:
+{{ toYaml .Values.daemonset.affinity | indent 8 }}
+      {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      {{- if .Values.daemonset.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
+      {{- end }}
   updateStrategy:
     type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
 {{ end }}

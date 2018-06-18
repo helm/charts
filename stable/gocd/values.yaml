@@ -15,12 +15,16 @@ serviceAccount:
   create: true
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
-  # If create if false and a name is not specified, the default service account is used for the cluster role binding.
+  # If create is false and a name is not specified, the default service account is used for the cluster role binding.
   name:
 
 server:
   # server.enabled is the toggle to run GoCD Server. Change to false for Agent Only Deployment.
   enabled: true
+  # server.shouldPreconfigure is used to invoke a script to pre configure the elastic agent profile and the plugin settings in the GoCD server.
+  # Note: If this value is set to true, then, the serviceAccount.name is configured for the GoCD server pod. The service account token is mounted as a secret and is used in the lifecycle hook.
+  # Note: An attempt to preconfigure the GoCD server is made. There are cases where the pre-configuration can fail and the GoCD server starts with an empty config.
+  shouldPreconfigure: true
   image:
     # server.image.repository is the GoCD Server image name
     repository: "gocd/gocd-server"
@@ -58,7 +62,7 @@ server:
     #  server.env.extraEnvVars is the list of environment variables passed to GoCD Server
     extraEnvVars:
       - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
-        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v1.0.0/kubernetes-elastic-agent-1.0.0-94.jar
+        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v1.0.1/kubernetes-elastic-agent-1.0.1-107.jar
   service:
     # server.service.type is the GoCD Server service type
     type: "NodePort"
@@ -71,12 +75,29 @@ server:
     nodeHttpPort:
     # server.service.nodeHttpPort is the GoCD Server Service Node HTTPS port
     nodeHttpsPort:
+    annotations:
+      ## When using LoadBalancer service type, use the following AWS certificate from ACM
+      ## https://aws.amazon.com/documentation/acm/
+      # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:eu-west-1:123456789:certificate/abc123-abc123-abc123-abc123"
+      # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "https"
+      # service.beta.kubernetes.io/aws-load-balancer-backend-port: "https"
+    ## When using LoadBalancer service type, whitelist these source IP ranges
+    ## https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/
+    # loadBalancerSourceRanges:
+    #   - 192.168.1.10/32
   ingress:
     # server.ingress.enabled is the toggle to enable/disable GoCD Server Ingress
     enabled: true
     # server.ingress.hosts is used to create an Ingress record.
 #    hosts:
 #      - ci.example.com
+    annotations:
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    tls:
+    #  - secretName: ci-example-tls
+    #    hosts:
+    #      - ci.example.com
 
   persistence:
     # server.persistence.enabled is the toggle for server volume persistence.

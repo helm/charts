@@ -47,7 +47,7 @@ To best utilize the combination of Beats, Logstash and Elasticsearch,
 load Beats-generated index templates into Elasticsearch as described [here](
 https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-template.html).
 
-On a remote-to-Kubernetes Linux instance you might run the following ommand to
+On a remote-to-Kubernetes Linux instance you might run the following command to
 load that instance's Beats-generated index template into Elasticsearch
 (Elasticsearch hostname will vary).
 
@@ -80,6 +80,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `service.type`              | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.annotations`       | Service annotations                                | `{}`                                             |
 | `service.ports`             | Ports exposed by service                           | beats                                            |
+| `service.loadBalancerIP`    | The load balancer IP for the service               | unset                                            |
 | `ports`                     | Ports exposed by logstash container                | beats                                            |
 | `ingress.enabled`           | Enables Ingress                                    | `false`                                          |
 | `ingress.annotations`       | Ingress annotations                                | `{}`                                             |

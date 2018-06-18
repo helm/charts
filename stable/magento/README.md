@@ -47,8 +47,11 @@ The following table lists the configurable parameters of the Magento chart and t
 
 |             Parameter              |               Description                |                         Default                          |
 |------------------------------------|------------------------------------------|----------------------------------------------------------|
-| `image`                            | Magento image                            | `bitnami/magento:{VERSION}`                              |
-| `imagePullPolicy`                  | Image pull policy                        | `Always` if `image` tag is `latest`, else `IfNotPresent` |
+| `image.registry`                   | Magento image registry                   | `docker.io`                                              |
+| `image.repository`                 | Magento Image name                       | `bitnami/magento`                                        |
+| `image.tag`                        | Magento Image tag                        | `{VERSION}`                                              |
+| `image.pullPolicy`                 | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`                | Specify image pull secrets               | `nil`                                                    |
 | `magentoHost`                      | Magento host to create application URLs  | `nil`                                                    |
 | `magentoLoadBalancerIP`            | `loadBalancerIP` for the magento Service | `nil`                                                    |
 | `magentoUsername`                  | User of the application                  | `user`                                                   |
@@ -65,10 +68,10 @@ The following table lists the configurable parameters of the Magento chart and t
 | `externalDatabase.password`        | Password for the above username          | `nil`                                                    |
 | `externalDatabase.database`        | Name of the existing database            | `bitnami_magento`                                        |
 | `mariadb.enabled`                  | Whether to use the MariaDB chart           | `true`                                                   |
-| `mariadb.mariadbRootPassword`      | MariaDB admin password                   | `nil`                                                    |
-| `mariadb.mariadbDatabase`          | Database name to create                  | `bitnami_magento`                                        |
-| `mariadb.mariadbUser`              | Database user to create                  | `bn_magento`                                             |
-| `mariadb.mariadbPassword`          | Password for the database                | _random 10 character long alphanumeric string_           |
+| `mariadb.rootUser.password`      | MariaDB admin password                   | `nil`                                                    |
+| `mariadb.db.name`          | Database name to create                  | `bitnami_magento`                                        |
+| `mariadb.db.user`              | Database user to create                  | `bn_magento`                                             |
+| `mariadb.db.password`          | Password for the database                | _random 10 character long alphanumeric string_           |
 | `serviceType`                      | Kubernetes Service type                  | `LoadBalancer`                                           |
 | `persistence.enabled`              | Enable persistence using PVC             | `true`                                                   |
 | `persistence.apache.storageClass`  | PVC Storage Class for Apache volume      | `nil`  (uses alpha storage annotation)                   |

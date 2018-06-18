@@ -29,7 +29,7 @@ $ helm install --name my-release stable/spark
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Spark chart and their default values.
+The following table lists the configurable parameters of the Spark chart and their default values.
 
 ### Spark Master
 
