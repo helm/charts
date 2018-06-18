@@ -55,6 +55,7 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 | `postgresDatabase`         | Name for new database to create.                | `postgres`                                                 |
 | `postgresInitdbArgs`       | Initdb Arguments                                | `nil`                                                      |
 | `schedulerName`            | Name of an alternate scheduler                  | `nil`                                                      |
+| `existingSecret`           | Use Existing secret for Admin password          | `nil`                                                      |
 | `postgresConfig`           | Runtime Config Parameters                       | `nil`                                                      |
 | `persistence.enabled`      | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `nil`                                                      |
@@ -80,6 +81,14 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 | `nodeSelector`             | Node labels for pod assignment                  | {}                                                         |
 | `affinity`                 | Affinity settings for pod assignment            | {}                                                         |
 | `tolerations`              | Toleration labels for pod assignment            | []                                                         |
+| `probes.liveness.initialDelay`      | Liveness probe initial delay           | `60`                                                       |
+| `probes.liveness.timeoutSeconds`    | Liveness probe timeout seconds         | `5`                                                        |
+| `probes.liveness.failureThreshold`  | Liveness probe failure threshold       | `6`                                                        |
+| `probes.readiness.initialDelay`     | Readiness probe initial delay          | `5`                                                        |
+| `probes.readiness.timeoutSeconds`   | Readiness probe timeout seconds        | `3`                                                        |
+| `probes.readiness.failureThreshold` | Readiness probe failure threshold      | `5`                                                        |
+| `podAnnotations`           | Annotations for the postgresql pod              | {}                                                         |
+| `deploymentAnnotations`    | Annotations for the postgresql deployment       | {}                                                         |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
 
@@ -106,6 +115,8 @@ $ helm install --name my-release -f values.yaml stable/postgresql
 The [postgres](https://github.com/docker-library/postgres) image stores the PostgreSQL data and configurations at the `/var/lib/postgresql/data/pgdata` path of the container.
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning. If the PersistentVolumeClaim should not be managed by the chart, define `persistence.existingClaim`.
+
+Note: When using persistence ensure that you either provide a `postgresPassword` or use `existingSecret`, otherwise `helm update` will generate a new random password which is ignored by postgres. That will cause confusing behaviour especially if services depend on the secret
 
 ### Existing PersistentVolumeClaims
 

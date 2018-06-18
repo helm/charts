@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
   name: {{ template "rabbitmq.fullname" . }}
@@ -19,6 +19,10 @@ spec:
       labels:
         app: {{ template "rabbitmq.name" . }}
         release: "{{ .Release.Name }}"
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -27,7 +31,7 @@ spec:
       {{- end}}
       {{- end }}
       {{- if .Values.rbacEnabled}}
-      serviceAccountName: {{ template "rabbitmq.fullname" . }} 
+      serviceAccountName: {{ template "rabbitmq.fullname" . }}
       {{- end }}
       {{- if .Values.affinity }}
       affinity:
@@ -42,7 +46,7 @@ spec:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: 10
-      containers:        
+      containers:
       - name: {{ template "rabbitmq.fullname" . }}
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
@@ -50,14 +54,11 @@ spec:
          - bash
          - -ec
          - |
-            #create the var/lib/rabbitmq directory under the bitnami folder
-            mkdir -p /opt/bitnami/rabbitmq/var/lib/rabbitmq/
-            
             #persist the erlang cookie in both places for server and cli tools
             echo $RABBITMQ_ERL_COOKIE > /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
             cp /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie /root
 
-            #change permision so only the user has access to the cookie file
+            #change permission so only the user has access to the cookie file
             chmod 400 /root/.erlang.cookie
             chmod 400 /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
 
@@ -76,7 +77,7 @@ spec:
           - name: config-volume
             mountPath: /opt/bitnami/rabbitmq/conf
           - name: data
-            mountPath: /bitnami/rabbitmq
+            mountPath: /opt/bitnami/rabbitmq/var/lib/rabbitmq/
         ports:
         - name: epmd
           containerPort: 4369
@@ -127,7 +128,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ template "rabbitmq.fullname" . }}
-                key: rabbitmq-erlang-cookie 
+                key: rabbitmq-erlang-cookie
           - name: RABBITMQ_PASSWORD
             valueFrom:
               secretKeyRef:
@@ -135,18 +136,36 @@ spec:
                 key: rabbitmq-password
       volumes:
         - name: config-volume
-          configMap: 
+          configMap:
             name: {{ template "rabbitmq.fullname" . }}-config
             items:
             - key: rabbitmq.conf
               path: rabbitmq.conf
             - key: enabled_plugins
               path: enabled_plugins
+      {{- if not .Values.persistence.enabled }}
         - name: data
-        {{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-             claimName: {{ .Values.persistence.existingClaim | default (include "rabbitmq.fullname" .) }}
-        {{- else }}
           emptyDir: {}
-        {{- end -}}
-       
+  {{- else }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          app: {{ template "rabbitmq.name" . }}
+          chart: {{ template "rabbitmq.chart" .  }}
+          release: "{{ .Release.Name }}"
+          heritage: "{{ .Release.Service }}"
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote }}
+        resources:
+            requests:
+              storage: {{ .Values.persistence.size | quote }}
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+  {{- end }}

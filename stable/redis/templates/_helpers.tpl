@@ -46,21 +46,23 @@ Return the appropriate apiVersion for networkpolicy.
 Return the proper image name
 */}}
 {{- define "redis.image" -}}
-{{- $registryName :=  default .Values.image.registry "docker.io" -}}
-{{- $tag := .Values.image.tag | default "latest" -}}
-{{- printf "%s/%s:%s" $registryName .Values.image.repository $tag -}}
+{{- $registryName :=  .Values.image.registry -}}
+{{- $repositoryName := .Values.image.repository -}}
+{{- $tag := .Values.image.tag | toString -}}
+{{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
 
 {{/*
 Return the proper image name (for the metrics image)
 */}}
 {{- define "metrics.image" -}}
-{{- $registryName :=  default .Values.metrics.image.registry "docker.io" -}}
-{{- $tag := .Values.metrics.image.tag | default "latest" -}}
-{{- printf "%s/%s:%s" $registryName .Values.metrics.image.repository $tag -}}
+{{- $registryName :=  .Values.metrics.image.registry -}}
+{{- $repositoryName := .Values.metrics.image.repository -}}
+{{- $tag := .Values.metrics.image.tag | toString -}}
+{{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
 
-{{/* 
+{{/*
 Return slave readiness probe
 */}}
 {{- define "redis.slave.readinessProbe" -}}
@@ -114,4 +116,15 @@ securityContext:
   runAsUser: {{ $securityContext.runAsUser | default .Values.master.securityContext.runAsUser }}
 {{- end }}
 {{- end }}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "redis.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "redis.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
 {{- end -}}

@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: {{ template "jaeger.fullname" . }}-cassandra-schema
-        image: {{ .Values.schema.image }}:{{ .Values.schema.tag }}
+        image: {{ .Values.schema.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.schema.pullPolicy }}
         env:
         - name: CQLSH_HOST

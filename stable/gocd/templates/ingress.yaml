@@ -34,4 +34,8 @@ spec:
               serviceName: {{ template "gocd.fullname" $ }}-server
               servicePort: {{ $.Values.server.service.httpPort }}
     {{- end -}}
+  {{- if .Values.server.ingress.tls }}
+  tls:
+{{ toYaml .Values.server.ingress.tls | indent 4 }}
+  {{- end -}}
 {{- end -}}

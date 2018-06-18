@@ -10,6 +10,7 @@ metadata:
   name: {{ template "influxdb.fullname" . }}-set-auth
   annotations:
     "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   activeDeadlineSeconds: {{ .Values.setDefaultUser.activeDeadlineSeconds }}
   template:

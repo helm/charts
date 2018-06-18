@@ -1,15 +1,18 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-sentinel
+  name: {{ template "redis-ha.fullname" . }}-sentinel
+  labels:
+{{ include "labels.standard" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicas.sentinels }}
   template:
     metadata:
       labels:
-        app: "redis-ha"
-        name: {{ template "fullname" . }}-sentinel
-{{ include "labels.standard" . | indent 8 }}
+        app: {{ template "redis-ha.name" . }}
+        release: {{ .Release.Name }}
+        component: sentinel
+        name: {{ template "redis-ha.fullname" . }}-sentinel
     spec:
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
       {{- if .Values.nodeSelector }}
@@ -29,12 +32,12 @@ spec:
           - name: SENTINEL
             value: "true"
           - name: REDIS_CHART_PREFIX
-            value: {{ template "fullname" . }}-
+            value: {{ template "redis-ha.fullname" . }}-
 {{- if .Values.auth }}
           - name: REDIS_PASS
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" . }}
+                name: {{ template "redis-ha.fullname" . }}
                 key: auth
 {{- end }}
         ports:
