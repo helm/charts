@@ -63,8 +63,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 |              Parameter               |                             Description                             |               Default                |
 | ------------------------------------ | ------------------------------------------------------------------- | ------------------------------------ |
 | `appVersion`                         | Application Version (Elasticsearch)                                 | `6.1.1`                              |
-| `image.repository`                   | Container image name                                                | `centerforopenscience/elasticsearch` |
-| `image.tag`                          | Container image tag                                                 | `5.4`                                |
+| `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
+| `image.tag`                          | Container image tag                                                 | `6.1.1`                                |
 | `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                      |
 | `cluster.kubernetesDomain`           | Kubernetes cluster domain name                                      | `cluster.local`                      |
