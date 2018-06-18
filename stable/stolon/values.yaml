@@ -1,6 +1,6 @@
 image:
   repository: sorintlab/stolon
-  tag: v0.10.0-pg10
+  tag: v0.11.0-pg10
   pullPolicy: IfNotPresent
 
 # used by create-cluster-job when store.backend is etcd
@@ -30,17 +30,17 @@ rbac:
 serviceAccount:
   create: true
   # The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template
-  # name: my-name
+  name:
 
 superuserUsername: "stolon"
 
-## password for the superuser (default is 40 random chars)
-# superuserPassword: ""
+## password for the superuser (REQUIRED)
+superuserPassword:
 
 replicationUsername: "repluser"
 
-## password for the replication user (default is 40 random chars)
-# replicationPassword: "replPassword"
+## password for the replication user (REQUIRED)
+replicationPassword:
 
 ## backend could be one of the following: consul, etcdv2, etcdv3 or kubernetes
 store:

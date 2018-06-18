@@ -47,11 +47,12 @@ The following table lists the configurable parameters of the MySQL chart and the
 | Parameter                            | Description                               | Default                                              |
 | ------------------------------------ | ----------------------------------------- | ---------------------------------------------------- |
 | `image`                              | `mysql` image repository.                 | `mysql`                                              |
-| `imageTag`                           | `mysql` image tag.                        | `5.7.14`                                              |
+| `imageTag`                           | `mysql` image tag.                        | `5.7.14`                                             |
 | `imagePullPolicy`                    | Image pull policy                         | `IfNotPresent`                                       |
-| `mysqlRootPassword`                  | Password for the `root` user.             | Random 10 characters                                 |
+| `existingSecret`                     | Use Existing secret for Password details  | `nil`                                                |
+| `mysqlRootPassword`                  | Password for the `root` user. Ignored if existing secret is provided      | Random 10 characters |
 | `mysqlUser`                          | Username of new user to create.           | `nil`                                                |
-| `mysqlPassword`                      | Password for the new user.                | Random 10 characters                                 |
+| `mysqlPassword`                      | Password for the new user. Ignored if existing secret is provided         | Random 10 characters |
 | `mysqlDatabase`                      | Name for new database to create.          | `nil`                                                |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 30                                                   |
 | `livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
@@ -65,11 +66,16 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3 |
 | `persistence.enabled`                | Create a volume to store data             | true                                                 |
 | `persistence.size`                   | Size of persistent volume claim           | 8Gi RW                                               |
-| `nodeSelector`                       | Node labels for pod assignment            | {}                                                   |
 | `persistence.storageClass`           | Type of persistent volume claim           | nil  (uses alpha storage class annotation)           |
 | `persistence.accessMode`             | ReadWriteOnce or ReadOnly                 | ReadWriteOnce                                        |
 | `persistence.existingClaim`          | Name of existing persistent volume        | `nil`                                                |
 | `persistence.subPath`                | Subdirectory of the volume to mount       | `nil`                                                |
+| `nodeSelector`                       | Node labels for pod assignment            | {}                                                   |
+| `metrics.enabled`                    | Start a side-car prometheus exporter      | `false`                                              |
+| `metrics.image`                      | Exporter image                            | `prom/mysqld-exporter`                               |
+| `metrics.imageTag`                   | Exporter image                            | `v0.10.0`                                            |
+| `metrics.imagePullPolicy`            | Exporter image pull policy                | `IfNotPresent`                                       |
+| `metrics.resources`                  | Exporter resource requests/limit          | `nil`                                                |
 | `resources`                          | CPU/Memory resource requests/limits       | Memory: `256Mi`, CPU: `100m`                         |
 | `configurationFiles`                 | List of mysql configuration files         | `nil`                                                |
 | `ssl.enabled`                        | Setup and use SSL for MySQL connections   | `false`                                              |
@@ -187,3 +193,12 @@ kubectl create secret generic mysql-ssl-certs \
   --from-file=server-key.pem=./ssl/server-private-key.pem
 ```
 > **Note**: `ca.pem`, `server-cert.pem`, and `server-key.pem` **must** be used as the key names in this generic secret.
+
+If you are using a certificate your configurationFiles must include the three ssl lines under [mysqld]
+
+```
+[mysqld]
+    ssl-ca=/ssl/ca.pem
+    ssl-cert=/ssl/server-cert.pem
+    ssl-key=/ssl/server-key.pem
+```

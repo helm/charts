@@ -91,6 +91,16 @@ initializationFiles:
 #  second-db.sql: |-
 #    CREATE DATABASE IF NOT EXISTS second DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
 
+metrics:
+  enabled: false
+  image: prom/mysqld-exporter
+  imageTag: v0.10.0
+  imagePullPolicy: IfNotPresent
+  resources: {}
+  annotations: {}
+    # prometheus.io/scrape: "true"
+    # prometheus.io/port: "9104"
+
 ## Configure the service
 ## ref: http://kubernetes.io/docs/user-guide/services/
 service:
