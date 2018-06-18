@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "rookout.fullname" . }}
+  labels:
+    product: rookout
+    app: {{ template "rookout.name" . }}
+spec:
+  selector:
+    app: {{ template "rookout.name" . }}
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 7486
