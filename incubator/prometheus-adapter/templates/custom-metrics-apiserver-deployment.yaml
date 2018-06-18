@@ -38,9 +38,9 @@ spec:
 {{- end }}
         - --logtostderr=true
         - --prometheus-url={{ .Values.prometheus.url }}:{{ .Values.prometheus.port }}
-        - --metrics-relist-interval=30s
-        - --rate-interval=5m
-        - --v=10
+        - --metrics-relist-interval={{ .Values.metricsRelistInterval }}
+        - --rate-interval={{ .Values.rateInterval }}
+        - --v={{ .Values.logLevel }}
         ports:
         - containerPort: 6443
 {{- if .Values.tls.enable }}
