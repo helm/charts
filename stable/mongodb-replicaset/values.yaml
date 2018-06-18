@@ -40,8 +40,7 @@ testImage:
   tag: 0.4.0
   pullPolicy: IfNotPresent
 
-
-#      image: 
+#      image:
 # Additional environment variables to be set in the container
 extraVars: {}
 # - name: TCMALLOC_AGGRESSIVE_DECOMMIT
