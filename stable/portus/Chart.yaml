@@ -12,7 +12,7 @@ sources:
   - https://github.com/docker/distribution/
   - https://github.com/Nordstrom/kube-registry
 maintainers:
-  - name: Vincent De Smet
+  - name: so0k
     email: vincent.desmet@honestbee.com
   - name: rendhalver
     email: pete.brown@powerhrg.com
