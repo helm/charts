@@ -10,6 +10,8 @@ sources:
 - https://github.com/graphite-project
 - https://github.com/hopsoft/docker-graphite-statsd
 maintainers:
+- name: Fabian Schlege
+  email: fabian.schlegel@kiwigrid.com
 - name: André Bauer
-  email: monotek23@gmail.com
+  email: andre.bauer@kiwigrid.com
 icon: https://graphiteapp.org/img/graphite-logo_color.png
