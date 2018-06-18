@@ -55,13 +55,8 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `nodeSelector`                    | node labels for pod assignment | `{}`  |
 | `affinity`                       |     node/pod affinities | `{}` |
 | `annotations`                    | Deployment annotations | `{}` |
-| `cloudSQL.enabled`                | Use a Google Cloud SQL proxy | `false`
-| `cloudSQL.image.repository`       | Image for Google Cloud SQL proxy | `gcr.io/cloudsql-docker/gce-proxy`
-| `cloudSQL.image.tag`              | Image tag for Google Cloud SQL proxy | `1.11`
-| `cloudSQL.image.pullPolicy`       | Image pull policy for Google Cloud SQL proxy | `IfNotPresent`
-| `cloudSQL.instanceConnectionName` | Google Cloud SQL instance identifier | `""`
-| `cloudSQL.port`                   | Google Cloud SQL proxy listen port | `5432`
-| `cloudSQL.existingSecret`         | Reference to an existing secret containing Google Cloud SQL instance credentials | `""`
+| `extraContainers`                | Additional sidecar containers | `""` |
+| `extraVolumes`                   | Additional volumes for use in extraContainers | `""` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

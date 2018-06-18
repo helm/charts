@@ -147,18 +147,8 @@ affinity: {}
 
 annotations: {}
 
-# use Google Cloud Platform Cloud SQL proxy
-cloudSQL:
-  enabled: false
-  image:
-    repository: gcr.io/cloudsql-docker/gce-proxy
-    tag: 1.11
-    pullPolicy: IfNotPresent
-  # Cloud SQL instance identifier
-  # ref: https://cloud.google.com/sql/docs/postgres/connect-kubernetes-engine#4_get_your_instance_connection_name
-  instanceConnectionName: ""
-  # port that proxy will listen on
-  port: 5432
-  # `existingSecret` is a reference to an existing secret containing the CloudSQL instance credentials
-  # in a key `credentials.json`.
-  existingSecret: ""
+# Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy
+extraContainers: |
+
+# Additional volumes, e. g. for secrets used in an extraContainer
+extraVolumes: |
