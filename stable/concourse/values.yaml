@@ -313,6 +313,24 @@ web:
       ## Optional prefix for all metrics to easily find them in Datadog
       # prefix: concoursedev
 
+    ## Enable the influxdb metrics?
+    ##
+    influxdb:
+      enabled: false
+
+      ## Influxdb url to which metrics will be emitted
+      url: http://127.0.0.1:8086
+
+      ## InfluxDB database to which metrics will be emitted
+      database: concourse
+
+      ## Skip SSL verification when emitting to InfluxDB
+      insecureSkipVerify: false
+
+      ## Optional username for authorizing access
+      ##
+      # username:
+
 ## Configuration values for Concourse Worker components.
 ##
 worker:
@@ -738,3 +756,8 @@ secrets:
   ## make sure to also set credentialManager.vault.authBackend to `cert`
   ##
   # vaultClientKey: |-
+
+  ## If influxdb metrics are enabled and authentication is required,
+  ## provide a password here to authenticate with the influxdb server configured.
+  ##
+  # influxdbPassword:

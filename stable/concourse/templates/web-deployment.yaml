@@ -281,6 +281,21 @@ spec:
             - name: CONCOURSE_DATADOG_AGENT_PORT
               value: {{ .Values.web.metrics.datadog.agentPort | quote }}
             {{- end }}
+            {{- if .Values.web.metrics.influxdb.enabled }}
+            - name: CONCOURSE_INFLUXDB_URL
+              value: {{ .Values.web.metrics.influxdb.url | quote }}
+            - name: CONCOURSE_INFLUXDB_DATABASE
+              value: {{ .Values.web.metrics.influxdb.database | quote }}
+            - name: CONCOURSE_INFLUXDB_USERNAME
+              value: {{ .Values.web.metrics.influxdb.username | quote }}
+            - name: CONCOURSE_INFLUXDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: influxdb-password
+            - name: CONCOURSE_INFLUXDB_INSECURE_SKIP_VERIFY
+              value: {{ .Values.web.metrics.influxdb.insecureSkipVerify | quote}}
+            {{- end }}
           ports:
             - name: atc
               containerPort: {{ .Values.concourse.atcPort }}
