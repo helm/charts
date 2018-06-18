@@ -33,6 +33,9 @@ spec:
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
+      securityContext:
+        runAsUser: 472
+        fsGroup: 472
 {{- if .Values.dashboards }}
       initContainers:
         - name: download-dashboards
@@ -131,6 +134,11 @@ spec:
             - name: storage
               mountPath: "/var/lib/grafana"
               subPath: {{ .Values.persistence.subPath }}
+          {{- range .Values.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
           ports:
             - name: service
               containerPort: {{ .Values.service.port }}
