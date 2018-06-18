@@ -15,11 +15,7 @@ spec:
         app: {{ template "sysdig.fullname" .}}
         role: monitoring
     spec:
-      {{- if .Values.rbac.create }}
-      serviceAccountName: {{ template "sysdig.fullname" . }}
-      {{- else }}
-      serviceAccountName: {{ .Values.rbac.serviceAccountName }}
-      {{- end }}
+      serviceAccountName: {{ template "sysdig.serviceAccountName" .}}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       hostNetwork: true
