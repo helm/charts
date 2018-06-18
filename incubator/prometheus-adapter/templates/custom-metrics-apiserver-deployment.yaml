@@ -7,12 +7,12 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   name: {{ template "k8s-prometheus-adapter.fullname" . }}
-  namespace: {{ .Release.Namespace | quote }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       app: {{ template "k8s-prometheus-adapter.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
