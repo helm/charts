@@ -20,8 +20,12 @@ resources: {}
 rbac:
   # Create and use rbac resources
   create: true
-  # Ignored if rbac.create is true
-  serviceAccountName: default
+
+serviceAccount:
+  # Create and use serviceAccount resources
+  create: true
+  # Use this value as serviceAccountName
+  name:
 
 fakeEventGenerator:
   enabled: false

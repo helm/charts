@@ -15,11 +15,7 @@ spec:
         app: {{ template "falco.fullname" .}}
         role: security
     spec:
-{{- if .Values.rbac.create }}
-      serviceAccountName: {{ template "falco.fullname" .}}
-{{- else }}
-      serviceAccountName: {{ .Values.rbac.serviceAccountName }}
-{{- end }}
+      serviceAccountName: {{ template "falco.serviceAccountName" .}}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       containers:
