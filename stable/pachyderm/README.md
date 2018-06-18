@@ -32,16 +32,16 @@ The following table lists the configurable parameters of `pachd` and their defau
 
 Next table lists the configurable parameters of `etcd` and their default values:
 
-| Parameter                   | Description           | Default           |
-|-----------------------------|-----------------------|-------------------|
-| `etcd.image.repository`     | Container image name  | `pachyderm/etcd`  |
-| `*.image.tag`               | Container image tag   | `<latest version>`|
-| `*.image.pullPolicy`        | Image pull policy     | `IfNotPresent`    |
-| `*.resources.requests`      | Memory and cpu request| `{250M,250m}`     |
-| `*.persistence.enabled`     | Enable persistence    | `false`           |
-| `*.persistence.size`        | Storage request       | `20G`             |
-| `*.persistence.accessMode`  | Access mode for PV    | `ReadWriteOnce`   |
-| `*.persistence.storageClass`| PVC storage class     | `nil`             |
+| Parameter                   | Description           | Default               |
+|-----------------------------|-----------------------|-----------------------|
+| `etcd.image.repository`     | Container image name  | `quay.io/coreos/etcd` |
+| `*.image.tag`               | Container image tag   | `<latest version>`    |
+| `*.image.pullPolicy`        | Image pull policy     | `IfNotPresent`        |
+| `*.resources.requests`      | Memory and cpu request| `{250M,250m}`         |
+| `*.persistence.enabled`     | Enable persistence    | `false`               |
+| `*.persistence.size`        | Storage request       | `20G`                 |
+| `*.persistence.accessMode`  | Access mode for PV    | `ReadWriteOnce`       |
+| `*.persistence.storageClass`| PVC storage class     | `nil`                 |
 
 
 In order to set which object store credentials you want to use, please set the flag `credentials` with one of the following values: `local | s3 | google | amazon | microsoft`.
