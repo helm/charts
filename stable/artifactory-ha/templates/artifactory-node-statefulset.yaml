@@ -4,12 +4,12 @@ metadata:
   name: {{ template "artifactory-ha.node.name" . }}
   labels:
     app: {{ template "artifactory-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "artifactory-ha.chart" . }}
     component: {{ .Values.artifactory.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  serviceName: "{{ template "artifactory-ha.node.name" . }}"
+  serviceName: {{ template "artifactory-ha.node.name" . }}
   replicas: {{ .Values.artifactory.node.replicaCount }}
   updateStrategy:
     type: RollingUpdate
@@ -223,11 +223,19 @@ spec:
         persistentVolumeClaim:
           claimName: {{ template "artifactory-ha.fullname" . }}-backup-pvc
       {{- end }}
+      {{- if .Values.artifactory.persistence.local }}
+      - name: volume
+        emptyDir: {}
+      {{- else }}
   volumeClaimTemplates:
   - metadata:
       name: volume
     spec:
-      accessModes: [ "ReadWriteOnce" ]
+    {{- if .Values.artifactory.node.persistence.existingClaim }}
+      selector:
+        matchLabels:
+          app: artifactory-ha-member
+    {{- else }}
       {{- if .Values.artifactory.persistence.storageClass }}
       {{- if (eq "-" .Values.artifactory.persistence.storageClass) }}
       storageClassName: ""
@@ -235,6 +243,9 @@ spec:
       storageClassName: "{{ .Values.artifactory.persistence.storageClass }}"
       {{- end }}
       {{- end }}
+      accessModes: [ "{{ .Values.artifactory.persistence.accessMode }}" ]
       resources:
         requests:
           storage: {{ .Values.artifactory.persistence.size }}
+    {{- end }}
+  {{- end }}
