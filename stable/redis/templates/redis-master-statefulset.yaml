@@ -13,7 +13,7 @@ spec:
       release: "{{ .Release.Name }}"
       role: master
       app: {{ template "redis.name" . }}
-  serviceName: "redis-master"  
+  serviceName: "redis-master"
   template:
     metadata:
       labels:
@@ -39,6 +39,7 @@ spec:
         fsGroup: {{ .Values.master.securityContext.fsGroup }}
         runAsUser: {{ .Values.master.securityContext.runAsUser }}
       {{- end }}
+      serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
       {{- if .Values.master.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.master.nodeSelector | indent 8 }}
@@ -46,6 +47,9 @@ spec:
       {{- if .Values.master.tolerations }}
       tolerations:
 {{ toYaml .Values.master.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.master.schedulerName }}
+      schedulerName: "{{ .Values.master.schedulerName }}"
       {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
@@ -150,3 +154,9 @@ spec:
       {{- end }}
     {{- end }}
   {{- end }}
+  updateStrategy:
+    type: {{ .Values.master.statefulset.updateStrategy }}
+    {{- if .Values.master.statefulset.rollingUpdatePartition }}
+    rollingUpdate:
+      partition: {{ .Values.master.statefulset.rollingUpdatePartition }}
+    {{- end }}

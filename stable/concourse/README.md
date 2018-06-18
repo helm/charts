@@ -119,6 +119,11 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
 | `web.metrics.prometheus.enabled` | Enable Prometheus metrics exporter | `false` |
 | `web.metrics.prometheus.port` | Port for exporting Prometheus metrics | `9391` |
+| `web.metrics.datadog.enabled` | Enable datadog metrics exporter | `false` |
+| `web.metrics.datadog.agentHost` | Host to export Datadog metrics to | `127.0.0.1` |
+| `web.metrics.datadog.agentHostUseHostIP` | Use node's IP as host to export Datadog metrics to. Overrides `web.metrics.datadog.agentHost` | `127.0.0.1` |
+| `web.metrics.datadog.agentPort` | Port to export Datadog metrics to | `8125` |
+| `web.metrics.datadog.prefix` | prefix for all Datadog metrics to easily find them in Datadog | `nil` |
 | `worker.nameOverride` | Override the Concourse Worker components name | `nil` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
@@ -177,7 +182,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.gitlabAuthClientSecret` | Application client secret for GitLab OAuth | `nil` |
 | `secrets.genericOauthClientId` | Application client ID for Generic OAuth | `nil` |
 | `secrets.genericOauthClientSecret` | Application client secret for Generic OAuth | `nil` |
-| `secrets.postgresqlUri` | PostgreSQL connection URI when `postgres.enabled` is `false` | `nil` |
+| `secrets.postgresqlUri` | PostgreSQL connection URI when `postgresql.enabled` is `false` | `nil` |
 | `secrets.vaultCaCert` | CA certificate   use to verify the vault server SSL cert. | `nil` |
 | `secrets.vaultClientToken` | Vault periodic client token | `nil` |
 | `secrets.vaultAppRoleId` | Vault AppRole RoleID | `nil` |
