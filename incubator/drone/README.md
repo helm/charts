@@ -1,6 +1,7 @@
 # Drone.io
 
 [Drone](http://readme.drone.io/) is a Continuous Integration platform built on container technology.
+**NOTE: this chart has been DEPRECATED. Please see stable/drone.**
 
 ## TL;DR;
 
@@ -34,10 +35,10 @@ The following table lists the configurable parameters of the drone charts and th
 | Parameter                   | Description                                                                                   | Default                     |
 |-----------------------------|-----------------------------------------------------------------------------------------------|-----------------------------|
 | `images.server.repository`  | Drone **server** image                                                                        | `docker.io/drone/drone`     |
-| `images.server.tag`         | Drone **server** image tag                                                                    | `0.8.4`                     |
+| `images.server.tag`         | Drone **server** image tag                                                                    | `0.8.5`                     |
 | `images.server.pullPolicy`  | Drone **server** image pull policy                                                            | `IfNotPresent`              |
 | `images.agent.repository`   | Drone **agent** image                                                                         | `docker.io/drone/agent`     |
-| `images.agent.tag`          | Drone **agent** image tag                                                                     | `0.8.4`                     |
+| `images.agent.tag`          | Drone **agent** image tag                                                                     | `0.8.5`                     |
 | `images.agent.pullPolicy`   | Drone **agent** image pull policy                                                             | `IfNotPresent`              |
 | `images.dind.repository`    | Docker **dind** image                                                                         | `docker.io/library/docker`  |
 | `images.dind.tag`           | Docker **dind** image tag                                                                     | `17.12.0-ce-dind`           |
@@ -55,17 +56,19 @@ The following table lists the configurable parameters of the drone charts and th
 | `server.annotations`        | Drone **server** annotations                                                                  | `{}`                        |
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
 | `server.schedulerName`      | Drone **server** alternate scheduler name                                                     | `nil`                       |
-| `server.afinity`            | Drone **server** scheduling preferences                                                       | `{}`                        |
+| `server.affinity`           | Drone **server** scheduling preferences                                                       | `{}`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
 | `agent.replicas`            | Drone **agent** replicas                                                                      | `1`                         |
 | `agent.annotations`         | Drone **agent** annotations                                                                   | `{}`                        |
 | `agent.resources`           | Drone **agent** pod resource requests & limits                                                | `{}`                        |
 | `agent.schedulerName`       | Drone **agent** alternate scheduler name                                                      | `nil`                       |
-| `agent.afinity`             | Drone **agent** scheduling preferences                                                        | `{}`                        |
+| `agent.affinity`            | Drone **agent** scheduling preferences                                                        | `{}`                        |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
 | `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |
 | `dind.env`                  | **DinD** environment variables                                                                | `nil`                       |
+| `dind.command`              | **DinD** custom command instead of default entry point                                        | `nil`                       |
+| `dind.args`                 | **DinD** arguments for custom command or entry point                                          | `nil`                       |
 | `persistence.enabled`       | Use a PVC to persist data                                                                     | `true`                      |
 | `persistence.existingClaim` | Use an existing PVC to persist data                                                           | `nil`                       |
 | `persistence.storageClass`  | Storage class of backing PVC                                                                  | `nil`                       |

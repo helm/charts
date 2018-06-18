@@ -5,7 +5,7 @@ metadata:
   name: {{ template "artifactory-ha.nginx.fullname" . }}
   labels:
     app: {{ template "artifactory-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "artifactory-ha.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     component: {{ .Values.nginx.name }}
@@ -22,6 +22,12 @@ spec:
 {{ toYaml .Values.nginx.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
   ports:
+  {{- if .Values.artifactory.replicator.enabled }}
+  - port: {{ .Values.nginx.externalPortReplicator }}
+    targetPort: {{ .Values.nginx.internalPortReplicator }}
+    protocol: TCP
+    name: replicator
+  {{- end }}
   - port: {{ .Values.nginx.externalPortHttp }}
     targetPort: {{ .Values.nginx.internalPortHttp }}
     protocol: TCP
@@ -32,6 +38,6 @@ spec:
     name: https
   selector:
     app: {{ template "artifactory-ha.name" . }}
-    component: "{{ .Values.nginx.name }}"
+    component: {{ .Values.nginx.name }}
     release: {{ .Release.Name }}
 {{- end }}

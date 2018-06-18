@@ -4,7 +4,7 @@ image:
   repository: datadog/agent               # Agent6
   # repository: datadog/dogstatsd         # Standalone DogStatsD6
   # repository: datadog/docker-dd-agent   # Agent5
-  tag: 6.1.2  # Use 6.1.2-jmx to enable jmx fetch collection
+  tag: 6.2.1  # Use 6.2.1-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
 
 # NB! Normally you need to keep Datadog DaemonSet enabled!
@@ -36,6 +36,14 @@ daemonset:
   ## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes >= 1.6)
   # tolerations: []
 
+  ## Allow the DaemonSet to schedule on selected nodes
+  # Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  # nodeSelector: {}
+
+  ## Allow the DaemonSet to schedule ussing affinity rules
+  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  # affinity: {}
+
   ## Allow the DaemonSet to perform a rolling update on helm update
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   # updateStrategy: RollingUpdate
@@ -47,6 +55,16 @@ daemonset:
 deployment:
   enabled: false
   replicas: 1
+  # Affinity for pod assignment
+  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  affinity: {}
+  # Tolerations for pod assignment
+  # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+
+  # If you're using a NodePort-type service and need a fixed port, set this parameter.
+  # dogstatsdNodePort: 8125
+  # traceNodePort: 8126
 
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
@@ -150,16 +168,17 @@ datadog:
   # checksd:
   #   service.py: |-
 
-  ## dd-agent resource requests and limits
+  ## datadog-agent resource requests and limits
+  ## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 200m
+      memory: 256Mi
     limits:
-      cpu: 256m
-      memory: 512Mi
+      cpu: 200m
+      memory: 256Mi
 
 rbac:
   ## If true, create & use RBAC resources

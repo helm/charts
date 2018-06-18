@@ -1,12 +1,21 @@
 ## Set default image, imageTag, and imagePullPolicy. mode is used to indicate the
-## minio server mode, i.e. standalone or distributed.
-## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2018-04-27T23-33-52Z
+  tag: RELEASE.2018-06-09T03-43-35Z
   pullPolicy: IfNotPresent
 
+## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
+## client used to create a default bucket).
+##
+mcImage:
+  repository: minio/mc
+  tag: RELEASE.2018-06-09T02-18-09Z
+  pullPolicy: IfNotPresent
+
+## minio server mode, i.e. standalone or distributed.
+## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
+##
 mode: standalone
 
 ## Set default accesskey, secretkey, Minio config file path, volume mount path and
@@ -55,6 +64,10 @@ service:
   type: ClusterIP
   clusterIP: None
   port: 9000
+  annotations: {}
+    # prometheus.io/scrape: 'true'
+    # prometheus.io/path:   '/minio/prometheus/metrics'
+    # prometheus.io/port:   '9000'
 
 ingress:
   enabled: false

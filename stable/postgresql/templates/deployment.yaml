@@ -7,8 +7,11 @@ metadata:
     chart: {{ template "postgresql.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.deploymentAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
-  template:
   selector:
     matchLabels:
       app: {{ template "postgresql.name" . }}
@@ -18,6 +21,10 @@ spec:
       labels:
         app: {{ template "postgresql.name" . }}
         release: {{ .Release.Name }}
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.affinity }}
       affinity:
@@ -76,18 +83,18 @@ spec:
             - sh
             - -c
             - exec pg_isready --host $POD_IP
-          initialDelaySeconds: 120
-          timeoutSeconds: 5
-          failureThreshold: 6
+          initialDelaySeconds: {{ .Values.probes.liveness.initialDelay }}
+          timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+          failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
         readinessProbe:
           exec:
             command:
             - sh
             - -c
             - exec pg_isready --host $POD_IP
-          initialDelaySeconds: 5
-          timeoutSeconds: 3
-          periodSeconds: 5
+          initialDelaySeconds: {{ .Values.probes.readiness.initialDelay }}
+          timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+          periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:

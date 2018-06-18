@@ -20,6 +20,10 @@ spec:
     type: Recreate
   template:
     metadata:
+{{- if .Values.collector.podAnnotations }}
+      annotations:
+{{ toYaml .Values.collector.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "jaeger.name" . }}
         component: collector
@@ -33,7 +37,7 @@ spec:
 {{ toYaml .Values.collector.nodeSelector | indent 8 }}
       containers:
       - name: {{ template "jaeger.collector.name" . }}
-        image: {{ .Values.collector.image }}:{{ .Values.collector.tag }}
+        image: {{ .Values.collector.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.collector.pullPolicy }}
         env:
           - name: SPAN_STORAGE_TYPE
