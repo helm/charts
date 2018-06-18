@@ -128,5 +128,5 @@ spec:
     {{- end }}
       volumes:
       - name: mission-control-certs
-        configMap:
-          name: {{ template "mission-control.fullname" . }}-certs
+        secret:
+          secretName: {{ template "mission-control.fullname" . }}-certs
