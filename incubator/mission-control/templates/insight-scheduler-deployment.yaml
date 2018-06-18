@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "insight-scheduler.fullname" . }}
@@ -10,6 +10,11 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.insightScheduler.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "mission-control.name" . }}
+      component: {{ .Values.insightScheduler.name }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       name: {{ .Values.insightScheduler.name }}

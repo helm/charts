@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "insight-server.fullname" . }}
@@ -10,6 +10,11 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.insightServer.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "mission-control.name" . }}
+      component: {{ .Values.insightServer.name }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:

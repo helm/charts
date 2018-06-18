@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "insight-executor.fullname" . }}
@@ -10,11 +10,16 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.insightExecutor.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "mission-control.name" . }}
+      component: {{ .Values.insightExecutor.name }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "mission-control.name" . }}
-        component: "{{ .Values.insightExecutor.name }}"
+        component: {{ .Values.insightExecutor.name }}
         release: {{ .Release.Name }}
     spec:
     {{- if .Values.imagePullSecrets }}

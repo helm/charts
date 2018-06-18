@@ -6,7 +6,6 @@ Expand the name of the chart.
 {{- default .Chart.Name .Values.missionControl.name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-
 {{/*
 The insight-executor name
 */}}
@@ -31,6 +30,7 @@ The insight-server name
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
 */}}
 {{- define "mission-control.fullname" -}}
 {{- if .Values.missionControl.fullnameOverride -}}

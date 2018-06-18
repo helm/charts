@@ -2,10 +2,10 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ .Release.Name }}-create-user"
+  name: {{ template "mission-control.fullname" . }}-create-user
   labels:
-    app: {{ template "mission-control.fullname" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "mission-control.name" . }}
+    chart: {{ template "mission-control.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     component: mongodb
@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         app: {{ template "mission-control.name" . }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        chart: {{ template "mission-control.chart" . }}
         heritage: {{ .Release.Service }}
         release: {{ .Release.Name }}
     spec:
