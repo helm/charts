@@ -1,10 +1,10 @@
 dependencies:
 - name: elasticsearch
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-  version: 0.4.9
+  version: 1.0.0
 - name: kibana
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 0.5.0
+  version: 0.6.0
 - name: logstash
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   version: 0.6.3
@@ -17,5 +17,5 @@ dependencies:
 - name: elasticsearch-curator
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   version: 0.2.1
-digest: sha256:7f5967872bbe141aa3564c4494adf21f8b51756125f18b550b3c856665100382
-generated: 2018-05-31T07:49:02.269473047-04:00
+digest: sha256:3296c80006ef4fd329d8ecce48e20f9b9548e8568eac047516e26c6cd9496098
+generated: 2018-06-18T14:25:59.972192713+10:00
