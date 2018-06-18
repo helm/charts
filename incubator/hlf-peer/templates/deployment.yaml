@@ -69,8 +69,8 @@ spec:
 
               while [ ! -f ${CORE_PEER_MSPCONFIGPATH}/signcerts/cert.pem ];
               do
-                echo ">\033[0;35m fabric-ca-client enroll -d -u http://${CA_ADMIN}:${CA_PASSWORD}@${CA_ADDRESS} -M ${CORE_PEER_MSPCONFIGPATH} \033[0m"
-                fabric-ca-client enroll -d -u http://${CA_ADMIN}:${CA_PASSWORD}@${CA_ADDRESS} -M ${CORE_PEER_MSPCONFIGPATH}
+                echo ">\033[0;35m fabric-ca-client enroll -d -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${CORE_PEER_MSPCONFIGPATH} \033[0m"
+                fabric-ca-client enroll -d -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${CORE_PEER_MSPCONFIGPATH}
 
                 if [ ! -f ${CORE_PEER_MSPCONFIGPATH}/signcerts/cert.pem ]
                 then
@@ -92,8 +92,8 @@ spec:
               # Create TLS certificate for Peer
               if [ ! -f ${CORE_PEER_TLS_PRIVATEKEY} ]
               then
-                echo ">\033[0;35m fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_ADMIN}:${CA_PASSWORD}@http://${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-peer.fullname" . }} \033[0m"
-                fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_ADMIN}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-peer.fullname" . }}
+                echo ">\033[0;35m fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_USERNAME}:${CA_PASSWORD}@http://${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-peer.fullname" . }} \033[0m"
+                fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-peer.fullname" . }}
 
                 mkdir -p $(dirname $CORE_PEER_TLS_PRIVATEKEY)
                 cp /tmp/tls/keystore/* $CORE_PEER_TLS_PRIVATEKEY
@@ -116,7 +116,7 @@ spec:
                 name: {{ include "hlf-peer.fullname" . }}
             {{- if eq .Values.peer.databaseType "CouchDB" }}
             - secretRef:
-                name: {{ .Values.peer.couchdbInstance }}-hl-couchdb
+                name: {{ .Values.peer.couchdbInstance }}-hlf-couchdb
             {{- end }}
             - configMapRef:
                 name: {{ include "hlf-peer.fullname" . }}--peer
@@ -142,7 +142,7 @@ spec:
     {{- with .Values.affinity }}
       affinity:
         ## This affinity is required to ensure reasonable ledger access speeds
-        {{- if eq .Values.peer.databaseType "CouchDB" }}
+        {{- if eq $.Values.peer.databaseType "CouchDB" }}
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
