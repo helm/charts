@@ -154,3 +154,9 @@ spec:
       {{- end }}
     {{- end }}
   {{- end }}
+  updateStrategy:
+    type: {{ .Values.master.statefulset.updateStrategy }}
+    {{- if .Values.master.statefulset.rollingUpdatePartition }}
+    rollingUpdate:
+      partition: {{ .Values.master.statefulset.rollingUpdatePartition }}
+    {{- end }}
