@@ -25,7 +25,7 @@ spec:
   ports:
   - port: {{ .Values.service.externalPort }}
     protocol: TCP
-    targetPort: {{ .Values.service.port }}
+    targetPort: api
     name: api
   selector:
     app: {{ template "vault.name" . }}

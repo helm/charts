@@ -3,7 +3,7 @@ kind: PodDisruptionBudget
 metadata:
   name: {{ template "vault.fullname" . }}
 spec:
-  maxUnavailable: 1
+  maxUnavailable: {{ .Values.vault.maxUnavailable }}
   selector:
     matchLabels:
       app: {{ template "vault.name" . }}
