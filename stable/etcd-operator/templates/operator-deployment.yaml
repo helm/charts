@@ -1,6 +1,6 @@
 {{- if .Values.deployments.etcdOperator }}
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "etcd-operator.fullname" . }}
@@ -10,6 +10,10 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "etcd-operator.fullname" . }}
+      release: {{ .Release.Name }}
   replicas: {{ .Values.etcdOperator.replicaCount }}
   template:
     metadata:
