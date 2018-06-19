@@ -44,11 +44,6 @@ spec:
 {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
-{{- if not .Values.persistence.enabled }}
-      volumes:
-        - name: data
-          emptyDir: {}
-{{- end }}
       containers:
 
         - name: zookeeper
@@ -150,13 +145,19 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-{{- if .Values.exporters.jmx.enabled }}
+      {{- if (or .Values.exporters.jmx.enabled (not .Values.persistence.enabled)) }}
       volumes:
+        {{- if .Values.exporters.jmx.enabled }}
         - name: config-jmx-exporter
           configMap:
             name: {{ .Release.Name }}-jmx-exporter
-{{- end }}
-{{- if .Values.persistence.enabled }}
+        {{- end }}
+        {{- if not .Values.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+        {{- end }}
+      {{- end }}
+  {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -173,4 +174,4 @@ spec:
         storageClassName: "{{ .Values.persistence.storageClass }}"
         {{- end }}
       {{- end }}
-{{- end }}
+  {{- end }}
