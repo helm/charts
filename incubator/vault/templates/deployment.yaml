@@ -1,3 +1,4 @@
+{{- $scheme := coalesce (and (eq .Values.vault.config.listener.tcp.tls_disable false) "https") "http" -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -56,10 +57,8 @@ spec:
           # Alive if it is listening for clustering traffic
           httpGet:
             path: /v1/sys/health?standbycode=200&sealedcode=200&uninitcode=200
-            port: 8200
-            {{- if not .Values.vault.config.listener.tcp.tls_disable }}
-            scheme: HTTPS
-            {{- end }}
+            port: api
+            scheme: {{ $scheme | upper }}
         readinessProbe:
           # Ready depends on preference
           httpGet:
@@ -67,10 +66,8 @@ spec:
             {{- range $key, $value := .Values.vault.readinessParams -}}
               {{ $key }}={{ $value }}&
             {{- end -}}"
-            port: 8200
-            {{- if not .Values.vault.config.listener.tcp.tls_disable }}
-            scheme: HTTPS
-            {{- end }}
+            port: api
+            scheme: {{ $scheme | upper }}
         securityContext:
           readOnlyRootFilesystem: true
           capabilities:
@@ -85,10 +82,12 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: VAULT_ADDR
+            value: "{{ $scheme }}://$(POD_NAME).vault.$(POD_NAMESPACE).svc.cluster.local:8200"
           - name: VAULT_API_ADDR
-            value: "https://$(POD_NAME).vault.$(POD_NAMESPACE).svc.cluster.local:8200"
+            value: "{{ $scheme }}://$(POD_NAME).vault.$(POD_NAMESPACE).svc.cluster.local:8200"
           - name: VAULT_CLUSTER_ADDR
-            value: "https://$(POD_NAME).vault.$(POD_NAMESPACE).svc.cluster.local:8201"
+            value: "{{ $scheme }}://$(POD_NAME).vault.$(POD_NAMESPACE).svc.cluster.local:8201"
           - name: VAULT_LOG_LEVEL
             value: "{{ .Values.vault.logLevel }}"
         {{- if .Values.vault.extraEnv }}
