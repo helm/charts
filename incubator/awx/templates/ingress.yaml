@@ -1,7 +1,11 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "awx.fullname" . -}}
+{{- $servicePort := .Values.webService.internalPort -}}
+{{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ $awx.fullName }}
+  name: {{ $fullName }}
   labels:
     app: {{ template "awx.name" . }}
     chart: {{ template "awx.chart" . }}
