@@ -17,5 +17,7 @@ rules:
 - apiGroups: [""] # "" indicates the core API group
   resources: ["configmaps"]
   verbs: ["get", "watch", "list"]
+{{- else }}
+rules: []
 {{- end}}
 {{- end}}
