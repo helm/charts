@@ -50,7 +50,7 @@ The following table lists the configurable parameters of the Falco chart and the
 | `image.pullPolicy`                              | The image pull policy                                               | `Always`                                                                               |
 | `resources`                                     | Specify container resources                                         | `{}`                                                                                   |
 | `rbac.create`                                   | If true, create & use RBAC resources                                | `true`                                                                                 |
-| `serviceAccount.create`                         | Create serviceAccount                                               | `default`                                                                              |
+| `serviceAccount.create`                         | Create serviceAccount                                               | `true`                                                                                 |
 | `serviceAccount.name`                           | Use this value as serviceAccountName                                | ` `                                                                                    |
 | `fakeEventGenerator.enabled`                    | Run falco-event-generator for sample events                         | `false`                                                                                |
 | `fakeEventGenerator.replicas`                   | How many replicas of falco-event-generator to run                   | `1`                                                                                    |
