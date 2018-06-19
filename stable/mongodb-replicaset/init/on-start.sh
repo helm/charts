@@ -61,6 +61,9 @@ if [ -f "$ca_crt"  ]; then
     pem=/work-dir/mongo.pem
     ssl_args=(--ssl --sslCAFile "$ca_crt" --sslPEMKeyFile "$pem")
 
+# Move into /work-dir
+pushd /work-dir
+
 cat >openssl.cnf <<EOL
 [req]
 req_extensions = v3_req

@@ -2,7 +2,7 @@
 prometheusScrape: true
 image:
   repository: k8s.gcr.io/kube-state-metrics
-  tag: v1.2.0
+  tag: v1.3.1
   pullPolicy: IfNotPresent
 service:
   port: 8080
