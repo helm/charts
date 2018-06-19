@@ -5,6 +5,9 @@ metadata:
   labels:
     product: rookout
     app: {{ template "rookout.name" . }}
+    chart: {{ template "fluentd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   selector:
     app: {{ template "rookout.name" . }}
