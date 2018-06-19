@@ -182,5 +182,7 @@ rbac:
   serviceAccountName: default
   # RBAC api version (currently either v1beta1 or v1alpha1)
   apiVersion: v1beta1
-  # Cluster role reference
+  # Role reference
   roleRef: cluster-admin
+  # Role kind (RoleBinding or ClusterRoleBinding)
+  roleBindingKind: ClusterRoleBinding
