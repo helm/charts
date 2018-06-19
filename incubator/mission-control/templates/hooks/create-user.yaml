@@ -29,6 +29,22 @@ spec:
       containers:
       - name: post-install-job
         image: "mvertes/alpine-mongo:{{ .Values.mongodb.image.tag }}-0"
+        env:
+        - name: MONGODB_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mission-control.fullname" . }}-mongodb-cred
+              key: adminPassword
+        - name: MONGODB_MC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mission-control.fullname" . }}-mongodb-cred
+              key: mcPassword
+        - name: MONGODB_INSIGHT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mission-control.fullname" . }}-mongodb-cred
+              key: insightPassword
         command:
         - 'sh'
         - '-c'

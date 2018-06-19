@@ -22,7 +22,7 @@ data:
     sleep 1
     done
     echo "DB ready. Configuring..."
-    mongo --host {{ .Release.Name }}-mongodb --port 27017 < /scripts/createMongoDBUsers.js || errorExit "DB user setup failed"
+    mongo --eval "var adminPassword = '$MONGODB_ADMIN_PASSWORD', mcPassword = '$MONGODB_MC_PASSWORD', insightPassword = '$MONGODB_INSIGHT_PASSWORD';" --host {{ .Release.Name }}-mongodb --port 27017 /scripts/createMongoDBUsers.js || errorExit "DB user setup failed"
     echo "DB config done"
 
   createMongoDBUsers.js: |
@@ -31,7 +31,7 @@ data:
     // Default admin user
     var adminUser = {
         user: "{{ .Values.mongodb.db.adminUser }}",
-        pwd: "{{ .Values.mongodb.db.adminPassword }}"
+        pwd: adminPassword
     };
 
     // Create the admin user
@@ -44,7 +44,7 @@ data:
     // Default mc user
     var jfmcUser = {
         user: "{{ .Values.mongodb.db.mcUser }}",
-        pwd: "{{ .Values.mongodb.db.mcPassword }}",
+        pwd: mcPassword,
         roles: ["dbOwner"],
         customData: {
             createdBy: "JFrog Mission-Control installer"
@@ -54,7 +54,7 @@ data:
     // Default insight-server user
     var jiUser = {
         user: "{{ .Values.mongodb.db.insightUser }}",
-        pwd: "{{ .Values.mongodb.db.insightPassword }}",
+        pwd: insightPassword,
         roles: ["dbOwner"],
         customData: {
             createdBy: "JFrog Mission-Control installer"
