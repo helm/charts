@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "rundeck.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ template "rundeck.name" . }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "rundeck.fullname" . }}
+data:
+  framework.properties: |-
+    #    
+    # framework.properties -
+    #
+    
+    # ----------------------------------------------------------------
+    # Rundeck server connection information
+    # ----------------------------------------------------------------
+    
+    framework.server.name = localhost
+    framework.server.hostname = localhost
+    framework.server.port = 4440
+    framework.server.url = http://localhost:4440
+    
+    # ----------------------------------------------------------------
+    # Installation locations
+    # ----------------------------------------------------------------
+    
+    rdeck.base={{ .Values.env.RUNDECK_INSTALL_DIR }}
+    
+    framework.projects.dir={{ .Values.env.SHARED_STORAGE }}/projects
+    framework.etc.dir={{ .Values.env.RUNDECK_INSTALL_DIR }}/etc
+    framework.var.dir={{ .Values.env.RUNDECK_INSTALL_DIR }}/var
+    framework.tmp.dir={{ .Values.env.RUNDECK_INSTALL_DIR }}/var/tmp
+    framework.logs.dir={{ .Values.env.SHARED_STORAGE }}/logs
+    framework.libext.dir={{ .Values.env.RUNDECK_INSTALL_DIR }}/libext
+    
+    # ----------------------------------------------------------------
+    # SSH defaults for node executor and file copier
+    # ----------------------------------------------------------------
+    
+    framework.ssh.keypath = {{ .Values.env.RSA_KEY_DIR }}/id_rsa
+    framework.ssh.user = {{ .Values.env.RD_USER }}
+    
+    # ssh connection timeout after a specified number of milliseconds.
+    # "0" value means wait forever.
+    framework.ssh.timeout = 0
+    
+    
+    # ----------------------------------------------------------------
+    # Auto generated server UUID: 93be48ac-74f4-45f7-a809-bf6139d8a755
+    # ----------------------------------------------------------------
+    rundeck.server.uuid = 93be48ac-74f4-45f7-a809-bf6139d8a755
+    rundeck.tokens.file={{ .Values.env.SHARED_STORAGE }}/token/tokens.properties
+  realm.properties: |-
+    #    
+    #
+    # This file defines users passwords and roles for a HashUserRealm
+    #
+    # The format is
+    #  <username>: <password>[,<rolename> ...]
+    #
+    # Passwords may be clear text, obfuscated or checksummed.  The class 
+    # org.mortbay.util.Password should be used to generate obfuscated
+    # passwords or password checksums
+    #
+    # This sets the temporary user accounts for the Rundeck app
+    #
+    admin:admin,user,admin
+    user:user,user
+    {{ .Values.env.RD_USER }}:{{ .Values.env.RD_PASSWORD }},user,admin,architect,deploy,build
+  project.properties: |-
+    #    
+    # project.properties
+    #
+    # $Id: project.properties.template 2126 2010-08-17 21:06:08Z ahonor $
+    #
+    
+    #
+    # The base directory for this project's instances
+    #
+    project.dir = {{ .Values.env.SHARED_STORAGE }}/projects/${project.name}
+    #
+    # The base directory of project specific configuration files
+    #
+    project.etc.dir = {{ .Values.env.SHARED_STORAGE }}/projects/${project.name}/etc
+    
+    #
+    # The default resources file
+    #
+    resources.source.1.type=file
+    resources.source.1.config.file = {{ .Values.env.SHARED_STORAGE }}/projects/${project.name}/etc/resources.xml
+    resources.source.1.config.format=resourcexml
+    resources.source.1.config.includeServerNode=true
+    resources.source.1.config.generateFileAutomatically=true
+
+    # ----------------------------------------------------------------
+    # SSH defaults for project
+    # ----------------------------------------------------------------
+    
+    project.ssh.keypath = {{ .Values.env.RSA_KEY_DIR }}/id_rsa
+    project.ssh.user = {{ .Values.env.RD_USER }}
+
+    #
+    # The project description
+    #
+    project.description =
+    #
+    # The organization
+    #
+    project.organization =
+  rundeck-config.properties: |-
+    #    
+    #loglevel.default is the default log level for jobs: ERROR,WARN,INFO,VERBOSE,DEBUG
+    loglevel.default=DEBUG
+    rdeck.base={{ .Values.env.RUNDECK_INSTALL_DIR }}
+    
+    #rss.enabled if set to true enables RSS feeds that are public (non-authenticated)
+    rss.enabled=false
+  
+    grails.serverURL={{ .Values.grails.url }}
+    grails.mail.host={{ .Values.grails.mailhost }}
+    grails.mail.port={{ .Values.grails.mailport }}
+    {{- if .Values.grails.auth}} 
+    grails.mail.username={{ .Values.grails.mailuser }}
+    grails.mail.password={{ .Values.grails.mailpass }}
+    grails.mail.props = ["mail.smtp.starttls.enable":"true","mail.smtp.port":"{{ .Values.grails.mailport }}"]
+    grails.mail.default.from={{ .Values.grails.mailfrom }}
+    {{- end}}
+    dataSource.dbCreate = update
+    dataSource.url = {{ .Values.datasource.url }}
+    dataSource.username={{ .Values.env.DB_USER }}
+    dataSource.password={{ .Values.env.DB_PASS }}
