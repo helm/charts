@@ -24,13 +24,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-          - name: ROOKOUT_TOKEN
-            value: {{.Values.token}}
+            - name: ROOKOUT_TOKEN
+              value: {{.Values.token}}
           ports:
             - containerPort: 7486
           livenessProbe:
-          tcpSocket:
-            port: 7486
+            tcpSocket:
+              port: 7486
           initialDelaySeconds: 15
           periodSeconds: 20
-  
