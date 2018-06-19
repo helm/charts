@@ -1,28 +1,37 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ .Values.webName }}
+  name: {{ template "awx.fullname" . }}-{{ .Values.webName }}
   labels:
-    app: {{ .Values.app }}
+    app: {{ template "awx.name" . }}
+    chart: {{ template "awx.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     role: {{ .Values.webRole }}
 spec:
   replicas: {{ .Values.webReplicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "awx.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.app }}
+        app: {{ template "awx.name" . }}
+        release: {{ .Release.Name }}
         role: {{ .Values.webRole }}
     spec:
-      hostname: {{ .Values.app }}{{ .Values.webRole }}
+      hostname: {{ template "awx.fullname" . }}{{ .Values.webName }}
       containers:
         - name: {{ .Values.webName }}
-          image: {{ .Values.webImage | quote }}
+          image: {{ .Values.webImage.repository }}:{{ .Values.webImage.tag }}
+          imagePullPolicy: {{ .Values.webImage.pullPolicy }}
           ports:
             - name: {{ .Values.webService.name }}
               containerPort: {{ .Values.webService.externalPort }}
           env:
           - name: DATABASE_HOST
-            value: {{ .Values.dbName }}
+            value: {{ template "awx.fullname" . }}-{{ .Values.dbName }}
           - name: DATABASE_USER
             value: {{ .Values.dbUser }}
           - name: DATABASE_PASSWORD
@@ -30,7 +39,7 @@ spec:
           - name: DATABASE_NAME
             value: {{ .Values.dbDatabaseName }}
           - name: RABBITMQ_HOST
-            value: {{ .Values.queueName }}
+            value: {{ template "awx.fullname" . }}-{{ .Values.queueName }}
           - name: RABBITMQ_USER
             value: {{ .Values.queueUser }}
           - name: RABBITMQ_PASSWORD
@@ -38,6 +47,20 @@ spec:
           - name: RABBITMQ_VHOST
             value: {{ .Values.queueVhost }}
           - name: MEMCACHED_HOST
-            value: {{ .Values.cacheName }}
+            value: {{ template "awx.fullname" . }}-{{ .Values.cacheName }}
           - name: SECRET_KEY
-            value: {{ .Values.secret_key }}
+            value: {{ .Values.secretKey }}
+          resources:
+{{ toYaml .Values.webResources | indent 12 }}
+    {{- with .Values.webNodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.webAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.webTolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

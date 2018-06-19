@@ -1,19 +1,18 @@
-apiVersion: v1
 name: awx
-version: 0.0.1
-appVersion: 0.0.1
-description: Ansible AWX
+version: 0.0.2
+appVersion: 0.0.2
+apiVersion: v1
+description: AWX provides a web-based user interface, REST API, and task engine built on top of Ansible.
 keywords:
-- Postgresql
-- Rabbitmq
-- Memcached
-- Nginx
 - Ansible AWX
+- Automation configuration deployment
+- Devops
+- Web-based GUI
 home: https://github.com/ansible/awx
 icon: https://www.ansible.com/hubfs/2017_Images/BrandPage/Brand-Assets/Tower/Ansible_RH_AnsibleTower_RGB_RedWhite.svg?t=1528996684045
 sources:
 - https://github.com/Najeongho/charts/tree/master/incubator/awx
 maintainers:
 - name: Najeongho
-  email: jeongho.na@sk.com
+  email: skwjdgh1@gmail.com
 engine: gotpl

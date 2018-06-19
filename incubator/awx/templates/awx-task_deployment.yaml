@@ -1,25 +1,34 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ .Values.taskName }}
+  name: {{ template "awx.fullname" . }}-{{ .Values.taskName }}
   labels:
-    app: {{ .Values.app }}
+    app: {{ template "awx.name" . }}
+    chart: {{ template "awx.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     role: {{ .Values.taskRole }}
 spec:
   replicas: {{ .Values.taskReplicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "awx.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.app }}
+        app: {{ template "awx.name" . }}
+        release: {{ .Release.Name }}
         role: {{ .Values.taskRole }}
     spec:
-      hostname: {{ .Values.app }}
+      hostname: {{ template "awx.fullname" . }}
       containers:
         - name: {{ .Values.taskName }}
-          image: {{ .Values.taskImage }}
+          image: {{ .Values.taskImage.repository }}:{{ .Values.taskImage.tag }}
+          imagePullPolicy: {{ .Values.taskImage.pullPolicy }}
           env:
             - name: DATABASE_HOST
-              value: {{ .Values.dbName }}
+              value: {{ template "awx.fullname" . }}-{{ .Values.dbName }}
             - name: DATABASE_USER
               value: {{ .Values.dbUser }}
             - name: DATABASE_PASSWORD
@@ -27,7 +36,7 @@ spec:
             - name: DATABASE_NAME
               value: {{ .Values.dbDatabaseName }}
             - name: RABBITMQ_HOST
-              value: {{ .Values.queueName }}
+              value: {{ template "awx.fullname" . }}-{{ .Values.queueName }}
             - name: RABBITMQ_USER
               value: {{ .Values.queueUser }}
             - name: RABBITMQ_PASSWORD
@@ -35,11 +44,25 @@ spec:
             - name: RABBITMQ_VHOST
               value: {{ .Values.queueVhost }}
             - name: MEMCACHED_HOST
-              value: {{ .Values.cacheName }}
+              value: {{ template "awx.fullname" . }}-{{ .Values.cacheName }}
             - name: SECRET_KEY
-              value: {{ .Values.secret_key }}
+              value: {{ .Values.secretKey }}
           lifecycle:
             postStart:
               exec:
                 command:
 {{ toYaml .Values.taskCommand | indent 18 }}
+          resources:
+{{ toYaml .Values.taskResources | indent 12 }}
+    {{- with .Values.taskNodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.taskAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.taskTolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

@@ -1,21 +1,44 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ .Values.cacheName }}
+  name: {{ template "awx.fullname" . }}-{{ .Values.cacheName}}
   labels:
-    app: {{ .Values.app }}
+    app: {{ template "awx.name" . }}
+    chart: {{ template "awx.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     role: {{ .Values.cacheRole }}
 spec:
   replicas: {{ .Values.cacheReplicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "awx.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.app }}
+        app: {{ template "awx.name" . }}
+        release: {{ .Release.Name }}
         role: {{ .Values.cacheRole }}
     spec:
       containers:
-      - name: {{ .Values.cacheContainername }}
-        image: {{ .Values.cacheImage | quote }}
+      - name: {{ .Values.cacheName }}
+        image: {{ .Values.cacheImage.repository }}:{{ .Values.cacheImage.tag }}
+        imagePullPolicy: {{ .Values.cacheImage.pullPolicy }}
         ports:
-        - name: {{ .Values.cacheContainername }}
-          containerPort: {{ .Values.cachePort }}
+        - name: {{ .Values.cacheName }}
+          containerPort: {{ .Values.cacheService.port }}
+        resources:
+{{ toYaml .Values.cacheResources | indent 10 }}
+    {{- with .Values.cacheNodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.cacheAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.cacheTolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

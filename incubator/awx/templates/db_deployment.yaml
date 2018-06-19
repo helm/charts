@@ -1,24 +1,33 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ .Values.dbName }}
+  name: {{ template "awx.fullname" . }}-{{ .Values.dbName }}
   labels:
-    app: {{ .Values.app }}
+    app: {{ template "awx.name" . }}
+    chart: {{ template "awx.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     role: {{ .Values.dbRole }}
 spec:
-  replicas: {{ .Values.dbReplicas }}
+  replicas: {{ .Values.dbReplicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "awx.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.app }}
+        app: {{ template "awx.name" . }}
+        release: {{ .Release.Name }}
         role: {{ .Values.dbRole }}
     spec:
       containers:
-      - name: {{ .Values.dbContainername }}
-        image: {{ .Values.dbImage }}
+      - name: {{ .Values.dbName }}
+        image: {{ .Values.dbImage.repository }}:{{ .Values.dbImage.tag }}
+        imagePullPolicy: {{ .Values.dbImage.pullPolicy }}
         ports:
-        - name: {{ .Values.dbContainername }}
-          containerPort: {{ .Values.dbPort }}
+        - name: {{ .Values.dbName }}
+          containerPort: {{ .Values.dbService.port }}
         env:
         - name: POSTGRES_USER
           value: {{ .Values.dbUser }}
@@ -27,11 +36,31 @@ spec:
         - name: POSTGRES_DB
           value: {{ .Values.dbDatabaseName }}
         - name: PGDATA
-          value: {{ .Values.dbPersistence.mountPath }}{{ .Values.dbPersistence.subPath }}
+          value: {{ .Values.persistence.mountPath }}{{ .Values.persistence.subPath }}
+        resources:
+{{ toYaml .Values.dbResources | indent 10 }}
         volumeMounts:
-        - name: {{ .Values.dbPersistence.name }}
-          mountPath: {{ .Values.dbPersistence.mountPath }}
+        - name: {{ .Values.persistence.name }}
+          mountPath: {{ .Values.persistence.mountPath }}
       volumes:
-      - name: {{ .Values.dbPersistence.name }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.dbPersistence.existingClaim }}
+        - name: {{ .Values.persistence.name }}
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "awx.fullname" .) }}
+        {{- else }}
+        # emptyDir: {}
+          hostPath:
+            path: /data
+        {{- end -}}
+    {{- with .Values.dbNodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.dbAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.dbTolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

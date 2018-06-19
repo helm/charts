@@ -1,33 +1,19 @@
-########### Start of common value ###########
-
-
-## AWX app name
-app: "awx"
-
-## AWX secret key
-secret_key: "aabbcc"
-
-
-########### End of common value ###########
-
-
 ########### Start of DB value ###########
 
-
-## DB POD name
-dbName: "awx-db"
+## DB name
+dbName: db
 
 ## DB role label
 dbRole: "database"
 
-## DB replicas
-dbReplicas: 1
-
-## DB container name
-dbContainername: "postgres"
+## DB replica Count
+dbReplicaCount: 1
 
 ## DB image and tag
-dbImage: "postgres:9.6.2"
+dbImage:
+  repository: postgres
+  tag: 9.6.2
+  pullPolicy: IfNotPresent
 
 ## DB username
 dbUser: "awx"
@@ -35,23 +21,35 @@ dbUser: "awx"
 ## DB user password
 dbPassword: "awxpass"
 
-## DB name
+## Postgres DB name
 dbDatabaseName: "awx"
 
 ## DB port
-dbPort: 5432
+dbService:
+  type: ClusterIP
+
+  ## Optional static port assignment for service type NodePort.
+  # nodePort: 30000
+
+  port: 5432
+
 
 ## Persist data to a persistent volume
-dbPersistence:
-  ## A manually managed Persistent Volume and Claim
-  ## If defined, PVC must be created manually before volume will be bound
+persistence:
+  enabled: false
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 10Gi
   existingClaim: "awx-db"
 
-  ## DB PV access mode. If you select file storage(NAS), you must set "ReadWriteMany". If you select block storage(ISCSI), you must set "ReadWriteOnce". It is based on IBM Cloud.
-  accessMode: ReadWriteOnce
-
-  ## DB PV size. You can set at least 20GB. It is based on IBM Cloud.
-  size: 20Gi
+  ## DB PV Storage-Class selection. Storage class is defined as follows: "ibmc-(block or file)-(bronze or silver or gold)".
+  annotations: { volume.beta.kubernetes.io/storage-class: "ibmc-block-bronze" }
 
   ## DB PV mount path and sub-path (with DB file).
   mountPath: "/var/lib/postgresql/data"
@@ -64,30 +62,43 @@ dbPersistence:
   ## DB PV hourly payment method. It is charged in the IBM Cloud.
   billingType: "hourly"
 
-  ## DB PV Storage-Class selection. Storage class is defined as follows: "ibmc-(block or file)-(bronze or silver or gold)".
-  annotations: {volume.beta.kubernetes.io/storage-class: "ibmc-block-bronze"}
+dbResources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
 
+dbNodeSelector: {}
+
+dbTolerations: []
+
+dbAffinity: {}
 
 ########### End of DB value ###########
 
 
 ########### Start of queue value ###########
 
-
 ## Queue name
-queueName: "awx-queue"
+queueName: queue
 
 ## Queue role label
 queueRole: "queue"
 
-## Queue replicas
-queueReplicas: 1
+## Queue replica Count
+queueReplicaCount: 1
 
 ## Queue image and tag
-queueImage: rabbitmq:3
-
-## Queue Container name
-queueContainerName: rabbitmq
+queueImage:
+  repository: rabbitmq
+  tag: 3
+  pullPolicy: IfNotPresent
 
 ## Queue username
 queueUser: "guest"
@@ -95,77 +106,147 @@ queueUser: "guest"
 ## Queue user password
 queuePassword: "guest"
 
-## Queue node port
-queueNodePort: 5672
-
 ## Queue application vhost
 queueVhost: awx
 
+## Queue node port
+queueService:
+  type: ClusterIP
+
+  ## Optional static port assignment for service type NodePort.
+  # nodePort: 30000
+
+  port: 5672
+
+queueResources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+queueNodeSelector: {}
+
+queueTolerations: []
+
+queueAffinity: {}
 
 ########### End of queue value ###########
 
 
 ########### Start of cache value ###########
 
-
 ## Cache name
-cacheName: "awx-cache"
+cacheName: cache
 
 ## Cache role
 cacheRole: "cache"
 
-## Cache replicas
+## Cache replica Count
 cacheReplicaCount: 1
 
 ## Cache image and tag
-cacheImage: memcached:alpine
-
-## Cache container name
-cacheContainername: "memcached"
+cacheImage:
+  repository: memcached
+  tag: alpine
+  pullPolicy: IfNotPresent
 
 ## Cache port
-cachePort: 11211
+cacheService:
+  type: ClusterIP
 
+  ## Optional static port assignment for service type NodePort.
+  # nodePort: 30000
+
+  port: 11211
+
+cacheResources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+cacheNodeSelector: {}
+
+cacheTolerations: []
+
+cacheAffinity: {}
 
 ########### End of cache value ###########
 
 
 ########### Start of awx-task value ###########
 
-
 ## Awx-task name
-taskName: "awx-task"
+taskName: task
 
 ## Awx-task role label
 taskRole: "task"
 
-## Awx-task replicas
+## Awx-task replica Count
 taskReplicaCount: 1
 
 ## Awx-task image and tag
-taskImage: "ansible/awx_task:latest"
+taskImage:
+  repository: ansible/awx_task
+  tag: latest
+  pullPolicy: IfNotPresent
+
+## AWX secret key
+secretKey: "aabbcc"
 
 ## Command to be executed at awx-task runtime.
-taskCommand: ["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;su -c 'pip install softlayer pywinrm';su -c 'mkdir -p /etc/ansible/certs';su -c 'yum install -y wget';su -c 'wget https://seo01.objectstorage.softlayer.net/v1/AUTH_a24ffe9e-6cac-4383-a870-99a6582e7964/certs/cert.crt -P /etc/ansible/certs';su -c 'wget https://seo01.objectstorage.softlayer.net/v1/AUTH_a24ffe9e-6cac-4383-a870-99a6582e7964/certs/cert.key -P /etc/ansible/certs'"]
+#taskCommand: ["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;su -c 'pip install softlayer pywinrm';su -c 'mkdir -p /etc/ansible/certs';su -c 'yum install -y wget';su -c 'wget https://seo01.objectstorage.softlayer.net/v1/AUTH_a24ffe9e-6cac-4383-a870-99a6582e7964/certs/cert.crt -P /etc/ansible/certs';su -c 'wget https://seo01.objectstorage.softlayer.net/v1/AUTH_a24ffe9e-6cac-4383-a870-99a6582e7964/certs/cert.key -P /etc/ansible/certs'"]
+taskCommand: ["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;"]
 
+taskResources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+taskNodeSelector: {}
+
+taskTolerations: []
+
+taskAffinity: {}
 
 ########### End of awx-task value ###########
 
 
 ########### Start of web value ###########
 
-
 ## Web name
-webName: "awx-web"
+webName: web
 
 ## Web role label
 webRole: "web"
 
-## Web replicas
+## Web replicas Count
 webReplicaCount: 1
 
 ## Web image and tag
-webImage: ansible/awx_web:latest
+webImage:
+  repository: ansible/awx_web
+  tag: latest
+  pullPolicy: IfNotPresent
 
 ## Web service info
 webService:
@@ -174,11 +255,44 @@ webService:
   ## Set it to "NodePort". To change to "LoadBalancer" and "Ingress", you can set it after "Portable IP" is preassigned. It is based on IBM Cloud.
   type: "NodePort"
 
+  ## Optional static port assignment for service type NodePort.
+  # nodePort: 30000
+
   ## Set internal port
   internalPort: 80
 
   ## Set external port
   externalPort: 8052
 
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts: []
+  #  - chart.example.com
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+webResources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+webNodeSelector: {}
+
+webTolerations: []
+
+webAffinity: {}
 
 ########### End of web value ###########
