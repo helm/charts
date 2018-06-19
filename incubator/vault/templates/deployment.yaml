@@ -25,7 +25,7 @@ spec:
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     spec:
-      subdomain: vault
+      subdomain: "{{ template "consul.fullname" . }}"
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -83,11 +83,11 @@ spec:
               fieldRef:
                 fieldPath: metadata.namespace
           - name: VAULT_ADDR
-            value: "{{ $scheme }}://$(POD_NAME).vault.$(POD_NAMESPACE).svc.cluster.local:8200"
+            value: "{{ $scheme }}://$(POD_NAME).{{ template "consul.fullname" . }}.$(POD_NAMESPACE).svc.cluster.local:8200"
           - name: VAULT_API_ADDR
-            value: "{{ $scheme }}://$(POD_NAME).vault.$(POD_NAMESPACE).svc.cluster.local:8200"
+            value: "{{ $scheme }}://$(POD_NAME).{{ template "consul.fullname" . }}.$(POD_NAMESPACE).svc.cluster.local:8200"
           - name: VAULT_CLUSTER_ADDR
-            value: "{{ $scheme }}://$(POD_NAME).vault.$(POD_NAMESPACE).svc.cluster.local:8201"
+            value: "{{ $scheme }}://$(POD_NAME).{{ template "consul.fullname" . }}.$(POD_NAMESPACE).svc.cluster.local:8201"
           - name: VAULT_LOG_LEVEL
             value: "{{ .Values.vault.logLevel }}"
         {{- if .Values.vault.extraEnv }}
