@@ -48,6 +48,16 @@ daemonset:
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   # updateStrategy: RollingUpdate
 
+  ## Allow datadog to collect logs from containers
+  ## ref: https://docs.datadoghq.com/logs/log_collection/docker/
+  logs:
+    enabled: false
+    collectAllContainers: true
+    ## If set to false, operator is responsible for managing /opt/datadog-agent/run
+    ## on the node. If set to true, kubernetes will manage the directory
+    ## requires Kubernetes >=1.8
+    managePointerDirectory: false
+
 # Apart from DaemonSet, deploy Datadog agent pods and related service for
 # applications that want to send custom metrics. Provides DogStasD service.
 #
