@@ -8,7 +8,6 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-#    role: {{ .Values.persistence.role }}
     billingType: {{ .Values.persistence.billingType }}
 {{- if .Values.persistence.annotations }}
   annotations:
