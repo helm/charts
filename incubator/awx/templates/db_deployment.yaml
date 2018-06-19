@@ -46,11 +46,9 @@ spec:
         - name: {{ .Values.persistence.name }}
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "awx.fullname" .) }}
+            claimName: {{ .Values.persistence.claimName | default (include "awx.fullname" .) }}
         {{- else }}
-        # emptyDir: {}
-          hostPath:
-            path: /data
+          emptyDir: {}
         {{- end -}}
     {{- with .Values.dbNodeSelector }}
       nodeSelector:

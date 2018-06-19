@@ -36,28 +36,28 @@ dbService:
 
 ## Persist data to a persistent volume
 persistence:
-  enabled: false
+  enabled: true
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: ""
+  storageClass: ""
   accessMode: ReadWriteOnce
   size: 10Gi
-  existingClaim: "awx-db"
+  claimName: "awx-db"
 
   ## DB PV Storage-Class selection. Storage class is defined as follows: "ibmc-(block or file)-(bronze or silver or gold)".
-  annotations: { volume.beta.kubernetes.io/storage-class: "ibmc-block-bronze" }
+  annotations: {volume.beta.kubernetes.io/storage-class: "ibmc-block-bronze"}
 
   ## DB PV mount path and sub-path (with DB file).
   mountPath: "/var/lib/postgresql/data"
   subPath: "/pgdata"
 
   ## DB persistence name and role
-  name: "data-volume"
-  role: "db-pvc"
+  name: "data"
+#  role: "db-pvc"
 
   ## DB PV hourly payment method. It is charged in the IBM Cloud.
   billingType: "hourly"
@@ -207,8 +207,7 @@ taskImage:
 secretKey: "aabbcc"
 
 ## Command to be executed at awx-task runtime.
-#taskCommand: ["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;su -c 'pip install softlayer pywinrm';su -c 'mkdir -p /etc/ansible/certs';su -c 'yum install -y wget';su -c 'wget https://seo01.objectstorage.softlayer.net/v1/AUTH_a24ffe9e-6cac-4383-a870-99a6582e7964/certs/cert.crt -P /etc/ansible/certs';su -c 'wget https://seo01.objectstorage.softlayer.net/v1/AUTH_a24ffe9e-6cac-4383-a870-99a6582e7964/certs/cert.key -P /etc/ansible/certs'"]
-taskCommand: ["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;"]
+taskCommand: ["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;su -c 'pip install softlayer pywinrm';su -c 'mkdir -p /etc/ansible/certs';su -c 'yum install -y wget';su -c 'wget https://seo01.objectstorage.softlayer.net/v1/AUTH_a24ffe9e-6cac-4383-a870-99a6582e7964/certs/cert.crt -P /etc/ansible/certs';su -c 'wget https://seo01.objectstorage.softlayer.net/v1/AUTH_a24ffe9e-6cac-4383-a870-99a6582e7964/certs/cert.key -P /etc/ansible/certs'"]
 
 taskResources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

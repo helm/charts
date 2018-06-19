@@ -1,14 +1,14 @@
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+{{- if and .Values.persistence.enabled }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "awx.fullname" . }}-{{ .Values.dbName }}
+  name: {{ .Values.persistence.claimName | default (include "awx.fullname" .) }}
   labels:
     app: {{ template "awx.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-    role: {{ .Values.persistence.role }}
+#    role: {{ .Values.persistence.role }}
     billingType: {{ .Values.persistence.billingType }}
 {{- if .Values.persistence.annotations }}
   annotations:
