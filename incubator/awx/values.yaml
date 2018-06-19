@@ -207,7 +207,7 @@ taskImage:
 secretKey: "aabbcc"
 
 ## Command to be executed at awx-task runtime.
-taskCommand: ["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;su -c 'pip install softlayer pywinrm';su -c 'mkdir -p /etc/ansible/certs';su -c 'yum install -y wget';su -c 'wget https://seo01.objectstorage.softlayer.net/v1/AUTH_a24ffe9e-6cac-4383-a870-99a6582e7964/certs/cert.crt -P /etc/ansible/certs';su -c 'wget https://seo01.objectstorage.softlayer.net/v1/AUTH_a24ffe9e-6cac-4383-a870-99a6582e7964/certs/cert.key -P /etc/ansible/certs'"]
+taskCommand: ["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;su -c 'pip install softlayer pywinrm';su -c 'yum install -y wget'"]
 
 taskResources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
