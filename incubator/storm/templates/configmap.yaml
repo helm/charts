@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "storm.nimbus.fullname" . }}
   labels:
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "storm.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
@@ -22,7 +22,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "storm.supervisor.fullname" . }}
   labels:
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "storm.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
@@ -41,7 +41,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "storm.logging.name" . }}
   labels:
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "storm.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
@@ -57,7 +57,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "storm.ui.fullname" . }}
   labels:
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "storm.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:

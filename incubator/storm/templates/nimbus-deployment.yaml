@@ -4,7 +4,7 @@ metadata:
   name: {{ template "storm.nimbus.fullname" . }}
   labels:
     app: {{ template "storm.nimbus.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    chart: {{ template "storm.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:

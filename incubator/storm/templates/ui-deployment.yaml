@@ -5,7 +5,7 @@ metadata:
   name: {{ template "storm.ui.fullname" . }}
   labels:
     app: {{ template "storm.ui.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    chart: {{ template "storm.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
