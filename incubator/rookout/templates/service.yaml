@@ -5,6 +5,8 @@ metadata:
   labels:
     product: rookout
     app: {{ template "rookout.name" . }}
+    release: {{ .Release.Name }}
+
 spec:
   selector:
     app: {{ template "rookout.name" . }}
