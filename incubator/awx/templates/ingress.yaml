@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $awx.fullName }}
   labels:
     app: {{ template "awx.name" . }}
     chart: {{ template "awx.chart" . }}
