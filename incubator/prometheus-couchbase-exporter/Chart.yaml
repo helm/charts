@@ -1,0 +1,14 @@
+apiVersion: v1
+appVersion: "1.0"
+description: A Helm chart for prometheus couchbase exporter
+name: prometheus-couchbase-exporter
+version: 1.0.0
+sources:
+- https://github.com/brunopsoares/prometheus_couchbase_exporter
+keywords:
+- couchbase
+- prometheus
+- exporter
+maintainers:
+- email: dimitrovvlado@gmail.com
+  name: dimitrovvlado
