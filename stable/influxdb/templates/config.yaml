@@ -91,7 +91,7 @@ data:
       unix-socket-enabled = {{ .Values.config.http.unix_socket_enabled }}
       bind-socket = "{{ .Values.config.http.bind_socket }}"
 
-    [[ifql]]
+    [ifql]
       enabled = {{ .Values.config.ifql.enabled }}
       log-enabled = {{ .Values.config.ifql.log_enabled }}
       bind-address = ":{{ .Values.config.ifql.bind_address }}"
