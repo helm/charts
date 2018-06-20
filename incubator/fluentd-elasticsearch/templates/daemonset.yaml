@@ -24,6 +24,7 @@ spec:
         heritage: "{{ .Release.Service }}"
         kubernetes.io/cluster-service: "true"
         version: {{ .Values.image.tag }}
+        release: "{{ .Release.Name }}"
       # This annotation ensures that fluentd does not get evicted if the node
       # supports critical pod annotation based priority scheme.
       # Note that this does not guarantee admission on the nodes (#40573).
