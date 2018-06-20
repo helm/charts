@@ -1,6 +1,6 @@
 {{- if .Values.sumologic.collectorUrl -}}
 # Sumologic collector URL is required
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "sumologic-fluentd.fullname" . }}
@@ -52,7 +52,7 @@ spec:
               {{- else }}
             - name: fluentd-user-conf
               mountPath: /fluentd/conf.d/user
-              readOnly: true           
+              readOnly: true
               {{- end }}
             {{- end }}
           env:

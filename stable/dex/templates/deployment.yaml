@@ -1,7 +1,7 @@
 {{ $fullname := include "dex.fullname" . }}
 {{ $tlsBuiltName := printf "%s-tls" $fullname }}
 {{ $tlsSecretName := default $tlsBuiltName .Values.secret.tlsName }}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "dex.fullname" . }}

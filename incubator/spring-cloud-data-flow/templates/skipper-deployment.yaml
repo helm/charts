@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "scdf.fullname" . }}-skipper
@@ -62,7 +62,7 @@ spec:
             configMapKeyRef:
               name: {{ template "scdf.fullname" . }}-skipper
               key: spring.application.json
-          value: 
+          value:
       initContainers:
       - name: init-mysql-wait
         image: busybox

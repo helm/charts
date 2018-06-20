@@ -1,5 +1,5 @@
 {{- if and .Values.acsenginecluster.resourcegroup .Values.acsenginecluster.azurespappid .Values.acsenginecluster.azurespsecret .Values.acsenginecluster.azuresptenantid .Values.acsenginecluster.kubeconfigprivatekey .Values.acsenginecluster.clientprivatekey -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "acs-engine-autoscaler.fullname" . }}
@@ -71,19 +71,19 @@ spec:
             - {{ .Values.acsenginecluster.sleeptime | quote }}
             {{- end }}
             {{- if .Values.acsenginecluster.ignorepools }}
-            - --ignore-pools 
+            - --ignore-pools
             - {{ .Values.acsenginecluster.ignorepools }}
             {{- end }}
             {{- if .Values.acsenginecluster.spareagents }}
-            - --spare-agents 
+            - --spare-agents
             - {{ .Values.acsenginecluster.spareagents | quote }}
             {{- end }}
             {{- if .Values.acsenginecluster.idlethreshold }}
-            - --idle-threshold 
+            - --idle-threshold
             - {{ .Values.acsenginecluster.idlethreshold | quote }}
             {{- end }}
             {{- if .Values.acsenginecluster.overprovision }}
-            - --over-provision 
+            - --over-provision
             - {{ .Values.acsenginecluster.overprovision | quote }}
             {{- end }}
             - -vvv

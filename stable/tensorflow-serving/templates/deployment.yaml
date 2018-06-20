@@ -1,5 +1,5 @@
 {{- $gpuCount := .Values.gpuCount -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "tensorflow-serving.fullname" . }}
@@ -17,7 +17,7 @@ spec:
   selector:
     matchLabels:
       release: {{ .Release.Name | quote }}
-      app: {{ template "tensorflow-serving.name" . }} 
+      app: {{ template "tensorflow-serving.name" . }}
   template:
     metadata:
       labels:

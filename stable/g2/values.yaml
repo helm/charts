@@ -6,4 +6,3 @@ g2:
   serviceType: ClusterIP
 rbac:
   install: false
-  apiVersion: v1beta1

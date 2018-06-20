@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels: {{ include "sentry-kubernetes.labels" . | indent 4 }}
@@ -14,7 +14,7 @@ spec:
         checksum/secrets: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}
       labels:
         app: {{ template "sentry-kubernetes.name" . }}
-        release: {{.Release.Name }}    
+        release: {{.Release.Name }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -31,7 +31,7 @@ spec:
             value: {{ .Values.sentry.environment }}
           {{ end }}
           {{ if .Values.sentry.release }}
-          - name: RELEASE 
+          - name: RELEASE
             value: {{ .Values.sentry.release }}
           {{ end }}
         resources:

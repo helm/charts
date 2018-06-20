@@ -1,5 +1,5 @@
 {{- if eq true .Values.firefoxDebug.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "selenium.firefoxDebug.fullname" . }}
@@ -14,7 +14,7 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
-      annotations: 
+      annotations:
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -26,7 +26,7 @@ spec:
               name: jmx
               protocol: TCP
             {{- end }}
-            - containerPort: 5900 
+            - containerPort: 5900
               name: vnc
           env:
             - name: HUB_PORT_4444_TCP_ADDR

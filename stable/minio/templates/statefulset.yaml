@@ -1,6 +1,6 @@
 {{- if eq .Values.mode "distributed" }}
 {{ $nodeCount := .Values.replicas | int }}
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "minio.fullname" . }}

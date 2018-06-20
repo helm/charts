@@ -1,9 +1,5 @@
 {{- if or (.Values.sematext.spmToken) (.Values.sematext.logseneToken) }}
-{{- if .Capabilities.APIVersions.Has "apps/v1beta2" }}
-apiVersion: apps/v1beta2
-{{- else }}
-apiVersion: extensions/v1beta1
-{{- end }}
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "sematext.fullname" . }}

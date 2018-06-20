@@ -1,5 +1,5 @@
 {{- if ne (printf "%s" .Values.projectID) "MUST PROVIDE PROJECT ID" }}
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "gcp-night-king.fullname" . }}

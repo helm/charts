@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "phpmyadmin.fullname" . }}
@@ -35,7 +35,7 @@ spec:
             {{- if .Values.db.chartName }}
             - name: DATABASE_HOST
               value: "{{ template "phpmyadmin.dbfullname" . }}"
-            {{- else }} 
+            {{- else }}
             - name: DATABASE_HOST
               value: "{{ .Values.db.host }}"
             {{- end }}

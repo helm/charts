@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-zeppelin
@@ -46,7 +46,7 @@ spec:
               name: hadoop-config
 {{- end }}
           resources:
-{{ toYaml .Values.zeppelin.resources | indent 12 }} 
+{{ toYaml .Values.zeppelin.resources | indent 12 }}
           readinessProbe:
             httpGet:
               path: /
