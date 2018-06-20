@@ -147,6 +147,7 @@ spec:
               - key: worker-key-pub
                 path: worker_key.pub
   {{- if .Values.persistence.enabled }}
+    {{- if (eq "volumeclaim" .Values.persistence.worker.type) }}
   volumeClaimTemplates:
     - metadata:
         name: concourse-work-dir
@@ -163,6 +164,12 @@ spec:
         storageClassName: "{{ .Values.persistence.worker.storageClass }}"
       {{- end }}
       {{- end }}
+    {{- else if (eq "hostpath" .Values.persistence.worker.type) }}
+        - name: concourse-work-dir
+          hostPath:
+            path: {{ .Values.persistence.worker.path }}
+            type: {{ .Values.persistence.worker.pathType }}
+    {{- end }}
   {{- else }}
         - name: concourse-work-dir
           emptyDir: {}

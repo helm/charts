@@ -443,6 +443,20 @@ persistence:
   ## Worker Persistence configuration.
   ##
   worker:
+    ## concourse data Persistent type
+    ## If set to "hostpath", concourse-work-dir will use a hostPath volume for persistence
+    ## If set to "volumeclaim" (the default), concourse-work-dir will use a PVC for persistence
+    type: "volumeclaim"
+
+    ## concourse data Persistent Host Path path
+    ##
+    path: ""
+
+    ## concourse data Persistent Host Path type
+    ##
+    pathType: Directory
+
+
     ## concourse data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
