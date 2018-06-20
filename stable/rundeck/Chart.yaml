@@ -1,5 +1,11 @@
 apiVersion: v1
-appVersion: "1.0"
-description: A Helm chart for Rundeck
 name: rundeck
 version: 0.1.0
+home: https://hub.docker.com/r/deepakr11/rundeck/
+source:
+  - https://github.com/Deepak-Routray/rundeck-docker
+appVersion: "1.0"
+description: A Helm chart for Rundeck
+maintainers:
+  - DEEPAK ROUTRAY droutray@cisco.com
+
