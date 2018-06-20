@@ -172,6 +172,8 @@ master:
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
   # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
   # tolerations: []
+  ## Redis Master pod/node affinity/anti-affinity
+  affinity: {}
   ## Redis Master pod annotations
   podAnnotations: {}
   ## Redis Master Service properties
