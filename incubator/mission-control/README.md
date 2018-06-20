@@ -19,12 +19,6 @@ This chart will do the following:
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) installed and setup to use the cluster
 - [Helm](https://helm.sh/) installed and setup to use the cluster (helm init)
 
-## Installing the Chart
-To install the chart with the release name `mission-control`:
-```
-
-```
-
 ## Create Secret with keys and certs for Mission-Control
 
 * Create file `generate_keys.sh` with following content:
@@ -200,7 +194,7 @@ echo -e "========================================================\n"
 kubectl create secret generic mission-control-certs --from-file=./certs/insight-server/etc/security/insight.key --from-file=./certs/insight-server/etc/security/insight.crt --from-file=./certs/insight-server/etc/security/jfmc.crt  --from-file=./certs/mission-control/etc/security/jfmc-truststore.jks-b64 --from-file=./certs/mission-control/etc/security/jfmc-keystore.jks-b64
 ```
 
-* Installing the Chart with cert secret
+### Installing the Chart with certificate secret
 ```bash
 helm install --name mission-control --set certsSecretName=mission-control-certs incubator/mission-control
 ```
