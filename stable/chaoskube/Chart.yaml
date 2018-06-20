@@ -1,5 +1,5 @@
 name: chaoskube
-version: 0.7.0
+version: 0.8.0
 appVersion: 0.8.0
 description: Chaoskube periodically kills random pods in your Kubernetes cluster.
 home: https://github.com/linki/chaoskube
