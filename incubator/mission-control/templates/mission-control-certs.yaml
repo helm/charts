@@ -1,3 +1,4 @@
+{{- if (not .Values.certsSecretName) }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -9,12 +10,13 @@ metadata:
     release: {{ .Release.Name }}
 type: Opaque
 data:
-  insight.key: {{ .Values.insightKey | b64enc | quote }}
+  insight.key: {{ required "A valid .Values.insightKey entry required!" .Values.insightKey | b64enc | quote }}
 
-  insight.crt: {{ .Values.insightCrt | b64enc | quote }}
+  insight.crt: {{ required "A valid .Values.insightCrt entry required!" .Values.insightCrt | b64enc | quote }}
 
-  jfmc.crt: {{ .Values.jfmcCrt | b64enc | quote }}
+  jfmc.crt: {{ required "A valid .Values.jfmcCrt entry required!" .Values.jfmcCrt | b64enc | quote }}
 
-  jfmc-keystore.jks-b64: {{ .Values.jfmcKeystore | b64enc | quote }}
+  jfmc-keystore.jks-b64: {{ required "A valid .Values.jfmcKeystore entry required!" .Values.jfmcKeystore | b64enc | quote }}
 
-  jfmc-truststore.jks-b64: {{ .Values.jfmcTruststore | b64enc | quote }}
+  jfmc-truststore.jks-b64: {{ required "A valid .Values.jfmcTruststore entry required!" .Values.jfmcTruststore | b64enc | quote }}
+{{- end }}
