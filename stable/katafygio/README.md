@@ -1,6 +1,6 @@
 # Katafygio
 
-[Katafygio](https://github.com/bpineau/katafygio) discovers Kubernetes objects (deployments, services, ...), and continuously save them as YAML files in a git repository. This provides real time, continuous backups, and keeps detailed changes history.
+[Katafygio](https://github.com/bpineau/katafygio) discovers Kubernetes objects (deployments, services, ...), and continuously saves them as YAML files in a Git repository. This provides real-time, continuous backups, and keeps detailed changes history.
 
 ## TL;DR;
 
@@ -21,7 +21,7 @@ This chart installs a [Katafygio](https://github.com/bpineau/katafygio) deployme
 You may filter out irrelevant objects using the `excludeKind` and `excludeObject` options, to keep your backups' repository lean.
 
 By default, the chart will dump (and version) the clusters content in /var/lib/katafygio/data (configurable with `localDir`).
-This can be useful as is, to keep a local changes history. To benefit from long term, out of cluster, and centrally reachable persistence, you may provide the address of a remote git repository (with `gitUrl`), where all changes will be pushed.
+This can be useful as is, to keep a local changes history. To benefit from long term, out of cluster, and centrally reachable persistence, you may provide the address of a remote Git repository (with `gitUrl`), where all changes will be pushed.
 
 ## Installing the Chart
 
@@ -53,7 +53,7 @@ The following table lists the configurable parameters of the Katafygio chart and
 | `image.pullPolicy`      | Katafygio container image pull policy                       | `IfNotPresent`                       |
 | `localDir`              | Container's local path where Katafygio will dump and commit | `/tmp/kf-dump`                       |
 | `gitUrl`                | Optional remote repository where changes will be pushed     | `nil`                                |
-| `noGit`                 | Disable git versioning                                      | `false`                              |
+| `noGit`                 | Disable Git versioning                                      | `false`                              |
 | `filter`                | Label selector to dump only matched objects                 | `nil`                                |
 | `healthcheckPort`       | The port Katafygio will listen for health checks requests   | `8080`                               |
 | `excludeKind`           | Object kinds to ignore                                      | `{"replicaset","endpoints","event"}` |

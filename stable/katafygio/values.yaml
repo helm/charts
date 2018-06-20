@@ -61,7 +61,6 @@ persistence:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
-  apiVersion: v1
 
 # serviceAccount is used to provide a dedicated serviceAccount when using RBAC
 # (or to fallback to the namespace's "default" SA if name is left empty).
