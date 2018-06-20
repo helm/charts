@@ -369,6 +369,12 @@ worker:
   #   - name: CONCOURSE_GARDEN_DNS_PROXY_ENABLE
   #     value: "true"
 
+  ## Configure additional volumeMounts for the
+  ## worker container(s)
+  # addictionalVolumeMounts:
+  #   - name: concourse-baggageclaim
+  #     mountPath: /baggageclaim
+
   ## Annotations to be added to the worker pods.
   ##
   # annotations:
@@ -393,6 +399,14 @@ worker:
   #               operator: NotIn
   #               values:
   #                 - "true"
+
+  ## Configure additional volumes for the
+  ## worker container(s)
+  # additionalVolumes:
+  #   - name: concourse-baggageclaim
+  #     hostPath:
+  #       path: /dev/nvme0n1
+  #       type: BlockDevice
 
   ## Whether the workers should be forced to run on separate nodes.
   ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred
