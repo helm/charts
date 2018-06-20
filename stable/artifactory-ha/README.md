@@ -80,7 +80,7 @@ $ helm install --name artifactory-ha \
 
 Get more details on configuring Artifactory in the [official documentation](https://www.jfrog.com/confluence/).
 
-## Create Distribution Certificates for Artifactory Enterprise Plus
+### Create Distribution Certificates for Artifactory Enterprise Plus
 ```bash
 # Create private.key and root.crt
 $ openssl req -newkey rsa:2048 -nodes -keyout private.key -x509 -days 365 -out root.crt
@@ -178,7 +178,7 @@ $ helm install --name artifactory-ha --set artifactory.license.secret=artifactor
 ```
 **NOTE:** You have to keep passing the license secret parameters as `--set artifactory.license.secret=artifactory-cluster-license,artifactory.license.dataKey=art.lic` on all future calls to `helm install` and `helm upgrade`!
 
-## Bootstrapping Artifactory
+### Bootstrapping Artifactory
 **IMPORTANT:** Bootstrapping Artifactory needs license. Pass license as shown in above section.
 
 * User guide to [bootstrap Artifactory Global Configuration](https://www.jfrog.com/confluence/display/RTF/Configuration+Files#ConfigurationFiles-BootstrappingtheGlobalConfiguration)
@@ -201,12 +201,24 @@ Create configMap in Kubernetes:
 ```bash
 $ kubectl apply -f bootstrap-config.yaml
 ```
-# Pass the configMap to helm
+### Pass the configMap to helm
 ```bash
 $ helm install --name artifactory-ha --set artifactory.license.secret=artifactory-cluster-license,artifactory.license.dataKey=art.lic,artifactory.configMapName=my-release-bootstrap-config stable/artifactory-ha
 ```
 
-#### Scaling your Artifactory cluster
+### Use custom nginx.conf with Nginx
+
+Steps to create configMap with nginx.conf
+* Create `nginx.conf` file.
+```bash
+kubectl create configmap nginx-config --from-file=nginx.conf
+```
+* Pass configMap to helm install
+```bash
+helm install --name artifactory-ha --set nginx.customConfigMap=nginx-config stable/artifactory-ha
+```
+
+### Scaling your Artifactory cluster
 A key feature in Artifactory HA is the ability to set an initial cluster size with `--set artifactory.node.replicaCount=${CLUSTER_SIZE}` and if needed, resize it.
 
 ##### Before scaling
@@ -393,6 +405,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |    |
 | `nginx.env.ssl`                   | Nginx Environment enable ssl               | `true`                                  |
 | `nginx.env.skipAutoConfigUpdate`  | Nginx Environment to disable auto configuration update | `false`                     |
+| `nginx.customConfigMap`           | Nginx CustomeConfigMap name for `nginx.conf` | `false`                               |
 | `nginx.resources.requests.memory` | Nginx initial memory request               | `250Mi`                                 |
 | `nginx.resources.requests.cpu`    | Nginx initial cpu request                  | `100m`                                  |
 | `nginx.resources.limits.memory`   | Nginx memory limit                         | `250Mi`                                 |

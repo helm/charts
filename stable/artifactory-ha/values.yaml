@@ -263,6 +263,8 @@ nginx:
     ssl: true
     # artUrl: "http://artifactory:8081/artifactory"
     skipAutoConfigUpdate: false
+  ## Custom ConfigMap for nginx.conf
+  customConfigMap:
   persistence:
     mountPath: "/var/opt/jfrog/nginx"
     enabled: false
