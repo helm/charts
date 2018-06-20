@@ -126,7 +126,7 @@ Amazon EBS volume) to provide persistence.
 
 ---
 
-The following is a recommended configration example when another storage class
+The following is a recommended configuration example when another storage class
 does not exist to provide persistence:
 
     persistence:
@@ -161,7 +161,7 @@ An example of the necessary `PersistentVolume`:
 
 ---
 
-The following is a recommended configration example for running on bare metal with a hostPath volume:
+The following is a recommended configuration example for running on bare metal with a hostPath volume:
 
     persistence:
       enabled: true
