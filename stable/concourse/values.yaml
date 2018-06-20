@@ -371,7 +371,7 @@ worker:
 
   ## Configure additional volumeMounts for the
   ## worker container(s)
-  # addictionalVolumeMounts:
+  # additionalVolumeMounts:
   #   - name: concourse-baggageclaim
   #     mountPath: /baggageclaim
 

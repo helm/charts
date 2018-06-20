@@ -112,8 +112,8 @@ spec:
               readOnly: true
             - name: concourse-work-dir
               mountPath: /concourse-work-dir
-{{- if .Values.worker.addictionalVolumeMounts }}
-{{ toYaml .Values.worker.addictionalVolumeMounts | indent 12 }}
+{{- if .Values.worker.additionalVolumeMounts }}
+{{ toYaml .Values.worker.additionalVolumeMounts | indent 12 }}
 {{- end }}
       affinity:
 {{- if .Values.worker.additionalAffinities }}
@@ -138,8 +138,8 @@ spec:
                   release: {{ .Release.Name | quote }}
           {{- end }}
       volumes:
-{{- if .Values.worker.addictionalVolumes }}
-{{ toYaml .Values.worker.addictionalVolumes | indent 8 }}
+{{- if .Values.worker.additionalVolumes }}
+{{ toYaml .Values.worker.additionalVolumes | indent 8 }}
 {{- end }}
         - name: concourse-keys
           secret:
