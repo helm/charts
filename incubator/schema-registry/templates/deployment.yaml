@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "schema-registry.fullname" . }}
@@ -43,7 +43,7 @@ spec:
             value: {{ .Values.sasl.scram.clientUser }}
           - name: SCRAM_CLIENT_PASSWORD
             {{- if (hasKey .Values.sasl.scram "useExistingSecret") }}
-            valueFrom: 
+            valueFrom:
 {{ toYaml .Values.sasl.scram.useExistingSecret.clientPassword | indent 14 -}}
             {{- else }}
             valueFrom:
@@ -112,4 +112,4 @@ spec:
         configMap:
           name: {{ template "schema-registry.fullname" . }}
       {{- end }}
-          
+

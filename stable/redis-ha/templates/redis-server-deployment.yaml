@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   # Pay attention to the redis-role label at runtime. The self-determination logic in the image sets this value accordingly.

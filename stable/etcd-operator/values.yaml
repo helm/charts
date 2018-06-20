@@ -5,7 +5,6 @@
 ## Install Default RBAC roles and bindings
 rbac:
   create: true
-  apiVersion: v1beta1
 
 ## Service account names and whether to create them
 serviceAccount:

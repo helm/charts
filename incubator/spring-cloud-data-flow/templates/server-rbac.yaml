@@ -1,6 +1,6 @@
 {{- if .Values.rbac.create -}}
 kind: Role
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ template "scdf.fullname" . }}
   labels:
@@ -23,7 +23,7 @@ rules:
     verbs: ["get", "list", "watch", "create", "delete", "update", "patch"]
 ---
 kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ template "scdf.fullname" . }}
   labels:

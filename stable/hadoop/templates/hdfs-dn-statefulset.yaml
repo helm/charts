@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "hadoop.fullname" . }}-hdfs-dn
@@ -50,7 +50,7 @@ spec:
            - "/bin/bash"
            - "/tmp/hadoop-config/bootstrap.sh"
            - "-d"
-        resources:       
+        resources:
 {{ toYaml .Values.hdfs.dataNode.resources | indent 10 }}
         readinessProbe:
           httpGet:
@@ -77,6 +77,6 @@ spec:
       {{- if .Values.persistence.dataNode.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "hadoop.fullname" . }}-hdfs-dn
-      {{- else }}        
+      {{- else }}
         emptyDir: {}
       {{- end }}

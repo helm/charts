@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "etcd.fullname" . }}
@@ -41,7 +41,7 @@ spec:
         - containerPort: {{ .Values.clientPort }}
           name: client
         resources:
-{{ toYaml .Values.resources | indent 10 }}          
+{{ toYaml .Values.resources | indent 10 }}
         env:
         - name: INITIAL_CLUSTER_SIZE
           value: {{ .Values.replicas | quote }}

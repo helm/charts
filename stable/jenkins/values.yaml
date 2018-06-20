@@ -180,7 +180,5 @@ NetworkPolicy:
 rbac:
   install: false
   serviceAccountName: default
-  # RBAC api version (currently either v1beta1 or v1alpha1)
-  apiVersion: v1beta1
   # Cluster role reference
   roleRef: cluster-admin

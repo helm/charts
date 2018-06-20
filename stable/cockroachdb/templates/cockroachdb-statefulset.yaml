@@ -11,7 +11,7 @@ metadata:
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
 ---
 {{- end }}
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
@@ -29,7 +29,7 @@ rules:
   - create
   - get
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
@@ -48,7 +48,7 @@ rules:
   - get
   - watch
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
@@ -66,7 +66,7 @@ subjects:
   name: {{ template "cockroachdb.serviceAccountName" . }}
   namespace: {{ .Release.Namespace | quote }}
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
@@ -165,7 +165,7 @@ spec:
       component: "{{ .Release.Name }}-{{ .Values.Component }}"
   maxUnavailable: {{ .Values.MaxUnavailable }}
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"

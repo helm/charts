@@ -1,6 +1,6 @@
 {{- if .Values.rbac.create -}}
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ template "fullname" . }}
   labels:
@@ -17,7 +17,7 @@ subjects:
   namespace: {{ .Release.Namespace | quote }}
   name: {{ template "kube-spot-termination-notice-handler.serviceAccountName" . }}
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: {{ template "fullname" . }}

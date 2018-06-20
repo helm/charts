@@ -1,5 +1,5 @@
 {{- if and (and .Values.coscale.appId .Values.coscale.accessToken) .Values.coscale.templateId -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "coscale.name" . }}
@@ -15,7 +15,7 @@ spec:
       labels:
         app: {{ template "coscale.name" . }}
     spec:
-      hostNetwork: true    
+      hostNetwork: true
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

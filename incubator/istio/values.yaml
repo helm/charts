@@ -1,7 +1,6 @@
 ## Install Default RBAC roles and bindings
 rbac:
   install: false
-  apiVersion: v1beta1
 
 istio:
   install: false

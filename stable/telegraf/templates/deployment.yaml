@@ -1,6 +1,6 @@
 {{- if gt (len .Values.single.config.outputs.influxdb.urls) 0 }}
 {{- if .Values.single.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "fullname" . }}-s

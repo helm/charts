@@ -2,7 +2,7 @@
 {{ if .Values.rbac.install }}
 {{- $serviceName := include "istio.name" . -}}
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ $serviceName }}-pilot
 rules:
@@ -29,7 +29,7 @@ rules:
   verbs: ["create", "update", "delete"]
 ---
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ $serviceName }}-initializer
 rules:
@@ -44,7 +44,7 @@ rules:
 # It also uses discovery API to discover Kinds of config.istio.io
 # K8s adapter needs to list pods, services etc.
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ $serviceName }}-mixer
 rules:
@@ -59,7 +59,7 @@ rules:
   verbs: ["get", "list", "watch"]
 ---
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ $serviceName }}-ca
 rules:
@@ -71,7 +71,7 @@ rules:
   verbs: ["get", "watch", "list"]
 ---
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ $serviceName }}-sidecar
 rules:
@@ -86,7 +86,7 @@ rules:
   verbs: ["get", "watch", "list"]
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ $serviceName }}-pilot-admin-role-binding
 subjects:
@@ -100,7 +100,7 @@ roleRef:
 ---
 # Grant permissions to the Sidecar initializer
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ $serviceName }}-initializer-admin-role-binding
 subjects:
@@ -113,7 +113,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ $serviceName }}-ca-role-binding
 subjects:
@@ -126,7 +126,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ $serviceName }}-ingress-admin-role-binding
 subjects:
@@ -140,7 +140,7 @@ roleRef:
 ---
 # Grant permissions to the Egress controller.
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ $serviceName }}-egress-admin-role-binding
 subjects:
@@ -153,7 +153,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ $serviceName }}-sidecar-role-binding
 subjects:
@@ -167,7 +167,7 @@ roleRef:
 ---
 # Grant permissions to Mixer.
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ $serviceName }}-mixer-admin-role-binding
 subjects:

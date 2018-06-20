@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "hadoop.fullname" . }}-hdfs-nn
@@ -77,6 +77,6 @@ spec:
       {{- if .Values.persistence.nameNode.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "hadoop.fullname" . }}-hdfs-nn
-      {{- else }}        
+      {{- else }}
         emptyDir: {}
       {{- end }}

@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "prometheus-pushgateway.fullname" . }}
@@ -19,7 +19,7 @@ spec:
         app: {{ template "prometheus-pushgateway.name" . }}
         release: {{ .Release.Name }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}        
+{{ toYaml .Values.podAnnotations | indent 8 }}
     spec:
       serviceAccountName: {{ template "prometheus-pushgateway.serviceAccountName" . }}
       containers:

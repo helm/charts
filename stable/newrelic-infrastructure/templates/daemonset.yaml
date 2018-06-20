@@ -1,5 +1,5 @@
 {{- if and .Values.licenseKey .Values.cluster }}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels: {{ include "newrelic.labels" . | indent 4 }}
@@ -42,7 +42,7 @@ spec:
             - name: "NRIA_DISPLAY_NAME"
               valueFrom:
                 fieldRef:
-                  apiVersion: "v1"
+                  apiVersion: v1
                   fieldPath: "spec.nodeName"
             - name: "NRIA_PASSTHROUGH_ENVIRONMENT"
               value: "KUBERNETES_SERVICE_HOST,KUBERNETES_SERVICE_PORT,CLUSTER_NAME"
