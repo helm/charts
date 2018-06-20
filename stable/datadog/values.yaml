@@ -104,6 +104,12 @@ datadog:
   ##
   collectEvents: false
 
+  ## Enables log collection
+  ## ref: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup
+  ##
+  # logsEnabled: false
+  # logsConfigContainerCollectAll: false
+
   ## Un-comment this to enable APM and tracing, on ports 7777 and 8126
   ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
   ##
