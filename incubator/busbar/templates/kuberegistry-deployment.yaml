@@ -1,0 +1,47 @@
+kind: Deployment
+apiVersion: apps/v1beta1
+metadata:
+  name: {{ template "kubeRegistry.fullname" . }}-external
+  labels:
+    app: {{ template "busbar.name" . }}
+    component: {{ template "kubeRegistry.fullname" . }}-external
+    release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "busbar.name" . }}
+        component: {{ template "kubeRegistry.fullname" . }}-external
+        release: "{{ .Release.Name }}"
+        kubernetes.io/cluster-service: "true"
+    spec:
+      containers:
+      - name: {{ template "kubeRegistry.fullname" . }}-external
+        image: {{ .Values.image.kuberegistry.repository }}:{{ .Values.image.kuberegistry.tag }}
+        imagePullPolicy: {{ .Values.image.kuberegistry.pullPolicy }}
+        env:
+        - name: REGISTRY_HTTP_ADDR
+          value: :5000
+        - name: REGISTRY_STORAGE
+          value: s3
+        - name: REGISTRY_STORAGE_S3_ACCESSKEY
+          value: {{ .Values.kubeRegistry.storageS3Accesskey }}
+        - name: REGISTRY_STORAGE_S3_SECRETKEY
+          value: {{ .Values.kubeRegistry.storageS3Secretkey }}
+        - name: REGISTRY_STORAGE_S3_REGION
+          value: us-east-1
+        - name: REGISTRY_STORAGE_S3_BUCKET
+          value: {{ .Values.kubeRegistry.storageS3Bucket }}
+        - name: REGISTRY_STORAGE_S3_SECURE
+          value: "true"
+        ports:
+        - containerPort: 5000
+          name: registry
+          protocol: TCP
+        resources:
+{{ toYaml .Values.kubeRegistry.resources | indent 10 }}
+
+

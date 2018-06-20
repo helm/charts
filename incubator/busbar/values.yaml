@@ -1,0 +1,57 @@
+## Busbar default Values
+##
+
+## Images
+image:
+  busbar:
+    repository: busbario/busbar
+    tag: 1.8.1
+    pullPolicy: IfNotPresent
+  kuberegistry:
+    repository: registry
+    tag: 2.2.1
+    pullPolicy: IfNotPresent
+  kubeconfig:
+    repository: 127.0.0.1:5000/kubeconfig
+    tag: latest
+    pullPolicy: Always
+
+## Cluster Name
+clusterName: busbar_cluster
+privateDomainName: private
+publicDomainName: example.com
+
+## Private Registry
+kubeRegistry:
+  storageS3Accesskey: my_private_registry_s3_access_key
+  storageS3Secretkey: my_private_registry_s3_secret_key
+  storageS3Bucket: my_private_registry_s3_bucket
+
+  resources: {}
+#    limits:
+#      cpu: "1"
+#      memory: 256Mi
+#    requests:
+#      cpu: "0.5"
+#      memory: 256Mi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+busbar:
+  web:
+    resources: {}
+#      requests:
+#        cpu: 100m
+#        memory: 256Mi
+
+  worker:
+    resources: {}
+#      requests:
+#        cpu: 1
+#        memory: 512Mi
+
+## Dependencies
+## Redis
+redis:
+  usePassword: false
