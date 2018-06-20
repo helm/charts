@@ -87,6 +87,8 @@ artifactory:
     ##   GKE, AWS & OpenStack)
     ##
     # storageClass: "-"
+    ## Annotations for the Persistent Volume Claim
+    annotations: {}
   ## Uncomment the following resources definitions or pass them from command line
   ## to control the cpu and memory resources allocated by the Kubernetes cluster
   resources: {}
