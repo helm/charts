@@ -14,6 +14,30 @@ fluentd:
 
 nginx-ldapauth-proxy:
   enabled: false
-
+  # Example config to get it working with ELK. Adjust as you need to.
+  # proxy:
+  #   port: 5601
+  #   # This is the internal hostname for the kibana service
+  #   host: "elk-kibana.default.svc.cluster.local"
+  #   authName: "ELK:Infrastructure:LDAP"
+  #   ldapHost: "ldap.example.com"
+  #   ldapDN: "dc=example,dc=com"
+  #   ldapFilter: "objectClass=organizationalPerson"
+  #   ldapBindDN: "cn=reader,dc=example,dc=com"
+  #   requires:
+  #     - name: "ELK-USER"
+  #       filter: "cn=elkuser,ou=groups,dc=example,dc=com"
+  # ingress:
+  #   enabled: true
+  #   hosts:
+  #     - "elk.example.com"
+  #   annotations:
+  #     kubernetes.io/ingress.class: nginx
+  #   tls:
+  #     - hosts:
+  #       - elk.example.com
+  #       secretName: example-elk-tls
+  # secrets:
+  #   ldapBindPassword: PASSWORD
 elasticsearch-curator:
   enabled: false
