@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This chart bootstraps Horovod which is a Distributed TensorFlow Framework on a Kubernetes cluster using the Helm Package manager. It deploys Horovod workers as statefulsets, and the Horovod master as a job, then discover the the host list automatically.ß
+This chart bootstraps Horovod which is a Distributed TensorFlow Framework on a Kubernetes cluster using the Helm Package Manager. It deploys Horovod workers as statefulsets, and the Horovod master as a job, then discover the host list automatically.
 
 ## Prerequisites
 
@@ -64,7 +64,7 @@ master:
 EOF
 ```
 
-For most cases, the overlay network impacts the horovod performance greatly, so we should apply `Host Network` solution. To run Horovod with Host Network and GPU, you can create `values.yaml` like below
+For most cases, the overlay network impacts the Horovod performance greatly, so we should apply `Host Network` solution. To run Horovod with Host Network and GPU, you can create `values.yaml` like below
 
 
 ```
