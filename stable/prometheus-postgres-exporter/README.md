@@ -41,12 +41,14 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `image`                         | Image                                      | `wrouesnel/postgres_exporter`                      |
 | `imageTag`                      | Image tag                                  | `v0.4.6`                                      |
 | `imagePullPolicy`               | Image pull policy                          | `IfNotPresent` |
-| `service.type`      | Service type |  `ClusterIP` | 
+| `service.type`      | Service type |  `ClusterIP` |
 | `service.port`                      | The service port                               | `80`                                     |
 | `service.targetPort`                      | The target port of the container                               | `9187`                                        |
 | `resources`          |                                  |                    `{}`                                  |
 | `config.datasource`                 | Postgresql datasource configuration                      |                                     |
-| `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) | 
+| `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) |
+| `rbac.create`                   | Specifies whether RBAC resources should be created.| `true` |
+| `rbac.pspEnabled`               | Specifies whether a PodSecurityPolicy should be created.| `true` |
 | `serviceAccount.create`         | Specifies whether a service account should be created.| `true` |
 | `serviceAccount.name`           | Name of the service account.|        |
 | `tolerations`                   | Add tolerations                            | `[]`  |
