@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
   name: {{ template "nats.fullname" . }}
@@ -32,6 +32,11 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
       securityContext:
         runAsUser: 1001
         fsGroup: 1001

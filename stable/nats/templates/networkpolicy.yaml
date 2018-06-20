@@ -21,7 +21,7 @@ spec:
       from:
         - podSelector:
             matchLabels:
-              {{ template "redis.fullname" . }}-client: "true"
+              {{ template "nats.fullname" . }}-client: "true"
       {{- end }}
     - ports:
       - port: {{ .Values.clusterService.port }}

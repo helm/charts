@@ -6,7 +6,7 @@ metadata:
   name: {{ template "nats.fullname" $ }}-monitoring
   labels:
     app: "{{ template "nats.name" $ }}"
-    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    chart: "{{ template "nats.chart" $ }}"
     release: {{ $.Release.Name | quote }}
     heritage: {{ $.Release.Service | quote }}
   annotations:

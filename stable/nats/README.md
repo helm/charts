@@ -52,11 +52,11 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `image.pullSecrets`                  | Specify image pull secrets                                                                   | `nil`                             |
 | `auth.enabled`                       | Switch to enable/disable client authentication                                               | `true`                            |
 | `auth.user`                          | Client authentication user                                                                   | `nats_cluster`                    |
-| `auth.password`                      | Client authentication user                                                                   | `random alhpanumeric string (10)` |
+| `auth.password`                      | Client authentication password                                                               | `random alhpanumeric string (10)` |
 | `auth.token`                         | Client authentication token                                                                  | `nil`                             |
 | `clusterAuth.enabled`                | Switch to enable/disable cluster authentication                                              | `true`                            |
 | `clusterAuth.user`                   | Cluster authentication user                                                                  | `nats_cluster`                    |
-| `clusterAuth.password`               | Cluster authentication user                                                                  | `random alhpanumeric string (10)` |
+| `clusterAuth.password`               | Cluster authentication password                                                              | `random alhpanumeric string (10)` |
 | `clusterAuth.token`                  | Cluster authentication token                                                                 | `nil`                             |
 | `debug.enabled`                      | Switch to enable/disable debug on logging                                                    | `false`                           |
 | `debug.trace`                        | Switch to enable/disable trace debug level on logging                                        | `false`                           |
@@ -66,6 +66,9 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `maxPayload`                         | Max. payload                                                                                 | `nil`                             |
 | `writeDeadline`                      | Duration the server can block on a socket write to a client                                  | `nil`                             |
 | `replicaCount`                       | Number of NATS nodes                                                                         | `1`                               |
+| `securityContext.enabled`            | Enable security context                                                                      | `true`                            |
+| `securityContext.fsGroup`            | Group ID for the container                                                                   | `1001`                            |
+| `securityContext.runAsUser`          | User ID for the container                                                                    | `1001`                            |
 | `updateStrategy`                     | Replicaset Update strategy                                                                   | `OnDelete`                        |
 | `rollingUpdatePartition`             | Partition for Rolling Update strategy                                                        | `nil`                             |
 | `podLabels`                          | Additional labels to be added to pods                                                        | {}                                |
