@@ -82,7 +82,7 @@ $ helm delete --purge artifactory
 This will completely delete your Artifactory Pro deployment.  
 **IMPORTANT:** This will also delete your data volumes. You will lose all data!
 
-## Create Distribution Cert for Artifactory Edge
+### Create Distribution Cert for Artifactory Edge
 ```bash
 # Create private.key and root.crt
 $ openssl req -newkey rsa:2048 -nodes -keyout private.key -x509 -days 365 -out root.crt
@@ -98,7 +98,7 @@ Pass it to `helm`
 $ helm install --name artifactory --set artifactory.distributionCerts=distribution-certs stable/artifactory
 ```
 
-##### Kubernetes Secret
+### Kubernetes Secret for Artifactory License
 You can deploy the Artifactory license as a [Kubernetes secret](https://kubernetes.io/docs/concepts/configuration/secret/).
 Prepare a text file with the license written in it.
 ```bash
@@ -110,13 +110,13 @@ $ helm install --name artifactory --set artifactory.license.secret=artifactory-l
 ```
 **NOTE:** You have to keep passing the license secret parameters as `--set artifactory.license.secret=artifactory-license,artifactory.license.dataKey=art.lic` on all future calls to `helm install` and `helm upgrade`!
 
-## Bootstrapping Artifactory
+### Bootstrapping Artifactory
 **IMPORTANT:** Bootstrapping Artifactory needs license. Pass license as shown in above section.
 
 * User guide to [bootstrap Artifactory Global Configuration](https://www.jfrog.com/confluence/display/RTF/Configuration+Files#ConfigurationFiles-BootstrappingtheGlobalConfiguration)
 * User guide to [bootstrap Artifactory Security Configuration](https://www.jfrog.com/confluence/display/RTF/Configuration+Files#ConfigurationFiles-BootstrappingtheSecurityConfiguration)
 
-Create `bootstrap-config.yaml` with artifactory.config.import.xml and security.import.xml as shown below:
+1. Create `bootstrap-config.yaml` with artifactory.config.import.xml and security.import.xml as shown below:
 ```
 apiVersion: v1
 kind: ConfigMap
@@ -129,13 +129,25 @@ data:
     <config contents>
 ```
 
-Create configMap in Kubernetes:
+2. Create configMap in Kubernetes:
 ```bash
 $ kubectl apply -f bootstrap-config.yaml
 ```
-# Pass the configMap to helm
+3. Pass the configMap to helm
 ```bash
 $ helm install --name artifactory --set artifactory.license.secret=artifactory-license,artifactory.license.dataKey=art.lic,artifactory.configMapName=my-release-bootstrap-config stable/artifactory
+```
+
+### Use custom nginx.conf with Nginx
+
+Steps to create configMap with nginx.conf
+* Create `nginx.conf` file.
+```bash
+kubectl create configmap nginx-config --from-file=nginx.conf
+```
+* Pass configMap to helm install
+```bash
+helm install --name artifactory-ha --set nginx.customConfigMap=nginx-config stable/artifactory-ha
 ```
 
 ### Use an external Database
@@ -255,6 +267,8 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |                                                 |
 | `nginx.env.artUrl` | Nginx Environment variable Artifactory URL | `"http://artifactory:8081/artifactory"`                |
 | `nginx.env.ssl` | Nginx Environment enable ssl | `true`                                                                  |
+| `nginx.env.skipAutoConfigUpdate`  | Nginx Environment to disable auto configuration update | `false`                     |
+| `nginx.customConfigMap`           | Nginx CustomeConfigMap name for `nginx.conf` | `false`                               |
 | `nginx.persistence.mountPath` | Nginx persistence volume mount path | `"/var/opt/jfrog/nginx"`                           |
 | `nginx.persistence.enabled` | Nginx persistence volume enabled | `true`                                                  |
 | `nginx.persistence.accessMode` | Nginx persistence volume access mode | `ReadWriteOnce`                                  |

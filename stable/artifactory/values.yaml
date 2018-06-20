@@ -158,6 +158,9 @@ nginx:
   env:
     # artUrl: "http://artifactory:8081/artifactory"
     ssl: true
+    skipAutoConfigUpdate: false
+  ## Custom ConfigMap for nginx.conf
+  customConfigMap:
   persistence:
     mountPath: "/var/opt/jfrog/nginx"
     enabled: false
