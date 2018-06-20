@@ -46,6 +46,8 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
+| `datadog.logsEnabled`       | Enable log collection from containers    | `nil`                               |
+| `datadog.logsConfigContainerCollectAll`       | Add a log configuration that enabled log collection for all containers    | `nil`             |
 | `datadog.apmEnabled`        | Enable tracing from the host       | `nil`                                     |
 | `datadog.autoconf`          | Additional Datadog service discovery configurations | `nil`                    |
 | `datadog.checksd`           | Additional Datadog service checks  | `nil`                                     |
