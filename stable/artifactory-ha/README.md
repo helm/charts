@@ -158,7 +158,7 @@ $ helm install --name artifactory-ha --set artifactory.masterKey=${MASTER_KEY} s
 ```
 **NOTE:** Make sure to pass the same master key with `--set artifactory.masterKey=${MASTER_KEY}` on all future calls to `helm install` and `helm upgrade`!
 
-#### Install Artifactory HA license
+### Install Artifactory HA license
 For activating Artifactory HA, you must install an appropriate license. There are two ways to manage the license. **Artifactory UI** or a **Kubernetes Secret**.
 The easier and recommended way is the **Artifactory UI**. Using the **Kubernetes Secret** is for advanced users and is better suited for automation.
 **IMPORTANT:** You should use only one of the following methods. Switching between them while a cluster is running might disable your Artifactory HA cluster!
@@ -201,7 +201,8 @@ Create configMap in Kubernetes:
 ```bash
 $ kubectl apply -f bootstrap-config.yaml
 ```
-### Pass the configMap to helm
+
+#### Pass the configMap to helm
 ```bash
 $ helm install --name artifactory-ha --set artifactory.license.secret=artifactory-cluster-license,artifactory.license.dataKey=art.lic,artifactory.configMapName=my-release-bootstrap-config stable/artifactory-ha
 ```
@@ -405,7 +406,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |    |
 | `nginx.env.ssl`                   | Nginx Environment enable ssl               | `true`                                  |
 | `nginx.env.skipAutoConfigUpdate`  | Nginx Environment to disable auto configuration update | `false`                     |
-| `nginx.customConfigMap`           | Nginx CustomeConfigMap name for `nginx.conf` | `false`                               |
+| `nginx.customConfigMap`           | Nginx CustomeConfigMap name for `nginx.conf` | ` `                                   |
 | `nginx.resources.requests.memory` | Nginx initial memory request               | `250Mi`                                 |
 | `nginx.resources.requests.cpu`    | Nginx initial cpu request                  | `100m`                                  |
 | `nginx.resources.limits.memory`   | Nginx memory limit                         | `250Mi`                                 |
