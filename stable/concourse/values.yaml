@@ -63,6 +63,10 @@ concourse:
   ##
   # externalURL:
 
+  ## Working directory used by various concourse parts
+  ##
+  workingDirectory: /concourse-work-dir
+
   ## The filesystem driver used by baggageclaim on workers, can be values
   ## "btrfs", "overlay", or "naive". As of 3.9 "btrfs" is recommended, while "naive" is most
   ## supported but least space efficient. For background see

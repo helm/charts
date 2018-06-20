@@ -94,7 +94,7 @@ spec:
             - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
               value: "/concourse-keys/worker_key"
             - name: CONCOURSE_WORK_DIR
-              value: "/concourse-work-dir"
+              value: {{ .Values.concourse.workingDirectory | quote }}
             - name: CONCOURSE_BAGGAGECLAIM_DRIVER
               value: {{ .Values.concourse.baggageclaimDriver | quote }}
             - name: LIVENESS_PROBE_FATAL_ERRORS
