@@ -1,5 +1,5 @@
 # Rundeck Helm chart
-This chart would install Rundeck in kubernetes cluster. Rundeck is open source software that helps you automate routine operational procedures in data center or cloud environments. For more details on Rundeck, please refer [Rundeck](http://rundeck.org).
+This chart would install Rundeck in kubernetes cluster. Rundeck is open source software that helps automating routine operational procedures in data center or cloud environments. For more details on Rundeck, please refer [Rundeck](http://rundeck.org).
 Chart supports persistent shared store for storing rundeck project related files. It also supports external DB to store various jobs and their logs.
 ## Prerequisite
 Kubernetes 1.9+

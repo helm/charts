@@ -35,15 +35,15 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: 
+resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-   limits:
+  limits:
     cpu: 1
     memory: 512Mi
-   requests:
+  requests:
     cpu: 1
     memory: 512Mi
 
@@ -74,13 +74,13 @@ env:
   RUNDECK_INSTALL_DIR: /opt/rundeck
   RSA_KEY_DIR: /var/lib/rundeck/.ssh
   JAVA_OPTIONS: -Xmx256m -Xms128m -XX:MaxMetaspaceSize=256m -XX:+PrintFlagsFinal
-  #UID: 1000
-  #GID: 1000
-  
+#UID: 1000
+#GID: 1000
+
 #######################################
 # ConfigMap Overrides
 
-volumeclaim: 
+volumeclaim:
   enabled: true
   accessmode: ReadWriteOnce
   storage: 5Gi
@@ -92,7 +92,7 @@ storage:
   claimName: rundeck
   mountPoint: /rundeck
   remotePath: rundeck
-  
+
 grails:
   auth: false
   url: "http://rundeck.default.svc.cluster.local:80"
@@ -103,7 +103,7 @@ grails:
   mailfrom: "someone@somewhere.com"
 
 datasource:
-  #url: jdbc:postgresql://db.default.svc.cluster.local:5432/rundeck?autoReconnect=true
+#url: jdbc:postgresql://db.default.svc.cluster.local:5432/rundeck?autoReconnect=true
   url: jdbc:h2:file:/var/lib/rundeck/data/rundeckdb;MVCC=true
 
 init:
@@ -116,8 +116,8 @@ init:
         - /bin/sh
         - -c
         - if [ -d /nfs/rundeck ]; then echo "Dir exists"; else mkdir /nfs/rundeck; fi
-edgeNodes: 
-    - 127.0.0.1: rundeck
+edgeNodes:
+  - 127.0.0.1: rundeck
 liveness:
   delay: 120
   period: 30
