@@ -33,7 +33,7 @@ helm delete `my-release`
 
 ## Configuration
 
-The following tables lists the configurable parameters of the OpenEBS chart and their default values.
+The following table lists the configurable parameters of the OpenEBS chart and their default values.
 
 | Parameter                            | Description                                   | Default                           |
 | ------------------------------------ | --------------------------------------------- | --------------------------------- |

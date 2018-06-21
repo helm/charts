@@ -29,9 +29,17 @@ cloudsql:
   ## PostgreSQL port 5432 or MySQL port 3306, or other port you set for your SQL instance.
   ## Use different ports for different instances.
   instances:
+    # GCP instance name.
   - instance: "instance"
+    # Optional abbreviation used to override the truncated instance name if the
+    # 15 character instance name prefix is not unique for use as a port
+    # identifier.
+    instanceShortName: ""
+    # GCP project where the instance exists.
     project: "project"
+    # GCP region where the instance exists.
     region: "region"
+    # Port number for the proxy to expose for this instance.
     port: 5432
 
 ## Configure resource requests and limits

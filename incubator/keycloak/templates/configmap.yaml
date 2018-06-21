@@ -5,38 +5,10 @@ metadata:
   name: {{ template "keycloak.fullname" . }}
   labels:
     app: {{ template "keycloak.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "keycloak.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
-{{- if .Values.keycloak.persistence.deployPostgres }}
-  wait_for_postgresql.sh: |
-    #!/usr/bin/env bash
-
-    set -eu
-
-    pod_labels="${1?Please specify PostgreSQL labels}"
-    max_retries=30
-    retry_count=0
-    sleep_secs=2
-    ready_pods=
-
-    echo 'Polling for PostgreSQL readiness...'
-
-    while [ -z "$ready_pods" ] && [ "$retry_count" -lt "$max_retries" ]; do
-        ready_pods=$(kubectl get pods -l "$pod_labels" -o jsonpath="{.items[*].status.containerStatuses[?(@.ready==true)].name}")
-        retry_count=$((retry_count + 1))
-        sleep "$sleep_secs"
-    done
-
-    if [ -z "$ready_pods" ]; then
-        echo "ERROR: Timeout waiting for PostgreSQL to start up." >&2
-        exit 1
-    fi
-
-    echo "PostgreSQL ready!"
-{{- end }}
-
   keycloak.sh: |
     #!/usr/bin/env bash
 
@@ -44,13 +16,16 @@ data:
 
     /opt/jboss/keycloak/bin/jboss-cli.sh --file=/scripts/keycloak.cli
 
-    args=(-b 0.0.0.0{{ if $highAvailability }} --server-config standalone-ha.xml{{ end }})
+  {{- with .Values.keycloak.preStartScript }}
+    echo 'Running custom pre-start script...'
+{{ . | indent 4 }}
+  {{- end }}
 
-    exec /opt/jboss/docker-entrypoint.sh "${args[@]}"
+    exec /opt/jboss/docker-entrypoint.sh -b 0.0.0.0 {{- if $highAvailability }} --server-config standalone-ha.xml{{ end }}
     exit "$?"
 
   keycloak.cli: |
-    embed-server{{ if $highAvailability }} --server-config=standalone-ha.xml{{ end }} --std-out=echo
+    embed-server {{- if $highAvailability }} --server-config=standalone-ha.xml{{ end }} --std-out=echo
 
 {{- $cli := .Values.keycloak.cli }}
 
@@ -64,8 +39,8 @@ data:
 {{ $cli.discovery | indent 4 }}
 {{- end }}
 
-{{- if $cli.custom }}
-{{ $cli.custom | indent 4 }}
+{{- with $cli.custom }}
+{{ . | indent 4 }}
 {{- end }}
 
     stop-embedded-server

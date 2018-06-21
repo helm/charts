@@ -2,7 +2,7 @@ replicaCount: 1
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
-  imageTag: 3.11.0
+  imageTag: 3.12.1
   imagePullPolicy: IfNotPresent
   env:
     - name: install4jAddVmParams
@@ -90,6 +90,7 @@ nexusBackup:
 
 ingress:
   enabled: false
+  path: /
   annotations: {}
   # # NOTE: Can't use 'false' due to https://github.com/jetstack/kube-lego/issues/173.
   # kubernetes.io/ingress.allow-http: true

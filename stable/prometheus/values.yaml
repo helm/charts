@@ -387,6 +387,11 @@ nodeExporter:
   ##
   podAnnotations: {}
 
+  ## Labels to be added to node-exporter pods
+  ##
+  pod:
+    labels: {}
+
   ## node-exporter resource limits & requests
   ## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -447,6 +452,17 @@ server:
   ## This flag controls access to the administrative HTTP API which includes functionality such as deleting time
   ## series. This is disabled by default.
   enableAdminApi: false
+
+  global:
+    ## How frequently to scrape targets by default
+    ##
+    scrape_interval: 1m
+    ## How long until a scrape request times out
+    ##
+    scrape_timeout: 10s
+    ## How frequently to evaluate rules
+    ##
+    evaluation_interval: 1m
 
   ## Additional Prometheus server container arguments
   ##
@@ -635,7 +651,7 @@ pushgateway:
   ##
   image:
     repository: prom/pushgateway
-    tag: v0.4.0
+    tag: v0.5.1
     pullPolicy: IfNotPresent
 
   ## Additional pushgateway container arguments
@@ -723,7 +739,7 @@ pushgateway:
 ##
 alertmanagerFiles:
   alertmanager.yml:
-    global:
+    global: {}
       # slack_api_url: ''
 
     receivers:
@@ -745,17 +761,6 @@ serverFiles:
   rules: {}
 
   prometheus.yml:
-    global:
-      ## How frequently to scrape targets by default
-      ##
-      scrape_interval: 1m
-      ## How long until a scrape request times out
-      ##
-      scrape_timeout: 10s
-      ## How frequently to evaluate rules
-      ##
-      evaluation_interval: 1m
-
     rule_files:
       - /etc/config/rules
       - /etc/config/alerts

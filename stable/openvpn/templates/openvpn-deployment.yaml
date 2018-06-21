@@ -9,6 +9,10 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+{{- if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "openvpn.name" . }}
@@ -18,6 +22,8 @@ spec:
       labels:
         app: {{ template "openvpn.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print .Template.BasePath "/config-openvpn.yaml") . | sha256sum }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -43,6 +49,9 @@ spec:
             name: openvpn
             readOnly: false
           - mountPath: /etc/openvpn/certs
+            {{- if .Values.persistence.subPath }}
+            subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
             name: certs
             readOnly: false
       volumes:

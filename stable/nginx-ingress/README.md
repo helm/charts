@@ -15,7 +15,7 @@ $ helm install stable/nginx-ingress
 This chart bootstraps an nginx-ingress deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
-  - Kubernetes 1.4+ with Beta APIs enabled
+  - Kubernetes 1.6+
 
 ## Installing the Chart
 
@@ -47,7 +47,7 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.13.0`
+`controller.image.tag` | controller container image tag | `0.14.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
@@ -57,11 +57,13 @@ Parameter | Description | Default
 `controller.extraContainers` | Sidecar containers to add to the controller pod. See [LemonLDAP::NG controller](https://github.com/lemonldap-ng-controller/lemonldap-ng-controller) as example | `{}`
 `controller.extraVolumeMounts` | Additional volumeMounts to the controller main container | `{}`
 `controller.extraVolumes` | Additional volumes to the controller pod | `{}`
+`controller.extraInitContainers` | Containers, which are run before the app containers are started | `[]`
 `controller.ingressClass` | name of the ingress class to route through this controller | `nginx`
 `controller.scope.enabled` | limit the scope of the ingress controller | `false` (watch all namespaces)
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)
 `controller.extraArgs` | Additional controller container arguments | `{}`
 `controller.kind` | install as Deployment or DaemonSet | `Deployment`
+`controller.daemonset.useHostPort` | If `controller.kind` is `DaemonSet`, this will enable `hostPort` for TCP/80 and TCP/443 | false
 `controller.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `controller.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`
@@ -137,8 +139,9 @@ Parameter | Description | Default
 `defaultBackend.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
 `imagePullSecrets` | name of Secret resource containing private registry credentials | `nil`
-`rbac.create` | If true, create & use RBAC resources | `false`
-`rbac.serviceAccountName` | ServiceAccount to be used (ignored if rbac.create=true) | `default`
+`rbac.create` | if `true`, create & use RBAC resources | `true`
+`serviceAccount.create` | if `true`, create a service account | ``
+`serviceAccount.name` | The name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
 `tcp` | TCP service key:value pairs | `{}`
 `udp` | UDP service key:value pairs | `{}`

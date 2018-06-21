@@ -35,7 +35,9 @@ data:
       client
       nobind
       dev tun
+      {{- if .Values.openvpn.redirectGateway }}
       redirect-gateway def1
+      {{- end }}
       <key>
       `cat ${EASY_RSA_LOC}/pki/private/$1.key`
       </key>

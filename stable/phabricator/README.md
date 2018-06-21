@@ -64,7 +64,7 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `smtpUser`                             | SMTP user                                    | `nil`                                                    |
 | `smtpPassword`                         | SMTP password                                | `nil`                                                    |
 | `smtpProtocol`                         | SMTP protocol [`ssl`, `tls`]                 | `nil`                                                    |
-| `mariadb.mariadbRootPassword`          | MariaDB admin password                       | `nil`                                                    |
+| `mariadb.rootUser.password`          | MariaDB admin password                       | `nil`                                                    |
 | `serviceType`                          | Kubernetes Service type                      | `LoadBalancer`                                           |
 | `persistence.enabled`                  | Enable persistence using PVC                 | `true`                                                   |
 | `persistence.apache.storageClass`      | PVC Storage Class for Apache volume          | `nil` (uses alpha storage class annotation)              |
