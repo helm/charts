@@ -51,6 +51,16 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.keycloak.image.repository }}:{{ .Values.keycloak.image.tag }}"
           imagePullPolicy: {{ .Values.keycloak.image.pullPolicy }}
+          {{- with .Values.keycloak.postStartScript }}
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                - '/bin/sh'
+                - '-c'
+                - >
+{{ . | indent 18 }}
+{{- end }}
           command:
             - /scripts/keycloak.sh
           env:

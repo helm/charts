@@ -33,6 +33,9 @@ keycloak:
   ## Custom script that is run before Keycloak is started.
   preStartScript:
 
+  ## Custom script that is run after Keycloak is started
+  postStartScript:
+
   ## Additional arguments to start command e.g. -Dkeycloak.import= to load a realm
   extraArgs:
 
