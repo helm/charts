@@ -15,6 +15,9 @@ spec:
       labels:
         app: {{ template "gcloud-sqlproxy.fullname" . }}
     spec:
+      {{- if .Values.rbac.create }}
+      serviceAccountName: {{ template "gcloud-sqlproxy.fullname" . }}
+      {{- end }}
       containers:
       - name: sqlproxy
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
