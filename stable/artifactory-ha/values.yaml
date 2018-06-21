@@ -193,6 +193,11 @@ artifactory:
     #  xms: "1g"
     #  xmx: "2g"
     #  other:
+    nodeSelector: {}
+
+    tolerations: []
+
+    affinity: {}
   node:
     name: artifactory-ha-member
     persistence:
@@ -214,6 +219,11 @@ artifactory:
     #  xms: "1g"
     #  xmx: "2g"
     #  other:
+    nodeSelector: {}
+
+    tolerations: []
+
+    affinity: {}
 
 # Nginx
 nginx:
@@ -290,3 +300,9 @@ nginx:
   #  limits:
   #    memory: "250Mi"
   #    cpu: "500m"
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}

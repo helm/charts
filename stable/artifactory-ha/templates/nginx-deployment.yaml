@@ -139,6 +139,18 @@ spec:
           failureThreshold: {{ .Values.nginx.livenessProbe.failureThreshold }}
           successThreshold: {{ .Values.nginx.livenessProbe.successThreshold }}
         {{- end }}
+    {{- with .Values.nginx.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.nginx.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.nginx.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       volumes:
       {{- if .Values.artifactory.replicator.enabled }}
       - name: replicator-nginx-config
