@@ -46,9 +46,9 @@ spec:
           readinessProbe:
             httpGet:
               path: /
-            port: 8080
-          #initialDelaySeconds: 15
-          #  periodSeconds: 30  
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30  
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
