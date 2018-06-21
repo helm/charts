@@ -33,6 +33,7 @@ spec:
               port: {{ .Values.hub.port }}
             initialDelaySeconds: 30
             periodSeconds: 5
+            timeoutSeconds: {{ .Values.hub.livenessTimeout }}
           readinessProbe:
             httpGet:
               path: /grid/console

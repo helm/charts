@@ -24,6 +24,9 @@ hub:
   ## Timeout for probe Hub readiness via HTTP request on Hub console
   readinessTimeout: 1
 
+  ## Timeout for probe Hub liveness via HTTP request on Hub console
+  livenessTimeout: 1
+
   ## Set the JAVA_OPTS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx400m"
