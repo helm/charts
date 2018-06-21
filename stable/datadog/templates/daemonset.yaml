@@ -23,6 +23,9 @@ spec:
       {{- if .Values.daemonset.useHostNetwork }}
       hostNetwork: {{ .Values.daemonset.useHostNetwork }}
       {{- end }}
+      {{- if .Values.daemonset.useHostPID }}
+      hostPID: {{ .Values.daemonset.useHostPID }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
