@@ -32,18 +32,6 @@ extraVars: {}
 # - name: TCMALLOC_AGGRESSIVE_DECOMMIT
 #   value: "true"
 
-# Prometheus Metrics Exporter
-metrics:
-  enabled: false
-  image: ssalaues/mongodb-exporter
-  imageTag: 0.5
-  imagePullPolicy: IfNotPresent
-  resources: {}
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9216"
-    prometheus.io/path: "/metrics"
-
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
 

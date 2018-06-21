@@ -142,7 +142,7 @@ spec:
             - --keyFile=/data/configdb/key.txt
           {{- end }}
           {{- if .Values.tls.enabled }}
-            - --sslMode=requireSSL
+            - --ssl
             - --sslCAFile=/data/configdb/tls.crt
             - --sslPEMKeyFile=/work-dir/mongo.pem
           {{- end }}
@@ -185,74 +185,7 @@ spec:
               mountPath: /data/configdb
             - name: workdir
               mountPath: /work-dir
-{{ if .Values.metrics.enabled }}
-        - name: metrics
-          image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
-          imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
-          command:
-            - sh
-            - -ec
-            - |
-            {{- if .Values.auth.enabled }}
-              export MONGODB_URL=mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }}
-            {{- else }}
-              export MONGODB_URL=mongodb://localhost:{{ .Values.port }}
-            {{- end }}
-              /bin/mongodb_exporter \
-            {{- if .Values.tls.enabled }}
-               -mongodb.tls \
-               -mongodb.tls-ca=/ca/tls.crt \
-               -mongodb.tls-cert=/work-dir/mongo.pem \
-            {{- end }}
-               -web.metrics-path={{ index .Values "metrics" "annotations" "prometheus.io/path" }} \
-               -web.listen-address=:{{ index .Values "metrics" "annotations" "prometheus.io/port" }}
-          volumeMounts:
-          {{- if and (.Values.tls.enabled) }}
-            - name: ca
-              mountPath: /ca
-              readOnly: true
-          {{- end }}
-            - name: workdir
-              mountPath: /work-dir
-              readOnly: true
-          env:
-          {{- if .Values.auth.enabled }}
-            - name: METRICS_USER
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ template "mongodb-replicaset.adminSecret" . }}"
-                  key: user
-            - name: METRICS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ template "mongodb-replicaset.adminSecret" . }}"
-                  key: password
-          {{- end }}
-          ports:
-            - name: metrics
-              containerPort: {{ .Values.port }}
-          resources: {{ toYaml .Values.metrics.resources | indent 12 }}
-          livenessProbe:
-            exec:
-              command:
-                - sh
-                - -ec
-                {{- if .Values.auth.enabled }}
-                - export MONGODB_URL=mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }};
-                {{- else }}
-                - export MONGODB_URL=mongodb://localhost:{{ .Values.port }}
-                {{- end }}
-                - /bin/mongodb_exporter
-                {{- if .Values.tls.enabled }}
-                - -mongodb.tls
-                - -mongodb.tls-ca=/ca/tls.crt
-                - -mongodb.tls-cert=/work-dir/mongo.pem
-                {{- end }}
-                - -test
-              initialDelaySeconds: 30
-              periodSeconds: 10
-{{ end }}
-   {{- with .Values.nodeSelector }}
+    {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
