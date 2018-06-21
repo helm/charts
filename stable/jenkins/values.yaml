@@ -61,8 +61,6 @@ Master:
       Enabled: true
       ProxyCompatability: true
   CLI: false
-  # Kubernetes namespace where Jenkins slaves will be created
-  # SlaveKubernetesNamespace: jnk-slave-namespace
   # Kubernetes service type for the JNLP slave service
   # SETTING THIS TO "LoadBalancer" IS A HUGE SECURITY RISK: https://github.com/kubernetes/charts/issues/1341
   SlaveListenerServiceType: ClusterIP
