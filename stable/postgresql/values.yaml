@@ -138,7 +138,7 @@ probes:
   readiness:
     initialDelay: 5
     timeoutSeconds: 3
-    failureThreshold: 5
+    periodSeconds: 5
 ## Annotations for the deployment and nodes.
 deploymentAnnotations: {}
 podAnnotations: {}
