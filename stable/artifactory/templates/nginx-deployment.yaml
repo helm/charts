@@ -110,6 +110,18 @@ spec:
         {{- end}}
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
+    {{- with .Values.nginx.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.nginx.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.nginx.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
         {{- if .Values.nginx.readinessProbe.enabled }}
         readinessProbe:
           httpGet:

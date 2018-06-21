@@ -102,6 +102,12 @@ artifactory:
   #  xms: "1g"
   #  xmx: "2g"
   #  other: ""
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
   ## Artifactory Replicator
   replicator:
     enabled: false
@@ -186,6 +192,11 @@ nginx:
   #  limits:
   #    memory: "250Mi"
   #    cpu: "500m"
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
 
 ## Configuration values for the postgresql dependency
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md

@@ -149,6 +149,18 @@ spec:
       {{- end }}
         resources:
 {{ toYaml .Values.artifactory.resources | indent 10 }}
+    {{- with .Values.artifactory.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.artifactory.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.artifactory.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
         {{- if .Values.artifactory.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
