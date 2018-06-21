@@ -1,7 +1,7 @@
 init:
   image:
     repository: alpine
-    tag: 3.6
+    tag: 3.7
     pullPolicy: IfNotPresent
 
 keycloak:
@@ -9,7 +9,7 @@ keycloak:
 
   image:
     repository: jboss/keycloak
-    tag: 3.4.3.Final
+    tag: 4.0.0.Final
     pullPolicy: IfNotPresent
 
     ## Optionally specify an array of imagePullSecrets.
@@ -34,7 +34,7 @@ keycloak:
   preStartScript:
 
   ## Additional arguments to start command e.g. -Dkeycloak.import= to load a realm
-  extraArgs:
+  extraArgs: ""
 
   ## Username for the initial Keycloak admin user
   username: keycloak
@@ -194,7 +194,10 @@ keycloak:
   ## Persistence configuration
   persistence:
     # If true, the Postgres chart is deployed
-    deployPostgres: true
+    deployPostgres: false
+
+    # The database vendor. Can be either "postgres", "mysql", "mariadb", or "h2"
+    dbVendor: h2
 
     ## The following values only apply if "deployPostgres" is set to "false"
 
@@ -203,9 +206,6 @@ keycloak:
 
     # The key in the existing secret that stores the password
     existingSecretKey: password
-
-    # The database vendor. Can be either "POSTGRES" or "MYSQL"
-    dbVendor: POSTGRES
 
     dbName: keycloak
     dbHost: mykeycloak
