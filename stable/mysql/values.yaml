@@ -76,7 +76,7 @@ resources:
     cpu: 100m
 
 # Custom mysql configuration files used to override default mysql settings
-configurationFiles:
+configurationFiles: {}
 #  mysql.cnf: |-
 #    [mysqld]
 #    skip-name-resolve
@@ -85,7 +85,7 @@ configurationFiles:
 #    ssl-key=/ssl/server-key.pem
 
 # Custom mysql init SQL files used to initialize the database
-initializationFiles:
+initializationFiles: {}
 #  first-db.sql: |-
 #    CREATE DATABASE IF NOT EXISTS first DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
 #  second-db.sql: |-
