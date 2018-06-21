@@ -1,5 +1,5 @@
 name: gcloud-sqlproxy
-version: 0.3.4
+version: 0.3.5
 appVersion: 1.11
 description: Google Cloud SQL Proxy
 keywords:
@@ -13,6 +13,6 @@ home: https://cloud.google.com/sql/docs/postgres/sql-proxy
 sources:
 - https://github.com/rimusz/charts
 maintainers:
-- name: Rimas Mocevicius
+- name: rimusz
   email: rmocius@gmail.com
 engine: gotpl
