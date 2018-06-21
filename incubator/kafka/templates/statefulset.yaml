@@ -94,8 +94,22 @@ spec:
               - sh
               - -ec
               - /usr/bin/jps | /bin/grep -q SupportedKafka
+          {{- if not .Values.livenessProbe }}
           initialDelaySeconds: 30
           timeoutSeconds: 5
+          {{- else }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 30}}
+          {{- if .Values.livenessProbe.periodSeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          {{- end }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds | default 5}}
+          {{- if .Values.livenessProbe.successThreshold }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          {{- end }}
+          {{- if .Values.livenessProbe.failureThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- end }}
         readinessProbe:
           tcpSocket:
             port: kafka
