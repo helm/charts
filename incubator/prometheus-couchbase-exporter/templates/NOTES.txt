@@ -13,3 +13,4 @@
   echo "Visit http://127.0.0.1:{{ .Values.service.port }} to use your application"
   kubectl port-forward $POD_NAME {{ .Values.service.port }}
 {{- end }}
+
