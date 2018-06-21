@@ -28,7 +28,7 @@ spec:
                   "-credential_file=/secrets/cloudsql/credentials.json"]
         ports:
         {{- range .Values.cloudsql.instances }}
-        - name: {{ .instance }}
+        - name: {{ .instanceShortName | default (.instance | trunc 15) }}
           containerPort: {{ .port }}
         {{- end }}
         volumeMounts:

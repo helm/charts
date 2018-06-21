@@ -35,6 +35,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `image.repository`     | docker image                                      | jertel/elastalert-docker        |
 | `image.tag`            | docker image tag                                  | 0.1.30                          |
 | `image.pullPolicy`     | image pull policy                                 | IfNotPresent                    |
+| `command`              | command override for container                    | `NULL`                          |
+| `args`                 | args override for container                       | `NULL`                          |
 | `replicaCount`         | number of replicas to run                         | 1                               |
 | `elasticsearch.host`   | elasticsearch endpoint to use                     | elasticsearch                   |
 | `elasticsearch.port`   | elasticsearch port to use                         | 80                              |

@@ -1,5 +1,9 @@
 {{- $workerNum := .Values.worker.number -}}
 {{- $name := include "horovod.fullname" . }}
+{{- $slots := 1 }}
+{{- if index .Values.resources "nvidia.com/gpu" }}
+{{- $slots := index .Values.resources "nvidia.com/gpu" }}
+{{- end }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -11,9 +15,9 @@ metadata:
     app: {{ template "horovod.fullname" . }}
 data:
   hostfile.config: |
-    {{ $name }}-master
+    {{ $name }}-master slots={{ $slots }}
     {{- range $i, $none := until (int $workerNum) }}
-    {{ $name }}-{{ $i }}.{{ $name }}
+    {{ $name }}-{{ $i }}.{{ $name }} slots={{ $slots }}
     {{- end }}
   ssh.readiness: |
     #!/bin/bash
@@ -29,13 +33,15 @@ data:
      touch /root/.ssh/config
 
      if [ "$USESECRETS" == "true" ];then
-        ln -s /etc/secret-volume/id_rsa /root/.ssh/id_rsa
-        ln -s /etc/secret-volume/authorized_keys /root/.ssh/authorized_keys
+        set +e
+        yes | cp /etc/secret-volume/id_rsa /root/.ssh/id_rsa
+        yes | cp /etc/secret-volume/authorized_keys /root/.ssh/authorized_keys
+        set -e
      fi
 
      if [ -n "$SSHPORT" ]; then
         echo "Port $SSHPORT" > /root/.ssh/config
-        sed -ri "s/#Port 22/Port ${SSH_PORT}/g" /etc/ssh/sshd_config
+        sed -i "s/^Port.*/Port $SSHPORT /g" /etc/ssh/sshd_config
      fi
      echo "StrictHostKeyChecking no" >> /root/.ssh/config
      /usr/sbin/sshd
@@ -49,19 +55,25 @@ data:
     #!/bin/bash
     set -xev
     function updateSSHPort() {
-      if [ -n "$SSH_PORT" ]; then
-        sed -i "s/^Port.*/Port $SSH_PORT /g" /root/.ssh/config
+      mkdir -p /root/.ssh
+      rm -f /root/.ssh/config
+      touch /root/.ssh/config
+
+      if [ -n "$SSHPORT" ]; then
+        echo "Port $SSHPORT" > /root/.ssh/config
         echo "StrictHostKeyChecking no" >> /root/.ssh/config
       fi
     }
 
     function runCheckSSH() {
-      if [ "$USESECRETS" == "true" ];then
-        ln -s /etc/secret-volume/id_rsa /root/.ssh/id_rsa
-        ln -s /etc/secret-volume/authorized_keys /root/.ssh/authorized_keys
+      if [[ "$USESECRETS" == "true" ]];then
+        set +e
+        yes | cp /etc/secret-volume/id_rsa /root/.ssh/id_rsa
+        yes | cp /etc/secret-volume/authorized_keys /root/.ssh/authorized_keys
+        set -e
       fi
       
-      for i in `cat $1`;do
+      for i in `cat $1 | awk '{print $(1)}'`;do
         if [[ "$i" != *"master" ]];then
           retry 30 ssh -o ConnectTimeout=2 -q $i exit
         fi
@@ -94,21 +106,23 @@ data:
     updateSSHPort
     runCheckSSH $1
   worker.run: |
-     #! /bin/sh
+     #!/bin/bash
      set -x
      
      mkdir -p /root/.ssh
      rm -f /root/.ssh/config
      touch /root/.ssh/config
 
-     if [ "$USESECRETS" == "true" ];then
-        ln -s /etc/secret-volume/id_rsa /root/.ssh/id_rsa
-        ln -s /etc/secret-volume/authorized_keys /root/.ssh/authorized_keys
+     if [[ "$USESECRETS" == "true" ]];then
+        set +e
+        yes | cp /etc/secret-volume/id_rsa /root/.ssh/id_rsa
+        yes | cp /etc/secret-volume/authorized_keys /root/.ssh/authorized_keys
+        set -e
      fi
 
      if [ -n "$SSHPORT" ]; then
         echo "Port $SSHPORT" > /root/.ssh/config
-        sed -ri "s/#Port 22/Port ${SSH_PORT}/g" /etc/ssh/sshd_config
+        sed -i "s/^Port.*/Port $SSHPORT /g" /etc/ssh/sshd_config
      fi
      echo "StrictHostKeyChecking no" >> /root/.ssh/config
 
