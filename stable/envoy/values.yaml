@@ -1,12 +1,12 @@
 replicaCount: 2
 
-podDisruptionBudget:
+podDisruptionBudget: |
   maxUnavailable: 1
 
 ## ref: https://pracucci.com/graceful-shutdown-of-kubernetes-pods.html
 terminationGracePeriodSeconds: 30
 
-strategy:
+strategy: |
   type: RollingUpdate
   rollingUpdate:
     maxSurge: 2
@@ -18,7 +18,9 @@ image:
   ## ^ ref: https://github.com/envoyproxy/envoy/commit/952c5e1db91b6bcc1c11a0c8316d6b11bbcc3657
   pullPolicy: IfNotPresent
 
-command: ["/usr/bin/dumb-init", "--"]
+command:
+  - /usr/bin/dumb-init
+  - --
 args:
   - /usr/local/bin/envoy
   - --v2-config-only
@@ -39,11 +41,18 @@ service:
     # service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
     # service.beta.kubernetes.io/aws-load-balancer-internal: "true"
   ports:
-    n0: {port: 10000, targetPort: n0, protocol: TCP}
+    n0:
+      port: 10000
+      targetPort: n0
+      protocol: TCP
 
 ports:
-  admin: {containerPort: 9901, protocol: TCP}
-  n0: {containerPort: 10000, protocol: TCP}
+  admin:
+    containerPort: 9901
+    protocol: TCP
+  n0:
+    containerPort: 10000
+    protocol: TCP
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -127,13 +136,17 @@ files:
     admin:
       access_log_path: /dev/stdout
       address:
-        socket_address: { address: 0.0.0.0, port_value: 9901 }
+        socket_address:
+          address: 0.0.0.0
+          port_value: 9901
 
     static_resources:
       listeners:
       - name: listener_0
         address:
-          socket_address: { address: 0.0.0.0, port_value: 10000 }
+          socket_address:
+            address: 0.0.0.0
+            port_value: 10000
         filter_chains:
         - filters:
           - name: envoy.http_connection_manager
@@ -149,8 +162,11 @@ files:
                 - name: local_service
                   domains: ["*"]
                   routes:
-                  - match: { prefix: "/" }
-                    route: { host_rewrite: www.google.com, cluster: service_google }
+                  - match:
+                      prefix: "/"
+                    route:
+                      host_rewrite: www.google.com
+                      cluster: service_google
               http_filters:
               - name: envoy.router
       clusters:
@@ -159,5 +175,9 @@ files:
         type: LOGICAL_DNS
         dns_lookup_family: V4_ONLY
         lb_policy: ROUND_ROBIN
-        hosts: [{ socket_address: { address: google.com, port_value: 443 }}]
-        tls_context: { sni: www.google.com }
+        hosts:
+          - socket_address:
+              address: google.com
+              port_value: 443
+        tls_context:
+          sni: www.google.com

@@ -12,4 +12,4 @@ spec:
     matchLabels:
       app: {{ template "envoy.name" . }}
       release: {{ .Release.Name }}
-{{ toYaml .Values.podDisruptionBudget | indent 2 }}
+{{ .Values.podDisruptionBudget | indent 2 }}

@@ -10,6 +10,6 @@ home: https://www.envoyproxy.io/
 sources:
 - https://github.com/envoyproxy/envoy
 maintainers:
-- name: Joshua M. Dotson
+- name: josdotso
   email: josdotso@cisco.com
 icon: https://avatars0.githubusercontent.com/u/30125649

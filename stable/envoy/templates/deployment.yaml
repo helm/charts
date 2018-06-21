@@ -18,7 +18,7 @@ spec:
       app: {{ template "envoy.name" . }}
       release: {{ .Release.Name }}
   strategy:
-{{ toYaml .Values.strategy | indent 4 }}
+{{ .Values.strategy | indent 4 }}
   template:
     metadata:
       labels:
@@ -32,7 +32,7 @@ spec:
         {{- end }}
       {{- end }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print .Template.BasePath "/configmap.yaml") . | sha256sum }}
       {{- if .Values.podAnnotations }}
         ## Custom pod annotations
         {{- range $key, $value := .Values.podAnnotations }}
