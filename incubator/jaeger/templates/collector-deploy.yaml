@@ -20,6 +20,10 @@ spec:
     type: Recreate
   template:
     metadata:
+{{- if .Values.collector.podAnnotations }}
+      annotations:
+{{ toYaml .Values.collector.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "jaeger.name" . }}
         component: collector

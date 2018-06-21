@@ -51,6 +51,10 @@ The following table lists the configurable parameters and their default values.
 | `service.port`         | service external port                               | `9121`                    |
 | `redisAddress`         | address of one or more redis nodes, comma separated | `redis://myredis:6379`    |
 | `annotations`          | pod annotations for easier discovery                | {}                        |
+| `rbac.create`           | Specifies whether RBAC resources should be created.| `true` |
+| `rbac.pspEnabled`       | Specifies whether a PodSecurityPolicy should be created.| `true` |
+| `serviceAccount.create` | Specifies whether a service account should be created.| `true` |
+| `serviceAccount.name`   | Name of the service account.|        |
 
 For more information please refer to the [redis_exporter](https://github.com/oliver006/redis_exporter) documentation.
 
