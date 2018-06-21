@@ -1,10 +1,10 @@
 # Sysdig
 
-[Sysdig Monitor](https://www.sysdig.com/) is a container native monitoring and troubleshooting platform.
+[Sysdig](https://www.sysdig.com/) is a unified platform for container and microservices monitoring, troubleshooting, security and forensics. Sysdig platform has been built on top of [Sysdig tool](https://sysdig.com/opensource/sysdig/) and [Sysdig Inspect](https://sysdig.com/blog/sysdig-inspect/) open-source technologies.
 
 ## Introduction
 
-This chart adds the Sysdig Monitor Agent to all nodes in your cluster via a DaemonSet.
+This chart adds the Sysdig agent for [Sysdig Monitor](https://sysdig.com/product/monitor/) and [Sysdig Secure](https://sysdig.com/product/secure/) to all nodes in your cluster via a DaemonSet.
 
 ## Prerequisites
 
@@ -16,10 +16,10 @@ To install the chart with the release name `my-release`, retrieve your Sysdig Mo
 
 ```bash
 $ helm install --name my-release \
-    --set sysdig.AccessKey=YOUR-KEY-HERE stable/sysdig
+    --set sysdig.accessKey=YOUR-KEY-HERE stable/sysdig
 ```
 
-After a few minutes, you should see hosts and containers appearing in Sysdig Monitor.
+After a few seconds, you should see hosts and containers appearing in Sysdig Monitor and Sysdig Secure.
 
 > **Tip**: List all releases using `helm list`
 
@@ -30,6 +30,7 @@ To uninstall/delete the `my-release` deployment:
 ```bash
 $ helm delete my-release
 ```
+> **Tip**: Use helm delete --purge my-release to completely remove the release from Helm internal storage
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
@@ -37,21 +38,24 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Sysdig chart and their default values.
 
-|      Parameter              |          Description               |                         Default           |
-|-----------------------------|------------------------------------|-------------------------------------------|
-| `sysdig.AccessKey`          | Your Sysdig Monitor Access Key       | `Nil` You must provide your own key       |
-| `sysdig.AgentTags`          | String with tags for the agent     |  Empty                                    |
-| `image.repository`          | The image repository to pull from  | `sysdig/agent`                            |
-| `image.tag`                 | The image tag to pull              | `latest`                                  |
-| `image.pullPolicy`          | The Image pull policy              | `Always`                                  |
-| `tolerations`               | The tolerations for scheduling     | `node-role.kubernetes.io/master:NoSchedule`                       |
-
+| Parameter               | Description                             | Default                                     |
+| ---                     | ---                                     | ---                                         |
+| `image.repository`      | The image repository to pull from       | `sysdig/agent`                              |
+| `image.tag`             | The image tag to pull                   | `latest`                                    |
+| `image.pullPolicy`      | The Image pull policy                   | `Always`                                    |
+| `rbac.create`           | If true, create & use RBAC resources    | `true`                                      |
+| `serviceAccount.create` | Create serviceAccount                   | `true`                                      |
+| `serviceAccount.name`   | Use this value as serviceAccountName    | ` `                                         |
+| `sysdig.accessKey`      | Your Sysdig Monitor Access Key          | `Nil` You must provide your own key         |
+| `sysdig.settings`       | Settings for agent's configuration file | `{}`                                        |
+| `secure.enabled`        | Enable Sysdig Secure                    | `false`                                     |
+| `tolerations`           | The tolerations for scheduling          | `node-role.kubernetes.io/master:NoSchedule` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install --name my-release \
-    --set sysdig.AccessKey=YOUR-KEY-HERE,sysdig.AgentTags="role:webserver,location:europe" \
+    --set sysdig.accessKey=YOUR-KEY-HERE,sysdig.AgentTags="role:webserver,location:europe" \
     stable/sysdig
 ```
 
