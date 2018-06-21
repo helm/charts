@@ -1,0 +1,6 @@
+operatorImageName: "gcr.io/spark-operator/spark-operator"
+operatorImageTag: "v2.3.0-v1alpha1-latest"
+operatorNamespace: "sparkoperator"
+operatorVersionLabel: "v2.3.0-v1alpha1"
+
+enableInitializer: "false"
