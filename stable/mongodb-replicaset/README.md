@@ -51,7 +51,6 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `tls.enabled`                       | Enable MongoDB TLS support including authentication                       | `false`                                             |
 | `tls.cacert`                        | The CA certificate used for the members                                   | Our self signed CA certificate                      |
 | `tls.cakey`                         | The CA key used for the members                                           | Our key for the self signed CA certificate          |
-| `metrics.enabled`                   | Enable Prometheus compatible metrics for pods and replicasets             | `false`                                             |
 | `auth.enabled`                      | If `true`, keyfile access control is enabled                              | `false`                                             |
 | `auth.key`                          | Key for internal authentication                                           | ``                                                  |
 | `auth.existingKeySecret`            | If set, an existing secret with this name for the key is used             | ``                                                  |
@@ -161,26 +160,6 @@ mongodb with your `mongo.pem` certificate:
 ```console
 $ mongo --ssl --sslCAFile=ca.crt --sslPEMKeyFile=mongo.pem --eval "db.adminCommand('ping')"
 ```
-
-## Promethus metrics
-Enabling the metrics as follows will allow for each replicaset pod to export Prometheus compatible metrics
-on server status, individual replicaset information, replication oplogs, and storage engine.
-
-```yaml
-metrics:
-  enabled: true
-  image: ssalaues/mongodb-exporter
-  imageTag: 0.5
-  imagePullPolicy: IfNotPresent
-  resources: {}
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9216"
-    prometheus.io/path: "/metrics"
-```
-
-More information on [MongoDB Exporter](https://github.com/percona/mongodb_exporter) metrics available.
-
 ## Readiness probe
 The default values for the readiness probe are:
 
