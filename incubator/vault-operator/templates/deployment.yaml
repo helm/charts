@@ -1,24 +1,27 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "vault-operator.fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: {{ template "name" . }}
-    heritage: {{ .Release.Service }}
+    app: {{ template "vault-operator.name" . }}
+    chart: {{ template "vault-operator.chart" . }}
     release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "vault-operator.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
-      name: {{ template "fullname" . }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "vault-operator.name" . }}
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "serviceAccountName" . }}
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
@@ -35,13 +38,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        resources:
-          limits:
-            cpu: {{ .Values.resources.cpu }}
-            memory: {{ .Values.resources.memory }}
-          requests:
-            cpu: {{ .Values.resources.cpu }}
-            memory: {{ .Values.resources.memory }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
@@ -64,11 +60,17 @@ spec:
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         {{- end }}
-    {{- if .Values.nodeSelector }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml . | indent 8 }}
     {{- end }}
-    {{- if .Values.tolerations }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml . | indent 8 }}
     {{- end }}

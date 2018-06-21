@@ -1,14 +1,13 @@
 {{- if .Values.rbac.create }}
----
 apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
 kind: Role
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "vault-operator.fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: {{ template "name" . }}
-    heritage: {{ .Release.Service }}
+    app: {{ template "vault-operator.name" . }}
+    chart: {{ template "vault-operator.chart" . }}
     release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 rules:
 - apiGroups:
   - etcd.database.coreos.com

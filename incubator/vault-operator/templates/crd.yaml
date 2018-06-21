@@ -3,10 +3,10 @@ kind: CustomResourceDefinition
 metadata:
   name: vaultservices.vault.security.coreos.com
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: {{ template "name" . }}
-    heritage: {{ .Release.Service }}
+    app: {{ template "vault-operator.name" . }}
+    chart: {{ template "vault-operator.chart" . }}
     release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   group: vault.security.coreos.com
   names:

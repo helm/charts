@@ -17,14 +17,17 @@ serviceAccount:
   name: vault-operator-sa
 
 resources:
-  cpu: 100m
-  memory: 128Mi
-## Node labels for vault-operator pod assignment
-## Ref: https://kubernetes.io/docs/user-guide/node-selection/
-nodeSelector: {}
+  limits:
+   cpu: 100m
+   memory: 128Mi
+  requests:
+   cpu: 100m
+   memory: 128Mi
+
 ## additional command arguments go here; will be translated to `--key=value` form
 ## e.g., analytics: true
 commandArgs: {}
+
 ## Configurable health checks against the /readyz endpoint that vault-operator exposes
 readinessProbe:
   enabled: false
@@ -40,6 +43,12 @@ livenessProbe:
   timeoutSeconds: 1
   successThreshold: 1
   failureThreshold: 3
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
 
 ###
 # All of the config variables related to setting up the etcd-operator

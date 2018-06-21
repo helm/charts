@@ -1,14 +1,13 @@
 {{- if .Values.rbac.create }}
----
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "vault-operator.fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: {{ template "name" . }}
-    heritage: {{ .Release.Service }}
+    app: {{ template "vault-operator.name" . }}
+    chart: {{ template "vault-operator.chart" . }}
     release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 subjects:
 - kind: ServiceAccount
   name: {{ template "serviceAccountName" . }}
@@ -16,5 +15,5 @@ subjects:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ template "fullname" . }}
+  name: {{ template "vault-operator.fullname" . }}
 {{- end }}
