@@ -45,6 +45,10 @@ cloudsql:
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
+
+rbac:
+  create: false
+
 resources:
   requests:
     cpu: 100m
