@@ -46,7 +46,7 @@ spec:
       {{- if .Values.slave.schedulerName }}
       schedulerName: "{{ .Values.slave.schedulerName }}"
       {{- end }}
-    {{- with .Values.affinity }}
+    {{- with .Values.slave.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
