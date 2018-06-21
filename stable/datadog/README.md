@@ -4,11 +4,11 @@
 
 ## Introduction
 
-This chart adds the DataDog Agent to all nodes in your cluster via a DaemonSet. It also depends on the [kube-state-metrics chart](https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics).
+This chart adds the Datadog Agent to all nodes in your cluster via a DaemonSet. It also depends on the [kube-state-metrics chart](https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics).
 
 ## Prerequisites
 
-- Kubernetes 1.2+ with Beta APIs enabled
+Kubernetes 1.4+ or OpenShift 3.4+ (1.3 support is currently partial, full support is planned for 6.4.0).
 
 ## Installing the Chart
 
@@ -64,6 +64,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `daemonset.nodeSelector`    | Node selectors                     | `nil`                                     |
 | `daemonset.affinity`        | Node affinities                    | `nil`                                     |
 | `daemonset.useHostNetwork`  | If true, use the host's network    | `nil`                                     |
+| `daemonset.useHostPID`.     | If true, use the host's PID namespace    | `nil`                                     |
 | `daemonset.useHostPort`     | If true, use the same ports for both host and container  | `nil`               |
 | `datadog.leaderElection`    | Adds the leader Election feature   | `false`                                   |
 | `datadog.leaderLeaseDuration`| The duration for which a leader stays elected.| `nil`                         |
