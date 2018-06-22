@@ -14,6 +14,7 @@ admin:
   #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 
   # HTTPS traffic on the admin port
+  # if set to false also set readinessProbe and livenessProbe httpGet scheme's to 'HTTP'
   useTLS: true
   servicePort: 8444
   containerPort: 8444
