@@ -72,7 +72,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `deployment.tolerations`    | List of node taints to tolerate    | `[]`                                      |
 | `kube-state-metrics.rbac.create`| If true, create & use RBAC resources for kube-state-metrics | `true`       |
 | `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
-| `secret.create`             | If true, create a Secret | `true` |
+| `existingSecret`             | If set, use the secret with providen name instead of creating a new one |`nil` |
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
@@ -97,8 +97,8 @@ Datadog offers a multitude of [tags](https://hub.docker.com/r/datadog/docker-dd-
 By default installs Datadog agent inside a DaemonSet. You may also use Datadog agent inside a Deployment, if you want to collect Kubernetes API events or send custom metrics to DogStatsD endpoint.
 
 ### Secret
-By default, this Chart creates a Secret and puts an API key in that Secret. However, this behavior can be disabled when `secret.create` is set to false.
-You can use this in cases where you want to manually create a Secret instead. 
+By default, this Chart creates a Secret and puts an API key in that Secret.
+However, you can use manually created secret by setting `existingSecret` value.
 
 ### confd and checksd
 

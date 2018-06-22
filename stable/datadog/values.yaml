@@ -70,8 +70,8 @@ deployment:
   # dogstatsdNodePort: 8125
   # traceNodePort: 8126
 
-secret:
-  create: true
+# Use existing Secret which stores API key instead of creating a new one
+# existingSecret:
 
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
