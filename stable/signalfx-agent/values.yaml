@@ -20,6 +20,9 @@ image:
 # version of the agent
 rollingUpdateMaxUnavailable: 1
 
+# Namespace to deploy agent in (Optional: Will default to release namespace)
+namespace:
+
 # RBAC config for the agent
 rbac:
   create: true
