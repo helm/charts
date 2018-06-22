@@ -40,7 +40,9 @@ spec:
         - >
       {{- if .Values.postgresql.enabled }}
           until nc -z -w 2 {{ .Release.Name }}-postgresql {{ .Values.postgresql.service.port }} && echo database ok; do
-      {{- else }}
+      {{- else if .Values.database.cloudsql }}
+          until nc -z -w 2 {{ .Release.Name }}-gcloud-sqlproxy {{ .Values.postgresql.service.port }} && echo database ok; do
+      {{- else }} 
           until nc -z -w 2 {{ .Values.database.host }} {{ .Values.database.port }} && echo database ok; do
       {{- end }}
             sleep 2;
@@ -79,7 +81,7 @@ spec:
         - name: DB_TYPE
           value: 'postgresql'
         - name: DB_USER
-          value: {{.Values.postgresql.postgresUser | quote }}
+          value: {{ .Values.postgresql.postgresUser | quote }}
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -90,8 +92,13 @@ spec:
         {{- else }}
         - name: DB_TYPE
           value: '{{ .Values.database.type }}'
+          {{- if .Values.database.cloudsql }}
+        - name: DB_HOST
+          value: {{ .Release.Name }}-gcloud-sqlproxy
+          {{- else }}
         - name: DB_HOST
           value: '{{ .Values.database.host }}'
+          {{- end }}
         - name: DB_PORT
           value: '{{ .Values.database.port }}'
         - name: DB_USER
@@ -186,7 +193,7 @@ spec:
       - name: bootstrap-config
         configMap:
           name: {{ .Values.artifactory.configMapName }}
-      {{- end}}
+      {{- end }}
       {{- if .Values.artifactory.license.secret }}
       - name: artifactory-license
         secret:

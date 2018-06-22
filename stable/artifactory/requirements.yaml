@@ -3,3 +3,7 @@ dependencies:
     version: 0.8.7
     repository: https://kubernetes-charts.storage.googleapis.com/
     condition: postgresql.enabled
+  - name: gcloud-sqlproxy
+    version: 0.3.5
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: database.cloudsql

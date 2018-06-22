@@ -201,9 +201,19 @@ postgresql:
 
 ## If NOT using the PostgreSQL in this chart (postgresql.enabled=false),
 ## you must specify the following database details
+## You don't need to set the 'host' in case of cloudsql: true
 database:
-  type:
-  host:
-  port:
-  user:
-  password:
+  type: 
+  port: 
+  user: 
+  password: 
+  cloudsql: false
+
+gcloud-sqlproxy:
+  cloudsql:
+    serviceAccountKey:
+    instances:
+    - instance: 
+      project: 
+      region: 
+      port: 
