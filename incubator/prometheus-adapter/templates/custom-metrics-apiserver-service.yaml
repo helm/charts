@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
+  label:
+    app: {{ template "k8s-prometheus-adapter.name" . }}
+    chart: {{ template "k8s-prometheus-adapter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   name: {{ template "k8s-prometheus-adapter.fullname" . }}
-  app: {{ template "k8s-prometheus-adapter.name" . }}
-  chart: {{ template "k8s-prometheus-adapter.chart" . }}
-  release: {{ .Release.Name }}
-  heritage: {{ .Release.Service }}
 spec:
   ports:
   - port: 443
