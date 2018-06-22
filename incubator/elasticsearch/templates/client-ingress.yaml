@@ -1,0 +1,31 @@
+{{- if .Values.client.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.client.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "elasticsearch.client.fullname" . }}
+{{- if .Values.client.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.client.ingress.annotations | indent 4 }}
+{{- end }}
+spec:
+  rules:
+  - http:
+      paths:
+      - path: {{ .Values.client.ingress.path | quote }}
+        backend:
+          serviceName: {{ template "elasticsearch.client.fullname" . }}
+          servicePort: 9200
+    {{- if .Values.client.ingress.host }}
+    host: {{ .Values.client.ingress.host | quote }}
+    {{- end }}
+{{- if .Values.client.ingress.tls }}
+  tls:
+{{ toYaml .Values.client.ingress.tls | indent 4 }}
+{{- end -}}
+{{- end }}

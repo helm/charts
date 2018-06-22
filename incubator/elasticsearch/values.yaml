@@ -45,6 +45,13 @@ client:
   # podAnnotations:
   #   example: client-foo
 
+  ingress:
+    enabled: false
+    # host: ""
+    path: "/"
+    # annotations: {}
+    # tls: {}
+
 master:
   name: master
   replicas: 3

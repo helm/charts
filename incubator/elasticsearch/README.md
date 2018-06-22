@@ -79,6 +79,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.nodeSelector`                | Node labels for client pod assignment                               | `{}`                                 |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                 |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                          |
+| `client.ingress` | Client ingress | `{ enabled: false }` |
 | `master.name`                        | Master component name                                               | `master`                             |
 | `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                  |
 | `master.resources`                   | Master node resources requests & limits                             | `{} - cpu limit must be an integer`  |
