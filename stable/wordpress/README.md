@@ -67,10 +67,10 @@ The following table lists the configurable parameters of the WordPress chart and
 | `smtpUsername`                       | User name for SMTP emails                  | `nil`                                                      |
 | `smtpProtocol`                       | SMTP protocol [`tls`, `ssl`]               | `nil`                                                      |
 | `mariadb.enabled`                    | Deploy MariaDB container(s)                | `true`                                                     |
-| `mariadb.mariadbRootPassword`        | MariaDB admin password                     | `nil`                                                      |
-| `mariadb.mariadbDatabase`            | Database name to create                    | `bitnami_wordpress`                                        |
-| `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                             |
-| `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_             |
+| `mariadb.rootUser.password`        | MariaDB admin password                     | `nil`                                                      |
+| `mariadb.db.name`            | Database name to create                    | `bitnami_wordpress`                                        |
+| `mariadb.db.user`                | Database user to create                    | `bn_wordpress`                                             |
+| `mariadb.db.password`            | Password for the database                  | _random 10 character long alphanumeric string_             |
 | `externalDatabase.host`              | Host of the external database              | `localhost`                                                |
 | `externalDatabase.user`              | Existing username in the external db       | `bn_wordpress`                                             |
 | `externalDatabase.password`          | Password for the above username            | `nil`                                                      |

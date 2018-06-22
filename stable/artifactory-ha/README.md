@@ -178,6 +178,34 @@ $ helm install --name artifactory-ha --set artifactory.license.secret=artifactor
 ```
 **NOTE:** You have to keep passing the license secret parameters as `--set artifactory.license.secret=artifactory-cluster-license,artifactory.license.dataKey=art.lic` on all future calls to `helm install` and `helm upgrade`!
 
+## Bootstrapping Artifactory
+**IMPORTANT:** Bootstrapping Artifactory needs license. Pass license as shown in above section.
+
+* User guide to [bootstrap Artifactory Global Configuration](https://www.jfrog.com/confluence/display/RTF/Configuration+Files#ConfigurationFiles-BootstrappingtheGlobalConfiguration)
+* User guide to [bootstrap Artifactory Security Configuration](https://www.jfrog.com/confluence/display/RTF/Configuration+Files#ConfigurationFiles-BootstrappingtheSecurityConfiguration)
+
+Create `bootstrap-config.yaml` with artifactory.config.import.xml and security.import.xml as shown below:
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-release-bootstrap-config
+data:
+  artifactory.config.import.xml: |
+    <config contents>
+  security.import.xml: |
+    <config contents>
+```
+
+Create configMap in Kubernetes:
+```bash
+$ kubectl apply -f bootstrap-config.yaml
+```
+# Pass the configMap to helm
+```bash
+$ helm install --name artifactory-ha --set artifactory.license.secret=artifactory-cluster-license,artifactory.license.dataKey=art.lic,artifactory.configMapName=my-release-bootstrap-config stable/artifactory-ha
+```
+
 #### Scaling your Artifactory cluster
 A key feature in Artifactory HA is the ability to set an initial cluster size with `--set artifactory.node.replicaCount=${CLUSTER_SIZE}` and if needed, resize it.
 
@@ -268,7 +296,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.name`                   | Artifactory name                     | `artifactory`                              |
 | `artifactory.image.pullPolicy`       | Container pull policy                | `IfNotPresent`                             |
 | `artifactory.image.repository`       | Container image                      | `docker.bintray.io/jfrog/artifactory-pro`  |
-| `artifactory.image.version`          | Container image tag                  | `5.10.1`                                    |
+| `artifactory.image.version`          | Container image tag                  | `6.0.0`                                    |
 | `artifactory.masterKey`      | Artifactory Master Key. Can be generated with `openssl rand -hex 32` |`FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF`|
 | `artifactory.license.secret` | Artifactory license secret name              |                                            |
 | `artifactory.license.dataKey`| Artifactory license secret data key          |                                            |
@@ -314,7 +342,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.persistence.awsS3.path`                | AWS S3 path in bucket               | `artifactory-ha/filestore`   |
 | `artifactory.javaOpts.other` | Artifactory extra java options (for all nodes) | `-Dartifactory.locking.provider.type=db` |
 | `artifactory.replicator.enabled`            | Enable Artifactory Replicator | `false`  |
-| `artifactory.distributionCerts`            | Name of ConfigMap for Artifactory Distribution Certificate  | ``  |
+| `artifactory.distributionCerts`            | Name of ConfigMap for Artifactory Distribution Certificate  |   |
 | `artifactory.replicator.publicUrl`            | Artifactory Replicator Public URL |      |
 | `artifactory.primary.resources.requests.memory` | Artifactory primary node initial memory request  |                     |
 | `artifactory.primary.resources.requests.cpu`    | Artifactory primary node initial cpu request     |                     |
@@ -339,7 +367,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.name`                | Nginx name                        | `nginx`                                                |
 | `nginx.replicaCount`        | Nginx replica count               | `1`                                                    |
 | `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`        |
-| `nginx.image.version`       | Container version                 | `5.10.1`                                                |
+| `nginx.image.version`       | Container version                 | `6.0.0`                                                |
 | `nginx.image.pullPolicy`    | Container pull policy             | `IfNotPresent`                                         |
 | `nginx.service.type`        | Nginx service type                | `LoadBalancer`                                         |
 | `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |  |
@@ -364,6 +392,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
 | `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |    |
 | `nginx.env.ssl`                   | Nginx Environment enable ssl               | `true`                                  |
+| `nginx.env.skipAutoConfigUpdate`  | Nginx Environment to disable auto configuration update | `false`                     |
 | `nginx.resources.requests.memory` | Nginx initial memory request               | `250Mi`                                 |
 | `nginx.resources.requests.cpu`    | Nginx initial cpu request                  | `100m`                                  |
 | `nginx.resources.limits.memory`   | Nginx memory limit                         | `250Mi`                                 |
