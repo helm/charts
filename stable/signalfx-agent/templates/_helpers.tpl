@@ -41,3 +41,10 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Get namespace to deploy agent and its dependencies.
+*/}}
+{{- define "signalfx-agent.namespace" -}}
+    {{- default .Release.Namespace .Values.namespace -}}
+{{- end -}}
