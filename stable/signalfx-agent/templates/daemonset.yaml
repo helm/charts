@@ -3,6 +3,7 @@ apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
   name: {{ template "signalfx-agent.fullname" . }}
+  namespace: {{ template "signalfx-agent.namespace" . }}
   labels:
     app: {{ template "signalfx-agent.name" . }}
     version: {{ .Values.agentVersion }}
