@@ -53,7 +53,7 @@ spec:
         {{- else if .Values.zookeeper.enable }}
         {{- if .Values.zookeeper.deployChart }}
         - name: ZOOKEEPER_HOSTS
-          value: {{(printf "'zk-%s-headless:2181'" .Release.Name | trunc 63)}}
+          value: {{(printf "'%s-zookeeper-headless:2181'" .Release.Name | trunc 63)}}
         {{- else }}
         - name: ZOOKEEPER_HOSTS
           value: {{ .Values.zookeeper.hosts | quote }}
