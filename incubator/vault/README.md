@@ -110,3 +110,93 @@ $ kubectl port-forward vault-pod 8200
 $ export VAULT_ADDR=http://127.0.0.1:8200
 $ vault status
 ```
+
+### TLS config
+
+This is example of running Vault with Kubernetes generated TLS certificate:
+
+1. Create `CertificateSigningRequest` according to [documentation](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/),
+    some useful hosts entries to add:
+   - `127.0.0.1` for running Vault commands inside the pod,
+   - `*.<namespace>.pod.cluster.local` for direct Pod to Pod communication,
+   - `<release>.<namespace>.svc.cluster.local` for communication within cluster,
+
+1. Create `Secret` holding certificate and private key PEM:
+
+```yaml
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: vault-tls
+data:
+  tls.crt: ${BASE64_ENCODED_CRT}
+  tls.key: ${BASE64_ENCODED_PRIVATE_KEY}
+```
+
+1. Example TLS `values.yml` (note: you should replace `{{ ... }}` entries):
+
+```yaml
+replicaCount: {{ .Cur.replicas }}
+
+vault:
+  dev: false
+  extraEnv:
+  - name: VAULT_CAPATH
+    value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+  config:
+    ui: "true"
+    storage:
+      consul:
+        address: {{ .Cur.consul_addr | quote }}
+        path: {{ .Cur.name | quote }}
+    listener:
+      tcp:
+        tls_disable: false
+        tls_cert_file: /vault/tls/tls.crt
+        tls_key_file: /vault/tls/tls.key
+  customSecrets:
+  - secretName: {{ .Cur.tls_secret | quote }}
+    mountPath: /vault/tls
+
+ingress:
+  enabled: true
+  hosts:
+  - {{ .Cur.domain | quote }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Cur.ingress_class | quote }}
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/load-balance: "round_robin"
+  tls:
+  - hosts:
+    - {{ .Cur.domain | quote }}
+```
+
+### HA unseal script
+
+Example mass-unseal script:
+```bash
+#!/bin/sh
+set -Eeo pipefail
+[ -n "$DEBUG" ] && export DEBUG && set -x
+key="$1"
+release="${2:-vault}"
+namespace="${3:-${release}}"
+
+get_sealed () {
+  kubectl get pod -n "${namespace}" -l "release=${release},app=${release}" -o json | jq -r '
+    .items[] |
+    select(
+      .status.phase == "Running" and (
+        .status.containerStatuses | any(.name == "vault" and (.ready | not))
+      )
+    ) | .metadata.name'
+}
+
+for pod in $(get_sealed); do
+  any=1
+  kubectl -n "${namespace}" exec -ti "${pod}" -c vault -- sh -i -c 'VAULT_ADDR="https://${POD_IP//./-}.${POD_NAMESPACE}.pod.cluster.local:8200"'" vault operator unseal $key || exit 1"
+done
+
+[[ -n "${any:-}" ]] || exit 1
+```

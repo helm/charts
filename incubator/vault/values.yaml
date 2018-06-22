@@ -1,9 +1,12 @@
 # Default values for vault.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-replicaCount: 3
 ## The name of the secret to use if pulling images from a private registry.
 # imagePullSecret:
+replicaCount: 1
+maxUnavailable: 0
+# Allow to create all missing pods at once
+maxSurge: "100%"
 image:
   repository: vault
   tag: 0.11.1
@@ -32,7 +35,6 @@ service:
   #  - 10.0.0.0/8
   #  - 130.211.204.2/32
   externalPort: 8200
-  port: 8200
   # clusterIP: None
   annotations: {}
   #   cloud.google.com/load-balancer-type: "Internal"
@@ -128,10 +130,14 @@ vault:
   # - name: extra-volume
   #   secret:
   #     secretName: some-secret
-  readiness:
-    readyIfSealed: false
-    readyIfStandby: true
-    readyIfUninitialized: true
+  readinessParams:
+    # https://www.vaultproject.io/api/system/health.html
+    standbycode: "200"
+    #  standbyok: "false"
+    #  activecode: "200"
+    #  standbycode: "429"
+    #  sealedcode: "503"
+    #  uninitcode: "501"
   config:
     # A YAML representation of a final vault config.json file.
     # See https://www.vaultproject.io/docs/configuration/ for more information.
