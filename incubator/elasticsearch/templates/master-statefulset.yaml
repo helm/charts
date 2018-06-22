@@ -11,6 +11,9 @@ metadata:
 spec:
   serviceName: {{ template "elasticsearch.master.fullname" . }}
   replicas: {{ .Values.master.replicas }}
+{{- if and (eq .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "7") }}
+  podManagementPolicy: Parallel
+{{- end }}
   template:
     metadata:
       labels:
