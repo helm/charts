@@ -130,8 +130,8 @@ spec:
       {{- end }}
       - name: mission-control-certs
         secret:
-          {{- if .Values.certsSecretName }}
-          secretName: {{ .Values.certsSecretName }}
+          {{- if .Values.existingCertsSecret }}
+          secretName: {{ .Values.existingCertsSecret }}
           {{- else }}
           secretName: {{ template "mission-control.fullname" . }}-certs
           {{- end }}

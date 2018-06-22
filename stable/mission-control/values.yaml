@@ -78,7 +78,7 @@ ingress:
 
 ## Common
 ## Create secret with keys and certs as per documentation provided in README.md
-certsSecretName:
+existingCertsSecret:
 
 ## Create secret for certs from provided values. Follow script given in README.md to generate keys and certs. Example is given in
 ## Example values given in https://github.com/kubernetes/charts//blob/master/incubator/mission-control/ci/test-values.yaml

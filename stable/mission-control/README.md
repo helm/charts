@@ -196,7 +196,7 @@ kubectl create secret generic mission-control-certs --from-file=./certs/insight-
 
 ### Installing the Chart with certificate secret
 ```bash
-helm install --name mission-control --set certsSecretName=mission-control-certs incubator/mission-control
+helm install --name mission-control --set existingCertsSecret=mission-control-certs incubator/mission-control
 ```
 
 ## Set Mission Control base URL
@@ -207,7 +207,7 @@ helm install --name mission-control --set certsSecretName=mission-control-certs 
 
 * Set mission-control by running helm upgrade command:
 ```
-helm upgrade --name mission-control --set certsSecretName=mission-control-certs --set missionControl.missionControlUrl=$MISSION_CONTROL_URL incubator/mission-control
+helm upgrade --name mission-control --set existingCertsSecret=mission-control-certs --set missionControl.missionControlUrl=$MISSION_CONTROL_URL incubator/mission-control
 ```
 
 ### Accessing Mission Control
@@ -255,7 +255,7 @@ The following table lists the configurable parameters of the distribution chart 
 | `elasticsearch.env.clusterName`              | Elasticsearch Cluster Name                      | `es-cluster`                          |
 | `elasticsearch.env.esUsername`               | Elasticsearch User Name                         | `elastic`                             |
 | `elasticsearch.env.esPassword`               | Elasticsearch User Name                         | `changeme`                            |
-| `certsSecretName`                            | Mission Control certificate secret name         |                                       |
+| `existingCertsSecret`                            | Mission Control certificate secret name         |                                       |
 | `missionControl.name`                        | Mission Control name                            | `mission-control`                     |
 | `missionControl.replicaCount`                | Mission Control replica count                   | `1`                                   |
 | `missionControl.image`                       | Container image                                 | `docker.jfrog.io/jfrog/mission-control`     |

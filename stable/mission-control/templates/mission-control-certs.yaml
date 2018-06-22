@@ -1,4 +1,4 @@
-{{- if (not .Values.certsSecretName) }}
+{{- if (not .Values.existingCertsSecret) }}
 apiVersion: v1
 kind: Secret
 metadata:
