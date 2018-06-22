@@ -52,10 +52,10 @@ The following table lists the configurable parameters of the MSOMS chart and the
 | -----------------------    | ---------------------------------- | -------------------------------------------------------------------------------- |
 | `omsagent.image.tag`       | `msoms` image tag.                 | Most recent release                                                              |
 | `omsagent.image.pullPolicy`| `msoms` image pull policy.         | IfNotPresent                                                                     |
-| `omsagent.secret.wsid`     | OMS workspace id                   | Does not have a default value, needs to be provided                              |
-| `omsagent.secret.key`      | OMS workspace key                  | Does not have a default value, needs to be provided                              |
-| `omsagent.domain`          | OMS cloud domain (public / govt)   | opinsights.azure.com (Public cloud as default), opinsights.azure.us (Govt Cloud) |
-| `omsagent.env.clusterName`             | name of your cluster      | Does not have a default value, needs to be provided       |
+| `omsagent.secret.wsid`     | Azure Log analytics workspace id                   | Does not have a default value, needs to be provided                              |
+| `omsagent.secret.key`      | Azure Log analytics workspace key                  | Does not have a default value, needs to be provided                              |
+| `omsagent.domain`          | Azure Log analytics cloud domain (public / govt)   | opinsights.azure.com (Public cloud as default), opinsights.azure.us (Govt Cloud) |
+| `omsagent.env.clusterName`             | Name of your cluster      | Does not have a default value, needs to be provided       |
 
 
 You can create a Azure Loganalytics workspace from portal.azure.com and get its ID & PRIMARY KEY from 'Advanced Settings' tab in the Ux.
