@@ -154,7 +154,7 @@ pulling up the CockroachDB admin UI by port-forwarding from your local machine
 to one of the pods (replacing "release-cockroachdb-0" with one of your pods' names):
 
 ```shell
-kubectl port-forward release-cockroachdb-0 8080
+kubectl port-forward my-release-cockroachdb-0 8080
 ```
 
 Once you’ve done that, you should be able to access the admin UI by visiting
