@@ -34,8 +34,8 @@ spec:
 {{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
         - name: copy-config
-          image: "{{ .Values.initContainers.busybox.repository }}"
-          imagePullPolicy: "{{ .Values.initContainers.busybox.pullPolicy }}"
+          image: "{{ .Values.copyConfigImage.busybox.repository }}"
+          imagePullPolicy: "{{ .Values.copyConfigImage.busybox.pullPolicy }}"
           command:
             - "sh"
           args:

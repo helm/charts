@@ -29,9 +29,10 @@ image:
 
 # Specs for busybox image
 
-initContainers:
+copyConfigImage:
   busybox:
     repository: busybox
+    tag: latest
     pullPolicy: IfNotPresent
 
 # Specs for test image
