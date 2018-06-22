@@ -39,4 +39,3 @@ omsagent:
       limits:
         cpu: 150m
         memory: 500Mi
-
