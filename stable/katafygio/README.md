@@ -14,7 +14,7 @@ This chart installs a [Katafygio](https://github.com/bpineau/katafygio) deployme
 
 ## Prerequisites
 
-- Kubernetes 1.8+
+- Kubernetes 1.9+
 
 ## Chart Details
 
@@ -59,7 +59,6 @@ The following table lists the configurable parameters of the Katafygio chart and
 | `excludeKind`           | Object kinds to ignore                                      | `{"replicaset","endpoints","event"}` |
 | `excludeObject`         | Specific objects to ignore (eg. "configmap:default/foo")    | `nil`                                |
 | `rbac.create`           | Enable or disable RBAC roles and bindings                   | `true`                               |
-| `rbac.apiVersion`       | RBAC API version                                            | `v1`                                 |
 | `serviceAccount.create` | Whether a ServiceAccount should be created                  | `true`                               |
 | `serviceAccount.name`   | Service account to be used                                  | `nil`                                |
 | `resyncInterval`        | Seconds between full catch-up resyncs. 0 to disable         | `300`                                |
