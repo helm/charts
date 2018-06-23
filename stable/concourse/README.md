@@ -110,6 +110,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.tolerations` | Tolerations for the web nodes | `[]` |
 | `web.service.type` | Concourse Web service type | `ClusterIP` |
 | `web.service.annotations` | Concourse Web Service annotations | `nil` |
+| `web.service.loadBalancerSourceRanges` | Concourse Web Service Load Balancer Source IP ranges | `nil` |
 | `web.service.atcNodePort` | Sets the nodePort for atc when using `NodePort` | `nil` |
 | `web.service.tsaNodePort` | Sets the nodePort for tsa when using `NodePort` | `nil` |
 | `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
@@ -118,6 +119,16 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
 | `web.metrics.prometheus.enabled` | Enable Prometheus metrics exporter | `false` |
 | `web.metrics.prometheus.port` | Port for exporting Prometheus metrics | `9391` |
+| `web.metrics.datadog.enabled` | Enable datadog metrics exporter | `false` |
+| `web.metrics.datadog.agentHost` | Host to export Datadog metrics to | `127.0.0.1` |
+| `web.metrics.datadog.agentHostUseHostIP` | Use node's IP as host to export Datadog metrics to. Overrides `web.metrics.datadog.agentHost` | `127.0.0.1` |
+| `web.metrics.datadog.agentPort` | Port to export Datadog metrics to | `8125` |
+| `web.metrics.datadog.prefix` | prefix for all Datadog metrics to easily find them in Datadog | `nil` |
+| `web.metrics.influxdb.enabled` | Enable influxdb metrics exporter | `false` |
+| `web.metrics.influxdb.url` | Url for exporting influxdb metrics | `http://127.0.0.1:8086` |
+| `web.metrics.influxdb.database` | Influxdb database name | `concourse` |
+| `web.metrics.influxdb.insecure_skip_verify` | Skip TLS verify when connecting to influxdb | `false` |
+| `web.metrics.influxdb.username` | Username used to authenticate with influxdb | `nil` |
 | `worker.nameOverride` | Override the Concourse Worker components name | `nil` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
@@ -176,13 +187,14 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.gitlabAuthClientSecret` | Application client secret for GitLab OAuth | `nil` |
 | `secrets.genericOauthClientId` | Application client ID for Generic OAuth | `nil` |
 | `secrets.genericOauthClientSecret` | Application client secret for Generic OAuth | `nil` |
-| `secrets.postgresqlUri` | PostgreSQL connection URI when `postgres.enabled` is `false` | `nil` |
+| `secrets.postgresqlUri` | PostgreSQL connection URI when `postgresql.enabled` is `false` | `nil` |
 | `secrets.vaultCaCert` | CA certificate   use to verify the vault server SSL cert. | `nil` |
 | `secrets.vaultClientToken` | Vault periodic client token | `nil` |
 | `secrets.vaultAppRoleId` | Vault AppRole RoleID | `nil` |
 | `secrets.vaultAppRoleSecretId` | Vault AppRole SecretID | `nil` |
 | `secrets.vaultClientCert` | Vault Client Certificate | `nil` |
 | `secrets.vaultClientKey` | Vault Client Key | `nil` |
+| `secrets.influxdbPassword` | Password used to authenticate with influxdb | `nil` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

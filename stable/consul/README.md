@@ -49,7 +49,8 @@ The following table lists the configurable parameters of the consul chart and th
 | `SerfwanUdpPort`        | Container serf wan UDP listening port | `8302`                                                     |
 | `ServerPort`            | Container server listening port       | `8300`                                                     |
 | `ConsulDnsPort`         | Container dns listening port          | `8600`                                                     |
-| `antiAffinity`          | Consul pod anti-affinity setting      | `hard`                                                     |
+| `affinity`              | Consul affinity settings              | `see values.yaml`                                                     |
+| `nodeSelector`          | Node labels for pod assignment        | `{}`                                                       |
 | `maxUnavailable`        | Pod disruption Budget maxUnavailable  | `1`                                                        |
 | `ui.enabled`            | Enable Consul Web UI                  | `true`                                                    |
 | `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                    |

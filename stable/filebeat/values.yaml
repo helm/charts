@@ -45,6 +45,10 @@ config:
   http.enabled: false
   http.port: 5066
 
+# List of beat plugins
+plugins: []
+  # - kinesis.so
+
 # A map of additional environment variables
 extraVars: {}
   # test1: "test2"

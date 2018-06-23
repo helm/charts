@@ -14,7 +14,7 @@ This chart bootstraps a [RabbitMQ](https://github.com/bitnami/bitnami-docker-rab
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.8+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -61,7 +61,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.plugins`         | configuration file for plugins to enable                 | `[rabbitmq_management,rabbitmq_peer_discovery_k8s].`  |
 | `rabbitmq.configuration`    | rabbitmq.conf content                                   | see values.yaml                                                 |
 | `serviceType`               | Kubernetes Service type                                 | `ClusterIP`                                              |
-| `persistence.enabled`       | Use a PVC to persist data                               | `true`                                                   |
+| `persistence.enabled`       | Use a PVC to persist data                               | `false`                                                   |
 | `persistence.storageClass`  | Storage class of backing PVC                            | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                     | `ReadWriteOnce`                                          |
 | `persistence.size`          | Size of data volume                                     | `8Gi`                                                    |

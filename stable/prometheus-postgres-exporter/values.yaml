@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: wrouesnel/postgres_exporter
-  tag: v0.4.4
+  tag: v0.4.6
   pullPolicy: IfNotPresent
 
 service:
@@ -26,6 +26,11 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+  # Specifies whether a PodSecurityPolicy should be created
+  pspEnabled: true
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
@@ -138,3 +143,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+annotations: {}

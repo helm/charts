@@ -35,8 +35,12 @@ $ helm upgrade pg-sqlproxy stable/gcloud-sqlproxy --namespace sqlproxy \
 Replace Postgres/MySQL host with: if access is from the same namespace with `pg-sqlproxy-gcloud-sqlproxy` or if it is from a different namespace with `pg-sqlproxy-gcloud-sqlproxy.sqlproxy`, the rest database connections settings do not have to be changed.
 
 > **Tip**: List all releases using `helm list`
+
 > **Tip**: If you encounter a YAML parse error on `gcloud-sqlproxy/templates/secrets.yaml`, you might need to set `-w 0` option to `base64` command.
+
 > **Tip**: If you are using a MySQL instance, you may want to replace `pg-sqlproxy` with `mysql-sqlproxy` and `5432` with `3306`.
+
+> **Tip**: Because of limitations on the length of port names, the `instance` value for each of the instances must be unique for the first 15 characters.
 
 ## Uninstalling the Chart
 
@@ -52,16 +56,17 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Drupal chart and their default values.
 
-| Parameter                         | Description                            | Default                                                   |
-| --------------------------------- | -------------------------------------- | --------------------------------------------------------- |
-| `image`                           | SQLProxy image                         | `b.gcr.io/cloudsql-docker/gce-proxy`                      |
-| `imageTag`                        | SQLProxy image tag                     | `1.09`                                                    |
-| `imagePullPolicy`                 | Image pull policy                      | `IfNotPresent`                                            |
-| `replicasCount`                   | Replicas count                         | `1`                                                       |
-| `serviceAccountKey`               | Service account key JSON file          | Must be provided and base64 encoded                       |
-| `cloudsql.instances`              | List of PostgreSQL/MySQL instances     | [{instance: `instance`, project: `project`, region: `region`, port: 5432}] must be provided                |
-| `resources`                       | CPU/Memory resource requests/limits    | Memory: `100/150Mi`, CPU: `100/150m`                      |
-| `nodeSelector`                    | Node Selector                          |                                                           |
+| Parameter                         | Description                            | Default                                                                                     |
+| --------------------------------- | -------------------------------------- | ---------------------------------------------------------                                   |
+| `image`                           | SQLProxy image                         | `b.gcr.io/cloudsql-docker/gce-proxy`                                                        |
+| `imageTag`                        | SQLProxy image tag                     | `1.09`                                                                                      |
+| `imagePullPolicy`                 | Image pull policy                      | `IfNotPresent`                                                                              |
+| `replicasCount`                   | Replicas count                         | `1`                                                                                         |
+| `serviceAccountKey`               | Service account key JSON file          | Must be provided and base64 encoded                                                         |
+| `cloudsql.instances`              | List of PostgreSQL/MySQL instances     | [{instance: `instance`, project: `project`, region: `region`, port: 5432}] must be provided |
+| `resources`                       | CPU/Memory resource requests/limits    | Memory: `100/150Mi`, CPU: `100/150m`                                                        |
+| `nodeSelector`                    | Node Selector                          |                                                                                             |
+| `rbac.create`                     | Create RBAC configuration w/ SA        | `false`                                                                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
