@@ -4,7 +4,7 @@ image:
   repository: datadog/agent               # Agent6
   # repository: datadog/dogstatsd         # Standalone DogStatsD6
   # repository: datadog/docker-dd-agent   # Agent5
-  tag: 6.2.1  # Use 6.2.1-jmx to enable jmx fetch collection
+  tag: 6.3.0  # Use 6.3.0-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
 
 # NB! Normally you need to keep Datadog DaemonSet enabled!
@@ -28,6 +28,10 @@ daemonset:
   ## WARNING: Make sure that hosts using this are properly firewalled otherwise
   ## metrics and traces will be accepted from any host able to connect to this host.
   # useHostPort: true
+
+  ## Run the agent in the host's PID namespace. This is required for Dogstatsd origin
+  ## detection to work. See https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
+  # useHostPID: true
 
   ## Annotations to add to the DaemonSet's Pods
   # podAnnotations:
@@ -61,6 +65,10 @@ deployment:
   # Tolerations for pod assignment
   # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
+
+  # If you're using a NodePort-type service and need a fixed port, set this parameter.
+  # dogstatsdNodePort: 8125
+  # traceNodePort: 8126
 
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
@@ -99,6 +107,12 @@ datadog:
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   ##
   collectEvents: false
+
+  ## Enables log collection
+  ## ref: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup
+  ##
+  # logsEnabled: false
+  # logsConfigContainerCollectAll: false
 
   ## Un-comment this to enable APM and tracing, on ports 7777 and 8126
   ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host

@@ -21,7 +21,7 @@ $ helm install --name my-release stable/openldap
 
 We use the docker images provided by https://github.com/osixia/docker-openldap. The docker image is highly configurable and well documented. Please consult to documentation for the docker image for more information.
 
-The following tables lists the configurable parameters of the openldap chart and their default values.
+The following table lists the configurable parameters of the openldap chart and their default values.
 
 | Parameter                       | Description                                                   | Default            |
 | ------------------------------- | ------------------------------------------------------------- | -------------------|
