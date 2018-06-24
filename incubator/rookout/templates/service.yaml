@@ -3,7 +3,6 @@ apiVersion: apps/v1
 metadata:
   name: {{ template "rookout.fullname" . }}
   labels:
-    product: rookout
     app: {{ template "rookout.name" . }}
     chart: {{ template "fluentd.chart" . }}
     release: {{ .Release.Name }}
