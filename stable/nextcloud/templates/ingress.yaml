@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled }}
-apiVersion: {{ required "A valid .Values.networkPolicyApiVersion entry required!" .Values.networkPolicyApiVersion }}
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "nextcloud.fullname" . }}

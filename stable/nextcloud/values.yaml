@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: nextcloud
-  tag: latest
+  tag: 13.0.4-apache
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -29,7 +29,7 @@ replicaCount: 1
 ##
 ingress:
   enabled: false
-  servicePort: 80
+  servicePort: http
   annotations:
     # kubernetes.io/ingress.class: nginx
     # ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/24,172.10.0.1"
@@ -178,7 +178,7 @@ persistence:
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-resources:
-  requests:
-    memory: 512Mi
-    cpu: 300m
+# resources:
+#  requests:
+#    memory: 512Mi
+#    cpu: 300m
