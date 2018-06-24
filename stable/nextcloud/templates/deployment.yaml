@@ -1,5 +1,5 @@
 {{- if include "nextcloud.host" . -}}
-apiVersion: extensions/v1beta2
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "nextcloud.fullname" . }}
@@ -66,7 +66,7 @@ spec:
               key: nextcloud-password
         ports:
         - name: http
-          containerPort: 8080
+          containerPort: 80
         livenessProbe:
           httpGet:
             path: /status.php

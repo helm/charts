@@ -14,7 +14,7 @@ spec:
   {{- end }}
   ports:
   - name: http
-    port: 80
+    port: 8080
     targetPort: 80
   selector:
     app: {{ template "nextcloud.fullname" . }}
