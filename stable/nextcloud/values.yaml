@@ -17,10 +17,6 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
-## For Kubernetes v1.4, v1.5 and v1.6, use 'extensions/v1beta1'
-## For Kubernetes v1.7, use 'networking.k8s.io/v1'
-networkPolicyApiVersion: extensions/v1beta1
-
 # Number of replicas to be deployed
 replicaCount: 1
 
