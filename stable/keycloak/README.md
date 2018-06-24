@@ -188,7 +188,7 @@ In combination with an `emptyDir` that is shared with the Keycloak container, co
 
 ```yaml
 keycloak:
-  extraInitContainers:
+  extraInitContainers: |
     - name: theme-provider
       image: myuser/mytheme:1
       imagePullPolicy: IfNotPresent
@@ -203,11 +203,11 @@ keycloak:
         - name: theme
           mountPath: /theme
 
-  extraVolumeMounts:
+  extraVolumeMounts: |
     - name: theme
       mountPath: /opt/jboss/keycloak/themes/mytheme
 
-  extraVolumes:
+  extraVolumes: |
     - name: theme
       emptyDir: {}
 ```
