@@ -73,36 +73,12 @@ spec:
             port: http
         resources:
 {{ toYaml .Values.server.resources | indent 10 }}
-{{- if .Values.cloudSqlProxy.enabled }}
-        volumeMounts:
-          - name: drone-lib
-            mountPath: /var/lib/drone
-      # Cloud SQL proxy container
-      - name: {{ template "drone.fullname" . }}-cloud-sql-proxy
-        image: "{{ .Values.images.cloudSqlProxy.repository }}:{{ .Values.images.cloudSqlProxy.tag }}"
-        imagePullPolicy: Always
-        command:
-        - "/cloud_sql_proxy"
-        - "--dir=/cloudsql"
-        - "-instances={{- .Values.cloudSqlProxy.instanceName }}=tcp:{{- .Values.cloudSqlProxy.port }}"
-        - "-credential_file=/secrets/cloudsql/{{- .Values.cloudSqlProxy.credential.jsonKeyName }}"
-        volumeMounts:
-        - name: cloudsql-instance-credentials
-          mountPath: /secrets/cloudsql
-          readOnly: true
-      terminationGracePeriodSeconds: 60
-      restartPolicy: Always
-      volumes:
-      - name: drone-lib
-        hostPath:
-          path: /var/lib/drone
-      - name: cloudsql-instance-credentials
-        secret:
-          secretName: "{{- .Values.cloudSqlProxy.credential.name }}"
-{{- else }}
         volumeMounts:
           - name: data
             mountPath: /var/lib/drone
+{{- with .Values.server.extraContainers }}
+{{ tpl . $ | indent 6 }}
+{{- end }}
       volumes:
       - name: data
       {{- if .Values.persistence.enabled }}
@@ -111,5 +87,7 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+{{- with .Values.server.extraVolumes }}
+{{ tpl . $ | indent 6 }}
 {{- end }}
 {{ end }}
