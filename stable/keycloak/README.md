@@ -272,7 +272,7 @@ keycloak:
 
   persistence:
     deployPostgres: false
-    dbVendor: POSTGRES
+    dbVendor: postgres
     dbName: postgres
     dbHost: 127.0.0.1
     dbPort: 5432
