@@ -50,9 +50,9 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `resources.requests.memory`         | Memory resource requests           |                                           |
 | `resources.limits.memory`           | Memory resource limits             |                                           |
 | `ingress`                           | Settings for ingress               | `{}`                                      |
-| `nodeSelector`                      | Settings for ingress               | `{}`                                      |
-| `tolerations`                       | Settings for ingress               | `{}`                                      |
-| `affinity`                          | Settings for ingress               | `{}`                                      |
+| `nodeSelector`                      | Settings for nodeselecto           | `{}`                                      |
+| `tolerations`                       | Settings for toleration            | `{}`                                      |
+| `affinity`                          | Settings for affinity              | `{}`                                      |
 
 
 
