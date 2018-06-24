@@ -4,7 +4,7 @@ metadata:
   name: {{ template "rookout.fullname" . }}
   labels:
     app: {{ template "rookout.name" . }}
-    chart: {{ template "fluentd.chart" . }}
+    chart: {{ template "rookout.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
