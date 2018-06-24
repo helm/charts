@@ -71,6 +71,7 @@ spec:
         - sh
         - -exc
         - |
+          trap "exit 0" TERM; \
           while :; do \
           java \
           -XX:+UnlockExperimentalVMOptions \
@@ -80,7 +81,8 @@ spec:
           -jar \
           jmx_prometheus_httpserver.jar \
           {{ .Values.prometheus.jmx.port | quote }} \
-          /etc/jmx-kafka/jmx-kafka-prometheus.yml || sleep 10; \
+          /etc/jmx-kafka/jmx-kafka-prometheus.yml & \
+          wait $! || sleep 3; \
           done
         ports:
         - containerPort: {{ .Values.prometheus.jmx.port }}
