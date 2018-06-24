@@ -14,6 +14,6 @@ icon: https://cdn.rawgit.com/docker-library/docs/defa5ffc7123177acd60ddef6e16bdd
 sources:
 - https://github.com/nextcloud/server
 maintainers:
-- name: Keiran Smith
+- name: affix
   email: opensource@keiran.scot
 engine: gotpl
