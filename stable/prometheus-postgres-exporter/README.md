@@ -55,6 +55,8 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `nodeSelector`                    | node labels for pod assignment | `{}`  |
 | `affinity`                       |     node/pod affinities | `{}` |
 | `annotations`                    | Deployment annotations | `{}` |
+| `extraContainers`                | Additional sidecar containers | `""` |
+| `extraVolumes`                   | Additional volumes for use in extraContainers | `""` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
