@@ -1,0 +1,9 @@
+{{- template "common.service" (list . "cerebro.service") -}}
+{{- define "cerebro.service" -}}
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 9000
+    protocol: TCP
+{{- end -}}
