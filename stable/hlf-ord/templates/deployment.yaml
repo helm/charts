@@ -45,17 +45,17 @@ spec:
               # Download Fabric CA-client if it does not exist
               if [ ! -f /bin/fabric-ca-client ]
               then
-                if [ ! -f /hl_data/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz ]
+                if [ ! -f /var/hyperledger/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz ]
                 then
                   # Curl is needed to download Fabric CA-client
                   apt update
                   apt install curl -y
 
                   echo "Downloading Fabric CA-client"
-                  curl -f -s -C - https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/${HLF_TOOLS_BUILD}/hyperledger-fabric-ca-${HLF_TOOLS_BUILD}.tar.gz > /hl_data/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz
+                  curl -f -s -C - https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/${HLF_TOOLS_BUILD}/hyperledger-fabric-ca-${HLF_TOOLS_BUILD}.tar.gz > /var/hyperledger/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz
                 fi
                 echo "Unzipping Fabric CA-client"
-                tar xzf /hl_data/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz -C /
+                tar xzf /var/hyperledger/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz -C /
               fi
 
               while [ ! -f ${ORDERER_GENERAL_LOCALMSPDIR}/signcerts/cert.pem ];
@@ -109,7 +109,7 @@ spec:
               containerPort: 7050
               protocol: TCP
           volumeMounts:
-            - mountPath: /hl_data
+            - mountPath: /var/hyperledger
               name: data
             - mountPath: /hl_config/genesis
               name: genesis
