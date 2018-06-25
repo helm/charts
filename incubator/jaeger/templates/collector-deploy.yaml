@@ -35,6 +35,10 @@ spec:
     spec:
       nodeSelector:
 {{ toYaml .Values.collector.nodeSelector | indent 8 }}
+{{- if .Values.collector.tolerations }}
+      tolerations:
+{{ toYaml .Values.collector.tolerations | indent 8 }}
+{{- end }}
       containers:
       - name: {{ template "jaeger.collector.name" . }}
         image: {{ .Values.collector.image }}:{{ .Values.tag }}
