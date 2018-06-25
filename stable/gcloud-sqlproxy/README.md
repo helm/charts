@@ -59,7 +59,7 @@ The following table lists the configurable parameters of the Drupal chart and th
 | Parameter                         | Description                             | Default                                                                                     |
 | --------------------------------- | --------------------------------------  | ---------------------------------------------------------                                   |
 | `image`                           | SQLProxy image                          | `b.gcr.io/cloudsql-docker/gce-proxy`                                                        |
-| `imageTag`                        | SQLProxy image tag                      | `1.09`                                                                                      |
+| `imageTag`                        | SQLProxy image tag                      | `1.11`                                                                                      |
 | `imagePullPolicy`                 | Image pull policy                       | `IfNotPresent`                                                                              |
 | `replicasCount`                   | Replicas count                          | `1`                                                                                         |
 | `serviceAccountKey`               | Service account key JSON file           | Must be provided and base64 encoded when `secret.create == true`                            |
