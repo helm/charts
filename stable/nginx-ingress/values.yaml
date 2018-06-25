@@ -26,6 +26,10 @@ controller:
   daemonset:
     useHostPort: false
 
+    hostPorts:
+      http: 80
+      https: 443
+
   ## Required only if defaultBackend.enabled = false
   ## Must be <namespace>/<service_name>
   ##
@@ -164,6 +168,9 @@ controller:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
 
+    enableHttp: true
+    enableHttps: true
+
     ## Set external traffic policy to: "Local" to preserve source IP on
     ## providers supporting it
     ## Ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer
@@ -218,6 +225,13 @@ controller:
   ## Additional volumes to the controller pod.
   #  - name: copy-portal-skins
   #    emptyDir: {}
+
+  extraInitContainers: []
+  ## Containers, which are run before the app containers are started.
+  # - name: init-myservice
+  #   image: busybox
+  #   command: ['sh', '-c', 'until nslookup myservice; do echo waiting for myservice; sleep 2; done;']
+
 
   stats:
     enabled: false

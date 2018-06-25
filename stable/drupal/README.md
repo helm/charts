@@ -66,10 +66,10 @@ The following table lists the configurable parameters of the Drupal chart and th
 | `externalDatabase.password`       | Password for the above username       | `nil`                                                     |
 | `externalDatabase.database`       | Name of the existing database         | `bitnami_drupal`                                          |
 | `mariadb.enabled`                 | Whether to use the MariaDB chart      | `true`                                                    |
-| `mariadb.mariadbRootPassword`     | MariaDB admin password                | `nil`                                                     |
-| `mariadb.mariadbDatabase`         | Database name to create               | `bitnami_drupal`                                          |
-| `mariadb.mariadbUser`             | Database user to create               | `bn_drupal`                                               |
-| `mariadb.mariadbPassword`         | Password for the database             | _random 10 character long alphanumeric string_            |
+| `mariadb.rootUser.password`       | MariaDB admin password                | `nil`                                                     |
+| `mariadb.db.name`                 | Database name to create               | `bitnami_drupal`                                          |
+| `mariadb.db.user`                 | Database user to create               | `bn_drupal`                                               |
+| `mariadb.db.password`             | Password for the database             | _random 10 character long alphanumeric string_            |
 | `serviceType`                     | Kubernetes Service type               | `LoadBalancer`                                            |
 | `persistence.enabled`             | Enable persistence using PVC          | `true`                                                    |
 | `persistence.apache.storageClass` | PVC Storage Class for Apache volume   | `nil` (uses alpha storage class annotation)               |

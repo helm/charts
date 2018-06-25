@@ -6,7 +6,7 @@ metadata:
   name: pachyderm
 roleRef:
   apiGroup: ''
-  kind: Role
+  kind: ClusterRole
   name: pachyderm
 subjects:
   - kind: ServiceAccount
