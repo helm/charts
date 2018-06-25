@@ -150,6 +150,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `agent.service.compactPort`              | jaeger.thrift over compact thrift   |  6831                                  |
 | `agent.service.zipkinThriftPort`         | zipkin.thrift over compact thrift   |  5775                                  |
 | `agent.useHostNetwork`                   | Enable hostNetwork for agents       |  false                                 |
+| `agent.tolerations`                      | Node Tolerations                    | `[]`                                   |
 | `cassandra.config.cluster_name`          | Cluster name                        |  jaeger                                |
 | `cassandra.config.dc_name`               | Datacenter name                     |  dc1                                   |
 | `cassandra.config.endpoint_snitch`       | Node discovery method               |  GossipingPropertyFileSnitch           |
@@ -163,6 +164,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.service.annotations`          | Annotations for Collector SVC       |  nil                                   |
 | `collector.image`                        | Image for jaeger collector          |  jaegertracing/jaeger-collector        |
 | `collector.pullPolicy`                   | Collector image pullPolicy          |  IfNotPresent                          |
+| `collector.tolerations`                  | Node Tolerations                    | `[]`                                   |
 | `collector.service.annotations`          | Annotations for Collector SVC       |  nil                                   |
 | `collector.service.httpPort`             | Client port for HTTP thrift         |  14268                                 |
 | `collector.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`   |
@@ -183,6 +185,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `query.ingress.enabled`                  | Allow external traffic access       |  false                                 |
 | `query.podAnnotations`                   | Annotations for Query pod           |  nil                                   |
 | `query.pullPolicy`                       | Query UI image pullPolicy           |  IfNotPresent                          |
+| `query.tolerations`                      | Node Tolerations                    | `[]`                                   |
 | `query.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`       |
 | `query.service.queryPort`                | External accessible port            |  80                                    |
 | `query.service.targetPort`               | Internal Query UI port              |  16686                                 |
@@ -198,6 +201,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `spark.successfulJobsHistoryLimit`       | Cron job successfulJobsHistoryLimit |  5                                     |
 | `spark.failedJobsHistoryLimit`           | Cron job failedJobsHistoryLimit     |  5                                     |
 | `spark.tag`                              | Tag of the dependencies job image   |  latest                                |
+| `spark.tolerations`                      | Node Tolerations                    | `[]`                                   |
 | `storage.cassandra.host`                 | Provisioned cassandra host          |  cassandra                             |
 | `storage.cassandra.password`             | Provisioned cassandra password      |  password                              |
 | `storage.cassandra.port`                 | Provisioned cassandra port          |  9042                                  |
