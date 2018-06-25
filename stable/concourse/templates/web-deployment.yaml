@@ -39,7 +39,7 @@ spec:
             - "--aws-ssm-region"
             - "$(CONCOURSE_AWS_SSM_REGION)"
             {{- end }}
-            {{- if .Values.credentialManager.secretsmanager.enabled }}
+            {{- if .Values.credentialManager.awsSecretsManager.enabled }}
             - "--aws-secretsmanager-region"
             - "$(CONCOURSE_AWS_SECRETSMANAGER_REGION)"
             {{- end }}
@@ -267,7 +267,7 @@ spec:
               value: {{ .Values.credentialManager.ssm.teamSecretTemplate | quote }}
             {{- end }}
             {{- end }}
-            {{- if .Values.credentialManager.secretsmanager.enabled }}
+            {{- if .Values.credentialManager.awsSecretsManager.enabled }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -285,17 +285,17 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-secretsmanager-session-token
             {{- end }}
-            {{- if .Values.credentialManager.secretsmanager.region }}
+            {{- if .Values.credentialManager.awsSecretsManager.region }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_REGION
-              value: {{ .Values.credentialManager.secretsmanager.region | quote }}
+              value: {{ .Values.credentialManager.awsSecretsManager.region | quote }}
             {{- end }}
-            {{- if .Values.credentialManager.secretsmanager.pipelineSecretTemplate }}
+            {{- if .Values.credentialManager.awsSecretsManager.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_PIPELINE_SECRET_TEMPLATE
-              value: {{ .Values.credentialManager.secretsmanager.pipelineSecretTemplate | quote }}
+              value: {{ .Values.credentialManager.awsSecretsManager.pipelineSecretTemplate | quote }}
             {{- end }}
-            {{- if .Values.credentialManager.secretsmanager.teamSecretTemplate }}
+            {{- if .Values.credentialManager.awsSecretsManager.teamSecretTemplate }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_TEAM_SECRET_TEMPLATE
-              value: {{ .Values.credentialManager.secretsmanager.teamSecretTemplate | quote }}
+              value: {{ .Values.credentialManager.awsSecretsManager.teamSecretTemplate | quote }}
             {{- end }}
             {{- end }}
             {{- if .Values.web.metrics.prometheus.enabled }}

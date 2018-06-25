@@ -540,7 +540,7 @@ credentialManager:
 
   ## Configuration for AWS Secrets Manager as the Credential Manager. Supported in Concourse 3.11.0.
   ##
-  secretsmanager:
+  awsSecretsManager:
 
     ## Enable the use of AWS Secrets Manager.
     ##
