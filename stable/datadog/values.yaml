@@ -70,9 +70,6 @@ deployment:
   # dogstatsdNodePort: 8125
   # traceNodePort: 8126
 
-# Use existing Secret which stores API key instead of creating a new one
-# existingSecret:
-
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
 ##
@@ -84,6 +81,9 @@ datadog:
   ## ref: https://app.datadoghq.com/account/settings#agent/kubernetes
   ##
   # apiKey:
+
+  ## Use existing Secret which stores API key instead of creating a new one
+  # apiKeyExistingSecret:
 
   ## dd-agent container name
   ##

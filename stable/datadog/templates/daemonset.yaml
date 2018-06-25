@@ -1,5 +1,5 @@
 {{- if .Values.daemonset.enabled }}
-{{- if (or (.Values.existingSecret) (.Values.datadog.apiKey)) }}
+{{- if (or (.Values.datadog.apiKeyExistingSecret) (.Values.datadog.apiKey)) }}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:

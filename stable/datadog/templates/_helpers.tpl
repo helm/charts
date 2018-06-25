@@ -20,7 +20,7 @@ Return secret name to be used based on provided values.
 */}}
 {{- define "apiSecretName" -}}
 {{- $fullName := include "datadog.fullname" . -}}
-{{- default $fullName .Values.existingSecret | quote -}}
+{{- default $fullName .Values.datadog.apiKeyExistingSecret | quote -}}
 {{- end -}}
 
 {{/*
