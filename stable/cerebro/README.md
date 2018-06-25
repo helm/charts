@@ -16,7 +16,7 @@ Optionally you can also enable ingress.
 To install the chart with the release name `my-release`, run:
 
 ```bash
-$ helm install --name my-release incubator/cerebro
+$ helm install --name my-release stable/cerebro
 ```
 
 After a few seconds, you should see service statuses being written to the configured output.
@@ -60,13 +60,13 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-    incubator/cerebro
+    stable/cerebro
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml incubator/cerebro
+$ helm install --name my-release -f values.yaml stable/cerebro
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
