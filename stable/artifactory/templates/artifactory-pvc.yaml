@@ -1,4 +1,4 @@
-{{- if and .Values.artifactory.persistence.enabled (not .Values.artifactory.persistence.ExistingClaim) -}}
+{{- if and .Values.artifactory.persistence.enabled (not .Values.artifactory.persistence.existingClaim) -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
