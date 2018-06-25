@@ -48,6 +48,16 @@ kafkaStore:
   ## Additional Java arguments to pass to Kafka.
   # schemaRegistryOpts: -Dfoo=bar
 
+## Readiness probe config.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+##
+readinessProbe:
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
 # Options for connecting to SASL kafka brokers
 sasl:
   configPath: "/etc/kafka-config"
