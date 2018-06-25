@@ -67,7 +67,7 @@ spec:
             httpGet:
               path: /
               port: {{ .Values.servicePort }}
-            {{- if not .Values.livenessProbe }}}
+            {{- if not .Values.livenessProbe }}
             initialDelaySeconds: 10
             timeoutSeconds: 5
             {{- else }}
