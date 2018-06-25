@@ -58,17 +58,17 @@ spec:
               # Download Fabric CA-client if it does not exist
               if [ ! -f /bin/fabric-ca-client ]
               then
-                if [ ! -f /hl_data/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz ]
+                if [ ! -f /var/hyperledger/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz ]
                 then
                   # Curl is needed to download Fabric CA-client
                   apt update
                   apt install curl -y
 
                   echo "Downloading Fabric CA-client"
-                  curl -f -s -C - https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/${HLF_TOOLS_BUILD}/hyperledger-fabric-ca-${HLF_TOOLS_BUILD}.tar.gz > /hl_data/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz
+                  curl -f -s -C - https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/${HLF_TOOLS_BUILD}/hyperledger-fabric-ca-${HLF_TOOLS_BUILD}.tar.gz > /var/hyperledger/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz
                 fi
                 echo "Unzipping Fabric CA-client"
-                tar xzf /hl_data/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz -C /
+                tar xzf /var/hyperledger/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz -C /
               fi
 
               while [ ! -f ${CORE_PEER_MSPCONFIGPATH}/signcerts/cert.pem ];
@@ -125,7 +125,7 @@ spec:
             - configMapRef:
                 name: {{ include "hlf-peer.fullname" . }}--peer
           volumeMounts:
-            - mountPath: /hl_data
+            - mountPath: /var/hyperledger
               name: data
             - mountPath: /host/var/run/docker.sock
               name: dockersocket
