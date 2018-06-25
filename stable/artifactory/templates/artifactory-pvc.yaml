@@ -8,6 +8,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+{{- if .Values.artifactory.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.artifactory.persistence.annotations | indent 4 }}
+{{- end }}
 spec:
   accessModes:
     - {{ .Values.artifactory.persistence.accessMode | quote }}

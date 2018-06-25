@@ -35,7 +35,7 @@ filebeat.image.pullPolicy         | Elastic filebeat Kubernetes image pull polic
 filebeat.logstash.host            | Logstash service host; ex: logstash (this value must be provided)                                                     | ""
 filebeat.logstash.port            | Logstash service port                                                                                                 | 5000
 filebeat.logstash.sourceType      | Logstash source type will allow custom filtering via the Logstash configuration                                       | json-logs
-filebeat.logstash.index           | Elastisearch index that will contain the new DMARC data (index will be created on-the-fly if doesn't exist)           | dmarc
+filebeat.logstash.index           | Elasticsearch index that will contain the new DMARC data (index will be created on-the-fly if doesn't exist)           | dmarc
 filebeat.logstash.timeout         | Seconds to wait before timing out the connection to logstash                                                          | 15
 
 ## Secrets
