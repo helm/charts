@@ -9,7 +9,7 @@ replicas: 3
 image: "confluentinc/cp-kafka"
 
 ## The kafka image tag
-imageTag: "4.0.1-1"
+imageTag: "4.1.1-2"
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -276,6 +276,27 @@ prometheus:
       ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
       selector:
         prometheus: kube-prometheus
+
+## Topic creation and configuration.
+## The job will be run on a deployment only when the config has been changed.
+## - If 'partitions' and 'replicationFactor' are specified we create the topic (with --if-not-exists.)
+## - If 'partitions' is specified we 'alter' the number of partitions. This will
+## silently and safely fail if the new setting isn’t strictly larger than the old (i.e. a NOOP.) Do be aware of the
+## implications for keyed topics (ref: https://docs.confluent.io/current/kafka/post-deployment.html#admin-operations)
+## - If 'defaultConfig' is specified it's deleted from the topic configuration. If it isn't present,
+## it will silently and safely fail.
+## - If 'config' is specified it's added to the topic configuration.
+##
+topics: []
+  # - name: myExistingTopicConfig
+  #   config: "cleanup.policy=compact,delete.retention.ms=604800000"
+  # - name: myExistingTopicPartitions
+  #   partitions: 8
+  # - name: myNewTopicWithConfig
+  #   partitions: 8
+  #   replicationFactor: 3
+  #   defaultConfig: "segment.bytes,segment.ms"
+  #   config: "cleanup.policy=compact,delete.retention.ms=604800000"
 
 # ------------------------------------------------------------------------------
 # Zookeeper:

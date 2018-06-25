@@ -11,11 +11,12 @@ spec:
   ports:
   - name: broker
     port: 9092
+    targetPort: kafka
 {{- if and .Values.prometheus.jmx.enabled .Values.prometheus.operator.enabled }}
   - name: jmx-exporter
     protocol: TCP
     port: {{ .Values.jmx.port }}
-    targetPort: {{ .Values.prometheus.jmx.port }}
+    targetPort: prometheus
 {{- end }}
   selector:
     app: {{ include "kafka.name" . }}
