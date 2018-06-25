@@ -42,7 +42,7 @@ spec:
             - |
               export DB_DATASOURCE="host=${DB_HOST} port=${DB_PORT} user=${DB_USERNAME} password=${DB_PASSWORD} dbname=${DB_DATABASE} sslmode=${DB_SSL}"
               mkdir -p $FABRIC_CA_HOME
-              cp /hl_data/ca_config/ca.yaml $FABRIC_CA_HOME/fabric-ca-server-config.yaml
+              cp /var/hyperledger/ca_config/ca.yaml $FABRIC_CA_HOME/fabric-ca-server-config.yaml
               sed -i "s/<<<ADMIN>>>/${CA_ADMIN}/g" ${FABRIC_CA_HOME}/fabric-ca-server-config.yaml
               sed -i "s/<<<ADMINPW>>>/${CA_PASSWORD}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
               sed -i "s/<<<DB_TYPE>>>/${DB_TYPE}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
@@ -88,14 +88,14 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: data
-              mountPath: /hl_data
+              mountPath: /var/hyperledger
             - name: ca-config
               readOnly: true
-              mountPath: /hl_data/ca_config
+              mountPath: /var/hyperledger/ca_config
             {{- if .Values.ingress.tls }}
             - name: tls-secret
               readOnly: true
-              mountPath: /hl_data/tls_secret
+              mountPath: /var/hyperledger/tls_secret
             {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

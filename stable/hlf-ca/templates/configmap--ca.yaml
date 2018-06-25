@@ -6,6 +6,6 @@ metadata:
 {{ include "labels.standard" . | indent 4 }}
 data:
   GODEBUG: "netdns=go"
-  FABRIC_CA_HOME: /hl_data/fabric-ca
+  FABRIC_CA_HOME: /var/hyperledger/fabric-ca
   FABRIC_CA_SERVER_CA_NAME: {{ .Values.caName | quote }}
   SERVICE_DNS: {{ include "hlf-ca.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local

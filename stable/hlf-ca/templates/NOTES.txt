@@ -22,7 +22,7 @@ Run the following commands to...
 {{- end }}
 
 3. Display local (admin "client" enrollment) certificate, if it has been created:
-  kubectl exec $POD_NAME -- cat /hl_data/fabric-ca/msp/signcerts/cert.pem
+  kubectl exec $POD_NAME -- cat /var/hyperledger/fabric-ca/msp/signcerts/cert.pem
 
 4. Enroll the bootstrap admin identity:
   kubectl exec $POD_NAME -- bash -c 'fabric-ca-client enroll -d -u http://$CA_ADMIN:$CA_PASSWORD@$SERVICE_DNS:{{ .Values.service.port }}'

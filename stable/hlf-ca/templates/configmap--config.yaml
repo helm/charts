@@ -24,8 +24,8 @@ data:
       # Enable TLS (handled by the Ingress)
       enabled: false
       # TLS for the server's listening port
-      certfile: /hl_data/tls_secret/tls.crt
-      keyfile: /hl_data/tls_secret/tls.key
+      certfile: /var/hyperledger/tls_secret/tls.crt
+      keyfile: /var/hyperledger/tls_secret/tls.key
       clientauth:
         # Supported types: NoClientCert, RequestClientCert, RequireAnyClientCert, VerifyClientCertIfGiven and RequireAndVerifyClientCert.
         type: noclientcert
@@ -47,7 +47,7 @@ data:
       # Key file (is only used to import a private key into BCCSP)
       keyfile:
       # Certificate file (default: ca-cert.pem)
-      certfile: /hl_data/fabric-ca/msp/certs/{{ include "hlf-ca.fullname" . }}-cert.pem
+      certfile: /var/hyperledger/fabric-ca/msp/certs/{{ include "hlf-ca.fullname" . }}-cert.pem
       # Chain file
       chainfile:
     #############################################################################
