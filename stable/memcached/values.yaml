@@ -37,4 +37,4 @@ resources:
 
 extraContainers:
 
-additionalVolumes:
+extraVolumes:

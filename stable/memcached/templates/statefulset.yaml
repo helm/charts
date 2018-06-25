@@ -69,7 +69,7 @@ spec:
 {{- with .Values.extraContainers }}
 {{ tpl . $ | indent 6 }}
 {{- end }}
-{{- with .Values.additionalVolumes }}
+{{- with .Values.extraVolumes }}
       volumes:
 {{ tpl . $ | indent 6 }}
 {{- end }}
