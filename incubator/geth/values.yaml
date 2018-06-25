@@ -1,6 +1,6 @@
 image:
-  repository: "arilot/geth"
-  tag: "latest"
+  repository: "ethereum/client-g"
+  tag: "stable"
   pullPolicy: IfNotPresent
 
 rpcPort: 8545
@@ -10,7 +10,7 @@ rpcVhosts: "*"
 wsApi: "net,eth,personal,web3"
 wsOrigins: "*"
 networkId: 3
-testnet: true
+testnet: false
 syncMode: "fast"
 
 persistence:
@@ -29,7 +29,7 @@ persistence:
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-resources:
-  limit:
-    memory: 1000Mi
-    cpu: 300m
+resources: {}
+#   limit:
+#     memory: 1000Mi
+#     cpu: 300m
