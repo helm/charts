@@ -35,6 +35,6 @@ resources:
     memory: 64Mi
     cpu: 50m
 
-sidecars:
+extraContainers:
 
 additionalVolumes:
