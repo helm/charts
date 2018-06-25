@@ -40,6 +40,10 @@ spec:
         runAsUser: {{ .Values.master.securityContext.runAsUser }}
       {{- end }}
       serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
+      {{- with .Values.master.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       {{- if .Values.master.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.master.nodeSelector | indent 8 }}
