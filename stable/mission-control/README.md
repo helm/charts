@@ -196,7 +196,7 @@ kubectl create secret generic mission-control-certs --from-file=./certs/insight-
 
 ### Installing the Chart with certificate secret
 ```bash
-helm install --name mission-control --set existingCertsSecret=mission-control-certs incubator/mission-control
+helm install --name mission-control --set existingCertsSecret=mission-control-certs stable/mission-control
 ```
 
 ## Set Mission Control base URL
@@ -207,7 +207,7 @@ helm install --name mission-control --set existingCertsSecret=mission-control-ce
 
 * Set mission-control by running helm upgrade command:
 ```
-helm upgrade --name mission-control --set existingCertsSecret=mission-control-certs --set missionControl.missionControlUrl=$MISSION_CONTROL_URL incubator/mission-control
+helm upgrade --name mission-control --set existingCertsSecret=mission-control-certs --set missionControl.missionControlUrl=$MISSION_CONTROL_URL stable/mission-control
 ```
 
 ### Accessing Mission Control
@@ -217,7 +217,7 @@ Follow the instructions outputted by the install command to get the Distribution
 ### Updating Mission Control
 Once you have a new chart version, you can update your deployment with
 ```
-helm upgrade mission-control incubator/mission-control
+helm upgrade mission-control stable/mission-control
 ```
 
 ## Configuration
