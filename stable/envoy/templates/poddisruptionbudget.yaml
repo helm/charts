@@ -1,0 +1,15 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "envoy.fullname" . }}
+  labels:
+    app: {{ template "envoy.name" . }}
+    chart: {{ template "envoy.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "envoy.name" . }}
+      release: {{ .Release.Name }}
+{{ .Values.podDisruptionBudget | indent 2 }}
