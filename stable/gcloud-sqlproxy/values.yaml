@@ -20,6 +20,15 @@ replicasCount: 1
 ##
 serviceAccountKey: ""
 
+## Instance credentials secret configuration
+secret:
+  ## Should a secret be generated
+  create: true
+  ## The name of the secret to use/create, defaults to chart fullname if not set
+  name: ""
+  ## The key to use within the secret
+  key: credentials.json
+
 ## SQL connection settings
 ##
 cloudsql:
@@ -42,13 +51,12 @@ cloudsql:
     # Port number for the proxy to expose for this instance.
     port: 5432
 
-## Configure resource requests and limits
-## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-##
-
 rbac:
   create: false
 
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
 resources:
   requests:
     cpu: 100m
