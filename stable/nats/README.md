@@ -2,7 +2,7 @@
 
 [NATS](https://nats.io/) is an open-source, cloud-native messaging system. It provides a lightweight server that is written in the Go programming language.
 
-## TL;DR;
+## TL;DR
 
 ```bash
 $ helm install stable/nats
@@ -132,7 +132,6 @@ $ helm install --name my-release -f values.yaml stable/nats
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
-
 
 ## Production settings and horizontal scaling
 
