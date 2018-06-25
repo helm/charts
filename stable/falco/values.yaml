@@ -130,6 +130,17 @@ falco:
     keepAlive: false
     program: mail -s "Falco Notification" someone@example.com
 
+customRules: {}
+  # Although Falco comes with a nice default rule set for detecting weird
+  # behavior in containers, our users are going to customize the run-time
+  # security rule sets or policies for the specific container images and
+  # applications they run. This feature can be handled in this section.
+  #
+  # Example:
+  #
+  # rules-traefik.yaml: |-
+  #   [ rule body ]
+
   # If Google Cloud Security Command Center integration is enabled, falco will
   # be configured to use this integration as program_output and sets the following values:
   # * json_output: true

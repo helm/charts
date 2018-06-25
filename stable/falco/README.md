@@ -72,6 +72,7 @@ The following table lists the configurable parameters of the Falco chart and the
 | `falco.programOutput.enabled`                   | Enable program output for security notifications                    | `false`                                                                                |
 | `falco.programOutput.keepAlive`                 | Start the program once or re-spawn when a notification arrives      | `false`                                                                                |
 | `falco.programOutput.program`                   | Command to execute for program output                               | `mail -s "Falco Notification" someone@example.com`                                     |
+| `customRules`                                   | Third party rules enabled for Falco                                 | `{}`                                                                                   |
 | `integrations.gcscc.enabled`                    | Enable Google Cloud Security Command Center integration             | `false`                                                                                |
 | `integrations.gcscc.webhookUrl`                 | The URL where sysdig-gcscc-connector webhook is listening           | `http://sysdig-gcscc-connector.default.svc.cluster.local:8080/events`                  |
 | `integrations.gcscc.webhookAuthenticationToken` | Token used for authentication and webhook                           | `b27511f86e911f20b9e0f9c8104b4ec4`                                                     |
@@ -99,23 +100,17 @@ A few days ago [we published several rules](https://github.com/draios/falco-extr
 
 So the question is: How we can load custom rules in our Falco deployment?
 
-```bash
-$ helm install --name falco stable/falco
-```
-
-When deploying Falco using this chart, a configmap which holds rules was created and mounted in our containers, so we can edit it:
+We are going to create a file which contains custom rules so that we can keep it in a Git repository.
 
 ```bash
-$ kubectl edit configmap falco-rules
+$ cat custom-rules.yaml
 ```
 
-Note that configmap name is composed with deployment name and '-rules' suffix.
-
-And we add the data section:
+And the file looks like this one:
 
 ```yaml
-data:
-  rules-traefik.yaml: |
+customRules:
+  rules-traefik.yaml: |-
     - macro: traefik_consider_syscalls
       condition: (evt.num < 0)
 
@@ -145,10 +140,33 @@ data:
       priority: NOTICE
 ```
 
-And the configmap is updated with the rules-traefik.yaml key.  Next step is to refresh our pods, and we will see in the logs something like:
+So next step is to use the custom-rules.yaml file for installing the Falco Helm chart.
+
+```bash
+$ helm install --name falco -f custom-rules.yaml stable/falco
+```
+
+And we will see in our logs something like:
 
 ```bash
 Tue Jun  5 15:08:57 2018: Loading rules from file /etc/falco/rules.d/rules-traefik.yaml:
 ```
 
-Finally our new file has been loaded and is ready to help us.
+And this means that our Falco installation has loaded the rules and is ready to help us.
+
+### Automating the generation of custom-rules.yaml file
+
+Sometimes edit YAML files with multistrings is a bit error prone, so we added an script for automating this step and make your life easier.
+
+This script lives in [falco-extras repository](https://github.com/draios/falco-extras) in the scripts directory.
+
+Imagine that you would like to add rules for your Redis, MongoDB and Traefik containers, you have to:
+
+```bash
+$ git clone https://github.com/draios/falco-extras.git
+$ cd falco-extras
+$ ./scripts/rules2helm rules/rules-mongo.yaml rules/rules-redis.yaml rules/rules-traefik.yaml > custom-rules.yaml
+$ helm install --name falco -f custom-rules.yaml stable/falco
+```
+
+And that's all, in a few seconds you will see your pods up and running with MongoDB, Redis and Traefik rules enabled.

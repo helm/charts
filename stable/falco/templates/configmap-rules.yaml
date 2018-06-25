@@ -1,3 +1,4 @@
+{{- if .Values.customRules }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,4 +8,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-data: {}
+data:
+{{- range $file, $content :=  .Values.customRules }}
+  {{ $file }}: |-
+{{ $content | indent 4}}
+{{- end }}
+{{- end }}
