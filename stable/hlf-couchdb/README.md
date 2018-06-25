@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install incubator/hlf-couchdb
+$ helm install stable/hlf-couchdb
 ```
 
 ## Introduction
@@ -22,7 +22,7 @@ Hyperledger Fabric Peers can make use of CouchDB instances to permit rich query 
 To install the chart with the release name `cdb1`:
 
 ```bash
-$ helm install incubator/hlf-couchdb --name cdb1
+$ helm install stable/hlf-couchdb --name cdb1
 ```
 
 The command deploys the Hyperledger Fabric implementation of CouchDB on the Kubernetes cluster in the default configuration. The [Configuration](#Configuration) section lists the parameters that can be configured during installation.
@@ -32,7 +32,7 @@ The command deploys the Hyperledger Fabric implementation of CouchDB on the Kube
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install incubator/hlf-couchdb --name cdb1 --set couchdbUsername=couchdb,couchdbPassword=secretpassword
+$ helm install stable/hlf-couchdb --name cdb1 --set couchdbUsername=couchdb,couchdbPassword=secretpassword
 ```
 
 The above command creates a CouchDB user named `couchdb` with password `secretpassword`.
@@ -40,7 +40,7 @@ The above command creates a CouchDB user named `couchdb` with password `secretpa
 Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the defualt values.yaml. For example,
 
 ```bash
-$ helm install incubator/hlf-couchdb --name cdb1 -f my-values.yaml
+$ helm install stable/hlf-couchdb --name cdb1 -f my-values.yaml
 ```
 
 ## Updating the chart
@@ -48,8 +48,8 @@ $ helm install incubator/hlf-couchdb --name cdb1 -f my-values.yaml
 When updating the chart, make sure you provide the `couchdbPassword`, otherwise `helm update` will generate a new random (and invalid) password.
 
 ```bash
-$ export COUCHDB_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} cdb1-hlf-couchdb -o jsonpath="{.data.COUCHDB_PASSWORD}" | base64 --decode; echo)
-$ helm upgrade cdb1 incubator/hlf-couchdb --set couchdbPassword=$COUCHDB_PASSWORD
+$ export COUCHDB_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} cdb1 -o jsonpath="{.data.COUCHDB_PASSWORD}" | base64 --decode; echo)
+$ helm upgrade cdb1 stable/hlf-couchdb --set couchdbPassword=$COUCHDB_PASSWORD
 ```
 
 ## Uninstalling the Chart

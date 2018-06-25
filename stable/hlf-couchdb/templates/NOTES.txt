@@ -23,4 +23,4 @@
   export COUCHDB_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "hlf-couchdb.fullname" . }} -o jsonpath="{.data.COUCHDB_PASSWORD}" | base64 --decode; echo)
 
 3. Update the chart without resetting the password (requires running step 2):
-  helm upgrade {{ .Release.Name }} incubator/hlf-couchdb --namespace {{ .Release.Namespace }} -f my-values.yaml --set couchdbUsername=$COUCHDB_USERNAME,couchdbPassword=$COUCHDB_PASSWORD
+  helm upgrade {{ .Release.Name }} stable/hlf-couchdb --namespace {{ .Release.Namespace }} -f my-values.yaml --set couchdbUsername=$COUCHDB_USERNAME,couchdbPassword=$COUCHDB_PASSWORD

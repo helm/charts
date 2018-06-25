@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "hlf-couchdb.fullname" . }}
@@ -17,8 +17,12 @@ spec:
     spec:
       volumes:
       - name: data
+      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ include "hlf-couchdb.fullname" . }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "hlf-couchdb.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
