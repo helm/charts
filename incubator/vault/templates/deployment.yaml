@@ -43,7 +43,7 @@ spec:
             export VAULT_API_ADDR="${VAULT_SCHEME}://${POD_DNS}:8200"
             export VAULT_CLUSTER_ADDR="${VAULT_SCHEME}://${POD_DNS}:8201"
         {{- if .Values.vault.dev }}
-            exec vault server -dev -dev-listen-address [::]:8200
+            exec vault server -dev -dev-listen-address '[::]:8200'
         {{- else }}
             exec vault server -config /vault/config/config.json
         {{- end }}
