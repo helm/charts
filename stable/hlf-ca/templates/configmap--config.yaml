@@ -47,7 +47,7 @@ data:
       # Key file (is only used to import a private key into BCCSP)
       keyfile:
       # Certificate file (default: ca-cert.pem)
-      certfile: /hl_persistent/fabric-ca/msp/certs/{{ include "hlf-ca.fullname" . }}-cert.pem
+      certfile: /hl_data/fabric-ca/msp/certs/{{ include "hlf-ca.fullname" . }}-cert.pem
       # Chain file
       chainfile:
     #############################################################################

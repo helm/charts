@@ -16,9 +16,13 @@ spec:
 {{ include "labels.standard" . | indent 8 }}
     spec:
       volumes:
-        - name: persistent-volume
+        - name: data
+        {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-           claimName: {{ include "hlf-ca.fullname" . }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "hlf-ca.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
         {{- if .Values.ingress.tls }}
         - name: tls-secret
           secret:
@@ -83,8 +87,8 @@ spec:
               containerPort: 7054
               protocol: TCP
           volumeMounts:
-            - name: persistent-volume
-              mountPath: /hl_persistent
+            - name: data
+              mountPath: /hl_data
             - name: ca-config
               readOnly: true
               mountPath: /hl_data/ca_config

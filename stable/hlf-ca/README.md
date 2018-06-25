@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install incubator/hlf-ca
+$ helm install stable/hlf-ca
 ```
 
 ## Introduction
@@ -25,7 +25,7 @@ This CA can then be used to register and enroll identities for clients, admins a
 To install the chart with the release name `org1-ca`:
 
 ```bash
-$ helm install incubator/hlf-ca --name org1-ca
+$ helm install stable/hlf-ca --name org1-ca
 ```
 
 The command deploys the Hyperledger Fabric CA on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -35,7 +35,7 @@ The command deploys the Hyperledger Fabric CA on the Kubernetes cluster in the d
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install incubator/hlf-ca --name org1-ca --set adminUsername=ca-admin,adminPassword=secretpassword
+$ helm install stable/hlf-ca --name org1-ca --set adminUsername=ca-admin,adminPassword=secretpassword
 ```
 
 The above command creates a CA Admin user named `ca-admin` with password `secretpassword`.
@@ -43,7 +43,7 @@ The above command creates a CA Admin user named `ca-admin` with password `secret
 Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the defualt values.yaml. For example,
 
 ```bash
-$ helm install incubator/hlf-ca --name org1-ca -f my-values.yaml
+$ helm install stable/hlf-ca --name org1-ca -f my-values.yaml
 ```
 
 ## Updating the chart
@@ -51,8 +51,8 @@ $ helm install incubator/hlf-ca --name org1-ca -f my-values.yaml
 When updating the chart, make sure you provide the `adminPassword`, otherwise `helm update` will generate a new random (and invalid) password.
 
 ```bash
-$ export CA_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} org1-ca-hlf-ca -o jsonpath="{.data.CA_PASSWORD}" | base64 --decode; echo)
-$ helm upgrade org1-ca incubator/hlf-ca --set adminPassword=$CA_PASSWORD
+$ export CA_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} org1-ca -o jsonpath="{.data.CA_PASSWORD}" | base64 --decode; echo)
+$ helm upgrade org1-ca stable/hlf-ca --set adminPassword=$CA_PASSWORD
 ```
 
 ## Uninstalling the Chart
@@ -109,7 +109,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 
 ## Persistence
 
-The volume stores the Fabric_CA data and configurations at the `/hl_persistent` path of the container.
+The volume stores the Fabric_CA data and configurations at the `/hl_data` path of the container.
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning through a PersistentVolumeClaim managed by the chart.
 
