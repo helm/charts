@@ -26,6 +26,10 @@ controller:
   daemonset:
     useHostPort: false
 
+    hostPorts:
+      http: 80
+      https: 443
+
   ## Required only if defaultBackend.enabled = false
   ## Must be <namespace>/<service_name>
   ##
@@ -163,6 +167,9 @@ controller:
 
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
+
+    enableHttp: true
+    enableHttps: true
 
     ## Set external traffic policy to: "Local" to preserve source IP on
     ## providers supporting it
