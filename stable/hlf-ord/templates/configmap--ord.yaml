@@ -8,11 +8,11 @@ data:
   ## Environmental variable defining which version of tools to obtain (for fabric-ca-client)
   HLF_TOOLS_BUILD: linux-amd64-1.1.0
   ## Location where fabric-ca-client configuration is saved
-  FABRIC_CA_CLIENT_HOME: /hl_persistent/fabric-ca-client
+  FABRIC_CA_CLIENT_HOME: /hl_data/fabric-ca-client
   ## Orderer defaults
-  ORDERER_CFG_PATH: /hl_persistent/config
+  ORDERER_CFG_PATH: /hl_data/config
   ORDERER_GENERAL_LEDGERTYPE: file
-  ORDERER_FILELEDGER_LOCATION: /hl_persistent/ledger
+  ORDERER_FILELEDGER_LOCATION: /hl_data/ledger
   ORDERER_GENERAL_BATCHTIMEOUT: 1s
   ORDERER_GENERAL_BATCHSIZE_MAXMESSAGECOUNT: "10"
   ORDERER_GENERAL_MAXWINDOWSIZE: "1000"
@@ -20,13 +20,13 @@ data:
   ORDERER_GENERAL_LISTENADDRESS: 0.0.0.0
   ORDERER_GENERAL_LISTENPORT: "7050"
   ORDERER_GENERAL_LOGLEVEL: debug
-  ORDERER_GENERAL_LOCALMSPDIR: /hl_persistent/msp
+  ORDERER_GENERAL_LOCALMSPDIR: /hl_data/msp
   ORDERER_GENERAL_LOCALMSPID: {{ .Values.ord.mspID }}
   ORDERER_GENERAL_GENESISMETHOD: file
   ORDERER_GENERAL_GENESISFILE: /hl_config/genesis/genesis.block
   ORDERER_GENERAL_GENESISPROFILE: initial
   ORDERER_GENERAL_TLS_ENABLED: "false"
-  ORDERER_GENERAL_TLS_CERTIFICATE: "/hl_persistent/tls/tls.crt"
-  ORDERER_GENERAL_TLS_PRIVATEKEY: "/hl_persistent/tls/tls.key"
+  ORDERER_GENERAL_TLS_CERTIFICATE: "/hl_data/tls/tls.crt"
+  ORDERER_GENERAL_TLS_PRIVATEKEY: "/hl_data/tls/tls.key"
   GODEBUG: "netdns=go"
-  ADMIN_MSP_PATH: /hl_persistent/admin_msp
+  ADMIN_MSP_PATH: /hl_data/admin_msp

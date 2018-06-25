@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install incubator/hlf-ord
+$ helm install stable/hlf-ord
 ```
 
 ## Introduction
@@ -39,7 +39,7 @@ Learn more about deploying a production ready consensus framework based on Apach
 To install the chart with the release name `ord1`:
 
 ```bash
-$ helm install incubator/hlf-ord --name ord1
+$ helm install stable/hlf-ord --name ord1
 ```
 
 The command deploys the Hyperledger Fabric Orderer on the Kubernetes cluster in the default configuration. The [Configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -49,7 +49,7 @@ The command deploys the Hyperledger Fabric Orderer on the Kubernetes cluster in 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install incubator/hlf-ord --name ord1 --set caUsername=ord1,caPassword=secretpassword
+$ helm install stable/hlf-ord --name ord1 --set caUsername=ord1,caPassword=secretpassword
 ```
 
 The above command specifies (but does not register/enroll) an Orderer username of `ord1` with password `secretpassword`.
@@ -57,7 +57,7 @@ The above command specifies (but does not register/enroll) an Orderer username o
 Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the defualt values.yaml. For example,
 
 ```bash
-$ helm install incubator/hlf-ord --name ord1 -f my-values.yaml
+$ helm install stable/hlf-ord --name ord1 -f my-values.yaml
 ```
 
 ## Updating the chart
@@ -66,7 +66,7 @@ When updating the chart, make sure you provide the `caPassword`, otherwise `helm
 
 ```bash
 $ export CA_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} ord1-hlf-ord -o jsonpath="{.data.CA_PASSWORD}" | base64 --decode; echo)
-$ helm upgrade ord1 incubator/hlf-ord --set caPassword=$CA_PASSWORD
+$ helm upgrade ord1 stable/hlf-ord --set caPassword=$CA_PASSWORD
 ```
 
 ## Uninstalling the Chart
@@ -108,7 +108,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 
 ## Persistence
 
-The volume stores the Fabric Orderer data and configurations at the `/hl_persistent` path of the container.
+The volume stores the Fabric Orderer data and configurations at the `/hl_data` path of the container.
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning through a PersistentVolumeClaim managed by the chart.
 
