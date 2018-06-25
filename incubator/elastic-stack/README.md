@@ -5,7 +5,7 @@ You can optionally disable logstash and install Fluentd if you prefer. It also o
 
 ## Prerequisites Details
 
-* Kubernetes 1.6+
+* Kubernetes 1.8+
 * PV dynamic provisioning support on the underlying infrastructure
 
 ## Chart Details
