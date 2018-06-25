@@ -97,6 +97,12 @@ podAnnotations: {}
 #       command: ["./unseal -s my-unseal-keys"]
 
 vault:
+  # Vault addresses to use
+  # $(POD_IP).$(POD_NAMESPACE).pod.cluster.local gets hyphenated automatically
+  # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#a-records-1
+  addr: '$(LISTENER_SCHEME)://$(POD_IP).$(POD_NAMESPACE).pod.cluster.local:8200'
+  api_addr: '$(LISTENER_SCHEME)://$(POD_IP).$(POD_NAMESPACE).pod.cluster.local:8200'
+  cluster_addr: '$(LISTENER_SCHEME)://$(POD_IP).$(POD_NAMESPACE).pod.cluster.local:8201'
   # Only used to enable dev mode. When in dev mode, the rest of this config
   # section below is not used to configure Vault. See
   # https://www.vaultproject.io/intro/getting-started/dev-server.html for more

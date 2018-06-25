@@ -38,10 +38,12 @@ spec:
           - sh
           - "-c"
           - |
+            # hyphenate $(POD_IP).$(POD_NAMESPACE).pod.cluster.local
             export POD_DNS="${POD_IP//./-}.${POD_NAMESPACE}.pod.cluster.local"
-            export VAULT_ADDR="${VAULT_SCHEME}://${POD_DNS}:8200"
-            export VAULT_API_ADDR="${VAULT_SCHEME}://${POD_DNS}:8200"
-            export VAULT_CLUSTER_ADDR="${VAULT_SCHEME}://${POD_DNS}:8201"
+            # replace addresses with hyphenated versions
+            export VAULT_ADDR="${VAULT_ADDR//${POD_IP}.${POD_NAMESPACE}.pod.cluster.local/${POD_DNS}}"
+            export VAULT_API_ADDR="${VAULT_API_ADDR//${POD_IP}.${POD_NAMESPACE}.pod.cluster.local/${POD_DNS}}"
+            export VAULT_CLUSTER_ADDR="${VAULT_CLUSTER_ADDR//${POD_IP}.${POD_NAMESPACE}.pod.cluster.local/${POD_DNS}}"
         {{- if .Values.vault.dev }}
             exec vault server -dev -dev-listen-address '[::]:8200'
         {{- else }}
@@ -85,6 +87,14 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: LISTENER_SCHEME
+            value: "{{ $scheme }}"
+          - name: VAULT_ADDR
+            value: "{{ .Values.vault.addr }}"
+          - name: VAULT_API_ADDR
+            value: "{{ .Values.vault.api_addr }}"
+          - name: VAULT_CLUSTER_ADDR
+            value: "{{ .Values.vault.cluster_addr }}"
           - name: VAULT_SCHEME
             value: {{ $scheme | quote }}
           - name: VAULT_LOG_LEVEL
