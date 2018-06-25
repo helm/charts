@@ -306,3 +306,4 @@ nginx:
   tolerations: []
 
   affinity: {}
+  
