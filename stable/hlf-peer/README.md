@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install incubator/hlf-peer
+$ helm install stable/hlf-peer
 ```
 
 ## Introduction
@@ -22,14 +22,14 @@ This Peer can receive transaction requests, which it checks and signs, endorsing
     - the channel transaction for the Peer
     - the certificate of the Peer Organisation Admin
     - the private key of the Peer Organisation Admin (needed to join the channel)
-- A running [HLF-CouchDB Chart](https://github.com/kubernetes/charts/tree/master/incubator/hlf-couchdb) if you are using the `CouchDB` database.
+- A running [HLF-CouchDB Chart](https://github.com/kubernetes/charts/tree/master/stable/hlf-couchdb) if you are using the `CouchDB` database.
 
 ## Installing the Chart
 
 To install the chart with the release name `peer1`:
 
 ```bash
-$ helm install incubator/hlf-peer --name peer1
+$ helm install stable/hlf-peer --name peer1
 ```
 
 The command deploys the Hyperledger Fabric Peer on the Kubernetes cluster in the default configuration. The [Configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -39,7 +39,7 @@ The command deploys the Hyperledger Fabric Peer on the Kubernetes cluster in the
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install incubator/hlf-peer --name peer1 --set caUsername=peer1,caPassword=secretpassword
+$ helm install stable/hlf-peer --name peer1 --set caUsername=peer1,caPassword=secretpassword
 ```
 
 The above command specifies (but does not register/enroll) a Peer username of `peer1` with password `secretpassword`.
@@ -47,7 +47,7 @@ The above command specifies (but does not register/enroll) a Peer username of `p
 Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the defualt values.yaml. For example,
 
 ```bash
-$ helm install incubator/hlf-peer --name peer1 -f my-values.yaml
+$ helm install stable/hlf-peer --name peer1 -f my-values.yaml
 ```
 
 ## Updating the chart
@@ -56,7 +56,7 @@ When updating the chart, make sure you provide the `caPassword`, otherwise `helm
 
 ```bash
 $ export CA_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} peer1-hlf-peer -o jsonpath="{.data.CA_PASSWORD}" | base64 --decode; echo)
-$ helm upgrade peer1 incubator/hlf-peer --set caPassword=$CA_PASSWORD
+$ helm upgrade peer1 stable/hlf-peer --set caPassword=$CA_PASSWORD
 ```
 
 ## Uninstalling the Chart
@@ -101,7 +101,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 
 ## Persistence
 
-The volume stores the Fabric Peer data and configurations at the `/hl_persistent` path of the container.
+The volume stores the Fabric Peer data and configurations at the `/hl_data` path of the container.
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning through a PersistentVolumeClaim managed by the chart.
 

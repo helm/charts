@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "hlf-peer.fullname" . }}
@@ -16,13 +16,17 @@ spec:
 {{ include "labels.standard" . | indent 8 }}
     spec:
       volumes:
-        - name: {{ include "hlf-peer.fullname" . }}-pv
+        - name: data
+        {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-           claimName: {{ include "hlf-peer.fullname" . }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "hlf-peer.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
         - name: dockersocket
           hostPath:
             path: /var/run/docker.sock
-        - name: composer-channel
+        - name: channel
           secret:
             secretName: {{ .Values.secrets.channel }}
         - name: admin-cert
@@ -54,17 +58,17 @@ spec:
               # Download Fabric CA-client if it does not exist
               if [ ! -f /bin/fabric-ca-client ]
               then
-                if [ ! -f /hl_persistent/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz ]
+                if [ ! -f /hl_data/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz ]
                 then
                   # Curl is needed to download Fabric CA-client
                   apt update
                   apt install curl -y
 
                   echo "Downloading Fabric CA-client"
-                  curl -f -s -C - https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/${HLF_TOOLS_BUILD}/hyperledger-fabric-ca-${HLF_TOOLS_BUILD}.tar.gz > /hl_persistent/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz
+                  curl -f -s -C - https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/${HLF_TOOLS_BUILD}/hyperledger-fabric-ca-${HLF_TOOLS_BUILD}.tar.gz > /hl_data/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz
                 fi
                 echo "Unzipping Fabric CA-client"
-                tar xzf /hl_persistent/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz -C /
+                tar xzf /hl_data/fabric-ca-${HLF_TOOLS_BUILD}.tar.gz -C /
               fi
 
               while [ ! -f ${CORE_PEER_MSPCONFIGPATH}/signcerts/cert.pem ];
@@ -121,12 +125,12 @@ spec:
             - configMapRef:
                 name: {{ include "hlf-peer.fullname" . }}--peer
           volumeMounts:
-            - mountPath: /hl_persistent
-              name: {{ include "hlf-peer.fullname" . }}-pv
+            - mountPath: /hl_data
+              name: data
             - mountPath: /host/var/run/docker.sock
               name: dockersocket
-            - mountPath: /hl_config/composer_channel
-              name: composer-channel
+            - mountPath: /hl_config/channel
+              name: channel
             - mountPath: /hl_config/admin/admincerts
               name: admin-cert
             - mountPath: /hl_config/admin/signcerts

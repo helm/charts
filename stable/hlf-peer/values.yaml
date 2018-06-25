@@ -14,12 +14,13 @@ service:
   portEvent: 7053
 
 persistence:
+  enabled: true
   annotations: {}
-  accessModes:
-    - ReadWriteOnce
-  size: 1Gi
   ## If unset or "", use "default" storage class.
   storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  # existingClaim: ""
 
 ##################################
 ## Further configuration options #

@@ -23,4 +23,4 @@ Run the following commands to...
   export CA_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "hlf-peer.fullname" . }} -o jsonpath="{.data.CA_PASSWORD}" | base64 --decode; echo)
 
 4. Update the chart without resetting a password (requires running step 3):
-  helm upgrade {{ .Release.Name }} incubator/hlf-peer --namespace {{ .Release.Namespace }} -f my-values.yaml --set caUsername=$CA_USERNAME,caPassword=$CA_PASSWORD
+  helm upgrade {{ .Release.Name }} stable/hlf-peer --namespace {{ .Release.Namespace }} -f my-values.yaml --set caUsername=$CA_USERNAME,caPassword=$CA_PASSWORD
