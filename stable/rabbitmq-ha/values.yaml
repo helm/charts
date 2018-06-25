@@ -280,7 +280,8 @@ prometheus:
       pullPolicy: IfNotPresent
 
     ## Port Prometheus scrapes for metrics
-    port: 9090
+    port: 9419
+    capabilities: "bert,no_sort"
 
     ## Allow overriding of container resources
     resources: {}
