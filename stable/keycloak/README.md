@@ -188,7 +188,7 @@ In combination with an `emptyDir` that is shared with the Keycloak container, co
 
 ```yaml
 keycloak:
-  extraInitContainers:
+  extraInitContainers: |
     - name: theme-provider
       image: myuser/mytheme:1
       imagePullPolicy: IfNotPresent
@@ -203,11 +203,11 @@ keycloak:
         - name: theme
           mountPath: /theme
 
-  extraVolumeMounts:
+  extraVolumeMounts: |
     - name: theme
       mountPath: /opt/jboss/keycloak/themes/mytheme
 
-  extraVolumes:
+  extraVolumes: |
     - name: theme
       emptyDir: {}
 ```
@@ -258,7 +258,7 @@ keycloak:
       command:
         - /cloud_sql_proxy
       args:
-        - -instances={{ .Values.cloudsql.project }}:{{ .Values.cloudsql.region }}:{{ .Values.cloudsql.instance }}=tcp:5432=tcp:5432
+        - -instances={{ .Values.cloudsql.project }}:{{ .Values.cloudsql.region }}:{{ .Values.cloudsql.instance }}=tcp:5432
         - -credential_file=/secrets/cloudsql/credentials.json
       volumeMounts:
         - name: cloudsql-creds
@@ -272,7 +272,7 @@ keycloak:
 
   persistence:
     deployPostgres: false
-    dbVendor: POSTGRES
+    dbVendor: postgres
     dbName: postgres
     dbHost: 127.0.0.1
     dbPort: 5432
