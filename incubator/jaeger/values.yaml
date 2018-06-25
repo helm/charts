@@ -110,6 +110,9 @@ agent:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
   useHostNetwork: false
   dnsPolicy: ClusterFirst
 
@@ -145,6 +148,9 @@ collector:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
 
 query:
   enabled: true
@@ -190,6 +196,9 @@ query:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
 
 spark:
   enabled: false
@@ -211,6 +220,9 @@ spark:
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
 # End: Default values for the various components of Jaeger
 
 hotrod:
