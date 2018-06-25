@@ -107,6 +107,7 @@ following configurable parameters:
 | `prometheus.operator` | True if using the Prometheus Operator, False if not                                                             | `false`                                                       |
 | `prometheus.operator.serviceMonitor.namespace` | Namespace which Prometheus is running in.  Default to kube-prometheus install.    | `monitoring` |
 | `prometheus.operator.serviceMonitor.selector` | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install    | `{ prometheus: kube-prometheus }` |
+| `topics`                       |  List of topics to create & configure. Can specify name, partitions, replicationFactor, config. See values.yaml | `[]` (Empty list) |
 | `zookeeper.enabled`            | If True, installs Zookeeper Chart                                                                               | `true`                                                     |
 | `zookeeper.resources`          | Zookeeper resource requests and limits                                                                          | `{}`                                                       |
 | `zookeeper.heap`               | JVM heap size to allocate to Zookeeper                                                                          | `1G`                                                       |
@@ -185,7 +186,6 @@ such port at a time, setting the range at every Kafka pod is a reasonably safe c
 
 ## Known Limitations
 
-* Topic creation is not automated
 * Only supports storage options that have backends for persistent volume claims (tested mostly on AWS)
 * KAFKA_PORT will be created as an envvar and brokers will fail to start when there is a service named `kafka` in the same namespace. We work around this be unsetting that envvar `unset KAFKA_PORT`.
 
