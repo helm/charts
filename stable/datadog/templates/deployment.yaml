@@ -38,7 +38,7 @@ spec:
           - name: DD_API_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ template "apiSecretName" . }}
+                name: {{ template "datadog.apiSecretName" . }}
                 key: api-key
           {{- if .Values.datadog.logLevel }}
           - name: DD_LOG_LEVEL
