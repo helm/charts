@@ -24,8 +24,12 @@ In the event that we create both a headless service and a traditional one,
 ensure that the latter gets a unique name.
 */}}
 {{- define "couchdb.svcname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- printf "%s-svc-%s" .Values.fullnameOverride .Chart.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-svc-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
