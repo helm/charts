@@ -1,7 +1,7 @@
 # Default values for sumologic-fluentd.
 image:
   name: sumologic/fluentd-kubernetes-sumologic
-  tag: v1.15
+  tag: v1.16
   pullPolicy: IfNotPresent
 
 ## Annotations to add to the DaemonSet's Pods
@@ -124,6 +124,10 @@ sumologic:
 
   ## Add the uri of the proxy environment if present.
   # proxyUri:
+
+  ## Option to control the enabling of stat_watcher. (Default true)
+  ## ref: https://docs.fluentd.org/v1.0/articles/in_tail#enable_stat_watcher
+  # enableStatWatcher:
 
   ## Option to control adding timestamp to logs. (Default true)
   addTimeStamp: true
