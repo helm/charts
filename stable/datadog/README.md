@@ -40,6 +40,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 |             Parameter       |            Description             |                    Default                |
 |-----------------------------|------------------------------------|-------------------------------------------|
 | `datadog.apiKey`            | Your Datadog API key               |  `Nil` You must provide your own key      |
+| `datadog.apiKeyExistingSecret` | If set, use the secret with a provided name instead of creating a new one |`nil` |
 | `image.repository`          | The image repository to pull from  | `datadog/agent`                           |
 | `image.tag`                 | The image tag to pull              | `6.2.1`                                   |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
@@ -72,7 +73,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `deployment.tolerations`    | List of node taints to tolerate    | `[]`                                      |
 | `kube-state-metrics.rbac.create`| If true, create & use RBAC resources for kube-state-metrics | `true`       |
 | `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
-| `existingSecret`             | If set, use the secret with providen name instead of creating a new one |`nil` |
+
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
@@ -98,7 +99,7 @@ By default installs Datadog agent inside a DaemonSet. You may also use Datadog a
 
 ### Secret
 By default, this Chart creates a Secret and puts an API key in that Secret.
-However, you can use manually created secret by setting `existingSecret` value.
+However, you can use manually created secret by setting `datadog.apiKeyExistingSecret` value.
 
 ### confd and checksd
 
