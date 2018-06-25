@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "geode.fullname" . }}
+  labels:
+    app: {{ template "geode.name" . }}
+    chart: {{ template "geode.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.config.num_locators }}
+  selector:
+    matchLabels:
+      app: {{ template "geode.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "geode.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+          - sh
+          - -c
+          - |
+            gfsh start locator --name=${HOSTNAME} --jmx-manager-hostname-for-clients=${HOSTNAME} --dir=/data && \
+            while sleep 3600; do :; done
+          ports:
+            - name: locator
+              containerPort: 10334
+            - name: jmx
+              containerPort: 1099
+            - name: pulse
+              containerPort: 7070
+          livenessProbe:
+            exec:
+              command:
+              - ps -p $(cat /data/vf.gf.locator.pid)
+          #TODO: change this to hit the ping endpoint
+          readinessProbe:
+            exec:
+              command:
+              - ps -p $(cat /data/vf.gf.locator.pid)
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

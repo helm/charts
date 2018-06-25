@@ -1,0 +1,11 @@
+apiVersion: v1
+appVersion: "1.0"
+description: Apache Geode is an In Memory Data Grid
+name: geode
+version: 0.1.0
+icon: http://geode.apache.org/img/apache_geode_logo.png
+sources:
+- https://github.com/apache/geode
+maintainers:
+- name: sbawaska
+  email: sbawaskar@apache.org
