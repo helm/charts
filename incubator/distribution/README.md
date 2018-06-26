@@ -43,6 +43,10 @@ The following table lists the configurable parameters of the distribution chart 
 |         Parameter                            |           Description                      |               Default              |
 |----------------------------------------------|--------------------------------------------|------------------------------------|
 | `imagePullSecrets`                           | Docker registry pull secret                |                                    |
+| `serviceAccount.create`   | Specifies whether a ServiceAccount should be created | `true`                                      |
+| `serviceAccount.name`     | The name of the ServiceAccount to create             | Generated using the fullname template       |
+| `rbac.create`             | Specifies whether RBAC resources should be created   | `true`                                      |
+| `rbac.role.rules`         | Rules to create                   | `[]`                                                           |
 | `mongodb.enabled`                            | Enable Mongodb                             | `true`                             |
 | `mongodb.image.tag`                          | Mongodb docker image tag                   | `3.6.3`                            |
 | `mongodb.image.pullPolicy`                   | Mongodb Container pull policy              | `IfNotPresent`                     |

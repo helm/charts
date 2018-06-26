@@ -5,7 +5,7 @@ metadata:
   labels:
     app: {{ template "distribution.name" . }}
     chart: {{ template "distribution.chart" . }}
-    component: "{{ .Values.distribution.name }}"
+    component: {{ .Values.distribution.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 {{- if .Values.distribution.service.annotations }}
@@ -20,5 +20,5 @@ spec:
     targetPort: {{ .Values.distribution.internalPort }}
   selector:
     app: {{ template "distribution.name" . }}
-    component: "{{ .Values.distribution.name }}"
+    component: {{ .Values.distribution.name }}
     release: {{ .Release.Name }}

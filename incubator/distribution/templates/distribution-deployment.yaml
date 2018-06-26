@@ -22,6 +22,7 @@ spec:
         component: {{ .Values.distribution.name }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "distribution.serviceAccountName" . }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}

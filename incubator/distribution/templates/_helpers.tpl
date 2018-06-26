@@ -80,6 +80,17 @@ Set the final Redis connection URL
 {{- end -}}
 
 {{/*
+Create the name of the service account to use
+*/}}
+{{- define "distribution.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+{{ default (include "distribution.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+{{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "distribution.chart" -}}
