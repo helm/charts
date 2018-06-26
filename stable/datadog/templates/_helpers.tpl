@@ -16,6 +16,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Return secret name to be used based on provided values.
+*/}}
+{{- define "datadog.apiSecretName" -}}
+{{- $fullName := include "datadog.fullname" . -}}
+{{- default $fullName .Values.datadog.apiKeyExistingSecret | quote -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified confd name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
