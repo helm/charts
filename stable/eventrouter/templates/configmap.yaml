@@ -6,7 +6,7 @@ metadata:
 data:
 apiVersion: v1
 data:
-  config.json: |- 
+  config.json: |-
     {
-      "sink": "glog"
+      "sink": {{ .Values.sink }}
     }
