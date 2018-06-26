@@ -82,6 +82,9 @@ datadog:
   ##
   # apiKey:
 
+  ## Use existing Secret which stores API key instead of creating a new one
+  # apiKeyExistingSecret:
+
   ## dd-agent container name
   ##
   name: dd-agent

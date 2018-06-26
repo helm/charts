@@ -1,5 +1,5 @@
 {{- if .Values.daemonset.enabled }}
-{{- if .Values.datadog.apiKey }}
+{{- if (or (.Values.datadog.apiKeyExistingSecret) (.Values.datadog.apiKey)) }}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -54,7 +54,7 @@ spec:
           - name: DD_API_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ template "datadog.fullname" . }}
+                name: {{ template "datadog.apiSecretName" . }}
                 key: api-key
           {{- if .Values.datadog.logLevel }}
           - name: DD_LOG_LEVEL
