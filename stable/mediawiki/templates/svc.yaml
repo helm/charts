@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "mediawiki.fullname" . }}
   labels:
-    app: {{ template "mediawiki.fullname" . }}
+    app: {{ template "mediawiki.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -29,4 +29,4 @@ spec:
     nodePort: {{ .Values.service.nodePorts.https }}
     {{- end }}
   selector:
-    app: {{ template "mediawiki.fullname" . }}
+    app: {{ template "mediawiki.name" . }}

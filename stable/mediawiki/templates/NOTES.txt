@@ -1,5 +1,18 @@
 {{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
 
+** Please be patient while the chart is being deployed **
+
+{{- if .Values.ingress.enabled }}
+
+1. Get the Mediawiki URL indicated on the Ingress Rule and associate it to your cluster external IP:
+
+   export CLUSTER_IP=$(minikube ip) # On Minikube. Use: `kubectl cluster-info` on others K8s clusters
+   export HOSTNAME=$(kubectl get ingress --namespace {{ .Release.Namespace }} {{ template "mediawiki.fullname" . }} -o jsonpath='{.spec.rules[0].host}')
+   echo "Mediawiki URL: http://$HOSTNAME/"
+   echo "$CLUSTER_IP  $HOSTNAME" | sudo tee -a /etc/hosts
+
+{{- else }}
+
 1. Get the MediaWiki URL by running:
 
 {{- if contains "NodePort" .Values.service.type }}
@@ -20,6 +33,7 @@
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "mediawiki.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
   echo http://127.0.0.1:8080/
   kubectl port-forward $POD_NAME 8080:80
+{{- end }}
 {{- end }}
 
 2. Get your MediaWiki login credentials by running:
