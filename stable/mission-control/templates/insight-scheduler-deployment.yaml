@@ -23,6 +23,7 @@ spec:
         component: {{ .Values.insightScheduler.name }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "mission-control.serviceAccountName" . }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
