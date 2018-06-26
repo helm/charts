@@ -4,7 +4,7 @@ apiVersion: v1
 metadata:
   name: {{ template "mediawiki.fullname" . }}-apache
   labels:
-    app: {{ template "mediawiki.fullname" . }}
+    app: {{ template "mediawiki.name" . }}
     chart: {{ template "mediawiki.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
