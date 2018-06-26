@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 |              Parameter               |               Description                                   |                         Default                         |
 |--------------------------------------|-------------------------------------------------------------|---------------------------------------------------------|
 | `image.registry`                     | MediaWiki image registry                                    | `docker.io`                                             |
-| `image.repository`                   | MwdiaWiki Image name                                        | `bitnami/mediawiki`                                     |
+| `image.repository`                   | MediaWiki Image name                                        | `bitnami/mediawiki`                                     |
 | `image.tag`                          | MediaWiki Image tag                                         | `{VERSION}`                                             |
 | `image.pullPolicy`                   | Image pull policy                                           | `Always`                                                |
 | `image.pullSecrets`                  | Specify image pull secrets                                  | `nil`                                                   |
@@ -67,10 +67,10 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `externalDatabase.password`          | Password for the above username                             | `nil`                                                   |
 | `externalDatabase.database`          | Name of the existing database                               | `bitnami_mediawiki`                                     |
 | `mariadb.enabled`                    | Use or not the mariadb chart                                | `true`                                                  |
-| `mariadb.rootUser.password`        | MariaDB admin password                                      | `nil`                                                   |
-| `mariadb.db.name`            | Database name to create                                     | `bitnami_mediawiki`                                     |
-| `mariadb.db.user`                | Database user to create                                     | `bn_mediawiki`                                          |
-| `mariadb.db.password`            | Password for the database                                   | _random 10 character long alphanumeric string_          |
+| `mariadb.rootUser.password`          | MariaDB admin password                                      | `nil`                                                   |
+| `mariadb.db.name`                    | Database name to create                                     | `bitnami_mediawiki`                                     |
+| `mariadb.db.user`                    | Database user to create                                     | `bn_mediawiki`                                          |
+| `mariadb.db.password`                | Password for the database                                   | _random 10 character long alphanumeric string_          |
 | `service.type`                       | Kubernetes Service type                                     | `LoadBalancer`                                          |
 | `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                        | `nil`                                                   |
 | `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Local`                                                 |
