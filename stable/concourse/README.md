@@ -159,6 +159,10 @@ The following table lists the configurable parameters of the Concourse chart and
 | `credentialManager.ssm.region` | AWS Region to use for SSM | `nil` |
 | `credentialManager.ssm.pipelineSecretsTemplate` | Pipeline secrets template | `nil` |
 | `credentialManager.ssm.teamSecretsTemplate` | Team secrets template | `nil` |
+| `credentialManager.awsSecretsManager.enabled` | Use AWS Secrets Manager as a Credential Manager | `false` |
+| `credentialManager.awsSecretsManager.region` | AWS Region to use for Secrets Manager | `nil` |
+| `credentialManager.awsSecretsManager.pipelineSecretsTemplate` | Pipeline secrets template | `nil` |
+| `credentialManager.awsSecretsManager.teamSecretsTemplate` | Team secrets template | `nil` |
 | `credentialManager.vault.enabled` | Use Hashicorp Vault as a Credential Manager | `false` |
 | `credentialManager.vault.url` | Vault Server URL | `nil` |
 | `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
@@ -429,3 +433,40 @@ The minimum IAM policy you need to use SSM with Concourse is:
 ```
 
 Where `<kms-key-arn>` is the ARN of the KMS key used to encrypt the secrets in Paraemter Store, and the `<...arn...>` should be replaced with a correct ARN for your account and region's Parameter Store.
+
+#### AWS Secrets Manager
+
+To use Secrets Manager, set `credentialManager.kubernetes.enabled` to false, and set `credentialManager.awsSecretsManager.enabled` to true.
+
+For a given Concourse *team*, a pipeline will look for secrets in Secrets Manager using either `/concourse/{team}/{secret}` or `/concourse/{team}/{pipeline}/{secret}`; the patterns can be overridden using the `credentialManager.awsSecretsManager.teamSecretTemplate` and `credentialManager.awsSecretsManager.pipelineSecretTemplate` settings.
+
+Concourse requires AWS credentials which are able to read from Secrets Manager for this feature to function. Credentials can be set in the `secrets.awsSecretsmanager*` settings; if your cluster is running in a different AWS region, you may also need to set `credentialManager.awsSecretsManager.region`.
+
+The minimum IAM policy you need to use Secrets Manager with Concourse is:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAccessToSecretManagerParameters",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:ListSecrets"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessGetSecret",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:::secret:/concourse/*"
+      ]
+    }
+  ]
+}
+```
