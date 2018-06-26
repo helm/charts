@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "odoo.fullname" . }}
   labels:
-    app: {{ template "odoo.fullname" . }}
+    app: {{ template "odoo.name" . }}
     chart: {{ template "odoo.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "odoo.fullname" . }}
+        app: {{ template "odoo.name" . }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

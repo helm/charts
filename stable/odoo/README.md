@@ -83,8 +83,8 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `postgresql.persistence.accessMode`   | PVC Access Mode for PostgreSQL volume                       | `ReadWriteOnce`                                |
 | `postgresql.persistence.size`         | PVC Storage Request for PostgreSQL volume                   | `8Gi`                                          |
 | `livenessProbe.enabled`               | Enable/disable the liveness probe                           | `true`                                         |
-| `livenessProbe.initialDelaySeconds`   | Delay before liveness probe is initiated                    | 120                                            |
-| `livenessProbe.periodSeconds`         | How often to perform the probe                              | 10                                             |
+| `livenessProbe.initialDelaySeconds`   | Delay before liveness probe is initiated                    | 300                                            |
+| `livenessProbe.periodSeconds`         | How often to perform the probe                              | 30                                             |
 | `livenessProbe.timeoutSeconds`        | When the probe times out                                    | 5                                              |
 | `livenessProbe.failureThreshold`      | Minimum consecutive failures to be considered failed        | 6                                              |
 | `livenessProbe.successThreshold`      | Minimum consecutive successes to be considered successful   | 1                                              |

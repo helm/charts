@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "odoo.fullname" . }}
   labels:
-    app: {{ template "odoo.fullname" . }}
+    app: {{ template "odoo.name" . }}
     chart: {{ template "odoo.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -23,4 +23,4 @@ spec:
     nodePort: {{ .Values.service.nodePort }}
     {{- end }}
   selector:
-    app: {{ template "odoo.fullname" . }}
+    app: {{ template "odoo.name" . }}
