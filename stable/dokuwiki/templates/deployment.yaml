@@ -3,15 +3,15 @@ kind: Deployment
 metadata:
   name: {{ template "dokuwiki.fullname" . }}
   labels:
-    app: {{ template "dokuwiki.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "dokuwiki.name" . }}
+    chart: {{ template "dokuwiki.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   template:
     metadata:
       labels:
-        app: {{ template "dokuwiki.fullname" . }}
+        app: {{ template "dokuwiki.name" . }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -21,41 +21,49 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "dokuwiki.fullname" . }}
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: {{ template "dokuwiki.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: DOKUWIKI_USERNAME
-          value: {{ default "" .Values.dokuwikiUsername | quote }}
+          value: {{ .Values.dokuwikiUsername | quote }}
         - name: DOKUWIKI_FULL_NAME
-          value: {{ default "" .Values.dokuwikiFullName | quote }}
+          value: {{ .Values.dokuwikiFullName | quote }}
         - name: DOKUWIKI_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "dokuwiki.fullname" . }}
               key: dokuwiki-password
         - name: DOKUWIKI_EMAIL
-          value: {{ default "" .Values.dokuwikiEmail | quote }}
+          value: {{ .Values.dokuwikiEmail | quote }}
         - name: DOKUWIKI_WIKI_NAME
-          value: {{ default "" .Values.dokuwikiWikiName | quote }}
+          value: {{ .Values.dokuwikiWikiName | quote }}
         ports:
         - name: http
           containerPort: 80
         - name: https
           containerPort: 443
+        {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /doku.php
             port: http
-          initialDelaySeconds: 120
-          timeoutSeconds: 5
-          failureThreshold: 6
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /doku.php
             port: http
-          initialDelaySeconds: 30
-          timeoutSeconds: 3
-          periodSeconds: 5
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
