@@ -26,6 +26,7 @@ spec:
         component: {{ .Values.artifactory.name }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "artifactory-ha.serviceAccountName" . }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
