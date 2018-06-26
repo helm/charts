@@ -4,8 +4,8 @@ metadata:
   name: {{ template "artifactory.fullname" . }}
   labels:
     app: {{ template "artifactory.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.artifactory.name }}"
+    chart: {{ template "artifactory.chart" . }}
+    component: {{ .Values.artifactory.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
@@ -14,9 +14,10 @@ spec:
     metadata:
       labels:
         app: {{ template "artifactory.name" . }}
-        component: "{{ .Values.artifactory.name }}"
+        component: {{ .Values.artifactory.name }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "artifactory.serviceAccountName" . }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}

@@ -5,8 +5,8 @@ metadata:
   name: {{ template "artifactory.nginx.fullname" . }}
   labels:
     app: {{ template "artifactory.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.nginx.name }}"
+    chart: {{ template "artifactory.chart" . }}
+    component: {{ .Values.nginx.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
@@ -15,9 +15,10 @@ spec:
     metadata:
       labels:
         app: {{ template "artifactory.name" . }}
-        component: "{{ .Values.nginx.name }}"
+        component: {{ .Values.nginx.name }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "artifactory.serviceAccountName" . }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
