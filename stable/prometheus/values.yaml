@@ -33,7 +33,7 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.14.0
+    tag: v0.15.0
     pullPolicy: IfNotPresent
 
   ## Additional alertmanager container arguments
@@ -210,7 +210,7 @@ configmapReload:
   ##
   image:
     repository: jimmidyson/configmap-reload
-    tag: v0.1
+    tag: v0.2.2
     pullPolicy: IfNotPresent
 
   ## Additional configmap-reload container arguments
@@ -343,7 +343,7 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.15.2
+    tag: v0.16.0
     pullPolicy: IfNotPresent
 
   ## Custom Update Strategy
@@ -437,7 +437,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.2.1
+    tag: v2.3.1
     pullPolicy: IfNotPresent
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
@@ -651,7 +651,7 @@ pushgateway:
   ##
   image:
     repository: prom/pushgateway
-    tag: v0.5.1
+    tag: v0.5.2
     pullPolicy: IfNotPresent
 
   ## Additional pushgateway container arguments
