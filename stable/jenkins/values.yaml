@@ -19,7 +19,9 @@ Master:
   AdminUser: admin
   # AdminPassword: <defaults to random>
   Cpu: "200m"
+  CpuLimit: "1000m"
   Memory: "256Mi"
+  MemoryLimit: "1024Mi"
   # Environment variables that get added to the init container (useful for e.g. http_proxy)
   # InitContainerEnv:
   #   - name: http_proxy
