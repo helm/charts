@@ -30,6 +30,10 @@ spec:
       affinity:
 {{ toYaml .Values.server.affinity | indent 8 }}
 {{- end }}
+{{- if .Values.server.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.server.nodeSelector | indent 8 }}
+{{- end }}
       serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
       - name: {{ template "drone.fullname" . }}-server
