@@ -1,4 +1,4 @@
-{{- if and (or .Values.serviceAccountKey (not .Values.secret.create)) (ne (index .Values.cloudsql.instances 0).instance "instance") }}
+{{- if and (or .Values.serviceAccountKey .Values.existingSecret) (ne (index .Values.cloudsql.instances 0).instance "instance") }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -28,7 +28,7 @@ spec:
                   "-instances={{- range .Values.cloudsql.instances -}}
                                 {{ .project }}:{{ .region }}:{{ .instance }}=tcp:0.0.0.0:{{ .port }},
                               {{- end }}",
-                  "-credential_file=/secrets/cloudsql/{{.Values.secret.key}}"]
+                  "-credential_file=/secrets/cloudsql/{{- if .Values.existingSecret -}} {{ .Values.existingSecretKey }} {{- else -}} credentials.json {{- end -}}"]
         ports:
         {{- range .Values.cloudsql.instances }}
         - name: {{ .instanceShortName | default (.instance | trunc 15) }}
@@ -42,10 +42,10 @@ spec:
       volumes:
       - name: cloudsql-oauth-credentials
         secret:
-          {{ if (not .Values.secret.name) -}}
+          {{ if (not .Values.existingSecret) -}}
           secretName: {{ template "gcloud-sqlproxy.fullname" . }}
           {{- else -}}
-          secretName: {{ .Values.secret.name }}
+          secretName: {{ .Values.existingSecret }}
           {{- end }}
       - name: cloudsql
         emptyDir: {}

@@ -62,10 +62,9 @@ The following table lists the configurable parameters of the Drupal chart and th
 | `imageTag`                        | SQLProxy image tag                      | `1.11`                                                                                      |
 | `imagePullPolicy`                 | Image pull policy                       | `IfNotPresent`                                                                              |
 | `replicasCount`                   | Replicas count                          | `1`                                                                                         |
-| `serviceAccountKey`               | Service account key JSON file           | Must be provided and base64 encoded when `secret.create == true`                            |
-| `secret.create`                   | Create a secret storing the credentials | `true`                                                                                      |
-| `secret.name`                     | The name of the secret to use           | `{{ template "gcloud-sqlproxy.fullname" . }}`                                               |
-| `secret.key`                      | The key to use in the provided secret   | `credentials.json`                                                                          |
+| `serviceAccountKey`               | Service account key JSON file           | Must be provided and base64 encoded when no existing secret is used, in this case a new secret will be created holding this service account |
+| `existingSecret`                  | Name of an existing secret to be used for the cloud-sql credentials | `""`                                                            |
+| `existingSecretKey`               | The key to use in the provided existing secret   | `""`                                                                               |
 | `cloudsql.instances`              | List of PostgreSQL/MySQL instances      | [{instance: `instance`, project: `project`, region: `region`, port: 5432}] must be provided |
 | `resources`                       | CPU/Memory resource requests/limits     | Memory: `100/150Mi`, CPU: `100/150m`                                                        |
 | `nodeSelector`                    | Node Selector                           |                                                                                             |

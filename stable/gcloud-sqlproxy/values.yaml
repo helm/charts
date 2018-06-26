@@ -17,17 +17,15 @@ replicasCount: 1
 ## Service account has access be set to Cloud SQL instances
 ## the key must be encoded with base64
 ## e.g. `cat service-account.json | base64`
+## only used if no existing secret is specified
 ##
 serviceAccountKey: ""
 
-## Instance credentials secret configuration
-secret:
-  ## Should a secret be generated
-  create: true
-  ## The name of the secret to use/create, defaults to chart fullname if not set
-  name: ""
-  ## The key to use within the secret
-  key: credentials.json
+## Specify an existing secret holding the cloud-sql service account credentials
+existingSecret: ""
+## The key in the existing secret that stores the credenials
+existingSecretKey: ""
+
 
 ## SQL connection settings
 ##
