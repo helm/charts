@@ -1,6 +1,6 @@
 # Version of the signalfx-agent to deploy.  This will be the default for the
 # docker image tag if not overridden with imageTag
-agentVersion: 3.1.9
+agentVersion: 3.2.2
 
 # The access token for SignalFx.  REQUIRED
 signalFxAccessToken: ""
