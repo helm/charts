@@ -40,6 +40,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 |             Parameter       |            Description             |                    Default                |
 |-----------------------------|------------------------------------|-------------------------------------------|
 | `datadog.apiKey`            | Your Datadog API key               |  `Nil` You must provide your own key      |
+| `datadog.apiKeyExistingSecret` | If set, use the secret with a provided name instead of creating a new one |`nil` |
 | `image.repository`          | The image repository to pull from  | `datadog/agent`                           |
 | `image.tag`                 | The image tag to pull              | `6.2.1`                                   |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
@@ -95,6 +96,10 @@ Datadog offers a multitude of [tags](https://hub.docker.com/r/datadog/docker-dd-
 
 ### DaemonSet and Deployment
 By default installs Datadog agent inside a DaemonSet. You may also use Datadog agent inside a Deployment, if you want to collect Kubernetes API events or send custom metrics to DogStatsD endpoint.
+
+### Secret
+By default, this Chart creates a Secret and puts an API key in that Secret.
+However, you can use manually created secret by setting `datadog.apiKeyExistingSecret` value.
 
 ### confd and checksd
 
