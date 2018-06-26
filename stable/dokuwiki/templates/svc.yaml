@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "dokuwiki.fullname" . }}
   labels:
-    app: {{ template "dokuwiki.fullname" . }}
+    app: {{ template "dokuwiki.name" . }}
     chart: {{ template "dokuwiki.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -29,4 +29,4 @@ spec:
     nodePort: {{ .Values.service.nodePorts.https }}
     {{- end }}
   selector:
-    app: {{ template "dokuwiki.fullname" . }}
+    app: {{ template "dokuwiki.name" . }}
