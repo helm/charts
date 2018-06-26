@@ -5,3 +5,6 @@ icon: https://app.rookout.com/static/rookout/img/logo.svg
 name: rookout
 version: 0.1.0
 home: "http://rookout.com/"
+maintainers:
+- name: Zohar
+  email: zohar@rookout.com
