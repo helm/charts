@@ -19,4 +19,4 @@ spec:
   selector:
     app: {{ template "awx.name" . }}
     release: {{ .Release.Name }}
-    role: {{ .Values.webRole }}
+    component: {{ .Values.webComponent }}

@@ -42,6 +42,7 @@ The following table lists the configurable parameters of the AWX chart and their
 
 Parameter | Description | Default
 --- | --- | ---
+`dbComponent` | DB component label | `database`
 `dbImage.repository` | DB image repository | `postgres`
 `dbImage.tag` | DB image version | `9.6.2`
 `dbUser` | DB username | `awx`
@@ -56,19 +57,23 @@ Parameter | Description | Default
 `persistence.subPath` | DB PV sub-path (with DB file) | `/pgdata`
 `persistence.name` | DB persistence volume name | `data`
 `persistence.billingType` | DB PV hourly payment method. It is charged in the IBM Cloud. | `hourly`
+`queueComponent` | Queue component label | `queue`
 `queueImage.repository` | Queue image repository | `rabbitmq`
 `queueImage.tag` | Queue image version | `3`
 `queueUser` | Queue username | `guest`
 `queuePassword` | Queue user password | `guest`
 `queueVhost` | Queue application vhost | `awx`
 `queueService.port` | Queue service port | `5672`
+`cacheComponent` | Cache component label | `cache`
 `cacheImage.repository` | Cache image repository | `memcached`
 `cacheImage.tag` | Cache image version | `alpine`
 `cacheService.port` | Cache service port | `11211`
+`taskComponent` | Awx-task component label | `task`
 `taskImage.repository` | AWX-task image repository | `ansible/awx_task`
 `taskImage.tag` | AWX-task image version | `latest`
 `secretKey` | AWX secret key | `aabbcc`
 `taskCommand` | Command to be executed at awx-task runtime. | `["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;su -c 'pip install softlayer pywinrm';su -c 'yum install -y wget'"]`
+`webComponent` | Web component label | `web`
 `webImage.repository` | Web image repository | `ansible/awx_web`
 `webImage.tag` | Web image version | `latest`
 `webService.type` | Set it to "NodePort". To change to "LoadBalancer" and "Ingress", you can set it after "Portable IP" is preassigned. It is based on IBM Cloud. | `NodePort`

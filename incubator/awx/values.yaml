@@ -3,8 +3,8 @@
 ## DB name
 dbName: db
 
-## DB role label
-dbRole: "database"
+## DB component label
+dbComponent: "database"
 
 ## DB replica Count
 dbReplicaCount: 1
@@ -93,8 +93,8 @@ dbAffinity: {}
 ## Queue name
 queueName: queue
 
-## Queue role label
-queueRole: "queue"
+## Queue component label
+queueComponent: "queue"
 
 ## Queue replica Count
 queueReplicaCount: 1
@@ -149,8 +149,8 @@ queueAffinity: {}
 ## Cache name
 cacheName: cache
 
-## Cache role
-cacheRole: "cache"
+## Cache component
+cacheComponent: "cache"
 
 ## Cache replica Count
 cacheReplicaCount: 1
@@ -196,8 +196,8 @@ cacheAffinity: {}
 ## Awx-task name
 taskName: task
 
-## Awx-task role label
-taskRole: "task"
+## Awx-task component label
+taskComponent: "task"
 
 ## Awx-task replica Count
 taskReplicaCount: 1
@@ -240,8 +240,8 @@ taskAffinity: {}
 ## Web name
 webName: web
 
-## Web role label
-webRole: "web"
+## Web component label
+webComponent: "web"
 
 ## Web replicas Count
 webReplicaCount: 1
