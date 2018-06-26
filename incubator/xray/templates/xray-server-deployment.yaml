@@ -26,6 +26,7 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
     {{- end }}
+      serviceAccountName: {{ template "xray.serviceAccountName" . }}
       securityContext:
         runAsUser: {{ .Values.common.xrayUserId }}
         fsGroup: {{ .Values.common.xrayGroupId }}

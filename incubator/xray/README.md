@@ -48,8 +48,8 @@ $ helm status xray
 ## Upgrade
 To upgrade an existing Xray, you still use **helm**
 ```bash
-# Update existing deployed version to 2.1.0
-$ helm upgrade --set common.xrayVersion=2.1.0 incubator/xray
+# Update existing deployed version to 2.1.2
+$ helm upgrade --set common.xrayVersion=2.1.2 incubator/xray
 ```
 
 ## Remove
@@ -139,23 +139,27 @@ The following table lists the configurable parameters of the artifactory chart a
 | `imagePullSecrets`           | Docker registry pull secret                      |                                    |
 | `imagePullPolicy`            | Container pull policy                            | `IfNotPresent`                     |
 | `initContainerImage`         | Init container image                             | `alpine:3.6`                       |
+| `serviceAccount.create`   | Specifies whether a ServiceAccount should be created | `true`                               |
+| `serviceAccount.name`     | The name of the ServiceAccount to create             | Generated using the fullname template |
+| `rbac.create`             | Specifies whether RBAC resources should be created   | `true`                               |
+| `rbac.role.rules`         | Rules to create                   | `[]`                                                     |
 | `replicaCount`               | Replica count for Xray services                  | `1`                                |
-| `postgresql.enabled`              | Use enclosed PostgreSQL as database        | `true`                              |
-| `postgresql.postgresDatabase`     | PostgreSQL database name                   | `xraydb`                            |
-| `postgresql.postgresUser`         | PostgreSQL database user                   | `xray`                              |
-| `postgresql.postgresPassword`     | PostgreSQL database password               | ` `                                 |
-| `postgresql.persistence.enabled`  | PostgreSQL use persistent storage          | `true`                              |
-| `postgresql.persistence.size`     | PostgreSQL persistent storage size         | `50Gi`                              |
+| `postgresql.enabled`              | Use enclosed PostgreSQL as database         | `true`                             |
+| `postgresql.postgresDatabase`     | PostgreSQL database name                    | `xraydb`                           |
+| `postgresql.postgresUser`         | PostgreSQL database user                    | `xray`                             |
+| `postgresql.postgresPassword`     | PostgreSQL database password                | ` `                                |
+| `postgresql.persistence.enabled`  | PostgreSQL use persistent storage           | `true`                             |
+| `postgresql.persistence.size`     | PostgreSQL persistent storage size          | `50Gi`                             |
 | `postgresql.persistence.existingClaim`  | PostgreSQL use existing persistent storage          | ` `                  |
-| `postgresql.service.port`         | PostgreSQL database port                   | `5432`                              |
-| `postgresql.resources.requests.memory`    | PostgreSQL initial memory request  |                                     |
-| `postgresql.resources.requests.cpu`       | PostgreSQL initial cpu request     |                                     |
-| `postgresql.resources.limits.memory`      | PostgreSQL memory limit            |                                     |
-| `postgresql.resources.limits.cpu`         | PostgreSQL cpu limit               |                                     |
-| `mongodb.enabled`                         | Enable Mongodb                     | `true`                              |
-| `mongodb.image.tag`                       | Mongodb docker image tag           | `3.6.3`                             |
-| `mongodb.image.pullPolicy`                | Mongodb Container pull policy      | `IfNotPresent`                      |
-| `mongodb.persistence.enabled`    | Mongodb persistence volume enabled          | `true`                              |
+| `postgresql.service.port`         | PostgreSQL database port                    | `5432`                             |
+| `postgresql.resources.requests.memory`    | PostgreSQL initial memory request   |                                    |
+| `postgresql.resources.requests.cpu`       | PostgreSQL initial cpu request      |                                    |
+| `postgresql.resources.limits.memory`      | PostgreSQL memory limit             |                                    |
+| `postgresql.resources.limits.cpu`         | PostgreSQL cpu limit                |                                    |
+| `mongodb.enabled`                         | Enable Mongodb                      | `true`                             |
+| `mongodb.image.tag`                       | Mongodb docker image tag            | `3.6.3`                            |
+| `mongodb.image.pullPolicy`                | Mongodb Container pull policy       | `IfNotPresent`                     |
+| `mongodb.persistence.enabled`    | Mongodb persistence volume enabled           | `true`                             |
 | `mongodb.persistence.existingClaim`   | Use an existing PVC to persist data               | `nil`                    |
 | `mongodb.persistence.storageClass`    | Storage class of backing PVC                      | `generic`                |
 | `mongodb.persistence.size`            | Mongodb persistence volume size             | `50Gi`                         |
@@ -163,19 +167,19 @@ The following table lists the configurable parameters of the artifactory chart a
 | `mongodb.readinessProbe.initialDelaySeconds`| Mongodb delay before readiness probe is initiated  | ` `               |
 | `mongodb.mongodbExtraFlags`                 | MongoDB additional command line flags | `["--wiredTigerCacheSizeGB=1"]`|
 | `mongodb.mongodbDatabase`                   | Mongodb Database for Xray                       | `xray`               |
-| `mongodb.mongodbRootPassword`                  | Mongodb Database Password for root user      | ` `           |
+| `mongodb.mongodbRootPassword`                  | Mongodb Database Password for root user      | ` `                  |
 | `mongodb.mongodbUsername`                      | Mongodb Database Xray User                   | `admin`              |
-| `mongodb.mongodbPassword`                      | Mongodb Database Password for Xray User      | ` `           |
+| `mongodb.mongodbPassword`                      | Mongodb Database Password for Xray User      | ` `                  |
 | `rabbitmq-ha.replicaCount`                     | RabbitMQ Number of replica                   | `1`                  |
 | `rabbitmq-ha.rabbitmqUsername`                 | RabbitMQ application username                | `guest`              |
-| `rabbitmq-ha.rabbitmqPassword`                 | RabbitMQ application password                | ` `              |
+| `rabbitmq-ha.rabbitmqPassword`                 | RabbitMQ application password                | ` `                  |
 | `rabbitmq-ha.customConfigMap`                  | RabbitMQ Use a custom ConfigMap              | `true`               |
 | `rabbitmq-ha.rabbitmqErlangCookie`             | RabbitMQ Erlang cookie                       | `XRAYRABBITMQCLUSTER`|
 | `rabbitmq-ha.rabbitmqMemoryHighWatermark`      | RabbitMQ Memory high watermark               | `500MB`              |
 | `rabbitmq-ha.persistentVolume.enabled`         | If `true`, persistent volume claims are created | `true`            |
 | `rabbitmq-ha.persistentVolume.size`            | RabbitMQ Persistent volume size              | `20Gi`               |
-| `rabbitmq-ha.rbac.create`                      | If true, create & use RBAC resources         | `false`              |
-| `common.xrayVersion`                           | Xray image tag                               | `2.1.0`              |
+| `rabbitmq-ha.rbac.create`                      | If true, create & use RBAC resources         | `true`              |
+| `common.xrayVersion`                           | Xray image tag                               | `2.1.2`              |
 | `common.xrayConfigPath`                        | Xray config path                   | `/var/opt/jfrog/xray/data`     |
 | `common.xrayUserId`                            | Xray User Id                                 | `1035`               |
 | `common.xrayGroupId`                           | Xray Group Id                                | `1035`               |
