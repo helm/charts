@@ -20,6 +20,12 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
+        - name: logger
+          image: busybox
+          args: [/bin/sh, -c, 'tail -n+1 -f /var/log/locator.log']
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -27,7 +33,9 @@ spec:
           - sh
           - -c
           - |
-            gfsh start locator --name=${HOSTNAME} --jmx-manager-hostname-for-clients=${HOSTNAME} --dir=/data && \
+            gfsh start locator --name=${HOSTNAME} --jmx-manager-hostname-for-clients=${HOSTNAME} --dir=/data \
+            --max-heap={{ .Values.memory.max_locators }} \
+            --J=-Dgemfire.log-file=/var/log/locator.log && \
             while sleep 3600; do :; done
           ports:
             - name: locator
@@ -36,15 +44,24 @@ spec:
               containerPort: 1099
             - name: pulse
               containerPort: 7070
+          volumeMounts:
+          - name: varlog
+            mountPath: /var/log
           livenessProbe:
             exec:
               command:
-              - ps -p $(cat /data/vf.gf.locator.pid)
+              - sh
+              - -c
+              - |
+                cat /data/vf.gf.locator.pid | xargs ps
           #TODO: change this to hit the ping endpoint
           readinessProbe:
             exec:
               command:
-              - ps -p $(cat /data/vf.gf.locator.pid)
+              - sh
+              - -c
+              - |
+                cat /data/vf.gf.locator.pid | xargs ps
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
@@ -59,3 +76,6 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+      volumes:
+        - name: varlog
+          emptyDir: {}
