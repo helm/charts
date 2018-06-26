@@ -5,7 +5,7 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.13.0"
+    tag: "0.15.0"
     pullPolicy: IfNotPresent
 
   config: {}
@@ -25,6 +25,10 @@ controller:
   ## Use host ports 80 and 443
   daemonset:
     useHostPort: false
+
+    hostPorts:
+      http: 80
+      https: 443
 
   ## Required only if defaultBackend.enabled = false
   ## Must be <namespace>/<service_name>
@@ -144,6 +148,7 @@ controller:
   #  minReplicas: 1
   #  maxReplicas: 11
   #  targetCPUUtilizationPercentage: 50
+  #  targetMemoryUtilizationPercentage: 50
 
   ## Override NGINX template
   customTemplate:
@@ -163,6 +168,9 @@ controller:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
 
+    enableHttp: true
+    enableHttps: true
+
     ## Set external traffic policy to: "Local" to preserve source IP on
     ## providers supporting it
     ## Ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer
@@ -171,8 +179,8 @@ controller:
     healthCheckNodePort: 0
 
     targetPorts:
-      http: 80
-      https: 443
+      http: http
+      https: https
 
     type: LoadBalancer
 
@@ -217,6 +225,13 @@ controller:
   ## Additional volumes to the controller pod.
   #  - name: copy-portal-skins
   #    emptyDir: {}
+
+  extraInitContainers: []
+  ## Containers, which are run before the app containers are started.
+  # - name: init-myservice
+  #   image: busybox
+  #   command: ['sh', '-c', 'until nslookup myservice; do echo waiting for myservice; sleep 2; done;']
+
 
   stats:
     enabled: false
@@ -331,10 +346,11 @@ defaultBackend:
 
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:
-  create: false
-  createRole: false
-  createClusterRole: false
-  serviceAccountName: default
+  create: true
+
+serviceAccount:
+  create: true
+  name:
 
 ## Optional array of imagePullSecrets containing private registry credentials
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/

@@ -143,12 +143,16 @@ spec:
               readOnly: true
 {{- end }}
 {{- if .Values.controller.extraVolumeMounts }}
-{{ toYaml .Values.controller.extraVolumeMounts | indent 10}}
+{{ toYaml .Values.controller.extraVolumeMounts | indent 12}}
 {{- end }}
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
 {{- if .Values.controller.extraContainers }}
 {{ toYaml .Values.controller.extraContainers | indent 8}}
+{{- end }}
+{{- if .Values.controller.extraInitContainers }}
+      initContainers:
+{{ toYaml .Values.controller.extraInitContainers | indent 8}}
 {{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}
@@ -163,7 +167,7 @@ spec:
       affinity:
 {{ toYaml .Values.controller.affinity | indent 8 }}
     {{- end }}
-      serviceAccountName: {{ if or .Values.rbac.create .Values.rbac.createRole .Values.rbac.createClusterRole }}{{ template "nginx-ingress.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "nginx-ingress.serviceAccountName" . }}
       terminationGracePeriodSeconds: 60
 {{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumes) }}
       volumes:
@@ -177,6 +181,6 @@ spec:
               path: nginx.tmpl
 {{- end }}
 {{- if .Values.controller.extraVolumes }}
-{{ toYaml .Values.controller.extraVolumes | indent 6}}
+{{ toYaml .Values.controller.extraVolumes | indent 8}}
 {{- end }}
 {{- end }}

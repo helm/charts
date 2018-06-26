@@ -15,6 +15,9 @@ spec:
       labels:
         app: {{ template "gcloud-sqlproxy.fullname" . }}
     spec:
+      {{- if .Values.rbac.create }}
+      serviceAccountName: {{ template "gcloud-sqlproxy.fullname" . }}
+      {{- end }}
       containers:
       - name: sqlproxy
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -28,7 +31,7 @@ spec:
                   "-credential_file=/secrets/cloudsql/credentials.json"]
         ports:
         {{- range .Values.cloudsql.instances }}
-        - name: {{ .instance }}
+        - name: {{ .instanceShortName | default (.instance | trunc 15) }}
           containerPort: {{ .port }}
         {{- end }}
         volumeMounts:

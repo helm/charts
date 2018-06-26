@@ -45,6 +45,7 @@ If using a dedicated namespace(recommended) then make sure the namespace
 exists with:
 
 ```
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 $ kubectl create ns kafka
 $ helm install --name my-kafka --set global.namespace=kafka incubator/kafka
 ```
@@ -64,13 +65,14 @@ following configurable parameters:
 | `kafkaHeapOptions`             | Kafka broker JVM heap options                                                                                   | `-Xmx1G-Xms1G`                                                       |
 | `logSubPath`                   | Subpath under `persistence.mountPath` where kafka logs will be placed.                                          | `logs`                                                     |
 | `schedulerName`                | Name of Kubernetes scheduler (other than the default)                                                           | `nil`                                                      |
-| `affinity`                     | Pod scheduling preferences                                                                                      | `{}`                                                       |
+| `affinity`                     | Defines affinities and anti-affinities for pods as defined in: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity preferences                                                                                      | `{}`                                                       |
 | `tolerations`                  | List of node tolerations for the pods. https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/  | `[]`                                                       |
 | `external.enabled`             | If True, exposes Kafka brokers via NodePort (PLAINTEXT by default)                                              | `false`                                                    |
 | `external.servicePort`         | TCP port configured at external services (one per pod) to relay from NodePort to the external listener port.    | '19092'                                                    |
 | `external.firstListenerPort`   | TCP port which is added pod index number to arrive at the port used for NodePort and external listener port.    | '31090'                                                    |
 | `external.domain`              | Domain in which to advertise Kafka external listeners.                                                          | `cluster.local`                                            |
 | `external.init`                | External init container settings.                                                                               | (see `values.yaml`)                                        |
+| `rbac.enabled`                 | Enable a service account and role for the init container to use in an RBAC enabled cluster                      | `false`                                                    |
 | `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `{ offsets.topic.replication.factor: 3 }`                  |
 | `additionalPorts`              | Additional ports to expose on brokers.  Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar   | `{}`                                 |
 | `readinessProbe.initialDelaySeconds` | Number of seconds before probe is initiated.                                                              | `30`                                                       |
@@ -105,6 +107,7 @@ following configurable parameters:
 | `prometheus.operator` | True if using the Prometheus Operator, False if not                                                             | `false`                                                       |
 | `prometheus.operator.serviceMonitor.namespace` | Namespace which Prometheus is running in.  Default to kube-prometheus install.    | `monitoring` |
 | `prometheus.operator.serviceMonitor.selector` | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install    | `{ prometheus: kube-prometheus }` |
+| `topics`                       |  List of topics to create & configure. Can specify name, partitions, replicationFactor, config. See values.yaml | `[]` (Empty list) |
 | `zookeeper.enabled`            | If True, installs Zookeeper Chart                                                                               | `true`                                                     |
 | `zookeeper.resources`          | Zookeeper resource requests and limits                                                                          | `{}`                                                       |
 | `zookeeper.heap`               | JVM heap size to allocate to Zookeeper                                                                          | `1G`                                                       |
@@ -112,6 +115,7 @@ following configurable parameters:
 | `zookeeper.imagePullPolicy`    | Zookeeper Container pull policy                                                                                 | `IfNotPresent`                                             |
 | `zookeeper.url`                | URL of Zookeeper Cluster (unneeded if installing Zookeeper Chart)                                               | `""`                                                       |
 | `zookeeper.port`               | Port of Zookeeper Cluster                                                                                       | `2181`                                                     |
+| `zookeeper.affinity`                     | Defines affinities and anti-affinities for pods as defined in: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity preferences                                                                                      | `{}`
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
@@ -182,9 +186,8 @@ such port at a time, setting the range at every Kafka pod is a reasonably safe c
 
 ## Known Limitations
 
-* Topic creation is not automated
 * Only supports storage options that have backends for persistent volume claims (tested mostly on AWS)
-* There must not exist a service called `kafka` in the same namespace
+* KAFKA_PORT will be created as an envvar and brokers will fail to start when there is a service named `kafka` in the same namespace. We work around this be unsetting that envvar `unset KAFKA_PORT`.
 
 [brokerconfigs]: https://kafka.apache.org/documentation/#brokerconfigs
 

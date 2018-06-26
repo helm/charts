@@ -25,7 +25,7 @@ etcd:
   host:
   # Leave blank to use vendored etcd chart
   discovery:
-zooKeeper:
+zookeeper:
   enable: false
   deployChart: false
   # If not deploying etcd chart, fill-in list of ZooKeeper members in format:

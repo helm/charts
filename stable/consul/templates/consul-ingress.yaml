@@ -1,6 +1,7 @@
 {{- if .Values.uiIngress.enabled -}}
 {{- $releaseName := .Release.Name -}}
 {{- $servicePort := .Values.HttpPort -}}
+{{- $serviceName := printf "%s-%s" (include "consul.fullname" .) "ui" -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -11,7 +12,7 @@ metadata:
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "consul.chart" . }}
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
   name: "{{ template "consul.fullname" . }}-ui"
 spec:
@@ -21,7 +22,7 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: {{ printf "%s-%s" $releaseName "consul-ui" | trunc 63 }}
+              serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
   {{- end -}}
   {{- if .Values.uiIngress.tls }}
@@ -29,4 +30,3 @@ spec:
 {{ toYaml .Values.uiIngress.tls | indent 4 }}
   {{- end -}}
 {{- end }}
-

@@ -67,10 +67,10 @@ The following table lists the configurable parameters of the WordPress chart and
 | `smtpUsername`                       | User name for SMTP emails                  | `nil`                                                      |
 | `smtpProtocol`                       | SMTP protocol [`tls`, `ssl`]               | `nil`                                                      |
 | `mariadb.enabled`                    | Deploy MariaDB container(s)                | `true`                                                     |
-| `mariadb.mariadbRootPassword`        | MariaDB admin password                     | `nil`                                                      |
-| `mariadb.mariadbDatabase`            | Database name to create                    | `bitnami_wordpress`                                        |
-| `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                             |
-| `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_             |
+| `mariadb.rootUser.password`        | MariaDB admin password                     | `nil`                                                      |
+| `mariadb.db.name`            | Database name to create                    | `bitnami_wordpress`                                        |
+| `mariadb.db.user`                | Database user to create                    | `bn_wordpress`                                             |
+| `mariadb.db.password`            | Password for the database                  | _random 10 character long alphanumeric string_             |
 | `externalDatabase.host`              | Host of the external database              | `localhost`                                                |
 | `externalDatabase.user`              | Existing username in the external db       | `bn_wordpress`                                             |
 | `externalDatabase.password`          | Password for the above username            | `nil`                                                      |
@@ -90,6 +90,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                     | `nil`                                                      |
 | `ingress.secrets[0].key`             | TLS Secret Key                             | `nil`                                                      |
 | `persistence.enabled`                | Enable persistence using PVC               | `true`                                                     |
+| `persistence.existingClaim`          | Enable persistence using an existing PVC   | `nil`                                                      |
 | `persistence.storageClass`           | PVC Storage Class                          | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | PVC Access Mode                            | `ReadWriteOnce`                                            |
 | `persistence.size`                   | PVC Storage Request                        | `10Gi`                                                     |
@@ -114,6 +115,24 @@ $ helm install --name my-release -f values.yaml stable/wordpress
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Production and horizontal scaling
+
+The following repo contains the recommended production settings for wordpress capture in an alternative [values file](values-production.yaml). Please read carefully the comments in the values-production.yaml file to set up your environment appropriately.
+
+To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then:
+
+```console
+$ 
+$ helm install --name my-release -f ./values-production.yaml stable/wordpress
+$ kubectl scale deployment my-wp-deployment --replicas=3 
+```
+To use the /admin portal and to ensure you can scale wordpress you need to provide a ReadWriteMany PVC, if you dont have a provisioner for this type of storage, we recommend that you install the nfs provisioner and map it to a RWO volume.
+
+```console
+$ helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
+$ helm install --name my-release -f values-production.yaml --set persitence.storageClass=nfs stable/wordpress
+```
 
 ## Persistence
 

@@ -45,7 +45,7 @@ Parameter | Description | Default
 `cluster.persistentVolume.enabled` | If `true`, persistent volume claims are created | `true`
 `cluster.persistentVolume.storageClass` | Persistent volume storage class | `default`
 `cluster.persistentVolume.accessMode` | Persistent volume access modes | `[ReadWriteOnce]`
-`cluster.persistentVolume.size` | Persistent volume size | `10Gi`
+`cluster.persistentVolume.size` | Persistent volume size | `1Gi`
 `cluster.persistentVolume.annotations` | Persistent volume annotations | `{}`
 `cluster.rethinkCacheSize` | RethinkDB `cache-size` value in MB | `100`
 `proxy.replicas` | Number of RethinkDB Proxy replicas | `1`
