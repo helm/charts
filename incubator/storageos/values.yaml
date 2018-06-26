@@ -1,0 +1,92 @@
+# Default values for storageos.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: storageos/node
+  tag: 1.0.0-rc2
+  pullPolicy: IfNotPresent
+
+initContainer:
+  repository: storageos/init
+  tag: 0.1
+  pullPolicy: IfNotPresent
+
+csiDriverRegistrar:
+  repository: quay.io/k8scsi/driver-registrar
+  tag: v0.2.0
+  pullPolicy: IfNotPresent
+
+csiExternalProvisioner:
+  repository: quay.io/k8scsi/csi-provisioner
+  tag: v0.2.1
+  pullPolicy: IfNotPresent
+
+csiExternalAttacher:
+  repository: quay.io/k8scsi/csi-attacher
+  tag: v0.2.0
+  pullPolicy: IfNotPresent
+
+rbacEnabled: true
+
+cluster:
+  # To generate a join token see:
+  # https://docs.storageos.com/docs/install/prerequisites/clusterdiscovery
+  # or use hostname/ip address of any or all of the cluster nodes.
+  # Example:
+  # join: node1,node2,node3
+  # or
+  # join: 10.1.5.07,10.1.5.08,10.1.5.09
+  join:
+
+  # sharedDir should be set if running kubelet in a container.  This should
+  # be the path shared into to kubelet container, typically:
+  # "/var/lib/kubelet/plugins/kubernetes.io~storageos".  If not set, defaults
+  # will be used.
+  sharedDir:
+storageclass:
+  name: fast
+  pool: default
+  fsType: ext4
+api:
+  secretName: storageos-api
+  secretNamespace: default
+  # secrets are namespace specific, create 1+N for every namespace.
+  address: storageos:5705
+  # address is used to generate the ApiAddress value in the secret. This
+  # updated later with the service ClusterIP which is not known yet.
+  username: storageos
+  password: storageos
+namespace: storageos
+service:
+  name: storageos
+  type: ClusterIP
+  externalPort: 5705
+  internalPort: 5705
+resources: {}
+
+csi:
+  enable: false
+  # provisionCreds are credentials for volume create and delete operations.
+  provisionCreds:
+    enable: false
+    username: username1
+    password: password1
+    secretName: storageos-provision-creds
+  # controllerPublishCreds are credentials for controller volume publish and unpublish operations.
+  controllerPublishCreds:
+    enable: false
+    username: username2
+    password: password2
+    secretName: storageos-ctrl-publish-creds
+  # nodeStageCreds are credentials for node volume stage operations.
+  nodeStageCreds:
+    enable: false
+    username: username3
+    password: password3
+    secretName: storageos-node-stage-creds
+  # nodePublishCreds are credentials for node volume publish operations.
+  nodePublishCreds:
+    enable: false
+    username: username4
+    password: password4
+    secretName: storageos-node-publish-creds

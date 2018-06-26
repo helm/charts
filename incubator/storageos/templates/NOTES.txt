@@ -1,0 +1,13 @@
+{{- if not .Values.csi.enable }}
+
+1. Please run the following commands now to configure the link between Kubernetes and StorageOS(*):
+
+ClusterIP=$(kubectl get svc/{{ .Values.service.name }} --namespace {{ .Values.namespace }} -o custom-columns=IP:spec.clusterIP --no-headers=true)
+ApiAddress=$(echo -n "tcp://$ClusterIP:{{ .Values.service.externalPort }}" | base64)
+kubectl patch secret/{{ .Values.api.secretName }} --namespace {{ .Values.api.secretNamespace }} --patch "{\"data\": {\"apiAddress\": \"$ApiAddress\"}}"
+
+*) Unfortunately this is needed until the Kubernetes apiserver can use kube-dns to resolve service 
+   dns names like {{ .Values.service.name }}.{{ .Values.namespace }}.svc to the correct ClusterIP.
+   This is a known limitation: https://github.com/kubernetes-incubator/bootkube/issues/456
+
+{{- end }}
