@@ -1,0 +1,20 @@
+apiVersion: v1
+appVersion: "0.1.0"
+description: Scylla is an open-source distributed NoSQL data store. It was designed to be compatible with 
+             Apache Cassandra while achieving significantly higher throughputs and lower latencies.
+icon: https://www.scylladb.com/wp-content/uploads/sea-monster-speed-racer-01.png
+name: scylladb
+version: 0.1.0
+keywords:
+  - scylla
+  - nosql
+  - database
+  - cassandra
+sources: 
+  - http://scylladb.com
+  - https://hub.docker.com/r/scylladb/scylla/
+  - https://en.wikipedia.org/wiki/Scylla_(database)
+maintainers:
+  - name: gnumoreno
+    email: moreno@scylladb.com
+    url: https://github.com/gnumoreno
