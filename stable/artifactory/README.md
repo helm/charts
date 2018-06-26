@@ -196,6 +196,10 @@ The following table lists the configurable parameters of the artifactory chart a
 |         Parameter         |           Description             |                         Default                          |
 |---------------------------|-----------------------------------|----------------------------------------------------------|
 | `imagePullSecrets`        | Docker registry pull secret       |                                                          |
+| `serviceAccount.create`   | Specifies whether a ServiceAccount should be created | `true`                               |
+| `serviceAccount.name`     | The name of the ServiceAccount to create             | Generated using the fullname template |
+| `rbac.create`             | Specifies whether RBAC resources should be created   | `true`                               |
+| `rbac.role.rules`         | Rules to create                   | `[]`                                                     |
 | `artifactory.name`        | Artifactory name                  | `artifactory`                                            |
 | `artifactory.replicaCount`            | Replica count for Artifactory deployment| `1`                                    |
 | `artifactory.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                              |
@@ -207,7 +211,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.internalPort` | Artifactory service internal port | `8081`                                                  |
 | `artifactory.internalPortReplicator` | Replicator service internal port | `6061`                                         |
 | `artifactory.externalPortReplicator` | Replicator service external port | `6061`                                         |
-| `artifactory.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`    |
+| `artifactory.livenessProbe.enabled`              | would you like a livessProbed to be enabled             |  `true`     |
 | `artifactory.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 180                       |
 | `artifactory.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                        |
 | `artifactory.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                        |

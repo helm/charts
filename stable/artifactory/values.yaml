@@ -10,6 +10,33 @@ initContainerImage: "alpine:3.6"
 # For supporting pulling from private registries
 imagePullSecrets:
 
+## Role Based Access Control
+## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
+rbac:
+  create: true
+  role:
+    ## Rules to create. It follows the role specification
+    rules:
+    - apiGroups:
+      - ''
+      resources:
+      - services
+      - endpoints
+      - pods
+      verbs:
+      - get
+      - watch
+      - list
+
+## Service Account
+## Ref: https://kubernetes.io/docs/admin/service-accounts-admin/
+##
+serviceAccount:
+  create: true
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:
+
 ingress:
   enabled: false
   # Used to create an Ingress record.
