@@ -9,9 +9,6 @@ initContainerImage: "alpine:3.6"
 # For supporting pulling from private registries
 imagePullSecrets:
 
-# For supporting pulling from private registries
-imagePullSecrets:
-
 ## Role Based Access Control
 ## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
 rbac:
