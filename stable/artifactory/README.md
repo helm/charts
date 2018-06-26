@@ -184,9 +184,9 @@ The following table lists the configurable parameters of the artifactory chart a
 |         Parameter         |           Description             |                         Default                          |
 |---------------------------|-----------------------------------|----------------------------------------------------------|
 | `imagePullSecrets`        | Docker registry pull secret       |                                                          |
-| `serviceAccount.create`   | Specifies whether a ServiceAccount should be created | `false`                               |
+| `serviceAccount.create`   | Specifies whether a ServiceAccount should be created | `true`                               |
 | `serviceAccount.name`     | The name of the ServiceAccount to create             | Generated using the fullname template |
-| `rbac.create`             | Specifies whether RBAC resources should be created   | `false`                               |
+| `rbac.create`             | Specifies whether RBAC resources should be created   | `true`                               |
 | `rbac.role.rules`         | Rules to create                   | `[]`                                                     |
 | `artifactory.name`        | Artifactory name                  | `artifactory`                                            |
 | `artifactory.replicaCount`            | Replica count for Artifactory deployment| `1`                                    |
