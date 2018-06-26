@@ -45,31 +45,55 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Odoo chart and their default values.
 
-|               Parameter               |                Description                |                   Default                               |
-|---------------------------------------|-------------------------------------------|-------------------------------------------------------- |
-| `image.registry`                      | Odoo image registry                       | `docker.io`                                             |
-| `image.repository`                    | Odoo Image name                           | `bitnami/odoo`                                          |
-| `image.tag`                           | Odoo Image tag                            | `{VERSION}`                                             |
-| `image.pullPolicy`                    | Image pull policy                         | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`                   | Specify image pull secrets                | `nil`                                                   |
-| `odooUsername`                        | User of the application                   | `user@example.com`                                      |
-| `odooPassword`                        | Admin account password                    | `bitnami`                                               |
-| `odooEmail`                           | Admin account email                       | `user@example.com`                                      |
-| `smtpHost`                            | SMTP host                                 | `nil`                                                   |
-| `smtpPort`                            | SMTP port                                 | `nil`                                                   |
-| `smtpUser`                            | SMTP user                                 | `nil`                                                   |
-| `smtpPassword`                        | SMTP password                             | `nil`                                                   |
-| `smtpProtocol`                        | SMTP protocol [`ssl`, `tls`]              | `nil`                                                   |
-| `serviceType`                         | Kubernetes Service type                   | `LoadBalancer`                                          |
-| `resources`                           | CPU/Memory resource requests/limits       | Memory: `512Mi`, CPU: `300m`                            |
-| `persistence.storageClass`            | PVC Storage Class                         | `nil` (uses alpha storage class annotation)             |
-| `persistence.accessMode`              | PVC Access Mode                           | `ReadWriteOnce`                                         |
-| `persistence.size`                    | PVC Storage Request                       | `8Gi`                                                   |
-| `postgresql.postgresqlPassword`       | PostgreSQL password                       | `nil`                                                   |
-| `postgresql.persistence.enabled`      | Enable PostgreSQL persistence using PVC   | `true`                                                  |
-| `postgresql.persistence.storageClass` | PVC Storage Class for PostgreSQL volume   | `nil` (uses alpha storage class annotation)             |
-| `postgresql.persistence.accessMode`   | PVC Access Mode for PostgreSQL volume     | `ReadWriteOnce`                                         |
-| `postgresql.persistence.size`         | PVC Storage Request for PostgreSQL volume | `8Gi`                                                   |
+|               Parameter               |                Description                                  |                   Default                      |
+|---------------------------------------|-------------------------------------------------------------|------------------------------------------------|
+| `image.registry`                      | Odoo image registry                                         | `docker.io`                                    |
+| `image.repository`                    | Odoo Image name                                             | `bitnami/odoo`                                 |
+| `image.tag`                           | Odoo Image tag                                              | `{VERSION}`                                    |
+| `image.pullPolicy`                    | Image pull policy                                           | `Always`                                       |
+| `image.pullSecrets`                   | Specify image pull secrets                                  | `nil`                                          |
+| `odooUsername`                        | User of the application                                     | `user@example.com`                             |
+| `odooPassword`                        | Admin account password                                      | _random 10 character long alphanumeric string_ |
+| `odooEmail`                           | Admin account email                                         | `user@example.com`                             |
+| `smtpHost`                            | SMTP host                                                   | `nil`                                          |
+| `smtpPort`                            | SMTP port                                                   | `nil`                                          |
+| `smtpUser`                            | SMTP user                                                   | `nil`                                          |
+| `smtpPassword`                        | SMTP password                                               | `nil`                                          |
+| `smtpProtocol`                        | SMTP protocol [`ssl`, `tls`]                                | `nil`                                          |
+| `service.type`                        | Kubernetes Service type                                     | `LoadBalancer`                                 |
+| `service.loadBalancer`                | Kubernetes LoadBalancerIP to request                        | `nil`                                          |
+| `service.externalTrafficPolicy`       | Enable client source IP preservation                        | `Local`                                        |
+| `service.nodePort`                    | Kubernetes http node port                                   | `""`                                           |
+| `ingress.enabled`                     | Enable ingress controller resource                          | `false`                                        |
+| `ingress.hosts[0].name`               | Hostname to your Odoo installation                          | `odoo.local`                                   |
+| `ingress.hosts[0].path`               | Path within the url structure                               | `/`                                            |
+| `ingress.hosts[0].tls`                | Utilize TLS backend in ingress                              | `false`                                        |
+| `ingress.hosts[0].tlsSecret`          | TLS Secret (certificates)                                   | `odoo.local-tls-secret`                        |
+| `ingress.hosts[0].annotations`        | Annotations for this host's ingress record                  | `[]`                                           |
+| `ingress.secrets[0].name`             | TLS Secret Name                                             | `nil`                                          |
+| `ingress.secrets[0].certificate`      | TLS Secret Certificate                                      | `nil`                                          |
+| `ingress.secrets[0].key`              | TLS Secret Key                                              | `nil`                                          |
+| `resources`                           | CPU/Memory resource requests/limits                         | Memory: `512Mi`, CPU: `300m`                   |
+| `persistence.storageClass`            | PVC Storage Class                                           | `nil` (uses alpha storage class annotation)    |
+| `persistence.accessMode`              | PVC Access Mode                                             | `ReadWriteOnce`                                |
+| `persistence.size`                    | PVC Storage Request                                         | `8Gi`                                          |
+| `postgresql.postgresqlPassword`       | PostgreSQL password                                         | `nil`                                          |
+| `postgresql.persistence.enabled`      | Enable PostgreSQL persistence using PVC                     | `true`                                         |
+| `postgresql.persistence.storageClass` | PVC Storage Class for PostgreSQL volume                     | `nil` (uses alpha storage class annotation)    |
+| `postgresql.persistence.accessMode`   | PVC Access Mode for PostgreSQL volume                       | `ReadWriteOnce`                                |
+| `postgresql.persistence.size`         | PVC Storage Request for PostgreSQL volume                   | `8Gi`                                          |
+| `livenessProbe.enabled`               | Enable/disable the liveness probe                           | `true`                                         |
+| `livenessProbe.initialDelaySeconds`   | Delay before liveness probe is initiated                    | 300                                            |
+| `livenessProbe.periodSeconds`         | How often to perform the probe                              | 30                                             |
+| `livenessProbe.timeoutSeconds`        | When the probe times out                                    | 5                                              |
+| `livenessProbe.failureThreshold`      | Minimum consecutive failures to be considered failed        | 6                                              |
+| `livenessProbe.successThreshold`      | Minimum consecutive successes to be considered successful   | 1                                              |
+| `readinessProbe.enabled`              | Enable/disable the readiness probe                          | `true`                                         |
+| `readinessProbe.initialDelaySeconds`  | Delay before readinessProbe is initiated                    | 30                                             |
+| `readinessProbe.periodSeconds   `     | How often to perform the probe                              | 10                                             |
+| `readinessProbe.timeoutSeconds`       | When the probe times out                                    | 5                                              |
+| `readinessProbe.failureThreshold`     | Minimum consecutive failures to be considered failed        | 6                                              |
+| `readinessProbe.successThreshold`     | Minimum consecutive successes to be considered successful   | 1                                              |
 
 The above parameters map to the env variables defined in [bitnami/odoo](http://github.com/bitnami/bitnami-docker-odoo). For more information please refer to the [bitnami/odoo](http://github.com/bitnami/bitnami-docker-odoo) image documentation.
 
