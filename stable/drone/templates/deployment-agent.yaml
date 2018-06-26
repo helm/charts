@@ -30,6 +30,12 @@ spec:
 {{ toYaml .Values.agent.affinity | indent 8 }}
 {{- end }}
       serviceAccountName: {{ template "drone.serviceAccountName" . }}
+      {{- if .Values.images.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.images.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
       containers:
       - name: {{ template "drone.fullname" . }}-agent
         image: "{{ .Values.images.agent.repository }}:{{ .Values.images.agent.tag }}"
