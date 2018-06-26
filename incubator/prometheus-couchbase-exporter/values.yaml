@@ -16,7 +16,7 @@ service:
 couchbase:
   ## Host of the Couchbase cluster to connect to.
   ## This could be a local node (localhost, for instance), or the address
-  ## of a remote Couchbase server. If server is running in Kubernetes, 
+  ## of a remote Couchbase server. If server is running in Kubernetes,
   ## this should be the name of the Service
   ##
   host: cb-example
