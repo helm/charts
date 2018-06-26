@@ -31,6 +31,7 @@ spec:
           protocol: UDP
         {{- if .Values.datadog.apmEnabled }}
         - containerPort: 8126
+          hostPort: 8126
           name: traceport
           protocol: TCP
         {{- end }}
