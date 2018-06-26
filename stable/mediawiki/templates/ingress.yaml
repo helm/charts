@@ -3,7 +3,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | trimSuffix "-" -}}"
+  name: {{ template "mediawiki.fullname" $ }}
   labels:
     app: {{ template "mediawiki.fullname" $ }}
     chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
@@ -24,7 +24,7 @@ spec:
         - path: {{ default "/" .path }}
           backend:
             serviceName: {{ template "mediawiki.fullname" $ }}
-            servicePort: 80
+            servicePort: http
 {{- if .tls }}
   tls:
   - hosts:
