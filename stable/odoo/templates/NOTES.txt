@@ -1,3 +1,4 @@
+
 ** Please be patient while the chart is being deployed **
 
 {{- if .Values.ingress.enabled }}
