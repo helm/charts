@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ template "mediawiki.fullname" . }}
   labels:
-    app: {{ template "mediawiki.fullname" . }}
+    app: {{ template "mediawiki.name" . }}
     chart: {{ template "mediawiki.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "mediawiki.fullname" . }}
+        app: {{ template "mediawiki.name" . }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
