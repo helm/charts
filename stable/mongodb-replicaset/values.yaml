@@ -32,7 +32,7 @@ image:
 copyConfigImage:
   busybox:
     repository: busybox
-    tag: latest
+    tag: 1.28.4
     pullPolicy: IfNotPresent
 
 # Specs for test image
