@@ -3,10 +3,10 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "mediawiki.fullname" $ }}
+  name: {{ template "joomla.fullname" $ }}
   labels:
-    app: {{ template "mediawiki.name" $ }}
-    chart: {{ template "mediawiki.chart" $ }}
+    app: {{ template "joomla.fullname" $ }}
+    chart: {{ template "joomla.chart" $ }}
     release: {{ $.Release.Name | quote }}
     heritage: {{ $.Release.Service | quote }}
   annotations:
@@ -23,8 +23,8 @@ spec:
       paths:
         - path: {{ default "/" .path }}
           backend:
-            serviceName: {{ template "mediawiki.fullname" $ }}
-            servicePort: http
+            serviceName: {{ template "joomla.fullname" $ }}
+            servicePort: 80
 {{- if .tls }}
   tls:
   - hosts:

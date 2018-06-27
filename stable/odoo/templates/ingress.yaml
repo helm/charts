@@ -3,10 +3,10 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "mediawiki.fullname" $ }}
+  name: {{ template "odoo.fullname" $ }}
   labels:
-    app: {{ template "mediawiki.name" $ }}
-    chart: {{ template "mediawiki.chart" $ }}
+    app: {{ template "odoo.name" $ }}
+    chart: {{ template "odoo.chart" $ }}
     release: {{ $.Release.Name | quote }}
     heritage: {{ $.Release.Service | quote }}
   annotations:
@@ -23,7 +23,7 @@ spec:
       paths:
         - path: {{ default "/" .path }}
           backend:
-            serviceName: {{ template "mediawiki.fullname" $ }}
+            serviceName: {{ template "odoo.fullname" $ }}
             servicePort: http
 {{- if .tls }}
   tls:
