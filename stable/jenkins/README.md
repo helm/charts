@@ -38,8 +38,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
 | `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
-| `Master.Cpu`                      | Master requested cpu                 | `200m`                                                                       |
-| `Master.Memory`                   | Master requested memory              | `256Mi`                                                                      |
+| `Master.resources`                | Resources allocation (Requests and Limits) | `{requests: {cpu: 50m, memory: 256Mi}, limits: {cpu: 2000m, memory: 2048Mi}}`|
 | `Master.InitContainerEnv`         | Environment variables for Init Container                                 | Not set                                  |
 | `Master.ContainerEnv`             | Environment variables for Jenkins Container                              | Not set                                  |
 | `Master.RunAsUser`                | uid that jenkins runs with           | `0`                                                                          |
@@ -90,8 +89,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Agent.ImagePullSecret` | Agent image pull secret                         | Not set                |
 | `Agent.ImageTag`        | Agent image tag                                 | `2.62`                 |
 | `Agent.Privileged`      | Agent privileged container                      | `false`                |
-| `Agent.Cpu`             | Agent requested cpu                             | `200m`                 |
-| `Agent.Memory`          | Agent requested memory                          | `256Mi`                |
+| `Agent.resources`       | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
 | `Agent.volumes`         | Additional volumes                              | `nil`                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
