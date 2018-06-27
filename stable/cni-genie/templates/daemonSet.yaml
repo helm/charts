@@ -3,17 +3,18 @@ kind: DaemonSet
 apiVersion: extensions/v1beta1
 metadata:
   name: genie-plugin
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
   labels:
-    k8s-app: genie
+    k8s-app: {{.Values.geniePluginLabel }}
+    release: {{ .Release.Name }}
 spec:
   selector:
     matchLabels:
-      k8s-app: genie
+      k8s-app: {{.Values.geniePluginLabel }}
   template:
     metadata:
       labels:
-        k8s-app: genie
+        k8s-app: {{.Values.geniePluginLabel }}
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
         scheduler.alpha.kubernetes.io/tolerations: |
@@ -37,8 +38,8 @@ spec:
         # Installs required 00-genie.conf and genie binary
         # on slave node.
         - name: install-cni
-          image: quay.io/huawei-cni-genie/genie-plugin:latest
-          imagePullPolicy: {{.Values.imagePullPolicy }}
+          image: {{.Values.image.pluginImagePath }}
+          imagePullPolicy: {{.Values.image.pullPolicy }}
           command: ["/launch.sh"]
           env:
             - name: CNI_NETWORK_CONFIG
@@ -58,10 +59,10 @@ spec:
       volumes:
         - name: cni-bin-dir
           hostPath:
-            path: /opt/cni/bin
+            path: {{.Values.confPath.cniBinDirPath }}
         - name: cni-net-dir
           hostPath:
-            path: /etc/cni/net.d
+            path: {{.Values.confPath.cniConfDirPath }}
 ---
 # Genie network admission controller daemonset configuration
 # Genie network admission controller pods will run only in master nodes
@@ -69,7 +70,10 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: genie-network-admission-controller
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
+  labels:
+    k8s-app: {{.Values.geniePluginLabel }}
+    release: {{ .Release.Name }}
 spec:
   template:
     metadata:
@@ -89,10 +93,10 @@ spec:
       serviceAccountName: genie-plugin
       containers:
         - name: genie-network-admission-controller
-          image: quay.io/huawei-cni-genie/genie-admission-controller:latest
-          imagePullPolicy: {{.Values.imagePullPolicy }}
+          image: {{.Values.image.admissionControllerImagePath }}
+          imagePullPolicy: {{.Values.image.pullPolicy }}
           ports:
-            - containerPort: 8000
+            - containerPort: {{.Values.admissionControllerContainerPort }}
 ---
 {{- if .Values.includePolicy }}
 # Daemonset configuration for geine network policy
@@ -100,17 +104,18 @@ kind: DaemonSet
 apiVersion: extensions/v1beta1
 metadata:
   name: genie-policy-controller
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
   labels:
-    k8s-app: genie-policy
+    k8s-app: {{.Values.geniePolicyLabel }}
+    release: {{ .Release.Name }}
 spec:
   selector:
     matchLabels:
-      k8s-app: genie-policy
+      k8s-app: {{.Values.geniePolicyLabel }}
   template:
     metadata:
       labels:
-        k8s-app: genie-policy
+        k8s-app: {{.Values.geniePolicyLabel }}
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
         scheduler.alpha.kubernetes.io/tolerations: |
@@ -136,8 +141,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-          image: quay.io/huawei-cni-genie/genie-policy-controller:latest
-          imagePullPolicy: {{.Values.imagePullPolicy }}
+          image: {{.Values.image.policyControllerImagePath }}
+          imagePullPolicy: {{.Values.image.pullPolicy }}
           command:
             - /genie-policy
           args:

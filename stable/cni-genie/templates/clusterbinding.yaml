@@ -77,10 +77,10 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: genie-plugin
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
 - kind: ServiceAccount
   name: genie-policy
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
 - kind: Group
   name: system:authenticated
   apiGroup: rbac.authorization.k8s.io
@@ -97,5 +97,5 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: genie-policy
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
 {{- end }}

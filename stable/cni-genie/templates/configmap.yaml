@@ -4,14 +4,14 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: genie-config
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
 data:
   # The CNI network configuration to install on each node.
   cni_genie_network_config: |-
     {
         "name": "k8s-pod-network",
         "type": "genie",
-        "log_level": "info",
+        "log_level": "{{.Values.genieLogLevel }}",
         "datastore_type": "kubernetes",
         "hostname": "__KUBERNETES_NODE_NAME__",
         "policy": {
@@ -20,7 +20,7 @@ data:
         },
         "kubernetes": {
             "k8s_api_root": "https://__KUBERNETES_SERVICE_HOST__:__KUBERNETES_SERVICE_PORT__",
-            "kubeconfig": "/etc/cni/net.d/genie-kubeconfig"
+            "kubeconfig": "{{ .Values.confPath.kubeconfigPath }}"
         },
         "romana_root": "http://__ROMANA_SERVICE_HOST__:__ROMANA_SERVICE_PORT__",
         "segment_label_name": "romanaSegment"

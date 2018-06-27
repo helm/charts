@@ -3,7 +3,38 @@
 # By default, complete genie package will be installed including
 # multi networking support (along with admission controller) and network policy controller
 # In case network policy controller is not needed, set 'includePolicy' flag to false
-
-imagePullPolicy: IfNotPresent
-
 includePolicy: true
+
+image:
+  pullPolicy: IfNotPresent
+
+  # Paths for fetching genie images
+  pluginImagePath: quay.io/huawei-cni-genie/genie-plugin:latest
+
+  admissionControllerImagePath: quay.io/huawei-cni-genie/genie-admission-controller:latest
+
+  policyControllerImagePath: quay.io/huawei-cni-genie/genie-policy-controller:latest
+
+confPath:
+  # Path for genie bin file
+  cniBinDirPath: /opt/cni/bin
+
+  # Path for genie conf file
+  cniConfDirPath: /etc/cni/net.d
+
+  #Kubeconfig file for CNIGenie CNI plugin
+  kubeconfigPath: /etc/cni/net.d/genie-kubeconfig
+
+admissionControllerService:
+  externalPort: 8000
+  internalPort: 443
+
+#Port at which admission controller listens
+admissionControllerContainerPort: 8000
+
+# Loglevel for genie logs, logs will be part of /var/log/syslog file
+genieLogLevel: info
+
+#Labels for genie plugin and policy features
+geniePluginLabel: genie
+geniePolicyLabel: genie-policy

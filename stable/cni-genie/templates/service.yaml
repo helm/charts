@@ -6,10 +6,10 @@ metadata:
   labels:
     role: genie-network-admission-controller
   name: genie-network-admission-controller
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
-    - port: 443
-      targetPort: 8000
+    - port: {{.Values.admissionControllerService.internalPort }}
+      targetPort: {{.Values.admissionControllerService.externalPort }}
   selector:
     role: genie-network-admission-controller
