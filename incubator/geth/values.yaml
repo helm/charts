@@ -1,5 +1,5 @@
 image:
-  repository: "ethereum/client-g"
+  repository: "ethereum/client-go"
   tag: "stable"
   pullPolicy: IfNotPresent
 
@@ -9,7 +9,7 @@ rpcApi: "net,eth,personal,web3"
 rpcVhosts: "*"
 wsApi: "net,eth,personal,web3"
 wsOrigins: "*"
-networkId: 3
+networkId: 1
 testnet: false
 syncMode: "fast"
 
