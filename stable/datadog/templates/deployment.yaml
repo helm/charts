@@ -78,12 +78,12 @@ spec:
           - name: cgroups
             mountPath: /host/sys/fs/cgroup
             readOnly: true
-          {{- if .Values.datadog.confd }}
+          {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
           - name: confd
             mountPath: /conf.d
             readOnly: true
           {{- end }}
-          {{- if (or (.Values.datadog.checksd) (.Values.datadog.autoconf)) }}
+          {{- if .Values.datadog.checksd }}
           - name: checksd
             mountPath: /checks.d
             readOnly: true
@@ -107,7 +107,7 @@ spec:
         - hostPath:
             path: /sys/fs/cgroup
           name: cgroups
-        {{- if (or (.Values.datadog.checksd) (.Values.datadog.autoconf)) }}
+        {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
         - name: confd
           configMap:
             name: {{ template "datadog.confd.fullname" . }}
