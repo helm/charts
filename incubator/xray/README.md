@@ -132,17 +132,21 @@ $ helm install -n xray --set postgresql.enabled=false,global.postgresqlUrl=${XRA
 
 ## Configuration
 
-The following table lists the configurable parameters of the artifactory chart and their default values.
+The following table lists the configurable parameters of the xray chart and their default values.
 
 |         Parameter            |                    Description                   |           Default                  |
 |------------------------------|--------------------------------------------------|------------------------------------|
 | `imagePullSecrets`           | Docker registry pull secret                      |                                    |
 | `imagePullPolicy`            | Container pull policy                            | `IfNotPresent`                     |
 | `initContainerImage`         | Init container image                             | `alpine:3.6`                       |
-| `serviceAccount.create`   | Specifies whether a ServiceAccount should be created | `true`                               |
-| `serviceAccount.name`     | The name of the ServiceAccount to create             | Generated using the fullname template |
-| `rbac.create`             | Specifies whether RBAC resources should be created   | `true`                               |
-| `rbac.role.rules`         | Rules to create                   | `[]`                                                     |
+| `serviceAccount.create`   | Specifies whether a ServiceAccount should be created| `true`                             |
+| `serviceAccount.name`     | The name of the ServiceAccount to create            | Generated using the fullname template |
+| `rbac.create`             | Specifies whether RBAC resources should be created  | `true`                             |
+| `rbac.role.rules`         | Rules to create                                     | `[]`                               |
+| `ingress.enabled`            | If true, Xray Ingress will be created | `false`                                |
+| `ingress.annotations`        | Xray Ingress annotations                         | `{}`                               |
+| `ingress.hosts`              | Xray Ingress hostnames                           | `[]`                               |
+| `ingress.tls`                | Xray Ingress TLS configuration (YAML)            | `[]`                               |
 | `replicaCount`               | Replica count for Xray services                  | `1`                                |
 | `postgresql.enabled`              | Use enclosed PostgreSQL as database         | `true`                             |
 | `postgresql.postgresDatabase`     | PostgreSQL database name                    | `xraydb`                           |
@@ -218,6 +222,49 @@ The following table lists the configurable parameters of the artifactory chart a
 | `server.resources`                             | Xray server resources                        | `{}`                 |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
+
+### Ingress and TLS
+To get Helm to create an ingress object with a hostname, add these two lines to your Helm command:
+```
+helm install --name xray \
+  --set ingress.enabled=true \
+  --set ingress.hosts[0]="xray.company.com" \
+  --set server.service.type=NodePort \
+  incubator/xray
+```
+
+If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
+
+To manually configure TLS, first create/retrieve a key & certificate pair for the address(es) you wish to protect. Then create a TLS secret in the namespace:
+
+```console
+kubectl create secret tls xray-tls --cert=path/to/tls.cert --key=path/to/tls.key
+```
+
+Include the secret's name, along with the desired hostnames, in the Xray Ingress TLS section of your custom `values.yaml` file:
+
+```
+  ingress:
+    ## If true, Xray Ingress will be created
+    ##
+    enabled: true
+
+    ## Xray Ingress hostnames
+    ## Must be provided if Ingress is enabled
+    ##
+    hosts:
+      - xray.domain.com
+    annotations:
+      kubernetes.io/tls-acme: "true"
+    ## Xray Ingress TLS configuration
+    ## Secrets must be manually created in the namespace
+    ##
+    tls:
+      - secretName: xray-tls
+        hosts:
+          - xray.domain.com
+```
+
 
 ## Useful links
 - https://www.jfrog.com/confluence/display/XRAY/Xray+High+Availability
