@@ -1,0 +1,18 @@
+{{- if .Values.pdb.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "redis-ha.fullname" . }}-pdb
+  labels:
+    name: {{ template "redis-ha.fullname" . }}-pdb
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "redis-ha.name" . }}
+      release: {{ .Release.Name }}
+      component: server
+      name: {{ template "redis-ha.fullname" . }}-server
+      redis-node: "true"
+  minAvailable: {{ .Values.servers.minAvailable }}
+{{- end }}
