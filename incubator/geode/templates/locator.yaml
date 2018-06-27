@@ -33,7 +33,7 @@ spec:
           - sh
           - -c
           - |
-            gfsh start locator --name=${HOSTNAME} --jmx-manager-hostname-for-clients=${HOSTNAME} --dir=/data \
+            gfsh start locator --name=${HOSTNAME} --dir=/data \
             --max-heap={{ .Values.memory.max_locators }} \
             --J=-Dgemfire.log-file=/var/log/locator.log && \
             while sleep 3600; do :; done
