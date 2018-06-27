@@ -44,10 +44,13 @@ keycloak:
   password: ""
 
   ## Allows the specification of additional environment variables for Keycloak
-  extraEnv: {}
-    # KEYCLOAK_LOGLEVEL: DEBUG
-    # WILDFLY_LOGLEVEL: DEBUG
-    # CACHE_OWNERS: 2
+  extraEnv: |
+    # - name: KEYCLOAK_LOGLEVEL
+    #   value: DEBUG
+    # - name: WILDFLY_LOGLEVEL
+    #   value: DEBUG
+    # - name: CACHE_OWNERS
+    #   value: "2"
 
   affinity: |
     podAntiAffinity:
