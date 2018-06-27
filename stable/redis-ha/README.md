@@ -73,6 +73,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `rbac.create`                    |  whether RBAC resources should be created                                                                                    | true                                                      |
 | `serviceAccount.create`          | whether a new service account name that the agent will use should be created.                                                | true                                                      |
 | `serviceAccount.name`            | service account to be used.  If not set and serviceAccount.create is `true` a name is generated using the fullname template. | ``                                                        |
+| `pdb.enabled`                    | Whether PodDisruptionBudget resources should be created                                                                      | true                                                      |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

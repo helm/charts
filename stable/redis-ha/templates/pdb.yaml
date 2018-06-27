@@ -1,3 +1,4 @@
+{{- if .Values.pdb.enabled }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -14,3 +15,4 @@ spec:
       name: {{ template "redis-ha.fullname" . }}-server
       redis-node: "true"
   minAvailable: {{ .Values.servers.minAvailable }}
+{{- end }}
