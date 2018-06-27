@@ -3,17 +3,18 @@ kind: Deployment
 metadata:
   labels: {{ include "eventrouter.labels" . | indent 4 }}
   name: {{ template "eventrouter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "eventrouter.name" . }}
-      release: {{ .Release.Name }}    
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "eventrouter.name" . }}
-        release: {{ .Release.Name }}    
+        release: {{ .Release.Name }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
