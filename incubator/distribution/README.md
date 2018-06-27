@@ -47,6 +47,10 @@ The following table lists the configurable parameters of the distribution chart 
 | `serviceAccount.name`     | The name of the ServiceAccount to create             | Generated using the fullname template       |
 | `rbac.create`             | Specifies whether RBAC resources should be created   | `true`                                      |
 | `rbac.role.rules`         | Rules to create                   | `[]`                                                           |
+| `ingress.enabled`                            | If true, distribution Ingress will be created | `false`                         |
+| `ingress.annotations`                        | distribution Ingress annotations              | `{}`                            |
+| `ingress.hosts`                              | distribution Ingress hostnames                | `[]`                            |
+| `ingress.tls`                                | distribution Ingress TLS configuration (YAML) | `[]`                            |
 | `mongodb.enabled`                            | Enable Mongodb                             | `true`                             |
 | `mongodb.image.tag`                          | Mongodb docker image tag                   | `3.6.3`                            |
 | `mongodb.image.pullPolicy`                   | Mongodb Container pull policy              | `IfNotPresent`                     |
@@ -96,6 +100,48 @@ The following table lists the configurable parameters of the distribution chart 
 | `distributor.persistence.size`               | Distributor persistence volume size        | `50Gi`                             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
+
+### Ingress and TLS
+To get Helm to create an ingress object with a hostname, add these two lines to your Helm command:
+```
+helm install --name distribution \
+  --set ingress.enabled=true \
+  --set ingress.hosts[0]="distribution.company.com" \
+  --set distribution.service.type=NodePort \
+  incubator/distribution
+```
+
+If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
+
+To manually configure TLS, first create/retrieve a key & certificate pair for the address(es) you wish to protect. Then create a TLS secret in the namespace:
+
+```console
+kubectl create secret tls distribution-tls --cert=path/to/tls.cert --key=path/to/tls.key
+```
+
+Include the secret's name, along with the desired hostnames, in the Distribution Ingress TLS section of your custom `values.yaml` file:
+
+```
+  ingress:
+    ## If true, Distribution Ingress will be created
+    ##
+    enabled: true
+
+    ## Distribution Ingress hostnames
+    ## Must be provided if Ingress is enabled
+    ##
+    hosts:
+      - distribution.domain.com
+    annotations:
+      kubernetes.io/tls-acme: "true"
+    ## Distribution Ingress TLS configuration
+    ## Secrets must be manually created in the namespace
+    ##
+    tls:
+      - secretName: distribution-tls
+        hosts:
+          - distribution.domain.com
+```
 
 ## Useful links
 - https://www.jfrog.com/confluence/display/EP/Getting+Started
