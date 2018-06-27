@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "eventrouter.fullname" . }}
   labels: {{ include "eventrouter.labels" . | indent 4 }}
+  namespace: {{ .Release.Namespace }}
 data:
 apiVersion: v1
 data:
