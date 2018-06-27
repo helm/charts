@@ -4,9 +4,7 @@
 
 ## Introduction
 
-This chart adds the Datadog Agent to all nodes in your cluster via a DaemonSet. It also optionally depends on the [kube-state-metrics chart](https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics).
-
-For more information about running the Datadog Agent on Kubernetes, please refer to the [Datadog documentation website](https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/).
+This chart adds the Datadog Agent to all nodes in your cluster via a DaemonSet. It also optionally depends on the [kube-state-metrics chart](https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics). For more information about monitoring Kubernetes with Datadog, please refer to the [Datadog documentation website](https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/).
 
 ## Prerequisites
 
@@ -23,7 +21,7 @@ $ helm install --name my-release \
 
 After a few minutes, you should see hosts and metrics being reported in DataDog.
 
-> **Tip**: List all releases using `helm list`
+**Tip**: List all releases using `helm list`
 
 ## Uninstalling the Chart
 
@@ -49,30 +47,30 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
-| `datadog.logsEnabled`       | Enable log collection from containers    | `nil`                               |
-| `datadog.logsConfigContainerCollectAll`       | Add a log configuration that enabled log collection for all containers    | `nil`             |
+| `datadog.logsEnabled`       | Enable log collection              | `nil`                                     |
+| `datadog.logsConfigContainerCollectAll` | Collect logs from all containers | `nil`                           |
 | `datadog.apmEnabled`        | Enable tracing from the host       | `nil`                                     |
-| `datadog.checksd`           | Additional custom checks as python code  | `nil`                                     |
-| `datadog.confd`             | Additional check configurations (static and Autodiscovery) | `nil`                              |
+| `datadog.checksd`           | Additional custom checks as python code  | `nil`                               |
+| `datadog.confd`             | Additional check configurations (static and Autodiscovery) | `nil`             |
 | `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
 | `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
-| `resources.requests.cpu`    | CPU resource requests              | `100m`                                    |
-| `resources.limits.cpu`      | CPU resource limits                | `256m`                                    |
-| `resources.requests.memory` | Memory resource requests           | `128Mi`                                   |
-| `resources.limits.memory`   | Memory resource limits             | `512Mi`                                   |
-| `kubeStateMetrics.enabled`  | If true, create kube-state-metrics | `true`                                    |
+| `resources.requests.cpu`    | CPU resource requests              | `200m`                                    |
+| `resources.limits.cpu`      | CPU resource limits                | `200m`                                    |
+| `resources.requests.memory` | Memory resource requests           | `256Mi`                                   |
+| `resources.limits.memory`   | Memory resource limits             | `256Mi`                                   |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
 | `daemonset.nodeSelector`    | Node selectors                     | `nil`                                     |
 | `daemonset.affinity`        | Node affinities                    | `nil`                                     |
 | `daemonset.useHostNetwork`  | If true, use the host's network    | `nil`                                     |
-| `daemonset.useHostPID`.     | If true, use the host's PID namespace    | `nil`                                     |
+| `daemonset.useHostPID`.     | If true, use the host's PID namespace    | `nil`                               |
 | `daemonset.useHostPort`     | If true, use the same ports for both host and container  | `nil`               |
-| `datadog.leaderElection`    | Adds the leader Election feature   | `false`                                   |
+| `datadog.leaderElection`    | Enable the leader Election feature   | `false`                                 |
 | `datadog.leaderLeaseDuration`| The duration for which a leader stays elected.| `nil`                         |
 | `datadog.collectEvents`     | Enable Kubernetes event collection. Requires leader election. | `false`        |
 | `deployment.affinity`       | Node / Pod affinities              | `{}`                                      |
 | `deployment.tolerations`    | List of node taints to tolerate    | `[]`                                      |
+| `kubeStateMetrics.enabled`  | If true, create kube-state-metrics | `true`                                    |
 | `kube-state-metrics.rbac.create`| If true, create & use RBAC resources for kube-state-metrics | `true`       |
 | `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
 
@@ -90,17 +88,19 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 $ helm install --name my-release -f my-values.yaml stable/datadog
 ```
 
-> **Tip**: You can copy and customize the default [values.yaml](values.yaml)
+**Tip**: You can copy and customize the default [values.yaml](values.yaml)
 
 ### Image repository and tag
 
-Datadog [offers two variants](https://hub.docker.com/r/datadog/agent/tags/), switch to a `-jmx` tag if you need to run JMX/java integrations.
+Datadog [offers two variants](https://hub.docker.com/r/datadog/agent/tags/), switch to a `-jmx` tag if you need to run JMX/java integrations. The chart also supports running [the standalone dogstatsd image](https://hub.docker.com/r/datadog/dogstatsd/tags/).
 
-The chart also supports running [the standalone dogstatsd image](https://hub.docker.com/r/datadog/dogstatsd/tags/).
+Starting with version 1.0.0, this chart does not support deploying Agent 5.x anymore. If you cannot upgrade to Agent 6.x, you can use a previous version of the chart by calling helm install with `--version 0.18.0`.
 
 ### DaemonSet and Deployment
 
-By default installs Datadog agent inside a DaemonSet. You may also use Datadog agent inside a Deployment for special use cases.
+By default, the Datadog Agent runs in a DaemonSet. It can alternatively run inside a Deployment for special use cases.
+
+**Note:** simultaneous DaemonSet + Deployment installation within a single release will soon be deprecated, requiring two releases to achieve this.
 
 ### Secret
 

@@ -166,7 +166,7 @@ datadog:
   #       - kube-state-metrics
   #     init_config:
   #     instances:
-  #       - kube_state_url: http://%%host%%:%%port%%/metrics
+  #       - kube_state_url: http://%%host%%:8080/metrics
 
   ## Provide additional custom checks as python code
   ## Each key will become a file in /checks.d
