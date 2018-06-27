@@ -19,4 +19,10 @@ spec:
     release: {{ .Release.Name }}
     component: frontend
   type: {{ .Values.global.service.type }}
+  {{- if .Values.global.service.loadBalancerSourceRanges}}
+  loadBalancerSourceRanges:
+  {{- range .Values.global.service.loadBalancerSourceRanges }}
+  - {{ . }}
+  {{- end }}
+  {{- end -}}
 {{- end -}}

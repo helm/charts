@@ -19,6 +19,9 @@ global:
     # global.service.type: (required if frontend.enabled == true) the type of the frontend service -- must be ClusterIP, NodePort or LoadBalancer
     # global.service.type is a global to keep it with the other values for configuring the frontend service
     type: "ClusterIP"
+    # global.service.loadBalancerSourceRanges: lets you limit the load balancer to a specific network range/s
+    # global.service.loadBalancerSourceRanges: [198.40.126.0/21,215.140.110.2/32]
+
 
 # weave-scope-frontend.* controls how the Scope frontend is installed
 weave-scope-frontend:
