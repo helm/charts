@@ -33,11 +33,11 @@ spec:
           value: {{ template "nextcloud.mariadb.fullname" . }}
         - name: MYSQL_PORT_NUMBER
           value: "3306"
-        - name: nextcloud_DATABASE_NAME
+        - name: MYSQL_DATABASE
           value: {{ .Values.mariadb.mariadbDatabase | quote }}
-        - name: nextcloud_DATABASE_USER
+        - name: MYSQL_USER
           value: {{ .Values.mariadb.mariadbUser | quote }}
-        - name: nextcloud_DATABASE_PASSWORD
+        - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "nextcloud.mariadb.fullname" . }}
@@ -92,12 +92,31 @@ spec:
         volumeMounts:
         - name: apache-data
           mountPath: /var/www/html
+        - name: nextcloud-data
+          mountPath: /var/www/html/data
+        {{- range .Values.persistence.extraExistingClaimMounts }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+          readOnly: {{ .readOnly }}
+        {{- end }}
       volumes:
       - name: apache-data
-      {{- if .Values.persistence.enabled }}
+      {{- if .Values.persistence.apache.enabled }}
         persistentVolumeClaim:
           claimName: {{ if .Values.persistence.apache.existingClaim }}{{ .Values.persistence.apache.existingClaim }}{{- else }}{{ template "nextcloud.fullname" . }}-apache{{- end }}
       {{- else }}
         emptyDir: {}
+      {{- end }}
+      - name: nextcloud-data
+      {{- if .Values.persistence.nextcloud.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.nextcloud.existingClaim }}{{ .Values.persistence.nextcloud.existingClaim }}{{- else }}{{ template "nextcloud.fullname" . }}-nextcloud{{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      {{- range .Values.persistence.extraExistingClaimMounts }}
+      - name: {{ .name }}
+        persistentVolumeClaim:
+          claimName: {{ .existingClaim }}
       {{- end }}
 {{- end -}}

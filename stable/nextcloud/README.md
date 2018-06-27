@@ -75,15 +75,17 @@ The following table lists the configurable parameters of the nextcloud chart and
 | `mariadb.mariadbUser`               | Database user to create                   | `bn_nextcloud`                                           |
 | `mariadb.mariadbRootPassword`       | MariaDB admin password                    | `nil`                                                   |
 | `serviceType`                       | Kubernetes Service type                   | `LoadBalancer`                                          |
-| `persistence.enabled`               | Enable persistence using PVC              | `true`                                                  |
+| `persistence.apache.enabled`        | Enable persistence using PVC              | `true`                                                  |
 | `persistence.apache.storageClass`   | PVC Storage Class for Apache volume       | `nil` (uses alpha storage class annotation)             |
 | `persistence.apache.existingClaim`  | An Existing PVC name for Apache volume    | `nil` (uses alpha storage class annotation)             |
 | `persistence.apache.accessMode`     | PVC Access Mode for Apache volume         | `ReadWriteOnce`                                         |
 | `persistence.apache.size`           | PVC Storage Request for Apache volume     | `1Gi`                                                   |
+| `persistence.nextcloud.enabled`     | Enable persistence using PVC              | `true`                                                  |
 | `persistence.nextcloud.storageClass` | PVC Storage Class for nextcloud volume     | `nil` (uses alpha storage class annotation)             |
 | `persistence.nextcloud.existingClaim`| An Existing PVC name for nextcloud volume  | `nil` (uses alpha storage class annotation)             |
 | `persistence.nextcloud.accessMode`   | PVC Access Mode for nextcloud volume       | `ReadWriteOnce`                                         |
 | `persistence.nextcloud.size`         | PVC Storage Request for nextcloud volume   | `8Gi`                                                   |
+| `persistence.extraExistingClaimMounts | Optionally add multiple existing claims | `[]`                                                      |
 | `resources`                         | CPU/Memory resource requests/limits       | Memory: `512Mi`, CPU: `300m`                            |
 
 > **Note**:
