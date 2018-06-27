@@ -22,7 +22,7 @@ spec:
         - name: {{ template "geth.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
-          command: ["/geth", "--networkid", "{{ .Values.networkId }}", "--syncmode", "{{ .Values.syncMode }}", "--rpc", "--rpcapi", "{{ .Values.rpcApi }}", "--rpcaddr", "0.0.0.0", "--rpcport", "{{ .Values.rpcPort }}", "--rpcvhosts", "{{ .Values.rpcVhosts }}", "--ws", "--wsaddr", "0.0.0.0", "--wsport", "{{ .Values.wsPort }}", "--wsapi", "{{ .Values.wsApi }}", "--wsorigins", "{{ .Values.wsOrigins }}", "{{- if .Values.testnet }}--testnet{{- end -}}"]
+          command: ["/usr/local/bin/geth", "--networkid", "{{ .Values.networkId }}", "--syncmode", "{{ .Values.syncMode }}", "--rpc", "--rpcapi", "{{ .Values.rpcApi }}", "--rpcaddr", "0.0.0.0", "--rpcport", "{{ .Values.rpcPort }}", "--rpcvhosts", "{{ .Values.rpcVhosts }}", "--ws", "--wsaddr", "0.0.0.0", "--wsport", "{{ .Values.wsPort }}", "--wsapi", "{{ .Values.wsApi }}", "--wsorigins", "{{ .Values.wsOrigins }}", "{{- if .Values.testnet }}--testnet{{- end -}}"]
           resources:
   {{ toYaml .Values.resources | indent 10 }}
           ports:
