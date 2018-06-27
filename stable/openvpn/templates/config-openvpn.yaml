@@ -35,6 +35,7 @@ data:
       client
       nobind
       dev tun
+      remote ${MY_IP_ADDR} {{ .Values.service.externalPort }} {{ .Values.openvpn.OVPN_PROTO }}
       {{- if .Values.openvpn.redirectGateway }}
       redirect-gateway def1
       {{- end }}
@@ -47,12 +48,6 @@ data:
       <ca>
       `cat ${EASY_RSA_LOC}/pki/ca.crt`
       </ca>
-      <dh>
-      `cat ${EASY_RSA_LOC}/pki/dh.pem`
-      </dh>
-      <connection>
-      remote ${MY_IP_ADDR} {{ .Values.service.externalPort }} {{ .Values.openvpn.OVPN_PROTO }}
-      </connection>
       EOF
       cat pki/$1.ovpn
 
