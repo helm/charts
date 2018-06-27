@@ -76,7 +76,7 @@ spec:
               name: jenkins-secrets
               readOnly: true
             {{- end }}
-            {{- if .Values.Master.Jobs }}
+            {{- if .Values.Master.JobsConfigMap }}
             -
               mountPath: /var/jenkins_jobs
               name: jenkins-jobs
@@ -168,7 +168,7 @@ spec:
               name: jenkins-secrets
               readOnly: true
             {{- end }}
-            {{- if .Values.Master.Jobs }}
+            {{- if .Values.Master.JobsConfigMap }}
             -
               mountPath: /var/jenkins_jobs
               name: jenkins-jobs
@@ -201,10 +201,10 @@ spec:
         secret:
           secretName: {{ .Values.Master.SecretsFilesSecret }}
       {{- end }}
-      {{- if .Values.Master.Jobs }}
+      {{- if .Values.Master.JobsConfigMap }}
       - name: jenkins-jobs
         configMap:
-          name: {{ template "jenkins.fullname" . }}-jobs
+          name: {{ .Values.Master.JobsConfigMap }}
       {{- end }}
       {{- if .Values.Master.InstallPlugins }}
       - name: plugin-dir

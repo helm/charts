@@ -97,10 +97,14 @@ Master:
   # useful to manage encryption keys used for credentials.xml for instance (such as
   # master.key and hudson.util.Secret)
   # SecretsFilesSecret: jenkins-secrets
-  # Jenkins XML job configs to provision
-  # Jobs: |-
-  #   test: |-
-  #     <<xml here>>
+  # Jobs are configured via a ConfigMap. Job name servers as a key and pointing to the configuration XML:
+  # data:
+  #   job-1-name: |
+  #     <xml>
+  #      ....
+  #   job-X-name: |
+  #     <xml>
+  # JobsConfigMap: <<ConfigMap name>>
   CustomConfigMap: false
   # Node labels and tolerations for pod assignment
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
