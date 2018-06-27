@@ -168,7 +168,7 @@ datadog:
   #     instances:
   #       - kube_state_url: http://%%host%%:%%port%%/metrics
 
-  ## Provide additional custom checks
+  ## Provide additional custom checks as python code
   ## Each key will become a file in /checks.d
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#optional-volumes
   ##
