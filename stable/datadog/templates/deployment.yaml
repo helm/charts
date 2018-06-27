@@ -18,6 +18,7 @@ spec:
         type: deployment
       name: {{ template "datadog.fullname" . }}
       annotations:
+        checksum/autoconf-config: {{ toYaml .Values.datadog.autoconf | sha256sum }}
         checksum/confd-config: {{ toYaml .Values.datadog.confd | sha256sum }}
         checksum/checksd-config: {{ toYaml .Values.datadog.checksd | sha256sum }}
     spec:
@@ -87,6 +88,15 @@ spec:
             mountPath: /checks.d
             readOnly: true
           {{- end }}
+          {{- if .Values.datadog.autoconf }}
+          - name: autoconf
+            {{- if hasSuffix "-alpine" .Values.image.tag }}
+            mountPath: /opt/datadog-agent/agent/conf.d/auto_conf
+            {{- else }}
+            mountPath: /etc/dd-agent/conf.d/auto_conf
+            {{- end }}
+            readOnly: true
+          {{- end }}
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
 {{- end }}
@@ -115,6 +125,11 @@ spec:
         - name: checksd
           configMap:
             name: {{ template "datadog.checksd.fullname" . }}
+        {{- end }}
+        {{- if .Values.datadog.autoconf }}
+        - name: autoconf
+          configMap:
+            name: {{ template "datadog.autoconf.fullname" . }}
         {{- end }}
 {{- if .Values.datadog.volumes }}
 {{ toYaml .Values.datadog.volumes | indent 8 }}

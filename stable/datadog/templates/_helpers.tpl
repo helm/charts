@@ -31,6 +31,13 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s-datadog-confd" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{/*
+Create a default fully qualified autoconf name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "datadog.autoconf.fullname" -}}
+{{- printf "%s-datadog-autoconf" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 
 {{/*
 Create a default fully qualified checksd name.
