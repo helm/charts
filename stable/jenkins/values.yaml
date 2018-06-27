@@ -107,6 +107,8 @@ Master:
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
   NodeSelector: {}
   Tolerations: {}
+  # Annotations to be added to Master pods
+  podAnnotations: {}
 
   Ingress:
     ApiVersion: extensions/v1beta1
