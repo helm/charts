@@ -48,9 +48,7 @@ spec:
             value: {{ .Values.datadog.logLevel | quote }}
           {{- end }}
           {{- if .Values.datadog.nonLocalTraffic }}
-          - name: NON_LOCAL_TRAFFIC # agent5
-            value: {{ .Values.datadog.nonLocalTraffic | quote }}
-          - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC # agent6
+          - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
             value: {{ .Values.datadog.nonLocalTraffic | quote }}
           {{- end }}
           {{- if .Values.datadog.tags }}
@@ -61,8 +59,6 @@ spec:
           - name: DD_APM_ENABLED
             value: {{ .Values.datadog.apmEnabled | quote }}
           {{- end }}
-          - name: SD_BACKEND
-            value: docker
           - name: KUBERNETES
             value: "yes"
           {{- if .Values.datadog.collectEvents }}
