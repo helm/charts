@@ -12,7 +12,8 @@ spec:
   - host: {{ .Values.Master.HostName | quote }}
     http:
       paths:
-      - backend:
+      - path: "{{ default "" .Values.Master.JenkinsUriPrefix }}"
+        backend:
           serviceName: {{ template "jenkins.fullname" . }}
           servicePort: {{ .Values.Master.ServicePort }}
 {{- if .Values.Master.Ingress.TLS }}
