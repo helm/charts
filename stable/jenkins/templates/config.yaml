@@ -67,10 +67,13 @@ data:
                   <command></command>
                   <args>${computer.jnlpmac} ${computer.name}</args>
                   <ttyEnabled>false</ttyEnabled>
-                  <resourceRequestCpu>{{.Values.Agent.Cpu}}</resourceRequestCpu>
-                  <resourceRequestMemory>{{.Values.Agent.Memory}}</resourceRequestMemory>
-                  <resourceLimitCpu>{{.Values.Agent.Cpu}}</resourceLimitCpu>
-                  <resourceLimitMemory>{{.Values.Agent.Memory}}</resourceLimitMemory>
+                  # Resources configuration is a little hacky. This was to prevent breaking
+                  # changes, and should be cleanned up in the future once everybody had
+                  # enough time to migrate.
+                  <resourceRequestCpu>{{.Values.Agent.Cpu | default .Values.Agent.resources.requests.cpu}}</resourceRequestCpu>
+                  <resourceRequestMemory>{{.Values.Agent.Memory | default .Values.Agent.resources.requests.memory}}</resourceRequestMemory>
+                  <resourceLimitCpu>{{.Values.Agent.Cpu | default .Values.Agent.resources.limits.cpu}}</resourceLimitCpu>
+                  <resourceLimitMemory>{{.Values.Agent.Memory | default .Values.Agent.resources.limits.memory}}</resourceLimitMemory>
                   <envVars>
                     <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                       <key>JENKINS_URL</key>
