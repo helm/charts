@@ -73,6 +73,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `ingress.tls`               | enable ingress with tls                                 | `false`                                                  |
 | `ingress.tlsSecret`         | tls type secret to be used                              | `myTlsSecret`                                            |
 | `ingress.annotations`       | ingress annotations as an array                         |  []                                                      |
+| `ingress.hostName`          | ingress hostname                                        |  `nil`                                                   |
 | `livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
 | `livenessProbe.initialDelaySeconds`   | number of seconds                                       |  120                                           |
 | `livenessProbe.timeoutSeconds`        | number of seconds                                       |  5                                             |
