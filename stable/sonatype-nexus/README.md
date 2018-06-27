@@ -82,6 +82,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexusProxy.imageName`                      | Proxy image                         | `quay.io/travelaudience/docker-nexus-proxy` |
 | `nexusProxy.imageTag`                       | Proxy image version                 | `2.1.0`                                 |
 | `nexusProxy.imagePullPolicy`                | Proxy image pull policy             | `IfNotPresent`                          |
+| `nexusProxy.resources`                      | Proxy resource requests and limits  | `{}`                                    |
 | `nexusProxy.env.nexusHttpHost`              | Nexus url to access Nexus           | `nil`                                   |
 | `nexusProxy.env.nexusDockerHost`            | Containers url to be used with docker | `nil`                                 |
 | `nexusProxy.env.enforceHttps`               | Allow only https access or not      | `false`                                 |
