@@ -15,6 +15,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
+  namespace: {{ template "nginx-ingress.namespace" . }}
 spec:
   clusterIP: "{{ .Values.controller.service.clusterIP }}"
 {{- if .Values.controller.service.externalIPs }}

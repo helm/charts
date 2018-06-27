@@ -9,6 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
+  namespace: {{ template "nginx-ingress.namespace" . }}
 spec:
   replicas: {{ .Values.defaultBackend.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
@@ -25,6 +26,7 @@ spec:
         {{- if .Values.defaultBackend.podLabels }}
 {{ toYaml .Values.defaultBackend.podLabels | indent 8 }}
         {{- end }}
+      namespace: {{ template "nginx-ingress.namespace" . }}
     spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
