@@ -47,6 +47,6 @@ Determine database host based on use of postgresql dependency.
 {{- if .Values.postgresql.install -}}
 {{- template "hackmd.postgresql.fullname" . -}}
 {{- else -}}
-{{- .Values.postgresql.postgresHost | quote -}}
+{{- .Values.postgresql.postgresHost -}}
 {{- end -}}
 {{- end -}}
