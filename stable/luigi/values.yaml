@@ -11,6 +11,7 @@ service:
   name: luigi
   type: LoadBalancer
   externalPort: 80
+  annotations: {}
 
   # Luigi config: these values should mattch the luigi documentation
   # https://luigi.readthedocs.io/en/stable/configuration.html
