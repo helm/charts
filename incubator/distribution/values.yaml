@@ -141,7 +141,7 @@ distribution:
     accessMode: ReadWriteOnce
     mountPath: "/var/opt/jfrog/distribution"
     size: 50Gi
-    ## artifactory data Persistent Volume Storage Class
+    ## distribution data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is
@@ -180,7 +180,7 @@ distributor:
     accessMode: ReadWriteOnce
     mountPath: "/var/opt/jfrog/distributor"
     size: 50Gi
-    ## artifactory data Persistent Volume Storage Class
+    ## distribution data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is
