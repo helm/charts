@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "gcloud-endpoints.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "gcloud-endpoints.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "gcloud-endpoints.fullname" . }}
     spec:
       containers:
         - name: endpoints
@@ -80,4 +80,4 @@ spec:
             timeoutSeconds: 1
 {{- end }}
           resources:
-            {{ include "toYaml" .Values.resources | indent 12 }}
+            {{ include "gcloud-endpoints.toYaml" .Values.resources | indent 12 }}
