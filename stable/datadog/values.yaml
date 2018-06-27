@@ -3,7 +3,6 @@ image:
   # This chart is compatible with different images, please choose one
   repository: datadog/agent               # Agent6
   # repository: datadog/dogstatsd         # Standalone DogStatsD6
-  # repository: datadog/docker-dd-agent   # Agent5
   tag: 6.3.0  # Use 6.3.0-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
 

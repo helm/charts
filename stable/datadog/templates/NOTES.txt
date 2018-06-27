@@ -28,10 +28,11 @@ Then run:
 {{- end }}
 
 {{- if .Values.datadog.apmEnabled }}
-The datadog agent is listening on ports 7777 and 8126.
+The datadog agent is listening on port 8126.
 {{- end }}
 
 {{- if .Values.datadog.autoconf }}
+
 #################################################################
 ####               WARNING: Deprecation notice               ####
 #################################################################
@@ -42,4 +43,15 @@ values were merged into the {{ template "datadog.confd.fullname" . }} configmap,
 but this will be removed in a future chart release.
 Please note that duplicate file names may have conflicted during
 the merge. In that case, the confd entry will take precedence.
+{{- end }}
+
+{{- if eq .Values.image.repository "datadog/docker-dd-agent" }}
+
+######################################################################
+####               ERROR: Unsupported agent version               ####
+######################################################################
+
+This version of the chart does not support deploying Agent 5.x.
+If you cannot upgrade to Agent 6.x, you can use a previous version
+of the chart by calling helm install with `--version 0.18.0`.
 {{- end }}
