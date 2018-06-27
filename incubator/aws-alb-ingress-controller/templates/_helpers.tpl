@@ -35,9 +35,9 @@ Create chart name and version as used by the chart label.
 Return the service account name used by the pod.
 */}}
 {{- define "serviceaccount.name" -}}
-{{- if and .Values.rbac.create .Values.rbac.serviceAccount.create -}}
-{{ include "aws-alb-ingress-controller.fullname" . }}
-{{- else -}}
+{{- if .Values.rbac.serviceAccount.name -}}
 {{ .Values.rbac.serviceAccount.name }}
+{{- else -}}
+{{ include "aws-alb-ingress-controller.fullname" . }}
 {{- end -}}
 {{- end -}}
