@@ -172,11 +172,9 @@ metrics:
   image: ssalaues/mongodb-exporter
   imageTag: 0.5
   imagePullPolicy: IfNotPresent
+  port: 9216
+  path: "/metrics"
   resources: {}
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9216"
-    prometheus.io/path: "/metrics"
 ```
 
 More information on [MongoDB Exporter](https://github.com/percona/mongodb_exporter) metrics available.

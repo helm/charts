@@ -26,6 +26,11 @@ spec:
 {{ toYaml .Values.extraLabels | indent 8 }}
 {{- end }}
       annotations:
+      {{- if .Values.metrics.enabled }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.metrics.port | quote }}
+        prometheus.io/path: {{ .Values.metrics.path | quote }}
+      {{- end }}
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
@@ -218,8 +223,8 @@ spec:
               -mongodb.tls-ca=/ca/tls.crt
               -mongodb.tls-cert=/work-dir/mongo.pem
             {{- end }}
-              -web.metrics-path={{ index .Values "metrics" "annotations" "prometheus.io/path" }}
-              -web.listen-address=:{{ index .Values "metrics" "annotations" "prometheus.io/port" }}
+              -web.metrics-path={{ .Values.metrics.path }}
+              -web.listen-address=:{{ .Values.metrics.port }}
           volumeMounts:
           {{- if and (.Values.tls.enabled) }}
             - name: ca
@@ -244,7 +249,7 @@ spec:
           {{- end }}
           ports:
             - name: metrics
-              containerPort: {{ index .Values "metrics" "annotations" "prometheus.io/port" }}
+              containerPort: {{ .Values.metrics.port  }}
           resources: {{ toYaml .Values.metrics.resources | indent 12 }}
           livenessProbe:
             exec:

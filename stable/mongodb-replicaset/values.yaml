@@ -41,12 +41,9 @@ metrics:
   # repository: ssalaues/mongodb-exporter
   # tag: 0.5
   # imagePullPolicy: IfNotPresent
+  # port: 9216
+  # path: "/metrics"
   # resources: {}
-  # Prometheus annotations not necessary with prometheus-operator
-  # annotations:
-  #   prometheus.io/scrape: "true"
-  #   prometheus.io/port: "9216"
-  #   prometheus.io/path: "/metrics"
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
