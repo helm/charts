@@ -72,11 +72,13 @@ spec:
           - name: DD_APM_ENABLED
             value: {{ .Values.datadog.apmEnabled | quote }}
           {{- end }}
+          {{- if .Values.datadog.leaderElection }}
           - name: DD_LEADER_ELECTION
             value: {{ .Values.datadog.leaderElection | quote}}
-          {{- if .Values.datadog.leaderElection }}
+          {{- end }}
+          {{- if .Values.datadog.leaderLeaseDuration }}
           - name: DD_LEADER_LEASE_DURATION
-            value: {{ default "60" .Values.datadog.leaderLeaseDuration | quote }}
+            value: {{ .Values.datadog.leaderLeaseDuration | quote }}
           {{- end }}
           {{- if .Values.datadog.collectEvents }}
           - name: DD_COLLECT_KUBERNETES_EVENTS
