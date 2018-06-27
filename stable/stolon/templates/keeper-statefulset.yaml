@@ -120,4 +120,7 @@ spec:
         storageClassName: "{{ .Values.persistence.storageClassName }}"
     {{- end }}
   {{- end }}
+{{- else }}
+        - name: data
+          emptyDir: {}
 {{- end }}

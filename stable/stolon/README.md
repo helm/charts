@@ -1,7 +1,7 @@
 # Stolon Helm Chart
 
 * Installs [Stolon](https://github.com/sorintlab/stolon) (HA PostgreSQL cluster)
-* Inspired by [this](https://github.com/lwolf/stolon-chart) and [stolon examples](https://github.com/sorintlab/stolon/tree/master/examples/kubernetes/statefulset)
+* Based on [lwolf/stolon-chart](https://github.com/lwolf/stolon-chart) and [stolon examples](https://github.com/sorintlab/stolon/tree/master/examples/kubernetes/statefulset)
 
 ## TL;DR;
 
