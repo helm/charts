@@ -35,9 +35,6 @@ rbac:
   # Specifies whether RBAC resources should be created
   create: true
 
-pdb:
-  enabled: true
-
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
