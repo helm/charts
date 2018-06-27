@@ -100,7 +100,7 @@ Starting with version 1.0.0, this chart does not support deploying Agent 5.x any
 
 By default, the Datadog Agent runs in a DaemonSet. It can alternatively run inside a Deployment for special use cases.
 
-**Note:** simultaneous DaemonSet + Deployment installation within a single release will soon be deprecated, requiring two releases to achieve this.
+**Note:** simultaneous DaemonSet + Deployment installation within a single release will be deprecated in a future version, requiring two releases to achieve this.
 
 ### Secret
 
