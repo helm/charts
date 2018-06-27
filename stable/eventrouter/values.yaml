@@ -26,3 +26,5 @@ rbac:
 tolerations: []
 
 nodeSelector: {}
+
+sink: glog
