@@ -23,6 +23,8 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
+      affinity:
+{{ tpl .Values.sentinelAffinity . | indent 8 }}
       containers:
       - name: sentinel
         image: {{ .Values.redis_image }}
