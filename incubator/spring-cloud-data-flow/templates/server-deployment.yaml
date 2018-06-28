@@ -77,6 +77,13 @@ spec:
           value: '8080'
         - name: SPRING_CLOUD_CONFIG_ENABLED
           value: 'false'
+        - name: SPRING_CLOUD_DATAFLOW_METRICS_COLLECTOR_USERNAME
+          value: '{{ .Values.metrics.metricsUsername }}'
+        - name: SPRING_CLOUD_DATAFLOW_METRICS_COLLECTOR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "scdf.fullname" . }}
+              key: metrics-password
         - name: SPRING_CLOUD_DATAFLOW_FEATURES_ANALYTICS_ENABLED
           value: 'true'
         - name: SPRING_CLOUD_DEPLOYER_KUBERNETES_CREATE_DEPLOYMENT

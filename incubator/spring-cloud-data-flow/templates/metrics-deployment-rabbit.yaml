@@ -28,15 +28,21 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 10 }}
         livenessProbe:
           httpGet:
-            path: /health
+            path: /actuator/health
             port: http
+            httpHeaders:
+            - name: Authorization
+              value: 'Basic {{ printf "%s:%s" .Values.metrics.metricsUsername .Values.metrics.metricsPassword | b64enc }}'
           initialDelaySeconds: 90
           periodSeconds: 15
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
-            path: /health
+            path: /actuator/health
             port: http
+            httpHeaders:
+            - name: Authorization
+              value: 'Basic {{ printf "%s:%s" .Values.metrics.metricsUsername .Values.metrics.metricsPassword | b64enc }}'
           initialDelaySeconds: 60
           periodSeconds: 15
           timeoutSeconds: 5
@@ -45,8 +51,13 @@ spec:
           value: '8080'
         - name: SPRING_CLOUD_CONFIG_ENABLED
           value: 'false'
-        - name: SECURITY_BASIC_ENABLED
-          value: 'false'
+        - name: SPRING_SECURITY_USER_NAME
+          value: '{{ .Values.metrics.metricsUsername }}'
+        - name: SPRING_SECURITY_USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "scdf.fullname" . }}
+              key: metrics-password
         - name: SPRING_RABBITMQ_HOST
           value: '${{ printf "{" }}{{ template "scdf.envrelease" . }}_RABBITMQ_SERVICE_HOST}'
         - name: SPRING_RABBITMQ_PORT
