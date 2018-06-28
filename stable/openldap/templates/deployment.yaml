@@ -7,22 +7,30 @@ metadata:
     chart: {{ template "openldap.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
 spec:
-  replicas: {{ .Values.replicas }}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "openldap.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+        checksum/configmap-env: {{ include (print $.Template.BasePath "/configmap-env.yaml") . | sha256sum }}
+{{- if .Values.customLdifFiles}}
+        checksum/configmap-customldif: {{ include (print $.Template.BasePath "/configmap-customldif.yaml") . | sha256sum }}
+{{- end }}
       labels:
         app: {{ template "openldap.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ .Values.containerName | quote }}
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: ldap-port
               containerPort: 389
@@ -30,9 +38,9 @@ spec:
               containerPort: 636
           envFrom:
             - configMapRef:
-                name: {{ template "openldap.fullname" . }}-env-configmap
+                name: {{ template "openldap.fullname" . }}-env
             - secretRef:
-                name: {{ template "openldap.fullname" . }}-secret
+                name: {{ template "openldap.secretName" . }}
           volumeMounts:
             - name: data
               mountPath: /var/lib/ldap
@@ -74,7 +82,7 @@ spec:
         {{- if .Values.customLdifFiles }}
         - name: customldif
           configMap:
-            name: {{ template "openldap.fullname" . }}-customldif-configmap
+            name: {{ template "openldap.fullname" . }}-customldif
         {{- end }}
         - name: data
         {{- if .Values.persistence.enabled }}
