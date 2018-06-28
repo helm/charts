@@ -4,25 +4,24 @@ replicaCount: 1
 image:
   repository: quay.io/coreos/vault-operator
   tag: 0.1.9
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 ## Install Default RBAC roles and bindings
 rbac:
   create: true
-  apiVersion: v1beta1
 
 ## Service account names and whether to create them
 serviceAccount:
   create: true
-  name: vault-operator-sa
+  name:
 
-resources:
-  limits:
-    cpu: 100m
-    memory: 128Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
 
 ## additional command arguments go here; will be translated to `--key=value` form
 ## e.g., analytics: true

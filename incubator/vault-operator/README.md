@@ -16,7 +16,7 @@ Official project documentation found [here](https://github.com/coreos/vault-oper
 
 ## Pre-requisites
 
-- Kubernetes 1.8+
+- Kubernetes 1.9+
 - __Suggested:__ RBAC setup for the Kubernetes cluster
 - [`etcd-operator`](https://github.com/kubernetes/charts/tree/master/stable/etcd-operator)
 
