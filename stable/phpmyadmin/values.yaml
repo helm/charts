@@ -26,7 +26,7 @@ db:
   port: 3306
   ## if you are deploying it as part of a release, and the db is also in the release
   ## you can pass a suffix that will be used to find the DB in releasename-dbSuffix
-  ## please note that this setting preceeds dbHost
+  ## please note that this setting precedes dbHost
   # chartName: mariadb
   # host: foo
 

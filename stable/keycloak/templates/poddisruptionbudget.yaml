@@ -1,0 +1,17 @@
+{{- if .Values.keycloak.podDisruptionBudget -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app: {{ template "keycloak.name" . }}
+    chart: {{ template "keycloak.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "keycloak.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "keycloak.name" . }}
+      release: {{ .Release.Name }}
+{{ toYaml .Values.keycloak.podDisruptionBudget | indent 2 }}
+{{- end -}}

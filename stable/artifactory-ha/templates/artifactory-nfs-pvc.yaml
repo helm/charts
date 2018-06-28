@@ -6,7 +6,7 @@ metadata:
   name: {{ template "artifactory-ha.fullname" . }}-data-pv
   labels:
     app: {{ template "artifactory-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "artifactory-ha.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     id: {{ template "artifactory-ha.name" . }}-data-pv
@@ -28,7 +28,7 @@ metadata:
   name: {{ template "artifactory-ha.fullname" . }}-data-pvc
   labels:
     app: {{ template "artifactory-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "artifactory-ha.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     type: nfs-volume
@@ -52,7 +52,7 @@ metadata:
   name: {{ template "artifactory-ha.fullname" . }}-backup-pv
   labels:
     app: {{ template "artifactory-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "artifactory-ha.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     id: {{ template "artifactory-ha.name" . }}-backup-pv
@@ -74,7 +74,7 @@ metadata:
   name: {{ template "artifactory-ha.fullname" . }}-backup-pvc
   labels:
     app: {{ template "artifactory-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "artifactory-ha.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     type: nfs-volume
