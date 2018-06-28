@@ -31,6 +31,12 @@ spec:
 {{ toYaml .Values.server.affinity | indent 8 }}
 {{- end }}
       serviceAccountName: {{ template "drone.serviceAccountName" . }}
+      {{- if .Values.images.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.images.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
       containers:
       - name: {{ template "drone.fullname" . }}-server
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"

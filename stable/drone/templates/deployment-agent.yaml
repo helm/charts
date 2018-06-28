@@ -30,6 +30,12 @@ spec:
 {{ toYaml .Values.agent.affinity | indent 8 }}
 {{- end }}
       serviceAccountName: {{ template "drone.serviceAccountName" . }}
+      {{- if .Values.images.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.images.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
       containers:
       - name: {{ template "drone.fullname" . }}-agent
         image: "{{ .Values.images.agent.repository }}:{{ .Values.images.agent.tag }}"
@@ -86,7 +92,16 @@ spec:
         volumeMounts:
           - name: docker-graph-storage
             mountPath: /var/lib/docker
+{{- if .Values.dind.dockerConfig }}
+          - name: docker-config
+            mountPath: "/root/.docker"
+{{- end }}
       volumes:
       - name: docker-graph-storage
         emptyDir: {}
+{{- if .Values.dind.dockerConfig }}
+      - name: docker-config
+        secret:
+{{ toYaml .Values.dind.dockerConfig | indent 10 }}
+{{- end }}
 {{- end }}

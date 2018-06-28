@@ -25,6 +25,13 @@ images:
     tag: 17.12.0-ce-dind
     pullPolicy: IfNotPresent
 
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistryPullSecretName
+
 service:
   httpPort: 80
 
@@ -168,14 +175,29 @@ dind:
   ## Values in here get injected as environment variables to DinD.
   ## ref: http://readme.drone.io/admin/installation-reference
   ##
-  #  env:
-  #    DRONE_DEBUG: "false"
+  # env:
+  #   DRONE_DEBUG: "false"
+
+  ## Optionally specify a Docker config.json secret
+  ## Secret must be manually created in the namespace.
+  ## ref: https://docs.docker.com/engine/reference/commandline/cli/#configuration-files
+  ##      https://kubernetes.io/docs/concepts/configuration/secret/#creating-a-secret-using-kubectl-create-secret
+  ##
+  # dockerConfig:
+  #   secretName: myDockerConfigSecret
+
+  #   ## Set items[] field to change target path of projected secret key in the volume:
+  #   ## ref: https://kubernetes.io/docs/concepts/configuration/secret/
+  #   ##
+  #   items:
+  #   - key: .dockerconfigjson
+  #     path: config.json
 
   ## Allowing custom command and args to DinD
   ## ref: https://discourse.drone.io/t/docker-mtu-problem/1207
   ##
-  #  command: '["/bin/sh"]'
-  #  args: '["-c", "dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --mtu=1350"]'
+  # command: '["/bin/sh"]'
+  # args: '["-c", "dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --mtu=1350"]'
 
   ## Docker storage driver.
   ## Your DinD instance should be using the same driver as your host.
@@ -204,7 +226,7 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
 
-  ## rabbitmq data Persistent Volume Storage Class
+  ## Drone data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
