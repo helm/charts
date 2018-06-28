@@ -14,4 +14,6 @@ sources:
 maintainers:
   - name: daniel-yavorovich
     email: daniel@arilot.com
+  - name: voron
+    email: av@arilot.com
 engine: gotpl
