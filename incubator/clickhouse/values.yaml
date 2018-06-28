@@ -12,7 +12,7 @@ replicas: 1
 image: yandex/clickhouse-server
 imageTag: latest
 imagePullPolicy: Always
-#imagePullSecret: mypullsecret
+# imagePullSecret: mypullsecret
 
 ## Resource limits and requests
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
