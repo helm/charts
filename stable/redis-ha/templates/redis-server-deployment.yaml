@@ -27,6 +27,8 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
+      affinity:
+{{ tpl .Values.serverAffinity . | indent 8 }}
       containers:
       - name: redis
         image: {{ .Values.redis_image }}
