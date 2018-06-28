@@ -9,3 +9,6 @@ keywords:
 home: https://www.atlassian.com/software/confluence
 sources:
 - https://bitbucket.org/atlassian/docker-atlassian-confluence-server
+maintainers:
+- name: int128
+  email: int128@gmail.com
