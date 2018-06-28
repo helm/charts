@@ -142,3 +142,7 @@ probes:
 ## Annotations for the deployment and nodes.
 deploymentAnnotations: {}
 podAnnotations: {}
+
+## Deployment pods replace strategy
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+# strategy: {}
