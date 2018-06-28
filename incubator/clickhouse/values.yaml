@@ -1,0 +1,67 @@
+## Pod Annotations
+# podAnnotations: {}
+
+## Statefulset annotations
+# annotations: {}
+
+replicas: 1
+
+image: yandex/clickhouse-server
+imageTag: latest
+imagePullPolicy: Always
+#imagePullSecret: mypullsecret
+
+resources:
+  limits:
+    cpu: 1
+    memory: 1Gi
+  requests:
+    cpu: 1
+    memory: 1Gi
+
+initdb_args: ['--user=default', '--database=default', '--multiquery']
+initdb_sql: conf/initdb.sql
+config_xml: conf/config.xml
+users_xml: conf/users.xml
+
+service:
+  type: ClusterIP
+  port: 8123
+  annotations: {}
+  labels: {}
+  externalIPs: []
+  ## Manually set NodePort value
+  ## Requires service.type: NodePort
+  # nodePort:
+
+ingress:
+  enabled: true
+  annotations: {}
+  labels: {}
+  path: /
+  hosts:
+    - chart-example.192.168.99.100.xip.io
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+persistence:
+  enabled: false
+  # storageClass: default
+  # accessMode: ReadWriteOnce
+  # size: 10Gi
+  # annotations: {}
+  # existingClaim:
+
+# If you want use nodeSelector for install clickhouse on specific node
+# nodeSelector:
+#   key: 'node-role/logging'
+#   value: ''
+
+# If you want use taint for install only clickhouse on specific node
+# tolerations:
+#   key: 'node-role/logging'
+#   operator: 'Exists'
+#   value: 'logging'
+#   effect: 'NoSchedule'
