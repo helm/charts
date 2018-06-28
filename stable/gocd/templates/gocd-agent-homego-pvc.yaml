@@ -1,0 +1,27 @@
+{{- if and .Values.agent.persistence.enabled (not .Values.agent.persistence.existingClaim) -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "gocd.fullname" . }}-agent
+  labels:
+    app: {{ template "gocd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    component: agent
+spec:
+  accessModes:
+    - {{ .Values.agent.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.agent.persistence.size | quote }}
+{{- if .Values.agent.persistence.storageClass }}
+  storageClassName: {{ .Values.agent.persistence.storageClass }}
+{{- else }}
+  storageClassName: ""
+{{- end }}
+{{- if .Values.agent.persistence.pvSelector }}
+  selector:
+{{ toYaml .Values.agent.persistence.pvSelector | indent 4 }}
+{{- end }}
+{{- end }}

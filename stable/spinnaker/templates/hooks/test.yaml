@@ -5,6 +5,10 @@ metadata:
   annotations:
     "helm.sh/hook": test-success
 spec:
+{{- if .Values.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 4 }}
+{{- end }}
   initContainers:
     - name: "test-framework"
       image: "dduportal/bats:0.4.0"

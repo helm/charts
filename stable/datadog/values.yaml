@@ -1,7 +1,10 @@
 # Default values for datadog.
 image:
-  repository: datadog/docker-dd-agent
-  tag: latest
+  # This chart is compatible with different images, please choose one
+  repository: datadog/agent               # Agent6
+  # repository: datadog/dogstatsd         # Standalone DogStatsD6
+  # repository: datadog/docker-dd-agent   # Agent5
+  tag: 6.3.0  # Use 6.3.0-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
 
 # NB! Normally you need to keep Datadog DaemonSet enabled!
@@ -26,12 +29,24 @@ daemonset:
   ## metrics and traces will be accepted from any host able to connect to this host.
   # useHostPort: true
 
+  ## Run the agent in the host's PID namespace. This is required for Dogstatsd origin
+  ## detection to work. See https://docs.datadoghq.com/developers/dogstatsd/unix_socket/
+  # useHostPID: true
+
   ## Annotations to add to the DaemonSet's Pods
   # podAnnotations:
   #   scheduler.alpha.kubernetes.io/tolerations: '[{"key": "example", "value": "foo"}]'
 
   ## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes >= 1.6)
   # tolerations: []
+
+  ## Allow the DaemonSet to schedule on selected nodes
+  # Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  # nodeSelector: {}
+
+  ## Allow the DaemonSet to schedule ussing affinity rules
+  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  # affinity: {}
 
   ## Allow the DaemonSet to perform a rolling update on helm update
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
@@ -44,11 +59,22 @@ daemonset:
 deployment:
   enabled: false
   replicas: 1
+  # Affinity for pod assignment
+  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  affinity: {}
+  # Tolerations for pod assignment
+  # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+
+  # If you're using a NodePort-type service and need a fixed port, set this parameter.
+  # dogstatsdNodePort: 8125
+  # traceNodePort: 8126
 
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
 ##
-kubeStateMetrics.enabled: true
+kubeStateMetrics:
+  enabled: true
 
 datadog:
   ## You'll need to set this to your Datadog API key before the agent will run.
@@ -56,12 +82,17 @@ datadog:
   ##
   # apiKey:
 
+  ## Use existing Secret which stores API key instead of creating a new one
+  # apiKeyExistingSecret:
+
   ## dd-agent container name
   ##
   name: dd-agent
 
   ## Set logging verbosity.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
+  ## Note: For Agent6 (image `datadog/agent`) the valid log levels are
+  ## trace, debug, info, warn, error, critical, and off
   ##
   logLevel: WARNING
 
@@ -79,6 +110,12 @@ datadog:
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   ##
   collectEvents: false
+
+  ## Enables log collection
+  ## ref: https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#log-collection-setup
+  ##
+  # logsEnabled: false
+  # logsConfigContainerCollectAll: false
 
   ## Un-comment this to enable APM and tracing, on ports 7777 and 8126
   ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
@@ -114,19 +151,19 @@ datadog:
   ##
   # leaderLeaseDuration: 600
 
-  ## Provide additonal service definitions
+  ## Provide additional service definitions
   ## Each key will become a file in /conf.d/auto_conf
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
   ##
-  autoconf:
-    kubernetes_state.yaml: |-
-      docker_images:
-        - kube-state-metrics
-      init_config:
-      instances:
-        - kube_state_url: http://%%host%%:%%port%%/metrics
+  # autoconf:
+  #   kubernetes_state.yaml: |-
+  #     docker_images:
+  #       - kube-state-metrics
+  #     init_config:
+  #     instances:
+  #       - kube_state_url: http://%%host%%:%%port%%/metrics
 
-  ## Provide additonal service definitions
+  ## Provide additional service definitions
   ## Each key will become a file in /conf.d
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
   ##
@@ -137,23 +174,24 @@ datadog:
   #       - host: "name"
   #         port: "6379"
 
-  ## Provide additonal service checks
+  ## Provide additional service checks
   ## Each key will become a file in /checks.d
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
   ##
   # checksd:
   #   service.py: |-
 
-  ## dd-agent resource requests and limits
+  ## datadog-agent resource requests and limits
+  ## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 200m
+      memory: 256Mi
     limits:
-      cpu: 256m
-      memory: 512Mi
+      cpu: 200m
+      memory: 256Mi
 
 rbac:
   ## If true, create & use RBAC resources
@@ -163,3 +201,10 @@ rbac:
   serviceAccountName: default
 
 tolerations: []
+
+kube-state-metrics:
+  rbac:
+    create: true
+
+    ## Ignored if rbac.create is true
+    serviceAccountName: default

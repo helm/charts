@@ -1,15 +1,19 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "5.4"
+appVersion: "6.1.1"
 
 image:
-  repository: "centerforopenscience/elasticsearch"
-  tag: "5.4"
+  repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
+  tag: "6.1.1"
   pullPolicy: "IfNotPresent"
 
 cluster:
   name: "elasticsearch"
+  kubernetesDomain: cluster.local
+  # If you want X-Pack installed, switch to an image that includes it, enable this option and toggle the features you want
+  # enabled in the environment variables outlined in the README
+  xpackEnable: false
   config:
   env:
     # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
@@ -21,8 +25,14 @@ client:
   name: client
   replicas: 2
   serviceType: ClusterIP
+
+## (dict) If specified, apply these annotations to the client service
+#  serviceAnnotations:
+#    example: client-svc-foo
+
   heapSize: "512m"
   antiAffinity: "soft"
+  nodeSelector: {}
   resources:
     limits:
       cpu: "1"
@@ -31,8 +41,13 @@ client:
       cpu: "25m"
       memory: "512Mi"
 
+  ## (dict) If specified, apply these annotations to each client Pod
+  # podAnnotations:
+  #   example: client-foo
+
 master:
   name: master
+  exposeHttp: false
   replicas: 3
   heapSize: "512m"
   persistence:
@@ -42,6 +57,7 @@ master:
     size: "4Gi"
     # storageClass: "ssd"
   antiAffinity: "soft"
+  nodeSelector: {}
   resources:
     limits:
       cpu: "1"
@@ -50,8 +66,13 @@ master:
       cpu: "25m"
       memory: "512Mi"
 
+  ## (dict) If specified, apply these annotations to each master Pod
+  # podAnnotations:
+  #   example: master-foo
+
 data:
   name: data
+  exposeHttp: false
   replicas: 2
   heapSize: "1536m"
   persistence:
@@ -62,6 +83,7 @@ data:
     # storageClass: "ssd"
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
+  nodeSelector: {}
   resources:
     limits:
       cpu: "1"
@@ -69,7 +91,6 @@ data:
     requests:
       cpu: "25m"
       memory: "1536Mi"
-
-## Install Default RBAC roles and bindings
-rbac:
-  create: false
+  ## (dict) If specified, apply these annotations to each data Pod
+  # podAnnotations:
+  #   example: data-foo

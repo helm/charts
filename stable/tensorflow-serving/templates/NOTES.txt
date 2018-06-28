@@ -1,0 +1,8 @@
+Getting Started:
+
+**** NOTE: It may take a few minutes for the LoadBalancer IP to be available.                                                                 ****
+****       You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "tensorflow-serving.fullname" . }}' ****
+  export TF_SERVING_SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "tensorflow-serving.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo docker run -it --rm cheyang/tf-mnist:grpcio_upgraded /serving/bazel-bin/tensorflow_serving/example/mnist_client --num_tests=1000 --server=$TF_SERVING_SERVICE_IP:9090`
+  
+

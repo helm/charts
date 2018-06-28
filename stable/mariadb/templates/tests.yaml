@@ -5,5 +5,5 @@ metadata:
 data:
   run.sh: |-
     @test "Testing MariaDB is accessible" {
-      mysql -h {{ template "mariadb.fullname" . }} -uroot {{- if .Values.usePassword }} -p$MARIADB_ROOT_PASSWORD{{ end }} -e 'show databases;'
+      mysql -h {{ template "mariadb.fullname" . }} -uroot -p$MARIADB_ROOT_PASSWORD -e 'show databases;'
     }

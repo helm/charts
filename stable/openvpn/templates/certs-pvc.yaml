@@ -3,12 +3,11 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "openvpn.fullname" . }}
-  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "openvpn.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "openvpn.name" . }}
+    chart: {{ template "openvpn.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}

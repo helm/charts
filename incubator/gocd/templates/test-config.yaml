@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "gocd.fullname" . }}-tests
+  labels:
+    app: {{ template "gocd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+data:
+  run.sh: |-
+    @test "Testing GoCD UI is accessible" {
+      {{- if .Values.agent.goServerUrl }}
+        curl --connect-timeout 10 --retry 12 --retry-delay 10 --retry-max-time {{ .Values.server.healthCheck.initialDelaySeconds }} {{ .Values.agent.goServerUrl }}/auth/login
+      {{- else }}
+        curl --connect-timeout 10 --retry 12 --retry-delay 10 --retry-max-time {{ .Values.server.healthCheck.initialDelaySeconds }} "http://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpPort }}/go/auth/login"
+      {{- end }}
+    }
+
+    @test "Testing GoCD application is accessible through service" {
+      curl --retry 2 --retry-delay 10 --retry-max-time {{ .Values.server.healthCheck.initialDelaySeconds }} http://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpPort }}/go
+    }

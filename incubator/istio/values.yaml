@@ -5,7 +5,7 @@ rbac:
 
 istio:
   install: false
-  release: 0.2.8
+  release: 0.2.12
 
 ## Enable Istio auth feature
 ## This deploys a CA in the namespace and enables mTLS between the services

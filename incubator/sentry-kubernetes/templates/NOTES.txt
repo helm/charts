@@ -1,0 +1,3 @@
+sentry-kubernetes has been installed!
+
+If your dsn was correct you should start seeing events in Sentry!

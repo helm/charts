@@ -2,6 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "heapster.fullname" . }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     {{- range $key, $value := .Values.labels }}
@@ -11,6 +13,8 @@ spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
       labels:
         app: {{ template "heapster.fullname" . }}
     spec:
@@ -94,7 +98,7 @@ spec:
                 fieldPath: metadata.namespace
         command:
           - /pod_nanny
-          - "--deployment={{ template "fullname" . }}"
+          - "--deployment={{ template "heapster.fullname" . }}"
           - "--container={{ .Chart.Name }}-eventer"
           {{- range .Values.eventer.resizer.flags }}
           - {{ . | quote }}

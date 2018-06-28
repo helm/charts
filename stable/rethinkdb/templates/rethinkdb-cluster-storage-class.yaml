@@ -8,7 +8,7 @@ kind: StorageClass
 metadata:
   labels:
     app: "{{ template "rethinkdb.name" . }}-cluster"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "rethinkdb.chart" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
   name: {{ template "rethinkdb.fullname" . }}

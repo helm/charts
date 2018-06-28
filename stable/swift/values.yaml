@@ -4,7 +4,7 @@
 replicaCount: 1
 swift:
   image: appscode/swift
-  tag: 0.5.1
+  tag: 0.7.3
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
 ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -21,9 +21,15 @@ imagePullPolicy: IfNotPresent
 nodeSelector: {}
 ## Log level for proxy
 logLevel: 3
+
 ## Install Default RBAC roles and bindings
 rbac:
-  ## If true, create & use RBAC resources
-  create: false
-  ## Ignored if rbac.create is true
-  serviceAccountName: default
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:

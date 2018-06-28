@@ -1,5 +1,5 @@
 {{ if .Values.rbac.create }}
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: {{ template "stash.fullname" . }}
@@ -26,21 +26,32 @@ rules:
   resources: ["*"]
   verbs: ["*"]
 - apiGroups:
+  - apps
+  resources:
+  - deployments
+  - statefulsets
+  verbs: ["get", "list", "watch", "patch"]
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  - cronjobs
+  verbs: ["get", "list", "watch", "create", "delete", "patch"]
+- apiGroups:
   - extensions
   resources:
   - replicasets
   - daemonsets
-  verbs: ["get", "list", "watch", "patch"]
-- apiGroups:
-  - apps
-  resources:
-  - deployments
   verbs: ["get", "list", "watch", "patch"]
 - apiGroups: [""]
   resources:
   - namespaces
   - replicationcontrollers
   verbs: ["get", "list", "watch", "patch"]
+- apiGroups: [""]
+  resources:
+  - configmaps
+  verbs: ["create", "update", "get", "delete"]
 - apiGroups: [""]
   resources:
   - secrets
@@ -51,11 +62,21 @@ rules:
   verbs: ["create"]
 - apiGroups: [""]
   resources:
+  - nodes
+  verbs: ["list"]
+- apiGroups: [""]
+  resources:
   - pods
-  verbs: ["list", delete"]
+  verbs: ["get", "create", "list", "delete", "deletecollection"]
+- apiGroups: [""]
+  resources:
+  - serviceaccounts
+  verbs: ["get", "create", "patch", "delete"]
 - apiGroups:
   - rbac.authorization.k8s.io
   resources:
+  - clusterroles
+  - roles
   - rolebindings
   verbs: ["get", "create", "delete", "patch"]
 {{ end }}

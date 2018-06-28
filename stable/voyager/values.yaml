@@ -1,17 +1,14 @@
 ##
 ## Voyager chart configuration
 ##
-operator:
-  image: appscode/voyager
-  imageTag: 5.0.0-rc.3
-## Docker image containing HAProxy binary
-haproxy:
-  image: appscode/haproxy
-  imageTag: 1.7.9-5.0.0-rc.3
-## Docker image containing Prometheus exporter
-exporter:
-  image: appscode/voyager
-  imageTag: 5.0.0-rc.3
+# Docker registry containing Voyager & HAProxy images
+dockerRegistry: appscode
+## Tags for Docker images
+imageTags:
+  ## Docker image tag containing Voyager
+  voyager: 6.0.0
+  ## Docker image tag containing HAProxy binary
+  haproxy: 1.7.10-6.0.0
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
 ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -22,7 +19,7 @@ exporter:
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
 imagePullPolicy: IfNotPresent
-## Use cloud provider here. Read details https://github.com/appscode/voyager/blob/master/docs/user-guide/README.md
+## Use cloud provider here.
 cloudProvider:
 ## The path to the cloud provider configuration file. Empty string for no configuration file.
 ## ie. for azure use /etc/kubernetes/azure.json
@@ -43,11 +40,30 @@ nodeSelector: {}
 
 ## Install Default RBAC roles and bindings
 rbac:
-  ## If true, create & use RBAC resources
-  create: false
-  ## Ignored if rbac.create is true
-  serviceAccountName: default
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
 
 # this flag can be set to 'voyager' to handle only ingress
 # with annotation kubernetes.io/ingress.class=voyager.
 ingressClass:
+
+apiserver:
+  # groupPriorityMinimum is the minimum priority the group should have. Please see
+  # https://github.com/kubernetes/kube-aggregator/blob/release-1.9/pkg/apis/apiregistration/v1beta1/types.go#L58-L64
+  # for more information on proper values of this field.
+  groupPriorityMinimum: 10000
+  # versionPriority is the ordering of this API inside of the group. Please see
+  # https://github.com/kubernetes/kube-aggregator/blob/release-1.9/pkg/apis/apiregistration/v1beta1/types.go#L66-L70
+  # for more information on proper values of this field
+  versionPriority: 15
+  # enableAdmissionWebhook is used to configure apiserver as ValidationWebhook for Voyager CRDs
+  enableAdmissionWebhook: false
+  # CA certificate used by main Kubernetes api server
+  ca:

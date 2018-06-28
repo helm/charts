@@ -1,11 +1,12 @@
 dependencies:
 - name: redis
-  version: 0.9.0
+  version: 1.1.6
   repository: https://kubernetes-charts.storage.googleapis.com/
 - name: minio
-  version: 0.1.5
+  version: 1.1.1
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: minio.enabled
 - name: jenkins
-  version: 0.9.0
+  version: 0.13.3
   repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: jenkins.enabled

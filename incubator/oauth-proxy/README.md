@@ -2,6 +2,7 @@
 
 [oauth-proxy](https://github.com/bitly/oauth2_proxy) is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, and others) to validate accounts by email, domain or group.
 
+**Note - this chart has been deprecated and [moved to stable](../../stable/oauth2-proxy)**.
 
 **Note - at this time, there is a known incompatibility between `oauth-proxy` version 2.2 (which is it's latest release) and `nginx-ingress` versions >= 0.9beta12. To utilize this chart at this time please use nginx-ingress version 0.9beta11**
 
@@ -37,19 +38,24 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the oauth-proxy chart and their default values.
+The following table lists the configurable parameters of the oauth-proxy chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
 `affinity` | node/pod affinities | None
-`config.clientId` | oauth client ID | `""`
+`config.clientID` | oauth client ID | `""`
 `config.clientSecret` | oauth client secret | `""`
 `config.cookieSecret` | server specific cookie for the secret; create a new one with `python -c 'import os,base64; print base64.b64encode(os.urandom(16))'` | `""`
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `a5huynh/oauth2_proxy`
 `image.tag` | Image tag | `2.2`
+`imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | enable ingress | `false`
+`ingress.path` | ingress base path | `/`
+`ingress.host` | Ingress accepted hostnames | `nil`
+`ingress.tls` | Ingress TLS configuration| `[]`
+`ingress.annotations` | Ingress annotations | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `podLabels` | additional labesl to add to each pod | `{}`

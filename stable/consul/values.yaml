@@ -12,6 +12,11 @@ SerfwanPort: 8302
 SerfwanUdpPort: 8302
 ServerPort: 8300
 ConsulDnsPort: 8600
+
+## Specify the domain with which consul should run with
+## This will be passed as a -domain parameter
+Domain: consul
+
 ## Used as selector
 Component: "consul"
 Replicas: 3
@@ -37,11 +42,23 @@ DisableHostNodeId: false
 ## default 'dc1'
 # DatacenterName: dc1
 
-## Encrypt Gossip traffic
-EncryptGossip: true
+## Encrypt Gossip Traffic
+Gossip:
+  Encrypt: true
+  Create: true
 
-## StorageClass name for use with Persistent Volume Claim (PVC) using beta notations
-# StorageClass:
+## predefined value for gossip key.
+## Will use a generated random alpha numeric if not provided
+# GossipKey: key
+
+## consul data Persistent Volume Storage Class
+## If defined, StorageClassName: <storageClass>
+## If set to "-", StorageClassName: "", which disables dynamic provisioning
+## If undefined (the default) or set to null, no storageClassName spec is
+##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+##   GKE, AWS & OpenStack)
+##
+# StorageClass: "-"
 
 ## Setting maxUnavailable will create a pod disruption budget that will prevent
 ## voluntarty cluster administration from taking down too many consul pods. If
@@ -51,12 +68,29 @@ EncryptGossip: true
 ## to set maxUnavailable to 1.
 maxUnavailable: 1
 
-## Anti-Affinity setting. The default "hard" will use pod anti-affinity that is
-## requiredDuringSchedulingIgnoredDuringExecution to ensure 2 services don't
-## end up on the same node. Setting this to "soft" will use
-## preferredDuringSchedulingIgnoredDuringExecution. If set to anything else,
-## no anti-affinity rules will be configured.
-antiAffinity: "hard"
+## nodeAffinity settings
+# nodeAffinity:
+#   requiredDuringSchedulingIgnoredDuringExecution:
+#     nodeSelectorTerms:
+#     - matchExpressions:
+#       - key: cloud.google.com/gke-preemptible
+#         operator: NotIn
+#         values:
+#         - true
+
+## Affinity settings
+affinity: |
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 1
+      podAffinityTerm:
+        topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchExpressions:
+          - key: component
+            operator: In
+            values:
+            - "{{ .Release.Name }}-{{ .Values.Component }}"
 
 ## Enable Consul Web UI
 ##
@@ -67,6 +101,12 @@ ui:
 uiService:
   enabled: true
   type: "NodePort"
+
+ConsulConfig: []
+#  - type: secret
+#    name: consul-defaults
+#  - type: configMap
+#    name: consul-defaults
 
 ## Create an Ingress for the Web UI
 uiIngress:
@@ -79,3 +119,4 @@ uiIngress:
 test:
   image: lachlanevenson/k8s-kubectl
   imageTag: v1.4.8-bash
+nodeSelector: {}

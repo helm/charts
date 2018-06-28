@@ -15,5 +15,5 @@ spec:
       targetPort: 7474
   selector:
     app: {{ template "neo4j.name" . }}
-    release: {{ .Release.Name }}
+    release: {{ .Release.Name | quote }}
     component: core

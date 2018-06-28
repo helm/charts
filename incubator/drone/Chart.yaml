@@ -1,8 +1,12 @@
 name: drone
 home: https://drone.io/
-version: 0.1.0
-appVersion: 0.8.1
-description: Drone CI
+icon: https://drone.io/apple-touch-icon.png
+version: 1.1.1
+appVersion: 0.8.5
+# The incubator/drone chart is deprecated and no longer maintained. Please use
+# the stable chart you can find at stable/drone.
+deprecated: true
+description: DEPRECATED Drone is a Continuous Delivery system built on container technology
 keywords:
 - continuous-delivery
 - continuous-deployment
@@ -13,6 +17,3 @@ keywords:
 - go
 sources:
 - https://github.com/drone/drone
-maintainers:
-- name: christian-roggia
-  email: christian.roggia@gmail.com

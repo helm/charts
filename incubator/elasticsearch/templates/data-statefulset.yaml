@@ -17,8 +17,13 @@ spec:
         app: {{ template "elasticsearch.name" . }}
         component: "{{ .Values.data.name }}"
         release: {{ .Release.Name }}
+        {{- if .Values.data.podAnnotations }}
+      annotations:
+{{ toYaml .Values.data.podAnnotations | indent 8 }}
+        {{- end }}
     spec:
-      serviceAccountName: {{ template "elasticsearch.fullname" . }}
+      securityContext:
+        fsGroup: 1000
       {{- if eq .Values.data.antiAffinity "hard" }}
       affinity:
         podAntiAffinity:
@@ -42,6 +47,10 @@ spec:
                   release: "{{ .Release.Name }}"
                   component: "{{ .Values.data.name }}"
       {{- end }}
+{{- if .Values.data.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.data.nodeSelector | indent 8 }}
+{{- end }}
       initContainers:
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
@@ -67,14 +76,8 @@ spec:
       containers:
       - name: elasticsearch
         env:
-        - name: SERVICE
-          value: {{ template "elasticsearch.master.fullname" . }}
-        - name: KUBERNETES_MASTER
-          value: kubernetes.default.svc.cluster.local
-        - name: KUBERNETES_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
+        - name: DISCOVERY_SERVICE
+          value: {{ template "elasticsearch.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.cluster.kubernetesDomain }}
         - name: NODE_MASTER
           value: "false"
         - name: PROCESSORS
@@ -92,6 +95,10 @@ spec:
         ports:
         - containerPort: 9300
           name: transport
+{{ if .Values.data.exposeHttp }}
+        - containerPort: 9200
+          name: http
+{{ end }}
         resources:
 {{ toYaml .Values.data.resources | indent 12 }}
         readinessProbe:
@@ -105,16 +112,29 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
+{{- if hasPrefix "2." .Values.image.tag }}
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config
           subPath: logging.yml
+{{- end }}
+{{- if hasPrefix "5." .Values.image.tag }}
+        - mountPath: /usr/share/elasticsearch/config/log4j2.properties
+          name: config
+          subPath: log4j2.properties
+{{- end }}
         - name: config
           mountPath: /pre-stop-hook.sh
           subPath: pre-stop-hook.sh
+        - name: config
+          mountPath: /post-start-hook.sh
+          subPath: post-start-hook.sh
         lifecycle:
           preStop:
             exec:
               command: ["/bin/bash","/pre-stop-hook.sh"]
+          postStart:
+            exec:
+              command: ["/bin/bash","/post-start-hook.sh"]
       terminationGracePeriodSeconds: {{ .Values.data.terminationGracePeriodSeconds }}
       volumes:
       - name: config

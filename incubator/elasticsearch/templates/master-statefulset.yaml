@@ -17,8 +17,13 @@ spec:
         app: {{ template "elasticsearch.name" . }}
         component: "{{ .Values.master.name }}"
         release: {{ .Release.Name }}
+        {{- if .Values.master.podAnnotations }}
+      annotations:
+{{ toYaml .Values.master.podAnnotations | indent 8 }}
+        {{- end }}
     spec:
-      serviceAccountName: {{ template "elasticsearch.fullname" . }}
+      securityContext:
+        fsGroup: 1000
       {{- if eq .Values.master.antiAffinity "hard" }}
       affinity:
         podAntiAffinity:
@@ -42,6 +47,10 @@ spec:
                   release: "{{ .Release.Name }}"
                   component: "{{ .Values.master.name }}"
       {{- end }}
+{{- if .Values.master.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.master.nodeSelector | indent 8 }}
+{{- end }}
       initContainers:
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
@@ -67,20 +76,14 @@ spec:
       containers:
       - name: elasticsearch
         env:
-        - name: SERVICE
-          value: {{ template "elasticsearch.master.fullname" . }}
-        - name: KUBERNETES_MASTER
-          value: kubernetes.default.svc.cluster.local
-        - name: KUBERNETES_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
         - name: NODE_DATA
           value: "false"
 {{- if hasPrefix "5." .Values.appVersion }}
         - name: NODE_INGEST
           value: "false"
 {{- end }}
+        - name: DISCOVERY_SERVICE
+          value: {{ template "elasticsearch.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.cluster.kubernetesDomain }}
         - name: PROCESSORS
           valueFrom:
             resourceFieldRef:
@@ -103,15 +106,26 @@ spec:
         ports:
         - containerPort: 9300
           name: transport
+{{ if .Values.master.exposeHttp }}
+        - containerPort: 9200
+          name: http
+{{ end }}
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
+{{- if hasPrefix "2." .Values.image.tag }}
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config
           subPath: logging.yml
+{{- end }}
+{{- if hasPrefix "5." .Values.image.tag }}
+        - mountPath: /usr/share/elasticsearch/config/log4j2.properties
+          name: config
+          subPath: log4j2.properties
+{{- end }}
       volumes:
       - name: config
         configMap:

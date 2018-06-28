@@ -2,12 +2,12 @@
 kind: ServiceAccount
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "traefik.fullname" . }}
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "traefik.fullname" . }}
 rules:
   - apiGroups:
       - ""
@@ -32,13 +32,13 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "traefik.fullname" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ template "fullname" . }}
+  name: {{ template "traefik.fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ template "fullname" . }}
+  name: {{ template "traefik.fullname" . }}
   namespace: {{ .Release.Namespace }}
 {{- end }}

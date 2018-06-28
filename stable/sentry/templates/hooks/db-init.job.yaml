@@ -22,6 +22,10 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       restartPolicy: Never
+      {{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.imagePullSecrets | indent 8 }}
+      {{- end }}
       containers:
       - name: db-init-job
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -65,3 +69,7 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: smtp-password
+        - name: SENTRY_EMAIL_USE_TLS
+          value: {{ .Values.email.use_tls | quote }}
+        - name: SENTRY_SERVER_EMAIL
+          value: {{ .Values.email.from_address | quote }}
