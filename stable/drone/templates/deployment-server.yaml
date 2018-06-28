@@ -76,6 +76,10 @@ spec:
         volumeMounts:
           - name: data
             mountPath: /var/lib/drone
+{{- if .Values.agent.initContainers }}
+      initContainers:
+{{ toYaml .Values.agent.initContainers | indent 8 }}
+{{- end }}
       volumes:
       - name: data
       {{- if .Values.persistence.enabled }}
