@@ -1,0 +1,21 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: vaultservices.vault.security.coreos.com
+  labels:
+    app: {{ template "vault-operator.name" . }}
+    chart: {{ template "vault-operator.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  group: vault.security.coreos.com
+  names:
+    kind: VaultService
+    listKind: VaultServiceList
+    plural: vaultservices
+    shortNames:
+    - vault
+    singular: vaultservice
+  scope: Namespaced
+  version: v1alpha1
+  
