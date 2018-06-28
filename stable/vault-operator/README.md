@@ -25,13 +25,13 @@ Official project documentation found [here](https://github.com/coreos/vault-oper
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install incubator/vault-operator --name my-release
+$ helm install stable/vault-operator --name my-release
 ```
 
 If you do not want to deploy the `etcd-operator` manually, you can deploy it at the same time as when you deploy the `vault-operator`:
 
 ```bash
-$ helm install incubator/vault-operator --name my-release --set etcd-operator.enabled=true
+$ helm install stable/vault-operator --name my-release --set etcd-operator.enabled=true
 ```
 
 ## Uninstalling the Chart
@@ -67,14 +67,14 @@ The following table lists the configurable parameters of the vault-operator char
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install --name my-release --set image.tag=v0.1.9 incubator/vault-operator
+$ helm install --name my-release --set image.tag=v0.1.9 stable/vault-operator
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while
 installing the chart. For example:
 
 ```bash
-$ helm install --name my-release --values values.yaml incubator/vault-operator
+$ helm install --name my-release --values values.yaml stable/vault-operator
 ```
 
 ## RBAC
@@ -99,7 +99,7 @@ If the output contains "beta" or both "alpha" and "beta" you can may install rba
 RBAC resources are enabled by default. To disable RBAC do the following:
 
 ```bash
-$ helm install --name my-release incubator/vault-operator --set rbac.create=false
+$ helm install --name my-release stable/vault-operator --set rbac.create=false
 ```
 
 ### Changing RBAC Manifest apiVersion
@@ -107,7 +107,7 @@ $ helm install --name my-release incubator/vault-operator --set rbac.create=fals
 By default the RBAC resources are generated with the "v1beta1" apiVersion. To use "v1alpha1" do the following:
 
 ```bash
-$ helm install --name my-release incubator/vault-operator --set rbac.install=true,rbac.apiVersion=v1alpha1
+$ helm install --name my-release stable/vault-operator --set rbac.install=true,rbac.apiVersion=v1alpha1
 ```
 
 ## Creating a Vault
