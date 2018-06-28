@@ -1,0 +1,101 @@
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "clickhouse.name" . }}
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ template "clickhouse.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "clickhouse.name" . }}
+{{- with .Values.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "clickhouse.name" . }}
+      release: {{ template "clickhouse.name" . }}
+  serviceName: {{ template "clickhouse.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "clickhouse.name" . }}
+        release: {{ template "clickhouse.name" . }}
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+        - name: {{ template "clickhouse.name" . }}
+          image: {{ .Values.image }}:{{ .Values.imageTag }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8123
+            - name: native
+              containerPort: 9000
+          livenessProbe:
+            timeoutSeconds: 1
+            initialDelaySeconds: 30
+            tcpSocket:
+              port: 9000
+          readinessProbe:
+            timeoutSeconds: 1
+            initialDelaySeconds: 5
+            tcpSocket:
+              port: 9000
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8123
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8123
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+          volumeMounts:
+            - name: clickhouse-data-volume
+              mountPath: /var/lib/clickhouse/
+            - name: config-volume
+              mountPath: /etc/clickhouse-server/
+      volumes:
+        - name: clickhouse-data-volume
+{{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "clickhouse.name" .) }}
+{{- else }}
+          emptyDir: {}
+{{- end }}
+        - name: config-volume
+          configMap:
+            name: {{ template "clickhouse.name" . }}-config
+{{ if .Values.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret }}
+{{ end }}
+{{- if .Values.tolerations }}
+      tolerations:
+      - operator: {{ .Values.tolerations.operator | quote }}
+        key: {{ .Values.tolerations.key | quote }}
+  {{- if .Values.tolerations.value }}
+        value: {{ .Values.tolerations.value | quote }}
+  {{- end }}
+  {{- if .Values.tolerations.effect }}
+        effect: {{ .Values.tolerations.effect | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{ .Values.nodeSelector.key }}: {{ .Values.nodeSelector.value }}
+{{- end }}

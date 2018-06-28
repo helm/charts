@@ -1,0 +1,80 @@
+## Pod Annotations
+# podAnnotations: {}
+
+## Statefulset annotations
+# annotations: {}
+
+## Number of ClickHouse nodes
+replicas: 1
+
+## Image settings
+## ref: http://kubernetes.io/docs/user-guide/images/
+image: yandex/clickhouse-server
+imageTag: latest
+imagePullPolicy: Always
+#imagePullSecret: mypullsecret
+
+## Resource limits and requests
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+resources:
+  limits:
+    cpu: 1
+    memory: 1Gi
+  requests:
+    cpu: 1
+    memory: 1Gi
+
+## Bootstrapping and ClickHouse server settings and links to configuration files
+initdb_args: ['--user=default', '--database=default', '--multiquery']
+initdb_sql: conf/initdb.sql
+config_xml: conf/config.xml
+users_xml: conf/users.xml
+
+## Specify a service type
+## ref: http://kubernetes.io/docs/user-guide/services/
+service:
+  type: ClusterIP
+  port: 8123
+  annotations: {}
+  labels: {}
+  externalIPs: []
+  ## Manually set NodePort value
+  ## Requires service.type: NodePort
+  # nodePort:
+
+## Specify ingress settings
+## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+ingress:
+  enabled: true
+  annotations: {}
+  labels: {}
+  path: /
+  hosts:
+    - chart-example.192.168.99.100.xip.io
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+## The storage volume used by each Pod in the StatefulSet. If a
+## persistentVolume is not enabled, the Pods will use `emptyDir` ephemeral
+## local storage.
+persistence:
+  enabled: false
+  # storageClass: default
+  # accessMode: ReadWriteOnce
+  # size: 10Gi
+  # annotations: {}
+  # existingClaim:
+
+## If you want use nodeSelector for install clickhouse on specific node
+# nodeSelector:
+#   key: 'node-role/logging'
+#   value: ''
+
+## If you want use taint for install only clickhouse on specific node
+# tolerations:
+#   key: 'node-role/logging'
+#   operator: 'Exists'
+#   value: 'logging'
+#   effect: 'NoSchedule'
