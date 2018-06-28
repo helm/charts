@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "jaeger.collector.name" . }}-collector
+  name: {{ template "jaeger.collector.name" . }}
   labels:
     app: {{ template "jaeger.name" . }}
     jaeger-infra: collector-deployment
@@ -20,6 +20,10 @@ spec:
     type: Recreate
   template:
     metadata:
+{{- if .Values.collector.podAnnotations }}
+      annotations:
+{{ toYaml .Values.collector.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "jaeger.name" . }}
         component: collector
@@ -31,9 +35,13 @@ spec:
     spec:
       nodeSelector:
 {{ toYaml .Values.collector.nodeSelector | indent 8 }}
+{{- if .Values.collector.tolerations }}
+      tolerations:
+{{ toYaml .Values.collector.tolerations | indent 8 }}
+{{- end }}
       containers:
-      - name: {{ template "jaeger.collector.name" . }}-collector
-        image: {{ .Values.collector.image }}:{{ .Values.collector.tag }}
+      - name: {{ template "jaeger.collector.name" . }}
+        image: {{ .Values.collector.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.collector.pullPolicy }}
         env:
           - name: SPAN_STORAGE_TYPE
@@ -97,9 +105,20 @@ spec:
         - containerPort: {{ .Values.collector.service.httpPort }}
           name: http
           protocol: TCP
+        - containerPort: {{ .Values.collector.service.healthCheckPort }}
+          name: healthcheck
+          protocol: TCP
         - containerPort: {{ .Values.collector.service.zipkinPort }}
           name: zipkin
           protocol: TCP
+        readinessProbe:
+          httpGet:
+            port: healthcheck
+          initialDelaySeconds: 10
+        livenessProbe:
+          httpGet:
+            port: healthcheck
+          initialDelaySeconds: 10
         resources:
 {{ toYaml .Values.collector.resources | indent 10 }}
       dnsPolicy: {{ .Values.collector.dnsPolicy }}

@@ -40,13 +40,15 @@ The default configuration values for this chart are listed in `values.yaml`.
 | `service.type`                        | Type for the service                                         | ClusterIP                                         |
 | `service.externalPort`                | Service external port                                        | 8082                                              |
 | `service.internalPort`                | Service internal port                                        | 8082                                              |
-| `resources.limits`                    | Server resource  limits                                      | limits: {cpu: 100m, memory: 128Mi}              |
+| `service.annotations`                 | Service annotations, specified as a map                      | `{}`                                              |
+| `resources.limits`                    | Server resource  limits                                      | limits: {cpu: 100m, memory: 128Mi}                |
 | `resources.requests`                  | Server resource requests                                     | requests: {cpu: 100m, memory: 128Mi}              |
 | `command`                             | Commands for heapster pod                                    | "/heapster --source=kubernetes.summary_api:''     |
 | `rbac.create`                         | Bind system:heapster role                                    | false                                             |
 | `rbac.serviceAccountName`             | existing ServiceAccount to use (ignored if rbac.create=true) | default                                           |
 | `resizer.enabled`                     | If enabled, scale resources                                  | true                                              |
 | `eventer.enabled`                     | If enabled, start eventer                                    | false                                             |
+| `podAnnotations`                      | Pod Annotations to be added to the heapster Pod              | `{}`                                              |
 | `nodeSelector`                        | Node labels for pod assignment                               | `{}`                                              |
 
 The table below is only applicable if `resizer.enabled` is `true`. More information on resizer can be found [here](https://github.com/kubernetes/contrib/blob/master/addon-resizer/README.md).

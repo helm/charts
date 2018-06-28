@@ -1,13 +1,29 @@
 rbac:
-  create: false
+  create: true
+
+## Define serviceAccount names for components. Defaults to component's fully qualified name.
+##
+serviceAccounts:
+  alertmanager:
+    create: true
+    name:
+  kubeStateMetrics:
+    create: true
+    name:
+  nodeExporter:
+    create: true
+    name:
+  pushgateway:
+    create: true
+    name:
+  server:
+    create: true
+    name:
 
 alertmanager:
   ## If false, alertmanager will not be installed
   ##
   enabled: true
-
-  # Defines the serviceAccountName to use when `rbac.create=false`
-  serviceAccountName: default
 
   ## alertmanager container name
   ##
@@ -17,7 +33,7 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.13.0
+    tag: v0.15.0
     pullPolicy: IfNotPresent
 
   ## Additional alertmanager container arguments
@@ -55,11 +71,16 @@ alertmanager:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## alertmanager Ingress hostnames
+    ## alertmanager Ingress additional labels
+    ##
+    extraLabels: {}
+
+    ## alertmanager Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
     #   - alertmanager.domain.com
+    #   - domain.com/alertmanager
 
     ## alertmanager Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -73,10 +94,24 @@ alertmanager:
   # strategy:
   #   type: Recreate
 
+  ## Node tolerations for alertmanager scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+    # - key: "key"
+    #   operator: "Equal|Exists"
+    #   value: "value"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
   ## Node labels for alertmanager pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   persistentVolume:
     ## If true, alertmanager will create/use a Persistent Volume Claim
@@ -139,10 +174,18 @@ alertmanager:
     #   cpu: 10m
     #   memory: 32Mi
 
+  ## Security context to be added to alertmanager pods
+  ##
+  securityContext: {}
+
   service:
     annotations: {}
     labels: {}
     clusterIP: ""
+
+    ## Enabling peer mesh service end points for enabling the HA alert manager
+    ## Ref: https://github.com/prometheus/alertmanager/blob/master/README.md
+    # enableMeshPeer : true
 
     ## List of IP addresses at which the alertmanager service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -167,10 +210,45 @@ configmapReload:
   ##
   image:
     repository: jimmidyson/configmap-reload
-    tag: v0.1
+    tag: v0.2.2
     pullPolicy: IfNotPresent
 
+  ## Additional configmap-reload container arguments
+  ##
+  extraArgs: {}
+
+  ## Additional configmap-reload mounts
+  ##
+  extraConfigmapMounts: []
+    # - name: prometheus-alerts
+    #   mountPath: /etc/alerts.d
+    #   configMap: prometheus-alerts
+    #   readOnly: true
+
+
   ## configmap-reload resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+
+initChownData:
+  ## If false, data ownership will not be reset at startup
+  ## This allows the prometheus-server to be run with an arbitrary user
+  ##
+  enabled: true
+
+  ## initChownData container name
+  ##
+  name: init-chown-data
+
+  ## initChownData container image
+  ##
+  image:
+    repository: busybox
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  ## initChownData resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources: {}
@@ -180,9 +258,6 @@ kubeStateMetrics:
   ##
   enabled: true
 
-  # Defines the serviceAccountName to use when `rbac.create=false`
-  serviceAccountName: default
-
   ## kube-state-metrics container name
   ##
   name: kube-state-metrics
@@ -190,13 +265,22 @@ kubeStateMetrics:
   ## kube-state-metrics container image
   ##
   image:
-    repository: k8s.gcr.io/kube-state-metrics
-    tag: v1.2.0
+    repository: quay.io/coreos/kube-state-metrics
+    tag: v1.3.1
     pullPolicy: IfNotPresent
 
   ## kube-state-metrics container arguments
   ##
   args: {}
+
+  ## Node tolerations for kube-state-metrics scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+    # - key: "key"
+    #   operator: "Equal|Exists"
+    #   value: "value"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for kube-state-metrics pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -206,6 +290,9 @@ kubeStateMetrics:
   ## Annotations to be added to kube-state-metrics pods
   ##
   podAnnotations: {}
+
+  pod:
+    labels: {}
 
   replicaCount: 1
 
@@ -220,11 +307,17 @@ kubeStateMetrics:
     #   cpu: 10m
     #   memory: 16Mi
 
+  ## Security context to be added to kube-state-metrics pods
+  ##
+  securityContext: {}
+
   service:
     annotations:
       prometheus.io/scrape: "true"
     labels: {}
 
+    # Exposed as a headless service:
+    # https://kubernetes.io/docs/concepts/services-networking/service/#headless-services
     clusterIP: None
 
     ## List of IP addresses at which the kube-state-metrics service is available
@@ -242,9 +335,6 @@ nodeExporter:
   ##
   enabled: true
 
-  # Defines the serviceAccountName to use when `rbac.create=false`
-  serviceAccountName: default
-
   ## node-exporter container name
   ##
   name: node-exporter
@@ -253,7 +343,7 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.15.2
+    tag: v0.16.0
     pullPolicy: IfNotPresent
 
   ## Custom Update Strategy
@@ -271,6 +361,12 @@ nodeExporter:
     # - name: textfile-dir
     #   mountPath: /srv/txt_collector
     #   hostPath: /var/lib/node-exporter
+    #   readOnly: true
+
+  extraConfigmapMounts: []
+    # - name: certs-configmap
+    #   mountPath: /prometheus
+    #   configMap: certs-configmap
     #   readOnly: true
 
   ## Node tolerations for node-exporter scheduling to nodes with taints
@@ -291,6 +387,11 @@ nodeExporter:
   ##
   podAnnotations: {}
 
+  ## Labels to be added to node-exporter pods
+  ##
+  pod:
+    labels: {}
+
   ## node-exporter resource limits & requests
   ## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -302,11 +403,18 @@ nodeExporter:
     #   cpu: 100m
     #   memory: 30Mi
 
+  ## Security context to be added to node-exporter pods
+  ##
+  securityContext: {}
+    # runAsUser: 0
+
   service:
     annotations:
       prometheus.io/scrape: "true"
     labels: {}
 
+    # Exposed as a headless service:
+    # https://kubernetes.io/docs/concepts/services-networking/service/#headless-services
     clusterIP: None
 
     ## List of IP addresses at which the node-exporter service is available
@@ -325,14 +433,11 @@ server:
   ##
   name: server
 
-  # Defines the serviceAccountName to use when `rbac.create=false`
-  serviceAccountName: default
-
   ## Prometheus server container image
   ##
   image:
     repository: prom/prometheus
-    tag: v2.1.0
+    tag: v2.3.1
     pullPolicy: IfNotPresent
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
@@ -344,6 +449,21 @@ server:
   ## Maybe same with Ingress host name
   baseURL: ""
 
+  ## This flag controls access to the administrative HTTP API which includes functionality such as deleting time
+  ## series. This is disabled by default.
+  enableAdminApi: false
+
+  global:
+    ## How frequently to scrape targets by default
+    ##
+    scrape_interval: 1m
+    ## How long until a scrape request times out
+    ##
+    scrape_timeout: 10s
+    ## How frequently to evaluate rules
+    ##
+    evaluation_interval: 1m
+
   ## Additional Prometheus server container arguments
   ##
   extraArgs: {}
@@ -354,6 +474,20 @@ server:
     # - name: certs-dir
     #   mountPath: /etc/kubernetes/certs
     #   hostPath: /etc/kubernetes/certs
+    #   readOnly: true
+
+  extraConfigmapMounts: []
+    # - name: certs-configmap
+    #   mountPath: /prometheus
+    #   configMap: certs-configmap
+    #   readOnly: true
+
+  ## Additional Prometheus server Secret mounts
+  # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
+  extraSecretMounts: []
+    # - name: secret-files
+    #   mountPath: /etc/secrets
+    #   secretName: prom-secret-files
     #   readOnly: true
 
   ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.server.configMapOverrideName}}
@@ -373,11 +507,16 @@ server:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## Prometheus server Ingress hostnames
+    ## Prometheus server Ingress additional labels
+    ##
+    extraLabels: {}
+
+    ## Prometheus server Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
     #   - prometheus.domain.com
+    #   - domain.com/prometheus
 
     ## Prometheus server Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -402,7 +541,13 @@ server:
 
   ## Node labels for Prometheus server pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
   nodeSelector: {}
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   persistentVolume:
     ## If true, Prometheus server will create/use a Persistent Volume Claim
@@ -466,6 +611,10 @@ server:
     #   cpu: 500m
     #   memory: 512Mi
 
+  ## Security context to be added to server pods
+  ##
+  securityContext: {}
+
   service:
     annotations: {}
     labels: {}
@@ -502,7 +651,7 @@ pushgateway:
   ##
   image:
     repository: prom/pushgateway
-    tag: v0.4.0
+    tag: v0.5.2
     pullPolicy: IfNotPresent
 
   ## Additional pushgateway container arguments
@@ -516,15 +665,16 @@ pushgateway:
 
     ## pushgateway Ingress annotations
     ##
-    annotations:
+    annotations: {}
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## pushgateway Ingress hostnames
+    ## pushgateway Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
     #   - pushgateway.domain.com
+    #   - domain.com/pushgateway
 
     ## pushgateway Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -533,6 +683,15 @@ pushgateway:
     #   - secretName: prometheus-alerts-tls
     #     hosts:
     #       - pushgateway.domain.com
+
+  ## Node tolerations for pushgateway scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+    # - key: "key"
+    #   operator: "Equal|Exists"
+    #   value: "value"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for pushgateway pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -556,6 +715,10 @@ pushgateway:
     #   cpu: 10m
     #   memory: 32Mi
 
+  ## Security context to be added to push-gateway pods
+  ##
+  securityContext: {}
+
   service:
     annotations:
       prometheus.io/probe: pushgateway
@@ -575,8 +738,8 @@ pushgateway:
 ## alertmanager ConfigMap entries
 ##
 alertmanagerFiles:
-  alertmanager.yml: |-
-    global:
+  alertmanager.yml:
+    global: {}
       # slack_api_url: ''
 
     receivers:
@@ -719,6 +882,11 @@ serverFiles:
         kubernetes_sd_configs:
           - role: node
 
+        # This configuration will work only on kubelet 1.7.3+
+        # As the scrape endpoints for cAdvisor have changed
+        # if you are using older version you need to change the replacement to
+        # replacement: /api/v1/nodes/${1}:4194/proxy/metrics
+        # more info here https://github.com/coreos/prometheus-operator/issues/633
         relabel_configs:
           - action: labelmap
             regex: __meta_kubernetes_node_label_(.+)
@@ -727,7 +895,7 @@ serverFiles:
           - source_labels: [__meta_kubernetes_node_name]
             regex: (.+)
             target_label: __metrics_path__
-            replacement: /api/v1/nodes/${1}:4194/proxy/metrics
+            replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
 
       # Scrape config for service endpoints.
       #
@@ -760,7 +928,7 @@ serverFiles:
           - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
             action: replace
             target_label: __address__
-            regex: (.+)(?::\d+);(\d+)
+            regex: ([^:]+)(?::\d+)?;(\d+)
             replacement: $1:$2
           - action: labelmap
             regex: __meta_kubernetes_service_label_(.+)
@@ -837,8 +1005,8 @@ serverFiles:
             regex: (.+)
           - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
             action: replace
-            regex: (.+):(?:\d+);(\d+)
-            replacement: ${1}:${2}
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
             target_label: __address__
           - action: labelmap
             regex: __meta_kubernetes_pod_label_(.+)

@@ -1,6 +1,6 @@
 {{- if .Values.deployments.restoreOperator }}
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "etcd-restore-operator.fullname" . }}
@@ -10,15 +10,19 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "etcd-restore-operator.name" . }}
+      release: {{ .Release.Name }}
   replicas: {{ .Values.restoreOperator.replicaCount }}
   template:
     metadata:
       name: {{ template "etcd-restore-operator.fullname" . }}
       labels:
-        app: {{ template "etcd-restore-operator.fullname" . }}
+        app: {{ template "etcd-restore-operator.name" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "etcd-restore-operator.fullname" . }}{{ else }}{{ .Values.rbac.restoreOperatorServiceAccountName }}{{ end }}
+      serviceAccountName: {{ template "etcd-restore-operator.serviceAccountName" . }}
       containers:
       - name: {{ .Values.restoreOperator.name }}
         image: "{{ .Values.restoreOperator.image.repository }}:{{ .Values.restoreOperator.image.tag }}"
@@ -26,7 +30,7 @@ spec:
         ports:
         - containerPort: {{ .Values.restoreOperator.port }}
         command:
-         - etcd-restore-operator
+        - etcd-restore-operator
 {{- range $key, $value := .Values.restoreOperator.commandArgs }}
         - "--{{ $key }}={{ $value }}"
 {{- end }}
@@ -52,4 +56,8 @@ spec:
       nodeSelector:
 {{ toYaml .Values.restoreOperator.nodeSelector | indent 8 }}
     {{- end }}
-{{- end}}
+    {{- if .Values.restoreOperator.tolerations }}
+      tolerations:
+{{ toYaml .Values.restoreOperator.tolerations | indent 8 }}
+    {{- end }}
+{{- end }}

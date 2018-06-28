@@ -6,6 +6,8 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
+tag: 1.4.1
+
 storage:
   # allowed values (cassandra, elasticsearch)
   type: cassandra
@@ -20,6 +22,7 @@ storage:
     port: 9200
     user: elastic
     password: changeme
+    nodesWanOnly: false
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
@@ -45,7 +48,6 @@ cassandra:
 schema:
   annotations: {}
   image: jaegertracing/jaeger-cassandra-schema
-  tag: 1.0.0
   pullPolicy: IfNotPresent
   # Acceptable values are test and prod. Default is for production use.
   mode: prod
@@ -67,7 +69,7 @@ elasticsearch:
   cluster:
     name: "tracing"
   data:
-    persistance:
+    persistence:
       enabled: false
   rbac:
     create: false
@@ -76,7 +78,6 @@ agent:
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-agent
-  tag: 1.0.0
   pullPolicy: IfNotPresent
   collector:
     host: null
@@ -86,6 +87,8 @@ agent:
     useHostPort: false
   service:
     annotations: {}
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
     type: ClusterIP
     # zipkinThriftPort :accept zipkin.thrift over compact thrift protocol
     zipkinThriftPort: 5775
@@ -103,21 +106,28 @@ agent:
     #   cpu: 256m
     #   memory: 128Mi
   nodeSelector: {}
+  podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+  useHostNetwork: false
+  dnsPolicy: ClusterFirst
 
 collector:
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-collector
-  tag: 1.0.0
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   replicaCount: 1
   service:
     annotations: {}
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
     type: ClusterIP
     # tchannelPort: used by jaeger-agent to send spans in jaeger.thrift format
     tchannelPort: 14267
@@ -125,6 +135,7 @@ collector:
     httpPort: 14268
     # can accept Zipkin spans in JSON or Thrift
     zipkinPort: 9411
+    healthCheckPort: 14269
   resources: {}
     # limits:
     #   cpu: 1
@@ -133,15 +144,18 @@ collector:
     #   cpu: 500m
     #   memory: 512Mi
   nodeSelector: {}
+  podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
 
 query:
   enabled: true
   annotations: {}
   image: jaegertracing/jaeger-query
-  tag: 1.0.0
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
@@ -150,6 +164,8 @@ query:
   service:
     annotations: {}
     type: ClusterIP
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
     # queryPort: externally accessible port for UI and API
     queryPort: 80
     # targetPort: the internal port the UI and API are exposed on
@@ -176,9 +192,13 @@ query:
     #    cpu: 256m
     #    memory: 128Mi
   nodeSelector: {}
+  podAnnotations: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
 
 spark:
   enabled: false
@@ -187,30 +207,37 @@ spark:
   tag: latest
   pullPolicy: Always
   schedule: "49 23 * * *"
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 5
   resources: {}
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
     # requests:
-    #    cpu: 256m
-    #    memory: 128Mi
+    #   cpu: 256m
+    #   memory: 128Mi
   nodeSelector: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
 # End: Default values for the various components of Jaeger
 
 hotrod:
   enabled: false
   replicaCount: 1
   image:
-    repository: mikelorant/jaeger-hotrod
+    repository: jaegertracing/example-hotrod
     tag: latest
     pullPolicy: Always
   service:
     annotations: {}
     name: hotrod
     type: ClusterIP
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
     externalPort: 80
     internalPort: 8080
   ingress:

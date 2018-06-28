@@ -1,0 +1,39 @@
+The OpenEBS has been installed. Check its status by running:
+  kubectl get pods -n {{ .Release.Namespace }}
+
+For dynamically creating OpenEBS Volumes, you will need to create StorageClass. 
+
+OpenEBS Storage class can be created using the following spec:
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+   name: openebs-standard
+provisioner: openebs.io/provisioner-iscsi
+parameters:
+  openebs.io/storage-pool: "default"
+  openebs.io/jiva-replica-count: "3"
+  openebs.io/volume-monitor: "true"
+  openebs.io/capacity: 5G
+---
+
+And use this storage class "openebs-standard" in your PVC as shown below:
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: demo-vol-claim
+spec:
+  storageClassName: openebs-standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4G
+---
+
+For more information, please visit http://docs.openebs.io/.
+
+Please note that, OpenEBS uses iSCSI for connecting applications with the 
+OpenEBS Volumes and your nodes should have the iSCSI initiator installed. 
+

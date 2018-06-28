@@ -2,6 +2,8 @@
 
 [burrow](https://github.com/hyperledger/burrow) is a permissioned Ethereum smart-contract blockchain node. It executes Ethereum smart contract code on a permissioned virtual machine. Burrow provides transaction finality and high transaction throughput on a proof-of-stake Tendermint consensus engine.
 
+**Note - this chart has been deprecated and [moved to stable](../../stable/burrow)**.
+
 ## TL;DR;
 
 ```console
@@ -36,7 +38,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the kibana chart and their default values.
+The following table lists the configurable parameters of the kibana chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
@@ -157,7 +159,7 @@ There are a few other considerations underpinning how this chart was developed.
 
 ### Deployments versus StatefulSets
 
-The first consideration is whether to utilize multiple deployments or a statefulSet. The chart maintainer has (to date) found it significantly easier to work with multiple deployments than with a statefulSet because the config files and keys differ subltely between and across each blockchain node. StatefulSets are currently not able to as elegantly handle the 1-to-1 linkages between the various key secrets and config files that are necessary to operate each blockchain node within the cluster.
+The first consideration is whether to utilize multiple deployments or a statefulSet. The chart maintainer has (to date) found it significantly easier to work with multiple deployments than with a statefulSet because the config files and keys differ subtly between and across each blockchain node. StatefulSets are currently not able to as elegantly handle the 1-to-1 linkages between the various key secrets and config files that are necessary to operate each blockchain node within the cluster.
 
 ### Running multiple chains within your cluster
 

@@ -36,6 +36,14 @@ persistence:
 
 If you want to create a `StorageClass` on other platform, please see documentation here [https://kubernetes.io/docs/user-guide/persistent-volumes/](https://kubernetes.io/docs/user-guide/persistent-volumes/)
 
+When running a cluster without persistence, the termination of a pod will first initiate a decommissioning of that pod.
+Depending on the amount of data stored inside the cluster this may take a while. In order to complete a graceful
+termination, pods need to get more time for it. Set the following values in `values.yaml`:
+
+```yaml
+podSettings:
+  terminationGracePeriodSeconds: 1800
+```
 
 ## Install Chart with specific cluster size
 By default, this Chart will create a cassandra with 3 nodes. If you want to change the cluster size during installation, you can use `--set config.cluster_size={value}` argument. Or edit `values.yaml`
@@ -68,7 +76,7 @@ nodes:
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Cassandra chart and their default values.
+The following table lists the configurable parameters of the Cassandra chart and their default values.
 
 | Parameter                  | Description                                     | Default                                                    |
 | -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
@@ -95,6 +103,7 @@ The following tables lists the configurable parameters of the Cassandra chart an
 | `persistence.size`         | Size of data volume                             | `10Gi`                                                     |
 | `resources`                | CPU/Memory resource requests/limits             | Memory: `4Gi`, CPU: `2`                                    |
 | `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
+| `podManagementPolicy`      | podManagementPolicy of the StatefulSet          | `OrderedReady`                                             |
 | `updateStrategy.type`      | UpdateStrategy of the StatefulSet               | `OnDelete`                                                 |
 
 ## Scale cassandra

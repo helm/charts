@@ -1,0 +1,22 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "ethereum.fullname" . }}-geth-tx
+  labels:
+    app: {{ template "ethereum.name" . }}
+    chart: {{ template "ethereum.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: geth-tx
+spec:
+  selector:
+    app: {{ template "ethereum.name" . }}
+    release: {{ .Release.Name }}
+    component: geth-tx
+  type: {{ .Values.geth.tx.service.type }}
+  sessionAffinity: ClientIP
+  ports:
+  - name: rpc
+    port: 8545
+  - name: ws
+    port: 8546

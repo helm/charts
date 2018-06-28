@@ -31,9 +31,9 @@ spec:
             - name: DECK_HOST
               value: "0.0.0.0"
             - name: DECK_PORT
-              value: "9000"
+              value: {{ .Values.deck.port | quote }}
           ports:
-            - containerPort: 9000
+            - containerPort: {{ .Values.deck.port }}
               name: deck
           volumeMounts:
             - mountPath: /opt/spinnaker/config

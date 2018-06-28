@@ -3,7 +3,7 @@ apiVersion: v1
 metadata:
   name: {{ template "scdf.fullname" . }}-metrics
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "scdf.name" . }}
     component: metrics
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
@@ -11,11 +11,10 @@ metadata:
 spec:
   type: {{ .Values.metrics.service.type }}
   ports:
-    - port: {{ .Values.metrics.service.externalPort }}
-      targetPort: {{ .Values.metrics.service.internalPort }}
-      protocol: TCP
+    - port: 80
+      targetPort: http
       name: http
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "scdf.name" . }}
     component: metrics
     release: {{ .Release.Name }}

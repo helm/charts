@@ -1,0 +1,47 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels: {{ include "sentry-kubernetes.labels" . | indent 4 }}
+  name: {{ template "sentry-kubernetes.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "sentry-kubernetes.name" . }}
+  template:
+    metadata:
+      annotations:
+        checksum/secrets: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}
+      labels:
+        app: {{ template "sentry-kubernetes.name" . }}
+        release: {{.Release.Name }}    
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: DSN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "sentry-kubernetes.fullname" . }}
+                key: sentry.dsn
+          {{ if .Values.sentry.environment }}
+          - name: ENVIRONMENT
+            value: {{ .Values.sentry.environment }}
+          {{ end }}
+          {{ if .Values.sentry.release }}
+          - name: RELEASE 
+            value: {{ .Values.sentry.release }}
+          {{ end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ template "sentry-kubernetes.serviceAccountName" . }}

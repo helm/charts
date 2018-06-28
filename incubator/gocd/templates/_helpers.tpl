@@ -3,7 +3,7 @@
 Expand the name of the chart.
 */}}
 {{- define "gocd.name" -}}
-{{- default .Chart.Name | trunc 63 | trimSuffix "-" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -13,4 +13,15 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "gocd.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "gocd.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "gocd.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
 {{- end -}}

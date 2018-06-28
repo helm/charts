@@ -52,6 +52,9 @@ service:
   type: ClusterIP
   externalPort: 80
   internalPort: 3000
+  annotations:
+    # Used to add custom annotations to the Service.
+    # service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
 ingress:
   enabled: false
   # Used to create Ingress record (should used with service.type: ClusterIP).

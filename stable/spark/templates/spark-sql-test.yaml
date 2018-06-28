@@ -8,7 +8,7 @@ spec:
   containers:
     - name: {{ .Release.Name }}-sql-test
       image: {{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}
-      command: ["/opt/spark/bin/spark-sql", "--master",
+      command: ["{{ .Values.Spark.Path }}/bin/spark-sql", "--master",
                 "spark://{{ .Release.Name }}-master:{{ .Values.Master.ServicePort }}", "-e",
                 "show databases;"]
   restartPolicy: Never
