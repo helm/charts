@@ -8,6 +8,9 @@ metadata:
     chart: {{ template "openldap.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
