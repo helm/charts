@@ -76,6 +76,9 @@ spec:
         volumeMounts:
           - name: data
             mountPath: /var/lib/drone
+{{- with .Values.server.extraContainers }}
+{{ tpl . $ | indent 6 }}
+{{- end }}
       volumes:
       - name: data
       {{- if .Values.persistence.enabled }}
@@ -84,4 +87,7 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+{{- with .Values.server.extraVolumes }}
+{{ tpl . $ | indent 6 }}
+{{- end }}
 {{ end }}
