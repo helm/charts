@@ -20,6 +20,8 @@ omsagent:
   env:
     clusterName: <your_cluster_name>
     doNotCollectKubeSystemLogs: "true"
+  rbac: true
+   
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

@@ -1,3 +1,4 @@
+{{- if .Values.omsagent.rbac }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -34,4 +35,5 @@ roleRef:
   kind: ClusterRole
   name: omsagent-reader
   apiGroup: rbac.authorization.k8s.io
+{{- end }} 
 
