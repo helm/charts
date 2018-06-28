@@ -9,7 +9,7 @@ This chart bootstraps a deployment with the [atlassian/confluence-server](https:
 
 - Kubernetes 1.8+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
-- At least 2GB Memory
+- 4GB Memory or more
 
 
 ## Getting Started
@@ -40,9 +40,9 @@ Parameter | Description | Default
 `confluence.reverseProxyHost` | Hostname of the server. | `confluence.example.com`
 `confluence.reverseProxyPort` | Port of the server. | `443`
 `confluence.reverseProxyScheme` | `http` or `https`. | `https`
-`confluence.javaHeapSize` | JavaVM heap size passed as `-Xmx` and `-Xms`. | `1024m`
-`confluence.javaMemoryOptions` | JavaVM memory options. | see [values.yaml](values.yaml)
-`confluence.javaOptions` | JavaVM options. | `nil`
+`confluence.javaHeapSize` | JavaVM heap size passed as `-Xmx` and `-Xms`. | `2048m`
+`confluence.javaMemoryOptions` | JavaVM memory options. | See [values.yaml](values.yaml)
+`confluence.javaOptions` | JavaVM options. | ``
 `synchrony.javaHeapSize` | JavaVM heap size for Synchrony. | `0m` (disable Synchrony)
 `persistence.enabled` | Create a persistent volume to store data. | `true`
 `persistence.size` | Size of a persistent volume. | `8Gi`
@@ -55,31 +55,29 @@ Parameter | Description | Default
 `nodeSelector` | Node labels for pod assignment | `{}`
 
 
-### Resources Limits
+### Requests and Limits
 
-It is highly recommended to set resources limits for the following reasons.
+It is highly recommended to set `resources.requests.memory` and `resources.limits.memory` to prevent that pods suddenly die due to OOM killer.
 
-- Set memory request and limit to prevent containers suddenly die due to OOM killer.
-- Set CPU limit to prevent other pods fail liveness probe and die.
+If you are using a single core instance, the Confluence pod eats whole CPU time on startup and other pods may die due to liveness probe.
+So it is good to set `resources.limits.cpu`.
 
 You can calculate memory size by:
 
 ```
-[resources.limits.memory] = [confluence.javaHeapSize] + 800MiB
+[resources.limits.memory] = [confluence.javaHeapSize] + 1GiB or more
 ```
 
 Here is an example of resources limits:
 
 ```yaml
 # values.yaml
-confluence:
-  javaHeapSize: 1024m
 resources:
   limits:
-    memory: 1800Mi
+    memory: 4096Mi
     cpu: 800m
   requests:
-    memory: 1800Mi
+    memory: 4096Mi
     cpu: 0
 ```
 
