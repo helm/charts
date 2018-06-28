@@ -124,11 +124,10 @@ The following repo contains the recommended production settings for wordpress ca
 To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then:
 
 ```console
-$
 $ helm install --name my-release -f ./values-production.yaml stable/wordpress
 ```
 
-Note that values-production.yaml includes a replicaCount of 3, so there will be 3 WordPress pods. As a result, to use the /admin portal and to ensure you can scale wordpress you need to provide a ReadWriteMany PVC, if you don't have a provisioner for this type of storage, we recommend that you install the nfs provisioner and map it to a RWO volume.
+Note that [values-production.yaml](values-production.yaml) includes a replicaCount of 3, so there will be 3 WordPress pods. As a result, to use the /admin portal and to ensure you can scale wordpress you need to provide a ReadWriteMany PVC, if you don't have a provisioner for this type of storage, we recommend that you install the nfs provisioner and map it to a RWO volume.
 
 ```console
 $ helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
