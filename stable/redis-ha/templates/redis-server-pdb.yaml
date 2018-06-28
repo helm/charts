@@ -1,0 +1,12 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "redis-ha.fullname" . }}-server-pdb
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      redis-node: "true"
+{{ include "labels.standard" . | indent 6 }}

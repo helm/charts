@@ -1,5 +1,21 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "redis-ha.fullname" . }}-server-svc
+  labels:
+    chart: {{ template "chartref" . }}
+{{ include "labels.standard" . | indent 4 }}
+  annotations:
+{{ toYaml .Values.servers.annotations | indent 4 }}
+spec:
+  selector:
+    redis-node: "true"
+{{ include "labels.standard" . | indent 4 }}
+  type: "{{ .Values.servers.serviceType }}"
+  clusterIP: None
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   # Pay attention to the redis-role label at runtime. The self-determination logic in the image sets this value accordingly.
   name: {{ template "redis-ha.fullname" . }}-server
@@ -8,17 +24,20 @@ metadata:
     redis-node: "true"
 {{ include "labels.standard" . | indent 4 }}
 spec:
+  serviceName: {{ template "redis-ha.fullname" . }}-server-svc
   replicas: {{ .Values.replicas.servers }}
+  updateStrategy:
+    type: OnDelete
   template:
     metadata:
       labels:
-        app: {{ template "redis-ha.name" . }}
-        release: {{ .Release.Name }}
-        component: server
         name: {{ template "redis-ha.fullname" . }}-server
         redis-node: "true"
+{{ include "labels.standard" . | indent 8 }}
     spec:
+      {{ if .Values.rbac.create }}
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
+      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -30,20 +49,26 @@ spec:
       containers:
       - name: redis
         image: {{ .Values.redis_image }}
+        livenessProbe:
+          exec:
+            command: ["redis-cli", "ping"]
+          initialDelaySeconds: 5
+          periodSeconds: 5
         resources:
 {{ toYaml .Values.resources.server | indent 10 }}
         env:
+          - name: MAX_MEMORY
+            value: {{ .Values.redis.maxMemory }}
+          - name: MAX_MEMORY_POLICY
+            value: {{ .Values.redis.maxMemoryPolicy }}
+          - name: RDB_BACKUPS
+            value: {{ .Values.redis.rdbBackups | quote }}
+          - name: DISKLESS_REPLICATION
+            value: {{ .Values.redis.disklessReplication | quote }}
           - name: REDIS_SENTINEL_SERVICE_HOST
             value: "redis-sentinel"
           - name: REDIS_CHART_PREFIX
             value: {{ template "redis-ha.fullname" . }}-
-{{- if .Values.auth }}
-          - name: REDIS_PASS
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "redis-ha.fullname" . }}
-                key: auth
-{{- end }}
         ports:
           - containerPort: 6379
         volumeMounts:
@@ -51,4 +76,3 @@ spec:
             name: data
       volumes:
       - name: data
-
