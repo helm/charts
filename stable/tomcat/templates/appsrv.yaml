@@ -39,16 +39,12 @@ spec:
             - containerPort: {{ .Values.service.internalPort }}
               hostPort: 8009
           livenessProbe:
-            tcpSocket:
-              port: 8080
+            exec:
+              command:
+              - cat
+              - /usr/local/tomcat/webapps/sample/index.html
             initialDelaySeconds: 15
             periodSeconds: 20  
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 8080
-            initialDelaySeconds: 15
-            periodSeconds: 30  
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
