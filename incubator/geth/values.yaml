@@ -1,6 +1,6 @@
 image:
   repository: "ethereum/client-go"
-  tag: "stable"
+  tag: "release-1.8"
   pullPolicy: IfNotPresent
 
 rpcPort: 8545
