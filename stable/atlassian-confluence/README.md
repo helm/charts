@@ -20,9 +20,17 @@ To install the chart with the release name `atlassian-confluence`:
 helm install stable/atlassian-confluence --name atlassian-confluence
 ```
 
-It takes a few minutes to bootstrap a Confluence server.
-Then open your browser and you will see the [Confluence Setup Wizard](https://confluence.atlassian.com/doc/confluence-setup-guide-135691.html).
-The wizard may freeze while database initialization. Hang tight.
+It will take a few minutes to bootstrap a Confluence server.
+Open your browser and proceed the [Confluence Setup Wizard](https://confluence.atlassian.com/doc/confluence-setup-guide-135691.html).
+
+You need to turn off the collaborative edit feature for now.
+See [Administering Collaborative Editing](https://confluence.atlassian.com/doc/administering-collaborative-editing-858772086.html).
+
+To upgrade to the recent version of Confluence:
+
+```sh
+helm upgrade atlassian-confluence
+```
 
 To delete the release `atlassian-confluence`:
 
@@ -116,15 +124,3 @@ synchrony:
 ```
 
 Also you need to increase the memory request and limit.
-
-
-## Upgrade Confluence
-
-To upgrade to a more recent version of Confluence:
-
-```sh
-helm upgrade atlassian-confluence
-```
-
-Confluence will automatically upgrade the database on boot up.
-Note that upgrading requires a valid license.
