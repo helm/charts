@@ -12,6 +12,10 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
+{{- with .Values.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "postgresql.name" . }}
