@@ -6,12 +6,15 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "openldap.fullname" . }}-customldif-configmap
+  name: {{ template "openldap.fullname" . }}-customldif
   labels:
     app: {{ template "openldap.name" . }}
     chart: {{ template "openldap.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
 data:
 {{- range $key, $val := .Values.customLdifFiles }}
   {{ $key }}: |-
