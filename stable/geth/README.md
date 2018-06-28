@@ -16,7 +16,7 @@ This chart bootstraps a single Ethereum node deployment on a [Kubernetes](http:/
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release incubator/geth
+$ helm install --name my-release stable/geth
 ```
 
 The command deploys Geth on the Kubernetes cluster in the default configuration.
