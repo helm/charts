@@ -1,5 +1,6 @@
 name: yopass
-version: 0.0.1
+appVersion: 1.0.0
+version: 0.1.0
 description: Yopass
 keywords:
 - secrets
