@@ -103,14 +103,22 @@ spec:
               mountPath: "/etc/grafana/ldap.toml"
               subPath: ldap.toml
 {{- if .Values.dashboards }}
-  {{- range $key, $value := .Values.dashboards }}
-    {{ if hasKey $value "json" }}
-            - name: dashboards-json
-              mountPath: "/var/lib/grafana/dashboards/{{ $key }}.json"
-              subPath: {{ $key }}.json
+  {{- range $provider, $dashboards := .Values.dashboards }}
+    {{- range $key, $value := $dashboards }}
+      {{- if hasKey $value "json" }}
+            - name: dashboards-{{ $provider }}
+              mountPath: "/var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json"
+              subPath: "{{ $key }}.json"
+      {{- end }}
     {{- end }}
   {{- end }}
 {{- end -}}
+{{- if .Values.dashboardsConfigMaps }}
+  {{- range keys .Values.dashboardsConfigMaps }}
+            - name: dashboards-{{ . }}
+              mountPath: "/var/lib/grafana/dashboards/{{ . }}"
+  {{- end }}
+{{- end }}
 {{- if .Values.datasources }}
             - name: config
               mountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
@@ -215,9 +223,20 @@ spec:
         - name: config
           configMap:
             name: {{ template "grafana.fullname" . }}
-        - name: dashboards-json
+        {{- if .Values.dashboards }}
+          {{- range keys .Values.dashboards }}
+        - name: dashboards-{{ . }}
           configMap:
-            name: {{ template "grafana.fullname" . }}-dashboards-json
+            name: {{ template "grafana.fullname" $ }}-dashboards-{{ . }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.dashboardsConfigMaps }}
+          {{- range $provider, $name := .Values.dashboardsConfigMaps }}
+        - name: dashboards-{{ $provider }}
+          configMap:
+            name: {{ $name }}
+          {{- end }}
+        {{- end }}
         - name: ldap
           secret:
             {{- if .Values.ldap.existingSecret }}

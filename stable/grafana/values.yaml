@@ -135,6 +135,8 @@ datasources: {}
 ## Configure grafana dashboard providers
 ## ref: http://docs.grafana.org/administration/provisioning/#dashboards
 ##
+## `path` must be /var/lib/grafana/dashboards/<provider_name>
+##
 dashboardProviders: {}
 #  dashboardproviders.yaml:
 #    apiVersion: 1
@@ -146,22 +148,36 @@ dashboardProviders: {}
 #      disableDeletion: false
 #      editable: true
 #      options:
-#        path: /var/lib/grafana/dashboards
+#        path: /var/lib/grafana/default/dashboards
 
 ## Configure grafana dashboard to import
 ## NOTE: To use dashboards you must also enable/configure dashboardProviders
 ## ref: https://grafana.com/dashboards
 ##
+## dashboards per provider, use provider name as key.
+##
 dashboards: {}
-#  some-dashboard:
-#    json: |
-#      $RAW_JSON
-#  prometheus-stats:
-#    gnetId: 2
-#    revision: 2
-#    datasource: Prometheus
-#  local-dashboard:
-#    url: https://example.com/repository/test.json
+#  default:
+#    some-dashboard:
+#      json: |
+#        $RAW_JSON
+#    prometheus-stats:
+#      gnetId: 2
+#      revision: 2
+#      datasource: Prometheus
+#    local-dashboard:
+#      url: https://example.com/repository/test.json
+
+## Reference to external ConfigMap per provider. Use provider name as key and ConfiMap name as value.
+## A provider dashboards must be defined either by external ConfigMaps or in values.yaml, not in both.
+## ConfigMap data example:
+##
+## data:
+##   example-dashboard.json: |
+##     RAW_JSON
+##
+dashboardsConfigMaps: {}
+#  default: ""
 
 ## Grafana's primary configuration
 ## NOTE: values in map will be converted to ini format
