@@ -22,7 +22,9 @@ spec:
     agentVersion: {{ .Values.omsagent.image.tag }}
     dockerProviderVersion: {{ .Values.omsagent.image.dockerProviderVersion }}
   spec:
+  {{- if .Values.omsagent.rbac }}
    serviceAccountName: omsagent
+  {{- end }}
    containers:
      - name: omsagent 
        image: "microsoft/oms:{{ .Values.omsagent.image.tag }}"

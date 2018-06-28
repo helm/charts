@@ -18,7 +18,9 @@ This article describes how to set up and use [Azure Monitor - Containers](https:
 
 1. [Create Azure Log Analytics Workspace](https://docs.microsoft.com/en-us/azure/log-analytics/log-analytics-quick-create-workspace))
 
-2. [Add the 'AzureMonitor-Containers' Solution to your Log Analytics workspace.](https://docs.microsoft.com/en-us/azure/log-analytics/log-analytics-add-solutions)
+- You will need to add AzureMonitor-Containers solution to your workspace from #1 above
+
+2. [Add the 'AzureMonitor-Containers' Solution to your Log Analytics workspace.](http://aka.ms/coinhelmdoc)
 
 ---
 
@@ -56,6 +58,8 @@ The following table lists the configurable parameters of the MSOMS chart and the
 | `omsagent.secret.key`      | Azure Log analytics workspace key                  | Does not have a default value, needs to be provided                              |
 | `omsagent.domain`          | Azure Log analytics cloud domain (public / govt)   | opinsights.azure.com (Public cloud as default), opinsights.azure.us (Govt Cloud) |
 | `omsagent.env.clusterName`             | Name of your cluster      | Does not have a default value, needs to be provided       |
+|`doNotCollectKubeSystemLogs`| Disable collecting logs from containers in 'kube-system' namespace | true|
+| `omsagent.rbac`             | rbac enabled/disabled      | true  (i.e enabled)     |
 
 
 You can create a Azure Loganalytics workspace from portal.azure.com and get its ID & PRIMARY KEY from 'Advanced Settings' tab in the Ux.
