@@ -49,6 +49,14 @@ spec:
             initialDelaySeconds: 5
             tcpSocket:
               port: 9000
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8123
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8123
           resources:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}

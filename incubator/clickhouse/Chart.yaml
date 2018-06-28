@@ -9,6 +9,7 @@ keywords:
 home: https://clickhouse.yandex/
 sources:
 - https://github.com/yandex/ClickHouse
+- https://github.com/onedata/k8s-wait-for
 maintainers:
 - name: tekn0ir
   email: anders.aslund@teknoir.se
