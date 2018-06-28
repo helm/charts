@@ -607,7 +607,7 @@ secrets:
   create: true
 
   ## Concourse Host Keys.
-  ## ref: https://concourse-ci.org/binaries.html#generating-keys
+  ## ref: https://concourse-ci.org/install.html#generating-keys
   ##
   hostKey: |-
     -----BEGIN RSA PRIVATE KEY-----
@@ -642,7 +642,7 @@ secrets:
     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDYBQ9fG6IML+qsFaMh1Pl+81wyUwRilHdfhItAiAsLVQsOwI5+V4pn5aLhHPBuRQqIqYmbkZ7I1VUIN1+90PVJ3X7l9qqanb85AHMtLujw1j9u0zDyH2XHgpUloknUQzUSLIZjjU3Hn3Uo/XikF+vT8104isO7Ym8Xp7sIcRuvOQ3nuRsFVCRogxpLTVHD/k57rwYVqWWLaKLwvx01ZVXOq4GHk/BVaKa9ODC/dNgbZMfwvVVXuf7/NFGmSMyXb49Si4aoP4Gn7jAX6GngBbm/bgKqO0skQy/ggQm/YVF+s5q4EhleMBLVJKD1VpM5LeLDFpiu/y4bVd8wUcgK+QQ9 Concourse
 
   ## Concourse Session Signing Keys.
-  ## ref: https://concourse-ci.org/binaries.html#generating-keys
+  ## ref: https://concourse-ci.org/install.html#generating-keys
   ##
   sessionSigningKey: |-
     -----BEGIN RSA PRIVATE KEY-----
@@ -674,7 +674,7 @@ secrets:
     -----END RSA PRIVATE KEY-----
 
   ## Concourse Worker Keys.
-  ## ref: https://concourse-ci.org/binaries.html#generating-keys
+  ## ref: https://concourse-ci.org/install.html#generating-keys
   ##
   workerKey: |-
     -----BEGIN RSA PRIVATE KEY-----
