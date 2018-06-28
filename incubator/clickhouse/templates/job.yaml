@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "clickhouse.name" . }}-init
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: init-myservice
+        image: onedata/k8s-wait-for
+        args: ['pod', '-lapp={{ template "clickhouse.name" . }}']
+      containers:
+      - name: clickhouse-client
+        image: yandex/clickhouse-client
+        command:
+        - bash
+        - -c
+        - 'clickhouse-client {{ .Values.initdb_args | join " " }} --host={{ template "clickhouse.name" . }} --query="$(cat /init/initdb.sql | tr "\n" " ")"'
+        volumeMounts:
+          - name: init-volume
+            mountPath: /init/
+      restartPolicy: Never
+      volumes:
+        - name: init-volume
+          configMap:
+            name: {{ template "clickhouse.name" . }}-init
+  backoffLimit: 1

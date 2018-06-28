@@ -1,0 +1,16 @@
+apiVersion: v1
+appVersion: "1.0"
+description: ClickHouse is an open source column-oriented database management system capable of real time generation of analytical data reports using SQL queries.
+name: clickhouse
+version: 0.1.0
+keywords:
+- clickhouse
+- database
+home: https://clickhouse.yandex/
+sources:
+- https://github.com/yandex/ClickHouse
+- https://github.com/onedata/k8s-wait-for
+maintainers:
+- name: tekn0ir
+  email: anders.aslund@teknoir.se
+icon: https://clickhouse.yandex/images/logo.png
