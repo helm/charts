@@ -1,0 +1,79 @@
+## Default values for the image
+name: vault-operator
+replicaCount: 1
+image:
+  repository: quay.io/coreos/vault-operator
+  tag: 0.1.9
+  pullPolicy: IfNotPresent
+
+## Install Default RBAC roles and bindings
+rbac:
+  create: true
+
+## Service account names and whether to create them
+serviceAccount:
+  create: true
+  name:
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+## additional command arguments go here; will be translated to `--key=value` form
+## e.g., analytics: true
+commandArgs: {}
+
+## Configurable health checks against the /readyz endpoint that vault-operator exposes
+readinessProbe:
+  enabled: false
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+livenessProbe:
+  enabled: false
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+###
+# All of the config variables related to setting up the etcd-operator
+# Disabled by default
+# If you want more information about the variables exposed, please visit:
+#   https://github.com/kubernetes/charts/tree/master/stable/etcd-operator#configuration
+###
+etcd-operator:
+  enabled: false
+  deployments:
+    etcdOperator: true
+    backupOperator: true
+    restoreOperator: true
+  serviceAccount:
+    etcdOperatorServiceAccount:
+      create: true
+    backupOperatorServiceAccount:
+      create: true
+    restoreOperatorServiceAccount:
+      create: true
+  etcdOperator:
+    image:
+      tag: v0.9.2
+  backupOperator:
+    image:
+      tag: v0.9.2
+  restoreOperator:
+    image:
+      tag: v0.9.2
