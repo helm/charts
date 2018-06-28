@@ -67,4 +67,4 @@ spec:
       volumes:
       - name: hazelcast-storage
         configMap:
-          name: hazelcast-configuration
+          name: {{ template "hazelcast.fullname" . }}-configuration

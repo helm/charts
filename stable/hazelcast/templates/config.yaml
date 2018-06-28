@@ -2,8 +2,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: hazelcast-configuration
-  namespace: default
+  name: {{ template "hazelcast.fullname" . }}-configuration
+  labels:
+    app: {{ template "hazelcast.name" . }}
+    chart: {{ template "hazelcast.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 data:
 {{- range $key, $val := .Values.hazelcast.configurationFiles }}
   {{ $key }}: |-
