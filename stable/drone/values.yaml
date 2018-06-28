@@ -122,6 +122,13 @@ server:
   ##
   affinity: {}
 
+  ## additional siecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy.
+  ## ex: https://github.com/kubernetes/charts/tree/master/stable/keycloak
+  extraContainers: |
+
+  ## additional volumes, e. g. for secrets used in an extraContainers.
+  extraVolumes: |
+
 agent:
   ## Drone agent configuration.
   ## Values in here get injected as environment variables.
