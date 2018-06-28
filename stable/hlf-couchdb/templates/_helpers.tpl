@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "openldap.name" -}}
+{{- define "hlf-couchdb.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "openldap.fullname" -}}
+{{- define "hlf-couchdb.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,14 +27,19 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "openldap.chart" -}}
+{{- define "hlf-couchdb.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-
-{{/*
-Generate chart secret name
-*/}}
-{{- define "openldap.secretName" -}}
-{{ default (include "openldap.fullname" .) .Values.existingSecret }}
+{{- /*
+Credit: @technosophos
+https://github.com/technosophos/common-chart/
+labels.standard prints the standard Helm labels.
+The standard labels are frequently used in metadata.
+*/ -}}
+{{- define "labels.standard" -}}
+app: {{ include "hlf-couchdb.name" . }}
+heritage: {{ .Release.Service | quote }}
+release: {{ .Release.Name | quote }}
+chart: {{ include "hlf-couchdb.chart" . }}
 {{- end -}}
