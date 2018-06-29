@@ -2,9 +2,9 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-{- if .Values.kubeStateMetrics.deploymentAnnotations }}
+{- if .Values.nodeExporter.deploymentAnnotations }}
   annotations:
-{{ toYaml .Values.kubeStateMetrics.deploymentAnnotations | indent 4 }}
+{{ toYaml .Values.nodeExporter.deploymentAnnotations | indent 4 }}
 {{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
