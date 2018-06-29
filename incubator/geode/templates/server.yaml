@@ -35,9 +35,9 @@ spec:
           - |
             gfsh start server --name=${HOSTNAME} --dir=/data --J=-Dgemfire.locator-wait-time=100 \
             --locators={{ template "geode.fullname" . }}[10334] \
-            --max-heap={{ .Values.memory.max_servers }} \
+            --max-heap={{ .Values.memory.max_servers }} --hostname-for-clients=$(hostname -i) \
             --J=-Dgemfire.log-file=/var/log/server.log && \
-            while sleep 3600; do :; done
+            tail -f /var/log/server.log
           ports:
             - name: server
               containerPort: 40404

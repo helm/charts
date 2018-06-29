@@ -33,10 +33,11 @@ spec:
           - sh
           - -c
           - |
-            gfsh start locator --name=${HOSTNAME} --dir=/data \
+            gfsh -e "start locator --name=${HOSTNAME} --dir=/data \
             --max-heap={{ .Values.memory.max_locators }} \
-            --J=-Dgemfire.log-file=/var/log/locator.log && \
-            while sleep 3600; do :; done
+            --J=-Dgemfire.log-file=/var/log/locator.log" \
+            -e "configure pdx --read-serialized=true --disk-store=DEFAULT" && \
+            tail -f /var/log/locator.log
           ports:
             - name: locator
               containerPort: 10334
