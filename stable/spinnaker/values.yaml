@@ -1,12 +1,18 @@
+halyard:
+  spinnakerVersion: 1.8.0
+  image:
+    repository: gcr.io/spinnaker-marketplace/halyard
+    tag: stable
+
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
 # For more info visit:
 #   https://www.spinnaker.io/setup/providers/docker-registry/
 
 # Configure your Docker registries here
-accounts:
+dockerRegistries:
 - name: dockerhub
-  address: https://index.docker.io
+  address: index.docker.io
   repositories:
     - library/alpine
     - library/ubuntu
@@ -18,42 +24,16 @@ accounts:
 #   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
 #   email: 1234@5678.com
 
-# Settings for notifications via email
-# For more info visit:
-#   https://www.spinnaker.io/setup/features/notifications/#email
-
 kubeConfig:
   # Use this when you want to register arbitrary clusters with Spinnaker
   # Upload your ~/kube/.config to a secret
   enabled: false
-  secretName: my-kubeconfig
-  secretKey: config
+  configMapName: my-kubeconfig
+  configMapKey: config
   # List of contexts from the kubeconfig to make available to Spinnaker
-  contexts: []
-
-mail:
-  enabled: false
-  host: smtp.example.org
-  username: admin
-  password: admin
-  fromAddress: spinnaker@example.org
-  port: 25
-
-slack:
-  enabled: false
-  token:
-  botName: 'spinnakerbot'
-
-# Images for each component
-images:
-  clouddriver: gcr.io/spinnaker-marketplace/clouddriver:2.0.0-20180221152902
-  echo: gcr.io/spinnaker-marketplace/echo:0.8.0-20180221133510
-  deck: gcr.io/spinnaker-marketplace/deck:2.1.0-20180221143146
-  igor: gcr.io/spinnaker-marketplace/igor:0.9.0-20180221133510
-  orca: gcr.io/spinnaker-marketplace/orca:0.10.0-20180221133510
-  gate: gcr.io/spinnaker-marketplace/gate:0.10.0-20180221133510
-  front50: gcr.io/spinnaker-marketplace/front50:0.9.0-20180221133510
-  rosco: gcr.io/spinnaker-marketplace/rosco:0.5.0-20180221133510
+  contexts:
+  - default
+  deploymentContext: default
 
 # Change this if youd like to expose Spinnaker outside the cluster
 deck:
@@ -71,24 +51,8 @@ deck:
     #    hosts:
     #      - domain.com
 
-gate:
-  allowedOriginsPattern: '^https?://(?:localhost|127.0.0.1|[^/]+\.example\.com)(?::[1-9]\d*)?/?$'
-
 # Bucket to use when storing config data in S3 compatible storage
 storageBucket: spinnaker
-
-# Change service type for UI service
-serviceType: ClusterIP
-
-# Resources to provide to each of
-# the Spinnaker components
-resources:
-  limits:
-    cpu: 1000m
-    memory: 1280Mi
-  requests:
-    cpu: 1000m
-    memory: 1280Mi
 
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -121,7 +85,7 @@ gcs:
 # with Spinnaker, visit:
 #   https://www.spinnaker.io/setup/ci/jenkins/
 jenkins:
-  enabled: true
+  enabled: false
   Master:
     Cpu: "500m"
     Memory: "512Mi"
