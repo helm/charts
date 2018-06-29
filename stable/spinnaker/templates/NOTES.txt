@@ -8,7 +8,7 @@
 
 To customize your Spinnaker installation. Create a shell in your Halyard pod:
 
-  kubectl exec --namespace {{ .Release.Namespace }} -it --namespace {{ .Release.Name }}-spinnaker-halyard-0 bash
+  kubectl exec --namespace {{ .Release.Namespace }} -it {{ .Release.Name }}-spinnaker-halyard-0 bash
 
 For more info on using Halyard to customize your installation, visit:
   https://www.spinnaker.io/reference/halyard/
