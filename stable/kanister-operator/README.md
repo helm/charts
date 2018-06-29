@@ -47,7 +47,7 @@ Parameter | Description | Default
 --- | --- | ---
 `rbac.create` | all required roles and SA will be created | `true`
 `serviceAccount.create`| specify if SA will be created | `true`
-`serviceAccount.name`| porvided service account name will be used | `None`
+`serviceAccount.name`| provided service account name will be used | `None`
 `image.repository` | controller container image repository | `kanisterio/controller`
 `image.tag` | controller container image tag | `v0.2.0`
 `image.pullPolicy` | controller container image pull policy | `IfNotPresent`
