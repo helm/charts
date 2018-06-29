@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "consul-exporter.fullname" . }}
+  labels:
+    app: {{ template "consul-exporter.name" . }}
+    chart: {{ template "consul-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.httpPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "consul-exporter.name" . }}
+    release: {{ .Release.Name }}
