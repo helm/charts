@@ -55,6 +55,19 @@ spec:
       {{- if .Values.master.schedulerName }}
       schedulerName: "{{ .Values.master.schedulerName }}"
       {{- end }}
+      {{- if .Values.master.persistence.enabled }}
+      initContainers:
+      - name: init-{{ template "redis.fullname" . }}
+        image: "{{ template "redis.image" . }}"
+        command: ["sh", "-c", "chmod 0777 {{ .Values.master.persistence.path }}/{{ .Values.master.persistence.subPath }}"]
+        securityContext:
+          fsGroup: 0
+          runAsUser: 0
+        volumeMounts:
+        - name: redis-data
+          mountPath: {{ .Values.master.persistence.path }}
+          subPath: {{ .Values.master.persistence.subPath }}
+      {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
         image: "{{ template "redis.image" . }}"
