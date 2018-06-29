@@ -4,7 +4,7 @@ metadata:
   name: {{ template "datadog.checksd.fullname" . }}
   labels:
     app: {{ template "datadog.checksd.fullname" . | quote }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
   annotations:

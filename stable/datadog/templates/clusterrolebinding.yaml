@@ -4,7 +4,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app: {{ template "datadog.fullname" . | quote }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
   name: {{ template "datadog.fullname" . }}
