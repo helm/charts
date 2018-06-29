@@ -15,39 +15,17 @@ spec:
         app: {{ template "fullname" . }}
         component: halyard
     spec:
-      {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-      {{- end }}
       restartPolicy: OnFailure
       volumes:
-      - name: kube-config
-        configMap:
-      {{- if .Values.kubeConfig.enabled }}
-          name: {{ .Values.kubeConfig.configMapName }}
-      {{- else }}
-          name: {{ template "fullname" . }}-default-kubeconfig
-      {{- end }}
       - name: halyard-config
         configMap:
           name: {{ template "fullname" . }}-halyard-config
-      {{- if .Values.gcs.enabled }}
-      - name: gcs-key
-        secret:
-          secretName: {{ template "fullname" . }}-gcs
-      {{- end }}
       containers:
       - name: halyard-install
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}
         volumeMounts:
         - name: halyard-config
           mountPath: /opt/halyard/scripts
-        {{- if .Values.gcs.enabled }}
-        - name: gcs-key
-          mountPath: /opt/gcs
-        {{- end }}
-        - name: kube-config
-          mountPath: /opt/kube
         command:
         - bash
         - -xe
