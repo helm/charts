@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-{- if .Values.nodeExporter.deploymentAnnotations }}
+{{- if .Values.nodeExporter.deploymentAnnotations }}
   annotations:
 {{ toYaml .Values.nodeExporter.deploymentAnnotations | indent 4 }}
 {{- end }}
