@@ -140,10 +140,17 @@ spec:
               port: http
             initialDelaySeconds: {{ .Values.Master.HealthProbesReadinessTimeout }}
 {{- end }}
+          # Resources configuration is a little hacky. This was to prevent breaking
+          # changes, and should be cleanned up in the future once everybody had
+          # enough time to migrate.
           resources:
+{{ if or .Values.Master.Cpu .Values.Master.Memory }}
             requests:
               cpu: "{{ .Values.Master.Cpu }}"
               memory: "{{ .Values.Master.Memory }}"
+{{ else }}
+{{ toYaml .Values.Master.resources | indent 12 }}
+{{ end }}
           volumeMounts:
 {{- if .Values.Persistence.mounts }}
 {{ toYaml .Values.Persistence.mounts | indent 12 }}
