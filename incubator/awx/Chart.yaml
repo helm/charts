@@ -1,6 +1,6 @@
 name: awx
-version: 0.0.3
-appVersion: 0.0.3
+version: 0.0.4
+appVersion: 0.0.4
 apiVersion: v1
 description: AWX provides a web-based user interface, REST API, and task engine built on top of Ansible.
 keywords:

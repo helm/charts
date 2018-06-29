@@ -14,6 +14,7 @@ spec:
     matchLabels:
       app: {{ template "awx.name" . }}
       release: {{ .Release.Name }}
+      component: {{ .Values.taskComponent }}
   template:
     metadata:
       labels:
