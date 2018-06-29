@@ -54,6 +54,8 @@ spec:
               - -c
               - |
                 cat /data/vf.gf.locator.pid | xargs ps
+            initialDelaySeconds: 60
+            periodSeconds: 5
           #TODO: change this to hit the ping endpoint
           readinessProbe:
             exec:
@@ -62,6 +64,8 @@ spec:
               - -c
               - |
                 cat /data/vf.gf.locator.pid | xargs ps
+            initialDelaySeconds: 60
+            periodSeconds: 5
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
