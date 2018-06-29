@@ -1,0 +1,8 @@
+mysql:
+  mysqlUser: "kolide"
+  mysqlPassword: CaeZoowi7xohv5oghaizaNga2toezei2
+redis:
+  redisPassword: ooveib6aud0xe0ahve4UceiTh2haev3n
+fleet:
+  auth:
+    jwt_key: pu5te3Aekieghai5chupeiGahBoomiph

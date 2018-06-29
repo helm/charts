@@ -5,16 +5,6 @@ Kolide's [fleet](https://github.com/kolide/fleet) s a state of the art host moni
 ## TL;DR;
 
 ---
-mysql:
-  mysqlUser: "kolide"
-  mysqlPassword: CaeZoowi7xohv5oghaizaNga2toezei2
-redis:
-  redisPassword: ooveib6aud0xe0ahve4UceiTh2haev3n
-fleet:
-  auth:
-    jwt_key: pu5te3Aekieghai5chupeiGahBoomiph
-
-
 ```console
 $ helm install stable/kolide-fleet \
     --set="mysql.mysqlUser=kolide" \
