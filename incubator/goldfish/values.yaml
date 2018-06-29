@@ -50,3 +50,4 @@ config:
 
 secrets:
   vault-token: ''
+  vault-addr: 'http://vault:8200'
