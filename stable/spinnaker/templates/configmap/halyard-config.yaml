@@ -15,7 +15,7 @@ data:
     $HAL_COMMAND deploy apply
   clean.sh: |
     export HAL_COMMAND='hal --daemon-endpoint http://{{ template "fullname" . }}-halyard:8064'
-    $HAL_COMMAND clean
+    $HAL_COMMAND deploy clean -q
   config.sh: |
     # Spinnaker version
     $HAL_COMMAND config version edit --version {{ .Values.halyard.spinnakerVersion }}
