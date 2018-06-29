@@ -66,6 +66,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `smtpPassword`                       | SMTP password                              | `nil`                                                      |
 | `smtpUsername`                       | User name for SMTP emails                  | `nil`                                                      |
 | `smtpProtocol`                       | SMTP protocol [`tls`, `ssl`]               | `nil`                                                      |
+| `replicaCount`                       | Number of WordPress Pods to run            | `1`                                                        |
 | `mariadb.enabled`                    | Deploy MariaDB container(s)                | `true`                                                     |
 | `mariadb.rootUser.password`        | MariaDB admin password                     | `nil`                                                      |
 | `mariadb.db.name`            | Database name to create                    | `bitnami_wordpress`                                        |
@@ -123,11 +124,10 @@ The following repo contains the recommended production settings for wordpress ca
 To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then:
 
 ```console
-$ 
 $ helm install --name my-release -f ./values-production.yaml stable/wordpress
-$ kubectl scale deployment my-wp-deployment --replicas=3 
 ```
-To use the /admin portal and to ensure you can scale wordpress you need to provide a ReadWriteMany PVC, if you dont have a provisioner for this type of storage, we recommend that you install the nfs provisioner and map it to a RWO volume.
+
+Note that [values-production.yaml](values-production.yaml) includes a replicaCount of 3, so there will be 3 WordPress pods. As a result, to use the /admin portal and to ensure you can scale wordpress you need to provide a ReadWriteMany PVC, if you don't have a provisioner for this type of storage, we recommend that you install the nfs provisioner and map it to a RWO volume.
 
 ```console
 $ helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
