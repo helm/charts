@@ -15,7 +15,7 @@ For more information on Spinnaker and its capabilities, see it's [documentation]
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/spinnaker
+$ helm install --name my-release stable/spinnaker --timeout 600
 ```
 
 Note that this chart pulls in many different Docker images so can take a while to fully install. 
@@ -55,5 +55,26 @@ for Spinnaker. If you want to add arbitrary clusters need to do the following:
       contexts:
       # Names of contexts available in the uploaded kubeconfig
       - my-context
+      # This is the context from the list above that you would like
+      # to deploy Spinnaker itself to.
+      deploymentContext: my-context
     ```
 
+## Customizing your installation
+
+While the default installation is ready to handle your Kubernetes deployments there are
+many different integrations that you can turn on with Spinnaker. In order to customize
+Spinnaker, you will use the [Halyard](https://www.spinnaker.io/reference/halyard/) command line `hal` 
+to edit the configuration and apply it to what has already been deployed.
+
+Halyard has an in-cluster daemon that stores your configuration. You can exec a shell in this pod to
+make and apply your changes. The Halyard daemon is configured with a persistent volume to ensure that
+your configuration data persists any node failures, reboots or upgrades.
+
+For example:
+
+```shell
+$ helm install -n cd stable/spinnaker
+$ kubectl exec -it cd-spinnaker-halyard-0 bash
+spinnaker@cd-spinnaker-halyard-0:/workdir$ hal version list
+```
