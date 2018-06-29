@@ -79,21 +79,3 @@ gcs:
   enabled: false
   project: my-project-name
   jsonKey: '<INSERT CLOUD STORAGE JSON HERE>'
-
-# Configuration for the Jenkins instance that is attached to the
-# igor component of Spinnaker. For more info about the Jenkins integration
-# with Spinnaker, visit:
-#   https://www.spinnaker.io/setup/ci/jenkins/
-jenkins:
-  enabled: false
-  Master:
-    Cpu: "500m"
-    Memory: "512Mi"
-    ServiceType: ClusterIP
-    CustomConfigMap: true
-    NodeSelector: {}
-
-  Agent:
-    Cpu: "500m"
-    Memory: "512Mi"
-    NodeSelector: {}
