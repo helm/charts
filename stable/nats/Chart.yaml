@@ -5,7 +5,7 @@ description: An open-source, cloud-native messaging system
 keywords:
 - nats
 - messaging
-- addresing
+- addressing
 - discovery
 home: https://nats.io/
 sources:
