@@ -331,6 +331,10 @@ spec:
             - name: CONCOURSE_INFLUXDB_INSECURE_SKIP_VERIFY
               value: {{ .Values.web.metrics.influxdb.insecureSkipVerify | quote}}
             {{- end }}
+            {{- if .Values.web.logLevel }}
+            - name: CONCOURSE_LOG_LEVEL
+              value: {{ .Values.web.logLevel | quote }}
+            {{- end }}
           ports:
             - name: atc
               containerPort: {{ .Values.concourse.atcPort }}

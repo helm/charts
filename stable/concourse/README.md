@@ -102,6 +102,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `concourse.genericOauth.authUrlParam` | Parameters (comma separated) to pass to the authentication server AuthURL | `nil` |
 | `concourse.genericOauth.scope` | Optional scope required to authorize user | `nil` |
 | `concourse.genericOauth.tokenUrl` | Generic OAuth provider TokenURL endpoint | `nil` |
+| `web.logLevel` | Override the Concourse Web logging level. E.g: debug, warn, error (concourse defaults to info) | `nil` |
 | `web.nameOverride` | Override the Concourse Web components name | `nil` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |

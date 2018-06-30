@@ -178,6 +178,11 @@ concourse:
 ## Configuration values for Concourse Web components.
 ##
 web:
+  ## Modify the log level (defaults to info)
+  ## options are: debug|info|error|fatal
+  ##
+  # logLevel: info
+
   ## Override the components name (defaults to web).
   ##
   # nameOverride:
