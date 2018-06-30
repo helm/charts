@@ -31,12 +31,12 @@ spec:
 {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ .Release.Name }}
 {{- end }}
-    {{- if .Values.external.enabled }}
+    {{- if and .Values.external.enabled (eq .Values.external.type "MultiPort") }}
       ## ref: https://github.com/Yolean/kubernetes-kafka/blob/master/kafka/50kafka.yml
       initContainers:
       - name: init-ext
-        image: "{{ .Values.external.init.image }}:{{ .Values.external.init.imageTag }}"
-        imagePullPolicy: "{{ .Values.external.init.imagePullPolicy }}"
+        image: "{{ .Values.external.multiPort.init.image }}:{{ .Values.external.multiPort.init.imageTag }}"
+        imagePullPolicy: "{{ .Values.external.multiPort.init.imagePullPolicy }}"
         command:
           - sh
           - -euxc
@@ -71,8 +71,8 @@ spec:
         - sh
         - -exc
         - |
-          trap "exit 0" TERM; \
-          while :; do \
+          trap "exit 0" TERM
+          while :; do
           java \
           -XX:+UnlockExperimentalVMOptions \
           -XX:+UseCGroupMemoryLimitForHeap \
@@ -81,8 +81,8 @@ spec:
           -jar \
           jmx_prometheus_httpserver.jar \
           {{ .Values.prometheus.jmx.port | quote }} \
-          /etc/jmx-kafka/jmx-kafka-prometheus.yml & \
-          wait $! || sleep 3; \
+          /etc/jmx-kafka/jmx-kafka-prometheus.yml &
+          wait $! || sleep 3
           done
         ports:
         - containerPort: {{ .Values.prometheus.jmx.port }}
@@ -130,9 +130,9 @@ spec:
         - containerPort: 9092
           name: kafka
         {{- if .Values.external.enabled }}
-          {{- $replicas := .Values.replicas | int }}
+          {{- $numPorts := and (eq .Values.external.type "MultiPort") (.Values.replicas | int) | default 1 }}
           {{- $root := . }}
-          {{- range $i, $e := until $replicas }}
+          {{- range $i, $e := until $numPorts }}
         - containerPort: {{ add $root.Values.external.firstListenerPort $i }}
           name: external-{{ $i }}
           {{- end }}
@@ -155,6 +155,12 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        {{- if .Values.external.enabled }}
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        {{- end }}
         - name: KAFKA_HEAP_OPTS
           value: {{ .Values.kafkaHeapOptions }}
         {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
@@ -181,9 +187,16 @@ spec:
         - sh
         - -exc
         - |
-          unset KAFKA_PORT && \
-          export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
-          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
+          {{- if .Values.external.enabled }}
+            {{- if eq .Values.external.type "MultiPort" }}
+          export EXTERNAL_PORT=$(( {{ .Values.external.firstListenerPort }} + ${HOSTNAME##*-}))
+            {{- else }}
+          export EXTERNAL_PORT={{ .Values.external.firstListenerPort }}
+            {{- end }}
+          {{- end }}
+          unset KAFKA_PORT
+          export KAFKA_BROKER_ID=${HOSTNAME##*-}
+          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }}
           exec /etc/confluent/docker/run
         volumeMounts:
         - name: datadir

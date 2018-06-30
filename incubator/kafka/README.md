@@ -57,7 +57,7 @@ following configurable parameters:
 | Parameter                      | Description                                                                                                     | Default                                                    |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
 | `image`                        | Kafka Container image name                                                                                      | `confluentinc/cp-kafka`                                    |
-| `imageTag`                     | Kafka Container image tag                                                                                       | `4.0.0`                                                    |
+| `imageTag`                     | Kafka Container image tag                                                                                       | `4.1.1`                                                    |
 | `imagePullPolicy`              | Kafka Container pull policy                                                                                     | `IfNotPresent`                                             |
 | `replicas`                     | Kafka Brokers                                                                                                   | `3`                                                        |
 | `component`                    | Kafka k8s selector key                                                                                          | `kafka`                                                    |
@@ -68,10 +68,11 @@ following configurable parameters:
 | `affinity`                     | Defines affinities and anti-affinities for pods as defined in: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity preferences                                                                                      | `{}`                                                       |
 | `tolerations`                  | List of node tolerations for the pods. https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/  | `[]`                                                       |
 | `external.enabled`             | If True, exposes Kafka brokers via NodePort (PLAINTEXT by default)                                              | `false`                                                    |
-| `external.servicePort`         | TCP port configured at external services (one per pod) to relay from NodePort to the external listener port.    | '19092'                                                    |
-| `external.firstListenerPort`   | TCP port which is added pod index number to arrive at the port used for NodePort and external listener port.    | '31090'                                                    |
+| `external.type`                | SinglePort or MultiPort Use single or range of nodePort port numbers                     | `SinglePort`                                                    |
+| `external.firstListenerPort`   | First port number for NodePort external listener range.      | `31090`                                                    |
 | `external.domain`              | Domain in which to advertise Kafka external listeners.                                                          | `cluster.local`                                            |
-| `external.init`                | External init container settings.                                                                               | (see `values.yaml`)                                        |
+| `external.singlePort.bootstapService.enabled` | Service for bottstraping external clients to brokers       | 'false'        |
+| `external.singlePort.bootstapService.type` | NodePort or LoadBalancer | `NodePort`      |
 | `rbac.enabled`                 | Enable a service account and role for the init container to use in an RBAC enabled cluster                      | `false`                                                    |
 | `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `{ offsets.topic.replication.factor: 3 }`                  |
 | `additionalPorts`              | Additional ports to expose on brokers.  Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar   | `{}`                                 |
@@ -161,7 +162,20 @@ Kafka has a rich ecosystem, with lots of tools. This sections is intended to com
 
 ### Connecting to Kafka from outside Kubernetes
 
-Review and optionally override to enable the example text concerned with external access in `values.yaml`.
+As well as setting `external.enabled: true` you will need to set a couple of broker settings to enable
+external access.  See `external` and `configurationOverrides` sections in the `values.yaml` file.
+
+There are 2 types of external access supported by the Chart.
+
+#### SinglePort
+
+This option configures a single NodePort for all replicas with 'externalTrafficPolicy: local' (disabling kubeproxy routing.)  Clients connect to the correct host IP directly via the broker advertisedListeners mechanism. Note that this option has the limitation that only 1 broker can be scheduled per host.
+
+You can also enable a bootstrap service with a conventional NodePort thus allowing clients to use a single bootstrap network address.
+
+This option has been tested with kubespray on AWS with calico networking.
+
+#### MultiPort
 
 Once configured, you should be able to reach Kafka via NodePorts, one per replica. In kops where private,
 topology is enabled, this feature publishes an internal round-robin DNS record using the following naming
