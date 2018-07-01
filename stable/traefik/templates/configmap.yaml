@@ -10,9 +10,10 @@ metadata:
 data:
   traefik.toml: |
     # traefik.toml
-    logLevel = "INFO"
     {{- if .Values.debug.enabled }}
     debug = true
+    {{- else }}
+    logLevel = "INFO"
     {{- end }}
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true

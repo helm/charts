@@ -7,7 +7,7 @@ metadata:
   name: {{ template "artifactory-ha.nginx.fullname" . }}
   labels:
     app: {{ template "artifactory-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "artifactory-ha.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     component: {{ .Values.nginx.name }}
@@ -22,7 +22,7 @@ spec:
     metadata:
       labels:
         app: {{ template "artifactory-ha.name" . }}
-        component: "{{ .Values.nginx.name }}"
+        component: {{ .Values.nginx.name }}
         release: {{ .Release.Name }}
     spec:
     {{- if .Values.imagePullSecrets }}
@@ -76,7 +76,7 @@ spec:
                     /etc/nginx/conf.d/artifactory.conf;
                 fi;
                 if ! grep -q 'proxy_http_version' /etc/nginx/conf.d/artifactory.conf; then
-                sed -i 's,\(proxy_pass .*\),proxy_http_version  1.1;\n    \1,g' /etc/nginx/conf.d/artifactory.conf;
+                sed -i 's,\(proxy_next_upstream .*\),proxy_http_version  1.1;\n    \1,g' /etc/nginx/conf.d/artifactory.conf;
                 fi;
                 sleep 5; nginx -s reload; touch /var/log/nginx/conf.done
         env:
@@ -88,6 +88,8 @@ spec:
           {{- end }}
         - name: SSL
           value: "{{ .Values.nginx.env.ssl }}"
+        - name: SKIP_AUTO_UPDATE_CONFIG
+          value: "{{ .Values.nginx.env.skipAutoConfigUpdate }}"
         ports:
         - containerPort: {{ .Values.nginx.internalPortHttp }}
         - containerPort: {{ .Values.nginx.internalPortHttps }}

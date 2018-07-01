@@ -92,8 +92,9 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `sumologic.addTimeStamp` | Option to control adding timestamp to logs. | `true`
 | `sumologic.containerLogsPath` | Specify the path in_tail should watch for container logs. | `/mnt/log/containers/*.log`
 | `sumologic.proxyUri` | Add the uri of the proxy environment if present. | `Nil`
+| `sumologic.enableStatWatcher` | Option to control the enabling of [stat_watcher](https://docs.fluentd.org/v1.0/articles/in_tail#enable_stat_watcher). | `true`
 | `image.name` | The image repository and name to pull from | `sumologic/fluentd-kubernetes-sumologic` |
-| `image.tag` | The image tag to pull | `v1.15` |
+| `image.tag` | The image tag to pull | `v1.16` |
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` |
 | `persistence.enabled` | Boolean value, used to turn on or off fluentd position file persistence, on nodes (requires Kubernetes >= 1.8) | `false` |
 | `persistence.hostPath` | The path, on each node, to a directory for fluentd pos files. You must create the directory on each node first or set `persistence.createPath` (requires Kubernetes >= 1.8) | `/var/run/fluentd-pos` |
@@ -246,3 +247,6 @@ spec:
         ports:
         - containerPort: 80
 ```
+
+### FluentD stops processing logs
+When dealing with large volumes of data (TB's from what we have seen), FluentD may stop processing logs, but continue to run.  This issue seems to be caused by the [scalability of the inotify process](https://github.com/fluent/fluentd/issues/1630) that is packaged with the FluentD in_tail plugin.  If you encounter this situation, setting the `ENABLE_STAT_WATCHER` to `false` should resolve this issue.

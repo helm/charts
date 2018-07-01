@@ -75,6 +75,8 @@ artifactory:
   license:
     secret:
     dataKey:
+  ## Create configMap with artifactory.config.import.xml and security.import.xml and pass name of configMap in following parameter
+  configMapName:
   membershipPort: 10017
   externalPort: 8081
   internalPort: 8081
@@ -98,9 +100,10 @@ artifactory:
     periodSeconds: 10
     successThreshold: 1
   persistence:
+    enabled: true
+    local: false
     redundancy: 3
     mountPath: "/var/opt/jfrog/artifactory"
-    enabled: true
     accessMode: ReadWriteOnce
     size: 200Gi
     ## artifactory data Persistent Volume Storage Class
@@ -172,6 +175,10 @@ artifactory:
   ## Customising their resources and java parameters is done here.
   primary:
     name: artifactory-ha-primary
+    persistence:
+      ## Set existingClaim to true or false
+      ## If true, you must prepare a PVC with the name
+      existingClaim: false
     ## Resources for the primary node
     resources: {}
     #  requests:
@@ -188,6 +195,10 @@ artifactory:
     #  other:
   node:
     name: artifactory-ha-member
+    persistence:
+      ## Set existingClaim to true or false
+      ## If true, you must prepare a PVC with the name
+      existingClaim: false
     replicaCount: 2
     ## Resources for the member nodes
     resources: {}
@@ -251,6 +262,7 @@ nginx:
   env:
     ssl: true
     # artUrl: "http://artifactory:8081/artifactory"
+    skipAutoConfigUpdate: false
   persistence:
     mountPath: "/var/opt/jfrog/nginx"
     enabled: false
