@@ -87,7 +87,7 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.ingress.annotations`               | GoCD ingress annotations.                                                                                     | `{}`                |
 | `server.ingress.tls`                       | GoCD ingress TLS configuration.                                                                               | `[]`                |
 | `server.healthCheck.initialDelaySeconds`   | Initial delays in seconds to start the health checks. **Note**:GoCD server start up time.                     | `90`                |
-| `server.healthCheck.periodSeconds`         | GoCD server heath check interval period.                                                                      | `15`                |
+| `server.healthCheck.periodSeconds`         | GoCD server health check interval period.                                                                      | `15`                |
 | `server.healthCheck.failureThreshold`      | Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.              | `10`                |
 
 #### Preconfiguring the GoCD Server
@@ -149,8 +149,8 @@ The cases when the attempt to preconfigure the GoCD server fails:
 | `agent.env.goAgentBootstrapperJvmArgs`    | GoCD Agent Bootstrapper JVM Args.                                                                                                                                                | `nil`                        |
 | `agent.healthCheck.enabled`               | Enable use of GoCD agent health checks.                                                                                                                                          | `false`                      |
 | `agent.healthCheck.initialDelaySeconds`   | GoCD agent start up time.                                                                                                                                                        | `60`                         |
-| `agent.healthCheck.periodSeconds`         | GoCD agent heath check interval period.                                                                                                                                          | `60`                         |
-| `agent.healthCheck.failureThreshold`      | GoCD agent heath check failure threshold. Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.                                       | `60`                         |
+| `agent.healthCheck.periodSeconds`         | GoCD agent health check interval period.                                                                                                                                          | `60`                         |
+| `agent.healthCheck.failureThreshold`      | GoCD agent health check failure threshold. Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.                                       | `60`                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
