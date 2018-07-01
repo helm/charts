@@ -5,7 +5,7 @@ metadata:
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "consul.chart" . }}
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
   serviceName: "{{ template "consul.fullname" . }}"
@@ -22,7 +22,7 @@ spec:
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: {{ template "consul.chart" . }}
         component: "{{ .Release.Name }}-{{ .Values.Component }}"
     spec:
       securityContext:
@@ -30,6 +30,10 @@ spec:
     {{- if .Values.affinity }}
       affinity:
 {{ tpl .Values.affinity . | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
       containers:
       - name: "{{ template "consul.fullname" . }}"

@@ -12,7 +12,7 @@ hub:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.11.0"
+  tag: "3.12.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -23,6 +23,9 @@ hub:
 
   ## Timeout for probe Hub readiness via HTTP request on Hub console
   readinessTimeout: 1
+
+  ## Timeout for probe Hub liveness via HTTP request on Hub console
+  livenessTimeout: 1
 
   ## Set the JAVA_OPTS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
@@ -94,7 +97,7 @@ chrome:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-chrome/tags/
-  tag: "3.11.0"
+  tag: "3.12.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -170,7 +173,7 @@ chromeDebug:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-chrome-debug/tags/
-  tag: "3.11.0"
+  tag: "3.12.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -245,7 +248,7 @@ firefox:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-firefox/tags/
-  tag: "3.11.0"
+  tag: "3.12.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -307,7 +310,7 @@ firefoxDebug:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-firefox-debug/tags/
-  tag: "3.11.0"
+  tag: "3.12.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images

@@ -4,11 +4,11 @@
 
 ## Introduction
 
-This chart adds the DataDog Agent to all nodes in your cluster via a DaemonSet. It also depends on the [kube-state-metrics chart](https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics).
+This chart adds the Datadog Agent to all nodes in your cluster via a DaemonSet. It also depends on the [kube-state-metrics chart](https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics).
 
 ## Prerequisites
 
-- Kubernetes 1.2+ with Beta APIs enabled
+Kubernetes 1.4+ or OpenShift 3.4+ (1.3 support is currently partial, full support is planned for 6.4.0).
 
 ## Installing the Chart
 
@@ -40,12 +40,15 @@ The following table lists the configurable parameters of the Datadog chart and t
 |             Parameter       |            Description             |                    Default                |
 |-----------------------------|------------------------------------|-------------------------------------------|
 | `datadog.apiKey`            | Your Datadog API key               |  `Nil` You must provide your own key      |
-| `image.repository`          | The image repository to pull from  | `datadog/docker-dd-agent`                 |
-| `image.tag`                 | The image tag to pull              | `6.2.0`                                  |
+| `datadog.apiKeyExistingSecret` | If set, use the secret with a provided name instead of creating a new one |`nil` |
+| `image.repository`          | The image repository to pull from  | `datadog/agent`                           |
+| `image.tag`                 | The image tag to pull              | `6.2.1`                                   |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
+| `datadog.logsEnabled`       | Enable log collection from containers    | `nil`                               |
+| `datadog.logsConfigContainerCollectAll`       | Add a log configuration that enabled log collection for all containers    | `nil`             |
 | `datadog.apmEnabled`        | Enable tracing from the host       | `nil`                                     |
 | `datadog.autoconf`          | Additional Datadog service discovery configurations | `nil`                    |
 | `datadog.checksd`           | Additional Datadog service checks  | `nil`                                     |
@@ -59,10 +62,15 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `kubeStateMetrics.enabled`  | If true, create kube-state-metrics | `true`                                    |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
+| `daemonset.nodeSelector`    | Node selectors                     | `nil`                                     |
+| `daemonset.affinity`        | Node affinities                    | `nil`                                     |
 | `daemonset.useHostNetwork`  | If true, use the host's network    | `nil`                                     |
+| `daemonset.useHostPID`.     | If true, use the host's PID namespace    | `nil`                                     |
 | `daemonset.useHostPort`     | If true, use the same ports for both host and container  | `nil`               |
 | `datadog.leaderElection`    | Adds the leader Election feature   | `false`                                   |
 | `datadog.leaderLeaseDuration`| The duration for which a leader stays elected.| `nil`                         |
+| `deployment.affinity`       | Node / Pod affinities              | `{}`                                      |
+| `deployment.tolerations`    | List of node taints to tolerate    | `[]`                                      |
 | `kube-state-metrics.rbac.create`| If true, create & use RBAC resources for kube-state-metrics | `true`       |
 | `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
 
@@ -88,6 +96,10 @@ Datadog offers a multitude of [tags](https://hub.docker.com/r/datadog/docker-dd-
 
 ### DaemonSet and Deployment
 By default installs Datadog agent inside a DaemonSet. You may also use Datadog agent inside a Deployment, if you want to collect Kubernetes API events or send custom metrics to DogStatsD endpoint.
+
+### Secret
+By default, this Chart creates a Secret and puts an API key in that Secret.
+However, you can use manually created secret by setting `datadog.apiKeyExistingSecret` value.
 
 ### confd and checksd
 
