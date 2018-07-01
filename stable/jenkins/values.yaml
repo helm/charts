@@ -36,6 +36,8 @@ Master:
   # JavaOpts: "-Xms512m -Xmx512m"
   # JenkinsOpts: ""
   # JenkinsUriPrefix: "/jenkins"
+  # Enable pod security context (must be `true` if RunAsUser or FsGroup are set)
+  UsePodSecurityContext: true
   # Set RunAsUser to 1000 to let Jenkins run as non-root user 'jenkins' which exists in 'jenkins/jenkins' docker image.
   # When setting RunAsUser to a different value than 0 also set FsGroup to the same value:
   # RunAsUser: <defaults to 0>
