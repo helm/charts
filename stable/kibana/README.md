@@ -52,6 +52,7 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `replicaCount` | desired number of pods | `1`
+`serviceAccountName` | serviceAccount that will run the pod | `nil`
 `resources` | pod resource requests & limits | `{}`
 `service.externalPort` | external port for the service | `443`
 `service.internalPort` | internal port for the service | `4180`

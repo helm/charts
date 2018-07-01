@@ -2,6 +2,10 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
+{{- if .Values.nodeExporter.deploymentAnnotations }}
+  annotations:
+{{ toYaml .Values.nodeExporter.deploymentAnnotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -24,6 +28,9 @@ spec:
         app: {{ template "prometheus.name" . }}
         component: "{{ .Values.nodeExporter.name }}"
         release: {{ .Release.Name }}
+{{- if .Values.nodeExporter.pod.labels }}
+{{ toYaml .Values.nodeExporter.pod.labels | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.nodeExporter" . }}
       containers:

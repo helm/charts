@@ -1,4 +1,4 @@
-appVersion: "0.8.4"
+appVersion: "0.8.5"
 
 images:
   ## The official drone (server) image, change tag to use a different version.
@@ -6,7 +6,7 @@ images:
   ##
   server:
     repository: "docker.io/drone/drone"
-    tag: 0.8.4
+    tag: 0.8.5
     pullPolicy: IfNotPresent
 
   ## The official drone (agent) image, change tag to use a different version.
@@ -14,7 +14,7 @@ images:
   ##
   agent:
     repository: "docker.io/drone/agent"
-    tag: 0.8.4
+    tag: 0.8.5
     pullPolicy: IfNotPresent
 
   ## The official docker (dind) image, change tag to use a different version.
@@ -170,6 +170,12 @@ dind:
   ##
   #  env:
   #    DRONE_DEBUG: "false"
+
+  ## Allowing custom command and args to DinD
+  ## ref: https://discourse.drone.io/t/docker-mtu-problem/1207
+  ##
+  #  command: '["/bin/sh"]'
+  #  args: '["-c", "dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --mtu=1350"]'
 
   ## Docker storage driver.
   ## Your DinD instance should be using the same driver as your host.

@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:
@@ -25,6 +25,14 @@ spec:
       - name: elastalert
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.command }}
+        command:
+{{ toYaml .Values.command | indent 10 }}
+{{- end }}
+{{- if .Values.args }}
+        args:
+{{ toYaml .Values.args | indent 10 }}
+{{- end }}
         volumeMounts:
           - name: config
             mountPath: '/opt/config'
