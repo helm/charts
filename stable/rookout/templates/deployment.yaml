@@ -26,11 +26,11 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: ROOKOUT_TOKEN
-              value: {{.Values.token}}
+              value: {{ .Values.token }}
             - name: ROOKOUT_LISTEN_ALL
-              value: {{.Values.listenAll}}
+              value: {{ .Values.listenAll }}
             - name: ROOKOUT_AGENT_TAGS
-              value: {{.Values.tags}}  
+              value: {{ .Values.tags }}  
           ports:
             - containerPort: 7486
           livenessProbe:
