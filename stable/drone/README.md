@@ -56,14 +56,16 @@ The following table lists the configurable parameters of the drone charts and th
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
 | `server.schedulerName`      | Drone **server** alternate scheduler name                                                     | `nil`                       |
 | `server.affinity`           | Drone **server** scheduling preferences                                                       | `{}`                        |
-| `server.extraContainers`    | Additional sidecar containers | `""` |
-| `server.extraVolumes`       | Additional volumes for use in extraContainers | `""` |
+| `server.nodeSelector`       | Drone **server** node labels for pod assignment                                               | `{}`                        |
+| `server.extraContainers`    | Additional sidecar containers                                                                 | `""`                        |
+| `server.extraVolumes`       | Additional volumes for use in extraContainers                                                 | `""`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
 | `agent.replicas`            | Drone **agent** replicas                                                                      | `1`                         |
 | `agent.annotations`         | Drone **agent** annotations                                                                   | `{}`                        |
 | `agent.resources`           | Drone **agent** pod resource requests & limits                                                | `{}`                        |
 | `agent.schedulerName`       | Drone **agent** alternate scheduler name                                                      | `nil`                       |
 | `agent.affinity`            | Drone **agent** scheduling preferences                                                        | `{}`                        |
+| `agent.nodeSelector`        | Drone **agent** node labels for pod assignment                                                | `{}`                        |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
 | `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |
