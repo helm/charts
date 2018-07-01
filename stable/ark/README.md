@@ -1,6 +1,6 @@
 # Ark-server
 
-This helm chart install ark version v0.8.1
+This helm chart installs Ark version v0.8.1
 https://github.com/heptio/ark/tree/v0.8.1
 
 ## Premise
@@ -11,7 +11,7 @@ As a workaround, the chart creates a Config resource via post-install hook.
 Since resources created by hooks are not managed by Helm, a pre-delete hook removes the Config CRD when the release is deleted.
 
 At the same time the resources created with the hook are completely transparent to Helm, that is, when you delete the
-chart those resources remain there. Hence we need a sencond hook for deleting them (see hook-delete.yaml)
+chart those resources remain there. Hence we need a second hook for deleting them (see hook-delete.yaml)
 
 ## ConfigMap customization
 Since we want to have a customizable chart it's important that the configmap is a template and not a static file.
@@ -22,7 +22,7 @@ To do this we add the keyword `tpl` when reading the file
 ## Prerequisites
 
 ### Secret for cloud provider credentials
-Ark server needs a IAM service account in order to run, if you don't have it you must create it.
+Ark server needs an IAM service account in order to run, if you don't have it you must create it.
 Please follow the official documentation: https://heptio.github.io/ark/v0.8.1/cloud-common
 
 Don't forget the step to create the secret
@@ -88,4 +88,4 @@ helm install --name ark --namespace heptio-ark ./ark
 ```
 
 ## Remove heptio/ark
-Remember that when you remove ark all backups remain untouched
+Remember that when you remove Ark all backups remain untouched
