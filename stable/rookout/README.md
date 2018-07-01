@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install --name my-release stable/rookout --set token=YOUR_ORGANIZATIONAL_TOKEN stable/rookout
+$ helm install --name my-release stable/rookout --set token=YOUR_ORGANIZATIONAL_TOKEN
 ```
 
 ## Introduction
@@ -21,7 +21,7 @@ This chart bootstraps a [Rookout Router](https://docs.rookout.com/docs/installat
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/rookout --set token=<YOUR_ORGANIZATIONAL_TOKEN> stable/rookout
+$ helm install --name my-release stable/rookout --set token=YOUR_ORGANIZATIONAL_TOKEN
 ```
 
 The command deploys Rookout on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
