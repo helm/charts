@@ -6,6 +6,9 @@ image:
 service:
   type: ClusterIP
 
+listenAll: True
+tags: ''
+
 nodeSelector: {}
 
 tolerations: []
