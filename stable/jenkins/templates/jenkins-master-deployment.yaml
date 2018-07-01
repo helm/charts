@@ -40,11 +40,13 @@ spec:
       affinity:
 {{ toYaml .Values.Master.Affinity | indent 8 }}
       {{- end }}
+{{- if .Values.Master.UsePodSecurityContext }}
       securityContext:
         runAsUser: {{ default 0 .Values.Master.RunAsUser }}
 {{- if and (.Values.Master.RunAsUser) (.Values.Master.FsGroup) }}
 {{- if not (eq .Values.Master.RunAsUser 0.0) }}
         fsGroup: {{ .Values.Master.FsGroup }}
+{{- end }}
 {{- end }}
 {{- end }}
       serviceAccountName: {{ if .Values.rbac.install }}{{ template "jenkins.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
