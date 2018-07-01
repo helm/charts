@@ -13,7 +13,7 @@ image:
 service:
   type: ClusterIP
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 persistence:
   enabled: true
   ## cassandra data Persistent Volume Storage Class
