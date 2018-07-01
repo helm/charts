@@ -1,0 +1,62 @@
+## Bitnami WordPress image version
+## ref: https://hub.docker.com/r/bitnami/phpmyadmin/tags/
+##
+image:
+  registry: docker.io
+  repository: bitnami/phpmyadmin
+  tag: 4.8.0
+  ## Specify a imagePullPolicy
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
+
+## User of the application
+## ref: https://github.com/bitnami/bitnami-docker-phpmyadmin#environment-variables
+##
+service:
+  type: ClusterIP
+  port: 80
+
+db:
+  ## using default mysql port explicitly
+  port: 3306
+  ## if you are deploying it as part of a release, and the db is also in the release
+  ## you can pass a suffix that will be used to find the DB in releasename-dbSuffix
+  ## please note that this setting precedes dbHost
+  # chartName: mariadb
+  # host: foo
+
+ingress:
+  enabled: false
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  ## path you want to map the phpmyadmin interface to
+  path: /
+  # host: foo
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+
+## Enable liveness and readiness probes
+probesEnabled: true
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
