@@ -47,7 +47,7 @@ exists with:
 ```
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 $ kubectl create ns kafka
-$ helm install --name my-kafka --set global.namespace=kafka incubator/kafka
+$ helm install --name my-kafka --namespace kafka incubator/kafka
 ```
 
 This chart includes a ZooKeeper chart as a dependency to the Kafka
