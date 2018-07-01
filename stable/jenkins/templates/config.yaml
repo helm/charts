@@ -196,9 +196,10 @@ data:
       cp -n /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
     done
 {{- end }}
+{{- $files := .Files }}
 {{- range $key, $val := .Values.Master.InitScripts }}
-  init{{ $key }}.groovy: |-
-{{ $val | indent 4 }}
+{{ $val | splitList "/" | last | indent 2 }}: |-
+{{ $files.Get $val | indent 4 }}
 {{- end }}
   plugins.txt: |-
 {{- if .Values.Master.InstallPlugins }}

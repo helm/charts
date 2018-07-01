@@ -93,9 +93,9 @@ Master:
   #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
   #   - "new groovy.json.JsonSlurperClassic"
   # List of groovy init scripts to be executed during Jenkins master start
-  InitScripts:
-  #  - |
-  #    print 'adding global pipeline libraries, register properties, bootstrap jobs...'
+  # InitScripts:
+  #   - folder/my-script.groovy
+  #   - root-script.groovy
   # Kubernetes secret that contains a 'credentials.xml' for Jenkins
   # CredentialsXmlSecret: jenkins-credentials
   # Kubernetes secret that contains files to be put in the Jenkins 'secrets' directory,
