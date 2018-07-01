@@ -19,6 +19,13 @@ cpuLimit: 100m
 memoryLimit: 30Mi
 debug:
   enabled: false
+
+deploymentStrategy: {}
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
+  # type: RollingUpdate
+
 nodeSelector: {}
   # key: value
 affinity: {}
