@@ -252,7 +252,11 @@ func doMain() int {
 		xmlWrap(fmt.Sprintf("Helm Test %s", path.Base(chartPath)), func() error {
 			o, execErr := output(exec.Command(helmPath, "test", rel))
 			if execErr != nil {
-				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
+				l, logsErr := output(exec.Command(kubectlPath, "logs", rel, "--namespace", ns))
+				if logsErr != nil {
+					return fmt.Errorf("%s Command output: %s\n%s", execErr, string(o[:]), string(logsErr[:]))
+				}
+				return fmt.Errorf("%s Command output: %s\n%s", execErr, string(o[:]), string(l[:]))
 			}
 			return nil
 		})
