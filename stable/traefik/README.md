@@ -91,6 +91,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
 | `loadBalancerIP`                | An available static IP you have reserved on your cloud platform      | None                                      |
 | `loadBalancerSourceRanges`      | List of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
+| `externalIP`                    | Static IP for the service                                            | None                                      |     
 | `whiteListSourceRange`          | Enable IP whitelisting at the entrypoint level.                      | `false`                                   |
 | `externalTrafficPolicy`         | Set the externalTrafficPolicy in the Service to either Cluster or Local | `Cluster`                              |
 | `replicas`                      | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
@@ -100,6 +101,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `cpuLimit`                      | CPU limit per Traefik pod                                            | `200m`                                    |
 | `memoryLimit`                   | Memory limit per Traefik pod                                         | `30Mi`                                    |
 | `rbac.enabled`                  | Whether to enable RBAC with a specific cluster role and binding for Traefik | `false`                            |
+| `deploymentStrategy`                  | Specify deployment spec rollout strategy                                       | `{}`                                      |
 | `nodeSelector`                  | Node labels for pod assignment                                       | `{}`                                      |
 | `affinity`                      | Affinity settings                                                    | `{}`                                      |
 | `tolerations`                   | List of node taints to tolerate                                      | `[]`                                      |
@@ -109,6 +111,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
 | `ssl.insecureSkipVerify`        | Whether to verify certs on SSL connections                           | `false`                                   |
+| `ssl.tlsMinVersion`             | Minimum TLS version for https entrypoint                             | None                                      |
 | `ssl.defaultCert`               | Base64 encoded default certificate                                    | A self-signed certificate                 |
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
