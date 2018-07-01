@@ -17,8 +17,15 @@ replicasCount: 1
 ## Service account has access be set to Cloud SQL instances
 ## the key must be encoded with base64
 ## e.g. `cat service-account.json | base64`
+## only used if no existing secret is specified
 ##
 serviceAccountKey: ""
+
+## Specify an existing secret holding the cloud-sql service account credentials
+existingSecret: ""
+## The key in the existing secret that stores the credenials
+existingSecretKey: ""
+
 
 ## SQL connection settings
 ##
@@ -42,13 +49,12 @@ cloudsql:
     # Port number for the proxy to expose for this instance.
     port: 5432
 
-## Configure resource requests and limits
-## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-##
-
 rbac:
   create: false
 
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
 resources:
   requests:
     cpu: 100m
