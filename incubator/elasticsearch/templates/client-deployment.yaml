@@ -86,12 +86,12 @@ spec:
 {{ toYaml .Values.client.resources | indent 12 }}
         readinessProbe:
           httpGet:
-            path: /_cluster/health?wait_for_status=yellow
+            path: /_cluster/health
             port: 9200
           initialDelaySeconds: 5
         livenessProbe:
           httpGet:
-            path: /_cluster/health?wait_for_status=yellow
+            path: /_cluster/health
             port: 9200
           initialDelaySeconds: 90
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
