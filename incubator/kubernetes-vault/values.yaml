@@ -1,0 +1,37 @@
+# Default values for kubernetes-vault.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 3
+image:
+  repository: boostport/kubernetes-vault
+  tag: v0.5.2
+  pullPolicy: Always
+app: kubernetes-vault
+service:
+  dummyPort: 80
+
+# Maps directly to https://github.com/Boostport/kubernetes-vault#configuration
+configMap:
+  vault:
+    addr: http://vault:8200
+    token: change-this-value
+  kubernetes:
+    service: "{{ template \"fullname\" . }}"
+    watchNamespace: ${KUBERNETES_NAMESPACE}
+    serviceNamespace: ${KUBERNETES_NAMESPACE}
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  name: ""
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi

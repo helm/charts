@@ -2,22 +2,23 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-opencart
+  name: {{ template "opencart.fullname" . }}-opencart
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "opencart.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
-  {{- if .Values.persistence.opencart.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.opencart.storageClass | quote }}
-  {{- else }}
-    volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
 spec:
   accessModes:
     - {{ .Values.persistence.opencart.accessMode | quote }}
   resources:
     requests:
       storage: {{ .Values.persistence.opencart.size | quote }}
+{{- if .Values.persistence.opencart.storageClass }}
+{{- if (eq "-" .Values.persistence.opencart.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.opencart.storageClass }}"
+{{- end }}
+{{- end }}
 {{- end -}}

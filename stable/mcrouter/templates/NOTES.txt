@@ -1,0 +1,15 @@
+If you'd like to test your instance, connect to one of the pods and start a telnet session:
+
+    MCROUTER_POD_IP=$(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath="{.items[0].status.podIP}")
+
+    kubectl run -it --rm alpine --image=alpine --restart=Never telnet $MCROUTER_POD_IP {{ .Values.mcrouterCommandParams.port }}
+
+In the telnet prompt enter the following commands:
+
+    set mykey 0 0 5
+
+    hello
+
+    get mykey
+
+    quit

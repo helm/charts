@@ -1,0 +1,6 @@
+1. Create a port-forward to the zeppelin pod:
+   kubectl port-forward -n {{ .Release.Namespace }} $(kubectl get pod -n {{ .Release.Namespace }} --selector=app={{ template "zeppelin.name" . }} -o jsonpath='{.items...metadata.name}') 8080:8080
+
+   Open browser to UI:
+
+   open http://localhost:8080

@@ -8,7 +8,7 @@ To install the Cassandra Chart into your Kubernetes cluster (This Chart requires
 helm install --namespace "cassandra" -n "cassandra" incubator/cassandra
 ```
 
-After installation succuess, you can get a status of Chart
+After installation succeeds, you can get a status of Chart
 
 ```bash
 helm status "cassandra"
@@ -20,7 +20,7 @@ helm delete  --purge "cassandra"
 ```
 
 ## Persist data
-You need to create `StorageClass` before able to persist data in persistent volume. 
+You need to create `StorageClass` before able to persist data in persistent volume.
 To create a `StorageClass` on Google Cloud, run the following
 
 ```bash
@@ -36,6 +36,14 @@ persistence:
 
 If you want to create a `StorageClass` on other platform, please see documentation here [https://kubernetes.io/docs/user-guide/persistent-volumes/](https://kubernetes.io/docs/user-guide/persistent-volumes/)
 
+When running a cluster without persistence, the termination of a pod will first initiate a decommissioning of that pod.
+Depending on the amount of data stored inside the cluster this may take a while. In order to complete a graceful
+termination, pods need to get more time for it. Set the following values in `values.yaml`:
+
+```yaml
+podSettings:
+  terminationGracePeriodSeconds: 1800
+```
 
 ## Install Chart with specific cluster size
 By default, this Chart will create a cassandra with 3 nodes. If you want to change the cluster size during installation, you can use `--set config.cluster_size={value}` argument. Or edit `values.yaml`
@@ -48,7 +56,7 @@ helm install --namespace "cassandra" -n "cassandra" --set config.cluster_size=5 
 ```
 
 ## Install Chart with specific resource size
-By default, this Chart will create a cassandra with CPU 2 vCPU and 4Gi of memery which is suitable for development environment.
+By default, this Chart will create a cassandra with CPU 2 vCPU and 4Gi of memory which is suitable for development environment.
 If you want to use this Chart for production, I would recommend to update the CPU to 4 vCPU and 16Gi. Also increase size of `max_heap_size` and `heap_new_size`.
 To update the settings, edit `values.yaml`
 
@@ -66,8 +74,40 @@ nodes:
       cloud.google.com/gke-nodepool: pool-db
 ```
 
+## Configuration
+
+The following table lists the configurable parameters of the Cassandra chart and their default values.
+
+| Parameter                  | Description                                     | Default                                                    |
+| -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
+| `image.repo`               | `cassandra` image repository                    | `cassandra`                                                |
+| `image.tag`                | `cassandra` image tag                           | `3`                                                        |
+| `image.pullPolicy`         | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `image.pullSecrets`        | Image pull secrets                              | `nil`                                                      |
+| `config.cluster_name`      | The name of the cluster.                        | `cassandra`                                                |
+| `config.cluster_size`      | The number of nodes in the cluster.             | `3`                                                        |
+| `config.seed_size`         | The number of seed nodes used to bootstrap new clients joining the cluster.                | `2`                                                        |
+| `config.num_tokens`        | Initdb Arguments                                | `256`                                                      |
+| `config.dc_name`           | Initdb Arguments                                | `DC1`                                                      |
+| `config.rack_name`         | Initdb Arguments                                | `RAC1`                                                     |
+| `config.endpoint_snitch`   | Initdb Arguments                                | `SimpleSnitch`                                             |
+| `config.max_heap_size`     | Initdb Arguments                                | `2048M`                                                    |
+| `config.heap_new_size`     | Initdb Arguments                                | `512M`                                                     |
+| `config.ports.cql`         | Initdb Arguments                                | `9042`                                                     |
+| `config.ports.thrift`      | Initdb Arguments                                | `9160`                                                     |
+| `config.ports.agent`       | The port of the JVM Agent (if any)              | `nil`                                                      |
+| `config.start_rpc`         | Initdb Arguments                                | `false`                                                    |
+| `persistence.enabled`      | Use a PVC to persist data                       | `true`                                                     |
+| `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
+| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |
+| `persistence.size`         | Size of data volume                             | `10Gi`                                                     |
+| `resources`                | CPU/Memory resource requests/limits             | Memory: `4Gi`, CPU: `2`                                    |
+| `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
+| `podManagementPolicy`      | podManagementPolicy of the StatefulSet          | `OrderedReady`                                             |
+| `updateStrategy.type`      | UpdateStrategy of the StatefulSet               | `OnDelete`                                                 |
+
 ## Scale cassandra
-When you want to change the cluser size of your cassandra, you can use the helm upgrade command.
+When you want to change the cluster size of your cassandra, you can use the helm upgrade command.
 
 ```bash
 helm upgrade --set config.cluster_size=5 cassandra incubator/cassandra

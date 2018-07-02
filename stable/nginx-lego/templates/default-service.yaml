@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-default-backend
+  name: {{ template "nginx-lego.fullname" . }}-default-backend
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
@@ -10,4 +10,4 @@ spec:
   - port: 80
     targetPort: 8080
   selector:
-    app: {{ template "fullname" . }}-default-backend
+    app: {{ template "nginx-lego.fullname" . }}-default-backend

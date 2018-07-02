@@ -1,0 +1,100 @@
+# Default values for dex
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+image: quay.io/coreos/dex
+imageTag: "v2.10.0"
+imagePullPolicy: "IfNotPresent"
+
+inMiniKube: false
+
+nodeSelector: {}
+
+replicas: 1
+
+service:
+  type: ClusterIP
+  port: 5556
+  # externalIPs:
+
+resources:
+  # Normal resource usage of dex server
+  # limits:
+  #   cpu: 100m
+  #   memory: 50Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 50Mi
+
+extraVolumes: []
+extraVolumeMounts: []
+
+selfSigned:
+  create: true
+  image: gcr.io/google_containers/kubernetes-dashboard-init-amd64
+  imageTag: "v1.0.0"
+  imagePullPolicy: "IfNotPresent"
+  caDays: 10000
+  certDays: 10000
+  altNames:
+  - dex.minikube.local
+  altIPs: {}
+#  - 192.168.42.219
+
+secret: {}
+#  Override the default secret names here.
+#  tlsName: dex-tls
+#  caName: dex-ca
+
+env: []
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+config:
+  issuer: https://dex.minikube.local:5556
+  storage:
+    type: kubernetes
+    config:
+      inCluster: true
+  logger:
+    level: debug
+  web:
+    https: 0.0.0.0:5556
+    tlsCert: /etc/dex/tls/tls.crt
+    tlsKey: /etc/dex/tls/tls.key
+  connectors:
+#  - type: github
+#    id: github
+#    name: GitHub
+#    config:
+#      clientID: xxxxxxxxxxxxxxx
+#      clientSecret: yyyyyyyyyyyyyyyyyyyyy
+#      redirectURI: https://dex.minikube.local:5556/callback
+#      org: kubernetes
+  oauth2:
+    skipApprovalScreen: true
+
+#  staticClients:
+#  - id: example-app
+#    redirectURIs:
+#    - 'http://192.168.42.219:31850/oauth2/callback'
+#    name: 'Example App'
+#    secret: ZXhhbXBsZS1hcHAtc2VjcmV0
+
+  enablePasswordDB: true
+#  staticPasswords:
+#  - email: "admin@example.com"
+#    # bcrypt hash of the string "password"
+#    hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+#    username: "admin"
+#    userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"

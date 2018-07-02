@@ -1,0 +1,15 @@
+This deployment will be incomplete unless you followed the prerequisites for setting up Vault:
+https://github.com/Boostport/kubernetes-vault/blob/master/quick-start.md#22-set-up-the-root-certificate-authority
+
+If you deployed this chart without a providing a Vault token, you can upgrade as follows:
+helm upgrade {{ .Release.Name }} \
+        --set vault.token=aaaa-bbbb-cccc incubator/kubernetes-vault
+
+View logs to ensure that kubernetes-vault is working with the following command to list your pods:
+kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" .}}"
+
+And then view logs:
+kubectl logs $podName
+
+If kubernetes-vault successfully contacted Vault and received a token, you will see Consul
+debug messages.

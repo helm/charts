@@ -7,7 +7,7 @@
 To install the chart with the release name my-release:
 
 ```console
-$ helm install --name=my-release incubator/kube-ops-view
+$ helm install --name=my-release stable/kube-ops-view
 ```
 
 The command deploys Kubernetes Operational View on the Kubernetes cluster in the default configuration.

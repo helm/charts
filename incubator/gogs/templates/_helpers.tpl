@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "name" -}}
+{{- define "gogs.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -10,7 +10,7 @@ Expand the name of the chart.
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "fullname" -}}
+{{- define "gogs.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -19,7 +19,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Create a fully qualified server name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "gogs.fullname" -}}
+{{- define "gogs.gogs.fullname" -}}
 {{- printf "%s-%s" .Release.Name "gogs" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -27,7 +27,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Create a default fully qualified postgresql name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "postgresql.fullname" -}}
+{{- define "gogs.postgresql.fullname" -}}
 {{- $name := default "postgresql" .Values.postgresql.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -35,9 +35,9 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{/*
 Determine database user based on use of postgresql dependency.
 */}}
-{{- define "database.host" -}}
+{{- define "gogs.database.host" -}}
 {{- if .Values.postgresql.install -}}
-{{- template "postgresql.fullname" . -}}
+{{- template "gogs.postgresql.fullname" . -}}
 {{- else -}}
 {{- .Values.service.gogs.databaseHost | quote -}}
 {{- end -}}
@@ -46,7 +46,7 @@ Determine database user based on use of postgresql dependency.
 {{/*
 Determine database user based on use of postgresql dependency.
 */}}
-{{- define "database.user" -}}
+{{- define "gogs.database.user" -}}
 {{- if .Values.postgresql.install -}}
 {{- .Values.postgresql.postgresUser | quote -}}
 {{- else -}}
@@ -57,7 +57,7 @@ Determine database user based on use of postgresql dependency.
 {{/*
 Determine database password based on use of postgresql dependency.
 */}}
-{{- define "database.password" -}}
+{{- define "gogs.database.password" -}}
 {{- if .Values.postgresql.install -}}
 {{- .Values.postgresql.postgresPassword | quote -}}
 {{- else -}}
@@ -68,7 +68,7 @@ Determine database password based on use of postgresql dependency.
 {{/*
 Determine database name based on use of postgresql dependency.
 */}}
-{{- define "database.name" -}}
+{{- define "gogs.database.name" -}}
 {{- if .Values.postgresql.install -}}
 {{- .Values.postgresql.postgresDatabase | quote -}}
 {{- else -}}

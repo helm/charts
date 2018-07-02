@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "orangehrm.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "orangehrm.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,28 +11,56 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "orangehrm.fullname" . }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
-      - name: {{ template "fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+      - name: {{ template "orangehrm.fullname" . }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: {{ .Values.allowEmptyPassword | quote }}
+        {{- if .Values.mariadb.enabled }}
         - name: MARIADB_HOST
-          value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
+          value: {{ template "orangehrm.mariadb.fullname" . }}
+        - name: MARIADB_PORT_NUMBER
           value: "3306"
-        - name: MARIADB_PASSWORD
+        - name: ORANGEHRM_DATABASE_NAME
+          value: {{ .Values.mariadb.db.name | quote }}
+        - name: ORANGEHRM_DATABASE_USER
+          value: {{ .Values.mariadb.db.user | quote }}
+        - name: ORANGEHRM_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "mariadb.fullname" . }}
-              key: mariadb-root-password
+              name: {{ template "orangehrm.mariadb.fullname" . }}
+              key: mariadb-password
+        {{- else }}
+        - name: MARIADB_HOST
+          value: {{ .Values.externalDatabase.host | quote }}
+        - name: MARIADB_PORT_NUMBER
+          value: {{ .Values.externalDatabase.port | quote }}
+        - name: ORANGEHRM_DATABASE_NAME
+          value: {{ .Values.externalDatabase.database | quote }}
+        - name: ORANGEHRM_DATABASE_USER
+          value: {{ .Values.externalDatabase.user | quote }}
+        - name: ORANGEHRM_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              key: db-password
+        {{- end }}
         - name: ORANGEHRM_USERNAME
           value: {{ default "" .Values.orangehrmUsername | quote }}
         - name: ORANGEHRM_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "orangehrm.fullname" . }}
               key: orangehrm-password
         - name: SMTP_HOST
           value: {{ default "" .Values.smtpHost | quote }}
@@ -43,7 +71,7 @@ spec:
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "orangehrm.fullname" . }}
               key: smtp-password
         - name: SMTP_PROTOCOL
           value: {{ default "none" .Values.smtpProtocol | quote }}
@@ -54,16 +82,14 @@ spec:
           containerPort: 443
         livenessProbe:
           httpGet:
-            path: /
+            path: /symfony/web/index.php
             port: http
           initialDelaySeconds: 120
-          timeoutSeconds: 5
         readinessProbe:
           httpGet:
-            path: /
+            path: /symfony/web/index.php
             port: http
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          initialDelaySeconds: 30
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -75,14 +101,14 @@ spec:
       - name: orangehrm-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-orangehrm
+          claimName: {{ template "orangehrm.fullname" . }}-orangehrm
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
+          claimName: {{ template "orangehrm.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}

@@ -44,6 +44,7 @@ By default a pre-generated access and secret key will be used. To override the d
 $ helm install --set accessKey=myaccesskey,secretKey=mysecretkey \
     stable/minio
 ```
+
 ### Updating Minio configuration via Helm
 
 [ConfigMap](https://kubernetes.io/docs/user-guide/configmap/) allows injecting containers with configuration data even while a Helm release is deployed.
@@ -70,26 +71,47 @@ The command removes all the Kubernetes components associated with the chart and 
 Configuration
 -------------
 
-The following tables lists the configurable parameters of the Minio chart and their default values.
+The following table lists the configurable parameters of the Minio chart and their default values.
 
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
-| `image`                    | Minio image name                    | `minio/minio`                                           |
-| `imageTag`                 | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2017-05-05T01-14-51Z`|
-| `imagePullPolicy`          | Image pull policy                   | `Always`                                                |
+| `image.repository`         | Image repository                    | `minio/minio`                                           |
+| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-06-09T03-43-35Z`|
+| `image.pullPolicy`         | Image pull policy                   | `IfNotPresent`                                          |
+| `mcImage.repository`       | Client image repository             | `minio/mc`                                              |
+| `mcImage.tag`              | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).| `RELEASE.2018-06-09T02-18-09Z`|
+| `mcImage.pullPolicy`       | mc Image pull policy                | `IfNotPresent`                                          |
+| `ingress.enabled`          | Enables Ingress                     | `false`                                                 |
+| `ingress.annotations`      | Ingress annotations                 | `{}`                                                    |
+| `ingress.hosts`            | Ingress accepted hostnames          | `[]`                                                    |
+| `ingress.tls`              | Ingress TLS configuration           | `[]`                                                    |
 | `mode`                     | Minio server mode (`standalone`, `shared` or `distributed`)| `standalone`                     |
-| `replicas`                 | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 16 | `4`    |
+| `replicas`                 | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 32 | `4`    |
 | `accessKey`                | Default access key (5 to 20 characters) | `AKIAIOSFODNN7EXAMPLE`                              |
 | `secretKey`                | Default secret key (8 to 40 characters) | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`          |
 | `configPath`               | Default config file location        | `~/.minio`                                              |
 | `mountPath`                | Default mount location for persistent drive| `/export`                                        |
-| `serviceType`              | Kubernetes service type             | `LoadBalancer`                                          |
-| `servicePort`              | Kubernetes port where service is exposed| `9000`                                              |
+| `service.type`             | Kubernetes service type             | `ClusterIP`                                             |
+| `service.port`             | Kubernetes port where service is exposed| `9000`                                              |
+| `service.annotations`      | Service annotations                 | `{}`                                                    |
 | `persistence.enabled`      | Use persistent volume to store data | `true`                                                  |
 | `persistence.size`         | Size of persistent volume claim     | `10Gi`                                                  |
+| `persistence.existingClaim`| Use an existing PVC to persist data | `nil`                                                   |
 | `persistence.storageClass` | Type of persistent volume claim     | `generic`                                               |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                                         |
+| `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""`                                  |
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                            |
+| `nodeSelector`             | Node labels for pod assignment      | `{}`                                                    |
+| `affinity`                 | Affinity settings for pod assignment | `{}`                                                   |
+| `tolerations`              | Toleration labels for pod assignment | `[]`                                                   |
+| `defaultBucket.enabled`    | If set to true, a bucket will be created after minio install | `false`                        |
+| `defaultBucket.name`       | Bucket name                         | `bucket`                                                |
+| `defaultBucket.policy`     | Bucket policy                       | `none`                                                  |
+| `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                 |
+| `azuregateway.enabled`     | Use minio as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
+| `gcsgateway.enabled`       | Use minio as a [Google Cloud Storage gateway](https://docs.minio.io/docs/minio-gateway-for-gcs)| `false` |
+| `gcsgateway.gcsKeyJson`    | credential json file of service account key | `""` |
+| `gcsgateway.projectId`     | Google cloud project id             | `""` |
 
 Some of the parameters above map to the env variables defined in the [Minio DockerHub image](https://hub.docker.com/r/minio/minio/).
 
@@ -167,3 +189,35 @@ $ helm install --set persistence.enabled=false stable/minio
 ```
 
 > *"An emptyDir volume is first created when a Pod is assigned to a Node, and exists as long as that Pod is running on that node. When a Pod is removed from a node for any reason, the data in the emptyDir is deleted forever."*
+
+Existing PersistentVolumeClaim
+------------------------------
+
+If a Persistent Volume Claim already exists, specify it during installation.
+
+1. Create the PersistentVolume
+1. Create the PersistentVolumeClaim
+1. Install the chart
+
+```bash
+$ helm install --set persistence.existingClaim=PVC_NAME stable/minio
+```
+
+NetworkPolicy
+-------------
+
+To enable network policy for Minio,
+install [a networking plugin that implements the Kubernetes
+NetworkPolicy spec](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy#before-you-begin),
+and set `networkPolicy.enabled` to `true`.
+
+For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting
+the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ pods in the namespace:
+
+    kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
+
+With NetworkPolicy enabled, traffic will be limited to just port 9000.
+
+For more precise policy, set `networkPolicy.allowExternal=true`. This will
+only allow pods with the generated client label to connect to Minio.
+This label will be displayed in the output of a successful install.

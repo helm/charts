@@ -8,16 +8,17 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
-  {{- if .Values.persistence.testlink.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.testlink.storageClass | quote }}
-  {{- else }}
-    volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
 spec:
   accessModes:
     - {{ .Values.persistence.testlink.accessMode | quote }}
   resources:
     requests:
       storage: {{ .Values.persistence.testlink.size | quote }}
+{{- if .Values.persistence.testlink.storageClass }}
+{{- if (eq "-" .Values.persistence.testlink.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.testlink.storageClass }}"
+{{- end }}
+{{- end }}
 {{- end -}}

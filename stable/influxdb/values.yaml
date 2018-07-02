@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
   repo: "influxdb"
-  tag: "1.2-alpine"
+  tag: "1.4-alpine"
   pullPolicy: IfNotPresent
 
 ## Specify a service type
@@ -10,20 +10,34 @@ image:
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
 service:
+  ## Add annotations to service
+  # annotations: {}
   type: ClusterIP
+  ## Add IP Cluster
+  # clusterIP: ""
+  ## Add external IPs that route to one or more cluster nodes
+  # externalIPs: []
+  ## Specify LoadBalancer IP (only allow on some cloud provider)
+  # loadBalancerIP: ""
+  ## Allow source IPs to access on service (if empty, any access allow)
+  # loadBalancerSourceRanges: []
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 ##
 persistence:
   enabled: false
   ## If true will use an existing PVC instead of creating one
   # useExisting: false
   ## Name of existing PVC to be used in the influx deployment
-  # name: 
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  # name:
+  ## influxdb data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass:
+  # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
 
@@ -36,30 +50,31 @@ setDefaultUser:
   ## Image of the container used for job
   ## Default: appropriate/curl:latest
   ##
-  # image: appropriate/curl:latest
+  image: appropriate/curl:latest
 
   ## Deadline for job so it does not retry forever.
   ## Default: activeDeadline: 300
   ##
-  # activeDeadline: 300
+  activeDeadline: 300
 
   ## Restart policy for job
   ## Default: OnFailure
-  # restartPolicy: OnFailure
+  restartPolicy: OnFailure
 
-  # user:
+  user:
 
     ## The user name
     ## Default: "admin"
-    # username: "admin"
+    username: "admin"
 
     ## User password
-    ## Default: (Randomly generated 10 characters of Ascii)
+    ## single quotes must be escaped (\')
+    ## Default: (Randomly generated 10 characters of AlphaNum)
     # password:
 
     ## User privileges
     ## Default: "WITH ALL PRIVILEGES"
-    # privileges: "WITH ALL PRIVILEGES"
+    privileges: "WITH ALL PRIVILEGES"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -70,8 +85,29 @@ resources:
   limits:
     memory: 16Gi
     cpu: 8
-    
-## Change InfluxDB configuration paramaters below:
+
+ingress:
+  enabled: false
+  tls: false
+  # secretName: my-tls-cert # only needed if tls above is true
+  hostname: influxdb.foobar.com
+  annotations:
+    # kubernetes.io/ingress.class: "nginx"
+    # kubernetes.io/tls-acme: "true"
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## The InfluxDB image uses several environment variables to automatically
+## configure certain parts of the server.
+## Ref: https://hub.docker.com/_/influxdb/
+env:
+  # - name: INFLUXDB_DB
+  #   value: "demo"
+
+## Change InfluxDB configuration parameters below:
 ## Defaults are indicated
 ## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
 config:
@@ -149,6 +185,9 @@ config:
     consistency_level: one
     separator: .
     udp_read_buffer: 0
+    # Uncomment to define graphite templates
+    # templates:
+    #   - "graphite.metric.*.*.* measurement.run"
   collectd:
     enabled: false
     bind_address: 25826

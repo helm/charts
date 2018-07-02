@@ -27,7 +27,7 @@ linkerd:
 
   ## linkerd Docker image
   ##
-  image: buoyantio/linkerd:0.9.1
+  image: buoyantio/linkerd:1.1.2
 
   ingress:
     ## If true, linkerd Ingress will be created
@@ -67,7 +67,7 @@ linkerd:
       memory: 512Mi
 
 kubectl:
-  image: buoyantio/kubectl:v1.4.0
+  image: buoyantio/kubectl:v1.6.2
   # Resource configuration for the kubectl pods
   resources:
     # limits:

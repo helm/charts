@@ -1,0 +1,18 @@
+mysql:
+  rootPassword: "Root Password here..."
+  user: joomla
+  password: "User Password here..."
+  database: joomla
+
+php:
+  repository: joomla
+  tag: fpm-php7
+  envVars:
+  - name: JOOMLA_DB_HOST
+    value: localhost
+  - name: JOOMLA_DB_USER
+    value: joomla
+  - name: JOOMLA_DB_PASSWORD
+    value: "User Password here..."
+  - name: JOOMLA_DB_DATABASE
+    value: joomla

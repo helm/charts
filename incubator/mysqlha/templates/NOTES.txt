@@ -1,0 +1,19 @@
+The MySQL cluster is comprised of {{ .Values.mysqlha.replicaCount }} MySQL pods: 1 master and {{ sub .Values.mysqlha.replicaCount 1 }} slaves. Each instance is accessible within the cluster through:
+
+    <pod-name>.{{ template "fullname" . }}
+
+`{{ template "fullname" . }}-0.{{ template "fullname" . }}` is designated as the master and where all writes should be executed against. Read queries can be executed against the `{{ template "fullname" . }}-readonly` service which distributes connections across all MySQL pods.
+
+To connect to your database:
+
+1. Obtain the root password: 
+
+    kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
+
+2. Run a pod to use as a client:
+
+    kubectl run mysql-client --image={{ .Values.mysqlImage }} -it --rm --restart=Never -- /bin/sh
+
+2. Open a connection to one of the MySQL pods
+
+    mysql -h {{ template "fullname" . }}-0.{{ template "fullname" . }} -p

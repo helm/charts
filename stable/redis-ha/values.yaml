@@ -1,0 +1,71 @@
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  server:
+    requests:
+      memory: 200Mi
+      cpu: 100m
+    limits:
+      memory: 700Mi
+  sentinel:
+    requests:
+      memory: 200Mi
+      cpu: 100m
+    limits:
+      memory: 200Mi
+
+## Node labels, tolerations, and affinities for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+nodeSelector: {}
+tolerations: []
+sentinelAffinity: |
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchLabels:
+          app: {{ template "redis-ha.name" . }}
+          release: {{ .Release.Name | quote }}
+          component: sentinel
+      topologyKey: kubernetes.io/hostname
+serverAffinity: |
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchLabels:
+          app: {{ template "redis-ha.name" . }}
+          release: {{ .Release.Name | quote }}
+          component: server
+      topologyKey: kubernetes.io/hostname
+
+## Redis image version
+redis_image: quay.io/smile/redis:4.0.8r0
+## replicas number for each component
+replicas:
+  servers: 3
+  sentinels: 3
+servers:
+  serviceType: ClusterIP  # [ClusterIP|LoadBalancer]
+  annotations: {}
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+## Configures redis with AUTH (requirepass & masterauth conf params)
+auth: false
+
+## Redis password
+## Defaults to a random 10-character alphanumeric string if not set and auth is true
+## ref: https://github.com/kubernetes/charts/blob/master/stable/redis-ha/templates/redis-auth-secret.yaml
+##
+## redisPassword:

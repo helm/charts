@@ -1,0 +1,106 @@
+{{- if and .Values.acsenginecluster.resourcegroup .Values.acsenginecluster.azurespappid .Values.acsenginecluster.azurespsecret .Values.acsenginecluster.azuresptenantid .Values.acsenginecluster.kubeconfigprivatekey .Values.acsenginecluster.clientprivatekey -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "acs-engine-autoscaler.fullname" . }}
+  labels:
+{{ include "acs-engine-autoscaler.labels.standard" . | indent 4 }}
+  annotations:
+    description: {{ .Chart.Description }}
+{{- with .Values.deploymentAnnotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+{{ include "acs-engine-autoscaler.labels.standard" . | indent 8 }}
+        openai/do-not-drain: "true"
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - name: {{ template "acs-engine-autoscaler.fullname" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: AZURE_SP_APP_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "acs-engine-autoscaler.fullname" . }}
+              key: azure-sp-app-id
+        - name: AZURE_SP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "acs-engine-autoscaler.fullname" . }}
+              key: azure-sp-secret
+        - name: AZURE_SP_TENANT_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "acs-engine-autoscaler.fullname" . }}
+              key: azure-sp-tenant-id
+        - name: KUBECONFIG_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "acs-engine-autoscaler.fullname" . }}
+              key: kubeconfig-private-key
+        - name: CLIENT_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "acs-engine-autoscaler.fullname" . }}
+              key: client-private-key
+        - name: CA_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "acs-engine-autoscaler.fullname" . }}
+              key: ca-private-key
+        command:
+            - python
+            - main.py
+            - --resource-group
+            - {{ .Values.acsenginecluster.resourcegroup }}
+            {{- if .Values.acsenginecluster.acsdeployment }}
+            - --acs-deployment
+            - {{ .Values.acsenginecluster.acsdeployment }}
+            {{- end }}
+            {{- if .Values.acsenginecluster.sleeptime }}
+            - --sleep
+            - {{ .Values.acsenginecluster.sleeptime | quote }}
+            {{- end }}
+            {{- if .Values.acsenginecluster.ignorepools }}
+            - --ignore-pools 
+            - {{ .Values.acsenginecluster.ignorepools }}
+            {{- end }}
+            {{- if .Values.acsenginecluster.spareagents }}
+            - --spare-agents 
+            - {{ .Values.acsenginecluster.spareagents | quote }}
+            {{- end }}
+            {{- if .Values.acsenginecluster.idlethreshold }}
+            - --idle-threshold 
+            - {{ .Values.acsenginecluster.idlethreshold | quote }}
+            {{- end }}
+            {{- if .Values.acsenginecluster.overprovision }}
+            - --over-provision 
+            - {{ .Values.acsenginecluster.overprovision | quote }}
+            {{- end }}
+            - -vvv
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      restartPolicy: Always
+      dnsPolicy: Default
+{{ end }}

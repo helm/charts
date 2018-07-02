@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "nginx-lego.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
@@ -9,7 +9,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "nginx-lego.fullname" . }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -34,5 +34,5 @@ spec:
 {{ toYaml .Values.nginx.resources | indent 10 }}
         args:
         - /nginx-ingress-controller
-        - --default-backend-service={{ .Release.Namespace }}/{{ template "fullname" . }}-default-backend
-        - --nginx-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}
+        - --default-backend-service={{ .Release.Namespace }}/{{ template "nginx-lego.fullname" . }}-default-backend
+        - --nginx-configmap={{ .Release.Namespace }}/{{ template "nginx-lego.fullname" . }}

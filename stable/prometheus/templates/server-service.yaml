@@ -3,7 +3,7 @@ kind: Service
 metadata:
 {{- if .Values.server.service.annotations }}
   annotations:
-{{ toYaml .Values.server.service.annotations | indent 4}}
+{{ toYaml .Values.server.service.annotations | indent 4 }}
 {{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
@@ -12,7 +12,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 {{- if .Values.server.service.labels }}
-{{ toYaml .Values.server.service.labels | indent 4}}
+{{ toYaml .Values.server.service.labels | indent 4 }}
 {{- end }}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
@@ -37,6 +37,9 @@ spec:
       port: {{ .Values.server.service.servicePort }}
       protocol: TCP
       targetPort: 9090
+    {{- if .Values.server.service.nodePort }}
+      nodePort: {{ .Values.server.service.nodePort }}
+    {{- end }}
   selector:
     app: {{ template "prometheus.name" . }}
     component: "{{ .Values.server.name }}"

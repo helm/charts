@@ -9,4 +9,4 @@ data:
   enable-vts-status: {{ .Values.nginx.configmap.enable_vts_status | quote }}
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "nginx-lego.fullname" . }}

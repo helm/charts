@@ -1,0 +1,22 @@
+{{- if .Values.dashboards }}
+  {{- range $provider, $dashboards := .Values.dashboards }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "grafana.fullname" $ }}-dashboards-{{ $provider }}
+  labels:
+    app: {{ template "grafana.name" $ }}
+    chart: {{ template "grafana.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+    dashboard-provider: {{ $provider }}
+data:
+  {{- range $key, $value := $dashboards }}
+    {{- if hasKey $value "json" }}
+  {{ $key }}.json: |
+{{ $value.json | indent 4 }}
+    {{- end }}
+  {{- end }}
+  {{- end }}
+{{- end }}

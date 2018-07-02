@@ -4,7 +4,7 @@ kind: Service
 metadata:
 {{- if .Values.kubeStateMetrics.service.annotations }}
   annotations:
-{{ toYaml .Values.kubeStateMetrics.service.annotations | indent 4}}
+{{ toYaml .Values.kubeStateMetrics.service.annotations | indent 4 }}
 {{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
@@ -13,7 +13,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 {{- if .Values.kubeStateMetrics.service.labels }}
-{{ toYaml .Values.kubeStateMetrics.service.labels | indent 4}}
+{{ toYaml .Values.kubeStateMetrics.service.labels | indent 4 }}
 {{- end }}
   name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
 spec:

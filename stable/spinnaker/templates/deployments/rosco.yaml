@@ -18,6 +18,10 @@ spec:
         app: {{ template "fullname" . }}
         component: rosco
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       containers:
         - image: {{ .Values.images.rosco }}
           name: rosco
@@ -33,7 +37,7 @@ spec:
               name: docker-sock
           readinessProbe:
             httpGet:
-              path: /env
+              path: /health
               port: 8087
             initialDelaySeconds: 20
             timeoutSeconds: 1

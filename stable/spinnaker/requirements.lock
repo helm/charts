@@ -1,17 +1,12 @@
 dependencies:
-- condition: ""
-  enabled: false
-  import-values: null
-  name: redis
+- name: redis
   repository: https://kubernetes-charts.storage.googleapis.com/
-  tags: null
-  version: 0.4.6
-- condition: ""
-  enabled: false
-  import-values: null
-  name: minio
+  version: 1.1.6
+- name: minio
   repository: https://kubernetes-charts.storage.googleapis.com/
-  tags: null
-  version: 0.1.0
-digest: sha256:aa4f719e4ca9190bce0694d4e786b1e40b372bf6938e7648befbe33959fcddb3
-generated: 2017-05-04T10:29:33.8770622-07:00
+  version: 1.1.1
+- name: jenkins
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 0.13.3
+digest: sha256:c41d8c94dd87eccc61df25f2cdea2fd35e370a89d2c6742028585c7998339c41
+generated: 2018-04-25T10:53:14.553461816+09:00

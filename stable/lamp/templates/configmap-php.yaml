@@ -1,0 +1,28 @@
+{{- if or .Values.mysql.sockets ( or .Values.php.fpmEnabled .Values.php.ini ) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{template "lamp.fullname" .}}-php
+  labels:
+    app: {{ template "lamp.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  additional.ini: |
+  {{- if .Values.php.ini }}
+{{ .Values.php.ini  | indent 4 }}
+  {{- end }}
+  {{- if .Values.mysql.sockets }}
+    mysqli.default_socket=/var/run/mysqld/mysqld.sock
+    pdo_mysql.default_socket=/var/run/mysqld/mysqld.sock
+  {{- end }}
+  {{- if .Values.php.fpmEnabled }}
+  zz-docker.conf: |
+    [global]
+    daemonize = no
+    [www]
+    listen = /var/run/php/php-fpm.sock
+    listen.mode = 0666
+  {{- end }}
+{{- end }}

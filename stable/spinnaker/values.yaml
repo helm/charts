@@ -1,7 +1,7 @@
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
 # For more info visit:
-#   http://www.spinnaker.io/v1.0/docs/target-deployment-configuration#section-docker-registry
+#   https://www.spinnaker.io/setup/providers/docker-registry/
 
 # Configure your Docker registries here
 accounts:
@@ -20,7 +20,17 @@ accounts:
 
 # Settings for notifications via email
 # For more info visit:
-#   http://www.spinnaker.io/docs/notifications-and-events-guide#section-email
+#   https://www.spinnaker.io/setup/features/notifications/#email
+
+kubeConfig:
+  # Use this when you want to register arbitrary clusters with Spinnaker
+  # Upload your ~/kube/.config to a secret
+  enabled: false
+  secretName: my-kubeconfig
+  secretKey: config
+  # List of contexts from the kubeconfig to make available to Spinnaker
+  contexts: []
+
 mail:
   enabled: false
   host: smtp.example.org
@@ -29,25 +39,40 @@ mail:
   fromAddress: spinnaker@example.org
   port: 25
 
+slack:
+  enabled: false
+  token:
+  botName: 'spinnakerbot'
+
 # Images for each component
 images:
-  clouddriver: quay.io/spinnaker/clouddriver:v1.599.0
-  echo: quay.io/spinnaker/echo:v1.132.0
-  deck: quay.io/spinnaker/deck:v2.1095.0
-  igor: quay.io/spinnaker/igor:v1.65.0
-  orca: quay.io/spinnaker/orca:v1.395.2
-  gate: quay.io/spinnaker/gate:v3.28.0
-  front50: quay.io/spinnaker/front50:v1.90.0
-  rosco: quay.io/spinnaker/rosco:v0.93.0
+  clouddriver: gcr.io/spinnaker-marketplace/clouddriver:2.0.0-20180221152902
+  echo: gcr.io/spinnaker-marketplace/echo:0.8.0-20180221133510
+  deck: gcr.io/spinnaker-marketplace/deck:2.1.0-20180221143146
+  igor: gcr.io/spinnaker-marketplace/igor:0.9.0-20180221133510
+  orca: gcr.io/spinnaker-marketplace/orca:0.10.0-20180221133510
+  gate: gcr.io/spinnaker-marketplace/gate:0.10.0-20180221133510
+  front50: gcr.io/spinnaker-marketplace/front50:0.9.0-20180221133510
+  rosco: gcr.io/spinnaker-marketplace/rosco:0.5.0-20180221133510
 
 # Change this if youd like to expose Spinnaker outside the cluster
 deck:
   host: localhost
   port: 9000
   protocol: http
+  ingress:
+    enabled: false
+    # annotations:
+      # ingress.kubernetes.io/ssl-redirect: 'true'
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    # tls:
+    #  - secretName: -tls
+    #    hosts:
+    #      - domain.com
 
 gate:
-  allowedOriginsPattern: '^https?://(?:localhost|[^/]+\.example\.com)(?::[1-9]\d*)?/?$'
+  allowedOriginsPattern: '^https?://(?:localhost|127.0.0.1|[^/]+\.example\.com)(?::[1-9]\d*)?/?$'
 
 # Bucket to use when storing config data in S3 compatible storage
 storageBucket: spinnaker
@@ -65,10 +90,16 @@ resources:
     cpu: 1000m
     memory: 1280Mi
 
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+# nodeSelector to provide to each of the Spinnaker components
+nodeSelector: {}
+
 # Redis password to use for the in-cluster redis service
 # Redis is not exposed publically
 redis:
   redisPassword: password
+  nodeSelector: {}
 
 # Minio access/secret keys for the in-cluster S3 usage
 # Minio is not exposed publically
@@ -78,6 +109,7 @@ minio:
   serviceType: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
+  nodeSelector: {}
 
 gcs:
   enabled: false
@@ -87,23 +119,17 @@ gcs:
 # Configuration for the Jenkins instance that is attached to the
 # igor component of Spinnaker. For more info about the Jenkins integration
 # with Spinnaker, visit:
-#   http://www.spinnaker.io/docs/jenkins-script-execution-stage
+#   https://www.spinnaker.io/setup/ci/jenkins/
 jenkins:
+  enabled: true
   Master:
-    Name: jenkins-master
-    Image: "gcr.io/kubernetes-charts-ci/jenkins-master-k8s"
-    ImageTag: "v0.6.0"
-    ImagePullPolicy: "Always"
-    Component: "jenkins-master"
     Cpu: "500m"
     Memory: "512Mi"
-    ServicePort: 8080
     ServiceType: ClusterIP
-    ContainerPort: 8080
-    SlaveListenerPort: 50000
+    CustomConfigMap: true
+    NodeSelector: {}
 
   Agent:
-    Image: viglesiasce/spinnaker-jenkins-agent
-    ImageTag: v0.2.0
     Cpu: "500m"
     Memory: "512Mi"
+    NodeSelector: {}

@@ -21,14 +21,17 @@ spec:
       - name: {{ .Values.name }}
         image: {{ .Values.image }}:{{ .Values.imageTag }}
         args:
-        - --in-cluster
         - --interval={{ .Values.interval }}
         - --labels={{ .Values.labels }}
         - --annotations={{ .Values.annotations }}
         - --namespaces={{ .Values.namespaces }}
-        {{- if not .Values.dryRun}}
+        {{- if not .Values.dryRun }}
         - --no-dry-run
         {{- end }}
+        - --excluded-weekdays={{ .Values.excludedWeekdays }}
+        - --excluded-times-of-day={{ .Values.excludedTimesOfDay }}
+        - --excluded-days-of-year={{ .Values.excludedDaysOfYear }}
+        - --timezone={{ .Values.timezone }}
         resources:
           requests:
             cpu: {{ .Values.resources.cpu }}
@@ -36,3 +39,8 @@ spec:
           limits:
             cpu: {{ .Values.resources.cpu }}
             memory: {{ .Values.resources.memory }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ printf "%s-%s" .Release.Name .Values.name }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end -}}

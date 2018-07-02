@@ -1,3 +1,10 @@
+global:
+  ## NodeSelector to be used in every deployment
+  ## hub, chrome, firefox, chromeDebug and firefoxDebug
+  ## can also be spceifed at chart level see below
+  nodeSelector:
+  #  label: value
+
 hub:
   ## The repository and image
   ## ref: https://hub.docker.com/r/selenium/hub/
@@ -5,14 +12,20 @@ hub:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "2.53.1"
+  tag: "3.12.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
   ## The port which the hub listens on
   port: 4444
+
+  ## Timeout for probe Hub readiness via HTTP request on Hub console
+  readinessTimeout: 1
+
+  ## Timeout for probe Hub liveness via HTTP request on Hub console
+  livenessTimeout: 1
 
   ## Set the JAVA_OPTS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
@@ -20,14 +33,14 @@ hub:
 
   ## Set the SE_OPTS environment variable
   ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
-  # seOpts: 
+  # seOpts:
 
-  ## Defining a JMX port will open the port on the container, however, it 
+  ## Defining a JMX port will open the port on the container, however, it
   ## requires additional javaOpts, ie
   ## javaOpts: >
-  ##   -Dcom.sun.management.jmxremote.port=4000 
-  ##   -Dcom.sun.management.jmxremote.authenticate=false 
-  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ##   -Dcom.sun.management.jmxremote.port=4000
+  ##   -Dcom.sun.management.jmxremote.authenticate=false
+  ##   -Dcom.sun.management.jmxremote.ssl=false
   ## ref: http://openjdk.java.net/groups/jmx/
   # jmxPort: 4000
 
@@ -69,19 +82,24 @@ hub:
   # gridUnregisterIfStillDownAfer: 30000
   # timeZone: UTC
 
+  ## NodeSelector to be used for the hub
+  nodeSelector:
+  #  label: value
+
+
 chrome:
   ## Enable the creation of a node-chrome pod
   enabled: false
 
   ## The repository and image
-  ## ref: https://hub.docker.com/r/selenium/hub/
+  ## ref: https://hub.docker.com/r/selenium/node-chrome/
   image: "selenium/node-chrome"
 
   ## The tag for the image
-  ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "2.53.1"
+  ## ref: https://hub.docker.com/r/selenium/node-chrome/tags/
+  tag: "3.12.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
@@ -94,14 +112,14 @@ chrome:
 
   ## Set the SE_OPTS environment variable
   ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
-  # seOpts: 
+  # seOpts:
 
-  ## Defining a JMX port will open the port on the container, however, it 
+  ## Defining a JMX port will open the port on the container, however, it
   ## requires additional javaOpts, ie
   ## javaOpts: >
-  ##   -Dcom.sun.management.jmxremote.port=4000 
-  ##   -Dcom.sun.management.jmxremote.authenticate=false 
-  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ##   -Dcom.sun.management.jmxremote.port=4000
+  ##   -Dcom.sun.management.jmxremote.authenticate=false
+  ##   -Dcom.sun.management.jmxremote.ssl=false
   ## ref: http://openjdk.java.net/groups/jmx/
   # jmxPort: 4000
 
@@ -140,19 +158,24 @@ chrome:
   # nodePort: 5555
   # timeZone: UTC
 
+  ## NodeSelector to be used for chrome
+  nodeSelector:
+  #  label: value
+
+
 chromeDebug:
-  ## Enable the creation of a node-chrome pod
+  ## Enable the creation of a node-chrome-debug pod
   enabled: false
 
   ## The repository and image
-  ## ref: https://hub.docker.com/r/selenium/hub/
+  ## ref: https://hub.docker.com/r/selenium/node-chrome-debug/
   image: "selenium/node-chrome-debug"
 
   ## The tag for the image
-  ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "2.53.1"
+  ## ref: https://hub.docker.com/r/selenium/node-chrome-debug/tags/
+  tag: "3.12.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
@@ -165,14 +188,14 @@ chromeDebug:
 
   ## Set the SE_OPTS environment variable
   ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
-  # seOpts: 
+  # seOpts:
 
-  ## Defining a JMX port will open the port on the container, however, it 
+  ## Defining a JMX port will open the port on the container, however, it
   ## requires additional javaOpts, ie
   ## javaOpts: >
-  ##   -Dcom.sun.management.jmxremote.port=4000 
-  ##   -Dcom.sun.management.jmxremote.authenticate=false 
-  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ##   -Dcom.sun.management.jmxremote.port=4000
+  ##   -Dcom.sun.management.jmxremote.authenticate=false
+  ##   -Dcom.sun.management.jmxremote.ssl=false
   ## ref: http://openjdk.java.net/groups/jmx/
   # jmxPort: 4000
 
@@ -211,19 +234,23 @@ chromeDebug:
   # nodePort: 5555
   # timeZone: UTC
 
+  ## NodeSelector to be used for chromeDebug
+  nodeSelector:
+  #  label: value
+
 firefox:
-  ## Enable the creation of a node-chrome pod
+  ## Enable the creation of a node-firefox pod
   enabled: false
 
   ## The repository and image
-  ## ref: https://hub.docker.com/r/selenium/hub/
+  ## ref: https://hub.docker.com/r/selenium/node-firefox/
   image: "selenium/node-firefox"
 
   ## The tag for the image
-  ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "2.53.1"
+  ## ref: https://hub.docker.com/r/selenium/node-firefox/tags/
+  tag: "3.12.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
@@ -236,14 +263,14 @@ firefox:
 
   ## Set the SE_OPTS environment variable
   ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
-  # seOpts: 
+  # seOpts:
 
-  ## Defining a JMX port will open the port on the container, however, it 
+  ## Defining a JMX port will open the port on the container, however, it
   ## requires additional javaOpts, ie
   ## javaOpts: >
-  ##   -Dcom.sun.management.jmxremote.port=4000 
-  ##   -Dcom.sun.management.jmxremote.authenticate=false 
-  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ##   -Dcom.sun.management.jmxremote.port=4000
+  ##   -Dcom.sun.management.jmxremote.authenticate=false
+  ##   -Dcom.sun.management.jmxremote.ssl=false
   ## ref: http://openjdk.java.net/groups/jmx/
   # jmxPort: 4000
 
@@ -269,19 +296,23 @@ firefox:
   # nodePort: 5555
   # timeZone: UTC
 
+  ## NodeSelector to be used for firefox
+  nodeSelector:
+  #  label: value
+
 firefoxDebug:
-  ## Enable the creation of a node-chrome pod
+  ## Enable the creation of a node-firefox-debug pod
   enabled: false
 
   ## The repository and image
-  ## ref: https://hub.docker.com/r/selenium/hub/
+  ## ref: https://hub.docker.com/r/selenium/node-firefox-debug/
   image: "selenium/node-firefox-debug"
 
   ## The tag for the image
-  ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "2.53.1"
+  ## ref: https://hub.docker.com/r/selenium/node-firefox-debug/tags/
+  tag: "3.12.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
@@ -294,14 +325,14 @@ firefoxDebug:
 
   ## Set the SE_OPTS environment variable
   ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
-  # seOpts: 
+  # seOpts:
 
-  ## Defining a JMX port will open the port on the container, however, it 
+  ## Defining a JMX port will open the port on the container, however, it
   ## requires additional javaOpts, ie
   ## javaOpts: >
-  ##   -Dcom.sun.management.jmxremote.port=4000 
-  ##   -Dcom.sun.management.jmxremote.authenticate=false 
-  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ##   -Dcom.sun.management.jmxremote.port=4000
+  ##   -Dcom.sun.management.jmxremote.authenticate=false
+  ##   -Dcom.sun.management.jmxremote.ssl=false
   ## ref: http://openjdk.java.net/groups/jmx/
   # jmxPort: 4000
 
@@ -327,3 +358,6 @@ firefoxDebug:
   # nodePort: 5555
   # timeZone: UTC
 
+  ## NodeSelector to be used for firefoxDebug
+  nodeSelector:
+  #  label: value

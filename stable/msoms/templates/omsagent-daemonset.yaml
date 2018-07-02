@@ -1,0 +1,81 @@
+{{- if and (ne .Values.omsagent.secret.key "<your_workspace_key>") (ne .Values.omsagent.secret.wsid "<your_workspace_id>")}}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "msoms.fullname" . }}
+  labels:
+    app: {{ template "msoms.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+ updateStrategy:
+    type: RollingUpdate
+ template:
+  metadata:
+   labels:
+    release: {{ .Release.Name }}
+    app: {{ template "msoms.name" .   }}
+   annotations:
+    agentVersion: {{ .Values.omsagent.image.tag }}
+    dockerProviderVersion: {{ .Values.omsagent.image.dockerProviderVersion }}
+  spec:
+   containers:
+     - name: {{ template "msoms.name" . }}
+       image: "microsoft/oms:{{ .Values.omsagent.image.tag }}"
+       imagePullPolicy: {{ .Values.omsagent.image.pullPolicy }}
+       resources:
+{{ toYaml .Values.resources | indent 8 }}
+       securityContext:
+         privileged: true
+       ports:
+       - containerPort: 25225
+         protocol: TCP
+       - containerPort: 25224
+         protocol: UDP
+       volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker-sock
+        - mountPath: /var/log
+          name: host-log
+        - mountPath: /var/lib/docker/containers
+          name: containerlog-path
+        - mountPath: /etc/omsagent-secret
+          name: omsagent-secret
+          readOnly: true
+       livenessProbe:
+        exec:
+         command:
+         - /bin/bash
+         - -c
+         - ps -ef | pgrep omsagent
+        initialDelaySeconds: 60
+        periodSeconds: 60
+   volumes:
+    - name: docker-sock
+      hostPath:
+       path: /var/run/docker.sock
+    - name: host-log
+      hostPath:
+       path: /var/log
+    - name: containerlog-path
+      hostPath:
+       path: /var/lib/docker/containers
+    - name: omsagent-secret
+      secret:
+       secretName: {{ template "msoms.fullname" .}}
+{{- if .Values.nodeSelector }}       
+   nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 4 }}     
+{{- end }}         
+   # Tolerate a NoSchedule taint on master that ACS Engine sets.
+   tolerations:
+    - key: "node-role.kubernetes.io/master"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+{{- if .Values.tolerations }}       
+{{ toYaml .Values.tolerations | indent 4 }}     
+{{- end }}       
+
+{{- end }}               

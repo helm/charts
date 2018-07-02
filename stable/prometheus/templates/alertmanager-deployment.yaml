@@ -11,6 +11,10 @@ metadata:
   name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
   replicas: {{ .Values.alertmanager.replicaCount }}
+  {{- if .Values.server.strategy }}
+  strategy:
+{{ toYaml .Values.server.strategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
     {{- if .Values.alertmanager.podAnnotations }}
@@ -22,21 +26,34 @@ spec:
         component: "{{ .Values.alertmanager.name }}"
         release: {{ .Release.Name }}
     spec:
+{{- if .Values.alertmanager.schedulerName }}
+      schedulerName: "{{ .Values.alertmanager.schedulerName }}"
+{{- end }}
+      serviceAccountName: {{ template "prometheus.serviceAccountName.alertmanager" . }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}
           image: "{{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}"
           imagePullPolicy: "{{ .Values.alertmanager.image.pullPolicy }}"
+          env:
+            {{- range $key, $value := .Values.alertmanager.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
           args:
             - --config.file=/etc/config/alertmanager.yml
             - --storage.path={{ .Values.alertmanager.persistentVolume.mountPath }}
           {{- range $key, $value := .Values.alertmanager.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
+          {{- if .Values.alertmanager.baseURL }}
+            - --web.external-url={{ .Values.alertmanager.baseURL }}
+          {{- end }}
+
           ports:
             - containerPort: 9093
           readinessProbe:
             httpGet:
-              path: /#/status
+              path: {{ .Values.alertmanager.prefixURL }}/#/status
               port: 9093
             initialDelaySeconds: 30
             timeoutSeconds: 30
@@ -54,7 +71,7 @@ spec:
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
-            - --webhook-url=http://localhost:9093/-/reload
+            - --webhook-url=http://localhost:9093{{ .Values.alertmanager.prefixURL }}/-/reload
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:
@@ -65,10 +82,22 @@ spec:
       nodeSelector:
 {{ toYaml .Values.alertmanager.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.alertmanager.securityContext }}
+      securityContext:
+{{ toYaml .Values.alertmanager.securityContext | indent 8 }}
+    {{- end }}
+    {{- if .Values.alertmanager.tolerations }}
+      tolerations:
+{{ toYaml .Values.alertmanager.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.alertmanager.affinity }}
+      affinity:
+{{ toYaml .Values.alertmanager.affinity | indent 8 }}
+    {{- end }}
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "prometheus.alertmanager.fullname" . }}
+            name: {{ if .Values.alertmanager.configMapOverrideName }}{{ .Release.Name }}-{{ .Values.alertmanager.configMapOverrideName }}{{- else }}{{ template "prometheus.alertmanager.fullname" . }}{{- end }}
         - name: storage-volume
         {{- if .Values.alertmanager.persistentVolume.enabled }}
           persistentVolumeClaim:

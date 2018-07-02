@@ -1,0 +1,28 @@
+{{- if .Values.token -}}
+
+Weave Cloud agents had been installed!
+
+First, verify all Pods are running:
+
+  kubectl get pods -n {{ .Release.Namespace }}
+
+Next, login to Weave Cloud (https://cloud.weave.works) and verify the agents are connect to your instance.
+
+If you need help or have any question, join our Slack to chat to us – https://slack.weave.works.
+
+Happy hacking!
+
+{{- else -}}
+#######################################################
+####  ERROR: Weave Cloud service token is missing  ####
+#######################################################
+
+The installation of Weave Cloud agents is incomplete until you set the service token.
+
+To retrieve your Weave Cloud service token, log in to your instance first: https://cloud.weave.works/instances
+
+Then run:
+
+  helm upgrade {{ .Release.Name }} --set token=<YOUR_WEAVE_CLOUD_SERVICE_TOKEN> stable/weave-cloud
+
+{{- end }}

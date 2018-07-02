@@ -1,0 +1,34 @@
+{{- $agent := index .Values "weave-scope-agent" -}}
+You should now be able to access the Scope frontend in your web browser, by 
+{{- if $agent.probeToken }}
+logging into https://cloud.weave.works/ with your credentials.
+{{- else if $agent.scopeFrontend }} going to http://{{ $agent.scopeFrontend }}.
+{{- else if eq .Values.global.service.type "LoadBalancer" }}
+going to the URL given by:
+
+kubectl -n {{ .Release.Namespace }} get svc {{ .Values.global.service.name | default (include "toplevel.fullname" .) }} \
+-o jsonpath='http://{.status.loadBalancer.ingress[0].hostname}:{{ .Values.global.service.port }}/{"\n"}'
+{{- else if eq .Values.global.service.type "NodePort" }}
+going to the address or hostname of any node in the cluster, using http 
+and the port given by:
+
+SCOPE_PORT=$(kubectl -n {{ .Release.Namespace }} get svc {{ .Values.global.service.name | default (include "toplevel.fullname" .) }} \
+-o jsonpath='{.spec.ports[?(@.name==http)].nodePort}'); echo $SCOPE_PORT
+
+Most likely one or more of the URLs given by this pipeline will work:
+
+SCOPE_PORT=$(kubectl -n {{ .Release.Namespace }} get svc {{ .Values.global.service.name }} \
+-o jsonpath='{.spec.ports[?(@.name==http)].nodePort}'); \
+kubectl get nodes -o jsonpath='{.items[0].status.addresses[*].address}' | \
+xargs -I{} -d" " echo http://{}:$SCOPE_PORT 
+{{- else }}
+using kubectl port-forward:
+
+kubectl -n {{ .Release.Namespace }} port-forward $(kubectl -n {{ .Release.Namespace }} get endpoints \
+{{ .Values.global.service.name | default (include "toplevel.fullname" .) }} -o jsonpath='{.subsets[0].addresses[0].targetRef.name}') 8080:4040
+
+then browsing to http://localhost:8080/.
+{{- end }}
+For more details on using Weave Scope, see the Weave Scope documentation:
+
+https://www.weave.works/docs/scope/latest/introducing/

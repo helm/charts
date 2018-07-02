@@ -1,0 +1,32 @@
+{{- if eq .Values.omsagent.secret.wsid "<your_workspace_id>" }}
+
+##############################################################################
+####   ERROR: You did not provide Azure Log Analytics workspace ID.       ####
+##############################################################################
+
+{{- end }}
+
+{{- if eq .Values.omsagent.secret.key "<your_workspace_key>" }}
+
+##############################################################################
+####   ERROR: You did not provide Azure Log Analytics workspace key       ####
+##############################################################################
+
+{{- end }}
+
+{{- if or (eq .Values.omsagent.secret.key "<your_workspace_key>") (eq .Values.omsagent.secret.wsid "<your_workspace_id>")}}
+
+This deployment will not complete. To proceed, run 
+ helm upgrade {{ .Release.Name }} \
+   --set omsagent.secret.wsid=<your_workspace_id> \
+   --set omsagent.secret.key=<your_workspace_key> \ 
+   stable/msoms
+   
+{{- else -}}
+
+{{ .Release.Name }} deployment is complete. 
+Data should start flowing to the Log Analytics workspace shortly. 
+Proceed to https://portal.azure.com/ if you would like to view this data.
+
+{{- end }}
+      

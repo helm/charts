@@ -5,22 +5,26 @@ metadata:
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app: {{ template "locust.fullname" . }}
     component: worker
 spec:
-  replicas: {{default 2 .Values.worker.replicaCount}}
+  replicas: {{ default 2 .Values.worker.replicaCount }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{default 1 .Values.worker.maxSurge}}
-      maxUnavailable: {{default 1 .Values.worker.maxUnavailable}}
+      maxSurge: {{ default 1 .Values.worker.maxSurge }}
+      maxUnavailable: {{ default 1 .Values.worker.maxUnavailable }}
   template:
     metadata:
       labels:
         app: {{ template "locust.fullname" . }}
         component: worker
     spec:
+    {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+    {{- end }}
       containers:
       - name: locust
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

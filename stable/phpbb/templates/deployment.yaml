@@ -1,9 +1,10 @@
+{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "phpbb.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "phpbb.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,41 +13,74 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "phpbb.fullname" . }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
-      - name: {{ template "fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+      - name: {{ template "phpbb.fullname" . }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: {{ .Values.allowEmptyPassword | quote }}
         - name: MARIADB_HOST
-          value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
+        {{- if .Values.mariadb.enabled }}
+          value: {{ template "phpbb.mariadb.fullname" . }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.host | quote }}
+        {{- end }}
+        - name: MARIADB_PORT_NUMBER
+        {{- if .Values.mariadb.enabled }}
           value: "3306"
-        - name: MARIADB_PASSWORD
+        {{- else }}
+          value: {{ .Values.externalDatabase.port | quote }}
+        {{- end }}
+        - name: PHPBB_DATABASE_NAME
+        {{- if .Values.mariadb.enabled }}
+          value: {{ .Values.mariadb.db.name | quote }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.database | quote }}
+        {{- end }}
+        - name: PHPBB_DATABASE_USER
+        {{- if .Values.mariadb.enabled }}
+          value: {{ .Values.mariadb.db.user | quote }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.user | quote }}
+        {{- end }}
+        - name: PHPBB_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "mariadb.fullname" . }}
-              key: mariadb-root-password
+            {{- if .Values.mariadb.enabled }}
+              name: {{ template "phpbb.mariadb.fullname" . }}
+              key: mariadb-password
+            {{- else }}
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              key: db-password
+            {{- end }}
         - name: PHPBB_USERNAME
-          value: {{ default "" .Values.phpbbUser | quote }}
+          value: {{ .Values.phpbbUser | quote }}
         - name: PHPBB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "phpbb.fullname" . }}
               key: phpbb-password
         - name: PHPBB_EMAIL
-          value: {{ default "" .Values.phpbbEmail | quote }}
+          value: {{ .Values.phpbbEmail | quote }}
         - name: SMTP_HOST
-          value: {{ default "" .Values.smtpHost | quote }}
+          value: {{ .Values.smtpHost | quote }}
         - name: SMTP_PORT
-          value: {{ default "" .Values.smtpPort | quote }}
+          value: {{ .Values.smtpPort | quote }}
         - name: SMTP_USER
-          value: {{ default "" .Values.smtpUser | quote }}
+          value: {{ .Values.smtpUser | quote }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "phpbb.fullname" . }}
               key: smtp-password
         - name: SMTP_PROTOCOL
           value: {{ default "" .Values.smtpProtocol | quote }}
@@ -57,16 +91,14 @@ spec:
           containerPort: 443
         livenessProbe:
           httpGet:
-            path: /
+            path: /ucp.php
             port: http
           initialDelaySeconds: 120
-          timeoutSeconds: 5
         readinessProbe:
           httpGet:
-            path: /
+            path: /ucp.php
             port: http
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          initialDelaySeconds: 30
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -78,14 +110,15 @@ spec:
       - name: phpbb-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-phpbb
+          claimName: {{ template "phpbb.fullname" . }}-phpbb
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
+          claimName: {{ template "phpbb.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}
+{{- end }}

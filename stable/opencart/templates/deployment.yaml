@@ -1,10 +1,10 @@
-{{- if include "host" . -}}
+{{- if include "opencart.host" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "opencart.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "opencart.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,30 +12,58 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "opencart.fullname" . }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
-      - name: {{ template "fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+      - name: {{ template "opencart.fullname" . }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: {{ .Values.allowEmptyPassword | quote }}
+        {{- if .Values.mariadb.enabled }}
         - name: MARIADB_HOST
-          value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
+          value: {{ template "opencart.mariadb.fullname" . }}
+        - name: MARIADB_PORT_NUMBER
           value: "3306"
-        - name: MARIADB_PASSWORD
+        - name: OPENCART_DATABASE_NAME
+          value: {{ .Values.mariadb.db.name | quote }}
+        - name: OPENCART_DATABASE_USER
+          value: {{ .Values.mariadb.db.user | quote }}
+        - name: OPENCART_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "mariadb.fullname" . }}
-              key: mariadb-root-password
+              name: {{ template "opencart.mariadb.fullname" . }}
+              key: mariadb-password
+        {{- else }}
+        - name: MARIADB_HOST
+          value: {{ .Values.externalDatabase.host | quote }}
+        - name: MARIADB_PORT_NUMBER
+          value: {{ .Values.externalDatabase.port | quote }}
+        - name: OPENCART_DATABASE_NAME
+          value: {{ .Values.externalDatabase.database | quote }}
+        - name: OPENCART_DATABASE_USER
+          value: {{ .Values.externalDatabase.user | quote }}
+        - name: OPENCART_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              key: db-password
+        {{- end }}
         - name: OPENCART_HOST
-          value: {{ include "host" . | quote }}
+          value: {{ include "opencart.host" . | quote }}
         - name: OPENCART_USERNAME
           value: {{ default "" .Values.opencartUsername | quote }}
         - name: OPENCART_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "opencart.fullname" . }}
               key: opencart-password
         - name: OPENCART_EMAIL
           value: {{ default "" .Values.opencartEmail | quote }}
@@ -48,7 +76,7 @@ spec:
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "opencart.fullname" . }}
               key: smtp-password
         - name: SMTP_PROTOCOL
           value: {{ default "" .Values.smtpProtocol | quote }}
@@ -59,16 +87,24 @@ spec:
           containerPort: 443
         livenessProbe:
           httpGet:
-            path: /
+            path: /admin/
             port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "opencart.host" . | quote }}
           initialDelaySeconds: 120
           timeoutSeconds: 5
+          failureThreshold: 6
         readinessProbe:
           httpGet:
-            path: /
+            path: /admin/
             port: http
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+            httpHeaders:
+            - name: Host
+              value: {{ include "opencart.host" . | quote }}
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -80,14 +116,14 @@ spec:
       - name: opencart-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-opencart
+          claimName: {{ template "opencart.fullname" . }}-opencart
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
+          claimName: {{ template "opencart.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}

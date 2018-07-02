@@ -1,0 +1,38 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{ if .Values.auth.enabled }}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: v1
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
+    istio: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
+spec:
+  replicas: {{ .Values.ca.deployment.replicas }}
+  template:
+    metadata:
+      annotations:
+        {{- range $key, $value := .Values.ca.annotations }}
+          {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      labels:
+{{ include "istio.labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
+        istio: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
+    spec:
+    {{- if .Values.ca.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ $serviceName }}-{{ .Values.ca.deployment.name }}-service-account
+      containers:
+      - name: {{ .Values.ca.deployment.name }}
+        image: "{{ .Values.ca.deployment.image }}:{{ .Values.istio.release }}"
+        imagePullPolicy: {{ .Values.ca.deployment.imagePullPolicy }}
+        resources:
+{{ toYaml .Values.ca.deployment.resources | indent 10 }}
+{{ end }}
+{{- end -}}

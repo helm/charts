@@ -1,0 +1,6 @@
+To verify that Fluentd Cloudwatch has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "fluentd-cloudwatch.name" . }},release={{ .Release.Name }}"
+
+THIS APPLICATION CAPTURES ALL CONSOLE OUTPUT AND FORWARDS IT TO AWS CLOUDWATCH. Anything that might be identifying,
+including things like IP addresses, container images, and object names will NOT be anonymized.

@@ -1,4 +1,21 @@
-{{- $serviceName := include "fullname" . -}}
+{{- $istioInstall := (and (not .Release.IsInstall) .Values.istio.install) -}}
+{{- $serviceName := include "istio.name" . -}}
+{{- if and .Release.IsInstall .Values.istio.install -}}
+Installing required CustomerResourceDefinitions before installing Istio services.
+
+To install Istio services run the following:
+helm upgrade {{ .Release.Name }} incubator/istio --reuse-values --set istio.install=true
+{{ end -}}
+
+{{- if and .Release.IsInstall (not .Values.istio.install) -}}
+Installing required CustomerResourceDefinitions before installing Istio services.
+
+To install Istio services run the following:
+helm upgrade {{ .Release.Name }} incubator/istio --reuse-values --set istio.install=true
+{{ end -}}
+
+{{- if $istioInstall -}}
+
 Verify all Pods are running
 
   kubectl get pods --namespace {{ .Release.Namespace }}
@@ -15,7 +32,7 @@ Verifying the Grafana dashboard
 Verifying the Grafana dashboard
 
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}" -o jsonpath="{.items[0].metadata.name}")
-  kubectl port-forward $POD_NAME {{ .Values.addons.grafana.service.externalPort }}:{{ .Values.addons.grafana.service.externalPort }}
+  kubectl port-forward $POD_NAME {{ .Values.addons.grafana.service.externalPort }}:{{ .Values.addons.grafana.service.externalPort }} --namespace {{ .Release.Namespace }}
   echo http://127.0.0.1:{{ .Values.addons.grafana.service.externalPort }}/dashboard/db/istio-dashboard
 {{- end }}
 {{- end }}
@@ -32,15 +49,25 @@ Verifying the ServiceGraph service
 Verifying the ServiceGraph service
 
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ $serviceName }}-{{ .Values.addons.servicegraph.deployment.name }}" -o jsonpath="{.items[0].metadata.name}")
-  kubectl port-forward $POD_NAME {{ .Values.addons.servicegraph.service.externalPort }}:{{ .Values.addons.servicegraph.service.externalPort }}
+  kubectl port-forward $POD_NAME {{ .Values.addons.servicegraph.service.externalPort }}:{{ .Values.addons.servicegraph.service.externalPort }} --namespace {{ .Release.Namespace }}
   echo http://127.0.0.1:{{ .Values.addons.servicegraph.service.externalPort }}/dotviz
 {{- end }}
 {{- end }}
 
 Deploy your App!
 
-  kubectl create -f <(istioctl kube-inject -f <your-app-spec>.yaml)
+{{ if .Values.initializer.enabled }}
+  kubectl create -f <your-app-spec>.yaml
+{{- else }}
+  kubectl create -f <(istioctl kube-inject -i {{ .Release.Namespace }} -f <your-app-spec>.yaml)
+{{- end }}
 
 Or deploy the BookInfo App!
 
-  https://istio.io/docs/samples/bookinfo.html
+  https://istio.io/docs/guides/bookinfo.html
+
+Using Istioctl
+
+  istioctl [command]
+
+{{- end -}}

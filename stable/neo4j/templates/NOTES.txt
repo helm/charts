@@ -1,0 +1,31 @@
+{{- if and (ne "yes" .Values.acceptLicenseAgreement) (contains "enterprise" .Values.imageTag)}}
+####   ERROR: You did not accept the Neo4j Enterprise License. ####
+####   ERROR: Please set acceptLicenseAgreement to yes.        ####
+###################################################################
+{{- else }}
+We'll need to wait a few seconds for the Neo4j cluster to form.
+We need to see this line in all of our pods' logs:
+
+> Remote interface available at http://neo-helm-neo4j-core-2.neo-helm-neo4j.default.svc.cluster.local:7474/
+
+We can see the content of the logs by running the following command:
+
+kubectl logs -l "app={{ template "neo4j.name" . }},component=core"
+
+We can now run a query to find the topology of the cluster.
+
+kubectl run -it --rm cypher-shell \
+    --image=neo4j:3.2.3-enterprise \
+    --restart=Never \
+    --namespace {{ .Release.Namespace }} \
+    --command -- ./bin/cypher-shell -u neo4j -p <password> --a {{ printf "%s-%s" .Release.Name .Values.name | trunc 56 }}.{{ printf "%s" .Release.Namespace }}.svc.cluster.local "call dbms.cluster.overview()"
+
+This will print out the addresses of the members of the cluster.
+
+Note:
+You'll need to substitute <password> with the password you set when installing the Helm package.
+If you didn't set a password, one will be auto generated.
+You can find the base64 encoded version of the password by running the following command:
+
+kubectl get secrets {{ template "neo4j.secrets.fullname" . }} -o yaml
+{{- end}}

@@ -1,0 +1,40 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{ if .Values.addons.prometheus.enabled }}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+data:
+  prometheus.yml: |-
+    global:
+      scrape_interval: 15s
+    scrape_configs:
+
+    - job_name: 'istio-mesh'
+      # Override the global default and scrape targets from this job every 5 seconds.
+      scrape_interval: 5s
+      # metrics_path defaults to '/metrics'
+      # scheme defaults to 'http'.
+      static_configs:
+      - targets: ['{{ $serviceName }}-{{ .Values.mixer.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.mixer.service.externalPrometheusPort }}']
+
+    - job_name: 'envoy'
+      # Override the global default and scrape targets from this job every 5 seconds.
+      scrape_interval: 5s
+      # metrics_path defaults to '/metrics'
+      # scheme defaults to 'http'.
+      static_configs:
+      - targets: ['{{ $serviceName }}-{{ .Values.mixer.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.mixer.service.externalStatsdPromPort }}']
+
+    - job_name: 'mixer'
+      # Override the global default and scrape targets from this job every 5 seconds.
+      scrape_interval: 5s
+      # metrics_path defaults to '/metrics'
+      # scheme defaults to 'http'.
+      static_configs:
+      - targets: ['{{ $serviceName }}-{{ .Values.mixer.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.mixer.service.externalHttpHeathPort }}']
+{{ end }}
+{{- end -}}

@@ -1,0 +1,39 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{ if .Values.addons.servicegraph.enabled }}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $serviceName }}-{{ .Values.addons.servicegraph.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.addons.servicegraph.deployment.name }}
+spec:
+  replicas: {{ .Values.addons.servicegraph.deployment.replicas }}
+  template:
+    metadata:
+      annotations:
+        {{- range $key, $value := .Values.addons.servicegraph.deployment.annotations }}
+          {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      labels:
+{{ include "istio.labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.addons.servicegraph.deployment.name }}
+    spec:
+    {{- if .Values.addons.servicegraph.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      containers:
+      - name: {{ .Values.addons.servicegraph.deployment.name }}
+        image: "{{ .Values.addons.servicegraph.deployment.image }}:{{ .Values.istio.release }}"
+        imagePullPolicy: {{ .Values.addons.servicegraph.deployment.imagePullPolicy }}
+        ports:
+          - containerPort:  {{ .Values.addons.servicegraph.service.externalPort }}
+        args:
+        # Currently hardcoded to prometheus as service name due to Grafana being hardcoded.
+        - --prometheusAddr=http://{{ .Values.addons.prometheus.deployment.name }}:{{ .Values.addons.prometheus.service.externalPort }}
+        resources:
+{{ toYaml .Values.addons.servicegraph.deployment.resources | indent 10 }}
+{{ end }}
+{{- end -}}

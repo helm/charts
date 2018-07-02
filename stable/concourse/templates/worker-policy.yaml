@@ -1,9 +1,9 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "worker.fullname" . }}
+  name: {{ template "concourse.worker.fullname" . }}
   labels:
-    app: {{ template "worker.fullname" . }}
+    app: {{ template "concourse.worker.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,4 +11,4 @@ spec:
   minAvailable: {{ .Values.worker.minAvailable }}
   selector:
     matchLabels:
-      app: {{ template "worker.fullname" . }}
+      app: {{ template "concourse.worker.fullname" . }}

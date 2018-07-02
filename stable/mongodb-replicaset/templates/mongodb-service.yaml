@@ -8,11 +8,14 @@ metadata:
 {{ toYaml .Values.serviceAnnotations | indent 4 }}
   {{- end }}
   labels:
-    app: {{ template "name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "mongodb-replicaset.name" . }}
+    chart: {{ template "mongodb-replicaset.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
+  name: {{ template "mongodb-replicaset.fullname" . }}
 spec:
   type: ClusterIP
   clusterIP: None
@@ -20,5 +23,5 @@ spec:
     - name: peer
       port: {{ .Values.port }}
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "mongodb-replicaset.name" . }}
     release: {{ .Release.Name }}

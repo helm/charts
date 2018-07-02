@@ -1,0 +1,7 @@
+To verify that kubewatch has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "kubewatch.name" . }},release={{ .Release.Name }}"
+
+**N.B.** This chart is deprecated and has been replaced with
+the same named chart in the stable repository. Please use
+the stable repository's chart moving forward. 

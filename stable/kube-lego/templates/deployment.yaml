@@ -2,11 +2,11 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "kube-lego.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}
+  name: {{ template "kube-lego.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
@@ -16,11 +16,12 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "kube-lego.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube-lego.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
-        - name: {{ template "name" . }}
+        - name: {{ template "kube-lego.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           env:
@@ -32,7 +33,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-          # {{ required "config.LEGO_EMAIL is a required field" .Values.config.LEGO_EMAIL }}
           {{- range $key, $value := .Values.config }}
             - name: "{{ $key }}"
               value: "{{ $value }}"

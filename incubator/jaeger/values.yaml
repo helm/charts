@@ -1,0 +1,269 @@
+# Default values for jaeger.
+# This is a YAML-formatted file.
+# Jaeger values are grouped by component. Cassandra values override subchart values
+
+provisionDataStore:
+  cassandra: true
+  elasticsearch: false
+
+tag: 1.4.1
+
+storage:
+  # allowed values (cassandra, elasticsearch)
+  type: cassandra
+  cassandra:
+    host: cassandra
+    port: 9042
+    user: user
+    password: password
+  elasticsearch:
+    scheme: http
+    host: elasticsearch
+    port: 9200
+    user: elastic
+    password: changeme
+    nodesWanOnly: false
+
+# Begin: Override values on the Cassandra subchart to customize for Jaeger
+cassandra:
+  image:
+    tag: 3.11
+  persistence:
+    # To enable persistence, please see the documentation for the Cassandra chart
+    enabled: false
+  config:
+    cluster_name: jaeger
+    seed_size: 1
+    dc_name: dc1
+    rack_name: rack1
+    endpoint_snitch: GossipingPropertyFileSnitch
+# End: Override values on the Cassandra subchart to customize for Jaeger
+
+# Begin: Default values for the various components of Jaeger
+# This chart has been based on the Kubernetes integration found in the following repo:
+# https://github.com/jaegertracing/jaeger-kubernetes/blob/master/production/jaeger-production-template.yml
+#
+# This is the jaeger-cassandra-schema Job which sets up the Cassandra schema for
+# use by Jaeger
+schema:
+  annotations: {}
+  image: jaegertracing/jaeger-cassandra-schema
+  pullPolicy: IfNotPresent
+  # Acceptable values are test and prod. Default is for production use.
+  mode: prod
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 256m
+    #   memory: 128Mi
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+
+# Begin: Override values on the Elasticsearch subchart to customize for Jaeger
+elasticsearch:
+  image:
+    tag: "5.4"
+  cluster:
+    name: "tracing"
+  data:
+    persistence:
+      enabled: false
+  rbac:
+    create: false
+
+agent:
+  enabled: true
+  annotations: {}
+  image: jaegertracing/jaeger-agent
+  pullPolicy: IfNotPresent
+  collector:
+    host: null
+    port: null
+  cmdlineParams: {}
+  daemonset:
+    useHostPort: false
+  service:
+    annotations: {}
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
+    type: ClusterIP
+    # zipkinThriftPort :accept zipkin.thrift over compact thrift protocol
+    zipkinThriftPort: 5775
+    # compactPort: accept jaeger.thrift over compact thrift protocol
+    compactPort: 6831
+    # binaryPort: accept jaeger.thrift over binary thrift protocol
+    binaryPort: 6832
+    # samplingPort: (HTTP) serve configs, sampling strategies
+    samplingPort: 5778
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 256m
+    #   memory: 128Mi
+  nodeSelector: {}
+  podAnnotations: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+  useHostNetwork: false
+  dnsPolicy: ClusterFirst
+
+collector:
+  enabled: true
+  annotations: {}
+  image: jaegertracing/jaeger-collector
+  pullPolicy: IfNotPresent
+  dnsPolicy: ClusterFirst
+  cmdlineParams: {}
+  replicaCount: 1
+  service:
+    annotations: {}
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
+    type: ClusterIP
+    # tchannelPort: used by jaeger-agent to send spans in jaeger.thrift format
+    tchannelPort: 14267
+    # httpPort: can accept spans directly from clients in jaeger.thrift format
+    httpPort: 14268
+    # can accept Zipkin spans in JSON or Thrift
+    zipkinPort: 9411
+    healthCheckPort: 14269
+  resources: {}
+    # limits:
+    #   cpu: 1
+    #   memory: 1Gi
+    # requests:
+    #   cpu: 500m
+    #   memory: 512Mi
+  nodeSelector: {}
+  podAnnotations: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+
+query:
+  enabled: true
+  annotations: {}
+  image: jaegertracing/jaeger-query
+  pullPolicy: IfNotPresent
+  dnsPolicy: ClusterFirst
+  cmdlineParams: {}
+  healthCheckPort: 16687
+  replicaCount: 1
+  service:
+    annotations: {}
+    type: ClusterIP
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
+    # queryPort: externally accessible port for UI and API
+    queryPort: 80
+    # targetPort: the internal port the UI and API are exposed on
+    targetPort: 16686
+  ingress:
+    enabled: false
+    annotations: {}
+    # Used to create an Ingress record.
+    # hosts:
+    #   - chart-example.local
+    # annotations:
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    # tls:
+      # Secrets must be manually created in the namespace.
+      # - secretName: chart-example-tls
+      #   hosts:
+      #     - chart-example.local
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #    cpu: 256m
+    #    memory: 128Mi
+  nodeSelector: {}
+  podAnnotations: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+
+spark:
+  enabled: false
+  annotations: {}
+  image: jaegertracing/spark-dependencies
+  tag: latest
+  pullPolicy: Always
+  schedule: "49 23 * * *"
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 5
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 256m
+    #   memory: 128Mi
+  nodeSelector: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+  ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+# End: Default values for the various components of Jaeger
+
+hotrod:
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: jaegertracing/example-hotrod
+    tag: latest
+    pullPolicy: Always
+  service:
+    annotations: {}
+    name: hotrod
+    type: ClusterIP
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
+    externalPort: 80
+    internalPort: 8080
+  ingress:
+    enabled: false
+    # Used to create Ingress record (should be used with service.type: ClusterIP).
+    hosts:
+      - chart-example.local
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    tls:
+      # Secrets must be manually created in the namespace.
+      # - secretName: chart-example-tls
+      #   hosts:
+      #     - chart-example.local
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+  tracing:
+    host: null
+    port: 6831

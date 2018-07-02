@@ -1,53 +1,69 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "dokuwiki.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "dokuwiki.name" . }}
+    chart: {{ template "dokuwiki.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "dokuwiki.name" . }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
-      - name: {{ template "fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+      - name: {{ template "dokuwiki.fullname" . }}
+        image: {{ template "dokuwiki.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: DOKUWIKI_USERNAME
-          value: {{ default "" .Values.dokuwikiUsername | quote }}
+          value: {{ .Values.dokuwikiUsername | quote }}
         - name: DOKUWIKI_FULL_NAME
-          value: {{ default "" .Values.dokuwikiFullName | quote }}
+          value: {{ .Values.dokuwikiFullName | quote }}
         - name: DOKUWIKI_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "dokuwiki.fullname" . }}
               key: dokuwiki-password
         - name: DOKUWIKI_EMAIL
-          value: {{ default "" .Values.dokuwikiEmail | quote }}
+          value: {{ .Values.dokuwikiEmail | quote }}
         - name: DOKUWIKI_WIKI_NAME
-          value: {{ default "" .Values.dokuwikiWikiName | quote }}
+          value: {{ .Values.dokuwikiWikiName | quote }}
         ports:
         - name: http
           containerPort: 80
         - name: https
           containerPort: 443
+        {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
-            path: /
+            path: /doku.php
             port: http
-          initialDelaySeconds: 120
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
-            path: /
+            path: /doku.php
             port: http
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -59,14 +75,14 @@ spec:
       - name: dokuwiki-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-dokuwiki
+          claimName: {{ template "dokuwiki.fullname" . }}-dokuwiki
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
+          claimName: {{ template "dokuwiki.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}

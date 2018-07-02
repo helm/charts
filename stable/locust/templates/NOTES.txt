@@ -10,7 +10,7 @@ Get the Locust URL to visit by running these commands in the same shell:
 {{- else if contains "LoadBalancer" .Values.service.type }}
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         You can watch the status by running 'kubectl get svc -n {{ .Release.Namespace }} -w {{ template "locust.master-svc" . }}'
-  export SERVICE_IP=$(kubectl get svc -n {{ .Release.Namespace }} {{ template "locust.master-svc" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "locust.master-svc" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
   export LOCUST_URL=http://$SERVICE_IP:{{ .Values.service.externalPort }}/
 
 {{- else if contains "ClusterIP"  .Values.service.type }}

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "g2.fullname" . }}
+  labels:
+    app: "{{ template "g2.name" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: http
+    port: 4730
+    protocol: TCP
+    targetPort: http
+  - name: restapi
+    port: 3000
+    protocol: TCP
+    targetPort: restapi
+  selector:
+    app: "{{ template "g2.name" . }}"
+    release: "{{ .Release.Name }}"
+  type: '{{ .Values.g2.serviceType }}'

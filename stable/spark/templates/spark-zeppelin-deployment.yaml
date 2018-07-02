@@ -3,49 +3,52 @@ kind: Service
 metadata:
   name: {{ template "zeppelin-fullname" . }}
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Zeppelin.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
 spec:
   ports:
-    - port: {{.Values.Zeppelin.ServicePort}}
-      targetPort: {{.Values.Zeppelin.ContainerPort}}
+    - name: http
+      port: {{ .Values.Zeppelin.ServicePort }}
+      targetPort: {{ .Values.Zeppelin.ContainerPort }}
   selector:
-    component: "{{.Release.Name}}-{{.Values.Zeppelin.Component}}"
-  type: "LoadBalancer"
+    component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
+  type: {{ .Values.Zeppelin.ServiceType }}
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "zeppelin-fullname" . }}
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Zeppelin.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
 spec:
-  replicas: {{default 1 .Values.Zeppelin.Replicas}}
+  replicas: {{ default 1 .Values.Zeppelin.Replicas }}
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      component: "{{.Release.Name}}-{{.Values.Zeppelin.Component}}"
+      component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
   template:
     metadata:
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Zeppelin.Component}}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
     spec:
       containers:
         - name: {{ template "zeppelin-fullname" . }}
-          image: "{{.Values.Zeppelin.Image}}:{{.Values.Zeppelin.ImageTag}}"
-          command: ["/bin/sh","-c"]
-          args: ["sed -i.bak s/spark-master:7077/{{ template "master-fullname" . }}:{{.Values.Master.ServicePort}}/g /opt/zeppelin/conf/zeppelin-env.sh; /opt/zeppelin/bin/docker-zeppelin.sh"]
+          image: "{{ .Values.Zeppelin.Image }}:{{ .Values.Zeppelin.ImageTag }}"
           ports:
-            - containerPort: {{.Values.Zeppelin.ContainerPort}}
+            - containerPort: {{ .Values.Zeppelin.ContainerPort }}
+              name: http
           resources:
             requests:
-              cpu: "{{.Values.Zeppelin.Cpu}}"
+              cpu: "{{ .Values.Zeppelin.Cpu }}"
+          env:
+            - name: SPARK_MASTER
+              value: "spark://{{ template "master-fullname" . }}:{{ .Values.Master.ServicePort }}"

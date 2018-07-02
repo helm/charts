@@ -4,9 +4,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "worker.fullname" . }}
+  name: {{ template "concourse.worker.fullname" . }}
   labels:
-    app: {{ template "worker.fullname" . }}
+    app: {{ template "concourse.worker.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -14,8 +14,8 @@ spec:
   type: ClusterIP
   clusterIP: None
   ## We do NOT expose any port as workers will forward connections with the ATC through a TSA reverse-tunnel
-  ## ref: https://concourse.ci/architecture.html#architecture-worker
+  ## ref: https://concourse-ci.org/architecture.html#architecture-worker
   ##
   ports: []
   selector:
-    app: {{ template "worker.fullname" . }}
+    app: {{ template "concourse.worker.fullname" . }}

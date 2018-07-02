@@ -29,3 +29,12 @@ ingress:
   #   - secretName: kube-ops-view.local-tls
   #     hosts:
   #       - kube-ops-view.local
+rbac:
+  # If true, create & use RBAC resources
+  create: false
+  # Ignored if rbac.create is true
+  serviceAccountName: default
+
+## Additional pod labels
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}

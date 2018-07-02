@@ -18,6 +18,10 @@ spec:
         app: {{ template "fullname" . }}
         component: front50
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       containers:
         - image: {{ .Values.images.front50 }}
           name: front50
@@ -35,7 +39,7 @@ spec:
             {{ end }}
           readinessProbe:
             httpGet:
-              path: /env
+              path: /health
               port: 8080
             initialDelaySeconds: 20
             timeoutSeconds: 1

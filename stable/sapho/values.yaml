@@ -7,10 +7,14 @@ image: sapho/ops-docker-tomcat:8-jre8
 mysql:
   persistence:
     enabled: true
-    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ## mysql data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
     ##
-    # storageClass:
+    # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 8Gi
   resources:
@@ -31,6 +35,7 @@ resources:
   requests:
     cpu: 250m
     memory: 2048Mi
+saphoVersion: 4.2.0
 saphoDBport: 3306
 saphoDBtype: mysql
 saphoDBuser: root

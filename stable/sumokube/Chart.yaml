@@ -1,5 +1,7 @@
 name: sumokube
-version: 0.1.1
+version: 0.1.4
+appVersion: latest
+home: https://www.sumologic.com/
 description: Sumologic Log Collector
 keywords:
 - monitoring

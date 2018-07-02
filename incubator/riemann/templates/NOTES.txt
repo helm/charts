@@ -1,0 +1,3 @@
+Riemann can be accessed on port 5555 via tcp or udp on the following DNS name from within your cluster:
+{{ template "riemann.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+

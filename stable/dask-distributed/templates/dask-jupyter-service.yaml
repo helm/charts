@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "dask-distributed.jupyter-fullname" . }}
+  labels:
+    app: {{ template "dask-distributed.name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
+spec:
+  ports:
+    - port: {{ .Values.jupyter.servicePort }}
+      targetPort: {{ .Values.jupyter.containerPort }}
+  selector:
+    app: {{ template "dask-distributed.name" . }}
+    release: {{ .Release.Name | quote }}
+    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
+  type: {{ .Values.jupyter.serviceType }}

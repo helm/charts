@@ -1,24 +1,24 @@
 Chronograf can be accessed via port 80 on the following DNS name from within your cluster:
 
-- http://{{ template "fullname" . }}.{{ .Release.Namespace }}
+- http://{{ template "chronograf.fullname" . }}.{{ .Release.Namespace }}
 
 You can easily connect to the remote instance from your browser. Forward the webserver port to localhost:8888
 
-- kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{ .items[0].metadata.name }') 8888
+- kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "chronograf.fullname" . }} -o jsonpath='{ .items[0].metadata.name }') 8888
 
 You can also connect to the container running Chronograf. To open a shell session in the pod run the following:
 
-- kubectl exec -i -t --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{.items[0].metadata.name}') /bin/sh
+- kubectl exec -i -t --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "chronograf.fullname" . }} -o jsonpath='{.items[0].metadata.name}') /bin/sh
 
 To trail the logs for the Chronograf pod run the following:
 
-- kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{ .items[0].metadata.name }')
+- kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "chronograf.fullname" . }} -o jsonpath='{ .items[0].metadata.name }')
 
 {{- if eq .Values.service.type "LoadBalancer" }}
 
 To watch for the LoadBalancer IP run the following
 
-- kubectl get svc -w --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}
+- kubectl get svc -w --namespace {{ .Release.Namespace }} -l app={{ template "chronograf.fullname" . }}
 {{- end }}
 {{- if .Values.ingress.enabled }}
 

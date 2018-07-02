@@ -1,80 +1,107 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "worker.fullname" . }}
+  name: {{ template "concourse.worker.fullname" . }}
   labels:
-    app: {{ template "worker.fullname" . }}
+    app: {{ template "concourse.worker.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+
 spec:
-  serviceName: {{ template "worker.fullname" . }}
+  serviceName: {{ template "concourse.worker.fullname" . }}
   replicas: {{ .Values.worker.replicas }}
   template:
     metadata:
       labels:
-        app: {{ template "worker.fullname" . }}
+        app: {{ template "concourse.worker.fullname" . }}
+        release: "{{ .Release.Name }}"
       annotations:
-        scheduler.alpha.kubernetes.io/affinity: >
-          {
-            "podAntiAffinity": {
-              "preferredDuringSchedulingIgnoredDuringExecution": [
-                {
-                  "weight": 100,
-                  "labelSelector": {
-                    "matchExpressions": [{
-                      "key": "app",
-                      "operator": "In",
-                      "values": ["{{ template "worker.fullname" . }}"]
-                    }]
-                  },
-                  "topologyKey": "kubernetes.io/hostname"
-                }
-              ]
-            }
-          }
+        {{- range $key, $value := .Values.worker.annotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
     spec:
-      terminationGracePeriodSeconds: 60
+    {{- with .Values.worker.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.worker.fullname" . }}{{ else }}{{ .Values.rbac.workerServiceAccountName }}{{ end }}
+      tolerations:
+{{ toYaml .Values.worker.tolerations | indent 8 }}
+      terminationGracePeriodSeconds: {{ .Values.worker.terminationGracePeriodSeconds }}
       containers:
-        - name: {{ template "worker.fullname" . }}
+        - name: {{ template "concourse.worker.fullname" . }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          command:
+            - /bin/sh
           args:
-            - "worker"
+            - -c
+            - |-
+              cp /dev/null /tmp/.liveness_probe
+              rm -rf /concourse-work-dir/*
+              while ! concourse retire-worker --name=${HOSTNAME} | grep -q worker-not-found; do
+                touch /tmp/.pre_start_cleanup
+                sleep 5
+              done
+              rm -f /tmp/.pre_start_cleanup
+              concourse worker --name=${HOSTNAME} | tee -a /tmp/.liveness_probe
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |-
+                  FATAL_ERRORS=$( echo "${LIVENESS_PROBE_FATAL_ERRORS}" | grep -q '\S' && \
+                      grep -F "${LIVENESS_PROBE_FATAL_ERRORS}" /tmp/.liveness_probe )
+                  cp /dev/null /tmp/.liveness_probe
+                  if [ ! -z "${FATAL_ERRORS}" ]; then
+                    >&2 echo "Fatal error detected: ${FATAL_ERRORS}"
+                    exit 1
+                  fi
+                  if [ -f /tmp/.pre_start_cleanup ]; then
+                    >&2 echo "Still trying to clean up before starting concourse. 'fly prune-worker -w ${HOSTNAME}' might need to be called to force cleanup."
+                    exit 1
+                  fi
+            failureThreshold: 1
+            initialDelaySeconds: 10
+            periodSeconds: 10
           lifecycle:
             preStop:
               exec:
                 command:
-                  - "concourse"
-                  - "land-worker"
-                  - "--name=${HOSTNAME}"
+                  - /bin/sh
+                  - -c
+                  - |-
+                    while ! concourse retire-worker --name=${HOSTNAME} | grep -q worker-not-found; do
+                      sleep 5
+                    done
           env:
             - name: CONCOURSE_TSA_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
-                  key: concourse-tsa-host
+          {{- if semverCompare "^3.10.x" .Values.imageTag }}
+              value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.tsaPort}}"
+          {{- else }}
+              value: {{ template "concourse.web.fullname" . }}
             - name: CONCOURSE_TSA_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
-                  key: concourse-tsa-port
+              value: {{ .Values.concourse.tsaPort | quote }}
+          {{- end }}
             - name: CONCOURSE_GARDEN_DOCKER_REGISTRY
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
-                  key: garden-docker-registry
+              value: {{ .Values.concourse.dockerRegistry | quote }}
             - name: CONCOURSE_GARDEN_INSECURE_DOCKER_REGISTRY
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
-                  key: garden-insecure-docker-registry
+              value: {{ .Values.concourse.insecureDockerRegistry | quote }}
             - name: CONCOURSE_TSA_PUBLIC_KEY
               value: "/concourse-keys/host_key.pub"
             - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
               value: "/concourse-keys/worker_key"
             - name: CONCOURSE_WORK_DIR
               value: "/concourse-work-dir"
+            - name: CONCOURSE_BAGGAGECLAIM_DRIVER
+              value: {{ .Values.concourse.baggageclaimDriver | quote }}
+            - name: LIVENESS_PROBE_FATAL_ERRORS
+              value: {{ .Values.worker.fatalErrors | quote }}
+{{- if .Values.worker.env }}
+{{ toYaml .Values.worker.env | indent 12 }}
+{{- end }}
           resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
           securityContext:
@@ -85,10 +112,32 @@ spec:
               readOnly: true
             - name: concourse-work-dir
               mountPath: /concourse-work-dir
+      affinity:
+{{- if .Values.worker.additionalAffinities }}
+{{ toYaml .Values.worker.additionalAffinities | indent 8 }}
+{{- end }}
+        podAntiAffinity:
+          {{- if .Values.worker.hardAntiAffinity }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: {{ template "concourse.worker.fullname" . }}
+                release: {{ .Release.Name | quote }}
+            topologyKey: kubernetes.io/hostname
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: {{ template "concourse.worker.fullname" . }}
+                  release: {{ .Release.Name | quote }}
+          {{- end }}
       volumes:
         - name: concourse-keys
           secret:
-            secretName: {{ template "concourse.fullname" . }}
+            secretName: {{ template "concourse.concourse.fullname" . }}
             defaultMode: 0400
             items:
               - key: host-key-pub
@@ -101,19 +150,25 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: concourse-work-dir
-        annotations:
-          {{- if .Values.persistence.worker.class }}
-          volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.worker.class | quote }}
-          {{- else }}
-          volume.alpha.kubernetes.io/storage-class: default
-          {{- end }}
       spec:
         accessModes:
           - {{ .Values.persistence.worker.accessMode | quote }}
         resources:
           requests:
             storage: {{ .Values.persistence.worker.size | quote }}
+      {{- if .Values.persistence.worker.storageClass }}
+      {{- if (eq "-" .Values.persistence.worker.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistence.worker.storageClass }}"
+      {{- end }}
+      {{- end }}
   {{- else }}
         - name: concourse-work-dir
           emptyDir: {}
   {{- end }}
+{{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
+  updateStrategy:
+    type: {{ .Values.worker.updateStrategy }}
+{{- end }}
+  podManagementPolicy: {{ .Values.worker.podManagementPolicy }}

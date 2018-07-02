@@ -1,0 +1,73 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{- if not .Values.pilot.customConfigMap }}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $serviceName }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+data:
+  mesh: |-
+{{ if .Values.auth.enabled }}
+    authPolicy: MUTUAL_TLS
+{{ end }}
+    #
+    # Set the following variable to true to disable policy checks by the Mixer.
+    # Note that metrics will still be reported to the Mixer.
+    disablePolicyChecks: false
+    # Set enableTracing to false to disable request tracing.
+    enableTracing: true
+    #
+    # To disable the mixer completely (including metrics), comment out
+    # the following line
+    mixerAddress: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.mixer.service.externalTcpPort }}
+    # This is the ingress service name, update if you used a different name
+    ingressService: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+    egressProxyAddress: {{ $serviceName }}-{{ .Values.egress.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.egress.service.externalHttpPort }}
+    #
+    # Along with discoveryRefreshDelay, this setting determines how
+    # frequently should Envoy fetch and update its internal configuration
+    # from Istio Pilot. Lower refresh delay results in higher CPU
+    # utilization and potential performance loss in exchange for faster
+    # convergence. Tweak this value according to your setup.
+    rdsRefreshDelay: 1s
+    #
+    defaultConfig:
+      # See rdsRefreshDelay for explanation about this setting.
+      discoveryRefreshDelay: 1s
+      #
+      # TCP connection timeout between Envoy & the application, and between Envoys.
+      connectTimeout: 10s
+      #
+      ### ADVANCED SETTINGS #############
+      # Where should envoy's configuration be stored in the istio-proxy container
+      configPath: "/etc/istio/proxy"
+      binaryPath: "/usr/local/bin/envoy"
+      # The pseudo service name used for Envoy.
+      serviceCluster: istio-proxy
+      # These settings that determine how long an old Envoy
+      # process should be kept alive after an occasional reload.
+      drainDuration: 45s
+      parentShutdownDuration: 1m0s
+      #
+      # Port where Envoy listens (on local host) for admin commands
+      # You can exec into the istio-proxy container in a pod and
+      # curl the admin port (curl http://localhost:15000/) to obtain
+      # diagnostic information from Envoy. See
+      # https://lyft.github.io/envoy/docs/operations/admin.html
+      # for more details
+      proxyAdminPort: 15000
+      #
+      # Address where Istio Pilot service is running
+      discoveryAddress: {{ $serviceName }}-{{ .Values.pilot.name }}.{{ .Release.Namespace }}:{{ .Values.pilot.service.externalHttpDiscovery }}
+      #
+      # Zipkin trace collector
+      zipkinAddress: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.addons.zipkin.service.externalPort }}
+      #
+      # Statsd metrics collector. Istio mixer exposes a UDP endpoint
+      # to collect and convert statsd metrics into Prometheus metrics.
+      statsdUdpAddress: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.mixer.service.externalStatsdUdpPort }}
+{{- end -}}
+{{- end -}}
+ 

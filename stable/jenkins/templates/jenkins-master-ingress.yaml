@@ -1,20 +1,19 @@
 {{- if .Values.Master.HostName }}
-apiVersion: extensions/v1beta1
+apiVersion: {{ .Values.Master.Ingress.ApiVersion }}
 kind: Ingress
 metadata:
 {{- if .Values.Master.Ingress.Annotations }}
   annotations:
 {{ toYaml .Values.Master.Ingress.Annotations | indent 4 }}
 {{- end }}
-  name: {{ template "fullname" . }}
+  name: {{ template "jenkins.fullname" . }}
 spec:
   rules:
   - host: {{ .Values.Master.HostName | quote }}
     http:
       paths:
-      - path: /
-        backend:
-          serviceName: {{ template "fullname" . }}
+      - backend:
+          serviceName: {{ template "jenkins.fullname" . }}
           servicePort: {{ .Values.Master.ServicePort }}
 {{- if .Values.Master.Ingress.TLS }}
   tls:

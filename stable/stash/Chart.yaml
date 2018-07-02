@@ -1,0 +1,12 @@
+apiVersion: v1
+# This chart is deprecated and moved to https://github.com/appscode/charts. For details deprecation,
+# including how to un-deprecate a chart see the PROCESSES.md file.
+deprecated: true
+description: DEPRECATED Stash by AppsCode - Backup your Kubernetes Volumes
+name: stash
+version: 0.5.3
+appVersion: 0.7.0-rc.1
+home: https://github.com/appscode/stash
+icon: https://cdn.appscode.com/images/icon/stash.png
+sources:
+  - https://github.com/appscode/stash

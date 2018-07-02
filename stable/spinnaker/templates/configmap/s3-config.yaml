@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "fullname" . }}-s3-config
   labels:
-    app: {{template "fullname" .}}
+    app: {{ template "fullname" . }}
 data:
   credentials: |
     [default]

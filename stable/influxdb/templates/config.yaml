@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "influxdb.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "influxdb.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -84,7 +84,7 @@ data:
       unix-socket-enabled = {{ .Values.config.http.unix_socket_enabled }}
       bind-socket = "{{ .Values.config.http.bind_socket }}"
     
-    # TODO: allow multiple graphite listeners with templates
+    # TODO: allow multiple graphite listeners
     
     [[graphite]]
       enabled = {{ .Values.config.graphite.enabled }}
@@ -98,6 +98,13 @@ data:
       consistency-level = "{{ .Values.config.graphite.consistency_level }}"
       separator = "{{ .Values.config.graphite.separator }}"
       udp-read-buffer = {{ .Values.config.graphite.udp_read_buffer | int64 }}
+      {{- if .Values.config.graphite.templates }}
+      templates = [
+        {{- range .Values.config.graphite.templates }}
+          {{ quote . }},
+        {{- end }}
+      ]
+      {{- end }}
     
     # TODO: allow multiple collectd listeners with templates
 

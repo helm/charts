@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "kube-registry-proxy.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -9,9 +9,9 @@ metadata:
 spec:
   template:
     metadata:
-      name: {{ template "fullname" . }}
+      name: {{ template "kube-registry-proxy.fullname" . }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "kube-registry-proxy.fullname" . }}
     spec:
       containers:
       - name: kube-registry-proxy

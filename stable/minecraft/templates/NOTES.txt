@@ -15,7 +15,7 @@ same shell:
 
 {{- if contains "NodePort" .Values.minecraftServer.serviceType }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} \
-    -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
+    -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "minecraft.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} \
     -o jsonpath="{.items[0].status.addresses[0].address}")
   echo "You'll need to expose this node through your security groups/firewall"
@@ -27,12 +27,12 @@ same shell:
 !! NOTE: It may take a few minutes for the LoadBalancer IP to be available. !!
 
 You can watch for EXTERNAL-IP to populate by running:
-  kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}
+  kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "minecraft.fullname" . }}
 
 {{- else if contains "ClusterIP" .Values.minecraftServer.serviceType }}
   export POD_NAME=$(kubectl get pods \
     --namespace {{ .Release.Namespace }} \
-    -l "component={{ template "fullname" . }}" \
+    -l "component={{ template "minecraft.fullname" . }}" \
     -o jsonpath="{.items[0].metadata.name}")
   kubectl port-forward $POD_NAME 25565:25565
   echo "Point your Minecraft client at 127.0.0.1:22565"

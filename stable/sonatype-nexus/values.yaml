@@ -1,0 +1,108 @@
+replicaCount: 1
+
+nexus:
+  imageName: quay.io/travelaudience/docker-nexus
+  imageTag: 3.12.1
+  imagePullPolicy: IfNotPresent
+  env:
+    - name: install4jAddVmParams
+      value: "-Xms1200M -Xmx1200M -XX:MaxDirectMemorySize=2G -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+  # nodeSelector:
+  #   cloud.google.com/gke-nodepool: default-pool
+  resources: {}
+    # requests:
+      ## Based on https://support.sonatype.com/hc/en-us/articles/115006448847#mem
+      ## and https://twitter.com/analytically/status/894592422382063616:
+      ##   Xms == Xmx
+      ##   Xmx <= 4G
+      ##   MaxDirectMemory >= 2G
+      ##   Xmx + MaxDirectMemory <= RAM * 2/3 (hence the request for 4800Mi)
+      ##   MaxRAMFraction=1 is not being set as it would allow the heap
+      ##     to use all the available memory.
+      # cpu: 250m
+      # memory: 4800Mi
+  # The ports should only be changed if the nexus image uses a different port
+  dockerPort: 5003
+  nexusPort: 8081
+  serviceType: NodePort
+  # securityContext:
+  #   fsGroup: 2000
+  livenessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    failureThreshold: 6
+  readinessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    failureThreshold: 6
+
+nexusProxy:
+  imageName: quay.io/travelaudience/docker-nexus-proxy
+  imageTag: 2.1.0
+  imagePullPolicy: IfNotPresent
+  port: 8080
+  env:
+    nexusDockerHost:
+    nexusHttpHost:
+    enforceHttps: false
+    cloudIamAuthEnabled: false
+## If cloudIamAuthEnabled is set to true uncomment the variables below and remove this line
+  #   clientId: ""
+  #   clientSecret: ""
+  #   organizationId: ""
+  #   redirectUrl: ""
+  # secrets:
+  #   keystore: ""
+  #   password: ""
+  resources: {}
+    # requests:
+      # cpu: 100m
+      # memory: 256Mi
+    # limits:
+      # cpu: 200m
+      # memory: 512Mi
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  ## If defined, storageClass: <storageClass>
+  ## If set to "-", storageClass: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClass spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # existingClaim:
+  # annotations:
+  #  "helm.sh/resource-policy": keep
+  # storageClass: "-"
+  storageSize: 8Gi
+
+nexusBackup:
+  enabled: false
+  imageName: quay.io/travelaudience/docker-nexus-backup
+  imageTag: 1.2.0
+  imagePullPolicy: IfNotPresent
+  env:
+    targetBucket:
+  nexusAdminPassword: "admin123"
+  persistence:
+    enabled: true
+    # existingClaim:
+    # annotations:
+    #  "helm.sh/resource-policy": keep
+    accessMode: ReadWriteOnce
+    # See comment above for information on setting the backup storageClass
+    # storageClass: "-"
+    storageSize: 8Gi
+
+ingress:
+  enabled: false
+  path: /
+  annotations: {}
+  # # NOTE: Can't use 'false' due to https://github.com/jetstack/kube-lego/issues/173.
+  # kubernetes.io/ingress.allow-http: true
+  # kubernetes.io/ingress.class: gce
+  # kubernetes.io/ingress.global-static-ip-name: ""
+  # kubernetes.io/tls-acme: true
+  tls:
+    enabled: true
+    secretName: nexus-tls

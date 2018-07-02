@@ -18,6 +18,10 @@ spec:
         app: {{ template "fullname" . }}
         component: gate
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       containers:
         - image: {{ .Values.images.gate }}
           name: gate
@@ -28,7 +32,8 @@ spec:
             - mountPath: /opt/spinnaker/config
               name: {{ template "fullname" . }}-spinnaker-config
           livenessProbe:
-            tcpSocket:
+            httpGet:
+              path: /health
               port: 8084
             initialDelaySeconds: 30
             timeoutSeconds: 1

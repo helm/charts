@@ -1,0 +1,26 @@
+{{ if .Values.rbac.install }}
+{{- $serviceName := include "g2.fullname" . -}}
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+kind: ClusterRole
+metadata:
+  name: {{ $serviceName }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "g2.fullname" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+rules:
+- apiGroups:
+  - extensions
+  resources:
+  - deployments
+  verbs: ["get", "create", "update"]
+- apiGroups: [""]
+  resources:
+  - services
+  verbs: ["create", "update"]
+- apiGroups: [""]
+  resources:
+  - pods
+  verbs: ["list", "create", "update", "delete"]
+{{ end }}

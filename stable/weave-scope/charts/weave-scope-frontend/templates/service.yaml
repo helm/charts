@@ -1,0 +1,22 @@
+{{- if .Values.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    {{- include "weave-scope-frontend.helm_std_labels" . | indent 4 }}
+    component: frontend
+  name: {{ .Values.global.service.name | default (include "toplevel.fullname" .) }}
+  annotations:
+    {{- include "weave-scope-frontend.annotations" . | indent 4 }}
+spec:
+  ports:
+    - name: http
+      port: {{ .Values.global.service.port }}
+      targetPort: http
+      protocol: TCP
+  selector:
+    app: {{ template "toplevel.name" . }}
+    release: {{ .Release.Name }}
+    component: frontend
+  type: {{ .Values.global.service.type }}
+{{- end -}}

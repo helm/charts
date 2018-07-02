@@ -1,0 +1,125 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "keycloak.fullname" . }}
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+  labels:
+    app: {{ template "keycloak.name" . }}
+    chart: {{ template "keycloak.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.keycloak.replicas }}
+  serviceName: {{ template "keycloak.fullname" . }}-headless
+  podManagementPolicy: Parallel
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "keycloak.name" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      securityContext:
+{{ toYaml .Values.keycloak.securityContext | indent 8 }}
+    {{- if .Values.keycloak.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.keycloak.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+    {{- end }}
+    {{- if .Values.keycloak.persistence.deployPostgres }}
+      initContainers:
+        - name: wait-for-postgresql
+          image: "{{ .Values.init.image.repository }}:{{ .Values.init.image.tag }}"
+          imagePullPolicy: {{ .Values.init.image.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - |
+              until printf "." && nc -z -w 2 {{ template "keycloak.postgresql.fullname" . }} {{ .Values.postgresql.service.port }}; do
+                  sleep 2;
+              done;
+
+              echo 'PostgreSQL OK ✓'
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.keycloak.image.repository }}:{{ .Values.keycloak.image.tag }}"
+          imagePullPolicy: {{ .Values.keycloak.image.pullPolicy }}
+          command:
+            - /scripts/keycloak.sh
+          env:
+          {{- if .Release.IsInstall }}
+            - name: KEYCLOAK_USER
+              value: {{ .Values.keycloak.username }}
+            - name: KEYCLOAK_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "keycloak.fullname" . }}-http
+                  key: password
+          {{- end }}
+          {{- if .Values.keycloak.persistence.deployPostgres }}
+            - name: POSTGRES_PORT_5432_TCP_ADDR
+              value: {{ template "keycloak.postgresql.fullname" . }}
+            - name: POSTGRES_USER
+              value: {{ .Values.postgresql.postgresUser | quote }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "keycloak.postgresql.fullname" . }}
+                  key: postgres-password
+            - name: POSTGRES_DATABASE
+              value: {{ .Values.postgresql.postgresDatabase | quote }}
+          {{- else }}
+{{ include "keycloak.externalDbConfig" . | indent 12 }}
+          {{- end }}
+{{- with .Values.keycloak.extraEnv }}
+{{ toYaml . | indent 12 }}
+{{- end }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+{{- with .Values.keycloak.extraVolumeMounts }}
+{{ toYaml . | indent 12 }}
+{{- end }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /auth/
+              port: http
+            initialDelaySeconds: {{ .Values.keycloak.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.keycloak.livenessProbe.timeoutSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /auth/
+              port: http
+            initialDelaySeconds: {{ .Values.keycloak.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.keycloak.readinessProbe.timeoutSeconds }}
+          resources:
+{{ toYaml .Values.keycloak.resources | indent 12 }}
+    {{- with .Values.keycloak.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.keycloak.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.keycloak.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - name: scripts
+          configMap:
+            name: {{ template "keycloak.fullname" . }}
+            defaultMode: 0555
+{{- with .Values.keycloak.extraVolumes }}
+{{ toYaml . | indent 8 }}
+{{- end }}

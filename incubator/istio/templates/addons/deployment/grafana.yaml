@@ -1,0 +1,51 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{ if .Values.addons.grafana.enabled }}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}
+spec:
+  replicas: {{ .Values.addons.grafana.deployment.replicas }}
+  template:
+    metadata:
+      annotations:
+        {{- range $key, $value := .Values.addons.grafana.deployment.annotations }}
+          {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      labels:
+{{ include "istio.labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}
+    spec:
+    {{- if .Values.addons.grafana.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      containers:
+      - name: {{ .Values.addons.grafana.deployment.name }}
+        image:  "{{ .Values.addons.grafana.deployment.image }}:{{ .Values.istio.release }}"
+        imagePullPolicy: {{ .Values.addons.grafana.deployment.imagePullPolicy }}
+        ports:
+          - containerPort: {{ .Values.addons.grafana.service.externalPort }}
+        env:
+        - name: GRAFANA_PORT
+          value: "{{ .Values.addons.grafana.service.externalPort }}"
+        - name: GF_AUTH_BASIC_ENABLED
+          value: "false"
+        - name: GF_AUTH_ANONYMOUS_ENABLED
+          value: "true"
+        - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+          value: Admin
+        - name: GF_PATHS_DATA
+          value: /data/grafana
+        volumeMounts:
+        - mountPath: /data/grafana
+          name: grafana-data
+      volumes:
+      - name: grafana-data
+        emptyDir: {}
+{{ end }}
+{{- end -}}

@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "kapacitor.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-    app: {{ template "fullname" . }}
+    app: {{ template "kapacitor.fullname" . }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -14,4 +14,4 @@ spec:
     targetPort: 9092
     name: api
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "kapacitor.fullname" . }}

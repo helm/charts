@@ -12,14 +12,24 @@ SerfwanPort: 8302
 SerfwanUdpPort: 8302
 ServerPort: 8300
 ConsulDnsPort: 8600
+
+## Specify the domain with which consul should run with
+## This will be passed as a -domain parameter
+Domain: consul
+
 ## Used as selector
 Component: "consul"
 Replicas: 3
 Image: "consul"
-ImageTag: "0.7.5"
+ImageTag: "1.0.0"
 ImagePullPolicy: "Always"
-Cpu: "100m"
-Memory: "256Mi"
+Resources: {}
+ # requests:
+ #   cpu: "100m"
+ #   memory: "256Mi"
+ # limits:
+ #   cpu: "500m"
+ #   memory: "512Mi"
 ## Persistent volume size
 Storage: "1Gi"
 
@@ -28,8 +38,59 @@ Storage: "1Gi"
 ## host id.
 DisableHostNodeId: false
 
-## StorageClass name for use with Persistent Volume Claim (PVC) using beta notations
-# StorageClass:
+## Datacenter name for consul. If not supplied, will use the consul
+## default 'dc1'
+# DatacenterName: dc1
+
+## Encrypt Gossip Traffic
+Gossip:
+  Encrypt: true
+  Create: true
+
+## predefined value for gossip key.
+## Will use a generated random alpha numeric if not provided
+# GossipKey: key
+
+## consul data Persistent Volume Storage Class
+## If defined, StorageClassName: <storageClass>
+## If set to "-", StorageClassName: "", which disables dynamic provisioning
+## If undefined (the default) or set to null, no storageClassName spec is
+##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+##   GKE, AWS & OpenStack)
+##
+# StorageClass: "-"
+
+## Setting maxUnavailable will create a pod disruption budget that will prevent
+## voluntarty cluster administration from taking down too many consul pods. If
+## you set maxUnavailable, you should set it to ceil((n/2) - 1), where
+## n = Replicas. For example, if you have 5 or 6 Replicas, you'll want to set
+## maxUnavailable = 2. If you are using the default of 3 Replicas, you'll want
+## to set maxUnavailable to 1.
+maxUnavailable: 1
+
+## nodeAffinity settings
+# nodeAffinity:
+#   requiredDuringSchedulingIgnoredDuringExecution:
+#     nodeSelectorTerms:
+#     - matchExpressions:
+#       - key: cloud.google.com/gke-preemptible
+#         operator: NotIn
+#         values:
+#         - true
+
+## Affinity settings
+affinity: |
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 1
+      podAffinityTerm:
+        topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchExpressions:
+          - key: component
+            operator: In
+            values:
+            - "{{ .Release.Name }}-{{ .Values.Component }}"
 
 ## Enable Consul Web UI
 ##
@@ -40,3 +101,22 @@ ui:
 uiService:
   enabled: true
   type: "NodePort"
+
+ConsulConfig: []
+#  - type: secret
+#    name: consul-defaults
+#  - type: configMap
+#    name: consul-defaults
+
+## Create an Ingress for the Web UI
+uiIngress:
+  enabled: false
+  annotations: {}
+  hosts: []
+  tls: {}
+
+## test container details
+test:
+  image: lachlanevenson/k8s-kubectl
+  imageTag: v1.4.8-bash
+nodeSelector: {}

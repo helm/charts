@@ -1,0 +1,12 @@
+apiVersion: v1
+# This chart is deprecated and moved to https://github.com/appscode/charts. For details deprecation,
+# including how to un-deprecate a chart see the PROCESSES.md file.
+deprecated: true
+description: DEPRECATED swift by AppsCode - Ajax friendly Helm Tiller Proxy
+name: swift
+version: 0.6.3
+appVersion: 0.7.3
+home: https://github.com/appscode/swift
+icon: https://cdn.appscode.com/images/icon/swift.png
+sources:
+  - https://github.com/appscode/swift

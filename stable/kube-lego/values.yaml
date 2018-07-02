@@ -4,7 +4,7 @@
 config:
   ## Email address to use for registration with Let's Encrypt
   ##
-  # LEGO_EMAIL: my@email.tld
+  LEGO_EMAIL: foo@example.com
 
   ## Let's Encrypt API endpoint
   ## Production: https://acme-v01.api.letsencrypt.org/directory
@@ -16,11 +16,25 @@ config:
   ##
   LEGO_PORT: 8080
 
+  ## Specify which ingress class to watch
+  ##
+  # LEGO_SUPPORTED_INGRESS_CLASS: nginx
+
+  ## Specify which ingress provider should be watched
+  ## nginx and gce are the only two options presently
+  ##
+  # LEGO_SUPPORTED_INGRESS_PROVIDER: nginx
+
+  ## Specify what ingress class should something be
+  ## if no ingress class is specified
+  ##
+  # LEGO_DEFAULT_INGRESS_CLASS: nginx
+
 ## kube-lego image
 ##
 image:
   repository: jetstack/kube-lego
-  tag: 0.1.4
+  tag: 0.1.6
   pullPolicy: IfNotPresent
 
 ## Node labels for pod assignment
@@ -44,3 +58,7 @@ resources: {}
   # requests:
   #   cpu: 20m
   #   memory: 8Mi
+
+rbac:
+  create: false
+  serviceAccountName: default

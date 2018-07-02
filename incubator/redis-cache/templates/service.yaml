@@ -3,9 +3,9 @@ kind: Service
 metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-  name: {{ template "fullname" . }}
+  name: {{ template "redis-cache.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "redis-cache.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -15,4 +15,4 @@ spec:
     name: {{ .Values.service.name }}
   clusterIP: None
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "redis-cache.name" . }}
