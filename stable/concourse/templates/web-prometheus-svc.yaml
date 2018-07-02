@@ -9,7 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  type: ClusterIP
+  clusterIP: "None"
   ports:
     - name: prometheus
       port: {{ .Values.web.metrics.prometheus.port }}
