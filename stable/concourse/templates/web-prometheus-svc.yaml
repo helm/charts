@@ -1,0 +1,19 @@
+{{- if .Values.web.metrics.prometheus.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "concourse.prometheus.fullname" . }}
+  labels:
+    app: {{ template "concourse.prometheus.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: ClusterIP
+  ports:
+    - name: prometheus
+      port: {{ .Values.web.metrics.prometheus.port }}
+      targetPort: prometheus
+  selector:
+    app: {{ template "concourse.web.fullname" . }}
+{{- end -}}
