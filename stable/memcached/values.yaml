@@ -35,6 +35,6 @@ resources:
     memory: 64Mi
     cpu: 50m
 
-extraContainers:
+extraContainers: |
 
-extraVolumes:
+extraVolumes: |
