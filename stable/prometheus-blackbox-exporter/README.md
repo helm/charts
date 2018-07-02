@@ -7,7 +7,7 @@ Learn more: [https://github.com/prometheus/blackbox_exporter](https://github.com
 ## TL;DR;
 
 ```bash
-$ helm install stable/blackbox-exporter
+$ helm install stable/prometheus-blackbox-exporter
 ```
 
 ## Introduction
@@ -23,7 +23,7 @@ This chart creates a Blackbox-Exporter deployment on a [Kubernetes](http://kuber
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/blackbox-exporter
+$ helm install --name my-release stable/prometheus-blackbox-exporter
 ```
 
 The command deploys Blackbox Exporter on the Kubernetes cluster using the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -79,7 +79,7 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 
 ```bash
 # example for staging
-$ helm install --name my-release -f values.yaml stable/blackbox-exporter
+$ helm install --name my-release -f values.yaml stable/prometheus-blackbox-exporter
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
