@@ -49,6 +49,8 @@ Parameter | Description | Default
 `controller.image.repository` | controller container image repository | `quay.io/jcmoraisjr/haproxy-ingress`
 `controller.image.tag` | controller container image tag | `v0.5-beta.3`
 `controller.image.pullPolicy` | controller container image pullPolicy | `IfNotPresent`
+`controller.defaultSslCertificate.secret.namespace` | namespace of default certificate for controller | `{{ .Release.Namespace }}`
+`controller.defaultSslCertificate.secret.name` | name of the secret for default certificate of controller | `""`
 `controller.config` | haproxy ConfigMap entries | none
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.service.labels` | labels for controller service | `{}`

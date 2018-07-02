@@ -31,6 +31,13 @@ controller:
     tag: "v0.5-beta.3"
     pullPolicy: IfNotPresent
 
+  defaultSslCertificate:
+    secret:
+      # If not set, release namespace is used
+      namespace:
+      # Required
+      name:
+
   # ConfigMap to configure haproxy ingress
   config: {}
 

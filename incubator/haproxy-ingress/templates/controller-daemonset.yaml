@@ -27,6 +27,9 @@ spec:
           imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
           args:
             - --default-backend-service={{ .Release.Namespace }}/{{ .Values.defaultBackend.service.name }}
+          {{- if .Values.controller.defaultSslCertificate.secret.name }}
+            - --default-ssl-certificate={{ .Values.controller.defaultSslCertificate.secret.namespace | default .Release.Namespace }}/{{ .Values.controller.defaultSslCertificate.secret.name }}
+          {{- end}}
             - --configmap={{ .Release.Namespace }}/{{ template "haproxy-ingress.fullname" . }}
             - --sort-backends
           ports:
