@@ -19,6 +19,10 @@ pdbMinAvailable: 3
 ## Select AntiAffinity as either hard or soft, default is hard
 AntiAffinity: "hard"
 
+## Affinity for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+# nodeAffinity: {}
+
 memcached:
   ## Various values that get set as command-line flags.
   ## ref: https://github.com/memcached/memcached/wiki/ConfiguringServer#commandline-arguments
