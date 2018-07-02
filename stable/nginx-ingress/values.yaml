@@ -5,7 +5,7 @@ controller:
   name: controller
   image:
     repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-    tag: "0.14.0"
+    tag: "0.15.0"
     pullPolicy: IfNotPresent
 
   config: {}
@@ -25,6 +25,10 @@ controller:
   ## Use host ports 80 and 443
   daemonset:
     useHostPort: false
+
+    hostPorts:
+      http: 80
+      https: 443
 
   ## Required only if defaultBackend.enabled = false
   ## Must be <namespace>/<service_name>
@@ -163,6 +167,9 @@ controller:
 
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
+
+    enableHttp: true
+    enableHttps: true
 
     ## Set external traffic policy to: "Local" to preserve source IP on
     ## providers supporting it

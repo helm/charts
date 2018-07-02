@@ -42,9 +42,9 @@ Keycloak can be accessed:
 
 {{- end }}
 
-{{- if .Release.IsInstall -}}
-Login with the following credentials:
+{{- if .Release.IsInstall }}
 
+Login with the following credentials:
 Username: {{ .Values.keycloak.username }}
 
 To retrieve the initial user password run:
