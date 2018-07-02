@@ -16,6 +16,11 @@ mysqlha:
   mysqlReplicationUser: repl
   # mysqlReplicationPassword:
 
+  ## Username/password for MySQL metrics user
+  ##
+  mysqlMetricsUser: metrics
+  # mysqlMetricsPassword:
+
   ## Create a database user
   ##
   # mysqlUser:
@@ -45,6 +50,16 @@ persistence:
   - ReadWriteOnce
   size: 10Gi
   annotations: {}
+
+metrics:
+  enabled: false
+  image: prom/mysqld-exporter
+  imageTag: v0.10.0
+  imagePullPolicy: IfNotPresent
+  resources: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9104"
 
 resources:
   requests:

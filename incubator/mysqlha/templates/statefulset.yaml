@@ -67,10 +67,16 @@ spec:
             else
               cp /mnt/config-map/slave.cnf /mnt/conf.d/
             fi
-            # Copy replication user script
+            # Copy replication and metrics user script
             if [[ $ordinal -eq 0 ]]; then
               cp /mnt/config-map/create-replication-user.sql /mnt/scripts/create-replication-user.sql
+              if [[ "${METRICS_ENABLED}" == true ]]; then
+                cp /mnt/config-map/create-metrics-user.sql /mnt/scripts/create-metrics-user.sql
+              fi
             fi
+        env:
+        - name: METRICS_ENABLED
+          value: "{{ .Values.metrics.enabled }}"
         volumeMounts:
           - name: conf
             mountPath: /mnt/conf.d
@@ -151,6 +157,15 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: mysql-replication-password
+        {{- if .Values.mysqlha.mysqlMetricsUser }}
+        - name: MYSQL_METRICS_USER
+          value: {{ .Values.mysqlha.mysqlMetricsUser }}
+        - name: MYSQL_METRICS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: mysql-metrics-password
+        {{- end }}
         ports:
         - name: xtrabackup
           containerPort: 3307
@@ -172,6 +187,15 @@ spec:
               | sed s/@@REPLICATION_PASSWORD@@/"${MYSQL_REPLICATION_PASSWORD}"/g \
               | tee create-replication-user.sql
             mysql -h 127.0.0.1 --verbose < create-replication-user.sql
+          fi
+          # Create metrics user
+          if [[ -f create-metrics-user.sql ]]; then
+            cp create-metrics-user.sql create-metrics-user.orig.sql
+            cat create-metrics-user.sql \
+              | sed s/@@METRICS_USER@@/"${MYSQL_METRICS_USER}"/g \
+              | sed s/@@METRICS_PASSWORD@@/"${MYSQL_METRICS_PASSWORD}"/g \
+              | tee create-metrics-user.sql
+            mysql -h 127.0.0.1 --verbose < create-metrics-user.sql
           fi
 
           cd /var/lib/mysql
@@ -218,6 +242,37 @@ spec:
           requests:
             cpu: 100m
             memory: 100Mi
+      {{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
+        imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
+        env:
+        - name: MYSQL_METRICS_USER
+          value: {{ .Values.mysqlha.mysqlMetricsUser }}
+        - name: MYSQL_METRICS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: mysql-metrics-password
+        command: [ 'sh', '-c', 'DATA_SOURCE_NAME="${MYSQL_METRICS_USER}:${MYSQL_METRICS_PASSWORD}@(127.0.0.1:3306)/" /bin/mysqld_exporter' ]
+        ports:
+        - name: metrics
+          containerPort: 9104
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+      {{- end }}
       volumes:
       - name: conf
         emptyDir: {}
