@@ -64,37 +64,43 @@ Create the name for the password secret key.
 {{/*
 Create environment variables for database configuration.
 */}}
-{{- define "keycloak.externalDbConfig" -}}
+{{- define "keycloak.dbEnvVars" -}}
+{{- if .Values.keycloak.persistence.deployPostgres }}
+{{- if not (eq "postgres" .Values.keycloak.persistence.dbVendor) }}
+{{ fail (printf "ERROR: 'Setting keycloak.persistence.deployPostgres' to 'true' requires setting 'keycloak.persistence.dbVendor' to 'postgres' (is: '%s')!" .Values.keycloak.persistence.dbVendor) }}
+{{- end }}
+- name: DB_VENDOR
+  value: postgres
+- name: DB_ADDR
+  value: {{ template "keycloak.postgresql.fullname" . }}
+- name: DB_PORT
+  value: "5432"
+- name: DB_DATABASE
+  value: {{ .Values.postgresql.postgresDatabase | quote }}
+- name: DB_USER
+  value: {{ .Values.postgresql.postgresUser | quote }}
+- name: DB_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "keycloak.postgresql.fullname" . }}
+      key: postgres-password
+{{- else }}
 - name: DB_VENDOR
   value: {{ .Values.keycloak.persistence.dbVendor | quote }}
-{{- if eq .Values.keycloak.persistence.dbVendor "POSTGRES" }}
-- name: POSTGRES_PORT_5432_TCP_ADDR
+{{- if not (eq "h2" .Values.keycloak.persistence.dbVendor) }}
+- name: DB_ADDR
   value: {{ .Values.keycloak.persistence.dbHost | quote }}
-- name: POSTGRES_PORT_5432_TCP_PORT
+- name: DB_PORT
   value: {{ .Values.keycloak.persistence.dbPort | quote }}
-- name: POSTGRES_USER
+- name: DB_DATABASE
+  value: {{ .Values.keycloak.persistence.dbName | quote }}
+- name: DB_USER
   value: {{ .Values.keycloak.persistence.dbUser | quote }}
-- name: POSTGRES_PASSWORD
+- name: DB_PASSWORD
   valueFrom:
     secretKeyRef:
       name: {{ template "keycloak.externalDbSecret" . }}
       key: {{ include "keycloak.dbPasswordKey" . | quote }}
-- name: POSTGRES_DATABASE
-  value: {{ .Values.keycloak.persistence.dbName | quote }}
-{{- else if eq .Values.keycloak.persistence.dbVendor "MYSQL" }}
-- name: MYSQL_PORT_3306_TCP_ADDR
-  value: {{ .Values.keycloak.persistence.dbHost | quote }}
-- name: MYSQL_PORT_3306_TCP_PORT
-  value: {{ .Values.keycloak.persistence.dbPort | quote }}
-- name: MYSQL_USER
-  value: {{ .Values.keycloak.persistence.dbUser | quote }}
-- name: MYSQL_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "keycloak.externalDbSecret" . }}
-      key: {{ include "keycloak.dbPasswordKey" . | quote }}
-- name: MYSQL_DATABASE
-  value: {{ .Values.keycloak.persistence.dbName | quote }}
+{{- end }}
 {{- end }}
 {{- end -}}
-
