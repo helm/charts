@@ -4,8 +4,8 @@ kind: Service
 metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-  {{- if .Values.serviceAnnotations }}
-{{ toYaml .Values.serviceAnnotations | indent 4 }}
+  {{- if .Values.service.annotations }}
+{{ toYaml .Values.service.annotations | indent 4 }}
   {{- end }}
   labels:
     app: {{ template "mongodb-replicaset.name" . }}
@@ -17,8 +17,9 @@ metadata:
 {{- end }}
   name: {{ template "mongodb-replicaset.fullname" . }}
 spec:
-  type: ClusterIP
-  clusterIP: None
+  type: {{ .Values.service.type }}
+  clusterIP: {{ .Values.service.clusterIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   ports:
     - name: peer
       port: {{ .Values.port }}
