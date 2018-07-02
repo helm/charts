@@ -8,5 +8,5 @@ icon: https://raw.githubusercontent.com/coreos/etcd/master/logos/etcd-horizontal
 sources:
 - https://github.com/coreos/etcd
 maintainers:
-- name: Lachlan Evenson
+- name: lachie83
   email: lachlan@deis.com
