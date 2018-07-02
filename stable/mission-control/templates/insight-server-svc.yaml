@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "insight-server.fullname" . }}
+  labels:
+    app: {{ template "mission-control.name" . }}
+    chart: {{ template "mission-control.chart" . }}
+    component: {{ .Values.insightServer.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.insightServer.service.type }}
+  ports:
+  - name: http
+    port: {{ .Values.insightServer.internalHttpPort }}
+    targetPort: {{ .Values.insightServer.externalHttpPort }}
+    protocol: TCP
+  - name: https
+    port: {{ .Values.insightServer.internalHttpsPort }}
+    targetPort: {{ .Values.insightServer.externalHttpsPort }}
+    protocol: TCP
+  selector:
+    app: {{ template "mission-control.name" . }}
+    component: {{ .Values.insightServer.name }}
+    release: {{ .Release.Name }}
