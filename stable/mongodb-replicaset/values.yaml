@@ -73,8 +73,12 @@ persistentVolume:
   size: 10Gi
   annotations: {}
 
-# Annotations to be added to the service
-serviceAnnotations: {}
+# Service values
+service:
+  type: ClusterIP
+  clusterIP: None
+  loadBalancerIP: None
+  annotations: {}
 
 tls:
   # Enable or disable MongoDB TLS support

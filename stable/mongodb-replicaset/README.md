@@ -57,7 +57,10 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `auth.adminUser`                    | MongoDB admin user                                                        | ``                                                  |
 | `auth.adminPassword`                | MongoDB admin password                                                    | ``                                                  |
 | `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     | ``                                                  |
-| `serviceAnnotations`                | Annotations to be added to the service                                    | `{}`                                                |
+| `service.annotations`               | Annotations to be added to the service                                    | `{}`                                                |
+| `service.type`                      | Type of the service                                                       | `ClusterIP`                                         |
+| `service.clusterIP`                 | Cluster IP of the service                                                 | `None`                                              |
+| `service.loadBalancerIP`            | Cluster IP of the service                                                 | `None`                                              |
 | `configmap`                         | Content of the MongoDB config file                                        | ``                                                  |
 | `nodeSelector`                      | Node labels for pod assignment                                            | `{}`                                                |
 | `affinity`                          | Node/pod affinities                                                       | `{}`                                                |
@@ -69,8 +72,8 @@ The following table lists the configurable parameters of the mongodb chart and t
 
 *MongoDB config file*
 
-All options that depended on the chart configuration are supplied as command-line arguments to `mongod`. By default, 
-the chart creates an empty config file. Entries may be added via  the `configmap` configuration value. 
+All options that depended on the chart configuration are supplied as command-line arguments to `mongod`. By default,
+the chart creates an empty config file. Entries may be added via  the `configmap` configuration value.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -82,8 +85,8 @@ $ helm install --name my-release -f values.yaml stable/mongodb-replicaset
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-Once you have all 3 nodes in running, you can run the "test.sh" script in this directory, which will insert a key into 
-the primary and check the secondaries for output. This script requires that the `$RELEASE_NAME` environment variable 
+Once you have all 3 nodes in running, you can run the "test.sh" script in this directory, which will insert a key into
+the primary and check the secondaries for output. This script requires that the `$RELEASE_NAME` environment variable
 be set, in order to access the pods.
 
 ## Authentication
@@ -187,7 +190,7 @@ livenessProbe:
 ## Deep dive
 
 Because the pod names are dependent on the name chosen for it, the following examples use the
-environment variable `RELEASENAME`. For example, if the helm release name is `messy-hydra`, one would need to set the 
+environment variable `RELEASENAME`. For example, if the helm release name is `messy-hydra`, one would need to set the
 following before proceeding. The example scripts below assume 3 pods only.
 
 ```console
