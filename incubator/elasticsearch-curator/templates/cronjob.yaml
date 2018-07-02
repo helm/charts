@@ -24,7 +24,7 @@ spec:
           volumes:
             - name: config-volume
               configMap:
-                name: curator-config
+                name: {{ template "elasticsearch-curator.fullname" . }}-config
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 12 }}
 {{- end }}
