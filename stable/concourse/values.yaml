@@ -214,6 +214,9 @@ web:
   #   key1: "value1"
   #   key2: "value2"
 
+  ## Node selector for web nodes.
+  nodeSelector: {}
+
   ## Tolerations for the web nodes.
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
