@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "unifi.fullname" . }}-controller
+  labels:
+    app: {{ template "unifi.name" . }}
+    chart: {{ template "unifi.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.controllerService.type }}
+  ports:
+    - port: {{ .Values.controllerService.port }}
+      targetPort: 8080
+      protocol: TCP
+      name: controller
+  selector:
+    app: {{ template "unifi.name" . }}
+    release: {{ .Release.Name }}

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "unifi.fullname" . }}-discovery
+  labels:
+    app: {{ template "unifi.name" . }}
+    chart: {{ template "unifi.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.discoveryService.type }}
+  ports:
+    - port: {{ .Values.discoveryService.port }}
+      targetPort: http
+      protocol: UDP
+      name: discovery
+  selector:
+    app: {{ template "unifi.name" . }}
+    release: {{ .Release.Name }}
