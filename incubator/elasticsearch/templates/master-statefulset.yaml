@@ -51,6 +51,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.master.nodeSelector | indent 8 }}
 {{- end }}
+{{- if .Values.master.tolerations }}
+      tolerations:
+{{ toYaml .Values.master.tolerations | indent 8 }}
+{{- end }}
       initContainers:
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
