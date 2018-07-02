@@ -17,6 +17,7 @@ spec:
         role: cron
     spec:
       {{- if .Values.cron.affinity }}
+      affinity:
 {{ toYaml .Values.cron.affinity | indent 8 }}
       {{- end }}
       {{- if .Values.cron.nodeSelector }}
