@@ -44,7 +44,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | --------- | ----------- | ------- |
 | `global.nodeselector` | Node label to be useed globally for scheduling of all images | `nil` |
 | `hub.image` | The selenium hub image | `selenium/hub` |
-| `hub.tag` | The selenium hub image tag | `3.11.0` |
+| `hub.tag` | The selenium hub image tag | `3.12.0` |
 | `hub.pullPolicy` | The pull policy for the hub image | `IfNotPresent` |
 | `hub.port` | The port the hub listens on | `4444` |
 | `hub.javaOpts` | The java options for the selenium hub JVM, default sets the maximum heap size to 1,000 mb | `-Xmx1000m` |
