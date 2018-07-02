@@ -26,9 +26,92 @@ resources:
 
 ## Bootstrapping and ClickHouse server settings and links to configuration files
 initdb_args: ['--user=default', '--database=default', '--multiquery']
-initdb_sql: conf/initdb.sql
-config_xml: conf/config.xml
-users_xml: conf/users.xml
+initdb_sql: |
+  CREATE DATABASE IF NOT EXISTS test;
+  USE test;
+  CREATE TABLE IF NOT EXISTS test.Metrics
+  (
+      Name String,
+      PartitionDate Date DEFAULT toDate(Time),
+      Time DateTime,
+      Value Float32,
+      Dimensions Nested(
+      Key String,
+      Value Nullable(String))
+  ) ENGINE = MergeTree(PartitionDate, (Name, PartitionDate), 8192);
+config_xml: |
+  <?xml version="1.0"?>
+  <yandex>
+      <logger>
+          <console>1</console>
+      </logger>
+      <http_port>8123</http_port>
+      <tcp_port>9000</tcp_port>
+      <listen_host>0.0.0.0</listen_host>
+      <max_connections>4096</max_connections>
+      <keep_alive_timeout>3</keep_alive_timeout>
+      <max_concurrent_queries>100</max_concurrent_queries>
+      <uncompressed_cache_size>8589934592</uncompressed_cache_size>
+      <mark_cache_size>5368709120</mark_cache_size>
+      <path>/var/lib/clickhouse/</path>
+      <tmp_path>/var/lib/clickhouse/tmp/</tmp_path>
+      <users_config>users.xml</users_config>
+      <default_profile>default</default_profile>
+      <default_database>default</default_database>
+      <zookeeper incl="zookeeper-servers" optional="true" />
+      <macros incl="macros" optional="true" />
+      <builtin_dictionaries_reload_interval>3600</builtin_dictionaries_reload_interval>
+      <max_session_timeout>3600</max_session_timeout>
+      <default_session_timeout>60</default_session_timeout>
+      <query_log>
+          <database>system</database>
+          <table>query_log</table>
+          <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+      </query_log>
+      <dictionaries_config>*_dictionary.xml</dictionaries_config>
+      <resharding>
+          <task_queue_path>/clickhouse/task_queue</task_queue_path>
+      </resharding>
+      <distributed_ddl>
+          <path>/clickhouse/task_queue/ddl</path>
+      </distributed_ddl>
+  </yandex>
+users_xml: |
+  <?xml version="1.0"?>
+  <yandex>
+      <profiles>
+          <default>
+              <max_memory_usage>10000000000</max_memory_usage>
+              <use_uncompressed_cache>0</use_uncompressed_cache>
+              <load_balancing>random</load_balancing>
+          </default>
+          <readonly>
+              <readonly>1</readonly>
+          </readonly>
+      </profiles>
+      <users>
+          <default>
+              <password></password>
+              <networks incl="networks" replace="replace">
+                  <ip>::/0</ip>
+              </networks>
+              <profile>default</profile>
+              <quota>default</quota>
+          </default>
+      </users>
+      <quotas>
+          <default>
+              <interval>
+                  <duration>3600</duration>
+                  <queries>0</queries>
+                  <errors>0</errors>
+                  <result_rows>0</result_rows>
+                  <read_rows>0</read_rows>
+                  <execution_time>0</execution_time>
+              </interval>
+          </default>
+      </quotas>
+  </yandex>
 
 ## Specify a service type
 ## ref: http://kubernetes.io/docs/user-guide/services/

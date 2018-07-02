@@ -27,7 +27,7 @@ kubectl port-forward clickhouse-0 9000:9000
 ```
 Terminal #2:
 ```
-QUERY=$(cat conf/initdb.sql)
+QUERY=$(cat initdb.sql)
 docker run -ti --network=host \
     --rm yandex/clickhouse-client \
     --host=docker.for.mac.localhost \
@@ -87,9 +87,9 @@ The following table lists the configurable parameters of the clickhouse chart an
 | `podAnnotations`           | Annotations for the clickhouse pod              | `{}`                                                       |
 | `annotations`              | Annotations for the clickhouse statefulset      | `{}`                                                       |
 | `initdb_args`              | Arguments for the clickhouse-clinet init query  | `['--user=default', '--database=default', '--multiquery']` |
-| `initdb_sql`               | Path to bootstrap sql query file                | `conf/initdb.sql`                                          |
-| `config_xml`               | Path to server config                           | `conf/config.xml`                                          |
-| `users_xml`                | Path to users config                            | `conf/users.xml`                                           |
+| `initdb_sql`               | Bootstrap sql query file                        | `SQL query that create test db and table, see values.xml`  |
+| `config_xml`               | Server config, XML                              | `XML with default server config`                           |
+| `users_xml`                | Users config, XML                               | `XML with default users config`                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -97,18 +97,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 helm install --name my-release --set persistence.enabled=true incubator/clickhouse
 ```
 
-### Configuration files
+### Configuration
 Make a copy of `values.yaml` and `conf` dir:
 ```bash
 cp values.yaml myconfig.yaml
 cp -rf conf myconfig
-```
-
-Edit `myconfig.yaml` and point out files in `myconfig` dir:
-```yaml
-initdb_sql: myconfig/initdb.sql
-config_xml: myconfig/config.xml
-users_xml: myconfig/users.xml
 ```
 
 To use the edited `myconfig.yaml`:
@@ -116,7 +109,7 @@ To use the edited `myconfig.yaml`:
 helm install --name my-release -f myconfig.yaml .
 ```
 
-Edit `myconfig/config.xml` and `myconfig/users.xml` according to [server settings docs](https://clickhouse.yandex/docs/en/operations/server_settings/settings/)
+Edit `myconfig.yaml` `config_xml` and `users_xml` according to [server settings docs](https://clickhouse.yandex/docs/en/operations/server_settings/settings/)
 
 User passwords can be generated:
 ```bash
@@ -125,5 +118,5 @@ echo -n "password" | sha256sum | tr -d '-' | tr -d ' '
 ```
 
 #### Bootstrapping database
-Edit `myconfig/initdb.sql` boostrap script, to create tables and views you need according to [query docs](https://clickhouse.yandex/docs/en/query_language/queries/).
+Edit `myconfig.yaml` `initdb_sql` boostrap script, to create tables and views you need according to [query docs](https://clickhouse.yandex/docs/en/query_language/queries/).
 

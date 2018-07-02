@@ -1,11 +1,6 @@
 ---
 kind: ConfigMap
 apiVersion: v1
-data:
-  config.xml: |-
-{{ .Files.Get .Values.config_xml | indent 4}}
-  users.xml: |-
-{{ .Files.Get .Values.users_xml | indent 4}}
 metadata:
   name: {{ template "clickhouse.name" . }}-config
   labels:
@@ -14,13 +9,13 @@ metadata:
     release: {{ .Release.Name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     app: {{ template "clickhouse.name" . }}
+data:
+  config.xml: {{ .Values.config_xml | quote }}
+  users.xml: {{ .Values.users_xml | quote }}
 
 ---
 kind: ConfigMap
 apiVersion: v1
-data:
-  initdb.sql: |-
-{{ .Files.Get .Values.initdb_sql | indent 4}}
 metadata:
   name: {{ template "clickhouse.name" . }}-init
   labels:
@@ -29,3 +24,5 @@ metadata:
     release: {{ .Release.Name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     app: {{ template "clickhouse.name" . }}
+data:
+  initdb.sql: {{ .Values.initdb_sql | quote }}
