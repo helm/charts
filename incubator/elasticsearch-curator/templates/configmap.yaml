@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: curator-config
+  name: {{ template "elasticsearch-curator.fullname" . }}-config
   labels:
     app: {{ template "elasticsearch-curator.name" . }}
     chart: {{ template "elasticsearch-curator.chart" . }}
