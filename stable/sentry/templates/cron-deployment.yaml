@@ -17,7 +17,6 @@ spec:
         role: cron
     spec:
       {{- if .Values.cron.affinity }}
-https://github.com/kubernetes/charts/pull/5875/conflict?name=stable%252Fsentry%252Ftemplates%252Fcron-deployment.yaml&ancestor_oid=81bb47f5be2d70550065b256dc424515dc4f14af&base_oid=b11a633789f8f99cabae44f219ee1c1619e14261&head_oid=2f1c12230a107bbb4e03b23e319334e6147ad912      affinity:
 {{ toYaml .Values.cron.affinity | indent 8 }}
       {{- end }}
       {{- if .Values.cron.nodeSelector }}
