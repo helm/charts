@@ -101,6 +101,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `cpuLimit`                      | CPU limit per Traefik pod                                            | `200m`                                    |
 | `memoryLimit`                   | Memory limit per Traefik pod                                         | `30Mi`                                    |
 | `rbac.enabled`                  | Whether to enable RBAC with a specific cluster role and binding for Traefik | `false`                            |
+| `deploymentStrategy`                  | Specify deployment spec rollout strategy                                       | `{}`                                      |
 | `nodeSelector`                  | Node labels for pod assignment                                       | `{}`                                      |
 | `affinity`                      | Affinity settings                                                    | `{}`                                      |
 | `tolerations`                   | List of node taints to tolerate                                      | `[]`                                      |
