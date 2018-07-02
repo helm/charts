@@ -4,11 +4,11 @@
 
 ## Introduction
 
-This chart adds the DataDog Agent to all nodes in your cluster via a DaemonSet. It also depends on the [kube-state-metrics chart](https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics).
+This chart adds the Datadog Agent to all nodes in your cluster via a DaemonSet. It also depends on the [kube-state-metrics chart](https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics).
 
 ## Prerequisites
 
-- Kubernetes 1.2+ with Beta APIs enabled
+Kubernetes 1.4+ or OpenShift 3.4+ (1.3 support is currently partial, full support is planned for 6.4.0).
 
 ## Installing the Chart
 
@@ -40,6 +40,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 |             Parameter       |            Description             |                    Default                |
 |-----------------------------|------------------------------------|-------------------------------------------|
 | `datadog.apiKey`            | Your Datadog API key               |  `Nil` You must provide your own key      |
+| `datadog.apiKeyExistingSecret` | If set, use the secret with a provided name instead of creating a new one |`nil` |
 | `image.repository`          | The image repository to pull from  | `datadog/agent`                           |
 | `image.tag`                 | The image tag to pull              | `6.2.1`                                   |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
@@ -64,6 +65,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `daemonset.nodeSelector`    | Node selectors                     | `nil`                                     |
 | `daemonset.affinity`        | Node affinities                    | `nil`                                     |
 | `daemonset.useHostNetwork`  | If true, use the host's network    | `nil`                                     |
+| `daemonset.useHostPID`.     | If true, use the host's PID namespace    | `nil`                                     |
 | `daemonset.useHostPort`     | If true, use the same ports for both host and container  | `nil`               |
 | `datadog.leaderElection`    | Adds the leader Election feature   | `false`                                   |
 | `datadog.leaderLeaseDuration`| The duration for which a leader stays elected.| `nil`                         |
@@ -94,6 +96,10 @@ Datadog offers a multitude of [tags](https://hub.docker.com/r/datadog/docker-dd-
 
 ### DaemonSet and Deployment
 By default installs Datadog agent inside a DaemonSet. You may also use Datadog agent inside a Deployment, if you want to collect Kubernetes API events or send custom metrics to DogStatsD endpoint.
+
+### Secret
+By default, this Chart creates a Secret and puts an API key in that Secret.
+However, you can use manually created secret by setting `datadog.apiKeyExistingSecret` value.
 
 ### confd and checksd
 

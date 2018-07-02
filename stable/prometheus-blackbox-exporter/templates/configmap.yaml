@@ -1,0 +1,14 @@
+{{- if .Values.config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "prometheus-blackbox-exporter.fullname" . }}
+  labels:
+    chart: {{ template "prometheus-blackbox-exporter.chart" . }}
+    app: {{ template "prometheus-blackbox-exporter.name" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  blackbox.yaml: |
+{{ toYaml .Values.config | indent 4 }}
+{{- end }}
