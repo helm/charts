@@ -40,7 +40,7 @@ spec:
         command:
         - bash
         - -c
-        - "cp /opt/halyard/config/* /tmp/config && printf 'server:\n  address: 0.0.0.0\n' > /tmp/config/halyard-local.yml"
+        - "cp /opt/halyard/config/* /tmp/config && printf 'server.address: 0.0.0.0\n' > /tmp/config/halyard-local.yml"
         volumeMounts:
         - name: halyard-config
           mountPath: /tmp/config
