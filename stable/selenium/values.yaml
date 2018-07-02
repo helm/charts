@@ -27,7 +27,7 @@ hub:
   ## Timeout for probe Hub liveness via HTTP request on Hub console
   livenessTimeout: 1
 
-  ## Set the JAVA_OPTS environment variable
+  ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx400m"
 
@@ -106,7 +106,7 @@ chrome:
   ## The number of pods in the deployment
   replicas: 1
 
-  ## Set the JAVA_OPTS environment variable
+  ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium node is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
 
@@ -182,7 +182,7 @@ chromeDebug:
   ## The number of pods in the deployment
   replicas: 1
 
-  ## Set the JAVA_OPTS environment variable
+  ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
 
@@ -257,7 +257,7 @@ firefox:
   ## The number of pods in the deployment
   replicas: 1
 
-  ## Set the JAVA_OPTS environment variable
+  ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
 
@@ -319,7 +319,7 @@ firefoxDebug:
   ## The number of pods in the deployment
   replicas: 1
 
-  ## Set the JAVA_OPTS environment variable
+  ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
 
