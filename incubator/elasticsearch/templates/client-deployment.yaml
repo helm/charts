@@ -49,6 +49,7 @@ spec:
 {{- if .Values.client.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.client.nodeSelector | indent 8 }}
+{{- end }}
 {{- if .Values.client.tolerations }}
       tolerations:
 {{ toYaml .Values.client.tolerations | indent 8 }}

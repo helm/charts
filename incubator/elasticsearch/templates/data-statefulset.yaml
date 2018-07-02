@@ -50,6 +50,7 @@ spec:
 {{- if .Values.data.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.data.nodeSelector | indent 8 }}
+{{- end }}
 {{- if .Values.data.tolerations }}
       tolerations:
 {{ toYaml .Values.data.tolerations | indent 8 }}
