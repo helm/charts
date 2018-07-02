@@ -37,3 +37,15 @@ Create the block for the ProxyProtocol's Trusted IPs.
 	   {{- end -}}
          ]
 {{- end -}}
+
+{{/*
+Create the block for whiteListSourceRange.
+*/}}
+{{- define "traefik.whiteListSourceRange" -}}
+       whiteListSourceRange = [
+	   {{- range $idx, $ips := .Values.whiteListSourceRange }}
+	     {{- if $idx }}, {{ end }}
+	     {{- $ips | quote }}
+	   {{- end -}}
+         ]
+{{- end -}}

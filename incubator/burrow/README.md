@@ -2,6 +2,8 @@
 
 [burrow](https://github.com/hyperledger/burrow) is a permissioned Ethereum smart-contract blockchain node. It executes Ethereum smart contract code on a permissioned virtual machine. Burrow provides transaction finality and high transaction throughput on a proof-of-stake Tendermint consensus engine.
 
+**Note - this chart has been deprecated and [moved to stable](../../stable/burrow)**.
+
 ## TL;DR;
 
 ```console

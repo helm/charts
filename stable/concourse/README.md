@@ -47,7 +47,7 @@ $ kubectl delete pvc -l app=${RELEASE-NAME}-worker
 
 ## Scaling the Chart
 
-Scaling should typically be managed via the `helm upgrade` command, but `StatefulSets` don't yet work with `helm upgrade`. In the meantime, until `helm upgrade` works, if you want to change the number of replicas, you can use the kubectl scale as shown below:
+Scaling should typically be managed via the `helm upgrade` command, but `StatefulSets` don't yet work with `helm upgrade`. In the meantime, until `helm upgrade` works, if you want to change the number of replicas, you can use the `kubectl scale` command as shown below:
 
 ```console
 $ kubectl scale statefulset my-release-worker --replicas=3
@@ -63,12 +63,12 @@ The worker's Liveness Probe will trigger a restart of the worker if it detects u
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Concourse chart and their default values.
+The following table lists the configurable parameters of the Concourse chart and their default values.
 
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
-| `imageTag` | Concourse image version | `3.9.0` |
+| `imageTag` | Concourse image version | `3.10.0` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
 | `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.atcPort` | Concourse ATC listen port | `8080` |
@@ -80,7 +80,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `concourse.resourceCacheCleanupInterval` | The interval on which to check for and release old caches of resource versions | `30s` |
 | `concourse.baggageclaimDriver` | The filesystem driver used by baggageclaim | `naive` |
 | `concourse.containerPlacementStrategy` | The selection strategy for placing containers onto workers | `random` |
-| `concourse.dockerRegistry` | An URL pointing to the Docker registry to use to fetch Docker images | `nil` |
+| `concourse.dockerRegistry` | A URL pointing to the Docker registry to use to fetch Docker images | `nil` |
 | `concourse.insecureDockerRegistry` | Docker registry(ies) (comma separated) to allow connecting to even if not secure | `nil` |
 | `concourse.encryption.enabled` | Enable encryption of pipeline configuration | `false` |
 | `concourse.basicAuth.enabled` | Enable basic auth for the "main" Concourse team| `true` |
@@ -106,9 +106,11 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
+| `web.annotations`| Concourse Web deployment annotations | `nil` |
 | `web.tolerations` | Tolerations for the web nodes | `[]` |
 | `web.service.type` | Concourse Web service type | `ClusterIP` |
 | `web.service.annotations` | Concourse Web Service annotations | `nil` |
+| `web.service.loadBalancerSourceRanges` | Concourse Web Service Load Balancer Source IP ranges | `nil` |
 | `web.service.atcNodePort` | Sets the nodePort for atc when using `NodePort` | `nil` |
 | `web.service.tsaNodePort` | Sets the nodePort for tsa when using `NodePort` | `nil` |
 | `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
@@ -116,19 +118,30 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
 | `web.metrics.prometheus.enabled` | Enable Prometheus metrics exporter | `false` |
-| `web.metrics.prometheus.port` | Port for exporting Prometeus metrics | `9391` |
+| `web.metrics.prometheus.port` | Port for exporting Prometheus metrics | `9391` |
+| `web.metrics.datadog.enabled` | Enable datadog metrics exporter | `false` |
+| `web.metrics.datadog.agentHost` | Host to export Datadog metrics to | `127.0.0.1` |
+| `web.metrics.datadog.agentHostUseHostIP` | Use node's IP as host to export Datadog metrics to. Overrides `web.metrics.datadog.agentHost` | `127.0.0.1` |
+| `web.metrics.datadog.agentPort` | Port to export Datadog metrics to | `8125` |
+| `web.metrics.datadog.prefix` | prefix for all Datadog metrics to easily find them in Datadog | `nil` |
+| `web.metrics.influxdb.enabled` | Enable influxdb metrics exporter | `false` |
+| `web.metrics.influxdb.url` | Url for exporting influxdb metrics | `http://127.0.0.1:8086` |
+| `web.metrics.influxdb.database` | Influxdb database name | `concourse` |
+| `web.metrics.influxdb.insecure_skip_verify` | Skip TLS verify when connecting to influxdb | `false` |
+| `web.metrics.influxdb.username` | Username used to authenticate with influxdb | `nil` |
 | `worker.nameOverride` | Override the Concourse Worker components name | `nil` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
 | `worker.resources` | Concourse Worker resource requests and limits | `{requests: {cpu: "100m", memory: "512Mi"}}` |
 | `worker.env` | Configure additional environment variables for the worker container(s) | `[]` |
-| `worker.anotations` | Annotations to be added to the worker pods | `{}` |
+| `worker.annotations` | Annotations to be added to the worker pods | `{}` |
 | `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `{}` |
 | `worker.tolerations` | Tolerations for the worker nodes | `[]` |
 | `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown to allow the worker to drain its tasks | `60` |
 | `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
 | `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
 | `worker.podManagementPolicy` | `OrderedReady` or `Parallel` (requires Kubernetes >= 1.7) | `Parallel` |
+| `worker.hardAntiAffinity` | Should the workers be forced (as opposed to preferred) to be on different nodes? | `false` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.storageClass` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
@@ -140,21 +153,26 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
 | `credentialManager.kubernetes.enabled` | Enable Kubernetes Secrets Credential Manager | `true` |
 | `credentialManager.kubernetes.namespacePrefix` | Prefix for namespaces to look for secrets in | `.Release.Name-` |
-| `credentialManager.kubernetes.teams` | Teams to allow secret access when rbac is enabled | `["main"]` |
+| `credentialManager.kubernetes.teams` | Teams to create namespaces for to hold secrets | `["main"]` |
+| `credentialManager.kubernetes.keepNamespaces` | Don't delete namespaces when the release is deleted | `true` |
 | `credentialManager.ssm.enabled` | Use AWS SSM as a Credential Manager | `false` |
 | `credentialManager.ssm.region` | AWS Region to use for SSM | `nil` |
 | `credentialManager.ssm.pipelineSecretsTemplate` | Pipeline secrets template | `nil` |
 | `credentialManager.ssm.teamSecretsTemplate` | Team secrets template | `nil` |
+| `credentialManager.awsSecretsManager.enabled` | Use AWS Secrets Manager as a Credential Manager | `false` |
+| `credentialManager.awsSecretsManager.region` | AWS Region to use for Secrets Manager | `nil` |
+| `credentialManager.awsSecretsManager.pipelineSecretsTemplate` | Pipeline secrets template | `nil` |
+| `credentialManager.awsSecretsManager.teamSecretsTemplate` | Team secrets template | `nil` |
 | `credentialManager.vault.enabled` | Use Hashicorp Vault as a Credential Manager | `false` |
 | `credentialManager.vault.url` | Vault Server URL | `nil` |
 | `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
-| `credentialManager.vault.caCert` | CA public certificate when using self-signed TLS with Vault | `nil` |
+| `credentialManager.vault.useCaCert` | CA public certificate when using self-signed TLS with Vault | `nil` |
 | `credentialManager.vault.authBackend` | Vault Authentication Backend to use, leave blank when using clientToken | `nil` |
 | `rbac.create` | Enables creation of RBAC resources | `true` |
 | `rbac.apiVersion` | RBAC version | `v1beta1` |
 | `rbac.webServiceAccountName` | Name of the service account to use for web pods if `rbac.create` is `false` | `default` |
 | `rbac.workerServiceAccountName` | Name of the service account to use for workers if `rbac.create` is `false` | `default` |
-| `secrets.create` | Create the secret resource from the following values. *See [Secrets](#Secrets)* | `true` |
+| `secrets.create` | Create the secret resource from the following values. *See [Secrets](#secrets)* | `true` |
 | `secrets.hostKey` | Concourse Host Private Key | *See [values.yaml](values.yaml)* |
 | `secrets.hostKeyPub` | Concourse Host Public Key | *See [values.yaml](values.yaml)* |
 | `secrets.sessionSigningKey` | Concourse Session Signing Private Key | *See [values.yaml](values.yaml)* |
@@ -173,13 +191,14 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `secrets.gitlabAuthClientSecret` | Application client secret for GitLab OAuth | `nil` |
 | `secrets.genericOauthClientId` | Application client ID for Generic OAuth | `nil` |
 | `secrets.genericOauthClientSecret` | Application client secret for Generic OAuth | `nil` |
-| `secrets.postgresqlUri` | PostgreSQL connection URI when `postgres.enabled` is `false` | `nil` |
+| `secrets.postgresqlUri` | PostgreSQL connection URI when `postgresql.enabled` is `false` | `nil` |
 | `secrets.vaultCaCert` | CA certificate   use to verify the vault server SSL cert. | `nil` |
 | `secrets.vaultClientToken` | Vault periodic client token | `nil` |
 | `secrets.vaultAppRoleId` | Vault AppRole RoleID | `nil` |
 | `secrets.vaultAppRoleSecretId` | Vault AppRole SecretID | `nil` |
 | `secrets.vaultClientCert` | Vault Client Certificate | `nil` |
 | `secrets.vaultClientKey` | Vault Client Key | `nil` |
+| `secrets.influxdbPassword` | Password used to authenticate with influxdb | `nil` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -208,7 +227,7 @@ printf "%s" "concourse" > basic-auth-username
 printf "%s" "$(openssl rand -base64 24)" > basic-auth-password
 ```
 
-You'll also need to create/copy secret values for optional features. See [templates/secrets.yaml](templates/secrets.yaml) for possible values. In the example below, we are not using the [PostgreSQL](#PostgreSQL) chart dependency, and so we must set a `postgresql-uri` secret.
+You'll also need to create/copy secret values for optional features. See [templates/secrets.yaml](templates/secrets.yaml) for possible values. In the example below, we are not using the [PostgreSQL](#postgresql) chart dependency, and so we must set a `postgresql-uri` secret.
 
 ```console
 # copy a posgres URI to clipboard and paste it to file
@@ -230,7 +249,7 @@ Make sure you clean up after yourself.
 
 ### Persistence
 
-This chart mounts a Persistent Volume volume for each Concourse Worker. The volume is created using dynamic volume provisioning. If you want to disable it or change the persistence properties, update the `persistence` section of your custom `values.yaml` file:
+This chart mounts a Persistent Volume for each Concourse Worker. The volume is created using dynamic volume provisioning. If you want to disable it or change the persistence properties, update the `persistence` section of your custom `values.yaml` file:
 
 ```yaml
 ## Persistent Volume Storage configuration.
@@ -306,17 +325,19 @@ You can also bring your own PostgreSQL. To do so, set `postgresql.enabled` to fa
 
 1. Set `secrets.postgresqlUri` in your values
 
-2. Set `postgresql-uri` in your release's secrets as described in [Secrets](#Secrets).
+2. Set `postgresql-uri` in your release's secrets as described in [Secrets](#secrets).
 
 The only way to completely avoid putting secrets in Helm is to bring your own PostgreSQL, and use option 2 above.
 
 ### Credential Management
 
-Pipelines ususally need credentials to do things. Concourse supports the use of a [Credential Manager](https://concourse-ci.org/creds.html) so your pipelines can contain references to secrets instead of the actual secret values. You can't use more than one credential manager at a time.
+Pipelines usually need credentials to do things. Concourse supports the use of a [Credential Manager](https://concourse-ci.org/creds.html) so your pipelines can contain references to secrets instead of the actual secret values. You can't use more than one credential manager at a time.
 
 #### Kubernetes Secrets
 
-By default, this chart will use Kubernetes Secrets as a credential manager. For a given Concourse *team*, a pipeline will look for secrets in a namespace named `[namespacePrefix][teamName]`. The namespace prefix is the release name hyphen by default, and can be overridden with the value `credentialManager.kubernetes.namespacePrefix`. The service account used by Concourse must have `get` access to secrets in that namespace. When `rbac.create` is true, this access is granted for each team listed under `credentialManager.kubernetes.teams`.
+By default, this chart will use Kubernetes Secrets as a credential manager. For a given Concourse *team*, a pipeline will look for secrets in a namespace named `[namespacePrefix][teamName]`. The namespace prefix is the release name hyphen by default, and can be overridden with the value `credentialManager.kubernetes.namespacePrefix`. Each team listed under `credentialManager.kubernetes.teams` will have a namespace created for it, and the namespace will remain after deletion of the release unless you set `credentialManager.kubernetes.keepNamespace` to `false`. By default, a namespace will be created for the `main` team.
+
+The service account used by Concourse must have `get` access to secrets in that namespace. When `rbac.create` is true, this access is granted for each team listed under `credentialManager.kubernetes.teams`.
 
 Here are some examples of the lookup heuristics, given release name `concourse`:
 
@@ -383,7 +404,7 @@ credentialManager:
 
 ```
 
-#### AWS Systems Manager Paramter Store (SSM)
+#### AWS Systems Manager Parameter Store (SSM)
 
 To use SSM, set `credentialManager.kubernetes.enabled` to false, and set `credentialManager.ssm.enabled` to true.
 
@@ -412,3 +433,40 @@ The minimum IAM policy you need to use SSM with Concourse is:
 ```
 
 Where `<kms-key-arn>` is the ARN of the KMS key used to encrypt the secrets in Paraemter Store, and the `<...arn...>` should be replaced with a correct ARN for your account and region's Parameter Store.
+
+#### AWS Secrets Manager
+
+To use Secrets Manager, set `credentialManager.kubernetes.enabled` to false, and set `credentialManager.awsSecretsManager.enabled` to true.
+
+For a given Concourse *team*, a pipeline will look for secrets in Secrets Manager using either `/concourse/{team}/{secret}` or `/concourse/{team}/{pipeline}/{secret}`; the patterns can be overridden using the `credentialManager.awsSecretsManager.teamSecretTemplate` and `credentialManager.awsSecretsManager.pipelineSecretTemplate` settings.
+
+Concourse requires AWS credentials which are able to read from Secrets Manager for this feature to function. Credentials can be set in the `secrets.awsSecretsmanager*` settings; if your cluster is running in a different AWS region, you may also need to set `credentialManager.awsSecretsManager.region`.
+
+The minimum IAM policy you need to use Secrets Manager with Concourse is:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAccessToSecretManagerParameters",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:ListSecrets"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessGetSecret",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:::secret:/concourse/*"
+      ]
+    }
+  ]
+}
+```

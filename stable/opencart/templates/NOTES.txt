@@ -51,7 +51,7 @@ host. To configure OpenCart with the URL of your service:
   kubectl port-forward $POD_NAME 8080:80
 {{- else }}
   echo URL               : http://{{ include "opencart.host" . }}/
-  echo Adminstration URL : http://{{ include "opencart.host" . }}/admin
+  echo Administration URL : http://{{ include "opencart.host" . }}/admin
 {{- end }}
 
 2. Get your OpenCart login credentials by running:

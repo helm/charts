@@ -4,6 +4,10 @@
 apiVersion: v1
 kind: Namespace
 metadata:
+{{- if $.Values.credentialManager.kubernetes.keepNamespaces }}
+  annotations:
+    "helm.sh/resource-policy": keep
+{{- end }}
   name: {{ template "concourse.namespacePrefix" $ }}{{ . }}
   labels:
     app: {{ template "concourse.concourse.fullname" $ }}

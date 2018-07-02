@@ -25,7 +25,7 @@ $ helm install --name my-release stable/dask
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Dask chart and their default values.
+The following tables list the configurable parameters of the Dask chart and their default values.
 
 ### Dask scheduler
 
@@ -50,7 +50,7 @@ The following tables lists the configurable parameters of the Dask chart and the
 | -----------------------      | ---------------------------------| ---------------|
 | `worker.name`                | Dask worker name                 | `worker`       |
 | `worker.image`               | Container image name             | `daskdev/dask` |
-| `worker.imageTag`            | Container image tag              | `0.17.1`       |
+| `worker.imageTag`            | Container image tag              | `0.17.4`       |
 | `worker.replicas`            | k8s hpa and deployment replicas  | `3`            |
 | `worker.resources`           | Container resources              | `{}`           |
 |
@@ -59,10 +59,10 @@ The following tables lists the configurable parameters of the Dask chart and the
 
 | Parameter               | Description                      | Default                  |
 |-------------------------|----------------------------------|--------------------------|
-| `jupyter.name`          | jupyter name                     | `jupyter`                |
+| `jupyter.name`          | Jupyter name                     | `jupyter`                |
 | `jupyter.enabled`       | Include optional Jupyter server  | `true`                   |
 | `jupyter.image`         | Container image name             | `daskdev/dask-notebook`  |
-| `jupyter.imageTag`      | Container image tag              | `0.17.1`                 |
+| `jupyter.imageTag`      | Container image tag              | `0.17.4`                 |
 | `jupyter.replicas`      | k8s deployment replicas          | `1`                      |
 | `jupyter.servicePort`   | k8s service port                 | `80`                     |
 | `jupyter.resources`     | Container resources              | `{}`                     |

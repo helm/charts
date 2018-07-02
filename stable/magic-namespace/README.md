@@ -106,7 +106,7 @@ $ helm install stable/magic-namespace \
 
 Deleting a release of a Magic Namespace will _not_ delete the namespace. It will
 only delete the Tiller, service accounts, role bindings, etc. from that
-namespace. This is actually desireable behavior, as anything the team has
+namespace. This is actually desirable behavior, as anything the team has
 deployed within that namespace is likely to be unaffected, though further
 deployments to and management of that namespace will not be possible by anyone
 other than the cluster operator.

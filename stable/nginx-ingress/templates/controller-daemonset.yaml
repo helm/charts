@@ -30,6 +30,10 @@ spec:
         {{- end }}
     spec:
       dnsPolicy: {{ .Values.controller.dnsPolicy }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.controller.name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
@@ -80,14 +84,13 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-          {{- range $key, $value := .Values.controller.extraEnvs }}
-            - name: {{ $key | upper | replace "." "_" }}
-              value: {{ $value }}
+          {{- if .Values.controller.extraEnvs }}
+{{ toYaml .Values.controller.extraEnvs | indent 12 }}
           {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 10254
+              port: {{ .Values.controller.livenessProbe.port }}
               scheme: HTTP
             initialDelaySeconds: {{ .Values.controller.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.controller.livenessProbe.periodSeconds }}
@@ -99,13 +102,13 @@ spec:
               containerPort: 80
               protocol: TCP
               {{- if .Values.controller.daemonset.useHostPort }}
-              hostPort: 80
+              hostPort: {{ .Values.controller.daemonset.hostPorts.http }}
               {{- end }}
             - name: https
               containerPort: 443
               protocol: TCP
               {{- if .Values.controller.daemonset.useHostPort }}
-              hostPort: 443
+              hostPort: {{ .Values.controller.daemonset.hostPorts.https }}
               {{- end }}
           {{- if .Values.controller.stats.enabled }}
             - name: stats
@@ -130,21 +133,33 @@ spec:
           readinessProbe:
             httpGet:
               path: /healthz
-              port: 10254
+              port: {{ .Values.controller.readinessProbe.port }}
               scheme: HTTP
             initialDelaySeconds: {{ .Values.controller.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.controller.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.controller.readinessProbe.timeoutSeconds }}
             successThreshold: {{ .Values.controller.readinessProbe.successThreshold }}
             failureThreshold: {{ .Values.controller.readinessProbe.failureThreshold }}
-{{- if .Values.controller.customTemplate.configMapName }}
+{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumeMounts) }}
           volumeMounts:
+{{- end }}
+{{- if .Values.controller.customTemplate.configMapName }}
             - mountPath: /etc/nginx/template
               name: nginx-template-volume
               readOnly: true
 {{- end }}
+{{- if .Values.controller.extraVolumeMounts }}
+{{ toYaml .Values.controller.extraVolumeMounts | indent 10}}
+{{- end }}
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
+{{- if .Values.controller.extraContainers }}
+{{ toYaml .Values.controller.extraContainers | indent 8}}
+{{- end }}
+{{- if .Values.controller.extraInitContainers }}
+      initContainers:
+{{ toYaml .Values.controller.extraInitContainers | indent 8}}
+{{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}
       nodeSelector:
@@ -158,10 +173,12 @@ spec:
       affinity:
 {{ toYaml .Values.controller.affinity | indent 8 }}
     {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "nginx-ingress.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "nginx-ingress.serviceAccountName" . }}
       terminationGracePeriodSeconds: 60
-{{- if .Values.controller.customTemplate.configMapName }}
+{{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumes) }}
       volumes:
+{{- end }}
+{{- if .Values.controller.customTemplate.configMapName }}
         - name: nginx-template-volume
           configMap:
             name: {{ .Values.controller.customTemplate.configMapName }}
@@ -169,6 +186,7 @@ spec:
             - key: {{ .Values.controller.customTemplate.configMapKey }}
               path: nginx.tmpl
 {{- end }}
-  updateStrategy:
-{{ toYaml .Values.controller.updateStrategy | indent 4 }}
+{{- if .Values.controller.extraVolumes }}
+{{ toYaml .Values.controller.extraVolumes | indent 6}}
+{{- end }}
 {{- end }}

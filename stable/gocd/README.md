@@ -61,13 +61,14 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the GoCD chart and their default values.
+The following tables list the configurable parameters of the GoCD chart and their default values.
 
 ### GoCD Server
 
 | Parameter                                  | Description                                                                                                   | Default             |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------- |
 | `server.enabled`                           | Enable GoCD Server. Supported values are `true`, `false`. When enabled, the GoCD server deployment is done on helm install.  | `true`              |
+| `server.shouldPreconfigure`                | Preconfigure GoCD Server to have a default elastic agent profile and Kubernetes elastic agent plugin settings. Supported values are `true`, `false`.  | `true`              |
 | `server.image.repository`                  | GoCD server image                                                                                             | `gocd/gocd-server`  |
 | `server.image.tag`                         | GoCD server image tag                                                                                         | `.Chart.appVersion` |
 | `server.image.pullPolicy`                  | Image pull policy                                                                                             | `IfNotPresent`      |
@@ -76,15 +77,58 @@ The following tables lists the configurable parameters of the GoCD chart and the
 | `server.env.goServerSystemProperties`      | GoCD Server system properties                                                                                 | `nil`               |
 | `server.env.extraEnvVars`                  | GoCD Server extra Environment variables                                                                       | `nil`               |
 | `server.service.type`                      | Type of GoCD server Kubernetes service                                                                        | `NodePort`          |
+| `server.service.loadBalancerSourceRanges`  | GoCD server service Load Balancer source IP ranges to whitelist                                               | `nil`               |
 | `server.service.httpPort`                  | GoCD server service HTTP port                                                                                 | `8153`              |
 | `server.service.httpsPort`                 | GoCD server service HTTPS port                                                                                | `8154`              |  
 | `server.service.nodeHttpPort`              | GoCD server service node HTTP port. **Note**: A random nodePort will get assigned if not specified            | `nil`               |  
 | `server.service.nodeHttpsPort`             | GoCD server service node HTTPS port. **Note**: A random nodePort will get assigned if not specified           | `nil`               |  
 | `server.ingress.enabled`                   | Enable/disable GoCD ingress. Allow traffic from outside the cluster via http. Do `kubectl describe ing` to get the public ip to access the gocd server.                                | `true`              |                                                                                     
 | `server.ingress.hosts`                     | GoCD ingress hosts records.                                                                                   | `nil`               |
+| `server.ingress.annotations`               | GoCD ingress annotations.                                                                                     | `{}`                |
+| `server.ingress.tls`                       | GoCD ingress TLS configuration.                                                                               | `[]`                |
 | `server.healthCheck.initialDelaySeconds`   | Initial delays in seconds to start the health checks. **Note**:GoCD server start up time.                     | `90`                |
-| `server.healthCheck.periodSeconds`         | GoCD server heath check interval period.                                                                      | `15`                |
+| `server.healthCheck.periodSeconds`         | GoCD server health check interval period.                                                                      | `15`                |
 | `server.healthCheck.failureThreshold`      | Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.              | `10`                |
+
+#### Preconfiguring the GoCD Server
+
+Based on the information available about the Kubernetes cluster, the [Kubernetes elastic agent](https://github.com/gocd/kubernetes-elastic-agents) plugin settings can be configured. A default elastic agent profile too is created so that users can concentrate on building their CD pipeline.
+A simple first pipeline is created in order to bootstrap the getting started experience for users. 
+
+If you are comfortable with GoCD and feel that there is no need to preconfigure the server, then you can override `server.shouldPreconfigure` to be false. 
+
+**Note: If the GoCD server is started with an existing config from a persistent volume, set the value of `server.shouldPreconfigure` to `false`.** 
+
+```bash
+$ helm install --namespace gocd --name gocd-app --set server.shouldPreconfigure=false stable/gocd
+```
+
+We are using the `postStart` container lifecycle hook to configure the plugin settings and the elastic agent profile. On starting the container, an attempt is made to configure the GoCD server. 
+
+```bash
+$ kubectl get pods --namespace gocd
+```
+
+The above command will show the pod state. This will be in `ContainerCreating` till the preconfigure script exits. 
+
+```bash
+$ kubectl describe pods --namespace gocd
+```
+
+The above command will show the events that occurred in detail. This can be used to determine if there is any problem at the time of creating the GoCD server pod. If the preconfigure script fails for some reason, the event `FailedPostStartHook` is published.
+
+The output of the preconfigure script is provided at `/godata/logs/preconfigure.log`.
+
+```bash
+$ helm status gocd-app
+```
+
+This command provides the information on how to access the GoCD server.
+
+The cases when the attempt to preconfigure the GoCD server fails:
+
+1. The service account token mounted as a secret for the GoCD server pod does not have sufficient permissions. The API call to configure the plugin settings will fail.
+2. If the GoCD server is started with an existing configuration with security configured, then the API calls in the preconfigure script will fail. 
 
 ### GoCD Agent
 
@@ -105,8 +149,8 @@ The following tables lists the configurable parameters of the GoCD chart and the
 | `agent.env.goAgentBootstrapperJvmArgs`    | GoCD Agent Bootstrapper JVM Args.                                                                                                                                                | `nil`                        |
 | `agent.healthCheck.enabled`               | Enable use of GoCD agent health checks.                                                                                                                                          | `false`                      |
 | `agent.healthCheck.initialDelaySeconds`   | GoCD agent start up time.                                                                                                                                                        | `60`                         |
-| `agent.healthCheck.periodSeconds`         | GoCD agent heath check interval period.                                                                                                                                          | `60`                         |
-| `agent.healthCheck.failureThreshold`      | GoCD agent heath check failure threshold. Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.                                       | `60`                         |
+| `agent.healthCheck.periodSeconds`         | GoCD agent health check interval period.                                                                                                                                          | `60`                         |
+| `agent.healthCheck.failureThreshold`      | GoCD agent health check failure threshold. Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.                                       | `60`                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -124,7 +168,7 @@ $ helm install --namespace gocd --name gocd-app -f values.yaml stable/gocd
 By default, the GoCD helm chart supports dynamic volume provisioning. This means that the standard storage class with a default provisioner provided by various cloud platforms used. 
 Refer to the [Kubernetes blog](http://blog.kubernetes.io/2017/03/dynamic-provisioning-and-storage-classes-kubernetes.html) to know more about the default provisioners across platforms.
 
-> **Note**: The recalim policy for most default volume provisioners is `delete`. This means that, the persistent volume provisioned using the default provisioner will be deleted along with the data when the PVC gets deleted.
+> **Note**: The reclaim policy for most default volume provisioners is `delete`. This means that, the persistent volume provisioned using the default provisioner will be deleted along with the data when the PVC gets deleted.
 
 One can change the storage class to be used by overriding `server.persistence.storageClass` and `agent.persistence.storageClass` like below:
 

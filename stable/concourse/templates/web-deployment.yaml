@@ -13,6 +13,9 @@ spec:
     metadata:
       labels:
         app: {{ template "concourse.web.fullname" . }}
+        release: "{{ .Release.Name }}"
+      annotations:
+{{ toYaml .Values.web.annotations | indent 8 }}
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.web.fullname" . }}{{ else }}{{ .Values.rbac.webServiceAccountName }}{{ end }}
       tolerations:
@@ -35,6 +38,20 @@ spec:
             {{- if .Values.credentialManager.ssm.enabled }}
             - "--aws-ssm-region"
             - "$(CONCOURSE_AWS_SSM_REGION)"
+            {{- end }}
+            {{- if .Values.credentialManager.awsSecretsManager.enabled }}
+            - "--aws-secretsmanager-region"
+            - "$(CONCOURSE_AWS_SECRETSMANAGER_REGION)"
+            {{- end }}
+            {{- if .Values.web.metrics.datadog.enabled }}
+            - "--datadog-agent-host"
+            - "$(CONCOURSE_DATADOG_AGENT_HOST)"
+            - "--datadog-agent-port"
+            - "$(CONCOURSE_DATADOG_AGENT_PORT)"
+            {{- if .Values.web.metrics.datadog.prefix }}
+            - "--datadog-prefix"
+            - {{ .Values.web.metrics.datadog.prefix }}
+            {{- end }}
             {{- end }}
           env:
             - name: CONCOURSE_TSA_HOST_KEY
@@ -200,11 +217,13 @@ spec:
             - name: CONCOURSE_VAULT_CA_CERT
               value: "/concourse-vault/ca.cert"
             {{- end }}
+            {{- if eq (default "" .Values.credentialManager.vault.authBackend) "cert" }}
             - name: CONCOURSE_VAULT_CLIENT_CERT
               value: "/concourse-vault/client.cert"
             - name: CONCOURSE_VAULT_CLIENT_KEY
               value: "/concourse-vault/client.key"
-            {{- if eq .Values.credentialManager.vault.authBackend "approle" }}
+            {{- end }}
+            {{- if eq (default "" .Values.credentialManager.vault.authBackend) "approle" }}
             - name: CONCOURSE_VAULT_APPROLE_ID
               valueFrom:
                 secretKeyRef:
@@ -248,11 +267,69 @@ spec:
               value: {{ .Values.credentialManager.ssm.teamSecretTemplate | quote }}
             {{- end }}
             {{- end }}
+            {{- if .Values.credentialManager.awsSecretsManager.enabled }}
+            - name: CONCOURSE_AWS_SECRETSMANAGER_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: aws-secretsmanager-access-key
+            - name: CONCOURSE_AWS_SECRETSMANAGER_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: aws-secretsmanager-secret-key
+            {{- if .Values.secrets.awsSsmSessionToken }}
+            - name: CONCOURSE_AWS_SECRETSMANAGER_SESSION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: aws-secretsmanager-session-token
+            {{- end }}
+            {{- if .Values.credentialManager.awsSecretsManager.region }}
+            - name: CONCOURSE_AWS_SECRETSMANAGER_REGION
+              value: {{ .Values.credentialManager.awsSecretsManager.region | quote }}
+            {{- end }}
+            {{- if .Values.credentialManager.awsSecretsManager.pipelineSecretTemplate }}
+            - name: CONCOURSE_AWS_SECRETSMANAGER_PIPELINE_SECRET_TEMPLATE
+              value: {{ .Values.credentialManager.awsSecretsManager.pipelineSecretTemplate | quote }}
+            {{- end }}
+            {{- if .Values.credentialManager.awsSecretsManager.teamSecretTemplate }}
+            - name: CONCOURSE_AWS_SECRETSMANAGER_TEAM_SECRET_TEMPLATE
+              value: {{ .Values.credentialManager.awsSecretsManager.teamSecretTemplate | quote }}
+            {{- end }}
+            {{- end }}
             {{- if .Values.web.metrics.prometheus.enabled }}
             - name: CONCOURSE_PROMETHEUS_BIND_IP
               value: "0.0.0.0"
             - name: CONCOURSE_PROMETHEUS_BIND_PORT
               value: {{ .Values.web.metrics.prometheus.port | quote }}
+            {{- end }}
+            {{- if .Values.web.metrics.datadog.enabled }}
+            - name: CONCOURSE_DATADOG_AGENT_HOST
+            {{- if .Values.web.metrics.datadog.agentHostUseHostIP }}
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            {{- else }}
+              value: {{ .Values.web.metrics.datadog.agentHost | quote }}
+            {{- end }}
+            - name: CONCOURSE_DATADOG_AGENT_PORT
+              value: {{ .Values.web.metrics.datadog.agentPort | quote }}
+            {{- end }}
+            {{- if .Values.web.metrics.influxdb.enabled }}
+            - name: CONCOURSE_INFLUXDB_URL
+              value: {{ .Values.web.metrics.influxdb.url | quote }}
+            - name: CONCOURSE_INFLUXDB_DATABASE
+              value: {{ .Values.web.metrics.influxdb.database | quote }}
+            - name: CONCOURSE_INFLUXDB_USERNAME
+              value: {{ .Values.web.metrics.influxdb.username | quote }}
+            - name: CONCOURSE_INFLUXDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: influxdb-password
+            - name: CONCOURSE_INFLUXDB_INSECURE_SKIP_VERIFY
+              value: {{ .Values.web.metrics.influxdb.insecureSkipVerify | quote}}
             {{- end }}
           ports:
             - name: atc
@@ -312,8 +389,10 @@ spec:
               - key: vault-ca-cert
                 path: ca.cert
             {{- end }}
+            {{- if eq (default "" .Values.credentialManager.vault.authBackend) "cert" }}
               - key: vault-client-cert
                 path: client.cert
               - key: vault-client-key
                 path: client.key
+            {{- end }}
         {{- end }}

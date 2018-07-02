@@ -1,4 +1,8 @@
 ---
+rbac:
+ # Specifies whether RBAC resources should be created
+ create: true
+
 ## Set default credentials for object store
 credentials: "local"
 
@@ -42,11 +46,11 @@ pachd:
  ## For available images please check: https://hub.docker.com/r/pachyderm/pachd/tags/
  image:
   repository: pachyderm/pachd
-  tag: 1.6.7
+  tag: 1.7.3
   pullPolicy: Always
  worker:
   repository: pachyderm/worker
-  tag: 1.6.7
+  tag: 1.7.3
  resources:
   ## For non-local deployments, 1 cpu and 2G of memory requests are recommended
   requests:
@@ -55,10 +59,10 @@ pachd:
 
 ## Set default image settings and persistence settings of etcd
 etcd:
- ## For available images please check: https://hub.docker.com/r/pachyderm/etcd/tags
+ ## For available images please check: https://hub.docker.com/r/pachyderm/etcd/tags or: https://quay.io/repository/coreos/etcd?tag=latest&tab=tags
  image:
-  repository: pachyderm/etcd
-  tag: v3.2.7
+  repository: quay.io/coreos/etcd
+  tag: v3.3.5
   pullPolicy: IfNotPresent
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

@@ -10,12 +10,16 @@ metadata:
 data:
   traefik.toml: |
     # traefik.toml
-    logLevel = "INFO"
     {{- if .Values.debug.enabled }}
     debug = true
+    {{- else }}
+    logLevel = "INFO"
     {{- end }}
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true
+    {{- end }}
+    {{- if .Values.ssl.insecureSkipVerify }}
+    InsecureSkipVerify = true
     {{- end }}
     {{- if .Values.ssl.enabled }}
     defaultEntryPoints = ["http","https"]
@@ -25,6 +29,9 @@ data:
     [entryPoints]
       [entryPoints.http]
       address = ":80"
+      {{- if .Values.whiteListSourceRange }}
+      {{ template "traefik.whiteListSourceRange" . }}
+      {{- end }}
       {{- if .Values.proxyProtocol.enabled }}
         [entryPoints.http.proxyProtocol]
         {{ template "traefik.trustedips" . }}
@@ -37,6 +44,9 @@ data:
         {{- end }}
       {{- if .Values.ssl.enabled }}
       [entryPoints.https]
+      {{- if .Values.whiteListSourceRange }}
+      {{ template "traefik.whiteListSourceRange" . }}
+      {{- end }}
       address = ":443"
       {{- if .Values.proxyProtocol.enabled }}
         [entryPoints.https.proxyProtocol]
@@ -44,11 +54,17 @@ data:
       {{- end }}
       compress = {{ .Values.gzip.enabled }}
         [entryPoints.https.tls]
+          {{- if .Values.ssl.tlsMinVersion }}
+          minVersion = "{{ .Values.ssl.tlsMinVersion }}"
+          {{- end }}
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
       {{- else }}
       [entryPoints.httpn]
+      {{- if .Values.whiteListSourceRange }}
+      {{ template "traefik.whiteListSourceRange" . }}
+      {{- end }}
       address = ":8880"
       compress = {{ .Values.gzip.enabled }}
       {{- end }}
@@ -65,6 +81,9 @@ data:
       {{- if .Values.kubernetes.labelSelector }}
     labelselector = {{ .Values.kubernetes.labelSelector | quote }}
       {{- end}}
+      {{- if .Values.kubernetes.ingressClass }}
+    ingressClass = {{ .Values.kubernetes.ingressClass | quote }}
+      {{- end}}
     {{- end}}
     {{- if .Values.accessLogs.enabled }}
     [accessLog]
@@ -80,7 +99,7 @@ data:
     entryPoint = "https"
     onHostRule = true
     {{- if .Values.acme.staging }}
-    caServer = "https://acme-staging.api.letsencrypt.org/directory"
+    caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
     {{- end }}
     {{- if .Values.acme.logging }}
     acmeLogging = true

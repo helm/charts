@@ -1,0 +1,61 @@
+# Enable RBAC
+rbac:
+  create: true
+
+# Create ServiceAccount
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# Default 404 backend
+defaultBackend:
+  name: ingress-default-backend
+  image:
+    repository: gcr.io/google_containers/defaultbackend
+    tag: "1.0"
+    pullPolicy: IfNotPresent
+  resources:
+    cpu: 10m
+    memory: 20Mi
+
+  service:
+    name: ingress-default-backend
+
+controller:
+  name: controller
+  image:
+    repository: quay.io/jcmoraisjr/haproxy-ingress
+    tag: "v0.5-beta.3"
+    pullPolicy: IfNotPresent
+
+  defaultSslCertificate:
+    secret:
+      # If not set, release namespace is used
+      namespace:
+      # Required
+      name:
+
+  # ConfigMap to configure haproxy ingress
+  config: {}
+
+  service:
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+
+    targetPorts:
+      http: 80
+      https: 443
+
+    type: LoadBalancer
+
+    # type: NodePort
+    # nodePorts:
+    #   http: 32080
+    #   https: 32443
+    nodePorts:
+      http: ""
+      https: ""

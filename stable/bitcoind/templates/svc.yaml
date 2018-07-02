@@ -22,4 +22,3 @@ spec:
   selector:
     app: {{ template "bitcoind.name" . }}
     release: {{ .Release.Name }}
-    bitcoind-rotation: {{ .Values.service.selector }}

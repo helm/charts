@@ -45,13 +45,13 @@ chart and deletes the release.
 
 ### General Configuration Parameters
 
-The following tables lists the configurable parameters of the Kong chart
+The following table lists the configurable parameters of the Kong chart
 and their default values.
 
 | Parameter                         | Description                                                            | Default               |
 | ------------------------------    | --------------------------------------------------------------------   | -------------------   |
 | image.repository                  | Kong image                                                             | `kong`                |
-| image.tag                         | Kong image version                                                     | `0.11.2`              |
+| image.tag                         | Kong image version                                                     | `0.13.1`              |
 | image.pullPolicy                  | Image pull policy                                                      | `IfNotPresent`        |
 | replicaCount                      | Kong instance count                                                    | `1`                   |
 | admin.useTLS                      | Secure Admin traffic                                                   | `true`                |

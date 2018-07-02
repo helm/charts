@@ -6,10 +6,10 @@ or Issuer resource (for example, by creating a 'letsencrypt-staging' issuer).
 More information on the different types of issuers and how to configure them
 can be found in our documentation:
 
-https://github.com/jetstack/cert-manager/tree/v0.2.3/docs/api-types/issuer
+https://cert-manager.readthedocs.io/en/latest/reference/issuers.html
 
 For information on how to configure cert-manager to automatically provision
 Certificates for Ingress resources, take a look at the `ingress-shim`
 documentation:
 
-https://github.com/jetstack/cert-manager/blob/v0.2.3/docs/user-guides/ingress-shim.md
+https://cert-manager.readthedocs.io/en/latest/reference/ingress-shim.html

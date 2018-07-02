@@ -47,8 +47,11 @@ The following table lists the configurable parameters of the phpBB chart and the
 
 |             Parameter             |              Description              |                         Default                         |
 |-----------------------------------|---------------------------------------|---------------------------------------------------------|
-| `image`                           | phpBB image                           | `bitnami/phpbb:{VERSION}`                               |
-| `imagePullPolicy`                 | Image pull policy                     | `IfNotPresent`                                          |
+| `image.registry`                  | phpBB image registry                  | `docker.io`                                             |
+| `image.repository`                | phpBB image name                      | `bitnami/phpbb`                                         |
+| `image.tag`                       | phpBB image tag                       | `{VERSION}`                                             |
+| `image.pullPolicy`                | Image pull policy                     | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`               | Specify image pull secrets            | `nil`                                                   |
 | `phpbbUser`                       | User of the application               | `user`                                                  |
 | `phpbbPassword`                   | Application password                  | _random 10 character long alphanumeric string_          |
 | `phpbbEmail`                      | Admin email                           | `user@example.com`                                      |
@@ -60,12 +63,12 @@ The following table lists the configurable parameters of the phpBB chart and the
 | `externalDatabase.host`           | Host of the external database         | `nil`                                                   |
 | `externalDatabase.user`           | Existing username in the external db  | `bn_phpbb`                                              |
 | `externalDatabase.password`       | Password for the above username       | `nil`                                                   |
-| `externalDatabase.database`       | Name of the existing database          | `bitnami_phpbb`                                         |
-| `mariadb.enabled`                 | Use or not the mariadb chart          | `true`                                                  |
-| `mariadb.mariadbRootPassword`     | MariaDB admin password                | `nil`                                                   |
-| `mariadb.mariadbDatabase`         | Database name to create               | `bitnami_phpbb`                                         |
-| `mariadb.mariadbUser`             | Database user to create               | `bn_phpbb`                                              |
-| `mariadb.mariadbPassword`         | Password for the database             | _random 10 character long alphanumeric string_          |
+| `externalDatabase.database`       | Name of the existing database         | `bitnami_phpbb`                                         |
+| `mariadb.enabled`                 | Use or not the MariaDB chart          | `true`                                                  |
+| `mariadb.rootUser.password`     | MariaDB admin password                | `nil`                                                   |
+| `mariadb.db.name`         | Database name to create               | `bitnami_phpbb`                                         |
+| `mariadb.db.user`             | Database user to create               | `bn_phpbb`                                              |
+| `mariadb.db.password`         | Password for the database             | _random 10 character long alphanumeric string_          |
 | `serviceType`                     | Kubernetes Service type               | `LoadBalancer`                                          |
 | `persistence.enabled`             | Enable persistence using PVC          | `true`                                                  |
 | `persistence.apache.storageClass` | PVC Storage Class for Apache volume   | `nil` (uses alpha storage class annotation)             |

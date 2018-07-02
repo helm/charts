@@ -13,10 +13,16 @@ spec:
       labels:
         app: {{ template "jasperreports.fullname" . }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "jasperreports.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD
           value: {{ .Values.allowEmptyPassword | quote }}
@@ -26,9 +32,9 @@ spec:
         - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: JASPERREPORTS_DATABASE_NAME
-          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+          value: {{ .Values.mariadb.db.name | quote }}
         - name: JASPERREPORTS_DATABASE_USER
-          value: {{ .Values.mariadb.mariadbUser | quote }}
+          value: {{ .Values.mariadb.db.user | quote }}
         - name: JASPERREPORTS_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:

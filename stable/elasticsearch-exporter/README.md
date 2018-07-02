@@ -12,7 +12,7 @@ $ helm install stable/elasticsearch-exporter
 
 ## Introduction
 
-This chart creates a Elasticsearch-Exporter deployment on a [Kubernetes](http://kubernetes.io) 
+This chart creates an Elasticsearch-Exporter deployment on a [Kubernetes](http://kubernetes.io) 
 cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites

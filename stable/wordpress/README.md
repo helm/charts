@@ -46,15 +46,19 @@ The command removes all the Kubernetes components associated with the chart and 
 The following table lists the configurable parameters of the WordPress chart and their default values.
 
 | Parameter                            | Description                                | Default                                                    |
-| -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
-| `image`                              | WordPress image                            | `bitnami/wordpress:{VERSION}`                              |
-| `imagePullPolicy`                    | Image pull policy                          | `IfNotPresent`                                             |
+| ------------------------------------ | ------------------------------------------ | ---------------------------------------------------------- |
+| `image.registry`                     | WordPress image registry                   | `docker.io`                                                |
+| `image.repository`                   | WordPress image name                       | `bitnami/wordpress`                                        |
+| `image.tag`                          | WordPress image tag                        | `{VERSION}`                                                |
+| `image.pullPolicy`                   | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `image.pullSecrets`                  | Specify image pull secrets                 | `nil`                                                      |
 | `wordpressUsername`                  | User of the application                    | `user`                                                     |
 | `wordpressPassword`                  | Application password                       | _random 10 character long alphanumeric string_             |
 | `wordpressEmail`                     | Admin email                                | `user@example.com`                                         |
 | `wordpressFirstName`                 | First name                                 | `FirstName`                                                |
 | `wordpressLastName`                  | Last name                                  | `LastName`                                                 |
 | `wordpressBlogName`                  | Blog name                                  | `User's Blog!`                                             |
+| `wordpressTablePrefix`               | Table prefix                               | `wp_`                                                      |
 | `allowEmptyPassword`                 | Allow DB blank passwords                   | `yes`                                                      |
 | `smtpHost`                           | SMTP host                                  | `nil`                                                      |
 | `smtpPort`                           | SMTP port                                  | `nil`                                                      |
@@ -62,16 +66,17 @@ The following table lists the configurable parameters of the WordPress chart and
 | `smtpPassword`                       | SMTP password                              | `nil`                                                      |
 | `smtpUsername`                       | User name for SMTP emails                  | `nil`                                                      |
 | `smtpProtocol`                       | SMTP protocol [`tls`, `ssl`]               | `nil`                                                      |
+| `replicaCount`                       | Number of WordPress Pods to run            | `1`                                                        |
 | `mariadb.enabled`                    | Deploy MariaDB container(s)                | `true`                                                     |
-| `mariadb.mariadbRootPassword`        | MariaDB admin password                     | `nil`                                                      |
-| `mariadb.mariadbDatabase`            | Database name to create                    | `bitnami_wordpress`                                        |
-| `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                             |
-| `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_             |
+| `mariadb.rootUser.password`        | MariaDB admin password                     | `nil`                                                      |
+| `mariadb.db.name`            | Database name to create                    | `bitnami_wordpress`                                        |
+| `mariadb.db.user`                | Database user to create                    | `bn_wordpress`                                             |
+| `mariadb.db.password`            | Password for the database                  | _random 10 character long alphanumeric string_             |
 | `externalDatabase.host`              | Host of the external database              | `localhost`                                                |
 | `externalDatabase.user`              | Existing username in the external db       | `bn_wordpress`                                             |
 | `externalDatabase.password`          | Password for the above username            | `nil`                                                      |
 | `externalDatabase.database`          | Name of the existing database              | `bitnami_wordpress`                                        |
-| `externalDatabase.port`              | Database port number                       | `3306`                                        |
+| `externalDatabase.port`              | Database port number                       | `3306`                                                     |
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
 | `nodePorts.http`                     | Kubernetes http node port                  | `""`                                                       |
 | `nodePorts.https`                    | Kubernetes https node port                 | `""`                                                       |
@@ -86,6 +91,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                     | `nil`                                                      |
 | `ingress.secrets[0].key`             | TLS Secret Key                             | `nil`                                                      |
 | `persistence.enabled`                | Enable persistence using PVC               | `true`                                                     |
+| `persistence.existingClaim`          | Enable persistence using an existing PVC   | `nil`                                                      |
 | `persistence.storageClass`           | PVC Storage Class                          | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | PVC Access Mode                            | `ReadWriteOnce`                                            |
 | `persistence.size`                   | PVC Storage Request                        | `10Gi`                                                     |
@@ -111,6 +117,23 @@ $ helm install --name my-release -f values.yaml stable/wordpress
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Production and horizontal scaling
+
+The following repo contains the recommended production settings for wordpress capture in an alternative [values file](values-production.yaml). Please read carefully the comments in the values-production.yaml file to set up your environment appropriately.
+
+To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then:
+
+```console
+$ helm install --name my-release -f ./values-production.yaml stable/wordpress
+```
+
+Note that [values-production.yaml](values-production.yaml) includes a replicaCount of 3, so there will be 3 WordPress pods. As a result, to use the /admin portal and to ensure you can scale wordpress you need to provide a ReadWriteMany PVC, if you don't have a provisioner for this type of storage, we recommend that you install the nfs provisioner and map it to a RWO volume.
+
+```console
+$ helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
+$ helm install --name my-release -f values-production.yaml --set persitence.storageClass=nfs stable/wordpress
+```
+
 ## Persistence
 
 The [Bitnami WordPress](https://github.com/bitnami/bitnami-docker-wordpress) image stores the WordPress data and configurations at the `/bitnami` path of the container.
@@ -134,7 +157,7 @@ Note also if you disable MariaDB per above you MUST supply values for the `exter
 This chart provides support for ingress resources. If you have an
 ingress controller installed on your cluster, such as [nginx-ingress](https://kubeapps.com/charts/stable/nginx-ingress)
 or [traefik](https://kubeapps.com/charts/stable/traefik) you can utilize
-the ingress controller to service your WordPress application.
+the ingress controller to serve your WordPress application.
 
 To enable ingress integration, please set `ingress.enabled` to `true`
 
@@ -191,11 +214,11 @@ wrj2wDbCDCFmfqnSJ+dKI3vFLlEz44sAV8jX/kd4Y6ZTQhlLbYc=
 -----END RSA PRIVATE KEY-----
 ````
 
-If you are going to use helm to manage the certificates, please copy
+If you are going to use Helm to manage the certificates, please copy
 these values into the `certificate` and `key` values for a given
 `ingress.secrets` entry.
 
-If you are going are going to manage TLS secrets outside of helm, please
+If you are going are going to manage TLS secrets outside of Helm, please
 know that you can create a TLS secret by doing the following:
 
 ```

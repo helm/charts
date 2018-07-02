@@ -1,5 +1,6 @@
 name: percona
-version: 0.3.0
+version: 0.3.2
+appVersion: 5.7.17
 description: free, fully compatible, enhanced, open source drop-in replacement for
   MySQL
 keywords:

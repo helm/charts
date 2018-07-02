@@ -16,7 +16,7 @@ To connect from outside the K8s cluster:
 
      # Execute the following commands to route the connection to Admin SSL port:
      export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "release={{ .Release.Name }}, app={{ template "kong.name" . }}" -o jsonpath="{.items[0].metadata.name}")
-     kubectl port-forward $POD_NAME {{ .Values.admin.servicePort }}:{{ .Values.admin.servicePort }}
+     kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.admin.servicePort }}:{{ .Values.admin.servicePort }}
    {{- end }}
 
 
@@ -39,5 +39,5 @@ To connect from outside the K8s cluster:
 
      # Execute the following commands to route the connection to proxy SSL port:
      export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "release={{ .Release.Name }}, app={{ template "kong.name" . }}" -o jsonpath="{.items[0].metadata.name}")
-     kubectl port-forward $POD_NAME {{ .Values.proxy.servicePort }}:{{ .Values.proxy.servicePort }}
+     kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.proxy.servicePort }}:{{ .Values.proxy.servicePort }}
    {{- end }}
