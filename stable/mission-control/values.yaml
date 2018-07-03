@@ -119,7 +119,7 @@ missionControl:
   replicaCount: 1
   name: mission-control
   image: docker.bintray.io/jfrog/mission-control
-  version: 3.0.0
+  version: 3.1.0
   missionControlUrl:
   podRestartTime:
   persistence:
@@ -170,7 +170,7 @@ insightServer:
   replicaCount: 1
   name: insight-server
   image: docker.bintray.io/jfrog/insight-server
-  version: 3.0.0
+  version: 3.1.0
   service:
     name: insight-server
     type: ClusterIP
@@ -195,7 +195,7 @@ insightScheduler:
   replicaCount: 1
   name: insight-scheduler
   image: docker.bintray.io/jfrog/insight-scheduler
-  version: 3.0.0
+  version: 3.1.0
   service:
     type: ClusterIP
   externalPort: 8080
@@ -217,7 +217,7 @@ insightExecutor:
   replicaCount: 1
   name: insight-executor
   image: docker.bintray.io/jfrog/insight-executor
-  version: 3.0.0
+  version: 3.1.0
   persistence:
     enabled: true
     ## A manually managed Persistent Volume and Claim
