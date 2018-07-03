@@ -75,9 +75,11 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.livenessProbe.initialDelaySeconds`   | LivenessProbe initial delay         | 30                                      |
 | `nexus.livenessProbe.periodSeconds`         | Seconds between polls               | 30                                      |
 | `nexus.livenessProbe.failureThreshold`      | Number of attempts before failure   | 6                                       |
+| `nexus.livenessProbe.path`                  | Path for LivenessProbe              | /                                       |
 | `nexus.readinessProbe.initialDelaySeconds`  | ReadinessProbe initial delay        | 30                                      |
 | `nexus.readinessProbe.periodSeconds`        | Seconds between polls               | 30                                      |
 | `nexus.readinessProbe.failureThreshold`     | Number of attempts before failure   | 6                                       |
+| `nexus.readinessProbe.path`                 | Path for ReadinessProbe             | /                                       |
 | `nexusProxy.port`                           | Port for exposing Nexus             | `8080`                                  |
 | `nexusProxy.imageName`                      | Proxy image                         | `quay.io/travelaudience/docker-nexus-proxy` |
 | `nexusProxy.imageTag`                       | Proxy image version                 | `2.1.0`                                 |
