@@ -1,4 +1,4 @@
-1. Get the application URL by running these commands:
+1. To monitor Geode cluster run these commands:
 {{- if .Values.ingress.enabled }}
 {{- range .Values.ingress.hosts }}
   http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
@@ -14,6 +14,7 @@
   echo http://$SERVICE_IP:{{ .Values.service.port }}
 {{- else if contains "ClusterIP" .Values.service.type }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "geode.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl port-forward $POD_NAME 8080:80
+  kubectl port-forward $POD_NAME 7070:7070
+  Then visit http://127.0.0.1:7070/pulse (login/password: admin/admin)"
+
 {{- end }}
