@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "openam.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ template "openam.name" . }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "openam.fullname" . }}-initial-config
+data:
+  initial-config.properties: |
+    ##############################################################################
+    ###
+    SERVER_URL={{ .Values.server.url }}
+    DEPLOYMENT_URI=/openam
+    BASE_DIR= {{ .Values.env.BASE_DIR}}
+    locale=en_US
+    PLATFORM_LOCALE=en_US
+    AM_ENC_KEY=
+    ADMIN_PWD={{ .Values.env.AM_PWD}}
+    AMLDAPUSERPASSWD=00000000
+    COOKIE_DOMAIN= {{ .Values.cookieDomain }}
+    ACCEPT_LICENSES=true
+
+    DATA_STORE={{ .Values.dataStore.type }}
+    DIRECTORY_SSL={{ .Values.directory.ssl }}
+    DIRECTORY_SERVER= {{ .Values.directory.server }}
+    DIRECTORY_PORT={{ .Values.directory.port }}
+    DIRECTORY_ADMIN_PORT={{ .Values.directory.adminPort }}
+    DIRECTORY_JMX_PORT={{ .Values.directory.jmxPort }}
+    ROOT_SUFFIX={{ .Values.dataStore.rootSuffix }}
+    DS_DIRMGRDN={{ .Values.dataStore.dirMgrDN }}
+    DS_DIRMGRPASSWD={{ .Values.dataStore.dirMgrPassword }}

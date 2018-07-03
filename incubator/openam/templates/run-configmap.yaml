@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "openam.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ template "openam.name" . }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "openam.fullname" . }}-run
+data:
+  run_me.sh: |
+    #!/usr/bin/env bash
+
+    # Instance dir does not exist? Then we need to run setup
+    if [ ! -f ${BASE_DIR}/install.log ] ; then
+      echo "OpenAM config not found. Configuring.."
+      /bin/configure.sh &
+    fi
+    
+    echo "Starting the server"
+    export heap="1g"
+    if [ ! -z "$MAX_HEAP" ] ; then
+      heap="$MAX_HEAP"
+    fi
+    sed -i '3i JAVA_OPTS="$JAVA_OPTS -server -Xmx$heap -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=256m -Dcom.sun.identity.configuration.directory=${BASE_DIR}"' ${CATALINA_HOME}/bin/catalina.sh
+    ${CATALINA_HOME}/bin/catalina.sh run
