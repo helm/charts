@@ -63,6 +63,8 @@ allowEmptyPassword: "yes"
 # smtpUsername:
 # smtpProtocol:
 
+replicaCount: 3
+
 externalDatabase:
 ## All of these values are only used when mariadb.enabled is set to false
   ## Database host
@@ -223,7 +225,7 @@ persistence:
   ## the existingClaim variable
   # existingClaim: your-claim
   ##
-  ## To use the /admin portal and to ensure you can scale wordpress you need to provide a 
+  ## To use the /admin portal and to ensure you can scale wordpress you need to provide a
   ## ReadWriteMany PVC, if you dont have a provisioner for this type of storage
   ## We recommend that you install the nfs provisioner and map it to a RWO volume
   ## helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi

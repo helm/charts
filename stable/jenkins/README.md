@@ -38,10 +38,10 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
 | `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
-| `Master.Cpu`                      | Master requested cpu                 | `200m`                                                                       |
-| `Master.Memory`                   | Master requested memory              | `256Mi`                                                                      |
+| `Master.resources`                | Resources allocation (Requests and Limits) | `{requests: {cpu: 50m, memory: 256Mi}, limits: {cpu: 2000m, memory: 2048Mi}}`|
 | `Master.InitContainerEnv`         | Environment variables for Init Container                                 | Not set                                  |
 | `Master.ContainerEnv`             | Environment variables for Jenkins Container                              | Not set                                  |
+| `Master.UsePodSecurityContext`    | Enable pod security context (must be `true` if `RunAsUser` or `FsGroup` are set) | `true`                           |
 | `Master.RunAsUser`                | uid that jenkins runs with           | `0`                                                                          |
 | `Master.FsGroup`                  | uid that will be used for persistent volume | `0`                                                                   |
 | `Master.ServiceAnnotations`       | Service annotations                  | `{}`                                                                         |
@@ -73,6 +73,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
 | `Master.Affinity`                 | Affinity settings                    | `{}`                                                                         |
 | `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
+| `Master.PodAnnotations`           | Annotations for master pod           | `{}`                                                                         |
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
 | `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `extensions/v1beta1`                                                         |
 | `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
@@ -89,8 +90,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Agent.ImagePullSecret` | Agent image pull secret                         | Not set                |
 | `Agent.ImageTag`        | Agent image tag                                 | `2.62`                 |
 | `Agent.Privileged`      | Agent privileged container                      | `false`                |
-| `Agent.Cpu`             | Agent requested cpu                             | `200m`                 |
-| `Agent.Memory`          | Agent requested memory                          | `256Mi`                |
+| `Agent.resources`       | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
 | `Agent.volumes`         | Additional volumes                              | `nil`                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
