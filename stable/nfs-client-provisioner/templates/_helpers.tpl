@@ -30,3 +30,11 @@ Create chart name and version as used by the chart label.
 {{- define "nfs-client-provisioner.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{- define "nfs-client-provisioner.provisionerName" -}}
+{{- if .Values.storageClass.provisionerName -}}
+{{- printf .Values.storageClass.provisionerName -}}
+{{- else -}}
+cluster.local/{{ template "nfs-client-provisioner.fullname" . -}}
+{{- end -}}
+{{- end -}}

@@ -19,7 +19,7 @@ storageClass:
   create: true
 
   ## Set a provisioner name. If unset, a name will be generated.
-  provisionerName: fuseim.pri/ifs
+  # provisionerName: 
 
   ## Set StorageClass as the default StorageClass
   ## Ignored if storageClass.create is false
