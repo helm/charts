@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: yannart/cerebro
-  tag: 0.7.3
+  tag: 0.8.1
   pullPolicy: IfNotPresent
 
 service:

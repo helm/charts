@@ -41,7 +41,7 @@ The following table lists the configurable parameters of the cerebro chart and t
 |-------------------------------------|------------------------------------|-------------------------------------------|
 | `replicaCount`                      | Number of replicas                 | `1`                                       |
 | `image.repository`                  | The image to run                   | `yannart/cerebro`                         |
-| `image.tag`                         | The image tag to pull              | `0.7.3`                                   |
+| `image.tag`                         | The image tag to pull              | `0.8.1`                                   |
 | `image.pullPolicy`                  | Image pull policy                  | `IfNotPresent`                            |
 | `service.type`                      | Type of Service                    | `ClusterIP`                               |
 | `service.port`                      | Port for kubernetes service        | `80`                                      |
