@@ -1,5 +1,6 @@
 name: gcloud-endpoints
-version: 0.1.0
+version: 0.1.1
+appVersion: 1
 description: Develop, deploy, protect and monitor your APIs with Google Cloud Endpoints.
 keywords:
 - google
@@ -14,6 +15,6 @@ keywords:
 - open api
 home: https://cloud.google.com/endpoints/
 maintainers:
-- name: Matt Tucker
+- name: ultimateboy
   email: mtucker@deis.com
 engine: gotpl
