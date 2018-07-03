@@ -9,7 +9,7 @@ keywords:
 home: https://www.mysql.com/
 icon: https://www.mysql.com/common/logos/logo-mysql-170x115.png
 maintainers:
-  - name: Jason Poon
+  - name: jpoon
     email: jason.poon@microsoft.com
-  - name: Jon Hoare
+  - name: jonhoare
     email: jon.bitbucket@livewire-uk.co.uk
