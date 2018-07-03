@@ -87,6 +87,7 @@ airflow:
     PIP_TRUSTED_HOST: pypi.mycompany.com
     HTTP_PROXY: http://proxy.mycompany.com:1234
     HTTPS_PROXY: http://proxy.mycompany.com:1234
+```
 
 
 ### Worker Statefulset
