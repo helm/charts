@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: {{ template "datadog.fullname" . }}
   labels:
-    app: {{ template "datadog.fullname" . | quote }}
+    app: "{{ template "datadog.autoconf.fullname" . }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}

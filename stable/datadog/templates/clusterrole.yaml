@@ -3,7 +3,7 @@ apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRole
 metadata:
   labels:
-    app: {{ template "datadog.fullname" . | quote }}
+    app: "{{ template "datadog.autoconf.fullname" . }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
