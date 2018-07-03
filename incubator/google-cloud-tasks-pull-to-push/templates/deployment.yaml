@@ -1,0 +1,87 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "chart.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "chart.name" . }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: {{ template "chart.fullname" . }}
+      labels:
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        app: {{ template "chart.name" . }}
+    spec:
+      {{- if .Values.restartPolicy }}
+      restartPolicy: {{ .Values.restartPolicy }}
+      {{- end}}
+      containers:
+      - name: google-cloud-tasks-pull-to-push
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        {{- if .Values.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- end}}
+        args:
+        - --project={{ .Values.project }}
+        {{- if .Values.location }}
+        - --location={{ .Values.location}}
+        {{- end}}
+        {{- if .Values.queue }}
+        - --queue={{ .Values.queue }}
+        {{- end}}
+        {{- if .Values.rate }}
+        - --rate={{ .Values.rate }}
+        {{- end}}
+        {{- if .Values.leaseDuration }}
+        - --lease-duration={{ .Values.leaseDuration }}
+        {{- end}}
+        {{- if .Values.pull }}
+        {{- if .Values.pull.minBackoff }}
+        - --pull-min-backoff={{ .Values.pull.minBackoff }}
+        {{- end}}
+        {{- if .Values.pull.maxBackoff }}
+        - --pull-max-backoff={{ .Values.pull.maxBackoff }}
+        {{- end}}
+        {{- if .Values.pull.maxDoublings }}
+        - --pull-max-doublings={{ .Values.pull.maxDoublings }}
+        {{- end}}
+        {{- end}}
+        {{- if .Values.push }}
+        {{- if .Values.push.minBackoff }}
+        - --push-min-backoff={{ .Values.push.minBackoff }}
+        {{- end}}
+        {{- if .Values.push.maxBackoff }}
+        - --push-max-backoff={{ .Values.push.maxBackoff }}
+        {{- end}}
+        {{- if .Values.push.maxDoublings }}
+        - --push-max-doublings={{ .Values.push.maxDoublings }}
+        {{- end}}
+        {{- end}}
+        env:
+        {{- if .Values.credentialsSecret }}
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /app/auth/credentials.json
+        {{- end}}
+        {{- if .Values.resources }}
+        resources:
+    {{ toYaml .Values.resources | trim | indent 6 }}
+        {{- end}}
+        {{- if .Values.credentialsSecret }}
+        volumeMounts:
+        - name: gcp-credentials
+          mountPath: /app/auth
+          readOnly: true
+        {{- end}}
+      {{- if .Values.credentialsSecret }}
+      volumes:
+      - name: gcp-credentials
+        secret:
+          secretName: {{ .Values.credentialsSecret }}
+      {{- end}}

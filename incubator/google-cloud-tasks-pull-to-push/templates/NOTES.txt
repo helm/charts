@@ -1,0 +1,2 @@
+Add your GCP project id to google-cloud-tasks-pull-to-push.project in values.yaml.
+See README.md for additional configuration.
