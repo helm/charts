@@ -30,10 +30,9 @@ image:
 # Specs for busybox image
 
 copyConfigImage:
-  busybox:
-    repository: busybox
-    tag: 1.28.4
-    pullPolicy: IfNotPresent
+  repository: busybox
+  tag: 1.28.4
+  pullPolicy: IfNotPresent
 
 # Specs for test image
 testImage:
