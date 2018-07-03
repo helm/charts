@@ -47,6 +47,11 @@ spec:
         - name: halyard-home
           mountPath: /tmp/spinnaker
       volumes:
+      {{- if .Values.kubeConfig.enabled }}
+      - name: kube-config
+        secret:
+          secretName: {{ .Values.kubeConfig.secretName }}
+      {{- end }}
       {{- if .Values.gcs.enabled }}
       - name: gcs-key
         secret:
@@ -64,6 +69,10 @@ spec:
         {{- if .Values.gcs.enabled }}
         - name: gcs-key
           mountPath: /opt/gcs
+        {{- end }}
+        {{- if .Values.kubeConfig.enabled }}
+        - name: kube-config
+          mountPath: /opt/kube
         {{- end }}
         - name: halyard-home
           mountPath: /home/spinnaker

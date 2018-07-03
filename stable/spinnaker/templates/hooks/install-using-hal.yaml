@@ -21,12 +21,10 @@ spec:
       {{- end }}
       restartPolicy: OnFailure
       volumes:
-      - name: kube-config
-        configMap:
       {{- if .Values.kubeConfig.enabled }}
-          name: {{ .Values.kubeConfig.configMapName }}
-      {{- else }}
-          name: {{ template "fullname" . }}-default-kubeconfig
+      - name: kube-config
+        secret:
+          secretName: {{ .Values.kubeConfig.secretName }}
       {{- end }}
       - name: halyard-config
         configMap:
@@ -46,8 +44,10 @@ spec:
         - name: gcs-key
           mountPath: /opt/gcs
         {{- end }}
+        {{- if .Values.kubeConfig.enabled }}
         - name: kube-config
           mountPath: /opt/kube
+        {{- end }}
         command:
         - bash
         - -xe

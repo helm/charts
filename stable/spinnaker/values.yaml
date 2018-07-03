@@ -28,8 +28,8 @@ kubeConfig:
   # Use this when you want to register arbitrary clusters with Spinnaker
   # Upload your ~/kube/.config to a secret
   enabled: false
-  configMapName: my-kubeconfig
-  configMapKey: config
+  secretName: my-kubeconfig
+  secretKey: config
   # List of contexts from the kubeconfig to make available to Spinnaker
   contexts:
   - default
