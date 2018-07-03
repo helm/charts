@@ -132,7 +132,7 @@ missionControl:
     mountPath: "/var/opt/jfrog/mission-control"
     accessMode: ReadWriteOnce
     size: 100Gi
-    ## artifactory data Persistent Volume Storage Class
+    ## Mission Control data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is
@@ -228,7 +228,7 @@ insightExecutor:
     mountPath: "/var/cloudbox"
     accessMode: ReadWriteOnce
     size: 100Gi
-    ## artifactory data Persistent Volume Storage Class
+    ## Mission Control data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is
