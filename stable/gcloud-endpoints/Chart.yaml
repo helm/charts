@@ -15,6 +15,6 @@ keywords:
 - open api
 home: https://cloud.google.com/endpoints/
 maintainers:
-- name: Matt Tucker
+- name: ultimateboy
   email: mtucker@deis.com
 engine: gotpl
