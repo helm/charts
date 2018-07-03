@@ -47,6 +47,11 @@ spec:
         - name: halyard-home
           mountPath: /tmp/spinnaker
       volumes:
+      {{- if .Values.gcs.enabled }}
+      - name: gcs-key
+        secret:
+          secretName: {{ template "fullname" . }}-gcs
+      {{- end }}
       - name: halyard-config
         emptyDir: {}
       containers:
@@ -56,6 +61,10 @@ spec:
         - containerPort: 8064
           name: daemon
         volumeMounts:
+        {{- if .Values.gcs.enabled }}
+        - name: gcs-key
+          mountPath: /opt/gcs
+        {{- end }}
         - name: halyard-home
           mountPath: /home/spinnaker
         - name: halyard-config
