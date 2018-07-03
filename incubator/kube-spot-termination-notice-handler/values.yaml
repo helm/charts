@@ -41,7 +41,7 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-tolerations: {}
+tolerations: []
   # key: "dedicated"
   # operator: "Equal"
   # value: "gpu"

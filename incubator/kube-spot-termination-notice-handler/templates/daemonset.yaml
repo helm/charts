@@ -48,7 +48,5 @@ spec:
     {{- end }}
 {{- if .Values.tolerations }}
       tolerations:
-      - {{- range $key, $value := .Values.tolerations }}
-{{- end }}
 {{ toYaml .Values.tolerations | indent 8 }}
-{{- end }}
+    {{- end }}
