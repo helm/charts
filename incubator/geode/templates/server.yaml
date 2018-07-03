@@ -20,12 +20,6 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: logger
-          image: busybox
-          args: [/bin/sh, -c, 'tail -n+1 -f /var/log/server.log']
-          volumeMounts:
-            - name: varlog
-              mountPath: /var/log
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -43,9 +37,6 @@ spec:
               containerPort: 40404
             - name: jmx
               containerPort: 1099
-          volumeMounts:
-          - name: varlog
-            mountPath: /var/log
           livenessProbe:
             exec:
               command:
