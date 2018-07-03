@@ -36,6 +36,3 @@ persistence:
   enabled: true
   accessMode: ReadWriteOnce
   size: 1Gi
-
-dags:
-  load_examples: true
