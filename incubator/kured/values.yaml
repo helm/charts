@@ -1,0 +1,13 @@
+image:
+  repository: quay.io/weaveworks/kured
+  # Appears to be without numbered numbered tags, so using this instead
+  tag: master-c42fff3
+  pullPolicy: IfNotPresent
+
+extraArgs:  {}
+
+rbac:
+  create: true
+  serviceAccountName: kured
+
+updateStrategy: OnDelete
