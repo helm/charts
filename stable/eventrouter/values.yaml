@@ -28,3 +28,7 @@ tolerations: []
 nodeSelector: {}
 
 sink: glog
+
+podAnnotations: {}
+
+containerPorts: []
