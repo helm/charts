@@ -7,3 +7,5 @@ home: https://github.com/weaveworks/kured
 maintainers:
   - name: plumdog
     email: plummer574@gmail.com
+sources:
+  - https://github.com/weaveworks/kured
