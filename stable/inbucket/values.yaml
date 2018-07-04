@@ -7,7 +7,9 @@ cmdOptions:
   logjson: false
   netdebug: false
 
-env: {}
+env:
+  INBUCKET_STORAGE_TYPE: "file"
+  INBUCKET_STORAGE_PARAMS: "path:/storage"
 
 service:
   annotations: {}
