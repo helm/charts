@@ -44,8 +44,9 @@ The following table lists the configurable parameters of the Inbucket chart and 
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | container image repository | `jhillyerd/inbucket`
-`image.tag` | container image tag | `release-1.2.0`
-`image.pullPolicy` | container image pull policy | `IfNotPresent`
+`image.tag` | container image tag | `stable`
+`image.pullPolicy` | container image pull policy | `Always`
+`cmdOptions` | inbucket cmd options | `{ "logjson": false "netdebug": false }`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
 `resources` | pod resource requests & limits | `{}`
@@ -55,9 +56,9 @@ Parameter | Description | Default
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `service.type` | type of service to create | `ClusterIP`
-`service.node.http` | http port of service | `""`
-`service.node.smtp` | smtp port of service | `""`
-`service.node.pop3` | pop3 port of service | `""`
+`service.node.http` | http port of service | `"9000"`
+`service.node.smtp` | smtp port of service | `"2500"`
+`service.node.pop3` | pop3 port of service | `"1100"`
 `service.nodePort.http` | if `service.type` is `NodePort` and this is non-empty, sets the http node port of the service | `""`
 `service.nodePort.smtp` | if `service.type` is `NodePort` and this is non-empty, sets the smtp node port of the service | `""`
 `service.nodePort.pop3` | if `service.type` is `NodePort` and this is non-empty, sets the pop3 node port of the service | `""`

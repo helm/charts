@@ -1,7 +1,11 @@
 image:
   repository: jhillyerd/inbucket
-  tag: release-1.2.0
-  pullPolicy: IfNotPresent
+  tag: stable
+  pullPolicy: Always
+
+cmdOptions:
+  logjson: false
+  netdebug: false
 
 service:
   annotations: {}
@@ -11,13 +15,13 @@ service:
   loadBalancerSourceRanges: []
   type: ClusterIP
   port:
-    http: 10080
-    smtp: 10025
-    pop: 10110
+    http: 9000
+    smtp: 2500
+    pop3: 1100
   nodePort:
     http: ""
     smtp: ""
-    pop: ""
+    pop3: ""
 
 ingress:
   enabled: false
