@@ -67,6 +67,12 @@ Parameter | Description | Default
 `ingress.path` | if `true`, an ingress is created | `/`
 `ingress.hosts` | a list of ingress hosts | `[inbucket.example.com]`
 `ingress.tls` | a list of [IngressTLS](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/#ingresstls-v1beta1-extensions) items | `[]`
+`persistence.enabled` | Use a PVC to persist data | `false`
+`persistence.existingClaim` | Provide an existing PersistentVolumeClaim | `nil`
+`persistence.storageClass` | Storage class of backing PVC | `nil`
+`persistence.accessMode` | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`
+`persistence.annotations` | Persistent Volume annotations | `{}`
+`persistence.size` | Size of data volume | `1Gi`
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

@@ -12,6 +12,13 @@ spec:
     matchLabels:
       app: {{ template "inbucket.name" . }}
       release: {{ .Release.Name | quote }}
+
+  strategy:
+{{- if .Values.persistence.enabled }}
+    type: Recreate
+{{- else }}
+    type: RollingUpdate
+{{- end }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -37,6 +44,10 @@ spec:
             - name: "{{ $key }}"
               value: "{{ $value }}"
           {{- end }}
+          volumeMounts:
+            - name: storage
+              mountPath: /storage
+              readOnly: false
           ports:
             - name: http
               containerPort: 9000
@@ -61,3 +72,11 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+      volumes:
+      - name: storage
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "inbucket.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
