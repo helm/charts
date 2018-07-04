@@ -26,7 +26,7 @@ spec:
 {{ toYaml .Values.extraLabels | indent 8 }}
 {{- end }}
       annotations:
-      {{- if .Values.metrics.enabled }}
+      {{- if .Values.metrics.prometheusServiceDiscovery }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.metrics.port | quote }}
         prometheus.io/path: {{ .Values.metrics.path | quote }}
@@ -206,8 +206,8 @@ spec:
               mountPath: /work-dir
 {{ if .Values.metrics.enabled }}
         - name: metrics
-          image: "{{ .Values.metrics.repository }}:{{ .Values.metrics.tag }}"
-          imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
+          image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
           command:
             - sh
             - -ec
@@ -223,6 +223,8 @@ spec:
               -mongodb.tls-ca=/ca/tls.crt
               -mongodb.tls-cert=/work-dir/mongo.pem
             {{- end }}
+              -mongodb.socket-timeout={{ .Values.metrics.socketTimeout }}
+              -mongodb.sync-timeout={{ .Values.metrics.syncTimeout }}
               -web.metrics-path={{ .Values.metrics.path }}
               -web.listen-address=:{{ .Values.metrics.port }}
           volumeMounts:

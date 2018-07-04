@@ -153,7 +153,7 @@ if mongo "${ssl_args[@]}" --eval "rs.status()" | grep "no replset config has bee
         mongo admin "${ssl_args[@]}" --eval "db.createUser({user: '$admin_user', pwd: '$admin_password', roles: [{role: 'root', db: 'admin'}]})"
         if [[ "$METRICS" == "true" ]]; then
             log "Creating cluterMonitor user..."
-            mongo admin "${ssl_args[@]}" --eval "db.auth('$admin_user', '$admin_password'); db.createUser({user: '$metrics_user', pwd: '$metrics_password', roles: [{role: 'clusterMonitor', db: 'admin'}]})"
+            mongo admin "${ssl_args[@]}" --eval "db.auth('$admin_user', '$admin_password'); db.createUser({user: '$metrics_user', pwd: '$metrics_password', roles: [{role: 'clusterMonitor', db: 'admin'}, {role: 'read', db: 'local'}]})"
         fi
     fi
 

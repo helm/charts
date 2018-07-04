@@ -38,11 +38,15 @@ extraVars: {}
 # Prometheus Metrics Exporter
 metrics:
   enabled: false
-  # repository: ssalaues/mongodb-exporter
-  # tag: 0.5
-  # imagePullPolicy: IfNotPresent
+  # image:
+  #   repository: ssalaues/mongodb-exporter
+  #   tag: 0.6.1
+  #   pullPolicy: IfNotPresent
   # port: 9216
   # path: "/metrics"
+  # socketTimeout: 3s
+  # syncTimeout: 1m
+  # prometheusServiceDiscovery: true
   # resources: {}
 
 # Annotations to be added to MongoDB pods
