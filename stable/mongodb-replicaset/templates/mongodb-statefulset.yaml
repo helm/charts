@@ -258,18 +258,19 @@ spec:
               command:
                 - sh
                 - -ec
+                - |-
                 {{- if .Values.auth.enabled }}
-                - export MONGODB_URL=mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }};
+                  export MONGODB_URL=mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }};
                 {{- else }}
-                - export MONGODB_URL=mongodb://localhost:{{ .Values.port }};
+                  export MONGODB_URL=mongodb://localhost:{{ .Values.port }};
                 {{- end }}
-                - /bin/mongodb_exporter
+                  /bin/mongodb_exporter
                 {{- if .Values.tls.enabled }}
-                - -mongodb.tls
-                - -mongodb.tls-ca=/ca/tls.crt
-                - -mongodb.tls-cert=/work-dir/mongo.pem
+                  -mongodb.tls
+                  -mongodb.tls-ca=/ca/tls.crt
+                  -mongodb.tls-cert=/work-dir/mongo.pem
                 {{- end }}
-                - -test
+                  -test
               initialDelaySeconds: 30
               periodSeconds: 10
 {{ end }}

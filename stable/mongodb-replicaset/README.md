@@ -58,7 +58,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `metrics.port                       | Port for metrics exporter                                                 | `9216`                                              |
 | `metrics.path                       | URL Path to expose metics                                                 | `/metrics`                                          |
 | `metrics.socketTimeout              | Time to wait for a non-responding socket                                  | `3s`                                                |
-| `metrics.syncTimeout                | Time an operation with this session will wait before returning an error   | `1m0s`                                              |
+| `metrics.syncTimeout                | Time an operation with this session will wait before returning an error   | `1m`                                                |
 | `metrics.prometheusServiceDiscovery | Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
 | `auth.enabled`                      | If `true`, keyfile access control is enabled                              | `false`                                             |
 | `auth.key`                          | Key for internal authentication                                           | ``                                                  |
@@ -179,12 +179,15 @@ on server status, individual replicaset information, replication oplogs, and sto
 ```yaml
 metrics:
   enabled: true
-    image:
-      repository: ssalaues/mongodb-exporter
-      tag: 0.6.1
-      pullPolicy: IfNotPresent
+  image:
+    repository: ssalaues/mongodb-exporter
+    tag: 0.6.1
+    pullPolicy: IfNotPresent
   port: 9216
   path: "/metrics"
+  socketTimeout: 3s
+  syncTimeout: 1m
+  prometheusServiceDiscovery: true
   resources: {}
 ```
 
