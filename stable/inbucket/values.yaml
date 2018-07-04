@@ -7,6 +7,8 @@ cmdOptions:
   logjson: false
   netdebug: false
 
+env: {}
+
 service:
   annotations: {}
   clusterIP: ""

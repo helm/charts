@@ -47,6 +47,7 @@ Parameter | Description | Default
 `image.tag` | container image tag | `stable`
 `image.pullPolicy` | container image pull policy | `Always`
 `cmdOptions` | inbucket cmd options | `{ "logjson": false "netdebug": false }`
+`env` | environment variables | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
 `resources` | pod resource requests & limits | `{}`
