@@ -12,7 +12,7 @@ This chart bootstraps a vault-operator and allows the deployment of vault cluste
 
 ## Official Documentation
 
-Official project documentation found [here](https://github.com/coreos/vault-operator)
+Official project documentation can be found [here](https://github.com/coreos/vault-operator)
 
 ## Pre-requisites
 
@@ -92,7 +92,7 @@ You also need to have the following parameter on the api server. See the followi
 --authorization-mode=RBAC
 ```
 
-If the output contains "beta" or both "alpha" and "beta" you can may install rbac by default, if not, you may turn RBAC off as described below.
+If the output contains "beta" or both "alpha" and "beta" you may install RBAC by default, if not, you may turn RBAC off as described below.
 
 ### RBAC Role/RoleBinding Creation
 
