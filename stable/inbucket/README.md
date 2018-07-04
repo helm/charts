@@ -56,9 +56,9 @@ Parameter | Description | Default
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `service.type` | type of service to create | `ClusterIP`
-`service.node.http` | http port of service | `"9000"`
-`service.node.smtp` | smtp port of service | `"2500"`
-`service.node.pop3` | pop3 port of service | `"1100"`
+`service.port.http` | http port of service | `9000`
+`service.port.smtp` | smtp port of service | `2500`
+`service.port.pop3` | pop3 port of service | `1100`
 `service.nodePort.http` | if `service.type` is `NodePort` and this is non-empty, sets the http node port of the service | `""`
 `service.nodePort.smtp` | if `service.type` is `NodePort` and this is non-empty, sets the smtp node port of the service | `""`
 `service.nodePort.pop3` | if `service.type` is `NodePort` and this is non-empty, sets the pop3 node port of the service | `""`
