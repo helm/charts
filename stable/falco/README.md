@@ -26,7 +26,7 @@ $ helm install --name my-release stable/falco
 
 After a few seconds, Falco should be running.
 
-> **Tip**: List all releases using `helm list`, a release is a name used to track an specific deployment
+> **Tip**: List all releases using `helm list`, a release is a name used to track a specific deployment
 
 ## Uninstalling the Chart
 
@@ -60,7 +60,7 @@ The following table lists the configurable parameters of the Falco chart and the
 | `falco.logStderr`                               | Send Falco debugging information logs to stderr                     | `true`                                                                                 |
 | `falco.logSyslog`                               | Send Falco debugging information logs to syslog                     | `true`                                                                                 |
 | `falco.logLevel`                                | The minimum level of Falco debugging information to include in logs | `info`                                                                                 |
-| `falco.priority`                                | The minimum rule priority level to load an run                      | `debug`                                                                                |
+| `falco.priority`                                | The minimum rule priority level to load and run                      | `debug`                                                                                |
 | `falco.bufferedOutputs`                         | Use buffered outputs to channels                                    | `false`                                                                                |
 | `falco.outputs.rate`                            | Number of tokens gained per second                                  | `1`                                                                                    |
 | `falco.outputs.maxBurst`                        | Maximum number of tokens outstanding                                | `1000`                                                                                 |
@@ -156,7 +156,7 @@ And this means that our Falco installation has loaded the rules and is ready to 
 
 ### Automating the generation of custom-rules.yaml file
 
-Sometimes edit YAML files with multistrings is a bit error prone, so we added an script for automating this step and make your life easier.
+Sometimes edit YAML files with multistrings is a bit error prone, so we added a script for automating this step and make your life easier.
 
 This script lives in [falco-extras repository](https://github.com/draios/falco-extras) in the scripts directory.
 
