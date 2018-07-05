@@ -43,7 +43,7 @@ These ones will be site specific and may contain sensitive information
 | `kuberos`                   | App Specific config options               | See below                                             |
 |   `oidcClientURL`           | URL of OIDC provider endpoint             | `https://accounts.google.com`                         |
 |   `oidcClientID`            | Your unique client ID                     | `REDACTED.apps.googleusercontent.com`                 |
-|   `oidcSecret`              | The password for the Client ID above.     | Junk    [See Provider below](#oidcprovidersetup)      |
+|   `oidcSecret`              | The password for the Client ID above.     | Junk    [See Provider below](#oidc-provider-setup)    |
 |   `clusters`                | List of clusters to generate config for   | See below                                             |
 |       `name`                | The friendly name of the cluster          | `dev-cluster`                                         |
 |       `apiServer`           | The endpoint for kubectl to use           | `'https://api.dev-cluster.example.com`                |
