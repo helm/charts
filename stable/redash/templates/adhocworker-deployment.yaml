@@ -1,24 +1,29 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "redash.scheduledWorker.fullname" . }}
+  name: {{ template "redash.adhocWorker.fullname" . }}
   labels:
     app: {{ template "redash.name" . }}
-    component: scheduledworker
+    component: adhocworker
     chart: {{ template "redash.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.scheduledWorker.replicaCount }}
+  replicas: {{ .Values.adhocWorker.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "redash.name" . }}
+      component: adhocworker
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "redash.name" . }}
-        component: scheduledworker
+        component: adhocworker
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "redash.name" . }}-scheduledworker
+        - name: {{ template "redash.name" . }}-adhocworker
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/app/bin/docker-entrypoint", "scheduler"]
@@ -37,21 +42,21 @@ spec:
             - name: "{{ $key }}"
               value: "{{ $value }}"
           {{- end }}
-          {{- range $key, $value := .Values.scheduledWorker.env }}
+          {{- range $key, $value := .Values.adhocWorker.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
           {{- end }}
           resources:
-{{ toYaml .Values.scheduledWorker.resources | indent 12 }}
-    {{- if .Values.scheduledWorker.nodeSelector }}
+{{ toYaml .Values.adhocWorker.resources | indent 12 }}
+    {{- if .Values.adhocWorker.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.scheduledWorker.nodeSelector | indent 8 }}
+{{ toYaml .Values.adhocWorker.nodeSelector | indent 8 }}
     {{- end }}
-    {{- with .Values.scheduledWorker.affinity }}
+    {{- with .Values.adhocWorker.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.scheduledWorker.tolerations }}
+    {{- with .Values.adhocWorker.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}

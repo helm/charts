@@ -5,7 +5,7 @@
 ##
 image:
   repository: redash/redash
-  tag: 4.0.0-rc.1
+  tag: 4.0.1.b4038
   pullPolicy: IfNotPresent
 
 ## Override the name of the chart
@@ -171,3 +171,4 @@ postgresql:
 ##
 redis:
   redisPassword: redash
+
