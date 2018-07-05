@@ -22,6 +22,7 @@ This chart will do the following:
 ## Create Secret with keys and certs for Mission-Control
 
 * Create file `generate_keys.sh` with following content:
+
 ```bash
 #!/bin/bash
 set -e
