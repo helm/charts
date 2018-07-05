@@ -4,6 +4,9 @@
 
 This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 
+Note: 
+This chart requires kube-state-metrics with the label `k8s-app: kube-state-metrics`
+
 ## Configuration
 
 | Parameter          | Description                                                  | Default                    |

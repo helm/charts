@@ -50,6 +50,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.client.nodeSelector | indent 8 }}
 {{- end }}
+{{- if .Values.client.tolerations }}
+      tolerations:
+{{ toYaml .Values.client.tolerations | indent 8 }}
+{{- end }}
       initContainers:
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
@@ -86,12 +90,12 @@ spec:
 {{ toYaml .Values.client.resources | indent 12 }}
         readinessProbe:
           httpGet:
-            path: /_cluster/health?wait_for_status=yellow
+            path: /_cluster/health
             port: 9200
           initialDelaySeconds: 5
         livenessProbe:
           httpGet:
-            path: /_cluster/health?wait_for_status=yellow
+            path: /_cluster/health
             port: 9200
           initialDelaySeconds: 90
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
