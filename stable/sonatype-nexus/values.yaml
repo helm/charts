@@ -31,10 +31,12 @@ nexus:
     initialDelaySeconds: 30
     periodSeconds: 30
     failureThreshold: 6
+    path: /
   readinessProbe:
     initialDelaySeconds: 30
     periodSeconds: 30
     failureThreshold: 6
+    path: /
 
 nexusProxy:
   imageName: quay.io/travelaudience/docker-nexus-proxy
