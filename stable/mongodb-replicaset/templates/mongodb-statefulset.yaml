@@ -211,7 +211,7 @@ spec:
           command:
             - sh
             - -ec
-            - |-
+            - >-
             {{- if .Values.auth.enabled }}
               export MONGODB_URL=mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }};
             {{- else }}
@@ -258,7 +258,7 @@ spec:
               command:
                 - sh
                 - -ec
-                - |-
+                - >-
                 {{- if .Values.auth.enabled }}
                   export MONGODB_URL=mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }};
                 {{- else }}
