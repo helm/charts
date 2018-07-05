@@ -1,6 +1,6 @@
 dependencies:
 - name: mariadb
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 4.2.2
+  version: 4.2.5
 digest: sha256:b75f19f70f8a102eeda32e04c0c99dd8e635de3f3ee27e28c6f93054276e9dc1
-generated: 2018-06-11T15:20:43.790656005+02:00
+generated: 2018-07-05T01:22:52.480975592Z
