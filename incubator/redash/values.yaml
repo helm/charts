@@ -22,10 +22,6 @@ env:
 ## Configuration for Redash web server
 ##
 server:
-  ## Server container name
-  ##
-  name: redash
-
   ## Server container port (only useful if you are using a customized image)
   httpPort: 5000
 
@@ -86,10 +82,6 @@ ingress:
 ## Configuration for Redash ad-hoc workers
 ##
 adhocWorker:
-  ## Ad-hoc worker container name
-  ##
-  name: worker-adhoc
-
   ## Ad-hoc worker specific environment variables
   ## Add any environment variables from https://redash.io/help-onpremise/setup/settings-environment-variables.html
   ##
@@ -122,10 +114,6 @@ adhocWorker:
 ## Configuration for Redash scheduled workers
 ##
 scheduledWorker:
-  ## Ad-hoc worker container name
-  ##
-  name: worker-scheduled
-
   ## Scheduled worker specific environment variables
   ## Add any environment variables from https://redash.io/help-onpremise/setup/settings-environment-variables.html
   ##
@@ -160,7 +148,6 @@ scheduledWorker:
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
 postgresql:
-  name: postgresql
   imageTag: "9.5.6-alpine"
   postgresUser: redash
   postgresPassword: redash
@@ -183,5 +170,4 @@ postgresql:
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/redis/README.md
 ##
 redis:
-  name: redis
   redisPassword: redash

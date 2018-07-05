@@ -16,5 +16,5 @@ spec:
       name: http
   selector:
     app: {{ template "redash.name" . }}
-    component: "{{ .Values.server.name }}"
+    component: server
     release: {{ .Release.Name }}

@@ -4,7 +4,7 @@ metadata:
   name: {{ template "redash.scheduledWorker.fullname" . }}
   labels:
     app: {{ template "redash.name" . }}
-    component: {{ .Values.scheduledWorker.name }}
+    component: scheduledworker
     chart: {{ template "redash.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -14,11 +14,11 @@ spec:
     metadata:
       labels:
         app: {{ template "redash.name" . }}
-        component: {{ .Values.scheduledWorker.name }}
+        component: scheduledworker
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "redash.name" . }}-{{ .Values.scheduledWorker.name }}
+        - name: {{ template "redash.name" . }}-scheduledworker
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/app/bin/docker-entrypoint", "scheduler"]

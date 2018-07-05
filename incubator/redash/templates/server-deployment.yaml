@@ -4,7 +4,7 @@ metadata:
   name: {{ template "redash.fullname" . }}
   labels:
     app: {{ template "redash.name" . }}
-    component: "{{ .Values.server.name }}"
+    component: server
     chart: {{ template "redash.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -14,11 +14,11 @@ spec:
     metadata:
       labels:
         app: {{ template "redash.name" . }}
-        component: "{{ .Values.server.name }}"
+        component: server
         release: {{ .Release.Name }}
     spec:
       initContainers:
-        - name: {{ template "redash.name" . }}-{{ .Values.server.name }}-createdb
+        - name: {{ template "redash.name" . }}-server-createdb
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["bash", "/config/createdb.sh"]
@@ -50,7 +50,7 @@ spec:
               value: "{{ $value }}"
           {{- end }}
       containers:
-        - name: {{ template "redash.name" . }}-{{ .Values.server.name }}
+        - name: {{ template "redash.name" . }}-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/app/bin/docker-entrypoint", "server"]
