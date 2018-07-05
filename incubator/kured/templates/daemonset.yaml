@@ -12,6 +12,10 @@ metadata:
 spec:
   updateStrategy:
     type: {{ .Values.updateStrategy }}
+  selector:
+    matchLabels:
+      app: {{ template "kured.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
