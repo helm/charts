@@ -1,11 +1,11 @@
 name: nats
-version: 0.0.1
+version: 0.0.2
 appVersion: 1.1.0
 description: An open-source, cloud-native messaging system
 keywords:
 - nats
 - messaging
-- addresing
+- addressing
 - discovery
 home: https://nats.io/
 sources:
