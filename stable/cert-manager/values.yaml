@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/jetstack/cert-manager-controller
-  tag: v0.3.1
+  tag: v0.3.2
   pullPolicy: IfNotPresent
 
 createCustomResource: true
