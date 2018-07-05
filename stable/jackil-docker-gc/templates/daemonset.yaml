@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: default
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: DOCKERGC_RECYCLING_STRATEGY
+          value: {{ .Values.config.strategy | quote }}
+        - name: DOCKERGC_EXECUTION_INTERVAL_IN_MINUTES
+          value: {{ .Values.config.executionIntervalInMinutes | quote }}
+        - name: DOCKERGC_DOCKER_ENDPOINT
+          value: {{ .Values.config.dockerEndpoint | quote }}
+        - name: DOCKERGC_CONTAINER_STATE_BLACKLIST
+          value: {{ .Values.config.containerStateBlacklist | quote }}
+        - name: DOCKERGC_IMAGE_DELETION_ORDER
+          value: {{ .Values.config.imageDeletionOrder | quote }}
+        - name: DOCKERGC_DOCKER_CLIENT_TIMEOUT_IN_SECONDS
+          value: {{ .Values.config.dockerClientTimeoutInSeconds | quote }}
+        {{- if eq .Values.config.strategy "ByDate" }}
+        - name: DOCKERGC_DAYS_BEFORE_DELETION
+          value: {{ .Values.config.daysBeforeDeletion | quote }}
+        {{- end }}
+        {{- if eq .Values.config.strategy "ByDiskSpace" }}
+        - name: DOCKERGC_SIZE_LIMIT_IN_GIGABYTE
+          value: {{ .Values.config.sizeLimitInGigabyte | quote }}
+        {{- end }}
+        {{- if .Values.statsd.enabled }}
+        - name: STATSD_LOGGER_ENABLED
+          value: {{ .Values.statsd.enabled | quote }}
+        - name: STATSD_HOST
+          value: {{ .Values.statsd.host | quote }}
+        - name: STATSD_PORT
+          value: {{ .Values.statsd.port | quote }}                    
+        {{- end }}        
+        volumeMounts:
+         - mountPath: {{ .Values.docker.socketPath }}
+           name: {{ .Values.docker.volumeName }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      volumes:
+       - name: {{ .Values.docker.volumeName }}
+         hostPath:
+          path: {{ .Values.docker.socketPath }}
