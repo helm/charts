@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
 {{- if .Values.kubeStateMetrics.deploymentAnnotations }}
   annotations:
-{{ toYaml .kubeStateMetrics.deploymentAnnotations | indent 4 }}
+{{ toYaml .Values.kubeStateMetrics.deploymentAnnotations | indent 4 }}
 {{- end }}
   labels:
     app: {{ template "prometheus.name" . }}

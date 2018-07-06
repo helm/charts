@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
 {{- if .Values.server.deploymentAnnotations }}
   annotations:
-{{ toYaml .server.deploymentAnnotations | indent 4 }}
+{{ toYaml .Values.server.deploymentAnnotations | indent 4 }}
 {{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
