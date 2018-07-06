@@ -66,6 +66,12 @@ spec:
       - name: {{ template "drone.fullname" . }}-dind
         image: "{{ .Values.images.dind.repository }}:{{ .Values.images.dind.tag }}"
         imagePullPolicy: {{ .Values.images.dind.pullPolicy }}
+{{- if .Values.dind.command }}
+        command: {{ .Values.dind.command }}
+{{ end }}
+{{- if .Values.dind.args }}
+        args: {{ .Values.dind.args }}
+{{ end }}
         env:
         - name: DOCKER_DRIVER
           value: {{ .Values.dind.driver }}

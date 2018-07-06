@@ -167,6 +167,18 @@ spec:
             - name: AUDIT_LOG_PATH
               value: {{ quote .Values.sumologic.auditLogPath }}
             {{- end }}
+            {{- if .Values.sumologic.containerLogsPath }}
+            - name: CONTAINER_LOGS_PATH
+              value: {{ quote .Values.sumologic.containerLogsPath }}
+            {{- end }}
+            {{- if .Values.sumologic.proxyUri }}
+            - name: PROXY_URI
+              value: {{ quote .Values.sumologic.proxyUri }}
+            {{- end }}
+            {{- if .Values.sumologic.enableStatWatcher }}
+            - name: ENABLE_STAT_WATCHER
+              value: {{ quote .Values.sumologic.enableStatWatcher }}
+            {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "sumologic-fluentd.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       volumes:
         - name: pos-files
