@@ -35,14 +35,14 @@ spec:
               name: nexus-http
           livenessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.nexus.livenessProbe.path }}
               port: {{ .Values.nexus.nexusPort }}
             initialDelaySeconds: {{ .Values.nexus.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.nexus.livenessProbe.periodSeconds }}
             failureThreshold: {{ .Values.nexus.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.nexus.readinessProbe.path }}
               port: {{ .Values.nexus.nexusPort }}
             initialDelaySeconds: {{ .Values.nexus.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.nexus.readinessProbe.periodSeconds }}
