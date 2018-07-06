@@ -1,6 +1,6 @@
 name: dokuwiki
-version: 2.0.1
-appVersion: 0.20180422.201805030840
+version: 2.0.2
+appVersion: 0.20180422.201805030840-debian-9
 description: DokuWiki is a standards-compliant, simple to use wiki optimized for creating
   documentation. It is targeted at developer teams, workgroups, and small companies.
   All data is stored in plain text files, so no database is required.
