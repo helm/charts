@@ -1,6 +1,6 @@
 name: redis
-version: 3.6.1
-appVersion: 4.0.10
+version: 3.6.2
+appVersion: 4.0.10-debian-9
 description: Open source, advanced key-value store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets.
 keywords:
 - redis
