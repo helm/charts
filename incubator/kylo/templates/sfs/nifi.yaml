@@ -41,7 +41,7 @@ spec:
         - containerPort: {{ .Values.nifi.properties.httpPort }}
           name: http
           protocol: TCP
-        - containerPort: {{ .Values.nifi.properties.clusterPort }}
+        - containerPort: {{ .Values.nifi.properties.cluster.port }}
           name: cluster
           protocol: TCP
         env:
@@ -73,6 +73,12 @@ spec:
           - name: "bootstrap-conf"
             mountPath: /opt/nifi/nifi-{{ .Values.nifi.image.version }}/conf/bootstrap.conf
             subPath: "bootstrap.conf"
+          - name: "core-site"
+            mountPath: /etc/hadoop/conf/core-site.xml
+            subPath: "core-site.xml"
+          - name: "hdfs-site"
+            mountPath: /etc/hadoop/conf/hdfs-site.xml
+            subPath: "hdfs-site.xml"
           - name: "nifi-properties"
             mountPath: /opt/nifi/nifi-{{ .Values.nifi.image.version }}/conf/nifi.temp
             subPath: "nifi.temp"
@@ -115,13 +121,42 @@ spec:
         volumeMounts:
         - name: logs
           mountPath: /var/log
+      initContainers:
+        - name: copy-nifi-templates
+          image: busybox:1.27.1
+          command: ['sh', '-c']
+          args:
+            - mkdir -p /opt/nifi/data/templates && cp /templates/hello-world.xml /opt/nifi/data/templates/
+          volumeMounts:
+            - name: "data"
+              mountPath: /opt/nifi/data
+            - name: "templates"
+              mountPath: /templates
       volumes:
+      - name: "templates"
+        configMap:
+          name: {{ template "kylo.fullname" . }}-nifi
+          items:
+            - key: "hello-world.xml"
+              path: "hello-world.xml"
       - name: "bootstrap-conf"
         configMap:
           name: {{ template "kylo.fullname" . }}-nifi
           items:
             - key: "bootstrap.conf"
               path: "bootstrap.conf"
+      - name: "core-site"
+        configMap:
+          name: {{ template "kylo.fullname" . }}-nifi
+          items:
+            - key: "core-site.xml"
+              path: "core-site.xml"
+      - name: "hdfs-site"
+        configMap:
+          name: {{ template "kylo.fullname" . }}-nifi
+          items:
+            - key: "hdfs-site.xml"
+              path: "hdfs-site.xml"
       - name: "nifi-properties"
         configMap:
           name: {{ template "kylo.fullname" . }}-nifi

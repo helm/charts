@@ -9,6 +9,8 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  annotations:
+    ingress.kubernetes.io/custom-request-headers: X-ProxyScheme:http||X-ProxyHost:{{ .Values.kylo.ingress.domain }}||X-ProxyPort:80
 spec:
   rules:
   - host: {{ .Values.kylo.ingress.domain }}
@@ -16,5 +18,5 @@ spec:
       paths:
       - backend:
           serviceName: {{ template "kylo.name" . }}-kylo-ui
-          servicePort: {{ .Values.nifi.properties.httpPort }}
+          servicePort: 8400
 {{- end -}}

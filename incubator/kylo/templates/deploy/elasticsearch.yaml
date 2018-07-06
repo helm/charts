@@ -29,7 +29,7 @@ spec:
 {{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.elasticsearch.nodeSelector | indent 8 }}
 {{- end }}
       containers:
         - name: {{ template "kylo.name" . }}-elasticsearch

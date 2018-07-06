@@ -30,7 +30,7 @@ spec:
 {{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.kylo.ui.nodeSelector | indent 8 }}
 {{- end }}
       containers:
         - name: {{ template "kylo.name" . }}-kylo-ui

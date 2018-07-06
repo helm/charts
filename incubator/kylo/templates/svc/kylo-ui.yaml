@@ -13,6 +13,9 @@ spec:
   ports:
     - port: 8400
       name: http
+    - name: "8099"
+      port: 8099
+      targetPort: 8099
   selector:
     app: {{ template "kylo.fullname" . }}-kylo-ui
     release: {{ .Release.Name }}

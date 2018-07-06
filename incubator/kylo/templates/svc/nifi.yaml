@@ -13,7 +13,7 @@ spec:
   ports:
     - port: {{ .Values.nifi.properties.httpPort }}
       name: http
-    - port: {{ .Values.nifi.properties.clusterPort }}
+    - port: {{ .Values.nifi.properties.cluster.port }}
       name: cluster
   selector:
     app: {{ template "kylo.fullname" . }}-nifi

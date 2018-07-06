@@ -57,7 +57,9 @@ activemq:
   image:
     repository: govcloud/docker-kylo
     pullPolicy: Always
-    tag: "activemq"
+    tag: "v0.9.1-activemq"
+
+  nodeSelector: {}
 
   ## Configure Persistence Volumes / Claims
   persistence:
@@ -91,7 +93,9 @@ elasticsearch:
   image:
     repository: govcloud/docker-kylo
     pullPolicy: Always
-    tag: "elasticsearch"
+    tag: "v0.9.1-elasticsearch"
+
+  nodeSelector: {}
 
   ## Configure Persistence Volumes / Claims
   persistence:
@@ -126,23 +130,28 @@ kylo:
     image:
       repository: govcloud/docker-kylo
       pullPolicy: Always
-      tag: "services"
+      tag: "v0.9.1-services"
+
+    nodeSelector: {}
+
   ui:
     image:
       repository: govcloud/docker-kylo
       pullPolicy: Always
-      tag: "ui"
+      tag: "v0.9.1-ui"
+
+    nodeSelector: {}
 
   activeDirectory:
     enabled: false
 
-  ## Configure Ingress resource that allow you to access the Drupal installation
+  ## Configure Ingress resource that allow you to access the Kylo installation
   ## Set up the URL
   ## ref: http://kubernetes.io/docs/user-guide/ingress/
   ##
   ingress:
-    enabled: enabled
-    domain: kylo.inno.cloud.statcan.ca
+    enabled: true
+    domain: kylo.govcloud.ca
     annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
@@ -187,6 +196,8 @@ mysql:
     pullPolicy: Always
     tag: "10.3"
 
+  nodeSelector: {}
+
   ## Configure Persistence Volumes / Claims
   persistence:
     enabled: true
@@ -219,7 +230,9 @@ nifi:
   properties:
     isNode: true
     httpPort: 8080
-    clusterPort: 6007
+    cluster:
+      secure: false
+      port: 6007
     provenanceStorage: "8 GB"
     siteToSite:
       secure: false
@@ -241,7 +254,7 @@ nifi:
   image:
     repository: govcloud/docker-kylo
     pullPolicy: Always
-    tag: "nifi"
+    tag: "v0.9.1-nifi"
     version: "1.6.0"
 
   ## Configure Ingress resource that allow you to access the Drupal installation
@@ -249,8 +262,8 @@ nifi:
   ## ref: http://kubernetes.io/docs/user-guide/ingress/
   ##
   ingress:
-    enabled: enabled
-    domain: nifi.inno.cloud.statcan.ca
+    enabled: true
+    domain: nifi.govcloud.ca
     annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
@@ -276,7 +289,10 @@ nifi:
 
   ## Configure Persistence Volumes / Claims
   persistence:
-    enabled: false
+    enabled: true
+
+    extra:
+      enabled: false
     ## A manually managed Persistent Volume and Claim
     ## Requires persistence.enabled: true
     ## If defined, PVC must be created manually before volume will be bound
@@ -358,6 +374,8 @@ zookeeper:
       memory: "256Mi"
     requests:
       memory: "128Mi"
+
+  nodeSelector: {}
 
   antiAffinity: "soft"
 

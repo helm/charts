@@ -56,9 +56,12 @@ The following tables lists the configurable parameters of the Traefik chart and 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
-For example on a local install:
+For example the following is how to install Kylo locally:
 
 ```bash
-$ helm install --name kylo --namespace kylo \
-  --set serviceType=NodePort
+helm install --name kylo \
+             --namespace kylo \
+             --set serviceType=NodePort \
+             --set ingress.enabled=false \
+             -f values.yaml .
 ```
