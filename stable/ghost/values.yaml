@@ -114,7 +114,7 @@ mariadb:
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##
-  # root:
+  # rootUser:
   #   password:
 
   ## Enable persistence using Persistent Volume Claims
