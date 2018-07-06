@@ -49,7 +49,7 @@ The following table lists common configurable parameters of the chart and
 their default values. See values.yaml for all available options. 
 
 |       Parameter                        |           Description                       |                         Default                     |
-|----------------------------------------|---------------------------------------------|-----------------------------------------------------|
+|----------------------------------------|----------------------------------------------------------|-----------------------------------------------------|
 | `image.pullPolicy`                     | Container pull policy                       | `IfNotPresent`                                      |
 | `image.repository`                     | Container image to use                      | `chartmuseum/chartmuseum`                           |
 | `image.tag`                            | Container image tag to deploy               | `v0.5.2`                                            |
@@ -108,6 +108,10 @@ their default values. See values.yaml for all available options.
 | `gcp.secret.enabled`                   | Flag for the GCP service account            | `false`                                             |
 | `gcp.secret.name`                      | Secret name for the GCP json file           | ``                                                  |
 | `gcp.secret.key`                       | Secret key for te GCP json file             | `credentials.json`                                  |
+| `openstack.secret.enabled`             | Flag for custom openstack secret file                    | `false`                                             |
+| `openstack.secret.name`                | Secret name for openstack secret file                    | ``                                                  |
+| `openstack.secret.enKeys`              | Keys in the secret file to load as env variables         | `[OS_AUTH_URL,OS_PROJECT_NAME,OS_DOMAIN_NAME,OS_USERNAME,OS_PASSWORD]` |
+| `openstack.secret.CABundleKey`         | Key in the secret file that contains a custom CA bundle  | `OS_CA_BUNDLE`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
@@ -375,12 +379,55 @@ env:
     STORAGE_OPENSTACK_CONTAINER: mycontainer
     STORAGE_OPENSTACK_PREFIX:
     STORAGE_OPENSTACK_REGION: YOURREGION
+    # If your openstack API has a private/self-signed CA
+    # Put a path to a file here and dump you CA chain in ca_bundle below
+    STORAGE_OPENSTACK_CACERT: /etc/openstack.crt
+
   secret:
-    OS_AUTH_URL: https://myauth.url.com/v2.0/
-    OS_TENANT_ID: yourtenantid
+    OS_AUTH_URL: https://myauth.url.com/v3
+    OS_PROJECT_NAME: yourprojectname
+    OS_DOMAIN_NAME: yourdomainname
     OS_USERNAME: yourusername
     OS_PASSWORD: yourpassword
+openstack:
+  secret:
+    enabled: false
+  CABundle: |
+    -----BEGIN CERTIFICATE-----
+    MIIFDzCCAvegAwIBAgIQMdvrBUH6dJRHHWPHRG1FsDANBgkqhkiG9w0BAQsFADAa
+    ...
+    ...
+    -----END CERTIFICATE-----
 ```
+
+If you don't want to include sensitive data in tiller, you can create your own secret file for openstack and use it with those values:
+```yaml
+env:
+  open:
+    STORAGE: openstack
+    STORAGE_OPENSTACK_CONTAINER: mycontainer
+    STORAGE_OPENSTACK_PREFIX:
+    STORAGE_OPENSTACK_REGION: YOURREGION
+    # If your openstack API has a private/self-signed CA
+    # Put a path to a file here and dump you CA chain in OS_CA_BUNDLE below
+    STORAGE_OPENSTACK_CACERT: /etc/openstack.crt
+
+openstack:
+  secret:
+    enabled: true
+    name: mysecret
+    # Those are all the keys that will be passed as corresponding environment variables from your secret
+    envKeys:
+      - OS_AUTH_URL
+      - OS_PROJECT_NAME
+      - OS_DOMAIN_NAME
+      - OS_USERNAME
+      - OS_PASSWORD
+    # This is the key that contains your own CA bundle
+    #  if STORAGE_OPENSTACK_CACERT is set, the value of the caBundleKey in your secret will be mounted under the STORAGE_OPENSTACK_CACERT path
+    CABundleKey: OS_CA_BUNDLE
+```
+
 
 Run command to install
 

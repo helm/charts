@@ -31,7 +31,7 @@ spec:
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
-{{- if .Values.gcp.secret.enabled }}
+{{- if (and (eq .Values.env.open.STORAGE "google") (.Values.gcp.secret.enabled)) }}
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: "/etc/secrets/google/credentials.json"
 {{- end }}
@@ -42,6 +42,16 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ $secret_name }}
+              key: {{ $name | quote }}
+{{- end }}
+{{- end }}
+{{- if (and (eq .Values.env.open.STORAGE "openstack") (.Values.openstack.secret.enabled)) }}
+{{ $secretName := .Values.openstack.secret.name }}
+{{- range $name := .Values.openstack.secret.envKeys }}
+        - name: {{ $name | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secretName }}
               key: {{ $name | quote }}
 {{- end }}
 {{- end }}
@@ -68,7 +78,13 @@ spec:
         - mountPath: /storage
           name: storage-volume
 {{- end }}
-{{- if  .Values.gcp.secret.enabled }}
+{{- if (and (eq .Values.env.open.STORAGE "openstack") (not (empty .Values.env.open.STORAGE_OPENSTACK_CACERT))) }}
+        volumeMounts:
+        - mountPath: {{ .Values.env.open.STORAGE_OPENSTACK_CACERT }}
+          name: openstack-ca-bundle
+          subPath: {{ base .Values.env.open.STORAGE_OPENSTACK_CACERT }}
+{{- end }}
+{{- if (and (eq .Values.env.open.STORAGE "google") (.Values.gcp.secret.enabled)) }}
         volumeMounts:
         - mountPath: /etc/secrets/google
           name: {{ include "chartmuseum.fullname" . }}-gcp
@@ -98,7 +114,9 @@ spec:
       securityContext:
 {{ toYaml . | indent 8 }}
     {{- end }}
+      {{- if (or (eq .Values.env.open.STORAGE "local") (eq .Values.env.open.STORAGE "openstack") (eq .Values.env.open.STORAGE "google"))}}
       volumes:
+      {{- if (eq .Values.env.open.STORAGE "local") }}
       - name: storage-volume
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
@@ -106,7 +124,22 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
-      {{ if .Values.gcp.secret.enabled }}
+      {{- end }}
+      {{- if (and (eq .Values.env.open.STORAGE "openstack") (not (empty .Values.env.open.STORAGE_OPENSTACK_CACERT))) }}
+      - name: openstack-ca-bundle
+        secret:
+      {{- if .Values.openstack.secret.enabled}}
+          secretName: {{ .Values.openstack.secret.name }}
+          items:
+          - key: {{ .Values.openstack.secret.CABundleKey }}
+      {{- else }}
+          secretName: {{ include "chartmuseum.fullname" . }}
+          items:
+          - key: OS_CA_BUNDLE
+      {{- end }}
+            path: {{ base .Values.env.open.STORAGE_OPENSTACK_CACERT }}
+      {{- end }}
+      {{ if (and (eq .Values.env.open.STORAGE "google") (.Values.gcp.secret.enabled)) }}
       - name: {{ include "chartmuseum.fullname" . }}-gcp
         secret:
       {{ if .Values.env.secret.GOOGLE_CREDENTIALS_JSON }}
@@ -119,5 +152,6 @@ spec:
           items:
           - key: {{ .Values.gcp.secret.key }}
             path: credentials.json
+      {{ end }}
       {{ end }}
       {{ end }}

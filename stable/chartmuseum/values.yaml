@@ -193,3 +193,22 @@ gcp:
     name:
     # Secret key that holds the json value.
     key: credentials.json
+
+# Openstack section to specify a custom CA bundle for your API or use a standalone secret file
+openstack:
+  # Custom CA certificates for your openstack API
+  CABundle:
+  secret:
+    enabled: false
+    # Name of the secret that contains the openstack parameters
+    name:
+    # Those are all the keys that will be passed as corresponding environment variables
+    envKeys:
+    - OS_AUTH_URL
+    - OS_PROJECT_NAME
+    - OS_DOMAIN_NAME
+    - OS_USERNAME
+    - OS_PASSWORD
+    # This is the key that contains your own CA bundle if STORAGE_OPENSTACK_CACERT is set
+    # The content of caBundleKey will be mounted under the STORAGE_OPENSTACK_CACERT path
+    CABundleKey: OS_CA_BUNDLE
