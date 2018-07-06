@@ -15,6 +15,8 @@ data:
     set -eu
 
     /opt/jboss/keycloak/bin/jboss-cli.sh --file=/scripts/keycloak.cli
+    /opt/jboss/keycloak/bin/add-user.sh -u $KEYCLOAK_USER -p $KEYCLOAK_PASSWORD
+    /opt/jboss/keycloak/bin/add-user-keycloak.sh -r master -u $KEYCLOAK_USER -p $KEYCLOAK_PASSWORD
 
   {{- with .Values.keycloak.preStartScript }}
     echo 'Running custom pre-start script...'
