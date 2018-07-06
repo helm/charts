@@ -12,7 +12,7 @@ pod:
 
 image:
   repository: quay.io/pires/docker-elasticsearch-curator
-  tag: 5.4.1
+  tag: 5.5.4
   pullPolicy: IfNotPresent
 
 config:
