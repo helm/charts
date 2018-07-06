@@ -3,6 +3,13 @@ halyard:
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
     tag: stable
+  # Provide a config map with Hal commands that will be run the core config (storage)
+  # The config map should contain a script in the config.sh key
+  additionalConfig:
+    enabled: false
+    configMapName: my-halyard-config
+    configMapKey: config.sh
+
 
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions

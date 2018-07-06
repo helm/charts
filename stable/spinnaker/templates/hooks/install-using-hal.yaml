@@ -29,6 +29,11 @@ spec:
       - name: halyard-config
         configMap:
           name: {{ template "fullname" . }}-halyard-config
+      {{- if .Values.halyard.additionalConfig.enabled }}
+      - name: additional-config
+        configMap:
+          name: {{ .Values.halyard.additionalConfig.configMapName }}
+      {{- end }}
       {{- if .Values.gcs.enabled }}
       - name: gcs-key
         secret:
@@ -40,6 +45,10 @@ spec:
         volumeMounts:
         - name: halyard-config
           mountPath: /opt/halyard/scripts
+        {{- if .Values.halyard.additionalConfig.enabled }}
+        - name: additional-config
+          mountPath: /opt/halyard/additional
+        {{- end }}
         {{- if .Values.gcs.enabled }}
         - name: gcs-key
           mountPath: /opt/gcs

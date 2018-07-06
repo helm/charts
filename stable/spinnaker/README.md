@@ -62,9 +62,10 @@ for Spinnaker. If you want to add arbitrary clusters need to do the following:
 
 ## Customizing your installation
 
-While the default installation is ready to handle your Kubernetes deployments there are
+### Manual
+While the default installation is ready to handle your Kubernetes deployments, there are
 many different integrations that you can turn on with Spinnaker. In order to customize
-Spinnaker, you will use the [Halyard](https://www.spinnaker.io/reference/halyard/) command line `hal` 
+Spinnaker, you can use the [Halyard](https://www.spinnaker.io/reference/halyard/) command line `hal` 
 to edit the configuration and apply it to what has already been deployed.
 
 Halyard has an in-cluster daemon that stores your configuration. You can exec a shell in this pod to
@@ -77,4 +78,15 @@ For example:
 $ helm install -n cd stable/spinnaker
 $ kubectl exec -it cd-spinnaker-halyard-0 bash
 spinnaker@cd-spinnaker-halyard-0:/workdir$ hal version list
+```
+
+### Automated
+If you have known set of commands that you'd like to run after the base config steps or if
+you'd like to override some settings before the Spinnaker deployment is applied, you can enable
+the `halyard.additionalConfig.enabled` flag. You will need to create a config map that contains a key
+contianing the `hal` commands you'd like to run. You can set the key via the config map name via `halyard.additionalConfig.configMapName` and the key via `halyard.additionalConfig.configMapKey`. The `DAEMON_ENDPOINT` environment variable can be used in your custom commands to
+get a prepopulated URL that points to your Halyard daemon within the cluster. For example:
+
+```shell
+hal --daemon-endpoint $DAEMON_ENDPOINT config security authn oauth2 enable
 ```

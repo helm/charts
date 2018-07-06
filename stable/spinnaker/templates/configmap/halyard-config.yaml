@@ -7,10 +7,15 @@ metadata:
 data:
   install.sh: |
     # Wait for the Hal daemon to be ready
-    export HAL_COMMAND='hal --daemon-endpoint http://{{ template "fullname" . }}-halyard:8064'
+    export DAEMON_ENDPOINT=http://{{ template "fullname" . }}-halyard:8064
+    export HAL_COMMAND="hal --daemon-endpoint $DAEMON_ENDPOINT"
     until $HAL_COMMAND --ready; do sleep 10 ; done
 
     bash /opt/halyard/scripts/config.sh
+
+    {{ if .Values.halyard.additionalConfig.enabled }}
+    bash /opt/halyard/additional/{{ .Values.halyard.additionalConfig.configMapKey }}
+    {{ end }}
 
     $HAL_COMMAND deploy apply
   clean.sh: |
