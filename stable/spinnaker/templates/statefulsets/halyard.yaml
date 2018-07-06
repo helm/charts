@@ -31,6 +31,7 @@ spec:
         app: {{ template "fullname" . }}
         component: halyard
     spec:
+      serviceAccountName: {{ template "fullname" . }}-halyard
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
