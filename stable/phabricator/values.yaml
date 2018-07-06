@@ -22,6 +22,11 @@ image:
 ##
 # phabricatorHost:
 
+## Phabricator alternate domain to upload files
+## ref: https://github.com/bitnami/bitnami-docker-phabricator#configuration
+##
+# phabricatorAlternateFileDomain:
+
 ## loadBalancerIP for the Phabricator Service (optional, cloud specific)
 ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
 ##
