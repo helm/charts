@@ -61,10 +61,12 @@ spec:
             - name: "{{ $key }}"
               value: "{{ $value }}"
           {{- end }}
-        {{- if .Values.extraEnvFromSecret }}
+        {{- if .Values.extraEnvFromSecret }}          
           envFrom:
+          {{- range .Values.extraEnvFromSecret }}
             - secretRef:
-                name: {{ .Values.extraEnvFromSecret }}
+                name: {{ . | quote }}
+          {{- end }}
         {{- end }}
     {{- with .Values.resources }}
           resources:
