@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 4.9.6
+  tag: 4.9.7-debian-9
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
