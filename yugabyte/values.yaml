@@ -4,13 +4,13 @@
 Component: "yugabytedb"
 Image:
   repository: "yugabytedb/yugabyte"
-  tag: latest
+  tag: 1.0.4.0-b24 
   pullPolicy: IfNotPresent
 
 persistentVolume:
   count: 2
-  storage: 100Mi
-  storageClass: null
+  storage: 10Gi
+  storageClass: standard 
 
 PodManagementPolicy: Parallel
 
