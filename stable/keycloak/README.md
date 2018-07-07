@@ -45,7 +45,7 @@ Parameter | Description | Default
 `init.image.pullPolicy` | Init image pull policy | `IfNotPresent`
 `keycloak.replicas` | The number of Keycloak replicas | `1`
 `keycloak.image.repository` | The Keycloak image repository | `jboss/keycloak`
-`keycloak.image.tag` | The Keycloak image tag | `4.0.0.Final`
+`keycloak.image.tag` | The Keycloak image tag | `4.1.0.Final`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
 `keycloak.image.pullSecrets` | Image pull secrets | `[]`
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`

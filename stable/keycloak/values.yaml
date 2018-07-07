@@ -9,7 +9,7 @@ keycloak:
 
   image:
     repository: jboss/keycloak
-    tag: 4.0.0.Final
+    tag: 4.1.0.Final
     pullPolicy: IfNotPresent
 
     ## Optionally specify an array of imagePullSecrets.
@@ -59,6 +59,11 @@ keycloak:
             matchLabels:
               app:  {{ template "keycloak.name" . }}
               release: "{{ .Release.Name }}"
+            matchExpressions:
+              - key: role
+                operator: NotIn
+                values:
+                  - test
           topologyKey: kubernetes.io/hostname
       preferredDuringSchedulingIgnoredDuringExecution:
         - weight: 100
@@ -67,6 +72,11 @@ keycloak:
               matchLabels:
                 app:  {{ template "keycloak.name" . }}
                 release: "{{ .Release.Name }}"
+              matchExpressions:
+                - key: role
+                  operator: NotIn
+                  values:
+                    - test
             topologyKey: failure-domain.beta.kubernetes.io/zone
 
   nodeSelector: {}
