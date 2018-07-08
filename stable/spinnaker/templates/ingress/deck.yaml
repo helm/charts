@@ -6,7 +6,7 @@ metadata:
   annotations:
 {{ toYaml .Values.deck.ingress.annotations | indent 4 }}
 {{- end }}
-  name: {{ template "fullname" . }}
+  name: {{ template "spinnaker.fullname" . }}
 spec:
   rules:
   - host: {{ .Values.deck.host | quote }}
@@ -14,7 +14,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "fullname" . }}-deck
+          serviceName: {{ template "spinnaker.fullname" . }}-deck
           servicePort: {{ .Values.deck.port }}
 {{- if .Values.deck.ingress.tls }}
   tls:

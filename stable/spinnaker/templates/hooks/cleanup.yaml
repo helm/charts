@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: "{{ .Release.Name }}-cleanup-using-hal"
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "spinnaker.fullname" . }}
     component: halyard
   annotations:
     "helm.sh/hook": "pre-delete"
@@ -12,14 +12,14 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "spinnaker.fullname" . }}
         component: halyard
     spec:
       restartPolicy: OnFailure
       volumes:
       - name: halyard-config
         configMap:
-          name: {{ template "fullname" . }}-halyard-config
+          name: {{ template "spinnaker.fullname" . }}-halyard-config
       containers:
       - name: halyard-install
         image: {{ .Values.halyard.image.repository }}:{{ .Values.halyard.image.tag }}

@@ -10,10 +10,10 @@ roleRef:
 subjects:
 - namespace: {{ .Release.Namespace }}
   kind: ServiceAccount
-  name: {{ template "fullname" . }}-halyard
+  name: {{ template "spinnaker.fullname" . }}-halyard
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
- name: {{ template "fullname" . }}-halyard
+ name: {{ template "spinnaker.fullname" . }}-halyard
  namespace: {{ .Release.Namespace }}

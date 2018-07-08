@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}-halyard-config
+  name: {{ template "spinnaker.fullname" . }}-halyard-config
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "spinnaker.fullname" . }}
 data:
   install.sh: |
     # Wait for the Hal daemon to be ready
-    export DAEMON_ENDPOINT=http://{{ template "fullname" . }}-halyard:8064
+    export DAEMON_ENDPOINT=http://{{ template "spinnaker.fullname" . }}-halyard:8064
     export HAL_COMMAND="hal --daemon-endpoint $DAEMON_ENDPOINT"
     until $HAL_COMMAND --ready; do sleep 10 ; done
 
@@ -19,7 +19,7 @@ data:
 
     $HAL_COMMAND deploy apply
   clean.sh: |
-    export HAL_COMMAND='hal --daemon-endpoint http://{{ template "fullname" . }}-halyard:8064'
+    export HAL_COMMAND='hal --daemon-endpoint http://{{ template "spinnaker.fullname" . }}-halyard:8064'
     $HAL_COMMAND deploy clean -q
   config.sh: |
     # Spinnaker version
