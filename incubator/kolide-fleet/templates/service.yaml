@@ -3,10 +3,9 @@ kind: "Service"
 apiVersion: "v1"
 metadata:
   annotations:
-{{- if .Values.pod.annotations }}
-{{ toYaml .Values.service.annotations | indent 4 }}
+{{- if .Values.fleet.service.annotations }}
+{{ toYaml .Values.fleet.service.annotations | indent 4 }}
 {{ end }}
-    {{ if eq .Values.service.type "LoadBalancer" }}service.beta.kubernetes.io/external-traffic: "OnlyLocal"{{ end }}
   labels:
     app: {{ template "fleet.name" . }}
     chart: {{ template "fleet.chart" . }}
@@ -14,6 +13,9 @@ metadata:
     heritage: {{ .Release.Service }}
   name: {{ template "fleet.fullname" . }}
 spec:
+  {{- if .Values.fleet.service.externalTrafficPolicy }}
+  externalTrafficPolicy: "{{ .Values.service.externalTrafficPolicy }}"
+  {{- end }}
   selector:
     app: {{ template "fleet.fullname" . }}
     release: "{{ .Release.Name }}"
@@ -22,13 +24,13 @@ spec:
       name: "http"
       port: 443
       targetPort: "http"
-  type: {{ default "ClusterIP" .Values.service.type }}
-  {{ if eq .Values.service.type "LoadBalancer" -}}
-  {{ if .Values.service.loadBalancer.publicIp -}}
-  loadBalancerIP: {{ .Values.service.loadBalancer.publicIp }}
-  {{ if .Values.service.loadBalancer.allowedIps -}}
+  type: {{ .Values.fleet.service.type }}
+  {{ if eq .Values.fleet.service.type "LoadBalancer" -}}
+  {{ if .Values.fleet.service.loadBalancer.publicIp -}}
+  loadBalancerIP: {{ .Values.fleet.service.loadBalancer.publicIp }}
+  {{ if .Values.fleet.service.loadBalancer.allowedIps -}}
   loadBalancerSourceRanges:
-{{ .Values.service.loadBalancer.allowedIps | toYaml | indent 4 }}
+{{ .Values.fleet.service.loadBalancer.allowedIps | toYaml | indent 4 }}
   {{ end -}}
   {{ end -}}
   {{ end -}}

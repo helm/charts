@@ -41,7 +41,8 @@ spec:
                 secretKeyRef:
                   name: {{ template "fleet.fullname" . }}
                   key: "fleet.mysql.password"
-          image: {{ .Values.pod.fleet.image | quote }}
+          image: {{ .Values.fleet.image.repository }}:{{ .Values.fleet.image.tag }}
+          imagePullPolicy: {{ .Values.fleet.image.pullPolicy }}
           args:
             - "fleet"
             - "prepare"

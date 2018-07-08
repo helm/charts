@@ -15,69 +15,62 @@ redis:
 
 ## Fleet application specific settings
 fleet:
-  mysql: {}
-    # address: ""
-    # database: ""
-    # tls_cert: ""
-    # tls_key: ""
-    # tls_ca: ""
-    # tls_server_name: ""
-    # tls_config: ""
-  server: {}
-    # tls: ""
-    # tlsprofile: "modern"
+  image:
+    repository: "kolide/fleet"
+    tag: "latest"
+    pullPolicy: "Always"
+  replicas: 1
+  pod:
+    resources: {}
+      # requests:
+      #  cpu: "100m"
+      #  memory: "256Mi"
+      # limits:
+      #   cpu: "100m"
+      #   memory: "512Mi"
+    annotations: {}
+      # prometheus.io/path: /metrics
+      # prometheus.io/port: "8080"
+      # prometheus.io/scheme: https
+      # prometheus.io/scrape: "true"
+  service:
+    type: "LoadBalancer"
+    # privateIp:
+    # externalTrafficPolicy: "Local"
+    loadBalancer:
+      # publicIp:
+      allowedIps:
+        - "0.0.0.0/0"
+      # hostName:
+    annotations: {}
+      # prometheus.io/probe: true
+      # prometheus.io/path: /healthz
+      # prometheus.io/scheme: https
+      # prometheus.io/port: 443
+  mysql:
+    tls_cert: ""
+    tls_key: ""
+    tls_ca: ""
+    tls_server_name: ""
+    tls_config: ""
+  server:
+    tls: true
+    tlsprofile: "modern"
   auth:
     ## (Required)
     jwt_key: ""
-    # bcrypt_cost: ""
-    # salt_key_size: ""
-  app: {}
-    # token_key_size: ""
-    # invite_token_validity_period: ""
-  session: {}
-    # key_size: ""
-    # duration: ""
-  osquery: {}
-    # node_key_size: ""
-    # label_update_interval: ""
+    bcrypt_cost: 12
+    salt_key_size: 24
+  app:
+    token_key_size: 24
+    invite_token_validity_period: "120h0m0s"
+  session:
+    key_size: 64
+    duration: "2160h0m0s"
+  osquery:
+    node_key_size: 24
+    label_update_interval: "1h0m0s"
   logging:
-    ## Whether to enable debug logging
     debug: false
-    ## Whether logging should be expressed in JSON
     json: true
-    ## Whether to disable the banner as part of the logs
     disable_banner: true
-
-pod:
-  annotations: {}
-    # prometheus.io/path: /metrics
-    # prometheus.io/port: "8080"
-    # prometheus.io/scheme: https
-    # prometheus.io/scrape: "true"
-  fleet:
-    image: kolide/fleet
-
-service:
-  type: "LoadBalancer"
-  # privateIp:
-  loadBalancer:
-    # publicIp:
-    allowedIps:
-      - "0.0.0.0/0"
-    # hostName:
-  annotations: {}
-    # prometheus.io/probe: true
-    # prometheus.io/path: /healthz
-    # prometheus.io/scheme: https
-    # prometheus.io/port: 443
-
-deployment:
-  replicas: 1
-
-resources:
-  requests:
-    cpu: "100m"
-    memory: "256Mi"
-  limits:
-    # cpu: "100m"
-    # memory: "512Mi"

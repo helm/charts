@@ -33,7 +33,7 @@ testing purposes a self signed certificate can be generated with the following c
     tls.key: $(cat key.pem | base64 -w 0)
   kind: Secret
   metadata:
-    name: {{ .Release.Name }}-fleet-tls
+    name: {{ template "fleet.fullname" . }}-tls
   type: kubernetes.io/tls
   EOF
 
@@ -44,25 +44,25 @@ for testing purposes it's fine.
 
 ## Accessing fleet
 
-{{ if .Values.service.loadBalancer.hostName }}
-1. Visit http://{{ .Values.service.loadBalancer.hostName }}
+{{ if .Values.fleet.service.loadBalancer.hostName }}
+1. Visit https://{{ .Values.fleet.service.loadBalancer.hostName }}
 {{- else }}
 1. Get the fleet URL to visit by running these commands in the same shell:
-{{- if contains "NodePort" .Values.service.type }}
+{{- if contains "NodePort" .Values.fleet.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fleet.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT/login
+  echo https://$NODE_IP:$NODE_PORT/login
 
-{{- else if contains "LoadBalancer" .Values.service.type }}
+{{- else if contains "LoadBalancer" .Values.fleet.service.type }}
   NOTE: It may take a few minutes for the loadBalancer IP to be available.
         You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fleet.fullname" . }}'
   export SERVICE_IP=$(kubectl get svc {{ template "fleet.fullname" . }} --namespace {{ .Release.Namespace }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo http://$SERVICE_IP:{{ .Values.service.port }}/login
+  echo https://$SERVICE_IP:{{ .Values.fleet.service.port }}/login
 
-{{- else if contains "ClusterIP"  .Values.service.type }}
+{{- else if contains "ClusterIP"  .Values.fleet.service.type }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ template "fleet.fullname" . }}-master" -o jsonpath="{.items[0].metadata.name}")
-  echo http://127.0.0.1:{{ .Values.service.port }}
-  kubectl port-forward $POD_NAME {{ .Values.service.port }}:{{ .Values.service.port }}
+  echo https://127.0.0.1:{{ .Values.fleet.service.port }}
+  kubectl port-forward $POD_NAME {{ .Values.fleet.service.port }}:{{ .Values.fleet.service.port }}
 
 {{- end }}
 {{- end }}

@@ -19,7 +19,7 @@ This chart bootstraps a [Fleet](https://github.com/kolide/fleet) deployment on a
 
 ## Prerequisites
 
-- Kubernetes 1.3+ with Beta APIs enabled 
+- Kubernetes 1.9+ with Beta APIs enabled
 
 ## Installing the Chart
 

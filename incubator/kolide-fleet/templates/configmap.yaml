@@ -13,15 +13,15 @@ data:
     ---
     mysql:
       address: {{ .Release.Name }}-mysql:3306
-      username: {{ default "kolide" .Values.mysql.mysqlUsername }}
+      username: {{ .Values.mysql.mysqlUsername }}
       # Handled as a secret in an environment variable
       # password: kolide
-      database: {{ default "kolide" .Values.mysql.mysqlDatabase }}
-      tls_cert: {{ default "" .Values.fleet.mysql.tls_cert }}
-      tls_key: {{ default "" .Values.fleet.mysql.tls_key }}
-      tls_ca: {{ default "" .Values.fleet.mysql.tls_ca }}
-      tls_server_name: {{ default "" .Values.fleet.mysql.tls_server_name }}
-      tls_config: {{ default  "" .Values.fleet.mysql.tls_config }}
+      database: {{ .Values.mysql.mysqlDatabase }}
+      tls_cert: {{ .Values.fleet.mysql.tls_cert }}
+      tls_key: {{ .Values.fleet.mysql.tls_key }}
+      tls_ca: {{ .Values.fleet.mysql.tls_ca }}
+      tls_server_name: {{ .Values.fleet.mysql.tls_server_name }}
+      tls_config: {{ .Values.fleet.mysql.tls_config }}
     redis:
       address: {{ .Release.Name }}-redis:6379
       # Handled as a secret in an environment variable
@@ -30,26 +30,26 @@ data:
       address: 0.0.0.0:8080
       cert: /etc/pki/fleet/tls.crt
       key: /etc/pki/fleet/tls.key
-      tls: {{ default true .Values.fleet.server.tls }}
-      tlsprofile: {{ default "modern" .Values.fleet.server.tlsprofile }}
+      tls: {{ .Values.fleet.server.tls }}
+      tlsprofile: {{ .Values.fleet.server.tlsprofile }}
     auth:
       # Handled as a secret in an environment variable
       # jwt_key: ""
-      bcrypt_cost: {{ default 12 .Values.fleet.auth.bcrypt_cost }}
-      salt_key_size: {{ default 24 .Values.fleet.auth.salt_key_size }}
+      bcrypt_cost: {{ .Values.fleet.auth.bcrypt_cost }}
+      salt_key_size: {{ .Values.fleet.auth.salt_key_size }}
     app:
-      token_key_size: {{ default 24 .Values.fleet.app.token_key_size }}
-      invite_token_validity_period: {{ default "120h0m0s" .Values.fleet.app.invite_token_validity_period }}
+      token_key_size: {{ .Values.fleet.app.token_key_size }}
+      invite_token_validity_period: {{ .Values.fleet.app.invite_token_validity_period }}
     session:
-      key_size: {{ default 64 .Values.fleet.session.key_size }}
-      duration: {{ default "2160h0m0s" .Values.fleet.session.duration }}
+      key_size: {{ .Values.fleet.session.key_size }}
+      duration: {{ .Values.fleet.session.duration }}
     osquery:
-      node_key_size: {{ default 24 .Values.fleet.osquery.node_key_size }}
+      node_key_size: {{ .Values.fleet.osquery.node_key_size }}
       status_log_file: /dev/stdout
       result_log_file: /dev/stdout
       enable_log_rotation: false
-      label_update_interval: {{ default "1h0m0s" .Values.fleet.osquery.label_update_interval }}
+      label_update_interval: {{ .Values.fleet.osquery.label_update_interval }}
     logging:
-      debug: {{ default false .Values.fleet.logging.debug }}
-      json: {{ default false .Values.fleet.logging.json }}
-      disable_banner: {{ default false .Values.fleet.logging.disable_banner }}
+      debug: {{ .Values.fleet.logging.debug }}
+      json: {{ .Values.fleet.logging.json }}
+      disable_banner: {{ .Values.fleet.logging.disable_banner }}

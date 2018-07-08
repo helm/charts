@@ -1,5 +1,5 @@
 ---
-apiVersion: "extensions/v1beta1"
+apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
   labels:
@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
   name: {{ template "fleet.fullname" . }}
 spec:
-  replicas: {{ default 2 .Values.deployment.replicas }}
+  replicas: {{ .Values.fleet.replicas }}
   selector:
     matchLabels:
       app: {{ template "fleet.fullname" . }}
@@ -19,11 +19,11 @@ spec:
   template:
     metadata:
       annotations:
-{{- if .Values.pod.annotations }}
-{{ toYaml .Values.pod.annotations | indent 8 }}
+{{- if .Values.fleet.pod.annotations }}
+{{ toYaml .Values.fleet.pod.annotations | indent 8 }}
 {{ end }}
-        checksum.helm.kubernetes.io/secret: {{ include (print $.Chart.Name "/templates/secret.yaml") . | sha256sum }}
-        checksum.helm.kubernetes.io/configmap: {{ include (print $.Chart.Name "/templates/configmap.yaml") . | sha256sum }}
+        checksum.helm.kubernetes.io/secret: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}
+        checksum.helm.kubernetes.io/configmap: {{ include (print .Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
         app: {{ template "fleet.fullname" . }}
         release: "{{ .Release.Name }}"
@@ -59,14 +59,15 @@ spec:
                 secretKeyRef:
                   name: {{ template "fleet.fullname" . }}
                   key: "fleet.redis.password"
-          image: {{ .Values.pod.fleet.image | quote }}
+          image: {{ .Values.fleet.image.repository }}:{{ .Values.fleet.image.tag }}
+          imagePullPolicy: {{ .Values.fleet.image.pullPolicy }}
           args:
             - "fleet"
             - "serve"
             - "--config"
             - "/etc/fleet/config.yml"
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.fleet.pod.resources | indent 12 }}
           ports:
             - containerPort: 8080
               protocol: "TCP"
