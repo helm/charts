@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "spinnaker.fullname" . }}-halyard-config
   labels:
-    app: {{ template "spinnaker.fullname" . }}
+{{ include "spinnaker.standard-labels" . | indent 4 }}
 data:
   install.sh: |
     # Wait for the Hal daemon to be ready

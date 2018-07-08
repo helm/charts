@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "spinnaker.fullname" . }}-halyard
   labels:
-    app: {{ template "spinnaker.fullname" . }}
+{{ include "spinnaker.standard-labels" . | indent 4 }}
     component: halyard
 spec:
   ports:
@@ -18,17 +18,19 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "spinnaker.fullname" . }}-halyard
+  labels:
+{{ include "spinnaker.standard-labels" . | indent 4 }}
 spec:
   serviceName: {{ template "spinnaker.fullname" . }}-halyard
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "spinnaker.fullname" . }}
+{{ include "spinnaker.standard-selector-labels" . | indent 6 }}
       component: halyard
   template:
     metadata:
       labels:
-        app: {{ template "spinnaker.fullname" . }}
+{{ include "spinnaker.standard-labels" . | indent 8 }}
         component: halyard
     spec:
       serviceAccountName: {{ template "spinnaker.fullname" . }}-halyard
@@ -90,6 +92,8 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: halyard-home
+      labels:
+{{ include "spinnaker.standard-labels" . | indent 8 }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
