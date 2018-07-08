@@ -51,3 +51,5 @@ data:
     {{- end }}
     $HAL_COMMAND config deploy edit --account-name {{ .Values.kubeConfig.deploymentContext }} --type distributed \
                            --location {{ .Release.Namespace }}
+    # Use Deck to route to Gate
+    $HAL_COMMAND config security api edit --no-validate --override-base-url /gate
