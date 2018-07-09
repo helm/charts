@@ -46,9 +46,15 @@ client:
   # podAnnotations:
   #   example: client-foo
 
+  ingress:
+    enabled: false
+    # host: ""
+    path: "/"
+    # annotations: {}
+    # tls: {}
+
 master:
   name: master
-  exposeHttp: false
   replicas: 3
   heapSize: "512m"
   persistence:
@@ -74,7 +80,6 @@ master:
 
 data:
   name: data
-  exposeHttp: false
   replicas: 2
   heapSize: "1536m"
   persistence:

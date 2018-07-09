@@ -4,10 +4,14 @@ metadata:
   labels:
     app: {{ template "elasticsearch.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.master.name }}"
+    component: "{{ .Values.data.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "elasticsearch.fullname" . }}-discovery
+  name: {{ template "elasticsearch.data.fullname" . }}
+{{- if .Values.data.serviceAnnotations }}
+  annotations:
+{{ toYaml .Values.data.serviceAnnotations | indent 4 }}
+{{- end }}
 spec:
   clusterIP: None
   ports:
@@ -19,5 +23,6 @@ spec:
       targetPort: http
   selector:
     app: {{ template "elasticsearch.name" . }}
-    component: "{{ .Values.master.name }}"
+    component: "{{ .Values.data.name }}"
     release: {{ .Release.Name }}
+  type: {{ .Values.data.serviceType }}
