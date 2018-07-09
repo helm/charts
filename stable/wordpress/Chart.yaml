@@ -1,6 +1,6 @@
 name: wordpress
-version: 2.1.1
-appVersion: 4.9.7-debian-9
+version: 2.1.2
+appVersion: 4.9.7
 description: Web publishing platform for building blogs and websites.
 icon: https://bitnami.com/assets/stacks/wordpress/img/wordpress-stack-220x234.png
 keywords:
