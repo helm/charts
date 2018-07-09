@@ -115,6 +115,11 @@ spec:
       - name: "{{ $root.Release.Name }}-{{ .label }}"
         image: "{{ $root.Values.Image.repository }}:{{ $root.Values.Image.tag }}"
         imagePullPolicy: {{ $root.Values.Image.pullPolicy }}
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         metadata:
           labels:
             heritage: {{ $root.Release.Service | quote }}
@@ -125,6 +130,7 @@ spec:
         {{ if eq .name "yb-masters" }}
           - "/home/yugabyte/bin/yb-master"
           - "--fs_data_dirs={{range $index := until (int ($root.Values.persistentVolume.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
+          - "--rpc_bind_addresses=$(POD_IP)"
           - "--master_addresses={{ $root.Release.Name }}-yb-masters:7100"
           - "--master_replication_factor={{ .replicas }}"
         {{ else }}
