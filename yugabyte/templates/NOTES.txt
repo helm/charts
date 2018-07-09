@@ -7,21 +7,21 @@
 {{- $root := . -}}
 {{- range .Values.Services }}
 {{- if .hasLoadBalancer }}
+
 3. Get information about the master UI load balancer:
-  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-  You can watch the status of by running 'kubectl get svc -w "{{ $root.Release.Name }}-{{ .label }}-ui"'
+  kubectl get svc --namespace {{ $root.Release.Namespace }} yb-master-ui
 {{- end }}
 {{- end }}
 
 4. Connect to one of the tablet server:
-  kubectl exec -it {{ .Release.Name }}-yb-tserver-0 bash
+  kubectl exec --namespace {{ .Release.Namespace }} -it yb-tserver-0 bash
 
 5. Run CQL shell from inside of a tablet server:
-  kubectl exec -it {{ .Release.Name }}-yb-tserver-0 bin/cqlsh
+  kubectl exec --namespace {{ .Release.Namespace }} -it yb-tserver-0 bin/cqlsh
 
 6. Cleanup YugaByte Pods
-  helm delete <namespace> --purge
+  helm delete {{ .Release.Name }} --purge
   NOTE: You need to manually delete the persistent volume
   {{- range .Values.Services }}
-  kubectl delete pvc -l app={{ $root.Release.Name }}-{{.label}}
+  kubectl delete pvc --namespace {{ $root.Release.Namespace }} -l app={{.label}}
   {{- end }}

@@ -6,13 +6,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ $root.Release.Name }}-{{ .name }}"
+  name: "{{ .name }}"
   labels:
-    app: "{{ $root.Release.Name }}-{{ .label }}"
+    app: "{{ .label }}"
     heritage: {{ $root.Release.Service | quote }}
     release: {{ $root.Release.Name | quote }}
     chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
-    component: "{{ $root.Release.Name }}-{{ $root.Values.Component }}"
+    component: "{{ $root.Values.Component }}"
 spec:
   clusterIP: None
   ports:
@@ -21,27 +21,27 @@ spec:
       port: {{ $port }}
     {{- end}}
   selector:
-    app: "{{ $root.Release.Name }}-{{ .label }}"
+    app: "{{ .label }}"
 
 {{- if .hasLoadBalancer }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ $root.Release.Name }}-{{ .label }}-ui"
+  name: "{{ .label }}-ui"
   labels:
-    app: "{{ $root.Release.Name }}-{{ .label }}"
+    app: "{{ .label }}"
     heritage: {{ $root.Release.Service | quote }}
     release: {{ $root.Release.Name | quote }}
     chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
-    component: "{{ $root.Release.Name }}-{{ $root.Values.Component }}"
+    component: "{{ $root.Values.Component }}"
 spec:
   clusterIP:
   ports:
     - name: ui
       port: 7000
   selector:
-    app: "{{ $root.Release.Name }}-{{ .label }}"
+    app: "{{ .label }}"
   type: LoadBalancer
 {{- end }}
 
@@ -49,15 +49,15 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: "{{ $root.Release.Name }}-{{ .label }}"
+  name: "{{ .label }}"
   labels:
-    app: "{{ $root.Release.Name }}-{{ .label }}"
+    app: "{{ .label }}"
     heritage: {{ $root.Release.Service | quote }}
     release: {{ $root.Release.Name | quote }}
     chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
-    component: "{{ $root.Release.Name }}-{{ $root.Values.Component }}"
+    component: "{{ $root.Values.Component }}"
 spec:
-  serviceName: "{{ $root.Release.Name }}-{{ .name }}"
+  serviceName: "{{ .name }}"
   podManagementPolicy: {{ $root.Values.PodManagementPolicy }}
   replicas: {{ .replicas }}
   volumeClaimTemplates:
@@ -68,7 +68,7 @@ spec:
           heritage: {{ $root.Release.Service | quote }}
           release: {{ $root.Release.Name | quote }}
           chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
-          component: "{{ $root.Release.Name }}-{{ $root.Values.Component }}"
+          component: "{{ $root.Values.Component }}"
       spec:
         accessModes:
           - "ReadWriteOnce"
@@ -84,15 +84,15 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: "{{ $root.Release.Name }}-{{ .label }}"
+      app: "{{ .label }}"
   template:
     metadata:
       labels:
-        app: "{{ $root.Release.Name }}-{{ .label }}"
+        app: "{{ .label }}"
         heritage: {{ $root.Release.Service | quote }}
         release: {{ $root.Release.Name | quote }}
         chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
-        component: "{{ $root.Release.Name }}-{{ $root.Values.Component }}"
+        component: "{{ $root.Values.Component }}"
     spec:
       {{- if $root.Values.nodeSelector }}
       nodeSelector:
@@ -109,10 +109,10 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - "{{ $root.Release.Name }}-{{ .label }}"
+                  - "{{ .label }}"
               topologyKey: kubernetes.io/hostname
       containers:
-      - name: "{{ $root.Release.Name }}-{{ .label }}"
+      - name: "{{ .label }}"
         image: "{{ $root.Values.Image.repository }}:{{ $root.Values.Image.tag }}"
         imagePullPolicy: {{ $root.Values.Image.pullPolicy }}
         env:
@@ -125,18 +125,18 @@ spec:
             heritage: {{ $root.Release.Service | quote }}
             release: {{ $root.Release.Name | quote }}
             chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
-            component: "{{ $root.Release.Name }}-{{ $root.Values.Component }}"
+            component: "{{ $root.Values.Component }}"
         command:
         {{ if eq .name "yb-masters" }}
           - "/home/yugabyte/bin/yb-master"
           - "--fs_data_dirs={{range $index := until (int ($root.Values.persistentVolume.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
           - "--rpc_bind_addresses=$(POD_IP)"
-          - "--master_addresses={{ $root.Release.Name }}-yb-masters:7100"
+          - "--master_addresses=yb-masters:7100"
           - "--master_replication_factor={{ .replicas }}"
         {{ else }}
           - "/home/yugabyte/bin/yb-tserver"
           - "--fs_data_dirs={{range $index := until (int ($root.Values.persistentVolume.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
-          - "--tserver_master_addrs={{ $root.Release.Name }}-yb-masters:7100"
+          - "--tserver_master_addrs=yb-masters:7100"
           - "--tserver_master_replication_factor={{ .replicas }}"
         {{ end }}
         ports:
