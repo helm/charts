@@ -1,0 +1,15 @@
+apiVersion: v1
+appVersion: 1.0.0
+description: OpenIBAN chart
+name: openiban
+version: 0.1.0
+description: OpenIBAN is a self-hosted, free and open-source IBAN validation API.
+keywords:
+- iban
+- golang
+home: https://openiban.com
+sources:
+- https://github.com/fourcube/goiban-service
+maintainers:
+- name: Bart Verwilst
+  email: bart@verwilst.be
