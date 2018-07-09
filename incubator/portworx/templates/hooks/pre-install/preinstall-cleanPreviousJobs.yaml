@@ -1,0 +1,39 @@
+{{- $customRegistryURL := .Values.customRegistryURL | default "none" }}
+{{- $registrySecret := .Values.registrySecret | default "none" }}
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: kube-system
+  name: px-hook-preinstall-clean
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-15"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+{{ if semverCompare ">= 1.8" .Capabilities.KubeVersion.GitVersion }}
+  backoffLimit: 0
+{{ else }}
+  activeDeadlineSeconds: 30
+{{ end }}
+  template:
+    spec:
+      {{- if not (eq $registrySecret "none") }}
+      imagePullSecrets:
+        - name: {{ $registrySecret }}
+      {{- end }}    
+      serviceAccountName: tiller
+      restartPolicy: Never
+      containers:
+      - name: px-clean
+        {{- if eq $customRegistryURL "none" }}
+        image: "lachlanevenson/k8s-kubectl:{{ template "px.kubernetesVersion" . }}"
+        {{- else }}
+        image: "{{ $customRegistryURL }}/lachlanevenson/k8s-kubectl:{{ template "px.kubernetesVersion" . }}"
+        {{- end }}
+        command: ['/bin/sh']
+        args: ['-c','kubectl get jobs -nkube-system | grep px-hook | cut -f1 -d " " | xargs -r kubectl delete -nkube-system jobs']
