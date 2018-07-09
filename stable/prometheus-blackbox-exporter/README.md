@@ -2,7 +2,7 @@
 
 Prometheus exporter for blackbox testing
 
-Learn more: [https://github.com/prometheus/blackbox_exporter](https://github.com/prometheus/blackbox_exporter])
+Learn more: [https://github.com/prometheus/blackbox_exporter](https://github.com/prometheus/blackbox_exporter)
 
 ## TL;DR;
 
