@@ -1,5 +1,5 @@
 name: phpmyadmin
-version: 0.1.6
+version: 0.1.7
 appVersion: 4.8.2-debian-9
 description: phpMyAdmin is an mysql administration frontend
 keywords:
