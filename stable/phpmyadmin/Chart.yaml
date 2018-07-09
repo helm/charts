@@ -1,6 +1,6 @@
 name: phpmyadmin
 version: 0.1.6
-appVersion: 4.8.0
+appVersion: 4.8.2-debian-9
 description: phpMyAdmin is an mysql administration frontend
 keywords:
 - mariadb
