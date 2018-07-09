@@ -104,7 +104,7 @@ following configurable parameters:
 | `prometheus.kafka.interval`       | Interval that Prometheus scrapes Kafka metrics when using Prometheus Operator                                | `10s`                                                      |
 | `prometheus.kafka.port`        | Kafka Exporter Port which exposes metrics in Prometheus format for scraping                                     | `9308`                                                     |
 | `prometheus.kafka.resources`    | Allows setting resource limits for kafka-exporter pod                                                           | `{}`                                                       |
-| `prometheus.operator` | True if using the Prometheus Operator, False if not                                                             | `false`                                                       |
+| `prometheus.operator.enabled` | True if using the Prometheus Operator, False if not                                                             | `false`                                                       |
 | `prometheus.operator.serviceMonitor.namespace` | Namespace which Prometheus is running in.  Default to kube-prometheus install.    | `monitoring` |
 | `prometheus.operator.serviceMonitor.selector` | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install    | `{ prometheus: kube-prometheus }` |
 | `topics`                       |  List of topics to create & configure. Can specify name, partitions, replicationFactor, config. See values.yaml | `[]` (Empty list) |
