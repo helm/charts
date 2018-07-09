@@ -26,6 +26,10 @@ spec:
 {{ toYaml .Values.defaultBackend.podLabels | indent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.defaultBackend.name }}
           image: "{{ .Values.defaultBackend.image.repository }}:{{ .Values.defaultBackend.image.tag }}"
@@ -46,7 +50,8 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 5
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
               protocol: TCP
           resources:
 {{ toYaml .Values.defaultBackend.resources | indent 12 }}
@@ -57,6 +62,10 @@ spec:
     {{- if .Values.defaultBackend.tolerations }}
       tolerations:
 {{ toYaml .Values.defaultBackend.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.defaultBackend.affinity }}
+      affinity:
+{{ toYaml .Values.defaultBackend.affinity | indent 8 }}
     {{- end }}
       terminationGracePeriodSeconds: 60
 {{- end }}

@@ -18,7 +18,7 @@ Using the service endpoint from within the cluster you can use:
 
 To verify the service is up and running, you can run container for the Anchore Engine CLI:
 
-    kubectl run -i --tty anchore-cli --restart=Never --image anchore/engine-cli --env ANCHORE_CLI_USER=admin --env ANCHORE_CLI_PASS=${ANCHORE_CLI_PASS} --env ANCHORE_CLI_URL=http://{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.ports.api}}/v1/
+    kubectl run -i --tty anchore-cli --restart=Always --image anchore/engine-cli --env ANCHORE_CLI_USER=admin --env ANCHORE_CLI_PASS=${ANCHORE_CLI_PASS} --env ANCHORE_CLI_URL=http://{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.ports.api}}/v1/
 
 from within the container you can use 'anchore-cli' commands.
 

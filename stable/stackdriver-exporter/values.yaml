@@ -1,0 +1,42 @@
+# Number of exporters to run
+replicaCount: 1
+
+# Restart policy for container
+restartPolicy: Always
+
+image:
+  repository: frodenas/stackdriver-exporter
+  tag: v0.5.1
+  pullPolicy: IfNotPresent
+
+resources: {}
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+service:
+  type: ClusterIP
+  httpPort: 9255
+  annotations: {}
+
+stackdriver:
+  # The Google Project ID to gather metrics for
+  projectId: "FALSE"
+  metrics:
+    # The prefixes to gather metrics for, we default to just CPU metrics.
+    typePrefixes: 'compute.googleapis.com/instance/cpu'
+    # The frequency to request
+    interval: '5m'
+    # How far into the past to offset
+    offset: '0s'
+
+web:
+  # Port to listen on
+  listenAddress: ':9255'
+  # Path under which to expose metrics.
+  path: /metrics
+
+annotations: {}

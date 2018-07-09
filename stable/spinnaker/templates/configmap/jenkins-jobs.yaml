@@ -1,3 +1,4 @@
+{{ if .Values.jenkins.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -190,3 +191,4 @@ data:
         <triggers/>
         <disabled>false</disabled>
       </flow-definition>
+{{- end }}

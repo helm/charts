@@ -1,0 +1,18 @@
+apiVersion: v1
+description: Helm Chart Repository with support for Amazon S3 and Google Cloud Storage
+name: chartmuseum
+version: 1.6.0
+appVersion: 0.7.1
+home: https://github.com/chartmuseum/chartmuseum
+icon: https://raw.githubusercontent.com/chartmuseum/chartmuseum/master/logo.png
+keywords:
+- chartmuseum
+- helm
+- charts repo
+maintainers:
+- name: codefresh-io
+  email: opensource@codefresh.io
+- name: cloudposse
+  email: hello@cloudposse.com
+- name: chartmuseum
+  email: chartmuseum@gmail.com

@@ -1,0 +1,43 @@
+{{- if .Values.nginx.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "artifactory-ha.nginx.fullname" . }}
+  labels:
+    app: {{ template "artifactory-ha.name" . }}
+    chart: {{ template "artifactory-ha.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: {{ .Values.nginx.name }}
+spec:
+  type: {{ .Values.nginx.service.type }}
+{{- if eq .Values.nginx.service.type "LoadBalancer" }}
+  {{ if .Values.nginx.service.loadBalancerIP -}}
+  loadBalancerIP: {{ .Values.nginx.service.loadBalancerIP }}
+  {{ end -}}
+  externalTrafficPolicy: Local
+{{- end }}
+{{- if .Values.nginx.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.nginx.service.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
+  ports:
+  {{- if .Values.artifactory.replicator.enabled }}
+  - port: {{ .Values.nginx.externalPortReplicator }}
+    targetPort: {{ .Values.nginx.internalPortReplicator }}
+    protocol: TCP
+    name: replicator
+  {{- end }}
+  - port: {{ .Values.nginx.externalPortHttp }}
+    targetPort: {{ .Values.nginx.internalPortHttp }}
+    protocol: TCP
+    name: http
+  - port: {{ .Values.nginx.externalPortHttps }}
+    targetPort: {{ .Values.nginx.internalPortHttps }}
+    protocol: TCP
+    name: https
+  selector:
+    app: {{ template "artifactory-ha.name" . }}
+    component: {{ .Values.nginx.name }}
+    release: {{ .Release.Name }}
+{{- end }}

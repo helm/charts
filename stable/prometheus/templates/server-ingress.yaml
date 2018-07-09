@@ -15,14 +15,19 @@ metadata:
     component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- range $key, $value := .Values.server.ingress.extraLabels }}
+    {{ $key }}: {{ $value }}
+{{- end }}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
   rules:
   {{- range .Values.server.ingress.hosts }}
-    - host: {{ . }}
+    {{- $url := splitList "/" . }}
+    - host: {{ first $url }}
       http:
         paths:
-          - backend:
+          - path: /{{ rest $url | join "/" }}
+            backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
   {{- end -}}

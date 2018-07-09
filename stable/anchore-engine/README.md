@@ -2,7 +2,7 @@ Anchore Engine Helm Chart
 =========================
 
 This chart deploys the Anchore Engine docker container image analysis system. Anchore Engine
-requires a PostgresSQL database (>=9.6) which may be handled by the chart or supplied externally,
+requires a PostgreSQL database (>=9.6) which may be handled by the chart or supplied externally,
 and executes in a 2-tier architecture with an api/control layer and a batch execution worker pool layer.
 
 See [Anchore Engine](https://github.com/anchore/anchore-engine) for more project details.
@@ -14,6 +14,9 @@ Chart Details
 The chart is split into three primary sections: GlobalConfig, CoreConfig, WorkerConfig. As the name implies,
 the GlobalConfig is for configuration values that all components require, while the Core and Worker sections are
 tier-specific and allow customization for each role.
+
+NOTE: It is highly recommended to set a non-default password when deploying. The admin password is set to a default in the chart. To customize it use:
+ `--set globalConfig.users.admin.password=<pass>` or set it in the values.yaml locally.
 
 
 ### Core Role
@@ -35,18 +38,33 @@ Installing the Chart
 
 Deploying PostgreSQL as a dependency managed in the chart:
 
-`helm install .`
+`helm install stable/anchore-engine`
 
 
-Using and existing/external PostgreSQL service:
+Using an existing/external PostgreSQL service:
 
-`helm install --name <name> --set postgresql.enabled=False .`
+`helm install --name <name> --set postgresql.enabled=False stable/anchore-engine`
+
+
+This installs the chart in cluster-local mode. To expose the service outside the chart there are two options:
+1. Use a LoadBalancer service type by setting the `service.type=LoadBalancer` in the values.yaml or on CLI
+2. Use an ingress by setting `ingress.enabled=True` in the values.yaml or on CLI
+
 
 
 Configuration
 -------------
 
 While the configuration options of Anchore Engine are extensive, the options provided by the chart are:
+
+### Exposing the service outside the cluster:
+
+* Use ingress, which enables SSL termination at the LB:
+  * ingress.enabled=True (may require service.type=NodePort for some K8s installations e.g. GKE)
+
+* Use a LoadBalancer service type:
+  * service.type=LoadBalancer 
+
 
 ### Database
 
@@ -75,9 +93,14 @@ Adding Workers
 
 To set a specific number of workers once the service is running:
 
-`helm upgrade --set workerConfig.replicaCount=2`
+If using defaults from the chart:
+
+`helm upgrade --set workerConfig.replicaCount=2 <releasename> stable/anchore-engine`
+
+If customized values, use the local directory for the chart values:
+
+`helm upgrade --set workerConfig.replicaCount=2 <releasename> ./anchore-engine`
 
 To launch with more than one worker you can either modify values.yaml or run with:
 
-`helm install --set workerConfig.replicaCount=2 <chart location>`
-
+`helm install --set workerConfig.replicaCount=2 stable/anchore-engine`

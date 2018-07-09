@@ -16,6 +16,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Return secret name to be used based on provided values.
+*/}}
+{{- define "datadog.apiSecretName" -}}
+{{- $fullName := include "datadog.fullname" . -}}
+{{- default $fullName .Values.datadog.apiKeyExistingSecret | quote -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified confd name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
@@ -43,7 +51,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Return the appropriate apiVersion for RBAC APIs.
 */}}
 {{- define "rbac.apiVersion" -}}
-{{- if ge .Capabilities.KubeVersion.Minor "8" -}}
+{{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion -}}
 "rbac.authorization.k8s.io/v1"
 {{- else -}}
 "rbac.authorization.k8s.io/v1beta1"

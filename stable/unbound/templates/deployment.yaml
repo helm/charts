@@ -1,0 +1,87 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "unbound.fullname" . }}
+  labels:
+    app: {{ template "unbound.name" . }}
+    chart: {{ template "unbound.chart" . }}
+    release: {{ .Release.Name  }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "unbound.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        app: {{ template "unbound.name" . }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: "unbound"
+        image: {{ .Values.unbound.image.repository }}:{{ .Values.unbound.image.tag }}
+        imagePullPolicy: {{ .Values.unbound.image.pullPolicy | quote }}
+{{- with .Values.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+{{- end }}
+        ports:
+        - name: "dns-udp"
+          containerPort: {{ .Values.unbound.serverPort }}
+          protocol: "UDP"
+        - name: "dns-tcp"
+          containerPort: {{ .Values.unbound.serverPort }}
+          protocol: "TCP"
+        volumeMounts:
+        - name: "unbound-conf"
+          mountPath: "/etc/unbound/"
+          readOnly: true
+        livenessProbe:
+          httpGet:
+            path: "/healthz"
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        readinessProbe:
+          httpGet:
+            path: "/healthz"
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+      - name: "healthz"
+        image: {{ .Values.healthz.image.repository }}:{{ .Values.healthz.image.tag }}
+        imagePullPolicy: {{ .Values.healthz.image.pullPolicy | quote }}
+        args:
+          - "-cmd=nslookup health.check.unbound 127.0.0.1:{{ .Values.unbound.serverPort }} > /dev/null"
+        ports:
+        - name: healthz
+          containerPort: 8080
+          protocol: TCP
+      volumes:
+      - name: "unbound-conf"
+        configMap:
+          name: {{ template "unbound.fullname" . }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+

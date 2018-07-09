@@ -26,5 +26,12 @@ You may set these options in your values file:
 
 * `slackUrl` - optional - put a slack webhook URL here to get messaged when a termination notice is received.
 
+* `clusterName` - optional - when slack is configured use this cluster name for reports
+
 * `pollInterval` - how often to query the EC2 metadata for termination notices. Defaults to every `5` seconds.
 
+* `rbac.create` -  Specifies whether RBAC resources should be created. Defaults to `true`.
+
+* `serviceAccount.create` -  Specifies whether a ServiceAccount should be created. Defaults to `true`.
+
+* `serviceAccount.name` - The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template.

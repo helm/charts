@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "percona-xtradb-cluster.fullname" . }}-repl"
+  labels:
+    app: {{ template "percona-xtradb-cluster.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  clusterIP: None
+  ports:
+  - name: galera
+    port: 4567
+  - name: state-xfer
+    port: 4568
+  - name: state-snap
+    port: 4444
+  selector:
+    app: {{ template "percona-xtradb-cluster.fullname" . }}
+    release: "{{ .Release.Name }}"

@@ -10,6 +10,6 @@ spec:
     image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
     env:
       - name: VAULT_ADDR
-        value: http://{{ template "vault.fullname" . }}:8200
+        value: http://{{ template "vault.fullname" . }}.{{ .Release.Namespace }}:8200
     command: ["sh", "-c", "vault status"]
   restartPolicy: Never

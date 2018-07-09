@@ -32,7 +32,7 @@ To install the chart with the release name `my-aerospike` using a dedicated name
 
 ```
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-aerospike --namespace aerospike incubator/aerospike
+$ helm install --name my-aerospike --namespace aerospike stable/aerospike
 ```
 
 The chart can be customized using the following configurable parameters:
@@ -43,6 +43,8 @@ The chart can be customized using the following configurable parameters:
 | `image.tag`                     | Aerospike Container image tag                                   | `3.14.1.2`                   |
 | `image.pullPolicy`              | Aerospike Container pull policy                                 | `Always`                     |
 | `replicaCount`                  | Aerospike Brokers                                               | `1`                          |
+| `command`                       | Custom command (Docker Entrypoint)                              | `[]`                         |
+| `args`                          | Custom args (Docker Cmd)                                        | `[]`                         |
 | `persistentVolume`              | config of persistent volumes for storage-engine                 | `{}`                         |
 | `confFile`                      | config filename. This file should be included in the chart path | `aerospike.conf`             |
 | `resources`                     | resource requests and limits                                    | `{}`                         |
@@ -54,7 +56,7 @@ Specify parameters using `--set key=value[,key=value]` argument to `helm install
 Alternatively a YAML file that specifies the values for the parameters can be provided like this:
 
 ```bash
-$ helm install --name my-aerospike -f values.yaml incubator/aerospike
+$ helm install --name my-aerospike -f values.yaml stable/aerospike
 ```
 
 ### Conf files for Aerospike

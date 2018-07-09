@@ -4,7 +4,6 @@
 config:
   ## Email address to use for registration with Let's Encrypt
   ##
-  # LEGO_EMAIL: my@email.tld
   LEGO_EMAIL: foo@example.com
 
   ## Let's Encrypt API endpoint
@@ -35,7 +34,7 @@ config:
 ##
 image:
   repository: jetstack/kube-lego
-  tag: 0.1.5
+  tag: 0.1.6
   pullPolicy: IfNotPresent
 
 ## Node labels for pod assignment

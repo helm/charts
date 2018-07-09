@@ -13,8 +13,9 @@ spec:
     type: Recreate
   template:
     metadata:
-    {{- if .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
@@ -31,10 +32,12 @@ spec:
             httpGet:
               path: /
               port: 4873
+            initialDelaySeconds: 5
           readinessProbe:
             httpGet:
               path: /
               port: 4873
+            initialDelaySeconds: 5
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:

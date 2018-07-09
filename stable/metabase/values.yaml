@@ -5,7 +5,7 @@
 replicaCount: 1
 image:
   repository: metabase/metabase
-  tag: v0.26.2
+  tag: v0.27.2
   pullPolicy: IfNotPresent
 
 # Config Jetty web server
@@ -31,6 +31,8 @@ database:
   # dbname:
   # username:
   # password:
+  ## Alternatively, use a connection URI for full configurability. Example for SSL enabled Postgres.
+  # connectionURI: postgres://user:password@host:port/database?ssl=true&sslmode=require&sslfactory=org.postgresql.ssl.NonValidatingFactory"
 
 password:
   # Changing Metabase password complexity:
@@ -50,6 +52,9 @@ service:
   type: ClusterIP
   externalPort: 80
   internalPort: 3000
+  annotations:
+    # Used to add custom annotations to the Service.
+    # service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
 ingress:
   enabled: false
   # Used to create Ingress record (should used with service.type: ClusterIP).

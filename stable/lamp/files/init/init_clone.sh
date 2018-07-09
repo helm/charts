@@ -5,7 +5,7 @@ export DBDIR=/data/db
 export CLONEWEBDIR=/clone_data/web
 export CLONEDBDIR=/clone_data/db
 if [ -n "$(ls -A $WEBDIR)" ]; then
-	echo "Pod allready initialized, continuing..."
+	echo "Pod already initialized, continuing..."
 else
 	xtrabackup -uroot -p"$MYSQL_ROOT_PASSWORD" -H$MYSQL_HOST -h $CLONEDBDIR --backup --target-dir=$DBDIR
 
