@@ -311,8 +311,10 @@ zookeeper:
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   resources: ~
 
-  ## The JVM heap size to allocate to Zookeeper
-  heap: "1G"
+  ## Environmental variables to set in Zookeeper
+  env:
+    ## The JVM heap size to allocate to Zookeeper
+    ZK_HEAP_SIZE: "1G"
 
   persistence:
     enabled: false
@@ -321,7 +323,8 @@ zookeeper:
 
   ## Specify a Zookeeper imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-  imagePullPolicy: "IfNotPresent"
+  image:
+    PullPolicy: "IfNotPresent"
 
   ## If the Zookeeper Chart is disabled a URL and port are required to connect
   url: ""
