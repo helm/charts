@@ -1,6 +1,6 @@
 name: orangehrm
-version: 2.0.1
-appVersion: 4.1.1-debian-8
+version: 2.0.2
+appVersion: 4.1.1
 description: OrangeHRM is a free HR management system that offers a wealth of modules
   to suit the needs of your business.
 keywords:
