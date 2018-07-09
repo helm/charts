@@ -1,6 +1,6 @@
 name: mariadb
-version: 4.2.5
-appVersion: 10.1.34
+version: 4.2.6
+appVersion: 10.1.34-debian-9
 description: Fast, reliable, scalable, and easy to use open-source relational database system. MariaDB Server is intended for mission-critical, heavy-load production systems as well as for embedding into mass-deployed software. Highly available MariaDB cluster.
 keywords:
 - mariadb
