@@ -1,0 +1,13 @@
+replicaCount: 1
+
+image:
+  repository: lightbend/spark-history-server
+  tag: 2.3.1
+  pullPolicy: Always
+
+service:
+  externalPort: 80
+  internalPort: 18080
+  type: NodePort
+
+logDirectory: hdfs://hdfs/history/
