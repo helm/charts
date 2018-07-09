@@ -12,8 +12,8 @@ serviceType: LoadBalancer
 ## Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ingress:
-  enabled: false
-  domain: nifi.k8s.cloud.statcan.ca
+  enabled: true
+  domain: nifi.govcloud.ca
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -73,7 +73,9 @@ nifi:
   properties:
     isNode: true
     httpPort: 8080
-    clusterPort: 6007
+    cluster:
+      port: 6007
+      secure: false
     provenanceStorage: "8 GB"
     siteToSite:
       secure: false
@@ -86,7 +88,7 @@ nifi:
     memory: 2g
 
   # Number of NiFi replicas
-  replicas: 2
+  replicas: 1
 
   # Load Balancer for NiFi cluster
   loadBalancer:
@@ -112,7 +114,7 @@ nifi:
 
   ## Configure Persistence Volumes / Claims
   persistence:
-    enabled: false
+    enabled: true
     ## A manually managed Persistent Volume and Claim
     ## Requires persistence.enabled: true
     ## If defined, PVC must be created manually before volume will be bound

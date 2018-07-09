@@ -47,9 +47,12 @@ The following tables lists the configurable parameters of the Traefik chart and 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
-For example on a local install:
+For example the following is how to install NiFi locally:
 
 ```bash
-$ helm install --name nifi --namespace nifi \
-  --set serviceType=NodePort
+helm install --name nifi \
+             --namespace nifi \
+             --set serviceType=NodePort \
+             --set ingress.enabled=false \
+             -f values.yaml .
 ```

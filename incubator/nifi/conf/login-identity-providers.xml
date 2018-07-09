@@ -21,14 +21,14 @@
 <loginIdentityProviders>
     <!--
         Identity Provider for users logging in with username/password against an LDAP server.
-        
+
         'Authentication Strategy' - How the connection to the LDAP server is authenticated. Possible
             values are ANONYMOUS, SIMPLE, LDAPS, or START_TLS.
-        
+
         'Manager DN' - The DN of the manager that is used to bind to the LDAP server to search for users.
         'Manager Password' - The password of the manager that is used to bind to the LDAP server to
             search for users.
-            
+
         'TLS - Keystore' - Path to the Keystore that is used when connecting to LDAP using LDAPS or START_TLS.
         'TLS - Keystore Password' - Password for the Keystore that is used when connecting to LDAP
             using LDAPS or START_TLS.
@@ -43,13 +43,13 @@
             Possible values are REQUIRED, WANT, NONE.
         'TLS - Protocol' - Protocol to use when connecting to LDAP using LDAPS or START_TLS. (i.e. TLS,
             TLSv1.1, TLSv1.2, etc).
-        'TLS - Shutdown Gracefully' - Specifies whether the TLS should be shut down gracefully 
+        'TLS - Shutdown Gracefully' - Specifies whether the TLS should be shut down gracefully
             before the target context is closed. Defaults to false.
-            
+
         'Referral Strategy' - Strategy for handling referrals. Possible values are FOLLOW, IGNORE, THROW.
         'Connect Timeout' - Duration of connect timeout. (i.e. 10 secs).
         'Read Timeout' - Duration of read timeout. (i.e. 10 secs).
-       
+
         'Url' - Space-separated list of URLs of the LDAP servers (i.e. ldap://<hostname>:<port>).
         'User Search Base' - Base DN for searching for users (i.e. CN=Users,DC=example,DC=com).
         'User Search Filter' - Filter for searching for users against the 'User Search Base'.
@@ -62,13 +62,14 @@
             for. If the user never logs out, they will be required to log back in following
             this duration.
     -->
-    <!-- To enable the ldap-provider remove 2 lines. This is 1 of 2. 
+
+    {{- if .Values.ldap.enabled -}}
     <provider>
         <identifier>ldap-provider</identifier>
         <class>org.apache.nifi.ldap.LdapProvider</class>
-        <property name="Authentication Strategy">START_TLS</property>
-        <property name="Manager DN"></property>
-        <property name="Manager Password"></property>
+        <property name="Authentication Strategy">{{.Values.ldap.authenticationStrategy}}</property>
+        <property name="Manager DN">{{.Values.ldap.manager_DN}}</property>
+        <property name="Manager Password">{{.Values.ldap.manager_Password}}</property>
         <property name="TLS - Keystore"></property>
         <property name="TLS - Keystore Password"></property>
         <property name="TLS - Keystore Type"></property>
@@ -78,17 +79,16 @@
         <property name="TLS - Client Auth"></property>
         <property name="TLS - Protocol"></property>
         <property name="TLS - Shutdown Gracefully"></property>
-        
         <property name="Referral Strategy">FOLLOW</property>
         <property name="Connect Timeout">10 secs</property>
         <property name="Read Timeout">10 secs</property>
-        <property name="Url"></property>
-        <property name="User Search Base"></property>
-        <property name="User Search Filter"></property>
-        <property name="Identity Strategy">USE_DN</property>
+        <property name="Url">{{.Values.ldap.url}}</property>
+        <property name="User Search Base">{{.Values.ldap.userSearchBase}}</property>
+        <property name="User Search Filter">{{.Values.ldap.userSearchFilter}}</property>
+        <property name="Identity Strategy">{{.Values.ldap.identityStrategy}}</property>
         <property name="Authentication Expiration">12 hours</property>
     </provider>
-    To enable the ldap-provider remove 2 lines. This is 2 of 2. -->
+    {{- end -}}
 
     <!--
         Identity Provider for users logging in with username/password against a Kerberos KDC server.

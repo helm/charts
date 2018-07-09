@@ -40,7 +40,7 @@ spec:
         - containerPort: {{ .Values.nifi.properties.httpPort }}
           name: http
           protocol: TCP
-        - containerPort: {{ .Values.nifi.properties.clusterPort }}
+        - containerPort: {{ .Values.nifi.properties.cluster.port }}
           name: cluster
           protocol: TCP
         env:
@@ -111,7 +111,24 @@ spec:
         volumeMounts:
         - name: logs
           mountPath: /var/log
+      initContainers:
+        - name: copy-nifi-templates
+          image: busybox:1.27.1
+          command: ['sh', '-c']
+          args:
+            - cp /templates/hello-world.xml /opt/nifi/data/templates/
+          volumeMounts:
+            - name: "data"
+              mountPath: /opt/nifi/data
+            - name: "templates"
+              mountPath: /templates
       volumes:
+      - name: "templates"
+        configMap:
+          name: {{ template "nifi.fullname" . }}
+          items:
+            - key: "hello-world.xml"
+              path: "hello-world.xml"
       - name: "bootstrap-conf"
         configMap:
           name: {{ template "nifi.fullname" . }}
