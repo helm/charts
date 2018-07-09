@@ -1,6 +1,6 @@
 name: joomla
-version: 2.0.3
-appVersion: 3.8.10-debian-9
+version: 2.0.4
+appVersion: 3.8.10
 description: PHP content management system (CMS) for publishing web content
 keywords:
 - joomla
