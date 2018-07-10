@@ -80,6 +80,7 @@ resources: {}
 nodeSelector: {}
 
 tolerations: []
+#  - operator: Exists
 
 affinity: {}
 
