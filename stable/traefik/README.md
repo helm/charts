@@ -129,6 +129,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.persistence.size`         | Minimum size of the volume requested                                 | `1Gi`                                     |
 | `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
 | `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
+| `dashboard.path`                | Path for the Traefik dashboard                                       | `/`                                       |
 | `dashboard.service.annotations` | Annotations for the Traefik dashboard Service definition, specified as a map | None                |
 | `dashboard.ingress.annotations` | Annotations for the Traefik dashboard Ingress definition, specified as a map | None                |
 | `dashboard.ingress.labels`      | Labels for the Traefik dashboard Ingress definition, specified as a map      | None                              |
