@@ -61,6 +61,13 @@ deck:
 # Bucket to use when storing config data in S3 compatible storage
 storageBucket: spinnaker
 
+# spinnakerFeatureFlags is a list of Spinnaker feature flags to enable
+# Ref: https://www.spinnaker.io/reference/halyard/commands/#hal-config-features-edit
+# spinnakerFeatureFlags:
+#   - artifacts
+#   - pipeline-templates
+spinnakerFeatureFlags: []
+
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 # nodeSelector to provide to each of the Spinnaker components

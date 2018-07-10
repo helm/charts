@@ -38,7 +38,7 @@ data:
     # Docker Registry
     $HAL_COMMAND config provider docker-registry enable
     {{- range $index, $registry := .Values.dockerRegistries }}
-    
+
     $HAL_COMMAND config provider docker-registry account add {{ $registry.name }} --address {{ $registry.address }} \
         --repositories {{ range $index, $repository := $registry.repositories }}{{- $repository }},{{- end }}
     {{- end }}
@@ -53,3 +53,6 @@ data:
                            --location {{ .Release.Namespace }}
     # Use Deck to route to Gate
     $HAL_COMMAND config security api edit --no-validate --override-base-url /gate
+    {{- range $index, $feature := .Values.spinnakerFeatureFlags }}
+    $HAL_COMMAND config features edit --{{ $feature }} true
+    {{- end }}
