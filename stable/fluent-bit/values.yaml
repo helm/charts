@@ -112,6 +112,10 @@ filter:
 # it append the map fields as part of the log structure.
 #  mergeJSONLog: true
 
+# If mergeJSONLog is set AND this is set, the structured data from the parsed
+# log field is placed under a key of this name.
+#  mergeJSONKey: top-level-key-name
+
 # If true, enable the use of monitoring for a pod annotation of
 # fluentbit.io/parser: parser_name. parser_name must be the name
 # of a parser contained within parsers.conf
