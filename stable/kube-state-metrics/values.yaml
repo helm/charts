@@ -5,6 +5,8 @@ image:
   tag: v1.3.1
   pullPolicy: IfNotPresent
 service:
+  # labels:
+  #   key: value
   port: 8080
   # Default to clusterIP for backward compatibility
   type: ClusterIP
@@ -15,6 +17,10 @@ rbac:
   create: false
   # Ignored if rbac.create is true
   serviceAccountName: default
+
+# If you wish to provide additional labels to apply to the pod(s), specify
+# them here
+podLabels: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
