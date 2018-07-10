@@ -158,9 +158,9 @@ data:
   jenkins.model.JenkinsLocationConfiguration.xml: |-
     <?xml version='1.1' encoding='UTF-8'?>
     <jenkins.model.JenkinsLocationConfiguration>
-      <adminAddress>{{ default "nobody@nowhere.io" .Values.Master.JenkinsAdminEmail }}</adminAddress>
+      <adminAddress>{{ default "" .Values.Master.JenkinsAdminEmail }}</adminAddress>
 {{- if .Values.Master.HostName }}
-{{- if .Values.Master.JenkinsUriSecure }}
+{{- if .Values.Master.Ingress.TLS }}
       <jenkinsUrl>https://{{ .Values.Master.HostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
 {{- else }}
       <jenkinsUrl>http://{{ .Values.Master.HostName }}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
