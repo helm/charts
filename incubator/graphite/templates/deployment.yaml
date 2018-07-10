@@ -25,7 +25,7 @@ spec:
         image: {{ .Values.image.repository }}
         command: [ "sh", "-c", "test -f /opt/graphite/storage/graphite.db || /usr/bin/expect /usr/local/bin/django_admin_init.exp"]
         volumeMounts:
-          - name: {{ template "graphite.fullname" . }}
+          - name: {{ template "graphite.fullname" . }}-pvc
             mountPath: /opt/graphite/storage/
       containers:
       - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -38,17 +38,17 @@ spec:
         - containerPort: 2004
           name: graphite-pickle
         volumeMounts:
-          - name: graphite-conf
+          - name: {{ template "graphite.fullname" . }}-configmap
             mountPath: /opt/graphite/conf/
-          - name: {{ template "graphite.fullname" . }}
+          - name: {{ template "graphite.fullname" . }}-pvc
             mountPath: /opt/graphite/storage/
       volumes:
-        - name: graphite-conf
+        - name: {{ template "graphite.fullname" . }}-configmap
           configMap:
-            name: graphite-conf
-        - name: {{ template "graphite.fullname" . }}
+            name: {{ template "graphite.fullname" . }}-configmap
+        - name: {{ template "graphite.fullname" . }}-pvc
           persistentVolumeClaim:
-            claimName: {{ template "graphite.fullname" . }}
+            claimName: {{ template "graphite.fullname" . }}-pvc
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
