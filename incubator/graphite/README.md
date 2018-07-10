@@ -67,4 +67,4 @@ Graphite itself is a stateful application that stores all related data in its ow
 
 For more information about Graphite visit the official [webiste](https://graphiteapp.org/) and the [docs](http://graphite.readthedocs.io/en/latest/).
 
-To find infos about the Docker container visit [Github](https://github.com/hopsoft/docker-graphite-statsd) or [Dockerhub](https://hub.docker.com/r/hopsoft/graphite-statsd/).
+To find infos about the Docker container visit [Github](https://github.com/graphite-project/docker-graphite-statsd) or [Dockerhub](https://hub.docker.com/r/graphiteapp/graphite-statsd/).
