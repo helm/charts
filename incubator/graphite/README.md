@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This chart uses hopsoft/graphite-statsd container to run Graphite inside Kubernetes.
+This chart uses graphiteapp/graphite-statsd container to run Graphite inside Kubernetes.
 
 ## Prerequisites
 
