@@ -36,8 +36,8 @@ The following table lists the configurable parameters of the Graphite chart and 
 
 |             Parameter                    |            Description              |                  Default               |
 |------------------------------------------|-------------------------------------|----------------------------------------|
-| `image.repository`                       | Docker image repo                   | hopsoft/graphite-statsd                |
-| `image.tag`                              | Docker image                        | v0.9.15-phusion0.9.18                  |
+| `image.repository`                       | Docker image repo                   | graphiteapp/graphite-statsd            |
+| `image.tag`                              | Docker image                        | 1.1.3                                  |
 | `image.pullPolicy`                       | Docker image pull policy            | IfNotPresent                           |
 | `service.type`                           | Service type                        | ClusterIP                              |
 | `ingress.enabled`                        | Ingress enabled                     | false                                  |
