@@ -40,7 +40,7 @@ The following table lists the configurable parameters of the cerebro chart and t
 |             Parameter               |            Description             |                    Default                |
 |-------------------------------------|------------------------------------|-------------------------------------------|
 | `replicaCount`                      | Number of replicas                 | `1`                                       |
-| `image.repository`                  | The image to run                   | `yannart/cerebro`                         |
+| `image.repository`                  | The image to run                   | `lmenezes/cerebro`                        |
 | `image.tag`                         | The image tag to pull              | `0.8.1`                                   |
 | `image.pullPolicy`                  | Image pull policy                  | `IfNotPresent`                            |
 | `service.type`                      | Type of Service                    | `ClusterIP`                               |
