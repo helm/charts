@@ -45,6 +45,7 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `image.pullPolicy`                  | Image pull policy                  | `IfNotPresent`                            |
 | `service.type`                      | Type of Service                    | `ClusterIP`                               |
 | `service.port`                      | Port for kubernetes service        | `80`                                      |
+| `service.annotations`               | Annotations to add to the service  | `{}`                                      |
 | `resources.requests.cpu`            | CPU resource requests              |                                           |
 | `resources.limits.cpu`              | CPU resource limits                |                                           |
 | `resources.requests.memory`         | Memory resource requests           |                                           |
