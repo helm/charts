@@ -30,6 +30,9 @@ spec:
             - --excluded-times-of-day={{ .Values.excludedTimesOfDay }}
             - --excluded-days-of-year={{ .Values.excludedDaysOfYear }}
             - --timezone={{ .Values.timezone }}
+            {{- if .Values.debug }}
+            - --debug
+            {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ printf "%s-%s" .Release.Name .Values.name }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

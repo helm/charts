@@ -25,6 +25,9 @@ namespaces:
 # don't kill pods, only log what would have been done
 dryRun: true
 
+# Enable debug logging
+debug: false
+
 # Set values for exempting specific week days from Chaoskube Actions
 excludedWeekdays:
 
