@@ -59,6 +59,13 @@ spec:
             secretKeyRef:
               name: {{ template "mission-control.fullname" . }}-mongodb-cred
               key: insightPassword
+        - name: MONGODB_ADMIN_USERNAME
+          value: '{{ .Values.mongodb.db.adminUser }}'
+        - name: MONGODB_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mission-control.fullname" . }}-mongodb-cred
+              key: adminPassword
         - name: JFMC_SCHEDULER_MONGO_DB
           value: '{{ .Values.mongodb.db.insightSchedulerDb }}'
         ports:
