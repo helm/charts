@@ -13,6 +13,10 @@ dependencies:
   version: ^0.1.0
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   condition: fluentd.enabled
+- name: fluent-bit
+  version: ^0.6.0
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: fluent-bit.enabled
 - name: nginx-ldapauth-proxy
   version: ^0.1.0
   repository: https://kubernetes-charts.storage.googleapis.com/
