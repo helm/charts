@@ -14,7 +14,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "fullname" . }}-deck
+          serviceName: spin-deck
           servicePort: {{ .Values.deck.port }}
 {{- if .Values.deck.ingress.tls }}
   tls:
