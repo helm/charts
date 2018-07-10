@@ -54,6 +54,7 @@ Parameter | Description | Default
 `replicaCount` | desired number of pods | `1`
 `serviceAccountName` | serviceAccount that will run the pod | `nil`
 `resources` | pod resource requests & limits | `{}`
+`priorityClassName` | priorityClassName | `nil`
 `service.externalPort` | external port for the service | `443`
 `service.internalPort` | internal port for the service | `4180`
 `service.externalIPs` | external IP addresses | None:
