@@ -1,6 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+{{- if .Values.server.deploymentAnnotations }}
+  annotations:
+{{ toYaml .Values.server.deploymentAnnotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
