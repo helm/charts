@@ -70,8 +70,12 @@ data:
       NETWORK=`echo $BASEIP".0"`
       DNS=$(cat /etc/resolv.conf | grep -v '^#' | grep nameserver | awk '{print $2}')
       SEARCH=$(cat /etc/resolv.conf | grep -v '^#' | grep search | awk '{$1=""; print $0}')
+      FORMATTED_SEARCH=""
+      for DOMAIN in $SEARCH; do
+        FORMATTED_SEARCH="${FORMATTED_SEARCH}push \"dhcp-option DOMAIN-SEARCH ${DOMAIN}\"\n"
+      done
       cp -f /etc/openvpn/setup/openvpn.conf /etc/openvpn/
-      sed 's|OVPN_K8S_SEARCH|'"${SEARCH}"'|' -i /etc/openvpn/openvpn.conf
+      sed 's|OVPN_K8S_SEARCH|'"${FORMATTED_SEARCH}"'|' -i /etc/openvpn/openvpn.conf
       sed 's|OVPN_K8S_DNS|'"${DNS}"'|' -i /etc/openvpn/openvpn.conf
       sed 's|NETWORK|'"${NETWORK}"'|' -i /etc/openvpn/openvpn.conf
 
@@ -103,7 +107,7 @@ data:
 {{ end }}
 
 {{ if .Values.openvpn.dhcpOptionDomain }}
-      push "dhcp-option DOMAIN OVPN_K8S_SEARCH"
+      OVPN_K8S_SEARCH
 {{ end }}
       push "dhcp-option DNS OVPN_K8S_DNS"
 

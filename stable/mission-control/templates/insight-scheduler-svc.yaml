@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "insight-scheduler.fullname" . }}
+  labels:
+    role: {{ .Values.insightScheduler.service.name }}
+  labels:
+    app: {{ template "mission-control.name" . }}
+    chart: {{ template "mission-control.chart" . }}
+    component: {{ .Values.insightScheduler.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.insightScheduler.service.type }}
+  ports:
+  - name: http
+    port: {{ .Values.insightScheduler.internalPort }}
+    targetPort: {{ .Values.insightScheduler.externalPort }}
+    protocol: TCP
+  selector:
+    app: {{ template "mission-control.name" . }}
+    component: {{ .Values.insightScheduler.name }}
+    release: {{ .Release.Name }}
