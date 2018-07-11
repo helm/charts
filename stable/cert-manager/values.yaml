@@ -69,3 +69,5 @@ ingressShim: {}
 # namespace manifest for the namespace that cert-manager is being installed
 # within. It should **not** be used if you are using Helm for deployment.
 createNamespaceResource: false
+
+priorityClassName: ""
