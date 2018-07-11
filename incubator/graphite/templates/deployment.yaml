@@ -31,7 +31,7 @@ spec:
       - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         name: {{ .Chart.Name }}
         ports:
-        - containerPort: 80
+        - containerPort: 8080
           name: graphite-gui
         - containerPort: 2003
           name: graphite-plain

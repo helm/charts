@@ -16,7 +16,7 @@ spec:
     - port: 2003
       name: graphite-plain
       protocol: TCP
-    - port: 80
+    - port: 8080
       name: graphite-gui
       protocol: TCP
   selector:
