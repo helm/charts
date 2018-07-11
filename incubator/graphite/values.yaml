@@ -22,7 +22,7 @@ ingress:
   #      - chart-example.local
 
 graphite:
-  pvcsize: 
+  pvcsize: "10Gi"
 
 resources: {}
   # limits:
