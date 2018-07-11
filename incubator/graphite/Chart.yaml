@@ -10,7 +10,7 @@ sources:
 - https://github.com/graphite-project
 - https://github.com/graphite-project/docker-graphite-statsd
 maintainers:
-- name: Fabian Schlege
+- name: Fabian Schlegel
   email: fabian.schlegel@kiwigrid.com
 - name: André Bauer
   email: andre.bauer@kiwigrid.com
