@@ -50,7 +50,7 @@ The following table lists the configurable parameters of the Graphite chart and 
 | `nodeSelector`                           | NodeSelector                        | `{}`                                   |
 | `tolerations`                            | Tolerations                         | `[]`                                   |
 | `affinity`                               | Affinity                            | `{}`                                   |
-| `configMaps`                             | All Config files                    | `...`                                  |
+| `configMaps`                             | All Config files                    | `see values.yaml`                      |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
