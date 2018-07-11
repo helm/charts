@@ -50,6 +50,28 @@ spec:
             - mountPath: /etc/falco/rules.d
               name: rules-volume
             {{- end }}
+            {{- if .Values.integrations.natsOutput.enabled }}
+            - mountPath: /var/run/falco/
+              name: shared-pipe
+              readOnly: false
+            {{- end }}
+      {{- if .Values.integrations.natsOutput.enabled }}
+        - name: {{ .Chart.Name }}-nats
+          image: sysdig/falco-nats:latest
+          imagePullPolicy: Always
+          args: [ "/bin/falco-nats", "-s", {{ .Values.integrations.natsOutput.natsUrl | quote }}]
+          volumeMounts:
+            - mountPath: /var/run/falco/
+              name: shared-pipe
+      initContainers:
+          - name: init-pipe
+            image: busybox
+            command: ['mkfifo','/var/run/falco/nats']
+            volumeMounts:
+            - mountPath: /var/run/falco/
+              name: shared-pipe
+              readOnly: false
+      {{- end }}
       volumes:
         - name: dshm
           emptyDir:
@@ -86,6 +108,10 @@ spec:
         - name: rules-volume
           configMap:
             name: {{ template "falco.fullname" . }}-rules
+        {{- end }}
+        {{- if .Values.integrations.natsOutput.enabled }}
+        - name: shared-pipe
+          emptyDir: {}
         {{- end }}
 
   updateStrategy:
