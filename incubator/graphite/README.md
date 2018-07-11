@@ -40,6 +40,7 @@ The following table lists the configurable parameters of the Graphite chart and 
 | `image.tag`                              | Docker image                        | 1.1.3                                  |
 | `image.pullPolicy`                       | Docker image pull policy            | IfNotPresent                           |
 | `service.type`                           | Service type                        | ClusterIP                              |
+| `graphite.pvsize`                        | Size of PVC                         | 10Gi                                   |
 | `ingress.enabled`                        | Ingress enabled                     | false                                  |
 | `ingress.annotations`                    | Ingress annotations                 | `{}`                                   |
 | `ingress.path`                           | Ingress path                        |  /                                     |
@@ -49,6 +50,7 @@ The following table lists the configurable parameters of the Graphite chart and 
 | `nodeSelector`                           | NodeSelector                        | `{}`                                   |
 | `tolerations`                            | Tolerations                         | `[]`                                   |
 | `affinity`                               | Affinity                            | `{}`                                   |
+| `configMaps`                             | All Config files                    | `...`                                  |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
