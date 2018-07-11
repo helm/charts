@@ -19,6 +19,7 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       hostPID: true
       containers:
         - name: {{ .Chart.Name }}
