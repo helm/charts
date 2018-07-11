@@ -54,6 +54,9 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `nodeSelector`                      | Settings for nodeselector          | `{}`                                      |
 | `tolerations`                       | Settings for toleration            | `{}`                                      |
 | `affinity`                          | Settings for affinity              | `{}`                                      |
+| `config.basePath`                   | Application base path              | `/`                                       |
+| `config.restHistorySize`            | Rest request history size per user | `50`                                      |
+| `config.hosts`                      | A list of known hosts              | `[]`                                      |
 
 
 
