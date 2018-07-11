@@ -27,7 +27,7 @@ data:
       {{- end }}
 
     # Whether to output events in json or text
-    {{- if .Values.integrations.gcscc.enabled }}
+    {{- if (or .Values.integrations.gcscc.enabled .Values.integrations.natsOutput.enabled) }}
     json_output: true
     {{- else }}
     json_output: {{ .Values.falco.jsonOutput }}
@@ -36,7 +36,12 @@ data:
     # When using json output, whether or not to include the "output" property
     # itself (e.g. "File below a known binary directory opened for writing
     # (user=root ....") in the json output.
+
+    {{- if .Values.integrations.natsOutput.enabled }}
+    json_include_output_property: true
+    {{- else }}
     json_include_output_property: {{ .Values.falco.jsonIncludeOutputProperty }}
+    {{- end }}
 
     # Send information logs to stderr and/or syslog Note these are *not* security
     # notification logs! These are just Falco lifecycle (and possibly error) logs.
@@ -56,7 +61,7 @@ data:
     priority: {{ .Values.falco.priority }}
 
     # Whether or not output to any of the output channels below is
-    # buffered. Defaults to true
+    # buffered. Defaults to false
     buffered_outputs: {{ .Values.falco.bufferedOutputs }}
 
     # A throttling mechanism implemented as a token bucket limits the
@@ -88,10 +93,17 @@ data:
     # Also, the file will be closed and reopened if falco is signaled with
     # SIGUSR1.
 
+    {{- if .Values.integrations.natsOutput.enabled }}
+    file_output:
+      enabled: true
+      keep_alive: true
+      filename: /var/run/falco/nats
+    {{- else }}
     file_output:
       enabled: {{ .Values.falco.fileOutput.enabled }}
       keep_alive: {{ .Values.falco.fileOutput.keepAlive }}
       filename: {{ .Values.falco.fileOutput.filename }}
+    {{- end }}
 
     stdout_output:
       enabled: {{ .Values.falco.stdoutOutput.enabled }}

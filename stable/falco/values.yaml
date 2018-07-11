@@ -141,6 +141,7 @@ customRules: {}
   # rules-traefik.yaml: |-
   #   [ rule body ]
 
+integrations:
   # If Google Cloud Security Command Center integration is enabled, falco will
   # be configured to use this integration as program_output and sets the following values:
   # * json_output: true
@@ -148,11 +149,21 @@ customRules: {}
   #     enabled: true
   #     keep_alive: false
   #     program: "\"curl -d @- -X POST --header 'Content-Type: application/json' --header 'Authorization: authentication_token' url \""
-integrations:
   gcscc:
     enabled: false
     webhookUrl: http://sysdig-gcscc-connector.default.svc.cluster.local:8080/events
     webhookAuthenticationToken: b27511f86e911f20b9e0f9c8104b4ec4
+  # If Nats Output integration is enabled, falco will be configured to use this
+  # integration as file_output and sets the following values:
+  # * json_output: true
+  # * json_include_output_property: true
+  # * file_output:
+  #     enabled: true
+  #     keep_alive: true
+  #     filename: /var/run/falco/nats
+  natsOutput:
+    enabled: false
+    natsUrl: "nats://nats.nats-io.svc.cluster.local:4222"
 
 # Allow falco to run on Kubernetes 1.6 masters.
 tolerations:
