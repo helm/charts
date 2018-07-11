@@ -29,6 +29,10 @@ spec:
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
+{{- if and .Values.prometheus.exporter.enabled  (not .Values.prometheus.operator.enabled) }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: 9001
+{{- end }}
     spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
@@ -185,6 +189,27 @@ spec:
               mountPath: /data/configdb
             - name: workdir
               mountPath: /work-dir
+        {{- if .Values.prometheus.exporter.enabled }}
+        - name: mongodb-exporter
+          image: alpine
+          imagePullPolicy: IfNotPresent
+          command:
+          - "sh"
+          - "-c"
+          - >
+            wget https://github.com/dcu/mongodb_exporter/releases/download/v1.0.0/mongodb_exporter-linux-amd64 -O /tmp/mongodb_exporter-linux-amd64;
+            chmod +x /tmp/mongodb_exporter-linux-amd64;
+            /tmp/mongodb_exporter-linux-amd64
+          ports:
+          - containerPort: 9001
+            name: metrics
+            protocol: TCP
+          {{- if and (.Values.auth.enabled) (not .Values.auth.existingAdminSecret) -}}
+          env:
+          - name: MONGODB_URL
+            value: "mongodb://{{ .Values.auth.adminUser }}:{{.Values.auth.adminPassword}}@{{ template "mongodb-replicaset.name" . }}:27017"
+          {{- end}}
+        {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

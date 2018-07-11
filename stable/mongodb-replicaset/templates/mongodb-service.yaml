@@ -22,6 +22,12 @@ spec:
   ports:
     - name: peer
       port: {{ .Values.port }}
+    {{ if .Values.prometheus.exporter.enabled }}
+    - name: metrics
+      protocol: TCP
+      port: 9001
+      targetPort: metrics
+    {{ end }}
   selector:
     app: {{ template "mongodb-replicaset.name" . }}
     release: {{ .Release.Name }}

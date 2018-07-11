@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: mongodb-replicaset
+  name: mongodb-replicaset
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: mongodb-replicaset
+      release: mongodb-replicaset
+  serviceName: mongodb-replicaset
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mongodb-replicaset
+        release: mongodb-replicaset
+    spec:
+      containers:
+

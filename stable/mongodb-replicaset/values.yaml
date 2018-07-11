@@ -105,3 +105,26 @@ livenessProbe:
   failureThreshold: 3
   periodSeconds: 10
   successThreshold: 1
+
+prometheus:
+  ## Configures Prometheus Exporter to expose and scrape stats.
+  exporter:
+    enabled: false
+
+  ## Prometheus is using Operator.  Setting to true will create Operator specific resources like ServiceMonitors and Alerts
+  operator:
+    ## Are you using Prometheus Operator? [Blog Post](https://coreos.com/blog/the-prometheus-operator.html)
+    enabled: false
+
+    serviceMonitor:
+      ## Interval at which Prometheus scrapes MongoDB Exporter
+      interval: 10s
+
+      # Namespace Prometheus is installed in
+      namespace: monitoring
+
+      ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
+      ## [Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65)
+      ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
+      selector:
+        prometheus: kube-prometheus

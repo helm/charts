@@ -1,0 +1,22 @@
+{{ if and .Values.prometheus.exporter.enabled .Values.prometheus.operator.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "mongodb-replicaset.fullname" . }}
+  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
+  labels:
+{{- if .Values.prometheus.operator.serviceMonitor.selector }}
+{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "mongodb-replicaset.name" . }}
+      release: {{ .Release.Name }}
+  endpoints:
+  - port: metrics
+    interval: {{ .Values.prometheus.operator.serviceMonitor.interval }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{ end }}
