@@ -21,6 +21,9 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+graphite:
+  pvcsize: 
+
 resources: {}
   # limits:
   #  cpu: 100m
