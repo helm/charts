@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: sentry
-  tag: "8.22"
+  tag: "9.0"
   pullPolicy: IfNotPresent
   # Add the secret name to pull from a private registry.
   imagePullSecrets: []
@@ -82,10 +82,12 @@ email:
 # Name of the service and what port to expose on the pod
 # Don't change these unless you know what you're doing
 service:
-  name: sentry
+  name: sentry-private-test
   type: LoadBalancer
   externalPort: 9000
   internalPort: 9000
+  annotations: {
+  }
   ## External IP addresses of service
   ## Default: nil
   ##
