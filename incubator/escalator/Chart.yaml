@@ -1,0 +1,11 @@
+apiVersion: v1
+appVersion: 0.0.0
+description: Escalator is a batch or job optimized horizontal autoscaler for Kubernetes
+name: escalator
+version: 0.1.0
+home: https://github.com/atlassian/escalator
+sources:
+- https://github.com/atlassian/escalator
+maintainers:
+- name: wendorf
+  email: github@danwendorf.com

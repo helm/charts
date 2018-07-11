@@ -1,0 +1,116 @@
+# Default values for escalator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: atlassian/escalator
+  tag: v1.0.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+  # Annotations to add to the service
+  annotations: {}
+
+# Annotations to add to every pod
+podAnnotations: {}
+
+## General Escalator configuration. Additional documentation:
+#  https://github.com/atlassian/escalator/blob/master/docs/configuration/command-line.md
+
+# Log level (4 for info, 5 for debug)
+logLevel: 4
+
+# Format of logging output (json, ascii)
+logFormat: ascii
+
+# How often cluster is reevaluated for scale up or down
+scanInterval: 60s
+
+# Log the actions that Escalator will perform without actually running them
+dryMode: true
+
+# Cloud provider to use. Currently, only aws is available
+cloudProvider: aws
+
+aws:
+  # AWS role arn to assume. Only usable when using the aws cloud provider.
+  # roleArn: arn:aws:iam::111111111111:role/escalator
+
+  # AWS region your autoscaling groups are in. Only necessary if providing an ARN.
+  region: us-east-1
+
+# Kubernetes configuration to use when querying the API. Only necessary if autoscaling a different cluster than the one
+# in which Escalator is deployed.
+kubeConfig:
+  # Use a custom kubeConfig
+  enabled: false
+#  # Kubernetes Secret with a custom kubeConfig
+#  secretName: my-kubeconfig
+#  # Secret key with contents of custom kubeConfig
+#  secretKey: config
+
+## Each node group to autoscale
+#  See https://github.com/atlassian/escalator/blob/master/docs/configuration/nodegroup.md
+#  for details for each key
+nodeGroups: []
+  # - name: "default"
+  #   label_key: "customer"
+  #   label_value: "shared"
+  #   cloud_provider_group_name: "shared-nodes"
+  #   min_nodes: 1
+  #   max_nodes: 30
+  #   dry_mode: false
+  #   taint_upper_capacity_threshold_percent: 40
+  #   taint_lower_capacity_threshold_percent: 10
+  #   slow_node_removal_rate: 2
+  #   fast_node_removal_rate: 5
+  #   scale_up_threshold_percent: 70
+  #   scale_up_cool_down_period: 2m
+  #   scale_up_cool_down_timeout: 10m
+  #   soft_delete_grace_period: 1m
+  #   hard_delete_grace_period: 10m

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "escalator.fullname" . }}
+  labels:
+    app: {{ template "escalator.name" . }}
+    chart: {{ template "escalator.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  nodegroups_config.yaml: |
+  {{- with .Values.nodeGroups }}
+    node_groups:
+{{ toYaml . | indent 6 }}
+  {{- end }}

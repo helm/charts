@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "escalator.fullname" . }}
+  labels:
+    app: {{ template "escalator.name" . }}
+    chart: {{ template "escalator.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "escalator.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+        {{- end }}
+      labels:
+        app: {{ template "escalator.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "escalator.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: http
+          command:
+            - "./main"
+            - "--nodegroups"
+            - "/opt/conf/nodegroups/nodegroups_config.yaml"
+            - "--loglevel={{ .Values.logLevel }}"
+            - "--logfmt={{ .Values.logFormat }}"
+            - "--scaninterval={{ .Values.scanInterval }}"
+            - "--cloud-provider={{ .Values.cloudProvider }}"
+            {{- if .Values.dryMode }}
+            - "--drymode"
+            {{- end }}
+            {{- if .Values.aws.roleArn }}
+            - "--aws-assume-role-arn={{ .Values.aws.roleArn }}"
+            {{- end }}
+            {{- if .Values.kubeConfig.enabled }}
+            - "--kubeconfig"
+            - "/opt/conf/kubeconfig/{{ $.Values.kubeConfig.secretKey }}"
+            {{- end }}
+          volumeMounts:
+            - name: nodegroups
+              mountPath: /opt/conf/nodegroups
+              readOnly: true
+            {{- if .Values.kubeConfig.enabled }}
+            - name: kubeconfig
+              mountPath: /opt/conf/kubeconfig
+            {{- end }}
+          env:
+          {{- if .Values.aws.region }}
+            - name: AWS_REGION
+              value: {{ .Values.aws.region }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: nodegroups
+          configMap:
+            name: {{ template "escalator.fullname" . }}
+            defaultMode: 0644
+            items:
+            - key: nodegroups_config.yaml
+              path: nodegroups_config.yaml
+        {{- if .Values.kubeConfig.enabled }}
+        - name: kubeconfig
+          secret:
+            secretName: {{ .Values.kubeConfig.secretName }}
+        {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

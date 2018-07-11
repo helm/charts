@@ -1,0 +1,31 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ template "escalator.fullname" . }}
+  labels:
+    app: {{ template "escalator.name" . }}
+    chart: {{ template "escalator.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - watch
+  - list
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - update
+  - patch
+  - watch
+  - list
+  - get
+  - delete
+{{- end }}
