@@ -56,7 +56,7 @@ data:
     priority: {{ .Values.falco.priority }}
 
     # Whether or not output to any of the output channels below is
-    # buffered. Defaults to true
+    # buffered. Defaults to false
     buffered_outputs: {{ .Values.falco.bufferedOutputs }}
 
     # A throttling mechanism implemented as a token bucket limits the
