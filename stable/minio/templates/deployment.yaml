@@ -41,6 +41,10 @@ spec:
           {{- end }}
           {{- end }}
           volumeMounts:
+            {{- if .Values.ssl.enabled }}
+            - name: secret-volume
+              mountPath: /root/.minio/certs
+            {{- end }}
             - name: export
               mountPath: {{ .Values.mountPath }}
               {{- if and .Values.persistence.enabled .Values.persistence.subPath }}
@@ -88,6 +92,18 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       volumes:
+        {{- if .Values.ssl.enabled }}
+        - name: secret-volume
+          secret:
+            secretName: {{ .Values.ssl.secret }}
+            items:
+            - key: public.crt
+              path: public.crt
+            - key: private.key
+              path: private.key
+            - key: root.crt
+              path: CAs/root.crt
+        {{- end }}
         - name: export
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:

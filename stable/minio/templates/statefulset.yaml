@@ -34,10 +34,18 @@ spec:
           args:
             - server
             {{- range $i := until $nodeCount }}
+            {{- if $.Values.ssl.enabled }}
+            - https://{{ template "minio.fullname" $ }}-{{ $i }}.{{ template "minio.fullname" $ }}.{{ $.Release.Namespace }}.svc.cluster.local{{ $.Values.mountPath }}
+            {{- else }}
             - http://{{ template "minio.fullname" $ }}-{{ $i }}.{{ template "minio.fullname" $ }}.{{ $.Release.Namespace }}.svc.cluster.local{{ $.Values.mountPath }}
             {{- end }}
             {{- end }}
+            {{- end }}
           volumeMounts:
+            {{- if .Values.ssl.enabled }}
+            - name: secret-volume
+              mountPath: /root/.minio/certs
+            {{- end }}
             - name: export
               mountPath: {{ .Values.mountPath }}
               {{- if and .Values.persistence.enabled .Values.persistence.subPath }}
@@ -72,6 +80,18 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
       volumes:
+        {{- if .Values.ssl.enabled }}
+        - name: secret-volume
+          secret:
+            secretName: {{ .Values.ssl.secret }}
+            items:
+            - key: public.crt
+              path: public.crt
+            - key: private.key
+              path: private.key
+            - key: root.crt
+              path: CAs/root.crt
+        {{- end }}
         - name: minio-user
           secret:
             secretName: {{ template "minio.fullname" . }}

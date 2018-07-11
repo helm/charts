@@ -207,3 +207,19 @@ minioConfig:
 networkPolicy:
   enabled: false
   allowExternal: true
+ssl:
+  enabled: false
+  secret: tls-ssl-minio
+  certificates:
+#    private: |-
+#      -----BEGIN RSA PRIVATE KEY-----
+#      .....
+#      -----END RSA PRIVATE KEY-----
+#    public: |-
+#      -----BEGIN CERTIFICATE-----
+#      .....
+#      -----END CERTIFICATE-----
+#    root: |-
+#      -----BEGIN CERTIFICATE-----
+#      .....
+#      -----END CERTIFICATE-----
