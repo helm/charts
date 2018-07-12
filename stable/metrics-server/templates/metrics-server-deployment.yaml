@@ -25,4 +25,6 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - /metrics-server
-            - --source=kubernetes.summary_api:''
+            {{- range .Values.args }}
+            - {{ . | quote }}
+            {{- end }}

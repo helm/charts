@@ -13,3 +13,4 @@ Parameter | Description | Default
 `image.repository` | Image repository | `gcr.io/google_containers/metrics-server-amd64`
 `image.tag` | Image tag | `v0.2.1`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
+`args` | Command line arguments | --source=kubernetes.summary_api:''
