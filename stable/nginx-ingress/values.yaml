@@ -22,13 +22,15 @@ controller:
   # to keep resolving names inside the k8s network, use ClusterFirstWithHostNet.
   dnsPolicy: ClusterFirst
 
-  ## Use host ports 80 and 443
   daemonset:
+    ## Use host ports 80 and 443
     useHostPort: false
-
     hostPorts:
       http: 80
       https: 443
+    # Define port(s) defined for TCP and/or UDP as hostPort(s)
+    useTcpHostPort: false
+    useUdpHostPort: false
 
   ## Required only if defaultBackend.enabled = false
   ## Must be <namespace>/<service_name>
