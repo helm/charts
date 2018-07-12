@@ -8,13 +8,14 @@ image:
 nodeSelector: {}
 
 config: {}
-  # http_2xx:
-  #   prober: http
-  #   timeout: 5s
-  #   http:
-  #     valid_http_versions: ["HTTP/1.1", "HTTP/2"]
-  #     no_follow_redirects: false
-  #     preferred_ip_protocol: "ip4" # defaults to "ip6"
+  # modules:
+  #   http_2xx:
+  #     prober: http
+  #     timeout: 5s
+  #     http:
+  #       valid_http_versions: ["HTTP/1.1", "HTTP/2"]
+  #       no_follow_redirects: false
+  #       preferred_ip_protocol: "ip4" # defaults to "ip6"
 
 resources:
   # limits:
