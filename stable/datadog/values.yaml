@@ -119,6 +119,8 @@ datadog:
 
   ## Un-comment this to enable APM and tracing, on ports 7777 and 8126
   ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
+  ## Additionally this exposes env variables `DD_AGENT_SERVICE_HOST` and `DD_AGENT_PORT`
+  ## ref: https://docs.datadoghq.com/tracing/setup/kubernetes/
   ##
   # apmEnabled: true
 
