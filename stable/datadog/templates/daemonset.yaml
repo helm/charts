@@ -73,6 +73,12 @@ spec:
           {{- if .Values.datadog.apmEnabled }}
           - name: DD_APM_ENABLED
             value: {{ .Values.datadog.apmEnabled | quote }}
+          - name: DD_AGENT_SERVICE_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: DD_AGENT_PORT
+            value: 8126
           {{- end }}
           - name: KUBERNETES_LEADER_CANDIDATE # agent5
             value: {{ .Values.datadog.leaderElection | quote}}
