@@ -1,6 +1,6 @@
 # DokuWiki
 
-[DokuWiki](https://www.dokuwiki.org) DokuWiki is a standards-compliant, simple to use wiki optimized for creating documentation. It is targeted at developer teams, workgroups, and small companies. All data is stored in plain text files, so no database is required.
+[DokuWiki](https://www.dokuwiki.org) is a standards-compliant, simple to use wiki optimized for creating documentation. It is targeted at developer teams, workgroups, and small companies. All data is stored in plain text files, so no database is required.
 
 ## TL;DR;
 
@@ -46,8 +46,8 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 |              Parameter               |               Description                                  |                   Default                     |
 |--------------------------------------|------------------------------------------------------------|-----------------------------------------------|
 | `image.registry`                     | DokuWiki image registry                                    | `docker.io`                                   |
-| `image.repository`                   | DokuWiki Image name                                        | `bitnami/dokuwiki`                            |
-| `image.tag`                          | DokuWiki Image tag                                         | `{VERSION}`                                   |
+| `image.repository`                   | DokuWiki image name                                        | `bitnami/dokuwiki`                            |
+| `image.tag`                          | DokuWiki image tag                                         | `{VERSION}`                                   |
 | `image.pullPolicy`                   | Image pull policy                                          | `Always`                                      |
 | `image.pullSecrets`                  | Specify image pull secrets                                 | `nil`                                         |
 | `dokuwikiUsername`                   | User of the application                                    | `user`                                        |

@@ -12,7 +12,7 @@ This chart adds the Sysdig agent for [Sysdig Monitor](https://sysdig.com/product
 
 ## Installing the Chart
 
-To install the chart with the release name `my-release`, retrieve your Sysdig Monitor Access Key from your [Account Settings](https://app.sysdigcloud.com/#/settings/user) and run:
+To install the chart with the release name `my-release`, retrieve your Sysdig Monitor Access Key from your [Account Settings](https://app.sysdigcloud.com/#/settings/agentInstallation) and run:
 
 ```bash
 $ helm install --name my-release \
