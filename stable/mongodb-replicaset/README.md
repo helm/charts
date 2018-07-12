@@ -68,6 +68,9 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `extraLabels`                       | Additional labels to add to resources                                     | `{}`                                                |
 | `prometheus.exporter.enabled`       | Enables Prometheus.io exporter on :9001/metrics                           | `false`                                             |
 | `prometheus.operator.enabled`       | Create a ServiceMonitor resource for prometheus-operator                  | `false`                                             |
+| `prometheus.operator.serviceMonitor.interval`           | How often Prometheus Scrapes metrics                       | `10s`                                                   |
+| `prometheus.operator.serviceMonitor.namespace`                  | Namespace which Prometheus is installed                              | `monitoring`                                                   |
+| `prometheus.operator.serviceMonitor.selector`                  | Label Selector for Prometheus to find ServiceMonitors                     | `{ prometheus: kube-prometheus }`                                                   |
 
 *MongoDB config file*
 
