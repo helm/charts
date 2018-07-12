@@ -1,6 +1,6 @@
 # Elasticsearch Helm Chart
 
-This chart uses a standard Docker image of Elasticsearch (hub.docker.com/r/blacktop/elasticsearch) and uses a service pointing to the master's transport port for service discovery.
+This chart uses a standard Docker image of Elasticsearch (docker.elastic.co/elasticsearch/elasticsearch-oss) and uses a service pointing to the master's transport port for service discovery.
 Elasticsearch does not communicate with the Kubernetes API, hence no need for RBAC permissions.
 
 ## Warning for previous users
@@ -63,8 +63,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 |              Parameter               |                             Description                             |               Default                |
 | ------------------------------------ | ------------------------------------------------------------------- | ------------------------------------ |
 | `appVersion`                         | Application Version (Elasticsearch)                                 | `6.1.1`                              |
-| `image.repository`                   | Container image name                                                | `centerforopenscience/elasticsearch` |
-| `image.tag`                          | Container image tag                                                 | `5.4`                                |
+| `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
+| `image.tag`                          | Container image tag                                                 | `6.1.1`                                |
 | `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                      |
 | `cluster.kubernetesDomain`           | Kubernetes cluster domain name                                      | `cluster.local`                      |
@@ -77,6 +77,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.heapSize`                    | Client node heap size                                               | `512m`                               |
 | `client.podAnnotations`              | Client Deployment annotations                                       | `{}`                                 |
 | `client.nodeSelector`                | Node labels for client pod assignment                               | `{}`                                 |
+| `client.tolerations`                 | Client tolerations                                                  | `{}`                                 |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                 |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                          |
 | `master.exposeHttp`                  | Expose http port 9200 on master Pods for monitoring, etc            | `false`                              |
@@ -85,6 +86,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.resources`                   | Master node resources requests & limits                             | `{} - cpu limit must be an integer`  |
 | `master.podAnnotations`              | Master Deployment annotations                                       | `{}`                                 |
 | `master.nodeSelector`                | Node labels for master pod assignment                               | `{}`                                 |
+| `master.tolerations`                 | Master tolerations                                                  | `{}`                                 |
 | `master.heapSize`                    | Master node heap size                                               | `512m`                               |
 | `master.name`                        | Master component name                                               | `master`                             |
 | `master.persistence.enabled`         | Master persistent enabled/disabled                                  | `true`                               |
@@ -103,6 +105,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.persistence.accessMode`        | Data persistent Access Mode                                         | `ReadWriteOnce`                      |
 | `data.podAnnotations`                | Data StatefulSet annotations                                        | `{}`                                 |
 | `data.nodeSelector`                  | Node labels for data pod assignment                                 | `{}`                                 |
+| `data.tolerations`                   | Data tolerations                                                    | `{}`                                 |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                               |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                               |
 

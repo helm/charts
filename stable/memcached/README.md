@@ -46,6 +46,10 @@ The following table lists the configurable parameters of the Memcached chart and
 | `imagePullPolicy`         | Image pull policy               | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `memcached.verbosity`     | Verbosity level (v, vv, or vvv) | Un-set.                                                 |
 | `memcached.maxItemMemory` | Max memory for items (in MB)    | `64`                                                    |
+| `metrics.enabled`         | Expose metrics in prometheus format | false                                               |
+| `metrics.imagePullPolicy` | Image pull policy               | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `extraContainers`         | Container sidecar definition(s) as string | Un-set                                        |
+| `extraVolumes`            | Volume definitions to add as string | Un-set                                              |
 
 The above parameters map to `memcached` params. For more information please refer to the [Memcached documentation](https://github.com/memcached/memcached/wiki/ConfiguringServer).
 

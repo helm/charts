@@ -51,6 +51,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.data.nodeSelector | indent 8 }}
 {{- end }}
+{{- if .Values.data.tolerations }}
+      tolerations:
+{{ toYaml .Values.data.tolerations | indent 8 }}
+{{- end }}
       initContainers:
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
@@ -125,10 +129,16 @@ spec:
         - name: config
           mountPath: /pre-stop-hook.sh
           subPath: pre-stop-hook.sh
+        - name: config
+          mountPath: /post-start-hook.sh
+          subPath: post-start-hook.sh
         lifecycle:
           preStop:
             exec:
               command: ["/bin/bash","/pre-stop-hook.sh"]
+          postStart:
+            exec:
+              command: ["/bin/bash","/post-start-hook.sh"]
       terminationGracePeriodSeconds: {{ .Values.data.terminationGracePeriodSeconds }}
       volumes:
       - name: config

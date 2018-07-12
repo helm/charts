@@ -214,6 +214,9 @@ web:
   #   key1: "value1"
   #   key2: "value2"
 
+  ## Node selector for web nodes.
+  nodeSelector: {}
+
   ## Tolerations for the web nodes.
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
@@ -312,6 +315,24 @@ web:
 
       ## Optional prefix for all metrics to easily find them in Datadog
       # prefix: concoursedev
+
+    ## Enable the influxdb metrics?
+    ##
+    influxdb:
+      enabled: false
+
+      ## Influxdb url to which metrics will be emitted
+      url: http://127.0.0.1:8086
+
+      ## InfluxDB database to which metrics will be emitted
+      database: concourse
+
+      ## Skip SSL verification when emitting to InfluxDB
+      insecureSkipVerify: false
+
+      ## Optional username for authorizing access
+      ##
+      # username:
 
 ## Configuration values for Concourse Worker components.
 ##
@@ -520,6 +541,26 @@ credentialManager:
     ##
     # teamSecretTemplate: ''
 
+  ## Configuration for AWS Secrets Manager as the Credential Manager. Supported in Concourse 3.11.0.
+  ##
+  awsSecretsManager:
+
+    ## Enable the use of AWS Secrets Manager.
+    ##
+    enabled: false
+
+    ## AWS region to use when reading from Secrets Manager
+    ##
+    # region:
+
+    ## pipeline-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
+    ##
+    # pipelineSecretTemplate:
+
+    ## team-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{secret}
+    ##
+    # teamSecretTemplate: ''
+
   ## Configuration for Hashicorp Vault as the Credential Manager.
   ##
   vault:
@@ -569,7 +610,7 @@ secrets:
   create: true
 
   ## Concourse Host Keys.
-  ## ref: https://concourse-ci.org/binaries.html#generating-keys
+  ## ref: https://concourse-ci.org/install.html#generating-keys
   ##
   hostKey: |-
     -----BEGIN RSA PRIVATE KEY-----
@@ -604,7 +645,7 @@ secrets:
     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDYBQ9fG6IML+qsFaMh1Pl+81wyUwRilHdfhItAiAsLVQsOwI5+V4pn5aLhHPBuRQqIqYmbkZ7I1VUIN1+90PVJ3X7l9qqanb85AHMtLujw1j9u0zDyH2XHgpUloknUQzUSLIZjjU3Hn3Uo/XikF+vT8104isO7Ym8Xp7sIcRuvOQ3nuRsFVCRogxpLTVHD/k57rwYVqWWLaKLwvx01ZVXOq4GHk/BVaKa9ODC/dNgbZMfwvVVXuf7/NFGmSMyXb49Si4aoP4Gn7jAX6GngBbm/bgKqO0skQy/ggQm/YVF+s5q4EhleMBLVJKD1VpM5LeLDFpiu/y4bVd8wUcgK+QQ9 Concourse
 
   ## Concourse Session Signing Keys.
-  ## ref: https://concourse-ci.org/binaries.html#generating-keys
+  ## ref: https://concourse-ci.org/install.html#generating-keys
   ##
   sessionSigningKey: |-
     -----BEGIN RSA PRIVATE KEY-----
@@ -636,7 +677,7 @@ secrets:
     -----END RSA PRIVATE KEY-----
 
   ## Concourse Worker Keys.
-  ## ref: https://concourse-ci.org/binaries.html#generating-keys
+  ## ref: https://concourse-ci.org/install.html#generating-keys
   ##
   workerKey: |-
     -----BEGIN RSA PRIVATE KEY-----
@@ -679,6 +720,11 @@ secrets:
   # awsSsmAccessKey:
   # awsSsmSecretKey:
   # awsSsmSessionToken:
+
+  ## Secrets for Secrets Manager AWS access
+  # awsSecretsmanagerAccessKey:
+  # awsSecretsmanagerSecretKey:
+  # awsSecretsmanagerSessionToken:
 
   ## Secrets for Concourse basic auth
   ##
@@ -738,3 +784,8 @@ secrets:
   ## make sure to also set credentialManager.vault.authBackend to `cert`
   ##
   # vaultClientKey: |-
+
+  ## If influxdb metrics are enabled and authentication is required,
+  ## provide a password here to authenticate with the influxdb server configured.
+  ##
+  # influxdbPassword:

@@ -76,3 +76,10 @@ spec:
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 6 }}
+{{- end }}
+{{- with .Values.extraVolumes }}
+      volumes:
+{{ tpl . $ | indent 6 }}
+{{- end }}
