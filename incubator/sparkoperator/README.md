@@ -24,9 +24,8 @@ The following table lists the configurable parameters of the Spark operator char
 | Parameter              | Description                                 | Default                                |
 | ---------------------- | ------------------------------------------- | -------------------------------------- |
 | `operatorImageName`    | The name of the operator image              | `gcr.io/spark-operator/spark-operator` |
-| `operatorImageTag`     | The tag of the operator image               | `v2.3.0-v1alpha1-latest`               |
+| `operatorVersion`      | The version of the operator to install      | `v2.3.0-v1alpha1-latest`               |
 | `operatorNamespace`    | K8s namespace where operator is installed   | `sparkoperator`                        |
-| `operatorVersionLabel` | The label indicating the operator version   | `v2.3.0-v1alpha1`                      |
 | `enableInitializer`    | Whether to enable initializer alpha feature | false                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

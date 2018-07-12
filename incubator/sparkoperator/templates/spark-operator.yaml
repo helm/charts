@@ -21,27 +21,27 @@ metadata:
   namespace: {{ .Values.operatorNamespace }}
   labels:
     app.kubernetes.io/name: sparkoperator
-    app.kubernetes.io/version: {{ .Values.operatorVersionLabel }}
+    app.kubernetes.io/version: {{ .Values.operatorVersion }}
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: sparkoperator
-      app.kubernetes.io/version: {{ .Values.operatorVersionLabel }}
+      app.kubernetes.io/version: {{ .Values.operatorVersion }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app.kubernetes.io/name: sparkoperator
-        app.kubernetes.io/version: {{ .Values.operatorVersionLabel }}
+        app.kubernetes.io/version: {{ .Values.operatorVersion }}
       initializers:
         pending: []  
     spec:
       serviceAccountName: sparkoperator
       containers:
       - name: sparkoperator
-        image: {{ .Values.operatorImageName }}:{{ .Values.operatorImageTag }}
+        image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
         imagePullPolicy: Always
         command: ["/usr/bin/spark-operator"]
         args:
