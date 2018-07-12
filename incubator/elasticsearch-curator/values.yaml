@@ -80,6 +80,8 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
+priorityClassName: ""
+
 # extraVolumes and extraVolumeMounts allows you to mount other volumes
 # Example Use Case: mount ssl certificates when elasticsearch has tls enabled
 # extraVolumes:

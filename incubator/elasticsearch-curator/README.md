@@ -41,6 +41,7 @@ their default values.
 | `configMaps.action_file_yml` | Contents of the Curator action_file.yml               | See values.yaml                              |
 | `configMaps.config_yml`      | Contents of the Curator config.yml (overrides config) | See values.yaml                              |
 | `resources`                  | Resource requests and limits                          | {}                                           |
+| `priorityClassName`          | priorityClassName                                     | `nil`                                        |
 | `extraVolumeMounts`          | Mount extra volume(s),                                |                                              |
 | `extraVolumes`               | Extra volumes                                         |                                              |
 
