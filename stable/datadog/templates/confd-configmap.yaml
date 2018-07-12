@@ -3,10 +3,10 @@ kind: ConfigMap
 metadata:
   name: {{ template "datadog.confd.fullname" . }}
   labels:
-    app: {{ template "datadog.confd.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: "{{ template "datadog.confd.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
   annotations:
     checksum/confd-config: {{ toYaml .Values.datadog.confd | sha256sum }}
 data:

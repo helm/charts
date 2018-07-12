@@ -5,7 +5,10 @@ kind: DaemonSet
 metadata:
   name: {{ template "datadog.fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "datadog.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   template:
     metadata:
