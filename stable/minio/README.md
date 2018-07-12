@@ -76,7 +76,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository                    | `minio/minio`                                           |
-| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-06-09T03-43-35Z`|
+| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-07-10T01-42-11Z`|
 | `image.pullPolicy`         | Image pull policy                   | `IfNotPresent`                                          |
 | `mcImage.repository`       | Client image repository             | `minio/mc`                                              |
 | `mcImage.tag`              | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).| `RELEASE.2018-06-09T02-18-09Z`|
@@ -85,7 +85,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `ingress.annotations`      | Ingress annotations                 | `{}`                                                    |
 | `ingress.hosts`            | Ingress accepted hostnames          | `[]`                                                    |
 | `ingress.tls`              | Ingress TLS configuration           | `[]`                                                    |
-| `mode`                     | Minio server mode (`standalone`, `shared` or `distributed`)| `standalone`                     |
+| `mode`                     | Minio server mode (`standalone` or `distributed`)| `standalone`                               |
 | `replicas`                 | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 32 | `4`    |
 | `accessKey`                | Default access key (5 to 20 characters) | `AKIAIOSFODNN7EXAMPLE`                              |
 | `secretKey`                | Default secret key (8 to 40 characters) | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`          |
@@ -112,6 +112,8 @@ The following table lists the configurable parameters of the Minio chart and the
 | `gcsgateway.enabled`       | Use minio as a [Google Cloud Storage gateway](https://docs.minio.io/docs/minio-gateway-for-gcs)| `false` |
 | `gcsgateway.gcsKeyJson`    | credential json file of service account key | `""` |
 | `gcsgateway.projectId`     | Google cloud project id             | `""` |
+| `nasgateway.enabled`       | Use minio as a [NAS gateway](https://docs.minio.io/docs/minio-gateway-for-nas)             | `false` |
+| `nasgateway.replicas`      | Number of NAS gateway instances to be run in parallel on a PV            | `4` |
 
 Some of the parameters above map to the env variables defined in the [Minio DockerHub image](https://hub.docker.com/r/minio/minio/).
 
@@ -155,29 +157,29 @@ This provisions Minio server in distributed mode with 8 nodes. Note that the `re
 1. StatefulSets need persistent storage, so the `persistence.enabled` flag is ignored when `mode` is set to `distributed`.
 2. When uninstalling a distributed Minio release, you'll need to manually delete volumes associated with the StatefulSet.
 
-Shared Minio
+NAS Gateway
 -----------
 
 ### Prerequisites
 
-Minio shared mode deployment creates multiple Minio server instances backed by single PV in `ReadWriteMany` mode. Currently few [Kubernetes volume plugins](https://kubernetes.io/docs/user-guide/persistent-volumes/#access-modes) support `ReadWriteMany` mode. To deploy Minio shared mode you'll need to have a Persistent Volume running with one of the supported volume plugins. [This document](https://kubernetes.io/docs/user-guide/volumes/#nfs)
+Minio in [NAS gateway mode](https://docs.minio.io/docs/minio-gateway-for-nas) can be used to create multiple Minio instances backed by single PV in `ReadWriteMany` mode. Currently few [Kubernetes volume plugins](https://kubernetes.io/docs/user-guide/persistent-volumes/#access-modes) support `ReadWriteMany` mode. To deploy Minio NAS gateway with Helm chart you'll need to have a Persistent Volume running with one of the supported volume plugins. [This document](https://kubernetes.io/docs/user-guide/volumes/#nfs)
 outlines steps to create a NFS PV in Kubernetes cluster.
 
-### Provision Shared Minio instances
+### Provision NAS Gateway Minio instances
 
-To provision Minio servers in [shared mode](https://github.com/minio/minio/blob/master/docs/shared-backend/README.md), set the `mode` field to `shared`,
-
-```bash
-$ helm install --set mode=shared stable/minio
-```
-
-This provisions 4 Minio server nodes backed by single storage. To change the number of nodes in your shared Minio deployment, set the `replicas` field,
+To provision Minio servers in [NAS gateway mode](https://docs.minio.io/docs/minio-gateway-for-nas), set the `nasgateway.enabled` field to `true`,
 
 ```bash
-$ helm install --set mode=shared,replicas=8 stable/minio
+$ helm install --set nasgateway.enabled=true stable/minio
 ```
 
-This provisions Minio server in shared mode with 8 nodes.
+This provisions 4 Minio NAS gateway instances backed by single storage. To change the number of instances in your Minio deployment, set the `replicas` field,
+
+```bash
+$ helm install --set nasgateway.enabled=true,nasgateway.replicas=8 stable/minio
+```
+
+This provisions Minio NAS gateway with 8 instances.
 
 Persistence
 -----------
