@@ -10,7 +10,12 @@ metadata:
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
+    {{- if .Values.persistence.enabled }}
     type: Recreate
+    rollingUpdate: null
+    {{- else }}
+    type: RollingUpdate
+    {{- end }}
   template:
     metadata:
       annotations:
@@ -31,12 +36,12 @@ spec:
               name: http
           livenessProbe:
             httpGet:
-              path: /
+              path: /-/ping
               port: http
             initialDelaySeconds: 5
           readinessProbe:
             httpGet:
-              path: /
+              path: /-/ping
               port: http
             initialDelaySeconds: 5
           resources:
