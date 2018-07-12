@@ -55,7 +55,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `extraVolume`                      | Extra volume                               |                                                            |
 | `image.repository`                 | Image                                      | `gcr.io/google-containers/fluentd-elasticsearch`           |
 | `image.tag`                        | Image tag                                  | `v2.2.0                                                    |
-| `image.pullPolicy`                 | Image pull policy                          | `Always` if `image.tag` is `imagePullPolicy`               |
+| `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`               |
 | `rbac.create`                      | RBAC                                       | `true`                                                     |
 | `resources.limits.cpu`             | CPU limit                                  | `100m`                                                     |
 | `resources.limits.memory`          | Memory limit                               | `500Mi`                                                    |
