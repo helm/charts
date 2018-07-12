@@ -29,6 +29,9 @@ spec:
 {{ toYaml .Values.extraVolumes | indent 12 }}
 {{- end }}
           restartPolicy: Never
+{{- if .Values.priorityClassName }}
+          priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
           containers:
             - name: {{ .Chart.Name }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
