@@ -10,14 +10,26 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: 2004
-      name: graphite-pickle
+    - name: graphite-pickle
+      port: 2004
       protocol: TCP
-    - port: 2003
-      name: graphite-plain
+    - name: graphite-plain
+      port: 2003
       protocol: TCP
-    - port: 8080
-      name: graphite-gui
+    - name: graphite-gui
+      port: 8080
+      protocol: TCP
+    - name: graphite-agg-plain
+      port: 2023
+      protocol: TCP
+    - name: graphite-agg-pickle
+      port: 2024
+      protocol: TCP
+    - name: statsd
+      port: 8125
+      protocol: TCP
+    - name: statsd-admin
+      port: 8126
       protocol: TCP
   selector:
     app: {{ template "graphite.name" . }}

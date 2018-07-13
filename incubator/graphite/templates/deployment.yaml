@@ -31,12 +31,20 @@ spec:
       - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         name: {{ .Chart.Name }}
         ports:
-        - containerPort: 8080
-          name: graphite-gui
-        - containerPort: 2003
-          name: graphite-plain
-        - containerPort: 2004
-          name: graphite-pickle
+        - name: graphite-gui
+          containerPort: 8080
+        - name: graphite-plain
+          containerPort: 2003
+        - name: graphite-pickle
+          containerPort: 2004
+        - name: graphite-agg-plain
+          containerPort: 2023
+        - name: graphite-agg-pickle
+          containerPort: 2024
+        - name: statsd
+          containerPort: 8125
+        - name: statsd-admin
+          containerPort: 8126
         volumeMounts:
           - name: {{ template "graphite.fullname" . }}-configmap
             mountPath: /opt/graphite/conf/
