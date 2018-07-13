@@ -29,8 +29,8 @@ spec:
         imagePullPolicy: {{ .Values.etcdOperator.image.pullPolicy }}
         command:
         - etcd-operator
-{{- range $key, $value := .Values.etcdOperator.commandArgs }}
-        - "--{{ $key }}={{ $value }}"
+{{- range $value := .Values.etcdOperator.commandArgs }}
+        - "{{ $value }}"
 {{- end }}
         env:
         - name: MY_POD_NAMESPACE

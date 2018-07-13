@@ -51,9 +51,9 @@ etcdOperator:
   ## Node labels for etcd-operator pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
-  ## additional command arguments go here; will be translated to `--key=value` form
-  ## e.g., analytics: true
+  ## additional command arguments go here
   commandArgs: {}
+    # -cluster-wide
   ## Configurable health checks against the /readyz endpoint that etcd-operator exposes
   readinessProbe:
     enabled: false
@@ -88,9 +88,9 @@ backupOperator:
   ## Node labels for etcd pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
-  ## additional command arguments go here; will be translated to `--key=value` form
-  ## e.g., analytics: true
-  commandArgs: {}
+  ## additional command arguments go here
+  commandArgs:
+    # -cluster-wide
 
 # restore spec
 restoreOperator:
@@ -113,9 +113,9 @@ restoreOperator:
   ## Node labels for etcd pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
-  ## additional command arguments go here; will be translated to `--key=value` form
-  ## e.g., analytics: true
+  ## additional command arguments go here
   commandArgs: {}
+    # -cluster-wide
 
 ## etcd-cluster specific values
 etcdCluster:

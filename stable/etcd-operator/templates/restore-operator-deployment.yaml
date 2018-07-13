@@ -31,8 +31,8 @@ spec:
         - containerPort: {{ .Values.restoreOperator.port }}
         command:
         - etcd-restore-operator
-{{- range $key, $value := .Values.restoreOperator.commandArgs }}
-        - "--{{ $key }}={{ $value }}"
+{{- range $value := .Values.restoreOperator.commandArgs }}
+        - "{{ $value }}"
 {{- end }}
         env:
         - name: MY_POD_NAMESPACE
