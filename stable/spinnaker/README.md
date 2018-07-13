@@ -3,8 +3,8 @@
 [Spinnaker](http://spinnaker.io/) is an open source, multi-cloud continuous delivery platform.
 
 ## Chart Details
-This chart will provision a fully functional and fully featured Spinnaker installation 
-that can deploy and manage applications in the cluster that it is deployed to. 
+This chart will provision a fully functional and fully featured Spinnaker installation
+that can deploy and manage applications in the cluster that it is deployed to.
 
 Redis and Minio are used as the stores for Spinnaker state.
 
@@ -18,7 +18,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/spinnaker --timeout 600
 ```
 
-Note that this chart pulls in many different Docker images so can take a while to fully install. 
+Note that this chart pulls in many different Docker images so can take a while to fully install.
 
 ## Configuration
 
@@ -65,7 +65,7 @@ for Spinnaker. If you want to add arbitrary clusters need to do the following:
 ### Manual
 While the default installation is ready to handle your Kubernetes deployments, there are
 many different integrations that you can turn on with Spinnaker. In order to customize
-Spinnaker, you can use the [Halyard](https://www.spinnaker.io/reference/halyard/) command line `hal` 
+Spinnaker, you can use the [Halyard](https://www.spinnaker.io/reference/halyard/) command line `hal`
 to edit the configuration and apply it to what has already been deployed.
 
 Halyard has an in-cluster daemon that stores your configuration. You can exec a shell in this pod to
