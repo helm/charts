@@ -34,23 +34,28 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Graphite chart and their default values.
 
-|             Parameter                    |            Description              |                  Default               |
-|------------------------------------------|-------------------------------------|----------------------------------------|
-| `image.repository`                       | Docker image repo                   | graphiteapp/graphite-statsd            |
-| `image.tag`                              | Docker image                        | 1.1.3                                  |
-| `image.pullPolicy`                       | Docker image pull policy            | IfNotPresent                           |
-| `service.type`                           | Service type                        | ClusterIP                              |
-| `graphite.pvsize`                        | Size of PVC                         | 10Gi                                   |
-| `ingress.enabled`                        | Ingress enabled                     | false                                  |
-| `ingress.annotations`                    | Ingress annotations                 | `{}`                                   |
-| `ingress.path`                           | Ingress path                        |  /                                     |
-| `ingress.hosts`                          | Ingress hosts                       | `[]`                                   |
-| `ingress.tls`                            | Ingress TLS                         | `[]`                                   |
-| `resources`                              | Resources                           | `{}`                                   |
-| `nodeSelector`                           | NodeSelector                        | `{}`                                   |
-| `tolerations`                            | Tolerations                         | `[]`                                   |
-| `affinity`                               | Affinity                            | `{}`                                   |
-| `configMaps`                             | All Config files                    | `see values.yaml`                      |
+|             Parameter          |            Description                       |                  Default               |
+|--------------------------------|----------------------------------------------|----------------------------------------|
+| `image.repository`             | Docker image repo                            | `graphiteapp/graphite-statsd`          |
+| `image.tag`                    | Docker image                                 | `1.1.3`                                |
+| `image.pullPolicy`             | Docker image pull policy                     | `IfNotPresent`                         |
+| `service.type`                 | Service type                                 | `ClusterIP`                            |
+| `persistence.enabled`          | Enable config persistence using PVC          | `true`                                 |
+| `persistence.storageClass`     | PVC Storage Class for config volume          | `nil`                                  |
+| `persistence.existingClaim`    | Name of an existing PVC to use for config    | `nil`                                  |
+| `persistence.accessMode`       | PVC Access Mode for config volume            | `ReadWriteOnce`                        |
+| `persistence.size`             | PVC Storage Request for config volume        | `10Gi`                                 |
+| `resources`                    | Resource limits for Graphite pod             | `{}`                                   |
+| `ingress.enabled`              | Ingress enabled                              | `false`                                |
+| `ingress.annotations`          | Ingress annotations                          | `{}`                                   |
+| `ingress.path`                 | Ingress path                                 | `/`                                    |
+| `ingress.hosts`                | Ingress hosts                                | `[]`                                   |
+| `ingress.tls`                  | Ingress TLS                                  | `[]`                                   |
+| `resources`                    | Resources                                    | `{}`                                   |
+| `nodeSelector`                 | NodeSelector                                 | `{}`                                   |
+| `tolerations`                  | Tolerations                                  | `[]`                                   |
+| `affinity`                     | Affinity                                     | `{}`                                   |
+| `configMaps`                   | All Config files                             | see values.yaml                        |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
