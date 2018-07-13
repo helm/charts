@@ -19,10 +19,10 @@ spec:
     - name: graphite-gui
       port: 8080
       protocol: TCP
-    - name: graphite-agg-plain
+    - name: aggregate-plain
       port: 2023
       protocol: TCP
-    - name: graphite-agg-pickle
+    - name: aggregate-pickl
       port: 2024
       protocol: TCP
     - name: statsd

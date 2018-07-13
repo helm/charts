@@ -37,9 +37,9 @@ spec:
           containerPort: 2003
         - name: graphite-pickle
           containerPort: 2004
-        - name: graphite-agg-plain
+        - name: aggregate-plain
           containerPort: 2023
-        - name: graphite-agg-pickle
+        - name: aggregate-pickl
           containerPort: 2024
         - name: statsd
           containerPort: 8125
