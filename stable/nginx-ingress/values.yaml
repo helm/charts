@@ -260,6 +260,8 @@ controller:
       # prometheus.io/scrape: "true"
       # prometheus.io/port: "10254"
 
+      extraLabels: {}
+
       clusterIP: ""
 
       ## List of IP addresses at which the stats-exporter service is available

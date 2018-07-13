@@ -12,6 +12,9 @@ metadata:
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- if .Values.controller.metrics.service.extraLabels }}
+{{ toYaml .Values.controller.metrics.service.extraLabels | indent 4 }}
+{{- end }}
   name: {{ template "nginx-ingress.controller.fullname" . }}-metrics
 spec:
   clusterIP: "{{ .Values.controller.metrics.service.clusterIP }}"
