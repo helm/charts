@@ -33,6 +33,9 @@ spec:
 {{- end }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.nodeExporter" . }}
+{{- if .Values.nodeExporter.priorityClassName }}
+      priorityClassName: "{{ .Values.nodeExporter.priorityClassName }}"
+{{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.nodeExporter.name }}
           image: "{{ .Values.nodeExporter.image.repository }}:{{ .Values.nodeExporter.image.tag }}"

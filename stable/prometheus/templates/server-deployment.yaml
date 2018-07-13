@@ -29,6 +29,9 @@ spec:
         component: "{{ .Values.server.name }}"
         release: {{ .Release.Name }}
     spec:
+{{- if .Values.server.priorityClassName }}
+      priorityClassName: "{{ .Values.server.priorityClassName }}"
+{{- end }}
 {{- if .Values.server.schedulerName }}
       schedulerName: "{{ .Values.server.schedulerName }}"
 {{- end }}
