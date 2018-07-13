@@ -65,6 +65,21 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+        {{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 10 }}
+        {{- end }}
+          {{- if .Values.http_proxy }}
+          - name: HTTP_PROXY
+            value: {{ .Values.http_proxy }}
+          {{- end }}
+          {{- if .Values.https_proxy }}
+          - name: HTTPS_PROXY
+            value: {{ .Values.https_proxy }}
+          {{- end }}
+          {{- if .Values.no_proxy }}
+          - name: NO_PROXY
+            value: {{ .Values.no_proxy }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
