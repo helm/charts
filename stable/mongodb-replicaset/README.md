@@ -66,6 +66,11 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `readinessProbe`                    | Readiness probe configuration                                             | See below                                           |
 | `extraVars`                         | Set environment variables for the main container                          | `{}`                                                |
 | `extraLabels`                       | Additional labels to add to resources                                     | `{}`                                                |
+| `prometheus.exporter.enabled`       | Enables Prometheus.io exporter on :9001/metrics                           | `false`                                             |
+| `prometheus.operator.enabled`       | Create a ServiceMonitor resource for prometheus-operator                  | `false`                                             |
+| `prometheus.operator.serviceMonitor.interval`           | How often Prometheus Scrapes metrics                       | `10s`                                                   |
+| `prometheus.operator.serviceMonitor.namespace`                  | Namespace which Prometheus is installed                              | `monitoring`                                                   |
+| `prometheus.operator.serviceMonitor.selector`                  | Label Selector for Prometheus to find ServiceMonitors                     | `{ prometheus: kube-prometheus }`                                                   |
 
 *MongoDB config file*
 
@@ -315,3 +320,7 @@ connecting to: mongodb://127.0.0.1:27017
 ### Scaling
 
 Scaling should be managed by `helm upgrade`, which is the recommended way.
+
+### Prometheus Monitoring & Alerts
+
+Prometheus and its features can be enabled by setting `prometheus.enabled` to `true`.  See values.yaml for more details and configuration options
