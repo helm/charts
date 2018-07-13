@@ -1,3 +1,4 @@
+{{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -20,4 +21,5 @@ override duplicates
 {{- end -}}
 {{- if .Values.datadog.confd }}
 {{ toYaml .Values.datadog.confd | indent 2 }}
+{{- end -}}
 {{- end -}}
