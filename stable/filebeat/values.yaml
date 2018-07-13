@@ -79,8 +79,8 @@ resources: {}
 
 nodeSelector: {}
 
-tolerations: []
-#  - operator: Exists
+tolerations:
+  - operator: Exists
 
 affinity: {}
 
