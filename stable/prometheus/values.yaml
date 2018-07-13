@@ -36,6 +36,10 @@ alertmanager:
     tag: v0.15.0
     pullPolicy: IfNotPresent
 
+  ## alertmanager priorityClassName
+  ##
+  priorityClassName: ""
+
   ## Additional alertmanager container arguments
   ##
   extraArgs: {}
@@ -269,6 +273,10 @@ kubeStateMetrics:
     tag: v1.3.1
     pullPolicy: IfNotPresent
 
+  ## kube-state-metrics priorityClassName
+  ##
+  priorityClassName: ""
+
   ## kube-state-metrics container arguments
   ##
   args: {}
@@ -345,6 +353,10 @@ nodeExporter:
     repository: prom/node-exporter
     tag: v0.16.0
     pullPolicy: IfNotPresent
+
+  ## node-exporter priorityClassName
+  ##
+  priorityClassName: ""
 
   ## Custom Update Strategy
   ##
@@ -439,6 +451,10 @@ server:
     repository: prom/prometheus
     tag: v2.3.1
     pullPolicy: IfNotPresent
+
+  ## prometheus server priorityClassName
+  ##
+  priorityClassName: ""
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
@@ -653,6 +669,10 @@ pushgateway:
     repository: prom/pushgateway
     tag: v0.5.2
     pullPolicy: IfNotPresent
+
+  ## pushgateway priorityClassName
+  ##
+  priorityClassName: ""
 
   ## Additional pushgateway container arguments
   ##
