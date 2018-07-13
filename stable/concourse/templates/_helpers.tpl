@@ -20,6 +20,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "concourse.prometheus.fullname" -}}
+{{- $name := default "web" .Values.web.nameOverride -}}
+{{- printf "%s-%s-prometheus" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
 {{- define "concourse.worker.fullname" -}}
 {{- $name := default "worker" .Values.worker.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
