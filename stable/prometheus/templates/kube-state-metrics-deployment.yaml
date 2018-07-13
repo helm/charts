@@ -30,6 +30,9 @@ spec:
 {{- end }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.kubeStateMetrics" . }}
+{{- if .Values.kubeStateMetrics.priorityClassName }}
+      priorityClassName: "{{ .Values.kubeStateMetrics.priorityClassName }}"
+{{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.kubeStateMetrics.name }}
           image: "{{ .Values.kubeStateMetrics.image.repository }}:{{ .Values.kubeStateMetrics.image.tag }}"

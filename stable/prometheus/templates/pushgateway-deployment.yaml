@@ -23,6 +23,9 @@ spec:
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.pushgateway" . }}
+{{- if .Values.pushgateway.priorityClassName }}
+      priorityClassName: "{{ .Values.pushgateway.priorityClassName }}"
+{{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.pushgateway.name }}
           image: "{{ .Values.pushgateway.image.repository }}:{{ .Values.pushgateway.image.tag }}"
