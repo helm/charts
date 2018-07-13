@@ -33,7 +33,7 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.15.0
+    tag: v0.15.1
     pullPolicy: IfNotPresent
 
   ## alertmanager priorityClassName
@@ -449,7 +449,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.3.1
+    tag: v2.3.2
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
