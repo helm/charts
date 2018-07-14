@@ -129,6 +129,13 @@ mariadb:
       accessMode: ReadWriteOnce
       size: 8Gi
 
+    # resources for the mariadb master
+    resources: {}
+
+  slave:
+    # resources for the mariadb slave
+    resources: {}
+
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer or ClusterIP
 ##
