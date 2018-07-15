@@ -1,3 +1,4 @@
+{{ if .Values.elasticsearch.host }}
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -8,10 +9,13 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        checksum/rules: {{ include (print $.Template.BasePath "/rules.yaml") . | sha256sum }}
       labels:
         name: {{ template "elastalert.fullname" . }}-elastalert
         app: {{ template "elastalert.name" . }}
@@ -21,11 +25,14 @@ spec:
       - name: elastalert
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        env:
-        - name: ELASTICSEARCH_HOST
-          value: {{ .Values.elasticsearch.host }}
-        - name: ELASTICSEARCH_PORT
-          value: {{ .Values.elasticsearch.port | quote }}
+{{- if .Values.command }}
+        command:
+{{ toYaml .Values.command | indent 10 }}
+{{- end }}
+{{- if .Values.args }}
+        args:
+{{ toYaml .Values.args | indent 10 }}
+{{- end }}
         volumeMounts:
           - name: config
             mountPath: '/opt/config'
@@ -49,5 +56,4 @@ spec:
             items:
             - key: elastalert_config
               path: elastalert_config.yaml
-            - key: elastalert_supervisord
-              path: elastalert_supervisord.conf
+{{- end }}

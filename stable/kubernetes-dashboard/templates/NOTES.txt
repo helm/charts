@@ -27,6 +27,6 @@ Get the Kubernetes Dashboard URL by running:
 
 Get the Kubernetes Dashboard URL by running:
   export POD_NAME=$(kubectl get pods -n {{ .Release.Namespace }} -l "app={{ template "kubernetes-dashboard.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  echo https://127.0.0.1:9090/
-  kubectl -n {{ .Release.Namespace }} port-forward $POD_NAME 9090:9090
+  echo https://127.0.0.1:8443/
+  kubectl -n {{ .Release.Namespace }} port-forward $POD_NAME 8443:8443
 {{- end }}

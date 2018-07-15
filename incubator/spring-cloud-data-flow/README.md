@@ -28,13 +28,13 @@ If you are using a cluster that does not have a load balancer (like Minikube) th
 
 ```bash
 $ helm install --name my-release --set server.service.type=NodePort incubator/spring-cloud-data-flow
-````
+```
 
 Note that this chart pulls in many different Docker images so can take a while to fully install. 
 
 ## Configuration
 
-The following tables lists the configurable parameters and their default values.
+The following tables list the configurable parameters and their default values.
 
 ### RBAC Configuration
 
@@ -64,7 +64,7 @@ The following tables lists the configurable parameters and their default values.
 
 | Parameter                         | Description                                        | Default          |
 | --------------------------------- | -------------------------------------------------- | ---------------- |
-| server.version                    | The version/tag of the Data Flow server            | 1.3.0.RELEASE
+| server.version                    | The version/tag of the Data Flow server            | 1.5.2.RELEASE
 | server.imagePullPolicy            | The imagePullPolicy of the Data Flow server        | IfNotPresent
 | server.service.type               | The service type for the Data Flow server          | LoadBalancer
 | server.service.externalPort       | The external port for the Data Flow server         | 80
@@ -73,7 +73,7 @@ The following tables lists the configurable parameters and their default values.
 
 | Parameter                          | Description                                       | Default          |
 | ---------------------------------- | ------------------------------------------------- | ---------------- |
-| skipper.version                    | The version/tag of the Skipper server             | 1.0.0.RELEASE
+| skipper.version                    | The version/tag of the Skipper server             | 1.0.7.RELEASE
 | skipper.imagePullPolicy            | The imagePullPolicy of the Skipper server         | IfNotPresent
 | skipper.platformName               | The name of the configured platform account       | minikube
 | skipper.service.type               | The service type for the Skipper server           | ClusterIP
@@ -82,7 +82,7 @@ The following tables lists the configurable parameters and their default values.
 
 | Parameter                          | Description                                       | Default          |
 | ---------------------------------- | ------------------------------------------------- | ---------------- |
-| metrics.version                    | The version/tag of the Metrics server             | 1.0.0.RELEASE
+| metrics.version                    | The version/tag of the Metrics server             | 2.0.0.RELEASE
 | metrics.imagePullPolicy            | The imagePullPolicy of the Metrics server         | IfNotPresent
 | metrics.service.type               | The service type for the Metrics server           | ClusterIP
 

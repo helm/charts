@@ -1,0 +1,68 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "prometheus-rabbitmq-exporter.fullname" . }}
+  labels:
+    app: {{ template "prometheus-rabbitmq-exporter.name" . }}
+    chart: {{ template "prometheus-rabbitmq-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-rabbitmq-exporter.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "prometheus-rabbitmq-exporter.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+{{ toYaml .Values.annotations | indent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: RABBIT_URL
+              value: "{{ .Values.rabbitmq.url }}"
+            - name: RABBIT_USER
+              value: "{{ .Values.rabbitmq.user }}"
+            - name: RABBIT_PASSWORD
+              value: "{{ .Values.rabbitmq.password }}"
+            - name: PUBLISH_PORT
+              value: "{{ .Values.service.internalPort }}"
+            - name: LOG_LEVEL
+              value: "{{ .Values.loglevel }}"
+            - name: RABBIT_CAPABILITIES
+              value: "{{ .Values.rabbitmq.capabilities }}"
+            - name: INCLUDE_QUEUES
+              value: "{{ .Values.rabbitmq.include_queues }}"
+            - name: SKIP_QUEUES
+              value: "{{ .Values.rabbitmq.skip_queues }}"
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

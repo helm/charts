@@ -37,3 +37,35 @@ Create the block for the ProxyProtocol's Trusted IPs.
 	   {{- end -}}
          ]
 {{- end -}}
+
+{{/*
+Create the block for whiteListSourceRange.
+*/}}
+{{- define "traefik.whiteListSourceRange" -}}
+       whiteListSourceRange = [
+	   {{- range $idx, $ips := .Values.whiteListSourceRange }}
+	     {{- if $idx }}, {{ end }}
+	     {{- $ips | quote }}
+	   {{- end -}}
+         ]
+{{- end -}}
+
+{{/*
+Create the block for acme.domains.
+*/}}
+{{- define "traefik.acme.domains" -}}
+{{- range $idx, $value := .Values.acme.domains.domainsList }}
+    {{- if $value.main }}
+    [[acme.domains]]
+       main = {{- range $mainIdx, $mainValue := $value }} {{ $mainValue | quote }}{{- end -}}
+    {{- end -}}
+{{- if $value.sans }}
+       sans = [
+  {{- range $sansIdx, $domains := $value.sans }}
+			 {{- if $sansIdx }}, {{ end }}
+	     {{- $domains | quote }}
+  {{- end -}}
+	     ]
+	{{- end -}}
+{{- end -}}
+{{- end -}}

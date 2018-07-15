@@ -15,7 +15,7 @@ spec:
         app: "{{ template "swift.name" . }}"
         release: "{{ .Release.Name }}"
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "swift.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "swift.serviceAccountName" . }}
       containers:
       - args:
         - run

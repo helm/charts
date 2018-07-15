@@ -43,13 +43,17 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Ghost chart and their default values.
+The following table lists the configurable parameters of the Ghost chart and their default values.
 
 | Parameter                     | Description                                                   | Default                                                  |
 |-------------------------------|---------------------------------------------------------------|----------------------------------------------------------|
-| `image`                       | Ghost image                                                   | `bitnami/ghost:{VERSION}`                                |
-| `imagePullPolicy`             | Image pull policy                                             | `Always` if `image` tag is `latest`, else `IfNotPresent` |
+| `image.registry`              | Ghost image registry                                          | `docker.io`                                              |
+| `image.repository`            | Ghost Image name                                              | `bitnami/ghost`                                          |
+| `image.tag`                   | Ghost Image tag                                               | `{VERSION}`                                              |
+| `image.pullPolicy`            | Image pull policy                                             | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`           | Specify image pull secrets                                    | `nil`                                                    |
 | `ghostHost`                   | Ghost host to create application URLs                         | `nil`                                                    |
+| `ghostPath`                   | Ghost path to create application URLs                         | `nil`                                                    |
 | `ghostPort`                   | Ghost port to create application URLs along with host         | `80`                                                     |
 | `ghostLoadBalancerIP`         | `loadBalancerIP` for the Ghost Service                        | `nil`                                                    |
 | `ghostUsername`               | User of the application                                       | `user@example.com`                                       |
@@ -62,10 +66,10 @@ The following tables lists the configurable parameters of the Ghost chart and th
 | `externalDatabase.password`   | Password for the above username                               | `nil`                                                    |
 | `externalDatabase.database`   | Name of the existing database                                 | `bitnami_ghost`                                          |
 | `mariadb.enabled`             | Whether or not to install MariaDB (disable if using external) | `true`                                                   |
-| `mariadb.mariadbRootPassword` | MariaDB admin password                                        | `nil`                                                    |
-| `mariadb.mariadbDatabase`     | MariaDB Database name to create                               | `bitnami_ghost`                                          |
-| `mariadb.mariadbUser`         | MariaDB Database user to create                               | `bn_ghost`                                               |
-| `mariadb.mariadbPassword`     | MariaDB Password for user                                     | _random 10 character long alphanumeric string_           |
+| `mariadb.rootUser.password` | MariaDB admin password                                        | `nil`                                                    |
+| `mariadb.db.name`     | MariaDB Database name to create                               | `bitnami_ghost`                                          |
+| `mariadb.db.user`         | MariaDB Database user to create                               | `bn_ghost`                                               |
+| `mariadb.db.password`     | MariaDB Password for user                                     | _random 10 character long alphanumeric string_           |
 | `serviceType`                 | Kubernetes Service type                                       | `LoadBalancer`                                           |
 | `persistence.enabled`         | Enable persistence using PVC                                  | `true`                                                   |
 | `persistence.storageClass`    | PVC Storage Class for Ghost volume                            | `nil` (uses alpha storage annotation)                    |
@@ -87,7 +91,7 @@ The above parameters map to the env variables defined in [bitnami/ghost](http://
 > $ gcloud compute addresses create ghost-public-ip
 > ```
 >
-> The reserved IP address can be associated to the Ghost service by specifying it as the value of the `ghostLoadBalancerIP` parameter while installing the chart.
+> The reserved IP address can be assigned to the Ghost service by specifying it as the value of the `ghostLoadBalancerIP` parameter while installing the chart.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -97,7 +101,7 @@ $ helm install --name my-release \
     stable/ghost
 ```
 
-The above command sets the Ghost administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the Ghost administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 

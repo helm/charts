@@ -11,6 +11,9 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
 spec:
   clusterIP: "{{ .Values.service.clusterIP }}"
 {{- if .Values.service.externalIPs }}
@@ -40,11 +43,11 @@ spec:
     {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
     - name: stomp-tcp
       protocol: TCP
-      port: 1883
+      port: 61613
       targetPort: stomp-tcp
     - name: stomp-ssl
       protocol: TCP
-      port: 8883
+      port: 61614
       targetPort: stomp-ssl
     {{- end }}
     {{- if .Values.rabbitmqWebSTOMPPlugin.enabled }}
@@ -56,11 +59,11 @@ spec:
     {{- if .Values.rabbitmqMQTTPlugin.enabled }}
     - name: mqtt-tcp
       protocol: TCP
-      port: 61613
+      port: 1883
       targetPort: mqtt-tcp
     - name: mqtt-ssl
       protocol: TCP
-      port: 61614
+      port: 8883
       targetPort: mqtt-ssl
     {{- end }}
     {{- if .Values.rabbitmqWebMQTTPlugin.enabled }}
@@ -75,6 +78,12 @@ spec:
       port: {{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }}
       targetPort: amqps
     {{- end }}
+    {{ if .Values.prometheus.exporter.enabled }}
+    - name: exporter
+      protocol: TCP
+      port: {{ .Values.prometheus.exporter.port }}
+      targetPort: exporter
+    {{ end }}
   selector:
     app: {{ template "rabbitmq-ha.name" . }}
     release: {{ .Release.Name }}

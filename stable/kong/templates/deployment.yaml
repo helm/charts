@@ -28,14 +28,20 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        {{- if .Values.admin.useTLS }}
         - name: KONG_ADMIN_LISTEN
-          value: 0.0.0.0:{{ default 8001 .Values.admin.http.containerPort }}
-        - name: KONG_ADMIN_LISTEN_SSL
-          value: 0.0.0.0:{{ default 8444 .Values.admin.https.containerPort }}
+          value: "0.0.0.0:{{ .Values.admin.containerPort }} ssl"
+        {{- else }}
+        - name: KONG_ADMIN_LISTEN
+          value: 0.0.0.0:{{ .Values.admin.containerPort }}
+        {{- end }}
+        {{- if .Values.proxy.useTLS }}
         - name: KONG_PROXY_LISTEN
-          value: 0.0.0.0:{{ default 8000 .Values.proxy.http.containerPort }}
-        - name: KONG_PROXY_LISTEN_SSL
-          value: 0.0.0.0:{{ default 8443 .Values.proxy.https.containerPort }}
+          value: "0.0.0.0:{{ .Values.proxy.containerPort }} ssl"
+        {{- else }}
+        - name: KONG_PROXY_LISTEN
+          value: 0.0.0.0:{{ .Values.proxy.containerPort }}
+        {{- end }}
         - name: KONG_NGINX_DAEMON
           value: "off"
         - name: KONG_PROXY_ACCESS_LOG
@@ -64,24 +70,12 @@ spec:
           value: {{ template "kong.cassandra.fullname" . }}
         {{- end }}
         ports:
-        {{- if .Values.admin.https }}
-        - name: admin-ssl
-          containerPort: {{ .Values.admin.https.containerPort }}
-          protocol: TCP
-        {{- else if .Values.admin.http }}
         - name: admin
-          containerPort: {{ .Values.admin.http.containerPort }}
+          containerPort: {{ .Values.admin.containerPort }}
           protocol: TCP
-        {{ end }}
-        {{- if .Values.proxy.https }}
-        - name: proxy-ssl
-          containerPort: {{ .Values.proxy.https.containerPort }}
-          protocol: TCP
-        {{- else if .Values.proxy.http }}
         - name: proxy
-          containerPort: {{ .Values.proxy.http.containerPort }}
+          containerPort: {{ .Values.proxy.containerPort }}
           protocol: TCP
-        {{- end }}
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:

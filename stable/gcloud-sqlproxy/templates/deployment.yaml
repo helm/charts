@@ -1,4 +1,4 @@
-{{- if and .Values.serviceAccountKey (ne .Values.cloudsql.instance "PROJECT:REGION:INSTANCE") }}
+{{- if and (or .Values.serviceAccountKey .Values.existingSecret) (ne (index .Values.cloudsql.instances 0).instance "instance") }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -15,6 +15,9 @@ spec:
       labels:
         app: {{ template "gcloud-sqlproxy.fullname" . }}
     spec:
+      {{- if .Values.rbac.create }}
+      serviceAccountName: {{ template "gcloud-sqlproxy.fullname" . }}
+      {{- end }}
       containers:
       - name: sqlproxy
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -22,11 +25,15 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         command: ["/cloud_sql_proxy", "--dir=/cloudsql",
-                  "-instances={{ .Values.cloudsql.instance }}=tcp:0.0.0.0:{{ .Values.cloudsql.port }}",
-                  "-credential_file=/secrets/cloudsql/credentials.json"]
+                  "-instances={{- range .Values.cloudsql.instances -}}
+                                {{ .project }}:{{ .region }}:{{ .instance }}=tcp:0.0.0.0:{{ .port }},
+                              {{- end }}",
+                  "-credential_file=/secrets/cloudsql/{{- if .Values.existingSecret -}} {{ .Values.existingSecretKey }} {{- else -}} credentials.json {{- end -}}"]
         ports:
-        - name: sqlproxy
-          containerPort: {{ .Values.cloudsql.port }}
+        {{- range .Values.cloudsql.instances }}
+        - name: {{ .instanceShortName | default (.instance | trunc 15) }}
+          containerPort: {{ .port }}
+        {{- end }}
         volumeMounts:
         - name: cloudsql-oauth-credentials
           mountPath: /secrets/cloudsql
@@ -35,9 +42,17 @@ spec:
       volumes:
       - name: cloudsql-oauth-credentials
         secret:
+          {{ if (not .Values.existingSecret) -}}
           secretName: {{ template "gcloud-sqlproxy.fullname" . }}
+          {{- else -}}
+          secretName: {{ .Values.existingSecret }}
+          {{- end }}
       - name: cloudsql
         emptyDir: {}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.nodeSelector | indent 8 }}    
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
 {{- end }}

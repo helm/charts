@@ -8,9 +8,10 @@ metadata:
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
 rules:
 - apiGroups:
-  - "voyager.appscode.com"
+  - voyager.appscode.com
   resources:
-  - "*"
+  - certificates
+  - ingresses
   verbs:
   - create
   - delete
@@ -29,9 +30,10 @@ metadata:
     rbac.authorization.k8s.io/aggregate-to-view: "true"
 rules:
 - apiGroups:
-  - "voyager.appscode.com"
+  - voyager.appscode.com
   resources:
-  - "*"
+  - certificates
+  - ingresses
   verbs:
   - get
   - list

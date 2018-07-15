@@ -13,6 +13,8 @@ spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
       labels:
         app: {{ template "heapster.fullname" . }}
     spec:
