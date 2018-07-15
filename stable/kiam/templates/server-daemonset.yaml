@@ -118,6 +118,7 @@ spec:
                 - --server-address=localhost:{{ .Values.server.service.targetPort }}
                 - --server-address-refresh=2s
                 - --timeout=5s
+                - --gateway-timeout-creation={{ .Values.server.gatewayTimeoutCreation }}
             initialDelaySeconds: 3
             periodSeconds: 10
             timeoutSeconds: 10
