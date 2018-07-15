@@ -38,6 +38,10 @@ Worker:
   # DaemonMemory: 1g
   # Set how much total memory workers have to give executors
   # ExecutorMemory: 1g
+  Autoscaling:
+    Enabled: false
+  ReplicasMax: 10
+  CpuTargetPercentage: 50
 
 Zeppelin:
   Name: zeppelin
