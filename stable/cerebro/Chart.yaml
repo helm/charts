@@ -3,10 +3,10 @@ appVersion: "0.8.1"
 description: A Helm chart for Cerebro - a web admin tool that replaces Kopf.
 home: https://github.com/lmenezes/cerebro
 sources:
- - https://github.com/yannart/docker-cerebro
+ - https://github.com/lmenezes/cerebro-docker
  - https://github.com/lmenezes/cerebro
 name: cerebro
-version: 0.1.1
+version: 0.2.0
 maintainers:
 - name: davidkarlsen
   email: david@davidkarlsen.com
