@@ -1,11 +1,14 @@
 {{- if .Values.deployment.enabled }}
-{{- if .Values.datadog.apiKey }}
+{{- if (or (.Values.datadog.apiKeyExistingSecret) (.Values.datadog.apiKey)) }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "datadog.fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "datadog.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   replicas: {{ .Values.deployment.replicas }}
   template:
@@ -38,7 +41,7 @@ spec:
           - name: DD_API_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ template "datadog.fullname" . }}
+                name: {{ template "datadog.apiSecretName" . }}
                 key: api-key
           {{- if .Values.datadog.logLevel }}
           - name: DD_LOG_LEVEL

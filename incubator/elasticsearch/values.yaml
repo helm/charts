@@ -1,15 +1,19 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "5.4"
+appVersion: "6.2.4"
 
 image:
-  repository: "centerforopenscience/elasticsearch"
-  tag: "5.4"
+  repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
+  tag: "6.2.4"
   pullPolicy: "IfNotPresent"
 
 cluster:
   name: "elasticsearch"
+  kubernetesDomain: cluster.local
+  # If you want X-Pack installed, switch to an image that includes it, enable this option and toggle the features you want
+  # enabled in the environment variables outlined in the README
+  xpackEnable: false
   config:
   env:
     # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
@@ -29,6 +33,7 @@ client:
   heapSize: "512m"
   antiAffinity: "soft"
   nodeSelector: {}
+  tolerations: {}
   resources:
     limits:
       cpu: "1"
@@ -54,6 +59,7 @@ master:
     # storageClass: "ssd"
   antiAffinity: "soft"
   nodeSelector: {}
+  tolerations: {}
   resources:
     limits:
       cpu: "1"
@@ -80,6 +86,7 @@ data:
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
   nodeSelector: {}
+  tolerations: {}
   resources:
     limits:
       cpu: "1"
@@ -87,11 +94,6 @@ data:
     requests:
       cpu: "25m"
       memory: "1536Mi"
-
   ## (dict) If specified, apply these annotations to each data Pod
   # podAnnotations:
   #   example: data-foo
-
-## Install Default RBAC roles and bindings
-rbac:
-  create: false
