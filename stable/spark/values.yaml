@@ -67,3 +67,22 @@ Zeppelin:
   #   SecretName: example-tls
   #   Hosts:
   #   - example.local
+  Persistence:
+    Config:
+      Enabled: false
+      ## etcd data Persistent Volume Storage Class
+      ## If defined, storageClassName: <storageClass>
+      ## If set to "-", storageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ## set, choosing the default provisioner. (gp2 on AWS, standard on
+      ## GKE, AWS & OpenStack)
+      storageClass: "-"
+      ## Set default PVC size
+      Size: 10G
+      ## Set default PVC access mode: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+      AccessMode: ReadWriteOnce
+    Notebook:
+      Enabled: false
+      storageClass: "-"
+      Size: 10G
+      AccessMode: ReadWriteOnce
