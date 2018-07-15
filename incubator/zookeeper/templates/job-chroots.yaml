@@ -30,6 +30,9 @@ spec:
         job: chroots
     spec:
       restartPolicy: {{ $job.restartPolicy }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
       containers:
         - name: main
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
