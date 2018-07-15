@@ -51,7 +51,7 @@ and their default values.
 | Parameter                         | Description                                                            | Default               |
 | ------------------------------    | --------------------------------------------------------------------   | -------------------   |
 | image.repository                  | Kong image                                                             | `kong`                |
-| image.tag                         | Kong image version                                                     | `0.13.1`              |
+| image.tag                         | Kong image version                                                     | `0.14.0`              |
 | image.pullPolicy                  | Image pull policy                                                      | `IfNotPresent`        |
 | replicaCount                      | Kong instance count                                                    | `1`                   |
 | admin.useTLS                      | Secure Admin traffic                                                   | `true`                |
