@@ -58,6 +58,13 @@ spec:
         - name: ZOOKEEPER_HOSTS
           value: {{ .Values.zookeeper.hosts | quote }}
         {{- end }}
+        {{- else if .Values.kubernetesDCS.enable }}
+        - name: PATRONI_KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: PATRONI_KUBERNETES_LABELS
+          value: '{app: {{ template "patroni.name" . }},release: {{ .Release.Name }} }'
         {{- end }}
         - name: SCOPE
           value: {{ template "patroni.fullname" . }}
@@ -102,6 +109,10 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         ports:
         - containerPort: 8008
         - containerPort: 5432

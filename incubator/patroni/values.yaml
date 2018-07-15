@@ -17,9 +17,11 @@ credentials:
 
 # Distribution Configuration stores
 # Please note that only one of the following stores should be enabled.
-etcd:
+kubernetesDCS:
   enable: true
-  deployChart: true
+etcd:
+  enable: false
+  deployChart: false
   # If not deploying etcd chart, fill-in value for etcd service
   # <service>.<namespace>.svc.cluster.local
   host:
