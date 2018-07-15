@@ -1,5 +1,5 @@
 name: spark
-version: 0.1.14
+version: 0.2.0
 appVersion: 1.5.1
 description: Fast and general-purpose cluster computing system.
 home: http://spark.apache.org
