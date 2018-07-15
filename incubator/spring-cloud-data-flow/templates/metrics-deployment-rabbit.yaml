@@ -28,14 +28,14 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 10 }}
         livenessProbe:
           httpGet:
-            path: /health
+            path: /actuator/health
             port: http
           initialDelaySeconds: 90
           periodSeconds: 15
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
-            path: /health
+            path: /actuator/health
             port: http
           initialDelaySeconds: 60
           periodSeconds: 15
@@ -45,8 +45,8 @@ spec:
           value: '8080'
         - name: SPRING_CLOUD_CONFIG_ENABLED
           value: 'false'
-        - name: SECURITY_BASIC_ENABLED
-          value: 'false'
+        - name: SPRING_AUTOCONFIGURE_EXCLUDE
+          value: 'org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration'
         - name: SPRING_RABBITMQ_HOST
           value: '${{ printf "{" }}{{ template "scdf.envrelease" . }}_RABBITMQ_SERVICE_HOST}'
         - name: SPRING_RABBITMQ_PORT
