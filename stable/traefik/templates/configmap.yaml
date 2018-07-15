@@ -111,6 +111,9 @@ data:
       [acme.httpChallenge]
       entryPoint = "http"
     {{- end }}
+    {{- if .Values.acme.domains.enabled }}
+    {{- if .Values.acme.domains.domainsList }}{{ template "traefik.acme.domains" . }}{{- end }}
+    {{- end }}
     {{- end }}
     {{- if or .Values.dashboard.enabled .Values.metrics.prometheus.enabled .Values.metrics.statsd.enabled .Values.metrics.datadog.enabled }}
     [web]
