@@ -61,6 +61,7 @@ Parameter | Description | Default
 `service.loadBalancerIP` | Load Balancer IP address (to use with service.type LoadBalancer) | None:
 `service.type` | type of service | `ClusterIP`
 `service.annotations` | Kubernetes service annotations | None:
+`service.labels` | Kubernetes service labels | None:
 `tolerations` | List of node taints to tolerate | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
