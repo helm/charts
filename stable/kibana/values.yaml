@@ -33,6 +33,9 @@ service:
   annotations:
     # Annotation example: setup ssl with aws cert when service.type is LoadBalancer
     # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:EXAMPLE_CERT
+  labels:
+    ## Label example: show service URL in `kubectl cluster-info`
+    # kubernetes.io/cluster-service: "true"
 
 ingress:
   enabled: false
