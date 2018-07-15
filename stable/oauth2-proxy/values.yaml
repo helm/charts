@@ -58,6 +58,8 @@ resources: {}
   #   cpu: 100m
   #   memory: 300Mi
 
+priorityClassName: ""
+
 # Affinity for pod assignment
 # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 # affinity: {}
