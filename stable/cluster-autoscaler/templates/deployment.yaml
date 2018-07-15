@@ -24,6 +24,9 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
         - name: {{ template "cluster-autoscaler.name" . }}
         {{- if eq .Values.cloudProvider "spotinst" }}
