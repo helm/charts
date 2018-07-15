@@ -2,41 +2,41 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "cert-manager.name" -}}
+{{- define "profile.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Name of the profile to create
+*/}}
+{{- define "profile.profileName" -}}
+{{- if .Values.defaultProfile -}}
+    {{ .Values.defaultProfileName }}
+{{- else -}}
+    {{- required "If not creating a default profile, please provide a name for the profile by setting the parameter profileName" .Values.profileName -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "cert-manager.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
+{{- define "profile.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
 {{- end -}}
 
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "cert-manager.chart" -}}
+{{- define "profile.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "cert-manager.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create -}}
-    {{ default (include "cert-manager.fullname" .) .Values.serviceAccount.name }}
-{{- else -}}
-    {{ default "default" .Values.serviceAccount.name }}
-{{- end -}}
+{{/* Helm required labels */}}
+{{- define "profile.helmLabels" -}}
+heritage: {{ .Release.Service }}
+release: {{ .Release.Name }}
+chart: {{ template "profile.chart" . }}
+app: {{ template "profile.name" . }}
 {{- end -}}
