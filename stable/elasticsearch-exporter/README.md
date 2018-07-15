@@ -50,6 +50,7 @@ Parameter | Description | Default
 `image.tag` | container image tag | `1.0.2`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `resources` | resource requests & limits | `{}`
+`priorityClassName` | priorityClassName | `nil` |
 `service.type` | type of service to create | `ClusterIP`
 `service.httpPort` | port for the http service | `9108`
 `es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
