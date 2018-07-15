@@ -62,6 +62,8 @@ resources: {}  # Optionally specify how much CPU and memory (RAM) each zookeeper
   #  cpu: 100m
   #  memory: 128Mi
 
+priorityClassName: ""
+
 nodeSelector: {}  # Node label-values required to run zookeeper pods.
 
 tolerations: []  # Node taint overrides for zookeeper pods.

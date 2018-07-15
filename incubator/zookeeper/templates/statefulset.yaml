@@ -44,6 +44,9 @@ spec:
 {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
       containers:
 
         - name: zookeeper
