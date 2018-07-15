@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "patroni.fullname" . }}
@@ -10,6 +10,8 @@ metadata:
 spec:
   serviceName: {{ template "patroni.fullname" . }}
   replicas: {{ .Values.replicaCount }}
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       app: {{ template "patroni.name" . }}
