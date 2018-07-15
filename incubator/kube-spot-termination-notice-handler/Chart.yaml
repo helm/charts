@@ -7,7 +7,8 @@ home: https://github.com/egeland/kube-spot-termination-notice-handler
 source:
   - https://hub.docker.com/r/egeland/kube-spot-termination-notice-handler/
 maintainers:
-  - name: FFX Blue Operations
-    email: blueops@fairfaxmedia.com.au
-  - name: Frode Egeland
+# commented out due to unknown Github account
+#  - name: FFX Blue Operations
+#    email: blueops@fairfaxmedia.com.au
+  - name: egeland
     email: egeland@gmail.com
