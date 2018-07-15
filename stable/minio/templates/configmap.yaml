@@ -12,17 +12,24 @@ data:
 {{ include (print $.Template.BasePath "/_helper_create_bucket.txt") . | indent 4 }}
   config.json: |-
     {
-      "version": "22",
+      "version": "26",
       "credential": {
         "accessKey": {{ .Values.accessKey | quote }},
         "secretKey": {{ .Values.secretKey | quote }}
       },
       "region": {{ .Values.minioConfig.region | quote }},
       "browser": {{ .Values.minioConfig.browser | quote }},
+      "worm": {{ .Values.minioConfig.worm | quote }},
       "domain": {{ .Values.minioConfig.domain | quote }},
       "storageclass": {
-        "standard": {{ .Values.minioConfig.standardStorageClass | quote }},
-        "rrs": {{ .Values.minioConfig.reducedRedundancyStorageClass | quote }}
+        "standard": {{ .Values.minioConfig.storageClass.standardStorageClass | quote }},
+        "rrs": {{ .Values.minioConfig.storageClass.reducedRedundancyStorageClass | quote }}
+      },
+      "cache": {
+        "drives": {{ .Values.minioConfig.cache.drives }},
+        "expiry": {{ .Values.minioConfig.cache.expiry | int }},
+        "maxuse": {{ .Values.minioConfig.cache.maxuse | int }},
+        "exclude": {{ .Values.minioConfig.cache.exclude }}
       },
       "notify": {
         "amqp": {
@@ -124,7 +131,9 @@ data:
             "qos": {{ .Values.minioConfig.mqtt.qos | int }},
             "clientId": {{ .Values.minioConfig.mqtt.clientId | quote }},
             "username": {{ .Values.minioConfig.mqtt.username | quote }},
-            "password": {{ .Values.minioConfig.mqtt.password | quote }}
+            "password": {{ .Values.minioConfig.mqtt.password | quote }},
+            "reconnectInterval": {{ .Values.minioConfig.mqtt.reconnectInterval | int }},
+            "keepAliveInterval": {{ .Values.minioConfig.mqtt.keepAliveInterval | int }}
           }
         }
       }

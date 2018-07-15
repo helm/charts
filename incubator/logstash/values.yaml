@@ -35,7 +35,7 @@ service:
     #  port: 8080
     #  targetPort: http
     #  protocol: TCP
-
+    # loadBalancerIP: 10.0.0.1
 ports:
   # - name: syslog-udp
   #   containerPort: 1514

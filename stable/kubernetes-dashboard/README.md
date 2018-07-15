@@ -34,7 +34,7 @@ $ helm delete my-release
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 ## Access control
-It is critical for the Kubernetes custer to correctly setup access control of Kubernetes Dashboard. See this [guide](https://github.com/kubernetes/dashboard/wiki/Access-control) for best practises.
+It is critical for the Kubernetes cluster to correctly setup access control of Kubernetes Dashboard. See this [guide](https://github.com/kubernetes/dashboard/wiki/Access-control) for best practises.
 
 It is highly recommended to use RBAC with minimal privileges needed for Dashboard to run.
 
@@ -47,13 +47,15 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `image.repository`        | Repository for container image                                                                                              | `k8s.gcr.io/kubernetes-dashboard-amd64`                                  |
 | `image.tag`               | Image tag                                                                                                                   | `v1.8.3`                                                                 |
 | `image.pullPolicy`        | Image pull policy                                                                                                           | `IfNotPresent`                                                           |
+| `replicaCount`          | Number of replicas                                                                                                            | `1`                |
 | `extraArgs`               | Additional container arguments                                                                                              | `[]`                                                                     |
 | `nodeSelector`            | node labels for pod assignment                                                                                              | `{}`                                                                     |
 | `tolerations`             | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                | `[]`                                                                     |
 | `service.externalPort`    | Dashboard external port                                                                                                     | 443                                                                      |
 | `service.internalPort`    | Dashboard internal port                                                                                                     | 443                                                                      |
-| `ingress.annotations`     | Specify ingress class                                                                                                       | `kubernetes.io/ingress.class: nginx`                                     |
+| `ingress.annotations`     | Specify ingress class                                                                                                       | `kubernetes.io/ingress.class: nginx` |
 | `ingress.enabled`         | Enable ingress controller resource                                                                                          | `false`                                                                  |
+| `ingress.path`            | Path to match against incoming requests. Must begin with a '/'                                                              | `/`                                                                  |
 | `ingress.hosts`           | Dashboard Hostnames                                                                                                         | `nil`                                                                    |
 | `ingress.tls`             | Ingress TLS configuration                                                                                                   | `[]`                                                                     |
 | `resources`               | Pod resource requests & limits                                                                                              | `limits: {cpu: 100m, memory: 50Mi}, requests: {cpu: 100m, memory: 50Mi}` |
@@ -76,3 +78,10 @@ $ helm install stable/kubernetes-dashboard --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Using the dashboard with 'kubectl proxy'
+
+When running 'kubectl proxy', the address `localhost:8001/ui` automatically expands to `http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/`. For this to reach the dashboard, the name of the service must be 'kubernetes-dashboard', not any other value as set by Helm. You can manually specify this using the value 'fullnameOverride':
+```
+fullnameOverride: 'kubernetes-dashboard'
+```

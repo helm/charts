@@ -39,10 +39,6 @@ spec:
         - --port=7472
         - --config={{ template "metallb.configMapName" . }}
         env:
-        - name: METALLB_NODE_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.hostIP
         - name: METALLB_NODE_NAME
           valueFrom:
             fieldRef:

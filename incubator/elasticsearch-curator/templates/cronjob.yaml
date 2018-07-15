@@ -7,6 +7,8 @@ metadata:
     chart: {{ template "elasticsearch-curator.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations: 
+{{ toYaml .Values.cronjob.annotations | indent 4 }}
 spec:
   schedule: "{{ .Values.cronjob.schedule }}"
   jobTemplate:
@@ -16,12 +18,20 @@ spec:
           labels:
             app: {{ template "elasticsearch-curator.name" . }}
             release: {{ .Release.Name }}
+          annotations: 
+{{ toYaml .Values.pod.annotations | indent 12 }}
         spec:
           volumes:
             - name: config-volume
               configMap:
-                name: curator-config
+                name: {{ template "elasticsearch-curator.fullname" . }}-config
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 12 }}
+{{- end }}
           restartPolicy: Never
+{{- if .Values.priorityClassName }}
+          priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
           containers:
             - name: {{ .Chart.Name }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -29,6 +39,9 @@ spec:
               volumeMounts:
                 - name: config-volume
                   mountPath: /etc/es-curator
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 16 }}
+{{- end }}
               command: [ "curator" ]
               args: [ "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
               resources:

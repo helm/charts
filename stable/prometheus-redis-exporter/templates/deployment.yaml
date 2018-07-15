@@ -15,10 +15,13 @@ spec:
       release: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+{{ toYaml .Values.annotations | indent 8 }}
       labels:
         app: {{ template "prometheus-redis-exporter.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "prometheus-redis-exporter.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

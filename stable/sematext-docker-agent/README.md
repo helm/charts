@@ -49,7 +49,7 @@ The following table lists the configuration parameters of the sematext-docker-ag
 | `resources.limits.cpu`        | CPU resource limits                  | `Nil`                                     |
 | `resources.requests.memory`   | Memory resource requests             | `Nil`                                     |
 | `resources.limits.memory`     | Memory resource limits               | `Nil`                                     |
-| `sematext.useHostNetwork`     | Use the host networking              | `true`                                    |
+| `sematext.useHostNetwork`     | Use the host networking              | `false`                                   |
 | `sematext.url.spmReceiver`    | Custom endpoint for SPM receiver     | `Nil`                                     |
 | `sematext.url.logseneReceiver`| Custom endpoint for Logsene receiver | `Nil`                                     |
 | `sematext.url.eventsReceiver` | Custom endpoint for Events receiver  | `Nil`                                     |

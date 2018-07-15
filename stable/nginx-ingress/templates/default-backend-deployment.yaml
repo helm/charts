@@ -50,7 +50,8 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 5
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
               protocol: TCP
           resources:
 {{ toYaml .Values.defaultBackend.resources | indent 12 }}
