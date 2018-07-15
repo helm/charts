@@ -57,21 +57,21 @@ The following table lists the configurable parameters of the Spark chart and the
 
 ### Spark Worker
 
-| Parameter                    | Description                        | Default                                                    |
-| -----------------------      | ---------------------------------- | ---------------------------------------------------------- |
-| `Worker.Name`                | Spark worker name                  | `spark-worker`                                             |
-| `Worker.Image`               | Container image name               | `k8s.gcr.io/spark`                                         |
-| `Worker.ImageTag`            | Container image tag                | `1.5.1_v3`                                                 |
-| `Worker.Replicas`            | k8s hpa and deployment replicas    | `3`                                                        |
-| `Worker.ReplicasMax`         | k8s hpa max replicas               | `10`                                                       |
-| `Worker.Component`           | k8s selector key                   | `spark-worker`                                             |
-| `Worker.Cpu`                 | container requested cpu            | `100m`                                                     |
-| `Worker.Memory`              | container requested memory         | `512Mi`                                                    |
-| `Worker.ContainerPort`       | Container listening port           | `7077`                                                     |
-| `Worker.CpuTargetPercentage` | k8s hpa cpu targetPercentage       | `50`                                                       |
-| `Worker.DaemonMemory`        | Worker JVM Xms and Xmx setting     | `1g`                                                       |
+| Parameter                    | Description                          | Default                                                    |
+| -----------------------      | ------------------------------------ | ---------------------------------------------------------- |
+| `Worker.Name`                | Spark worker name                    | `spark-worker`                                             |
+| `Worker.Image`               | Container image name                 | `k8s.gcr.io/spark`                                         |
+| `Worker.ImageTag`            | Container image tag                  | `1.5.1_v3`                                                 |
+| `Worker.Replicas`            | k8s hpa and deployment replicas      | `3`                                                        |
+| `Worker.ReplicasMax`         | k8s hpa max replicas                 | `10`                                                       |
+| `Worker.Component`           | k8s selector key                     | `spark-worker`                                             |
+| `Worker.Cpu`                 | container requested cpu              | `100m`                                                     |
+| `Worker.Memory`              | container requested memory           | `512Mi`                                                    |
+| `Worker.ContainerPort`       | Container listening port             | `7077`                                                     |
+| `Worker.CpuTargetPercentage` | k8s hpa cpu targetPercentage         | `50`                                                       |
+| `Worker.DaemonMemory`        | Worker JVM Xms and Xmx setting       | `1g`                                                       |
 | `Worker.ExecutorMemory`      | Worker memory available for executor | `1g`                                                       |
-
+| `Worker.Autoscaling`         | Enable horizontal pod autoscaling    | `false`                                                    |
 
 
 ### Zeppelin
