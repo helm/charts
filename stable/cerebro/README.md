@@ -40,11 +40,12 @@ The following table lists the configurable parameters of the cerebro chart and t
 |             Parameter               |            Description             |                    Default                |
 |-------------------------------------|------------------------------------|-------------------------------------------|
 | `replicaCount`                      | Number of replicas                 | `1`                                       |
-| `image.repository`                  | The image to run                   | `yannart/cerebro`                         |
+| `image.repository`                  | The image to run                   | `lmenezes/cerebro`                        |
 | `image.tag`                         | The image tag to pull              | `0.8.1`                                   |
 | `image.pullPolicy`                  | Image pull policy                  | `IfNotPresent`                            |
 | `service.type`                      | Type of Service                    | `ClusterIP`                               |
 | `service.port`                      | Port for kubernetes service        | `80`                                      |
+| `service.annotations`               | Annotations to add to the service  | `{}`                                      |
 | `resources.requests.cpu`            | CPU resource requests              |                                           |
 | `resources.limits.cpu`              | CPU resource limits                |                                           |
 | `resources.requests.memory`         | Memory resource requests           |                                           |
@@ -53,6 +54,9 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `nodeSelector`                      | Settings for nodeselector          | `{}`                                      |
 | `tolerations`                       | Settings for toleration            | `{}`                                      |
 | `affinity`                          | Settings for affinity              | `{}`                                      |
+| `config.basePath`                   | Application base path              | `/`                                       |
+| `config.restHistorySize`            | Rest request history size per user | `50`                                      |
+| `config.hosts`                      | A list of known hosts              | `[]`                                      |
 
 
 
