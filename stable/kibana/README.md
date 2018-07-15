@@ -41,8 +41,8 @@ Parameter | Description | Default
 `affinity` | node/pod affinities | None
 `env` | Environment variables to configure Kibana | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
-`image.repository` | Image repository | `kibana`
-`image.tag` | Image tag | `6.0.0`
+`image.repository` | Image repository | `docker.elastic.co/kibana/kibana-oss`
+`image.tag` | Image tag | `6.3.1`
 `image.pullSecrets` |Specify image pull secrets | `nil`
 `commandline.args` | add additional commandline args | `nil`
 `ingress.enabled` | Enables Ingress | `false`
@@ -54,6 +54,7 @@ Parameter | Description | Default
 `replicaCount` | desired number of pods | `1`
 `serviceAccountName` | serviceAccount that will run the pod | `nil`
 `resources` | pod resource requests & limits | `{}`
+`priorityClassName` | priorityClassName | `nil`
 `service.externalPort` | external port for the service | `443`
 `service.internalPort` | internal port for the service | `4180`
 `service.externalIPs` | external IP addresses | None:
