@@ -5,7 +5,7 @@ appVersion: "6.2.4"
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.2.4"
+  tag: "6.3.1"
   pullPolicy: "IfNotPresent"
 
 cluster:
@@ -25,11 +25,9 @@ client:
   name: client
   replicas: 2
   serviceType: ClusterIP
-
 ## (dict) If specified, apply these annotations to the client service
 #  serviceAnnotations:
 #    example: client-svc-foo
-
   heapSize: "512m"
   antiAffinity: "soft"
   nodeSelector: {}
@@ -41,7 +39,7 @@ client:
     requests:
       cpu: "25m"
       memory: "512Mi"
-
+  priorityClassName: ""
   ## (dict) If specified, apply these annotations to each client Pod
   # podAnnotations:
   #   example: client-foo
@@ -67,7 +65,7 @@ master:
     requests:
       cpu: "25m"
       memory: "512Mi"
-
+  priorityClassName: ""
   ## (dict) If specified, apply these annotations to each master Pod
   # podAnnotations:
   #   example: master-foo
@@ -94,6 +92,7 @@ data:
     requests:
       cpu: "25m"
       memory: "1536Mi"
+  priorityClassName: ""
   ## (dict) If specified, apply these annotations to each data Pod
   # podAnnotations:
   #   example: data-foo
