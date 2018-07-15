@@ -3,7 +3,7 @@
 
 image:
   repository: kong
-  tag: 0.13.1
+  tag: 0.14.0
   pullPolicy: IfNotPresent
 
 # Specify Kong admin and proxy services configurations
