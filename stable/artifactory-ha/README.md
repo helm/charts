@@ -378,7 +378,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.internalPortHttps` | Nginx service internal port | `443`   |
 | `nginx.internalPortReplicator` | Replicator service internal port | `6061`   |
 | `nginx.externalPortReplicator` | Replicator service external port | `6061`   |
-| `nginx.livenessProbe.enabled`               | would you like a livenessProbed to be enabled             |  `true`                                        |
+| `nginx.livenessProbe.enabled`              | Enable liveness probe                     |  `true`                                        |
 | `nginx.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 100                                                   |
 | `nginx.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
 | `nginx.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                                                    |
