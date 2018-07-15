@@ -102,3 +102,5 @@ service:
   loadBalancerSourceRanges: []
   servicePort: 7979
   type: ClusterIP
+
+priorityClassName: ""
