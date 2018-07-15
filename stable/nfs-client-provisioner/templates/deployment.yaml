@@ -1,10 +1,11 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "nfs-client-provisioner.fullname" . }}
   labels:
     app: {{ template "nfs-client-provisioner.name" . }}
     chart: {{ template "nfs-client-provisioner.chart" . }}
+    heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}

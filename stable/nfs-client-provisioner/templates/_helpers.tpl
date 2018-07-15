@@ -38,3 +38,14 @@ Create chart name and version as used by the chart label.
 cluster.local/{{ template "nfs-client-provisioner.fullname" . -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "nfs-client-provisioner.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "nfs-client-provisioner.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
