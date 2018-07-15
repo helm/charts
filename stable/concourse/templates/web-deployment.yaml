@@ -335,6 +335,9 @@ spec:
             - name: CONCOURSE_INFLUXDB_INSECURE_SKIP_VERIFY
               value: {{ .Values.web.metrics.influxdb.insecureSkipVerify | quote}}
             {{- end }}
+{{- if .Values.web.env }}
+{{ toYaml .Values.web.env | indent 12 }}
+{{- end }}
           ports:
             - name: atc
               containerPort: {{ .Values.concourse.atcPort }}
