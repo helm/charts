@@ -12,5 +12,5 @@ metadata:
   annotations:
     storageclass.kubernetes.io/is-default-class: "true"
 {{- end }}
-provisioner: {{ .Values.storageClass.provisionerName }}
+provisioner: {{ nfs-client-provisioner.provisionerName }}
 {{ end -}}
