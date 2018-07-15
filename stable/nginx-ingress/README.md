@@ -74,6 +74,7 @@ Parameter | Description | Default
 `controller.replicaCount` | desired number of controller pods | `1`
 `controller.minAvailable` | minimum number of available controller pods for PodDisruptionBudget | `1`
 `controller.resources` | controller pod resource requests & limits | `{}`
+`controller.priorityClassName` | controller priorityClassName | `nil`
 `controller.lifecycle` | controller pod lifecycle hooks | `{}`
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.service.labels` | labels for controller service | `{}`
@@ -136,6 +137,7 @@ Parameter | Description | Default
 `defaultBackend.replicaCount` | desired number of default backend pods | `1`
 `defaultBackend.minAvailable` | minimum number of available default backend pods for PodDisruptionBudget | `1`
 `defaultBackend.resources` | default backend pod resource requests & limits | `{}`
+`defaultBackend.priorityClassName` | default backend  priorityClassName | `nil`
 `defaultBackend.service.annotations` | annotations for default backend service | `{}`
 `defaultBackend.service.clusterIP` | internal default backend cluster service IP | `""`
 `defaultBackend.service.externalIPs` | default backend service external IP addresses | `[]`
