@@ -18,15 +18,30 @@ spec:
       labels:
         app: {{ template "cerebro.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
+      initContainers:
+        - name: chown-db
+          image: docker.io/busybox:musl
+          command: ["chown", "1000:1000", "/var/db/cerebro"]
+          volumeMounts:
+            - name: db
+              mountPath: /var/db/cerebro
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["-Dconfig.file=/etc/cerebro/application.conf"]
           ports:
             - name: http
               containerPort: 9000
               protocol: TCP
+          volumeMounts:
+            - name: db
+              mountPath: /var/db/cerebro
+            - name: config
+              mountPath: /etc/cerebro
           livenessProbe:
             httpGet:
               path: /
@@ -37,6 +52,12 @@ spec:
               port: http
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: db
+          emptyDir: {}
+        - name: config
+          configMap:
+            name: {{ template "cerebro.fullname" . }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
