@@ -307,7 +307,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.internalPort`   | Artifactory service internal port                         | `8081`                        |
 | `artifactory.internalPortReplicator` | Replicator service internal port | `6061`   |
 | `artifactory.externalPortReplicator` | Replicator service external port | `6061`   |
-| `artifactory.livenessProbe.enabled`               | would you like a livenessProbed to be enabled             |  `true`                                        |
+| `artifactory.livenessProbe.enabled`              | Enable liveness probe                     |  `true`                                        |
 | `artifactory.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 180                                                   |
 | `artifactory.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
 | `artifactory.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                                                    |
