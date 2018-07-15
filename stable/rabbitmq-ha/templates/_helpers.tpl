@@ -46,5 +46,5 @@ Generate chart secret name
 Generate chart ssl secret name
 */}}
 {{- define "rabbitmq-ha.certSecretName" -}}
-{{ default (include "rabbitmq-ha.fullname" .) .Values.rabbitmqCert.existingSecret }}
+{{ default (print (include "rabbitmq-ha.fullname" .) "-cert") .Values.rabbitmqCert.existingSecret }}
 {{- end -}}
