@@ -13,7 +13,7 @@ $ helm install stable/kube-state-metrics
 ## Configuration
 
 | Parameter                             | Description                                             | Default                                     |
-|---------------------------------------|---------------------------------------------------------|---------------------------------------|
+|---------------------------------------|---------------------------------------------------------|---------------------------------------------|
 | `image.repository`                    | The image repository to pull from                       | quay.io/coreos/kube-state-metrics           |
 | `image.tag`                           | The image tag to pull from                              | `<latest version>`                          |
 | `image.pullPolicy`                    | Image pull policy                                       | IfNotPresent                                |
@@ -22,7 +22,7 @@ $ helm install stable/kube-state-metrics
 | `rbac.create`                         | If true, create & use RBAC resources                    | False                                       |
 | `rbac.serviceAccountName`             | ServiceAccount to be used (ignored if rbac.create=true) | default                                     |
 | `nodeSelector`                        | Node labels for pod assignment                          | {}                                          |
-| `tolerations`                         | Tolerations for pod assignment	                        | []                                          |
+| `tolerations`                         | Tolerations for pod assignment	                      | []                                          |
 | `podAnnotations`                      | Annotations to be added to the pod                      | {}                                          |
 | `resources`                           | kube-state-metrics resource requests and limits         | {}                                          |
 | `collectors.cronjobs`                 | Enable the cronjobs collector.                          | true                                        |
