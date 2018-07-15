@@ -194,6 +194,14 @@ web:
       cpu: "100m"
       memory: "128Mi"
 
+  ## Configure additional environment variables for the
+  ## web containers.
+  # env:
+  #   - name: CONCOURSE_LOG_LEVEL
+  #     value: "debug"
+  #   - name: CONCOURSE_TSA_LOG_LEVEL
+  #     value: "debug"
+
   ## Additional affinities to add to the web pods.
   ##
   # additionalAffinities:
