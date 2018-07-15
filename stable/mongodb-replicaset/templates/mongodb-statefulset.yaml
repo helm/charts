@@ -26,6 +26,11 @@ spec:
 {{ toYaml .Values.extraLabels | indent 8 }}
 {{- end }}
       annotations:
+      {{- if .Values.metrics.prometheusServiceDiscovery }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.metrics.port | quote }}
+        prometheus.io/path: {{ .Values.metrics.path | quote }}
+      {{- end }}
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
@@ -106,6 +111,20 @@ spec:
                 secretKeyRef:
                   name: "{{ template "mongodb-replicaset.adminSecret" . }}"
                   key: password
+          {{- if .Values.metrics.enabled }}
+            - name: METRICS
+              value: "true"
+            - name: METRICS_USER
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "mongodb-replicaset.metricsSecret" . }}"
+                  key: user
+            - name: METRICS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "mongodb-replicaset.metricsSecret" . }}"
+                  key: password
+          {{- end }}
           {{- end }}
           volumeMounts:
             - name: workdir
@@ -142,7 +161,7 @@ spec:
             - --keyFile=/data/configdb/key.txt
           {{- end }}
           {{- if .Values.tls.enabled }}
-            - --ssl
+            - --sslMode=requireSSL
             - --sslCAFile=/data/configdb/tls.crt
             - --sslPEMKeyFile=/work-dir/mongo.pem
           {{- end }}
@@ -185,7 +204,77 @@ spec:
               mountPath: /data/configdb
             - name: workdir
               mountPath: /work-dir
-    {{- with .Values.nodeSelector }}
+{{ if .Values.metrics.enabled }}
+        - name: metrics
+          image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+          command:
+            - sh
+            - -ec
+            - >-
+            {{- if .Values.auth.enabled }}
+              export MONGODB_URL=mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }};
+            {{- else }}
+              export MONGODB_URL=mongodb://localhost:{{ .Values.port }};
+            {{- end }}
+              /bin/mongodb_exporter
+            {{- if .Values.tls.enabled }}
+              -mongodb.tls
+              -mongodb.tls-ca=/ca/tls.crt
+              -mongodb.tls-cert=/work-dir/mongo.pem
+            {{- end }}
+              -mongodb.socket-timeout={{ .Values.metrics.socketTimeout }}
+              -mongodb.sync-timeout={{ .Values.metrics.syncTimeout }}
+              -web.metrics-path={{ .Values.metrics.path }}
+              -web.listen-address=:{{ .Values.metrics.port }}
+          volumeMounts:
+          {{- if and (.Values.tls.enabled) }}
+            - name: ca
+              mountPath: /ca
+              readOnly: true
+          {{- end }}
+            - name: workdir
+              mountPath: /work-dir
+              readOnly: true
+          env:
+          {{- if .Values.auth.enabled }}
+            - name: METRICS_USER
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "mongodb-replicaset.metricsSecret" . }}"
+                  key: user
+            - name: METRICS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "mongodb-replicaset.metricsSecret" . }}"
+                  key: password
+          {{- end }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.port  }}
+          resources: {{ toYaml .Values.metrics.resources | indent 12 }}
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -ec
+                - >-
+                {{- if .Values.auth.enabled }}
+                  export MONGODB_URL=mongodb://$METRICS_USER:$METRICS_PASSWORD@localhost:{{ .Values.port }};
+                {{- else }}
+                  export MONGODB_URL=mongodb://localhost:{{ .Values.port }};
+                {{- end }}
+                  /bin/mongodb_exporter
+                {{- if .Values.tls.enabled }}
+                  -mongodb.tls
+                  -mongodb.tls-ca=/ca/tls.crt
+                  -mongodb.tls-cert=/work-dir/mongo.pem
+                {{- end }}
+                  -test
+              initialDelaySeconds: 30
+              periodSeconds: 10
+{{ end }}
+   {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
