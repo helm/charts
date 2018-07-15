@@ -31,6 +31,9 @@ Resources: {}
  #   cpu: "500m"
  #   memory: "512Mi"
 ## Persistent volume size
+
+priorityClassName: ""
+
 Storage: "1Gi"
 
 ## Needed for 0.8.0 and later IF all consul containers are spun up
