@@ -1,13 +1,16 @@
 replicaCount: 1
 
 image:
-  repository: yannart/cerebro
+  repository: lmenezes/cerebro
+  # Note: when updating the version, ensure `config` and the ConfigMap are kept
+  # in sync with the default configuration of the upstream image
   tag: 0.8.1
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 80
+  annotations: {}
 
 ingress:
   enabled: false
@@ -29,3 +32,10 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+config:
+  basePath: '/'
+  restHistorySize: 50
+  hosts: []
+  #  - host:
+  #    name:
