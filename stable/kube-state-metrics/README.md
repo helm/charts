@@ -14,7 +14,7 @@ $ helm install stable/kube-state-metrics
 
 | Parameter                             | Description                                             | Default                                     |
 |---------------------------------------|---------------------------------------------------------|---------------------------------------------|
-| `image.repository`                    | The image repository to pull from                       | k8s.gcr.io/kube-state-metrics               |
+| `image.repository`                    | The image repository to pull from                       | quay.io/coreos/kube-state-metrics           |
 | `image.tag`                           | The image tag to pull from                              | `<latest version>`                          |
 | `image.pullPolicy`                    | Image pull policy                                       | IfNotPresent                                |
 | `service.port`                        | The port of the container                               | 8080                                        |
