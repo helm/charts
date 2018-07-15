@@ -26,6 +26,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.sentinel.priorityClassName }}
+      priorityClassName: "{{ .Values.sentinel.priorityClassName }}"
+{{- end }}
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
