@@ -121,6 +121,10 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
 | `acme.logging`                  | Display debug log messages from the ACME client library              | `false`                                   |
+| `acme.domains.enabled`          | Enable certificate creation by default for specific domain           | `false`                                   |
+| `acme.domains.domainList`       | List of domains & (optional) subject names                           | `[]`                                      |
+| `acme.domains.domainList.main`  | Main domain name of the generated certificate                        | *.example.com                             |
+| `acme.domains.domainList.sans`  | optional list of alternative subject names to give to the certificate | `[]`                                     |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
 | `acme.persistence.annotations`  | PVC annotations                                                      | `{}`                                      |
 | `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `nil` (uses alpha storage class annotation) |
@@ -220,6 +224,28 @@ acme:
     name:  # name of the dns provider to use
     $name: # the configuration of the dns provider. See the following section for an example
       # variables that the specific dns provider requires
+```
+
+### Let's Encrypt wildcard certificate
+
+To obtain an ACME (Let's Encrypt) wildcard certificate you must use a DNS challenge as explained above.
+Then you need to specify the wildcard domain name in the `acme.domains` section like this :
+
+```yaml
+acme:
+  enabled: true
+  challengeType: "dns-01"
+  dnsProvider:
+    name:  # name of the dns provider to use
+    $name: # the configuration of the dns provider. See the following section for an example
+      # variables that the specific dns provider requires
+  domains:
+    enabled: true
+    domainsList:
+      - main: "*.example.com" # name of the wildcard domain name for the certificate
+      - sans:
+        - "example.com" # OPTIONAL: Alternative name(s) for the certificate, if you want the same certificate for the root of the domain name for example
+      - main: "*.example2.com" # name of the wildcard domain name for the certificate
 ```
 
 #### Example: AWS Route 53

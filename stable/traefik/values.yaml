@@ -59,6 +59,20 @@ acme:
   email: admin@example.com
   staging: true
   logging: false
+  # Configure a Let's Encrypt certificate to be managed by default.
+  # This is the only way to request wildcard certificates (works only with dns challenge).
+  domains:
+    enabled: false
+    # List of sets of main and (optional) SANs to generate for
+    # for wildcard certificates see https://docs.traefik.io/configuration/acme/#wildcard-domains
+    domainsList:
+      # - main: "*.example.com"
+      # - sans:
+      #   - "example.com"
+      # - main: "*.example2.com"
+      # - sans:
+      #   - "test1.example2.com"
+      #   - "test2.example2.com"
   ## ACME challenge type: "tls-sni-01", "http-01" or "dns-01"
   ## Note the chart's default of tls-sni-01 has been DEPRECATED and (except in
   ## certain circumstances) DISABLED by Let's Encrypt. It remains as a default
