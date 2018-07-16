@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ .Release.Name }}-spinnaker
+  name: {{ template "spinnaker.fullname" . }}-spinnaker
   labels:
 {{ include "spinnaker.standard-labels" . | indent 4 }}
 roleRef:
