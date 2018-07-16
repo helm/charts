@@ -11,7 +11,7 @@ data:
     export HAL_COMMAND="hal --daemon-endpoint $DAEMON_ENDPOINT"
     until $HAL_COMMAND --ready; do sleep 10 ; done
 
-    bash /opt/halyard/scripts/config.sh
+    bash -xe /opt/halyard/scripts/config.sh
 
     {{ if .Values.halyard.additionalConfig.enabled }}
     bash /opt/halyard/additional/{{ .Values.halyard.additionalConfig.configMapKey }}
@@ -57,13 +57,26 @@ data:
     $HAL_COMMAND config provider docker-registry enable
     {{- range $index, $registry := .Values.dockerRegistries }}
 
-    $HAL_COMMAND config provider docker-registry account add {{ $registry.name }} --address {{ $registry.address }} \
+    if $HAL_COMMAND config provider docker-registry account get {{ $registry.name }}; then
+      PROVIDER_COMMAND='edit'
+    else
+      PROVIDER_COMMAND='add'
+    fi
+
+    $HAL_COMMAND config provider docker-registry account $PROVIDER_COMMAND {{ $registry.name }} --address {{ $registry.address }} \
         --repositories {{ range $index, $repository := $registry.repositories }}{{- $repository }},{{- end }}
     {{- end }}
 
     $HAL_COMMAND config provider kubernetes enable
     {{- range $index, $context := .Values.kubeConfig.contexts }}
-    $HAL_COMMAND config provider kubernetes account add {{ $context }} --docker-registries dockerhub \
+
+    if $HAL_COMMAND config provider kubernetes account get {{ $context }}; then
+      PROVIDER_COMMAND='edit'
+    else
+      PROVIDER_COMMAND='add'
+    fi
+
+    $HAL_COMMAND config provider kubernetes account $PROVIDER_COMMAND {{ $context }} --docker-registries dockerhub \
                 --context {{ $context }} {{ if not $.Values.kubeConfig.enabled }}--service-account true{{ end }} \
                 {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file /opt/kube/{{ $.Values.kubeConfig.secretKey }}{{ end }} --omit-namespaces=kube-system,kube-public --provider-version v2
     {{- end }}
