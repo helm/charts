@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "zcashd.fullname" . }}
+  labels:
+    app: {{ template "zcashd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "zcashd.name" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+        - name: {{ template "zcashd.fullname" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          resources:
+  {{ toYaml .Values.resources | indent 10 }}
+          ports:
+            - name: rpc
+              containerPort: {{ .Values.rpcPort }}
+          volumeMounts:
+            - name: data
+              mountPath: /srv/zcashd
+            {{- if .Values.ssl.enabled }}
+            - name: ssl
+              mountPath: /etc/zcashd-ssl
+            {{- end }}
+            {{- if .Values.configurationFiles }}
+            - name: configurations
+              mountPath: /etc/zcashd
+            {{- end }}
+      volumes:
+        {{- if .Values.ssl.enabled }}
+        - name: ssl
+          secret:
+            secretName: {{ .Values.ssl.secretName  }}
+        {{- end }}
+        {{- if .Values.configurationFiles }}
+        - name: configurations
+          configMap:
+            name: {{ template "zcashd.fullname" . }}
+        {{- end }}
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "zcashd.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}

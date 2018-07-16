@@ -1,0 +1,13 @@
+{{- if .Values.configurationFiles }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "bitcoind.fullname" . }}
+  labels:
+{{ include "bitcoind.labels.standard" . | indent 4 }}
+data:
+{{- range $key, $val := .Values.configurationFiles }}
+  {{ $key }}: |-
+{{ $val | indent 4}}
+{{- end }}
+{{- end -}}

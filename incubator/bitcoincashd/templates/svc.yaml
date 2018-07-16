@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "bitcoincashd.fullname" . }}
+  labels:
+    app: {{ template "bitcoincashd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+    - name: rpc
+      port: {{ .Values.rpcPort }}
+      targetPort: rpc
+  selector:
+    app: {{ template "bitcoincashd.name" . }}
+    release: "{{ .Release.Name }}"

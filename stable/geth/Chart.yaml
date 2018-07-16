@@ -1,0 +1,17 @@
+name: geth
+version: 0.1.1
+appVersion: 1.8
+description: Official Go implementation of the Ethereum protocol
+keywords:
+  - geth
+  - cryptocurrency
+  - blockchain
+home: https://geth.ethereum.org
+icon: https://geth.ethereum.org/static/images/ethereum.png
+sources:
+  - https://github.com/kubernetes/charts
+  - https://github.com/ethereum/go-ethereum
+maintainers:
+  - name: daniel-yavorovich
+    email: daniel@arilot.com
+engine: gotpl

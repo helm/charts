@@ -16,7 +16,8 @@ data:
             "homesteadBlock": 0,
             "eip150Block": 0,
             "eip155Block": 0,
-            "eip158Block": 0
+            "eip158Block": 0,
+            "byzantiumBlock": 0
         },
         "difficulty":  {{ .Values.geth.genesis.difficulty | quote }},
         "gasLimit": {{ .Values.geth.genesis.gasLimit | quote }},
