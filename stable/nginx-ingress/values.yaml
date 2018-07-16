@@ -372,3 +372,9 @@ tcp: {}
 ##
 udp: {}
 #  53: "kube-system/kube-dns:53"
+
+controllerPodDisruptionBudget:
+  create: true
+
+defaultBackendPodDisruptionBudget:
+  create: true
