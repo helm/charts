@@ -7,6 +7,8 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
@@ -18,12 +20,8 @@ spec:
       labels:
         app: {{ template "vault.name" . }}
         release: {{ .Release.Name }}
-{{- if .Values.podAnnotations }}
       annotations:
-      {{- range $key, $value := .Values.podAnnotations }}
-        {{ $key }}: {{ $value | quote }}
-      {{- end }}
-{{- end }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -33,6 +31,10 @@ spec:
         command: ["vault", "server", "-dev", "-dev-listen-address", "[::]:8200"]
         {{- else }}
         command: ["vault", "server", "-config", "/vault/config/config.json"]
+        {{- end }}
+        {{- if .Values.lifecycle }}
+        lifecycle:
+{{ tpl .Values.lifecycle . | indent 10 }}
         {{- end }}
         ports:
         - containerPort: {{ .Values.service.port }}
@@ -64,6 +66,9 @@ spec:
                 fieldPath: status.podIP
           - name: VAULT_CLUSTER_ADDR
             value: "https://$(POD_IP):8201"
+        {{- if .Values.vault.extraEnv }}
+{{ toYaml .Values.vault.extraEnv | indent 10 }}
+        {{- end }}
         volumeMounts:
         - name: vault-config
           mountPath: /vault/config/
@@ -73,9 +78,42 @@ spec:
         - name: {{ .secretName }}
           mountPath: {{ .mountPath }}
         {{- end }}
+{{- if .Values.vault.extraContainers }}
+{{ toYaml .Values.vault.extraContainers | indent 6}}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       {{- if .Values.affinity }}
+      {{- if .Values.consulAgent.join }}
+      - name: {{ .Chart.Name }}-consul-agent
+        image: "{{ .Values.consulAgent.repository }}:{{ .Values.consulAgent.tag }}"
+        imagePullPolicy: {{ .Values.consulAgent.pullPolicy }}
+        securityContext:
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - name: consul-data
+          mountPath: /etc/consul
+        {{- if .Values.consulAgent.gossipKeySecretName }}
+        - name: consul-gossip-key
+          mountPath: /etc/consul/secrets
+          readOnly: true
+        {{- end }}
+        command:
+          - "/bin/sh"
+          - "-ec"
+          - |
+            {{- if .Values.consulAgent.gossipKeySecretName }}
+            if [ -e /etc/consul/secrets/gossip-key ]; then
+              echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
+              GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
+            fi
+            {{- end }}
+
+            exec /bin/consul agent \
+              $GOSSIP_KEY \
+              -join={{- .Values.consulAgent.join }} \
+              -data-dir=/etc/consul
+      {{- end }}
       affinity:
 {{ tpl .Values.affinity . | indent 8 }}
       {{- end }}
@@ -90,3 +128,19 @@ spec:
           secret:
             secretName: {{ .secretName }}
         {{- end }}
+{{- if .Values.vault.extraVolumes }}
+{{ toYaml .Values.vault.extraVolumes | indent 8}}
+{{- end }}
+        {{- if .Values.consulAgent.join }}
+        - name: consul-data
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.consulAgent.gossipKeySecretName }}
+        - name: consul-gossip-key
+          secret:
+            secretName: {{ .Values.consulAgent.gossipKeySecretName }}
+        {{- end }}
+      {{- if .Values.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret }}
+      {{- end }}

@@ -67,14 +67,31 @@ spec:
             httpGet:
               path: /
               port: {{ .Values.servicePort }}
+            {{- if not .Values.livenessProbe }}
             initialDelaySeconds: 10
             timeoutSeconds: 5
+            {{- else }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 10}}
+            {{- if .Values.livenessProbe.periodSeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            {{- end }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds | default 5}}
+            {{- if .Values.livenessProbe.successThreshold }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            {{- end }}
+            {{- if .Values.livenessProbe.failureThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            {{- end }}
+            {{- end }}
           readinessProbe:
             httpGet:
               path: /
               port: {{ .Values.servicePort }}
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 10}}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds | default 5}}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           env:
           - name: SCHEMA_REGISTRY_HOST_NAME
             valueFrom:
@@ -83,12 +100,12 @@ spec:
           - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
             value: {{ template "schema-registry.kafkaStore.bootstrapServers" . }}
           - name: SCHEMA_REGISTRY_KAFKASTORE_GROUP_ID
-            value: {{ template "schema-registry.groupId" . }}
+            value: {{ template "schema-registry.kafkaStore.groupId" . }}
           - name: SCHEMA_REGISTRY_MASTER_ELIGIBILITY
             value: "true"
           {{ range $configName, $configValue := .Values.configurationOverrides }}
           - name: SCHEMA_REGISTRY_{{ $configName | replace "." "_" | upper }}
-            value: {{ $configValue }}
+            value: {{ $configValue | quote }}
           {{ end }}
           {{- if .Values.schemaRegistryOpts }}
           # The pre-flight checks use KAFKA_OPTS instead of SCHEMA_REGISTRY_OPTS.

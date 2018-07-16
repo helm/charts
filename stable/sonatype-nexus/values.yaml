@@ -2,7 +2,7 @@ replicaCount: 1
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
-  imageTag: 3.9.0
+  imageTag: 3.12.1
   imagePullPolicy: IfNotPresent
   env:
     - name: install4jAddVmParams
@@ -31,10 +31,12 @@ nexus:
     initialDelaySeconds: 30
     periodSeconds: 30
     failureThreshold: 6
+    path: /
   readinessProbe:
     initialDelaySeconds: 30
     periodSeconds: 30
     failureThreshold: 6
+    path: /
 
 nexusProxy:
   imageName: quay.io/travelaudience/docker-nexus-proxy
@@ -54,7 +56,13 @@ nexusProxy:
   # secrets:
   #   keystore: ""
   #   password: ""
-
+  resources: {}
+    # requests:
+      # cpu: 100m
+      # memory: 256Mi
+    # limits:
+      # cpu: 200m
+      # memory: 512Mi
 persistence:
   enabled: true
   accessMode: ReadWriteOnce
@@ -90,6 +98,7 @@ nexusBackup:
 
 ingress:
   enabled: false
+  path: /
   annotations: {}
   # # NOTE: Can't use 'false' due to https://github.com/jetstack/kube-lego/issues/173.
   # kubernetes.io/ingress.allow-http: true

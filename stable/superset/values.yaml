@@ -47,6 +47,14 @@ configFile: |-
   # Set this API key to enable Mapbox visualizations
   MAPBOX_API_KEY = ''
 
+## Extra environment variables that will be passed onto deployment pod
+##
+extraEnv: {}
+
+## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
+## This can be useful for secret keys, etc
+##
+extraEnvFromSecret: ""
 
 persistence:
 

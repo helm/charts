@@ -1,6 +1,6 @@
 # Traefik
 
-[Traefik](http://traefik.io/) is a modern HTTP reverse proxy and load balancer made to deploy
+[Traefik](https://traefik.io/) is a modern HTTP reverse proxy and load balancer made to deploy
 microservices with ease.
 
 ## Introduction
@@ -87,10 +87,11 @@ The following table lists the configurable parameters of the Traefik chart and t
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
 | `fullnameOverride`              | Override the full resource names                                     | `{release-name}-traefik (or traefik if release-name is traefik`|
 | `image`                         | Traefik image name                                                   | `traefik`                                 |
-| `imageTag`                      | The version of the official Traefik image to use                     | `1.5.4`                                  |
+| `imageTag`                      | The version of the official Traefik image to use                     | `1.6.2`                                   |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
 | `loadBalancerIP`                | An available static IP you have reserved on your cloud platform      | None                                      |
 | `loadBalancerSourceRanges`      | List of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
+| `externalIP`                    | Static IP for the service                                            | None                                      |     
 | `whiteListSourceRange`          | Enable IP whitelisting at the entrypoint level.                      | `false`                                   |
 | `externalTrafficPolicy`         | Set the externalTrafficPolicy in the Service to either Cluster or Local | `Cluster`                              |
 | `replicas`                      | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
@@ -100,6 +101,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `cpuLimit`                      | CPU limit per Traefik pod                                            | `200m`                                    |
 | `memoryLimit`                   | Memory limit per Traefik pod                                         | `30Mi`                                    |
 | `rbac.enabled`                  | Whether to enable RBAC with a specific cluster role and binding for Traefik | `false`                            |
+| `deploymentStrategy`                  | Specify deployment spec rollout strategy                                       | `{}`                                      |
 | `nodeSelector`                  | Node labels for pod assignment                                       | `{}`                                      |
 | `affinity`                      | Affinity settings                                                    | `{}`                                      |
 | `tolerations`                   | List of node taints to tolerate                                      | `[]`                                      |
@@ -109,6 +111,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
 | `ssl.insecureSkipVerify`        | Whether to verify certs on SSL connections                           | `false`                                   |
+| `ssl.tlsMinVersion`             | Minimum TLS version for https entrypoint                             | None                                      |
 | `ssl.defaultCert`               | Base64 encoded default certificate                                    | A self-signed certificate                 |
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
@@ -118,6 +121,10 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
 | `acme.logging`                  | Display debug log messages from the ACME client library              | `false`                                   |
+| `acme.domains.enabled`          | Enable certificate creation by default for specific domain           | `false`                                   |
+| `acme.domains.domainList`       | List of domains & (optional) subject names                           | `[]`                                      |
+| `acme.domains.domainList.main`  | Main domain name of the generated certificate                        | *.example.com                             |
+| `acme.domains.domainList.sans`  | optional list of alternative subject names to give to the certificate | `[]`                                     |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
 | `acme.persistence.annotations`  | PVC annotations                                                      | `{}`                                      |
 | `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `nil` (uses alpha storage class annotation) |
@@ -138,6 +145,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
 | `kubernetes.namespaces`         | List of Kubernetes namespaces to watch                               | All namespaces                            |
 | `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch (e.g `realm=public`)| No label filter                           |
+| `kubernetes.ingressClass`       | Value of `kubernetes.io/ingress.class` annotation to watch - must start with `traefik` if set | None             |
 | `accessLogs.enabled`            | Whether to enable Traefik's access logs                              | `false`                                   |
 | `accessLogs.filePath`           | The path to the log file. Logs to stdout if omitted                  | None                                      |
 | `accessLogs.format`             | What format the log entries should be in. Either `common` or `json`  | `common`                                  |
@@ -177,7 +185,7 @@ Currently it is possible to specify the number of `replicas` but the implementat
 
 **Full Traefik clustering with leader election is not yet supported.**
 
-It is heavily advised to not set a value for `replicas` if you also have Let's Encrypt configured. While setting `replicas` will work for many cases, since no leader is elected it has the consequence that each node will end up requesting Let's Encrypt certificates if this is also configured. This will quickly cut into the very modest rate limit that Let's Encrypt enforces.
+It is heavily advised to not set a value for `replicas` if you also have Let's Encrypt configured. While setting `replicas` will work for many cases, since no leader is elected it has the consequence that each node will end up requesting Let's Encrypt certificates if this is also configured. This will quickly cut into the very modest rate limit that Let's Encrypt enforces. Also, if using challenges, the challenges may fail, as the challenge request may hit a pod without the challenge certificate.
 
 [Basic auth](https://docs.traefik.io/toml/#api-backend) can be specified via `dashboard.auth.basic` as a map of usernames to passwords as below.
 See the linked Traefik documentation for accepted passwords encodings.
@@ -216,6 +224,28 @@ acme:
     name:  # name of the dns provider to use
     $name: # the configuration of the dns provider. See the following section for an example
       # variables that the specific dns provider requires
+```
+
+### Let's Encrypt wildcard certificate
+
+To obtain an ACME (Let's Encrypt) wildcard certificate you must use a DNS challenge as explained above.
+Then you need to specify the wildcard domain name in the `acme.domains` section like this :
+
+```yaml
+acme:
+  enabled: true
+  challengeType: "dns-01"
+  dnsProvider:
+    name:  # name of the dns provider to use
+    $name: # the configuration of the dns provider. See the following section for an example
+      # variables that the specific dns provider requires
+  domains:
+    enabled: true
+    domainsList:
+      - main: "*.example.com" # name of the wildcard domain name for the certificate
+      - sans:
+        - "example.com" # OPTIONAL: Alternative name(s) for the certificate, if you want the same certificate for the root of the domain name for example
+      - main: "*.example2.com" # name of the wildcard domain name for the certificate
 ```
 
 #### Example: AWS Route 53

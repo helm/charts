@@ -24,6 +24,9 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
         - name: {{ template "cluster-autoscaler.name" . }}
         {{- if eq .Values.cloudProvider "spotinst" }}
@@ -72,8 +75,8 @@ spec:
               value: "{{ .Values.spotinst.account }}"
           {{- end }}
           {{- range $key, $value := .Values.extraEnv }}
-          - name: {{ $key }}
-            value: {{ $value }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
           {{- end }}
           livenessProbe:
             httpGet:

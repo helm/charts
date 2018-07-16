@@ -33,8 +33,12 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.14.0
+    tag: v0.15.1
     pullPolicy: IfNotPresent
+
+  ## alertmanager priorityClassName
+  ##
+  priorityClassName: ""
 
   ## Additional alertmanager container arguments
   ##
@@ -71,6 +75,10 @@ alertmanager:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
+    ## alertmanager Ingress additional labels
+    ##
+    extraLabels: {}
+
     ## alertmanager Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##
@@ -103,6 +111,11 @@ alertmanager:
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   persistentVolume:
     ## If true, alertmanager will create/use a Persistent Volume Claim
@@ -201,7 +214,7 @@ configmapReload:
   ##
   image:
     repository: jimmidyson/configmap-reload
-    tag: v0.1
+    tag: v0.2.2
     pullPolicy: IfNotPresent
 
   ## Additional configmap-reload container arguments
@@ -256,9 +269,13 @@ kubeStateMetrics:
   ## kube-state-metrics container image
   ##
   image:
-    repository: k8s.gcr.io/kube-state-metrics
-    tag: v1.2.0
+    repository: quay.io/coreos/kube-state-metrics
+    tag: v1.3.1
     pullPolicy: IfNotPresent
+
+  ## kube-state-metrics priorityClassName
+  ##
+  priorityClassName: ""
 
   ## kube-state-metrics container arguments
   ##
@@ -307,7 +324,9 @@ kubeStateMetrics:
       prometheus.io/scrape: "true"
     labels: {}
 
-    clusterIP: ""
+    # Exposed as a headless service:
+    # https://kubernetes.io/docs/concepts/services-networking/service/#headless-services
+    clusterIP: None
 
     ## List of IP addresses at which the kube-state-metrics service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -332,8 +351,12 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.15.2
+    tag: v0.16.0
     pullPolicy: IfNotPresent
+
+  ## node-exporter priorityClassName
+  ##
+  priorityClassName: ""
 
   ## Custom Update Strategy
   ##
@@ -376,6 +399,11 @@ nodeExporter:
   ##
   podAnnotations: {}
 
+  ## Labels to be added to node-exporter pods
+  ##
+  pod:
+    labels: {}
+
   ## node-exporter resource limits & requests
   ## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -397,7 +425,9 @@ nodeExporter:
       prometheus.io/scrape: "true"
     labels: {}
 
-    clusterIP: ""
+    # Exposed as a headless service:
+    # https://kubernetes.io/docs/concepts/services-networking/service/#headless-services
+    clusterIP: None
 
     ## List of IP addresses at which the node-exporter service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -419,8 +449,12 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.2.1
+    tag: v2.3.2
     pullPolicy: IfNotPresent
+
+  ## prometheus server priorityClassName
+  ##
+  priorityClassName: ""
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
@@ -430,6 +464,21 @@ server:
   ## External URL which can access alertmanager
   ## Maybe same with Ingress host name
   baseURL: ""
+
+  ## This flag controls access to the administrative HTTP API which includes functionality such as deleting time
+  ## series. This is disabled by default.
+  enableAdminApi: false
+
+  global:
+    ## How frequently to scrape targets by default
+    ##
+    scrape_interval: 1m
+    ## How long until a scrape request times out
+    ##
+    scrape_timeout: 10s
+    ## How frequently to evaluate rules
+    ##
+    evaluation_interval: 1m
 
   ## Additional Prometheus server container arguments
   ##
@@ -474,6 +523,10 @@ server:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
+    ## Prometheus server Ingress additional labels
+    ##
+    extraLabels: {}
+
     ## Prometheus server Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##
@@ -506,6 +559,11 @@ server:
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
+
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
 
   persistentVolume:
     ## If true, Prometheus server will create/use a Persistent Volume Claim
@@ -609,8 +667,12 @@ pushgateway:
   ##
   image:
     repository: prom/pushgateway
-    tag: v0.4.0
+    tag: v0.5.2
     pullPolicy: IfNotPresent
+
+  ## pushgateway priorityClassName
+  ##
+  priorityClassName: ""
 
   ## Additional pushgateway container arguments
   ##
@@ -697,7 +759,7 @@ pushgateway:
 ##
 alertmanagerFiles:
   alertmanager.yml:
-    global:
+    global: {}
       # slack_api_url: ''
 
     receivers:
@@ -719,17 +781,6 @@ serverFiles:
   rules: {}
 
   prometheus.yml:
-    global:
-      ## How frequently to scrape targets by default
-      ##
-      scrape_interval: 1m
-      ## How long until a scrape request times out
-      ##
-      scrape_timeout: 10s
-      ## How frequently to evaluate rules
-      ##
-      evaluation_interval: 1m
-
     rule_files:
       - /etc/config/rules
       - /etc/config/alerts

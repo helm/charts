@@ -34,7 +34,7 @@ $ helm delete my-release
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 ## Access control
-It is critical for the Kubernetes custer to correctly setup access control of Kubernetes Dashboard. See this [guide](https://github.com/kubernetes/dashboard/wiki/Access-control) for best practises.
+It is critical for the Kubernetes cluster to correctly setup access control of Kubernetes Dashboard. See this [guide](https://github.com/kubernetes/dashboard/wiki/Access-control) for best practises.
 
 It is highly recommended to use RBAC with minimal privileges needed for Dashboard to run.
 
@@ -47,6 +47,7 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `image.repository`        | Repository for container image                                                                                              | `k8s.gcr.io/kubernetes-dashboard-amd64`                                  |
 | `image.tag`               | Image tag                                                                                                                   | `v1.8.3`                                                                 |
 | `image.pullPolicy`        | Image pull policy                                                                                                           | `IfNotPresent`                                                           |
+| `replicaCount`          | Number of replicas                                                                                                            | `1`                |
 | `extraArgs`               | Additional container arguments                                                                                              | `[]`                                                                     |
 | `nodeSelector`            | node labels for pod assignment                                                                                              | `{}`                                                                     |
 | `tolerations`             | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                | `[]`                                                                     |

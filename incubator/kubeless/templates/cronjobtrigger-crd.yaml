@@ -1,0 +1,15 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+description: CRD object for Cron trigger type
+kind: CustomResourceDefinition
+metadata:
+  name: cronjobtriggers.kubeless.io
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  group: kubeless.io
+  names:
+    kind: CronJobTrigger
+    plural: cronjobtriggers
+    singular: cronjobtrigger
+  scope: Namespaced
+  version: v1beta1
