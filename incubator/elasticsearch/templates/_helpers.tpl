@@ -46,3 +46,36 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "elasticsearch.master.fullname" -}}
 {{ template "elasticsearch.fullname" . }}-{{ .Values.master.name }}
 {{- end -}}
+
+{{/*
+Create the default client node java opts
+We can add custom overrides here.
+
+`opts_equals` are applied with `-` prefix and `=` option. Ex. `foo: bar` -> `-foo=bar`
+`opts` are applied with `-` prefix and without a `=`. Ex. `foo: bar` -> `-foobar`
+*/}}
+{{- define "elasticsearch.client.java_opts" -}}
+-Djava.net.preferIPv4Stack=true {{ if .Values.client.heapSize }}-Xms{{ .Values.client.heapSize }} -Xmx{{ .Values.client.heapSize }}{{ end }}{{- range $opt, $val := .Values.client.java.opts_equals }}-{{ $opt }}={{ $val }} {{- end}} {{- range $opt, $val := .Values.client.java.opts }}-{{ $opt }}{{ $val }} {{- end}}
+{{- end -}}
+
+{{/*
+Create the default master node java opts
+We can add custom overrides here.
+
+`opts_equals` are applied with `-` prefix and `=` option. Ex. `foo: bar` -> `-foo=bar`
+`opts` are applied with `-` prefix and without a `=`. Ex. `foo: bar` -> `-foobar`
+*/}}
+{{- define "elasticsearch.master.java_opts" -}}
+-Djava.net.preferIPv4Stack=true {{ if .Values.master.heapSize }}-Xms{{ .Values.master.heapSize }} -Xmx{{ .Values.master.heapSize }}{{ end }}{{- range $opt, $val := .Values.master.java.opts_equals }}-{{ $opt }}={{ $val }} {{- end}} {{- range $opt, $val := .Values.master.java.opts }}-{{ $opt }}{{ $val }} {{- end}}
+{{- end -}}
+
+{{/*
+Create the default data node java opts
+We can add custom overrides here.
+
+`opts_equals` are applied with `-` prefix and `=` option. Ex. `foo: bar` -> `-foo=bar`
+`opts` are applied with `-` prefix and without a `=`. Ex. `foo: bar` -> `-foobar`
+*/}}
+{{- define "elasticsearch.data.java_opts" -}}
+-Djava.net.preferIPv4Stack=true {{ if .Values.data.heapSize }}-Xms{{ .Values.data.heapSize }} -Xmx{{ .Values.data.heapSize }}{{ end }}{{- range $opt, $val := .Values.data.java.opts_equals }}-{{ $opt }}={{ $val }} {{- end}} {{- range $opt, $val := .Values.data.java.opts }}-{{ $opt }}{{ $val }} {{- end}}
+{{- end -}}
