@@ -45,6 +45,9 @@ hazelcast:
             <tcp-ip enabled="false" />
             <discovery-strategies>
               <discovery-strategy enabled="true" class="com.hazelcast.kubernetes.HazelcastKubernetesDiscoveryStrategy">
+                <properties>
+                  <property name="service-name">${serviceName}</property>
+                </properties>
               </discovery-strategy>
             </discovery-strategies>
           </join>

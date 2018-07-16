@@ -60,10 +60,8 @@ spec:
         - name: hazelcast-storage
           mountPath: /data/hazelcast
         env:
-        - name: HZ_DATA
-          value: /data/hazelcast
         - name: JAVA_OPTS
-          value: "-Dhazelcast.rest.enabled={{ .Values.hazelcast.rest }} {{ .Values.hazelcast.javaOpts }}"
+          value: "-Dhazelcast.rest.enabled={{ .Values.hazelcast.rest }} -Dhazelcast.config=/data/hazelcast/hazelcast.xml -DserviceName={{ template "hazelcast.fullname" . }} {{ .Values.hazelcast.javaOpts }}"
       volumes:
       - name: hazelcast-storage
         configMap:
