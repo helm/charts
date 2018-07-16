@@ -14,6 +14,6 @@ roleRef:
   name: {{ template "kured.fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ .Values.rbac.serviceAccountName }}
+  name: {{ template "kured.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 {{- end -}}

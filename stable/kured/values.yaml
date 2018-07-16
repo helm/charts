@@ -8,6 +8,9 @@ extraArgs:  {}
 
 rbac:
   create: true
-  serviceAccountName: kured
+
+serviceAccount:
+  create: true
+  name:
 
 updateStrategy: OnDelete

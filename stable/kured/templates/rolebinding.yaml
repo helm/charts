@@ -12,7 +12,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   namespace: {{ .Release.Namespace }}
-  name: {{ .Values.rbac.serviceAccountName }}
+  name: {{ template "kured.serviceAccountName" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

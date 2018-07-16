@@ -22,7 +22,7 @@ spec:
         app: {{ template "kured.name" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ .Values.rbac.serviceAccountName }}
+      serviceAccountName: {{ template "kured.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
