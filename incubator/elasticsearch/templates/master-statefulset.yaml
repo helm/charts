@@ -90,8 +90,8 @@ spec:
           value: "false"
 {{- end }}
         - name: DISCOVERY_SERVICE
-{{- if .Values.cluster.discoveryService }}
-          value: {{ .Values.cluster.discoveryService }}
+{{- if .Values.cluster.shortDiscoveryURI }}
+          value: {{ template "elasticsearch.fullname" . }}-discovery.{{ .Release.Namespace }}
 {{- else }}
           value: {{ template "elasticsearch.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.cluster.kubernetesDomain }}
 {{- end }}
