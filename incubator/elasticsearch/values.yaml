@@ -104,4 +104,3 @@ data:
   ## (dict) If specified, apply these annotations to each data Pod
   # podAnnotations:
   #   example: data-foo
-  
