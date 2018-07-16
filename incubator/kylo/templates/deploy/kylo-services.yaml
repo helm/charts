@@ -38,7 +38,8 @@ spec:
           image: "{{ .Values.kylo.services.image.repository }}:{{ .Values.kylo.services.image.tag }}"
           ports:
             - containerPort: 8420
-          resources: {}
+          resources:
+{{ toYaml .Values.kylo.resources | indent 12 }}
           volumeMounts:
             - mountPath: /opt/kylo/kylo-services/conf
               name: kylo-services-config
@@ -51,6 +52,9 @@ spec:
             - name: sparkconf
               mountPath: /etc/spark2/
               readOnly: true
+            - name: "hive-site"
+              mountPath: /opt/spark/conf/hive-site.xml
+              subPath: "hive-site.xml"
       restartPolicy: Always
       volumes:
         - name: kylovol
@@ -74,3 +78,9 @@ spec:
         - name: sparkconf
           hostPath:
             path: /etc/spark2/
+        - name: "hive-site"
+          configMap:
+            name: {{ template "kylo.fullname" . }}-kylo-services
+            items:
+              - key: "hive-site.xml"
+                path: "hive-site.xml"

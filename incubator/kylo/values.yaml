@@ -124,6 +124,10 @@ elasticsearch:
     #    name: nothing
     #    readOnly: true
 
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources: {}
+
 ## Kylo configuration
 kylo:
   services:
@@ -188,6 +192,16 @@ kylo:
     #  - mountPath: /var/nothing
     #    name: nothing
     #    readOnly: true
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources:
+    requests:
+      memory: "1028Mi"
+      cpu: "1000m"
+    limits:
+      memory: "2048Mi"
+      cpu: "2000m"
 
 ## MySQL configuration
 mysql:
@@ -329,6 +343,16 @@ nifi:
     # Storage capacity for nifi logs
     logStorage: 5Gi
 
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources:
+    requests:
+      memory: "1028Mi"
+      cpu: "1000m"
+    limits:
+      memory: "4096Mi"
+      cpu: "2000m"
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources: {}
@@ -370,10 +394,10 @@ zookeeper:
   ## Configure Zookeeper resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   resources:
-    limits:
-      memory: "256Mi"
     requests:
       memory: "128Mi"
+    limits:
+      memory: "256Mi"
 
   nodeSelector: {}
 

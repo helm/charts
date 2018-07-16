@@ -36,7 +36,7 @@ spec:
         imagePullPolicy: {{ .Values.nifi.image.pullPolicy | quote }}
         image: "{{ .Values.nifi.image.repository }}:{{ .Values.nifi.image.tag }}"
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml .Values.nifi.resources | indent 10 }}
         ports:
         - containerPort: {{ .Values.nifi.properties.httpPort }}
           name: http
@@ -53,6 +53,8 @@ spec:
           value: {{ .Values.keystorePass }}
         - name: OU
           value: "NiFi"
+        - name: HADOOP_CONF_DIR
+          value: /etc/hadoop/conf:/opt/spark/conf
         - name: HOST
           valueFrom:
             fieldRef:
@@ -60,8 +62,6 @@ spec:
         - name: HEADLESS
           value: {{ template "kylo.fullname" . }}-nifi-headless
         volumeMounts:
-          - name: "data"
-            mountPath: /opt/nifi/data
           - name: "flowfile-repository"
             mountPath: /opt/nifi/flowfile_repository
           - name: "content-repository"
@@ -70,6 +70,9 @@ spec:
             mountPath: /opt/nifi/provenance_repository
           - name: "logs"
             mountPath: /opt/nifi/logs
+          - name: "issue-attributes-1000-rows"
+            mountPath: /opt/fake_data/Issue_Attribute_1000_rows_2018-05-04-13-52-58.csv
+            subPath: "Issue_Attribute_1000_rows_2018-05-04-13-52-58.csv"
           - name: "bootstrap-conf"
             mountPath: /opt/nifi/nifi-{{ .Values.nifi.image.version }}/conf/bootstrap.conf
             subPath: "bootstrap.conf"
@@ -79,6 +82,12 @@ spec:
           - name: "hdfs-site"
             mountPath: /etc/hadoop/conf/hdfs-site.xml
             subPath: "hdfs-site.xml"
+          - name: "hive-site"
+            mountPath: /opt/spark/conf/hive-site.xml
+            subPath: "hive-site.xml"
+          - name: "spark-defaults-conf"
+            mountPath: /opt/spark/conf/spark.defaults.conf
+            subPath: "spark.defaults.conf"
           - name: "nifi-properties"
             mountPath: /opt/nifi/nifi-{{ .Values.nifi.image.version }}/conf/nifi.temp
             subPath: "nifi.temp"
@@ -133,6 +142,12 @@ spec:
             - name: "templates"
               mountPath: /templates
       volumes:
+      - name: "issue-attributes-1000-rows"
+        configMap:
+          name: {{ template "kylo.fullname" . }}-nifi
+          items:
+            - key: "Issue_Attribute_1000_rows_2018-05-04-13-52-58.csv"
+              path: "Issue_Attribute_1000_rows_2018-05-04-13-52-58.csv"
       - name: "templates"
         configMap:
           name: {{ template "kylo.fullname" . }}-nifi
@@ -157,6 +172,18 @@ spec:
           items:
             - key: "hdfs-site.xml"
               path: "hdfs-site.xml"
+      - name: "hive-site"
+        configMap:
+          name: {{ template "kylo.fullname" . }}-nifi
+          items:
+            - key: "hive-site.xml"
+              path: "hive-site.xml"
+      - name: "spark-defaults-conf"
+        configMap:
+          name: {{ template "kylo.fullname" . }}-nifi
+          items:
+            - key: "spark.defaults.conf"
+              path: "spark.defaults.conf"
       - name: "nifi-properties"
         configMap:
           name: {{ template "kylo.fullname" . }}-nifi

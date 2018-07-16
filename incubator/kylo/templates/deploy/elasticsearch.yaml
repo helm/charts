@@ -47,7 +47,8 @@ spec:
           ports:
             - containerPort: 9200
             - containerPort: 9300
-          resources: {}
+          resources:
+{{ toYaml .Values.elasticsearch.resources | indent 12 }}
           volumeMounts:
             - name: elasticsearchvol
               mountPath: /usr/share/elasticsearch/data

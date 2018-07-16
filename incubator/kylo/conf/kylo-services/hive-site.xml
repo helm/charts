@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+  <property>
+      <name>javax.jdo.option.ConnectionURL</name>
+      <value>jdbc:postgresql://hadoop-postgresql:5432/metastore?createDatabaseIfNotExist=true</value>
+      <description>metadata is stored in a PostgreSQL server</description>
+  </property>
+  <property>
+      <name>javax.jdo.option.ConnectionDriverName</name>
+      <value>org.postgresql.Driver</value>
+      <description>PostgreSQL JDBC driver class</description>
+  </property>
+  <property>
+      <name>javax.jdo.option.ConnectionUserName</name>
+      <value>hiveuser</value>
+      <description>user name for connecting to pgsql server</description>
+  </property>
+  <property>
+      <name>javax.jdo.option.ConnectionPassword</name>
+      <value>hivepasswd</value>
+      <description>password for connecting to pgsql server</description>
+  </property>
+  <property>
+    <name>hive.metastore.schema.verification</name>
+    <value>false</value>
+    <description>
+      Enforce metastore schema version consistency.
+      True: Verify that version information stored in is compatible with one from Hive jars.  Also disable automatic
+            schema migration attempt. Users are required to manually migrate schema after Hive upgrade which ensures
+            proper metastore schema migration. (Default)
+      False: Warn if the version information stored in metastore doesn't match with one from in Hive jars.
+    </description>
+  </property>
+  <property>
+    <name>hive.metastore.schema.verification.record.version</name>
+    <value>false</value>
+    <description>Creates necessary schema on a startup if one doesn't exist</description>
+  </property>
+  <property>
+      <name>datanucleus.autoCreateSchema</name>
+      <value>false</value>
+      <description>Creates necessary schema on a startup if one doesn't exist</description>
+  </property>
+</configuration>
