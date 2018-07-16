@@ -27,11 +27,29 @@ data:
 
     # Storage
     {{ if .Values.minio.enabled }}
-    echo {{ .Values.minio.secretKey }} | $HAL_COMMAND config storage s3 edit --endpoint http://{{ .Release.Name }}-minio:9000 --access-key-id {{ .Values.minio.accessKey }} --secret-access-key --bucket {{ .Values.storageBucket }}
+    echo {{ .Values.minio.secretKey }} | $HAL_COMMAND config storage s3 edit --endpoint http://{{ .Release.Name }}-minio:9000 --access-key-id {{ .Values.minio.accessKey }} --secret-access-key --bucket {{ .Values.minio.bucket }}
+    $HAL_COMMAND config storage edit --type s3
+    {{ end }}
+    {{ if .Values.s3.enabled }}
+    {{- if .Values.s3.secretKey -}} cat /opt/s3/secretKey | {{- end }} $HAL_COMMAND config storage s3 edit \
+      --bucket {{ .Values.s3.bucket }} \
+      {{- if .Values.s3.rootFolder }}
+      --root-folder {{ .Values.s3.rootFolder }} \
+      {{- end }}
+      {{- if .Values.s3.region }}
+      --region {{ .Values.s3.region }} \
+      {{- end }}
+      {{- if .Values.s3.endpoint }}
+      --endpoint {{ .Values.s3.endpoint }} \
+      {{- end }}
+      {{- if .Values.s3.accessKey }}
+      --access-key-id "$(cat /opt/s3/accessKey)" \
+      {{- end }}
+
     $HAL_COMMAND config storage edit --type s3
     {{ end }}
     {{ if .Values.gcs.enabled }}
-    $HAL_COMMAND config storage gcs edit --project {{ .Values.gcs.project }} --json-path /opt/gcs/key.json --bucket {{ .Values.storageBucket }}
+    $HAL_COMMAND config storage gcs edit --project {{ .Values.gcs.project }} --json-path /opt/gcs/key.json --bucket {{ .Values.gcs.bucket }}
     $HAL_COMMAND config storage edit --type gcs
     {{ end }}
 
