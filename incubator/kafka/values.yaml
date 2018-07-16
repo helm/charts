@@ -246,7 +246,7 @@ prometheus:
     image: danielqsj/kafka-exporter
 
     ## The image tag to use for the metrics collector
-    imageTag: v1.0.1
+    imageTag: v1.2.0
 
     ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
     interval: 10s
