@@ -14,20 +14,26 @@ nfs:
   server: 
   path: /ifs/kubernetes
 
-## For creating the StorageClass automatically:
+# For creating the StorageClass automatically:
 storageClass:
   create: true
 
-  ## Set a provisioner name. If unset, a name will be generated.
+  # Set a provisioner name. If unset, a name will be generated.
   # provisionerName: 
 
-  ## Set StorageClass as the default StorageClass
-  ## Ignored if storageClass.create is false
+  # Set StorageClass as the default StorageClass
+  # Ignored if storageClass.create is false
   defaultClass: false
 
-  ## Set a StorageClass name
-  ## Ignored if storageClass.create is false
+  # Set a StorageClass name
+  # Ignored if storageClass.create is false
   name: nfs-client
+
+  # Allow volume to be expanded dynamically
+  allowVolumeExpansion: true
+
+  # Method used to reclaim an obsoleted volume
+  reclaimPolicy: Delete
 
 ## For RBAC support:
 rbac:
