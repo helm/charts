@@ -3,8 +3,7 @@ image:
   # This chart is compatible with different images, please choose one
   repository: datadog/agent               # Agent6
   # repository: datadog/dogstatsd         # Standalone DogStatsD6
-  # repository: datadog/docker-dd-agent   # Agent5
-  tag: 6.3.0  # Use 6.3.0-jmx to enable jmx fetch collection
+  tag: 6.3.2  # Use 6.3.2-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
 
 # NB! Normally you need to keep Datadog DaemonSet enabled!
@@ -117,13 +116,13 @@ datadog:
   # logsEnabled: false
   # logsConfigContainerCollectAll: false
 
-  ## Un-comment this to enable APM and tracing, on ports 7777 and 8126
+  ## Un-comment this to enable APM and tracing, on port 8126
   ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
   ##
   # apmEnabled: true
 
   ## The dd-agent supports many environment variables
-  ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
+  ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#environment-variables
   ##
   # env:
   #   - name:
@@ -151,21 +150,10 @@ datadog:
   ##
   # leaderLeaseDuration: 600
 
-  ## Provide additional service definitions
-  ## Each key will become a file in /conf.d/auto_conf
-  ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
-  ##
-  # autoconf:
-  #   kubernetes_state.yaml: |-
-  #     docker_images:
-  #       - kube-state-metrics
-  #     init_config:
-  #     instances:
-  #       - kube_state_url: http://%%host%%:%%port%%/metrics
-
-  ## Provide additional service definitions
+  ## Provide additional check configurations (static and Autodiscovery)
   ## Each key will become a file in /conf.d
-  ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
+  ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#optional-volumes
+  ## ref: https://docs.datadoghq.com/agent/autodiscovery/
   ##
   # confd:
   #   redisdb.yaml: |-
@@ -173,10 +161,16 @@ datadog:
   #     instances:
   #       - host: "name"
   #         port: "6379"
+  #   kubernetes_state.yaml: |-
+  #     ad_identifiers:
+  #       - kube-state-metrics
+  #     init_config:
+  #     instances:
+  #       - kube_state_url: http://%%host%%:8080/metrics
 
-  ## Provide additional service checks
+  ## Provide additional custom checks as python code
   ## Each key will become a file in /checks.d
-  ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
+  ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#optional-volumes
   ##
   # checksd:
   #   service.py: |-
