@@ -1,3 +1,11 @@
+### 1.1.3
+
+* [3df661cc](https://github.com/kubernetes/charts/commit/3df661cc):  Use the gocd-agent-docker-dind image of the tag same as of GoCD app version
+
+### 1.1.2
+
+* [ec6474b9](https://github.com/kubernetes/charts/commit/ec6474b9):  Fix heath check->health check (#6269)
+
 ### 1.1.1
 
 * [ccd0a08d](https://github.com/kubernetes/charts/commit/ccd0a08d): Do not perform preconfigure_server script if server has already been configured

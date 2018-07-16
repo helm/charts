@@ -322,9 +322,9 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.service.pool`   | Artifactory instances to be in the load balancing pool. `members` or `all` | `members`    |
 | `artifactory.externalPort`   | Artifactory service external port                         | `8081`                        |
 | `artifactory.internalPort`   | Artifactory service internal port                         | `8081`                        |
-| `artifactory.internalPortReplicator` | Replicator service internal port | `6061`                                         |
-| `artifactory.externalPortReplicator` | Replicator service external port | `6061`                                         |
-| `artifactory.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                |
+| `artifactory.internalPortReplicator` | Replicator service internal port | `6061`   |
+| `artifactory.externalPortReplicator` | Replicator service external port | `6061`   |
+| `artifactory.livenessProbe.enabled`              | Enable liveness probe                     |  `true`                                        |
 | `artifactory.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 180                                                   |
 | `artifactory.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                    |
 | `artifactory.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                                                    |
@@ -395,7 +395,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.internalPortHttps` | Nginx service internal port           | `443`                           |
 | `nginx.internalPortReplicator` | Replicator service internal port | `6061`                          |
 | `nginx.externalPortReplicator` | Replicator service external port | `6061`                          |
-| `nginx.livenessProbe.enabled`              | would you like a livessProbed to be enabled            |  `true`                                  |
+| `nginx.livenessProbe.enabled`              | would you like a liveness Probe to be enabled          |  `true`                                  |
 | `nginx.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 100                                                   |
 | `nginx.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                    |
 | `nginx.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                                                    |
