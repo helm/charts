@@ -8,12 +8,17 @@ image:
   tag: "6.3.1"
   pullPolicy: "IfNotPresent"
 
+plugins: {}
+index: {}
+
 cluster:
   name: "elasticsearch"
   kubernetesDomain: cluster.local
   # If you want X-Pack installed, switch to an image that includes it, enable this option and toggle the features you want
   # enabled in the environment variables outlined in the README
   xpackEnable: false
+  slowlogEnable: false
+  gclogEnable: false
   config:
   env:
     # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
@@ -29,6 +34,9 @@ client:
 #  serviceAnnotations:
 #    example: client-svc-foo
   heapSize: "512m"
+  java:
+    opts_equal: {}
+    opts: {}
   antiAffinity: "soft"
   nodeSelector: {}
   tolerations: {}
@@ -49,6 +57,9 @@ master:
   exposeHttp: false
   replicas: 3
   heapSize: "512m"
+  java:
+    opts_equal: {}
+    opts: {}
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
@@ -75,6 +86,9 @@ data:
   exposeHttp: false
   replicas: 2
   heapSize: "1536m"
+  java:
+    opts_equal: {}
+    opts: {}
   persistence:
     enabled: true
     accessMode: ReadWriteOnce

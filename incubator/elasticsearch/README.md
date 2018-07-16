@@ -76,6 +76,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`  |
 | `client.priorityClassName`           | Client priorityClass                                                | `nil`                                |
 | `client.heapSize`                    | Client node heap size                                               | `512m`                               |
+| `client.java.opts_equal`             | Client node java `-<key>=<value>` options                           | `{}`                                 |
+| `client.java.opts`                   | Client node java `-<key><value>` options                            | `{}`                                 |
 | `client.podAnnotations`              | Client Deployment annotations                                       | `{}`                                 |
 | `client.nodeSelector`                | Node labels for client pod assignment                               | `{}`                                 |
 | `client.tolerations`                 | Client tolerations                                                  | `{}`                                 |
@@ -90,6 +92,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.nodeSelector`                | Node labels for master pod assignment                               | `{}`                                 |
 | `master.tolerations`                 | Master tolerations                                                  | `{}`                                 |
 | `master.heapSize`                    | Master node heap size                                               | `512m`                               |
+| `master.java.opts_equal`             | Master node java `-<key>=<value>` options                           | `{}`                                 |
+| `master.java.opts`                   | Master node java `-<key><value>` options                            | `{}`                                 |
 | `master.name`                        | Master component name                                               | `master`                             |
 | `master.persistence.enabled`         | Master persistent enabled/disabled                                  | `true`                               |
 | `master.persistence.name`            | Master statefulset PVC template name                                | `data`                               |
@@ -101,6 +105,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`  |
 | `data.priorityClassName`             | Data priorityClass                                                  | `nil`                                |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                              |
+| `data.java.opts_equal`               | Data node java `-<key>=<value>` options                             | `{}`                                 |
+| `data.java.opts`                     | Data node java `-<key><value>` options                              | `{}`                                 |
 | `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                               |
 | `data.persistence.name`              | Data statefulset PVC template name                                  | `data`                               |
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                               |
