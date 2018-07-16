@@ -9,6 +9,9 @@ service:
 listenAll: True
 tags: ''
 
+rookout:
+  token: ''
+
 nodeSelector: {}
 
 tolerations: []
