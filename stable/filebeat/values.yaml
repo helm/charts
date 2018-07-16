@@ -1,6 +1,6 @@
 image:
-  repository: docker.elastic.co/beats/filebeat
-  tag: 6.2.3
+  repository: docker.elastic.co/beats/filebeat-oss
+  tag: 6.3.1
   pullPolicy: IfNotPresent
 
 config:
@@ -16,23 +16,25 @@ config:
       reload.enabled: false
 
   processors:
-  - add_cloud_metadata:
+    - add_cloud_metadata:
 
   filebeat.prospectors:
-  - type: log
-    enabled: true
-    paths:
-    - /var/log/*.log
-  - type: docker
-    containers.ids:
-    - "*"
-    processors:
-    - add_kubernetes_metadata:
-        in_cluster: true
-    - drop_event:
-        when:
-          equals:
-            kubernetes.container.name: "filebeat"
+    - type: log
+      enabled: true
+      paths:
+        - /var/log/*.log
+        - /var/log/messages
+        - /var/log/syslog
+    - type: docker
+      containers.ids:
+      - "*"
+      processors:
+        - add_kubernetes_metadata:
+            in_cluster: true
+        - drop_event:
+            when:
+              equals:
+                kubernetes.container.name: "filebeat"
 
   output.file:
     path: "/usr/share/filebeat/data"
@@ -74,6 +76,13 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 100Mi
+
+nodeSelector: {}
+
+tolerations:
+  - operator: Exists
+
+affinity: {}
 
 rbac:
   # Specifies whether RBAC resources should be created

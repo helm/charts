@@ -1,6 +1,6 @@
 name: ghost
-version: 4.0.5
-appVersion: 1.24.7-debian-8
+version: 4.0.7
+appVersion: 1.24.8
 description: A simple, powerful publishing platform that allows you to share your
   stories with the world
 keywords:
