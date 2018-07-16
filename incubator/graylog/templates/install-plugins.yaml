@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "graylog.fullname" . }}-install-plugins
+  labels:
+    app: {{ template "graylog.name" . }}-node
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: graylog-node
+data:
+  install_plugins.sh: |-
+    cd /usr/share/graylog/plugin
+    {{- if .Values.plugins.install }}
+      {{- range $index, $val := .Values.plugins.install }}
+        wget {{ $val }} --no-check-certificate
+      {{- end }}
+    {{- end }}

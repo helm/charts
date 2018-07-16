@@ -20,6 +20,25 @@ spec:
         app: {{ template "graylog.name" . }}-node
         role: graylog-node
     spec:
+      initContainers:
+        - name: install-plugins
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["sh",
+            "-c",
+            "cp /tmp/scripts/install_plugins.sh /usr/share/graylog/plugin/install_plugins.sh &&
+            chmod 0775 /usr/share/graylog/plugin/install_plugins.sh &&
+            /usr/share/graylog/plugin/install_plugins.sh &&
+            cp /usr/share/graylog/plugin/* /usr/share/graylog/plugin_install
+            "
+          ]
+          volumeMounts:
+            - mountPath: /usr/share/graylog/plugin_install
+              name: graylog-plugins
+              subPath: plugin
+            - name: install-plugins
+              mountPath: /tmp/scripts/
+          resources:
+{{ toYaml .Values.plugins.resources | indent 12 }}
       containers:
       - name: graylog
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -83,3 +102,15 @@ spec:
             secretKeyRef:
               name: {{ template "graylog.fullname" . }}
               key: root_password
+        volumeMounts:
+          - mountPath: /usr/share/graylog/plugin
+            name: graylog-plugins
+            subPath: plugin
+      volumes:
+      - name: install-plugins
+        configMap:
+          name: {{ template "graylog.fullname" . }}-install-plugins
+          items:
+            - key: install_plugins.sh
+              path: install_plugins.sh
+      - name: graylog-plugins
