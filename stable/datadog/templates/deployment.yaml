@@ -48,9 +48,7 @@ spec:
             value: {{ .Values.datadog.logLevel | quote }}
           {{- end }}
           {{- if .Values.datadog.nonLocalTraffic }}
-          - name: NON_LOCAL_TRAFFIC # agent5
-            value: {{ .Values.datadog.nonLocalTraffic | quote }}
-          - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC # agent6
+          - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
             value: {{ .Values.datadog.nonLocalTraffic | quote }}
           {{- end }}
           {{- if .Values.datadog.tags }}
@@ -61,8 +59,6 @@ spec:
           - name: DD_APM_ENABLED
             value: {{ .Values.datadog.apmEnabled | quote }}
           {{- end }}
-          - name: SD_BACKEND
-            value: docker
           - name: KUBERNETES
             value: "yes"
           {{- if .Values.datadog.collectEvents }}
@@ -82,7 +78,7 @@ spec:
           - name: cgroups
             mountPath: /host/sys/fs/cgroup
             readOnly: true
-          {{- if .Values.datadog.confd }}
+          {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
           - name: confd
             mountPath: /conf.d
             readOnly: true
@@ -90,15 +86,6 @@ spec:
           {{- if .Values.datadog.checksd }}
           - name: checksd
             mountPath: /checks.d
-            readOnly: true
-          {{- end }}
-          {{- if .Values.datadog.autoconf }}
-          - name: autoconf
-            {{- if hasSuffix "-alpine" .Values.image.tag }}
-            mountPath: /opt/datadog-agent/agent/conf.d/auto_conf
-            {{- else }}
-            mountPath: /etc/dd-agent/conf.d/auto_conf
-            {{- end }}
             readOnly: true
           {{- end }}
 {{- if .Values.datadog.volumeMounts }}
@@ -120,7 +107,7 @@ spec:
         - hostPath:
             path: /sys/fs/cgroup
           name: cgroups
-        {{- if .Values.datadog.confd }}
+        {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
         - name: confd
           configMap:
             name: {{ template "datadog.confd.fullname" . }}
@@ -129,11 +116,6 @@ spec:
         - name: checksd
           configMap:
             name: {{ template "datadog.checksd.fullname" . }}
-        {{- end }}
-        {{- if .Values.datadog.autoconf }}
-        - name: autoconf
-          configMap:
-            name: {{ template "datadog.autoconf.fullname" . }}
         {{- end }}
 {{- if .Values.datadog.volumes }}
 {{ toYaml .Values.datadog.volumes | indent 8 }}
