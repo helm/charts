@@ -49,9 +49,6 @@ spec:
           {{- end }}
           name: traceport
           protocol: TCP
-        - containerPort: 7777
-          name: legacytraceport
-          protocol: TCP
         {{- end }}
         env:
           - name: DD_API_KEY
@@ -64,9 +61,7 @@ spec:
             value: {{ .Values.datadog.logLevel | quote }}
           {{- end }}
           {{- if .Values.datadog.nonLocalTraffic }}
-          - name: NON_LOCAL_TRAFFIC # agent5
-            value: {{ .Values.datadog.nonLocalTraffic | quote }}
-          - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC # agent6
+          - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
             value: {{ .Values.datadog.nonLocalTraffic | quote }}
           {{- end }}
           {{- if .Values.datadog.tags }}
@@ -77,22 +72,18 @@ spec:
           - name: DD_APM_ENABLED
             value: {{ .Values.datadog.apmEnabled | quote }}
           {{- end }}
-          - name: KUBERNETES_LEADER_CANDIDATE # agent5
-            value: {{ .Values.datadog.leaderElection | quote}}
-          - name: DD_LEADER_ELECTION  # agent6
-            value: {{ .Values.datadog.leaderElection | quote}}
           {{- if .Values.datadog.leaderElection }}
-          - name: KUBERNETES_LEADER_LEASE_DURATION # agent5
-            value: {{ default "600" .Values.datadog.leaderLeaseDuration | quote }}
-          - name: DD_LEADER_LEASE_DURATION # agent6
-            value: {{ default "60" .Values.datadog.leaderLeaseDuration | quote }}
+          - name: DD_LEADER_ELECTION
+            value: {{ .Values.datadog.leaderElection | quote}}
+          {{- end }}
+          {{- if .Values.datadog.leaderLeaseDuration }}
+          - name: DD_LEADER_LEASE_DURATION
+            value: {{ .Values.datadog.leaderLeaseDuration | quote }}
           {{- end }}
           {{- if .Values.datadog.collectEvents }}
-          - name: DD_COLLECT_KUBERNETES_EVENTS # agent6
+          - name: DD_COLLECT_KUBERNETES_EVENTS
             value: {{.Values.datadog.collectEvents | quote}}
           {{- end }}
-          - name: SD_BACKEND  # agent5
-            value: docker
           - name: KUBERNETES
             value: "yes"
           {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
@@ -109,7 +100,6 @@ spec:
           - name: DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL
             value: {{.Values.datadog.logsConfigContainerCollectAll | quote}}
           {{- end }}
-
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
 {{- end }}
@@ -123,7 +113,7 @@ spec:
           - name: cgroups
             mountPath: /host/sys/fs/cgroup
             readOnly: true
-          {{- if .Values.datadog.confd }}
+          {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
           - name: confd
             mountPath: /conf.d
             readOnly: true
@@ -131,15 +121,6 @@ spec:
           {{- if .Values.datadog.checksd }}
           - name: checksd
             mountPath: /checks.d
-            readOnly: true
-          {{- end }}
-          {{- if .Values.datadog.autoconf }}
-          - name: autoconf
-            {{- if hasSuffix "-alpine" .Values.image.tag }}
-            mountPath: /opt/datadog-agent/agent/conf.d/auto_conf
-            {{- else }}
-            mountPath: /etc/dd-agent/conf.d/auto_conf
-            {{- end }}
             readOnly: true
           {{- end }}
           {{- if .Values.datadog.logsEnabled }}
@@ -165,7 +146,7 @@ spec:
         - hostPath:
             path: /sys/fs/cgroup
           name: cgroups
-        {{- if .Values.datadog.confd }}
+        {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
         - name: confd
           configMap:
             name: {{ template "datadog.confd.fullname" . }}
@@ -174,11 +155,6 @@ spec:
         - name: checksd
           configMap:
             name: {{ template "datadog.checksd.fullname" . }}
-        {{- end }}
-        {{- if .Values.datadog.autoconf }}
-        - name: autoconf
-          configMap:
-            name: {{ template "datadog.autoconf.fullname" . }}
         {{- end }}
         {{- if .Values.datadog.logsEnabled }}
         - hostPath:
