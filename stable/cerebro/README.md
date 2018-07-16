@@ -46,6 +46,7 @@ The following table lists the configurable parameters of the cerebro chart and t
 | `service.type`                      | Type of Service                    | `ClusterIP`                               |
 | `service.port`                      | Port for kubernetes service        | `80`                                      |
 | `service.annotations`               | Annotations to add to the service  | `{}`                                      |
+| `service.labels`                    | Labels to add to the service       | `{}`                                      |
 | `resources.requests.cpu`            | CPU resource requests              |                                           |
 | `resources.limits.cpu`              | CPU resource limits                |                                           |
 | `resources.requests.memory`         | Memory resource requests           |                                           |
