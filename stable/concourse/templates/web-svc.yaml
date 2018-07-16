@@ -36,5 +36,10 @@ spec:
       {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.tsaNodePort }}
       nodePort: {{ .Values.web.service.tsaNodePort}}
       {{ end }}
+    {{- if .Values.web.metrics.prometheus.enabled }}
+    - name: prometheus
+      port: {{ .Values.web.metrics.prometheus.port }}
+      targetPort: prometheus
+    {{- end }}
   selector:
     app: {{ template "concourse.web.fullname" . }}
