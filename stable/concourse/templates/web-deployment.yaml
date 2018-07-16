@@ -17,6 +17,10 @@ spec:
       annotations:
 {{ toYaml .Values.web.annotations | indent 8 }}
     spec:
+    {{- with .Values.web.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.web.fullname" . }}{{ else }}{{ .Values.rbac.webServiceAccountName }}{{ end }}
       tolerations:
 {{ toYaml .Values.web.tolerations | indent 8 }}
@@ -331,6 +335,9 @@ spec:
             - name: CONCOURSE_INFLUXDB_INSECURE_SKIP_VERIFY
               value: {{ .Values.web.metrics.influxdb.insecureSkipVerify | quote}}
             {{- end }}
+{{- if .Values.web.env }}
+{{ toYaml .Values.web.env | indent 12 }}
+{{- end }}
           ports:
             - name: atc
               containerPort: {{ .Values.concourse.atcPort }}
