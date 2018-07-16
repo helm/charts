@@ -87,8 +87,16 @@ spec:
         - mountPath: /config
           name: config
         {{- if .Values.ssl.enabled }}
-        - mountPath: /ssl
-          name: ssl
+        - mountPath: /ssl/cert/default
+          name: ssl-default-cert
+        {{- range .Values.ssl.certificates }}
+        - mountPath: /ssl/cert/{{ .name }}
+          name: ssl-{{ .name }}-cert
+        {{- end }}
+        {{- end }}
+        {{- range .Values.ssl.rootCAs }}
+        - mountPath: /ssl/ca/{{ .name }}
+          name: ssl-{{ .name }}-ca
         {{- end }}
         {{- if .Values.acme.enabled }}
         - mountPath: /acme
@@ -125,9 +133,19 @@ spec:
         configMap:
           name: {{ template "traefik.fullname" . }}
       {{- if .Values.ssl.enabled }}
-      - name: ssl
+      - name: ssl-default-cert
         secret:
           secretName: {{ template "traefik.fullname" . }}-default-cert
+      {{- range .Values.ssl.certificates }}
+      - name: ssl-{{ .name }}-cert
+        secret:
+          secretName: {{ if eq .type "base64"}}{{ template "traefik.fullname" $ }}-{{ .name }}-cert{{- else }}{{ .name }}{{- end }}
+      {{- end }}
+      {{- end }}
+      {{- range .Values.ssl.rootCAs }}
+      - name: ssl-{{ .name }}-ca
+        secret:
+          secretName: {{ if eq .type "base64"}}{{ template "traefik.fullname" $ }}-{{ .name }}-ca{{- else }}{{ .name }}{{- end }}
       {{- end }}
       {{- if .Values.acme.enabled }}
       - name: acme

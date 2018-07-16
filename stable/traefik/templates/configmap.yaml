@@ -21,6 +21,13 @@ data:
     {{- if .Values.ssl.insecureSkipVerify }}
     InsecureSkipVerify = true
     {{- end }}
+    {{- if .Values.ssl.rootCAs }}
+    RootCAs = [
+      {{- range .Values.ssl.rootCAs }}
+      "/ssl/ca/{{ .name }}/tls.crt",
+      {{- end }}
+    ]
+    {{- end }}
     {{- if .Values.ssl.enabled }}
     defaultEntryPoints = ["http","https"]
     {{- else }}
@@ -58,8 +65,13 @@ data:
           minVersion = "{{ .Values.ssl.tlsMinVersion }}"
           {{- end }}
           [[entryPoints.https.tls.certificates]]
-          CertFile = "/ssl/tls.crt"
-          KeyFile = "/ssl/tls.key"
+          CertFile = "/ssl/cert/default/tls.crt"
+          KeyFile = "/ssl/cert/default//tls.key"
+          {{- range .Values.ssl.certificates }}
+          [[entryPoints.https.tls.certificates]]
+          CertFile = "/ssl/cert/{{ .name }}/tls.crt"
+          KeyFile = "/ssl/cert/{{ .name }}/tls.key"
+          {{- end }}
       {{- else }}
       [entryPoints.httpn]
       {{- if .Values.whiteListSourceRange }}
