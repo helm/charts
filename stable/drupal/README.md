@@ -52,6 +52,7 @@ The following table lists the configurable parameters of the Drupal chart and th
 | `image.tag`                       | Drupal Image tag                      | `{VERSION}`                                               |
 | `image.pullPolicy`                | Drupal image pull policy              | `Always` if `imageTag` is `latest`, else `IfNotPresent`   |
 | `image.pullSecrets`               | Specify image pull secrets            | `nil` (does not add image pull secrets to deployed pods)  |
+| `drupalProfile`                   | Drupal installation profile           | `standard`                                                |
 | `drupalUsername`                  | User of the application               | `user`                                                    |
 | `drupalPassword`                  | Application password                  | _random 10 character long alphanumeric string_            |
 | `drupalEmail`                     | Admin email                           | `user@example.com`                                        |

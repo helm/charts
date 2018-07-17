@@ -60,15 +60,23 @@ spec:
         {{- else }}
           value: {{ default "" .Values.externalDatabase.password | quote }}
         {{- end }}
+        {{- if .Values.drupalProfile }}
+        - name: DRUPAL_PROFILE
+          value: {{ .Values.drupalProfile | quote }}
+        {{- end }}
+        {{- if .Values.drupalUsername }}
         - name: DRUPAL_USERNAME
-          value: {{ default "" .Values.drupalUsername | quote }}
+          value: {{ .Values.drupalUsername | quote }}
+        {{- end }}
         - name: DRUPAL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "drupal.fullname" . }}
               key: drupal-password
+        {{- if .Values.drupalEmail }}
         - name: DRUPAL_EMAIL
-          value: {{ default "" .Values.drupalEmail | quote }}
+          value: {{ .Values.drupalEmail | quote }}
+        {{- end }}
 {{- if .Values.extraVars }}
 {{ toYaml .Values.extraVars | indent 8 }}
 {{- end }}
