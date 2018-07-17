@@ -58,9 +58,6 @@ deck:
     #    hosts:
     #      - domain.com
 
-# Bucket to use when storing config data in S3 compatible storage
-storageBucket: spinnaker
-
 # spinnakerFeatureFlags is a list of Spinnaker feature flags to enable
 # Ref: https://www.spinnaker.io/reference/halyard/commands/#hal-config-features-edit
 # spinnakerFeatureFlags:
@@ -88,9 +85,20 @@ minio:
   serviceType: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
+  bucket: "spinnaker"
   nodeSelector: {}
 
 gcs:
   enabled: false
   project: my-project-name
+  bucket: "<GCS-BUCKET-NAME>"
   jsonKey: '<INSERT CLOUD STORAGE JSON HERE>'
+
+s3:
+  enabled: false
+  bucket: "<S3-BUCKET-NAME>"
+  # rootFolder: "front50"
+  # region: "us-east-1"
+  # endpoint: ""
+  # accessKey: ""
+  # secretKey: ""

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-halyard
+  name: {{ template "spinnaker.fullname" . }}-halyard
   labels:
-    app: {{ template "fullname" . }}
+{{ include "spinnaker.standard-labels" . | indent 4 }}
     component: halyard
 spec:
   ports:
@@ -11,27 +11,29 @@ spec:
     name: daemon
   clusterIP: None
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "spinnaker.fullname" . }}
     component: halyard
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}-halyard
+  name: {{ template "spinnaker.fullname" . }}-halyard
+  labels:
+{{ include "spinnaker.standard-labels" . | indent 4 }}
 spec:
-  serviceName: {{ template "fullname" . }}-halyard
+  serviceName: {{ template "spinnaker.fullname" . }}-halyard
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
+{{ include "spinnaker.standard-selector-labels" . | indent 6 }}
       component: halyard
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+{{ include "spinnaker.standard-labels" . | indent 8 }}
         component: halyard
     spec:
-      serviceAccountName: {{ template "fullname" . }}-halyard
+      serviceAccountName: {{ template "spinnaker.fullname" . }}-halyard
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
@@ -64,7 +66,12 @@ spec:
       {{- if .Values.gcs.enabled }}
       - name: gcs-key
         secret:
-          secretName: {{ template "fullname" . }}-gcs
+          secretName: {{ template "spinnaker.fullname" . }}-gcs
+      {{- end }}
+      {{- if and .Values.s3.enabled .Values.s3.accessKey .Values.s3.secretKey }}
+      - name: s3-secrets
+        secret:
+          secretName: {{ template "spinnaker.fullname" . }}-s3
       {{- end }}
       - name: halyard-config
         emptyDir: {}
@@ -79,6 +86,10 @@ spec:
         - name: gcs-key
           mountPath: /opt/gcs
         {{- end }}
+        {{- if and .Values.s3.enabled .Values.s3.accessKey .Values.s3.secretKey }}
+        - name: s3-secrets
+          mountPath: /opt/s3
+        {{- end }}
         {{- if .Values.kubeConfig.enabled }}
         - name: kube-config
           mountPath: /opt/kube
@@ -90,6 +101,8 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: halyard-home
+      labels:
+{{ include "spinnaker.standard-labels" . | indent 8 }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:

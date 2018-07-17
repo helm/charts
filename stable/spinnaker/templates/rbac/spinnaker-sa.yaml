@@ -2,13 +2,15 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
- name: {{ .Release.Name }}-spinnaker
+  name: {{ template "spinnaker.fullname" . }}-spinnaker
+  labels:
+{{ include "spinnaker.standard-labels" . | indent 4 }}
 roleRef:
- apiGroup: rbac.authorization.k8s.io
- kind: ClusterRole
- name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
 subjects:
 - namespace: {{ .Release.Namespace }}
   kind: ServiceAccount
   name: default
-{{ end }}
+{{- end }}
