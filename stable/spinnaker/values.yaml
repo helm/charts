@@ -66,7 +66,8 @@ storageBucket: spinnaker
 # spinnakerFeatureFlags:
 #   - artifacts
 #   - pipeline-templates
-spinnakerFeatureFlags: []
+spinnakerFeatureFlags:
+  - jobs
 
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
