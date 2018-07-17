@@ -276,6 +276,10 @@ controller:
 
   priorityClassName: ""
 
+  tcp: {}
+
+  udp: {}
+
 ## Rollback limit
 ##
 revisionHistoryLimit: 10

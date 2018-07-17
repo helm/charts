@@ -125,6 +125,8 @@ Parameter | Description | Default
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `controller.headers` | configMap key:value pairs containing the [custom headers](https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers) for Nginx | `{}`
 `controller.updateStrategy` | allows setting of RollingUpdate strategy | `{}`
+`controller.tcp` | TCP port key:value pairs. Use to expose container ports without creating matching configmap, service port entries | `{}`
+`controller.udp` | UDP port key:value pairs. Use to expose container ports without creating matching configmap, service port entries | `{}`
 `defaultBackend.enabled` | If false, controller.defaultBackendService must be provided | `true`
 `defaultBackend.name` | name of the default backend component | `default-backend`
 `defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend`
