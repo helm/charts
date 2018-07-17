@@ -197,11 +197,11 @@ kylo:
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   resources:
     requests:
-      memory: "1028Mi"
-      cpu: "1000m"
-    limits:
       memory: "2048Mi"
-      cpu: "2000m"
+      cpu: "1500m"
+    limits:
+      memory: "4096Mi"
+      cpu: "2500m"
 
 ## MySQL configuration
 mysql:
@@ -347,11 +347,11 @@ nifi:
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   resources:
     requests:
-      memory: "1028Mi"
-      cpu: "1000m"
+      memory: "2048Mi"
+      cpu: "2000m"
     limits:
       memory: "4096Mi"
-      cpu: "2000m"
+      cpu: "3000m"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
