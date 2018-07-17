@@ -28,6 +28,9 @@ spec:
       port: 9000
       targetPort: {{ .Values.service.port }}
       protocol: TCP
+{{- if (and (eq .Values.service.type "NodePort") ( .Values.service.nodePort)) }}
+      nodePort: {{ .Values.service.nodePort }}
+{{- end}}
   selector:
     app: {{ template "minio.name" . }}
     release: {{ .Release.Name }}
