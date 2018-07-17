@@ -93,7 +93,7 @@ globalConfig:
     policy_bundle_sync: 300
 
   # Enable prometheus metrics
-  enableMetrics: False
+  enableMetrics: false
 
 # Configuration for the core engine service that serves the API
 # The core service handles the user facing APIs and coordination of workers as well as storage interfaces for data
@@ -137,14 +137,14 @@ coreConfig:
   # Event log configuration
   events:
     notification:
-      enabled: True
+      enabled: true
       # Send notifications for events with severity level that matches items in this list
       level:
         - error
-        #- info
+#        - info
   archive:
     compression:
-      enabled: True
+      enabled: true
       min_size_kbytes: 100
     storage_driver:
       # Valid storage driver names: 'db', 'localfs', 's3', 'swift'
