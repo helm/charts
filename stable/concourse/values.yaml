@@ -63,6 +63,10 @@ concourse:
   ##
   # externalURL:
 
+  ## Working directory used by various concourse parts
+  ##
+  workingDirectory: /concourse-work-dir
+
   ## The filesystem driver used by baggageclaim on workers, can be values
   ## "btrfs", "overlay", or "naive". As of 3.9 "btrfs" is recommended, while "naive" is most
   ## supported but least space efficient. For background see
@@ -380,6 +384,12 @@ worker:
   #   - name: CONCOURSE_GARDEN_DNS_PROXY_ENABLE
   #     value: "true"
 
+  ## Configure additional volumeMounts for the
+  ## worker container(s)
+  # additionalVolumeMounts:
+  #   - name: concourse-baggageclaim
+  #     mountPath: /baggageclaim
+
   ## Annotations to be added to the worker pods.
   ##
   # annotations:
@@ -404,6 +414,14 @@ worker:
   #               operator: NotIn
   #               values:
   #                 - "true"
+
+  ## Configure additional volumes for the
+  ## worker container(s)
+  # additionalVolumes:
+  #   - name: concourse-baggageclaim
+  #     hostPath:
+  #       path: /dev/nvme0n1
+  #       type: BlockDevice
 
   ## Whether the workers should be forced to run on separate nodes.
   ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred
