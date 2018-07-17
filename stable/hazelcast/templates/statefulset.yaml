@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "hazelcast.fullname" . }}
@@ -9,6 +9,10 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   replicas: {{ .Values.cluster.memberCount }}
+  selector:
+    matchLabels:
+      app: {{ template "hazelcast.name" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
