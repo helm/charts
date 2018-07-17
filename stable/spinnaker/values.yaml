@@ -58,6 +58,14 @@ deck:
     #    hosts:
     #      - domain.com
 
+# spinnakerFeatureFlags is a list of Spinnaker feature flags to enable
+# Ref: https://www.spinnaker.io/reference/halyard/commands/#hal-config-features-edit
+# spinnakerFeatureFlags:
+#   - artifacts
+#   - pipeline-templates
+spinnakerFeatureFlags:
+  - jobs
+
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 # nodeSelector to provide to each of the Spinnaker components

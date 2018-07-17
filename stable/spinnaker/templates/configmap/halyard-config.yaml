@@ -84,3 +84,6 @@ data:
                            --location {{ .Release.Namespace }}
     # Use Deck to route to Gate
     $HAL_COMMAND config security api edit --no-validate --override-base-url /gate
+    {{- range $index, $feature := .Values.spinnakerFeatureFlags }}
+    $HAL_COMMAND config features edit --{{ $feature }} true
+    {{- end }}
