@@ -12,7 +12,7 @@ hub:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.12.0"
+  tag: "3.13.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -101,7 +101,7 @@ chrome:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-chrome/tags/
-  tag: "3.12.0"
+  tag: "3.13.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -177,7 +177,7 @@ chromeDebug:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-chrome-debug/tags/
-  tag: "3.12.0"
+  tag: "3.13.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -252,7 +252,7 @@ firefox:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-firefox/tags/
-  tag: "3.12.0"
+  tag: "3.13.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -314,7 +314,7 @@ firefoxDebug:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-firefox-debug/tags/
-  tag: "3.12.0"
+  tag: "3.13.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
