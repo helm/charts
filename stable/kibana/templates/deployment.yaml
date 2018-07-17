@@ -52,9 +52,11 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - name: {{ template "kibana.name" . }}
-          mountPath: "/usr/share/kibana/config/kibana.yml"
-          subPath: config
+        {{- range $configFile := (keys .Values.configFiles) }}
+        - name: {{ template "kibana.name" $ }}
+          mountPath: "/usr/share/kibana/config/{{ $configFile }}"
+          subPath: {{ $configFile }}
+        {{- end }}
     {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
