@@ -71,6 +71,7 @@ service:
   type: ClusterIP
   clusterIP: None
   port: 9000
+  # nodePort: 31311
   annotations: {}
     # prometheus.io/scrape: 'true'
     # prometheus.io/path:   '/minio/prometheus/metrics'

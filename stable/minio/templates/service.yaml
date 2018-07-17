@@ -28,6 +28,15 @@ spec:
       port: 9000
       targetPort: {{ .Values.service.port }}
       protocol: TCP
+{{- if (and (eq .Values.service.type "NodePort") ( .Values.service.nodePort)) }}
+      nodePort: {{ .Values.service.nodePort }}
+{{- end}}
+{{- if .Values.service.externalIPs }}
+  externalIPs:
+{{- range $i , $ip := .Values.service.externalIPs }}
+  - {{ $ip }}
+{{- end }}
+{{- end }}
   selector:
     app: {{ template "minio.name" . }}
     release: {{ .Release.Name }}
