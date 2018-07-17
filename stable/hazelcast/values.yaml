@@ -103,11 +103,20 @@ service:
   type: ClusterIP
   # port is the Kubernetes service port
   port: 5701
-  # clusterIP set to None makes the service headless, which is required if DNS Lookup is used (https://github.com/hazelcast/hazelcast-kubernetes#dns-lookup)
+  # clusterIP set to None makes the service headless
+  # It is required if DNS Lookup is used (https://github.com/hazelcast/hazelcast-kubernetes#dns-lookup)
   # clusterIP: "None"
 
 
 # Role-based Access Control
 rbac:
-  # create is a flag which enables installing RBAC Role authorization; it is not required if DNS Lookup is used (https://github.com/hazelcast/hazelcast-kubernetes#dns-lookup)
+  # Specifies whether RBAC resources should be created
+  # It is not required if DNS Lookup is used (https://github.com/hazelcast/hazelcast-kubernetes#dns-lookup)
   create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
