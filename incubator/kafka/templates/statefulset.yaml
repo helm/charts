@@ -68,17 +68,25 @@ spec:
       - name: metrics
         image: "{{ .Values.prometheus.jmx.image }}:{{ .Values.prometheus.jmx.imageTag }}"
         command:
-        - java
-        - -XX:+UnlockExperimentalVMOptions
-        - -XX:+UseCGroupMemoryLimitForHeap
-        - -XX:MaxRAMFraction=1
-        - -XshowSettings:vm
-        - -jar
-        - jmx_prometheus_httpserver.jar
-        - {{ .Values.prometheus.jmx.port | quote }}
-        - /etc/jmx-kafka/jmx-kafka-prometheus.yml
+        - sh
+        - -exc
+        - |
+          trap "exit 0" TERM; \
+          while :; do \
+          java \
+          -XX:+UnlockExperimentalVMOptions \
+          -XX:+UseCGroupMemoryLimitForHeap \
+          -XX:MaxRAMFraction=1 \
+          -XshowSettings:vm \
+          -jar \
+          jmx_prometheus_httpserver.jar \
+          {{ .Values.prometheus.jmx.port | quote }} \
+          /etc/jmx-kafka/jmx-kafka-prometheus.yml & \
+          wait $! || sleep 3; \
+          done
         ports:
         - containerPort: {{ .Values.prometheus.jmx.port }}
+          name: prometheus
         resources:
 {{ toYaml .Values.prometheus.jmx.resources | indent 10 }}
         volumeMounts:
@@ -94,8 +102,22 @@ spec:
               - sh
               - -ec
               - /usr/bin/jps | /bin/grep -q SupportedKafka
+          {{- if not .Values.livenessProbe }}
           initialDelaySeconds: 30
           timeoutSeconds: 5
+          {{- else }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 30}}
+          {{- if .Values.livenessProbe.periodSeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          {{- end }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds | default 5}}
+          {{- if .Values.livenessProbe.successThreshold }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          {{- end }}
+          {{- if .Values.livenessProbe.failureThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- end }}
         readinessProbe:
           tcpSocket:
             port: kafka
@@ -159,6 +181,7 @@ spec:
         - sh
         - -exc
         - |
+          unset KAFKA_PORT && \
           export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
           export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           exec /etc/confluent/docker/run

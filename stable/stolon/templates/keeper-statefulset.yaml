@@ -27,6 +27,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.keeper.priorityClassName }}
+      priorityClassName: "{{ .Values.keeper.priorityClassName }}"
+{{- end }}
       serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       terminationGracePeriodSeconds: 10
       containers:
@@ -115,9 +118,12 @@ spec:
             storage: {{ .Values.persistence.size | quote }}
   {{- if .Values.persistence.storageClassName }}
     {{- if (eq "-" .Values.persistence.storageClassName) }}
-  storageClassName: ""
+        storageClassName: ""
     {{- else }}
-  storageClassName: "{{ .Values.persistence.storageClassName }}"
+        storageClassName: "{{ .Values.persistence.storageClassName }}"
     {{- end }}
   {{- end }}
+{{- else }}
+        - name: data
+          emptyDir: {}
 {{- end }}

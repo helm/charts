@@ -54,6 +54,7 @@ and can be overwritten via the helm `--set` flag.
 Parameter | Description | Default
 ---                            | ---                                                                  | ---
 `replicaCount`                 | amount of parallel openvpn replicas to be started                    | `1`
+`updateStrategy`               | update strategy for deployment                                       | `{}`
 `image.repository`             | `openvpn` image repository                                           | `jfelten/openvpn-docker`
 `image.tag`                    | `openvpn` image tag                                                  | `1.1.0`
 `image.pullPolicy`             | Image pull policy                                                    | `IfNotPresent`

@@ -10,9 +10,10 @@ metadata:
 data:
   traefik.toml: |
     # traefik.toml
-    logLevel = "INFO"
     {{- if .Values.debug.enabled }}
     debug = true
+    {{- else }}
+    logLevel = "INFO"
     {{- end }}
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true
@@ -109,6 +110,9 @@ data:
     {{- else if eq .Values.acme.challengeType "http-01" }}
       [acme.httpChallenge]
       entryPoint = "http"
+    {{- end }}
+    {{- if .Values.acme.domains.enabled }}
+    {{- if .Values.acme.domains.domainsList }}{{ template "traefik.acme.domains" . }}{{- end }}
     {{- end }}
     {{- end }}
     {{- if or .Values.dashboard.enabled .Values.metrics.prometheus.enabled .Values.metrics.statsd.enabled .Values.metrics.datadog.enabled }}

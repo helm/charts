@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hlf-ord.fullname" . }}
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 7050
+      protocol: TCP
+      name: grpc
+  selector:
+    app: {{ include "hlf-ord.name" . }}
+    release: {{ .Release.Name }}

@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ template "mediawiki.fullname" . }}
   labels:
-    app: {{ template "mediawiki.fullname" . }}
+    app: {{ template "mediawiki.name" . }}
     chart: {{ template "mediawiki.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "mediawiki.fullname" . }}
+        app: {{ template "mediawiki.name" . }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -37,18 +37,18 @@ spec:
         - name: MARIADB_PORT_NUMBER
         {{- if .Values.mariadb.enabled }}
           value: "3306"
-        {{ else }}
+        {{- else }}
           value: {{ .Values.externalDatabase.port | quote }}
-        {{ end }}
+        {{- end }}
         - name: MEDIAWIKI_DATABASE_NAME
         {{- if .Values.mariadb.enabled }}
-          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+          value: {{ .Values.mariadb.db.name | quote }}
         {{- else }}
           value: {{ .Values.externalDatabase.database | quote }}
         {{- end }}
         - name: MEDIAWIKI_DATABASE_USER
         {{- if .Values.mariadb.enabled }}
-          value: {{ .Values.mariadb.mariadbUser | quote }}
+          value: {{ .Values.mariadb.db.user | quote }}
         {{- else }}
           value: {{ .Values.externalDatabase.user | quote }}
         {{- end }}
@@ -122,9 +122,9 @@ spec:
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
-        {{- end }}
         volumeMounts:
         - name: mediawiki-data
           mountPath: /bitnami/mediawiki
