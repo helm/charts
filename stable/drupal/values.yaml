@@ -17,6 +17,11 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+## Installation Profile
+## ref: https://github.com/bitnami/bitnami-docker-drupal#configuration
+##
+drupalProfile: standard
+
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-drupal#configuration
 ##
