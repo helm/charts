@@ -81,7 +81,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
 | `metrics.service.type`             | Service type for metrics                   | `ClusterIP`                                       |
 | `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
-| `ignoreOlder`                     | Specify if older log messages should be ignored for existing container logs, time is in s | `` |
+| `ignoreOlder`                     | Ignores files that have been last modified before this time in seconds. Supports m,h,d (minutes, hours,days) syntax. Default behavior is to read all specified files. | `` |
 | | | |
 
 
