@@ -14,7 +14,7 @@ This chart bootstraps a [Hazelcast](https://github.com/hazelcast/hazelcast-docke
 
 ## Prerequisites
 
-- Kubernetes 1.8+
+- Kubernetes 1.9+
 
 ## Installing the Chart
 
