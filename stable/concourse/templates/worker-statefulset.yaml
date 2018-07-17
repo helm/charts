@@ -94,7 +94,7 @@ spec:
             - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
               value: "/concourse-keys/worker_key"
             - name: CONCOURSE_WORK_DIR
-              value: "/concourse-work-dir"
+              value: {{ .Values.concourse.workingDirectory | quote }}
             - name: CONCOURSE_BAGGAGECLAIM_DRIVER
               value: {{ .Values.concourse.baggageclaimDriver | quote }}
             - name: LIVENESS_PROBE_FATAL_ERRORS
@@ -112,6 +112,9 @@ spec:
               readOnly: true
             - name: concourse-work-dir
               mountPath: /concourse-work-dir
+{{- if .Values.worker.additionalVolumeMounts }}
+{{ toYaml .Values.worker.additionalVolumeMounts | indent 12 }}
+{{- end }}
       affinity:
 {{- if .Values.worker.additionalAffinities }}
 {{ toYaml .Values.worker.additionalAffinities | indent 8 }}
@@ -135,6 +138,9 @@ spec:
                   release: {{ .Release.Name | quote }}
           {{- end }}
       volumes:
+{{- if .Values.worker.additionalVolumes }}
+{{ toYaml .Values.worker.additionalVolumes | indent 8 }}
+{{- end }}
         - name: concourse-keys
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}
