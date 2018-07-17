@@ -26,11 +26,13 @@ data:
         Refresh_Interval 5
         Mem_Buf_Limit    5MB
         Skip_Long_Lines  On
+{{- if .Values.ignoreOlder }}
+        ignore_older     {{ .Values.ignoreOlder }}
+{{- end }}
 {{- if .Values.trackOffsets }}
         DB               /tail-db/tail-containers-state.db
         DB.Sync          Normal
 {{- end }}
-
     [FILTER]
         Name                kubernetes
         Match               {{ .Values.filter.kubeTag }}.*
@@ -75,6 +77,9 @@ data:
 {{- if .Values.backend.es.http_user }}
         HTTP_User {{ .Values.backend.es.http_user }}
         HTTP_Passwd {{ .Values.backend.es.http_passwd }}
+{{- end }}
+{{- if .Values.backend.es.time_key }}
+        time_key {{ .Values.backend.es.time_key }}
 {{- end }}
 {{if eq .Values.backend.es.tls "on" }}
         tls {{ .Values.backend.es.tls }}

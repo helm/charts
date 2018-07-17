@@ -46,6 +46,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.tls_verify`       | Force certificate validation  | `on` |
 | `backend.es.tls_ca`           | TLS CA certificate for the Elastic instance (in PEM format). Specify if tls: on. | `` |
 | `backend.es.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
+| `backend.es.time_key`         | When Logstash_Format is enabled, each record will get a new timestamp field. The Time_Key property defines the name of that field. | `` |
 | **HTTP Backend**              |
 | `backend.http.host`           | IP address or hostname of the target HTTP Server | `127.0.0.1` |
 | `backend.http.port`           | TCP port of the target HTTP Server | `80` |
@@ -80,6 +81,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
 | `metrics.service.type`             | Service type for metrics                   | `ClusterIP`                                       |
 | `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
+| `ignoreOlder`                     | Specify if older log messages should be ignored for existing container logs, time is in s | `` |
 | | | |
 
 

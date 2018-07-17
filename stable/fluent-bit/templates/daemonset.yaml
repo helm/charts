@@ -41,6 +41,9 @@ spec:
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit.conf
           subPath: fluent-bit.conf
+        - name: config
+          mountPath: /fluent-bit/etc/parsers.conf
+          subPath: parsers.conf
 {{- if .Values.backend.es.tls_ca }}
         - name: es-tls-secret
           mountPath: /secure/es-tls-ca.crt
