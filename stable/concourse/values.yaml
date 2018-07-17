@@ -380,6 +380,10 @@ worker:
   #   - name: CONCOURSE_GARDEN_DNS_PROXY_ENABLE
   #     value: "true"
 
+  ## Will be passed verbatim; no shell-escaping.
+  ##
+  # additionalArguments : "--certs-dir /etc/ssl/certs/"
+
   ## Annotations to be added to the worker pods.
   ##
   # annotations:

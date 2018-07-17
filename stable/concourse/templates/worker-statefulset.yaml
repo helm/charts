@@ -45,7 +45,7 @@ spec:
                 sleep 5
               done
               rm -f /tmp/.pre_start_cleanup
-              concourse worker --name=${HOSTNAME} | tee -a /tmp/.liveness_probe
+              concourse worker --name=${HOSTNAME} {{ .Values.worker.additionalArguments }} | tee -a /tmp/.liveness_probe
           livenessProbe:
             exec:
               command:

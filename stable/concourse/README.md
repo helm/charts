@@ -136,6 +136,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
 | `worker.resources` | Concourse Worker resource requests and limits | `{requests: {cpu: "100m", memory: "512Mi"}}` |
 | `worker.env` | Configure additional environment variables for the worker container(s) | `[]` |
+| `worker.additionalArguments` | Configure additional command-line arguments to pass to the workers | `nil` |
 | `worker.annotations` | Annotations to be added to the worker pods | `{}` |
 | `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `{}` |
 | `worker.tolerations` | Tolerations for the worker nodes | `[]` |
