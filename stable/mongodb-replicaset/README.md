@@ -77,6 +77,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `readinessProbe`                    | Readiness probe configuration                                             | See below                                           |
 | `extraVars`                         | Set environment variables for the main container                          | `{}`                                                |
 | `extraLabels`                       | Additional labels to add to resources                                     | `{}`                                                |
+| `postInstall`                       | Jobs to run against the database after install                            | `{}`                                                |
 
 *MongoDB config file*
 
@@ -337,6 +338,7 @@ messy-hydra-mongodb-2 "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.def
 ```
 
 Check the previously inserted key:
+
 ```console
 $ kubectl exec $RELEASE_NAME-mongodb-replicaset-1 -- mongo --eval="rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)"
 
@@ -348,3 +350,28 @@ connecting to: mongodb://127.0.0.1:27017
 ### Scaling
 
 Scaling should be managed by `helm upgrade`, which is the recommended way.
+
+### Post Install
+
+If further initialization (create users, collections, indexes, insert data, etc.) is needed create a container that will do this work. It needs to wait until MongoDB is available before attempting to do it's work. A sample might look like this.
+
+#### Dockerfile
+
+```
+FROM mongo
+ADD initdb.sh /
+CMD /initdb.sh
+```
+
+#### initdb.sh
+
+```
+#!/bin/sh
+
+until mongo --eval "print(\"waited for connection\")"
+  do
+    sleep 60
+  done
+
+mongo --eval "db.createUser({ user: \"reportsUser\", pwd: \"password\" });"
+```

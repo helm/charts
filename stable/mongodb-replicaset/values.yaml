@@ -122,3 +122,7 @@ livenessProbe:
   failureThreshold: 3
   periodSeconds: 10
   successThreshold: 1
+
+# postInstall:
+#   - name: job1
+#     image: mongoinit
