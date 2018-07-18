@@ -2,9 +2,9 @@
 apiVersion: {{ required "A valid .Values.networkPolicyApiVersion entry required!" .Values.networkPolicyApiVersion }}
 kind: Ingress
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "owncloud.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "owncloud.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -19,7 +19,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "fullname" . }}
+          serviceName: {{ template "owncloud.fullname" . }}
           servicePort: {{ .Values.ingress.servicePort }}
 {{- if .Values.ingress.tls }}
   tls:
