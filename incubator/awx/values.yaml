@@ -212,8 +212,7 @@ taskImage:
 secretKey: "aabbcc"
 
 ## Command to be executed at awx-task runtime.
-#taskCommand: ["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;su -c "echo 'nameserver 8.8.8.8' >> /etc/resolv.conf";su -c 'pip install softlayer pywinrm';su -c 'mkdir /root/.ssh';su -c "ssh-keygen -b 2048 -t rsa -f /root/.ssh/id_rsa -q -N ''";"]
-taskCommand: ["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;su -c "echo 'nameserver 8.8.8.8' >> /etc/resolv.conf";su -c 'pip install softlayer pywinrm';su -c 'mkdir /root/.ssh'"]
+taskCommand: ["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;su -c 'echo \"nameserver 8.8.8.8\" >> /etc/resolv.conf';su -c 'pip install softlayer pywinrm';su -c 'mkdir /root/.ssh';su -c 'ssh-keygen -b 2048 -t rsa -f /root/.ssh/id_rsa -q -N \"\""]
 
 
 taskResources: {}
