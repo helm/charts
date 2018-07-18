@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "redis-ha.fullname" . }}-server-svc
+  labels:
+    release: {{ .Release.Name }}
+    app: {{ template "redis-ha.fullname" . }}
+  annotations:
+{{ toYaml .Values.servers.annotations | indent 4 }}
+spec:
+  selector:
+    redis-node: "true"
+    release: {{ .Release.Name }}
+  type: ClusterIP
+  clusterIP: None

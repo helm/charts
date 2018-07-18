@@ -1,0 +1,10 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "redis-ha.fullname" . }}-sentinel-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      redis-role: "sentinel"
+      release: {{ .Release.Name }}
