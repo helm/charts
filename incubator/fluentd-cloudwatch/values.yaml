@@ -35,6 +35,8 @@ rbac:
   ## If true, create and use RBAC resources
   create: false
 
+# imagePullSecret:
+
   ## Ignored if rbac.create is true
   serviceAccountName: default
 # Add extra environment variables if specified (must be specified as a single line object and be quoted)
