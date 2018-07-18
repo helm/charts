@@ -102,3 +102,14 @@ s3:
   # endpoint: ""
   # accessKey: ""
   # secretKey: ""
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If left blank it is auto-generated from the fullname of the release
+  name: 

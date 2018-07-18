@@ -1,4 +1,7 @@
+# In the case of a local cluster Spinnaker needs
+# to be able to deploy to all namespaces in the cluster.
 {{- if not .Values.kubeConfig.enabled }}
+{{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -12,5 +15,8 @@ roleRef:
 subjects:
 - namespace: {{ .Release.Namespace }}
   kind: ServiceAccount
+  # Clouddriver does not currently allow config of its
+  # service account.
   name: default
+{{- end }}
 {{- end }}

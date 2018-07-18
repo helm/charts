@@ -1,23 +1,13 @@
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: {{ template "spinnaker.fullname" . }}-halyard
-  labels:
-{{ include "spinnaker.standard-labels" . | indent 4 }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: edit
-subjects:
-- namespace: {{ .Release.Namespace }}
-  kind: ServiceAccount
-  name: {{ template "spinnaker.fullname" . }}-halyard
----
+{{- if .Values.serviceAccount.create }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  {{- if .Values.serviceAccount.name }}
+  name: {{ .Values.serviceAccount.name }}
+  {{- else }}
   name: {{ template "spinnaker.fullname" . }}-halyard
+  {{- end }}
   namespace: {{ .Release.Namespace }}
   labels:
 {{ include "spinnaker.standard-labels" . | indent 4 }}
+{{- end }}
