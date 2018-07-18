@@ -13,13 +13,13 @@ nodeSelector: {}
 
 replicas: 1
 
-resources:
-  limits:
-    cpu: 100m
-    memory: 50Mi
-  requests:
-    cpu: 100m
-    memory: 50Mi
+# resources:
+  # limits:
+    # cpu: 100m
+    # memory: 50Mi
+  # requests:
+    # cpu: 100m
+    # memory: 50Mi
     
 ports:
   - name: http
