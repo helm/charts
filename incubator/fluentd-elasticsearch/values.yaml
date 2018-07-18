@@ -340,7 +340,7 @@ configMaps:
       @id journald-docker
       @type systemd
       filters [{ "_SYSTEMD_UNIT": "docker.service" }]
-      pos_file /var/log/journald-docker.pos
+      #pos_file /var/log/journald-docker.pos
       <storage>
         @type local
         persistent true
