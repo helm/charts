@@ -276,6 +276,9 @@ controller:
 
   priorityClassName: ""
 
+  podDisruptionBudget:
+    enabled: true
+
 ## Rollback limit
 ##
 revisionHistoryLimit: 10
@@ -348,6 +351,9 @@ defaultBackend:
 
   priorityClassName: ""
 
+  podDisruptionBudget:
+    enabled: true
+
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:
   create: true
@@ -372,9 +378,3 @@ tcp: {}
 ##
 udp: {}
 #  53: "kube-system/kube-dns:53"
-
-controllerPodDisruptionBudget:
-  create: true
-
-defaultBackendPodDisruptionBudget:
-  create: true
