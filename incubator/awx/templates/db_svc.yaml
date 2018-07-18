@@ -13,9 +13,9 @@ spec:
   - name: {{ .Values.dbName }}
     port: {{ .Values.dbService.port }}
     targetPort: {{ .Values.dbService.port }}
-  {{- if and (eq "NodePort" .Values.dbService.type) .Values.dbService.nodePort }}
+    {{- if and (eq "NodePort" .Values.dbService.type) .Values.dbService.nodePort }}
     nodePort: {{ .Values.dbService.nodePort }}
-  {{- end }}
+    {{- end }}
   selector:
     app: {{ template "awx.name" . }}
     release: {{ .Release.Name }}

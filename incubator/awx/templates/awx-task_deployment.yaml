@@ -52,18 +52,18 @@ spec:
             postStart:
               exec:
                 command:
-{{ toYaml .Values.taskCommand | indent 18 }}
+                  {{ toYaml .Values.taskCommand | indent 18 }}
           resources:
-{{ toYaml .Values.taskResources | indent 12 }}
-    {{- with .Values.taskNodeSelector }}
+            {{ toYaml .Values.taskResources | indent 12 }}
+      {{- with .Values.taskNodeSelector }}
       nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.taskAffinity }}
+        {{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.taskAffinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.taskTolerations }}
+        {{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.taskTolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{ toYaml . | indent 8 }}
+      {{- end }}

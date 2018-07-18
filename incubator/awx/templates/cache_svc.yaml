@@ -13,9 +13,9 @@ spec:
   - name: {{ .Values.cacheName }}
     port: {{ .Values.cacheService.port }}
     targetPort: {{ .Values.cacheService.port }}
-    {{- if and (eq "NodePort" .Values.cacheService.type) .Values.cacheService.nodePort }}
+      {{- if and (eq "NodePort" .Values.cacheService.type) .Values.cacheService.nodePort }}
       nodePort: {{ .Values.cacheService.nodePort }}
-    {{- end }}
+      {{- end }}
   selector:
     app: {{ template "awx.name" . }}
     release: {{ .Release.Name }}

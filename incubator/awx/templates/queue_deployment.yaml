@@ -32,16 +32,16 @@ spec:
         - name: RABBITMQ_DEFAULT_VHOST
           value: {{ .Values.queueVhost | quote }}
         resources:
-{{ toYaml .Values.queueResources | indent 10 }}
-    {{- with .Values.queueNodeSelector }}
+          {{ toYaml .Values.queueResources | indent 10 }}
+      {{- with .Values.queueNodeSelector }}
       nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.queueAffinity }}
+        {{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.queueAffinity }}
       affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.queueTolerations }}
+        {{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.queueTolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+        {{ toYaml . | indent 8 }}
+      {{- end }}

@@ -13,9 +13,9 @@ spec:
   - name: {{ .Values.queueName }}
     port: {{ .Values.queueService.port }}
     targetPort: {{ .Values.queueService.port }}
-    {{- if and (eq "NodePort" .Values.queueService.type) .Values.queueService.nodePort }}
+      {{- if and (eq "NodePort" .Values.queueService.type) .Values.queueService.nodePort }}
       nodePort: {{ .Values.queueService.nodePort }}
-    {{- end }}
+      {{- end }}
   selector:
     app: {{ template "awx.name" . }}
     release: {{ .Release.Name }}

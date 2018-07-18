@@ -11,12 +11,12 @@ metadata:
     chart: {{ template "awx.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- with .Values.ingress.annotations }}
+  {{- with .Values.ingress.annotations }}
   annotations:
-{{ toYaml . | indent 4 }}
-{{- end }}
+    {{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
-{{- if .Values.ingress.tls }}
+  {{- if .Values.ingress.tls }}
   tls:
   {{- range .Values.ingress.tls }}
     - hosts:
@@ -25,7 +25,7 @@ spec:
       {{- end }}
       secretName: {{ .secretName }}
   {{- end }}
-{{- end }}
+  {{- end }}
   rules:
   {{- range .Values.ingress.hosts }}
   - host: {{ . }}

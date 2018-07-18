@@ -13,9 +13,9 @@ spec:
     - name: {{ .Values.webService.name }}
       port: {{ .Values.webService.internalPort }}
       targetPort: {{ .Values.webService.externalPort }}
-    {{- if and (eq "NodePort" .Values.webService.type) .Values.webService.nodePort }}
+      {{- if and (eq "NodePort" .Values.webService.type) .Values.webService.nodePort }}
       nodePort: {{ .Values.webService.nodePort }}
-    {{- end }}
+      {{- end }}
   selector:
     app: {{ template "awx.name" . }}
     release: {{ .Release.Name }}
