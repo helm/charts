@@ -47,6 +47,7 @@ their default values.
 | `resources.limits.memory`   | Container requested memory                                                                 | `nil`           |
 | `priorityClassName      `   | priorityClassName                                                                          | `""`            |
 | `storage`                   | Storage system to use                                                                      | `filesystem`    |
+| `storageRedirectDisable`    | Forward all storage traffic via the registry                                               | `false`         |
 | `tlsSecretName`             | Name of secret for TLS certs                                                               | `nil`           |
 | `secrets.htpasswd`          | Htpasswd authentication                                                                    | `nil`           |
 | `secrets.s3.accessKey`      | Access Key for S3 configuration                                                            | `nil`           |
@@ -56,6 +57,7 @@ their default values.
 | `haSharedSecret`            | Shared secret for Registry                                                                 | `nil`           |
 | `configData`                | Configuration hash for docker                                                              | `nil`           |
 | `s3.region`                 | S3 region                                                                                  | `nil`           |
+| `s3.regionendpoint`         | S3 region endpoint (Minio, ...)                                                            | `nil`           |
 | `s3.bucket`                 | S3 bucket name                                                                             | `nil`           |
 | `s3.encrypt`                | Store images in encrypted format                                                           | `nil`           |
 | `s3.secure`                 | Use HTTPS                                                                                  | `nil`           |
