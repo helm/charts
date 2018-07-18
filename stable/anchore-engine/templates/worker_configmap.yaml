@@ -12,27 +12,17 @@ data:
   config.yaml: |
     # Anchore Service Configuration File
 
-    # General system-wide configuration options, these should not need to
-    # be altered for basic operation
-    #
     service_dir: {{ .Values.globalConfig.configDir }}
     tmp_dir: {{ default "/tmp" .Values.workerConfig.analyzerScratchDir }}
 
     allow_awsecr_iam_auto: {{ .Values.globalConfig.allowECRUseIAMRole }}
     cleanup_images: {{ .Values.globalConfig.cleanupImages }}
 
-    #docker_conn: 'unix://var/run/docker.sock'
-    #docker_conn_timeout: 600
-
     log_level: {{ .Values.workerConfig.logLevel }}
-    #host_id: 'e3651c16-5161-412f-a188-2bfae2d2dcf0'
+    host_id: ${ANCHORE_POD_NAME}
     internal_ssl_verify: {{ .Values.globalConfig.internalServicesSslVerifyCerts }}
-
-    #
-    # A feeds section is available for override, but shouldn't be
-    # needed. By default, the 'admin' credentials are used if present,
-    # otherwise anonymous access for feed sync is used
-
+    metrics:
+      enabled: {{ .Values.globalConfig.enableMetrics }}
     credentials:
       users:
          admin:
@@ -54,9 +44,12 @@ data:
     services:
       analyzer:
         enabled: true
+        endpoint_hostname: ${ANCHORE_POD_IP}
+        listen: '0.0.0.0'
+        port: {{ .Values.workerConfig.port }}
         cycle_timer_seconds: {{ .Values.workerConfig.cycleTimerSeconds }}
         max_threads: {{ .Values.workerConfig.concurrentTasksPerWorker }}
-        analyzer_driver: {{ .Values.workerConfig.analyzerMode }}
+        analyzer_driver: nodocker
         ssl_cert: {{ .Values.workerConfig.ssl.certDir -}}/{{- .Values.workerConfig.ssl.certSecretCertName }}
         ssl_key: {{ .Values.workerConfig.ssl.certDir -}}/{{ .Values.workerConfig.ssl.certSecretKeyName }}
         ssl_enable: {{ .Values.globalConfig.internalServicesSslEnabled }}
