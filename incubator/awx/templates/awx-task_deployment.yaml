@@ -52,7 +52,7 @@ spec:
             postStart:
               exec:
                 command:
-                {{ toYaml .Values.taskCommand }}
+{{ toYaml .Values.taskCommand | indent 18 }}
           resources:
             {{ toYaml .Values.taskResources | indent 12 }}
       {{- with .Values.taskNodeSelector }}
