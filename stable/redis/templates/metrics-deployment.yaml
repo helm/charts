@@ -30,6 +30,7 @@ spec:
         {{- end}}
       {{- end}}
       {{- if .Values.metrics.nodeSelector }}
+      serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
       nodeSelector:
 {{ toYaml .Values.metrics.nodeSelector | indent 8 }}
       {{- end }}
