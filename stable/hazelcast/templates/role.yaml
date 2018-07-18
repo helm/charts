@@ -10,10 +10,10 @@ metadata:
     heritage: "{{ .Release.Service }}"
 rules:
 - apiGroups:
-    - ""
+  - ""
   resources:
-    - endpoints
+  - endpoints
   verbs:
-    - get
-    - list
+  - get
+  - list
 {{- end -}}
