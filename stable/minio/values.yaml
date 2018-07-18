@@ -105,16 +105,18 @@ resources:
     memory: 256Mi
     cpu: 250m
 
-## Create a bucket after minio install
+## Create these bucket after minio install
 ##
-defaultBucket:
-  enabled: false
+defaultBuckets:
   ## If enabled, must be a string with length > 0
-  name: bucket
+  #- name: bucket1
   ## Can be one of none|download|upload|public
-  policy: none
+  #  policy: none
   ## Purge if bucket exists already
-  purge: false
+  #  purge: false
+  #- name: bucket2
+  #  policy: none
+  #  purge: false
 
 ## Use minio as an azure blob gateway, you should disable data persistence so no volume claim are created.
 ## https://docs.minio.io/docs/minio-gateway-for-azure

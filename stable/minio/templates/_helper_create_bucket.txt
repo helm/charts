@@ -72,4 +72,6 @@ createBucket() {
 # Try connecting to Minio instance
 connectToMinio
 # Create the bucket
-createBucket {{ .Values.defaultBucket.name }} {{ .Values.defaultBucket.policy }} {{ .Values.defaultBucket.purge }}
+{{- range $bucket := .Values.defaultBuckets }}
+createBucket {{ $bucket.name }} {{ $bucket.policy }} {{ $bucket.purge }}
+{{- end }}
