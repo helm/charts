@@ -39,7 +39,7 @@ The following table lists the configurable parameters of the kibana chart and th
 Parameter | Description | Default
 --- | --- | ---
 `affinity` | node/pod affinities | None
-`configFiles` | Kibana configuration files (config properties can be set through the `env` parameter too) | None
+`configFiles` | Kibana configuration files (config properties can be set through the `env` parameter too). All the files listed under this variable will overwrite any existing files by the same name in kibana config directory. Files not mentioned under this variable will remain unaffected. | None
 `env` | Environment variables to configure Kibana | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `docker.elastic.co/kibana/kibana-oss`
