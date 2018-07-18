@@ -12,7 +12,7 @@ metadata:
     "helm.sh/hook": post-install
     "helm.sh/hook-weight": "1"
     "helm.sh/hook-delete-policy": hook-succeeded
-  name: dex-web-certs
+  name: {{ $fullname  }}-web-certs
   labels:
     app: {{ template "dex.name" . }}
     chart: {{ template "dex.chart" . }}

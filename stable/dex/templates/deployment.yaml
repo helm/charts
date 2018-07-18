@@ -1,8 +1,10 @@
 {{ $fullname := include "dex.fullname" . }}
-{{ $tlsBuiltName := printf "%s-tls" $fullname }}
-{{ $httpsTlsSecretName := default $tlsBuiltName .Values.certs.web.secret.tlsName }}
-{{ $grpcTlsServerSecretName := .Values.certs.grpc.secret.serverTlsName }}
-{{ $grpcCaSecretName := .Values.certs.grpc.secret.caName }}
+{{ $httpsTlsBuiltName := printf "%s-tls" $fullname }}
+{{ $httpsTlsSecretName := default $httpsTlsBuiltName .Values.certs.web.secret.tlsName }}
+{{ $grpcTlsServerBuiltName := printf "%s-server-tls" $fullname }}
+{{ $grpcTlsServerSecretName := default $grpcTlsServerBuiltName .Values.certs.grpc.secret.serverTlsName }}
+{{ $grpcCaBuiltName := printf "%s-ca" $fullname }}
+{{ $grpcCaSecretName := default $grpcCaBuiltName .Values.certs.grpc.secret.caName }}
 
 apiVersion: apps/v1beta2
 kind: Deployment

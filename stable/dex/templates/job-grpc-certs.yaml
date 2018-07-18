@@ -1,8 +1,12 @@
 {{- if .Values.certs.grpc.create }}
 {{ $fullname := include "dex.fullname" . }}
-{{ $tlsServerSecretName := .Values.certs.grpc.secret.serverTlsName }}
-{{ $tlsClientSecretName := .Values.certs.grpc.secret.clientTlsName }}
-{{ $caName := .Values.certs.grpc.secret.caName }}
+{{ $tlsServerBuiltName := printf "%s-server-tls" $fullname }}
+{{ $tlsServerSecretName := default $tlsServerBuiltName .Values.certs.grpc.secret.serverTlsName }}
+{{ $tlsClientBuiltName := printf "%s-client-tls" $fullname }}
+{{ $tlsClientSecretName := default $tlsClientBuiltName .Values.certs.grpc.secret.clientTlsName }}
+{{ $caBuiltName := printf "%s-ca" $fullname }}
+{{ $caName := default $caBuiltName .Values.certs.grpc.secret.caName }}
+{{ $openSslConfigName := printf "%s-openssl-config" $fullname }}
 {{ $local := dict "i" 0 }}
 apiVersion: batch/v1
 kind: Job
@@ -11,7 +15,7 @@ metadata:
     "helm.sh/hook": post-install
     "helm.sh/hook-weight": "2"
     "helm.sh/hook-delete-policy": hook-succeeded
-  name: dex-grpc-certs
+  name: {{ $fullname }}-grpc-certs
   labels:
     app: {{ template "dex.name" . }}
     chart: {{ template "dex.chart" . }}
@@ -90,5 +94,5 @@ spec:
       volumes:
       - name: openssl-config
         configMap:
-          name: dex-openssl-config
+          name: {{ $openSslConfigName }}
 {{- end }}
