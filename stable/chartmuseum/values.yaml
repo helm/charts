@@ -5,7 +5,7 @@ strategy:
     maxUnavailable: 0
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.7.0
+  tag: v0.7.1
   pullPolicy: IfNotPresent
 env:
   open:
@@ -124,6 +124,11 @@ probes:
     successThreshold: 1
     failureThreshold: 3
 
+serviceAccount:
+  create: false
+  # name:
+
+securityContext: {}
 
 nodeSelector: {}
 

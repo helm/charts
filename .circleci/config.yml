@@ -1,16 +1,28 @@
 version: 2
 jobs:
-  build:
+  lint-scripts:
     docker:
-      - image: circleci/python:3.6.4
+      - image: koalaman/shellcheck-alpine
     steps:
       - checkout
       - run:
-          name: install tools
-          command: test/circle/install.sh
+          name: lint
+          command: |
+            shellcheck -x test/build.sh
+            shellcheck -x test/e2e.sh
+            shellcheck -x test/helm-test-e2e.sh
+            shellcheck -x test/repo-sync.sh
+  lint-charts:
+    docker:
+      - image: gcr.io/kubernetes-charts-ci/test-image:v2.0.2
+    steps:
+      - checkout
       - run:
           name: lint
-          command: test/circle/lint.sh
+          command: |
+            git remote add k8s https://github.com/kubernetes/charts
+            git fetch k8s master
+            chart_test.sh --config test/.testenv --no-install
   sync:
     docker:
       - image: google/cloud-sdk
@@ -21,9 +33,10 @@ jobs:
           command: test/repo-sync.sh
 workflows:
   version: 2
-  test:
+  lint:
     jobs:
-      - build
+      - lint-scripts
+      - lint-charts
   sync:
     triggers:
       - schedule:

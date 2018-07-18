@@ -2,6 +2,8 @@
 # This supports shell glob matching, relative path matching, and
 # negation (prefixed with !). Only one pattern per line.
 .DS_Store
+# OWNERS file for Kubernetes
+OWNERS
 # Common VCS dirs
 .git/
 .gitignore

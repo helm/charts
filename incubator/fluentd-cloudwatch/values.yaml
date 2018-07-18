@@ -37,6 +37,9 @@ rbac:
 
   ## Ignored if rbac.create is true
   serviceAccountName: default
+# Add extra environment variables if specified (must be specified as a single line object and be quoted)
+extraVars: []
+# - "{ name: NODE_NAME, valueFrom: { fieldRef: { fieldPath: spec.nodeName } } }"
 
 fluentdConfig: |
   <match fluent.**>
@@ -45,6 +48,7 @@ fluentdConfig: |
 
   <source>
     type tail
+    enable_stat_watcher false
     path /var/log/containers/*.log
     pos_file /var/log/fluentd-containers.log.pos
     time_format %Y-%m-%dT%H:%M:%S.%NZ
@@ -55,6 +59,7 @@ fluentdConfig: |
 
   <source>
     type tail
+    enable_stat_watcher false
     format /^(?<time>[^ ]* [^ ,]*)[^\[]*\[[^\]]*\]\[(?<severity>[^ \]]*) *\] (?<message>.*)$/
     time_format %Y-%m-%d %H:%M:%S
     path /var/log/salt/minion
@@ -64,6 +69,7 @@ fluentdConfig: |
 
   <source>
     type tail
+    enable_stat_watcher false
     format syslog
     path /var/log/startupscript.log
     pos_file /var/log/fluentd-startupscript.log.pos
@@ -72,6 +78,7 @@ fluentdConfig: |
 
   <source>
     type tail
+    enable_stat_watcher false
     format /^time="(?<time>[^)]*)" level=(?<severity>[^ ]*) msg="(?<message>[^"]*)"( err="(?<error>[^"]*)")?( statusCode=($<status_code>\d+))?/
     path /var/log/docker.log
     pos_file /var/log/fluentd-docker.log.pos
@@ -80,6 +87,7 @@ fluentdConfig: |
 
   <source>
     type tail
+    enable_stat_watcher false
     format none
     path /var/log/etcd.log
     pos_file /var/log/fluentd-etcd.log.pos
@@ -88,6 +96,7 @@ fluentdConfig: |
 
   <source>
     type tail
+    enable_stat_watcher false
     format kubernetes
     multiline_flush_interval 5s
     path /var/log/kubelet.log
@@ -97,6 +106,7 @@ fluentdConfig: |
 
   <source>
     type tail
+    enable_stat_watcher false
     format kubernetes
     multiline_flush_interval 5s
     path /var/log/kube-proxy.log
@@ -106,6 +116,7 @@ fluentdConfig: |
 
   <source>
     type tail
+    enable_stat_watcher false
     format kubernetes
     multiline_flush_interval 5s
     path /var/log/kube-apiserver.log
@@ -115,6 +126,7 @@ fluentdConfig: |
 
   <source>
     type tail
+    enable_stat_watcher false
     format kubernetes
     multiline_flush_interval 5s
     path /var/log/kube-controller-manager.log
@@ -124,6 +136,7 @@ fluentdConfig: |
 
   <source>
     type tail
+    enable_stat_watcher false
     format kubernetes
     multiline_flush_interval 5s
     path /var/log/kube-scheduler.log
@@ -133,6 +146,7 @@ fluentdConfig: |
 
   <source>
     type tail
+    enable_stat_watcher false
     format kubernetes
     multiline_flush_interval 5s
     path /var/log/rescheduler.log
@@ -142,6 +156,7 @@ fluentdConfig: |
 
   <source>
     type tail
+    enable_stat_watcher false
     format kubernetes
     multiline_flush_interval 5s
     path /var/log/glbc.log
@@ -151,6 +166,7 @@ fluentdConfig: |
 
   <source>
     type tail
+    enable_stat_watcher false
     format kubernetes
     multiline_flush_interval 5s
     path /var/log/cluster-autoscaler.log
