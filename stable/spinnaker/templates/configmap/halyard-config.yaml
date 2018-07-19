@@ -77,7 +77,6 @@ data:
     $HAL_COMMAND config provider docker-registry account $PROVIDER_COMMAND {{ $registry.name }} --address {{ $registry.address }} \
         ${CREDS} --repositories {{ range $index, $repository := $registry.repositories }}{{if $index}},{{end}}{{- $repository }}{{- end }}
 
-    sleep 600
     {{- end }}
 
     $HAL_COMMAND config provider kubernetes enable
