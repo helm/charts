@@ -56,7 +56,6 @@ data:
     {{ end }}
 
     # Docker Registry
-
     $HAL_COMMAND config provider docker-registry enable
     {{- range $index, $registry := .Values.dockerRegistries }}
 
