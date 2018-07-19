@@ -131,13 +131,13 @@ spec:
           containerPort: 9104
         livenessProbe:
           httpGet:
-            path: /metrics
+            path: /
             port: metrics
           initialDelaySeconds: 15
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
-            path: /metrics
+            path: /
             port: metrics
           initialDelaySeconds: 5
           timeoutSeconds: 1
