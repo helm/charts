@@ -31,6 +31,15 @@ dockerRegistries:
 #   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
 #   email: 1234@5678.com
 
+# If you don't want to put your passwords into a values file
+# you can use a pre-created secret instead of putting passwords
+# (specify secret name in below `dockerRegistryAccountSecret`)
+# per account above with data in the format:
+# <name>: <password>
+
+# dockerRegistryAccountSecret: myregistry-secrets
+
+
 kubeConfig:
   # Use this when you want to register arbitrary clusters with Spinnaker
   # Upload your ~/kube/.config to a secret
@@ -70,6 +79,10 @@ redis:
   nodeSelector: {}
   cluster:
     enabled: false
+# Uncomment if you don't want to create a PVC for redis
+#  master:
+#    persistence:
+#      enabled: false
 
 # Minio access/secret keys for the in-cluster S3 usage
 # Minio is not exposed publically
@@ -81,6 +94,9 @@ minio:
   secretKey: spinnakeradmin
   bucket: "spinnaker"
   nodeSelector: {}
+# Uncomment if you don't want to create a PVC for minio
+#  persistence:
+#    enabled: false
 
 gcs:
   enabled: false
