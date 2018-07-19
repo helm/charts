@@ -74,14 +74,16 @@ nodeSelector: {}
 # Redis password to use for the in-cluster redis service
 # Redis is not exposed publically
 redis:
-  redisPassword: password
+  password: password
   nodeSelector: {}
+  cluster:
+    enabled: false
 
 # Minio access/secret keys for the in-cluster S3 usage
 # Minio is not exposed publically
 minio:
   enabled: true
-  imageTag: RELEASE.2016-11-26T02-23-47Z
+  imageTag: RELEASE.2018-06-09T02-18-09Z
   serviceType: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
