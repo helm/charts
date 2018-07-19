@@ -70,7 +70,7 @@ spec:
       {{- end }}
       - name: reg-secrets
         secret:
-          {{- if .Values.accountSecret }}
+          {{- if .Values.dockerRegistryAccountSecret }}
           secretName: {{ .Values.dockerRegistryAccountSecret }}
           {{- else }}
           secretName: {{ template "spinnaker.fullname" .}}-registry
