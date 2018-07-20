@@ -59,10 +59,18 @@ The following table lists the configurable parameters of the Hazelcast chart and
 | `livenessProbe.timeoutSeconds`             | When the probe times out                                                                                       | `5`                                                  |
 | `livenessProbe.successThreshold`           | Minimum consecutive successes for the probe to be considered successful after having failed                    | `1`                                                  |
 | `livenessProbe.failureThreshold`           | Minimum consecutive failures for the probe to be considered failed after having succeeded.                     | `3`                                                  |
-| `resources`                                | CPU/Memory resource requests/limits                                                                            | Memory: `256Mi`, CPU: `100m`                         |
+| `readinessProbe.enabled`                   | Turn on and off readiness probe                                                                                | `true`                                               |
+| `readinessProbe.initialDelaySeconds`       | Delay before readiness probe is initiated                                                                      | `30`                                                 |
+| `readinessProbe.periodSeconds`             | How often to perform the probe                                                                                 | `10`                                                 |
+| `readinessProbe.timeoutSeconds`            | When the probe times out                                                                                       | `1`                                                  |
+| `readinessProbe.successThreshold`          | Minimum consecutive successes for the probe to be considered successful after having failed                    | `1`                                                  |
+| `readinessProbe.failureThreshold`          | Minimum consecutive failures for the probe to be considered failed after having succeeded.                     | `3`                                                  |
+| `resources`                                | CPU/Memory resource requests/limits                                                                            | `nil`                                                |
 | `service.type`                             | Kubernetes service type ('ClusterIP', 'LoadBalancer', or 'NodePort')                                           | `ClusterIP`                                          |
 | `service.port`                             | Kubernetes service port                                                                                        | `5701`                                               |
 | `rbac.create`                              | Enable installing RBAC Role authorization                                                                      | `true`                                               |
+| `serviceAccount.create`                    | Enable installing Service Account                                                                              | `true`                                               |
+| `serviceAccount.name`                      | Name of Service Account, if not set, the name is generated using the fullname template                         | `nil`                                                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
