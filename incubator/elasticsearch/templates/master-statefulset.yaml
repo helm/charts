@@ -50,6 +50,10 @@ spec:
                   release: "{{ .Release.Name }}"
                   component: "{{ .Values.master.name }}"
       {{- end }}
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+{{- end }}
 {{- if .Values.master.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.master.nodeSelector | indent 8 }}
