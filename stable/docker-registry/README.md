@@ -59,6 +59,7 @@ their default values.
 | `s3.bucket`                 | S3 bucket name                                                                             | `nil`           |
 | `s3.encrypt`                | Store images in encrypted format                                                           | `nil`           |
 | `s3.secure`                 | Use HTTPS                                                                                  | `nil`           |
+| `s3.endpoint`               | Optional region endpoint to use for accessing S3                                           | `nil`           |
 | `swift.authurl`             | Swift authurl                                                                              | `nil`           |
 | `swift.container`           | Swift container                                                                            | `nil`           |
 

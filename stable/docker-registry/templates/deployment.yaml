@@ -106,6 +106,10 @@ spec:
             - name: REGISTRY_STORAGE_S3_SECURE
               value: {{ .Values.s3.secure | quote }}
           {{- end }}
+          {{- if .Values.s3.endpoint }}
+            - name: REGISTRY_STORAGE_S3_REGIONENDPOINT
+              value: {{ .Values.s3.endpoint | quote }}
+          {{- end }}
 {{- else if eq .Values.storage "swift" }}
             - name: REGISTRY_STORAGE_SWIFT_AUTHURL
               value: {{ required ".Values.swift.authurl is required" .Values.swift.authurl }}

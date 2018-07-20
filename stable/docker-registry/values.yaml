@@ -79,6 +79,7 @@ secrets:
 #  bucket: my-bucket
 #  encrypt: false
 #  secure: true
+#  endpoint: https://s3.us-east-2.amazonaws.com
 
 # Options for swift storage type:
 # swift:
