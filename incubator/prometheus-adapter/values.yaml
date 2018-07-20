@@ -40,5 +40,4 @@ prometheus:
   port: 9090
 
 metricsRelistInterval: 30s
-rateInterval: 5m
 logLevel: 10

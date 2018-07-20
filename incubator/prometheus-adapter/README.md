@@ -57,7 +57,6 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `prometheus.url`                | Url of where we can find the Prometheus service                                 | `http://prometheus.default.svc`             |
 | `prometheus.port`               | Port of where we can find the Prometheus service                                | `9090`                                      |
 | `metricsRelistInterval`         | Interval at which to re-list the set of all available metrics from Prometheus   | `30s`                                       |
-| `rateInterval`                  | Period of time used to calculate rate metrics from cumulative metrics           | `5m`                                        |
 | `logLevel`                      | Log level                                                                       | `10`                                        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
