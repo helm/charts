@@ -1,7 +1,7 @@
 # Default values for k8s-prometheus-adapter..
 image:
-  repository: directxman12/k8s-prometheus-adapter
-  tag: v0.1.0-centos
+  repository: directxman12/k8s-prometheus-adapter-amd64
+  tag: v0.2.1
   pullPolicy: IfNotPresent
 
 replicas: 1

@@ -13,7 +13,7 @@ $ helm install incubator/prometheus-adapter
 This charts install the [Prometheus Adapter](https://github.com/DirectXMan12/k8s-prometheus-adapter) on your kubernetes clutser using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
-Kubernetes 1.6+
+Kubernetes 1.9+
 
 ## Installing the Chart
 

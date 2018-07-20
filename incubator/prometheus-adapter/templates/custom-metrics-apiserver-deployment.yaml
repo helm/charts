@@ -39,16 +39,26 @@ spec:
         - --logtostderr=true
         - --prometheus-url={{ .Values.prometheus.url }}:{{ .Values.prometheus.port }}
         - --metrics-relist-interval={{ .Values.metricsRelistInterval }}
-        - --rate-interval={{ .Values.rateInterval }}
         - --v={{ .Values.logLevel }}
+        - --config=/etc/adapter/config.yaml
         ports:
         - containerPort: 6443
-{{- if .Values.tls.enable }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
+        - mountPath: /etc/adapter/
+          name: config
+          readOnly: true
+{{- if .Values.tls.enable }}
         - mountPath: /var/run/serving-cert
           name: volume-serving-cert
-          readOnly: false
+          readOnly: true
+{{- end }}
       volumes:
+      - name: config
+        configMap:
+          name: {{ template "k8s-prometheus-adapter.fullname" . }}
+{{- if .Values.tls.enable }}
       - name: volume-serving-cert
         secret:
           secretName: {{ template "k8s-prometheus-adapter.fullname" . }}
