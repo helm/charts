@@ -16,7 +16,7 @@ env:
   # LOGGING_VERBOSE: "true"
   # SERVER_DEFAULTROUTE: "/app/kibana"
 
-configFiles:
+files:
   kibana.yml:
     ## Default Kibana configuration from kibana-docker.
     server.name: kibana
@@ -24,7 +24,7 @@ configFiles:
     elasticsearch.url: http://elasticsearch:9200
 
     ## Custom config properties below
-    ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html 
+    ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
     # server.port: 5601
     # logging.verbose: "true"
     # server.defaultRoute: "/app/kibana"
