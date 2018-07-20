@@ -13,11 +13,11 @@ spec:
       maxUnavailable: 1      
   template:
     metadata:
-      labels: {{ include "prometheus-node-exporter.labels" . | indent 6 }}
+      labels: {{ include "prometheus-node-exporter.labels" . | indent 8 }}
     spec:
 {{- if and .Values.rbac.create .Values.serviceAccount.create }}
       serviceAccountName: {{ template "prometheus-node-exporter.serviceAccountName" . }}
-{{- end -}}      
+{{- end }}      
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
@@ -29,7 +29,9 @@ spec:
             - --path.procfs=/host/proc
             - --path.sysfs=/host/sys
             - --web.listen-address=0.0.0.0:{{ .Values.service.port }}
+{{- if .Values.extraArgs }}
 {{ toYaml .Values.extraArgs | indent 12 }}
+{{- end }}
           ports:
             - name: metrics
               containerPort: {{ .Values.service.targetPort }}
