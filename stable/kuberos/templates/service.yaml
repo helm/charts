@@ -11,8 +11,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-#      targetPort: http
-      targetPort: 10003
+      targetPort: kuberos-port
       protocol: TCP
       name: http
   selector:
