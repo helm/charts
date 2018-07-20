@@ -47,9 +47,9 @@ To access Hazelcast from outside the Kubernetes cluster:
   *) Check service external IP:
      $ export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "hazelcast.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   *) Insert Data:
-     $ curl -v -X POST -H "Content-Type: text/plain" -d "bar" http://$SERVICE_IP:{{ .Values.service.externalPort }}/hazelcast/rest/maps/mapName/foo
+     $ curl -v -X POST -H "Content-Type: text/plain" -d "bar" http://$SERVICE_IP:{{ .Values.service.port }}/hazelcast/rest/maps/mapName/foo
   *) Get Data:
-     $ curl http://$SERVICE_IP:{{ .Values.service.externalPort }}/hazelcast/rest/maps/mapName/foo
+     $ curl http://$SERVICE_IP:{{ .Values.service.port }}/hazelcast/rest/maps/mapName/foo
 {{- else if contains "ClusterIP" .Values.service.type }}
   *) Forward port from POD:
      $ export POD=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "hazelcast.name" . }}" -o jsonpath="{.items[0].metadata.name}")
