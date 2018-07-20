@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kuberos.fullname" . }}-config
+data:
+  template: |-
+    apiVersion: v1
+    kind: Config
+    current-context: {{ (index .Values.kuberos.clusters 0).name  }}
+    clusters:
+    {{ range .Values.kuberos.clusters }}
+    - name: {{ .name }}
+      cluster:
+        certificate-authority-data: {{ .caCrt | b64enc | quote }}
+        server: {{ .apiServer }}
+    {{- end }}
