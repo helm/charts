@@ -40,6 +40,8 @@ excludedDaysOfYear:
 # Set specific Timezone for Actions to take place
 timezone: UTC
 
+priorityClassName: ""
+
 # create service account with permission to list and kill pods
 rbac:
   create: false
