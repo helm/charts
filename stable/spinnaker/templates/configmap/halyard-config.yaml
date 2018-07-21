@@ -6,6 +6,8 @@ metadata:
 {{ include "spinnaker.standard-labels" . | indent 4 }}
 data:
   install.sh: |
+    #!/bin/bash
+
     # Wait for the Hal daemon to be ready
     export DAEMON_ENDPOINT=http://{{ template "spinnaker.fullname" . }}-halyard:8064
     export HAL_COMMAND="hal --daemon-endpoint $DAEMON_ENDPOINT"
@@ -63,8 +65,17 @@ data:
       PROVIDER_COMMAND='add'
     fi
 
+    CREDS=""
+    {{ if $registry.username -}}
+    CREDS+="--username {{ $registry.username }} --password-file /opt/registry/passwords/{{ $registry.name }}"
+    {{ if $registry.email -}}
+    CREDS+=" --email {{ $registry.email }}"
+    {{- end -}}
+    {{- end }}
+
     $HAL_COMMAND config provider docker-registry account $PROVIDER_COMMAND {{ $registry.name }} --address {{ $registry.address }} \
-        --repositories {{ range $index, $repository := $registry.repositories }}{{- $repository }},{{- end }}
+        ${CREDS} --repositories {{ range $index, $repository := $registry.repositories }}{{if $index}},{{end}}{{- $repository }}{{- end }}
+
     {{- end }}
 
     $HAL_COMMAND config provider kubernetes enable

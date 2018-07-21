@@ -52,6 +52,13 @@ spec:
         secret:
           secretName: {{ template "spinnaker.fullname" . }}-gcs
       {{- end }}
+      - name: reg-secrets
+        secret:
+          {{- if .Values.dockerRegistryAccountSecret }}
+          secretName: {{ .Values.dockerRegistryAccountSecret }}
+          {{- else }}
+          secretName: {{ template "spinnaker.fullname" .}}-registry
+          {{- end }}
       {{- if and .Values.s3.enabled .Values.s3.accessKey .Values.s3.secretKey }}
       - name: s3-secrets
         secret:
@@ -82,6 +89,8 @@ spec:
           mountPath: /home/spinnaker
         - name: halyard-config
           mountPath: /opt/halyard/config
+        - name: reg-secrets
+          mountPath: /opt/registry/passwords
   volumeClaimTemplates:
   - metadata:
       name: halyard-home
