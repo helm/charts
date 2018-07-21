@@ -68,6 +68,8 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `web.affinity`                       | Affinity settings for web pod assignment    | `{}`                                                       |
 | `web.schedulerName`                  | Name of an alternate scheduler for web pod  | `nil`                                                      |
 | `web.tolerations`                    | Toleration labels for web pod assignment    | `[]`                                                       |
+| `web.podAnnotations`                 | Annotations to be added to pods             | `{}`                                                       |
+| `web.annotations`                    | Deployment annotations                      | `{}`                                                       |
 | `cron.replicacount`                  | Amount of cron pods to run                  | `1`                                                        |
 | `cron.resources.limits`              | Cron resource limits                        | `{cpu: 200m, memory: 200Mi}`                               |
 | `cron.resources.requests`            | Cron resource requests                      | `{cpu: 100m, memory: 100Mi}`                               |
@@ -75,6 +77,8 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `cron.affinity`                      | Affinity settings for cron pod assignment   | `{}`                                                       |
 | `cron.schedulerName`                 | Name of an alternate scheduler for cron pod | `nil`                                                      |
 | `cron.tolerations`                   | Toleration labels for cron pod assignment   | `[]`                                                       |
+| `cron.podAnnotations`                | Annotations to be added to pods             | `{}`                                                       |
+| `cron.annotations`                   | Deployment annotations                      | `{}`                                                       |   
 | `worker.replicacount`                | Amount of worker pods to run                | `2`                                                        |
 | `worker.resources.limits`            | Worker resource limits                      | `{cpu: 300m, memory: 500Mi}`                               |
 | `worker.resources.requests`          | Worker resource requests                    | `{cpu: 100m, memory: 100Mi}`                               |
@@ -82,6 +86,8 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `worker.schedulerName`               | Name of an alternate scheduler for worker   | `nil`                                                      |
 | `worker.affinity`                    | Affinity settings for worker pod assignment | `{}`                                                       |
 | `worker.tolerations`                 | Toleration labels for worker pod assignment | `[]`                                                       |
+| `worker.podAnnotations`              | Annotations to be added to pods             | `{}`                                                       |
+| `worker.annotations`                 | Deployment annotations                      | `{}`                                                       |
 | `user.email`                         | Username for default admin                  | `admin@sentry.local`                                       |
 | `email.from_address`                 | Email notifications are from                | `smtp`                                                     |
 | `email.host`                         | SMTP host for sending email                 | `smtp`                                                     |
