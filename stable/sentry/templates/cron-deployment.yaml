@@ -28,6 +28,13 @@ spec:
       tolerations:
 {{ toYaml .Values.cron.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.cron.schedulerName }}
+      schedulerName: "{{ .Values.cron.schedulerName }}"
+      {{- end }}
+      {{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.imagePullSecrets | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}-cron
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

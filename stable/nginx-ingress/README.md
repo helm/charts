@@ -47,7 +47,7 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.14.0`
+`controller.image.tag` | controller container image tag | `0.15.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
@@ -64,6 +64,8 @@ Parameter | Description | Default
 `controller.extraArgs` | Additional controller container arguments | `{}`
 `controller.kind` | install as Deployment or DaemonSet | `Deployment`
 `controller.daemonset.useHostPort` | If `controller.kind` is `DaemonSet`, this will enable `hostPort` for TCP/80 and TCP/443 | false
+`controller.daemonset.hostPorts.http` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"80"`
+`controller.daemonset.hostPorts.https` | If `controller.daemonset.useHostPort` is `true` and this is non-empty, it sets the hostPort | `"443"`
 `controller.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `controller.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`
@@ -72,6 +74,7 @@ Parameter | Description | Default
 `controller.replicaCount` | desired number of controller pods | `1`
 `controller.minAvailable` | minimum number of available controller pods for PodDisruptionBudget | `1`
 `controller.resources` | controller pod resource requests & limits | `{}`
+`controller.priorityClassName` | controller priorityClassName | `nil`
 `controller.lifecycle` | controller pod lifecycle hooks | `{}`
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.service.labels` | labels for controller service | `{}`
@@ -83,6 +86,8 @@ Parameter | Description | Default
 `controller.service.healthCheckNodePort` | If `controller.service.type` is `NodePort` or `LoadBalancer` and `controller.service.externalTrafficPolicy` is set to `Local`, set this to [the managed health-check port the kube-proxy will expose](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport). If blank, a random port in the `NodePort` range will be assigned | `""`
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
+`controller.service.enableHttp` | if port 80 should be opened for service | `true`
+`controller.service.enableHttps` | if port 443 should be opened for service | `true`
 `controller.service.targetPorts.http` | Sets the targetPort that maps to the Ingress' port 80 | `80`
 `controller.service.targetPorts.https` | Sets the targetPort that maps to the Ingress' port 443 | `443`
 `controller.service.type` | type of controller service to create | `LoadBalancer`
@@ -132,6 +137,7 @@ Parameter | Description | Default
 `defaultBackend.replicaCount` | desired number of default backend pods | `1`
 `defaultBackend.minAvailable` | minimum number of available default backend pods for PodDisruptionBudget | `1`
 `defaultBackend.resources` | default backend pod resource requests & limits | `{}`
+`defaultBackend.priorityClassName` | default backend  priorityClassName | `nil`
 `defaultBackend.service.annotations` | annotations for default backend service | `{}`
 `defaultBackend.service.clusterIP` | internal default backend cluster service IP | `""`
 `defaultBackend.service.externalIPs` | default backend service external IP addresses | `[]`
