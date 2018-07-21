@@ -1,0 +1,71 @@
+## Default values for hlf-ord.
+## This is a YAML-formatted file.
+## Declare variables to be passed into your templates.
+
+image:
+  repository: hyperledger/fabric-orderer
+  tag: x86_64-1.1.0
+  pullPolicy: IfNotPresent
+
+service:
+  # Cluster IP or LoadBalancer
+  type: ClusterIP
+  port: 7050
+
+persistence:
+  enabled: true
+  annotations: {}
+  ## If unset or "", use "default" storage class.
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  # existingClaim: ""
+
+##################################
+## Further configuration options #
+##################################
+## Address of Certificate Authority where O
+caAddress: hlf-ca.local
+## Username for registering/enrolling with CA
+caUsername: ord1
+## Password for registering/enrolling with CA  (defaults to random 24 alphanumeric)
+# caPassword:
+
+ord:
+  ## Type of Orderer, `solo` or `kafka`
+  type: solo
+  ## MSP ID of the Orderer
+  mspID: OrdererMSP
+
+secrets:
+  ## This should contain "genesis" block derived from a configtx.yaml
+  ## configtxgen -profile OrdererGenesis -outputBlock genesis.block
+  genesis: hlf--genesis
+  ## This should contain the Certificate of the Orderer Organisation admin
+  ## This is necessary to successfully run the orderer
+  adminCert: hlf--ord-admincert
+
+resources: {}
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+  ## Suggested antiAffinity, as each Orderer should be on a separate Node for resilience
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     - topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           app: hlf-ord
