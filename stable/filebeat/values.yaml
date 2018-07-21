@@ -79,6 +79,8 @@ resources: {}
 
 nodeSelector: {}
 
+annotations: {}
+
 tolerations:
   - operator: Exists
 
