@@ -17,7 +17,7 @@ spec:
   serviceName: {{ template "memcached.fullname" . }}
   replicas: {{ .Values.replicaCount }}
   podManagementPolicy: "Parallel"
-  updateStrategy: 
+  updateStrategy:
     type: RollingUpdate
 {{- if semverCompare ">= 1.8-0" .Capabilities.KubeVersion.GitVersion }}
   selector:
@@ -112,14 +112,14 @@ spec:
         args:
         - "--memcached.address"
         - "localhost:{{ .Values.memcached.port }}"
-        - "--web.listen-address" 
+        - "--web.listen-address"
         - ":{{ .Values.metrics.port }}"
         - "--web.telemetry-path"
         - {{ .Values.metrics.path | quote }}
         ports:
         - name: metrics
           containerPort: {{ .Values.metrics.port }}
-        # Only probe the root so as not to invoke 
+        # Only probe the root so as not to invoke
         # the metrics collection transaction for a probe
         livenessProbe:
           httpGet:
