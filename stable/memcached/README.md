@@ -12,7 +12,7 @@ $ helm install stable/memcached
 
 ## Introduction
 
-This chart bootstraps a [Memcached](https://hub.docker.com/_/memcached/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [Memcached](https://hub.docker.com/_/memcached/) deployment of a StatefulSet on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Installing the Chart
 
