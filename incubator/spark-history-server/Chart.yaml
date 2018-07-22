@@ -1,5 +1,6 @@
 name: spark-history-server
 version: 0.1.0
+appVersion: 2.3.1
 description: A Helm chart for Spark History Server
 home: https://spark.apache.org
 sources:
