@@ -81,8 +81,8 @@ nodeSelector: {}
 
 annotations: {}
 
-tolerations:
-  - operator: Exists
+tolerations: []
+  # - operator: Exists
 
 affinity: {}
 
