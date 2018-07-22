@@ -4,7 +4,7 @@ metadata:
   name: {{ template "memcached.fullname" . }}
   labels:
     app: {{ template "memcached.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: "{{ template "memcached.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -43,17 +43,42 @@ spec:
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         command:
         - memcached
-        - -m {{ .Values.memcached.maxItemMemory  }}
+        - --memory-limit
+        - {{ .Values.memcached.maxItemMemoryMegabytes | quote }}
+        {{- if .Values.memcached.port }}
+        - --port
+        - {{ .Values.memcached.port | quote }}
+        {{- end }}
+        {{- if .Values.memcached.udpPort }}
+        - --udp-port
+        - {{ .Values.memcached.udpPort | quote }}
+        {{- end }}
+        {{- if .Values.memcached.maxItemSize }}
+        - --max-item-size
+        - {{ .Values.memcached.maxItemSize | quote }}
+        {{- end }}
+        {{- if .Values.memcached.maxConnections }}
+        - --conn-limit
+        - {{ .Values.memcached.maxConnections | quote }}
+        {{- end }}
+        {{- if .Values.memcached.slabMinSizeBytes }}
+        - --slab-min-size
+        - {{ .Values.memcached.slabMinSizeBytes | quote }}
+        {{- end }}
+        {{- if .Values.memcached.growthFactor }}
+        - --slab-growth-factor
+        - {{ .Values.memcached.growthFactor | quote }}
+        {{- end }}
         {{- if .Values.memcached.extendedOptions }}
-        - -o
-        - {{ .Values.memcached.extendedOptions }}
+        - --extended
+        - {{ .Values.memcached.extendedOptions | quote }}
         {{- end }}
         {{- if .Values.memcached.verbosity }}
         - -{{ .Values.memcached.verbosity }}
         {{- end }}
         ports:
         - name: memcache
-          containerPort: 11211
+          containerPort: {{ .Values.memcached.port }}
         livenessProbe:
           tcpSocket:
             port: memcache

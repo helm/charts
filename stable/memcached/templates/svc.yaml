@@ -4,14 +4,14 @@ metadata:
   name: {{ template "memcached.fullname" . }}
   labels:
     app: {{ template "memcached.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: "{{ template "memcached.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
   clusterIP: None
   ports:
   - name: memcache
-    port: 11211
+    port: {{ .Values.memcached.port }}
     targetPort: memcache
   selector:
     app: {{ template "memcached.fullname" . }}
