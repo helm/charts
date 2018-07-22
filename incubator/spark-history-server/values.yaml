@@ -10,7 +10,10 @@ service:
   internalPort: 18080
   type: ClusterIP
 
-logDirectory: hdfs://hdfs/history/
+hdfs:
+  hdfsSiteConfigMap: hdfs-site
+  coreSiteConfigMap: core-site
+  logDirectory: hdfs://hdfs/history/
 
 ingress:
   baseURL: /spark-history-server

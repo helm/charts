@@ -18,15 +18,27 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+        - name: hdfs-site
+          mountPath: /etc/hadoop/hdfs-site.xml
+          subPath: hdfs-site.xml
+        - name: core-site
+          mountPath: /etc/hadoop/core-site.xml
+          subPath: core-site.xml
         env:
         - name: SPARK_NO_DAEMONIZE
           value: "true"
         - name: SPARK_HISTORY_OPTS
           value: >-
-            -Dspark.history.fs.logDirectory={{ .Values.logDirectory }}
+            -Dspark.history.fs.logDirectory={{ .Values.hdfs.logDirectory }}
         ports:
            - containerPort: {{ .Values.service.internalPort }}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
-        resources:
-{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+      - name: hdfs-site
+        configMap:
+          name: {{ .Values.hdfs.hdfsSiteConfigMap }}
+      - name: core-site
+        configMap:
+          name: {{ .Values.hdfs.coreSiteConfigMap }}
