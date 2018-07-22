@@ -13,7 +13,6 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
-
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -29,6 +28,5 @@ spec:
            - containerPort: {{ .Values.service.internalPort }}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
-
         resources:
 {{ toYaml .Values.resources | indent 12 }}

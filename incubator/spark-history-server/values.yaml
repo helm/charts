@@ -8,6 +8,11 @@ image:
 service:
   externalPort: 80
   internalPort: 18080
-  type: NodePort
+  type: ClusterIP
 
 logDirectory: hdfs://hdfs/history/
+
+ingress:
+  baseURL: /spark-history-server
+  controller: traefik
+  label: traefik-ingress-lb
