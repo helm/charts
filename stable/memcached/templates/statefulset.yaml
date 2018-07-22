@@ -11,6 +11,12 @@ spec:
   serviceName: {{ template "memcached.fullname" . }}
   replicas: {{ .Values.replicaCount }}
   podManagementPolicy: "Parallel"
+  updateStrategy: 
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "memcached.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
@@ -40,11 +46,11 @@ spec:
         {{- end }}
       containers:
       - name: "memcached"
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         args:
         - "--memory-limit"
-        - {{ .Values.memcached.maxItemMemoryMegabytes | quote }}
+        - {{ .Values.memcached.maxItemMemory | quote }}
         {{- if .Values.memcached.port }}
         - "--port"
         - {{ .Values.memcached.port | quote }}

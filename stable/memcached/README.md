@@ -22,6 +22,12 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/memcached
 ```
 
+To install the chart with Prometheus metrics:
+
+```bash
+$ helm install --name my-release stable/memcached --set metrics.enabled=true
+```
+
 The command deploys Memcached on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
@@ -40,16 +46,26 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Memcached chart and their default values.
 
-|      Parameter            |          Description            |                         Default                         |
-|---------------------------|---------------------------------|---------------------------------------------------------|
-| `image`                   | The image to pull and run       | A recent official memcached tag                         |
-| `imagePullPolicy`         | Image pull policy               | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `memcached.verbosity`     | Verbosity level (v, vv, or vvv) | Un-set.                                                 |
-| `memcached.maxItemMemory` | Max memory for items (in MB)    | `64`                                                    |
-| `extraContainers`         | Container sidecar definition(s) as string | Un-set                                        |
-| `extraVolumes`            | Volume definitions to add as string | Un-set                                              |
+|      Parameter                     |          Description                      |                         Default                         |
+|------------------------------------|-------------------------------------------|---------------------------------------------------------|
+| `image`                            | The image to pull and run                 | A recent official memcached tag                         |
+| `imagePullPolicy`                  | Image pull policy                         | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `memcached.port`                   | TCP port                                  | 11211                                                   |
+| `memcached.udpPort`                | UDP port                                  | 11211 (0 to disable)                                    |
+| `memcached.maxItemMemory`          | Max memory for items (in MB)              | `64`                                                    |
+| `memcached.maxItemSize`            | Max item size (e.g. 5m or 2k)             | `1m`                                                    |
+| `memcached.maxConnections`         | Maximum connections                       | `1024`                                                  |
+| `memcached.slabMinSizeBytes`       | Minimum slab size                         | `48`                                                    |
+| `memcached.slabGrowthFactor`       | Slab growth factor                        | `1.25`                                                  |
+| `memcached.verbosity`              | Verbosity level (v, vv, or vvv)           | `v`                                                     |
+| `memcached.extendedOptions`        | Comma-separated options                   | `modern`                                                |
+| `memcached.metrics.enabled`        | Enable Prometheus metrics exporter        | `false`                                                 |
+| `extraContainers`                  | Container sidecar definition(s) as string | Un-set                                                  |
+| `extraVolumes`                     | Volume definitions to add as string       | Un-set                                                  |
 
 The above parameters map to `memcached` params. For more information please refer to the [Memcached documentation](https://github.com/memcached/memcached/wiki/ConfiguringServer).
+
+You may find the Wiki is very out of date. You can get a full list of options info from binary: `docker run --rm memcached -h`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
