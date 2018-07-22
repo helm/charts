@@ -1,4 +1,10 @@
+{{- if semverCompare ">= 1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: apps/v1
+{{- else if semverCompare ">= 1.8-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: apps/v1beta2
+{{- else -}}
 apiVersion: apps/v1beta1
+{{- end }}
 kind: StatefulSet
 metadata:
   name: {{ template "memcached.fullname" . }}
@@ -13,10 +19,12 @@ spec:
   podManagementPolicy: "Parallel"
   updateStrategy: 
     type: RollingUpdate
+{{- if semverCompare ">= 1.8-0" .Capabilities.KubeVersion.GitVersion }}
   selector:
     matchLabels:
       app: {{ template "memcached.fullname" . }}
       release: "{{ .Release.Name }}"
+{{- end }}
   template:
     metadata:
       labels:
