@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-{{ if eq .Values.enableWebhook false }}
+{{ if eq .Values.enableWebhook true }}
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -37,14 +37,36 @@ spec:
         app.kubernetes.io/name: sparkoperator
         app.kubernetes.io/version: {{ .Values.operatorVersion }}
       initializers:
-        pending: []  
+        pending: []
     spec:
       serviceAccountName: sparkoperator
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: spark-webhook-certs
       containers:
       - name: sparkoperator
-        image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
+        image: gcr.io/spark-operator/spark-operator:{{ .Values.operatorVersion }}
         imagePullPolicy: Always
+        volumeMounts:
+          - name: webhook-certs
+            mountPath: /etc/webhook-certs
         command: ["/usr/bin/spark-operator"]
         args:
         - -logtostderr
+        - -enable-webhook=true
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark-webhook
+  namespace: {{ .Values.operatorNamespace }}
+spec:
+  ports:
+    - port: 443
+      targetPort: 8080
+      name: webhook
+  selector:
+    app.kubernetes.io/name: sparkoperator
+    app.kubernetes.io/version: {{ .Values.operatorVersion }}
 {{ end }}

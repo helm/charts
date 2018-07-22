@@ -4,7 +4,11 @@ This is the Helm chart for the [Spark-on-Kubernetes Operator](https://github.com
 
 #### Prerequisites
 
-The Operator requires Kubernetes version 1.8 and above because it relies on garbage collection of custom resources. The [Initializer](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#initializers) needs to be enabled for the Kubernetes API server if customization of driver and executor pods (through mounting ConfigMaps and volumes) are desired. For more details, read the project [documentation](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator).
+The Operator requires Kubernetes version 1.8 and above because it relies on garbage collection of custom resources. If customization of driver and executor pods (through mounting custom configMaps and volumes) is desired, then the [Mutating Admission Webhook](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/) needs to be enabled and it only became beta in Kubernetes 1.9.
+
+##### Generating certificates (Required only when using webhooks)
+
+First manually create the `sparkoperator` namespace using `kubectl create ns sparkoperator`. Then as explained in the operator project [documentation](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/quick-start-guide.md#using-the-mutating-admission-webhook), run [`hack/gencerts.sh`](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/hack/gencerts.sh) to place secrets in the namespace just created.
 
 #### Installing the chart
 
@@ -21,12 +25,12 @@ By default, the operator is installed in a namespace called "sparkoperator". It 
 
 The following table lists the configurable parameters of the Spark operator chart and their default values.
 
-| Parameter              | Description                                 | Default                                |
-| ---------------------- | ------------------------------------------- | -------------------------------------- |
-| `operatorImageName`    | The name of the operator image              | `gcr.io/spark-operator/spark-operator` |
-| `operatorVersion`      | The version of the operator to install      | `v2.3.0-v1alpha1-latest`               |
-| `operatorNamespace`    | K8s namespace where operator is installed   | `sparkoperator`                        |
-| `enableInitializer`    | Whether to enable initializer alpha feature | false                                  |
+| Parameter           | Description                                  | Default                                |
+| ------------------- | -------------------------------------------- | -------------------------------------- |
+| `operatorImageName` | The name of the operator image               | `gcr.io/spark-operator/spark-operator` |
+| `operatorVersion`   | The version of the operator to install       | `v2.3.0-v1alpha1-latest`               |
+| `operatorNamespace` | K8s namespace where operator is installed    | `sparkoperator`                        |
+| `enableWebhook`     | Whether to enable mutating admission webhook | true                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

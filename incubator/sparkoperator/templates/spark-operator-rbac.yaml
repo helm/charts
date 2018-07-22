@@ -14,10 +14,15 @@
 # limitations under the License.
 #
 
+# If using admission webhooks, then do not create the namespace
+# because it is assumed that the user has manually created the namespace
+# and then run hack/gencerts.sh to generate secrets in the namespace.
+{{ if eq .Values.enableWebhook false }}
 apiVersion: v1
 kind: Namespace
 metadata:
   name: sparkoperator
+{{ end }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -34,10 +39,10 @@ rules:
   resources: ["pods"]
   verbs: ["*"]
 - apiGroups: [""]
-  resources: ["services"]
+  resources: ["services", "configmaps"]
   verbs: ["create", "get", "delete"]
 - apiGroups: [""]
-  resources: ["nodes", "endpoints"]
+  resources: ["nodes"]
   verbs: ["get"]
 - apiGroups: [""]
   resources: ["events"]
@@ -46,7 +51,7 @@ rules:
   resources: ["customresourcedefinitions"]
   verbs: ["create", "get", "update", "delete"]
 - apiGroups: ["admissionregistration.k8s.io"]
-  resources: ["initializerconfigurations"]
+  resources: ["mutatingwebhookconfigurations"]
   verbs: ["create", "get", "update", "delete"]
 - apiGroups: ["sparkoperator.k8s.io"]
   resources: ["sparkapplications", "scheduledsparkapplications"]
