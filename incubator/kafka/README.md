@@ -72,6 +72,9 @@ following configurable parameters:
 | `external.firstListenerPort`                   | TCP port which is added pod index number to arrive at the port used for NodePort and external listener port.                                                             | '31090'                                                            |
 | `external.domain`                              | Domain in which to advertise Kafka external listeners.                                                                                                                   | `cluster.local`                                                    |
 | `external.init`                                | External init container settings.                                                                                                                                        | (see `values.yaml`)                                                |
+| `external.type`                                | Service Type.                                                                                                                                                            | `NodePort`                                                         |
+| `external.distinct`                            | Distinct DNS entries for each created A record.                                                                                                                          | `false`                                                            |
+| `external.annotations`                         | Additional annotations for the external service.                                                                                                                         | `{}`                                                               |
 | `rbac.enabled`                                 | Enable a service account and role for the init container to use in an RBAC enabled cluster                                                                               | `false`                                                            |
 | `configurationOverrides`                       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                                                                                       | `{ offsets.topic.replication.factor: 3 }`                          |
 | `additionalPorts`                              | Additional ports to expose on brokers.  Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar                           | `{}`                                                               |
@@ -162,6 +165,8 @@ Kafka has a rich ecosystem, with lots of tools. This sections is intended to com
 
 ### Connecting to Kafka from outside Kubernetes
 
+#### Node Port External Service Type
+
 Review and optionally override to enable the example text concerned with external access in `values.yaml`.
 
 Once configured, you should be able to reach Kafka via NodePorts, one per replica. In kops where private,
@@ -174,6 +179,12 @@ be adjusted to allow non-Kubernetes nodes (e.g. bastion) to access the Kafka ext
 {{ .Release.Name }}.{{ .Values.external.domain }}
 ```
 
+If `external.distinct` is set theses entries will be prefixed with the replica number or broker id.
+
+```
+{{ .Release.Name }}-<BROKER_ID>.{{ .Values.external.domain }}
+```
+
 Port numbers for external access used at container and NodePort are unique to each container in the StatefulSet.
 Using the default `external.firstListenerPort` number with a `replicas` value of `3`, the following
 container and NodePorts will be opened for external access: `31090`, `31091`, `31092`. All of these ports should
@@ -184,6 +195,10 @@ The `external.servicePort` at each external access service (one such service per
 the a `containerPort` with a number matching its respective `NodePort`. The range of NodePorts is set, but
 should not actually listen, on all Kafka pods in the StatefulSet. As any given pod will listen only one
 such port at a time, setting the range at every Kafka pod is a reasonably safe configuration.
+
+#### Load Balancer External Service Type
+
+The load balancer external service type differs from the node port type by routing to the `port` specified in the service for each statefulset container.  Because of this `external.servicePort` is unused and will be set to the sum of `external.firstListenerPort` and the replica number.  It is important to note that `external.firstListenerPort` does not have to be within the configured node port range for the cluster, however a node port will be allocated.
 
 ## Known Limitations
 
