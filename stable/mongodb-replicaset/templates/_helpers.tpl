@@ -50,6 +50,13 @@ Create the name for the admin secret.
     {{- end -}}
 {{- end -}}
 
+{{- define "mongodb-replicaset.dbSecret" -}}
+    {{- if .Values.auth.existingDbSecret -}}
+        {{- .Values.auth.existingDbSecret -}}
+    {{- else -}}
+        {{- template "mongodb-replicaset.fullname" . -}}-db
+    {{- end -}}
+{{- end -}}
 
 {{/*
 Create the name for the key secret.

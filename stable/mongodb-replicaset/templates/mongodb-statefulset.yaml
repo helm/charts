@@ -1,4 +1,8 @@
+{{- if semverCompare "^1.9-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: apps/v1
+{{- else }}
 apiVersion: apps/v1beta2
+{{- end }}
 kind: StatefulSet
 metadata:
   labels:
@@ -26,7 +30,7 @@ spec:
 {{ toYaml .Values.extraLabels | indent 8 }}
 {{- end }}
       annotations:
-      {{- if .Values.metrics.prometheusServiceDiscovery }}
+      {{- if and (.Values.metrics.prometheusServiceDiscovery) (.Values.metrics.enabled) }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.metrics.port | quote }}
         prometheus.io/path: {{ .Values.metrics.path | quote }}
@@ -111,6 +115,24 @@ spec:
                 secretKeyRef:
                   name: "{{ template "mongodb-replicaset.adminSecret" . }}"
                   key: password
+          {{- if .Values.db.enabled }}
+            - name: DB_ENABLED
+              value: "true"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "mongodb-replicaset.dbSecret" . }}"
+                  key: user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "mongodb-replicaset.dbSecret" . }}"
+                  key: password
+            - name: DB_NAME
+              value: "{{ .Values.db.name }}"
+            - name: DB_ROLE
+              value: "{{ .Values.db.role }}"
+          {{- end }}
           {{- if .Values.metrics.enabled }}
             - name: METRICS
               value: "true"

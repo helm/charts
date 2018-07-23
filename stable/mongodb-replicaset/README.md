@@ -55,22 +55,27 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `tls.cacert`                        | The CA certificate used for the members                                   | Our self signed CA certificate                      |
 | `tls.cakey`                         | The CA key used for the members                                           | Our key for the self signed CA certificate          |
 | `metrics.enabled`                   | Enable Prometheus compatible metrics for pods and replicasets             | `false`                                             |
-| `metrics.image.repository`           | Image name for metrics exporter                                           | `ssalaues/mongodb-exporter`                         |
-| `metrics.image.tag`                  | Image tag for metrics exporter                                            | `0.6.1`                                             |
-| `metrics.image.pullPolicy`           | Image pull policy for metrics exporter                                    | `IfNotPresent`                                      |
-| `metrics.port`                       | Port for metrics exporter                                                 | `9216`                                              |
-| `metrics.path`                       | URL Path to expose metics                                                 | `/metrics`                                          |
-| `metrics.socketTimeout`              | Time to wait for a non-responding socket                                  | `3s`                                                |
-| `metrics.syncTimeout`                | Time an operation with this session will wait before returning an error   | `1m`                                                |
-| `metrics.prometheusServiceDiscovery` | Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
+| `metrics.image.repository`          | Image name for metrics exporter                                           | `ssalaues/mongodb-exporter`                         |
+| `metrics.image.tag`                 | Image tag for metrics exporter                                            | `0.6.1`                                             |
+| `metrics.image.pullPolicy`          | Image pull policy for metrics exporter                                    | `IfNotPresent`                                      |
+| `metrics.port`                      | Port for metrics exporter                                                 | `9216`                                              |
+| `metrics.path`                      | URL Path to expose metics                                                 | `/metrics`                                          |
+| `metrics.socketTimeout`             | Time to wait for a non-responding socket                                  | `3s`                                                |
+| `metrics.syncTimeout`               | Time an operation with this session will wait before returning an error   | `1m`                                                |
+| `metrics.prometheusServiceDiscovery`| Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
 | `auth.enabled`                      | If `true`, keyfile access control is enabled                              | `false`                                             |
 | `auth.key`                          | Key for internal authentication                                           | ``                                                  |
 | `auth.existingKeySecret`            | If set, an existing secret with this name for the key is used             | ``                                                  |
 | `auth.adminUser`                    | MongoDB admin user                                                        | ``                                                  |
 | `auth.adminPassword`                | MongoDB admin password                                                    | ``                                                  |
+| `auth.dbUser`                       | MongoDB db user                                                           | ``                                                  |
+| `auth.dbPassword`                   | MongoDB db password                                                       | ``                                                  |
 | `auth.metricsUser`                  | MongoDB clusterMonitor user                                               | ``                                                  |
 | `auth.metricsPassword`              | MongoDB clusterMonitor password                                           | ``                                                  |
 | `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     | ``                                                  |
+| `db.enabled`                        | If auth.enabled and this `true`, creates new db user role                 | `false`                                             |
+| `db.name`                           | Database name for the user role to be associated with                     | ``                                                  |
+| `db.role`                           | Database role permissions for the user                                    | `readWrite`                                         |
 | `serviceAnnotations`                | Annotations to be added to the service                                    | `{}`                                                |
 | `configmap`                         | Content of the MongoDB config file                                        | ``                                                  |
 | `nodeSelector`                      | Node labels for pod assignment                                            | `{}`                                                |
@@ -129,11 +134,14 @@ configmap:
       mode: requireSSL
       CAFile: /ca/tls.crt
       PEMKeyFile: /work-dir/mongo.pem
+      # Set to false to require mutual TLS encryption
+      allowConnectionsWithoutCertificates: true
   replication:
     replSetName: rs0
   security:
     authorization: enabled
-    clusterAuthMode: x509
+    # # Uncomment to enable mutual TLS encryption
+    # clusterAuthMode: x509
     keyFile: /keydir/key.txt
 ```
 
