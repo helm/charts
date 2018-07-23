@@ -42,6 +42,10 @@ spec:
       - name: metrics
         image: {{ template "metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        args:
+        {{- range $key, $value := .Values.metrics.extraArgs }}
+          - --{{ $key }}={{ $value }}
+        {{- end }}
         env:
         - name: REDIS_ADDR
         {{- if .Values.cluster.enabled }}
