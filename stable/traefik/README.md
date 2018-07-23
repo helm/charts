@@ -83,85 +83,85 @@ release.
 
 The following table lists the configurable parameters of the Traefik chart and their default values.
 
-| Parameter                       | Description                                                          | Default                                   |
-| ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
-| `fullnameOverride`              | Override the full resource names                                     | `{release-name}-traefik (or traefik if release-name is traefik`|
-| `image`                         | Traefik image name                                                   | `traefik`                                 |
-| `imageTag`                      | The version of the official Traefik image to use                     | `1.6.2`                                   |
-| `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
-| `loadBalancerIP`                | An available static IP you have reserved on your cloud platform      | None                                      |
-| `loadBalancerSourceRanges`      | List of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
-| `externalIP`                    | Static IP for the service                                            | None                                      |     
-| `whiteListSourceRange`          | Enable IP whitelisting at the entrypoint level.                      | `false`                                   |
-| `externalTrafficPolicy`         | Set the externalTrafficPolicy in the Service to either Cluster or Local | `Cluster`                              |
-| `replicas`                      | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
-| `podDisruptionBudget`                  | Pod disruption budget             | `{}` |
-| `cpuRequest`                    | Initial share of CPU requested per Traefik pod                       | `100m`                                    |
-| `memoryRequest`                 | Initial share of memory requested per Traefik pod                    | `20Mi`                                    |
-| `cpuLimit`                      | CPU limit per Traefik pod                                            | `200m`                                    |
-| `memoryLimit`                   | Memory limit per Traefik pod                                         | `30Mi`                                    |
-| `rbac.enabled`                  | Whether to enable RBAC with a specific cluster role and binding for Traefik | `false`                            |
-| `deploymentStrategy`                  | Specify deployment spec rollout strategy                                       | `{}`                                      |
-| `nodeSelector`                  | Node labels for pod assignment                                       | `{}`                                      |
-| `affinity`                      | Affinity settings                                                    | `{}`                                      |
-| `tolerations`                   | List of node taints to tolerate                                      | `[]`                                      |
-| `proxyProtocol.enabled`         | Enable PROXY protocol support.                                       | `false`                                   |
-| `proxyProtocol.trustedIPs`      | List of PROXY IPs (CIDR ranges) trusted to accurately convey the end-user IP. | `[]`                              |
-| `debug.enabled`                 | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
-| `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
-| `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
-| `ssl.insecureSkipVerify`        | Whether to verify certs on SSL connections                           | `false`                                   |
-| `ssl.tlsMinVersion`             | Minimum TLS version for https entrypoint                             | None                                      |
-| `ssl.defaultCert`               | Base64 encoded default certificate                                    | A self-signed certificate                 |
-| `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
-| `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
-| `acme.challengeType`            | Type of ACME challenge to perform domain validation. `tls-sni-01`, `http-01` or `dns-01` | `tls-sni-01`                     |
-| `acme.dnsProvider.name`         | Which DNS provider to use. See [here](https://github.com/xenolf/lego/tree/master/providers/dns) for the list of possible values. | `nil`                                     |
-| `acme.dnsProvider.$name`        | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. See [here](#example-aws-route-53). | `{}`                     |
-| `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
-| `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
-| `acme.logging`                  | Display debug log messages from the ACME client library              | `false`                                   |
-| `acme.domains.enabled`          | Enable certificate creation by default for specific domain           | `false`                                   |
-| `acme.domains.domainList`       | List of domains & (optional) subject names                           | `[]`                                      |
-| `acme.domains.domainList.main`  | Main domain name of the generated certificate                        | *.example.com                             |
-| `acme.domains.domainList.sans`  | optional list of alternative subject names to give to the certificate | `[]`                                     |
-| `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
-| `acme.persistence.annotations`  | PVC annotations                                                      | `{}`                                      |
-| `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `nil` (uses alpha storage class annotation) |
-| `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
-| `acme.persistence.existingClaim`| An Existing PVC name                                                 | `nil`                                     |
-| `acme.persistence.size`         | Minimum size of the volume requested                                 | `1Gi`                                     |
-| `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
-| `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
-| `dashboard.service.annotations` | Annotations for the Traefik dashboard Service definition, specified as a map | None                |
-| `dashboard.ingress.annotations` | Annotations for the Traefik dashboard Ingress definition, specified as a map | None                |
-| `dashboard.ingress.labels`      | Labels for the Traefik dashboard Ingress definition, specified as a map      | None                              |
-| `dashboard.auth.basic`          | Basic auth for the Traefik dashboard specified as a map, see Authentication section | unset by default; this means basic auth is disabled |
-| `dashboard.statistics.recentErrors` | Number of recent errors to show in the ‘Health’ tab              | None                                      |
-| `service.annotations`           | Annotations for the Traefik Service definition, specified as a map   | None                                      |
-| `service.labels`                | Additional labels for the Traefik Service definition, specified as a map | None                                  |
-| `service.nodePorts.http`           | Desired nodePort for service of type NodePort used for http requests  |   blank ('') - will assign a dynamic node port                                      |
-| `service.nodePorts.https`           | Desired nodePort for service of type NodePort used for https requests  | blank ('') - will assign a dynamic node port                                      |
-| `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
-| `kubernetes.namespaces`         | List of Kubernetes namespaces to watch                               | All namespaces                            |
-| `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch (e.g `realm=public`)| No label filter                           |
-| `kubernetes.ingressClass`       | Value of `kubernetes.io/ingress.class` annotation to watch - must start with `traefik` if set | None             |
-| `accessLogs.enabled`            | Whether to enable Traefik's access logs                              | `false`                                   |
-| `accessLogs.filePath`           | The path to the log file. Logs to stdout if omitted                  | None                                      |
-| `accessLogs.format`             | What format the log entries should be in. Either `common` or `json`  | `common`                                  |
-| `metrics.prometheus.enabled`    | Whether to enable the `/metrics` endpoint for metric collection by Prometheus. | `false`                           |
-| `metrics.prometheus.buckets`    | A list of response times (in seconds) - for each list element, Traefik will report all response times less than the element. | `[0.1,0.3,1.2,5]` |
-| `metrics.datadog.enabled`       | Whether to enable pushing metrics to Datadog.                          | `false`                                   |
-| `metrics.datadog.address`       | Datadog host in the format <hostname>:<port>                         | `localhost:8125`                          |
-| `metrics.datadog.pushInterval`  | How often to push metrics to Datadog.                                | `10s`                                     |
-| `metrics.statsd.enabled`        | Whether to enable pushing metrics to Statsd.                           | `false`                                   |
-| `metrics.statsd.address`        | Statsd host in the format <hostname>:<port>                          | `localhost:8125`                          |
-| `metrics.statsd.pushInterval`   | How often to push metrics to Statsd.                                 | `10s`                                     |
-| `deployment.podAnnotations`            | Annotations for the Traefik pod definition                    | None                                      |
-| `deployment.hostPort.httpEnabled`      | Whether to enable hostPort binding to host for http.          | `false`                                   |
-| `deployment.hostPort.httpsEnabled`     | Whether to enable hostPort binding to host for https.         | `false`                                   |
-| `deployment.hostPort.dashboardEnabled` | Whether to enable hostPort binding to host for dashboard.     | `false`                                   |
-| `sendAnonymousUsage`            | Send anonymous usage statistics.                                     | `false`                                   |
+| Parameter                              | Description                                                                                                                  | Default                                           |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `fullnameOverride`                     | Override the full resource names                                                                                             | `{release-name}-traefik` (or traefik if release-name is traefik) |
+| `image`                                | Traefik image name                                                                                                           | `traefik`                                         |
+| `imageTag`                             | The version of the official Traefik image to use                                                                             | `1.6.5`                                           |
+| `serviceType`                          | A valid Kubernetes service type                                                                                              | `LoadBalancer`                                    |
+| `loadBalancerIP`                       | An available static IP you have reserved on your cloud platform                                                              | None                                              |
+| `loadBalancerSourceRanges`             | List of IP CIDRs allowed access to load balancer (if supported)                                                              | None                                              |
+| `externalIP`                           | Static IP for the service                                                                                                    | None                                              |
+| `whiteListSourceRange`                 | Enable IP whitelisting at the entrypoint level.                                                                              | `false`                                           |
+| `externalTrafficPolicy`                | Set the externalTrafficPolicy in the Service to either Cluster or Local                                                      | `Cluster`                                         |
+| `replicas`                             | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
+| `podDisruptionBudget`                  | Pod disruption budget                                                                                                        | `{}`                                              |
+| `cpuRequest`                           | Initial share of CPU requested per Traefik pod                                                                               | `100m`                                            |
+| `memoryRequest`                        | Initial share of memory requested per Traefik pod                                                                            | `20Mi`                                            |
+| `cpuLimit`                             | CPU limit per Traefik pod                                                                                                    | `200m`                                            |
+| `memoryLimit`                          | Memory limit per Traefik pod                                                                                                 | `30Mi`                                            |
+| `rbac.enabled`                         | Whether to enable RBAC with a specific cluster role and binding for Traefik                                                  | `false`                                           |
+| `deploymentStrategy`                   | Specify deployment spec rollout strategy                                                                                     | `{}`                                              |
+| `nodeSelector`                         | Node labels for pod assignment                                                                                               | `{}`                                              |
+| `affinity`                             | Affinity settings                                                                                                            | `{}`                                              |
+| `tolerations`                          | List of node taints to tolerate                                                                                              | `[]`                                              |
+| `proxyProtocol.enabled`                | Enable PROXY protocol support.                                                                                               | `false`                                           |
+| `proxyProtocol.trustedIPs`             | List of PROXY IPs (CIDR ranges) trusted to accurately convey the end-user IP.                                                | `[]`                                              |
+| `debug.enabled`                        | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
+| `ssl.enabled`                          | Whether to enable HTTPS                                                                                                      | `false`                                           |
+| `ssl.enforced`                         | Whether to redirect HTTP requests to HTTPS                                                                                   | `false`                                           |
+| `ssl.insecureSkipVerify`               | Whether to verify certs on SSL connections                                                                                   | `false`                                           |
+| `ssl.tlsMinVersion`                    | Minimum TLS version for https entrypoint                                                                                     | None                                              |
+| `ssl.defaultCert`                      | Base64 encoded default certificate                                                                                           | A self-signed certificate                         |
+| `ssl.defaultKey`                       | Base64 encoded private key for the certificate above                                                                         | The private key for the certificate above         |
+| `acme.enabled`                         | Whether to use Let's Encrypt to obtain certificates                                                                          | `false`                                           |
+| `acme.challengeType`                   | Type of ACME challenge to perform domain validation. `tls-sni-01`, `http-01` or `dns-01`                                     | `tls-sni-01`                                      |
+| `acme.dnsProvider.name`                | Which DNS provider to use. See [here](https://github.com/xenolf/lego/tree/master/providers/dns) for the list of possible values. | `nil`                                         |
+| `acme.dnsProvider.$name`               | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. See [here](#example-aws-route-53). | `{}`                         |
+| `acme.email`                           | Email address to be used in certificates obtained from Let's Encrypt                                                         | `admin@example.com`                               |
+| `acme.staging`                         | Whether to get certs from Let's Encrypt's staging environment                                                                | `true`                                            |
+| `acme.logging`                         | Display debug log messages from the ACME client library                                                                      | `false`                                           |
+| `acme.domains.enabled`                 | Enable certificate creation by default for specific domain                                                                   | `false`                                           |
+| `acme.domains.domainList`              | List of domains & (optional) subject names                                                                                   | `[]`                                              |
+| `acme.domains.domainList.main`         | Main domain name of the generated certificate                                                                                | *.example.com                                     |
+| `acme.domains.domainList.sans`         | optional list of alternative subject names to give to the certificate                                                        | `[]`                                              |
+| `acme.persistence.enabled`             | Create a volume to store ACME certs (if ACME is enabled)                                                                     | `true`                                            |
+| `acme.persistence.annotations`         | PVC annotations                                                                                                              | `{}`                                              |
+| `acme.persistence.storageClass`        | Type of `StorageClass` to request, will be cluster-specific                                                                  | `nil` (uses alpha storage class annotation)       |
+| `acme.persistence.accessMode`          | `ReadWriteOnce` or `ReadOnly`                                                                                                | `ReadWriteOnce`                                   |
+| `acme.persistence.existingClaim`       | An Existing PVC name                                                                                                         | `nil`                                             |
+| `acme.persistence.size`                | Minimum size of the volume requested                                                                                         | `1Gi`                                             |
+| `dashboard.enabled`                    | Whether to enable the Traefik dashboard                                                                                      | `false`                                           |
+| `dashboard.domain`                     | Domain for the Traefik dashboard                                                                                             | `traefik.example.com`                             |
+| `dashboard.service.annotations`        | Annotations for the Traefik dashboard Service definition, specified as a map                                                 | None                                              |
+| `dashboard.ingress.annotations`        | Annotations for the Traefik dashboard Ingress definition, specified as a map                                                 | None                                              |
+| `dashboard.ingress.labels`             | Labels for the Traefik dashboard Ingress definition, specified as a map                                                      | None                                              |
+| `dashboard.auth.basic`                 | Basic auth for the Traefik dashboard specified as a map, see Authentication section                                          | unset by default; this means basic auth is disabled |
+| `dashboard.statistics.recentErrors`    | Number of recent errors to show in the ‘Health’ tab                                                                          | None                                              |
+| `service.annotations`                  | Annotations for the Traefik Service definition, specified as a map                                                           | None                                              |
+| `service.labels`                       | Additional labels for the Traefik Service definition, specified as a map.                                                    | None                                              |
+| `service.nodePorts.http`               | Desired nodePort for service of type NodePort used for http requests                                                         | blank ('') - will assign a dynamic node port      |
+| `service.nodePorts.https`              | Desired nodePort for service of type NodePort used for https requests                                                        | blank ('') - will assign a dynamic node port      |
+| `gzip.enabled`                         | Whether to use gzip compression                                                                                              | `true`                                            |
+| `kubernetes.namespaces`                | List of Kubernetes namespaces to watch                                                                                       | All namespaces                                    |
+| `kubernetes.labelSelector`             | Valid Kubernetes ingress label selector to watch (e.g `realm=public`).                                                       | No label filter                                   |
+| `kubernetes.ingressClass`              | Value of `kubernetes.io/ingress.class` annotation to watch - must start with `traefik` if set                                | None                                              |
+| `accessLogs.enabled`                   | Whether to enable Traefik's access logs                                                                                      | `false`                                           |
+| `accessLogs.filePath`                  | The path to the log file. Logs to stdout if omitted                                                                          | None                                              |
+| `accessLogs.format`                    | What format the log entries should be in. Either `common` or `json`                                                          | `common`                                          |
+| `metrics.prometheus.enabled`           | Whether to enable the `/metrics` endpoint for metric collection by Prometheus.                                               | `false`                                           |
+| `metrics.prometheus.buckets`           | A list of response times (in seconds) - for each list element, Traefik will report all response times less than the element. | `[0.1,0.3,1.2,5]`                                 |
+| `metrics.datadog.enabled`              | Whether to enable pushing metrics to Datadog.                                                                                | `false`                                           |
+| `metrics.datadog.address`              | Datadog host in the format <hostname>:<port>                                                                                 | `localhost:8125`                                  |
+| `metrics.datadog.pushInterval`         | How often to push metrics to Datadog.                                                                                        | `10s`                                             |
+| `metrics.statsd.enabled`               | Whether to enable pushing metrics to Statsd.                                                                                 | `false`                                           |
+| `metrics.statsd.address`               | Statsd host in the format <hostname>:<port>                                                                                  | `localhost:8125`                                  |
+| `metrics.statsd.pushInterval`          | How often to push metrics to Statsd.                                                                                         | `10s`                                             |
+| `deployment.podAnnotations`            | Annotations for the Traefik pod definition                                                                                   | None                                              |
+| `deployment.hostPort.httpEnabled`      | Whether to enable hostPort binding to host for http.                                                                         | `false`                                           |
+| `deployment.hostPort.httpsEnabled`     | Whether to enable hostPort binding to host for https.                                                                        | `false`                                           |
+| `deployment.hostPort.dashboardEnabled` | Whether to enable hostPort binding to host for dashboard.                                                                    | `false`                                           |
+| `sendAnonymousUsage`                   | Send anonymous usage statistics.                                                                                             | `false`                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
