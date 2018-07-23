@@ -50,13 +50,12 @@ jiva:
   imageTag: "0.6.0"
   replicas: 3
   replicaNodeSelector:
-    #Enable this option and specify the node label that will be used to 
-    #select the nodes where replica pods are scheduled. To use this feature,
-    #the nodes should already be labeled with the key=value. For example:
+    # Enable this option and specify the node label that will be used to
+    # select the nodes where replica pods are scheduled. To use this feature,
+    # the nodes should already be labeled with the key=value. For example:
     # `kubectl label nodes <node-name> nodetype=storage
     enabled: false
     value: "nodetype=storage"
-
 
 policies:
   monitoring:
