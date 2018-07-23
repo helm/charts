@@ -23,6 +23,9 @@ spec:
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.pushgateway" . }}
+{{- if .Values.pushgateway.priorityClassName }}
+      priorityClassName: "{{ .Values.pushgateway.priorityClassName }}"
+{{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.pushgateway.name }}
           image: "{{ .Values.pushgateway.image.repository }}:{{ .Values.pushgateway.image.tag }}"
@@ -35,7 +38,11 @@ spec:
             - containerPort: 9091
           readinessProbe:
             httpGet:
+            {{- if (index .Values "pushgateway" "extraArgs" "web.route-prefix") }}
+              path: /{{ index .Values "pushgateway" "extraArgs" "web.route-prefix" }}/#/status
+            {{- else }}
               path: /#/status
+            {{- end }}
               port: 9091
             initialDelaySeconds: 10
             timeoutSeconds: 10

@@ -11,6 +11,9 @@ service:
   port: 9091
   targetPort: 9091
 
+# Optional pod annotations
+podAnnotations: {}
+
 # Optional additional arguments
 extraArgs: []
 

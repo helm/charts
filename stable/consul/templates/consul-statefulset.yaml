@@ -5,7 +5,7 @@ metadata:
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "consul.chart" . }}
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
   serviceName: "{{ template "consul.fullname" . }}"
@@ -22,44 +22,22 @@ spec:
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: {{ template "consul.chart" . }}
         component: "{{ .Release.Name }}-{{ .Values.Component }}"
     spec:
       securityContext:
         fsGroup: 1000
-      {{- if eq .Values.antiAffinity "hard" }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+    {{- if .Values.affinity }}
       affinity:
-        {{- if .Values.nodeAffinity }}
-        nodeAffinity:
-{{ toYaml .Values.nodeAffinity | indent 10 }}
-        {{- end }}
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: component
-                operator: In
-                values:
-                - "{{ .Release.Name }}-{{ .Values.Component }}"
-            topologyKey: kubernetes.io/hostname
-      {{- else if eq .Values.antiAffinity "soft" }}
-      affinity:
-        {{- if .Values.nodeAffinity }}
-        nodeAffinity:
-{{ toYaml .Values.nodeAffinity | indent 10 }}
-        {{- end }}
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            podAffinityTerm:
-              topologyKey: kubernetes.io/hostname
-              labelSelector:
-                matchExpressions:
-                - key: component
-                  operator: In
-                  values:
-                  - "{{ .Release.Name }}-{{ .Values.Component }}"
-      {{- end }}
+{{ tpl .Values.affinity . | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
       containers:
       - name: "{{ template "consul.fullname" . }}"
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
@@ -129,7 +107,7 @@ spec:
           - |
             IP=$(hostname -i)
 
-            {{- if .Values.EncryptGossip }}
+            {{- if .Values.Gossip.Encrypt }}
             if [ -e /etc/consul/secrets/gossip-key ]; then
               echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
               GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
@@ -175,7 +153,7 @@ spec:
               -bind=0.0.0.0 \
               -advertise=${IP} \
               ${PEERS} \
-            {{- if .Values.EncryptGossip }}
+            {{- if .Values.Gossip.Encrypt }}
               ${GOSSIP_KEY} \
             {{- end }}
               -client=0.0.0.0 \

@@ -25,7 +25,7 @@ $ helm install --name my-release stable/fluent-bit --set on_minikube=true
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Fluent-Bit chart and the default values.
+The following table lists the configurable parameters of the Fluent-Bit chart and the default values.
 
 | Parameter                  | Description                        | Default                 |
 | -----------------------    | ---------------------------------- | ----------------------- |
@@ -51,16 +51,21 @@ The following tables lists the configurable parameters of the Fluent-Bit chart a
 | `backend.http.port`           | TCP port of the target HTTP Server | `80` |
 | `backend.http.uri`            | Specify an optional HTTP URI for the target web server, e.g: /something | `"/"`
 | `backend.http.format`         | Specify the data format to be used in the HTTP request body, by default it uses msgpack, optionally it can be set to json.  | `msgpack` |
+| **Parsers**                   |
+| `parsers.regex`                    | List of regex parsers | `NULL` |
+| `parsers.json`                     | List of json parsers | `NULL` |
 | **General**                   |
-| `annotations`                      | Optional deamon set annotations            | `NULL`                |
+| `annotations`                      | Optional deamonset set annotations        | `NULL`                |
+| `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
-| `extraVolume`                      | Extra volume                               |                                                | 
+| `extraVolume`                      | Extra volume                               |                                                |
 | `filter.kubeURL`                   | Optional custom configmaps                 | `https://kubernetes.default.svc:443`            |
 | `filter.kubeCAFile`                | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`    |
 | `filter.kubeTokenFile`             | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/token`     |
+| `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `0.12.15`                                         |
+| `image.fluent_bit.tag`             | Image tag                                  | `0.13.0`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
@@ -68,9 +73,13 @@ The following tables lists the configurable parameters of the Fluent-Bit chart a
 | `resources.limits.cpu`             | CPU limit                                  | `100m`                                            |
 | `resources.limits.memory`          | Memory limit                               | `500Mi`                                           |
 | `resources.requests.cpu`           | CPU request                                | `100m`                                            |
-| `resources.requests.memory`        | Memory request                             | `200Mi`                                           | 
+| `resources.requests.memory`        | Memory request                             | `200Mi`                                           |
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
+| `metrics.enabled`                  | Specifies whether a service for metrics should be exposed | `false`                            |
+| `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
+| `metrics.service.type`             | Service type for metrics                   | `ClusterIP`                                       |
+| `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
 | | | |
 
 

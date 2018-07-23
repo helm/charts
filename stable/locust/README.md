@@ -24,16 +24,19 @@ To install the chart with the release name `locust-nymph` in the default namespa
 helm install -n locust-nymph --set master.config.target-host=http://site.example.com stable/locust
 ```
 
-| Parameter                    | Description                        | Default                                               |
-| ---------------------------- | ---------------------------------- | ----------------------------------------------------- |
-| `Name`                       | Locust master name                 | `locust`                                              |
-| `image.repository`           | Locust container image name        | `quay.io/honestbee/locust`                            |
-| `image.tag`                  | Locust Container image tag         | `0.7.5`                                               |
-| `service.type`               | k8s service type exposing master   | `NodePort`                                            |
-| `service.nodePort`           | Port on cluster to expose master   | `0`                                                   |
-| `master.config.target-host`  | locust target host                 | `http://site.example.com`                             |
-| `worker.config.locust-script`| locust script to run               | `/locust-tasks/tasks.py`                              |
-| `worker.replicaCount`        | Number of workers to run           | `2`                                                   |
+| Parameter                    | Description                             | Default                                               |
+| ---------------------------- | ----------------------------------      | ----------------------------------------------------- |
+| `Name`                       | Locust master name                      | `locust`                                              |
+| `image.repository`           | Locust container image name             | `quay.io/honestbee/locust`                            |
+| `image.tag`                  | Locust Container image tag              | `0.7.5`                                               |
+| `image.pullSecrets`          | Locust Container image registry secret  | `None`                                                |
+| `service.type`               | k8s service type exposing master        | `NodePort`                                            |
+| `service.nodePort`           | Port on cluster to expose master        | `0`                                                   |
+| `service.annotations`        | KV containing custom annotations        | `{}`                                                  |
+| `service.extraLabels`        | KV containing extra labels              | `{}`                                                  |
+| `master.config.target-host`  | locust target host                      | `http://site.example.com`                             |
+| `worker.config.locust-script`| locust script to run                    | `/locust-tasks/tasks.py`                              |
+| `worker.replicaCount`        | Number of workers to run                | `2`                                                   |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 

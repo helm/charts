@@ -42,6 +42,8 @@ resources:
   cpu: 10m
   memory: 16Mi
 
+priorityClassName: ""
+
 # create service account with permission to list and kill pods
 rbac:
   create: false
