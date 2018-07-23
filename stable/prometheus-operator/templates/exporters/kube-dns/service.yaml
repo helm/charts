@@ -1,0 +1,22 @@
+{{- if .Values.kubeDns.serviceMonitor.selfMonitor }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+{{ toYaml .Values.kubeDns.labels | indent 4 }}
+  name: {{ template "kube-dns.fullname" . }}
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics-dnsmasq
+      port: 10054
+      protocol: TCP
+      targetPort: 10054
+    - name: http-metrics-skydns
+      port: 10055
+      protocol: TCP
+      targetPort: 10055
+  selector:
+{{ toYaml .Values.kubeDns.service.selector | indent 4 }}
+{{- end }}

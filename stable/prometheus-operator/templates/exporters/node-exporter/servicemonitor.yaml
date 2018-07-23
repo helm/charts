@@ -1,0 +1,17 @@
+{{- if .Values.nodeexporter.serviceMonitor.selfMonitor }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "node-exporter.fullname" . }}
+  labels:
+{{ toYaml .Values.nodeexporter.labels | indent 4 }}
+spec:
+  jobLabel: {{ .Values.nodeexporter.serviceMonitor.jobLabel }}
+  selector:
+{{ toYaml .Values.nodeexporter.serviceMonitor.selector | indent 4 }}
+    matchNames:
+      - {{ .Release.Namespace | quote }}
+  endpoints:
+  - port: metrics
+    interval: 30s
+{{- end }} 

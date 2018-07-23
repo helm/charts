@@ -1,0 +1,42 @@
+{{- if .Values.kubelet.serviceMonitor.selfMonitor }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: kubelet
+  name: kubelet
+spec:
+  endpoints:
+  {{- if .Values.kubelet.serviceMonitor.https }}
+  - port: https-metrics
+    scheme: https
+    interval: 15s
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    honorLabels: true
+  - port: https-metrics
+    scheme: https
+    path: /metrics/cadvisor
+    interval: 30s
+    honorLabels: true
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true  
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+  {{- else }}
+  - port: http-metrics
+    interval: 30s
+    honorLabels: true
+  - port: cadvisor
+    interval: 30s
+    honorLabels: true
+  {{- end }}
+  jobLabel: k8s-app
+  namespaceSelector:
+    matchNames:
+    - kube-system
+  selector:
+{{ toYaml .Values.kubelet.serviceMonitor.selector | indent 4 }}
+{{- end}}

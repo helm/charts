@@ -1,0 +1,28 @@
+{{- if .Values.prometheus.ingress.enabled }}
+{{- $routePrefix := .Values.prometheus.routePrefix }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+{{- if .Values.prometheus.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.prometheus.ingress.annotations | indent 4 }}
+{{- end }}
+  labels:
+{{ toYaml .Values.prometheus.labels | indent 4 }}
+  name: {{ template "prometheus.fullname" . }}
+spec:
+  rules:
+    {{- range $host := .Values.prometheus.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: "{{ $routePrefix }}"
+            backend:
+              serviceName: "prometheus-k8s"
+              servicePort: 9090
+    {{- end }}
+{{- if .Values.prometheus.ingress.tls }}
+  tls:
+{{ toYaml .Values.prometheus.ingress.tls | indent 4 }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,18 @@
+{{- if .Values.prometheus.serviceMonitor.selfMonitor }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus.fullname" . }}
+  labels:    
+    k8s-app: prometheus
+{{ toYaml .Values.prometheus.labels | indent 4 }}
+spec:
+  selector:
+{{ toYaml .Values.prometheus.serviceMonitor.selector | indent 4 }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace | quote }}
+  endpoints:
+  - port: web
+    interval: 30s
+{{- end }}

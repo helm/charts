@@ -1,0 +1,25 @@
+{{/*
+# {{- if .Values.coreDns.serviceMonitor.selfMonitor }}
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   labels:
+# {{- if .Values.alertmanager.service.annotations }}
+#     component: {{ .Values.coreDns.service.selectorLabel }}
+#   annotations:
+# {{ toYaml .Values.alertmanager.service.annotations | indent 4 }}
+# {{- end }}
+#   name: {{ template "alertmanager.fullname" . }}
+#   namespace: kube-system
+# spec:
+#   clusterIP: None
+#   ports:
+#     - name: http-metrics-coredns
+#       port: {{ .Values.coreDns.service.port }}
+#       protocol: TCP
+#       targetPort: {{ .Values.coreDns.service.port }}
+#   selector:
+#     k8s-app: {{ .Values.coreDns.service.selectorLabel }}
+#   type: ClusterIP
+# {{- end }} TODO REMOVE
+*/}}

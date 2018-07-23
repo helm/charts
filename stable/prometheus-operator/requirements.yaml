@@ -1,0 +1,22 @@
+dependencies:
+
+  # - name: exporter-kube-etcd
+  #   version: 0.1.15
+  #   #e2e-repository: file://../exporter-kube-etcd
+  #   repository: https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
+  #   condition: deployKubeEtcd
+
+  - name: kube-state-metrics
+    version: 0.8.2
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: kubeStateMetrics.deploy
+
+  - name: prometheus-node-exporter
+    version: 0.5.0
+    condition: nodeexporter.deploy
+    repository: https://kubernetes-charts.storage.googleapis.com/
+
+  - name: grafana
+    version: 1.12.0
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: grafana.deploy

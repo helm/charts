@@ -1,0 +1,19 @@
+{{- if .Values.kubeScheduler.serviceMonitor.selfMonitor }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+{{ toYaml .Values.kubeScheduler.labels | indent 4 }}
+  name: {{ template "kubeScheduler.fullname" . }}
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: {{ .Values.kubeScheduler.service.port}}
+      protocol: TCP
+      targetPort: {{ .Values.kubeScheduler.service.targetPort}}
+  type: ClusterIP
+  selector:
+    {{ toYaml .Values.kubeScheduler.service.selector | indent 4 }}
+{{- end -}}
