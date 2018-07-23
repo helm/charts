@@ -1,0 +1,18 @@
+{{- if .Values.rbacEnable }}
+{{- if .Values.pspEnable }}
+apiVersion: extensions/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+{{ include "prometheus-operator.labels.standard" . | indent 4 }}
+  name: psp-{{ template "prometheus-operator.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: psp-{{ template "prometheus-operator.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "prometheus-operator.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}
+{{- end }}

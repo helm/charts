@@ -1,0 +1,56 @@
+# Default values for prometheus-operator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## Prometheus-config-reloader image to use for config and rule reloading
+##
+prometheusConfigReloader:
+  repository: quay.io/coreos/prometheus-config-reloader
+  tag: v0.22.0
+
+## Configmap-reload image to use for reloading configmaps
+##
+configmapReload:
+  repository: quay.io/coreos/configmap-reload
+  tag: v0.0.1
+
+## Prometheus-operator image
+##
+image:
+  repository: quay.io/coreos/prometheus-operator
+  tag: v0.22.0
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+  pspEnable: true
+
+kubeletService:
+  enable: true
+  
+rbac: 
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 200m
+  #  memory: 100Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 50Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

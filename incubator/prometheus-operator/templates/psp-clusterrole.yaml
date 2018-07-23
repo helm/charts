@@ -1,0 +1,16 @@
+{{- if .Values.rbacEnable }}
+{{- if .Values.pspEnable }}
+kind: ClusterRole
+apiVersion: extensions/v1beta1
+metadata:
+  labels:
+{{ include "prometheus-operator.labels.standard" . | indent 4 }}
+  name: psp-{{ template "prometheus-operator.fullname" . }}
+rules:
+- apiGroups: ['extensions']
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+  - {{ template "prometheus-operator.fullname" . }}
+{{- end }}
+{{- end }}
