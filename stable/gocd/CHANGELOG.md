@@ -1,3 +1,7 @@
+### 1.2.0
+
+* [514a1856](https://github.com/kubernetes/charts/commit/514a1856):  Bump up GoCD app version to 18.7.0
+
 ### 1.1.3
 
 * [3df661cc](https://github.com/kubernetes/charts/commit/3df661cc):  Use the gocd-agent-docker-dind image of the tag same as of GoCD app version
