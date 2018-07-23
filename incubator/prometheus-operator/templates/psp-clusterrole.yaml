@@ -1,7 +1,7 @@
 {{- if .Values.rbacEnable }}
 {{- if .Values.pspEnable }}
 kind: ClusterRole
-apiVersion: extensions/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
 {{ include "prometheus-operator.labels.standard" . | indent 4 }}
