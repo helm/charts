@@ -42,13 +42,31 @@ data:
     {{- if .Values.maxControlLine }}
     max_control_line: {{ .Values.maxControlLine }}
     {{- end }}
-    {{- if .Values.maxPayload }}    
+    {{- if .Values.maxPayload }}
     max_payload: {{ .Values.maxPayload }}
     {{- end }}
     {{- if .Values.writeDeadline }}
     write_deadline: {{ .Values.writeDeadline | quote }}
     {{- end }}
 
+    # TLS for client connections
+    {{- if .Values.tls.enabled }}
+    tls {
+      cert_file: "/opt/bitnami/nats/client-tls/tls.crt"
+      key_file: "/opt/bitnami/nats/client-tls/tls.key"
+      {{- if .Values.tls.clusterCA }}
+      ca_file: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+      {{- else if .Values.tls.ca }}
+      ca_file: "/opt/bitnami/nats/client-tls/tls.ca"
+      {{- end }}
+      {{- if .Values.tls.timeout }}
+      timeout: {{ .Values.tls.timeout }}
+      {{- end }}
+      {{- if .Values.tls.verify }}
+      verify: {{ .Values.tls.verify }}
+      {{- end }}
+    }
+    {{- end }}
 
     # Clustering definition
     cluster {
@@ -64,6 +82,22 @@ data:
         token: {{ .Values.clusterAuth.token }}
         {{- end }}
         timeout:  1
+      }
+      {{- end }}
+
+      # TLS for cluster connections
+      {{- if .Values.clusterTls.enabled }}
+      tls {
+        cert_file: "/opt/bitnami/nats/cluster-tls/tls.crt"
+        key_file: "/opt/bitnami/nats/cluster-tls/tls.key"
+        {{- if .Values.clusterTls.clusterCA }}
+        ca_file: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+        {{- else if .Values.clusterTls.ca }}
+        ca_file: "/opt/bitnami/nats/cluster-tls/tls.ca"
+        {{- end }}
+        {{- if .Values.clusterTls.timeout }}
+        timeout: {{ .Values.clusterTls.timeout }}
+        {{- end }}
       }
       {{- end }}
 

@@ -101,6 +101,25 @@ auth:
   # password:
   # token:
 
+## Client TLS
+## ref: https://github.com/nats-io/gnatsd#tls
+##
+tls:
+  enabled: false
+  # timeout: 0.5
+  # verify: false
+  # certificate: |
+  #   -----BEGIN CERTIFICATE-----
+  #   -----END CERTIFICATE-----
+  # key: |
+  #   -----BEGIN RSA PRIVATE KEY-----
+  #   -----END RSA PRIVATE KEY-----
+  # ca: |
+  #   -----BEGIN CERTIFICATE-----
+  #   -----END CERTIFICATE-----
+  ## Use the K8s cluster's CA (Useful when cert was generated via a K8s CSR)
+  # clusterCA: false
+
 ## Cluster Authentication
 ## ref: https://github.com/nats-io/gnatsd#authentication
 ##
@@ -109,6 +128,25 @@ clusterAuth:
   user: nats_cluster
   # password:
   # token:
+
+## Cluster TLS
+## ref: https://github.com/nats-io/gnatsd#tls
+##
+clusterTls:
+  enabled: false
+  # timeout: 0.5
+  # certificate: |
+  #   -----BEGIN CERTIFICATE-----
+  #   -----END CERTIFICATE-----
+  # key: |
+  #   -----BEGIN RSA PRIVATE KEY-----
+  #   -----END RSA PRIVATE KEY-----
+  # ca: |
+  #   -----BEGIN CERTIFICATE-----
+  #   -----END CERTIFICATE-----
+  ## Use the cluster's CA
+  ## Use the K8s cluster's CA (Useful when cert was generated via a K8s CSR)
+  # clusterCA: false
 
 ## Logging parameters
 ## ref: https://github.com/nats-io/gnatsd#command-line-arguments
