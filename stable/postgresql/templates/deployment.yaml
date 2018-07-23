@@ -80,6 +80,10 @@ spec:
         {{- end }}
         - name: POD_IP
           valueFrom: { fieldRef: { fieldPath: status.podIP } }
+      {{- range $key, $value := .Values.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+      {{- end }}
         ports:
         - name: postgresql
           containerPort: 5432
