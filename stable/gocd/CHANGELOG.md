@@ -1,3 +1,7 @@
+### 1.1.4
+
+* [](): Support Host Aliases
+
 ### 1.1.3
 
 * [3df661cc](https://github.com/kubernetes/charts/commit/3df661cc):  Use the gocd-agent-docker-dind image of the tag same as of GoCD app version
