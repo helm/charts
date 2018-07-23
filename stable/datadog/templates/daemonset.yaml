@@ -100,6 +100,22 @@ spec:
           - name: DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL
             value: {{.Values.datadog.logsConfigContainerCollectAll | quote}}
           {{- end }}
+          {{- if .Values.datadog.processAgent }}
+          - name: DD_PROCESS_AGENT_ENABLED
+            value: {{.Values.datadog.processAgent | quote}}
+          {{- end }}
+          {{- if .Values.datadog.hostname }}
+          - name: DD_HOSTNAME
+            value: {{.Values.datadog.hostname | quote}}
+          {{- end }}
+          {{- if .Values.datadog.acInclude }}
+          - name: DD_AC_INCLUDE
+            value: {{.Values.datadog.acInclude | quote}}
+          {{- end }}
+          {{- if .Values.datadog.acExclude }}
+          - name: DD_AC_EXCLUDE
+            value: {{.Values.datadog.acExclude | quote}}
+          {{- end }}
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
 {{- end }}
