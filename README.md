@@ -64,7 +64,7 @@ Individual charts can be maintained by one or more members of the Kubernetes com
 
 1. Be listed on the chart, in the `Chart.yaml` file, as a maintainer. If you need sponsors and have contributed to the chart, please reach out to the existing maintainers, or if you are having trouble connecting with them, please reach out to one of the [OWNERS](OWNERS) of the charts repository.
 1. Be invited (and accept your invite) as a read-only collaborator on [this repo](https://github.com/helm/charts). This is required for @k8s-ci-robot [PR comment interaction](https://github.com/kubernetes/community/blob/master/contributors/guide/pull-requests.md).
-1. An OWNERS file needs to be added to a chart. That OWNERS file should list the maintainers GitHub Login names for both the reviewers and approvers sections. For an example see the [Drupal chart](stable/drupal/OWNERS). The `OWNERS` file should also be appended to the `.helmignore` file.
+1. An OWNERS file needs to be added to a chart. That OWNERS file should list the maintainers' GitHub login names for both the reviewers and approvers sections. For an example see the [Drupal chart](stable/drupal/OWNERS). The `OWNERS` file should also be appended to the `.helmignore` file.
 
 Once these two steps are done a chart approver can merge pull requests following the directions in the [REVIEW_GUIDELINES.md](REVIEW_GUIDELINES.md) file.
 
