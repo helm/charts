@@ -66,6 +66,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
 | `image.tag`                          | Container image tag                                                 | `6.3.1`                              |
 | `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
+| `imagePullSecrets`                   | Specify image pull secrets                                          | Not set                              |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                      |
 | `cluster.kubernetesDomain`           | Kubernetes cluster domain name                                      | `cluster.local`                      |
 | `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                              |
