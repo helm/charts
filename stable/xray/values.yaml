@@ -131,7 +131,7 @@ rabbitmq-ha:
     create: true
 
 common:
-  xrayVersion: 2.1.2
+  xrayVersion: 2.2.4
   xrayConfigPath: /var/opt/jfrog/xray/data
   xrayUserId: 1035
   xrayGroupId: 1035
