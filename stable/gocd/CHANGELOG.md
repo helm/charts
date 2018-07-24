@@ -1,6 +1,10 @@
-### 1.1.4
+### 1.2.1
 
 * [](): Support Host Aliases
+
+### 1.2.0
+
+* [514a1856](https://github.com/kubernetes/charts/commit/514a1856):  Bump up GoCD app version to 18.7.0
 
 ### 1.1.3
 
