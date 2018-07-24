@@ -31,26 +31,30 @@ The following tables list the configurable parameters of the Rendertron chart an
 
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
-| `replicaCount`             | Number of nodes | `1` |
-| `image.repository`         | Image repository | `ravishi/rendertron` |
-| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/ravishi/rendertron/tags/).| `a6b93ee7ca98687610542ac930597ce5064762d2`|
-| `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
-| `service.type`             | Kubernetes service type | `ClusterIP` |
-| `service.port`             | Kubernetes port where service is exposed| `8080` |
-| `service.annotations`      | Service annotations | `{}` |
-| `service.labels`           | Custom labels | `{}`
-| `ingress.enabled`          | Enables Ingress | `false` |
-| `ingress.annotations`      | Ingress path | `/` |
-| `ingress.path`             | Ingress annotations | `{}` |
-| `ingress.hosts`            | Ingress accepted hostnames | `[]` |
-| `ingress.tls`              | Ingress TLS configuration | `[]` |
-| `resources`                | CPU/Memory resource requests/limits | `{}` |
-| `nodeSelector`             | Node labels for pod assignment | `{}` |
-| `tolerations`              | Toleration labels for pod assignment | `[]` |
-| `affinity`                 | Affinity settings for pod assignment | `{}` |
-| `env`                      | Extra environment variables passed to pods | `{}` |
-| `annotations`              | Deployment annotations | `{}` |
-| `podAnnotations`           | Pod annotations | `{}` |
+| `replicaCount`               | Number of nodes | `1` |
+| `image.repository`           | Image repository | `ravishi/rendertron` |
+| `image.tag`                  | Image tag. Possible values listed [here](https://hub.docker.com/r/ravishi/rendertron/tags/).| `a6b93ee7ca98687610542ac930597ce5064762d2`|
+| `image.pullPolicy`           | Image pull policy | `IfNotPresent` |
+| `config.cache`               | Enable cache | `false` |
+| `config.debug`               | Enable debugging | `false` |
+| `config.analyticsTrackingId` | Google Analytics tracking ID. See [config options].(https://github.com/GoogleChrome/rendertron#config) | `""` |
+| `config.renderOnly`          | Restricted Domains. See [config options].(https://github.com/GoogleChrome/rendertron#config) | `[]` |
+| `service.type`               | Kubernetes service type | `ClusterIP` |
+| `service.port`               | Kubernetes port where service is exposed| `8080` |
+| `service.annotations`        | Service annotations | `{}` |
+| `service.labels`             | Custom labels | `{}`
+| `ingress.enabled`            | Enables Ingress | `false` |
+| `ingress.annotations`        | Ingress path | `/` |
+| `ingress.path`               | Ingress annotations | `{}` |
+| `ingress.hosts`              | Ingress accepted hostnames | `[]` |
+| `ingress.tls`                | Ingress TLS configuration | `[]` |
+| `resources`                  | CPU/Memory resource requests/limits | `{}` |
+| `nodeSelector`               | Node labels for pod assignment | `{}` |
+| `tolerations`                | Toleration labels for pod assignment | `[]` |
+| `affinity`                   | Affinity settings for pod assignment | `{}` |
+| `env`                        | Extra environment variables passed to pods | `{}` |
+| `annotations`                | Deployment annotations | `{}` |
+| `podAnnotations`             | Pod annotations | `{}` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
