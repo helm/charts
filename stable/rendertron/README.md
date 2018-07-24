@@ -66,3 +66,5 @@ $ helm install --name my-release -f values.yaml stable/rendertron
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+Note that Rendertron [does not yet release official docker container images](https://github.com/GoogleChrome/rendertron/issues/93).  Therefore, you must build and publish your own images or use the unofficial ones available at https://hub.docker.com/r/ravishi/rendertron/tags/.
