@@ -96,6 +96,8 @@ The following table lists the configurable parameters of the WordPress chart and
 | `persistence.accessMode`             | PVC Access Mode                            | `ReadWriteOnce`                                            |
 | `persistence.size`                   | PVC Storage Request                        | `10Gi`                                                     |
 | `nodeSelector`                       | Node labels for pod assignment             | `{}`                                                       |
+| `tolerations`                        | List of node taints to tolerate            | `[]`                                                       |
+| `affinity`                           | Map of node/pod affinities                 | `{}`                                                       |
 
 The above parameters map to the env variables defined in [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress). For more information please refer to the [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress) image documentation.
 
@@ -131,7 +133,7 @@ Note that [values-production.yaml](values-production.yaml) includes a replicaCou
 
 ```console
 $ helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
-$ helm install --name my-release -f values-production.yaml --set persitence.storageClass=nfs stable/wordpress
+$ helm install --name my-release -f values-production.yaml --set persistence.storageClass=nfs stable/wordpress
 ```
 
 ## Persistence

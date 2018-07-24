@@ -20,6 +20,8 @@ spec:
     matchLabels:
       app: {{ template "postgresql.name" . }}
       release: {{ .Release.Name }}
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:

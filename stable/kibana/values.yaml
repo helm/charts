@@ -1,6 +1,6 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.0.0"
+  tag: "6.3.1"
   pullPolicy: "IfNotPresent"
 
 commandline:
@@ -33,6 +33,9 @@ service:
   annotations:
     # Annotation example: setup ssl with aws cert when service.type is LoadBalancer
     # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:EXAMPLE_CERT
+  labels:
+    ## Label example: show service URL in `kubectl cluster-info`
+    # kubernetes.io/cluster-service: "true"
 
 ingress:
   enabled: false
@@ -56,6 +59,8 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 300Mi
+
+priorityClassName: ""
 
 # Affinity for pod assignment
 # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
