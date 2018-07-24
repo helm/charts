@@ -59,6 +59,9 @@ controller:
     # limits:
       # cpu: 100m
       # memory: 100Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 # speaker contains configuration specific to the MetalLB speaker
 # daemonset.
@@ -71,3 +74,6 @@ speaker:
     # limits:
       # cpu: 100m
       # memory: 100Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
