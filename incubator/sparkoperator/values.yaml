@@ -2,4 +2,5 @@ operatorImageName: gcr.io/spark-operator/spark-operator
 operatorVersion: v2.3.0-v1alpha1-latest
 operatorNamespace: sparkoperator
 
-enableWebhook: true
+enableWebhook: false
+
