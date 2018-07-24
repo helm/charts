@@ -195,14 +195,14 @@ accessLogs:
   format: common  # choices are: common, json
   ## for JSON logging, finer-grained control over what is logged. Fields can be
   ## retained or dropped, and request headers can be retained, dropped or redacted
-  # fields:
-  #   defaultMode: keep # choices are keep, drop
-  #   names: {}
-  #     # ClientUsername: drop
-  #   headers:
-  #     defaultMode: keep # choices are keep, drop, redact
-  #     names: {}
-  #       # Authorization: redact
+  fields:
+    defaultMode: keep # choices are keep, drop
+    names: {}
+      # ClientUsername: drop
+    headers:
+      defaultMode: keep # choices are keep, drop, redact
+      names: {}
+        # Authorization: redact
 rbac:
   enabled: false
 ## Enable the /metrics endpoint, for now only supports prometheus
