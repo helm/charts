@@ -55,12 +55,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "minio.fullname" . }}
+                  name: {{ if .Values.createSecret }}{{ template "minio.fullname" . }}{{ else }}{{ .Values.existingSecretName }}{{ end }}
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "minio.fullname" . }}
+                  name: {{ if .Values.createSecret }}{{ template "minio.fullname" . }}{{ else }}{{ .Values.existingSecretName }}{{ end }}
                   key: secretkey
           resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -79,7 +79,7 @@ spec:
       volumes:
         - name: minio-user
           secret:
-            secretName: {{ template "minio.fullname" . }}
+            secretName: {{ if .Values.createSecret }}{{ template "minio.fullname" . }}{{ else }}{{ .Values.existingSecretName }}{{ end }}
         - name: minio-server-config
           configMap:
             name: {{ template "minio.fullname" . }}
