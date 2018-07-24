@@ -23,20 +23,20 @@ This chart will do the following:
 ## Deploy JFrog Xray
 ```bash
 # cd to directory that includes untar version of helm charts
-helm install -n xray --set replicaCount=2,rabbitmq-ha.replicaCount=2,common.masterKey=${MASTER_KEY} incubator/xray
+helm install -n xray --set replicaCount=2,rabbitmq-ha.replicaCount=2,common.masterKey=${MASTER_KEY} stable/xray
 
 # Passing the imagePullSecrets to authenticate with Bintray and download E+ docker images. 
-helm upgrade xray --set replicaCount=3,rabbitmq-ha.replicaCount=3,common.masterKey=${MASTER_KEY} incubator/xray
+helm upgrade xray --set replicaCount=3,rabbitmq-ha.replicaCount=3,common.masterKey=${MASTER_KEY} stable/xray
 ```
 
 ### Deploy Xray
 Deploy the Xray tools and services
 ```bash
 # Get required dependency charts
-$ helm dependency update incubator/xray
+$ helm dependency update stable/xray
 
 # Deploy Xray
-$ helm install -n xray incubator/xray
+$ helm install -n xray stable/xray
 ```
 
 ## Status
@@ -49,7 +49,7 @@ $ helm status xray
 To upgrade an existing Xray, you still use **helm**
 ```bash
 # Update existing deployed version to 2.1.2
-$ helm upgrade --set common.xrayVersion=2.1.2 incubator/xray
+$ helm upgrade --set common.xrayVersion=2.1.2 stable/xray
 ```
 
 ## Remove
@@ -74,7 +74,7 @@ $ export MASTER_KEY=$(openssl rand -hex 32)
 $ echo ${MASTER_KEY}
 
 # Pass the created master key to helm
-$ helm install --set common.masterKey=${MASTER_KEY} -n xray incubator/xray
+$ helm install --set common.masterKey=${MASTER_KEY} -n xray stable/xray
 ```
 **NOTE:** Make sure to pass the same master key with `--set common.masterKey=${MASTER_KEY}` on all future calls to `helm install` and `helm upgrade`!
 
@@ -86,7 +86,7 @@ For **high availability** of Xray, just need to set the replica count per pod be
 > It is highly recommended to also set **RabbitMQ** to run as an HA cluster.
 ```bash
 # Start Xray with 3 replicas per service and 3 replicas for RabbitMQ
-$ helm install -n xray --set replicaCount=3,rabbitmq-ha.replicaCount=3 incubator/xray
+$ helm install -n xray --set replicaCount=3,rabbitmq-ha.replicaCount=3 stable/xray
 ```
 
 ### External Databases
@@ -108,7 +108,7 @@ For this, pass the parameter: `global.mongoUrl=${XRAY_MONGODB_CONN_URL}`.
 # MongoDB password: password1_X
 
 $ export XRAY_MONGODB_CONN_URL='mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@custom-mongodb.local:27017/?authSource=${MONGODB_DATABSE}&authMechanism=SCRAM-SHA-1'
-$ helm install -n xray --set global.mongoUrl=${XRAY_MONGODB_CONN_URL} incubator/xray
+$ helm install -n xray --set global.mongoUrl=${XRAY_MONGODB_CONN_URL} stable/xray
 ```
 
 #### PostgreSQL
@@ -127,7 +127,7 @@ For this, pass the parameters: `postgresql.enabled=false` and `global.postgresql
 # PostgreSQL password: password2_X
 
 $ export XRAY_POSTGRESQL_CONN_URL='postgres://${POSTGRESQL_USER}:${POSTGRESQL_PASSWORD}@custom-postgresql.local:5432/${POSTGRESQL_DATABASE}?sslmode=disable'
-$ helm install -n xray --set postgresql.enabled=false,global.postgresqlUrl=${XRAY_POSTGRESQL_CONN_URL} incubator/xray
+$ helm install -n xray --set postgresql.enabled=false,global.postgresqlUrl=${XRAY_POSTGRESQL_CONN_URL} stable/xray
 ```
 
 ## Configuration
@@ -230,7 +230,7 @@ helm install --name xray \
   --set ingress.enabled=true \
   --set ingress.hosts[0]="xray.company.com" \
   --set server.service.type=NodePort \
-  incubator/xray
+  stable/xray
 ```
 
 If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
