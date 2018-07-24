@@ -31,6 +31,14 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{/* Helm requires labels */}}
+{{- define "metrics-server.labels" -}}
+app: {{ template "metrics-server.fullname" . }}
+chart: {{ template "metrics-server.name" . }}-{{ .Chart.Version }}
+release: {{ .Release.Name }}
+heritage: {{ .Release.Service }}
+{{- end -}}
+
 {{/*
 Create a service name that defaults to app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).

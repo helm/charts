@@ -2,27 +2,32 @@ apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "metrics-server.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "metrics-server.name" . }}
-    chart: {{ template "metrics-server.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{ include "metrics-server.labels" . | indent 4 }}
 spec:
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "metrics-server.name" . }}
+      app: {{ template "metrics-server.fullname" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "metrics-server.name" . }}
+        app: {{ template "metrics-server.fullname" . }}
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "metrics-server.serviceAccountName" . }}
       containers:
-        - name: metrics-server
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - /metrics-server
+            {{- if .Values.image.custom_command_args }}
+            - --source=kubernetes.summary_api:''{{ .Values.image.custom_command_args }}
+            {{- else }}
             - --source=kubernetes.summary_api:''
+            {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
