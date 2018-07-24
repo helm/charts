@@ -1,3 +1,7 @@
+# Default values for metrics-server.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
 rbac:
   # Specifies whether RBAC resources should be created
   create: true

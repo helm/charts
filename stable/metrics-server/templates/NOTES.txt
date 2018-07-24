@@ -1,9 +1,12 @@
-The metric server has been deployed. 
+The metrics server has been deployed.
 {{ if .Values.apiService.create }}
 In a few minutes you should be able to list metrics using the following
 command:
 
   kubectl get --raw "/apis/metrics.k8s.io/v1beta1/nodes"
+
+  NOTE: If use have existing hpa resources you may need to re-create them.
+
 {{ else }}
 NOTE: You have disabled the API service creation for this release. The metrics
 API will not work with this release unless you configure the metrics API
