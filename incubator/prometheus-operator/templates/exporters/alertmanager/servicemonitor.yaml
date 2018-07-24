@@ -1,0 +1,29 @@
+{{- if .Values.alertmanager.selfServiceMonitor }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+{{ include "prometheus-operator.labels.standard" . | indent 4 }}
+    component: {{ .Values.alertmanager.selectorLabel }}
+  name: {{ template "alertmanager.fullname" . }}
+
+# TODO review
+#     prometheus: {{ .Values.prometheusLabelValue | default .Release.Name | quote }}
+#     {{- with .Values.additionalServiceMonitorLabels }}
+# {{ toYaml .Values.additionalServiceMonitorLabels | indent 4 }}
+#     {{- end }}
+spec:
+  jobLabel: app
+  selector:
+    matchLabels:
+{{ include "prometheus-operator.labels.standard" . | indent 6 }}  namespaceSelector:
+      component: {{ .Values.alertmanager.selectorLabel }}
+    matchNames:
+      - {{ .Release.Namespace | quote }}
+  endpoints:
+  - port: http
+    interval: 30s
+{{- with .Values.alertmanager.serviceMonitor.extraSpecs }}
+{{ toYaml . | indent 2 }}
+{{- end }}    
+{{- end }}

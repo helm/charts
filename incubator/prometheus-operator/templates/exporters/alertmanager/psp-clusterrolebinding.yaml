@@ -1,0 +1,17 @@
+{{- if and .Values.rbac.create .Values.rbac.pspEnable }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+{{ include "alertmanager.labels.standard" . | indent 4 }}
+  name: psp-{{ template "alertmanager.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: psp-{{ template "alertmanager.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "alertmanager.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}
+{{- end }}
