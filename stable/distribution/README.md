@@ -23,7 +23,7 @@ This chart will do the following:
 ## Installing the Chart
 To install the chart with the release name `distribution`:
 ```
-helm install --name distribution incubator/distribution
+helm install --name distribution stable/distribution
 ```
 
 ### Accessing Distribution
@@ -33,7 +33,65 @@ Follow the instructions outputted by the install command to get the Distribution
 ### Updating Distribution
 Once you have a new chart version, you can update your deployment with
 ```
-helm upgrade distribution incubator/distribution
+helm upgrade distribution stable/distribution
+```
+
+### Create a unique Master Key
+JFrog Distribution requires a unique master key to be used by all micro-services in the same cluster. By default the chart has one set in values.yaml (`distribution.masterKey`).
+
+**This key is for demo purpose and should not be used in a production environment!**
+
+You should generate a unique one and pass it to the template at install/upgrade time.
+```bash
+# Create a key
+$ export MASTER_KEY=$(openssl rand -hex 32)
+$ echo ${MASTER_KEY}
+
+# Pass the created master key to helm
+$ helm install --set distribution.masterKey=${MASTER_KEY} -n distribution stable/distribution
+```
+**NOTE:** Make sure to pass the same master key with `--set distribution.masterKey=${MASTER_KEY}` on all future calls to `helm install` and `helm upgrade`!
+
+
+### External Databases
+There is an option to use external database services (MongoDB or PostgreSQL) for your Distribution.
+
+#### MongoDB
+To use an external **MongoDB**, You need to set Distribution **MongoDB** connection URL.
+
+For this, pass the parameter: `mongodb.enabled=false,global.mongoUrl=${DISTRIBUTION_MONGODB_CONN_URL},global.mongoAuditUrl=${DISTRIBUTION_MONGODB_AUDIT_URL}`.
+
+**IMPORTANT:** Make sure the DB is already created before deploying Distribution services
+```bash
+# Passing a custom MongoDB to Distribution
+
+# Example
+# MongoDB host: custom-mongodb.local
+# MongoDB port: 27017
+# MongoDB user: distribution
+# MongoDB password: password1_X
+
+$ export DISTRIBUTION_MONGODB_CONN_URL='mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@custom-mongodb.local:27017/${MONGODB_DATABSE}'
+$ export DISTRIBUTION_MONGODB_AUDIT_URL='mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@custom-mongodb.local:27017/audit?maxpoolsize=500'
+$ helm install -n distribution --set global.mongoUrl=${DISTRIBUTION_MONGODB_CONN_URL},global.mongoAuditUrl=${DISTRIBUTION_MONGODB_AUDIT_URL} incubator/distribution
+```
+
+#### External Redis
+To use an external **Redis**, You need to disable the use of the bundled **Redis** and set a custom **Redis** connection URL.
+
+For this, pass the parameters: `redis.enabled=false` and `global.redisUrl=${DISTRIBUTION_REDIS_CONN_URL}`.
+
+**IMPORTANT:** Make sure the DB is already created before deploying Distribution services
+```bash
+# Passing a custom Redis to Distribution
+
+# Example
+# Redis host: custom-redis.local
+# Redis port: 6379
+# Redis password: password2_X
+
+$ export DISTRIBUTION_REDIS_CONN_URL='redis://:${REDIS_PASSWORD}@custom-redis.local:6379'
+$ helm install -n distribution --set redis.enabled=false,global.redisUrl=${DISTRIBUTION_REDIS_CONN_URL} stable/distribution
 ```
 
 ## Configuration
@@ -76,7 +134,7 @@ The following table lists the configurable parameters of the distribution chart 
 | `distribution.name`                          | Distribution name                          | `distribution`                     |
 | `distribution.image.pullPolicy`              | Container pull policy                      | `IfNotPresent`                     |
 | `distribution.image.repository`              | Container image                            | `docker.jfrog.io/jf-distribution`  |
-| `distribution.image.version`                 | Container image tag                        | `1.0.0`                            |
+| `distribution.image.version`                 | Container image tag                        | `1.1.0`                            |
 | `distribution.service.type`                  | Distribution service type                  | `LoadBalancer`                     |
 | `distribution.externalPort`                  | Distribution service external port         | `80`                               |
 | `distribution.internalPort`                  | Distribution service internal port         | `8080`                             |
@@ -90,7 +148,7 @@ The following table lists the configurable parameters of the distribution chart 
 | `distributor.name`                           | Distribution name                          | `distribution`                     |
 | `distributor.image.pullPolicy`               | Container pull policy                      | `IfNotPresent`                     |
 | `distributor.image.repository`               | Container image                            | `docker.jfrog.io/jf-distribution`  |
-| `distributor.image.version`                  | Container image tag                        | `1.0.0`                            |
+| `distributor.image.version`                  | Container image tag                        | `1.1.0`                            |
 | `distributor.token`                          | Distributor token                          | ` `                                |
 | `distributor.persistence.mountPath`          | Distributor persistence volume mount path  | `"/bt-distributor"`                |
 | `distributor.persistence.existingClaim`      | Provide an existing PersistentVolumeClaim  | `nil`                              |
@@ -108,7 +166,7 @@ helm install --name distribution \
   --set ingress.enabled=true \
   --set ingress.hosts[0]="distribution.company.com" \
   --set distribution.service.type=NodePort \
-  incubator/distribution
+  stable/distribution
 ```
 
 If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.

@@ -101,15 +101,22 @@ redis:
   #    memory: "2Gi"
   #    cpu: "250m"
 
+# For setting up external services, must pass the connection URL for them
+global:
+  mongoUrl:
+  mongoAuditUrl:
+  redisUrl:
+
 distribution:
   replicaCount: 1
   name: distribution
   image:
     repository: "docker.bintray.io/jfrog/distribution-distribution"
-    version: 1.0.0
+    version: 1.1.0
     imagePullPolicy: IfNotPresent
   internalPort: 8080
   externalPort: 80
+  masterKey: BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
   env:
     artifactoryUrl:
     btServerUrl:
@@ -155,7 +162,7 @@ distributor:
   name: distributor
   image:
     repository: "docker.bintray.io/jfrog/distribution-distributor"
-    version: 1.0.0
+    version: 1.1.0
     imagePullPolicy: IfNotPresent
   token:
   resources: {}

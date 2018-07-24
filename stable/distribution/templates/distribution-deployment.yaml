@@ -45,7 +45,9 @@ spec:
           protocol: TCP
         env:
         - name: DEFAULT_JAVA_OPTS
-          value: '-Ddistribution.home={{ .Values.distribution.persistence.mountPath }} -Dcom.sun.management.jmxremote.authenticate=false
+          value: '-Ddistribution.home={{ .Values.distribution.persistence.mountPath }}
+                  -Djfrog.master.key={{ .Values.distribution.masterKey }}
+                  -Dcom.sun.management.jmxremote.authenticate=false
                   -Dcom.sun.management.jmxremote.ssl=false -Duser.timezone=UTC
                   {{- if .Values.distribution.javaOpts.xms }}
                   -Xms{{ .Values.distribution.javaOpts.xms }}
