@@ -33,7 +33,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `replicas`                 | Number of nodes | `1` |
-| `deploymentStrategy`       | Deployment strategy | `RollingUpdate` |
+| `updateStrategy`           | Update strategy | `RollingUpdate` |
+| `terminationGracePeriodSeconds` | Termination grace period | `10` |
 | `image.repository`         | Image repository | `grafana/grafana` |
 | `image.tag`                | Image tag. (`Must be >= 5.0.0`) Possible values listed [here](https://hub.docker.com/r/grafana/grafana/tags/).| `5.0.4`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
@@ -52,9 +53,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `affinity`                 | Affinity settings for pod assignment | `{}` |
 | `persistence.enabled`      | Use persistent volume to store data | `false` |
 | `persistence.size`         | Size of persistent volume claim | `10Gi` |
-| `persistence.existingClaim`| Use an existing PVC to persist data | `nil` |
-| `persistence.storageClassName` | Type of persistent volume claim | `nil` |
-| `persistence.accessModes`  | Persistence access modes | `[]` |
+| `persistence.storageClass` | Type of persistent volume claim | `nil` |
+| `persistence.accessMode`   | Persistence volume access mode | `nil` |
 | `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""` |
 | `schedulerName`            | Alternate scheduler name | `nil` |
 | `env`                      | Extra environment variables passed to pods | `{}` |
