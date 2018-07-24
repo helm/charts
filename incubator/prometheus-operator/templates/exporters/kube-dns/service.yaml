@@ -1,0 +1,24 @@
+{{- if .Values.kubeDns.selfServiceMonitor }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+{{ include "prometheus-operator.labels.standard" . | indent 4 }}
+    component: kube-dns
+  name: {{ template "prometheus-operator.fullname" . }}
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics-dnsmasq
+      port: 10054
+      protocol: TCP
+      targetPort: 10054
+    - name: http-metrics-skydns
+      port: 10055
+      protocol: TCP
+      targetPort: 10055
+  selector:
+    k8s-app: kube-dns
+  type: ClusterIP
+{{- end -}}
