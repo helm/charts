@@ -8,9 +8,10 @@ servicePort: 9090
 containerPort: 9090
 component: "tensorflow-inception"
 replicas: 1
-image: "quay.io/lachie83/inception_serving"
-imageTag: "latest"
-imagePullPolicy: "IfNotPresent"
+image:
+  repository: "quay.io/lachie83/inception_serving"
+  tag: "latest"
+  pullPolicy: "IfNotPresent"
 resources: {}
 #  limits:
 #    nvidia.com/gpu: 1
