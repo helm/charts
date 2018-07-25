@@ -1,0 +1,24 @@
+# {{- if .Values.kubeScheduler.selfServiceMonitor }}
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   labels:
+#     app: {{ template "exporter-kube-scheduler.name" . }}
+#     component: kube-scheduler
+#     heritage: {{ .Release.Service }}
+#     release: {{ .Release.Name }}
+#     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+#   name: {{ template "exporter-kube-scheduler.fullname" . }}
+#   namespace: kube-system
+# spec:
+#   clusterIP: None
+#   ports:
+#     - name: http-metrics
+#       port: {{ .Values.schedulerPort}}
+#       protocol: TCP
+#       targetPort: {{ .Values.schedulerPort}}
+# {{- if not .Values.endpoints }}
+#   selector:
+#     {{ .Values.serviceSelectorLabelKey }}: kube-scheduler
+# {{- end }}
+#   type: ClusterIP TODO remove-mve

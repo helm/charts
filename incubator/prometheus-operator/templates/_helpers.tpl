@@ -52,3 +52,40 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+
+{{/* Alertmanager labels */}}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "alertmanager.chart" -}}
+{{- printf "alertmanager-%s" .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "alertmanager.name" -}}
+{{- default "alertmanager" .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "alertmanager.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default "alertmanager" .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+
+{{- define "alertmanager.labels.standard" -}}
+app: {{ template "alertmanager.name" . }}
+alertmanager: {{ .Release.Name }}
+chart: {{ template "alertmanager.chart" . }}
+heritage: {{ .Release.Service | quote }}
+release: {{ .Release.Name | quote }}
+component: alertmanager
+{{- end -}}

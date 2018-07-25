@@ -41,15 +41,164 @@ resources: {}
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 200m
-  #  memory: 100Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 50Mi
+  # https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/manifests/0prometheus-operator-deployment.yaml#L29-L35
+  limits:
+   cpu: 200m
+   memory: 100Mi
+  requests:
+   cpu: 100m
+   memory: 50Mi
 
 nodeSelector: {}
 
 tolerations: []
 
 affinity: {}
+
+####################
+### Alertmanager ###
+####################
+
+alertmanager:
+  ## Alertmanager configuration directives
+  ## Ref: https://prometheus.io/docs/alerting/configuration/
+  ##
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: ['job']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'null'
+      routes:
+      - match:
+          alertname: DeadMansSwitch
+        receiver: 'null'
+    receivers:
+    - name: 'null'
+
+  ## External URL at which Alertmanager will be reachable
+  ##
+  externalUrl: ""
+
+  ## Alertmanager container image
+  ##
+  image:
+    repository: quay.io/prometheus/alertmanager
+    tag: v0.15.0
+
+  ingress:
+    ## If true, Alertmanager Ingress will be created
+    ##
+    enabled: false
+
+    ## Annotations for Alertmanager Ingress
+    ##
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+
+    ## Labels to be added to the Ingress
+    ##
+    labels: {}
+
+    ## Hostnames.
+    ## Must be provided if Ingress is enabled.
+    ##
+    # hosts:
+    #   - alertmanager.domain.com
+    hosts: []
+
+    ## TLS configuration for Alertmanager Ingress
+    ## Secret must be manually created in the namespace
+    ##
+    tls: []
+      # - secretName: alertmanager-general-tls
+      #   hosts:
+      #     - alertmanager.example.com
+
+  ## If true, create a serviceMonitor for alertmanager
+  ##
+  selfServiceMonitor: true
+
+  ## Alertmanager template files to include
+  #
+  templateFiles: {}
+  #
+  # An example template:
+  #   template_1.tmpl: |-
+  #       {{ define "cluster" }}{{ .ExternalURL | reReplaceAll ".*alertmanager\\.(.*)" "$1" }}{{ end }}
+  #
+  #       {{ define "slack.myorg.text" }}
+  #       {{- $root := . -}}
+  #       {{ range .Alerts }}
+  #         *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
+  #         *Cluster:*  {{ template "cluster" $root }}
+  #         *Description:* {{ .Annotations.description }}
+  #         *Graph:* <{{ .GeneratorURL }}|:chart_with_upwards_trend:>
+  #         *Runbook:* <{{ .Annotations.runbook }}|:spiral_note_pad:>
+  #         *Details:*
+  #           {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+  #           {{ end }}
+
+  # Default values for exporter-coredns.
+
+coreDns:
+  ## If true, create a serviceMonitor for coredns
+  ##
+  selfServiceMonitor: false
+  
+  jobLabel: coredns
+
+  labels:
+    k8s-app: coredns
+
+  # Port that core DNS Metrics are exposed on
+  service:
+    port: 9153
+
+    # The k8s-app label coredns service is deployed with
+    selector:
+      matchLabels:
+        component: metrics
+        k8s-app: coredns 
+        
+  serviceMonitor:
+    extraSpecs: {}
+
+
+kubeDns:
+  ## If true, create a serviceMonitor for kube-dns
+  ##
+  selfServiceMonitor: false
+
+  jobLabel: kube-dns
+
+  labels:
+    k8s-app: kube-dns
+
+  service:
+
+    # The k8s-app label coredns service is deployed with
+    selector:
+      matchLabels:
+        k8s-app: kube-dns
+
+kubeScheduler:
+
+  jobLabel: k8s-app
+
+  labels:
+    k8s-app: kube-scheduler
+
+  service:
+    selector: 
+      matchLabels:
+        k8s-app: kube-scheduler
+
+nodeExporter:
+  deploy: true
+  
+  selfServiceMonitor: true

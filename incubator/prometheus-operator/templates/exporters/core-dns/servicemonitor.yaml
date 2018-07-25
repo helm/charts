@@ -6,7 +6,7 @@ metadata:
     {{ .Values.coreDns.labels | indent 4}}
   name: {{ template "exporter-coredns.fullname" . }}
 spec:
-  jobLabel: k8s-app
+  jobLabel: {{ .Values.coreDns.jobLabel }}
   selector:
     matchLabels:
       {{ .Values.coreDns.service.selector | indent 6 }}
