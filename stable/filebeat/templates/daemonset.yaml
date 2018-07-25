@@ -26,7 +26,7 @@ spec:
         checksum/secret: {{ toYaml .Values.config | sha256sum }}
 {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
-{{- end }}        
+{{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -57,8 +57,10 @@ spec:
         {{- end }}
         securityContext:
           runAsUser: 0
+{{- if .Values.resources }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- end }}
         volumeMounts:
         - name: filebeat-config
           mountPath: /usr/share/filebeat/filebeat.yml
