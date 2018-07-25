@@ -14,3 +14,7 @@ Parameter | Description | Default
 `image.tag` | Image tag | `v0.2.1`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `args` | Command line arguments | --source=kubernetes.summary_api:''
+`resources` | CPU/Memory resource requests/limits. | `{}`
+`tolerations` | List of node taints to tolerate (requires Kubernetes >=1.6) | `[]`
+`nodeSelector` | Node labels for pod assignment | `{}`
+`affinity` | Node affinity | `{}`

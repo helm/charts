@@ -24,3 +24,11 @@ image:
 
 args:
   - --source=kubernetes.summary_api:''
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
