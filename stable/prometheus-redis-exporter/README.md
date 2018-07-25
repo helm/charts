@@ -46,6 +46,7 @@ The following table lists the configurable parameters and their default values.
 | `image.repository`     | prometheus-redis-exporter image repository          | `oliver006/redis_exporter`|
 | `image.tag`            | prometheus-redis-exporter image tag                 | `v0.16.0`                 |
 | `image.pullPolicy`     | image pull policy                                   | `IfNotPresent`            |
+| `extraArgs`            | extra arguments for the binary; possible values [here](https://github.com/oliver006/redis_exporter#flags)| {}
 | `resources`            | cpu/memory resource requests/limits                 | {}                        |
 | `service.type`         | desired service type                                | `ClusterIP`               |
 | `service.port`         | service external port                               | `9121`                    |
