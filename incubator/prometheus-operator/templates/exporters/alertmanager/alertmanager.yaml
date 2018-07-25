@@ -1,0 +1,11 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
+metadata:
+  labels:
+{{ toYaml .Values.alertmanager.labels | indent 4 }}
+  name: main
+spec:
+  baseImage: {{ .Values.alertmanager.image.repository }}/{{ .Values.alertmanager.image.tag}}
+  replicas: 1
+  serviceAccountName: {{ template "alertmanager.serviceAccountName" . }} 
+  version: {{ .Values.alertmanager.image.tag}}

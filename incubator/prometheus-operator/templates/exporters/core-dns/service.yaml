@@ -1,4 +1,5 @@
-# {{- if .Values.coreDns.selfServiceMonitor }}
+{{/*
+# {{- if .Values.coreDns.serviceMonitor.selfMonitor }}
 # apiVersion: v1
 # kind: Service
 # metadata:
@@ -20,4 +21,5 @@
 #   selector:
 #     k8s-app: {{ .Values.coreDns.service.selectorLabel }}
 #   type: ClusterIP
-# {{- end -}} TODO REMOVE
+# {{- end }} TODO REMOVE
+*/}}

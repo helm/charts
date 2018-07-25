@@ -1,0 +1,23 @@
+{{- if .Values.kubeApiServer.serviceMonitor.selfMonitor }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+{{ toYaml .Values.kubeApiServer.labels | indent 4}}
+  name: kube-apiserver
+spec:
+  endpoints:
+  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    interval: 30s
+    port: https
+    scheme: https
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      serverName: kubernetes
+  jobLabel: {{ .Values.kubeApiServer.serviceMonitor.jobLabel }}
+  namespaceSelector:
+    matchNames:
+    - default
+  selector:
+{{ toYaml .Values.kubeApiServer.service.selector | indent 4 }}
+{{- end}}

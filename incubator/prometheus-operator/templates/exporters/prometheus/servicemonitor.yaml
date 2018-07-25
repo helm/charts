@@ -1,15 +1,14 @@
-{{- if .Values.prometheus.selfServiceMonitor }}
+{{- if .Values.prometheus.serviceMonitor.selfMonitor }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:    
-    {{ .Values.prometheus.labels | indent 4}}
-    {{ include "prometheus-operator.labels.global" . | indent 4 }} 
+{{ toYaml .Values.prometheus.serviceMonitor.labels | indent 4 }}
+{{ include "prometheus-operator.labels.standard" . | indent 4 }}
   name: prometheus
 spec:
-  jobLabel: {{ .Values.prometheus.jobLabel }}
   selector:
-    {{ .Values.prometheus.service.selector | indent 4 }}
+{{ toYaml .Values.prometheus.service.selector | indent 4 }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace | quote }}

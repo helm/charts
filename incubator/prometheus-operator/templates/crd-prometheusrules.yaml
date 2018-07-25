@@ -339,4 +339,4 @@ spec:
                 - rules
               type: array
   version: v1
-{{- end -}}
+{{- end }}

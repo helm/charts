@@ -3,7 +3,7 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 kind: PodSecurityPolicy
 metadata:
-  name: {{ template "prometheus.fullname" . }}
+  name: psp-prometheus
 spec:
   privileged: false
   # Required to prevent escalations to root.

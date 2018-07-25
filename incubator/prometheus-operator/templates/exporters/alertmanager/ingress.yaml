@@ -21,7 +21,7 @@ spec:
             backend:
               serviceName: "{{ $serviceName }}"
               servicePort: 9093
-    {{- end -}}              
+    {{- end }}              
 {{- if .Values.alertmanager.ingress.tls }}
   tls:
 {{ toYaml .Values.alertmanager.ingress.tls | indent 4 }}

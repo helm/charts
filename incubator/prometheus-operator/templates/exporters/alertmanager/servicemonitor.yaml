@@ -1,15 +1,14 @@
-{{- if .Values.alertmanager.selfServiceMonitor }}
+{{- if .Values.alertmanager.serviceMonitor.selfMonitor }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    {{ .Values.alertmanager.labels | indent 4}}  
-    {{ include "prometheus-operator.labels.global" . | indent 4 }}      
+{{ toYaml .Values.alertmanager.labels | indent 4 }}
   name: alertmanager
 spec:
-  jobLabel: {{ .Values.alertmanager.jobLabel }}
+  jobLabel: {{ .Values.alertmanager.serviceMonitor.jobLabel }}
   selector:
-    {{ .Values.alertmanager.service.selector | indent 4 }}
+{{ toYaml .Values.alertmanager.service.selector | indent 4 }}
     matchNames:
       - {{ .Release.Namespace | quote }}
   endpoints:

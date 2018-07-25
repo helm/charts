@@ -2998,4 +2998,4 @@ spec:
           - availableReplicas
           - unavailableReplicas
   version: v1
-{{- end -}}
+{{- end }}

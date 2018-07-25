@@ -235,4 +235,4 @@ spec:
           - endpoints
           - selector
   version: v1
-{{- end -}}
+{{- end }}

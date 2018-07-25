@@ -2,14 +2,14 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  namespace: default
   name: prometheus-k8s
+  namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ template "prometheus.serviceAccountName" . }} 
+  name: {{ template "prometheus.serviceAccountName" . }}
 subjects:
-  - kind: ServiceAccount
+- kind: ServiceAccount
     name: {{ template "prometheus.serviceAccountName" . }} 
     namespace: {{ .Release.Namespace }}
 {{- end }}

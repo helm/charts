@@ -1,4 +1,4 @@
-{{- if .Values.rbacEnable }}
+{{- if .Values.global.rbac.create }}
 {{- if .Values.pspEnable }}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1

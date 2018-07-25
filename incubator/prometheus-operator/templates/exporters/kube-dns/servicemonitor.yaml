@@ -1,16 +1,15 @@
-{{- if .Values.kubeDns.selfServiceMonitor }}
+{{- if .Values.kubeDns.serviceMonitor.selfMonitor }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:    
-    {{ .Values.kubeDns.labels | indent 4}}
-    {{ include "prometheus-operator.labels.global" . | indent 4 }} 
+{{ toYaml .Values.kubeDns.labels | indent 4}}
+{{ include "prometheus-operator.labels.global" . | indent 4 }} 
   name: kube-dns
 spec:
-  jobLabel: {{ .Values.kubeDns.jobLabel }}
+  jobLabel: {{ .Values.kubeDns.serviceMonitor.jobLabel }}
   selector:
-    matchLabels:
-      {{ .Values.kubeDns.service.selector | indent 6 }}
+{{ toYaml .Values.kubeDns.service.selector | indent 4 }}
   namespaceSelector:
     matchNames:
       - "kube-system"
@@ -21,4 +20,4 @@ spec:
   - port: http-metrics-skydns
     interval: 15s
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-{{- end -}}
+{{- end }}

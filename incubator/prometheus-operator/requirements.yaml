@@ -1,63 +1,23 @@
 dependencies:
 
-  # - name: prometheus
-  #   version: 0.0.50
-  #   #e2e-repository: file://../prometheus
-  #   repository: https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-
-  # - name: exporter-coredns
-  #   version: 0.0.3
-  #   #e2e-repository: file://../exporter-coredns
-  #   repository: https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-  #   condition: deployCoreDNS
-
-  # - name: exporter-kube-controller-manager
-  #   version: 0.1.10
-  #   #e2e-repository: file://../exporter-kube-controller-manager
-  #   repository: https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-  #   condition: deployKubeControllerManager
-
-  # - name: exporter-kube-dns
-  #   version: 0.1.7
-  #   #e2e-repository: file://../exporter-kube-dns
-  #   repository: https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-  #   condition: deployKubeDNS
-
   # - name: exporter-kube-etcd
   #   version: 0.1.15
   #   #e2e-repository: file://../exporter-kube-etcd
   #   repository: https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
   #   condition: deployKubeEtcd
 
-  # - name: exporter-kube-scheduler
-  #   version: 0.1.9
-  #   #e2e-repository: file://../exporter-kube-scheduler
-  #   repository: https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-  #   condition: deployKubeScheduler
-
   - name: kube-state-metrics
     version: 0.8.1
-    repository: @stable
-    condition: kubeStateMetrics
-
-  # - name: exporter-kubelets
-  #   version: 0.2.11
-  #   #e2e-repository: file://../exporter-kubelets
-  #   repository: https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-  #   condition: deployKubelets
-
-  # - name: exporter-kubernetes
-  #   version: 0.1.10
-  #   #e2e-repository: file://../exporter-kubernetes
-  #   repository: https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: kubeStateMetrics.deploy
 
   - name: prometheus-node-exporter
     alias: nodeExporter
     version: 0.2.0
     condition: nodeExporter.deploy
+    repository: https://kubernetes-charts.storage.googleapis.com/
 
-  # - name: grafana
-  #   version: 0.0.36
-  #   #e2e-repository: file://../grafana
-  #   repository: https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-  #   condition: deployGrafana
+  - name: grafana
+    version: 1.12.0
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: grafana.deploy

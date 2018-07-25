@@ -1,27 +1,32 @@
-{{- if and .Values.global.rbac.create .Values.kubeStateMetrics.serviceMonitor.selfMonitor }}
+{{- if .Values.kubelet.serviceMonitor.selfMonitor }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    k8s-app: kube-state-metrics
-  name: kube-state-metrics
+    k8s-app: kubelet
+  name: kubelet
+  namespace: monitoring
 spec:
   endpoints:
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     honorLabels: true
     interval: 30s
-    port: https-main
+    port: https-metrics
     scheme: https
-    scrapeTimeout: 30s
     tlsConfig:
       insecureSkipVerify: true
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    honorLabels: true
     interval: 30s
-    port: https-self
+    path: /metrics/cadvisor
+    port: https-metrics
     scheme: https
     tlsConfig:
       insecureSkipVerify: true
-  jobLabel: {{ .Values.kubeStateMetrics.serviceMonitor.jobLabel }}
+  jobLabel: {{ .Values.kubelet.serviceMonitor.jobLabel }}
+  namespaceSelector:
+    matchNames:
+    - kube-system
   selector:
-{{ toYaml .Values.kubeStateMetrics.service.selector | indent 4 }}
-{{- end }}
+{{ toYaml .Values.kubelet.service.selector | indent 4 }}
+{{- end}}

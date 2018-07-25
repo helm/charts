@@ -1,30 +1,19 @@
-apiVersion: {{ template "prometheus-operator.apiVersion" . }}
+apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
   labels:
-    app: {{ template "prometheus.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    {{ if empty .Values.prometheusLabelValue -}}
-    prometheus: {{ template "prometheus.fullname" . }}
-    {{- else -}}
-    prometheus: {{ .Values.prometheusLabelValue }}
-    {{- end }}
-    release: {{ .Release.Name }}
-{{- if .Values.labels }}
-{{ toYaml .Values.labels | indent 4 }}
-{{- end }}
+{{ toYaml .Values.prometheus.prometheusSpec.labels | indent 4 }}
   name: {{ template "prometheus.fullname" . }}
 spec:
-{{- if .Values.labels }}
+{{- if .Values.prometheus.prometheusSpec.labels }}
   podMetadata:
     labels:
-{{ toYaml .Values.labels | indent 6 }}
+{{ toYaml .Values.prometheus.prometheusSpec.labels | indent 6 }}
 {{- end }}
-{{- if .Values.alertingEndpoints }}
+{{- if .Values.prometheus.prometheusSpec.alertingEndpoints }}
   alerting:
     alertmanagers:
-{{ toYaml .Values.alertingEndpoints | indent 6 }}
+{{ toYaml .Values.prometheus.prometheusSpec.alertingEndpoints | indent 6 }}
 {{- else }}
   alerting:
     alertmanagers:
@@ -33,39 +22,39 @@ spec:
         port: http
 {{- end }}
   baseImage: "{{ .Values.image.repository }}"
-{{- if .Values.externalLabels }}
+{{- if .Values.prometheus.prometheusSpec.externalLabels }}
   externalLabels:
-{{ toYaml .Values.externalLabels | indent 4}}
+{{ toYaml .Values.prometheus.prometheusSpec.externalLabels | indent 4}}
 {{- end }}
-{{- if .Values.externalUrl }}
+{{- if .Values.prometheus.prometheusSpec.externalUrl }}
   externalUrl: "{{ .Values.externalUrl }}"
-{{- else if .Values.ingress.enabled }}
-  externalUrl: "http://{{ index .Values.ingress.hosts 0 }}{{ .Values.routePrefix }}"
+{{- else if .Values.prometheus.ingress.enabled }}
+  externalUrl: "http://{{ index .Values.prometheus.ingress.hosts 0 }}{{ .Values.routePrefix }}"
 {{- else }}
   externalUrl: http://{{ template "prometheus.fullname" . }}.{{ .Release.Namespace }}:9090
 {{- end }}
-{{- if .Values.nodeSelector }}
+{{- if .Values.prometheus.prometheusSpec.nodeSelector }}
   nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 4 }}
+{{ toYaml .Values.prometheus.prometheusSpec.nodeSelector | indent 4 }}
 {{- end }}
-  paused: {{ .Values.paused }}
-  replicas: {{ .Values.replicaCount }}
-  logLevel:  {{ .Values.logLevel }}
+  paused: {{ .Values.prometheus.prometheusSpec.paused }}
+  replicas: {{ .Values.prometheus.prometheusSpec.replicaCount }}
+  logLevel:  {{ .Values.prometheus.prometheusSpec.logLevel }}
   resources:
-{{ toYaml .Values.resources | indent 4 }}
+{{ toYaml .Values.prometheus.prometheusSpec.resources | indent 4 }}
   retention: "{{ .Values.retention }}"
-{{- if .Values.routePrefix }}
+{{- if .Values.prometheus.prometheusSpec.routePrefix }}
   routePrefix: "{{ .Values.routePrefix }}"
 {{- end }}
-{{- if .Values.secrets }}
+{{- if .Values.prometheus.prometheusSpec.secrets }}
   secrets:
-{{ toYaml .Values.secrets | indent 4 }}
+{{ toYaml .Values.prometheus.prometheusSpec.secrets | indent 4 }}
 {{- end }}
-{{- if .Values.global.rbacEnable }}
+{{- if .Values.rbac.create }}
   serviceAccountName: {{ template "prometheus.serviceAccountName" .}}
 {{- end }}
-{{ if and .Values.config.specifiedInValues .Values.config.value }}
-{{- else if .Values.serviceMonitorsSelector }}
+{{ if and .Values.prometheus.prometheusSpec.config.specifiedInValues .Values.prometheus.prometheusSpec.config.value }}
+{{- else if .Values.sprometheus.prometheusSpec.erviceMonitorsSelector }}
   serviceMonitorSelector:
 {{ toYaml .Values.serviceMonitorsSelector | indent 4 }}
 {{- else }}
@@ -73,36 +62,36 @@ spec:
     matchLabels:
       prometheus: {{ .Values.prometheusLabelValue | default .Release.Name | quote }}
 {{- end }}
-{{- if .Values.serviceMonitorNamespaceSelector }}
+{{- if .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector }}
   serviceMonitorNamespaceSelector:
-{{ toYaml .Values.serviceMonitorNamespaceSelector | indent 4 }}
+{{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector | indent 4 }}
 {{- end }}
-{{- if .Values.remoteRead }}
+{{- if .Values.prometheus.prometheusSpec.remoteRead }}
   remoteRead:
-{{ toYaml .Values.remoteRead | indent 4 }}
+{{ toYaml .Values.prometheus.prometheusSpec.remoteRead | indent 4 }}
 {{- end }}
-{{- if .Values.remoteWrite }}
+{{- if .Values.prometheus.prometheusSpec.remoteWrite }}
   remoteWrite:
-{{ toYaml .Values.remoteWrite | indent 4 }}
+{{ toYaml .Values.prometheus.prometheusSpec.remoteWrite | indent 4 }}
 {{- end }}
-{{- if .Values.ruleNamespaceSelector }}
+{{- if .Values.prometheus.prometheusSpec.ruleNamespaceSelector }}
   ruleNamespaceSelector:
-{{ toYaml .Values.ruleNamespaceSelector | indent 4 }}
+{{ toYaml .Values.prometheus.prometheusSpec.ruleNamespaceSelector | indent 4 }}
 {{- end }}
-{{- if .Values.rulesSelector }}
+{{- if .Values.prometheus.prometheusSpec.rulesSelector }}
   ruleSelector:
-{{ toYaml .Values.rulesSelector | indent 4 }}
+{{ toYaml .Values.prometheus.prometheusSpec.rulesSelector | indent 4 }}
 {{- else }}
   ruleSelector:
     matchLabels:
-      prometheus: {{ .Values.prometheusLabelValue | default .Release.Name | quote }}
+      prometheus: {{ .Values.prometheus.prometheusSpec.prometheusLabelValue | default .Release.Name | quote }}
 {{- end }}
-{{- if .Values.storageSpec }}
+{{- if .Values.prometheus.prometheusSpec.storageSpec }}
   storage:
-{{ toYaml .Values.storageSpec | indent 4 }}
+{{ toYaml .Values.prometheus.prometheusSpec.storageSpec | indent 4 }}
 {{- end }}
   version: "{{ .Values.image.tag }}"
-{{- if eq .Values.podAntiAffinity "hard" }}
+{{- if eq .Values.prometheus.prometheusSpec.podAntiAffinity "hard" }}
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -110,8 +99,8 @@ spec:
         labelSelector:
           matchLabels:
             app: {{ template "prometheus.name" . }}
-            prometheus: {{ .Values.prometheusLabelValue | default .Release.Name | quote }}
-{{- else if eq .Values.podAntiAffinity "soft" }}
+            prometheus: {{ .Values.prometheus.prometheusSpec.prometheusLabelValue | default .Release.Name | quote }}
+{{- else if eq .Values.prometheus.prometheusSpec.podAntiAffinity "soft" }}
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
@@ -143,4 +132,3 @@ spec:
   containers:
 {{ toYaml .Values.sidecarsSpec | indent 4 }}
 {{- end }}
-

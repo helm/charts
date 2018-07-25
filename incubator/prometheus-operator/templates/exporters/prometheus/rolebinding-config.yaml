@@ -7,9 +7,9 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ template "prometheus.fullname" . }}-config
+  name: {{ template "prometheus.serviceAccountName" . }}-config
 subjects:
 - kind: ServiceAccount
-    name: {{ template "prometheus-operator.fullname" . }}
+    name: {{ template "prometheus.serviceAccountName" . }} 
     namespace: {{ .Release.Namespace }}
 {{- end }}
