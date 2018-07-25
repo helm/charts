@@ -235,6 +235,8 @@ postgresql:
   postgresUser: "artifactory"
   postgresPassword:
   postgresDatabase: "artifactory"
+  postgresConfig:
+    maxConnections: "1500"
   persistence:
     enabled: true
   service:
