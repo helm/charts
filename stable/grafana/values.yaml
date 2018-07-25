@@ -7,7 +7,7 @@ serviceAccount:
 
 replicas: 1
 
-deploymentStrategy: RollingUpdate
+updateStrategy: RollingUpdate
 
 image:
   repository: grafana/grafana
@@ -29,8 +29,9 @@ downloadDashboardsImage:
 ## Pod Annotations
 # podAnnotations: {}
 
-## Deployment annotations
+## Statefulset annotations
 # annotations: {}
+terminationGracePeriodSeconds: 10
 
 ## Expose the grafana service to be accessed from outside the cluster (LoadBalancer service).
 ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
@@ -84,13 +85,10 @@ affinity: {}
 ##
 persistence:
   enabled: false
-  # storageClassName: default
-  # accessModes:
-  #   - ReadWriteOnce
+  # storageClass: default
+  # accessMode: ReadWriteOnce
   # size: 10Gi
-  # annotations: {}
   # subPath: ""
-  # existingClaim:
 
 adminUser: admin
 # adminPassword: strongpassword
