@@ -201,8 +201,8 @@ Existing PersistentVolumeClaim
 If a Persistent Volume Claim already exists, specify it during installation.
 
 1. Create the PersistentVolume
-1. Create the PersistentVolumeClaim
-1. Install the chart
+2. Create the PersistentVolumeClaim
+3. Install the chart
 
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME stable/minio
@@ -226,3 +226,24 @@ With NetworkPolicy enabled, traffic will be limited to just port 9000.
 For more precise policy, set `networkPolicy.allowExternal=true`. This will
 only allow pods with the generated client label to connect to Minio.
 This label will be displayed in the output of a successful install.
+
+Existing secret
+---------------
+
+Instead of having this chart create the secret for you, you can supply a preexisting secret, much
+like an existing PersistentVolumeClaim.
+
+First, create the secret:
+```bash
+$ kubectl create secret generic my-minio-secret --from-literal=accesskey=foobarbaz --from-literal=secretkey=foobarbazqux
+```
+
+Then install the chart, specifying that you want to use an existing secret:
+```bash
+$ helm install --set createSecret=false --set existingSecretName=my-minio-secret stable/minio
+```
+
+The following fields are expected in the secret
+1. `accesskey` - the access key ID
+2. `secretkey` - the secret key
+3. `gcs_key.json` - The GCS key if you are using the GCS gateway feature. This is optional.
