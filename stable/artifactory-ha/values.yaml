@@ -59,6 +59,8 @@ postgresql:
   postgresDatabase: "artifactory"
   postgresUser: "artifactory"
   postgresPassword:
+  postgresConfig:
+    maxConnections: "1500"
   service:
     port: 5432
   persistence:
