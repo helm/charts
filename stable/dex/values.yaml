@@ -113,7 +113,7 @@ config:
 #    secret: ZXhhbXBsZS1hcHAtc2VjcmV0
 #
   enablePasswordDB: true
-#  staticPasswords:
+# staticPasswords:
 #  - email: "admin@example.com"
 #    # bcrypt hash of the string "password"
 #    hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
