@@ -1,10 +1,6 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-<<<<<<< HEAD
-  tag: "6.2.4"
-=======
   tag: "6.3.1"
->>>>>>> upstream/master
   pullPolicy: "IfNotPresent"
 
 commandline:
@@ -55,6 +51,16 @@ ingress:
 
 # service account that will run the pod. Leave commented to use the default service account.
 # serviceAccountName: kibana
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 60
+  timeoutSeconds: 10
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 60
+  timeoutSeconds: 10
 
 resources: {}
   # limits:
