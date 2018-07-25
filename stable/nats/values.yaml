@@ -243,3 +243,13 @@ ingress:
   # - name: nats.local-tls
   #   key:
   #   certificate:
+
+sidecars:
+## Add sidecars to the pod.
+## e.g.
+# - name: your-image-name
+  # image: your-image
+  # imagePullPolicy: Always
+  # ports:
+  # - name: portname
+  #   containerPort: 1234
