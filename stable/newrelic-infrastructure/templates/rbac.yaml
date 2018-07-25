@@ -8,6 +8,7 @@ rules:
 - apiGroups: [""]
   resources:
     - "nodes"
+    - "nodes/metrics"
     - "nodes/stats"
     - "nodes/proxy"
     - "pods"
