@@ -1,6 +1,6 @@
 name: fluentd-elasticsearch
-version: 0.6.4
-appVersion: 2.0.4
+version: 0.7.0
+appVersion: 2.2.0
 home: https://www.fluentd.org/
 description: A Fluentd Helm chart for Kubernetes with Elasticsearch output
 icon: https://raw.githubusercontent.com/fluent/fluentd-docs/master/public/logo/Fluentd_square.png
