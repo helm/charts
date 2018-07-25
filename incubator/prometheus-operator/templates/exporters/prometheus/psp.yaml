@@ -1,11 +1,9 @@
-{{- if .Values.global.rbac.create }}
-{{- if .Values.global.rbac.pspEnable }}
-apiVersion: extensions/v1beta1
+{{- if and .Values.global.rbac.create .Values.global.rbac.pspEnable }}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
 kind: PodSecurityPolicy
 metadata:
-  labels:
-{{ include "prometheus-operator.labels.standard" . | indent 4 }}
-  name: psp-{{ template "prometheus-operator.fullname" . }}
+  name: {{ template "prometheus.fullname" . }}
 spec:
   privileged: false
   # Required to prevent escalations to root.
@@ -44,5 +42,4 @@ spec:
       - min: 0
         max: 65535
   readOnlyRootFilesystem: false
-{{- end }}
 {{- end }}

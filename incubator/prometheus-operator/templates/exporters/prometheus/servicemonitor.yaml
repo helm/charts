@@ -1,0 +1,19 @@
+{{- if .Values.prometheus.selfServiceMonitor }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:    
+    {{ .Values.prometheus.labels | indent 4}}
+    {{ include "prometheus-operator.labels.global" . | indent 4 }} 
+  name: prometheus
+spec:
+  jobLabel: {{ .Values.prometheus.jobLabel }}
+  selector:
+    {{ .Values.prometheus.service.selector | indent 4 }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace | quote }}
+  endpoints:
+  - port: web
+    interval: 30s
+{{- end }}

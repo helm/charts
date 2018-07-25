@@ -1,0 +1,146 @@
+apiVersion: {{ template "prometheus-operator.apiVersion" . }}
+kind: Prometheus
+metadata:
+  labels:
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    {{ if empty .Values.prometheusLabelValue -}}
+    prometheus: {{ template "prometheus.fullname" . }}
+    {{- else -}}
+    prometheus: {{ .Values.prometheusLabelValue }}
+    {{- end }}
+    release: {{ .Release.Name }}
+{{- if .Values.labels }}
+{{ toYaml .Values.labels | indent 4 }}
+{{- end }}
+  name: {{ template "prometheus.fullname" . }}
+spec:
+{{- if .Values.labels }}
+  podMetadata:
+    labels:
+{{ toYaml .Values.labels | indent 6 }}
+{{- end }}
+{{- if .Values.alertingEndpoints }}
+  alerting:
+    alertmanagers:
+{{ toYaml .Values.alertingEndpoints | indent 6 }}
+{{- else }}
+  alerting:
+    alertmanagers:
+      - namespace: {{ .Release.Namespace }}
+        name: {{ printf "%s-alertmanager" .Release.Name | trunc 63 | trimSuffix "-" }}
+        port: http
+{{- end }}
+  baseImage: "{{ .Values.image.repository }}"
+{{- if .Values.externalLabels }}
+  externalLabels:
+{{ toYaml .Values.externalLabels | indent 4}}
+{{- end }}
+{{- if .Values.externalUrl }}
+  externalUrl: "{{ .Values.externalUrl }}"
+{{- else if .Values.ingress.enabled }}
+  externalUrl: "http://{{ index .Values.ingress.hosts 0 }}{{ .Values.routePrefix }}"
+{{- else }}
+  externalUrl: http://{{ template "prometheus.fullname" . }}.{{ .Release.Namespace }}:9090
+{{- end }}
+{{- if .Values.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 4 }}
+{{- end }}
+  paused: {{ .Values.paused }}
+  replicas: {{ .Values.replicaCount }}
+  logLevel:  {{ .Values.logLevel }}
+  resources:
+{{ toYaml .Values.resources | indent 4 }}
+  retention: "{{ .Values.retention }}"
+{{- if .Values.routePrefix }}
+  routePrefix: "{{ .Values.routePrefix }}"
+{{- end }}
+{{- if .Values.secrets }}
+  secrets:
+{{ toYaml .Values.secrets | indent 4 }}
+{{- end }}
+{{- if .Values.global.rbacEnable }}
+  serviceAccountName: {{ template "prometheus.serviceAccountName" .}}
+{{- end }}
+{{ if and .Values.config.specifiedInValues .Values.config.value }}
+{{- else if .Values.serviceMonitorsSelector }}
+  serviceMonitorSelector:
+{{ toYaml .Values.serviceMonitorsSelector | indent 4 }}
+{{- else }}
+  serviceMonitorSelector:
+    matchLabels:
+      prometheus: {{ .Values.prometheusLabelValue | default .Release.Name | quote }}
+{{- end }}
+{{- if .Values.serviceMonitorNamespaceSelector }}
+  serviceMonitorNamespaceSelector:
+{{ toYaml .Values.serviceMonitorNamespaceSelector | indent 4 }}
+{{- end }}
+{{- if .Values.remoteRead }}
+  remoteRead:
+{{ toYaml .Values.remoteRead | indent 4 }}
+{{- end }}
+{{- if .Values.remoteWrite }}
+  remoteWrite:
+{{ toYaml .Values.remoteWrite | indent 4 }}
+{{- end }}
+{{- if .Values.ruleNamespaceSelector }}
+  ruleNamespaceSelector:
+{{ toYaml .Values.ruleNamespaceSelector | indent 4 }}
+{{- end }}
+{{- if .Values.rulesSelector }}
+  ruleSelector:
+{{ toYaml .Values.rulesSelector | indent 4 }}
+{{- else }}
+  ruleSelector:
+    matchLabels:
+      prometheus: {{ .Values.prometheusLabelValue | default .Release.Name | quote }}
+{{- end }}
+{{- if .Values.storageSpec }}
+  storage:
+{{ toYaml .Values.storageSpec | indent 4 }}
+{{- end }}
+  version: "{{ .Values.image.tag }}"
+{{- if eq .Values.podAntiAffinity "hard" }}
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchLabels:
+            app: {{ template "prometheus.name" . }}
+            prometheus: {{ .Values.prometheusLabelValue | default .Release.Name | quote }}
+{{- else if eq .Values.podAntiAffinity "soft" }}
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              app: {{ template "prometheus.name" . }}
+              prometheus: {{ .Values.prometheusLabelValue | default .Release.Name | quote }}
+{{- end }}
+{{- if .Values.tolerations }}
+  tolerations:
+{{ toYaml .Values.tolerations | indent 4 }}
+{{- end }}
+  imagePullSecrets: 
+{{ toYaml .Values.global.imagePullSecrets | indent 4 }}
+{{- if .Values.additionalScrapeConfigs }}
+  additionalScrapeConfigs:
+    name: prometheus-{{ .Release.Name }}-additional-scrape-configs
+    key: additional-scrape-configs.yaml
+{{- end }}
+{{- if .Values.additionalAlertManagerConfigs }}
+  additionalAlertManagerConfigs:
+    name: prometheus-{{ .Release.Name }}-additional-alertmanager-configs
+    key: additional-alertmanager-configs.yaml
+{{- end }}
+{{- if .Values.sidecarsSpec }}
+  containers:
+{{ toYaml .Values.sidecarsSpec | indent 4 }}
+{{- end }}
+

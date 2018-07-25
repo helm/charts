@@ -2,14 +2,14 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: psp-{{ template "alertmanager.fullname" . }}
+  name: psp-{{ template "prometheus.fullname" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: psp-{{ template "alertmanager.fullname" . }}
+  name: psp-{{ template "prometheus.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "alertmanager.fullname" . }}
+    name: {{ template "prometheus.fullname" . }}
     namespace: {{ .Release.Namespace }}
 {{- end }}
-{{- end }}
+

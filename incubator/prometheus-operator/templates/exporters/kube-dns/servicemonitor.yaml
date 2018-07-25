@@ -4,7 +4,8 @@ kind: ServiceMonitor
 metadata:
   labels:    
     {{ .Values.kubeDns.labels | indent 4}}
-  name: {{ template "prometheus-operator.fullname" . }}
+    {{ include "prometheus-operator.labels.global" . | indent 4 }} 
+  name: kube-dns
 spec:
   jobLabel: {{ .Values.kubeDns.jobLabel }}
   selector:

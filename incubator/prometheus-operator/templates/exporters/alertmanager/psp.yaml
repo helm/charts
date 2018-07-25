@@ -1,9 +1,7 @@
-{{- if and .Values.rbac.create .Values.rbac.pspEnable }}
+{{- if and .Values.global.rbac.create .Values.global.rbac.pspEnable }}
 apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  labels:
-{{ include "alertmanager.labels.standard" . | indent 4 }}
   name: psp-{{ template "alertmanager.fullname" . }}
 spec:
   privileged: false

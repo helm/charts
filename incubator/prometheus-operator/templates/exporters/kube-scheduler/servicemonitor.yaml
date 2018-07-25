@@ -4,12 +4,12 @@ kind: ServiceMonitor
 metadata:
   labels:    
     {{ .Values.kubeScheduler.labels | indent 4}}
-  name: {{ template "prometheus-operator.fullname" . }}
+    {{ include "prometheus-operator.labels.global" . | indent 4 }}      
+  name: kube-scheduler
 spec:
   jobLabel: {{ .Values.kubeScheduler.jobLabel }}
   selector:
-    matchLabels:
-      {{ .Values.kubeScheduler.service.selector | indent 6 }}
+    {{ .Values.kubeScheduler.service.selector | indent 4 }}
   namespaceSelector:
     matchNames:
       - "kube-system"

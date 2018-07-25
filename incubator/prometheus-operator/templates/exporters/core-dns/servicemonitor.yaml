@@ -4,7 +4,8 @@ kind: ServiceMonitor
 metadata:
   labels:
     {{ .Values.coreDns.labels | indent 4}}
-  name: {{ template "exporter-coredns.fullname" . }}
+    {{ include "prometheus-operator.labels.global" . | indent 4 }}          
+  name: coredns
 spec:
   jobLabel: {{ .Values.coreDns.jobLabel }}
   selector:

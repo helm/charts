@@ -1,0 +1,18 @@
+{{- if .Values.nodeExporter.selfServiceMonitor }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    {{ .Values.nodeExporter.labels | indent 4}}
+    {{ include "prometheus-operator.labels.global" . | indent 4 }}      
+  name: node-exporter
+spec:
+  jobLabel: {{ .Values.nodeExporter.jobLabel }}
+  selector:
+    {{ .Values.nodeExporter.service.selector | indent 4 }}
+    matchNames:
+      - {{ .Release.Namespace | quote }}
+  endpoints:
+  - port: metrics
+    interval: 30s
+{{- end-}}    

@@ -42,6 +42,13 @@ release: {{ .Release.Name | quote }}
 operator: prometheus
 {{- end -}}
 
+{{- define "prometheus-operator.labels.global" -}}
+chart: {{ template "prometheus-operator.chart" . }}
+heritage: {{ .Release.Service | quote }}
+release: {{ .Release.Name | quote }}
+{{- end -}}
+
+
 {{/*
 Create the name of the service account to use
 */}}

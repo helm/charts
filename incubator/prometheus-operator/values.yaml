@@ -14,6 +14,14 @@ configmapReload:
   repository: quay.io/coreos/configmap-reload
   tag: v0.0.1
 
+global:
+  rbacEnable: true
+  pspEnable: true
+  
+  # Reference to one or more secrets to be used when pulling images
+  imagePullSecrets: []
+  #  - name: "image-pull-secret"
+  
 ## Prometheus-operator image
 ##
 image:
@@ -27,11 +35,6 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
-
-rbac:
-  # Specifies whether RBAC resources should be created
-  create: true
-  pspEnable: true
 
 kubeletService:
   enable: true
@@ -54,6 +57,84 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+## ServiceMonitor CRDs to create & be scraped by the Prometheus instance.
+##
+serviceMonitors: []
+  ## Name of the ServiceMonitor to create
+  ##
+  # - name: ""
+
+    ## Service label for use in assembling a job name of the form <label value>-<port>
+    ## If no label is specified, the service name is used.
+    ##
+    # jobLabel: ""
+
+    ## Label selector for services to which this ServiceMonitor applies
+    ##
+    # selector: {}
+
+    ## Namespaces from which services are selected
+    ##
+    # namespaceSelector:
+      ## Match any namespace
+      ##
+      # any: false
+
+      ## Explicit list of namespace names to select
+      ##
+      # matchNames: []
+
+    ## Endpoints of the selected service to be monitored
+    ##
+    # endpoints: []
+      ## Name of the endpoint's service port
+      ## Mutually exclusive with targetPort
+      # - port: ""
+
+      ## Name or number of the endpoint's target port
+      ## Mutually exclusive with port
+      # - targetPort: ""
+
+      ## File containing bearer token to be used when scraping targets
+      ##
+      #   bearerTokenFile: ""
+
+      ## Interval at which metrics should be scraped
+      ##
+      #   interval: 30s
+
+      ## HTTP path to scrape for metrics
+      ##
+      #   path: /metrics
+
+      ## HTTP scheme to use for scraping
+      ##
+      #   scheme: http
+
+      ## TLS configuration to use when scraping the endpoint
+      ##
+      #   tlsConfig:
+
+          ## Path to the CA file
+          ##
+          # caFile: ""
+
+          ## Path to client certificate file
+          ##
+          # certFile: ""
+
+          ## Skip certificate verification
+          ##
+          # insecureSkipVerify: false
+
+          ## Path to client key file
+          ##
+          # keyFile: ""
+
+          ## Server name used to verify host name
+          ##
+          # serverName: ""
 
 ####################
 ### Alertmanager ###
@@ -172,7 +253,7 @@ coreDns:
 kubeDns:
   ## If true, create a serviceMonitor for kube-dns
   ##
-  selfServiceMonitor: false
+  selfServiceMonitor: true
 
   jobLabel: kube-dns
 
@@ -188,6 +269,8 @@ kubeDns:
 
 kubeScheduler:
 
+  selfServiceMonitor: true
+
   jobLabel: k8s-app
 
   labels:
@@ -198,7 +281,42 @@ kubeScheduler:
       matchLabels:
         k8s-app: kube-scheduler
 
+kubeStateMetrics:
+
+  selfServiceMonitor: true
+
+  jobLabel: k8s-app
+
+  labels:
+    k8s-app: kube-scheduler
+
+  service:
+    selector: 
+      matchLabels:
+        k8s-app:  kube-state-metrics
+
 nodeExporter:
   deploy: true
   
   selfServiceMonitor: true
+
+  jobLabel: k8s-app
+
+  labels:
+    k8s-app: node-exporter
+
+  service:
+    selector: 
+      matchLabels:
+        k8s-app: node-exporter
+
+prometheus:
+
+  service:
+    selector:      
+      app: prometheus
+      prometheus: k8s
+    
+    extraSpecs: {}
+
+    annotations: {}
