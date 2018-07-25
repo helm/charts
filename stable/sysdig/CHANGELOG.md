@@ -3,6 +3,13 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.0.1
+
+### Minor Changes
+
+* Add dnsPolicy to daemonset. Its value is ClusterFirstWithHostNet
+* Fix link target for retrieving Sysdig Monitor Access Key in README
+
 ## v1.0.0
 
 ### Major Changes

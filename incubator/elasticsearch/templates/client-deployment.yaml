@@ -21,6 +21,9 @@ spec:
 {{ toYaml .Values.client.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+{{- if .Values.client.priorityClassName }}
+      priorityClassName: "{{ .Values.client.priorityClassName }}"
+{{- end }}
       securityContext:
         fsGroup: 1000
       {{- if eq .Values.client.antiAffinity "hard" }}
@@ -49,6 +52,10 @@ spec:
 {{- if .Values.client.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.client.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.client.tolerations }}
+      tolerations:
+{{ toYaml .Values.client.tolerations | indent 8 }}
 {{- end }}
       initContainers:
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html

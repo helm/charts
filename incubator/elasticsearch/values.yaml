@@ -1,11 +1,11 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "6.1.1"
+appVersion: "6.2.4"
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.1.1"
+  tag: "6.3.1"
   pullPolicy: "IfNotPresent"
 
 cluster:
@@ -25,14 +25,13 @@ client:
   name: client
   replicas: 2
   serviceType: ClusterIP
-
 ## (dict) If specified, apply these annotations to the client service
 #  serviceAnnotations:
 #    example: client-svc-foo
-
   heapSize: "512m"
   antiAffinity: "soft"
   nodeSelector: {}
+  tolerations: {}
   resources:
     limits:
       cpu: "1"
@@ -40,10 +39,14 @@ client:
     requests:
       cpu: "25m"
       memory: "512Mi"
-
+  priorityClassName: ""
   ## (dict) If specified, apply these annotations to each client Pod
   # podAnnotations:
   #   example: client-foo
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
 
 master:
   name: master
@@ -58,6 +61,7 @@ master:
     # storageClass: "ssd"
   antiAffinity: "soft"
   nodeSelector: {}
+  tolerations: {}
   resources:
     limits:
       cpu: "1"
@@ -65,10 +69,14 @@ master:
     requests:
       cpu: "25m"
       memory: "512Mi"
-
+  priorityClassName: ""
   ## (dict) If specified, apply these annotations to each master Pod
   # podAnnotations:
   #   example: master-foo
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 2  # Same as `cluster.env.MINIMUM_MASTER_NODES`
+    # maxUnavailable: 1
 
 data:
   name: data
@@ -84,6 +92,7 @@ data:
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
   nodeSelector: {}
+  tolerations: {}
   resources:
     limits:
       cpu: "1"
@@ -91,6 +100,11 @@ data:
     requests:
       cpu: "25m"
       memory: "1536Mi"
+  priorityClassName: ""
   ## (dict) If specified, apply these annotations to each data Pod
   # podAnnotations:
   #   example: data-foo
+  podDisruptionBudget:
+    enabled: false
+    # minAvailable: 1
+    maxUnavailable: 1
