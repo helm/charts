@@ -94,16 +94,28 @@ config:
     tlsKey: /etc/dex/tls/grpc/server/tls.key
     tlsClientCA: /etc/dex/tls/grpc/ca/tls.crt
   connectors:
-  - type: github
-    id: github
-    name: GitHub
-    config:
-      clientID: clientID
-      clientSecret: clientSecret
-      redirectURI: https://dex.io/callback
-      orgs:
-        - name: jenkins-x
+#  - type: github
+#    id: github
+#    name: GitHub
+#    config:
+#      clientID: xxxxxxxxxxxxxxx
+#      clientSecret: yyyyyyyyyyyyyyyyyyyyy
+#      redirectURI: https://dex.minikube.local:5556/callback
+#      org: kubernetes
   oauth2:
     skipApprovalScreen: true
 
+#  staticClients:
+#  - id: example-app
+#    redirectURIs:
+#    - 'http://192.168.42.219:31850/oauth2/callback'
+#    name: 'Example App'
+#    secret: ZXhhbXBsZS1hcHAtc2VjcmV0
+#
   enablePasswordDB: true
+#  staticPasswords:
+#  - email: "admin@example.com"
+#    # bcrypt hash of the string "password"
+#    hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+#    username: "admin"
+#    userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"
