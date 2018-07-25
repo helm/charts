@@ -114,8 +114,10 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `ingress.secrets[0].key`             | TLS Secret Key                                                                               | `nil`                             |
 | `networkPolicy.enabled`              | Enable NetworkPolicy                                                                         | `false`                           |
 | `networkPolicy.allowExternal`        | Allow external connections                                                                   | `true`                            |
+| `sidecars`                           | Attach additional containers to the pod.                                                     | `nil`                             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+
 
 ```bash
 $ helm install --name my-release \
@@ -132,6 +134,20 @@ $ helm install --name my-release -f values.yaml stable/nats
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Sidecars
+
+If you have a need for additional containers to run within the same pod as NATS (e.g. an additional metrics or logging exporter), you can do so via the `sidecars` config parameter. Simply define your container according to the Kubernetes container spec.
+
+```yaml
+sidecars:
+- name: your-image-name
+  image: your-image
+  imagePullPolicy: Always
+  ports:
+  - name: portname
+   containerPort: 1234
+```
 
 ## Production settings and horizontal scaling
 
