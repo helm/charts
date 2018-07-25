@@ -20,7 +20,7 @@ replicas: 1
   # requests:
     # cpu: 100m
     # memory: 50Mi
-    
+
 ports:
   - name: http
     containerPort: 8080
@@ -48,9 +48,9 @@ certs:
     altNames:
       - dex.io
     altIPs: {}
-    secret: 
-       tlsName: dex-web-server-tls
-       caName: dex-web-server-ca
+    secret:
+      tlsName: dex-web-server-tls
+      caName: dex-web-server-ca
   grpc:
     create: true
     activeDeadlineSeconds: 300
@@ -61,7 +61,6 @@ certs:
       serverTlsName: dex-grpc-server-tls
       clientTlsName: dex-grpc-client-tls
       caName: dex-grpc-ca
-      
 
 env: []
 
@@ -86,8 +85,8 @@ config:
     level: debug
   web:
     http: 0.0.0.0:8080
-    #tlsCert: /etc/dex/tls/https/server/tls.crt
-    #tlsKey: /etc/dex/tls/https/server/tls.key
+#   tlsCert: /etc/dex/tls/https/server/tls.crt
+#   tlsKey: /etc/dex/tls/https/server/tls.key
   grpc:
     addr: 0.0.0.0:5000
     tlsCert: /etc/dex/tls/grpc/server/tls.crt
