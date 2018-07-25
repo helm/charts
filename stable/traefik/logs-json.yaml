@@ -1,0 +1,6 @@
+rbac:
+  enabled: true
+accessLogs:
+  format: json
+  enabled: true
+

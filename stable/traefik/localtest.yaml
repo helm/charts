@@ -1,0 +1,27 @@
+imageTag: 1.6.4
+serviceType: NodePort
+accessLogs:
+  enabled: true
+  format: json
+  fields:
+    defaultMode: drop
+    names:
+      BackendName: keep
+    headers:
+      defaultMode: drop
+      names:
+        Authorization: redact
+rbac:
+  enabled: true
+metrics:
+  prometheus:
+    enabled: true
+namespaces:
+- traefik
+dashboard:
+  enabled: true
+  domain: docker
+  ingress:
+    annotations:
+      kubernetes.io/ingress.class: traefik
+

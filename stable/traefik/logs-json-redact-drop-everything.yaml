@@ -1,0 +1,10 @@
+
+rbac:
+  enabled: true
+accessLogs:
+  format: json
+  enabled: true
+  fields:
+    defaultMode: drop
+    headers:
+      defaultMode: redact
