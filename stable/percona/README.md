@@ -50,10 +50,10 @@ The following table lists the configurable parameters of the Percona chart and t
 | -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
 | `imageTag`                 | `percona` image tag.                 | Most recent release                                        |
 | `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`                                             |
-| `perconaRootPassword`        | Password for the `root` user.      | `nil`                                                      |
-| `perconaUser`                | Username of new user to create.    | `nil`                                                      |
-| `perconaPassword`            | Password for the new user.         | `nil`                                                      |
-| `perconaDatabase`            | Name for new database to create.   | `nil`                                                      |
+| `mysqlRootPassword`        | Password for the `root` user.      | `nil`                                                      |
+| `mysqlUser`                | Username of new user to create.    | `nil`                                                      |
+| `mysqlPassword`            | Password for the new user.         | `nil`                                                      |
+| `mysqlDatabase`            | Name for new database to create.   | `nil`                                                      |
 | `persistence.enabled`      | Create a volume to store data      | false                                                       |
 | `persistence.size`         | Size of persistent volume claim    | 8Gi RW                                                     |
 | `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
