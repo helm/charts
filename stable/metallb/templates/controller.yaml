@@ -34,6 +34,18 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534 # nobody
+    {{- with .Values.controller.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.controller.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.controller.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       containers:
       - name: controller
         image: {{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}
