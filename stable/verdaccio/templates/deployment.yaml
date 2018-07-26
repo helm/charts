@@ -56,9 +56,6 @@ spec:
             - mountPath: /verdaccio/conf
               name: config
               readOnly: true
-      # Allow non-root user to access PersistentVolume
-      securityContext:
-        fsGroup: 1000
       volumes:
       - name: config
         configMap:
