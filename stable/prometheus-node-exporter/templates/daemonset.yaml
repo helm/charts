@@ -6,7 +6,8 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{ include "prometheus-node-exporter.labels" . | indent 6 }}
+      app: {{ template "prometheus-node-exporter.name" . }}
+      release: {{ .Release.Name }}  
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
