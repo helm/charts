@@ -4,6 +4,9 @@ metadata:
   name: fluent-bit
   labels:
     app: {{ template "fluent-bit.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   updateStrategy:
     type: RollingUpdate
@@ -11,6 +14,7 @@ spec:
     metadata:
       labels:
         app: {{ template "fluent-bit.fullname" . }}
+        release: {{ .Release.Name }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
