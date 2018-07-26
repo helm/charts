@@ -22,8 +22,10 @@ data:
       echo "ca\n" | ./easyrsa build-ca nopass
       ./easyrsa build-server-full server nopass
       ./easyrsa gen-dh
+      ./easyrsa gen-crl
+      cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem # Note: the pki/ directory is inaccessible after openvpn drops privileges, so we cp crl.pem to ${EASY_RSA_LOC}
+      chmod 644 ${EASY_RSA_LOC}/crl.pem
     fi
-
 
   newClientCert.sh: |-
       #!/bin/bash
@@ -50,6 +52,16 @@ data:
       </ca>
       EOF
       cat pki/$1.ovpn
+
+  revokeClientCert.sh: |-
+      #!/bin/bash
+      EASY_RSA_LOC="/etc/openvpn/certs"
+      cd $EASY_RSA_LOC
+      ./easyrsa --batch revoke $1
+      ./easyrsa gen-crl
+      echo "Note, the server will access this at ${EASY_RSA_LOC}/crl.pem"
+      cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}
+      chmod 644 ${EASY_RSA_LOC}/crl.pem
 
   configure.sh: |-
       #!/bin/sh
@@ -87,6 +99,7 @@ data:
       ca /etc/openvpn/certs/pki/ca.crt
       cert /etc/openvpn/certs/pki/issued/server.crt
       dh /etc/openvpn/certs/pki/dh.pem
+      crl-verify /etc/openvpn/certs/crl.pem
 
       key-direction 0
       keepalive 10 60
