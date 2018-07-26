@@ -15,8 +15,11 @@ spec:
   type: {{ .Values.service.type}}
   sessionAffinity: None
   ports:
-  - port: {{ .Values.service.port }}
-    targetPort: https
+{{- range .Values.ports }}
+  - name: {{ .name }} 
+    port: {{ .containerPort }}
+    targetPort: {{ .containerPort}}
+{{- end}}
 {{- if hasKey .Values.service "externalIPs" }}
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}

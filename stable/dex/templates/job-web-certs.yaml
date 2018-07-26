@@ -1,17 +1,18 @@
-{{- if .Values.selfSigned.create }}
+{{- if .Values.certs.web.create }}
 {{ $fullname := include "dex.fullname" . }}
 {{ $tlsBuiltName := printf "%s-tls" $fullname }}
-{{ $tlsSecretName := default $tlsBuiltName .Values.secret.tlsName }}
+{{ $tlsSecretName := default $tlsBuiltName .Values.certs.web.secret.tlsName }}
 {{ $caBuiltName := printf "%s-ca" $fullname }}
-{{ $caName := default $caBuiltName .Values.secret.caName }}
+{{ $caName := default $caBuiltName .Values.certs.web.secret.caName }}
 {{ $local := dict "i" 0 }}
 apiVersion: batch/v1
 kind: Job
 metadata:
   annotations:
     "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "1"
     "helm.sh/hook-delete-policy": hook-succeeded
-  name: {{ template "dex.fullname" . }}
+  name: {{ $fullname  }}-web-certs
   labels:
     app: {{ template "dex.name" . }}
     chart: {{ template "dex.chart" . }}
@@ -19,7 +20,7 @@ metadata:
     release: "{{ .Release.Name }}"
     component: "job"
 spec:
-  activeDeadlineSeconds: {{ .Values.selfSigned.activeDeadlineSeconds }}
+  activeDeadlineSeconds: {{ .Values.certs.web.activeDeadlineSeconds }}
   template:
     metadata:
       labels:
@@ -31,8 +32,8 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: main
-        image: "{{ .Values.selfSigned.image }}:{{ .Values.selfSigned.imageTag }}"
-        imagePullPolicy: {{ .Values.selfSigned.imagePullPolicy }}
+        image: "{{ .Values.certs.image }}:{{ .Values.certs.imageTag }}"
+        imagePullPolicy: {{ .Values.certs.imagePullPolicy }}
         command:
         - /bin/bash
         - -exc
@@ -51,23 +52,23 @@ spec:
 
           [alt_names]
           {{- $_ := set $local "i" 1 }}
-          {{- range .Values.selfSigned.altNames }}
+          {{- range .Values.certs.web.altNames }}
           DNS.{{ $local.i }} = {{ . }}
           {{- $_ := set $local "i" ( add1 $local.i ) }}
           {{- end }}
           {{- $_ := set $local "i" 1 }}
-          {{- range .Values.selfSigned.altIPs }}
+          {{- range .Values.certs.web.altIPs }}
           IP.{{ $local.i }} = {{ . }}
           {{- $_ := set $local "i" ( add1 $local.i ) }}
           {{- end }}
           EOF
 
           openssl genrsa -out ca-key.pem 2048;
-          openssl req -x509 -new -nodes -key ca-key.pem -days {{ .Values.selfSigned.caDays }} -out ca.pem -subj "/CN=dex-ca";
+          openssl req -x509 -new -nodes -key ca-key.pem -days {{ .Values.certs.web.caDays }} -out ca.pem -subj "/CN=dex-ca";
 
           openssl genrsa -out key.pem 2048;
           openssl req -new -key key.pem -out csr.pem -subj "/CN=dex" -config req.cnf;
-          openssl x509 -req -in csr.pem -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out cert.pem -days {{ .Values.selfSigned.certDays }} -extensions v3_req -extfile req.cnf;
+          openssl x509 -req -in csr.pem -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out cert.pem -days {{ .Values.certs.web.certDays }} -extensions v3_req -extfile req.cnf;
 
           kubectl delete configmap {{ $caName | quote }} --namespace {{ .Release.Namespace }} || true
           kubectl delete secret {{ $caName | quote }} {{ $tlsSecretName }} --namespace {{ .Release.Namespace }} || true
