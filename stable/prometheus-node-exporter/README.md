@@ -36,19 +36,23 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Node Exporter chart and their default values.
 
-|        Parameter        |                                                          Description                                                          |                 Default                 |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
-| `image.repository`      | Image repository                                                                                                              | `quay.io/prometheus/node-exporter`      |
-| `image.tag`             | Image tag                                                                                                                     | `v0.15.2`                               |
-| `image.pullPolicy`      | Image pull policy                                                                                                             | `IfNotPresent`                          |
-| `extraArgs`             | Additional container arguments                                                                                              | `[]`                                                                     |
-| `resources`             | CPU/Memory resource requests/limits                                                                                           | `{}`                                    |
-| `service.type`          | Service type                                                                                                                  | `ClusterIP`                             |
-| `service.port`          | The service port                                                                                                              | `9100`                                  |
-| `service.targetPort`    | The target port of the container                                                                                              | `9100`                                  |
-| `serviceAccount.create` | Specifies whether a service account should be created.                                                                        | `true`                                  |
-| `serviceAccount.name`   | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                         |
-| `tolerations`           | List of node taints to tolerate                                                                                               | `- effect: NoSchedule operator: Exists` |
+|             Parameter             |                                                          Description                                                          |                 Default                 |     |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | --- |
+| `image.repository`                | Image repository                                                                                                              | `quay.io/prometheus/node-exporter`      |     |
+| `image.tag`                       | Image tag                                                                                                                     | `v0.15.2`                               |     |
+| `image.pullPolicy`                | Image pull policy                                                                                                             | `IfNotPresent`                          |     |
+| `extraArgs`                       | Additional container arguments                                                                                                | `[]`                                    |     |
+| `podLabels`                       | Additional labels to be added to pods                                                                                         | {}                                      |     |
+| `rbac.create`                     | If true, create & use RBAC resources                                                                                          | `true`                                  |     |
+| `rbac.pspEnabled`                 | Specifies whether a PodSecurityPolicy should be created.                                                                      | `true`                                  |     |
+| `resources`                       | CPU/Memory resource requests/limits                                                                                           | `{}`                                    |     |
+| `service.type`                    | Service type                                                                                                                  | `ClusterIP`                             |     |
+| `service.port`                    | The service port                                                                                                              | `9100`                                  |     |
+| `service.targetPort`              | The target port of the container                                                                                              | `9100`                                  |     |
+| `serviceAccount.create`           | Specifies whether a service account should be created.                                                                        | `true`                                  |     |
+| `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                         |     |
+| `serviceAccount.imagePullSecrets` | Specify image pull secrets                                                                                                    | `[]`                                    |     |
+| `tolerations`                     | List of node taints to tolerate                                                                                               | `- effect: NoSchedule operator: Exists` |     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
