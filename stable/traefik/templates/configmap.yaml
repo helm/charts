@@ -70,6 +70,9 @@ data:
       {{- end }}
     [kubernetes]
     {{- if .Values.kubernetes}}
+      {{- if .Values.kubernetes.endpoint }}
+    endpoint = {{ .Values.kubernetes.endpoint | quote }}
+      {{- end}}
       {{- if .Values.kubernetes.namespaces }}
     namespaces = [
         {{- range $idx, $element := .Values.kubernetes.namespaces }}
