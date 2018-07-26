@@ -4,11 +4,11 @@ This is the Helm chart for the [Spark-on-Kubernetes Operator](https://github.com
 
 #### Prerequisites
 
-The Operator requires Kubernetes version 1.8 and above because it relies on garbage collection of custom resources. If customization of driver and executor pods (through mounting custom configMaps and volumes) is desired, then the [Mutating Admission Webhook](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/) needs to be enabled and it only became beta in Kubernetes 1.9.
+The Operator requires Kubernetes version 1.8 and above because it relies on garbage collection of custom resources. If customization of driver and executor pods (through mounting custom configMaps and volumes) is desired, then the [Mutating Admission Webhook](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/quick-start-guide.md#using-the-mutating-admission-webhook) needs to be enabled and it only became beta in Kubernetes 1.9.
 
 ##### Generating certificates (Required only when using webhooks)
 
-First manually create the `sparkoperator` namespace using `kubectl create ns sparkoperator`. Then as explained in the operator project [documentation](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/quick-start-guide.md#using-the-mutating-admission-webhook), run [`hack/gencerts.sh`](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/hack/gencerts.sh) to place secrets in the namespace just created.
+First manually create the `sparkoperator` namespace using `kubectl create ns sparkoperator`. Then as explained in the operator project [documentation](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/quick-start-guide.md#using-the-mutating-admission-webhook), run [`hack/gencerts.sh`](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/hack/gencerts.sh) to create the server certificate bundle for the Mutating Admission Webhook and upload the bundle to a secret in the namespace just created.
 
 #### Installing the chart
 
@@ -19,7 +19,7 @@ $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incuba
 $ helm install incubator/sparkoperator
 ```
 
-By default, the operator is installed in a namespace called "sparkoperator". It would be created it does not exist.
+By default, the operator is installed in a namespace called "sparkoperator". It would be created if it does not exist.
 
 #### Configuration
 
