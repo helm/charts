@@ -42,6 +42,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `image.repository`                          | image repository                          | `sonarqube`                                |
 | `image.tag`                                 | `sonarqube` image tag.                    | 6.5                                        |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
+| `image.pullSecret`                          | imagePullSecret to use for private repository      |                                   |
 | `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
 | `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
 | `service.annotations`                       | Kubernetes service annotations            | None                                       |
