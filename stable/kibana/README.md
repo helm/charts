@@ -40,6 +40,7 @@ Parameter | Description | Default
 --- | --- | ---
 `affinity` | node/pod affinities | None
 `env` | Environment variables to configure Kibana | `{}`
+`files` | Kibana configuration files (config properties can be set through the `env` parameter too). All the files listed under this variable will overwrite any existing files by the same name in kibana config directory. Files not mentioned under this variable will remain unaffected. | None
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `docker.elastic.co/kibana/kibana-oss`
 `image.tag` | Image tag | `6.3.1`
