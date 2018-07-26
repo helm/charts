@@ -56,10 +56,9 @@ spec:
          - |
             #persist the erlang cookie in both places for server and cli tools
             echo $RABBITMQ_ERL_COOKIE > /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
-            cp /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie /root
-
+            cp /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie /opt/bitnami/rabbitmq/.rabbitmq/
             #change permission so only the user has access to the cookie file
-            chmod 400 /root/.erlang.cookie
+            chmod 400 /opt/bitnami/rabbitmq/.rabbitmq/.erlang.cookie
             chmod 400 /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
 
             #copy the mounted configuration to both places
@@ -67,7 +66,6 @@ spec:
 
             #replace the default password that is generated
             sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
-
             exec rabbitmq-server
         {{- if .Values.resources }}
         resources:

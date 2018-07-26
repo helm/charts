@@ -113,6 +113,12 @@ tolerations: []
 ## External access.
 ##
 external:
+  type: NodePort
+  # annotations:
+  #  service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+
+  # create an A record for each statefulset pod
+  distinct: false
   enabled: false
   servicePort: 19092
   firstListenerPort: 31090
