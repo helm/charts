@@ -30,7 +30,7 @@ The following table lists the configurable parameters of the Spark operator char
 | `operatorImageName` | The name of the operator image               | `gcr.io/spark-operator/spark-operator` |
 | `operatorVersion`   | The version of the operator to install       | `v2.3.0-v1alpha1-latest`               |
 | `operatorNamespace` | K8s namespace where operator is installed    | `sparkoperator`                        |
-| `enableWebhook`     | Whether to enable mutating admission webhook | true                                   |
+| `enableWebhook`     | Whether to enable mutating admission webhook | false                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
