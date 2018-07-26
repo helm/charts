@@ -1,6 +1,6 @@
 name: sonarqube
 description: Sonarqube is an open sourced code quality scanning tool
-version: 0.7.3
+version: 0.8.0
 appVersion: 6.7.3
 keywords:
   - coverage
