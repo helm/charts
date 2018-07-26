@@ -42,13 +42,6 @@ backend:
     # TLS debugging levels = 1-5
     tls_debug: 1
 
-parsers:
-  ## List the respective parsers in key: value format per entry
-  ## Regex required fields are name and regex. JSON required field
-  ## is name.
-  regex: []
-  json: []
-
   ##
   ## Ref: http://fluentbit.io/documentation/current/output/http.html
   ##
@@ -59,6 +52,13 @@ parsers:
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
+
+parsers:
+  ## List the respective parsers in key: value format per entry
+  ## Regex required fields are name and regex. JSON required field
+  ## is name.
+  regex: []
+  json: []
 
 env: []
 
