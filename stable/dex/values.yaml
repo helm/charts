@@ -13,39 +13,54 @@ nodeSelector: {}
 
 replicas: 1
 
+# resources:
+  # limits:
+    # cpu: 100m
+    # memory: 50Mi
+  # requests:
+    # cpu: 100m
+    # memory: 50Mi
+
+ports:
+  - name: http
+    containerPort: 8080
+    protocol: TCP
+  - name: grpc
+    containerPort: 5000
+    protocol: TCP
+
 service:
   type: ClusterIP
-  port: 5556
-  # externalIPs:
-
-resources:
-  # Normal resource usage of dex server
-  # limits:
-  #   cpu: 100m
-  #   memory: 50Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 50Mi
+  annotations: {}
 
 extraVolumes: []
 extraVolumeMounts: []
 
-selfSigned:
-  create: true
+certs:
   image: gcr.io/google_containers/kubernetes-dashboard-init-amd64
   imageTag: "v1.0.0"
   imagePullPolicy: "IfNotPresent"
-  caDays: 10000
-  certDays: 10000
-  altNames:
-  - dex.minikube.local
-  altIPs: {}
-#  - 192.168.42.219
-
-secret: {}
-#  Override the default secret names here.
-#  tlsName: dex-tls
-#  caName: dex-ca
+  web:
+    create: true
+    activeDeadlineSeconds: 300
+    caDays: 10000
+    certDays: 10000
+    altNames:
+      - dex.io
+    altIPs: {}
+    secret:
+      tlsName: dex-web-server-tls
+      caName: dex-web-server-ca
+  grpc:
+    create: true
+    activeDeadlineSeconds: 300
+    altNames:
+      - dex.io
+    altIPs: {}
+    secret:
+      serverTlsName: dex-grpc-server-tls
+      clientTlsName: dex-grpc-client-tls
+      caName: dex-grpc-ca
 
 env: []
 
@@ -61,7 +76,7 @@ serviceAccount:
   name:
 
 config:
-  issuer: https://dex.minikube.local:5556
+  issuer: https://dex.io
   storage:
     type: kubernetes
     config:
@@ -69,9 +84,14 @@ config:
   logger:
     level: debug
   web:
-    https: 0.0.0.0:5556
-    tlsCert: /etc/dex/tls/tls.crt
-    tlsKey: /etc/dex/tls/tls.key
+    http: 0.0.0.0:8080
+#   tlsCert: /etc/dex/tls/https/server/tls.crt
+#   tlsKey: /etc/dex/tls/https/server/tls.key
+  grpc:
+    addr: 0.0.0.0:5000
+    tlsCert: /etc/dex/tls/grpc/server/tls.crt
+    tlsKey: /etc/dex/tls/grpc/server/tls.key
+    tlsClientCA: /etc/dex/tls/grpc/ca/tls.crt
   connectors:
 #  - type: github
 #    id: github
@@ -90,9 +110,9 @@ config:
 #    - 'http://192.168.42.219:31850/oauth2/callback'
 #    name: 'Example App'
 #    secret: ZXhhbXBsZS1hcHAtc2VjcmV0
-
+#
   enablePasswordDB: true
-#  staticPasswords:
+# staticPasswords:
 #  - email: "admin@example.com"
 #    # bcrypt hash of the string "password"
 #    hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
