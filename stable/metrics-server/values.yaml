@@ -22,6 +22,9 @@ image:
   tag: v0.2.1
   pullPolicy: IfNotPresent
 
+args:
+  - --source=kubernetes.summary_api:''
+
 resources: {}
 
 nodeSelector: {}
