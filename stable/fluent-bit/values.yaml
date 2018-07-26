@@ -18,6 +18,9 @@ metrics:
 # When enabled, fluent-bit will keep track of tailing offsets across pod restarts.
 trackOffsets: false
 
+# Optional parameter to ignore older log lines in files (in seconds)
+ignore_older:
+
 backend:
   type: forward
   forward:
@@ -41,6 +44,8 @@ backend:
     tls_ca: ""
     # TLS debugging levels = 1-5
     tls_debug: 1
+    # Optional time key for timestamp field
+    time_key:
 
 parsers:
   ## List the respective parsers in key: value format per entry
