@@ -31,6 +31,8 @@ See the [spotify/docker-gc GitHub repository][] for more settings which may be a
 | `exclude.containers`              | containers to be excluded                | Not set                                 |
 | `serviceAccount`                  | service account to attach to deamonset   | Not set                                 |
 | `imagePullSecrets`                | Specify image pull secrets               | Not set                                 |
+| `tolerations`                     | Daemonset tolerations                    | Not set                                 |
+| `nodeSelector`                    | Node labels for daemonset pod assignment | Not set                                 |
 
 ## Design/Evolution
 
