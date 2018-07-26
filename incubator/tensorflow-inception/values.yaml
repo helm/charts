@@ -14,7 +14,7 @@ image:
    pullPolicy: "IfNotPresent"
 
 env:
-  ldLibraryPath: "/usr/lib/x86_64-linux-gnu/"
+   ldLibraryPath: "/usr/lib/x86_64-linux-gnu/"
 
 resources: {}
 #  limits:

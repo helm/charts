@@ -8,7 +8,7 @@ sources:
 - https://github.com/tensorflow/
 - https://tensorflow.github.io/serving/serving_inception.html
 maintainers:
-- name: Lachlan Evenson
+- name: lachie83
   email: lachlan.evenson@gmail.com
-- name: Thomas Jungblut
+- name: thomasjungblut
   email: thomas.jungblut@gmail.com
