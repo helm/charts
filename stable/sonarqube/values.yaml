@@ -5,6 +5,8 @@ replicaCount: 1
 image:
   repository: sonarqube
   tag: 6.7.3
+  # If using a private repository, the name of the imagePullSecret to use
+  # pullSecret: my-repo-secret
 service:
   name: sonarqube
   type: LoadBalancer
