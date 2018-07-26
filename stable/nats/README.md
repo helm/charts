@@ -54,10 +54,23 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `auth.user`                          | Client authentication user                                                                   | `nats_cluster`                    |
 | `auth.password`                      | Client authentication password                                                               | `random alhpanumeric string (10)` |
 | `auth.token`                         | Client authentication token                                                                  | `nil`                             |
+| `tls.enabled`                        | Switch to enable/disable client TLS                                                          | `false`                           |
+| `tls.certificate`                    | Client TLS certificate                                                                       | `nil`                             |
+| `tls.key`                            | Client TLS key                                                                               | `nil`                             |
+| `tls.ca`                             | Client TLS certificate authority                                                             | `nil`                             |
+| `tls.clusterCA`                      | Switch to enable/disable use of K8s cluster CA for client TLS                                | `false`                           |
+| `tls.timeout`                        | Client TLS timeout                                                                           | `nil`                             |
+| `tls.verify`                         | Switch to enable/disable client TLS verification                                             | `false`                           |
 | `clusterAuth.enabled`                | Switch to enable/disable cluster authentication                                              | `true`                            |
 | `clusterAuth.user`                   | Cluster authentication user                                                                  | `nats_cluster`                    |
 | `clusterAuth.password`               | Cluster authentication password                                                              | `random alhpanumeric string (10)` |
 | `clusterAuth.token`                  | Cluster authentication token                                                                 | `nil`                             |
+| `clusterTls.enabled`                 | Switch to enable/disable cluster TLS                                                         | `false`                           |
+| `clusterTls.certificate`             | Cluster TLS certificate                                                                      | `nil`                             |
+| `clusterTls.key`                     | Cluster TLS key                                                                              | `nil`                             |
+| `clusterTls.ca`                      | Cluster TLS certificate authority                                                            | `nil`                             |
+| `clusterTls.clusterCA`               | Switch to enable/disable use of K8s cluster CA for cluster TLS                               | `false`                           |
+| `clusterTls.timeout`                 | Cluster TLS timeout                                                                          | `nil`                             |
 | `debug.enabled`                      | Switch to enable/disable debug on logging                                                    | `false`                           |
 | `debug.trace`                        | Switch to enable/disable trace debug level on logging                                        | `false`                           |
 | `debug.logtime`                      | Switch to enable/disable logtime on logging                                                  | `false`                           |

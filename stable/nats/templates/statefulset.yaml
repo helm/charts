@@ -113,6 +113,16 @@ spec:
           - name: config
             mountPath: /opt/bitnami/nats/gnatsd.conf
             subPath: gnatsd.conf
+          {{- if .Values.tls.enabled }}
+          - name: client-tls
+            mountPath: /opt/bitnami/nats/client-tls/
+            readOnly: true
+          {{- end }}
+          {{- if .Values.clusterTls.enabled }}
+          - name: cluster-tls
+            mountPath: /opt/bitnami/nats/cluster-tls/
+            readOnly: true
+          {{- end }}
         {{- if .Values.sidecars }}
 {{ toYaml .Values.sidecars | indent 6 }}
         {{- end }}
@@ -120,3 +130,13 @@ spec:
       - name: config
         configMap:
           name: {{ template "nats.fullname" . }}
+      {{- if .Values.tls.enabled }}
+      - name: client-tls
+        secret:
+          secretName: {{ template "nats.fullname" . }}-client-tls
+      {{- end }}
+      {{- if .Values.clusterTls.enabled }}
+      - name: cluster-tls
+        secret:
+          secretName: {{ template "nats.fullname" . }}-cluster-tls
+      {{- end }}
