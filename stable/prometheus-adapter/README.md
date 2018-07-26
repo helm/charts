@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install incubator/prometheus-adapter
+$ helm install stable/prometheus-adapter
 ```
 
 ## Introduction
@@ -13,6 +13,7 @@ $ helm install incubator/prometheus-adapter
 This charts install the [Prometheus Adapter](https://github.com/DirectXMan12/k8s-prometheus-adapter) on your kubernetes clutser using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
+
 Kubernetes 1.9+
 
 ## Installing the Chart
@@ -20,7 +21,7 @@ Kubernetes 1.9+
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/prometheus-adapter
+$ helm install --name my-release stable/prometheus-adapter
 ```
 
 This command deploys the prometheus operator with the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -32,6 +33,7 @@ To uninstall/delete the `my-release` deployment:
 ```console
 $ helm delete my-release
 ```
+
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 ## Configuration
@@ -64,11 +66,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```console
 $ helm install --name my-release \
   --set logLevel=1 \
- incubator/prometheus-adapter
+ stable/prometheus-adapter
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/prometheus-adapter
+$ helm install --name my-release -f values.yaml stable/prometheus-adapter
 ```
