@@ -86,6 +86,54 @@ Assuming you have an existing release of the prometheus chart, named `prometheus
 
    Old data will be available when you query the new prometheus instance.
 
+
+
+## Using sidecar for alerts and rules
+
+If the value `sidecar.rules.enable` and/or `sidecar.alerts.enable` is set. A sidecar container is deployed in prometheus-server pod. This container watches all cluster config maps and looks for configmaps
+with labels definied in `sidecar.rules.label` and `sidecar.alerts.label`.  If it finds a config map with mentioned label it will add the files defined in the configmaps to directories set in `sidecar.rules.directory`,
+`sidecar.alerts.directory` and reload prometheus config. <-#TODOOOOO:XXXX If the configmap gets updated or deleted the container will also update or remove the corresponding files from prometheus configuration.
+In order to be able to reload prometheus on configmap changes, you need to enable prometheus admin API endpoint with `server.enableAdminApi: true`. Please make sure that you set the same directories
+in prometheus configuration file.
+
+Simple example:
+
+In prometheus configmap add:
+
+  ```yaml
+  rule_files:
+    - /tmp/rules/*.yaml
+    - /tmp/alerts/*.yaml
+  ``` 
+
+In chart values:
+
+  ```yaml
+  sidecar:
+    rules:
+      enabled: true
+      label: prometheus_rules
+      directory: /tmp/rules
+    alerts:
+      enabled: true
+      label: prometheus_alerts
+      directory: /tmp/alerts
+  ```  
+
+Example configmap:
+
+  ```yaml
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: example-prometheus-rule
+    labels:
+       prometheus_rules: "1"
+  data:
+      my-app-rules.yaml: |-
+          # prometheus rule files here
+  ```  
+
 ## Configuration
 
 The following table lists the configurable parameters of the Prometheus chart and their default values.
@@ -243,7 +291,7 @@ Parameter | Description | Default
 `server.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class |  `unset`
 `server.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`
 `server.podAnnotations` | annotations to be added to Prometheus server pods | `{}`
-`server.deploymentAnnotations` | annotations to be added to Prometheus server deployment | `{}'
+`server.deploymentAnnotations` | annotations to be added to Prometheus server deployment | `{}`
 `server.replicaCount` | desired number of Prometheus server pods | `1`
 `server.resources` | Prometheus server resource requests and limits | `{}`
 `server.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for server containers | `{}`
@@ -271,6 +319,17 @@ Parameter | Description | Default
 `serverFiles.rules` | Prometheus server rules configuration | `{}`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
 `networkPolicy.enabled` | Enable NetworkPolicy | `false` |
+`sidecar.image.repository` | prometheus sidecar containers image | `kiwigrid/k8s-sidecar`
+`sidecar.image.tag` | prometheus sidecar containers image tag | `0.0.3`
+`sidecar.image.pullPolicy` | sidecar container image pull policy | `IfNotPresent`
+`sidecar.image.resources` | sidecar container resource requests and limits | `{}`
+`sidecar.rules.enabled` | Enable a sidecar container to check clusterwide for configmaps with prometheus rules | `false`
+`sidecar.rules.label` | Label which is required in rules configmap in order to get the rules added to config | `false`
+`sidecar.rules.directory` | directory in which the rules should be stored (should the same as in prometheus server config)| `false`
+`sidecar.alerts.enabled` | Enable a sidecar container to check clusterwide for configmaps with prometheus alerts | `false`
+`sidecar.alerts.label` | Label which is required in alerts configmap in order to get the rules added to config | `false`
+`sidecar.alerts.directory` | directory in which the alerts should be stored (should the same as in prometheus server config) | `false`
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

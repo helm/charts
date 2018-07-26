@@ -71,6 +71,36 @@ spec:
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+{{- if .Values.sidecar.rules.enabled }}
+        - name: {{ template "prometheus.name" . }}-sc-rules
+          image: "{{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}"
+          imagePullPolicy: "{{ .Values.sidecar.image.pullPolicy }}"
+          env:
+            - name: LABEL
+              value: "{{ .Values.sidecar.rules.label }}"
+            - name: FOLDER
+              value: "{{ .Values.sidecar.rules.directory }}"
+          resources:
+{{ toYaml .Values.sidecar.resources | indent 12 }}
+          volumeMounts:
+            - name: sc-rules-volume
+              mountPath: {{ .Values.sidecar.rules.directory | quote }}
+{{- end }}
+{{- if .Values.sidecar.alerts.enabled }}
+        - name: {{ template "prometheus.name" . }}-sc-alerts
+          image: "{{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}"
+          imagePullPolicy: "{{ .Values.sidecar.image.pullPolicy }}"
+          env:
+            - name: LABEL
+              value: "{{ .Values.sidecar.alerts.label }}"
+            - name: FOLDER
+              value: "{{ .Values.sidecar.alerts.directory }}"
+          resources:
+{{ toYaml .Values.sidecar.resources | indent 12 }}
+          volumeMounts:
+            - name: sc-alerts-volume
+              mountPath: {{ .Values.sidecar.alerts.directory | quote }}
+{{- end }}
 
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
@@ -110,6 +140,14 @@ spec:
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
           volumeMounts:
+          {{- if .Values.sidecar.rules.enabled }}
+            - name: sc-rules-volume
+              mountPath: {{ .Values.sidecar.rules.directory | quote }}
+          {{- end }} 
+          {{- if .Values.sidecar.alerts.enabled }}
+            - name: sc-alerts-volume
+              mountPath: {{ .Values.sidecar.alerts.directory | quote }}
+          {{- end }} 
             - name: config-volume
               mountPath: /etc/config
             - name: storage-volume
@@ -148,6 +186,14 @@ spec:
     {{- end }}
       terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
       volumes:
+      {{- if .Values.sidecar.rules.enabled }}
+        - name: sc-rules-volume
+          emptyDir: {}
+      {{- end }}
+      {{- if .Values.sidecar.alerts.enabled }}
+        - name: sc-alerts-volume
+          emptyDir: {}
+      {{- end }}
         - name: config-volume
           configMap:
             name: {{ if .Values.server.configMapOverrideName }}{{ .Release.Name }}-{{ .Values.server.configMapOverrideName }}{{- else }}{{ template "prometheus.server.fullname" . }}{{- end }}

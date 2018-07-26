@@ -121,7 +121,7 @@ alertmanager:
     ## If true, alertmanager will create/use a Persistent Volume Claim
     ## If false, use emptyDir
     ##
-    enabled: true
+    enabled: false
 
     ## alertmanager data Persistent Volume access modes
     ## Must match those of existing PV or dynamic provisioner
@@ -569,7 +569,7 @@ server:
     ## If true, Prometheus server will create/use a Persistent Volume Claim
     ## If false, use emptyDir
     ##
-    enabled: true
+    enabled: false
 
     ## Prometheus server data Persistent Volume access modes
     ## Must match those of existing PV or dynamic provisioner
@@ -755,7 +755,23 @@ pushgateway:
     servicePort: 9091
     type: ClusterIP
 
-## alertmanager ConfigMap entries
+sidecar:
+  image: 
+    repository: kiwigrid/k8s-sidecar
+    tag: 0.0.3
+    pullPolicy: IfNotPresent
+
+  resources: {}
+  rules:
+    enabled: true
+    label: prometheus_rules
+    directory: /tmp/rules
+  alerts:
+    enabled: true
+    label: prometheus_alerts
+    directory: /tmp/alerts
+
+### alertmanager ConfigMap entries
 ##
 alertmanagerFiles:
   alertmanager.yml:
@@ -784,6 +800,9 @@ serverFiles:
     rule_files:
       - /etc/config/rules
       - /etc/config/alerts
+      ###
+      - /tmp/rules/*.yaml
+      - /tmp/alerts/*.yaml
 
     scrape_configs:
       - job_name: prometheus
