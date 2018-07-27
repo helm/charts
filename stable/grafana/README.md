@@ -35,7 +35,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `replicas`                 | Number of nodes | `1` |
 | `deploymentStrategy`       | Deployment strategy | `RollingUpdate` |
 | `image.repository`         | Image repository | `grafana/grafana` |
-| `image.tag`                | Image tag. (`Must be >= 5.0.0`) Possible values listed [here](https://hub.docker.com/r/grafana/grafana/tags/).| `5.0.4`|
+| `image.tag`                | Image tag. (`Must be >= 5.0.0`) Possible values listed [here](https://hub.docker.com/r/grafana/grafana/tags/).| `5.2.2`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `service.type`             | Kubernetes service type | `ClusterIP` |
 | `service.port`             | Kubernetes port where service is exposed| `9000` |
