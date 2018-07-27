@@ -107,7 +107,14 @@ spec:
           httpGet:
             path: /_cluster/health?local=true
             port: 9200
-          initialDelaySeconds: 5
+          initialDelaySeconds: {{ .Values.master.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.master.readinessProbe.periodSeconds }}
+        livenessProbe:
+          httpGet:
+            path: /_cluster/health?local=true
+            port: 9200
+          initialDelaySeconds: {{ .Values.master.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.master.livenessProbe.periodSeconds }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         ports:

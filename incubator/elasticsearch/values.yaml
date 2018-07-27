@@ -47,6 +47,12 @@ client:
     enabled: false
     minAvailable: 1
     # maxUnavailable: 1
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  livenessProbe:
+    initialDelaySeconds: 90
+    periodSeconds: 10
 
 master:
   name: master
@@ -77,6 +83,12 @@ master:
     enabled: false
     minAvailable: 2  # Same as `cluster.env.MINIMUM_MASTER_NODES`
     # maxUnavailable: 1
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  livenessProbe:
+    initialDelaySeconds: 90
+    periodSeconds: 10
 
 data:
   name: data
@@ -108,3 +120,9 @@ data:
     enabled: false
     # minAvailable: 1
     maxUnavailable: 1
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  livenessProbe:
+    initialDelaySeconds: 90
+    periodSeconds: 10

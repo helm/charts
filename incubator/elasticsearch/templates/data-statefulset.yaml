@@ -112,7 +112,14 @@ spec:
           httpGet:
             path: /_cluster/health?local=true
             port: 9200
-          initialDelaySeconds: 5
+          initialDelaySeconds: {{ .Values.data.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.data.readinessProbe.periodSeconds }}
+        livenessProbe:
+          httpGet:
+            path: /_cluster/health?local=true
+            port: 9200
+          initialDelaySeconds: {{ .Values.data.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.data.livenessProbe.periodSeconds }}
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data

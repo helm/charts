@@ -95,12 +95,14 @@ spec:
           httpGet:
             path: /_cluster/health
             port: 9200
-          initialDelaySeconds: 5
+          initialDelaySeconds: {{ .Values.client.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.client.readinessProbe.periodSeconds }}
         livenessProbe:
           httpGet:
             path: /_cluster/health
             port: 9200
-          initialDelaySeconds: 90
+          initialDelaySeconds: {{ .Values.client.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.client.livenessProbe.periodSeconds }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         ports:
