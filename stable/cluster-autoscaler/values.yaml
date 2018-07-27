@@ -41,7 +41,7 @@ autoscalingNodeGroupname: []
   # - name: agentpool1
   #   maxSize: 10
   #   minSize: 1
-      
+
 ## nodes= min number of nodes:maximum number of nodes:agentpool name
 image:
   repository: k8s.gcr.io/cluster-autoscaler
@@ -132,7 +132,7 @@ spotinst:
 
 ## Configuration details only for azure
 ##
-azure: 
+azure:
   clientID:
   ClientSecret:
   ResourceGroup:
