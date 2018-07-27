@@ -22,14 +22,12 @@ spec:
     spec:
       containers:
         - name: {{ template "jaeger.fullname" . }}-hotrod
-          image: {{ .Values.hotrod.image.repository }}:{{ .Values.hotrod.image.tag }}
+          image: {{ .Values.hotrod.image.repository }}:{{ .Values.tag }}
           imagePullPolicy: {{ .Values.hotrod.image.pullPolicy }}
-          env:
-            - name: JAEGER_AGENT_HOST_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "jaeger.fullname" . }}
-                  key: hotrod.agent-host-port
+          command:
+            - "/go/bin/hotrod-linux"
+            - "all"
+            - "--jaeger-agent.host-port={{ template "jaeger.hotrod.tracing.host" . }}:{{ .Values.hotrod.tracing.port }}"
           ports:
             - containerPort: {{ .Values.hotrod.service.internalPort }}
           livenessProbe:

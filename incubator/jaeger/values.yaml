@@ -6,7 +6,7 @@ provisionDataStore:
   cassandra: true
   elasticsearch: false
 
-tag: 1.4.1
+tag: 1.6.0
 
 storage:
   # allowed values (cassandra, elasticsearch)
@@ -230,7 +230,6 @@ hotrod:
   replicaCount: 1
   image:
     repository: jaegertracing/example-hotrod
-    tag: latest
     pullPolicy: Always
   service:
     annotations: {}
