@@ -87,6 +87,7 @@ master:
     initialDelaySeconds: 5
     periodSeconds: 10
   livenessProbe:
+    enabled: true
     initialDelaySeconds: 90
     periodSeconds: 10
 
@@ -124,5 +125,6 @@ data:
     initialDelaySeconds: 5
     periodSeconds: 10
   livenessProbe:
+    enabled: true
     initialDelaySeconds: 90
     periodSeconds: 10

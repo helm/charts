@@ -114,12 +114,14 @@ spec:
             port: 9200
           initialDelaySeconds: {{ .Values.data.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.data.readinessProbe.periodSeconds }}
+{{- if .Values.data.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /_cluster/health?local=true
             port: 9200
           initialDelaySeconds: {{ .Values.data.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.data.livenessProbe.periodSeconds }}
+{{- end }}
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
