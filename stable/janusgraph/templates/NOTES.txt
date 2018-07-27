@@ -2,7 +2,7 @@ Connect to JanusGraph using gremlin-server with the following configuration:
 
   To connect to your JanusGraph deployment using gremlin.sh from within your Kubernetes cluster:
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "janusgraph.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  kubectl exec -it $POD_NAME -- /janusgraph-0.2.0-hadoop2/bin/gremlin.sh
+  kubectl exec -it $POD_NAME --namespace {{ .Release.Namespace }} -- /janusgraph-0.2.0-hadoop2/bin/gremlin.sh
 
 
 
