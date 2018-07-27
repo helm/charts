@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "storm.nimbus.fullname" . }}
+  labels:
+    chart: {{ template "storm.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  storm.yaml: |-
+    ########### These MUST be filled in for a storm configuration
+    storm.zookeeper.servers:
+        - {{ template "storm.zookeeper.fullname" . }}
+    nimbus.seeds:
+        - {{ template "storm.nimbus.fullname" . }}
+    storm.local.hostname: {{ template "storm.nimbus.fullname" . }}
+    storm.log4j2.conf.dir: "/log4j2"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "storm.supervisor.fullname" . }}
+  labels:
+    chart: {{ template "storm.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  storm.yaml: |-
+    ########### These MUST be filled in for a storm configuration
+    storm.zookeeper.servers:
+        - {{ template "storm.zookeeper.fullname" . }}
+    nimbus.seeds:
+        - {{ template "storm.nimbus.fullname" . }}
+    storm.local.hostname: {{ template "storm.supervisor.fullname" . }}
+    storm.log4j2.conf.dir: "/log4j2"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "storm.logging.name" . }}
+  labels:
+    chart: {{ template "storm.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  {{- $files := .Files }}
+  {{- range tuple "cluster.xml" "worker.xml" }}
+  {{ . }}: |-
+{{ $files.Get . | indent 4 }}
+  {{- end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "storm.ui.fullname" . }}
+  labels:
+    chart: {{ template "storm.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  storm.yaml: |-
+    ########### These MUST be filled in for a storm configuration
+    storm.zookeeper.servers:
+        - {{ template "storm.zookeeper.fullname" . }}
+    nimbus.seeds:
+        - {{ template "storm.nimbus.fullname" . }}
+    storm.local.hostname: {{ template "storm.ui.fullname" . }}
+    storm.log4j2.conf.dir: "/log4j2"
