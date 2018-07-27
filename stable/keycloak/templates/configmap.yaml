@@ -40,7 +40,7 @@ data:
 {{- end }}
 
 {{- if and $highAvailability (eq $.Values.keycloak.persistence.dbVendor "postgres") }}
-{{ .postgresql | indent 4 }}
+{{ .postgresqlDiscovery | indent 4 }}
 {{- end }}
 
 {{- with .custom }}

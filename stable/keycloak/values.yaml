@@ -129,19 +129,19 @@ keycloak:
       /subsystem=jgroups/stack=tcp:add()
       /subsystem=jgroups/stack=tcp/transport=TCP:add(socket-binding="jgroups-tcp")
       /subsystem=jgroups/stack=tcp/protocol=JDBC_PING:add()
-      /subsystem=jgroups/stack=tcp/protocol=JDBC_PING/property=datasource_jndi_name:add(value=java:jboss/datasources/KeycloakDS)
-      /subsystem=jgroups/stack=tcp/protocol=JDBC_PING/property=clear_table_on_view_change:add(value=true)
-      /subsystem=jgroups/stack=tcp/protocol=JDBC_PING/property=break_on_coord_rsp:add(value=true)
+      /subsystem=jgroups/stack=tcp/protocol=JDBC_PING:write-attribute(name="properties", value={ \
+          "datasource_jndi_name" => "java:jboss/datasources/KeycloakDS", \
+          "clear_table_on_view_change" => "true", \
+          "break_on_coord_rsp" => "true" \
+      })
 
       /subsystem=jgroups/stack=tcp/protocol=MERGE3:add()
-      /subsystem=jgroups/stack=tcp/protocol=FD_SOCK:add(socket-binding="jgroups-tcp-fd")
-      /subsystem=jgroups/stack=tcp/protocol=FD:add()
       /subsystem=jgroups/stack=tcp/protocol=VERIFY_SUSPECT:add()
       /subsystem=jgroups/stack=tcp/protocol=pbcast.NAKACK2:add()
       /subsystem=jgroups/stack=tcp/protocol=UNICAST3:add()
       /subsystem=jgroups/stack=tcp/protocol=pbcast.STABLE:add()
       /subsystem=jgroups/stack=tcp/protocol=pbcast.GMS:add()
-      /subsystem=jgroups/stack=tcp/protocol=pbcast.GMS/property=max_join_attempts:add(value=5)
+      /subsystem=jgroups/stack=tcp/protocol=pbcast.GMS:write-attribute(name="properties", value={"max_join_attempts" => 5})
       /subsystem=jgroups/stack=tcp/protocol=MFC:add()
       /subsystem=jgroups/stack=tcp/protocol=FRAG2:add()
 
@@ -151,10 +151,15 @@ keycloak:
       /interface=private:write-attribute(name=nic, value=eth0)
       /interface=private:undefine-attribute(name=inet-address)
 
-    postgresql: |
+    postgresqlDiscovery: |
       # Statements must be adapted for PostgreSQL. Additionally, we add a 'creation_timestamp' column.
-      /subsystem=jgroups/stack=tcp/protocol=JDBC_PING/property=initialize_sql:add(value="CREATE TABLE IF NOT EXISTS JGROUPSPING (own_addr varchar(200) NOT NULL, creation_timestamp timestamp NOT NULL, cluster_name varchar(200) NOT NULL, ping_data bytea, constraint PK_JGROUPSPING PRIMARY KEY (own_addr, cluster_name))")
-      /subsystem=jgroups/stack=tcp/protocol=JDBC_PING/property=insert_single_sql:add(value="INSERT INTO JGROUPSPING (own_addr, creation_timestamp, cluster_name, ping_data) values (?, NOW(), ?, ?)")
+      /subsystem=jgroups/stack=tcp/protocol=JDBC_PING:write-attribute(name="properties", value={ \
+          "datasource_jndi_name" => "java:jboss/datasources/KeycloakDS", \
+          "clear_table_on_view_change" => "true", \
+          "break_on_coord_rsp" => "true", \
+          "initialize_sql" => "CREATE TABLE IF NOT EXISTS JGROUPSPING (own_addr varchar(200) NOT NULL, creation_timestamp timestamp NOT NULL, cluster_name varchar(200) NOT NULL, ping_data bytea, constraint PK_JGROUPSPING PRIMARY KEY (own_addr, cluster_name))", \
+          "insert_single_sql" => "INSERT INTO JGROUPSPING (own_addr, creation_timestamp, cluster_name, ping_data) values (?, NOW(), ?, ?)" \
+      })
 
     # Custom CLI script
     custom: ""
