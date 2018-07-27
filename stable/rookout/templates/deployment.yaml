@@ -1,0 +1,41 @@
+{{- if .Values.rookout.token }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "rookout.fullname" . }}
+  labels:
+    app: {{ template "rookout.name" . }}
+    chart: {{ template "rookout.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: 
+      app: {{ template "rookout.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "rookout.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: ROOKOUT_TOKEN
+              value: {{ .Values.token }}
+            - name: ROOKOUT_LISTEN_ALL
+              value: {{ .Values.listenAll }}
+            - name: ROOKOUT_AGENT_TAGS
+              value: {{ .Values.tags }}  
+          ports:
+            - containerPort: 7486
+          livenessProbe:
+            tcpSocket:
+              port: 7486
+          initialDelaySeconds: 15
+          periodSeconds: 20
+{{- end -}}
