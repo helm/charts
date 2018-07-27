@@ -19,6 +19,10 @@ replicaCount: 1
 ## Configuration Options can be found here: https://docs.confluent.io/current/schema-registry/docs/config.html
 configurationOverrides:
   kafkastore.topic.replication.factor: 1
+  # If you are running the schema-registry-ui, you may run into CORS issues;
+  # uncomment the following two lines to fix. Source: https://github.com/Landoop/schema-registry-ui#prerequisites
+  # access.control.allow.methods: "GET,POST,PUT,OPTIONS"
+  # access.control.allow.origin: "*"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -86,21 +90,14 @@ sasl:
     #       name: "zookeeper-secret"
     #       key: "zokeeper-client-password"
 
-# Scheme-Registry Settings
-configurationOverrides:
-  # Needed to run with 1 Kafka Broker
-  offsets.topic.replication.factor: 1
-  # If you are running the schema-registry-ui, you may run into CORS issues;
-  # unset the following two lines to fix. 
-  # Source: https://github.com/Landoop/schema-registry-ui#prerequisites
-  # access.control.allow.methods: "GET,POST,PUT,OPTIONS"
-  # access.control.allow.origin: "*"
-
 ## Kafka Settings
 kafka:
   ## This is enabled only to allow installations of this chart without arguments
   enabled: true
   imageTag: 4.0.1
+  configurationOverrides:
+    # Needed to run with 1 Kafka Broker
+    offsets.topic.replication.factor: 1
   replicas: 1
 
   ## Install only a single Zookeeper pod in the StatefulSet
