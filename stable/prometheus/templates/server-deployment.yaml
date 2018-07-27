@@ -80,6 +80,10 @@ spec:
               value: "{{ .Values.sidecar.rules.label }}"
             - name: FOLDER
               value: "{{ .Values.sidecar.rules.directory }}"
+            - name: REQ_URL
+              value: "http://{{ template "prometheus.server.fullname" . }}/-/reload"
+            - name: REQ_METHOD
+              value: "POST"
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:
@@ -95,6 +99,10 @@ spec:
               value: "{{ .Values.sidecar.alerts.label }}"
             - name: FOLDER
               value: "{{ .Values.sidecar.alerts.directory }}"
+            - name: REQ_URL
+              value: "http://{{ template "prometheus.server.fullname" . }}/-/reload"
+            - name: REQ_METHOD
+              value: "POST"
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:

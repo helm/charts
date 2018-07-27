@@ -92,9 +92,8 @@ Assuming you have an existing release of the prometheus chart, named `prometheus
 
 If the value `sidecar.rules.enable` and/or `sidecar.alerts.enable` is set. A sidecar container is deployed in prometheus-server pod. This container watches all cluster config maps and looks for configmaps
 with labels definied in `sidecar.rules.label` and `sidecar.alerts.label`.  If it finds a config map with mentioned label it will add the files defined in the configmaps to directories set in `sidecar.rules.directory`,
-`sidecar.alerts.directory` and reload prometheus config. <-#TODOOOOO:XXXX If the configmap gets updated or deleted the container will also update or remove the corresponding files from prometheus configuration.
-In order to be able to reload prometheus on configmap changes, you need to enable prometheus admin API endpoint with `server.enableAdminApi: true`. Please make sure that you set the same directories
-in prometheus configuration file.
+`sidecar.alerts.directory` and reload prometheus config. If the configmap gets updated or deleted the container will also update or remove the corresponding files from prometheus configuration.
+Please make sure that you set the same directories in prometheus configuration file.
 
 Simple example:
 
