@@ -129,11 +129,13 @@ for peer in "${peers[@]}"; do
         log '✓ Replica reached SECONDARY state.'
 
         # create the metric user if it does not exist
-        if [[ "$METRICS" == "true" ]]; then
-          metric_user_count=$(mongo admin --host "$peer" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.system.users.find({user:'$metrics_user'}).count()" --quiet)
-          if [ "$metric_user_count" == "0" ]; then
-            log "Creating cluterMonitor user..."
-            mongo admin --host "$peer" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.auth('$admin_user', '$admin_password'); db.createUser({user: '$metrics_user', pwd: '$metrics_password', roles: [{role: 'clusterMonitor', db: 'admin'}, {role: 'read', db: 'local'}]})"
+        if [[ "$AUTH" == "true" ]]; then
+          if [[ "$METRICS" == "true" ]]; then
+            metric_user_count=$(mongo admin --host "$peer" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.system.users.find({user:'$metrics_user'}).count()" --quiet)
+            if [ "$metric_user_count" == "0" ]; then
+              log "Creating cluterMonitor user..."
+              mongo admin --host "$peer" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.auth('$admin_user', '$admin_password'); db.createUser({user: '$metrics_user', pwd: '$metrics_password', roles: [{role: 'clusterMonitor', db: 'admin'}, {role: 'read', db: 'local'}]})"
+            fi
           fi
         fi
 
