@@ -7,10 +7,9 @@ icon: https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Apache_Spark_log
 home: https://github.com/jiri-kremser/spark-operator
 sources:
   - https://github.com/jiri-kremser/spark-operator
-home: https://github.com/jiri-kremser/spark-operator
 maintainers:
   - name: Jiri-Kremser
     email: jkremser@redhat.com
-keywords: 
+keywords:
   - Apache Spark
   - Operator
