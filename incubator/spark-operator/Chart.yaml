@@ -1,0 +1,16 @@
+apiVersion: v1
+name: spark-operator
+description: ConfigMap-based approach for managing the Spark clusters in Kubernetes and OpenShift
+version: 0.0.1
+appVersion: 0.1.3
+icon: https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Apache_Spark_logo.svg/388px-Apache_Spark_logo.svg.png
+home: https://github.com/jiri-kremser/spark-operator
+sources:
+  - https://github.com/jiri-kremser/spark-operator
+home: https://github.com/jiri-kremser/spark-operator
+maintainers:
+  - name: Jiri-Kremser
+    email: jkremser@redhat.com
+keywords: 
+  - Apache Spark
+  - Operator

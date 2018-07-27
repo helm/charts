@@ -1,0 +1,2 @@
+image: jkremser/spark-operator:latest
+version: v0.1.4-v1alpha1
