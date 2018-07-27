@@ -247,6 +247,9 @@ web:
     ##
     type: ClusterIP
 
+    ## When using web.service.type: LoadBalancer, sets the user-specified load balancer IP
+    # loadBalancerIP: 172.217.1.174
+
     ## Annotations to be added to the web service.
     ##
     # annotations:

@@ -23,6 +23,9 @@ spec:
     - {{ . }}
     {{- end }}
   {{ end }}
+  {{ if and (eq "LoadBalancer" .Values.web.service.type) .Values.web.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.web.service.loadBalancerIP }}
+  {{ end }}
   ports:
     - name: atc
       port: {{ .Values.concourse.atcPort }}
