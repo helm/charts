@@ -154,3 +154,6 @@ ssl:
 ## Default: nil (mysql will use image's default timezone, normally UTC)
 ## Example: 'Australia/Sydney'
 # timezone:
+
+# To be added to the database server pod(s)
+podAnnotations: {}
