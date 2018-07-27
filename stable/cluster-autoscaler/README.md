@@ -73,6 +73,20 @@ Without autodiscovery, specify an array of elements each containing ASG name, mi
 $ helm install stable/cluster-autoscaler --name my-release --set "autoscalingGroups[0].name=your-asg-name,autoscalingGroups[0].maxSize=10,autoscalingGroups[0].minSize=1"
 ```
 
+#### Azure
+##### Required parameters
+- `azure.clientID=<your service principal client id>`
+- `azure.clientSecret=<your service principal client secret>`
+- `azure.ResourceGroup= <your kubernetes cluster resource group>`
+- `azure.SubscriptionID= <your azure subscription id>`
+- `azure.TenantID= <your azure subscription tenent id>`
+- `azure.VMType= <your cluster vm type vmss, standard or aks>`
+
+Specify an array of elements each containings cluster agent group name, min size, max size.
+
+```console
+$ helm install stable/cluster-autoscaler --name my-release --set "autoscalingNodeGroupname[0].name=your-asg-name,autoscalingNodeGroupname[0].maxSize=10,autoscalingNodeGroupname[0].minSize=1"
+```
 ## Uninstalling the Chart
 
 To uninstall `my-release`:
@@ -100,8 +114,11 @@ Parameter | Description | Default
 `autoscalingGroupsnamePrefix[].name` | GCE MIG name | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].maxSize` | maximum MIG size | None. Required for `cloudProvider=gce`
 `autoscalingGroupsnamePrefix[].minSize` | minimum MIG size |  None. Required for `cloudProvider=gce`
+`autoscalingNodeGroupname[].name` | Azure agent node name | None. Required for `cloudProvider=azure`
+`autoscalingNodeGroupname[].maxSize` | maximum node size | None. Required for `cloudProvider=azure`
+`autoscalingNodeGroupname[].minSize` | minimum node size |  None. Required for `cloudProvider=azure`
 `sslCertPath` | Path on the host where ssl ca cert exists | `/etc/ssl/certs/ca-certificates.crt`
-`cloudProvider` | `aws` or `spotinst` are currently supported for AWS. `gce` for GCE| `aws`
+`cloudProvider` | `aws` or `spotinst` are currently supported for AWS. `gce` for GCE. `azure` for Azure.| `aws`
 `image.repository` | Image | `k8s.gcr.io/cluster-autoscaler`
 `image.tag` | Image tag  | `v1.2.0`
 `image.pullPolicy` | Image pull policy  | `IfNotPresent`
