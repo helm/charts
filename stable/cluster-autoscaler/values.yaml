@@ -32,7 +32,7 @@ sslCertPath: /etc/ssl/certs/ca-certificates.crt
 # Configuration file for cloud provider
 cloudConfigPath: /etc/gce.conf
 
-#Required if cloudProvider=azure
+# Required if cloudProvider=azure
 autoscalingNodeGroupname: []
 # At least one agent group element required
   # - name: vmss1
@@ -130,7 +130,8 @@ spotinst:
     tag: 0.6.0
     pullPolicy: IfNotPresent
 
-# Configuration details only for azure  
+## Configuration details only for azure
+##
 azure: 
   clientID:
   ClientSecret:
