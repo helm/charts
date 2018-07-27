@@ -60,7 +60,7 @@ spec:
           {{- if eq .Values.cloudProvider "gce" }}
             - --cloud-config={{ .Values.cloudConfigPath }}
             {{- end }}
-          {{- if .Values.cloudProvider "azure" }}
+          {{- if eq .Values.cloudProvider "azure" }}
             {{- range .Values.autoscalingNodeGroupname }}
             - --nodes={{ .minSize }}:{{ .maxSize }}:{{ .name }}
             {{- end }}
