@@ -73,7 +73,6 @@ spec:
           volumeMounts:
           - name: config-storage
             mountPath: /opt/couchdb/etc/default.d
-            subMountPath: chart.ini
           - name: database-storage
             mountPath: /opt/couchdb/data
         - name: couchdb-statefulset-assembler

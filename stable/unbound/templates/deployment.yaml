@@ -32,12 +32,17 @@ spec:
       - name: "unbound"
         image: {{ .Values.unbound.image.repository }}:{{ .Values.unbound.image.tag }}
         imagePullPolicy: {{ .Values.unbound.image.pullPolicy | quote }}
+{{- with .Values.resources }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml . | indent 10 }}
+{{- end }}
         ports:
         - name: "dns-udp"
           containerPort: {{ .Values.unbound.serverPort }}
           protocol: "UDP"
+        - name: "dns-tcp"
+          containerPort: {{ .Values.unbound.serverPort }}
+          protocol: "TCP"
         volumeMounts:
         - name: "unbound-conf"
           mountPath: "/etc/unbound/"
@@ -49,7 +54,6 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 2
         readinessProbe:
-          exec:
           httpGet:
             path: "/healthz"
             port: 8080
@@ -68,16 +72,16 @@ spec:
       - name: "unbound-conf"
         configMap:
           name: {{ template "unbound.fullname" . }}
-    {{- with .Values.nodeSelector }}
+{{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
+{{- end }}
+{{- with .Values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+{{- end }}
+{{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
-    {{- end }}
+{{- end }}
 

@@ -1,0 +1,6 @@
+{{ if .Values.createNamespaceResource }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Release.Namespace | quote }}
+{{- end }}

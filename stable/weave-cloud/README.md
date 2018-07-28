@@ -2,7 +2,7 @@
 
 > ***NOTE: This chart is for Kubernetes version 1.6 and later.***
 
-Weave Cloud is a add-on to Kubernetes which provides Continuous Delivery, along with hosted Prometheus Monitoring and a visual dashboard for exploring & debugging microservices.
+Weave Cloud is an add-on to Kubernetes which provides Continuous Delivery, along with hosted Prometheus Monitoring and a visual dashboard for exploring & debugging microservices.
 
 This package contains the agents which connect your cluster to Weave Cloud.
 
@@ -49,7 +49,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Weave Cloud Agents chart and their default values.
+The following table lists the configurable parameters of the Weave Cloud Agents chart and their default values.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
