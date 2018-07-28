@@ -1,5 +1,4 @@
 FROM openjdk:8-alpine
-MAINTAINER Krishna Kalyan "krishnakalyan3@gmail.com"
 
 # Default Args
 ARG APACHE_MIRROR_SERVER=http://www-us.apache.org
