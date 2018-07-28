@@ -168,21 +168,10 @@ More info: https://www.elastic.co/guide/en/elasticsearch/reference/5.5/modules-n
 
 ### GCE + Kubernetes 1.5
 
-Create StorageClass for SSD-PD
 
-```
-$ kubectl create -f - <<EOF
-kind: StorageClass
-apiVersion: extensions/v1beta1
-metadata:
-  name: ssd
-provisioner: kubernetes.io/gce-pd
-parameters:
-  type: pd-ssd
-EOF
-```
-Create cluster with Storage class `ssd` on Kubernetes 1.5+
+Create cluster with Storage class `fast` on Kubernetes 1.5+
 
+add a new storageclass gce-pd with type ssd, name it "fast" and reference it in data nodes, mind that master nodes will use the standard storageclass
 ```
-$ helm install incubator/elasticsearch --name my-release --set data.storageClass=ssd,data.storage=100Gi
+$ helm install --name my-release --set cluster.storageClass.enabled=true,cluster.storageClass.name=fast,cluster.storageClass.type=gce-pd-ssd,data.persistence.size=130Gi,data.persistence.storageClass=fast incubator/elasticsearch
 ```

@@ -148,11 +148,11 @@ spec:
       accessModes:
         - {{ .Values.master.persistence.accessMode | quote }}
     {{- if .Values.master.persistence.storageClass }}
-    {{- if (eq "-" .Values.master.persistence.storageClass) }}
+      {{- if (eq "-" .Values.master.persistence.storageClass) }}
       storageClassName: ""
-    {{- else }}
-      storageClassName: "{{ .Values.master.persistence.storageClass }}"
-    {{- end }}
+      {{- else }}
+      storageClassName: {{ .Values.master.persistence.storageClass }}
+      {{- end }}
     {{- end }}
       resources:
         requests:
