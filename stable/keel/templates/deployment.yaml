@@ -17,6 +17,8 @@ spec:
         app: {{ template "keel.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: keel
+      serviceAccount: keel
       containers:
         - name: keel
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -59,6 +61,9 @@ spec:
             - name: SLACK_APPROVALS_CHANNEL
               value: "{{ .Values.slack.approvalsChannel }}"
 {{- end }}
+          {{- if .Values.extraEnvs }}
+{{ toYaml .Values.extraEnvs | indent 12 }}
+          {{- end }}
           ports:
             - containerPort: 9300
           livenessProbe:

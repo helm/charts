@@ -7,6 +7,15 @@ image:
   tag: 0.9.5
   pullPolicy: IfNotPresent
 
+## Additional environment variables to set
+extraEnvs: []
+# extraEnvs:
+#   - name: FOO
+#     valueFrom:
+#       secretKeyRef:
+#         key: FOO
+#         name: secret-resource
+
 # Polling is enabled by default,
 # you can disable it setting value below to false
 polling:
