@@ -2,11 +2,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "home-assistant.configurator.fullname" . }}
+  name: {{ template "home-assistant.fullname" . }}-configurator
   labels:
     app: {{ template "home-assistant.name" . }}
     chart: {{ template "home-assistant.chart" . }}
-    component: "{{ .Release.Name }}-{{ .Values.configurator.name }}"
+    component: configurator
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.configurator.service.labels }}
@@ -47,5 +47,7 @@ spec:
       nodePort: {{.Values.configurator.service.nodePort}}
 {{ end }}
   selector:
-    component: "{{ .Release.Name }}-{{ .Values.configurator.name }}"
+    app: {{ template "home-assistant.name" . }}
+    release: {{ .Release.Name }}
+    component: configurator
 {{- end }}

@@ -5,7 +5,7 @@ metadata:
   labels:
     app: {{ template "home-assistant.name" . }}
     chart: {{ template "home-assistant.chart" . }}
-    component: "{{ .Release.Name }}-{{ .Values.name }}"
+    component: server
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -14,12 +14,13 @@ spec:
     matchLabels:
       app: {{ template "home-assistant.name" . }}
       release: {{ .Release.Name }}
+      component: server
   template:
     metadata:
       labels:
         app: {{ template "home-assistant.name" . }}
         release: {{ .Release.Name }}
-        component: "{{ .Release.Name }}-{{ .Values.name }}"
+        component: server
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -29,11 +30,6 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-            {{- if .Values.mqttService.enabled }}
-            - name: mqtt
-              containerPort: {{ .Values.mqttService.port }}
-              protocol: TCP
-            {{- end }}
           livenessProbe:
             httpGet:
               path: /

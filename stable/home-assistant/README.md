@@ -38,7 +38,6 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `image.repository`         | Image repository | `homeassistant/home-assistant` |
 | `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/jacobalberty/home-assistant/tags/).| `0.72.1`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
-| `name`                     | Default name | `home-assistant` |
 | `service.type`             | Kubernetes service type for the home-assistant GUI | `ClusterIP` |
 | `service.port`             | Kubernetes port where the home-assistant GUI is exposed| `8123` |
 | `service.annotations`      | Service annotations for the home-assistant GUI | `{}` |
@@ -58,17 +57,7 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `persistence.storageClass` | Type of persistent volume claim | `-` |
 | `persistence.accessMode`  | Persistence access modes | `ReadWriteMany` |
 | `extraEnv`          | Extra ENV vars to pass to the home-assistant container | `{}` |
-| `mqttService.enabled`             | Enable the mqtt service port for home-assistant | `false` |
-| `mqttService.type`             | Kubernetes service type for the mqtt service | `NodePort` |
-| `mqttService.port`             | Kubernetes port where the mqtt service is exposed| `1883` |
-| `mqttService.annotations`      | Service annotations for the mqtt service | `{}` |
-| `mqttService.clusterIP`   | Cluster IP for the mqtt service | `` |
-| `mqttService.externalIPs`   | External IPs for the mqtt service | `[]` |
-| `mqttService.loadBalancerIP`   | Loadbalance IP for the mqtt service | `` |
-| `mqttService.loadBalancerSourceRanges`   | Loadbalance client IP restriction range for the mqtt service | `[]` |
-| `mqttService.nodePort`   | nodePort to listen on for the mqtt service | `` |
 | `configurator.enabled`     | Enable the optional [configuration UI](https://github.com/danielperna84/hass-configurator) | `false` |
-| `configurator.name`        | Default name for the configurator UI | `configurator` |
 | `configurator.image.repository`         | Image repository | `billimek/hass-configurator-docker` |
 | `configurator.image.tag`                | Image tag | `x86_64-0.3.0`|
 | `configurator.image.pullPolicy`         | Image pull policy | `IfNotPresent` |

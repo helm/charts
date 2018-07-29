@@ -6,7 +6,7 @@ metadata:
   labels:
     app: {{ template "home-assistant.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.name }}"
+    component: server
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:

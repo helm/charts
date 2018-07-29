@@ -3,11 +3,11 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "home-assistant.configurator.fullname" . }}
+  name: {{ template "home-assistant.fullname" . }}-configurator
   labels:
     app: {{ template "home-assistant.name" . }}
     chart: {{ template "home-assistant.chart" . }}
-    component: "{{ .Release.Name }}-{{ .Values.configurator.name }}"
+    component: configurator
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -16,16 +16,16 @@ spec:
     matchLabels:
       app: {{ template "home-assistant.name" . }}
       release: {{ .Release.Name }}
+      component: configurator
   template:
     metadata:
       labels:
         app: {{ template "home-assistant.name" . }}
-        component: "{{ .Values.configurator.name }}"
+        component: configurator
         release: {{ .Release.Name }}
-        component: "{{ .Release.Name }}-{{ .Values.configurator.name }}"
     spec:
       containers:
-        - name: {{ template "home-assistant.name" . }}-{{ .Values.configurator.name }}
+        - name: {{ template "home-assistant.name" . }}-configurator
           image: "{{ .Values.configurator.image.repository }}:{{ .Values.configurator.image.tag }}"
           imagePullPolicy: {{ .Values.configurator.image.pullPolicy }}
           ports:
@@ -45,14 +45,14 @@ spec:
             - name: HC_HASS_API_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "home-assistant.configurator.fullname" . }}
+                  name: {{ template "home-assistant.fullname" . }}-configurator
                   key: hass-api-password
             {{- end }}
             {{- if .Values.configurator.credentials }}
             - name: HC_CREDENTIALS
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "home-assistant.configurator.fullname" . }}
+                  name: {{ template "home-assistant.fullname" . }}-configurator
                   key: credentials
             {{- end }}
             {{- if .Values.configurator.hassApiUrl }}

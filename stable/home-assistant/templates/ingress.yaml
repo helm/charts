@@ -9,7 +9,7 @@ metadata:
   labels:
     app: {{ template "home-assistant.name" . }}
     chart: {{ template "home-assistant.chart" . }}
-    component: "{{ .Release.Name }}-{{ .Values.name }}"
+    component: server
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- with .Values.ingress.annotations }}

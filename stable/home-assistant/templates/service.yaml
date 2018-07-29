@@ -5,7 +5,7 @@ metadata:
   labels:
     app: {{ template "home-assistant.name" . }}
     chart: {{ template "home-assistant.chart" . }}
-    component: "{{ .Values.name }}"
+    component: server
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.service.labels }}
@@ -46,4 +46,6 @@ spec:
       nodePort: {{.Values.service.nodePort}}
 {{ end }}
   selector:
-    component: "{{ .Release.Name }}-{{ .Values.name }}"
+    app: {{ template "home-assistant.name" . }}
+    release: {{ .Release.Name }}
+    component: server
