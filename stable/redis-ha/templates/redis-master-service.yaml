@@ -5,7 +5,7 @@ metadata:
   labels:
 {{ include "labels.standard" . | indent 4 }}
   annotations:
-{{ toYaml .Values.servers.annotations | indent 4 }}
+{{ toYaml .Values.servers.master.annotations | indent 4 }}
 spec:
   ports:
   - port: 6379
