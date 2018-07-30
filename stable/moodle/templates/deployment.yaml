@@ -12,6 +12,8 @@ spec:
     metadata:
       labels:
         app: {{ template "moodle.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.affinity }}
       affinity:
