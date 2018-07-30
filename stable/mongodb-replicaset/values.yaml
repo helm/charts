@@ -30,6 +30,20 @@ image:
   tag: 3.6
   pullPolicy: IfNotPresent
 
+# Specs for busybox image
+
+copyConfigImage:
+  repository: busybox
+  tag: 1.28.4
+  pullPolicy: IfNotPresent
+
+# Specs for test image
+testImage:
+  repository: dduportal/bats
+  tag: 0.4.0
+  pullPolicy: IfNotPresent
+
+#      image:
 # Additional environment variables to be set in the container
 extraVars: {}
 # - name: TCMALLOC_AGGRESSIVE_DECOMMIT

@@ -12,7 +12,7 @@ metadata:
 spec:
   initContainers:
     - name: test-framework
-      image: dduportal/bats:0.4.0
+      image: "{{ .Values.testImage.repository }}:{{ .Values.testImage.tag }}"
       command:
         - bash
         - -c
