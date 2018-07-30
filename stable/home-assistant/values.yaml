@@ -71,13 +71,13 @@ configurator:
   ## URL for the home assistant API endpoint
   # hassApiUrl: http://home-assistant:8123/api/
   ## home assistant API password
-  # hassApiPassword: 
+  # hassApiPassword:
   ## path where the home assistant configuration is stored
   basepath: /config
   ## don't allow switching out of the base path
   enforceBasepath: true
   ## enforce <username:password> basic auth for accessing the configurator
-  # credentials: 
+  # credentials:
 
   ## Additional hass-configurator container environment variable
   ## For instance to add a http_proxy
@@ -177,8 +177,6 @@ configurator:
     ##
     loadBalancerIP:
     loadBalancerSourceRanges: []
-
-
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
