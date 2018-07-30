@@ -14,6 +14,8 @@ spec:
     metadata:
       labels:
         app: {{ template "mediawiki.name" . }}
+        chart: {{ template "mediawiki.chart" . }}
+        release: {{ .Release.Name | quote }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
