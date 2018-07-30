@@ -1,0 +1,67 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "bitcoincashd.fullname" . }}
+  labels:
+    app: {{ template "bitcoincashd.name" . }}
+    chart: {{ template "bitcoincashd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "bitcoincashd.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "bitcoincashd.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.configurationFile }}
+      initContainers:
+        - name: copy-bitcoincashd-config
+          image: busybox
+          command: ['sh', '-c', 'cp /configmap/bitcoincash.conf /root/.bitcoin/bitcoincash.conf']
+          volumeMounts:
+            - name: configmap
+              mountPath: /configmap
+            - name: config
+              mountPath: /root/.bitcoin/
+      {{- end }}
+      containers:
+        - name: {{ template "bitcoincashd.fullname" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          resources:
+  {{ toYaml .Values.resources | indent 10 }}
+          ports:
+            - name: rpc
+              containerPort: {{ .Values.service.rpcPort }}
+            - name: p2p
+              containerPort: {{ .Values.service.p2pPort }}
+            - name: testnet
+              containerPort: {{ .Values.service.testnetPort }}
+          volumeMounts:
+            - name: data
+              mountPath: /root
+            {{- if .Values.configurationFile }}
+            - name: config
+              mountPath: /root/.bitcoin/bitcoincash.conf
+              subPath: bitcoincash.conf
+            {{- end }}
+      volumes:
+        {{- if .Values.configurationFile }}
+        - name: config
+          emptyDir: {}
+        - name: configmap
+          configMap:
+            name: {{ template "bitcoincashd.fullname" . }}
+        {{- end }}
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "bitcoincashd.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}
