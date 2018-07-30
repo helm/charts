@@ -20,6 +20,7 @@ spec:
         app: "{{ template "mariadb.name" . }}"
         component: "slave"
         release: "{{ .Release.Name }}"
+        chart: {{ template "mariadb.chart" . }}
     spec:
       securityContext:
         runAsUser: 1001
