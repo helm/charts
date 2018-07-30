@@ -6,7 +6,7 @@ metadata:
     role: service
 {{ include "labels.standard" . | indent 4 }}
   annotations:
-{{ toYaml .Values.servers.annotations | indent 4 }}
+{{ toYaml .Values.servers.slave.annotations | indent 4 }}
 spec:
   ports:
   - port: 6379
