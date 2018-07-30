@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         release: "{{ .Release.Name }}"
+        chart: {{ template "redis.chart" . }}
         role: metrics
         app: {{ template "redis.name" . }}
       {{- if .Values.metrics.podLabels }}
