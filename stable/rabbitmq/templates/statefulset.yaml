@@ -14,11 +14,13 @@ spec:
     matchLabels:
       app: {{ template "rabbitmq.name" . }}
       release: "{{ .Release.Name }}"
+      chart: {{ template "rabbitmq.chart" .  }}
   template:
     metadata:
       labels:
         app: {{ template "rabbitmq.name" . }}
         release: "{{ .Release.Name }}"
+        chart: {{ template "rabbitmq.chart" .  }}
       {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
