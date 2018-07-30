@@ -51,7 +51,7 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 | `image.pullSecrets`                  | Specify image pull secrets               | `nil`                                                   |
 | `service.type`            | type of service for phpMyAdmin frontend             | `ClusterIP`                                                  |
 | `service.port`        | port to expose service                   | `80`                                                   |
-| `db.port`            | database port to use to connect                  | `3360`                                     |
+| `db.port`            | database port to use to connect                  | `3306`                                     |
 | `db.chartName`                | Database suffix if included in the same release                  | `nil`                                          |
 | `db.host`            | database host to connect to               | `nil`          |
 | `ingress.enabled`            | ingress resource to be added              | `false`          |
@@ -70,7 +70,7 @@ $ helm install --name my-release \
   --set db.host=mymariadb,db.port=3306 stable/phpmyadmin
 ```
 
-The above command sets the phpMyAdmin to connect to a database in `mymariadb` host and `3306` port respectively. 
+The above command sets the phpMyAdmin to connect to a database in `mymariadb` host and `3306` port respectively.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
