@@ -759,8 +759,7 @@ sidecar:
   image: 
     repository: b13n1u/k8s-sidecar
     tag: 0.0.4
-    pullPolicy: Always
-
+    pullPolicy: IfNotPresent
   resources: {}
   rules:
     enabled: false
