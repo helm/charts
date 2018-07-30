@@ -47,8 +47,12 @@ replicas:
   servers: 3
   sentinels: 3
 servers:
-  serviceType: ClusterIP  # [ClusterIP|LoadBalancer]
-  annotations: {}
+  master:
+    serviceType: ClusterIP  # [ClusterIP|LoadBalancer]
+    annotations: {}
+  slave:
+    serviceType: ClusterIP  # [ClusterIP|LoadBalancer]
+    annotations: {}
 
 rbac:
   # Specifies whether RBAC resources should be created
