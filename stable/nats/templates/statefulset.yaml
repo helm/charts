@@ -18,11 +18,13 @@ spec:
   selector:
     matchLabels:
       app: "{{ template "nats.name" . }}"
+      chart: "{{ template "nats.chart" . }}"
       release: {{ .Release.Name | quote }}
   template:
     metadata:
       labels:
         app: "{{ template "nats.name" . }}"
+        chart: "{{ template "nats.chart" . }}"
         release: {{ .Release.Name | quote }}
         {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
