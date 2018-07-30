@@ -14,12 +14,14 @@ spec:
   selector:
     matchLabels:
       app: {{ template "mongodb.name" . }}
+      chart: {{ template "mongodb.chart" . }}
       release: {{ .Release.Name }}
       component: primary
   template:
     metadata:
       labels:
         app: {{ template "mongodb.name" . }}
+        chart: {{ template "mongodb.chart" . }}
         release: {{ .Release.Name }}
         component: primary
     spec:
