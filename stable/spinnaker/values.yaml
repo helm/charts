@@ -10,7 +10,6 @@ halyard:
     configMapName: my-halyard-config
     configMapKey: config.sh
 
-
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
 # For more info visit:
@@ -38,7 +37,6 @@ dockerRegistries:
 # <name>: <password>
 
 # dockerRegistryAccountSecret: myregistry-secrets
-
 
 kubeConfig:
   # Use this when you want to register arbitrary clusters with Spinnaker
@@ -73,6 +71,7 @@ deck:
 #   - artifacts
 #   - pipeline-templates
 spinnakerFeatureFlags:
+  - artifacts
   - jobs
 
 # Node labels for pod assignment
