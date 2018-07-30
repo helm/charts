@@ -14,6 +14,8 @@ spec:
     metadata:
       labels:
         app: {{ template "joomla.fullname" . }}
+        chart: {{ template "joomla.chart" . }}
+        release: {{ .Release.Name | quote }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
