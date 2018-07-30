@@ -2,6 +2,11 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+## If true, create a serviceMonitor for prometheus-operator
+##
+serviceMonitor:
+  selfMonitor: true
+
 ## Prometheus-config-reloader image to use for config and rule reloading
 ##
 prometheusConfigReloader:
@@ -14,6 +19,8 @@ configmapReload:
   repository: quay.io/coreos/configmap-reload
   tag: v0.0.1
 
+## If true, create & use RBAC resources resp. Pod Security Policies
+##
 global:
   rbac:
     create: true
@@ -23,10 +30,8 @@ global:
   imagePullSecrets: []
   #  - name: "image-pull-secret"
 
-
 kubeletService:
   enable: true
-
 
 
 ####################
@@ -169,6 +174,16 @@ coreDns:
 grafana:
   # Using default values from https://github.com/helm/charts/blob/master/stable/grafana/values.yaml
   deploy: true
+
+  datasources: 
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus:9090
+        access: proxy
+        isDefault: true
 
 kubeApiServer:
 
@@ -460,16 +475,6 @@ tolerations: {}
 ## If true, the Operator won't process any Prometheus configuration changes
 ##
 paused: false
-
-## If true, create & use RBAC resources resp. Pod Security Policies
-##
-global:
-  rbacEnable: true
-  pspEnable: true
-  
-  # Reference to one or more secrets to be used when pulling images
-  imagePullSecrets: []
-  #  - name: "image-pull-secret"
 
 ## serviceAccount to use by Prometheus
 ##

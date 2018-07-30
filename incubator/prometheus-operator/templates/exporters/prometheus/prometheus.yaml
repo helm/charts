@@ -1,3 +1,4 @@
+{{/*
 apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
@@ -132,3 +133,4 @@ spec:
   containers:
 {{ toYaml .Values.sidecarsSpec | indent 4 }}
 {{- end }}
+*/}}
