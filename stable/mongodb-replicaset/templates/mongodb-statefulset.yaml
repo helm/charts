@@ -38,6 +38,7 @@ spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
+        {{- if or .Values.configmap .Values.tls.enabled .Values.auth.enabled }}
         - name: copy-config
           image: busybox
           command:
@@ -48,7 +49,9 @@ spec:
               set -e
               set -x
 
+            {{- if .Values.configmap }}
               cp /configdb-readonly/mongod.conf /data/configdb/mongod.conf
+            {{- end }}
 
             {{- if .Values.tls.enabled }}
               cp /ca-readonly/tls.key /data/configdb/tls.key
@@ -62,8 +65,10 @@ spec:
           volumeMounts:
             - name: workdir
               mountPath: /work-dir
+          {{- if .Values.configmap }}
             - name: config
               mountPath: /configdb-readonly
+          {{- end }}
             - name: configdir
               mountPath: /data/configdb
           {{- if .Values.tls.enabled }}
@@ -74,6 +79,7 @@ spec:
             - name: keydir
               mountPath: /keydir-readonly
           {{- end }}
+        {{- end }}
         - name: install
           image: "{{ .Values.installImage.repository }}:{{ .Values.installImage.tag }}"
           args:
@@ -151,7 +157,9 @@ spec:
           command:
             - mongod
           args:
+          {{- if .Values.configmap }}
             - --config=/data/configdb/mongod.conf
+          {{- end }}
             - --dbpath=/data/db
             - --replSet={{ .Values.replicaSetName }}
             - --port=27017
@@ -287,9 +295,11 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
       volumes:
+        {{- if .Values.configmap }}
         - name: config
           configMap:
             name: {{ template "mongodb-replicaset.fullname" . }}-mongodb
+        {{- end }}
         - name: init
           configMap:
             defaultMode: 0755
