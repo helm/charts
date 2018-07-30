@@ -47,6 +47,9 @@ data:
       {{- if .Values.s3.accessKey }}
       --access-key-id "$(cat /opt/s3/accessKey)" \
       {{- end }}
+      {{- if .Values.s3.secretKey }}
+      --secret-access-key \
+      {{- end }}
 
     $HAL_COMMAND config storage edit --type s3
     {{ end }}
