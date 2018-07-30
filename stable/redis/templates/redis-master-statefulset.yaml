@@ -11,6 +11,7 @@ spec:
   selector:
     matchLabels:
       release: "{{ .Release.Name }}"
+      chart: {{ template "redis.chart" . }}
       role: master
       app: {{ template "redis.name" . }}
   serviceName: "redis-master"
@@ -18,6 +19,7 @@ spec:
     metadata:
       labels:
         release: "{{ .Release.Name }}"
+        chart: {{ template "redis.chart" . }}
         role: master
         app: {{ template "redis.name" . }}
 {{- if .Values.master.podLabels }}
