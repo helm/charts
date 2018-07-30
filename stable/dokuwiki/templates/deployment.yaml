@@ -12,6 +12,8 @@ spec:
     metadata:
       labels:
         app: {{ template "dokuwiki.name" . }}
+        chart: {{ template "dokuwiki.chart" . }}
+        release: {{ .Release.Name | quote }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
