@@ -756,7 +756,7 @@ pushgateway:
     type: ClusterIP
 
 sidecar:
-  image: 
+  image:
     repository: b13n1u/k8s-sidecar
     tag: 0.0.4
     pullPolicy: IfNotPresent
