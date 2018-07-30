@@ -12,6 +12,8 @@ spec:
     metadata:
       labels:
         app: {{ template "odoo.name" . }}
+        chart: {{ template "odoo.chart" . }}
+        release: {{ .Release.Name | quote }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
