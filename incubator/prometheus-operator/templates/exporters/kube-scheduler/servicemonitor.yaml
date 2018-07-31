@@ -2,14 +2,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
+  name: {{ template "kube-scheduler.fullname" . }}
   labels:    
-{{ toYaml .Values.kubeScheduler.serviceMonitor.labels | indent 4}}
-{{ include "prometheus-operator.labels.global" . | indent 4 }}      
-  name: kube-scheduler
+{{ toYaml .Values.kubeScheduler.labels | indent 4}}
 spec:
   jobLabel: {{ .Values.kubeScheduler.serviceMonitor.jobLabel }}
   selector:
-{{ toYaml .Values.kubeScheduler.service.selector | indent 4 }}
+{{ toYaml .Values.kubeScheduler.serviceMonitor.selector | indent 4 }}
   namespaceSelector:
     matchNames:
       - "kube-system"

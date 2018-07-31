@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: {{ template "kube-controller-manager.fullname" . }}
   labels:
 {{ toYaml .Values.kubeControllerManager.labels | indent 4 }}
   namespace: kube-system

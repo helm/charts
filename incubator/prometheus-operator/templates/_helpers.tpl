@@ -57,6 +57,15 @@ release: {{ .Release.Name | quote }}
 {{- end }}
 {{- end }}
 
+{{- define "alertmanager.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default "alertmanager" .Values.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end }}
+{{- end }}
+
 {{- define "prometheus-operator.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
     {{ default (include "prometheus-operator.fullname" .) .Values.serviceAccount.name }}
@@ -73,3 +82,30 @@ release: {{ .Release.Name | quote }}
 {{- end }}
 {{- end }}
 
+{{- define "kube-controller-manager.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default "kube-controller-manager" .Values.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end }}
+{{- end }}
+
+
+{{- define "kube-scheduler.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default "kube-scheduler" .Values.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end }}
+{{- end }}
+
+{{- define "node-exporter.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default "node-exporter" .Values.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end }}
+{{- end }}

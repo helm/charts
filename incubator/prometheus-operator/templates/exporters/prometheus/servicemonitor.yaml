@@ -3,12 +3,11 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:    
-{{ toYaml .Values.prometheus.serviceMonitor.labels | indent 4 }}
-{{ include "prometheus-operator.labels.standard" . | indent 4 }}
+{{ toYaml .Values.prometheus.labels | indent 4 }}
   name: prometheus
 spec:
   selector:
-{{ toYaml .Values.prometheus.service.selector | indent 4 }}
+{{ toYaml .Values.prometheus.serviceMonitor.selector | indent 4 }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace | quote }}

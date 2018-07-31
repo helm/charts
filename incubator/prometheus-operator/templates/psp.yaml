@@ -1,5 +1,4 @@
-{{- if .Values.global.rbac.create }}
-{{- if .Values.global.rbac.pspEnable }}
+{{- if and .Values.global.rbac.create .Values.global.rbac.pspEnable }}
 apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
 metadata:
@@ -44,5 +43,4 @@ spec:
       - min: 0
         max: 65535
   readOnlyRootFilesystem: false
-{{- end }}
 {{- end }}

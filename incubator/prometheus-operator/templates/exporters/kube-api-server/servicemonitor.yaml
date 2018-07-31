@@ -19,5 +19,5 @@ spec:
     matchNames:
     - default
   selector:
-{{ toYaml .Values.kubeApiServer.service.selector | indent 4 }}
+{{ toYaml .Values.kubeApiServer.serviceMonitor.selector | indent 4 }}
 {{- end}}

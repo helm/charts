@@ -2,14 +2,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
+  name: kube-dns
   labels:    
 {{ toYaml .Values.kubeDns.labels | indent 4}}
-{{ include "prometheus-operator.labels.global" . | indent 4 }} 
-  name: kube-dns
 spec:
   jobLabel: {{ .Values.kubeDns.serviceMonitor.jobLabel }}
   selector:
-{{ toYaml .Values.kubeDns.service.selector | indent 4 }}
+{{ toYaml .Values.kubeDns.serviceMonitor.selector | indent 4 }}
   namespaceSelector:
     matchNames:
       - "kube-system"

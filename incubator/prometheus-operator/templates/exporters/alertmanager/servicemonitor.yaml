@@ -6,7 +6,6 @@ metadata:
 {{ toYaml .Values.alertmanager.labels | indent 4 }}
   name: alertmanager
 spec:
-  jobLabel: {{ .Values.alertmanager.serviceMonitor.jobLabel }}
   selector:
 {{ toYaml .Values.alertmanager.service.selector | indent 4 }}
     matchNames:

@@ -5,7 +5,6 @@ metadata:
   labels:
     k8s-app: kubelet
   name: kubelet
-  namespace: monitoring
 spec:
   endpoints:
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
@@ -28,5 +27,5 @@ spec:
     matchNames:
     - kube-system
   selector:
-{{ toYaml .Values.kubelet.service.selector | indent 4 }}
+{{ toYaml .Values.kubelet.serviceMonitor.selector | indent 4 }}
 {{- end}}

@@ -5,7 +5,7 @@ metadata:
 {{ toYaml .Values.alertmanager.labels | indent 4 }}
   name: main
 spec:
-  baseImage: {{ .Values.alertmanager.image.repository }}/{{ .Values.alertmanager.image.tag}}
+  baseImage: {{ .Values.alertmanager.image.repository }}
   replicas: 1
   serviceAccountName: {{ template "alertmanager.serviceAccountName" . }} 
   version: {{ .Values.alertmanager.image.tag}}

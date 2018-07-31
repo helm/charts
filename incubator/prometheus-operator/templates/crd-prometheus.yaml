@@ -5,6 +5,8 @@ kind: CustomResourceDefinition
 metadata:
   creationTimestamp: null
   name: prometheuses.monitoring.coreos.com
+  annotations:
+    "helm.sh/hook": crd-install
 spec:
   group: monitoring.coreos.com
   names:

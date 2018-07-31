@@ -8,7 +8,7 @@ metadata:
 spec:
   jobLabel: {{ .Values.coreDns.serviceMonitor.jobLabel }}
   selector:
-{{ toYaml .Values.coreDns.service.selector | indent 6 }}
+{{ toYaml .Values.coreDns.serviceMonitor.selector | indent 6 }}
   namespaceSelector:
     matchNames:
       - "kube-system"

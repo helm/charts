@@ -12,9 +12,9 @@ dependencies:
     condition: kubeStateMetrics.deploy
 
   - name: prometheus-node-exporter
-    alias: nodeExporter
+    alias: nodeexporter
     version: 0.2.0
-    condition: nodeExporter.deploy
+    condition: nodeexporter.deploy
     repository: https://kubernetes-charts.storage.googleapis.com/
 
   - name: grafana

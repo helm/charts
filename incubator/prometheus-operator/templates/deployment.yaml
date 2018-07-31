@@ -16,10 +16,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args:
-          {{- if .Values.kubeletService.enable }}
-            - --kubelet-service={{ .Values.kubeletService.namespace }}/{{ .Values.kubeletService.name }}
+          {{- if .Values.kubelet.enable }}
+            - --kubelet-service={{ .Values.kubelet.namespace }}/{{ .Values.kubelet.name }}
           {{- end }}
-            - -logtostderr=true
+            - --logtostderr=true
             - --prometheus-config-reloader={{ .Values.prometheusConfigReloader.repository }}:{{ .Values.prometheusConfigReloader.tag }}
             - --config-reloader-image={{ .Values.configmapReload.repository }}:{{ .Values.configmapReload.tag }}
           ports:

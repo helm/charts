@@ -1,14 +1,13 @@
-{{- if .Values.serviceMonitor.selfMonitor }}
+{{- if .Values.prometheusOperator.serviceMonitor.selfMonitor }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  labels:
-    k8s-app: prometheus-operator
   name: {{ template "prometheus-operator.fullname" . }}
+  labels:
+{{ toYaml .Values.prometheusOperator.labels | indent 4 }}
 spec:
   endpoints:
   - port: http
   selector:
-    matchLabels:
-      k8s-app: prometheus-operator
+{{ toYaml .Values.prometheusOperator.serviceMonitor.selector | indent 4 }}
 {{- end }}

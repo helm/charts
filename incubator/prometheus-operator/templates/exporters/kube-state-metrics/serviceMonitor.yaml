@@ -23,5 +23,5 @@ spec:
       insecureSkipVerify: true
   jobLabel: {{ .Values.kubeStateMetrics.serviceMonitor.jobLabel }}
   selector:
-{{ toYaml .Values.kubeStateMetrics.service.selector | indent 4 }}
+{{ toYaml .Values.kubeStateMetrics.serviceMonitor.selector | indent 4 }}
 {{- end }}
