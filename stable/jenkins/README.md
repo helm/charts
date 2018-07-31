@@ -52,7 +52,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.HealthProbesLivenessTimeout`      | Set the timeout for the liveness probe | `120`                                                       |
 | `Master.HealthProbesReadinessTimeout` | Set the timeout for the readiness probe | `60`                                                       |
 | `Master.HealthProbeLivenessFailureThreshold` | Set the failure threshold for the liveness probe | `12`                                                       |
-| `Master.ContainerPort`            | Master listening port                | `8080`                                                                       |
 | `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |
 | `Master.DisabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`                                                                      |
 | `Master.CSRF.DefaultCrumbIssuer.Enabled` | Enable the default CSRF Crumb issuer | `true`                                                                      |
