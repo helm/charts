@@ -13,7 +13,7 @@ spec:
     matchLabels:
       app: {{ template "mongodb.name" . }}
       release: {{ .Release.Name }}
-      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+      chart: {{ template "mongodb.chart" . }}
       component: secondary
   podManagementPolicy: "Parallel"
   serviceName: {{ template "mongodb.fullname" . }}-headless
