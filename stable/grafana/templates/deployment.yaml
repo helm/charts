@@ -29,6 +29,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
       serviceAccountName: {{ template "grafana.serviceAccountName" . }}
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
