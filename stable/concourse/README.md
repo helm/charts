@@ -102,14 +102,18 @@ The following table lists the configurable parameters of the Concourse chart and
 | `concourse.genericOauth.authUrlParam` | Parameters (comma separated) to pass to the authentication server AuthURL | `nil` |
 | `concourse.genericOauth.scope` | Optional scope required to authorize user | `nil` |
 | `concourse.genericOauth.tokenUrl` | Generic OAuth provider TokenURL endpoint | `nil` |
+| `concourse.workingDirectory` | The working directory for concourse | `/concourse-work-dir` |
 | `web.nameOverride` | Override the Concourse Web components name | `nil` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
+| `web.env` | Configure additional environment variables for the web containers | `[]` |
 | `web.annotations`| Concourse Web deployment annotations | `nil` |
 | `web.tolerations` | Tolerations for the web nodes | `[]` |
+| `web.nodeSelector` | Node selector for web nodes | `{}` |
 | `web.service.type` | Concourse Web service type | `ClusterIP` |
 | `web.service.annotations` | Concourse Web Service annotations | `nil` |
+| `web.service.loadBalancerIP` | The IP to use when web.service.type is LoadBalancer | `nil` |
 | `web.service.loadBalancerSourceRanges` | Concourse Web Service Load Balancer Source IP ranges | `nil` |
 | `web.service.atcNodePort` | Sets the nodePort for atc when using `NodePort` | `nil` |
 | `web.service.tsaNodePort` | Sets the nodePort for tsa when using `NodePort` | `nil` |
@@ -134,7 +138,9 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
 | `worker.resources` | Concourse Worker resource requests and limits | `{requests: {cpu: "100m", memory: "512Mi"}}` |
 | `worker.env` | Configure additional environment variables for the worker container(s) | `[]` |
-| `worker.anotations` | Annotations to be added to the worker pods | `{}` |
+| `worker.annotations` | Annotations to be added to the worker pods | `{}` |
+| `worker.additionalVolumeMounts` | VolumeMounts to be added to the worker pods | `nil` |
+| `worker.additionalVolumes` | Volumes to be added to the worker pods | `nil` |
 | `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `{}` |
 | `worker.tolerations` | Tolerations for the worker nodes | `[]` |
 | `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown to allow the worker to drain its tasks | `60` |
@@ -159,6 +165,10 @@ The following table lists the configurable parameters of the Concourse chart and
 | `credentialManager.ssm.region` | AWS Region to use for SSM | `nil` |
 | `credentialManager.ssm.pipelineSecretsTemplate` | Pipeline secrets template | `nil` |
 | `credentialManager.ssm.teamSecretsTemplate` | Team secrets template | `nil` |
+| `credentialManager.awsSecretsManager.enabled` | Use AWS Secrets Manager as a Credential Manager | `false` |
+| `credentialManager.awsSecretsManager.region` | AWS Region to use for Secrets Manager | `nil` |
+| `credentialManager.awsSecretsManager.pipelineSecretsTemplate` | Pipeline secrets template | `nil` |
+| `credentialManager.awsSecretsManager.teamSecretsTemplate` | Team secrets template | `nil` |
 | `credentialManager.vault.enabled` | Use Hashicorp Vault as a Credential Manager | `false` |
 | `credentialManager.vault.url` | Vault Server URL | `nil` |
 | `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
@@ -429,3 +439,40 @@ The minimum IAM policy you need to use SSM with Concourse is:
 ```
 
 Where `<kms-key-arn>` is the ARN of the KMS key used to encrypt the secrets in Paraemter Store, and the `<...arn...>` should be replaced with a correct ARN for your account and region's Parameter Store.
+
+#### AWS Secrets Manager
+
+To use Secrets Manager, set `credentialManager.kubernetes.enabled` to false, and set `credentialManager.awsSecretsManager.enabled` to true.
+
+For a given Concourse *team*, a pipeline will look for secrets in Secrets Manager using either `/concourse/{team}/{secret}` or `/concourse/{team}/{pipeline}/{secret}`; the patterns can be overridden using the `credentialManager.awsSecretsManager.teamSecretTemplate` and `credentialManager.awsSecretsManager.pipelineSecretTemplate` settings.
+
+Concourse requires AWS credentials which are able to read from Secrets Manager for this feature to function. Credentials can be set in the `secrets.awsSecretsmanager*` settings; if your cluster is running in a different AWS region, you may also need to set `credentialManager.awsSecretsManager.region`.
+
+The minimum IAM policy you need to use Secrets Manager with Concourse is:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAccessToSecretManagerParameters",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:ListSecrets"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessGetSecret",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:::secret:/concourse/*"
+      ]
+    }
+  ]
+}
+```
