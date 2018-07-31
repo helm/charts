@@ -1,8 +1,0 @@
-rbac:
-  enabled: true
-accessLogs:
-  enabled: true
-  fields:
-    names:
-      ClientAddr: drop
-

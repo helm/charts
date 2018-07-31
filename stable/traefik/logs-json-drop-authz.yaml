@@ -1,9 +1,0 @@
-rbac:
-  enabled: true
-accessLogs:
-  format: json
-  enabled: true
-  fields:
-    headers:
-      names:
-        Authorization: drop

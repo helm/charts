@@ -1,5 +1,0 @@
-rbac:
-  enabled: true
-accessLogs:
-  enabled: true
-
