@@ -107,7 +107,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
-| `web.env` | Configure additional environment variables for the web containers | `[]` |
+| `web.extraEnv` | Configure additional environment variables for the web containers | `[]` |
 | `web.annotations`| Concourse Web deployment annotations | `nil` |
 | `web.tolerations` | Tolerations for the web nodes | `[]` |
 | `web.nodeSelector` | Node selector for web nodes | `{}` |
@@ -137,7 +137,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
 | `worker.resources` | Concourse Worker resource requests and limits | `{requests: {cpu: "100m", memory: "512Mi"}}` |
-| `worker.env` | Configure additional environment variables for the worker container(s) | `[]` |
+| `worker.extraEnv` | Configure additional environment variables for the worker container(s) | `[]` |
 | `worker.annotations` | Annotations to be added to the worker pods | `{}` |
 | `worker.additionalVolumeMounts` | VolumeMounts to be added to the worker pods | `nil` |
 | `worker.additionalVolumes` | Volumes to be added to the worker pods | `nil` |
@@ -218,7 +218,7 @@ $ helm install --name my-release -f values.yaml stable/concourse
 
 ### Secrets
 
-For your convenience, this chart provides some default values for secrets, but it is recommended that you generate and manage these secrets outside the Helm chart. To do this, set `secrets.create` to `false`, create files for each secret value, and turn it all into a k8s secret. Be careful with introducing trailing newline characters; following the steps below ensures none will end up in your secrets. First, perform the following to create the manditory secret values:
+For your convenience, this chart provides some default values for secrets, but it is recommended that you generate and manage these secrets outside the Helm chart. To do this, set `secrets.create` to `false`, create files for each secret value, and turn it all into a k8s secret. Be careful with introducing trailing newline characters; following the steps below ensures none will end up in your secrets. First, perform the following to create the mandatory secret values:
 
 ```console
 mkdir concourse-secrets

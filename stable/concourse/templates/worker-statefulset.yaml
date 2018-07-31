@@ -93,8 +93,8 @@ spec:
               value: {{ .Values.concourse.baggageclaimDriver | quote }}
             - name: LIVENESS_PROBE_FATAL_ERRORS
               value: {{ .Values.worker.fatalErrors | quote }}
-{{- if .Values.worker.env }}
-{{ toYaml .Values.worker.env | indent 12 }}
+{{- if .Values.worker.extraEnv }}
+{{ toYaml .Values.worker.extraEnv | indent 12 }}
 {{- end }}
           resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
