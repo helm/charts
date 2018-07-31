@@ -30,6 +30,9 @@ spec:
       schedulerName: "{{ .Values.alertmanager.schedulerName }}"
 {{- end }}
       serviceAccountName: {{ template "prometheus.serviceAccountName.alertmanager" . }}
+{{- if .Values.alertmanager.priorityClassName }}
+      priorityClassName: "{{ .Values.alertmanager.priorityClassName }}"
+{{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}
           image: "{{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}"

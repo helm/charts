@@ -104,7 +104,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.readinessProbe.successThreshold`   | Minimum consecutive successes for the probe (slave) | `1`                                                               |
 | `slave.readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe (slave)  | `3`                                                               |
 | `metrics.enabled`                         | Start a side-car prometheus exporter                | `false`                                                           |
-| `metrics.image.registry`                           | Exporter image registry                                 | `docker.io` | 
+| `metrics.image.registry`                           | Exporter image registry                                 | `docker.io` |
 `metrics.image.repository`                           | Exporter image name                                 | `prom/mysqld-exporter`                                            |
 | `metrics.image.tag`                        | Exporter image tag                                  | `v0.10.0`                                                         |
 | `metrics.image.pullPolicy`                 | Exporter image pull policy                          | `IfNotPresent`                                                    |
@@ -129,6 +129,12 @@ $ helm install --name my-release -f values.yaml stable/mariadb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Initialize a fresh instance
+
+The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, they must be located inside the chart folder `files/docker-entrypoint-initdb.d` so they can be consumed as a ConfigMap.
+
+The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
 
 ## Persistence
 
