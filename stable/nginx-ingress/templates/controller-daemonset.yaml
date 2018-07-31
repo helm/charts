@@ -34,6 +34,9 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
       {{- end }}
+{{- if .Values.controller.priorityClassName }}
+      priorityClassName: "{{ .Values.controller.priorityClassName }}"
+{{- end }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.controller.name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
@@ -102,13 +105,13 @@ spec:
               containerPort: 80
               protocol: TCP
               {{- if .Values.controller.daemonset.useHostPort }}
-              hostPort: 80
+              hostPort: {{ .Values.controller.daemonset.hostPorts.http }}
               {{- end }}
             - name: https
               containerPort: 443
               protocol: TCP
               {{- if .Values.controller.daemonset.useHostPort }}
-              hostPort: 443
+              hostPort: {{ .Values.controller.daemonset.hostPorts.https }}
               {{- end }}
           {{- if .Values.controller.stats.enabled }}
             - name: stats
@@ -156,6 +159,10 @@ spec:
 {{- if .Values.controller.extraContainers }}
 {{ toYaml .Values.controller.extraContainers | indent 8}}
 {{- end }}
+{{- if .Values.controller.extraInitContainers }}
+      initContainers:
+{{ toYaml .Values.controller.extraInitContainers | indent 8}}
+{{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}
       nodeSelector:
@@ -169,7 +176,7 @@ spec:
       affinity:
 {{ toYaml .Values.controller.affinity | indent 8 }}
     {{- end }}
-      serviceAccountName: {{ if or .Values.rbac.create .Values.rbac.createRole .Values.rbac.createClusterRole }}{{ template "nginx-ingress.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "nginx-ingress.serviceAccountName" . }}
       terminationGracePeriodSeconds: 60
 {{- if (or .Values.controller.customTemplate.configMapName .Values.controller.extraVolumes) }}
       volumes:

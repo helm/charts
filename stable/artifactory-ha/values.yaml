@@ -25,7 +25,7 @@ ingress:
 
 # Database
 ## Configuration values for the postgresql dependency
-## ref: https://github.com/kubernetes/charts/blob/master/stable/postgressql/README.md
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
 postgresql:
   enabled: true
@@ -59,7 +59,7 @@ artifactory:
   name: artifactory-ha
   image:
     repository: "docker.bintray.io/jfrog/artifactory-pro"
-    version: 5.10.1
+    version: 6.0.0
     pullPolicy: IfNotPresent
   ## Artifactory requires a unique master key
   ## You can generate one with the command:
@@ -75,14 +75,35 @@ artifactory:
   license:
     secret:
     dataKey:
+  ## Create configMap with artifactory.config.import.xml and security.import.xml and pass name of configMap in following parameter
+  configMapName:
   membershipPort: 10017
   externalPort: 8081
   internalPort: 8081
+  internalPortReplicator: 6061
+  externalPortReplicator: 6061
+  uid: 1030
+  ## The following settings are to configure the frequency of the liveness and readiness probes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 180
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
 
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 60
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
   persistence:
+    enabled: true
+    local: false
     redundancy: 3
     mountPath: "/var/opt/jfrog/artifactory"
-    enabled: true
     accessMode: ReadWriteOnce
     size: 200Gi
     ## artifactory data Persistent Volume Storage Class
@@ -142,12 +163,22 @@ artifactory:
   ## This will be passed to all cluster members. Primary and member nodes.
   javaOpts:
     other: "-Dartifactory.locking.provider.type=db"
+  ## Artifactory Replicator
+  replicator:
+    enabled: false
+    publicUrl:
+  # Name of ConfigMap for Distribution Cert
+  distributionCerts:
 
   ## Type specific configurations.
   ## There is a difference between the primary and the member nodes.
   ## Customising their resources and java parameters is done here.
   primary:
     name: artifactory-ha-primary
+    persistence:
+      ## Set existingClaim to true or false
+      ## If true, you must prepare a PVC with the name
+      existingClaim: false
     ## Resources for the primary node
     resources: {}
     #  requests:
@@ -164,6 +195,10 @@ artifactory:
     #  other:
   node:
     name: artifactory-ha-member
+    persistence:
+      ## Set existingClaim to true or false
+      ## If true, you must prepare a PVC with the name
+      existingClaim: false
     replicaCount: 2
     ## Resources for the member nodes
     resources: {}
@@ -187,7 +222,7 @@ nginx:
   replicaCount: 1
   image:
     repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
-    version: 5.10.1
+    version: 6.0.0
     pullPolicy: IfNotPresent
   service:
     ## For minikube, set this to NodePort, elsewhere use LoadBalancer
@@ -204,11 +239,30 @@ nginx:
   internalPortHttp: 80
   externalPortHttps: 443
   internalPortHttps: 443
+  internalPortReplicator: 6061
+  externalPortReplicator: 6061
+  ## The following settings are to configure the frequency of the liveness and readiness probes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 100
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 60
+    failureThreshold: 10
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
   ## The SSL secret that will be used by the Nginx pod
   # tlsSecretName: chart-example-tls
   env:
     ssl: true
-#    artUrl: "http://artifactory:8081/artifactory"
+    # artUrl: "http://artifactory:8081/artifactory"
+    skipAutoConfigUpdate: false
   persistence:
     mountPath: "/var/opt/jfrog/nginx"
     enabled: false

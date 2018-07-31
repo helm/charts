@@ -12,6 +12,9 @@ metadata:
     chart: {{ template "mongodb-replicaset.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels | indent 4 }}
+{{- end }}
   name: {{ template "mongodb-replicaset.fullname" . }}
 spec:
   type: ClusterIP
@@ -19,6 +22,11 @@ spec:
   ports:
     - name: peer
       port: {{ .Values.port }}
+{{- if .Values.metrics.enabled }}
+    - name: metrics
+      port: {{ .Values.metrics.port }}
+      targetPort: metrics
+{{- end }}
   selector:
     app: {{ template "mongodb-replicaset.name" . }}
     release: {{ .Release.Name }}

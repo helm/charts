@@ -243,7 +243,7 @@ providers:
     primaryCredentials:
       name: my-azure-account
 
-      # To set Azure credentials, enter your Azure supscription values for:
+      # To set Azure credentials, enter your Azure subscription values for:
       # clientId, appKey, tenantId, and subscriptionId.
       clientId:
       appKey:

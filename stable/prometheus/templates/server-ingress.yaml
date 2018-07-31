@@ -15,6 +15,9 @@ metadata:
     component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- range $key, $value := .Values.server.ingress.extraLabels }}
+    {{ $key }}: {{ $value }}
+{{- end }}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
   rules:

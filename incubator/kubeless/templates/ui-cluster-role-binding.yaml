@@ -1,0 +1,18 @@
+{{- if .Values.rbac.create }}
+{{- if .Values.ui.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: kubeless-ui
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kubeless-ui
+subjects:
+- kind: ServiceAccount
+  name: kubeless-ui
+  namespace: {{ .Release.Namespace }}
+{{- end}}
+{{- end}}

@@ -67,10 +67,13 @@ data:
                   <command></command>
                   <args>${computer.jnlpmac} ${computer.name}</args>
                   <ttyEnabled>false</ttyEnabled>
-                  <resourceRequestCpu>{{.Values.Agent.Cpu}}</resourceRequestCpu>
-                  <resourceRequestMemory>{{.Values.Agent.Memory}}</resourceRequestMemory>
-                  <resourceLimitCpu>{{.Values.Agent.Cpu}}</resourceLimitCpu>
-                  <resourceLimitMemory>{{.Values.Agent.Memory}}</resourceLimitMemory>
+                  # Resources configuration is a little hacky. This was to prevent breaking
+                  # changes, and should be cleanned up in the future once everybody had
+                  # enough time to migrate.
+                  <resourceRequestCpu>{{.Values.Agent.Cpu | default .Values.Agent.resources.requests.cpu}}</resourceRequestCpu>
+                  <resourceRequestMemory>{{.Values.Agent.Memory | default .Values.Agent.resources.requests.memory}}</resourceRequestMemory>
+                  <resourceLimitCpu>{{.Values.Agent.Cpu | default .Values.Agent.resources.limits.cpu}}</resourceLimitCpu>
+                  <resourceLimitMemory>{{.Values.Agent.Memory | default .Values.Agent.resources.limits.memory}}</resourceLimitMemory>
                   <envVars>
                     <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                       <key>JENKINS_URL</key>
@@ -167,9 +170,12 @@ data:
     cp -n /var/jenkins_config/config.xml /var/jenkins_home;
     cp -n /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
 {{- if .Values.Master.InstallPlugins }}
+    # Install missing plugins
     cp /var/jenkins_config/plugins.txt /var/jenkins_home;
     rm -rf /usr/share/jenkins/ref/plugins/*.lock
     /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
+    # Copy plugins to shared volume
+    cp -n /usr/share/jenkins/ref/plugins/* /var/jenkins_plugins;
 {{- end }}
 {{- if .Values.Master.ScriptApproval }}
     cp -n /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;

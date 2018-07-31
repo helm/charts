@@ -1,23 +1,29 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "openvpn.fullname" . }}
-  namespace: {{ .Release.Namespace }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-
+    app: {{ template "openvpn.name" . }}
+    chart: {{ template "openvpn.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+{{- if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "openvpn.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "openvpn.fullname" . }}
-        type: openvpn
-        heritage: {{ .Release.Service | quote }}
-        release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        app: {{ template "openvpn.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print .Template.BasePath "/config-openvpn.yaml") . | sha256sum }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -43,6 +49,9 @@ spec:
             name: openvpn
             readOnly: false
           - mountPath: /etc/openvpn/certs
+            {{- if .Values.persistence.subPath }}
+            subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
             name: certs
             readOnly: false
       volumes:

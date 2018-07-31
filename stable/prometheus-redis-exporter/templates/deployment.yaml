@@ -15,14 +15,21 @@ spec:
       release: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+{{ toYaml .Values.annotations | indent 8 }}
       labels:
         app: {{ template "prometheus-redis-exporter.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "prometheus-redis-exporter.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+          {{- range $key, $value := .Values.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
           ports:
             - name: exporter-port
               containerPort: 9121

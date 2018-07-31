@@ -74,4 +74,8 @@ spec:
       operator: "Equal"
       value: "true"
       effect: "NoSchedule"
+{{- if .Values.tolerations }}       
+{{ toYaml .Values.tolerations | indent 4 }}     
+{{- end }}       
+
 {{- end }}               

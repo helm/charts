@@ -10,7 +10,7 @@ $ helm install stable/prometheus-postgres-exporter
 
 ## Introduction
 
-This chart bootstraps a prometheus [postgres exporter](http://github.com/prometheus/postgres_exporter) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a prometheus [postgres exporter](https://github.com/wrouesnel/postgres_exporter) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Installing the Chart
 
@@ -34,24 +34,29 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the postgres Exporter chart and their default values.
+The following table lists the configurable parameters of the postgres Exporter chart and their default values.
 
 | Parameter                       | Description                                | Default                                                    |
 | ------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
 | `image`                         | Image                                      | `wrouesnel/postgres_exporter`                      |
-| `imageTag`                      | Image tag                                  | `v0.4.4`                                      |
+| `imageTag`                      | Image tag                                  | `v0.4.6`                                      |
 | `imagePullPolicy`               | Image pull policy                          | `IfNotPresent` |
-| `service.type`      | Service type |  `ClusterIP` | 
+| `service.type`      | Service type |  `ClusterIP` |
 | `service.port`                      | The service port                               | `80`                                     |
 | `service.targetPort`                      | The target port of the container                               | `9187`                                        |
 | `resources`          |                                  |                    `{}`                                  |
 | `config.datasource`                 | Postgresql datasource configuration                      |                                     |
-| `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) | 
+| `config.queries`                | SQL queries that the exporter will run | [postgres exporter defaults](https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml) |
+| `rbac.create`                   | Specifies whether RBAC resources should be created.| `true` |
+| `rbac.pspEnabled`               | Specifies whether a PodSecurityPolicy should be created.| `true` |
 | `serviceAccount.create`         | Specifies whether a service account should be created.| `true` |
 | `serviceAccount.name`           | Name of the service account.|        |
 | `tolerations`                   | Add tolerations                            | `[]`  |
 | `nodeSelector`                    | node labels for pod assignment | `{}`  |
 | `affinity`                       |     node/pod affinities | `{}` |
+| `annotations`                    | Deployment annotations | `{}` |
+| `extraContainers`                | Additional sidecar containers | `""` |
+| `extraVolumes`                   | Additional volumes for use in extraContainers | `""` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
