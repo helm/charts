@@ -217,11 +217,13 @@ accessLogs:
   ## for JSON logging, finer-grained control over what is logged. Fields can be
   ## retained or dropped, and request headers can be retained, dropped or redacted
   fields:
-    defaultMode: keep # choices are keep, drop
+    # choices are keep, drop
+    defaultMode: keep
     names: {}
       # ClientUsername: drop
     headers:
-      defaultMode: keep # choices are keep, drop, redact
+      # choices are keep, drop, redact
+      defaultMode: keep
       names: {}
         # Authorization: redact
 rbac:
