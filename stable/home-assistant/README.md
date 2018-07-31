@@ -65,7 +65,8 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `configurator.hassApiPassword`          | Home Assistant API Password | `` |
 | `configurator.basepath`                 | Base path of the home assistant configuration files | `/config` |
 | `configurator.enforceBasepath`          | If set to true, will prevent navigation to other directories in the configurator UI | `true` |
-| `configurator.credentials`              | If set, will require basic auth to access the configurator UI using the format 'username:password' | `` |
+| `configurator.username`                 | If this and password (below) are set, will require basic auth to access the configurator UI  | `` |
+| `configurator.password`                 | If this and username (above) are set, will require basic auth to access the configurator UI. password is in the format of a sha256 hash (e.g. "test" would be "{sha256}9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")  | `` |
 | `configurator.extraEnv`                 | Extra ENV vars to pass to the configuration UI | `{}` |
 | `configurator.ingress.enabled`          | Enables Ingress for the configurator UI | `false` |
 | `configurator.ingress.annotations`      | Ingress annotations for the configurator UI | `{}` |

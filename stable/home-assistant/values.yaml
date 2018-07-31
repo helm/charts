@@ -76,8 +76,11 @@ configurator:
   basepath: /config
   ## don't allow switching out of the base path
   enforceBasepath: true
-  ## enforce <username:password> basic auth for accessing the configurator
-  # credentials:
+  ## username for basic auth for accessing the configurator
+  # username:
+  ## password (sha256-hash) for basic auth for accessing the configurator
+  ## For example "test" would be "{sha256}9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+  # password:
 
   ## Additional hass-configurator container environment variable
   ## For instance to add a http_proxy

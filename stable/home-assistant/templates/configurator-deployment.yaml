@@ -48,12 +48,17 @@ spec:
                   name: {{ template "home-assistant.fullname" . }}-configurator
                   key: hass-api-password
             {{- end }}
-            {{- if .Values.configurator.credentials }}
-            - name: HC_CREDENTIALS
+            {{- if (.Values.configurator.username) and (.Values.configurator.password) }}
+            - name: HC_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: {{ template "home-assistant.fullname" . }}-configurator
-                  key: credentials
+                  key: username
+            - name: HC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "home-assistant.fullname" . }}-configurator
+                  key: password
             {{- end }}
             {{- if .Values.configurator.hassApiUrl }}
             - name: HC_HASS_API
