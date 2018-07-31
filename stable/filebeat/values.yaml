@@ -77,10 +77,14 @@ resources: {}
   #  cpu: 100m
   #  memory: 100Mi
 
+priorityClassName: ""
+
 nodeSelector: {}
 
-tolerations:
-  - operator: Exists
+annotations: {}
+
+tolerations: []
+  # - operator: Exists
 
 affinity: {}
 

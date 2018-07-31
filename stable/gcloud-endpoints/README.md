@@ -1,3 +1,5 @@
+# THIS CHART IS DEPRECATED.
+
 # Google Cloud Endpoints
 
 [Google Cloud Endpoints](https://cloud.google.com/endpoints/) is an NGINX-based proxy used to develop, deploy, protect, and monitor APIs running on Google Cloud.

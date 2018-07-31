@@ -1,4 +1,4 @@
-{{- if and (or .Values.serviceAccountKey .Values.existingSecret) (ne (index .Values.cloudsql.instances 0).instance "instance") }}
+{{- if ne (index .Values.cloudsql.instances 0).instance "instance" }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -24,33 +24,37 @@ spec:
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
-        command: ["/cloud_sql_proxy", "--dir=/cloudsql",
-                  "-instances={{- range .Values.cloudsql.instances -}}
-                                {{ .project }}:{{ .region }}:{{ .instance }}=tcp:0.0.0.0:{{ .port }},
-                              {{- end }}",
-                  "-credential_file=/secrets/cloudsql/{{- if .Values.existingSecret -}} {{ .Values.existingSecretKey }} {{- else -}} credentials.json {{- end -}}"]
+        command:
+        - /cloud_sql_proxy
+        - --dir=/cloudsql
+        - -instances={{- range .Values.cloudsql.instances -}}
+                        {{ .project }}:{{ .region }}:{{ .instance }}=tcp:0.0.0.0:{{ .port }},
+                     {{- end }}
+        {{ if or .Values.serviceAccountKey .Values.existingSecret -}}
+        - -credential_file=/secrets/cloudsql/{{- if .Values.existingSecret -}} {{ .Values.existingSecretKey }} {{- else -}} credentials.json {{- end }}
+        {{ end -}}
         ports:
         {{- range .Values.cloudsql.instances }}
         - name: {{ .instanceShortName | default (.instance | trunc 15) }}
           containerPort: {{ .port }}
         {{- end }}
         volumeMounts:
+        {{ if or .Values.serviceAccountKey .Values.existingSecret -}}
         - name: cloudsql-oauth-credentials
           mountPath: /secrets/cloudsql
+        {{ end -}}
         - name: cloudsql
           mountPath: /cloudsql
       volumes:
+      {{ if or .Values.serviceAccountKey .Values.existingSecret -}}
       - name: cloudsql-oauth-credentials
         secret:
-          {{ if (not .Values.existingSecret) -}}
-          secretName: {{ template "gcloud-sqlproxy.fullname" . }}
-          {{- else -}}
-          secretName: {{ .Values.existingSecret }}
-          {{- end }}
+          secretName: {{ default (include "gcloud-sqlproxy.fullname" .) .Values.existingSecret }}
+      {{ end -}}
       - name: cloudsql
         emptyDir: {}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}    
+{{ toYaml .Values.nodeSelector | indent 8 }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
       tolerations:
