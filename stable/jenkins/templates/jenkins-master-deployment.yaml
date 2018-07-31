@@ -59,6 +59,8 @@ spec:
           env:
 {{ toYaml .Values.Master.InitContainerEnv | indent 12 }}
           {{- end }}
+          resources:
+{{ toYaml .Values.Master.resources | indent 12 }}
           volumeMounts:
             -
               mountPath: /var/jenkins_home
