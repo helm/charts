@@ -318,8 +318,8 @@ Parameter | Description | Default
 `serverFiles.rules` | Prometheus server rules configuration | `{}`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
 `networkPolicy.enabled` | Enable NetworkPolicy | `false` |
-`sidecar.image.repository` | prometheus sidecar containers image | `kiwigrid/k8s-sidecar`
-`sidecar.image.tag` | prometheus sidecar containers image tag | `0.0.3`
+`sidecar.image.repository` | prometheus sidecar containers image | `b13n1u/k8s-sidecar`
+`sidecar.image.tag` | prometheus sidecar containers image tag | `0.0.4`
 `sidecar.image.pullPolicy` | sidecar container image pull policy | `IfNotPresent`
 `sidecar.image.resources` | sidecar container resource requests and limits | `{}`
 `sidecar.rules.enabled` | Enable a sidecar container to check clusterwide for configmaps with prometheus rules | `false`
