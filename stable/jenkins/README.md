@@ -205,6 +205,60 @@ jenkins:
     FsGroup: 1000
 ```
 
+## Providing jobs xml
+
+Jobs can be created (and overwritten) by providing jenkins config xml within the `values.yaml` file.
+The keys of the map will become a directory within the jobs directory.
+The values of the map will become the `config.xml` file in the respective directory.
+
+Below is an example of a `values.yaml` file and the directory structure created:
+
+#### values.yaml
+```yaml
+Master:
+  Jobs:
+    test-job: |-
+      <?xml version='1.0' encoding='UTF-8'?>
+      <project>
+        <keepDependencies>false</keepDependencies>
+        <properties/>
+        <scm class="hudson.scm.NullSCM"/>
+        <canRoam>false</canRoam>
+        <disabled>false</disabled>
+        <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+        <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+        <triggers/>
+        <concurrentBuild>false</concurrentBuild>
+        <builders/>
+        <publishers/>
+        <buildWrappers/>
+      </project>
+    test-job-2: |-
+      <?xml version='1.0' encoding='UTF-8'?>
+      <project>
+        <keepDependencies>false</keepDependencies>
+        <properties/>
+        <scm class="hudson.scm.NullSCM"/>
+        <canRoam>false</canRoam>
+        <disabled>false</disabled>
+        <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+        <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+        <triggers/>
+        <concurrentBuild>false</concurrentBuild>
+        <builders/>
+        <publishers/>
+        <buildWrappers/>
+```
+
+#### Directory structure of jobs directory
+```
+.
+├── _test-job-1
+|   └── config.xml
+├── _test-job-2
+|   └── config.xml
+```
+
 Docs taken from https://github.com/jenkinsci/docker/blob/master/Dockerfile:
 _Jenkins is run with user `jenkins`, uid = 1000. If you bind mount a volume from the host or a data container,ensure you use the same uid_
 
