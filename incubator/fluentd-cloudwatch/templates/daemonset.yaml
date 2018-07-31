@@ -51,6 +51,9 @@ spec:
               key: aws_secret_access_key
               name: {{ template "fluentd-cloudwatch.fullname" . }}
 {{- end }}
+{{- range $env := .Values.extraVars }}
+        - {{ $env  }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
