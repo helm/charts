@@ -98,6 +98,10 @@ spec:
               configMapKeyRef:
                 name: {{ template "jaeger.fullname" . }}
                 key: collector.zipkin.http-port
+          {{- if .Values.collector.samplingStrategiesFile }}
+          - name: SAMPLING_STRATEGIES_FILE
+            value: /etc/sampling
+          {{- end }}
         ports:
         - containerPort: {{ .Values.collector.service.tchannelPort }}
           name: tchannel
@@ -121,6 +125,18 @@ spec:
           initialDelaySeconds: 10
         resources:
 {{ toYaml .Values.collector.resources | indent 10 }}
+        {{- if .Values.collector.samplingStrategiesFile }}
+        volumeMounts:
+            - name: sampling-volume
+              mountPath: /etc/sampling
+              readOnly: true
+        {{- end }}
       dnsPolicy: {{ .Values.collector.dnsPolicy }}
       restartPolicy: Always
+      {{- if .Values.collector.samplingStrategiesFile }}
+      volumes:
+        - name: sampling-volume
+          configMap:
+            name: {{ .Values.collector.samplingStrategiesFile }}
+      {{- end }}
 {{- end -}}

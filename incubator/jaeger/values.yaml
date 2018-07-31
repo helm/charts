@@ -151,6 +151,9 @@ collector:
   ## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
+  # Collector sampling# sets a named configmap with a sampling file to be mounted
+  # and used by the Collector
+  samplingStrategiesFile: null
 
 query:
   enabled: true
