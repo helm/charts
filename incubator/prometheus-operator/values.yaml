@@ -11,7 +11,7 @@ serviceMonitor:
 ##
 image:
   repository: quay.io/coreos/prometheus-operator
-  tag: v0.22.0
+  tag: v0.22.2
   pullPolicy: IfNotPresent
   
 createCustomResource: true
@@ -227,7 +227,7 @@ kubelet:
   
   namespace: kube-system
   name: kubelet
-  
+
   labels:
     k8s-app: kubelet
 
@@ -349,8 +349,6 @@ prometheus:
   
   affinity: {}
 
-
-
   serviceAccount:
     # Specifies whether a ServiceAccount should be created
     create: true
@@ -412,13 +410,6 @@ prometheus:
         app: prometheus
         prometheus: k8s
 
-  serviceAccount:
-    # Specifies whether a ServiceAccount should be created
-    create: true
-    # The name of the ServiceAccount to use.
-    # If not set and create is true, a name is generated using the fullname template
-    name:
-
   labels:
       prometheus: k8s
   
@@ -427,3 +418,86 @@ prometheus:
       app: prometheus
       prometheus: k8s
     
+  prometheusSpec:
+
+    baseImage: quay.io/prometheus/prometheus
+    version: v2.3.2
+
+    ## Alertmanagers to which alerts will be sent
+    ## Ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#alertmanagerendpoints
+    ##
+    alertingEndpoints: []
+    #   - name: ""
+    #     namespace: ""
+    #     port: http
+    #     scheme: http
+
+    ## External labels to add to any time series or alerts when communicating with external systems
+    ##
+    externalLabels: {}
+
+    ## External URL at which Prometheus will be reachable
+    ##
+    externalUrl: ""
+
+    ## Change "prometheus" label value on all resources, .Release.Name by default
+    ##
+    prometheusLabelValue: ""
+
+    ## Custom Labels to be added to ServiceMonitor
+    ##
+    additionalSelfServiceMonitorLabels: {}
+
+    ##Custom Labels to be added to Prometheus Rules CRDs
+    ##
+    additionalRulesLabels: {}
+
+    serviceMonitorSelector:
+      matchLabels:
+        prometheus: bla
+
+    ## How long to retain metrics
+    ##
+    retention: 240h
+
+    ## If true, the Operator won't process any Prometheus configuration changes
+    ##
+    paused: false
+
+    ## Number of Prometheus replicas desired
+    ##
+    replicaCount: 1
+
+    ## Log level for Prometheus be configured in
+    ##
+    logLevel: info
+
+    ## Prefix used to register routes, overriding externalUrl route.
+    ## Useful for proxies that rewrite URLs.
+    ##
+    routePrefix: /        
+
+    ## Pod anti-affinity can prevent the scheduler from placing Prometheus replicas on the same node.
+    ## The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided.
+    ## The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node.
+    ## The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured.
+    podAntiAffinity: "soft"
+
+    ## The remote_read spec configuration for Prometheus.
+    ## Ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotereadspec
+    remoteRead: {}
+      # remoteRead:
+      #   - url: http://remote1/read
+
+    ## The remote_write spec configuriation for Prometheus.
+    ## Ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotewritespec
+    remoteWrite: {}
+      # remoteWrite:
+      #   - url: http://remote1/push
+
+    ## Resource limits & requests
+    ## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
+    ##
+    resources: {}
+      # requests:
+      #   memory: 400Mi

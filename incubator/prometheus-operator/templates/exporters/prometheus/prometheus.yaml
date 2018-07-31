@@ -1,29 +1,21 @@
 
-{{/*
 apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
   labels:
-{{ toYaml .Values.prometheus.prometheusSpec.labels | indent 4 }}
+{{ toYaml .Values.prometheus.labels | indent 4 }}
   name: {{ template "prometheus.fullname" . }}
 spec:
-{{- if .Values.prometheus.prometheusSpec.labels }}
-  podMetadata:
-    labels:
-{{ toYaml .Values.prometheus.prometheusSpec.labels | indent 6 }}
-{{- end }}
-{{- if .Values.prometheus.prometheusSpec.alertingEndpoints }}
   alerting:
     alertmanagers:
+{{- if .Values.prometheus.prometheusSpec.alertingEndpoints }}
 {{ toYaml .Values.prometheus.prometheusSpec.alertingEndpoints | indent 6 }}
 {{- else }}
-  alerting:
-    alertmanagers:
       - namespace: {{ .Release.Namespace }}
-        name: {{ printf "%s-alertmanager" .Release.Name | trunc 63 | trimSuffix "-" }}
+        name: {{ template "alertmanager.fullname" .}}
         port: http
 {{- end }}
-  baseImage: "{{ .Values.image.repository }}"
+  baseImage: "{{ .Values.prometheus.prometheusSpec.baseImage }}"
 {{- if .Values.prometheus.prometheusSpec.externalLabels }}
   externalLabels:
 {{ toYaml .Values.prometheus.prometheusSpec.externalLabels | indent 4}}
@@ -52,18 +44,11 @@ spec:
   secrets:
 {{ toYaml .Values.prometheus.prometheusSpec.secrets | indent 4 }}
 {{- end }}
-{{- if .Values.rbac.create }}
+{{- if .Values.global.rbac.create }}
   serviceAccountName: {{ template "prometheus.serviceAccountName" .}}
 {{- end }}
-{{ if and .Values.prometheus.prometheusSpec.config.specifiedInValues .Values.prometheus.prometheusSpec.config.value }}
-{{- else if .Values.sprometheus.prometheusSpec.erviceMonitorsSelector }}
   serviceMonitorSelector:
-{{ toYaml .Values.serviceMonitorsSelector | indent 4 }}
-{{- else }}
-  serviceMonitorSelector:
-    matchLabels:
-      prometheus: {{ .Values.prometheusLabelValue | default .Release.Name | quote }}
-{{- end }}
+{{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorsSelector | indent 4 }}
 {{- if .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector }}
   serviceMonitorNamespaceSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector | indent 4 }}
@@ -92,46 +77,20 @@ spec:
   storage:
 {{ toYaml .Values.prometheus.prometheusSpec.storageSpec | indent 4 }}
 {{- end }}
-  version: "{{ .Values.image.tag }}"
-{{- if eq .Values.prometheus.prometheusSpec.podAntiAffinity "hard" }}
+  version: "{{ .Values.prometheus.prometheusSpec.version }}"
   affinity:
     podAntiAffinity:
+{{- if eq .Values.prometheus.prometheusSpec.podAntiAffinity "hard" }}
       requiredDuringSchedulingIgnoredDuringExecution:
       - topologyKey: kubernetes.io/hostname
-        labelSelector:
-          matchLabels:
-            app: {{ template "prometheus.name" . }}
-            prometheus: {{ .Values.prometheus.prometheusSpec.prometheusLabelValue | default .Release.Name | quote }}
 {{- else if eq .Values.prometheus.prometheusSpec.podAntiAffinity "soft" }}
-  affinity:
-    podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
       - weight: 100
         podAffinityTerm:
           topologyKey: kubernetes.io/hostname
-          labelSelector:
-            matchLabels:
-              app: {{ template "prometheus.name" . }}
-              prometheus: {{ .Values.prometheusLabelValue | default .Release.Name | quote }}
 {{- end }}
-{{- if .Values.tolerations }}
-  tolerations:
-{{ toYaml .Values.tolerations | indent 4 }}
-{{- end }}
+        labelSelector:
+          matchLabels:
+{{ toYaml .Values.prometheus.labels | indent 12 }}
   imagePullSecrets: 
 {{ toYaml .Values.global.imagePullSecrets | indent 4 }}
-{{- if .Values.additionalScrapeConfigs }}
-  additionalScrapeConfigs:
-    name: prometheus-{{ .Release.Name }}-additional-scrape-configs
-    key: additional-scrape-configs.yaml
-{{- end }}
-{{- if .Values.additionalAlertManagerConfigs }}
-  additionalAlertManagerConfigs:
-    name: prometheus-{{ .Release.Name }}-additional-alertmanager-configs
-    key: additional-alertmanager-configs.yaml
-{{- end }}
-{{- if .Values.sidecarsSpec }}
-  containers:
-{{ toYaml .Values.sidecarsSpec | indent 4 }}
-{{- end }}
-*/}}
