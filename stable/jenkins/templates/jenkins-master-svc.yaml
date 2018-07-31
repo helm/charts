@@ -24,7 +24,10 @@ spec:
     component: "{{.Release.Name}}-{{.Values.Master.Component}}"
   type: {{.Values.Master.ServiceType}}
   {{if eq .Values.Master.ServiceType "LoadBalancer"}}
-  loadBalancerSourceRanges: {{.Values.Master.LoadBalancerSourceRanges}}
+{{- if .Values.Master.LoadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.Master.LoadBalancerSourceRanges | indent 4 }}
+{{- end }}
   {{if .Values.Master.LoadBalancerIP}}
   loadBalancerIP: {{.Values.Master.LoadBalancerIP}}
   {{end}}
