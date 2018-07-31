@@ -120,7 +120,7 @@ spec:
 {{ toYaml .Values.Master.ContainerEnv | indent 12 }}
             {{- end }}
           ports:
-            - containerPort: {{ .Values.Master.ContainerPort }}
+            - containerPort: 8080
               name: http
             - containerPort: {{ .Values.Master.SlaveListenerPort }}
               name: slavelistener
