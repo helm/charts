@@ -79,6 +79,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
 | `rbac.apiVersion`                 | RBAC API version                     | `v1beta1`                                                                    |
 | `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
+| `rbac.roleBindingKind`            | Role kind (`RoleBinding` or `ClusterRoleBinding`)| `ClusterRoleBinding`                                             |
 
 ### Jenkins Agent
 
