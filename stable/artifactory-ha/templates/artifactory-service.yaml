@@ -5,8 +5,8 @@ metadata:
   name: {{ template "artifactory-ha.fullname" . }}
   labels:
     app: {{ template "artifactory-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.artifactory.name }}"
+    chart: {{ template "artifactory-ha.chart" . }}
+    component: {{ .Values.artifactory.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
@@ -32,8 +32,8 @@ metadata:
   name: {{ template "artifactory-ha.primary.name" . }}
   labels:
     app: {{ template "artifactory-ha.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.artifactory.name }}"
+    chart: {{ template "artifactory-ha.chart" . }}
+    component: {{ .Values.artifactory.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
@@ -43,6 +43,12 @@ spec:
     targetPort: {{ .Values.artifactory.internalPort }}
     protocol: TCP
     name: http
+  {{- if .Values.artifactory.replicator.enabled }}
+  - port: {{ .Values.artifactory.externalPortReplicator }}
+    targetPort: {{ .Values.artifactory.internalPortReplicator }}
+    protocol: TCP
+    name: replicator
+  {{- end}}
   selector:
     role: {{ template "artifactory-ha.primary.name" . }}
     app: {{ template "artifactory-ha.name" . }}
