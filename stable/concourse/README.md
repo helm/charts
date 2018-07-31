@@ -102,6 +102,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `concourse.genericOauth.authUrlParam` | Parameters (comma separated) to pass to the authentication server AuthURL | `nil` |
 | `concourse.genericOauth.scope` | Optional scope required to authorize user | `nil` |
 | `concourse.genericOauth.tokenUrl` | Generic OAuth provider TokenURL endpoint | `nil` |
+| `concourse.workingDirectory` | The working directory for concourse | `/concourse-work-dir` |
 | `web.nameOverride` | Override the Concourse Web components name | `nil` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
@@ -112,6 +113,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `web.nodeSelector` | Node selector for web nodes | `{}` |
 | `web.service.type` | Concourse Web service type | `ClusterIP` |
 | `web.service.annotations` | Concourse Web Service annotations | `nil` |
+| `web.service.loadBalancerIP` | The IP to use when web.service.type is LoadBalancer | `nil` |
 | `web.service.loadBalancerSourceRanges` | Concourse Web Service Load Balancer Source IP ranges | `nil` |
 | `web.service.atcNodePort` | Sets the nodePort for atc when using `NodePort` | `nil` |
 | `web.service.tsaNodePort` | Sets the nodePort for tsa when using `NodePort` | `nil` |
@@ -137,6 +139,8 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.resources` | Concourse Worker resource requests and limits | `{requests: {cpu: "100m", memory: "512Mi"}}` |
 | `worker.env` | Configure additional environment variables for the worker container(s) | `[]` |
 | `worker.annotations` | Annotations to be added to the worker pods | `{}` |
+| `worker.additionalVolumeMounts` | VolumeMounts to be added to the worker pods | `nil` |
+| `worker.additionalVolumes` | Volumes to be added to the worker pods | `nil` |
 | `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `{}` |
 | `worker.tolerations` | Tolerations for the worker nodes | `[]` |
 | `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown to allow the worker to drain its tasks | `60` |
