@@ -8,7 +8,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 3.6.5-debian-9
+  tag: 3.6.6-debian-9
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -46,6 +46,14 @@ usePassword: true
 ## mongodbExtraFlags:
 ##  - "--wiredTigerCacheSizeGB=2"
 mongodbExtraFlags: []
+
+## Pod Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
 
 ## Kubernetes service type
 service:

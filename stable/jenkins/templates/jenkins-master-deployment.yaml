@@ -120,7 +120,7 @@ spec:
 {{ toYaml .Values.Master.ContainerEnv | indent 12 }}
             {{- end }}
           ports:
-            - containerPort: {{ .Values.Master.ContainerPort }}
+            - containerPort: 8080
               name: http
             - containerPort: {{ .Values.Master.SlaveListenerPort }}
               name: slavelistener
@@ -131,14 +131,14 @@ spec:
 {{- if .Values.Master.HealthProbes }}
           livenessProbe:
             httpGet:
-              path: /login
+              path: "{{ default "" .Values.Master.JenkinsUriPrefix }}/login"
               port: http
             initialDelaySeconds: {{ .Values.Master.HealthProbesLivenessTimeout }}
             timeoutSeconds: 5
             failureThreshold: {{ .Values.Master.HealthProbeLivenessFailureThreshold }}
           readinessProbe:
             httpGet:
-              path: /login
+              path: "{{ default "" .Values.Master.JenkinsUriPrefix }}/login"
               port: http
             initialDelaySeconds: {{ .Values.Master.HealthProbesReadinessTimeout }}
 {{- end }}
