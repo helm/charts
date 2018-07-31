@@ -31,7 +31,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `nameOverride`                    | Override the resource name prefix    | `jenkins`                                                                    |
 | `fullnameOverride`                | Override the full resource names     | `jenkins-{release-name}` (or `jenkins` if release-name is `jenkins`)         |
 | `Master.Name`                     | Jenkins master name                  | `jenkins-master`                                                             |
-| `Master.Image`                    | Master image name                    | `jenkinsci/jenkins`                                                          |
+| `Master.Image`                    | Master image name                    | `jenkins/jenkins`                                                          |
 | `Master.ImageTag`                 | Master image tag                     | `lts`                                                                     |
 | `Master.ImagePullPolicy`          | Master image pull policy             | `Always`                                                                     |
 | `Master.ImagePullSecret`          | Master image pull secret             | Not set                                                                      |
@@ -86,9 +86,9 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | ----------------------- | ----------------------------------------------- | ---------------------- |
 | `Agent.AlwaysPullImage` | Always pull agent container image before build  | `false`                |
 | `Agent.Enabled`         | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
-| `Agent.Image`           | Agent image name                                | `jenkinsci/jnlp-slave` |
+| `Agent.Image`           | Agent image name                                | `jenkins/jnlp-slave` |
 | `Agent.ImagePullSecret` | Agent image pull secret                         | Not set                |
-| `Agent.ImageTag`        | Agent image tag                                 | `2.62`                 |
+| `Agent.ImageTag`        | Agent image tag                                 | `3.10-1`                 |
 | `Agent.Privileged`      | Agent privileged container                      | `false`                |
 | `Agent.resources`       | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
 | `Agent.volumes`         | Additional volumes                              | `nil`                  |
