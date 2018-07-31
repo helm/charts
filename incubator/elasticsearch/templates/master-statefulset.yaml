@@ -22,6 +22,9 @@ spec:
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+{{- if .Values.master.priorityClassName }}
+      priorityClassName: "{{ .Values.master.priorityClassName }}"
+{{- end }}
       securityContext:
         fsGroup: 1000
       {{- if eq .Values.master.antiAffinity "hard" }}
