@@ -162,6 +162,17 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `deployment.hostPort.httpsEnabled`     | Whether to enable hostPort binding to host for https.                                                                        | `false`                                           |
 | `deployment.hostPort.dashboardEnabled` | Whether to enable hostPort binding to host for dashboard.                                                                    | `false`                                           |
 | `sendAnonymousUsage`                   | Send anonymous usage statistics.                                                                                             | `false`                                           |
+| `tracing.enabled`                      | Whether to enable request tracing                                                                                            | `false`                                           |
+| `tracing.backend`                      | Tracing backend to use, either `jaeger` or `zipkin`                                                                       | None                                              |
+| `tracing.serviceName`                  | Service name to be used in tracing backend                                                                                   | `traefik`                                         |
+| `tracing.jaeger.localAgentHostPort`    | Location of the Jaeger agent where spans will be sent                                                                        | `127.0.0.1:6831`                                  |
+| `tracing.jaeger.samplingServerUrl`     | Address of the Jaeger agent HTTP sampling server                                                                             | `http://localhost:5778/sampling`                  |
+| `tracing.jaeger.samplingType`          | Type of Jaeger sampler to use, one of: `const`, `probabilistic`, `ratelimiting`                                              | `const`                                           |
+| `tracing.jaeger.samplingParam`         | Value passed to the Jaeger sampler                                                                                           | `1.0`                                             |
+| `tracing.zipkin.httpEndpoint`          | Zipkin HTTP endpoint                                                                                                         | `http://localhost:9411/api/v1/spans`              |
+| `tracing.zipkin.debug`                 | Enables Zipkin debugging                                                                                                     | `false`                                           |
+| `tracing.zipkin.sameSpan`              | Use Zipkin SameSpan RPC style traces                                                                                         | `false`                                           |
+| `tracing.zipkin.id128Bit`              | Use Zipkin 128 bit root span IDs                                                                                             | `true`                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

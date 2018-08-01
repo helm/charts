@@ -162,3 +162,38 @@ data:
       pushinterval = {{ .Values.metrics.statsd.pushinterval | quote }}
       {{- end}}
     {{- end }}
+    {{- if .Values.tracing.enabled }}
+    [tracing]
+      backend = {{ .Values.tracing.backend | quote }}
+      serviceName = {{ .Values.tracing.serviceName | quote}}
+      {{- if eq .Values.tracing.backend "jaeger" }}
+      [tracing.jaeger]
+        {{- if .Values.tracing.jaeger.localAgentHostPort }}
+        localAgentHostPort = {{ .Values.tracing.jaeger.localAgentHostPort | quote }}
+        {{- end }}
+        {{- if .Values.tracing.jaeger.samplingServerUrl }}
+        samplingServerUrl = {{ .Values.tracing.jaeger.samplingServerUrl | quote }}
+        {{- end }}
+        {{- if .Values.tracing.jaeger.samplingType }}
+        samplingType = {{ .Values.tracing.jaeger.samplingType | quote }}
+        {{- end }}
+        {{- if ne (.Values.tracing.jaeger.samplingParam | quote) "" }}
+        samplingParam = {{ .Values.tracing.jaeger.samplingParam }}
+        {{- end }}
+      {{- end }}
+      {{- if eq .Values.tracing.backend "zipkin" }}
+      [tracing.zipkin]
+        {{- if .Values.tracing.zipkin.httpEndpoint }}
+        httpEndpoint = {{ .Values.tracing.zipkin.httpEndpoint | quote }}
+        {{- end }}
+        {{- if ne (.Values.tracing.zipkin.debug | quote) "" }}
+        debug = {{ .Values.tracing.zipkin.debug }}
+        {{- end }}
+        {{- if ne (.Values.tracing.zipkin.sameSpan | quote) "" }}
+        sameSpan = {{ .Values.tracing.zipkin.sameSpan }}
+        {{- end }}
+        {{- if ne (.Values.tracing.zipkin.id128bit | quote) "" }}
+        id128bit = {{ .Values.tracing.zipkin.id128bit }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
