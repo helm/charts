@@ -13,7 +13,7 @@ image:
   repository: quay.io/coreos/prometheus-operator
   tag: v0.22.2
   pullPolicy: IfNotPresent
-  
+
 createCustomResource: true
 
 serviceAccount:
@@ -45,7 +45,7 @@ global:
   rbac:
     create: true
     pspEnable: true
-  
+
   # Reference to one or more secrets to be used when pulling images
   imagePullSecrets: []
   #  - name: "image-pull-secret"
@@ -133,10 +133,10 @@ alertmanager:
     ## Service type
     ##
     type: ClusterIP
-    
+
     selector:
       component: metrics
-  
+
   ## If true, create a serviceMonitor for alertmanager
   ##
   serviceMonitor:
@@ -151,7 +151,7 @@ alertmanager:
     # The name of the ServiceAccount to use.
     # If not set and create is true, a name is generated using the fullname template
     name:
-    
+
   ## Alertmanager template files to include
   #
   templateFiles: {}
@@ -181,7 +181,7 @@ coreDns:
     selector:
       matchLabels:
         component: metrics
-        k8s-app: coredns 
+        k8s-app: coredns
 
   labels:
     k8s-app: coredns
@@ -194,13 +194,13 @@ coreDns:
     # The k8s-app label coredns service is deployed with
     selector:
       component: metrics
-      k8s-app: coredns 
+      k8s-app: coredns
 
 grafana:
   # Using default values from https://github.com/helm/charts/blob/master/stable/grafana/values.yaml
   deploy: true
 
-  datasources: 
+  datasources:
     datasources.yaml:
       apiVersion: 1
       datasources:
@@ -229,7 +229,7 @@ kubeApiServer:
       provider: kubernetes
 
 kubelet:
-  
+
   namespace: kube-system
   name: kubelet
 
@@ -295,7 +295,7 @@ kubeScheduler:
     k8s-app: kube-scheduler
 
   service:
-    selector: 
+    selector:
       k8s-app: kube-scheduler
 
 kubeStateMetrics:
@@ -312,12 +312,12 @@ kubeStateMetrics:
     k8s-app: kube-scheduler
 
   service:
-    selector: 
+    selector:
       k8s-app:  kube-state-metrics
 
 nodeexporter:
   deploy: true
-  
+
   serviceMonitor:
     selfMonitor: true
     jobLabel: k8s-app
@@ -328,12 +328,12 @@ nodeexporter:
   serviceAccount:
     name: prom-operator-node-exporter
     create: true
-    
+
   labels:
     k8s-app: node-exporter
 
   service:
-    selector: 
+    selector:
       k8s-app: node-exporter
 
 prometheusOperator:
@@ -351,7 +351,7 @@ prometheusOperator:
       k8s-app: prometheus-operator
 
 prometheus:
-  
+
   affinity: {}
 
   serviceAccount:
@@ -417,12 +417,12 @@ prometheus:
 
   labels:
       prometheus: k8s
-  
+
   service:
-    selector:      
+    selector:
       app: prometheus
       prometheus: k8s
-    
+
   prometheusSpec:
 
     baseImage: quay.io/prometheus/prometheus
@@ -481,7 +481,7 @@ prometheus:
     ## Prefix used to register routes, overriding externalUrl route.
     ## Useful for proxies that rewrite URLs.
     ##
-    routePrefix: /        
+    routePrefix: /
 
     ## Pod anti-affinity can prevent the scheduler from placing Prometheus replicas on the same node.
     ## The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided.
