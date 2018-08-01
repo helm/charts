@@ -32,7 +32,7 @@ spec:
         name: {{ .Chart.Name }}
         ports:
         - name: graphite-gui
-          containerPort: 8080
+          containerPort: {{ .Values.service.port }}
         - name: graphite-plain
           containerPort: 2003
         - name: graphite-pickle
@@ -45,6 +45,15 @@ spec:
           containerPort: 8125
         - name: statsd-admin
           containerPort: 8126
+          livenessProbe:
+            httpGet:
+              path: /
+              port: graphite-gui
+          readinessProbe:
+            httpGet:
+              path: /
+              port: graphite-gui
+          resources:
         volumeMounts:
           - name: {{ template "graphite.fullname" . }}-configmap
             mountPath: /opt/graphite/conf/
