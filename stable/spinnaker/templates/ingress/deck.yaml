@@ -11,7 +11,7 @@ metadata:
 {{ include "spinnaker.standard-labels" . | indent 4 }}
 spec:
   rules:
-  - host: {{ .Values.host | quote }}
+  - host: {{ .Values.ingress.host | quote }}
     http:
       paths:
       - path: /
