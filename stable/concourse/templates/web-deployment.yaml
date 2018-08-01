@@ -226,6 +226,113 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: gitlab-auth-host
             {{- end }}
+            {{- if .Values.secrets.ldapAuth.enabled }}
+            - name: CONCOURSE_LDAP_DISPLAY_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-display-name
+            - name: CONCOURSE_LDAP_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-host
+            - name: CONCOURSE_LDAP_BIND_DN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-bind-dn
+            - name: CONCOURSE_LDAP_BIND_PW
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-bind-pw
+            - name: CONCOURSE_LDAP_INSECURE_NO_SSL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-insecure-no-ssl
+            - name: CONCOURSE_LDAP_INSECURE_SKIP_VERIFY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-insecure-skip-verify
+            - name: CONCOURSE_LDAP_START_TLS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-start-tls
+            - name: CONCOURSE_LDAP_CA_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-ca-cert
+            - name: CONCOURSE_LDAP_USER_SEARCH_BASE_DN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-user-search-base-dn
+            - name: CONCOURSE_LDAP_USER_SEARCH_FILTER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-user-search-filter
+            - name: CONCOURSE_LDAP_USER_SEARCH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-user-search-username
+            - name: CONCOURSE_LDAP_USER_SEARCH_SCOPE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-user-search-scope
+            - name: CONCOURSE_LDAP_USER_SEARCH_ID_ATTR
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-user-search-id-attr
+            - name: CONCOURSE_LDAP_USER_SEARCH_EMAIL_ATTR
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-user-search-email-attr
+            - name: CONCOURSE_LDAP_USER_SEARCH_NAME_ATTR
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-user-search-name-attr
+            - name: CONCOURSE_LDAP_GROUP_SEARCH_BASE_DN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-group-search-base-dn
+            - name: CONCOURSE_LDAP_GROUP_SEARCH_FILTER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-group-search-filter
+            - name: CONCOURSE_LDAP_GROUP_SEARCH_SCOPE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-group-search-scope
+            - name: CONCOURSE_LDAP_GROUP_SEARCH_USER_ATTR
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-group-search-user-attr
+            - name: CONCOURSE_LDAP_GROUP_SEARCH_GROUP_ATTR
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-group-search-group-attr
+            - name: CONCOURSE_LDAP_GROUP_SEARCH_NAME_ATTR
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: ldap-auth-group-search-name-attr
+            {{- end }}
             {{- if .Values.secrets.oauthAuth.enabled }}
             - name: CONCOURSE_OAUTH_CLIENT_ID
               valueFrom:
@@ -435,6 +542,10 @@ spec:
               value: {{ join "," .gitlabUsers }}
             - name: CONCOURSE_MAIN_TEAM_GITLAB_GROUP
               value: {{ join "," .gitlabGroups }}
+            - name: CONCOURSE_MAIN_TEAM_LDAP_USER
+              value: {{ join "," .ldapUsers }}
+            - name: CONCOURSE_MAIN_TEAM_LDAP_GROUP
+              value: {{ join "," .ldapGroups }}
             - name: CONCOURSE_MAIN_TEAM_OAUTH_USER
               value: {{ join "," .oauthUsers }}
             - name: CONCOURSE_MAIN_TEAM_OAUTH_GROUP

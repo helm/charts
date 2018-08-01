@@ -93,6 +93,8 @@ The following table lists the configurable parameters of the Concourse chart and
 | `concourse.mainTeam.githubTeams` | List of GitHub teams (in `ORG_NAME:TEAM_NAME` format) with access to the main team | `[]` |
 | `concourse.mainTeam.gitlabUsers` | List of GitLab users with access to the main team | `[]` |
 | `concourse.mainTeam.gitlabGroups` | List of GitLab groups with access to the main team | `[]` |
+| `concourse.mainTeam.ldapUsers` | List of LDAP users with access to the main team | `[]` |
+| `concourse.mainTeam.ldapGroups` | List of LDAP groups with access to the main team | `[]` |
 | `concourse.mainTeam.oauthUsers` | List of OAuth2 users with access to the main team | `[]` |
 | `concourse.mainTeam.oauthGroups` | List of OAuth2 groups with access to the main team | `[]` |
 | `concourse.workingDirectory` | The working directory for concourse | `/concourse-work-dir` |
@@ -199,6 +201,28 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.gitlabAuth.clientId` | GitLab Authentication: (Required if GitLab enabled) Client id | `nil` |
 | `secrets.gitlabAuth.clientSecret` | GitLab Authentication: (Required if GitLab enabled) Client secret | `nil` |
 | `secrets.gitlabAuth.host` | GitLab Authentication: Hostname of Gitlab Enterprise deployment (Include scheme, No trailing slash) | `nil` |
+| `secrets.ldapAuth.enabled` | LDAP Authentication: (Required) Enable LDAP authentication | `false` |
+| `secrets.ldapAuth.displayName` | LDAP Authentication: The auth provider name displayed to users on the login page | `nil` |
+| `secrets.ldapAuth.host` | LDAP Authentication: (Required if LDAP enabled) The host and optional port of the LDAP server. If port isn't supplied, it will be guessed based on the TLS configuration. 389 or 636. | `nil` |
+| `secrets.ldapAuth.bindDn` | LDAP Authentication: (Required if LDAP enabled) Bind DN for searching LDAP users and groups. Typically this is a read-only user. | `nil` |
+| `secrets.ldapAuth.bindPw` | LDAP Authentication: (Required if LDAP enabled) Bind Password for the user specified by `secrets.ldapBindDn` | `nil` |
+| `secrets.ldapAuth.insecureNoSsl` | LDAP Authentication: Required if LDAP host does not use TLS. | `nil` |
+| `secrets.ldapAuth.insecureSkipVerify` | LDAP Authentication: Skip certificate verification | `nil` |
+| `secrets.ldapAuth.startTls` | LDAP Authentication: Start on insecure port, then negotiate TLS | `nil` |
+| `secrets.ldapAuth.caCert` | LDAP Authentication: CA certificate | `nil` |
+| `secrets.ldapAuth.userSearchBaseDn` | LDAP Authentication: BaseDN to start the search from. For example `cn=users,dc=example,dc=com` | `nil` |
+| `secrets.ldapAuth.userSearchFilter` | LDAP Authentication: Optional filter to apply when searching the directory. For example `(objectClass=person)` | `nil` |
+| `secrets.ldapAuth.userSearchUsername` | LDAP Authentication: Attribute to match against the inputted username. This will be translated and combined with the other filter as '(<attr>=<username>)'. | `nil` |
+| `secrets.ldapAuth.userSearchScope` | LDAP Authentication: Can either be: `sub` - search the whole sub tree or `one` - only search one level. Defaults to 'sub' when not specified. | `nil` |
+| `secrets.ldapAuth.userSearchIdAttr` | LDAP Authentication: A mapping of attributes on the user entry to claims. Defaults to 'uid' when not specified. | `nil` |
+| `secrets.ldapAuth.userSearchEmailAttr` | LDAP Authentication: A mapping of attributes on the user entry to claims. Defaults to 'mail' when not specified. | `nil` |
+| `secrets.ldapAuth.userSearchNameAttr` | LDAP Authentication: A mapping of attributes on the user entry to claims. | `nil` |
+| `secrets.ldapAuth.groupSearchBaseDn` | LDAP Authentication: BaseDN to start the search from. For example `cn=groups,dc=example,dc=com` | `nil` |
+| `secrets.ldapAuth.groupSearchFilter` | LDAP Authentication: Optional filter to apply when searching the directory. For example `(objectClass=posixGroup)` | `nil` |
+| `secrets.ldapAuth.groupSearchScope` | LDAP Authentication: Can either be: `sub` - search the whole sub tree or `one` - only search one level. Defaults to 'sub' when not specified. | `nil` |
+| `secrets.ldapAuth.groupSearchUserAttr` | LDAP Authentication: Adds an additional requirement to the filter that an attribute in the group match the user's attribute value. The exact filter being added is: (<groupAttr>=<userAttr value>) | `nil` |
+| `secrets.ldapAuth.groupSearchGroupAttr` | LDAP Authentication: Adds an additional requirement to the filter that an attribute in the group match the user's attribute value. The exact filter being added is: (<groupAttr>=<userAttr value>) | `nil` |
+| `secrets.ldapAuth.groupSearchNameAttr` | LDAP Authentication: The attribute of the group that represents its name. | `nil` |
 | `secrets.oauthAuth.enabled` | OAuth2 Authentication: (Required) Enable OAuth2 authentication | `false` |
 | `secrets.oauthAuth.displayName` | OAuth2 Authentication: The auth provider name displayed to users on the login page | `nil` |
 | `secrets.oauthAuth.clientId` | OAuth2 Authentication: (Required if OAuth2 enabled) Client id | `nil` |
