@@ -385,6 +385,48 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: oauth-auth-skip-ssl-validation
             {{- end }}
+            {{- if .Values.secrets.oidcAuth.enabled }}
+            - name: CONCOURSE_OIDC_DISPLAY_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oidc-auth-display-name
+            - name: CONCOURSE_OIDC_ISSUER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oidc-auth-issuer
+            - name: CONCOURSE_OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oidc-auth-client-id
+            - name: CONCOURSE_OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oidc-auth-client-secret
+            - name: CONCOURSE_OIDC_SCOPE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oidc-auth-scope
+            - name: CONCOURSE_OIDC_GROUPS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oidc-auth-groups-key
+            - name: CONCOURSE_OIDC_CA_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oidc-auth-ca-cert
+            - name: CONCOURSE_OIDC_SKIP_SSL_VALIDATION
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oidc-auth-skip-ssl-validation
+            {{- end }}
             {{- if .Values.credentialManager.kubernetes.enabled }}
             - name: CONCOURSE_KUBERNETES_NAMESPACE_PREFIX
               value: {{ template "concourse.namespacePrefix" . }}
@@ -550,6 +592,10 @@ spec:
               value: {{ join "," .oauthUsers }}
             - name: CONCOURSE_MAIN_TEAM_OAUTH_GROUP
               value: {{ join "," .oauthGroups }}
+            - name: CONCOURSE_MAIN_TEAM_OIDC_USER
+              value: {{ join "," .oidcUsers }}
+            - name: CONCOURSE_MAIN_TEAM_OIDC_GROUP
+              value: {{ join "," .oidcGroups }}
             {{- end }}
 {{- if .Values.web.extraEnv }}
 {{ toYaml .Values.web.extraEnv | indent 12 }}

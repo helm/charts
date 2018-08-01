@@ -97,6 +97,8 @@ The following table lists the configurable parameters of the Concourse chart and
 | `concourse.mainTeam.ldapGroups` | List of LDAP groups with access to the main team | `[]` |
 | `concourse.mainTeam.oauthUsers` | List of OAuth2 users with access to the main team | `[]` |
 | `concourse.mainTeam.oauthGroups` | List of OAuth2 groups with access to the main team | `[]` |
+| `concourse.mainTeam.oidcUsers` | List of OIDC users with access to the main team | `[]` |
+| `concourse.mainTeam.oidcGroups` | List of OIDC groups with access to the main team | `[]` |
 | `concourse.workingDirectory` | The working directory for concourse | `/concourse-work-dir` |
 | `web.nameOverride` | Override the Concourse Web components name | `nil` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
@@ -234,6 +236,15 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.oauthAuth.groupsKey` | OAuth2 Authentication: The groups key indicates which claim to use to map external groups to Concourse teams. | `nil` |
 | `secrets.oauthAuth.caCert` | OAuth2 Authentication: CA Certificate | `nil` |
 | `secrets.oauthAuth.skipSslValidation` | OAuth2 Authentication: Skip SSL validation | `nil` |
+| `secrets.oidcAuth.enabled` | OIDC Authentication: (Required) Enable OIDC authentication | `false` |
+| `secrets.oidcAuth.displayName` | OIDC Authentication: The auth provider name displayed to users on the login page | `nil` |
+| `secrets.oidcAuth.issuer` | OIDC Authentication: (Required if OIDC enabled) An OIDC issuer URL that will be used to discover provider configuration using the .well-known/openid-configuration | `nil` |
+| `secrets.oidcAuth.clientId` | OIDC Authentication: (Required if OIDC enabled) Client id | `nil` |
+| `secrets.oidcAuth.clientSecret` | OIDC Authentication: (Required if OIDC enabled) Client secret | `nil` |
+| `secrets.oidcAuth.scope` | OIDC Authentication: Any additional scopes that need to be requested during authorization | `nil` |
+| `secrets.oidcAuth.groupsKey` | OIDC Authentication: The groups key indicates which claim to use to map external groups to Concourse teams. | `nil` |
+| `secrets.oidcAuth.caCert` | OIDC Authentication: CA Certificate | `nil` |
+| `secrets.oidcAuth.skipSslValidation` | OIDC Authentication: Skip SSL validation | `nil` |
 | `secrets.externalPostgres.enabled` | External Postgres: Use an externally provided postgres | `false` |
 | `secrets.externalPostgres.host` | External Postgres: (Required if external postgres enabled) The host to connect to. | `nil` |
 | `secrets.externalPostgres.port` | External Postgres: The port to connect to. | `5432` |

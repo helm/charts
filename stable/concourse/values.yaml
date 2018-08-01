@@ -142,6 +142,12 @@ concourse:
     ## List of OAuth2 groups with access to the main team
     oauthGroups: []
 
+    ## List of OIDC users with access to the main team
+    oidcUsers: []
+
+    ## List of OIDC groups with access to the main team
+    oidcGroups: []
+
 ## Configuration values for Concourse Web components.
 ##
 web:
@@ -887,6 +893,36 @@ secrets:
 
     ## Userinfo URL
     # userinfoUrl:
+
+    ## Any additional scopes that need to be requested during authorization
+    # scope:
+
+    ## The groups key indicates which claim to use to map external groups to Concourse teams.
+    # groupsKey:
+
+    ## CA Certificate
+    # caCert:
+
+    ## Skip SSL validation
+    # skipSslValidation:
+
+  ## Secrets for OIDC.
+  ## See https://concourse-ci.org/install.html#generic-oidc-config
+  oidcAuth:
+    ## Enable the OIDC auth provider
+    enabled: false
+
+    ## The auth provider name displayed to users on the login page
+    # displayName:
+
+    ## (Required if OIDC enabled) An OIDC issuer URL that will be used to discover provider configuration using the .well-known/openid-configuration
+    # issuer:
+
+    ## (Required if OIDC enabled) Client id
+    # clientId:
+
+    ## (Required if OIDC enabled) Client secret
+    # clientSecret:
 
     ## Any additional scopes that need to be requested during authorization
     # scope:
