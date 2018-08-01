@@ -105,3 +105,6 @@ ingress:
   annotations: {}
   hostname: ""
   labels: {}
+  tls:
+    enabled: false
+    secretName: schema-registry-tls
