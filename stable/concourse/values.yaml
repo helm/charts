@@ -106,6 +106,15 @@ concourse:
     ## Allow all logged in users to access the main team. ALL OF THEM. If, for example, you've configured GitHub, any user with a GitHub account will have access to your main team.
     allowAllUsers: false
 
+    ## List of CloudFoundry users with access to the main team
+    cfUsers: []
+
+    ## List of CloudFoundry orgs with access to the main team
+    cfOrgs: []
+
+    ## List of whitelisted CloudFoundry spaces (in `ORG_NAME:SPACE_NAME` format) with access to the main team
+    cfSpaces: []
+
     ## List of GitHub users with access to the main team
     githubUsers: []
 
@@ -726,6 +735,27 @@ secrets:
     ## Default password for "concourse" user is "concourse"
     localUsers:
       - "concourse:$2a$12$HKPJ1pXLZjJWG0qLJegI9ezG4W.U5bC0blWV37u0vLePc/2uYRykm"
+
+  ## Secrets for CloudFoundry auth.
+  ## See https://concourse-ci.org/install.html#cf-auth-config
+  cfAuth:
+    ## Enable the GitHub auth provider
+    enabled: false
+
+    ## (Required if CloudFoundry enabled) Client id
+    # clientId:
+
+    ## (Required if CloudFoundry enabled) Client secret
+    # clientSecret:
+
+    ## (Required if CloudFoundry enabled) The base API URL of your CF deployment. It will use this information to discover information about the authentication provider.
+    # apiUrl:
+
+    ## CA Certificate
+    # caCert:
+
+    ## Skip SSL validation
+    # skipSslValidation:
 
   ## Secrets for GitHub auth.
   ## See https://concourse-ci.org/install.html#github-auth-config

@@ -160,6 +160,33 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: local-user-auth-local-users
             {{- end }}
+            {{- if .Values.secrets.cfAuth.enabled }}
+            - name: CONCOURSE_CF_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: cf-auth-client-id
+            - name: CONCOURSE_CF_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: cf-auth-client-secret
+            - name: CONCOURSE_CF_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: cf-auth-api-url
+            - name: CONCOURSE_CF_CA_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: cf-auth-ca-cert
+            - name: CONCOURSE_CF_SKIP_SSL_VALIDATION
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: cf-auth-skip-ssl-validation
+            {{- end }}
             {{- if .Values.secrets.githubAuth.enabled }}
             - name: CONCOURSE_GITHUB_CLIENT_ID
               valueFrom:
@@ -392,6 +419,12 @@ spec:
             - name: CONCOURSE_MAIN_TEAM_ALLOW_ALL_USERS
               value: ""
             {{- end }}
+            - name: CONCOURSE_MAIN_TEAM_CF_USER
+              value: {{ join "," .cfUsers }}
+            - name: CONCOURSE_MAIN_TEAM_CF_ORG
+              value: {{ join "," .cfOrgs }}
+            - name: CONCOURSE_MAIN_TEAM_CF_SPACE
+              value: {{ join "," .cfSpaces }}
             - name: CONCOURSE_MAIN_TEAM_GITHUB_USER
               value: {{ join "," .githubUsers }}
             - name: CONCOURSE_MAIN_TEAM_GITHUB_ORG

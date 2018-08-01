@@ -85,6 +85,9 @@ The following table lists the configurable parameters of the Concourse chart and
 | `concourse.encryption.enabled` | Enable encryption of pipeline configuration | `false` |
 | `concourse.mainTeam.localUsers` | List of local concourse users with access to the main team | `["concourse"]` |
 | `concourse.mainTeam.allowAllUsers` | Allow all logged in users to access the main team. ALL OF THEM. If, for example, you've configured GitHub, any user with a GitHub account will have access to your main team. | `false` |
+| `concourse.mainTeam.cfUsers` | List of CloudFoundry users with access to the main team | `[]` |
+| `concourse.mainTeam.cfOrgs` | List of CloudFoundry orgs with access to the main team | `[]` |
+| `concourse.mainTeam.cfSpaces` | List of whitelisted CloudFoundry spaces (in `ORG_NAME:SPACE_NAME` format) with access to the main team | `[]` |
 | `concourse.mainTeam.githubUsers` | List of GitHub users with access to the main team | `[]` |
 | `concourse.mainTeam.githubOrgs` | List of GitHub orgs with access to the main team | `[]` |
 | `concourse.mainTeam.githubTeams` | List of GitHub teams (in `ORG_NAME:TEAM_NAME` format) with access to the main team | `[]` |
@@ -181,6 +184,12 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.awsSsmSessionToken` | AWS Session Token for SSM access | `nil` |
 | `secrets.localUserAuth.enabled` | Local User Authentication: (Required) Enable Local User authentication | `true` |
 | `secrets.localUserAuth.localUsers` | List of `username:password` combinations for all your local users. The password can be bcrypted - if so, it must have a minimum cost of 10. | `["concourse:<bcrypt hash of 'concourse'>]`
+| `secrets.cfAuth.enabled` | CloudFoundry Authentication: (Required) Enable CloudFoundry authentication | `false` |
+| `secrets.cfAuth.clientId` | CloudFoundry Authentication: (Required if CloudFoundry enabled) Client id | `nil` |
+| `secrets.cfAuth.clientSecret` | CloudFoundry Authentication: (Required if CloudFoundry enabled) Client secret | `nil` |
+| `secrets.cfAuth.apiUrl` | CloudFoundry Authentication: (Required if CloudFoundry enabled) The base API URL of your CF deployment. It will use this information to discover information about the authentication provider. | `nil` |
+| `secrets.cfAuth.caCert` | CloudFoundry Authentication: CA Certificate | `nil` |
+| `secrets.cfAuth.skipSslValidation` | CloudFoundry Authentication: Skip SSL validation | `nil` |
 | `secrets.githubAuth.enabled` | GitHub Authentication: (Required) Enable GitHub authentication | `false` |
 | `secrets.githubAuth.clientId` | GitHub Authentication: (Required if GitHub enabled) Client id | `nil` |
 | `secrets.githubAuth.clientSecret` | GitHub Authentication: (Required if GitHub enabled) Client secret | `nil` |
