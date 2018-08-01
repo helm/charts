@@ -306,14 +306,14 @@ kubeStateMetrics:
     jobLabel: k8s-app
     selector:
       matchLabels:
-        k8s-app:  kube-state-metrics
+        k8s-app: kube-state-metrics
 
   labels:
     k8s-app: kube-scheduler
 
   service:
     selector:
-      k8s-app:  kube-state-metrics
+      k8s-app: kube-state-metrics
 
 nodeexporter:
   deploy: true
@@ -368,11 +368,11 @@ prometheus:
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
     # https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/manifests/0prometheus-operator-deployment.yaml#L29-L35
     limits:
-    cpu: 200m
-    memory: 100Mi
+      cpu: 200m
+      memory: 100Mi
     requests:
-    cpu: 100m
-    memory: 50Mi
+      cpu: 100m
+      memory: 50Mi
 
   tolerations: []
 
@@ -416,7 +416,7 @@ prometheus:
         prometheus: k8s
 
   labels:
-      prometheus: k8s
+    prometheus: k8s
 
   service:
     selector:
@@ -446,17 +446,9 @@ prometheus:
     externalUrl: ""
 
     ruleSelector:
-        matchLabels:
-          prometheus: k8s
-          role: alert-rules
-
-    ## Custom Labels to be added to ServiceMonitor
-    ##
-    additionalSelfServiceMonitorLabels: {}
-
-    ##Custom Labels to be added to Prometheus Rules CRDs
-    ##
-    additionalRulesLabels: {}
+      matchLabels:
+        prometheus: k8s
+        role: alert-rules
 
     serviceMonitorSelector:
       matchLabels:
@@ -502,8 +494,6 @@ prometheus:
       #   - url: http://remote1/push
 
     ## Resource limits & requests
-    ## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
-    ##
     resources: {}
       # requests:
       #   memory: 400Mi
