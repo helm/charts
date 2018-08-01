@@ -83,6 +83,9 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `kafka.enabled` | If `true`, install Kafka/Zookeeper alongside the `SchemaRegistry`. This is intended for testing and argument-less helm installs of this chart only and should not be used in Production. | `true` |
 | `kafka.replicas` | The number of Kafka Pods to install as part of the `StatefulSet` if `kafka.Enabled` is `true`| `1` |
 | `kafka.zookeeper.servers` | The number of Zookeeper Pods to install as part of the `StatefulSet` if `kafka.Enabled` is `true`| `1` |
-| `ingress.enabled` | Enable Ingress? | `false`
-| `ingress.hostname` | set hostname for ingress | `""`
-| `ingress.annotations` | set annotations for ingress | `{}`
+| `ingress.enabled` | Enable Ingress? | `false` |
+| `ingress.hostname` | set hostname for ingress | `""` |
+| `ingress.annotations` | set annotations for ingress | `{}` |
+| `ingress.tls.enabled` | Enable TLS for the Ingress | `false` |
+| `ingress.tls.secretName` | Name of the Kubernetes `Secret` object to obtain the TLS certificate from | `schema-registry-tls` |
+
