@@ -73,11 +73,8 @@ The following table lists the configurable parameters of the Concourse chart and
 | `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.atcPort` | Concourse ATC listen port | `8080` |
 | `concourse.tsaPort` | Concourse TSA listen port | `2222` |
-| `concourse.allowSelfSignedCertificates` | Allow self signed certificates | `false` |
 | `concourse.authDuration` | Length of time for which tokens are valid | `24h` |
 | `concourse.resourceCheckingInterval` | Interval on which to check for new versions of resources | `1m` |
-| `concourse.oldResourceGracePeriod` | How long to cache the result of a get step after a newer version of the resource is found | `5m` |
-| `concourse.resourceCacheCleanupInterval` | The interval on which to check for and release old caches of resource versions | `30s` |
 | `concourse.baggageclaimDriver` | The filesystem driver used by baggageclaim | `naive` |
 | `concourse.containerPlacementStrategy` | The selection strategy for placing containers onto workers | `random` |
 | `concourse.dockerRegistry` | A URL pointing to the Docker registry to use to fetch Docker images | `nil` |

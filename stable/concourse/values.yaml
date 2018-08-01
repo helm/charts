@@ -35,10 +35,6 @@ concourse:
   ##
   tsaPort: 2222
 
-  ## Allow self signed certificates.
-  ##
-  allowSelfSignedCertificates: false
-
   ## Length of time for which tokens are valid. Afterwards, users will have to log back in.
   ## Use Go duration format (48h = 48 hours).
   ##
@@ -48,16 +44,6 @@ concourse:
   ## Use Go duration format (1m = 1 minute).
   ##
   resourceCheckingInterval: 1m
-
-  ## How long to cache the result of a get step after a newer version of the resource is found.
-  ## Use Go duration format (1m = 1 minute).
-  ##
-  oldResourceGracePeriod: 5m
-
-  ## The interval on which to check for and release old caches of resource versions.
-  ## Use Go duration format (1m = 1 minute),
-  ##
-  resourceCacheCleanupInterval: 30s
 
   ## URL used to reach any ATC from the outside world.
   ##

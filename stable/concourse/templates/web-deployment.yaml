@@ -122,16 +122,10 @@ spec:
               value: "http://$(POD_IP):$(CONCOURSE_BIND_PORT)"
             - name: CONCOURSE_TSA_BIND_PORT
               value: {{ .Values.concourse.tsaPort | quote }}
-            - name: CONCOURSE_ALLOW_SELF_SIGNED_CERTIFICATES
-              value: {{ .Values.concourse.allowSelfSignedCertificates | quote }}
             - name: CONCOURSE_AUTH_DURATION
               value: {{ .Values.concourse.authDuration | quote }}
             - name: CONCOURSE_RESOURCE_CHECKING_INTERVAL
               value: {{ .Values.concourse.resourceCheckingInterval | quote }}
-            - name: CONCOURSE_OLD_RESOURCE_GRACE_PERIOD
-              value: {{ .Values.concourse.oldResourceGracePeriod | quote }}
-            - name: CONCOURSE_RESOURCE_CACHE_CLEANUP_INTERVAL
-              value: {{ .Values.concourse.resourceCacheCleanupInterval | quote }}
             - name: CONCOURSE_CONTAINER_PLACEMENT_STRATEGY
               value: {{ .Values.concourse.containerPlacementStrategy | quote }}
             {{- if .Values.secrets.localUserAuth.enabled }}
