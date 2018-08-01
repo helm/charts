@@ -40,6 +40,9 @@ The following table lists the configurable parameters of the Graphite chart and 
 | `image.tag`                    | Docker image                                 | `1.1.3`                                |
 | `image.pullPolicy`             | Docker image pull policy                     | `IfNotPresent`                         |
 | `service.type`                 | Service type                                 | `ClusterIP`                            |
+| `service.port`                 | Service port of Graphite UI                  | `8080`                                 |
+| `service.annotations`          | Service annotations                          | `{}`                                   |
+| `service.labels`               | Service labels                               | `{}`                                   |
 | `persistence.enabled`          | Enable config persistence using PVC          | `true`                                 |
 | `persistence.storageClass`     | PVC Storage Class for config volume          | `nil`                                  |
 | `persistence.existingClaim`    | Name of an existing PVC to use for config    | `nil`                                  |
