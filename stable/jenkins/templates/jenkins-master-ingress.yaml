@@ -1,22 +1,39 @@
-{{- if .Values.Master.HostName }}
+{{- if .Values.Master.Ingress.Enabled -}}
+{{- $fullName := include "jenkins.fullname" . -}}
+{{- $servicePort := .Values.Master.ServicePort -}}
+{{- $ingressPath := .Values.Master.Ingress.Path -}}
 apiVersion: {{ .Values.Master.Ingress.ApiVersion }}
 kind: Ingress
 metadata:
-{{- if .Values.Master.Ingress.Annotations }}
+  name: {{ $fullName }}
+  labels:
+    app: {{ template "jenkins.name" . }}
+    chart: {{ template "jenkins.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.Master.Ingress.Annotations }}
   annotations:
-{{ toYaml .Values.Master.Ingress.Annotations | indent 4 }}
+{{ toYaml . | indent 4 }}
 {{- end }}
-  name: {{ template "jenkins.fullname" . }}
 spec:
-  rules:
-  - host: {{ .Values.Master.HostName | quote }}
-    http:
-      paths:
-      - backend:
-          serviceName: {{ template "jenkins.fullname" . }}
-          servicePort: {{ .Values.Master.ServicePort }}
 {{- if .Values.Master.Ingress.TLS }}
   tls:
-{{ toYaml .Values.Master.Ingress.TLS | indent 4 }}
-{{- end -}}
+  {{- range .Values.Master.Ingress.TLS }}
+    - hosts:
+      {{- range .Hosts }}
+        - {{ . }}
+      {{- end }}
+      secretName: {{ .SecretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.Master.Ingress.Hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: {{ $ingressPath }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $servicePort }}
+  {{- end }}
 {{- end }}
