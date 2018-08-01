@@ -33,12 +33,12 @@
     kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:{{ .Values.concourse.atcPort }}
     {{- end }}
   {{- end }}
-{{- if .Values.concourse.basicAuth.enabled }}
+{{- if and .Values.secrets.localUserAuth.enabled (gt (len .Values.concourse.mainTeam.localUsers) 0) }}
 
 * Login with the following credentials
   {{ if .Values.secrets.create }}
-  Username: {{ .Values.secrets.basicAuthUsername }}
-  Password: {{ .Values.secrets.basicAuthPassword }}
+  Username: {{ index .Values.concourse.mainTeam.localUsers 0 }}
+  Password: if unchanged from chart default, password is 'concourse'
   {{ else }}
   Username: see basic-auth-username in secret {{ template "concourse.concourse.fullname" . }}
   Password: see basic-auth-password in secret {{ template "concourse.concourse.fullname" . }}

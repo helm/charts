@@ -123,83 +123,103 @@ spec:
               value: {{ .Values.concourse.resourceCacheCleanupInterval | quote }}
             - name: CONCOURSE_CONTAINER_PLACEMENT_STRATEGY
               value: {{ .Values.concourse.containerPlacementStrategy | quote }}
-            {{- if .Values.concourse.basicAuth.enabled }}
-            - name: CONCOURSE_BASIC_AUTH_USERNAME
+            {{- if .Values.secrets.localUserAuth.enabled }}
+            - name: CONCOURSE_ADD_LOCAL_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
-                  key: basic-auth-username
-            - name: CONCOURSE_BASIC_AUTH_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: basic-auth-password
+                  key: local-user-auth-local-users
             {{- end }}
-            {{- if .Values.concourse.githubAuth.enabled }}
-            - name: CONCOURSE_GITHUB_AUTH_CLIENT_ID
+            {{- if .Values.secrets.githubAuth.enabled }}
+            - name: CONCOURSE_GITHUB_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: github-auth-client-id
-            - name: CONCOURSE_GITHUB_AUTH_CLIENT_SECRET
+            - name: CONCOURSE_GITHUB_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: github-auth-client-secret
-            - name: CONCOURSE_GITHUB_AUTH_ORGANIZATION
-              value: {{ .Values.concourse.githubAuth.organization | quote }}
-            - name: CONCOURSE_GITHUB_AUTH_TEAM
-              value: {{ .Values.concourse.githubAuth.team | quote }}
-            - name: CONCOURSE_GITHUB_AUTH_USER
-              value: {{ .Values.concourse.githubAuth.user | quote }}
-            - name: CONCOURSE_GITHUB_AUTH_AUTH_URL
-              value: {{ .Values.concourse.githubAuth.authUrl | quote }}
-            - name: CONCOURSE_GITHUB_AUTH_TOKEN_URL
-              value: {{ .Values.concourse.githubAuth.tokenUrl | quote }}
-            - name: CONCOURSE_GITHUB_AUTH_API_URL
-              value: {{ .Values.concourse.githubAuth.apiUrl | quote }}
+            - name: CONCOURSE_GITHUB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: github-auth-host
+            - name: CONCOURSE_GITHUB_CA_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: github-auth-ca-cert
             {{- end }}
-            {{- if .Values.concourse.gitlabAuth.enabled }}
-            - name: CONCOURSE_GITLAB_AUTH_CLIENT_ID
+            {{- if .Values.secrets.gitlabAuth.enabled }}
+            - name: CONCOURSE_GITLAB_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: gitlab-auth-client-id
-            - name: CONCOURSE_GITLAB_AUTH_CLIENT_SECRET
+            - name: CONCOURSE_GITLAB_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: gitlab-auth-client-secret
-            - name: CONCOURSE_GITLAB_AUTH_GROUP
-              value: {{ .Values.concourse.gitlabAuth.group | quote }}
-            - name: CONCOURSE_GITLAB_AUTH_AUTH_URL
-              value: {{ .Values.concourse.gitlabAuth.authUrl | quote }}
-            - name: CONCOURSE_GITLAB_AUTH_TOKEN_URL
-              value: {{ .Values.concourse.gitlabAuth.tokenUrl | quote }}
-            - name: CONCOURSE_GITLAB_AUTH_API_URL
-              value: {{ .Values.concourse.gitlabAuth.apiUrl | quote }}
+            - name: CONCOURSE_GITLAB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: gitlab-auth-host
             {{- end }}
-            {{- if .Values.concourse.genericOauth.enabled }}
-            - name: CONCOURSE_GENERIC_OAUTH_CLIENT_ID
+            {{- if .Values.secrets.oauthAuth.enabled }}
+            - name: CONCOURSE_OAUTH_CLIENT_ID
+              valueFrom:
+                  secretKeyRef:
+                    name: {{ template "concourse.concourse.fullname" . }}
+                    key: oauth-auth-client-id
+            - name: CONCOURSE_OAUTH_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
-                  key: generic-oauth-client-id
-            - name: CONCOURSE_GENERIC_OAUTH_CLIENT_SECRET
+                  key: oauth-auth-client-secret
+            - name: CONCOURSE_OAUTH_AUTH_URL
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
-                  key: generic-oauth-client-secret
-            - name: CONCOURSE_GENERIC_OAUTH_DISPLAY_NAME
-              value: {{ .Values.concourse.genericOauth.displayName | quote }}
-            - name: CONCOURSE_GENERIC_OAUTH_AUTH_URL
-              value: {{ .Values.concourse.genericOauth.authUrl | quote }}
-            - name: CONCOURSE_GENERIC_OAUTH_AUTH_URL_PARAM
-              value: {{ .Values.concourse.genericOauth.authUrlParam | quote }}
-            - name: CONCOURSE_GENERIC_OAUTH_SCOPE
-              value: {{ .Values.concourse.genericOauth.scope | quote }}
-            - name: CONCOURSE_GENERIC_OAUTH_TOKEN_URL
-              value: {{ .Values.concourse.genericOauth.tokenUrl | quote }}
+                  key: oauth-auth-auth-url
+            - name: CONCOURSE_OAUTH_TOKEN_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oauth-auth-token-url
+            - name: CONCOURSE_OAUTH_DISPLAY_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oauth-auth-display-name
+            - name: CONCOURSE_OAUTH_USERINFO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oauth-auth-userinfo-url
+            - name: CONCOURSE_OAUTH_SCOPE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oauth-auth-scope
+            - name: CONCOURSE_OAUTH_GROUPS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oauth-auth-groups-key
+            - name: CONCOURSE_OAUTH_CA_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oauth-auth-ca-cert
+            - name: CONCOURSE_OAUTH_SKIP_SSL_VALIDATION
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: oauth-auth-skip-ssl-validation
             {{- end }}
             {{- if .Values.credentialManager.kubernetes.enabled }}
             - name: CONCOURSE_KUBERNETES_NAMESPACE_PREFIX
@@ -334,6 +354,28 @@ spec:
                   key: influxdb-password
             - name: CONCOURSE_INFLUXDB_INSECURE_SKIP_VERIFY
               value: {{ .Values.web.metrics.influxdb.insecureSkipVerify | quote}}
+            {{- end }}
+            {{- with .Values.concourse.mainTeam }}
+            - name: CONCOURSE_MAIN_TEAM_LOCAL_USER
+              value: {{ join "," .localUsers }}
+            {{- if .allowAllUsers }}
+            - name: CONCOURSE_MAIN_TEAM_ALLOW_ALL_USERS
+              value: ""
+            {{- end }}
+            - name: CONCOURSE_MAIN_TEAM_GITHUB_USER
+              value: {{ join "," .githubUsers }}
+            - name: CONCOURSE_MAIN_TEAM_GITHUB_ORG
+              value: {{ join "," .githubOrgs }}
+            - name: CONCOURSE_MAIN_TEAM_GITHUB_TEAM
+              value: {{ join "," .githubTeams }}
+            - name: CONCOURSE_MAIN_TEAM_GITLAB_USER
+              value: {{ join "," .gitlabUsers }}
+            - name: CONCOURSE_MAIN_TEAM_GITLAB_GROUP
+              value: {{ join "," .gitlabGroups }}
+            - name: CONCOURSE_MAIN_TEAM_OAUTH_USER
+              value: {{ join "," .oauthUsers }}
+            - name: CONCOURSE_MAIN_TEAM_OAUTH_GROUP
+              value: {{ join "," .oauthGroups }}
             {{- end }}
 {{- if .Values.web.extraEnv }}
 {{ toYaml .Values.web.extraEnv | indent 12 }}

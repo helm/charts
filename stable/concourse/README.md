@@ -83,25 +83,15 @@ The following table lists the configurable parameters of the Concourse chart and
 | `concourse.dockerRegistry` | A URL pointing to the Docker registry to use to fetch Docker images | `nil` |
 | `concourse.insecureDockerRegistry` | Docker registry(ies) (comma separated) to allow connecting to even if not secure | `nil` |
 | `concourse.encryption.enabled` | Enable encryption of pipeline configuration | `false` |
-| `concourse.basicAuth.enabled` | Enable basic auth for the "main" Concourse team| `true` |
-| `concourse.githubAuth.enabled` | Enable Github auth for the "main" Concourse team| `false` |
-| `concourse.githubAuth.organization` | GitHub organizations (comma separated) whose members will have access | `nil` |
-| `concourse.githubAuth.team` | GitHub teams (comma separated) whose members will have access | `nil` |
-| `concourse.githubAuth.user` | GitHub users (comma separated) to permit access | `nil` |
-| `concourse.githubAuth.authUrl` | Override default endpoint AuthURL for Github Enterprise | `nil` |
-| `concourse.githubAuth.tokenUrl` | Override default endpoint TokenURL for Github Enterprise | `nil` |
-| `concourse.githubAuth.apiUrl` | Override default API endpoint URL for Github Enterprise | `nil` |
-| `concourse.gitlabAuth.enabled` | Enable Gitlab auth for the "main" Concourse team| `false` |
-| `concourse.gitlabAuth.group` | GitLab groups (comma separated) whose members will have access | `nil` |
-| `concourse.gitlabAuth.authUrl` | Endpoint AuthURL for GitLab server | `nil` |
-| `concourse.gitlabAuth.tokenUrl` | Endpoint TokenURL for GitLab server | `nil` |
-| `concourse.gitlabAuth.apiUrl` | API endpoint URL for GitLab server | `nil` |
-| `concourse.genericOauth.enabled` | Enable generic OAuth for the "main" Concourse team| `false` |
-| `concourse.genericOauth.displayName` | Name for this auth method on the web UI | `nil` |
-| `concourse.genericOauth.authUrl` | Generic OAuth provider AuthURL endpoint | `nil` |
-| `concourse.genericOauth.authUrlParam` | Parameters (comma separated) to pass to the authentication server AuthURL | `nil` |
-| `concourse.genericOauth.scope` | Optional scope required to authorize user | `nil` |
-| `concourse.genericOauth.tokenUrl` | Generic OAuth provider TokenURL endpoint | `nil` |
+| `concourse.mainTeam.localUsers` | List of local concourse users with access to the main team | `["concourse"]` |
+| `concourse.mainTeam.allowAllUsers` | Allow all logged in users to access the main team. ALL OF THEM. If, for example, you've configured GitHub, any user with a GitHub account will have access to your main team. | `false` |
+| `concourse.mainTeam.githubUsers` | List of GitHub users with access to the main team | `[]` |
+| `concourse.mainTeam.githubOrgs` | List of GitHub orgs with access to the main team | `[]` |
+| `concourse.mainTeam.githubTeams` | List of GitHub teams (in `ORG_NAME:TEAM_NAME` format) with access to the main team | `[]` |
+| `concourse.mainTeam.gitlabUsers` | List of GitLab users with access to the main team | `[]` |
+| `concourse.mainTeam.gitlabGroups` | List of GitLab groups with access to the main team | `[]` |
+| `concourse.mainTeam.oauthUsers` | List of OAuth2 users with access to the main team | `[]` |
+| `concourse.mainTeam.oauthGroups` | List of OAuth2 groups with access to the main team | `[]` |
 | `concourse.workingDirectory` | The working directory for concourse | `/concourse-work-dir` |
 | `web.nameOverride` | Override the Concourse Web components name | `nil` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
@@ -189,14 +179,28 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.awsSsmAccessKey` | AWS Access Key ID for SSM access | `nil` |
 | `secrets.awsSsmSecretKey` | AWS Secret Access Key ID for SSM access | `nil` |
 | `secrets.awsSsmSessionToken` | AWS Session Token for SSM access | `nil` |
-| `secrets.basicAuthUsername` | Concourse Basic Authentication Username | `concourse` |
-| `secrets.basicAuthPassword` | Concourse Basic Authentication Password | `concourse` |
-| `secrets.githubAuthClientId` | Application client ID for GitHub OAuth | `nil` |
-| `secrets.githubAuthClientSecret` | Application client secret for GitHub OAuth | `nil` |
-| `secrets.gitlabAuthClientId` | Application client ID for GitLab OAuth | `nil` |
-| `secrets.gitlabAuthClientSecret` | Application client secret for GitLab OAuth | `nil` |
-| `secrets.genericOauthClientId` | Application client ID for Generic OAuth | `nil` |
-| `secrets.genericOauthClientSecret` | Application client secret for Generic OAuth | `nil` |
+| `secrets.localUserAuth.enabled` | Local User Authentication: (Required) Enable Local User authentication | `true` |
+| `secrets.localUserAuth.localUsers` | List of `username:password` combinations for all your local users. The password can be bcrypted - if so, it must have a minimum cost of 10. | `["concourse:<bcrypt hash of 'concourse'>]`
+| `secrets.githubAuth.enabled` | GitHub Authentication: (Required) Enable GitHub authentication | `false` |
+| `secrets.githubAuth.clientId` | GitHub Authentication: (Required if GitHub enabled) Client id | `nil` |
+| `secrets.githubAuth.clientSecret` | GitHub Authentication: (Required if GitHub enabled) Client secret | `nil` |
+| `secrets.githubAuth.host` | GitHub Authentication: Hostname of GitHub Enterprise deployment (No scheme, No trailing slash) | `nil` |
+| `secrets.githubAuth.caCert` | GitHub Authentication: CA certificate of GitHub Enterprise deployment | `nil` |
+| `secrets.gitlabAuth.enabled` | GitLab Authentication: (Required) Enable GitLab authentication | `false` |
+| `secrets.gitlabAuth.clientId` | GitLab Authentication: (Required if GitLab enabled) Client id | `nil` |
+| `secrets.gitlabAuth.clientSecret` | GitLab Authentication: (Required if GitLab enabled) Client secret | `nil` |
+| `secrets.gitlabAuth.host` | GitLab Authentication: Hostname of Gitlab Enterprise deployment (Include scheme, No trailing slash) | `nil` |
+| `secrets.oauthAuth.enabled` | OAuth2 Authentication: (Required) Enable OAuth2 authentication | `false` |
+| `secrets.oauthAuth.displayName` | OAuth2 Authentication: The auth provider name displayed to users on the login page | `nil` |
+| `secrets.oauthAuth.clientId` | OAuth2 Authentication: (Required if OAuth2 enabled) Client id | `nil` |
+| `secrets.oauthAuth.clientSecret` | OAuth2 Authentication: (Required if OAuth2 enabled) Client secret | `nil` |
+| `secrets.oauthAuth.authUrl` | OAuth2 Authentication: (Required if OAuth2 enabled) Authorization URL | `nil` |
+| `secrets.oauthAuth.tokenUrl` | OAuth2 Authentication: (Required if OAuth2 enabled) Token URL | `nil` |
+| `secrets.oauthAuth.userinfoUrl` | OAuth2 Authentication: Userinfo URL | `nil` |
+| `secrets.oauthAuth.scope` | OAuth2 Authentication: Any additional scopes that need to be requested during authorization | `nil` |
+| `secrets.oauthAuth.groupsKey` | OAuth2 Authentication: The groups key indicates which claim to use to map external groups to Concourse teams. | `nil` |
+| `secrets.oauthAuth.caCert` | OAuth2 Authentication: CA Certificate | `nil` |
+| `secrets.oauthAuth.skipSslValidation` | OAuth2 Authentication: Skip SSL validation | `nil` |
 | `secrets.postgresqlUri` | PostgreSQL connection URI when `postgresql.enabled` is `false` | `nil` |
 | `secrets.vaultCaCert` | CA certificate   use to verify the vault server SSL cert. | `nil` |
 | `secrets.vaultClientToken` | Vault periodic client token | `nil` |
@@ -229,8 +233,8 @@ ssh-keygen -t rsa -f worker-key  -N ''
 mv worker-key.pub worker-key-pub
 ssh-keygen -t rsa -f session-signing-key  -N ''
 rm session-signing-key.pub
-printf "%s" "concourse" > basic-auth-username
-printf "%s" "$(openssl rand -base64 24)" > basic-auth-password
+# copy bcrypted password to clipboard
+printf "%s:%s" "concourse" "$(pbpaste)" > local-user-auth-local-users
 ```
 
 You'll also need to create/copy secret values for optional features. See [templates/secrets.yaml](templates/secrets.yaml) for possible values. In the example below, we are not using the [PostgreSQL](#postgresql) chart dependency, and so we must set a `postgresql-uri` secret.

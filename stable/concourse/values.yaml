@@ -96,88 +96,36 @@ concourse:
   encryption:
     enabled: false
 
-  ## Enable basic auth for the "main" Concourse team.
-  ## See https://concourse-ci.org/teams.html#basic-auth
+  ## Configuration for the main team
+  ## See https://concourse-ci.org/main-team.html
   ##
-  basicAuth:
-    enabled: true
+  mainTeam:
+    ## List of local concourse users with access to the main team
+    localUsers: ["concourse"]
 
-  ## Enable GitHub auth for the "main" Concourse team.
-  ## See https://concourse-ci.org/teams.html#github-auth
-  ##
-  githubAuth:
-    enabled: false
+    ## Allow all logged in users to access the main team. ALL OF THEM. If, for example, you've configured GitHub, any user with a GitHub account will have access to your main team.
+    allowAllUsers: false
 
-    ## GitHub organizations (comma separated) whose members will have access.
-    ##
-    # organization:
+    ## List of GitHub users with access to the main team
+    githubUsers: []
 
-    ## GitHub teams (comma separated) whose members will have access.
-    ##
-    # team:
+    ## List of GitHub orgs with access to the main team
+    githubOrgs: []
 
-    ## GitHub users (comma separated) to permit access.
-    ##
-    # user:
+    ## List of GitHub teams (in `ORG_NAME:TEAM_NAME` format) with access to the main team
+    githubTeams: []
 
-    ## Override default endpoint AuthURL for Github Enterprise.
-    ##
-    # authUrl:
+    ## List of GitLab users with access to the main team
+    gitlabUsers: []
 
-    ## Override default endpoint TokenURL for Github Enterprise.
-    ##
-    # tokenUrl:
+    ## List of GitLab groups with access to the main team
+    gitlabGroups: []
 
-    ## Override default API endpoint URL for Github Enterprise.
-    ##
-    # apiUrl:
+    ## List of OAuth2 users with access to the main team
+    oauthUsers: []
 
-  ## Enable Gitlab auth for the "main" Concourse team.
-  ##
-  gitlabAuth:
-    enabled: false
-
-    ## GitLab Group (comma separated) whose members will have access.
-    ##
-    # group:
-
-    ## Endpoint AuthURL for Gitlab server.
-    ##
-    # authUrl:
-
-    ## Endpoint TokenURL for Gitlab server.
-    ##
-    # tokenUrl:
-
-    ## API endpoint URL for Gitlab server.
-    ##
-    # apiUrl:
-
-  ## Enable generic OAuth for the "main" Concourse team.
-  ## See https://concourse-ci.org/teams.html#generic-oauth
-  ##
-  genericOauth:
-    enabled: false
-
-    ## Name for this auth method on the web UI.
-    ##
-    # displayName:
-
-    ## Generic OAuth provider AuthURL endpoint.
-    ##
-    # authUrl:
-
-    ## Parameters (comma separated) to pass to the authentication server AuthURL.
-    ##
-    # authUrlParam:
-
-    ## Optional scope required to authorize user.
-    ##
-    # scope:
-
-    ## Generic OAuth provider TokenURL endpoint.
-    ##
-    # tokenUrl:
+    ## List of OAuth2 groups with access to the main team
+    oauthGroups: []
 
 ## Configuration values for Concourse Web components.
 ##
@@ -768,25 +716,86 @@ secrets:
   # awsSecretsmanagerSecretKey:
   # awsSecretsmanagerSessionToken:
 
-  ## Secrets for Concourse basic auth
-  ##
-  basicAuthUsername: concourse
-  basicAuthPassword: concourse
+  ## Secrets for Local User auth.
+  ## See https://concourse-ci.org/install.html#local-auth-config
+  localUserAuth:
+    ## Enable the Local User auth provider
+    enabled: true
 
-  ## Secrets for GitHub OAuth.
-  ##
-  # githubAuthClientId:
-  # githubAuthClientSecret:
+    ## List of username:password combinations for all your local users. The password can be bcrypted - if so, it must have a minimum cost of 10.
+    ## Default password for "concourse" user is "concourse"
+    localUsers:
+      - "concourse:$2a$12$HKPJ1pXLZjJWG0qLJegI9ezG4W.U5bC0blWV37u0vLePc/2uYRykm"
 
-  ## Secrets for GitLab OAuth.
+  ## Secrets for GitHub auth.
+  ## See https://concourse-ci.org/install.html#github-auth-config
   ##
-  # gitlabAuthClientId:
-  # gitlabAuthClientSecret:
+  githubAuth:
+    ## Enable the GitHub auth provider
+    enabled: false
 
-  ## Secrets for generic OAuth.
-  ##
-  # genericOauthClientId:
-  # genericOauthClientSecret:
+    ## (Required if GitHub enabled) Client id
+    # clientId:
+
+    ## (Required if GitHub enabled) Client secret
+    # clientSecret:
+
+    ## Hostname of GitHub Enterprise deployment (No scheme, No trailing slash)
+    # host:
+
+    ## CA certificate of GitHub Enterprise deployment
+    # caCert:
+
+  ## Secrets for GitLab auth.
+  ## See: https://concourse-ci.org/install.html#gitlab-auth-config
+  gitlabAuth:
+    ## Enable the GitLab auth provider
+    enabled: false
+
+    ## (Required if GitLab enabled) Client id
+    # clientId:
+
+    ## (Required if GitLab enabled) Client secret
+    # clientSecret:
+
+    ## Hostname of Gitlab Enterprise deployment (Include scheme, No trailing slash)
+    # host:
+
+  ## Secrets for OAuth2.
+  ## See https://concourse-ci.org/install.html#generic-oauth-config
+  oauthAuth:
+    ## Enable the Oauth2 auth provider
+    enabled: false
+
+    ## The auth provider name displayed to users on the login page
+    # displayName:
+
+    ## (Required if OAuth2 enabled) Client id
+    # clientId:
+
+    ## (Required if OAuth2 enabled) Client secret
+    # clientSecret:
+
+    ## (Required if OAuth2 enabled) Authorization URL
+    # authUrl:
+
+    ## (Required if OAuth2 enabled) Token URL
+    # tokenUrl:
+
+    ## Userinfo URL
+    # userinfoUrl:
+
+    ## Any additional scopes that need to be requested during authorization
+    # scope:
+
+    ## The groups key indicates which claim to use to map external groups to Concourse teams.
+    # groupsKey:
+
+    ## CA Certificate
+    # caCert:
+
+    ## Skip SSL validation
+    # skipSslValidation:
 
   ## If bringing your own PostgreSQL, set this to the full uri to use
   ## e.g. postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=disable
