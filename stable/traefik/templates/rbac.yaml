@@ -5,7 +5,11 @@ metadata:
   name: {{ template "traefik.fullname" . }}
 ---
 kind: ClusterRole
+{{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
+{{- else }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
+{{- end }}
 metadata:
   name: {{ template "traefik.fullname" . }}
 rules:
@@ -30,7 +34,11 @@ rules:
       - watch
 ---
 kind: ClusterRoleBinding
+{{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
+{{- else }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
+{{- end }}
 metadata:
   name: {{ template "traefik.fullname" . }}
 roleRef:

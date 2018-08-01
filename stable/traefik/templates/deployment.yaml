@@ -1,5 +1,9 @@
 {{- if eq .Values.deployType "Deployment" }}
-apiVersion: extensions/v1beta1
+{{- if semverCompare "^1.9-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: apps/v1
+{{- else }}
+apiVersion: apps/v1beta1
+{{- end }}
 kind: Deployment
 metadata:
   name: {{ template "traefik.fullname" . }}
