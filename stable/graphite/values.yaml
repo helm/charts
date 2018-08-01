@@ -7,6 +7,9 @@ image:
 
 service:
   type: ClusterIP
+  port: 8080
+  annotations: {}
+  labels: {}
 
 ingress:
   enabled: false
