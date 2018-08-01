@@ -30,15 +30,6 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           args:
             - "web"
-            {{- if eq (default "" .Values.credentialManager.vault.authBackend) "approle" }}
-            - "--vault-auth-param"
-            - "role_id=$(CONCOURSE_VAULT_APPROLE_ID)"
-            - "--vault-auth-param"
-            - "secret_id=$(CONCOURSE_VAULT_APPROLE_SECRET_ID)"
-            {{- end }}
-            {{- if .Values.credentialManager.kubernetes.enabled }}
-            - "--kubernetes-in-cluster"
-            {{- end }}
             {{- if .Values.credentialManager.ssm.enabled }}
             - "--aws-ssm-region"
             - "$(CONCOURSE_AWS_SSM_REGION)"
@@ -46,16 +37,6 @@ spec:
             {{- if .Values.credentialManager.awsSecretsManager.enabled }}
             - "--aws-secretsmanager-region"
             - "$(CONCOURSE_AWS_SECRETSMANAGER_REGION)"
-            {{- end }}
-            {{- if .Values.web.metrics.datadog.enabled }}
-            - "--datadog-agent-host"
-            - "$(CONCOURSE_DATADOG_AGENT_HOST)"
-            - "--datadog-agent-port"
-            - "$(CONCOURSE_DATADOG_AGENT_PORT)"
-            {{- if .Values.web.metrics.datadog.prefix }}
-            - "--datadog-prefix"
-            - {{ .Values.web.metrics.datadog.prefix }}
-            {{- end }}
             {{- end }}
           env:
             - name: CONCOURSE_TSA_HOST_KEY
@@ -430,6 +411,8 @@ spec:
             {{- if .Values.credentialManager.kubernetes.enabled }}
             - name: CONCOURSE_KUBERNETES_NAMESPACE_PREFIX
               value: {{ template "concourse.namespacePrefix" . }}
+            - name: CONCOURSE_KUBERNETES_IN_CLUSTER
+              value: ""
             {{- end }}
             {{- if .Values.credentialManager.vault.enabled }}
             - name: CONCOURSE_VAULT_URL
@@ -464,6 +447,8 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: vault-approle-secret-id
+            - name: CONCOURSE_VAULT_AUTH_PARAM
+              value: "role_id=$(CONCOURSE_VAULT_APPROLE_ID),secret_id=$(CONCOURSE_VAULT_APPROLE_SECRET_ID)"
             {{- end }}
             {{- end }}
             {{- if .Values.credentialManager.ssm.enabled }}
@@ -545,6 +530,10 @@ spec:
             {{- end }}
             - name: CONCOURSE_DATADOG_AGENT_PORT
               value: {{ .Values.web.metrics.datadog.agentPort | quote }}
+            {{- if .Values.web.metrics.datadog.prefix }}
+            - name: CONCOURSE_DATADOG_PREFIX
+              value: {{ .Values.web.metrics.datadog.prefix }}
+            {{- end }}
             {{- end }}
             {{- if .Values.web.metrics.influxdb.enabled }}
             - name: CONCOURSE_INFLUXDB_URL
