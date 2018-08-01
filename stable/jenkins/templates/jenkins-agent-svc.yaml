@@ -14,6 +14,9 @@ spec:
   ports:
     - port: {{ .Values.Master.SlaveListenerPort }}
       targetPort: {{ .Values.Master.SlaveListenerPort }}
+      {{ if (and (eq .Values.Master.SlaveListenerServiceType "NodePort") (not (empty .Values.Master.SlaveListenerPort))) }}
+      nodePort: {{.Values.Master.SlaveListenerPort}}
+      {{end}}
       name: slavelistener
   selector:
     component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
