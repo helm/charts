@@ -28,6 +28,11 @@ prometheusConfigReloader:
   repository: quay.io/coreos/prometheus-config-reloader
   tag: v0.22.0
 
+rules:
+  create: true
+  labels:
+    prometheus: k8s
+    role: alert-rules
 ## Configmap-reload image to use for reloading configmaps
 ##
 configmapReload:
@@ -440,9 +445,10 @@ prometheus:
     ##
     externalUrl: ""
 
-    ## Change "prometheus" label value on all resources, .Release.Name by default
-    ##
-    prometheusLabelValue: ""
+    ruleSelector:
+        matchLabels:
+          prometheus: k8s
+          role: alert-rules
 
     ## Custom Labels to be added to ServiceMonitor
     ##

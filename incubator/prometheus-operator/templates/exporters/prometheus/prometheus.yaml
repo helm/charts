@@ -47,8 +47,10 @@ spec:
 {{- if .Values.global.rbac.create }}
   serviceAccountName: {{ template "prometheus.serviceAccountName" .}}
 {{- end }}
+{{- if .Values.prometheus.prometheusSpec.serviceMonitorsSelector }}
   serviceMonitorSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorsSelector | indent 4 }}
+{{- end }}
 {{- if .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector }}
   serviceMonitorNamespaceSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector | indent 4 }}
@@ -65,14 +67,8 @@ spec:
   ruleNamespaceSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.ruleNamespaceSelector | indent 4 }}
 {{- end }}
-{{- if .Values.prometheus.prometheusSpec.rulesSelector }}
   ruleSelector:
-{{ toYaml .Values.prometheus.prometheusSpec.rulesSelector | indent 4 }}
-{{- else }}
-  ruleSelector:
-    matchLabels:
-      prometheus: {{ .Values.prometheus.prometheusSpec.prometheusLabelValue | default .Release.Name | quote }}
-{{- end }}
+{{ toYaml .Values.prometheus.prometheusSpec.ruleSelector | indent 4}}
 {{- if .Values.prometheus.prometheusSpec.storageSpec }}
   storage:
 {{ toYaml .Values.prometheus.prometheusSpec.storageSpec | indent 4 }}

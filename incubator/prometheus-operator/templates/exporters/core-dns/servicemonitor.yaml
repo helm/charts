@@ -3,7 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-{{ toYaml .Values.coreDns.serviceMonitor.labels | indent 4}}
+{{ toYaml .Values.coreDns.labels | indent 4}}
   name: coredns
 spec:
   jobLabel: {{ .Values.coreDns.serviceMonitor.jobLabel }}
