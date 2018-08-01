@@ -27,7 +27,7 @@ This article describes how to set up and use [Azure Monitor - Containers](https:
 ## Installing the Chart
 
 ```bash
-
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
 $ helm install --name azuremonitorcontainers incubator/azuremonitor-containers
 
 ```
