@@ -1,4 +1,4 @@
-{{- if .Values.alertmanager.ingress.enabled }}
+{{- if .Values.alertmanager.ingress.enable }}
 {{- $serviceName := include "alertmanager.fullname" . }}
 {{- $routePrefix := .Values.routePrefix }}
 apiVersion: extensions/v1beta1
@@ -21,7 +21,7 @@ spec:
             backend:
               serviceName: "{{ $serviceName }}"
               servicePort: 9093
-    {{- end }}              
+    {{- end }}
 {{- if .Values.alertmanager.ingress.tls }}
   tls:
 {{ toYaml .Values.alertmanager.ingress.tls | indent 4 }}

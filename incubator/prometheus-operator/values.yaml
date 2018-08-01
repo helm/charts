@@ -91,7 +91,7 @@ alertmanager:
   ingress:
     ## If true, Alertmanager Ingress will be created
     ##
-    enabled: false
+    enable: false
 
     ## Annotations for Alertmanager Ingress
     ##
@@ -104,7 +104,7 @@ alertmanager:
     labels: {}
 
     ## Hostnames.
-    ## Must be provided if Ingress is enabled.
+    ## Must be provided if Ingress is enable.
     ##
     # hosts:
     #   - alertmanager.domain.com
@@ -379,7 +379,7 @@ prometheus:
   ingress:
     ## If true, Prometheus Ingress will be created
     ##
-    enabled: false
+    enable: false
 
     ## Annotations for Prometheus Ingress
     ##
@@ -392,7 +392,7 @@ prometheus:
     labels: {}
 
     ## Hostnames.
-    ## Must be provided if Ingress is enabled.
+    ## Must be provided if Ingress is enable.
     ##
     # hosts:
     #   - prometheus.domain.com
@@ -414,9 +414,6 @@ prometheus:
       matchLabels:
         app: prometheus
         prometheus: k8s
-
-  labels:
-    prometheus: k8s
 
   service:
     selector:

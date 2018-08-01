@@ -22,7 +22,7 @@ spec:
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.externalUrl }}
   externalUrl: "{{ .Values.externalUrl }}"
-{{- else if .Values.prometheus.ingress.enabled }}
+{{- else if .Values.prometheus.ingress.enable }}
   externalUrl: "http://{{ index .Values.prometheus.ingress.hosts 0 }}{{ .Values.routePrefix }}"
 {{- else }}
   externalUrl: http://{{ template "prometheus.fullname" . }}.{{ .Release.Namespace }}:9090
@@ -88,5 +88,5 @@ spec:
         labelSelector:
           matchLabels:
 {{ toYaml .Values.prometheus.labels | indent 12 }}
-  imagePullSecrets: 
+  imagePullSecrets:
 {{ toYaml .Values.global.imagePullSecrets | indent 4 }}

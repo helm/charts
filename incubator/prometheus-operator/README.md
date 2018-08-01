@@ -39,9 +39,11 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the prometheus-operator chart and their default values.
 
-|               Parameter               |                                                         Description                                                         |                   Default                   |
-| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| `affinity`                            | node/pod affinities                                                                                                         | None                                        |
+|       Parameter        |                                                    Description                                                    | Default |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------- | ------- |
+| `affinity`             | node/pod affinities                                                                                               | None    |
+| `createCustomResource` | If true, will create CRDs used by prometheus-operator without relying on the container to come up and create them | `true`  |
+
 | `configmapReload.repository`          | configmap-reload image                                                                                                      | `quay.io/coreos/configmap-reload`           |
 | `configmapReload.tag`                 | configmap-reload tag                                                                                                        | `v0.0.1`                                    |
 | `image.repository`                    | Image                                                                                                                       | `quay.io/coreos/prometheus-operator`        |
@@ -53,10 +55,10 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `nodeSelector`                        | Node labels for pod assignment                                                                                              | `{}`                                        |
 | `prometheusConfigReloader.repository` | prometheus-config-reloader image                                                                                            | `quay.io/coreos/prometheus-config-reloader` |
 | `prometheusConfigReloader.tag`        | prometheus-config-reloader tag                                                                                              | `v0.0.4`                                    |
-| `global.rbac.create`                         | If true, create & use RBAC resources                                                                                        | `true`                                      |
-| `rbac.pspEnabled`                     | Specifies whether a PodSecurityPolicy should be created.                                                                    | `true`                                      |
+| `global.rbac.create`                  | If true, create & use RBAC resources                                                                                        | `true`                                      |
+| `global.rbac.pspenable`               | Specifies whether a PodSecurityPolicy should be created.                                                                    | `true`                                      |
 | `resources`                           | Pod resource requests & limits                                                                                              | `{}`                                        |
-| `serviceAccount.name`                 | Service account to be used. If not set and serviceAccount.create is `true`, a name is generated using the fullname template |                                          |
+| `serviceAccount.name`                 | Service account to be used. If not set and serviceAccount.create is `true`, a name is generated using the fullname template |                                             |
 | `serviceAccount.create`               | If true, create a new service account                                                                                       | `true`                                      |
 | `tolerations`                         | List of node taints to tolerate                                                                                             | `[]`                                        |
 

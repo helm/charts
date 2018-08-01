@@ -1,4 +1,4 @@
-{{- if .Values.prometheus.ingress.enabled }}
+{{- if .Values.prometheus.ingress.enable }}
 {{- $serviceName := include "prometheus.fullname" . }}
 {{- $routePrefix := .Values.routePrefix }}
 apiVersion: extensions/v1beta1
@@ -21,7 +21,7 @@ spec:
             backend:
               serviceName: "{{ $serviceName }}"
               servicePort: 9093
-    {{- end }}              
+    {{- end }}
 {{- if .Values.prometheus.ingress.tls }}
   tls:
 {{ toYaml .Values.prometheus.ingress.tls | indent 4 }}
