@@ -86,3 +86,6 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `ingress.enabled` | Enable Ingress? | `false` |
 | `ingress.hostname` | set hostname for ingress | `""` |
 | `ingress.annotations` | set annotations for ingress | `{}` |
+| `ingress.tls.enabled` | Enable TLS for the Ingress | `false` |
+| `ingress.tls.secretName` | Name of the Kubernetes `Secret` object to obtain the TLS certificate from | `schema-registry-tls` |
+
