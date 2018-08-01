@@ -13,6 +13,10 @@ spec:
     metadata:
       labels:
         app: {{ template "influxdb.fullname" . }}
+      {{- if .Values.pod.annotations }}
+      annotations:
+{{ toYaml .Values.pod.annotations | indent 8 }}
+      {{- end }}
     spec:
       containers:
       - name: {{ template "influxdb.fullname" . }}

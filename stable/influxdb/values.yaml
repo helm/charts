@@ -5,6 +5,10 @@ image:
   tag: "1.4-alpine"
   pullPolicy: IfNotPresent
 
+pod:
+  ## Add annotations to pod
+  annotations: {}
+
 ## Specify a service type
 ## NodePort is default
 ## ref: http://kubernetes.io/docs/user-guide/services/
