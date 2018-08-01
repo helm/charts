@@ -757,8 +757,8 @@ pushgateway:
 
 sidecar:
   image:
-    repository: b13n1u/k8s-sidecar
-    tag: 0.0.4
+    repository: kiwigrid/k8s-sidecar
+    tag: 0.0.5
     pullPolicy: IfNotPresent
   resources: {}
   rules:
