@@ -59,6 +59,8 @@ spec:
           env:
 {{ toYaml .Values.Master.InitContainerEnv | indent 12 }}
           {{- end }}
+          resources:
+{{ toYaml .Values.Master.resources | indent 12 }}
           volumeMounts:
             -
               mountPath: /var/jenkins_home
@@ -100,7 +102,7 @@ spec:
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
           {{- end }}
           env:
-            - name: JAVA_OPTS
+            - name: JAVA_TOOL_OPTIONS
               value: "{{ default "" .Values.Master.JavaOpts}}"
             - name: JENKINS_OPTS
               value: "{{ if .Values.Master.JenkinsUriPrefix }}--prefix={{ .Values.Master.JenkinsUriPrefix }} {{ end }}{{ default "" .Values.Master.JenkinsOpts}}"
@@ -120,7 +122,7 @@ spec:
 {{ toYaml .Values.Master.ContainerEnv | indent 12 }}
             {{- end }}
           ports:
-            - containerPort: {{ .Values.Master.ContainerPort }}
+            - containerPort: 8080
               name: http
             - containerPort: {{ .Values.Master.SlaveListenerPort }}
               name: slavelistener
@@ -131,14 +133,14 @@ spec:
 {{- if .Values.Master.HealthProbes }}
           livenessProbe:
             httpGet:
-              path: /login
+              path: "{{ default "" .Values.Master.JenkinsUriPrefix }}/login"
               port: http
             initialDelaySeconds: {{ .Values.Master.HealthProbesLivenessTimeout }}
             timeoutSeconds: 5
             failureThreshold: {{ .Values.Master.HealthProbeLivenessFailureThreshold }}
           readinessProbe:
             httpGet:
-              path: /login
+              path: "{{ default "" .Values.Master.JenkinsUriPrefix }}/login"
               port: http
             initialDelaySeconds: {{ .Values.Master.HealthProbesReadinessTimeout }}
 {{- end }}
