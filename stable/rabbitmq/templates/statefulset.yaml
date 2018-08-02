@@ -134,6 +134,11 @@ spec:
               secretKeyRef:
                 name: {{ template "rabbitmq.fullname" . }}
                 key: rabbitmq-password
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
       volumes:
         - name: config-volume
           configMap:

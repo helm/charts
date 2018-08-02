@@ -85,6 +85,14 @@ rabbitmq:
 ## Kubernetes service type
 serviceType: ClusterIP
 
+## Pod Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
+
 persistence:
   ## this enables PVC templates that will create one per pod
   enabled: false
