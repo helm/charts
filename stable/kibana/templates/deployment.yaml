@@ -9,6 +9,7 @@ metadata:
   name: {{ template "kibana.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -68,6 +69,19 @@ spec:
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
         {{- end }}
+{{- if .Values.ConfigmapDashboardImport }}
+      - name: {{ .Chart.Name }}-dashboardimport
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/bin/bash"]
+        args: ["-c", "/tmp/dashboardimport.sh"]
+        volumeMounts:
+        - name: {{ template "kibana.fullname" . }}-dashboards
+          mountPath: "/kibanadashboards"
+        - name: {{ template "kibana.fullname" . }}-importscript
+          mountPath: "/tmp/dashboardimport.sh"
+          subPath: dashboardimport.sh
+{{- end }}
     {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
@@ -86,3 +100,10 @@ spec:
         - name: {{ template "kibana.name" . }}
           configMap:
             name: {{ template "kibana.fullname" . }}
+        - name: {{ template "kibana.fullname" . }}-dashboards
+          configMap:
+            name: {{ template "kibana.fullname" . }}-dashboards
+        - name: {{ template "kibana.fullname" . }}-importscript
+          configMap:
+            name: {{ template "kibana.fullname" . }}-importscript
+            defaultMode: 0777
