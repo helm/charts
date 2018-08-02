@@ -82,7 +82,10 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `kafkaStore.overrideBootstrapServers` | Defaults to Kafka Servers in the same release, it can be overridden in case there was a separate release for Kafka Deploy | `{{- printf "PLAINTEXT://%s-kafka-headless:9092" .Release.Name }}`
 | `kafka.enabled` | If `true`, install Kafka/Zookeeper alongside the `SchemaRegistry`. This is intended for testing and argument-less helm installs of this chart only and should not be used in Production. | `true` |
 | `kafka.replicas` | The number of Kafka Pods to install as part of the `StatefulSet` if `kafka.Enabled` is `true`| `1` |
+| `kafka.configurationOverrides` | Any Kafka Configuration overrides to provide to the underlying kafka chart | `{offsets.topic.replica.factor: 1}` |
+| `kafka.persistence.enabled` | Whether or not to use a persistent volume for kafka | `false` |
 | `kafka.zookeeper.servers` | The number of Zookeeper Pods to install as part of the `StatefulSet` if `kafka.Enabled` is `true`| `1` |
-| `ingress.enabled` | Enable Ingress? | `false`
-| `ingress.hostname` | set hostname for ingress | `""`
-| `ingress.annotations` | set annotations for ingress | `{}`
+| `ingress.enabled` | Enable Ingress? | `false` |
+| `ingress.hostname` | set hostname for ingress | `""` |
+| `ingress.annotations` | set annotations for ingress | `{}` |
+| `ingress.labels` | Additional labels for the ingress | `{}` |
