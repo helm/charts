@@ -16,9 +16,6 @@ env:
   # LOGGING_VERBOSE: "true"
   # SERVER_DEFAULTROUTE: "/app/kibana"
 
-  ELASTICSEARCH_URL: http://monitoring-elasticsearch-client:9200
-
-
 files:
   kibana.yml:
     ## Default Kibana configuration from kibana-docker.
