@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-rabbitmq-alerts
-  namespace: monitoring
+  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
   labels:
     app: "rabbitmq"
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
