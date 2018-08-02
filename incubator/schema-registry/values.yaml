@@ -116,3 +116,6 @@ ingress:
   hostname: ""
   ## Any additional labels to add to the ingress
   labels: {}
+  tls:
+    enabled: false
+    secretName: schema-registry-tls
