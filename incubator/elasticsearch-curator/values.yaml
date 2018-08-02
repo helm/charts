@@ -6,13 +6,16 @@ cronjob:
   # At 01:00 every day
   schedule: "0 1 * * *"
   annotations: {}
+  concurrencyPolicy: ""
+  failedJobsHistoryLimit: ""
+  successfulJobsHistoryLimit: ""
 
 pod:
   annotations: {}
 
 image:
   repository: quay.io/pires/docker-elasticsearch-curator
-  tag: 5.4.1
+  tag: 5.5.4
   pullPolicy: IfNotPresent
 
 config:
@@ -79,6 +82,8 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+priorityClassName: ""
 
 # extraVolumes and extraVolumeMounts allows you to mount other volumes
 # Example Use Case: mount ssl certificates when elasticsearch has tls enabled
