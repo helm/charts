@@ -1,0 +1,109 @@
+## The kafka connect image repository
+imageRepository: confluentinc/cp-kafka-connect
+## The kafka connect image tag
+imageTag: 4.1.1
+## The kafka connect image pull policy
+imagePullPolicy: IfNotPresent
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+resources: {}
+#  limits:
+#    cpu: 1.0
+#    memory: 1024Mi
+#  requests:
+#    cpu: 0.128
+#    memory: 128Mi
+
+## The Deployment installs 1 pod by default
+replicaCount: 1
+
+## The type of Kubernetes Service to expose
+serviceType: ClusterIP
+## The port on which the Kubernetes Service should be exposed
+serviceExternalPort: 80
+## Any service annotations
+serviceAnnotations: {}
+
+## If enabled, create an ingress to Kubernetes for Kafka Connect
+ingressEnabled: false
+## The hostname for the ingress
+ingressHostname: ""
+## Any ingress annotations
+ingressAnnotations: {}
+
+## For HPA to be enabled, one of CPU and/or memory must be enabled
+## Scale on CPU
+hpaCPUEnabled: false
+## Scale on Memory
+hpaMemoryEnabled: false
+## Minimum replicas allowed is 1 by default
+hpaMinReplicas: 1
+## Maximum replicas allowed is 3 by default
+hpaMaxReplicas: 3
+## Scale when CPU hits 80% by default
+hpaCPUPercent: 80
+## Scale when Memory hits 80% by default
+hpaMemPercent: 80
+
+## Pod scheduling preferences (by default keep pods within a release on separate nodes).
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+## By default we don't set affinity
+affinity: {}
+
+# Tolerations for nodes that have taints on them.
+# Useful if you want to colocate kafka connect with sources or kafka
+# https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+# tolerations:
+# - key: "key"
+#   operator: "Equal"
+#   value: "value"
+#   effect: "NoSchedule"
+
+## The URL of the Schema Registry where Kafka Connect will store schemas
+schemaRegistryUrl: ""
+## The port on which Kafka Connect should be exposed
+connectRestPort: "28082"
+## The name of the Kafka Connect group
+connectGroupName: "connect"
+## The Kafka topic name for Kafka Connect config storage
+connectConfigStorageTopic: "connect-config"
+## The Kafka topic name for Kafka Connect offset storage
+connectOffsetStorageTopic: "connect-offset"
+## The Kafka topic name for Kafka Connect status storage
+connectStatusStoragetopic: "connect-status"
+## The type of Kafka Connect Key converter to use
+connectKeyConverter: "org.apache.kafka.connect.json.JsonConverter"
+## Whether or not to enable key conversions for schemas
+connectKeyConverterSchemasEnable: "false"
+## The type of Kafka Connect Value converter to use
+connectValueConverter: "io.confluent.connect.avro.AvroConverter"
+## The type of Kafka Connect Value converter to use internally
+connectInternalKeyConverter: "org.apache.kafka.connect.json.JsonConverter"
+## The type of Kafka Connect key converter to use internally
+connectInternalValueConverter: "org.apache.kafka.connect.json.JsonConverter"
+## The advertised hostname for Kafka Connect
+connectRestAdvertisedHostName: "localhost"
+## The log level for Kafka Connect
+connectLog4jLoggers: "org.reflections=ERROR"
+## The location of Kafka Connect plugins
+connectPluginPath: "/usr/share/java"
+## The size of the Java Heap that Kafka Connect should use
+connectJavaHeap: 512m
+
+## Schema Registry settings
+schemaRegistry:
+  ## This is enabled to allow installations of this chart without arguments
+  enabled: true
+  ## This value is required if schema registry installation is disabled -- it should be the service
+  ## address of Schema Registry in the cluster, or the URL of an out-of-cluster installation
+  overrideURL: ""
+
+## Kafka Settings - Note that kafka is included as part of the schema registry dependency.
+kafka:
+  ## This is enabled to allow installations of this chart without arguments
+  enabled: true
+  ## This value is required if kafka installation is disabled -- it should be the headless service
+  ## address of Kafka in the cluster, or the broker addresses for an out-of-cluster installation
+  overrideBootstrapServers: ""

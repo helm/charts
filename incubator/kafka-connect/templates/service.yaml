@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kafka-connect.fullName" . }}
+  labels:
+    app: {{ include "kafka-connect.fullName" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.serviceAnnotations }}
+  annotations:
+{{ toYaml .Values.serviceAnnotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.serviceType }}
+  ports:
+  - port: {{ .Values.serviceExternalPort }}
+    targetPort: kafka-connect
+    protocol: TCP
+    name: connect
+  selector:
+    app: {{ template "kafka-connect.fullName" . }}
+    release: {{ .Release.Name }}

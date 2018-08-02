@@ -1,0 +1,85 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kafka-connect.fullName" . }}
+  labels:
+    app: {{ include "kafka-connect.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_"}}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "kafka-connect.name" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_"}}"
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+      containers:
+      - name: {{ template "kafka-connect.fullName" . }}
+        image: "{{ .Values.imageRepository }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: CONNECT_BOOTSTRAP_SERVERS
+          value: "{{ template "kafka-connect.kafka.bootstrapServers" . }}"
+        - name: CONNECT_REST_PORT
+          value: {{ .Values.connectRestPort | quote }}
+        - name: CONNECT_GROUP_ID
+          value: "{{ template "kafka-connect.groupId" . }}"
+        - name: CONNECT_CONFIG_STORAGE_TOPIC
+          value: {{ .Values.connectConfigStorageTopic | quote }}
+        - name: CONNECT_OFFSET_STORAGE_TOPIC
+          value: {{ .Values.connectOffsetStorageTopic | quote }}
+        - name: CONNECT_STATUS_STORAGE_TOPIC
+          value: {{ .Values.connectStatusStoragetopic | quote }}
+        - name: CONNECT_KEY_CONVERTER
+          value: {{ .Values.connectKeyConverter | quote }}
+        - name: CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE
+          value: {{ .Values.connectKeyConverterSchemasEnable | quote }}
+        - name: CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL
+          value: "{{ template "kafka-connect.schemaRegistryUrl" . }}"
+        - name: CONNECT_VALUE_CONVERTER
+          value: {{ .Values.connectValueConverter | quote }}
+        - name: CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
+          value: {{ .Values.schemaRegistryUrl | quote }}
+        - name: CONNECT_INTERNAL_KEY_CONVERTER
+          value: {{ .Values.connectInternalKeyConverter | quote }}
+        - name: CONNECT_INTERNAL_VALUE_CONVERTER
+          value: {{ .Values.connectInternalValueConverter | quote }}
+        - name: CONNECT_REST_ADVERTISED_HOST_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: CONNECT_LOG4J_LOGGERS
+          value: {{ .Values.connectLog4jLoggers | quote }}
+        - name: CONNECT_PLUGIN_PATH
+          value: {{ .Values.connectPluginPath | quote }}
+        - name: CONNECT_SCHEMA_REGISTRY_URL
+          value: {{ .Values.schemaRegistryUrl | quote }}
+        - name: KAFKA_HEAP_OPTS
+          value: -Xmx{{ .Values.connectJavaHeap }}
+        ports:
+        - containerPort: {{ .Values.connectRestPort }}
+          name: kafka-connect
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.connectRestPort }}
+          initialDelaySeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.connectRestPort }}
+          initialDelaySeconds: 60
+        resources:
+{{ toYaml .Values.resources | indent 10 }}

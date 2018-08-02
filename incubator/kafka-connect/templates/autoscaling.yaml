@@ -1,0 +1,31 @@
+{{- if or .Values.hpaCPUEnabled .Values.hpaMemoryEnabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: "{{ template "kafka-connect.fullName" . }}"
+  labels:
+    app: {{ include "kafka-connect.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_"}}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: "{{ template "fullName" . }}"
+  minReplicas: {{ .Values.hpaMinReplicas }}
+  maxReplicas: {{ .Values.hpaMaxReplicas }}
+  metrics:
+{{- if .Values.hpaCPUEnabled }}
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: {{ .Values.hpaCPUPercent }}
+{{- end }}
+{{- if .Values.hpaMemoryEnabled }}
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageUtilization: {{ .Values.hpaMemPercent }}
+{{- end }}
+{{ end -}}

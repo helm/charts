@@ -1,0 +1,24 @@
+{{- if .Values.ingressEnabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "kafka-connect.fullName" . }}
+  labels:
+    app: {{ template "kafka-connect.fullName" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- if .Values.ingressAnnotations }}
+  annotations:
+{{ toYaml .Values.ingressAnnotations | indent 4 }}
+{{- end }}
+spec:
+  rules:
+    - host: {{ .Values.ingressHostname }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ template "kafka-connect.fullName" . }}
+              servicePort: kafka-connect
+{{ end -}}
