@@ -23,7 +23,7 @@ data:
       ./easyrsa build-server-full server nopass
       ./easyrsa gen-dh
       ./easyrsa gen-crl
-      cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem # Note: the pki/ directory is inaccessible after openvpn drops privileges, so we cp crl.pem to ${EASY_RSA_LOC}
+      cp ${EASY_RSA_LOC}/pki/crl.pem ${EASY_RSA_LOC}/crl.pem # Note: the pki/ directory is inaccessible after openvpn drops privileges, so we cp crl.pem to ${EASY_RSA_LOC} to allow CRL updates without a restart
       chmod 644 ${EASY_RSA_LOC}/crl.pem
     fi
 
