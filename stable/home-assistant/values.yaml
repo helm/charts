@@ -64,7 +64,7 @@ configurator:
   ## hass-configurator container image
   ##
   image:
-    repository: billimek/hass-configurator-docker
+    repository: causticlab/hass-configurator-docker
     tag: x86_64-0.3.1
     pullPolicy: IfNotPresent
 
