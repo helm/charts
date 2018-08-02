@@ -93,7 +93,19 @@ data:
     {{- if .Values.accessLogs.filePath }}
     filePath = "{{ .Values.accessLogs.filePath }}"
     {{- end}}
-    format = "{{ .Values.accessLogs.format }}"
+      format = "{{ .Values.accessLogs.format }}"
+    [accessLog.fields]
+      defaultMode = {{ .Values.accessLogs.fields.defaultMode | quote }}
+    [accessLog.fields.names]
+    {{- range $field, $action := .Values.accessLogs.fields.names }}
+      {{ printf "\"%s\" = \"%s\"" $field $action }}
+    {{- end}}
+    [accessLog.fields.headers]
+      defaultMode = {{ .Values.accessLogs.fields.headers.defaultMode | quote }}
+    [accessLog.fields.headers.names]
+    {{- range $header, $action := .Values.accessLogs.fields.headers.names }}
+      {{ printf "\"%s\" = \"%s\"" $header $action }}
+    {{- end}}
     {{- end}}
     {{- if .Values.acme.enabled }}
     [acme]
