@@ -14,12 +14,14 @@ spec:
   selector:
     matchLabels:
       app: {{ template "mongodb.name" . }}
+      chart: {{ template "mongodb.chart" . }}
       release: {{ .Release.Name }}
       component: primary
   template:
     metadata:
       labels:
         app: {{ template "mongodb.name" . }}
+        chart: {{ template "mongodb.chart" . }}
         release: {{ .Release.Name }}
         component: primary
     spec:
@@ -27,6 +29,10 @@ spec:
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

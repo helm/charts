@@ -34,6 +34,7 @@ The command removes all the Kubernetes components associated with the chart and 
 |---------------------------------|-----------------------------------------------|---------------------------------------------------------|
 | `replicas`                      | Number of nodes                               | `1`                                                     |
 | `deploymentStrategy`            | Deployment strategy                           | `RollingUpdate`                                         |
+| `securityContext`               | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `image.repository`              | Image repository                              | `grafana/grafana`                                       |
 | `image.tag`                     | Image tag. (`Must be >= 5.0.0`)               | `5.2.2`                                                 |
 | `image.pullPolicy`              | Image pull policy                             | `IfNotPresent`                                          |
