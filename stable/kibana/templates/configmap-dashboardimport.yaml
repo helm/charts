@@ -17,13 +17,11 @@ data:
 
     cd /kibanadashboards
 
-    echo "starting script... wait up to 30 seconds for kibana to come up..."
+    echo "starting script... wait up to {{ .Values.readinessProbe.initialDelaySeconds }} seconds for kibana to come up..."
 
-    for i in {1..15}; do
-      curl -Is localhost:5601/api/status | grep "HTTP.*200" > /dev/null && break || sleep 2
+    for i in {1..{{ .Values.readinessProbe.initialDelaySeconds }}}; do
+      curl -Is localhost:5601/api/status | grep "HTTP.*200" > /dev/null && break || sleep 1
     done
-
-
 
     for DASHBOARD_FILE in *; do
       echo -e "\nimporting ${DASHBOARD_FILE}..."

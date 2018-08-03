@@ -68,12 +68,12 @@ ingress:
 
 livenessProbe:
   enabled: true
-  initialDelaySeconds: 60
+  initialDelaySeconds: 30
   timeoutSeconds: 10
 
 readinessProbe:
   enabled: true
-  initialDelaySeconds: 60
+  initialDelaySeconds: 30
   timeoutSeconds: 10
 
 resources: {}
