@@ -41,8 +41,8 @@ The following tables lists the configurable parameters of the geth chart and the
   Parameter                | Description                                                                         | Default
 ---------------------------|-------------------------------------------------------------------------------------|--------
 `image.repository`         | Image source repository name                                                        | `ethereum/client-go`
-`image.tag`                 | `geth` image tag.                                                                   | `stable`
-`image.pullPolicy`          | Image pull policy                                                                   | `IfNotPresent`
+`image.tag`                | `geth` image tag.                                                                   | `stable`
+`image.pullPolicy`         | Image pull policy                                                                   | `IfNotPresent`
 `rpcPort`                  | HTTP-RPC server listening port                                                      | `8545`
 `wsPort`                   | WS-RPC server listening port                                                        | `8546`
 `rpcApi`                   | API's offered over the HTTP-RPC interface                                           | `net,eth,personal,web3`
@@ -50,6 +50,8 @@ The following tables lists the configurable parameters of the geth chart and the
 `wsOrigins`                | Origins from which to accept websockets requests                                    | `*`
 `networkId`                | Network identifier (integer, 1=Frontier, 2=Morden (disused), 3=Ropsten, 4=Rinkeby)  | `1`
 `syncMode`                 | Blockchain sync mode ("fast", "full", or "light")                                   | `fast`
+`testnet`                  | Ropsten network: pre-configured proof-of-work test network                          | `false`
+`rinkeby`                  | Rinkeby network: pre-configured proof-of-authority test network                     | `false`
 `persistence.enabled`      | Create a volume to store data                                                       | `true`
 `persistence.accessMode`   | ReadWriteOnce or ReadOnly                                                           | `ReadWriteOnce`
 `persistence.size`         | Size of persistent volume claim                                                     | `300Gi`
