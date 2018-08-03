@@ -1,0 +1,7 @@
+name: raw
+version: 0.1.0
+appVersion: 0.1.0
+description: A place for all the Kubernetes resources which don't already have a home.
+maintainers:
+- name: josdotso
+  email: josdotso@cisco.com
