@@ -1,4 +1,5 @@
 name: raw
+home: https://github.com/helm/charts/blob/master/incubator/raw
 version: 0.1.0
 appVersion: 0.1.0
 description: A place for all the Kubernetes resources which don't already have a home.
