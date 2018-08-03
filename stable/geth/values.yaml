@@ -11,6 +11,7 @@ wsApi: "net,eth,personal,web3"
 wsOrigins: "*"
 networkId: 1
 testnet: false
+rinkeby: false
 syncMode: "fast"
 
 persistence:
