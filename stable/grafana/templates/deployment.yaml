@@ -33,9 +33,10 @@ spec:
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
+{{- if .Values.securityContext }}
       securityContext:
-        runAsUser: 472
-        fsGroup: 472
+{{ toYaml .Values.securityContext | indent 8 }}
+{{- end }}
 {{- if .Values.dashboards }}
       initContainers:
         - name: download-dashboards
