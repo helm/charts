@@ -21,6 +21,10 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+securityContext:
+  runAsUser: 472
+  fsGroup: 472
+
 downloadDashboardsImage:
   repository: appropriate/curl
   tag: latest
