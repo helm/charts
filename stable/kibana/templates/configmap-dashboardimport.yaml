@@ -23,11 +23,9 @@ data:
 
     echo "waiting up to 30 seconds for kibana to come up..."
 
-    for i in {1..15}; do
-      curl -Is localhost:5601/api/status | grep "HTTP.*200" > /dev/null && break || sleep 2
+    for i in {1..{{ .Values.readinessProbe.initialDelaySeconds }}}; do
+      curl -Is localhost:5601/api/status | grep "HTTP.*200" > /dev/null && break || sleep 1
     done
-
-    echo "kibana api reachable..."
 
     for DASHBOARD_FILE in *; do
       echo -e "\nimporting ${DASHBOARD_FILE}..."
