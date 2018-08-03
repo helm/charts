@@ -1,5 +1,5 @@
 name: geth
-version: 0.1.3
+version: 0.1.4
 appVersion: 1.8
 description: Official Go implementation of the Ethereum protocol
 keywords:

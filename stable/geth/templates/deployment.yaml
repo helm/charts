@@ -23,9 +23,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
           {{ if or (.Values.testnet) (.Values.rinkeby) -}}{{/* remove networkId and force syncmode to full */ -}}
-          command: ["/usr/local/bin/geth",{{ if .Values.testnet }} "--testnet",{{ end }}{{ if .Values.rinkeby }} "--rinkeby",{{ end }} "--syncmode", "full", "--rpc", "--rpcapi", "{{ .Values.rpcApi }}", "--rpcaddr", "0.0.0.0", "--rpcport", "{{ .Values.rpcPort }}", "--rpcvhosts", "{{ .Values.rpcVhosts }}", "--ws", "--wsaddr", "0.0.0.0", "--wsport", "{{ .Values.wsPort }}", "--wsapi", "{{ .Values.wsApi }}", "--wsorigins", "{{ .Values.wsOrigins }}"]
+          command: ["/usr/local/bin/geth",{{ if .Values.testnet }} "--testnet",{{ end }}{{ if .Values.rinkeby }} "--rinkeby",{{ end }} "--syncmode", "full", "--rpc", "--rpcapi", "{{ .Values.rpcApi }}", "--rpcaddr", "0.0.0.0", "--rpcport", "{{ .Values.rpcPort }}", "--rpcvhosts", "{{ .Values.rpcVhosts }}", "--ws", "--wsaddr", "0.0.0.0", "--wsport", "{{ .Values.wsPort }}", "--wsapi", "{{ .Values.wsApi }}", "--wsorigins", "{{ .Values.wsOrigins }}"{{ range $key, $val := .Values.customArgs }}, {{ printf "--%s" $key | quote }}{{ if $val }}, {{ $val | quote }}{{ end }}{{ end }}]
           {{ else -}}
-          command: ["/usr/local/bin/geth", "--networkid", "{{ .Values.networkId }}", "--syncmode", "{{ .Values.syncMode }}", "--rpc", "--rpcapi", "{{ .Values.rpcApi }}", "--rpcaddr", "0.0.0.0", "--rpcport", "{{ .Values.rpcPort }}", "--rpcvhosts", "{{ .Values.rpcVhosts }}", "--ws", "--wsaddr", "0.0.0.0", "--wsport", "{{ .Values.wsPort }}", "--wsapi", "{{ .Values.wsApi }}", "--wsorigins", "{{ .Values.wsOrigins }}"]
+          command: ["/usr/local/bin/geth", "--networkid", "{{ .Values.networkId }}", "--syncmode", "{{ .Values.syncMode }}", "--rpc", "--rpcapi", "{{ .Values.rpcApi }}", "--rpcaddr", "0.0.0.0", "--rpcport", "{{ .Values.rpcPort }}", "--rpcvhosts", "{{ .Values.rpcVhosts }}", "--ws", "--wsaddr", "0.0.0.0", "--wsport", "{{ .Values.wsPort }}", "--wsapi", "{{ .Values.wsApi }}", "--wsorigins", "{{ .Values.wsOrigins }}"{{ range $key, $val := .Values.customArgs }}, {{ printf "--%s" $key | quote }}{{ if $val }}, {{ $val | quote }}{{ end }}{{ end }}]
           {{ end -}}
           resources:
   {{ toYaml .Values.resources | indent 10 -}}

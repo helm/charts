@@ -13,6 +13,11 @@ networkId: 1
 testnet: false
 rinkeby: false
 syncMode: "fast"
+customArgs: {}
+#  cache: 1024
+#  debug:
+#  maxpeers: 128
+  
 
 persistence:
   enabled: true

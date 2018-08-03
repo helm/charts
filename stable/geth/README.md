@@ -52,6 +52,7 @@ The following tables lists the configurable parameters of the geth chart and the
 `syncMode`                 | Blockchain sync mode ("fast", "full", or "light")                                   | `fast`
 `testnet`                  | Ropsten network: pre-configured proof-of-work test network                          | `false`
 `rinkeby`                  | Rinkeby network: pre-configured proof-of-authority test network                     | `false`
+`customArgs`               | Custom geth arguments with values                                                   | `{}`
 `persistence.enabled`      | Create a volume to store data                                                       | `true`
 `persistence.accessMode`   | ReadWriteOnce or ReadOnly                                                           | `ReadWriteOnce`
 `persistence.size`         | Size of persistent volume claim                                                     | `300Gi`
