@@ -7,7 +7,7 @@ resources: []
 #    value: 100000000
 #    globalDefault: false
 #    description: "This priority class should only be used for critical priority common pods."
-#  
+#
 #  - apiVersion: scheduling.k8s.io/v1beta1
 #    kind: PriorityClass
 #    metadata:
@@ -15,7 +15,7 @@ resources: []
 #    value: 90000000
 #    globalDefault: false
 #    description: "This priority class should only be used for high priority common pods."
-#  
+#
 #  - apiVersion: scheduling.k8s.io/v1beta1
 #    kind: PriorityClass
 #    metadata:
@@ -23,7 +23,7 @@ resources: []
 #    value: 80000000
 #    globalDefault: false
 #    description: "This priority class should only be used for medium priority common pods."
-#    
+#
 #  - apiVersion: scheduling.k8s.io/v1beta1
 #    kind: PriorityClass
 #    metadata:
@@ -31,7 +31,7 @@ resources: []
 #    value: 70000000
 #    globalDefault: false
 #    description: "This priority class should only be used for low priority common pods."
-#    
+#
 #  - apiVersion: scheduling.k8s.io/v1beta1
 #    kind: PriorityClass
 #    metadata:
@@ -39,7 +39,7 @@ resources: []
 #    value: 100000
 #    globalDefault: false
 #    description: "This priority class should only be used for critical priority app pods."
-#    
+#
 #  - apiVersion: scheduling.k8s.io/v1beta1
 #    kind: PriorityClass
 #    metadata:
@@ -47,7 +47,7 @@ resources: []
 #    value: 90000
 #    globalDefault: false
 #    description: "This priority class should only be used for high priority app pods."
-#    
+#
 #  - apiVersion: scheduling.k8s.io/v1beta1
 #    kind: PriorityClass
 #    metadata:
@@ -55,7 +55,7 @@ resources: []
 #    value: 80000
 #    globalDefault: true
 #    description: "This priority class should only be used for medium priority app pods."
-#    
+#
 #  - apiVersion: scheduling.k8s.io/v1beta1
 #    kind: PriorityClass
 #    metadata:
