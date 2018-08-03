@@ -17,7 +17,11 @@ data:
 
     cd /kibanadashboards
 
-    echo "starting script... wait up to 30 seconds for kibana to come up..."
+    echo "starting kibana..."
+
+    /usr/local/bin/kibana-docker $@ &
+
+    echo "waiting up to 30 seconds for kibana to come up..."
 
     for i in {1..15}; do
       curl -Is localhost:5601/api/status | grep "HTTP.*200" > /dev/null && break || sleep 2
@@ -36,10 +40,6 @@ data:
       else
         echo -e "\nimport of ${DASHBOARD_FILE} finished :-)"
       fi
-
-      while true; do
-        sleep infinity
-      done
 
     done
 ---

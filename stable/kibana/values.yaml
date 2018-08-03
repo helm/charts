@@ -163,7 +163,7 @@ ConfigmapDashboardImport: {}
   #         "type": "visualization",
   #         "updated_at": "2018-08-02T13:26:28.749Z",
   #         "version": 1,
-  #         "attributes": {
+  #         "attributes"env:: {
   #           "title": "KubernetesHost",
   #           "visState": "{\"title\":\"KubernetesHost\",\"type\":\"pie\",\"params\":{\"addLegend\":true,\"addTooltip\":true,\"isDonut\":false,\"legendPosition\":\"right\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"kubernetes.host.keyword\",\"size\":50,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
   #           "uiStateJSON": "{}",

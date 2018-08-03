@@ -26,6 +26,39 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
+{{- if .Values.ConfigmapDashboardImport }}
+      initContainers:
+      - name: {{ .Chart.Name }}-dashboardimport
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/bin/bash"]
+        args:
+          - "-c"
+          - "/tmp/dashboardimport.sh"
+{{- if .Values.commandline.args }}
+{{ toYaml .Values.commandline.args | indent 10 }}
+{{- end }}
+        env:
+        {{- range $key, $value := .Values.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+          name: {{ template "kibana.name" . }}
+          protocol: TCP
+        volumeMounts:
+        - name: {{ template "kibana.fullname" . }}-dashboards
+          mountPath: "/kibanadashboards"
+        - name: {{ template "kibana.fullname" . }}-importscript
+          mountPath: "/tmp/dashboardimport.sh"
+          subPath: dashboardimport.sh
+        {{- range $configFile := (keys .Values.files) }}
+        - name: {{ template "kibana.name" $ }}
+          mountPath: "/usr/share/kibana/config/{{ $configFile }}"
+          subPath: {{ $configFile }}
+        {{- end }}
+{{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -69,19 +102,6 @@ spec:
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
         {{- end }}
-{{- if .Values.ConfigmapDashboardImport }}
-      - name: {{ .Chart.Name }}-dashboardimport
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["/bin/bash"]
-        args: ["-c", "/tmp/dashboardimport.sh"]
-        volumeMounts:
-        - name: {{ template "kibana.fullname" . }}-dashboards
-          mountPath: "/kibanadashboards"
-        - name: {{ template "kibana.fullname" . }}-importscript
-          mountPath: "/tmp/dashboardimport.sh"
-          subPath: dashboardimport.sh
-{{- end }}
     {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
