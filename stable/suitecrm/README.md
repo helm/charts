@@ -76,6 +76,7 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 | `mariadb.rootUser.password`         | MariaDB admin password                          | `nil`                                                   |
 | `serviceType`                       | Kubernetes Service type                         | `LoadBalancer`                                          |
 | `externalTrafficPolicy`             | Set to `Local` to preserve the client source IP | `Cluster`                                               |
+| `sessionAffinity`                   | Configures the session affinity                 | `ClientIP`                                              |
 | `persistence.enabled`               | Enable persistence using PVC                    | `true`                                                  |
 | `persistence.apache.storageClass`   | PVC Storage Class for apache volume             | `nil` (uses alpha storage class annotation)             |
 | `persistence.apache.accessMode`     | PVC Access Mode for apache volume               | `ReadWriteOnce`                                         |
