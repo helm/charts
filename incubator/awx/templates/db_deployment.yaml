@@ -39,7 +39,7 @@ spec:
         - name: PGDATA
           value: {{ .Values.persistence.mountPath }}{{ .Values.persistence.subPath }}
         resources:
-          {{ toYaml .Values.dbResources | indent 10 }}
+{{ toYaml .Values.dbResources | indent 10 }}
         volumeMounts:
         - name: {{ .Values.persistence.name }}
           mountPath: {{ .Values.persistence.mountPath }}
@@ -53,13 +53,13 @@ spec:
           {{- end -}}
       {{- with .Values.dbNodeSelector }}
       nodeSelector:
-        {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- with .Values.dbAffinity }}
       affinity:
-        {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- with .Values.dbTolerations }}
       tolerations:
-        {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}

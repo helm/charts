@@ -102,7 +102,7 @@ queueReplicaCount: 1
 ## Queue image repository and version
 queueImage:
   repository: rabbitmq
-  tag: 3
+  tag: 3.7.4
   pullPolicy: IfNotPresent
 
 ## Queue username
@@ -158,7 +158,7 @@ cacheReplicaCount: 1
 ## Cache image repository and version
 cacheImage:
   repository: memcached
-  tag: alpine
+  tag: latest
   pullPolicy: IfNotPresent
 
 ## Cache service port
@@ -204,16 +204,12 @@ taskReplicaCount: 1
 
 ## Awx-task image and tag
 taskImage:
-  repository: ansible/awx_task
-  tag: latest
+  repository: registry.au-syd.bluemix.net/zcomposer/awx_task
+  tag: 2.1
   pullPolicy: IfNotPresent
 
 ## AWX secret key
 secretKey: "aabbcc"
-
-## Command to be executed at awx-task runtime.
-taskCommand: ["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;su -c 'echo \"nameserver 8.8.8.8\" >> /etc/resolv.conf';su -c 'pip install softlayer pywinrm';su -c 'mkdir /root/.ssh';su -c 'ssh-keygen -b 2048 -t rsa -f /root/.ssh/id_rsa -q -N \"\"'"]
-
 
 taskResources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -249,8 +245,8 @@ webReplicaCount: 1
 
 ## Web image and tag
 webImage:
-  repository: ansible/awx_web
-  tag: latest
+  repository: registry.au-syd.bluemix.net/zcomposer/awx_web
+  tag: 2.1
   pullPolicy: IfNotPresent
 
 ## Web service info

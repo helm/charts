@@ -52,16 +52,16 @@ spec:
           - name: SECRET_KEY
             value: {{ .Values.secretKey }}
           resources:
-            {{ toYaml .Values.webResources | indent 12 }}
+{{ toYaml .Values.webResources | indent 12 }}
       {{- with .Values.webNodeSelector }}
       nodeSelector:
-        {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- with .Values.webAffinity }}
       affinity:
-        {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- with .Values.webTolerations }}
       tolerations:
-        {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}

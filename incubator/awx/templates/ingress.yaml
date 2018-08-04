@@ -13,7 +13,7 @@ metadata:
     heritage: {{ .Release.Service }}
   {{- with .Values.ingress.annotations }}
   annotations:
-    {{ toYaml . | indent 4 }}
+{{ toYaml . | indent 4 }}
   {{- end }}
 spec:
   {{- if .Values.ingress.tls }}

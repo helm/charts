@@ -30,16 +30,16 @@ spec:
         - name: {{ .Values.cacheName }}
           containerPort: {{ .Values.cacheService.port }}
         resources:
-          {{ toYaml .Values.cacheResources | indent 10 }}
+{{ toYaml .Values.cacheResources | indent 10 }}
       {{- with .Values.cacheNodeSelector }}
       nodeSelector:
-        {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- with .Values.cacheAffinity }}
       affinity:
-        {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- with .Values.cacheTolerations }}
       tolerations:
-        {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}

@@ -48,22 +48,17 @@ spec:
               value: {{ template "awx.fullname" . }}-{{ .Values.cacheName }}
             - name: SECRET_KEY
               value: {{ .Values.secretKey }}
-          lifecycle:
-            postStart:
-              exec:
-                command:
-{{ toYaml .Values.taskCommand | indent 18 }}
           resources:
-            {{ toYaml .Values.taskResources | indent 12 }}
+{{ toYaml .Values.taskResources | indent 12 }}
       {{- with .Values.taskNodeSelector }}
       nodeSelector:
-        {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- with .Values.taskAffinity }}
       affinity:
-        {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- with .Values.taskTolerations }}
       tolerations:
-        {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}

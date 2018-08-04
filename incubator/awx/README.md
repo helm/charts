@@ -59,22 +59,21 @@ Parameter | Description | Default
 `persistence.billingType` | DB PV hourly payment method. It is charged in the IBM Cloud. | `hourly`
 `queueComponent` | Queue component label | `queue`
 `queueImage.repository` | Queue image repository | `rabbitmq`
-`queueImage.tag` | Queue image version | `3`
+`queueImage.tag` | Queue image version | `3.7.4`
 `queueUser` | Queue username | `guest`
 `queuePassword` | Queue user password | `guest`
 `queueVhost` | Queue application vhost | `awx`
 `queueService.port` | Queue service port | `5672`
 `cacheComponent` | Cache component label | `cache`
 `cacheImage.repository` | Cache image repository | `memcached`
-`cacheImage.tag` | Cache image version | `alpine`
+`cacheImage.tag` | Cache image version | `latest`
 `cacheService.port` | Cache service port | `11211`
 `taskComponent` | Awx-task component label | `task`
-`taskImage.repository` | AWX-task image repository | `ansible/awx_task`
+`taskImage.repository` | AWX-task image repository | `harbor.dev.action.cloudz.co.kr/zcomposer/awx_task`
 `taskImage.tag` | AWX-task image version | `latest`
 `secretKey` | AWX secret key | `aabbcc`
-`taskCommand` | Command to be executed at awx-task runtime. | `["/bin/sh", "-c", "echo 'root::0:0:root:/root:/bin/bash' >> /etc/passwd;su -c 'pip install softlayer pywinrm';su -c 'yum install -y wget'"]`
 `webComponent` | Web component label | `web`
-`webImage.repository` | Web image repository | `ansible/awx_web`
+`webImage.repository` | Web image repository | `harbor.dev.action.cloudz.co.kr/zcomposer/awx_web`
 `webImage.tag` | Web image version | `latest`
 `webService.type` | Set it to "NodePort". To change to "LoadBalancer" and "Ingress", you can set it after "Portable IP" is preassigned. It is based on IBM Cloud. | `NodePort`
 `webService.internalPort` | Set internal port | `80`

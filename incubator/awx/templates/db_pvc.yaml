@@ -10,11 +10,11 @@ metadata:
     heritage: "{{ .Release.Service }}"
     {{- if .Values.persistence.billingType }}
     billingType: 
-      {{ toYaml .Values.persistence.billingType | indent 6  }}
+{{ toYaml .Values.persistence.billingType | indent 6  }}
     {{- end }}
   {{- if .Values.persistence.annotations }}
   annotations:
-    {{ toYaml .Values.persistence.annotations | indent 4 }}
+{{ toYaml .Values.persistence.annotations | indent 4 }}
   {{- end }}
 spec:
   accessModes:
