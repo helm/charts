@@ -38,6 +38,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
 | `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
+| `Master.AdminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value                                  |
 | `Master.JenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set                                               |
 | `Master.resources`                | Resources allocation (Requests and Limits) | `{requests: {cpu: 50m, memory: 256Mi}, limits: {cpu: 2000m, memory: 2048Mi}}`|
 | `Master.InitContainerEnv`         | Environment variables for Init Container                                 | Not set                                  |
