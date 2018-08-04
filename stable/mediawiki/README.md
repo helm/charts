@@ -73,7 +73,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `mariadb.db.password`                | Password for the database                                   | _random 10 character long alphanumeric string_          |
 | `service.type`                       | Kubernetes Service type                                     | `LoadBalancer`                                          |
 | `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                        | `nil`                                                   |
-| `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Local`                                                 |
+| `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Cluster`                                                 |
 | `service.nodePorts.http`             | Kubernetes http node port                                   | `""`                                                    |
 | `service.nodePorts.https`            | Kubernetes https node port                                  | `""`                                                    |
 | `ingress.enabled`                    | Enable ingress controller resource                          | `false`                                                 |
