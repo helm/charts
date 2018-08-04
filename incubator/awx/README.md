@@ -49,14 +49,10 @@ Parameter | Description | Default
 `dbPassword` | DB user password | `awxpass`
 `dbDatabaseName` | DB name | `awx`
 `dbService.port` | DB service port | `5432`
-`persistence.accessMode` | DB PV access mode. If you select file storage(NAS), you must set "ReadWriteMany". If you select block storage(ISCSI), you must set "ReadWriteOnce". It is based on IBM Cloud. | `ReadWriteOnce`
-`persistence.size` | DB PV size. You can set at least 20GB. It is based on IBM Cloud. | `20Gi`
 `persistence.claimName` | DB claim name | `awx-db`
-`persistence.annotations` | DB PV Storage-Class selection. Storage class is defined as follows: "ibmc-(block or file)-(bronze or silver or gold)". | `ibmc-block-bronze`
 `persistence.mountPath` | DB PV mount path | `/var/lib/postgresql/data`
 `persistence.subPath` | DB PV sub-path (with DB file) | `/pgdata`
 `persistence.name` | DB persistence volume name | `data`
-`persistence.billingType` | DB PV hourly payment method. It is charged in the IBM Cloud. | `hourly`
 `queueComponent` | Queue component label | `queue`
 `queueImage.repository` | Queue image repository | `rabbitmq`
 `queueImage.tag` | Queue image version | `3.7.4`
@@ -69,11 +65,11 @@ Parameter | Description | Default
 `cacheImage.tag` | Cache image version | `latest`
 `cacheService.port` | Cache service port | `11211`
 `taskComponent` | Awx-task component label | `task`
-`taskImage.repository` | AWX-task image repository | `harbor.dev.action.cloudz.co.kr/zcomposer/awx_task`
+`taskImage.repository` | AWX-task image repository | `ansible/awx_task`
 `taskImage.tag` | AWX-task image version | `latest`
 `secretKey` | AWX secret key | `aabbcc`
 `webComponent` | Web component label | `web`
-`webImage.repository` | Web image repository | `harbor.dev.action.cloudz.co.kr/zcomposer/awx_web`
+`webImage.repository` | Web image repository | `ansible/awx_web`
 `webImage.tag` | Web image version | `latest`
 `webService.type` | Set it to "NodePort". To change to "LoadBalancer" and "Ingress", you can set it after "Portable IP" is preassigned. It is based on IBM Cloud. | `NodePort`
 `webService.internalPort` | Set internal port | `80`

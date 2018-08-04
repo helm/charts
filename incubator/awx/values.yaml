@@ -36,7 +36,7 @@ dbService:
 
 ## Persist data to a persistent volume
 persistence:
-  enabled: true
+  enabled: false
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
@@ -204,8 +204,8 @@ taskReplicaCount: 1
 
 ## Awx-task image and tag
 taskImage:
-  repository: registry.au-syd.bluemix.net/zcomposer/awx_task
-  tag: 2.1
+  repository: ansible/awx_task
+  tag: latest
   pullPolicy: IfNotPresent
 
 ## AWX secret key
@@ -245,8 +245,8 @@ webReplicaCount: 1
 
 ## Web image and tag
 webImage:
-  repository: registry.au-syd.bluemix.net/zcomposer/awx_web
-  tag: 2.1
+  repository: ansible/awx_web
+  tag: latest
   pullPolicy: IfNotPresent
 
 ## Web service info
