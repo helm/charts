@@ -62,8 +62,14 @@ config:
     # If a JVM Agent is in place
     # agent: 61621
 
-## Readiness probe values.
+## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+livenessProbe:
+  initialDelaySeconds: 90
+  periodSeconds: 30
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
 readinessProbe:
   initialDelaySeconds: 90
   periodSeconds: 30

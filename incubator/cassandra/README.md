@@ -107,12 +107,12 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `updateStrategy.type`                | UpdateStrategy of the StatefulSet               | `OnDelete`                                                 |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated        | `90`                                                       |
 | `livenessProbe.periodSeconds`        | How often to perform the probe                  | `30`                                                       |
-| `livenessProbe.timeoutSeconds`       | When the probe times out                        | `1`                                                        |
+| `livenessProbe.timeoutSeconds`       | When the probe times out                        | `5`                                                        |
 | `livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed.           | `1` |
 | `livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.             | `3` |
 | `readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated       | `90`                                                       |
 | `readinessProbe.periodSeconds`       | How often to perform the probe                  | `30`                                                       |
-| `readinessProbe.timeoutSeconds`      | When the probe times out                        | `1`                                                        |
+| `readinessProbe.timeoutSeconds`      | When the probe times out                        | `5`                                                        |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed.           | `1` |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.             | `3` |
 

@@ -103,27 +103,16 @@ spec:
         livenessProbe:
           exec:
             command: [ "/bin/sh", "-c", "nodetool status" ]
-          {{- if not .Values.livenessProbe }}
-          initialDelaySeconds: 90
-          periodSeconds: 30
-          {{- else }}
-          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 90 }}
-          periodSeconds: {{ .Values.livenessProbe.periodSeconds | default 30 }}
-          {{- if .Values.livenessProbe.timeoutSeconds }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
-          {{- end }}
-          {{- if .Values.livenessProbe.successThreshold }}
           successThreshold: {{ .Values.livenessProbe.successThreshold }}
-          {{- end }}
-          {{- if .Values.livenessProbe.failureThreshold }}
           failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
-          {{- end }}
-          {{- end }}
         readinessProbe:
           exec:
             command: [ "/bin/sh", "-c", "nodetool status | grep -E \"^UN\\s+${POD_IP}\"" ]
-          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 90 }}
-          periodSeconds: {{ .Values.readinessProbe.periodSeconds | default 30 }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
