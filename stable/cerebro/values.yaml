@@ -1,4 +1,5 @@
 replicaCount: 1
+revisionHistoryLimit: 3
 
 image:
   repository: lmenezes/cerebro
