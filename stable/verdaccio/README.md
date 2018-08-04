@@ -73,6 +73,7 @@ and their default values.
 | `service.loadBalancerIP`           | IP address to assign to load balancer (if supported)            | `""`                                                     |
 | `service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`                                                     |
 | `service.port`                     | Service port to expose                                          | `4873`                                                   |
+| `service.nodePort`                 | Service node port to expose when service type is `NodePort`     | none                                                     |
 | `service.type`                     | Type of service to create                                       | `ClusterIP`                                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
