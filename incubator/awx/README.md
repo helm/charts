@@ -69,12 +69,12 @@ Parameter | Description | Default
 `cacheImage.tag` | Cache image version | `latest`
 `cacheService.port` | Cache service port | `11211`
 `taskComponent` | Awx-task component label | `task`
-`taskImage.repository` | AWX-task image repository | `harbor.dev.action.cloudz.co.kr/zcomposer/awx_task`
-`taskImage.tag` | AWX-task image version | `latest`
+`taskImage.repository` | AWX-task image repository | `registry.au-syd.bluemix.net/zcomposer/awx_task`
+`taskImage.tag` | AWX-task image version | `2.1`
 `secretKey` | AWX secret key | `aabbcc`
 `webComponent` | Web component label | `web`
-`webImage.repository` | Web image repository | `harbor.dev.action.cloudz.co.kr/zcomposer/awx_web`
-`webImage.tag` | Web image version | `latest`
+`webImage.repository` | Web image repository | `registry.au-syd.bluemix.net/zcomposer/awx_web`
+`webImage.tag` | Web image version | `2.1`
 `webService.type` | Set it to "NodePort". To change to "LoadBalancer" and "Ingress", you can set it after "Portable IP" is preassigned. It is based on IBM Cloud. | `NodePort`
 `webService.internalPort` | Set internal port | `80`
 `webService.externalPort` | Set external port | `8052`
