@@ -77,6 +77,7 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `mariadb.rootUser.password`           | MariaDB admin password                                                                       | `nil`                                                   |
 | `serviceType`                         | Kubernetes Service type                                                                      | `LoadBalancer`                                          |
 | `externalTrafficPolicy`               | Set to `Local` to preserve the client source IP                                              | `Local`                                               |
+| `sessionAffinity`                     | Configures the session affinity                                                              | `None`                                              |
 | `persistence.enabled`                 | Enable persistence using PVC                                                                 | `true`                                                  |
 | `persistence.apache.storageClass`     | PVC Storage Class for Apache volume                                                          | `nil` (uses alpha storage class annotation)             |
 | `persistence.apache.accessMode`       | PVC Access Mode for Apache volume                                                            | `ReadWriteOnce`                                         |
