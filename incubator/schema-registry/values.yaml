@@ -19,6 +19,10 @@ replicaCount: 1
 ## Configuration Options can be found here: https://docs.confluent.io/current/schema-registry/docs/config.html
 configurationOverrides:
   kafkastore.topic.replication.factor: 1
+  # If you are running the schema-registry-ui, you may run into CORS issues;
+  # uncomment the following two lines to fix. Source: https://github.com/Landoop/schema-registry-ui#prerequisites
+  # access.control.allow.methods: "GET,POST,PUT,OPTIONS"
+  # access.control.allow.origin: "*"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
