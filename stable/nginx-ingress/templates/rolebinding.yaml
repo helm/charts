@@ -8,6 +8,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.fullname" . }}
+  namespace: {{ template "nginx-ingress.namespace" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -15,5 +16,5 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: {{ template "nginx-ingress.serviceAccountName" . }}
-    namespace: {{ .Release.Namespace }}
+    namespace: {{ template "nginx-ingress.namespace" . }}
 {{- end -}}

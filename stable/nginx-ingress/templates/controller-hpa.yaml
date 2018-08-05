@@ -10,6 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
+  namespace: {{ template "nginx-ingress.namespace" . }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1beta1
