@@ -26,4 +26,5 @@ spec:
       nodePort: {{ .Values.nodePorts.https }}
       {{- end }}
   selector:
-    app: {{ template "grav.fullname" . }}
+    app: {{ template "grav.name" . }}
+    release: {{ .Release.Name }}
