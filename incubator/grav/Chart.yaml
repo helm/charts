@@ -1,0 +1,7 @@
+apiVersion: v1
+appVersion: 1.4.8
+description: Grav is a modern open source flat-file CMS
+home: https://getgrav.org/
+icon: https://getgrav-grav.netdna-ssl.com/user/pages/media/grav-logo.svg
+name: grav
+version: 0.1.0
