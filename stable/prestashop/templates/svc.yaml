@@ -9,9 +9,11 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   type: {{ .Values.serviceType }}
-  {{- if eq .Values.serviceType "LoadBalancer" }}
-  loadBalancerIP: {{ default "" .Values.prestashopLoadBalancerIP }}
-  externalTrafficPolicy: Local
+  {{- if (and (eq .Values.serviceType "LoadBalancer") (not (empty .Values.prestashopLoadBalancerIP))) }}
+  loadBalancerIP: {{ .Values.prestashopLoadBalancerIP }}
+  {{- end }}
+  {{- if (or (eq .Values.serviceType "LoadBalancer") (eq .Values.serviceType "NodePort")) }}
+  externalTrafficPolicy: {{ .Values.externalTrafficPolicy | quote }}
   {{- end }}
   ports:
   - name: http
