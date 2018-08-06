@@ -138,10 +138,10 @@ controller:
   resources: {}
   #  limits:
   #    cpu: 100m
-  #    memory: 64Mi
+  #    memory: 150Mi
   #  requests:
   #    cpu: 100m
-  #    memory: 64Mi
+  #    memory: 150Mi
 
   autoscaling:
     enabled: false
