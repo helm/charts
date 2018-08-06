@@ -33,7 +33,7 @@ The following tables list the configurable parameters of the Dask chart and thei
 | -------------------------- | -------------------------| -----------------|
 | `scheduler.name`           | Dask scheduler name      | `scheduler`      |
 | `scheduler.image`          | Container image name     | `daskdev/dask`   |
-| `scheduler.imageTag`       | Container image tag      | `latest`         |
+| `scheduler.imageTag`       | Container image tag      | `0.18.1`         |
 | `scheduler.replicas`       | k8s deployment replicas  | `1`              |
 | `scheduler.resources`      | Container resources      | `{}`             |
 
