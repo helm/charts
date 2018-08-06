@@ -48,6 +48,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ingress.hosts`            | Ingress accepted hostnames | `[]` |
 | `ingress.tls`              | Ingress TLS configuration | `[]` |
 | `resources`                | CPU/Memory resource requests/limits | `{}` |
+| `priorityClassName`        | priorityClassName | `nil` |
 | `nodeSelector`             | Node labels for pod assignment | `{}` |
 | `tolerations`              | Toleration labels for pod assignment | `[]` |
 | `affinity`                 | Affinity settings for pod assignment | `{}` |

@@ -68,6 +68,8 @@ resources: {}
 #    cpu: 100m
 #    memory: 128Mi
 
+priorityClassName: ""
+
 ## Node labels for pod assignment
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
 #
