@@ -105,6 +105,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
 | `podManagementPolicy`      | podManagementPolicy of the StatefulSet          | `OrderedReady`                                             |
 | `updateStrategy.type`      | UpdateStrategy of the StatefulSet               | `OnDelete`                                                 |
+| `tolerations`              | Tolerations for the pods                        | `{}`                                                       |
 
 ## Scale cassandra
 When you want to change the cluster size of your cassandra, you can use the helm upgrade command.
