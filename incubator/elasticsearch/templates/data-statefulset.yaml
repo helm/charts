@@ -97,6 +97,9 @@ spec:
         - name: {{ $key }}
           value: {{ $value | quote }}
         {{- end }}
+{{- if .Values.cluster.args }}
+        args: {{ .Values.cluster.args }}
+{{- end }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         ports:
