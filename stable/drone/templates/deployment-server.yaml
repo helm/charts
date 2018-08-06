@@ -80,6 +80,9 @@ spec:
         volumeMounts:
           - name: data
             mountPath: /var/lib/drone
+{{- with .Values.server.extraVolumeMounts }}
+{{ tpl . $ | indent 10 }}
+{{- end }}
 {{- with .Values.server.extraContainers }}
 {{ tpl . $ | indent 6 }}
 {{- end }}
