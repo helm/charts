@@ -101,6 +101,9 @@ spec:
         - name: {{ $key }}
           value: {{ $value | quote }}
         {{- end }}
+{{- if .Values.cluster.args }}
+        args: {{ .Values.cluster.args }}
+{{- end }}
         resources:
 {{ toYaml .Values.master.resources | indent 12 }}
         readinessProbe:
