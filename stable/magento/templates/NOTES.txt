@@ -46,9 +46,9 @@ host. To configure Magento with the URL of your service:
 
 {{- if eq .Values.serviceType "ClusterIP" }}
 
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "magento.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-  echo http://127.0.0.1:8080/
-  kubectl port-forward $POD_NAME 8080:80
+  echo "Store URL: http://127.0.0.1:8080/"
+  echo "Admin URL: http://127.0.0.1:8080/{{ .Values.magentoAdminUri }}"
+  kubectl port-forward svc/{{ template "magento.fullname" . }} 8080:80
 {{- else }}
 
   echo Store URL : http://{{ include "magento.host" . }}/
