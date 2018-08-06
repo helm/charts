@@ -114,6 +114,7 @@ Parameter | Description | Default
 `controller.stats.service.type` | type of controller stats service to create | `ClusterIP`
 `controller.metrics.enabled` | if `true`, enable Prometheus metrics (`controller.stats.enabled` must be `true` as well) | `false`
 `controller.metrics.service.annotations` | annotations for Prometheus metrics service | `{}`
+`controller.metrics.service.extraLabels` | extra labels for Prometheus metrics service | `{}`
 `controller.metrics.service.clusterIP` | cluster IP address to assign to service | `""`
 `controller.metrics.service.externalIPs` | Prometheus metrics service external IP addresses | `[]`
 `controller.metrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
