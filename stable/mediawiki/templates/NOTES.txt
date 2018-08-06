@@ -32,7 +32,7 @@
 {{- else if contains "ClusterIP"  .Values.service.type }}
 
   echo "Mediawiki URL: http://127.0.0.1:8080/"
-  kubectl port-forward svc/{{ template "mediawiki.fullname" . }} 8080:80
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "mediawiki.fullname" . }} 8080:80
 
 {{- end }}
 {{- end }}
