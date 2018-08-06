@@ -1,5 +1,5 @@
 dependencies:
 - name: schema-registry
-  version: 0.4.6
+  version: 1.0.0
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   condition: schemaRegistry.enabled

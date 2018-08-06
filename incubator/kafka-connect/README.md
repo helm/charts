@@ -1,19 +1,35 @@
 # kafka-connect
 
-[kafka-connect](https://github.com/apache/kafka) is a Confluent Kafka
-Connector which uses a JDBC driver to connect to a JDBC data source. Once connected, the connector
-monitors a set of tables for changes and streams those changes into Kafka.
+[kafka-connect](https://www.confluent.io/product/connectors/) is an application which allows Kafka
+to integrate with other data sources. These integrations may act as either a _source_ or a _sink_
+to Kafka. Supported Kafka Connectors [included with the default Confluent Kafka Connect Docker image](https://docs.confluent.io/current/connect/connectors.html) include:
+
+  * JDBC
+  * HDFS
+  * Amazon S3
+  * GCS
+  * Elasticsearch
+  * Replicator
+  * JMS
+  * IBM MQ
+  * ActiveMQ
+  * Kafka FileStream
+
+Kafka-Connect is managed via its [HTTP API](https://docs.confluent.io/current/connect/references/restapi.html).
+A common strategy in a Kubernetes deployment would be to use a super-chart which uses this chart as
+a dependency and uses a post-installation hook or a Git-Sync sidecar to manage Kafka Connect.
+
+[Additional Connectors](https://www.confluent.io/product/connectors/) may be added or removed by modifying the default image for this Chart.
 
 ## TL;DR;
 
 ```bash
-$ kubectl create secret generic kafka-connect-config --from-literal=aws-access-key-id=<REDACTED> --from-literal=aws-secret-access-key=<REDACTED>
 $ helm install incubator/kafka-connect
 ```
 
 ## Introduction
 
-This chart bootstraps a [kafka-connect](https://github.com/apache/kafka)
+This chart bootstraps a [kafka-connect](https://www.confluent.io/product/connectors/)
 deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh)
 package manager.
 
@@ -96,8 +112,8 @@ default values.
 | `kafka.overrideBootstrapServers` | If kafka install is disabled, the broker URLs for Kafka, or the Kubernetes headless service address | `""` |
 
 The above parameters map to the env variables defined in
-[kafka-connect](https://github.com/apache/kafka). For more information please
-refer to the [kafka-connect](https://github.com/apache/kafka) documentation.
+[kafka-connect](https://www.confluent.io/product/connectors/). For more information please
+refer to the [kafka-connect](https://www.confluent.io/product/connectors/) documentation.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For
 example,
@@ -114,4 +130,3 @@ $ helm install --name my-release -f values.yaml incubator/kafka-connect
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
-

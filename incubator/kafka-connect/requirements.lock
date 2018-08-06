@@ -1,6 +1,6 @@
 dependencies:
 - name: schema-registry
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-  version: 0.4.4
-digest: sha256:7b3fc1b9ffbc9a85851cc72200d79a95bb18d857c575108759185bab3e023b88
-generated: 2018-08-02T09:05:28.578294749-05:00
+  version: 1.0.0
+digest: sha256:af5f0d558fa75e7fe99ac13718b2d3e94a5ee40d961bb905f8a4209d348fe58d
+generated: 2018-08-06T09:58:03.013998758-05:00
