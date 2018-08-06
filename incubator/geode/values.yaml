@@ -16,8 +16,8 @@ config:
   num_servers: 3
 
 memory:
-  max_locators: 50m
-  max_servers: 100m
+  max_locators: 128m
+  max_servers: 256m
 
 ingress:
   enabled: false
