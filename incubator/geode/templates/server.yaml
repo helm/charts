@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: {{ template "geode.fullname" . }}-server
   labels:
-    app: {{ template "geode.name" . }}
+    app: {{ template "geode.name" . }}-server
     chart: {{ template "geode.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -11,12 +11,12 @@ spec:
   replicas: {{ .Values.config.num_servers }}
   selector:
     matchLabels:
-      app: {{ template "geode.name" . }}
+      app: {{ template "geode.name" . }}-server
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "geode.name" . }}
+        app: {{ template "geode.name" . }}-server
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -30,6 +30,7 @@ spec:
             gfsh start server --name=${HOSTNAME} --dir=/data --J=-Dgemfire.locator-wait-time=100 \
             --locators={{ template "geode.fullname" . }}[10334] \
             --max-heap={{ .Values.memory.max_servers }} --hostname-for-clients=$(hostname -i) \
+            --bind-address=$(hostname -i) --jmx-manager-hostname-for-clients=$(hostname -i) \
             --J=-Dgemfire.log-file=/var/log/server.log && \
             tail -f /var/log/server.log
           ports:
