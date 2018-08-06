@@ -48,11 +48,13 @@ host. To configure Magento with the URL of your service:
 
   echo "Store URL: http://127.0.0.1:8080/"
   echo "Admin URL: http://127.0.0.1:8080/{{ .Values.magentoAdminUri }}"
-  kubectl port-forward svc/{{ template "magento.fullname" . }} 8080:80
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "magento.fullname" . }} 8080:80
+
 {{- else }}
 
   echo Store URL : http://{{ include "magento.host" . }}/
   echo Admin URL : http://{{ include "magento.host" . }}/{{ .Values.magentoAdminUri }}
+
 {{- end }}
 
 2. Get your Magento login credentials by running:
