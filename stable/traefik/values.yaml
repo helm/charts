@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.6.2
+imageTag: 1.6.5
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 loadBalancerIP:
@@ -37,6 +37,7 @@ tolerations: []
 #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 ## Kubernetes ingress filters
 # kubernetes:
+  # endpoint:
   # namespaces:
   # - default
   # labelSelector:
@@ -214,6 +215,18 @@ accessLogs:
   ## Path to the access logs file. If not provided, Traefik defaults it to stdout.
   # filePath: ""
   format: common  # choices are: common, json
+  ## for JSON logging, finer-grained control over what is logged. Fields can be
+  ## retained or dropped, and request headers can be retained, dropped or redacted
+  fields:
+    # choices are keep, drop
+    defaultMode: keep
+    names: {}
+      # ClientUsername: drop
+    headers:
+      # choices are keep, drop, redact
+      defaultMode: keep
+      names: {}
+        # Authorization: redact
 rbac:
   enabled: false
 ## Enable the /metrics endpoint, for now only supports prometheus
@@ -238,3 +251,17 @@ deployment:
     httpsEnabled: false
     dashboardEnabled: false
 sendAnonymousUsage: false
+tracing:
+  enabled: false
+  serviceName: traefik
+  # backend: choices are jaeger, zipkin
+  # jaeger:
+  #   localAgentHostPort: "127.0.0.1:6831"
+  #   samplingServerURL: http://localhost:5778/sampling
+  #   samplingType: const
+  #   samplingParam: 1.0
+  # zipkin:
+  #   httpEndpoint: http://localhost:9411/api/v1/spans
+  #   debug: false
+  #   sameSpan: false
+  #   id128bit: true
