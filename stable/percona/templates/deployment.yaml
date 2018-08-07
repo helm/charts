@@ -15,9 +15,9 @@ spec:
     spec:
       initContainers:
       - name: "remove-lost-found"
-        image: "busybox:1.25.0" 
+        image: "busybox:1.25.0"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
-        command: 
+        command:
         - "rm"
         - "-fr"
         - "/var/lib/mysql/lost+found"
@@ -77,4 +77,12 @@ spec:
           claimName: {{ template "percona.fullname" . }}
       {{- else }}
         emptyDir: {}
+      {{- end -}}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end -}}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
       {{- end -}}
