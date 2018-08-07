@@ -29,10 +29,9 @@ host. To configure Ghost with the URL of your service:
 
 {{- if eq .Values.serviceType "ClusterIP" }}
 
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "ghost.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
   echo Blog URL  : http://127.0.0.1:{{ default "80" .Values.ghostPort }}{{ .Values.ghostPath }}
   echo Admin URL : http://127.0.0.1:{{ default "80" .Values.ghostPort }}{{ .Values.ghostPath }}ghost
-  kubectl port-forward $POD_NAME {{ default "80" .Values.ghostPort }}:2368
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "ghost.fullname" . }} {{ default "80" .Values.ghostPort }}:2368
 
 {{- else if eq .Values.serviceType "NodePort" }}
   export APP_HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
