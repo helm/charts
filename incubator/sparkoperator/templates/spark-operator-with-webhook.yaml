@@ -1,4 +1,38 @@
 {{ if eq .Values.enableWebhook true }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.operatorNamespace }}
+  annotations:
+    "helm.sh/hook": "pre-install"
+    "helm.sh/hook-weight": "-10"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sparkoperator
+  namespace: {{ .Values.operatorNamespace }}
+  annotations:
+    "helm.sh/hook": "pre-install"
+    "helm.sh/hook-weight": "0"
+  labels:
+    app.kubernetes.io/name: sparkoperator
+    app.kubernetes.io/version: {{ .Values.operatorVersion }}
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sparkoperator
+        app.kubernetes.io/version: {{ .Values.operatorVersion }}
+    spec:
+      serviceAccountName: sparkoperator
+      restartPolicy: OnFailure
+      containers:
+      - name: main
+        image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
+        imagePullPolicy: Always
+        command: ["/usr/bin/gencerts.sh", "-n", "{{ .Values.operatorNamespace }}", "-p"]
+---
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -30,7 +64,7 @@ spec:
             secretName: spark-webhook-certs
       containers:
       - name: sparkoperator
-        image: gcr.io/spark-operator/spark-operator:{{ .Values.operatorVersion }}
+        image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
         imagePullPolicy: Always
         volumeMounts:
           - name: webhook-certs
