@@ -78,7 +78,11 @@ spec:
         - name: NODE_MASTER
           value: "false"
         - name: DISCOVERY_SERVICE
+{{- if .Values.cluster.shortDiscoveryURI }}
+          value: {{ template "elasticsearch.fullname" . }}-discovery.{{ .Release.Namespace }}
+{{- else }}
           value: {{ template "elasticsearch.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.cluster.kubernetesDomain }}
+{{- end }}
         - name: PROCESSORS
           valueFrom:
             resourceFieldRef:

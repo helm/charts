@@ -71,6 +71,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                              |
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                 |
 | `cluster.env`                        | Cluster environment variables                                       | `{}`                                 |
+| `cluster.shortDiscoveryURI`          | Use shortened URI as discovery service                              | `{}`                                 |
 | `client.name`                        | Client component name                                               | `client`                             |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                  |
 | `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`  |
@@ -119,6 +120,8 @@ In terms of Memory resources you should make sure that you follow that equation:
 - `${role}HeapSize < ${role}MemoryRequests < ${role}MemoryLimits`
 
 The YAML value of cluster.config is appended to elasticsearch.yml file for additional customization ("script.inline: on" for example to allow inline scripting)
+
+If `cluster.shortDiscoveryURI` is provided `{{ elasticsearch.fullname }}-discovery.{{ .Relase.Namespace }}` will be as the $DISCOVERY_SERVICE.
 
 # Deep dive
 
