@@ -36,6 +36,28 @@ serviceType: "ClusterIP"
 # Can be one of three options: "UDPNTCP" (default), "UDP" or "TCP"
 serviceProtocol: "UDPNTCP"
 
+# expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+# for example:
+#   affinity:
+#     nodeAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        nodeSelectorTerms:
+#        - matchExpressions:
+#          - key: foo.bar.com/role
+#            operator: In
+#            values:
+#            - master
+affinity: {}
+
+# expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#toleration-v1-core
+# for example:
+#   tolerations:
+#   - key: foo.bar.com/role
+#     operator: Equal
+#     value: master
+#     effect: NoSchedule
+tolerations: []
+
 # plugn configuration of CoreDNS refer to https://github.com/coredns/coredns/tree/master/plugin
 # for all specific details. set enabled to true/false to enable/disable a plugin.
 plugins:
