@@ -1,13 +1,16 @@
 # MongoDB Helm Chart
 
 ## Prerequisites Details
+
 * Kubernetes 1.8+ with Beta APIs enabled.
 * PV support on the underlying infrastructure.
 
 ## StatefulSet Details
+
 * https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/
 
 ## StatefulSet Caveats
+
 * https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations
 
 ## Chart Details
@@ -19,9 +22,9 @@ using Kubernetes StatefulSets and Init Containers.
 
 To install the chart with the release name `my-release`:
 
-```console
-$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-$ helm install --name my-release stable/mongodb-replicaset
+``` console
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+helm install --name my-release stable/mongodb-replicaset
 ```
 
 ## Configuration
@@ -52,14 +55,14 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `tls.cacert`                        | The CA certificate used for the members                                   | Our self signed CA certificate                      |
 | `tls.cakey`                         | The CA key used for the members                                           | Our key for the self signed CA certificate          |
 | `metrics.enabled`                   | Enable Prometheus compatible metrics for pods and replicasets             | `false`                                             |
-| `metrics.image.repository           | Image name for metrics exporter                                           | `ssalaues/mongodb-exporter`                         |
-| `metrics.image.tag                  | Image tag for metrics exporter                                            | `0.6.1`                                             |
-| `metrics.image.pullPolicy           | Image pull policy for metrics exporter                                    | `IfNotPresent`                                      |
-| `metrics.port                       | Port for metrics exporter                                                 | `9216`                                              |
-| `metrics.path                       | URL Path to expose metics                                                 | `/metrics`                                          |
-| `metrics.socketTimeout              | Time to wait for a non-responding socket                                  | `3s`                                                |
-| `metrics.syncTimeout                | Time an operation with this session will wait before returning an error   | `1m`                                                |
-| `metrics.prometheusServiceDiscovery | Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
+| `metrics.image.repository`           | Image name for metrics exporter                                           | `ssalaues/mongodb-exporter`                         |
+| `metrics.image.tag`                  | Image tag for metrics exporter                                            | `0.6.1`                                             |
+| `metrics.image.pullPolicy`           | Image pull policy for metrics exporter                                    | `IfNotPresent`                                      |
+| `metrics.port`                       | Port for metrics exporter                                                 | `9216`                                              |
+| `metrics.path`                       | URL Path to expose metics                                                 | `/metrics`                                          |
+| `metrics.socketTimeout`              | Time to wait for a non-responding socket                                  | `3s`                                                |
+| `metrics.syncTimeout`                | Time an operation with this session will wait before returning an error   | `1m`                                                |
+| `metrics.prometheusServiceDiscovery` | Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
 | `auth.enabled`                      | If `true`, keyfile access control is enabled                              | `false`                                             |
 | `auth.key`                          | Key for internal authentication                                           | ``                                                  |
 | `auth.existingKeySecret`            | If set, an existing secret with this name for the key is used             | ``                                                  |
@@ -80,22 +83,19 @@ The following table lists the configurable parameters of the mongodb chart and t
 
 *MongoDB config file*
 
-All options that depended on the chart configuration are supplied as command-line arguments to `mongod`. By default, 
-the chart creates an empty config file. Entries may be added via  the `configmap` configuration value. 
+All options that depended on the chart configuration are supplied as command-line arguments to `mongod`. By default, the chart creates an empty config file. Entries may be added via  the `configmap` configuration value.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-```console
-$ helm install --name my-release -f values.yaml stable/mongodb-replicaset
+``` console
+helm install --name my-release -f values.yaml stable/mongodb-replicaset
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-Once you have all 3 nodes in running, you can run the "test.sh" script in this directory, which will insert a key into 
-the primary and check the secondaries for output. This script requires that the `$RELEASE_NAME` environment variable 
-be set, in order to access the pods.
+Once you have all 3 nodes in running, you can run the "test.sh" script in this directory, which will insert a key into the primary and check the secondaries for output. This script requires that the `$RELEASE_NAME` environment variable be set, in order to access the pods.
 
 ## Authentication
 
@@ -112,8 +112,8 @@ used to create additional users with more specific permissions.
 To enable full TLS encryption set `tls.enabled` to `true`. It is recommended to create your own CA by executing:
 
 ```console
-$ openssl genrsa -out ca.key 2048
-$ openssl req -x509 -new -nodes -key ca.key -days 10000 -out ca.crt -subj "/CN=mydomain.com"
+openssl genrsa -out ca.key 2048
+openssl req -x509 -new -nodes -key ca.key -days 10000 -out ca.crt -subj "/CN=mydomain.com"
 ```
 
 After that paste the base64 encoded (`cat ca.key | base64 -w0`) cert and key into the fields `tls.cacert` and
@@ -169,10 +169,11 @@ alternative hostnames you want to allow access to the MongoDB replicaset. You sh
 mongodb with your `mongo.pem` certificate:
 
 ```console
-$ mongo --ssl --sslCAFile=ca.crt --sslPEMKeyFile=mongo.pem --eval "db.adminCommand('ping')"
+mongo --ssl --sslCAFile=ca.crt --sslPEMKeyFile=mongo.pem --eval "db.adminCommand('ping')"
 ```
 
 ## Promethus metrics
+
 Enabling the metrics as follows will allow for each replicaset pod to export Prometheus compatible metrics
 on server status, individual replicaset information, replication oplogs, and storage engine.
 
@@ -194,6 +195,7 @@ metrics:
 More information on [MongoDB Exporter](https://github.com/percona/mongodb_exporter) metrics available.
 
 ## Readiness probe
+
 The default values for the readiness probe are:
 
 ```yaml
@@ -206,6 +208,7 @@ readinessProbe:
 ```
 
 ## Liveness probe
+
 The default values for the liveness probe are:
 
 ```yaml
@@ -220,8 +223,7 @@ livenessProbe:
 ## Deep dive
 
 Because the pod names are dependent on the name chosen for it, the following examples use the
-environment variable `RELEASENAME`. For example, if the helm release name is `messy-hydra`, one would need to set the 
-following before proceeding. The example scripts below assume 3 pods only.
+environment variable `RELEASENAME`. For example, if the helm release name is `messy-hydra`, one would need to set the following before proceeding. The example scripts below assume 3 pods only.
 
 ```console
 export RELEASE_NAME=messy-hydra
@@ -230,12 +232,13 @@ export RELEASE_NAME=messy-hydra
 ### Cluster Health
 
 ```console
-$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-replicaset-$i -- sh -c 'mongo --eval="printjson(db.serverStatus())"'; done
+for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-replicaset-$i -- sh -c 'mongo --eval="printjson(db.serverStatus())"'; done
 ```
 
 ### Failover
 
 One can check the roles being played by each node by using the following:
+
 ```console
 $ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-replicaset-$i -- sh -c 'mongo --eval="printjson(rs.isMaster())"'; done
 
@@ -243,32 +246,32 @@ MongoDB shell version: 3.6.3
 connecting to: mongodb://127.0.0.1:27017
 MongoDB server version: 3.6.3
 {
-	"hosts" : [
-		"messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
-		"messy-hydra-mongodb-1.messy-hydra-mongodb.default.svc.cluster.local:27017",
-		"messy-hydra-mongodb-2.messy-hydra-mongodb.default.svc.cluster.local:27017"
-	],
-	"setName" : "rs0",
-	"setVersion" : 3,
-	"ismaster" : true,
-	"secondary" : false,
-	"primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
-	"me" : "messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
-	"electionId" : ObjectId("7fffffff0000000000000001"),
-	"maxBsonObjectSize" : 16777216,
-	"maxMessageSizeBytes" : 48000000,
-	"maxWriteBatchSize" : 1000,
-	"localTime" : ISODate("2016-09-13T01:10:12.680Z"),
-	"maxWireVersion" : 4,
-	"minWireVersion" : 0,
-	"ok" : 1
+  "hosts" : [
+    "messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
+    "messy-hydra-mongodb-1.messy-hydra-mongodb.default.svc.cluster.local:27017",
+    "messy-hydra-mongodb-2.messy-hydra-mongodb.default.svc.cluster.local:27017"
+  ],
+  "setName" : "rs0",
+  "setVersion" : 3,
+  "ismaster" : true,
+  "secondary" : false,
+  "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
+  "me" : "messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
+  "electionId" : ObjectId("7fffffff0000000000000001"),
+  "maxBsonObjectSize" : 16777216,
+  "maxMessageSizeBytes" : 48000000,
+  "maxWriteBatchSize" : 1000,
+  "localTime" : ISODate("2016-09-13T01:10:12.680Z"),
+  "maxWireVersion" : 4,
+  "minWireVersion" : 0,
+  "ok" : 1
 }
-
-
 ```
+
 This lets us see which member is primary.
 
 Let us now test persistence and failover. First, we insert a key (in the below example, we assume pod 0 is the master):
+
 ```console
 $ kubectl exec $RELEASE_NAME-mongodb-replicaset-0 -- mongo --eval="printjson(db.test.insert({key1: 'value1'}))"
 
@@ -278,6 +281,7 @@ connecting to: mongodb://127.0.0.1:27017
 ```
 
 Watch existing members:
+
 ```console
 $ kubectl run --attach bbox --image=mongo:3.6 --restart=Never --env="RELEASE_NAME=$RELEASE_NAME" -- sh -c 'while true; do for i in 0 1 2; do echo $RELEASE_NAME-mongodb-replicaset-$i $(mongo --host=$RELEASE_NAME-mongodb-replicaset-$i.$RELEASE_NAME-mongodb-replicaset --eval="printjson(rs.isMaster())" | grep primary); sleep 1; done; done';
 
@@ -292,6 +296,7 @@ messy-hydra-mongodb-0 "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.def
 ```
 
 Kill the primary and watch as a new master getting elected.
+
 ```console
 $ kubectl delete pod $RELEASE_NAME-mongodb-replicaset-0
 
@@ -299,6 +304,7 @@ pod "messy-hydra-mongodb-0" deleted
 ```
 
 Delete all pods and let the statefulset controller bring it up.
+
 ```console
 $ kubectl delete po -l "app=mongodb-replicaset,release=$RELEASE_NAME"
 $ kubectl get po --watch-only
@@ -337,6 +343,7 @@ messy-hydra-mongodb-2 "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.def
 ```
 
 Check the previously inserted key:
+
 ```console
 $ kubectl exec $RELEASE_NAME-mongodb-replicaset-1 -- mongo --eval="rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)"
 
