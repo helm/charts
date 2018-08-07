@@ -2,5 +2,5 @@ operatorImageName: lightbend/sparkoperator
 operatorVersion: 2.3.1
 operatorNamespace: sparkoperator
 
-enableWebhook: true
+enableWebhook: false
 enableMetrics: false
