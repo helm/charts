@@ -97,6 +97,8 @@ spec:
               mountPath: /docker-entrypoint.d
               subPath: {{ .Values.agent.persistence.subpath.dockerEntryPoint }}
           {{- end }}
+          securityContext:
+            privileged: {{ .Values.agent.privileged }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
