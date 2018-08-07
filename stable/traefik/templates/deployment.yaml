@@ -131,7 +131,11 @@ spec:
       {{- if .Values.ssl.enabled }}
       - name: ssl
         secret:
+        {{- if .Values.ssl.useNamedCertificateSecret }}
+          secretName: {{ .Values.ssl.certificateSecretName }}
+        {{- else }}
           secretName: {{ template "traefik.fullname" . }}-default-cert
+        {{- end }}
       {{- end }}
       {{- if .Values.acme.enabled }}
       - name: acme
