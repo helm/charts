@@ -59,7 +59,7 @@ spec:
           done;
       containers:
       - name: {{ .Values.artifactory.name }}
-        image: '{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}'
+        image: '{{ .Values.artifactory.image.repository }}:{{ default .Chart.AppVersion .Values.artifactory.image.version }}'
         imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
         lifecycle:
           postStart:
@@ -84,6 +84,9 @@ spec:
                 cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
                 cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys/trusted;
                 chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access/etc;
+                {{- end }}
+                {{- if .Values.artifactory.postStartCommand }}
+                {{ .Values.artifactory.postStartCommand }}
                 {{- end }}
         env:
       {{- if .Values.postgresql.enabled }}

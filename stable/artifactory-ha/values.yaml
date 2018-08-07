@@ -106,6 +106,10 @@ artifactory:
     dataKey:
   ## Create configMap with artifactory.config.import.xml and security.import.xml and pass name of configMap in following parameter
   configMapName:
+
+  ## Extra postStart command to install JDBC driver for MySql/MariaDb/Oracle
+  # postStartCommand: "curl -L -o /opt/jfrog/artifactory/tomcat/lib/mysql-connector-java-5.1.41.jar https://jcenter.bintray.com/mysql/mysql-connector-java/5.1.41/mysql-connector-java-5.1.41.jar && chown 1030:1030 /opt/jfrog/artifactory/tomcat/lib/mysql-connector-java-5.1.41.jar"
+
   membershipPort: 10017
   externalPort: 8081
   internalPort: 8081
@@ -192,7 +196,7 @@ artifactory:
   ## This will be passed to all cluster members. Primary and member nodes.
   javaOpts:
     other: "-Dartifactory.locking.provider.type=db"
-  ## Artifactory Replicator
+  ## Artifactory Replicator is available only for Enterprise Plus
   replicator:
     enabled: false
     publicUrl:
@@ -206,7 +210,7 @@ artifactory:
     name: artifactory-ha-primary
     persistence:
       ## Set existingClaim to true or false
-      ## If true, you must prepare a PVC with the name
+      ## If true, you must prepare a PVC with the name e.g `artifactory-ha-primary`
       existingClaim: false
     ## Resources for the primary node
     resources: {}
@@ -231,7 +235,7 @@ artifactory:
     name: artifactory-ha-member
     persistence:
       ## Set existingClaim to true or false
-      ## If true, you must prepare a PVC with the name
+      ## If true, you must prepare a PVC with the name e.g `artifactory-ha-member`
       existingClaim: false
     replicaCount: 2
     ## Resources for the member nodes
