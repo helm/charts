@@ -35,12 +35,13 @@ host. To configure Phabricator with the URL of your service:
 
 {{- if eq .Values.serviceType "ClusterIP" }}
 
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "phabricator.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-  echo http://127.0.0.1:8080/
-  kubectl port-forward $POD_NAME 8080:80
+  echo "Phabricator URL: http://127.0.0.1:8080/"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "phabricator.fullname" . }} 8080:80
+
 {{- else }}
 
-  echo URL : http://{{ include "phabricator.host" . }}/
+  echo "Phabricator URL: http://{{ include "phabricator.host" . }}/"
+
 {{- end }}
 
 2. Get your Phabricator login credentials by running:
