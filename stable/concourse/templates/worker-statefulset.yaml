@@ -39,7 +39,7 @@ spec:
             - -c
             - |-
               cp /dev/null /tmp/.liveness_probe
-              rm -rf /concourse-work-dir/*
+              rm -rf ${CONCOURSE_WORK_DIR:-/concourse-work-dir}/*
               while ! concourse retire-worker --name=${HOSTNAME} | grep -q worker-not-found; do
                 touch /tmp/.pre_start_cleanup
                 sleep 5
