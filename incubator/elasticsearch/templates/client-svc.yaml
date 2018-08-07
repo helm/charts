@@ -23,8 +23,8 @@ spec:
     component: "{{ .Values.client.name }}"
     release: {{ .Release.Name }}
   type: {{ .Values.client.serviceType }}
-{{- if .Values.service.loadBalancerIP }}
-  loadBalancerIP: "{{ .Values.service.loadBalancerIP }}"
+{{- if .Values.client.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.client.loadBalancerIP }}"
 {{- end }}
   {{if .Values.client.loadBalancerSourceRanges}}
   loadBalancerSourceRanges:
