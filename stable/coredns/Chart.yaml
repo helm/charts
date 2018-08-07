@@ -1,5 +1,5 @@
 name: coredns
-version: 0.9.0
+version: 0.9.1
 appVersion: 1.0.6
 description: CoreDNS is a DNS server that chains plugins and provides Kubernetes DNS Services
 keywords:
@@ -13,5 +13,5 @@ sources:
 maintainers:
 - name: Acaleph
   email: hello@acale.ph
-- name: Shashidhara TD
+- name: shashidharatd
   email: shashidhara.huawei@gmail.com
