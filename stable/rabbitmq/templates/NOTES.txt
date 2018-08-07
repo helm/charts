@@ -4,8 +4,8 @@
 Credentials:
 
     Username      : {{ .Values.rabbitmq.username }}
-    echo Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
-    echo ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
+    echo "Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)"
+    echo "ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)"
 
 RabbitMQ can be accessed within the cluster on port {{ .Values.rabbitmq.nodePort }} at {{ template "rabbitmq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
@@ -21,11 +21,11 @@ Obtain the NodePort IP and ports:
 
 To Access the RabbitMQ AMQP port:
 
-    echo URL : amqp://$NODE_IP:$NODE_PORT_AMQP/
+    echo "URL : amqp://$NODE_IP:$NODE_PORT_AMQP/"
 
 To Access the RabbitMQ Management interface:
 
-    echo URL : http://$NODE_IP:$NODE_PORT_STATS/
+    echo "URL : http://$NODE_IP:$NODE_PORT_STATS/"
 
 {{- else if contains "LoadBalancer" .Values.serviceType }}
 
@@ -38,24 +38,22 @@ NOTE: It may take a few minutes for the LoadBalancer IP to be available.
 
 To Access the RabbitMQ AMQP port:
 
-    echo URL : amqp://$SERVICE_IP:{{ .Values.rabbitmq.nodePort }}/
+    echo "URL : amqp://$SERVICE_IP:{{ .Values.rabbitmq.nodePort }}/"
 
 To Access the RabbitMQ Management interface:
 
-    echo URL : http://$SERVICE_IP:{{ .Values.rabbitmq.managerPort }}/
+    echo "URL : http://$SERVICE_IP:{{ .Values.rabbitmq.managerPort }}/"
 
 {{- else if contains "ClusterIP"  .Values.serviceType }}
 
-Create a proxy server between localhost and the Kubernetes API Server:
-
-    kubectl proxy --port 8002
-
 To Access the RabbitMQ AMQP port:
 
-    URL : amqp://127.0.0.1:8002/api/v1/proxy/namespaces/{{ .Release.Namespace }}/services/{{ template "rabbitmq.fullname" . }}:{{ .Values.rabbitmq.nodePort }}/
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "rabbitmq.fullname" . }} {{ .Values.rabbitmq.nodePort }}:{{ .Values.rabbitmq.nodePort }}
+    echo "URL : amqp://127.0.0.1:{{ .Values.rabbitmq.nodePort }}/"
 
 To Access the RabbitMQ Management interface:
 
-    URL : http://127.0.0.1:8002/api/v1/proxy/namespaces/{{ .Release.Namespace }}/services/{{ template "rabbitmq.fullname" . }}:{{ .Values.rabbitmq.managerPort }}/
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "rabbitmq.fullname" . }} {{ .Values.rabbitmq.managerPort }}:{{ .Values.rabbitmq.managerPort }}
+    echo "URL : http://127.0.0.1:{{ .Values.rabbitmq.managerPort }}/"
 
 {{- end }}
