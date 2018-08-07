@@ -1,6 +1,6 @@
 image:
   repository: gcr.io/heptio-images/ark
-  tag: v0.8.2
+  tag: v0.9.1
   pullPolicy: IfNotPresent
 
 # A docker image with kubectl installed
