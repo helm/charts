@@ -44,7 +44,7 @@ backend:
   splunk:
     host: 127.0.0.1
     port: 8088
-    token: 
+    token: ""
     send_raw: "on"
     tls: "on"
     tls_verify: "off"
