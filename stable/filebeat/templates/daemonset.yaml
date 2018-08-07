@@ -26,10 +26,23 @@ spec:
         checksum/secret: {{ toYaml .Values.config | sha256sum }}
 {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
-{{- end }}        
+{{- end }}
     spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+{{- if .Values.indexTemplateLoad }}
+      initContainers:
+      - name: "load-es-template"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: "Always"
+        command:
+        - /bin/bash
+        - -c
+        - filebeat setup --template
+          -E output.logstash.enabled=false
+          -E output.file.enabled=false
+          -E output.elasticsearch.hosts=[{{- range $index, $host := .Values.indexTemplateLoad }}{{ if $index }}, {{ end }}{{ $host | quote }}{{- end }}]
 {{- end }}
       containers:
       - name: {{ .Chart.Name }}

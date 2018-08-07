@@ -47,6 +47,12 @@ config:
   http.enabled: false
   http.port: 5066
 
+# Upload index template to Elasticsearch if Logstash output is enabled
+# https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-template.html
+# List of Elasticsearch hosts
+indexTemplateLoad: []
+  # - elasticsearch:9200
+
 # List of beat plugins
 plugins: []
   # - kinesis.so
