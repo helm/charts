@@ -46,12 +46,13 @@ host. To configure ownCloud with the URL of your service:
 
 {{- if eq .Values.serviceType "ClusterIP" }}
 
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "owncloud.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-  echo http://127.0.0.1:8080/
-  kubectl port-forward $POD_NAME 8080:80
+  echo "ownCloud URL: echo http://127.0.0.1:8080/"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "owncloud.fullname" . }} 8080:80
+
 {{- else }}
 
-  echo http://{{ include "owncloud.host" . }}{{ if .Values.owncloudPort }}:{{ .Values.owncloudPort  }}{{ end }}/
+  echo "ownCloud URL: http://{{ include "owncloud.host" . }}{{ if .Values.owncloudPort }}:{{ .Values.owncloudPort  }}{{ end }}/"
+
 {{- end }}
 
 2. Get your ownCloud login credentials by running:
