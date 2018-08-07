@@ -97,7 +97,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `persistence.enabled`      | Use persistent volume to store data | `true`                                                  |
 | `persistence.size`         | Size of persistent volume claim     | `10Gi`                                                  |
 | `persistence.existingClaim`| Use an existing PVC to persist data | `nil`                                                   |
-| `persistence.storageClass` | Type of persistent volume claim     | `generic`                                               |
+| `persistence.storageClass` | Storage class name of PVC           | `nil`                                                   |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                                         |
 | `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""`                                  |
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                            |
