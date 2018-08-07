@@ -149,6 +149,10 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `accessLogs.enabled`                   | Whether to enable Traefik's access logs                                                                                      | `false`                                           |
 | `accessLogs.filePath`                  | The path to the log file. Logs to stdout if omitted                                                                          | None                                              |
 | `accessLogs.format`                    | What format the log entries should be in. Either `common` or `json`                                                          | `common`                                          |
+| `accessLogs.fields.defaultMode`        | The default behaviour for fields logged in JSON access logs, other than headers. Either `keep` or `drop`                     | `keep`                                            |
+| `accessLogs.fields.names`              | A map of field-specific logging behaviours in JSON access logs, with field names as keys, and either `keep` or `drop` as the value for each map entry | None                     |
+| `accessLogs.fields.headers.defaultMode`| The default behaviour for logging HTTP headers in JSON access logs. Either `keep`, `drop` or `redact`                        | `keep`                                            |
+| `accessLogs.fields.headers.names`      | A map of HTTP-header-specific logging behaviours in JSON access logs, with HTTP header names as keys, and `keep`, `drop` or `redact` as the value for each map entry | None      |
 | `metrics.prometheus.enabled`           | Whether to enable the `/metrics` endpoint for metric collection by Prometheus.                                               | `false`                                           |
 | `metrics.prometheus.buckets`           | A list of response times (in seconds) - for each list element, Traefik will report all response times less than the element. | `[0.1,0.3,1.2,5]`                                 |
 | `metrics.datadog.enabled`              | Whether to enable pushing metrics to Datadog.                                                                                | `false`                                           |
@@ -162,6 +166,17 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `deployment.hostPort.httpsEnabled`     | Whether to enable hostPort binding to host for https.                                                                        | `false`                                           |
 | `deployment.hostPort.dashboardEnabled` | Whether to enable hostPort binding to host for dashboard.                                                                    | `false`                                           |
 | `sendAnonymousUsage`                   | Send anonymous usage statistics.                                                                                             | `false`                                           |
+| `tracing.enabled`                      | Whether to enable request tracing                                                                                            | `false`                                           |
+| `tracing.backend`                      | Tracing backend to use, either `jaeger` or `zipkin`                                                                       | None                                              |
+| `tracing.serviceName`                  | Service name to be used in tracing backend                                                                                   | `traefik`                                         |
+| `tracing.jaeger.localAgentHostPort`    | Location of the Jaeger agent where spans will be sent                                                                        | `127.0.0.1:6831`                                  |
+| `tracing.jaeger.samplingServerUrl`     | Address of the Jaeger agent HTTP sampling server                                                                             | `http://localhost:5778/sampling`                  |
+| `tracing.jaeger.samplingType`          | Type of Jaeger sampler to use, one of: `const`, `probabilistic`, `ratelimiting`                                              | `const`                                           |
+| `tracing.jaeger.samplingParam`         | Value passed to the Jaeger sampler                                                                                           | `1.0`                                             |
+| `tracing.zipkin.httpEndpoint`          | Zipkin HTTP endpoint                                                                                                         | `http://localhost:9411/api/v1/spans`              |
+| `tracing.zipkin.debug`                 | Enables Zipkin debugging                                                                                                     | `false`                                           |
+| `tracing.zipkin.sameSpan`              | Use Zipkin SameSpan RPC style traces                                                                                         | `false`                                           |
+| `tracing.zipkin.id128Bit`              | Use Zipkin 128 bit root span IDs                                                                                             | `true`                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
