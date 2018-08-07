@@ -111,7 +111,7 @@ spec:
               mountPath: /concourse-keys
               readOnly: true
             - name: concourse-work-dir
-              mountPath: /concourse-work-dir
+              mountPath: {{ .Values.concourse.workingDirectory | default "/concourse-work-dir" | quote }}
 {{- if .Values.worker.additionalVolumeMounts }}
 {{ toYaml .Values.worker.additionalVolumeMounts | indent 12 }}
 {{- end }}
