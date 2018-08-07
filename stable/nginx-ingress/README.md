@@ -136,6 +136,7 @@ Parameter | Description | Default
 `defaultBackend.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `defaultBackend.nodeSelector` | node labels for pod assignment | `{}`
 `defaultBackend.podAnnotations` | annotations to be added to pods | `{}`
+`defaultBackend.podLabels` | labels to add to the pod container metadata | `{}`
 `defaultBackend.replicaCount` | desired number of default backend pods | `1`
 `defaultBackend.minAvailable` | minimum number of available default backend pods for PodDisruptionBudget | `1`
 `defaultBackend.resources` | default backend pod resource requests & limits | `{}`
