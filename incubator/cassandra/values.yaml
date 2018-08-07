@@ -62,6 +62,21 @@ config:
     # If a JVM Agent is in place
     # agent: 61621
 
+## Liveness and Readiness probe values.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+livenessProbe:
+  initialDelaySeconds: 90
+  periodSeconds: 30
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  initialDelaySeconds: 90
+  periodSeconds: 30
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
 ## Configure node selector. Edit code below for adding selector to pods
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
 # selector:
