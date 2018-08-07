@@ -15,7 +15,7 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - name: myRegistrKeySecretName
 
 ## NATS replicas
 replicaCount: 1
