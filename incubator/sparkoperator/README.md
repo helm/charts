@@ -21,12 +21,13 @@ By default, the operator is installed in a namespace called "sparkoperator". It 
 
 The following table lists the configurable parameters of the Spark operator chart and their default values.
 
-| Parameter           | Description                                  | Default                   |
-| ------------------- | -------------------------------------------- | ------------------------- |
-| `operatorImageName` | The name of the operator image               | `lightbend/sparkoperator` |
-| `operatorVersion`   | The version of the operator to install       | `2.3.1`                   |
-| `operatorNamespace` | K8s namespace where operator is installed    | `sparkoperator`           |
-| `enableWebhook`     | Whether to enable mutating admission webhook | true                      |
+| Parameter           | Description                                           | Default                   |
+| ------------------- | ----------------------------------------------------- | ------------------------- |
+| `operatorImageName` | The name of the operator image                        | `lightbend/sparkoperator` |
+| `operatorVersion`   | The version of the operator to install                | `2.3.1`                   |
+| `operatorNamespace` | K8s namespace where operator is installed             | `sparkoperator`           |
+| `enableWebhook`     | Whether to enable mutating admission webhook          | true                      |
+| `enableMetrics`     | Whether to expose metrics to be scraped by Premetheus | false                     |
 
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. But note that currently the chart only supports setting either `enableWebhook` to true or `enableMetrics` to true, but not both.
 

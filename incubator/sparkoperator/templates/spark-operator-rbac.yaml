@@ -1,21 +1,15 @@
-# If using admission webhooks, then do not create the namespace
-# because it is assumed that the user has manually created the namespace
-# and then run hack/gencerts.sh to generate secrets in the namespace.
-{{ if eq .Values.enableWebhook false }}
+{{ if not .Values.enableWebhook }}
 apiVersion: v1
 kind: Namespace
 metadata:
   name: {{ .Values.operatorNamespace }}
-{{ end }}
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: sparkoperator
   namespace: {{ .Values.operatorNamespace }}
-  annotations:
-    "helm.sh/hook": "pre-install"
-    "helm.sh/hook-weight": "-5"
+{{ end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole

@@ -1,4 +1,4 @@
-{{ if and (not .Values.enableWebhook) (not .Values.enableMetrics) }}
+{{ if .Values.enableMetrics }}
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -17,6 +17,10 @@ spec:
     type: Recreate
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "10254"
+        prometheus.io/path: "/metrics"
       labels:
         app.kubernetes.io/name: sparkoperator
         app.kubernetes.io/version: {{ .Values.operatorVersion }}
@@ -29,6 +33,10 @@ spec:
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
         imagePullPolicy: Always
         command: ["/usr/bin/spark-operator"]
+        ports:
+        - containerPort: 10254
         args:
         - -logtostderr
+        - -enable-metrics=true
+        - -metrics-labels=app_type
 {{ end }}

@@ -3,3 +3,4 @@ operatorVersion: 2.3.1
 operatorNamespace: sparkoperator
 
 enableWebhook: true
+enableMetrics: false
