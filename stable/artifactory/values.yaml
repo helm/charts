@@ -54,11 +54,11 @@ ingress:
 # Artifactory
 artifactory:
   name: artifactory
-  replicaCount: 1
   image:
     # repository: "docker.bintray.io/jfrog/artifactory-oss"
     repository: "docker.bintray.io/jfrog/artifactory-pro"
-    version: 6.1.0
+    # Note that by default we use appVersion to get image tag
+    # version: 6.1.0
     pullPolicy: IfNotPresent
 
   ## Artifactory license secret.
@@ -70,6 +70,9 @@ artifactory:
     dataKey:
   ## Create configMap with artifactory.config.import.xml and security.import.xml and pass name of configMap in following parameter
   configMapName:
+
+  ## Extra postStart command to install JDBC driver for MySql/MariaDb/Oracle
+  # postStartCommand: "curl -L -o /opt/jfrog/artifactory/tomcat/lib/mysql-connector-java-5.1.41.jar https://jcenter.bintray.com/mysql/mysql-connector-java/5.1.41/mysql-connector-java-5.1.41.jar && chown 1030:1030 /opt/jfrog/artifactory/tomcat/lib/mysql-connector-java-5.1.41.jar"
 
   service:
     name: artifactory
@@ -101,7 +104,7 @@ artifactory:
     enabled: true
     ## A manually managed Persistent Volume and Claim
     ## Requires persistence.enabled: true
-    ## If defined, PVC must be created manually before volume will be bound
+    ## If defined, PVC must be created manually before volume will be bound with the name e.g `artifactory`
     # existingClaim:
 
     accessMode: ReadWriteOnce
@@ -137,7 +140,7 @@ artifactory:
 
   affinity: {}
 
-  ## Artifactory Replicator
+  ## Artifactory Replicator is available only for Enterprise Plus
   replicator:
     enabled: false
     publicUrl:
@@ -151,7 +154,8 @@ nginx:
   replicaCount: 1
   image:
     repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
-    version: 6.1.0
+    # Note that by default we use appVersion to get image tag
+    # version: 6.1.0
     pullPolicy: IfNotPresent
   service:
     ## For minikube, set this to NodePort, elsewhere use LoadBalancer

@@ -47,7 +47,7 @@ spec:
           done;
       containers:
       - name: {{ .Values.nginx.name }}
-        image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.version }}"
+        image: "{{ .Values.nginx.image.repository }}:{{ default .Chart.AppVersion .Values.nginx.image.version }}"
         imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
         lifecycle:
           postStart:
