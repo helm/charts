@@ -88,7 +88,7 @@ spec:
           mountPath: "/scripts"
       containers:
       - name: {{ .Values.indexer.name }}
-        image: {{ .Values.indexer.image }}:{{ .Values.common.xrayVersion }}
+        image: {{ .Values.indexer.image }}:{{ default .Chart.AppVersion .Values.common.xrayVersion }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
         - name: XRAYCONFIGPATH
