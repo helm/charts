@@ -74,6 +74,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `sidecar.dashboards.label`            | Label that config maps with dashboards should have to be added | false |
 | `sidecar.datasources.enabled`            | Enabled the cluster wide search for datasources and adds/updates/deletes them in grafana | false |
 | `sidecar.datasources.label`            | Label that config maps with datasources should have to be added | false |
+| `sidecar.env`            	 | Extra environment variables passed to pods | `{}` |
+| `sidecar.useCurrentNamespace`       	 | Use the current namespace of the pod for configmap lookup | false |
 | `smtp.existingSecret`      | The name of an existing secret containing the SMTP credentials, this must have the keys `user` and `password`. | `""` |
 
 ## Sidecar for dashboards

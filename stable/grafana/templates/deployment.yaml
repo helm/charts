@@ -72,6 +72,16 @@ spec:
               value: "{{ .Values.sidecar.dashboards.label }}"
             - name: FOLDER
               value: "{{ .Values.sidecar.dashboards.folder }}"
+{{- range $key, $value := .Values.sidecar.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+{{- end }}
+{{- if .Values.sidecar.useCurrentNamespace }}
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+{{- end}}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:
@@ -87,6 +97,16 @@ spec:
               value: "{{ .Values.sidecar.datasources.label }}"
             - name: FOLDER
               value: "/etc/grafana/provisioning/datasources"
+{{- range $key, $value := .Values.sidecar.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+{{- end }}
+{{- if .Values.sidecar.useCurrentNamespace }}
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+{{- end}}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           volumeMounts:
