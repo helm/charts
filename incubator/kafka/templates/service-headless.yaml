@@ -9,10 +9,16 @@ metadata:
     heritage: {{ .Release.Service }}
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+{{- if .Values.headless.annotations }}
+{{ .Values.headless.annotations | toYaml | trimSuffix "\n" | indent 4 }}
+{{- end }}
 spec:
   ports:
   - name: broker
-    port: 9092
+    port: {{ .Values.headless.port }}
+{{- if .Values.headless.targetPort }}
+    targetPort: {{ .Values.headless.targetPort }}
+{{- end }}
   clusterIP: None
   selector:
     app: {{ include "kafka.name" . }}
