@@ -41,7 +41,7 @@ spec:
           sleep 10
       containers:
       - name: {{ .Values.insightScheduler.name }}
-        image: {{ .Values.insightScheduler.image }}:{{ .Values.insightScheduler.version }}
+        image: {{ .Values.insightScheduler.image }}:{{ default .Chart.AppVersion .Values.insightScheduler.version }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
         - name: CORE_URL

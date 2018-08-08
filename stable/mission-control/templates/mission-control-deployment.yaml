@@ -40,7 +40,7 @@ spec:
           done
       containers:
       - name: {{ .Values.missionControl.name }}
-        image: {{ .Values.missionControl.image }}:{{ .Values.missionControl.version }}
+        image: {{ .Values.missionControl.image }}:{{ default .Chart.AppVersion .Values.missionControl.version }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
         - name: SPRING_DATA_MONGODB_HOST

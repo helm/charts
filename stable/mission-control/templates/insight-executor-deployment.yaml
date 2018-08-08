@@ -29,7 +29,7 @@ spec:
     {{- end }}
       containers:
       - name: {{ .Values.insightExecutor.name }}
-        image: {{ .Values.insightExecutor.image }}:{{ .Values.insightExecutor.version }}
+        image: {{ .Values.insightExecutor.image }}:{{ default .Chart.AppVersion .Values.insightExecutor.version }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
         - name: CORE_URL

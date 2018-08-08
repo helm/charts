@@ -41,7 +41,7 @@ spec:
           sleep 10
       containers:
       - name: {{ .Values.insightServer.name }}
-        image: {{ .Values.insightServer.image }}:{{ .Values.insightServer.version }}
+        image: {{ .Values.insightServer.image }}:{{ default .Chart.AppVersion .Values.insightServer.version }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
         - name: CORE_URL
