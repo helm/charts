@@ -9,7 +9,7 @@ metadata:
   name: run-{{ template "nfs-client-provisioner.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "nfs-client-provisioner.fullname" . }}
+    name: {{ template "nfs-client-provisioner.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
