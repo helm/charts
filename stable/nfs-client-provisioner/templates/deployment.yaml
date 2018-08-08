@@ -21,7 +21,7 @@ spec:
         app: {{ template "nfs-client-provisioner.name" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "nfs-client-provisioner.fullname" . }}{{ else }}{{ .Values.rbac.serviceAccountName | quote }}{{ end }}
+      serviceAccountName: {{ template "nfs-client-provisioner.serviceAccountName" }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
