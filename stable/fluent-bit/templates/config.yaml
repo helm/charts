@@ -5,6 +5,9 @@ metadata:
   name: {{ template "fluent-bit.fullname" . }}-config
   labels:
     app: {{ template "fluent-bit.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 data:
   fluent-bit.conf: |-
     [SERVICE]
@@ -26,6 +29,10 @@ data:
         Refresh_Interval 5
         Mem_Buf_Limit    5MB
         Skip_Long_Lines  On
+{{- if .Values.trackOffsets }}
+        DB               /tail-db/tail-containers-state.db
+        DB.Sync          Normal
+{{- end }}
 
     [FILTER]
         Name                kubernetes

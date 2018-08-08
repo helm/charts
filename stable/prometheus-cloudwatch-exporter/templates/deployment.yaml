@@ -31,7 +31,7 @@ spec:
             - "{{ .Values.service.targetPort }}"
             - /config/config.yaml
         {{- if not .Values.aws.role }}
-        {{- if and .Values.aws.secretKey .Values.aws.accessKey }}
+        {{- if and .Values.aws.aws_secret_access_key .Values.aws.aws_access_key_id }}
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:

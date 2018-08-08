@@ -11,6 +11,15 @@ metadata:
 {{ toYaml .Values.cronjob.annotations | indent 4 }}
 spec:
   schedule: "{{ .Values.cronjob.schedule }}"
+  {{- with .Values.cronjob.concurrencyPolicy }}
+  concurrencyPolicy: {{ . }}
+  {{- end }}
+  {{- with .Values.cronjob.failedJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ . }}
+  {{- end }}
+  {{- with .Values.cronjob.successfulJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ . }}
+  {{- end }}
   jobTemplate:
     spec:
       template:
@@ -24,11 +33,14 @@ spec:
           volumes:
             - name: config-volume
               configMap:
-                name: curator-config
+                name: {{ template "elasticsearch-curator.fullname" . }}-config
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 12 }}
 {{- end }}
           restartPolicy: Never
+{{- if .Values.priorityClassName }}
+          priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
           containers:
             - name: {{ .Chart.Name }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

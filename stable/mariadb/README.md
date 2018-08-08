@@ -53,13 +53,14 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `image.pullPolicy`                        | MariaDB image pull policy                           | `Always` if `imageTag` is `latest`, else `IfNotPresent`           |
 | `image.pullSecrets`                       | Specify image pull secrets                          | `nil` (does not add image pull secrets to deployed pods)          |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
-| `service.port`                            | MySQL service port                                  | `3306`                                                            |
-| `root.password`                           | Password for the `root` user                        | _random 10 character alphanumeric string_                         |
+| `service.port`                            | MySQL service port                                  | `3306`                                                             |
+| `rootUser.password`                       | Password for the `root` user                        | _random 10 character alphanumeric string_                         |
+| `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
 | `db.user`                                 | Username of new user to create                      | `nil`                                                             |
 | `db.password`                             | Password for the new user                           | _random 10 character alphanumeric string if `db.user` is defined_ |
 | `db.name`                                 | Name for new database to create                     | `my_database`                                                     |
-| `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                            |
-| `replication.user`                        | MariaDB replication user                            | `replicator`                                                      |
+| `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                             |
+| `replication.user`                        | MariaDB replication user                            | `replicator`                                                       |
 | `replication.password`                    | MariaDB replication user password                   | _random 10 character alphanumeric string_                         |
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
 | `master.persistence.enabled`              | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
@@ -103,7 +104,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.readinessProbe.successThreshold`   | Minimum consecutive successes for the probe (slave) | `1`                                                               |
 | `slave.readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe (slave)  | `3`                                                               |
 | `metrics.enabled`                         | Start a side-car prometheus exporter                | `false`                                                           |
-| `metrics.image.registry`                           | Exporter image registry                                 | `docker.io` | 
+| `metrics.image.registry`                           | Exporter image registry                                 | `docker.io` |
 `metrics.image.repository`                           | Exporter image name                                 | `prom/mysqld-exporter`                                            |
 | `metrics.image.tag`                        | Exporter image tag                                  | `v0.10.0`                                                         |
 | `metrics.image.pullPolicy`                 | Exporter image pull policy                          | `IfNotPresent`                                                    |
@@ -128,6 +129,12 @@ $ helm install --name my-release -f values.yaml stable/mariadb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Initialize a fresh instance
+
+The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, they must be located inside the chart folder `files/docker-entrypoint-initdb.d` so they can be consumed as a ConfigMap.
+
+The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
 
 ## Persistence
 

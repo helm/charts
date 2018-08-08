@@ -71,6 +71,8 @@ The following table lists the configurable parameters of the Parse chart and the
 | `persistence.storageClass`         | PVC Storage Class for Parse volume     | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`           | PVC Access Mode for Parse volume       | `ReadWriteOnce`                                         |
 | `persistence.size`                 | PVC Storage Request for Parse volume   | `8Gi`                                                   |
+| `mongodb.usePassword`              | Enable MongoDB password authentication | `true`                                                  |
+| `mongodb.password`                 | MongoDB admin password                 | `nil`                                                     |
 | `mongodb.persistence.enabled`      | Enable MongoDB persistence using PVC   | `true`                                                  |
 | `mongodb.persistence.storageClass` | PVC Storage Class for MongoDB volume   | `nil` (uses alpha storage class annotation)             |
 | `mongodb.persistence.accessMode`   | PVC Access Mode for MongoDB volume     | `ReadWriteOnce`                                         |
