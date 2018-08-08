@@ -48,10 +48,10 @@ The following tables lists the configurable parameters of this chart and their d
 | `replicaCount`                    | number of provisioner instances to deployed | 1                                                         |
 | `strategyType`                    | specifies the strategy used to replace old Pods by new ones | Recreate                                  |
 | `image.repository`                | provisioner image                           | `quay.io/external_storage/nfs-client-provisioner`         |
-| `image.tag`                       | version of provisioner image                | `v2.1.1-k8s1.10`                                          |
+| `image.tag`                       | version of provisioner image                | `v2.1.2-k8s1.11`                                          |
 | `image.pullPolicy`                | image pull policy                           | `IfNotPresent`                                            |
-| `storageclass.nane`               | name of the storageclass                    | `nfs-client`                                              |
-| `nfs.provisionerName`             | name of the provisionerName                 | `fuseim.pri/ifs`                                          |
+| `storageclass.name`               | name of the storageclass                    | `nfs-client`                                              |
+| `storageclass.provisionerName`    | name of the provisionerName                 | null 	                                              |
 | `nfs.server`                      | hostname of the NFS server                  | null (ip or hostname)                                     |
 | `nfs.path`                        | basepath of the mount point to be used      | `/ifs/kubernetes`                                         |
 | `resources`                       | Resources required (e.g. CPU, memory)       | `{}`                                                      |

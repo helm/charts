@@ -6,12 +6,12 @@ metadata:
     chart: {{ template "nfs-client-provisioner.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: run-{{ template "nfs-client-provisioner.name" . }}
+  name: run-{{ template "nfs-client-provisioner.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "nfs-client-provisioner.name" . }}
+    name: {{ template "nfs-client-provisioner.fullname" . }}
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: {{ template "nfs-client-provisioner.name" . }}-runner
+  name: {{ template "nfs-client-provisioner.fullname" . }}-runner
   apiGroup: rbac.authorization.k8s.io

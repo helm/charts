@@ -6,7 +6,7 @@ metadata:
     chart: {{ template "nfs-client-provisioner.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "nfs-client-provisioner.name" . }}-runner
+  name: {{ template "nfs-client-provisioner.fullname" . }}-runner
 rules:
   - apiGroups: [""]
     resources: ["persistentvolumes"]
