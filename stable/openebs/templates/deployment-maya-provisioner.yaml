@@ -64,6 +64,6 @@ spec:
 {{ toYaml .Values.provisioner.tolerations | indent 8 }}
 {{- end }}
 {{- if .Values.provisioner.affinity }}
-      tolerations:
+      affinity:
 {{ toYaml .Values.provisioner.affinity | indent 8 }}
 {{- end }}

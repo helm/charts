@@ -21,7 +21,7 @@ apiserver:
     externalPort: 5656
     internalPort: 5656
   nodeSelector: {}
-  tolerations: {}
+  tolerations: []
   affinity: {}
 
 provisioner:
@@ -29,7 +29,7 @@ provisioner:
   imageTag: "0.6.0"
   replicas: 1
   nodeSelector: {}
-  tolerations: {}
+  tolerations: []
   affinity: {}
 
 snapshotOperator:
@@ -42,7 +42,7 @@ snapshotOperator:
   replicas: 1
   upgradeStrategy: "Recreate"
   nodeSelector: {}
-  tolerations: {}
+  tolerations: []
   affinity: {}
 
 jiva:

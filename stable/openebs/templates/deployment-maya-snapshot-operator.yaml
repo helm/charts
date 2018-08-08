@@ -86,6 +86,6 @@ spec:
 {{ toYaml .Values.snapshotOperator.tolerations | indent 8 }}
 {{- end }}
 {{- if .Values.snapshotOperator.affinity }}
-      tolerations:
+      affinity:
 {{ toYaml .Values.snapshotOperator.affinity | indent 8 }}
 {{- end }}
