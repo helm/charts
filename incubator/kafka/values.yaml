@@ -113,8 +113,8 @@ tolerations: []
 ## Headless service.
 ##
 headless:
-  #annotations:
-  #targetPort:
+  # annotations:
+  # targetPort:
   port: 9092
 
 ## External access.
