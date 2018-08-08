@@ -17,7 +17,7 @@ spec:
         release: {{ .Release.Name }}
         component: apiserver
     spec:
-      serviceAccountName: {{ template "openebs.serviceAccountName". }}
+      serviceAccountName: {{ template "openebs.serviceAccountName" . }}
       containers:
       - name: {{ template "openebs.name" . }}-apiserver
         image: "{{ .Values.apiserver.image }}:{{ .Values.apiserver.imageTag }}"
@@ -43,6 +43,10 @@ spec:
           value: "{{ .Values.policies.monitoring.image }}:{{ .Values.policies.monitoring.imageTag }}"
         - name: OPENEBS_IO_JIVA_REPLICA_COUNT
           value: "{{ .Values.jiva.replicas }}"
+{{- if .Values.jiva.replicaNodeSelector.enabled }}
+        - name: DEFAULT_REPLICA_NODE_SELECTOR
+          value: "{{ .Values.jiva.replicaNodeSelector.value }}"
+{{- end }}
 {{- if .Values.apiserver.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.apiserver.nodeSelector | indent 8 }}
