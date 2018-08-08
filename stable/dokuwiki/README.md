@@ -56,7 +56,7 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `dokuwikiEmail`                      | User email                                                 | `user@example.com`                            |
 | `dokuwikiWikiName`                   | Wiki name                                                  | `My Wiki`                                     |
 | `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                       | `nil`                                         |
-| `service.externalTrafficPolicy`      | Enable client source IP preservation                       | `Local`                                       |
+| `service.externalTrafficPolicy`      | Enable client source IP preservation                       | `Cluster`                                       |
 | `service.nodePorts.http`             | Kubernetes http node port                                  | `""`                                          |
 | `service.nodePorts.https`            | Kubernetes https node port                                 | `""`                                          |
 | `ingress.enabled`                    | Enable ingress controller resource                         | `false`                                       |
