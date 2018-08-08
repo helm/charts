@@ -1,0 +1,27 @@
+{{- if .Values.prometheus.operator.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: {{ template "nginx-ingress.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.prometheus.operator.serviceMonitor.selector }}
+{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
+{{- end }}
+  name: {{ template "nginx-ingress.fullname" . }}
+  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
+spec:
+  jobLabel: {{ template "nginx-ingress.fullname" . }}
+  selector:
+    matchLabels:
+      app: {{ template "nginx-ingress.name" . }}
+      release: {{ .Release.Name }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    - port: metrics
+      interval: 15s
+{{- end -}}
