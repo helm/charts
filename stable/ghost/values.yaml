@@ -82,6 +82,9 @@ externalDatabase:
   ## Database host
   # host:
 
+  ## Database port
+  # port:
+
   ## Database user
   # user: bn_ghost
 

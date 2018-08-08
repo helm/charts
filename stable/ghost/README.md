@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `ghostBlogTitle`              | Ghost Blog name                                               | `User's Blog`                                            |
 | `allowEmptyPassword`          | Allow DB blank passwords                                      | `yes`                                                    |
 | `externalDatabase.host`       | Host of the external database                                 | `nil`                                                    |
+| `externalDatabase.port`       | Port of the external database                                 | `nil`                                                    |
 | `externalDatabase.user`       | Existing username in the external db                          | `bn_ghost`                                               |
 | `externalDatabase.password`   | Password for the above username                               | `nil`                                                    |
 | `externalDatabase.database`   | Name of the existing database                                 | `bitnami_ghost`                                          |
