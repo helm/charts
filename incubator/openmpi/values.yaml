@@ -1,0 +1,30 @@
+# Default values for openmpi.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+mpiWorker:
+  number: 5
+  podManagementPolicy: Parallel
+  image:
+    repository: cheyang/openmpi
+    tag: 3.0.0
+    pullPolicy: IfNotPresent
+  sshPort: 22
+  privileged: true
+  resources: {}
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    #  nvidia.com/gpu: 1
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+    #  nvidia.com/gpu: 1
+  volumeMounts: {}
+  volumes: {}
+  env: {}
+persistence:
+  enabled: false
+# pvc:
+#   storage: 500Mi
+#   matchLabels: {}

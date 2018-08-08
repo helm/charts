@@ -1,0 +1,13 @@
+Getting Started:
+
+*** NOTE: It may take a few minutes for the statefulset to be avaialble
+
+*** you can watch the status of statefulset by running 'kubectl get sts --namespace {{ .Release.Namespace }} -w {{ template "openmpi.fullname" . }}' ***
+
+*** you can run mpi command by running 'kubectl exec -it --namespace {{ .Release.Namespace }} {{ template "openmpi.fullname" . }}-0 -- mpiexec --allow-run-as-root \
+   --hostfile /openmpi/generated/hostfile --display-map -n 5 -npernode 1 \
+   --mca orte_keep_fqdn_hostnames t \
+   sh -c  'echo $(hostname):$(ifconfig eth0 | grep "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1)''
+
+
+
