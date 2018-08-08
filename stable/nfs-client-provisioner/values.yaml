@@ -11,7 +11,7 @@ image:
   pullPolicy: IfNotPresent
 
 nfs:
-  server: 
+  server:
   path: /ifs/kubernetes
 
 # For creating the StorageClass automatically:
@@ -19,7 +19,7 @@ storageClass:
   create: true
 
   # Set a provisioner name. If unset, a name will be generated.
-  # provisionerName: 
+  # provisionerName:
 
   # Set StorageClass as the default StorageClass
   # Ignored if storageClass.create is false
