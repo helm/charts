@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ template "openebs.fullname". }}
+  name: {{ template "openebs.fullname" . }}
   labels:
     app: {{ template "openebs.name" . }}
     chart: {{ template "openebs.chart" . }}
@@ -11,9 +11,9 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ template "openebs.fullname". }}
+  name: {{ template "openebs.fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ template "openebs.serviceAccountName". }}
+  name: {{ template "openebs.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 {{- end }}
