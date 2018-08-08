@@ -202,3 +202,10 @@ agent:
   ## Additional GoCD agent pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   nodeSelector: {}
+
+security:
+  ssh:
+    # security.ssh.enabled is the toggle to enable/disable mounting of ssh secret on GoCD server and agent pods
+    enabled: false
+    # security.ssh.secretName specifies the name of the k8s secret object that contains the ssh key and known hosts
+    secretName: gocd-ssh

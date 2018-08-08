@@ -217,6 +217,26 @@ $ helm install --name gocd-app --set server.persistence.existingClaim=PVC_NAME s
 | `agent.persistence.subpath.homego`            | The /home/go path on Persistence Volume              | `homego`             |
 | `agent.persistence.subpath.dockerEntryPoint`  | The /docker-entrypoint.d path on Persistence Volume  | `scripts`            |
 
+## SSH keys
+For accessing repositories over SSH, you need to add SSH keys to the server and the agent.
+Generate a new keypair, fetch the host key for the [host] you want to connect to and create the secret.
+The secret is structured to hold the entire contents of the .ssh folder on the GoCD server and agent.
+ ```bash
+$ ssh-keygen -t rsa -b 4096 -C "user@example.com" -f gocd-ssh -P ''
+$ ssh-keyscan [host] > gocd_known_hosts
+$ kubectl create secret generic gocd-ssh \
+    --from-file=id-rsa=gocd-ssh \
+    --from-file=id-rsa.pub=gocd-ssh.pub \
+    --from-file=known_hosts=gocd_known_hosts
+```
+ The last step is to copy the key over to the host, so GoCD can connect.
+
+### SSH key configuration parameters
+ | Parameter                                     | Description                                         | Default              |
+| --------------------------------------------- | --------------------------------------------------- | -------------------- |
+| `security.ssh.enabled`                        | Enable the use of SSH keys for GoCD agent/server    | `false`              |
+| `security.ssh.secretName`                     | The name of the secret holding the SSH keys         | `gocd-ssh`           |
+
 ##### Note:
 
 `/home/go` directory shared between multiple agents implies:
