@@ -13,11 +13,16 @@ metadata:
 {{ toYaml .Values.metrics.annotations | indent 4 }}
 {{- end }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.master.service.type }}
   ports:
   - name: mysql
-    port: {{ .Values.service.port }}
+    port: {{ .Values.master.service.port }}
+{{- if eq .Values.master.service.type "ClusterIP" }}
     targetPort: mysql
+{{- end }}
+{{- if eq .Values.master.service.type "NodePort" }}
+    nodePort: {{ .Values.master.service.nodePort }}
+{{- end }}
 {{- if .Values.metrics.enabled }}
   - name: metrics
     port: 9104
