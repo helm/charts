@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: prometheus-operator
+  name: {{ template "prometheus-operator.fullname" . }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: prometheus-operator
+    spec:
+      containers:
+      - args:
+        - --kubelet-service=kube-system/kubelet
+        - --config-reloader-image="{{ .Values.configReloader.image.repository }}:{{ .Values.configReloader.image.tag }}"
+        image: "{{ .Values.operator.image.repository }}:{{ .Values.operator.image.tag }}"
+        name: prometheus-operator
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus-operator.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
