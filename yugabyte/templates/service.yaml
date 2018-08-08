@@ -59,7 +59,11 @@ metadata:
 spec:
   serviceName: "{{ .name }}"
   podManagementPolicy: {{ $root.Values.PodManagementPolicy }}
-  replicas: {{ .replicas }}
+  {{ if eq .name "yb-masters" }}
+  replicas: {{ $root.Values.replica.masters }}
+  {{ else }}
+  replicas: {{ $root.Values.replica.tservers  }}
+  {{ end }}
   volumeClaimTemplates:
     {{- range $index := until (int ($root.Values.persistentVolume.count )) }}
     - metadata:
@@ -120,6 +124,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        resources:
+          requests:
+            cpu: {{ $root.Values.instanceType.cpu }}
+            memory: {{ $root.Values.instanceType.memory }}
         metadata:
           labels:
             heritage: {{ $root.Release.Service | quote }}
@@ -132,12 +140,12 @@ spec:
           - "--fs_data_dirs={{range $index := until (int ($root.Values.persistentVolume.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
           - "--rpc_bind_addresses=$(POD_IP)"
           - "--master_addresses=yb-masters:7100"
-          - "--master_replication_factor={{ .replicas }}"
+          - "--master_replication_factor= {{ $root.Values.replica.masters }}"
         {{ else }}
           - "/home/yugabyte/bin/yb-tserver"
           - "--fs_data_dirs={{range $index := until (int ($root.Values.persistentVolume.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
           - "--tserver_master_addrs=yb-masters:7100"
-          - "--tserver_master_replication_factor={{ .replicas }}"
+          - "--tserver_master_replication_factor={{ $root.Values.replica.masters }}"
         {{ end }}
         ports:
           {{- range $label, $port := .ports }}
