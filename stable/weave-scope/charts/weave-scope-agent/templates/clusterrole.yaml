@@ -28,6 +28,8 @@ rules:
       - services
       - nodes
       - namespaces
+      - persistentvolumes
+      - persistentvolumeclaims
     verbs:
       - get
       - list
@@ -67,5 +69,13 @@ rules:
 {{ if not .Values.serviceAccount.readonly }}
       - update
 {{ end }}
+  - apiGroups:
+      - storage.k8s.io
+    resources:
+      - storageclasses
+    verbs:
+      - get
+      - list
+      - watch
 {{- end }}
 {{- end -}}

@@ -35,7 +35,7 @@ spec:
             - '--probe.docker=true'
             - '--probe.kubernetes=true'
             {{ if .Values.disableFrontendControls }}
-            - "-probe.no-controls"
+            - "--probe.no-controls"
             {{ end }}
             {{- if .Values.global.probeToken }}
             - '--probe-token={{ .Values.global.probeToken }}'
