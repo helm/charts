@@ -1,5 +1,5 @@
-apiVersion: apps/v1beta1
-kind: StatefulSet
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: {{ template "memcached.fullname" . }}
   labels:
@@ -9,7 +9,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   serviceName: {{ template "memcached.fullname" . }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   template:
     metadata:
       labels:
@@ -18,25 +18,6 @@ spec:
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
     spec:
-      affinity:
-        podAntiAffinity:
-        {{- if eq .Values.AntiAffinity "hard" }}
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - topologyKey: "kubernetes.io/hostname"
-            labelSelector:
-              matchLabels:
-                app:  {{ template "memcached.fullname" . }}
-                release: {{ .Release.Name | quote }}
-        {{- else if eq .Values.AntiAffinity "soft" }}
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 5
-            podAffinityTerm:
-              topologyKey: "kubernetes.io/hostname"
-              labelSelector:
-                matchLabels:
-                  app:  {{ template "memcached.fullname" . }}
-                  release: {{ .Release.Name | quote }}
-        {{- end }}
       containers:
       - name: {{ template "memcached.fullname" . }}
         image: {{ .Values.image }}
