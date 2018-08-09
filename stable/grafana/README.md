@@ -55,7 +55,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.size`         | Size of persistent volume claim | `10Gi` |
 | `persistence.existingClaim`| Use an existing PVC to persist data | `nil` |
 | `persistence.storageClassName` | Type of persistent volume claim | `nil` |
-| `persistence.accessModes`  | Persistence access modes | `[]` |
+| `persistence.accessModes`  | Persistence access modes | `{}` |
 | `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""` |
 | `schedulerName`            | Alternate scheduler name | `nil` |
 | `env`                      | Extra environment variables passed to pods | `{}` |
