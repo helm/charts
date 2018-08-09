@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This article describes how to set up and use [Azure Monitor - Containers](https://docs.microsoft.com/en-us/azure/monitoring/monitoring-container-health)) to monitor the health and performance of your workloads deployed to Kubernetes environments. Monitoring your Kubernetes cluster and containers is critical, especially when running a production cluster, at scale, with multiple applications.
+This article describes how to set up and use [Azure Monitor - Containers](https://docs.microsoft.com/en-us/azure/monitoring/monitoring-container-health) to monitor the health and performance of your workloads deployed to Kubernetes environments. Monitoring your Kubernetes cluster and containers is critical, especially when running a production cluster, at scale, with multiple applications.
 
 *This is a private preview. If you like to be part of the private preview, please fill in the form* [here]((https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR5SUgbotTSlNh-jO0uLfw51UOVBTMzFCMVIyWVEzT09NWVpDOTc0UFhENC4u)).
 
@@ -27,7 +27,7 @@ This article describes how to set up and use [Azure Monitor - Containers](https:
 ## Installing the Chart
 
 ```bash
-
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
 $ helm install --name azuremonitorcontainers incubator/azuremonitor-containers
 
 ```
@@ -58,7 +58,7 @@ The following table lists the configurable parameters of the MSOMS chart and the
 | `omsagent.secret.key`      | Azure Log analytics workspace key                  | Does not have a default value, needs to be provided                              |
 | `omsagent.domain`          | Azure Log analytics cloud domain (public / govt)   | opinsights.azure.com (Public cloud as default), opinsights.azure.us (Govt Cloud) |
 | `omsagent.env.clusterName`             | Name of your cluster      | Does not have a default value, needs to be provided       |
-|`doNotCollectKubeSystemLogs`| Disable collecting logs from containers in 'kube-system' namespace | true|
+|`omsagent.env.doNotCollectKubeSystemLogs`| Disable collecting logs from containers in 'kube-system' namespace | true|
 | `omsagent.rbac`             | rbac enabled/disabled      | true  (i.e enabled)     |
 
 
