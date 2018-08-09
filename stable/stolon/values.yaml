@@ -35,12 +35,12 @@ serviceAccount:
 superuserUsername: "stolon"
 
 ## password for the superuser (REQUIRED)
-superuserPassword:
+# superuserPassword:
 
 replicationUsername: "repluser"
 
 ## password for the replication user (REQUIRED)
-replicationPassword:
+# replicationPassword:
 
 ## backend could be one of the following: consul, etcdv2, etcdv3 or kubernetes
 store:
