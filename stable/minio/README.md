@@ -87,8 +87,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `ingress.tls`              | Ingress TLS configuration           | `[]`                                                    |
 | `mode`                     | Minio server mode (`standalone` or `distributed`)| `standalone`                               |
 | `replicas`                 | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 32 | `4`    |
-| `createSecret`             | Create secret automatically from `accessKey` and `secretKey`| `true`                          |
-| `existingSecretName`       | Name of existing secret with access and secret key.| `""`                                     |
+| `existingSecret`           | Name of existing secret with access and secret key.| `""`                                     |
 | `accessKey`                | Default access key (5 to 20 characters) | `AKIAIOSFODNN7EXAMPLE`                              |
 | `secretKey`                | Default secret key (8 to 40 characters) | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`          |
 | `configPath`               | Default config file location        | `~/.minio`                                              |
@@ -240,7 +239,7 @@ $ kubectl create secret generic my-minio-secret --from-literal=accesskey=foobarb
 
 Then install the chart, specifying that you want to use an existing secret:
 ```bash
-$ helm install --set createSecret=false --set existingSecretName=my-minio-secret stable/minio
+$ helm install --set existingSecret=my-minio-secret stable/minio
 ```
 
 The following fields are expected in the secret
