@@ -14,6 +14,8 @@ spec:
     metadata:
       labels:
         app: {{ template "ghost.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -46,17 +48,19 @@ spec:
         {{- else }}
           value: {{ .Values.externalDatabase.host | quote }}
         {{- end }}
+        {{- if and (not .Values.mariadb.enabled) .Values.externalDatabase.port }}
         - name: MARIADB_PORT_NUMBER
-          value: "3306"
+          value: {{ .Values.externalDatabase.port | quote }}
+        {{- end }}
         - name: GHOST_DATABASE_NAME
         {{- if .Values.mariadb.enabled }}
-          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+          value: {{ .Values.mariadb.db.name | quote }}
         {{- else }}
           value: {{ .Values.externalDatabase.database | quote }}
         {{- end }}
         - name: GHOST_DATABASE_USER
         {{- if .Values.mariadb.enabled }}
-          value: {{ .Values.mariadb.mariadbUser | quote }}
+          value: {{ .Values.mariadb.db.user | quote }}
         {{- else }}
           value: {{ .Values.externalDatabase.user | quote }}
         {{- end }}

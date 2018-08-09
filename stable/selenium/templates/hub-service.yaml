@@ -13,6 +13,9 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.hub.serviceType | quote }}
+  {{- if .Values.hub.serviceLoadBalancerIP }}
+  loadBalancerIP: {{ .Values.hub.serviceLoadBalancerIP | quote }}
+  {{- end }}
   sessionAffinity: {{ .Values.hub.serviceSessionAffinity | quote }}
   ports:
   - name: hub

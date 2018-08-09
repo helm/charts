@@ -1,6 +1,6 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.0.0"
+  tag: "6.3.1"
   pullPolicy: "IfNotPresent"
 
 commandline:
@@ -16,6 +16,19 @@ env:
   # LOGGING_VERBOSE: "true"
   # SERVER_DEFAULTROUTE: "/app/kibana"
 
+files:
+  kibana.yml:
+    ## Default Kibana configuration from kibana-docker.
+    server.name: kibana
+    server.host: "0"
+    elasticsearch.url: http://elasticsearch:9200
+
+    ## Custom config properties below
+    ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
+    # server.port: 5601
+    # logging.verbose: "true"
+    # server.defaultRoute: "/app/kibana"
+
 service:
   type: ClusterIP
   externalPort: 443
@@ -30,9 +43,13 @@ service:
   ## Default: nil
   ##
   # loadBalancerIP: 10.2.2.2
+  # nodePort: 30000
   annotations:
     # Annotation example: setup ssl with aws cert when service.type is LoadBalancer
     # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:EXAMPLE_CERT
+  labels:
+    ## Label example: show service URL in `kubectl cluster-info`
+    # kubernetes.io/cluster-service: "true"
 
 ingress:
   enabled: false
@@ -56,6 +73,8 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 300Mi
+
+priorityClassName: ""
 
 # Affinity for pod assignment
 # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity

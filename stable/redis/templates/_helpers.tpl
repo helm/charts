@@ -117,3 +117,14 @@ securityContext:
 {{- end }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "redis.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "redis.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}

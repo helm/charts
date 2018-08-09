@@ -43,7 +43,6 @@ The command removes all the Kubernetes components associated with the chart and 
 The following table lists the configurable parameters of the Fluentd elasticsearch chart and their default values.
 
 
-=======
 | Parameter                          | Description                                | Default                                                    |
 | ---------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
 | `annotations`                      | Optional daemonset annotations             | `NULL`                                                     |
@@ -55,8 +54,8 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                            |
 | `image.repository`                 | Image                                      | `gcr.io/google-containers/fluentd-elasticsearch`           |
-| `image.tag`                        | Image tag                                  | `v2.0.4                                                    |
-| `image.pullPolicy`                 | Image pull policy                          | `Always` if `image.tag` is `imagePullPolicy`               |
+| `image.tag`                        | Image tag                                  | `v2.2.0                                                    |
+| `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`               |
 | `rbac.create`                      | RBAC                                       | `true`                                                     |
 | `resources.limits.cpu`             | CPU limit                                  | `100m`                                                     |
 | `resources.limits.memory`          | Memory limit                               | `500Mi`                                                    |
@@ -65,7 +64,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `service`                          | Service definition                         | `{}`                                                       |
 | `serviceAccount.create`            | Specifies whether a service account should be created.| `true`                                          |
 | `serviceAccount.name`              | Name of the service account.               |                                                            |   
-| `livenessProbe.enabled`            | Wether to enable livenessProbe             | `true`                                                    |   
+| `livenessProbe.enabled`            | Whether to enable livenessProbe             | `true`                                                    |   
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                                     |
 
 
