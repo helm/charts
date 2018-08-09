@@ -65,6 +65,11 @@ rabbitmq:
   ##
   diskFreeLimit: '"6GiB"'
 
+  ## RabbitMQ Log File Location
+  ## ref: https://www.rabbitmq.com/logging.html#log-file-location
+  ##
+  # logFileLocation: "-"
+
   ## Plugins to enable
   plugins: |-
       [rabbitmq_management,rabbitmq_peer_discovery_k8s].

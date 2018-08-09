@@ -114,6 +114,10 @@ spec:
           - name: NAMI_DEBUG
             value: 1
         {{- end }}
+        {{- if .Values.rabbitmq.logFileLocation}}
+          - name: RABBITMQ_LOGS
+            value: "{{ .Values.rabbitmq.logFileLocation }}"
+        {{- end}}
           - name: MY_POD_IP
             valueFrom:
               fieldRef:
