@@ -12,15 +12,21 @@ persistentVolume:
   storage: 10Gi
   storageClass: standard
 
-instanceType:
-  cpu: 3
-  memory: 10Gi
+resource:
+  master:
+    requests:
+      cpu: 2
+      memory: 7.5Gi
+  tserver:
+    requests:
+      cpu: 4
+      memory: 15Gi
+
+replicas:
+  master: 3
+  tserver: 3
 
 PodManagementPolicy: Parallel
-
-replica:
-  masters: 3
-  tservers: 3
 
 Services:
   - name: "yb-masters"

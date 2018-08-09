@@ -12,23 +12,19 @@ Client: &version.Version{SemVer:"v2.9.1", GitCommit:"20adb27c7c5868466912eebdf66
 Server: &version.Version{SemVer:"v2.9.1", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
 ```
 
-## Create Kubernetes clusters and node pools created 
+## Create Kubernetes clusters and node pools created
 Inorder for you to install YugaByte db using helm you need have a kubernetes cluster created and make sure it has node pools created as well.
 
 #### Creating new cluster
 If not already created, you can create a new kubernetes cluster by running the below command:
 ```
-gcloud container clusters create yugabyte --zone us-west1-b
+gcloud container clusters create yugabyte-demo --zone us-west1-b --machine-type=n1-standard-8
 ```
-#### Creating node pool to use
-If not created already, you can create a new node pool
+
+#### Update the local credentials
+Fetch the credentials for the newly created kubernetes cluster by running the below command:
 ```
-gcloud container node-pools create node-pool-8cpu-2ssd \
-      --cluster=yugabyte \
-      --local-ssd-count=2 \
-      --machine-type=n1-standard-8 \
-      --num-nodes=3 \
-      --zone=us-west1-b
+gcloud container clusters get-credentials yugabyte-demo --zone us-west1-b
 ```
 
 ## Running YugaByte using helm charts
@@ -41,17 +37,35 @@ kubectl create -f yugabyte-rbac.yaml
 ```
 
 ### Initiatlizing helm and tiller on your kubernetes cluster
-If you ran the yugabyte-rbac.yaml script above, your service account name would be `yugabyte-helm` if not make a note of the service account with necessary 
+If you ran the yugabyte-rbac.yaml script above, your service account name would be `yugabyte-helm` if not make a note of the service account with necessary
 helm privileges and initialize helm/tiller with that service account
 ```
 helm init --service-account yugabyte-helm --upgrade --wait
 ```
 
 ### Installing YugaByte helm package on your kubernetes cluster
-If the helm init was successful then you can go ahead and run the helm install command to install the yugabyte helm chart 
+If the helm init was successful then you can go ahead and run the helm install command to install the yugabyte helm chart, this would go with default resources and replication of 3.
 ```
 helm install yugabyte --namespace yb-demo --name yb-demo --wait
 ```
 
-Follow the instructions on the NOTES section.
+### Overriding YugaByte helm package with custom resources
+If you want to override the default resources for the yugabyte pods, you could do so using helm
 
+#### Creating YugaByte cluster with 5 nodes
+```
+helm install yugabyte --set replicas.tserver=5 --namespace yb-demo --name yb-demo --wait
+```
+
+#### Creating YugaByte cluster with custom resource
+```
+helm install yugabyte --set resource.tserver.requests.cpu=8,resource.tserver.requests.memory=15Gi --namespace yb-demo --name yb-demo
+```
+
+#### Creating YugaByte cluster with resource upper limits
+```
+helm install yugabyte --set resource.tserver.limits.cpu=16,resource.tserver.limits.memory=30Gi --namespace yb-demo --name yb-demo --wait
+```
+
+
+Follow the instructions on the NOTES section.
