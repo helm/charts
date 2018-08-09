@@ -1,5 +1,5 @@
 apiVersion: apps/v1beta2
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ template "distributor.fullname" . }}
   labels:
@@ -9,17 +9,22 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
+  serviceName: {{ template "distributor.name" . }}
   replicas: {{ .Values.distributor.replicaCount }}
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       app: {{ template "distribution.name" . }}
       release: {{ .Release.Name }}
+      role: {{ template "distributor.name" . }}
       component: {{ .Values.distributor.name }}
   template:
     metadata:
       labels:
         app: {{ template "distribution.name" . }}
         component: {{ .Values.distributor.name }}
+        role: {{ template "distributor.name" . }}
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "distribution.serviceAccountName" . }}
@@ -52,7 +57,7 @@ spec:
         {{- end }}
       containers:
       - name: {{ .Values.distributor.name }}
-        image: '{{ .Values.distributor.image.repository }}:{{ .Values.distributor.image.version }}'
+        image: '{{ .Values.distributor.image.repository }}:{{ default .Chart.AppVersion .Values.distributor.image.version }}'
         imagePullPolicy: {{ .Values.distributor.image.imagePullPolicy }}
         env:
         - name: DEFAULT_JAVA_OPTS
@@ -83,10 +88,29 @@ spec:
         configMap:
           name: {{ template "distributor.fullname" . }}-token
       {{- end }}
-      - name: distributor-data
       {{- if .Values.distributor.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ if .Values.distributor.persistence.existingClaim }}{{ .Values.distributor.persistence.existingClaim }}{{- else }}{{ template "distributor.fullname" . }}{{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: distributor-data
+      spec:
+      {{- if .Values.distributor.persistence.existingClaim }}
+        selector:
+          matchLabels:
+            app: {{ template "distributor.name" . }}
       {{- else }}
+        {{- if .Values.distributor.persistence.storageClass }}
+        {{- if (eq "-" .Values.distributor.persistence.storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: "{{ .Values.distributor.persistence.storageClass }}"
+        {{- end }}
+        {{- end }}
+        accessModes: [ "{{ .Values.distributor.persistence.accessMode }}" ]
+        resources:
+          requests:
+            storage: {{ .Values.distributor.persistence.size }}
+      {{- end }}
+      {{- else }}
+      - name: distributor-data
         emptyDir: {}
-      {{- end -}}
+      {{- end }}
