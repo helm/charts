@@ -2,5 +2,8 @@ dependencies:
 - name: postgresql
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 0.8.7
-digest: sha256:02e9e88b9a147c956d857fb8874f16257b90fc980522b329f3257979811af7f7
-generated: 2018-05-18T16:12:27.72899131-07:00
+- name: gcloud-sqlproxy
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 0.3.5
+digest: sha256:22e9150be9293edeb7edeaea9e3fa8d3cd25a7a110af875a40a691fedc72f7d9
+generated: 2018-06-22T15:57:51.515788+02:00
