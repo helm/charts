@@ -118,6 +118,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
         - name: patterns
           configMap:
