@@ -415,6 +415,7 @@ configMaps:
       @id elasticsearch
       @type elasticsearch
       @log_level info
+      type_name fluentd
       include_tag_key true
       host "#{ENV['OUTPUT_HOST']}"
       port "#{ENV['OUTPUT_PORT']}"
