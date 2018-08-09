@@ -52,8 +52,8 @@ service: {}
   #     port: 24231
 
 # Only required if you have docker installed to a none default location
-# docker:
-  # containers_location: "/var/lib/docker/containers"
+docker:
+  containers_location: "/var/lib/docker/containers"
 
 configMaps:
   system.conf: |-

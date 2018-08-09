@@ -61,7 +61,7 @@ spec:
         - name: varlog
           mountPath: /var/log
         - name: varlibdockercontainers
-          mountPath: {{ default "/var/lib/docker/containers" .Values.docker.containers_location }}
+          mountPath: {{ .Values.docker.containers_location }}
           readOnly: true
         - name: libsystemddir
           mountPath: /host/lib
