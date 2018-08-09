@@ -1,6 +1,6 @@
 # Sentry
 
-[Sentry](https://sentry.io/) is a cross-platform crash reporting and aggregation platform.
+[Sentry](https://sentry.io/) is a cross-platform crash reporting and aggregation platform. The version of Sentry used in this chart is 9.0, and it works perfectly.
 
 ## TL;DR;
 
@@ -131,3 +131,7 @@ See the [Configuration](#configuration) section to configure the PVC or to disab
 ## Ingress
 
 This chart provides support for Ingress resource. If you have an available Ingress Controller such as Nginx or Traefik you maybe want to set `ingress.enabled` to true and choose an `ingress.hostname` for the URL. Then, you should be able to access the installation using that address.
+
+## Annotations in service
+
+If you want to make private your service (e.g: Using a private ELB), you can use annotations in service to create a private service instead of making public to all.
