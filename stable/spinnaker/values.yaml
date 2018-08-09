@@ -1,5 +1,5 @@
 halyard:
-  spinnakerVersion: 1.8.4
+  spinnakerVersion: 1.8.5
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
     tag: stable
