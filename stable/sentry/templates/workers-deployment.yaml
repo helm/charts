@@ -1,6 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  {{- if .Values.worker.annotations }}
+  annotations:
+{{ toYaml .Values.worker.annotations | indent 4 }}
+  {{- end }}
   name: {{ template "fullname" . }}-worker
   labels:
     app: {{ template "fullname" . }}
@@ -11,6 +15,10 @@ spec:
   replicas: {{ .Values.worker.replicacount }}
   template:
     metadata:
+    {{- if .Values.worker.podAnnotations }}
+      annotations:
+{{ toYaml .Values.worker.podAnnotations | indent 8 }}
+    {{- end }}
       labels:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
