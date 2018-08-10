@@ -4,8 +4,8 @@ engine: gotpl
 home: https://express-gateway.io
 icon: https://cdn.rawgit.com/ExpressGateway/express-gateway/1757a863/logo/mark-only/ExpressGateway_logomark.png
 maintainers:
-- name: Vincenzo Chianese
-  email: vincenzo@express-gateway.io
+- name: XVincentX
+  email: vincenz.chianese@icloud.com
 name: express-gateway
 sources:
 - https://github.com/expressgateway/express-gateway
