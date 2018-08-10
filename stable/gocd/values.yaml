@@ -129,6 +129,13 @@ server:
       # custom entrypoint scripts that should be run before starting the GoCD server inside the container.
       dockerEntryPoint: scripts
 
+  security:
+    ssh:
+      # server.security.ssh.enabled is the toggle to enable/disable mounting of ssh secret on GoCD server pods
+      enabled: false
+      # server.security.ssh.secretName specifies the name of the k8s secret object that contains the ssh key and known hosts
+      secretName: gocd-server-ssh
+
 agent:
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0
@@ -187,6 +194,13 @@ agent:
     periodSeconds: 60
     # agent.healthCheck.failureThreshold is the health check failure threshold of GoCD agent
     failureThreshold: 60
+
+  security:
+    ssh:
+      # agent.security.ssh.enabled is the toggle to enable/disable mounting of ssh secret on GoCD agent pods
+      enabled: false
+      # agent.security.ssh.secretName specifies the name of the k8s secret object that contains the ssh key and known hosts
+      secretName: gocd-agent-ssh
 
   ## Configure GoCD agent resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

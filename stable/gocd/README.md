@@ -89,6 +89,8 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.healthCheck.initialDelaySeconds`   | Initial delays in seconds to start the health checks. **Note**:GoCD server start up time.                     | `90`                |
 | `server.healthCheck.periodSeconds`         | GoCD server health check interval period.                                                                      | `15`                |
 | `server.healthCheck.failureThreshold`      | Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.              | `10`                |
+| `server.security.ssh.enabled`              | Enable the use of SSH keys for GoCD server                                                                    | `false`             |
+| `server.security.ssh.secretName`           | The name of the secret holding the SSH keys                                                                   | `gocd-server-ssh`   |
 
 #### Preconfiguring the GoCD Server
 
@@ -130,6 +132,21 @@ The cases when the attempt to preconfigure the GoCD server fails:
 1. The service account token mounted as a secret for the GoCD server pod does not have sufficient permissions. The API call to configure the plugin settings will fail.
 2. If the GoCD server is started with an existing configuration with security configured, then the API calls in the preconfigure script will fail. 
 
+#### SSH keys
+For accessing repositories over SSH in GoCD server, you need to add SSH keys to the GoCD server.
+Generate a new keypair, fetch the host key for the [host] you want to connect to and create the secret.
+The secret is structured to hold the entire contents of the .ssh folder on the GoCD server.
+
+ ```bash
+$ ssh-keygen -t rsa -b 4096 -C "user@example.com" -f gocd-server-ssh -P ''
+$ ssh-keyscan [host] > gocd_known_hosts
+$ kubectl create secret generic gocd-server-ssh \
+    --from-file=id_rsa=gocd-server-ssh \
+    --from-file=id_rsa.pub=gocd-server-ssh.pub \
+    --from-file=known_hosts=gocd_known_hosts
+```
+ The last step is to copy the key over to the host, so GoCD server can connect.
+
 ### GoCD Agent
 
 | Parameter                                 | Description                                                                                                                                                                      | Default                      |
@@ -151,6 +168,8 @@ The cases when the attempt to preconfigure the GoCD server fails:
 | `agent.healthCheck.initialDelaySeconds`   | GoCD agent start up time.                                                                                                                                                        | `60`                         |
 | `agent.healthCheck.periodSeconds`         | GoCD agent health check interval period.                                                                                                                                          | `60`                         |
 | `agent.healthCheck.failureThreshold`      | GoCD agent health check failure threshold. Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.                                       | `60`                         |
+| `agent.security.ssh.enabled`              | Enable the use of SSH keys for GoCD agent                                                                                                                                        | `false`                      |
+| `agent.security.ssh.secretName`           | The name of the secret holding the SSH keys                                                                                                                                      | `gocd-agent-ssh`             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -162,6 +181,20 @@ $ helm install --namespace gocd --name gocd-app -f values.yaml stable/gocd
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+#### SSH keys
+For accessing repositories over SSH in GoCD agent, you need to add SSH keys to the GoCD agent.
+Generate a new keypair, fetch the host key for the [host] you want to connect to and create the secret.
+The secret is structured to hold the entire contents of the .ssh folder on the GoCD agent.
+
+ ```bash
+$ ssh-keygen -t rsa -b 4096 -C "user@example.com" -f gocd-agent-ssh -P ''
+$ ssh-keyscan [host] > gocd_known_hosts
+$ kubectl create secret generic gocd-agent-ssh \
+    --from-file=id_rsa=gocd-agent-ssh \
+    --from-file=id_rsa.pub=gocd-agent-ssh.pub \
+    --from-file=known_hosts=gocd_known_hosts
+```
+ The last step is to copy the key over to the host, so GoCD agent can connect.
 
 ## Persistence
 
