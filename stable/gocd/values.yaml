@@ -134,7 +134,7 @@ server:
       # server.security.ssh.enabled is the toggle to enable/disable mounting of ssh secret on GoCD server pods
       enabled: false
       # server.security.ssh.secretName specifies the name of the k8s secret object that contains the ssh key and known hosts
-      secretName: gocd-ssh
+      secretName: gocd-server-ssh
 
 agent:
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
@@ -200,7 +200,7 @@ agent:
       # agent.security.ssh.enabled is the toggle to enable/disable mounting of ssh secret on GoCD agent pods
       enabled: false
       # agent.security.ssh.secretName specifies the name of the k8s secret object that contains the ssh key and known hosts
-      secretName: gocd-ssh
+      secretName: gocd-agent-ssh
 
   ## Configure GoCD agent resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
