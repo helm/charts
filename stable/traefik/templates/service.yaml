@@ -24,7 +24,7 @@ spec:
   loadBalancerIP: {{ .Values.loadBalancerIP }}
   {{- end }}
   {{- if .Values.externalIP }}
-  externalIPs: 
+  externalIPs:
     - {{ .Values.externalIP }}
   {{- end }}
   {{- if .Values.loadBalancerSourceRanges }}
