@@ -46,11 +46,11 @@ readinessProbe:
     path: "/users"
     port: admin
     scheme: HTTP
-  initialDelaySeconds: 120
+  initialDelaySeconds: 5
   timeoutSeconds: 1
   periodSeconds: 10
   successThreshold: 1
-  failureThreshold: 5
+  failureThreshold: 2
 
 # livenessProbe for Kong pods
 livenessProbe:
@@ -58,11 +58,11 @@ livenessProbe:
     path: "/users"
     port: admin
     scheme: HTTP
-  initialDelaySeconds: 180
+  initialDelaySeconds: 10
   timeoutSeconds: 5
   periodSeconds: 30
   successThreshold: 1
-  failureThreshold: 5
+  failureThreshold: 2
 
 # Tolerations for pod assignment
 # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -82,15 +82,8 @@ replicaCount: 1
 # backend database. Redis is used by default.
 
 redis:
-  password: pwd
+  password: express-gateway
 
-redisConfig:
+storage:
   emulate: true
-  sentinels:
-  - host: osso-redis-master
-    port: 26379
-  - host: osso-redis-slave
-    port: 26379
-  name: osso-redis-master
-  password: pwd
   namespace: EG

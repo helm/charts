@@ -11,7 +11,15 @@ data:
   system.config.yml: |-
     db:
       redis:
-{{ toYaml .Values.redisConfig | indent 8 }}
+        emulate: {{ .Values.storage.emulate }}
+        sentinels:
+        - host: {{ template "eg.redis.fullname" . }}-master
+          port: 6379
+        - host: {{ template "eg.redis.fullname" . }}-slave
+          port: 6379
+        name: {{ template "eg.redis.fullname" . }}-master
+        password: express-gateway
+        namespace: {{ .Values.storage.namespace }}
 
     cli:
       url: http://localhost:{{ .Values.admin.containerPort }}
