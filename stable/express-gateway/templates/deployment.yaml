@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "eg.fullname" . }}"
+  labels:
+    app: "{{ template "eg.name" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "eg.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "eg.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      volumes:
+      - configMap:
+          name: "{{ template "eg.fullname" . }}"
+        name: config
+      containers:
+      - name: {{ template "eg.name" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+        - mountPath: /var/lib/eg/system.config.yml
+          name: config
+          subPath: system.config.yml
+        - mountPath: /var/lib/eg/gateway.config.yml
+          name: config
+          subPath: gateway.config.yml
+        ports:
+        - name: admin
+          containerPort: {{ .Values.admin.containerPort }}
+          protocol: TCP
+        - name: proxy
+          containerPort: {{ .Values.proxy.containerPort }}
+          protocol: TCP
+        readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 10 }}
+        livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 10 }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
