@@ -179,6 +179,9 @@ server:
   ## Session duration for STS tokens
   ##
   sessionDuration: 15m
+  ## Use hostNetwork for server
+  ## Set this to true when running the servers on the same nodes as the agents
+  useHostNetwork: false
 
 rbac:
   # Specifies whether RBAC resources should be created
