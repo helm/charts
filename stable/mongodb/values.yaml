@@ -57,6 +57,7 @@ securityContext:
 
 ## Kubernetes service type
 service:
+  annotations: {}
   type: ClusterIP
   port: 27017
 
