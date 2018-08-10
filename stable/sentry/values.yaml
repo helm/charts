@@ -63,8 +63,11 @@ worker:
   affinity: {}
   # schedulerName:
 
-# Initial admin user to create
+# Admin user to create
 user:
+  # Indicated to create the admin user or not,
+  # Default is true as the initial installation.
+  create: true
   email: admin@sentry.local
 
 # BYO Email server
