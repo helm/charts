@@ -131,6 +131,19 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.persistence.accessMode`          | `ReadWriteOnce` or `ReadOnly`                                                                                                | `ReadWriteOnce`                                   |
 | `acme.persistence.existingClaim`       | An Existing PVC name                                                                                                         | `nil`                                             |
 | `acme.persistence.size`                | Minimum size of the volume requested                                                                                         | `1Gi`                                             |
+| `kvprovider.storeAcme`                 | Store acme certificates in KV Provider (needed for [HA](https://docs.traefik.io/configuration/acme/#as-a-key-value-store-entry)) | false                                         |
+| `kvprovider.importAcme`                | Import acme certificates from acme.json of a mounted pvc (see: acme.persistence.existingClaim)                               | false                                             |
+| `kvprovider.$name.endpoint`            | Endpoint of the provider like \<kv-provider-fqdn>:\<port>                                                                      | none                                              |
+| `kvprovider.$name.watch`               | Wether traefik should watch for changes                                                                                      | true                                              |
+| `kvprovider.$name.prefix`              | Prefix where traefik data will be stored                                                                                     | traefik                                           |
+| `kvprovider.$name.filename`            | Advanced configuration. See: https://docs.traefik.io/                                                                        | provider default                                  |
+| `kvprovider.$name.username`            | Optional username                                                                                                            | none                                              |
+| `kvprovider.$name.password`            | Optional password                                                                                                            | none                                              |
+| `kvprovider.$name.tls.ca`              | Optional TLS certificate authority                                                                                           | none                                              |
+| `kvprovider.$name.tls.cert`            | Optional TLS certificate                                                                                                     | none                                              |
+| `kvprovider.$name.tls.key`             | Optional TLS keyfile                                                                                                         | none                                              |
+| `kvprovider.$name.tls.insecureSkipVerify`    | Optional Wether to skip verify                                                                                         | none                                              |
+| `kvprovider.etcd.useAPIV3              | Use V3 or use V2 API of ETCD                                                                                                 | false                                             |
 | `dashboard.enabled`                    | Whether to enable the Traefik dashboard                                                                                      | `false`                                           |
 | `dashboard.domain`                     | Domain for the Traefik dashboard                                                                                             | `traefik.example.com`                             |
 | `dashboard.service.annotations`        | Annotations for the Traefik dashboard Service definition, specified as a map                                                 | None                                              |
@@ -196,11 +209,56 @@ $ helm install --name my-release --namespace kube-system --values values.yaml st
 
 ### Clustering / High Availability
 
-Currently it is possible to specify the number of `replicas` but the implementation is naive.
+To enable cluster support, you need one of:
+* etcd
+* consul
+* boltdb
+* zookeeper
 
-**Full Traefik clustering with leader election is not yet supported.**
+as kvprovider, especially when you are using Let's Encrypt.
+If you have already certificates stored as acme.json in an existing persistent volume claim, you can import it.
 
-It is heavily advised to not set a value for `replicas` if you also have Let's Encrypt configured. While setting `replicas` will work for many cases, since no leader is elected it has the consequence that each node will end up requesting Let's Encrypt certificates if this is also configured. This will quickly cut into the very modest rate limit that Let's Encrypt enforces. Also, if using challenges, the challenges may fail, as the challenge request may hit a pod without the challenge certificate.
+Given you have:
+* a running [etcd operator](https://github.com/helm/charts/tree/master/stable/etcd-operator):
+* you have created a master chart requiring this traefik chart
+* an existing pvc with an `acme.json` called `acme-certs-pvc`
+* you have an etcd template like: 
+  ```
+  apiVersion: "etcd.database.coreos.com/v1beta2"
+  kind: "EtcdCluster"
+  metadata:
+    name: {{ .Values.etcdCluster.name }}
+    labels:
+       app: {{ .Values.etcdCluster.name }}
+    annotations:
+       etcd.database.coreos.com/scope: clusterwide
+  spec:
+    size: 3
+    version: "3.1.8"
+  ```
+* and these values in your values.yaml
+  ```
+  etcdCluster:
+    name: traefik-etcd-cluster
+
+  traefik:
+    replicas: 3
+    acme:
+      persistence:
+        enabled: true
+        existingClaim: acme-certs-pvc
+    kvprovider:
+      storeAcme: true
+      importAcme: true
+      etcd:
+        endpoint: "traefik-etcd-cluster-client:2379"
+        useAPIV3: false
+        watch: true
+        prefix: traefik
+  ```
+
+Then you are good to migrate your old certs into the kvprovider and run traefik in HA/Cluster-Mode.
+
 
 [Basic auth](https://docs.traefik.io/toml/#api-backend) can be specified via `dashboard.auth.basic` as a map of usernames to passwords as below.
 See the linked Traefik documentation for accepted passwords encodings.
