@@ -1,7 +1,7 @@
 ## Memcached image and tag
 ## ref: https://hub.docker.com/r/library/memcached/tags/
 ##
-image: memcached:1.5.6-alpine
+image: memcached:1.5.9-alpine
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -21,19 +21,49 @@ AntiAffinity: "hard"
 
 memcached:
   ## Various values that get set as command-line flags.
+  ## Wiki is very out of date, can get option info from binary: docker run --rm memcached -h
   ## ref: https://github.com/memcached/memcached/wiki/ConfiguringServer#commandline-arguments
   ##
+  port: 11211
+  udpPort: 11211
   maxItemMemory: 64
+  maxItemSize: 1m
+  maxConnections: 1024
+  slabMinSizeBytes: 48
+  slabGrowthFactor: "1.25"
   verbosity: v
-  extendedOptions: modern
+  extendedOptions: "modern"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+## NOTE: Make sure any memory limit is a bit larger than your memcached.maxItemMemory
 ##
-resources:
-  requests:
-    memory: 64Mi
-    cpu: 50m
+resources: {}
+  # requests:
+  #   memory: 64Mi
+  #   cpu: 50m
+  # limits:
+  #   memory: 76Mi
+  #   cpu: 100m
+
+## Prometheus metrics exporter
+## ref: https://github.com/prometheus/memcached_exporter
+##
+metrics:
+  enabled: false
+  image:
+    repository: prom/memcached-exporter
+    tag: v0.4.1
+    pullPolicy: IfNotPresent
+  port: 9150
+  path: "/metrics"
+  resources: {}
+    # requests:
+    #   memory: 8Mi
+    #   cpu: 50m
+    # limits:
+    #   memory: 8Mi
+    #   cpu: 100m
 
 extraContainers: |
 

@@ -1,15 +1,30 @@
+{{- if semverCompare ">= 1.9-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: apps/v1
+{{- else if semverCompare ">= 1.8-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: apps/v1beta2
+{{- else -}}
 apiVersion: apps/v1beta1
+{{- end }}
 kind: StatefulSet
 metadata:
   name: {{ template "memcached.fullname" . }}
   labels:
     app: {{ template "memcached.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: "{{ template "memcached.chart" . }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
   serviceName: {{ template "memcached.fullname" . }}
   replicas: {{ .Values.replicaCount }}
+  podManagementPolicy: "Parallel"
+  updateStrategy:
+    type: RollingUpdate
+{{- if semverCompare ">= 1.8-0" .Capabilities.KubeVersion.GitVersion }}
+  selector:
+    matchLabels:
+      app: {{ template "memcached.fullname" . }}
+      release: "{{ .Release.Name }}"
+{{- end }}
   template:
     metadata:
       labels:
@@ -38,34 +53,89 @@ spec:
                   release: {{ .Release.Name | quote }}
         {{- end }}
       containers:
-      - name: {{ template "memcached.fullname" . }}
+      - name: "memcached"
         image: {{ .Values.image }}
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
-        command:
-        - memcached
-        - -m {{ .Values.memcached.maxItemMemory  }}
+        args:
+        - "--memory-limit"
+        - {{ .Values.memcached.maxItemMemory | quote }}
+        {{- if .Values.memcached.port }}
+        - "--port"
+        - {{ .Values.memcached.port | quote }}
+        {{- end }}
+        {{- if .Values.memcached.udpPort }}
+        - "--udp-port"
+        - {{ .Values.memcached.udpPort | quote }}
+        {{- end }}
+        {{- if .Values.memcached.maxItemSize }}
+        - "--max-item-size"
+        - {{ .Values.memcached.maxItemSize | quote }}
+        {{- end }}
+        {{- if .Values.memcached.maxConnections }}
+        - "--conn-limit"
+        - {{ .Values.memcached.maxConnections | quote }}
+        {{- end }}
+        {{- if .Values.memcached.slabMinSizeBytes }}
+        - "--slab-min-size"
+        - {{ .Values.memcached.slabMinSizeBytes | quote }}
+        {{- end }}
+        {{- if .Values.memcached.growthFactor }}
+        - "--slab-growth-factor"
+        - {{ .Values.memcached.growthFactor | quote }}
+        {{- end }}
         {{- if .Values.memcached.extendedOptions }}
-        - -o
-        - {{ .Values.memcached.extendedOptions }}
+        - "--extended"
+        - {{ .Values.memcached.extendedOptions | quote }}
         {{- end }}
         {{- if .Values.memcached.verbosity }}
         - -{{ .Values.memcached.verbosity }}
         {{- end }}
         ports:
         - name: memcache
-          containerPort: 11211
+          containerPort: {{ .Values.memcached.port }}
         livenessProbe:
           tcpSocket:
             port: memcache
           initialDelaySeconds: 30
-          timeoutSeconds: 5
+          timeoutSeconds: 2
         readinessProbe:
           tcpSocket:
             port: memcache
           initialDelaySeconds: 5
-          timeoutSeconds: 1
+          timeoutSeconds: 2
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.metrics.enabled }}
+      - name: "metrics-exporter"
+        image: {{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        args:
+        - "--memcached.address"
+        - "localhost:{{ .Values.memcached.port }}"
+        - "--web.listen-address"
+        - ":{{ .Values.metrics.port }}"
+        - "--web.telemetry-path"
+        - {{ .Values.metrics.path | quote }}
+        ports:
+        - name: metrics
+          containerPort: {{ .Values.metrics.port }}
+        # Only probe the root so as not to invoke
+        # the metrics collection transaction for a probe
+        livenessProbe:
+          httpGet:
+            path: "/"
+            port: {{ .Values.metrics.port }}
+          initialDelaySeconds: 30
+          timeoutSeconds: 2
+        readinessProbe:
+          httpGet:
+            path: "/"
+            port: {{ .Values.metrics.port }}
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
 {{- with .Values.extraContainers }}
 {{ tpl . $ | indent 6 }}
 {{- end }}

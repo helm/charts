@@ -1,7 +1,8 @@
+{{- if .Values.metrics.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "memcached.fullname" . }}
+  name: {{ template "memcached.fullname" . }}-metrics
   labels:
     app: {{ template "memcached.fullname" . }}
     chart: "{{ template "memcached.chart" . }}"
@@ -10,8 +11,9 @@ metadata:
 spec:
   clusterIP: None
   ports:
-  - name: memcache
-    port: {{ .Values.memcached.port }}
-    targetPort: memcache
+  - name: metrics
+    port: {{ .Values.metrics.port }}
+    targetPort: metrics
   selector:
     app: {{ template "memcached.fullname" . }}
+{{- end -}}

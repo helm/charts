@@ -10,4 +10,4 @@ spec:
       release: "{{ .Release.Name }}"
       heritage: "{{ .Release.Service }}"
   minAvailable: {{ .Values.pdbMinAvailable }}
-  
+
