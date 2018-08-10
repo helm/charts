@@ -24,6 +24,9 @@ keycloak:
     fsGroup: 1000
     runAsNonRoot: true
 
+  ## Service account to use
+  #serviceAccountName: "default"
+
   ## Additional init containers, e. g. for providing custom themes
   extraInitContainers: |
 
