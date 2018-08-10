@@ -107,10 +107,74 @@ data:
       {{ printf "\"%s\" = \"%s\"" $header $action }}
     {{- end}}
     {{- end}}
+    {{- if .Values.kvprovider.etcd }}
+    [etcd]
+    endpoint = "{{ .Values.kvprovider.etcd.endpoint }}"
+    watch = {{ .Values.kvprovider.etcd.watch }}
+    prefix = "{{ .Values.kvprovider.etcd.prefix }}"
+    useAPIV3 = {{ .Values.kvprovider.etcd.useAPIV3 }}
+    {{- if .Values.kvprovider.etcd.username }}username = {{ .Values.kvprovider.etcd.username }}{{- end }}
+    {{- if .Values.kvprovider.etcd.password }}password = {{ .Values.kvprovider.etcd.password }}{{- end }}
+      {{- if .Values.kvprovider.etcd.tls }}
+      [etcd.tls]
+      {{- end }}
+      {{ range $key, $value := .Values.kvprovider.etcd.tls }}
+      {{ $key }} = {{ $value }}
+      {{ end }}
+    {{- end }}
+    {{- if .Values.kvprovider.consul }}
+    [consul]
+    endpoint = "{{ .Values.kvprovider.consul.endpoint }}"
+    watch = {{ .Values.kvprovider.consul.watch }}
+    prefix = {{ .Values.kvprovider.consul.prefix }}
+    {{- if .Values.kvprovider.consul.username }}username = {{ .Values.kvprovider.consul.username }}{{- end }}
+    {{- if .Values.kvprovider.consul.password }}password = {{ .Values.kvprovider.consul.password }}{{- end }}
+      {{- if .Values.kvprovider.consul.tls }}
+      [consul.tls]
+      {{- end }}
+      {{ range $key, $value := .Values.kvprovider.consul.tls }}
+      {{ $key }} = {{ $value }}
+      {{ end }}
+    {{- end }}
+    {{- if .Values.kvprovider.boltdb }}
+    [boltdb]
+    endpoint = "{{ .Values.kvprovider.boltdb.endpoint }}"
+    watch = {{ .Values.kvprovider.boltdb.watch }}
+    prefix = {{ .Values.kvprovider.boltdb.prefix }}
+    {{- if .Values.kvprovider.boltdb.username }}username = {{ .Values.kvprovider.boltdb.username }}{{- end }}
+    {{- if .Values.kvprovider.boltdb.password }}password = {{ .Values.kvprovider.boltdb.password }}{{- end }}
+      {{- if .Values.kvprovider.boltdb.tls }}
+      [boltdb.tls]
+      {{- end }}
+      {{ range $key, $value := .Values.kvprovider.boltdb.tls }}
+      {{ $key }} = {{ $value }}
+      {{ end }}
+    {{- end }}
+    {{- if .Values.kvprovider.zookeeper }}
+    [zookeeper]
+    endpoint = "{{ .Values.kvprovider.zookeeper.endpoint }}"
+    watch = {{ .Values.kvprovider.zookeeper.watch }}
+    prefix = {{ .Values.kvprovider.zookeeper.prefix }}
+    {{- if .Values.kvprovider.zookeeper.username }}username = {{ .Values.kvprovider.zookeeper.username }}{{- end }}
+    {{- if .Values.kvprovider.zookeeper.password }}password = {{ .Values.kvprovider.zookeeper.password }}{{- end }}
+      {{- if .Values.kvprovider.zookeeper.tls }}
+      [zookeeper.tls]
+      {{- end }}
+      {{ range $key, $value := .Values.kvprovider.zookeeper.tls }}
+      {{ $key }} = {{ $value }}
+      {{ end }}
+    {{- end }}
     {{- if .Values.acme.enabled }}
     [acme]
     email = "{{ .Values.acme.email }}"
+    {{- if .Values.kvprovider.storeAcme }}
+    storage = "traefik/acme/account"
+    {{- if .Values.kvprovider.importAcme }}
+    storageFile = "/acme/acme.json"
+    {{- end }}
+    {{- else }}
     storage = "/acme/acme.json"
+    {{- end }}
     entryPoint = "https"
     onHostRule = true
     {{- if .Values.acme.staging }}
