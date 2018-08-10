@@ -78,22 +78,30 @@ and their default values.
 Express Gateway is configured through the [Admin API interface][admin-api]. Its complete configuraton is stored in a config map.
 However there are some parameters that need to beset up before the container can start.
 
-| Parameter                         | Description                                                            | Default               |
-| ------------------------------    | --------------------------------------------------------------------   | -------------------   |
-| cassandra.enabled                 | Spin up a new cassandra cluster for Kong                               | `false`               |
-| postgresql.enabled                  | Spin up a new postgres instance for Kong                               | `true `               |
-| env.database                      | Choose either `postgres` or `cassandra`                                | `postgres`            |
-| env.pg_user                       | Postgres username                                                      | `kong`                |
-| env.pg_database                   | Postgres database name                                                 | `kong`                |
-| env.pg_password                   | Postgres database password (required if you are using your own database)| `kong`         |
-| env.pg_host                       | Postgres database host (required if you are using your own database)   | ``                    |
-| env.pg_port                       | Postgres database port                                                 | `5432`                |
-| env.cassandra_contact_points      | Cassandra contact points (required if you are using your own database) | ``                    |
-| env.cassandra_port                | Cassandra query port                                                   | `9042`                |
-| env.cassandra_keyspace            | Cassandra keyspace                                                     | `kong`                |
-| env.cassandra_repl_factor         | Replication factor for the Kong keyspace                               | `2`                   |
+```yml
 
-For complete list of Express Gateway configuration parameters please check https://www.express-gateway.io/docs/configuration/
+storage:
+  emulate: true
+  namespace: EG
+
+crypto:
+  cipherKey: sensitiveKey
+  algorithm: aes256
+  saltRounds: 10
+session:
+  secret: keyboard cat
+  resave: false
+  saveUninitialized: false
+accessTokens:
+  timeToExpiry: 7200000
+refreshTokens:
+  timeToExpiry: 7200000
+authorizationCodes:
+  timeToExpiry: 300000
+
+```
+
+For a complete list of Express Gateway cnfiguration parameters please check https://www.express-gateway.io/docs/configuration/system.config.yml
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
