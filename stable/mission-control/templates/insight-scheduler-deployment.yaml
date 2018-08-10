@@ -77,6 +77,12 @@ spec:
             port: 8080
           initialDelaySeconds: 120
           periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /schedulerservice/api/status
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 10
         resources:
 {{ toYaml .Values.insightScheduler.resources | indent 10 }}
     {{- with .Values.insightScheduler.nodeSelector }}

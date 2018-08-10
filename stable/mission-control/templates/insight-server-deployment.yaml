@@ -113,6 +113,12 @@ spec:
             port: 8082
           initialDelaySeconds: 300
           periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/status
+            port: 8082
+          initialDelaySeconds: 300
+          periodSeconds: 10
         resources:
 {{ toYaml .Values.insightServer.resources | indent 10 }}
     {{- with .Values.insightServer.nodeSelector }}

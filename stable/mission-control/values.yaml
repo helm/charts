@@ -36,6 +36,13 @@ serviceAccount:
   ## If not set and create is true, a name is generated using the fullname template
   name:
 
+## Post Install hook to create user in Mongodb
+postInstallHook:
+  image:
+    repository: mvertes/alpine-mongo
+    tag: 3.6.3-0
+    pullPolicy: IfNotPresent
+
 # Sub charts
 ## Configuration values for the mongodb dependency
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/mongodb/README.md

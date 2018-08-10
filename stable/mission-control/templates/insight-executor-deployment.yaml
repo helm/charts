@@ -50,6 +50,12 @@ spec:
             port: 8080
           initialDelaySeconds: 180
           periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /executorservice/api
+            port: 8080
+          initialDelaySeconds: 180
+          periodSeconds: 10
         resources:
 {{ toYaml .Values.insightExecutor.resources | indent 10 }}
     {{- with .Values.insightExecutor.nodeSelector }}
