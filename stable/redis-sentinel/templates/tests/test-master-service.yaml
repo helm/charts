@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "redis-sentinel.fullname" . }}-master-service-test
+  labels:
+    app: {{ template "redis-sentinel.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: "{{ .Release.Name }}-master-service-test"
+    image: "{{ .Values.image }}"
+    env:
+{{- if .Values.auth }}
+      - name: REDIS_PASS
+        valueFrom:
+          secretKeyRef:
+            name: {{ template "redis-sentinel.fullname" . }}
+            key: auth
+    command:
+      - sh
+      - -c
+      - redis-cli -a $REDIS_PASS -h {{ template "redis-sentinel.fullname" . }}-master info server
+{{- else }}
+    command:
+      - sh
+      - -c
+      - redis-cli -h {{ template "redis-sentinel.fullname" . }}-master info server
+{{- end }}
+  restartPolicy: Never

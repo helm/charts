@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "redis-sentinel.fullname" . }}-server
+  labels:
+    app: {{ template "redis-sentinel.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+data:
+  redis.conf: |-
+    daemonize no
+    pidfile /var/run/redis.pid
+    port 6379
+    tcp-backlog 511
+    bind 0.0.0.0
+    timeout 0
+    tcp-keepalive 60
+    loglevel notice
+    logfile ""
+    databases 16
+    save 900 1
+    save 300 10
+    save 60 10000
+    stop-writes-on-bgsave-error yes
+    rdbcompression yes
+    rdbchecksum yes
+    dbfilename dump.rdb
+    dir /data
+    slave-serve-stale-data yes
+    slave-read-only yes
+    repl-diskless-sync no
+    repl-diskless-sync-delay 5
+    repl-disable-tcp-nodelay no
+    slave-priority 100
+    appendonly yes
+    appendfilename "appendonly.aof"
+    appendfsync everysec
+    no-appendfsync-on-rewrite no
+    auto-aof-rewrite-percentage 100
+    auto-aof-rewrite-min-size 64mb
+    aof-load-truncated yes
+    lua-time-limit 5000
+    slowlog-log-slower-than 10000
+    slowlog-max-len 128
+    latency-monitor-threshold 0
+    notify-keyspace-events ""
+    hash-max-ziplist-entries 512
+    hash-max-ziplist-value 64
+    list-max-ziplist-entries 512
+    list-max-ziplist-value 64
+    set-max-intset-entries 512
+    zset-max-ziplist-entries 128
+    zset-max-ziplist-value 64
+    hll-sparse-max-bytes 3000
+    activerehashing yes
+    client-output-buffer-limit normal 0 0 0
+    client-output-buffer-limit slave 256mb 64mb 60
+    client-output-buffer-limit pubsub 32mb 8mb 60
+    hz 10
+    aof-rewrite-incremental-fsync yes
+  launcher.sh: |-
+    #!/bin/sh
+    set -e
+    echo "Starting redis launcher"
+    REDIS_CONF=/etc/redis/redis.conf
+
+    # Launch master
+    function launchmaster() {
+      # If we know we're a master, update the labels right away
+      echo "Using config file $REDIS_CONF"
+      /k8s/kubectl label --overwrite pod $HOSTNAME redis-role="master"
+      redis-server $REDIS_CONF --protected-mode no
+      echo "Launched $HOSTNAME as master"
+    }
+
+    # Launch slave
+    function launchslave() {
+      echo "Using config file $REDIS_CONF"
+      /k8s/kubectl label --overwrite pod $HOSTNAME redis-role="slave"
+      MASTER_HOST="{{ template "redis-sentinel.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local"
+      # Looking for Master IP
+      i=0
+      while true; do
+        timeout -t 3 redis-cli -h ${MASTER_HOST} -p 6379 INFO
+        if [[ "$?" == "0" ]]; then
+          break
+        fi
+        i=$((i+1))
+        s=$((1 + ($i/5)))
+        echo "Connecting to master at $MASTER_HOST failed. Waiting... $s seconds"
+        sleep $s
+      done
+      redis-server $REDIS_CONF --protected-mode no --slaveof {{ template "redis-sentinel.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local 6379
+      echo "Launched $HOSTNAME as slave"
+    }
+
+    # Determine whether this should be a master or slave instance
+    echo "Looking for pods running as master"
+    MASTER=`/k8s/kubectl get pod -o jsonpath='{range .items[*]}{.metadata.name} {.status.podIP}{"\n"}{end}' -l redis-role=master --field-selector=status.phase=Running`
+    echo "Current master is $MASTER"
+    if [[ -z ${MASTER} ]]; then
+      echo "No masters found. Launching Redis in Master mode..."
+      launchmaster
+    else
+      echo "Found master on $MASTER. Launching Redis in Slave mode..."
+      launchslave
+    fi
