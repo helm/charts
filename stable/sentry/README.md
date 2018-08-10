@@ -47,7 +47,8 @@ $ helm delete my-release
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 > **Warning**: Jobs are not deleted automatically. They need to be manually deleted
-```consule
+
+```console
 $ kubectl delete job/sentry-db-init job/sentry-user-create
 ```
 
@@ -82,6 +83,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `worker.schedulerName`               | Name of an alternate scheduler for worker   | `nil`                                                      |
 | `worker.affinity`                    | Affinity settings for worker pod assignment | `{}`                                                       |
 | `worker.tolerations`                 | Toleration labels for worker pod assignment | `[]`                                                       |
+| `user.create`                        | Create the default admin                    | `true`                                                     |
 | `user.email`                         | Username for default admin                  | `admin@sentry.local`                                       |
 | `email.from_address`                 | Email notifications are from                | `smtp`                                                     |
 | `email.host`                         | SMTP host for sending email                 | `smtp`                                                     |
