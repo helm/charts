@@ -27,6 +27,11 @@ web:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  ## Use an alternate scheduler, e.g. "stork".
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  # schedulerName:
+
 
 # How many cron instances to run
 cron:
@@ -41,6 +46,7 @@ cron:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # schedulerName:
 
 # How many worker instances to run
 worker:
@@ -55,9 +61,13 @@ worker:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # schedulerName:
 
-# Initial admin user to create
+# Admin user to create
 user:
+  # Indicated to create the admin user or not,
+  # Default is true as the initial installation.
+  create: true
   email: admin@sentry.local
 
 # BYO Email server
