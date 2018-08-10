@@ -55,7 +55,7 @@ servers:
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-  nodeSelector: { }
+  nodeSelector: {}
   tolerations: []
   antiAffinity: "soft"
   serviceType: ClusterIP  # [ClusterIP|LoadBalancer]
@@ -88,7 +88,7 @@ sentinel:
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-  nodeSelector: { cloud.google.com/gke-nodepool: xg5general }
+  nodeSelector: {}
   tolerations: []
   antiAffinity: "soft"
   serviceType: ClusterIP  # [ClusterIP|LoadBalancer]
@@ -104,4 +104,3 @@ sentinel:
   ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
   updateStrategy: OnDelete
   terminationGracePeriodSeconds: 30
-
