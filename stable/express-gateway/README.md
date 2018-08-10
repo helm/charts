@@ -41,50 +41,42 @@ chart and deletes the release.
 
 ## Configuration
 
-### General Configuration Parameters
+### General Deployment Configuration Parameters
 
 The following table lists the configurable parameters of the Kong chart
 and their default values.
 
-| Parameter                         | Description                                                            | Default               |
-| ------------------------------    | --------------------------------------------------------------------   | -------------------   |
-| image.repository                  | Kong image                                                             | `kong`                |
-| image.tag                         | Kong image version                                                     | `0.14.0`              |
-| image.pullPolicy                  | Image pull policy                                                      | `IfNotPresent`        |
-| replicaCount                      | Kong instance count                                                    | `1`                   |
-| admin.useTLS                      | Secure Admin traffic                                                   | `true`                |
-| admin.servicePort                 | TCP port on which the Kong admin service is exposed                    | `8444`                |
-| admin.containerPort               | TCP port on which Kong app listens for admin traffic                   | `8444`                |
-| admin.nodePort                    | Node port when service type is `NodePort`                              |                       |
-| admin.type                        | k8s service type, Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
-| admin.loadBalancerIP              | Will reuse an existing ingress static IP for the admin service         | `null`                |
-| proxy.useTLS                      | Secure Proxy traffic                                                   | `true`                |
-| proxy.servicePort                 | TCP port on which the Kong Proxy Service is exposed                    | `8443`                |
-| proxy.containerPort               | TCP port on which the Kong app listens for Proxy traffic               | `8443`                |
-| proxy.nodePort                    | Node port when service type is `NodePort`                              |                       |
-| proxy.type                        | k8s service type. Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
-| proxy.loadBalancerIP              | To reuse an existing ingress static IP for the admin service           |                       |
-| env                               | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)               |
-| runMigrations                     | Run Kong migrations job                                                | `true`                |
-| readinessProbe                    | Kong readiness probe                                                   |                       |
-| livenessProbe                     | Kong liveness probe                                                    |                       |
-| affinity                          | Node/pod affinities                                                    |                       |
-| nodeSelector                      | Node labels for pod assignment                                         | `{}`                  |
-| podAnnotations                    | Annotations to add to each pod                                         | `{}`                  |
-| resources                         | Pod resource requests & limits                                         | `{}`                  |
-| tolerations                       | List of node taints to tolerate                                        | `[]`                  |
+| Parameter            | Description                                                                                            | Default                          |
+|----------------------|--------------------------------------------------------------------------------------------------------|----------------------------------|
+| image.repository     | Express Gateway image                                                                                  | `expressgateway/express-gateway` |
+| image.tag            | Express Gateway image version                                                                          | `1.10.2`                         |
+| image.pullPolicy     | Image pull policy                                                                                      | `IfNotPresent`                   |
+| replicaCount         | Express Gateway instance count                                                                         | `1`                              |
+| admin.servicePort    | TCP port on which the Express Gateway admin service is exposed                                         | `9876`                           |
+| admin.containerPort  | TCP port on which Express Gateway app listens for admin traffic                                        | `9876`                           |
+| admin.nodePort       | Node port when service type is `NodePort`. Randomly chonsen by Kubernetes if not provided              |                                  |
+| admin.type           | k8s service type, Options: NodePort, ClusterIP, LoadBalancer                                           | `NodePort`                       |
+| admin.loadBalancerIP | Will reuse an existing ingress static IP for the admin service                                         | `null`                           |
+| proxy.https          | Secure Proxy traffic                                                                                   | `true`                           |
+| proxy.tls            | When `proxy.https` is `true`, an [array of key][eg-tls-section]                                        | `{}`                             |
+| proxy.servicePort    | TCP port on which the Express Gateway Proxy Service is exposed                                         | `8080`                           |
+| proxy.containerPort  | TCP port on which the Express Gateway app listens for Proxy traffic                                    | `8080`                           |
+| proxy.nodePort       | Node port when service type is `NodePort`. Randomly chonsen by Kubernetes if not provided              |                                  |
+| proxy.type           | k8s service type. Options: NodePort, ClusterIP, LoadBalancer                                           | `NodePort`                       |
+| proxy.loadBalancerIP | To reuse an existing ingress static IP for the admin service                                           |                                  |
+| readinessProbe       | Express Gateway readiness probe                                                                        |                                  |
+| livenessProbe        | Express Gateway liveness probe                                                                         |                                  |
+| affinity             | Node/pod affinities                                                                                    |                                  |
+| nodeSelector         | Node labels for pod assignment                                                                         | `{}`                             |
+| podAnnotations       | Annotations to add to each pod                                                                         | `{}`                             |
+| resources            | Pod resource requests & limits                                                                         | `{}`                             |
+| tolerations          | List of node taints to tolerate                                                                        | `[]`                             |
 
-### Kong-specific parameters
 
-Kong has a choice of either Postgres or Cassandra as a backend datatstore.
-This chart allows you to choose either of them with the `env.database`
-parameter.  Postgres is chosen by default.
+### Express Gateway configuration parameters
 
-Additionally, this chart allows you to use your own database or spin up a new
-instance by using the `postgres.enabled` or `cassandra.enabled` parameters.
-Enabling both will create both databases in your cluster, but only one
-will be used by Kong based on the `env.database` parameter.
-Postgres is enabled by default.
+Express Gateway is configured through the [Admin API interface][admin-api]. Its complete configuraton is stored in a config map.
+However there are some parameters that need to beset up before the container can start.
 
 | Parameter                         | Description                                                            | Default               |
 | ------------------------------    | --------------------------------------------------------------------   | -------------------   |
@@ -101,7 +93,7 @@ Postgres is enabled by default.
 | env.cassandra_keyspace            | Cassandra keyspace                                                     | `kong`                |
 | env.cassandra_repl_factor         | Replication factor for the Kong keyspace                               | `2`                   |
 
-For complete list of Kong configurations please check https://getkong.org/docs/0.11.x/configuration/.
+For complete list of Express Gateway configuration parameters please check https://www.express-gateway.io/docs/configuration/
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -117,3 +109,6 @@ $ helm install stable/express-gateway --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+[eg-tls-section]: https://www.express-gateway.io/docs/configuration/gateway.config.yml/https/#description
+[admin-api]: https://www.express-gateway.io/docs/admin/
