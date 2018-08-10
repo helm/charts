@@ -10,6 +10,8 @@ maintainers:
   name: jainishshah17
 - email: eldada@jfrog.com
   name: eldada
+- email: rimasm@jfrog.com
+  name: rimusz
 name: mission-control
 sources:
 - https://bintray.com/jfrog/product/mission-control/view
