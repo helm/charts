@@ -16,4 +16,6 @@ maintainers:
   email: jainishs@jfrog.com
 - name: eldada
   email: eldada@jfrog.com
+- name: rimusz
+  email: rimasm@jfrog.com
 icon: https://raw.githubusercontent.com/JFrogDev/artifactory-dcos/master/images/jfrog_med.png
