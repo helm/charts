@@ -26,14 +26,21 @@ spec:
         component: server
     spec:
       serviceAccountName: {{ template "gocd.serviceAccountName" . }}
-      {{- if .Values.server.persistence.enabled }}
+      {{- if or .Values.server.persistence.enabled .Values.server.security.ssh.enabled }}
       volumes:
+      {{- end }}
+      {{- if .Values.server.persistence.enabled }}
         - name: goserver-vol
           persistentVolumeClaim:
             claimName: {{ .Values.server.persistence.existingClaim | default (printf "%s-%s" (include "gocd.fullname" .) "server") }}
         - name: config-vol
           configMap:
             name: {{ template "gocd.fullname" . }}
+      {{- end }}
+      {{- if .Values.server.security.ssh.enabled }}
+        - name: ssh-secrets
+          secret:
+            secretName: {{ .Values.server.security.ssh.secretName }}
       {{- end }}
       containers:
         - name: {{ template "gocd.name" . }}-server
@@ -68,8 +75,10 @@ spec:
             initialDelaySeconds: {{ .Values.server.healthCheck.initialDelaySeconds }}
             periodSeconds: {{ .Values.server.healthCheck.periodSeconds }}
             failureThreshold: {{ .Values.server.healthCheck.failureThreshold }}
-          {{- if .Values.server.persistence.enabled }}
+          {{- if or .Values.server.persistence.enabled .Values.server.security.ssh.enabled }}
           volumeMounts:
+          {{- end }}
+          {{- if .Values.server.persistence.enabled }}
             - name: goserver-vol
               mountPath: /godata
               subPath: {{ .Values.server.persistence.subpath.godata }}
@@ -82,6 +91,11 @@ spec:
             - name: config-vol
               mountPath: /preconfigure_server.sh
               subPath: preconfigure_server.sh
+          {{- end }}
+          {{- if .Values.server.security.ssh.enabled }}
+            - name: ssh-secrets
+              readOnly: true
+              mountPath: /home/go/.ssh
           {{- end }}
           {{- if .Values.server.shouldPreconfigure }}
           lifecycle:
