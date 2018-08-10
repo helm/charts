@@ -48,12 +48,20 @@ spec:
           - containerPort: {{ .Values.service.port }}
             name: mongodb
           env:
+          - name: MONGODB_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
           - name: MONGODB_REPLICA_SET_MODE
             value: "arbiter"
           - name: MONGODB_PRIMARY_HOST
-            value: {{ template "mongodb.fullname" . }} 
+            value: {{ template "mongodb.fullname" . }}
           - name: MONGODB_REPLICA_SET_NAME
             value: {{ .Values.replicaSet.name | quote }}
+            {{- if .Values.replicaSet.useHostnames }}
+          - name: MONGODB_ADVERTISED_HOSTNAME
+            value: "$(MONGODB_POD_NAME).{{ template "mongodb.fullname" . }}-headless.{{ .Release.Namespace }}"
+            {{- end }}
             {{- if .Values.usePassword }}
           - name: MONGODB_PRIMARY_ROOT_PASSWORD
             valueFrom:

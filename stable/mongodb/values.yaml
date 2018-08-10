@@ -65,10 +65,14 @@ service:
   ##
   # nodePort:
 
-
+## Setting up replication
+## ref: https://github.com/bitnami/bitnami-docker-mongodb#setting-up-a-replication
+#
 replicaSet:
   ## Whether to create a MongoDB replica set for high availability or not
   enabled: false
+  useHostnames: true
+
   ## Name of the replica set
   ##
   name: rs0
