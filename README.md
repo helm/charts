@@ -1,7 +1,7 @@
 # Helm Charts
 
-Use this repository to submit official Charts for Kubernetes Helm. Charts are curated application definitions for Kubernetes Helm. For more information about installing and using Helm, see its
-[README.md](https://github.com/kubernetes/helm/tree/master/README.md). To get a quick introduction to Charts see this [chart document](https://github.com/kubernetes/helm/blob/master/docs/charts.md).
+Use this repository to submit official Charts for Helm. Charts are curated application definitions for Helm. For more information about installing and using Helm, see its
+[README.md](https://github.com/helm/helm/tree/master/README.md). To get a quick introduction to Charts see this [chart document](https://github.com/helm/helm/blob/master/docs/charts.md).
 
 ## Where to find us
 
@@ -28,7 +28,7 @@ You can then run `helm search incubator` to see the charts.
 
 ## Chart Format
 
-Take a look at the [alpine example chart](https://github.com/kubernetes/helm/tree/master/docs/examples/alpine) and the [nginx example chart](https://github.com/kubernetes/helm/tree/master/docs/examples/nginx) for reference when you're writing your first few charts.
+Take a look at the [alpine example chart](https://github.com/helm/helm/tree/master/docs/examples/alpine) and the [nginx example chart](https://github.com/helm/helm/tree/master/docs/examples/nginx) for reference when you're writing your first few charts.
 
 Before contributing a Chart, become familiar with the format. Note that the project is still under active development and the format may still evolve a bit.
 
@@ -84,4 +84,4 @@ To provide that support the API versions of objects should be those that work fo
 
 ## Status of the Project
 
-This project is still under active development, so you might run into [issues](https://github.com/kubernetes/charts/issues). If you do, please don't be shy about letting us know, or better yet, contribute a fix or feature.
+This project is still under active development, so you might run into [issues](https://github.com/helm/charts/issues). If you do, please don't be shy about letting us know, or better yet, contribute a fix or feature.
