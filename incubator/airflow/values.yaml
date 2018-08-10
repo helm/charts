@@ -135,6 +135,12 @@ ingress:
       ## Example for Traefik:
       # traefik.frontend.rule.type: PathPrefix
       # kubernetes.io/ingress.class: traefik
+    tls:
+      ## Set to "true" to enable TLS termination at the ingress
+      enabled: false
+      ## If enabled, set "secretName" to the secret containing the TLS private key and certificate
+      ## Example:
+      ## secretName: example-com-crt
   ##
   ## Configure the flower endpoind
   flower:
@@ -190,6 +196,12 @@ ingress:
       # traefik.frontend.rule.type: PathPrefix       ## Flower >= Jan 2018
       # traefik.frontend.rule.type: PathPrefixStrip  ## Flower < Jan 2018
       # kubernetes.io/ingress.class: traefik
+    tls:
+      ## Set to "true" to enable TLS termination at the ingress
+      enabled: false
+      ## If enabled, set "secretName" to the secret containing the TLS private key and certificate
+      ## Example:
+      ## secretName: example-com-crt
 
 
 ##

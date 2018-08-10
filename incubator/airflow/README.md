@@ -176,10 +176,14 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `ingres.web.host`                          | hostname for the webserver ui                           | ""                                                         |
 | `ingres.web.path`                          | path of the werbserver ui (read `values.yaml`)          | ``                                                         |
 | `ingres.web.annotations`                   | annotations for the web ui ingress                      | `{}`                                                       |
+| `ingres.web.tls.enabled`                   | enables TLS termination at the ingress                  | `false`                                                    |
+| `ingres.web.tls.secretName`                | name of the secret containing the TLS certificate & key | ``                                                         |
 | `ingres.flower.host`                       | hostname for the flower ui                              | ""                                                         |
 | `ingres.flower.path`                       | path of the flower ui (read `values.yaml`)              | ``                                                         |
 | `ingres.flower.liveness_path`              | path to the liveness probe (read `values.yaml`)         | `/`                                                        |
 | `ingres.flower.annotations`                | annotations for the web ui ingress                      | `{}`                                                       |
+| `ingres.flower.tls.enabled`                | enables TLS termination at the ingress                  | `false`                                                    |
+| `ingres.flower.tls.secretName`             | name of the secret containing the TLS certificate & key | ``                                                         |
 | `persistance.enabled`                      | enable persistance storage for DAGs                     | `false`                                                    |
 | `persistance.existingClaim`                | if using an existing claim, specify the name here       | `nil`                                                      |
 | `persistance.storageClass`                 | Persistent Volume Storage Class                         | (undefined)                                                |

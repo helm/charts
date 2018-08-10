@@ -13,6 +13,12 @@ metadata:
     {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
+{{- if .Values.ingress.web.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.web.host }}
+      secretName: {{ .Values.ingress.web.tls.secretName }}
+{{- end }}
   rules:
     - http:
         paths:
@@ -36,6 +42,12 @@ metadata:
     {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
+{{- if .Values.ingress.flower.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.flower.host }}
+      secretName: {{ .Values.ingress.flower.tls.secretName }}
+{{- end }}
   rules:
     - http:
         paths:
