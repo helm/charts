@@ -48,8 +48,10 @@ spec:
         {{- else }}
           value: {{ .Values.externalDatabase.host | quote }}
         {{- end }}
-        {{- if and (not .Values.mariadb.enabled) .Values.externalDatabase.port }}
         - name: MARIADB_PORT_NUMBER
+        {{- if .Values.mariadb.enabled }}
+          value: "3306"
+        {{- else }}
           value: {{ .Values.externalDatabase.port | quote }}
         {{- end }}
         - name: GHOST_DATABASE_NAME
