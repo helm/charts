@@ -5,7 +5,7 @@ deployType: Deployment
 imageTag: 1.6.5
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
-loadBalancerIP:
+# loadBalancerIP: ""
 # loadBalancerSourceRanges: []
 whiteListSourceRange: []
 externalTrafficPolicy: Cluster
@@ -47,7 +47,7 @@ tolerations: []
 proxyProtocol:
   enabled: false
   # trustedIPs is required when enabled
-  trustedIPs:
+  trustedIPs: []
   # - 10.0.0.0/8
 ssl:
   enabled: false
@@ -180,18 +180,18 @@ acme:
 dashboard:
   enabled: false
   domain: traefik.example.com
-  service:
+  service: {}
     # annotations:
     #   key: value
-  ingress:
+  ingress: {}
     # annotations:
     #   key: value
     # labels:
     #   key: value
-  auth:
+  auth: {}
     # basic:
     #   username: password
-  statistics:
+  statistics: {}
     ## Number of recent errors to show in the ‘Health’ tab
     # recentErrors:
 service:
