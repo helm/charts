@@ -50,6 +50,7 @@ proxyProtocol:
 ssl:
   enabled: false
   enforced: false
+  upstream: false
   insecureSkipVerify: false
   # https://docs.traefik.io/configuration/entrypoints/#specify-minimum-tls-version
   # tlsMinVersion: VersionTLS12
