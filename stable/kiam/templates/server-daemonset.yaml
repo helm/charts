@@ -30,6 +30,7 @@ spec:
       {{- end }}
     spec:
       serviceAccountName: {{ template "kiam.serviceAccountName.server" . }}
+      hostNetwork: {{ .Values.server.useHostNetwork }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
@@ -118,6 +119,7 @@ spec:
                 - --server-address=localhost:{{ .Values.server.service.targetPort }}
                 - --server-address-refresh=2s
                 - --timeout=5s
+                - --gateway-timeout-creation={{ .Values.server.gatewayTimeoutCreation }}
             initialDelaySeconds: 3
             periodSeconds: 10
             timeoutSeconds: 10

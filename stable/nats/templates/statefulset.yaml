@@ -18,11 +18,13 @@ spec:
   selector:
     matchLabels:
       app: "{{ template "nats.name" . }}"
+      chart: "{{ template "nats.chart" . }}"
       release: {{ .Release.Name | quote }}
   template:
     metadata:
       labels:
         app: "{{ template "nats.name" . }}"
+        chart: "{{ template "nats.chart" . }}"
         release: {{ .Release.Name | quote }}
         {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
@@ -32,6 +34,10 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
@@ -113,6 +119,9 @@ spec:
           - name: config
             mountPath: /opt/bitnami/nats/gnatsd.conf
             subPath: gnatsd.conf
+        {{- if .Values.sidecars }}
+{{ toYaml .Values.sidecars | indent 6 }}
+        {{- end }}
       volumes:
       - name: config
         configMap:

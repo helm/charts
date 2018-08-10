@@ -14,6 +14,7 @@ spec:
       labels:
         app: {{ template "name" . }}
         release: "{{ .Release.Name }}"
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

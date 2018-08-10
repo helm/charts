@@ -1,7 +1,7 @@
 # Ark-server
 
-This helm chart installs Ark version v0.8.1
-https://github.com/heptio/ark/tree/v0.8.1
+This helm chart installs Ark version v0.9.0
+https://github.com/heptio/ark/tree/v0.9.0
 
 ## Premise
 In general, Helm cannot install CRDs and resources based on these CRDs in the same Helm chart because CRDs need to be installed before CRD
@@ -23,7 +23,7 @@ To do this we add the keyword `tpl` when reading the file
 
 ### Secret for cloud provider credentials
 Ark server needs an IAM service account in order to run, if you don't have it you must create it.
-Please follow the official documentation: https://heptio.github.io/ark/v0.8.1/cloud-common
+Please follow the official documentation: https://heptio.github.io/ark/v0.9.0/cloud-common
 
 Don't forget the step to create the secret
 ```
@@ -32,7 +32,7 @@ kubectl create secret generic cloud-credentials --namespace <ARK_NAMESPACE> --fr
 
 ### Configuration
 Please change the values.yaml according to your setup
-See here for the official documentation https://heptio.github.io/ark/v0.8.1/config-definition
+See here for the official documentation https://heptio.github.io/ark/v0.9.0/config-definition
 
 Parameter | Description | Default | Required
 --- | --- | --- | ---
@@ -50,10 +50,10 @@ Parameter | Description | Default | Required
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | Image repository | `gcr.io/heptio-images/ark`
-`image.tag` | Image tag | `v0.8.2`
+`image.tag` | Image tag | `v0.9.1`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
-`kubectl.image.repository` | Image repository | `gcr.io/heptio-images/ark`
-`kubectl.image.tag` | Image tag | `v0.8.2`
+`kubectl.image.repository` | Image repository | `claranet/gcloud-kubectl-docker`
+`kubectl.image.tag` | Image tag | `1.0.0`
 `kubectl.image.pullPolicy` | Image pull policy | `IfNotPresent`
 `podAnnotations` | Annotations for the Ark server pod | `{}`
 `rbac.create` | If true, create and use RBAC resources | `true`

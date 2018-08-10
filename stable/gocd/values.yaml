@@ -63,6 +63,8 @@ server:
     extraEnvVars:
       - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
         value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v1.0.1/kubernetes-elastic-agent-1.0.1-107.jar
+      - name: GOCD_PLUGIN_INSTALL_docker-registry-artifact-plugin
+        value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/1.0.0/docker-registry-artifact-plugin-1.0.0-3.jar
   service:
     # server.service.type is the GoCD Server service type
     type: "NodePort"
@@ -127,6 +129,13 @@ server:
       # custom entrypoint scripts that should be run before starting the GoCD server inside the container.
       dockerEntryPoint: scripts
 
+  security:
+    ssh:
+      # server.security.ssh.enabled is the toggle to enable/disable mounting of ssh secret on GoCD server pods
+      enabled: false
+      # server.security.ssh.secretName specifies the name of the k8s secret object that contains the ssh key and known hosts
+      secretName: gocd-server-ssh
+
 agent:
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
   replicaCount: 0
@@ -185,6 +194,13 @@ agent:
     periodSeconds: 60
     # agent.healthCheck.failureThreshold is the health check failure threshold of GoCD agent
     failureThreshold: 60
+
+  security:
+    ssh:
+      # agent.security.ssh.enabled is the toggle to enable/disable mounting of ssh secret on GoCD agent pods
+      enabled: false
+      # agent.security.ssh.secretName specifies the name of the k8s secret object that contains the ssh key and known hosts
+      secretName: gocd-agent-ssh
 
   ## Configure GoCD agent resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

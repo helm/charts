@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/redis
-  tag: 4.0.10
+  tag: 4.0.11-debian-9
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -32,7 +32,7 @@ metrics:
   image:
     registry: docker.io
     repository: oliver006/redis_exporter
-    tag: v0.19.1
+    tag: v0.20.2
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
