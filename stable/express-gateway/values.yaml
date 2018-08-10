@@ -20,6 +20,7 @@ admin:
 proxy:
   # HTTPS traffic on the proxy port
   https: true
+  tls: {}
   servicePort: 8080
   containerPort: 8080
   type: NodePort
