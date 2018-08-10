@@ -1,5 +1,5 @@
 name: memcached
-version: 2.2.0
+version: 2.2.1
 appVersion: 1.5.6
 description: Free & open source, high-performance, distributed memory object caching
   system.
@@ -13,4 +13,6 @@ sources:
 maintainers:
 - name: gtaylor
   email: gtaylor@gc-taylor.com
+- name: olemarkus
+  email: o.with@sportradar.com
 engine: gotpl
