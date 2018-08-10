@@ -50,6 +50,12 @@ The following table lists the configurable parameters of the Memcached chart and
 |------------------------------------|-------------------------------------------|---------------------------------------------------------|
 | `image`                            | The image to pull and run                 | A recent official memcached tag                         |
 | `imagePullPolicy`                  | Image pull policy                         | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `replicaCount`                     | Number of memcached instances             | 3                                                       |
+| `pdbMinAvailable`                  | Minimum ready replicas required           | 3                                                       |
+| `AntiAffinity`                     | Hard or soft anti-affinity for Pods       | `hard`                                                  |
+| `labels`                           | Extra labels for StatefulSet/Pod/Svc      | Unset                                                   |
+| `annotations`                      | Extra annotations for StatefulSet/Pod/Svc | Unset                                                   |
+| `resources`                        | Resources requests & limits for memcached | Unset                                                   |
 | `memcached.port`                   | TCP port                                  | 11211                                                   |
 | `memcached.udpPort`                | UDP port                                  | 11211 (0 to disable)                                    |
 | `memcached.maxItemMemory`          | Max memory for items (in MB)              | `64`                                                    |
@@ -59,9 +65,17 @@ The following table lists the configurable parameters of the Memcached chart and
 | `memcached.slabGrowthFactor`       | Slab growth factor                        | `1.25`                                                  |
 | `memcached.verbosity`              | Verbosity level (v, vv, or vvv)           | `v`                                                     |
 | `memcached.extendedOptions`        | Comma-separated options                   | `modern`                                                |
-| `memcached.metrics.enabled`        | Enable Prometheus metrics exporter        | `false`                                                 |
-| `extraContainers`                  | Container sidecar definition(s) as string | Un-set                                                  |
-| `extraVolumes`                     | Volume definitions to add as string       | Un-set                                                  |
+| `metrics.enabled`                  | Enable Prometheus metrics exporter        | `false`                                                 |
+| `metrics.images.repository`        | Metrics exporter repository               | `prom/memcached-exporter`                               |
+| `metrics.images.tag`               | Metrics exporter image tag                | A recent version compatible with memcached version      |
+| `metrics.images.pullPolicy`        | Metrics exporter image pull policy        | `IfNotPresent`                                          |
+| `metrics.labels`                   | Extra labels for metics Service           | Unset                                                   |
+| `metrics.annotations`              | Extra annotations for metrics Service     | Unset                                                   |
+| `metrics.port`                     | Prometheus metrics scraping port          | 9150                                                    |
+| `metrics.path`                     | Prometheus metrics scraping URL path      | `/metrics`                                              |
+| `metrics.resources`                | Resources requests and limits for metrics | Unset                                                   |
+| `extraContainers`                  | Container sidecar definition(s) as string | Unset                                                   |
+| `extraVolumes`                     | Volume definitions to add as string       | Unset                                                   |
 
 The above parameters map to `memcached` params. For more information please refer to the [Memcached documentation](https://github.com/memcached/memcached/wiki/ConfiguringServer).
 

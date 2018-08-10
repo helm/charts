@@ -13,3 +13,8 @@ In another tab, attempt to set a key:
 You should see:
 
   STORED
+
+{{- if .Values.metrics.enabled }}
+Prometheus metrics are available from the Endpoints associated with the headless Service:
+{{ template "memcached.fullname" . }}-metrics
+{{- end }}

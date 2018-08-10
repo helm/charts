@@ -19,6 +19,14 @@ pdbMinAvailable: 3
 ## Select AntiAffinity as either hard or soft, default is hard
 AntiAffinity: "hard"
 
+## Optional labels and annotations for the StatefulSet, Pods, Service
+## Labels and annotations for the headless Prometheus Service are below under 'metrics'
+##
+labels: {}
+#  env: prod
+annotations: {}
+#  icon: "https://upload.wikimedia.org/wikipedia/en/thumb/2/27/Memcached.svg/1024px-Memcached.svg.png"
+
 memcached:
   ## Various values that get set as command-line flags.
   ## Wiki is very out of date, can get option info from binary: docker run --rm memcached -h
@@ -55,6 +63,10 @@ metrics:
     repository: prom/memcached-exporter
     tag: v0.4.1
     pullPolicy: IfNotPresent
+  labels: {}
+  #  prometheus-job: memcached
+  annotations: {}
+  #  prometheus.io/scrape: "true"
   port: 9150
   path: "/metrics"
   resources: {}

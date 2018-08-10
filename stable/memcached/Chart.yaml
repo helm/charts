@@ -1,11 +1,13 @@
 name: memcached
-version: 2.3.1
+version: 2.3.2
 appVersion: 1.5.9
 description: Free & open source, high-performance, distributed memory object caching
   system.
 keywords:
 - memcached
 - cache
+- prometheus
+- metrics
 home: http://memcached.org/
 icon: https://upload.wikimedia.org/wikipedia/en/thumb/2/27/Memcached.svg/1024px-Memcached.svg.png
 sources:
