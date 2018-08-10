@@ -1,3 +1,7 @@
+### 1.3.0
+
+* [750de42c](https://github.com/kubernetes/charts/commit/750de42c):  Add support for SSH keys on server and agent
+
 ### 1.2.0
 
 * [514a1856](https://github.com/kubernetes/charts/commit/514a1856):  Bump up GoCD app version to 18.7.0
