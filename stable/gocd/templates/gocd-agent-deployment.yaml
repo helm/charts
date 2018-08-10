@@ -22,11 +22,18 @@ spec:
         release: {{ .Release.Name | quote }}
         component: agent
     spec:
-      {{- if .Values.agent.persistence.enabled }}
+      {{- if or .Values.agent.persistence.enabled .Values.agent.security.ssh.enabled }}
       volumes:
+      {{- end }}
+      {{- if .Values.agent.persistence.enabled }}
         - name: goagent-vol
           persistentVolumeClaim:
             claimName: {{ .Values.agent.persistence.existingClaim | default (printf "%s-%s" (include "gocd.fullname" .) "agent")  }}
+      {{- end }}
+      {{- if .Values.agent.security.ssh.enabled }}
+        - name: ssh-secrets
+          secret:
+            secretName: {{ .Values.agent.security.ssh.secretName }}
       {{- end }}
       containers:
         - name: {{ template "gocd.name" . }}-agent
@@ -88,14 +95,21 @@ spec:
               port: 8152
             initialDelaySeconds: {{ .Values.agent.healthCheck.initialDelaySeconds }}
           {{- end }}
-          {{- if .Values.agent.persistence.enabled }}
+          {{- if or .Values.agent.persistence.enabled .Values.agent.security.ssh.enabled }}
           volumeMounts:
+          {{- end }}
+          {{- if .Values.agent.persistence.enabled }}
             - name: goagent-vol
               mountPath: /home/go
               subPath: {{ .Values.agent.persistence.subpath.homego }}
             - name: goagent-vol
               mountPath: /docker-entrypoint.d
               subPath: {{ .Values.agent.persistence.subpath.dockerEntryPoint }}
+          {{- end }}
+          {{- if .Values.agent.security.ssh.enabled }}
+            - name: ssh-secrets
+              readOnly: true
+              mountPath: /home/go/.ssh
           {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
