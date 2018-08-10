@@ -24,6 +24,4 @@ spec:
   selector:
     app: {{ template "redis.name" . }}
     release: "{{ .Release.Name }}"
-    {{- if .Values.cluster.enabled }}
     role: master
-    {{- end }}
