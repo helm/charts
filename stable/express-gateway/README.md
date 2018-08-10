@@ -14,7 +14,7 @@ cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
-- Kubernetes 1.8+ with Beta APIs enabled.
+- Kubernetes 1.9+
 - PV provisioner support in the underlying infrastructure if persistence
   is needed for Express Gateway datastore (backed by Redis)
 
