@@ -29,6 +29,7 @@ data:
     [entryPoints]
       [entryPoints.http]
       address = ":80"
+      compress = {{ .Values.gzip.enabled }}
       {{- if .Values.whiteListSourceRange }}
       {{ template "traefik.whiteListSourceRange" . }}
       {{- end }}
@@ -36,7 +37,6 @@ data:
         [entryPoints.http.proxyProtocol]
         {{ template "traefik.trustedips" . }}
       {{- end }}
-      compress = {{ .Values.gzip.enabled }}
         {{- if .Values.ssl.enforced }}
         [entryPoints.http.redirect]
           regex = "^http://(.*)"
@@ -48,11 +48,11 @@ data:
       {{ template "traefik.whiteListSourceRange" . }}
       {{- end }}
       address = ":443"
+      compress = {{ .Values.gzip.enabled }}
       {{- if .Values.proxyProtocol.enabled }}
         [entryPoints.https.proxyProtocol]
         {{ template "traefik.trustedips" . }}
       {{- end }}
-      compress = {{ .Values.gzip.enabled }}
         [entryPoints.https.tls]
           {{- if .Values.ssl.tlsMinVersion }}
           minVersion = "{{ .Values.ssl.tlsMinVersion }}"
