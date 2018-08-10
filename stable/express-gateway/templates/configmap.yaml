@@ -42,6 +42,8 @@ data:
   {{- if .Values.proxy.https }}
     https:
       port: {{ .Values.proxy.containerPort }}
+      tls:
+{{ toYaml .Values.proxy.tls | indent 8 }}
   {{- else }}
     http:
       port: {{ .Values.proxy.containerPort }}
