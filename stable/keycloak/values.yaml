@@ -25,7 +25,7 @@ keycloak:
     runAsNonRoot: true
 
   ## Service account to use
-  #serviceAccountName: "default"
+  # serviceAccountName: "default"
 
   ## Additional init containers, e. g. for providing custom themes
   extraInitContainers: |
