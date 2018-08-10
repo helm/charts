@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `port`                                  | MongoDB service port                                                                         | `27017`                                                  |
 | `replicaSet.enabled`                    | Switch to enable/disable replica set configuration                                           | `false`                                                  |
 | `replicaSet.name`                       | Name of the replica set                                                                      | `rs0`                                                    |
+| `replicaSet.useHostnames`               | Enable DNS hostnames in the replica set config                                               | `true` |
 | `replicaSet.key`                        | Key used for authentication in the replica set                                               | `nil`                                                    |
 | `replicaSet.replicas.secondary`         | Number of secondary nodes in the replica set                                                 | `1`                                                      |
 | `replicaSet.replicas.arbiter`           | Number of arbiter nodes in the replica set                                                   | `1`                                                      |
