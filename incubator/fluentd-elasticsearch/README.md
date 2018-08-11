@@ -66,6 +66,7 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `serviceAccount.name`              | Name of the service account.               |                                                            |   
 | `livenessProbe.enabled`            | Whether to enable livenessProbe             | `true`                                                    |   
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                                     |
+| `docker.containers_location`       | Define containers location                 | `/var/lib/docker/containers`                               |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
