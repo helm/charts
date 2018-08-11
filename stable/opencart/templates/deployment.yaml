@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app: {{ template "opencart.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -33,9 +35,9 @@ spec:
         - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: OPENCART_DATABASE_NAME
-          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+          value: {{ .Values.mariadb.db.name | quote }}
         - name: OPENCART_DATABASE_USER
-          value: {{ .Values.mariadb.mariadbUser | quote }}
+          value: {{ .Values.mariadb.db.user | quote }}
         - name: OPENCART_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:

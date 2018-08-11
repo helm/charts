@@ -19,6 +19,7 @@ spec:
         app: "{{ template "mariadb.name" . }}"
         component: "master"
         release: "{{ .Release.Name }}"
+        chart: {{ template "mariadb.chart" . }}
     spec:
       securityContext:
         runAsUser: 1001
@@ -110,6 +111,8 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /bitnami/mariadb
+        - name: custom-init-scripts
+          mountPath: /docker-entrypoint-initdb.d
 {{- if .Values.master.config }}
         - name: config
           mountPath: /opt/bitnami/mariadb/conf/my.cnf
@@ -150,6 +153,9 @@ spec:
           configMap:
             name: {{ template "master.fullname" . }}
       {{- end }}
+        - name: custom-init-scripts
+          configMap:
+            name: {{ template "master.fullname" . }}-init-scripts
 {{- if .Values.master.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:

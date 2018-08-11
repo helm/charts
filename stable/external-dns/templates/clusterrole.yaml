@@ -13,6 +13,7 @@ rules:
       - ingresses
       - services
       - pods
+      - nodes
     verbs:
       - get
       - list
