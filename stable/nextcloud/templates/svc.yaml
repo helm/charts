@@ -10,7 +10,7 @@ metadata:
 spec:
   type: {{ .Values.serviceType }}
   {{- if eq .Values.serviceType "LoadBalancer" }}
-  loadBalancerIP: {{ default "" .Values.nextcloudLoadBalancerIP }}
+  loadBalancerIP: {{ default "" .Values.nextcloud.loadBalancerIP }}
   {{- end }}
   ports:
   - name: http

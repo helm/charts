@@ -56,7 +56,7 @@ host. To configure nextcloud with the URL of your service:
 
 2. Get your nextcloud login credentials by running:
 
-  echo User:     {{ .Values.nextcloudUsername }}
+  echo User:     {{ .Values.nextcloud.username }}
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "nextcloud.fullname" . }} -o jsonpath="{.data.nextcloud-password}" | base64 --decode)
 {{- end }}
 

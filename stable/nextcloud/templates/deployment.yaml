@@ -47,18 +47,18 @@ spec:
           value: {{ .Values.externalDatabase.host | quote }}
         - name: MYSQL_PORT_NUMBER
           value: {{ .Values.externalDatabase.port | quote }}
-        - name: nextcloud_DATABASE_NAME
+        - name: DATABASE_NAME
           value: {{ .Values.externalDatabase.database | quote }}
-        - name: nextcloud_DATABASE_USER
+        - name: DATABASE_USER
           value: {{ .Values.externalDatabase.user | quote }}
-        - name: nextcloud_DATABASE_PASSWORD
+        - name: DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ printf "%s-%s" .Release.Name "externaldb" }}
               key: db-password
         {{- end }}
         - name: NEXTCLOUD_ADMIN_USER
-          value: {{ default "" .Values.nextcloudUsername | quote }}
+          value: {{ default "" .Values.nextcloud.username | quote }}
         - name: NEXTCLOUD_ADMIN_PASSWORD
           valueFrom:
             secretKeyRef:

@@ -14,7 +14,7 @@ metadata:
 {{- end }}
 spec:
   rules:
-  - host: {{ .Values.nextcloudHost }}
+  - host: {{ .Values.nextcloud.host }}
     http:
       paths:
       - path: /

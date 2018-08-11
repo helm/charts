@@ -34,31 +34,12 @@ ingress:
     #   hosts:
     #     - nextcloud.cluster.local
 
-## nextcloud host to create application URLs
-## ref: https://github.com/bitnami/bitnami-docker-nextcloud#configuration
-##
-# nextcloudHost:
-
-## loadBalancerIP for the nextcloud Service (optional, cloud specific)
-## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
-##
-# nextcloudLoadBalancerIP:
-
-## User of the application
-## ref: https://github.com/bitnami/bitnami-docker-nextcloud#configuration
-##
-nextcloudUsername: user
-
-## Application password
-## Defaults to a random 10-character alphanumeric string if not set
-## ref: https://github.com/bitnami/bitnami-docker-nextcloud#configuration
-##
-# nextcloudPassword:
-
-## Admin email
-## ref: https://github.com/bitnami/bitnami-docker-nextcloud#configuration
-##
-nextcloudEmail: user@example.com
+nextcloud:
+  host:
+  loadBalancerIP:
+  username:
+  password:
+  email: user@example.com
 
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-nextcloud#environment-variables
