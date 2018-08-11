@@ -43,7 +43,7 @@ chart and deletes the release.
 
 ### General Deployment Configuration Parameters
 
-The following table lists the configurable parameters of the Kong chart
+The following table lists the configurable parameters of the Express Gateway chart
 and their default values.
 
 | Parameter            | Description                                                                                            | Default                          |
