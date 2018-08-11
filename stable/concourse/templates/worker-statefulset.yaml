@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         app: {{ template "concourse.worker.fullname" . }}
+        release: "{{ .Release.Name }}"
       annotations:
         {{- range $key, $value := .Values.worker.annotations }}
         {{ $key }}: {{ $value | quote }}
@@ -77,7 +78,7 @@ spec:
                     done
           env:
             - name: CONCOURSE_TSA_HOST
-          {{- if semverCompare "^3.10" .Values.imageTag }}
+          {{- if semverCompare "^3.10.x" .Values.imageTag }}
               value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.tsaPort}}"
           {{- else }}
               value: {{ template "concourse.web.fullname" . }}
@@ -93,7 +94,7 @@ spec:
             - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
               value: "/concourse-keys/worker_key"
             - name: CONCOURSE_WORK_DIR
-              value: "/concourse-work-dir"
+              value: {{ .Values.concourse.workingDirectory | quote }}
             - name: CONCOURSE_BAGGAGECLAIM_DRIVER
               value: {{ .Values.concourse.baggageclaimDriver | quote }}
             - name: LIVENESS_PROBE_FATAL_ERRORS
@@ -111,11 +112,22 @@ spec:
               readOnly: true
             - name: concourse-work-dir
               mountPath: /concourse-work-dir
+{{- if .Values.worker.additionalVolumeMounts }}
+{{ toYaml .Values.worker.additionalVolumeMounts | indent 12 }}
+{{- end }}
       affinity:
 {{- if .Values.worker.additionalAffinities }}
 {{ toYaml .Values.worker.additionalAffinities | indent 8 }}
 {{- end }}
         podAntiAffinity:
+          {{- if .Values.worker.hardAntiAffinity }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: {{ template "concourse.worker.fullname" . }}
+                release: {{ .Release.Name | quote }}
+            topologyKey: kubernetes.io/hostname
+          {{- else }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
             podAffinityTerm:
@@ -124,7 +136,11 @@ spec:
                 matchLabels:
                   app: {{ template "concourse.worker.fullname" . }}
                   release: {{ .Release.Name | quote }}
+          {{- end }}
       volumes:
+{{- if .Values.worker.additionalVolumes }}
+{{ toYaml .Values.worker.additionalVolumes | indent 8 }}
+{{- end }}
         - name: concourse-keys
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}

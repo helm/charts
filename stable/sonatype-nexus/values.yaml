@@ -2,10 +2,11 @@ replicaCount: 1
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
-  imageTag: 3.9.0
+  imageTag: 3.12.1
   imagePullPolicy: IfNotPresent
   env:
-    install4jAddVmParams: "-Xms1200M -Xmx1200M -XX:MaxDirectMemorySize=2G -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+    - name: install4jAddVmParams
+      value: "-Xms1200M -Xmx1200M -XX:MaxDirectMemorySize=2G -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
   # nodeSelector:
   #   cloud.google.com/gke-nodepool: default-pool
   resources: {}
@@ -30,10 +31,12 @@ nexus:
     initialDelaySeconds: 30
     periodSeconds: 30
     failureThreshold: 6
+    path: /
   readinessProbe:
     initialDelaySeconds: 30
     periodSeconds: 30
     failureThreshold: 6
+    path: /
 
 nexusProxy:
   imageName: quay.io/travelaudience/docker-nexus-proxy
@@ -45,7 +48,7 @@ nexusProxy:
     nexusHttpHost:
     enforceHttps: false
     cloudIamAuthEnabled: false
-## If cloudIamAuthEnabled is set to true uncomment the variables bellow and remove this line
+## If cloudIamAuthEnabled is set to true uncomment the variables below and remove this line
   #   clientId: ""
   #   clientSecret: ""
   #   organizationId: ""
@@ -53,7 +56,13 @@ nexusProxy:
   # secrets:
   #   keystore: ""
   #   password: ""
-
+  resources: {}
+    # requests:
+      # cpu: 100m
+      # memory: 256Mi
+    # limits:
+      # cpu: 200m
+      # memory: 512Mi
 persistence:
   enabled: true
   accessMode: ReadWriteOnce
@@ -89,6 +98,7 @@ nexusBackup:
 
 ingress:
   enabled: false
+  path: /
   annotations: {}
   # # NOTE: Can't use 'false' due to https://github.com/jetstack/kube-lego/issues/173.
   # kubernetes.io/ingress.allow-http: true

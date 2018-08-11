@@ -1,3 +1,4 @@
+{{- if .Values.sumologic.collectorUrl -}}
 # Sumologic collector URL is required
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -138,6 +139,14 @@ spec:
             - name: FLUENTD_OPT
               value: {{ quote .Values.sumologic.fluentdOpt }}
             {{- end }}
+            {{- if quote .Values.sumologic.timeKey }}
+            - name: TIME_KEY
+              value: {{ quote .Values.sumologic.timeKey }}
+            {{- end }}
+            {{- if quote .Values.sumologic.addTimeStamp }}
+            - name: ADD_TIMESTAMP
+              value: {{ quote .Values.sumologic.addTimeStamp }}
+            {{- end }}
             {{- if quote .Values.sumologic.verifySsl }}
             - name: VERIFY_SSL
               value: {{ quote .Values.sumologic.verifySsl }}
@@ -157,6 +166,18 @@ spec:
             {{- if .Values.sumologic.auditLogPath }}
             - name: AUDIT_LOG_PATH
               value: {{ quote .Values.sumologic.auditLogPath }}
+            {{- end }}
+            {{- if .Values.sumologic.containerLogsPath }}
+            - name: CONTAINER_LOGS_PATH
+              value: {{ quote .Values.sumologic.containerLogsPath }}
+            {{- end }}
+            {{- if .Values.sumologic.proxyUri }}
+            - name: PROXY_URI
+              value: {{ quote .Values.sumologic.proxyUri }}
+            {{- end }}
+            {{- if .Values.sumologic.enableStatWatcher }}
+            - name: ENABLE_STAT_WATCHER
+              value: {{ quote .Values.sumologic.enableStatWatcher }}
             {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "sumologic-fluentd.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       volumes:
@@ -190,3 +211,4 @@ spec:
     {{- end }}
   updateStrategy:
     type: "{{ .Values.updateStrategy }}"
+{{- end }}

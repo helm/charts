@@ -10,6 +10,8 @@ spec:
       app: {{ template "sentry-kubernetes.name" . }}
   template:
     metadata:
+      annotations:
+        checksum/secrets: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum }}
       labels:
         app: {{ template "sentry-kubernetes.name" . }}
         release: {{.Release.Name }}    
@@ -24,6 +26,14 @@ spec:
               secretKeyRef:
                 name: {{ template "sentry-kubernetes.fullname" . }}
                 key: sentry.dsn
+          {{ if .Values.sentry.environment }}
+          - name: ENVIRONMENT
+            value: {{ .Values.sentry.environment }}
+          {{ end }}
+          {{ if .Values.sentry.release }}
+          - name: RELEASE 
+            value: {{ .Values.sentry.release }}
+          {{ end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
     {{- if .Values.nodeSelector }}

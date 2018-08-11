@@ -23,20 +23,20 @@ spec:
         app: {{ template "minio.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.configPath }}
-          args:
-            - -C {{ .Values.configPath }} server
-          {{- else }}
-          args:
-            - server
-            {{- range $i := until $nodeCount }}
-            - http://{{ template "minio.fullname" $ }}-{{ $i }}.{{ template "minio.fullname" $ }}.{{ $.Release.Namespace }}.svc.cluster.local{{ $.Values.mountPath }}
-            {{- end }}
-            {{- end }}
+          command: [ "/bin/sh", 
+          "-ce", 
+          "cp /tmp/config.json {{ .Values.configPath }} &&
+          /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
+          {{- range $i := until $nodeCount }}
+          http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.cluster.local{{ $.Values.mountPath }}
+          {{- end }}" ]
           volumeMounts:
             - name: export
               mountPath: {{ .Values.mountPath }}
@@ -44,14 +44,10 @@ spec:
               subPath: "{{ .Values.persistence.subPath }}"
               {{- end }}
             - name: minio-server-config
-              mountPath: {{ default "/root/.minio/config.json" .Values.configPath | quote }}
+              mountPath: "/tmp/config.json"
               subPath: config.json
-            - name: minio-server-config
-              mountPath: /root/.minio/initialize
-              subPath: initialize
-            - name: podinfo
-              mountPath: /podinfo
-              readOnly: false
+            - name: minio-config-dir
+              mountPath: {{ .Values.configPath }}
           ports:
             - name: service
               containerPort: 9000
@@ -87,12 +83,8 @@ spec:
         - name: minio-server-config
           configMap:
             name: {{ template "minio.fullname" . }}
-        - name: podinfo
-          downwardAPI:
-            items:
-              - path: "labels"
-                fieldRef:
-                  fieldPath: metadata.labels
+        - name: minio-config-dir
+          emptyDir: {}
   volumeClaimTemplates:
     - metadata:
         name: export

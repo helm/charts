@@ -1,3 +1,39 @@
+### 1.3.0
+
+* [750de42c](https://github.com/kubernetes/charts/commit/750de42c):  Add support for SSH keys on server and agent
+
+### 1.2.0
+
+* [514a1856](https://github.com/kubernetes/charts/commit/514a1856):  Bump up GoCD app version to 18.7.0
+
+### 1.1.3
+
+* [3df661cc](https://github.com/kubernetes/charts/commit/3df661cc):  Use the gocd-agent-docker-dind image of the tag same as of GoCD app version
+
+### 1.1.2
+
+* [ec6474b9](https://github.com/kubernetes/charts/commit/ec6474b9):  Fix heath check->health check (#6269)
+
+### 1.1.1
+
+* [ccd0a08d](https://github.com/kubernetes/charts/commit/ccd0a08d): Do not perform preconfigure_server script if server has already been configured
+
+### 1.1.0
+
+* [31990cd8](https://github.com/kubernetes/charts/commit/31990cd8): Support for ELB SSL using AWS ACM
+
+### 1.0.9
+
+* [3198a22c](https://github.com/kubernetes/charts/commit/3198a22c): Bump up application version to 18.6
+
+### 1.0.8
+
+* [4607974a](https://github.com/kubernetes/charts/commit/4607974a): Bump up application version to 18.5
+
+### 1.0.7
+
+* [0c66dbf](https://github.com/kubernetes/charts/commit/0c66dbf): Support TLS for ingress
+
 ### 1.0.6
 
 * [98cead4](https://github.com/kubernetes/charts/commit/98cead4): Bump up application version to 18.3

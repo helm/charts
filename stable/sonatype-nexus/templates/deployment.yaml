@@ -25,10 +25,9 @@ spec:
           image: {{ .Values.nexus.imageName }}:{{ .Values.nexus.imageTag }}
           imagePullPolicy: {{ .Values.nexus.imagePullPolicy }}
           env:
-            - name: INSTALL4J_ADD_VM_PARAMS
-              value: {{ .Values.nexus.env.install4jAddVmParams | quote }}
+{{ toYaml .Values.nexus.env | indent 12 }}
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.nexus.resources | indent 12 }}
           ports:
             - containerPort: {{ .Values.nexus.dockerPort }}
               name: nexus-docker-g
@@ -36,14 +35,14 @@ spec:
               name: nexus-http
           livenessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.nexus.livenessProbe.path }}
               port: {{ .Values.nexus.nexusPort }}
             initialDelaySeconds: {{ .Values.nexus.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.nexus.livenessProbe.periodSeconds }}
             failureThreshold: {{ .Values.nexus.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.nexus.readinessProbe.path }}
               port: {{ .Values.nexus.nexusPort }}
             initialDelaySeconds: {{ .Values.nexus.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.nexus.readinessProbe.periodSeconds }}
@@ -55,6 +54,8 @@ spec:
               name: nexus-backup
         - name: nexus-proxy
           image: {{ .Values.nexusProxy.imageName }}:{{ .Values.nexusProxy.imageTag }}
+          resources:
+{{ toYaml .Values.nexusProxy.resources | indent 12 }}
           imagePullPolicy: {{ .Values.nexusProxy.imagePullPolicy }}
           env:
             - name: ALLOWED_USER_AGENTS_ON_ROOT_REGEX
