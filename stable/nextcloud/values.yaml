@@ -135,8 +135,8 @@ serviceType: LoadBalancer
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  enabled: true
   apache:
+    enabled: true
     ## apache data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -154,6 +154,7 @@ persistence:
     accessMode: ReadWriteOnce
     size: 1Gi
   nextcloud:
+    enabled: true
     ## nextcloud data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -170,6 +171,14 @@ persistence:
 
     accessMode: ReadWriteOnce
     size: 8Gi
+
+  extraExistingClaimMounts: []
+    # - name: external-mount
+    #   mountPath: /srv/external-mount
+    ## A manually managed Persistent Volume and Claim
+    ## If defined, PVC must be created manually before volume will be bound
+    #   existingClaim:
+    #   readOnly: true
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

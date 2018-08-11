@@ -1,0 +1,21 @@
+{{- if .Values.persistence.nextcloud.enabled -}}
+{{- if not .Values.persistence.nextcloud.existingClaim -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "nextcloud.fullname" . }}-nextcloud
+spec:
+  accessModes:
+    - {{ .Values.persistence.nextcloud.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.nextcloud.size | quote }}
+{{- if .Values.persistence.nextcloud.storageClass }}
+{{- if (eq "-" .Values.persistence.nextcloud.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.nextcloud.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}
+{{- end -}}
