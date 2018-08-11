@@ -25,7 +25,7 @@ proxy:
   containerPort: 8080
   type: NodePort
 
-# readinessProbe for Kong pods
+# readinessProbe for EG pods
 readinessProbe:
   httpGet:
     path: "/users"
@@ -37,7 +37,7 @@ readinessProbe:
   successThreshold: 1
   failureThreshold: 2
 
-# livenessProbe for Kong pods
+# livenessProbe for EG pods
 livenessProbe:
   httpGet:
     path: "/users"
