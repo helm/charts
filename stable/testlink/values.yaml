@@ -17,6 +17,14 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+
+## List of nodeSelectors to limit where testlink can run
+## i.e
+##
+## nodeSelector:
+##   kops.k8s.io/instancegroup: my-ig
+nodeSelector: {}
+
 ## Admin username
 ## ref: https://github.com/bitnami/bitnami-docker-testlink#environment-variables
 ##
