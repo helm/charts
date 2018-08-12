@@ -4,7 +4,7 @@ image:
   tag: master-c42fff3
   pullPolicy: IfNotPresent
 
-extraArgs:  {}
+extraArgs: {}
 
 rbac:
   create: true
