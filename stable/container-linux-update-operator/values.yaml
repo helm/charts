@@ -1,0 +1,8 @@
+# Image configuration
+image:
+  repository: quay.io/coreos/container-linux-update-operator
+  tag: v0.7.0
+
+# Create rbac?
+rbac:
+  create: true
