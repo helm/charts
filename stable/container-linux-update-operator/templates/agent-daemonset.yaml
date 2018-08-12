@@ -2,17 +2,23 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: container-linux-update-agent
+  name: {{ template "container-linux-update-operator.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "container-linux-update-operator.name" . }}
+		component: agent
+		chart: {{ template "container-linux-update-operator.chart" . }}
+		release: {{ .Release.Name }}
+		heritage: {{ .Release.Service }} 
 spec:
   updateStrategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
+    type: Recreate
   template:
     metadata:
       labels:
-        app: container-linux-update-agent
+        app: {{ template "container-linux-update-operator.name" . }}
+        component: agent
+        chart: {{ template "container-linux-update-operator.chart" . }}
         release: {{ .Release.Name }}
     spec:
       strategy:
