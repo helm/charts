@@ -25,6 +25,14 @@ To install `cluo`, or some other release name, issue this:
 $ helm install --name cluo stable/container-linux-update-operator
 ```
 
+## Configuration
+
+| Parameter          | Description             | Default                                          |
+|--------------------|-------------------------|--------------------------------------------------|
+| `image.repository` | Image Repository to use | `quay.io/coreos/container-linux-update-operator` |
+| `image.tag`        | Image tag to use        | `v0.7.0`                                         |
+| `rbac.create`      | Enable RBAC creation    | `true`                                           |
+
 ## Disable Locksmithd
 
 You can mask `locksmithd` via kops, with the following:
