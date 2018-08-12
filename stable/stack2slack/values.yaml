@@ -1,0 +1,10 @@
+# Required
+slackApiToken: ''
+debug: '0'
+tagToChannel:
+  # api-platform.com: stackoverflow
+stackSite: 'stackoverflow'
+image:
+  repository: dunglas/stack2slack
+  tag: 0.1.0
+  pullPolicy: IfNotPresent

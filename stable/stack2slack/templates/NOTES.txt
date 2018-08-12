@@ -1,0 +1,14 @@
+{{- if eq (printf "%s" .Values.slackApiToken) "" }}
+#######################################################################################
+####   ERROR: You did not provided a Slack API token in your 'helm install' call.  ####
+#######################################################################################
+
+This deployment will be incomplete until you provide a Slack API token:
+
+    helm upgrade {{ .Release.Name }} \
+        --set slackApiToken=<your-token> stable/stack2slack
+{{- end }}
+
+Don't forget to invite the bot in channels it will post.
+
+From Slack: `/invite @bot-name`
