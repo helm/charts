@@ -16,5 +16,3 @@ spec:
     targetPort: {{ .Values.service.internalPort }}
     protocol: TCP
     name: {{ .Chart.Name }}
-  selector:
-    app: {{ template "fullname" . }}
