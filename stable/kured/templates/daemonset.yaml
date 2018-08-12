@@ -55,6 +55,10 @@ spec:
             - name: hostrun
               mountPath: /var/run
       restartPolicy: Always
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       volumes:
         - name: hostrun
           hostPath:

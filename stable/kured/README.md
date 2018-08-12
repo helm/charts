@@ -12,6 +12,7 @@ See https://github.com/weaveworks/kured
 | `serviceAccount.create` | Create service account roles                                                | `true`                     |
 | `serviceAccount.name`   | Service account name to create (or use if `serviceAccount.create` is false) | (chart fullname)           |
 | `updateStrategy`        | Daemonset update strategy                                                   | `OnDelete`                 |
+| `tolerations`           | Tolerations to apply to the daemonset (eg to allow running on master)       | `[]`                       |
 
 See https://github.com/weaveworks/kured#configuration for values for `extraArgs`. Note that
 ```yaml
