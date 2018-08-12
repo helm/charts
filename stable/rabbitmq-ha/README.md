@@ -78,7 +78,7 @@ and their default values.
 | `persistentVolume.size`            | Persistent volume size                                          | `8Gi`                                                    |
 | `persistentVolume.storageClass`    | Persistent volume storage class                                 | `-`                                                      |
 | `podAntiAffinity`                  | Pod antiaffinity, `hard` or `soft`                              | `hard`                                                   |
-| `prometheus.exporter.enabled`      | Configures Prometheus Exporter to expose and scrape stats       | `true`                                                   |
+| `prometheus.exporter.enabled`      | Configures Prometheus Exporter to expose and scrape stats       | `false`                                                   |
 | `prometheus.exporter.env`          | Environment variables to set for Exporter container             | `{}`                                                   |
 | `prometheus.exporter.image.repository`   | Prometheus Exporter repository                              | `kbudde/rabbitmq-exporter`                                                   |
 | `prometheus.exporter.image.tag`   | Image Tag                          | `latest`                  |
