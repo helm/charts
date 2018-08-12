@@ -6,15 +6,15 @@ metadata:
   labels:
     app: {{ template "container-linux-update-operator.name" . }}
     chart: {{ template "container-linux-update-operator.chart" . }}
-		component: operator
-		release: {{ .Release.Name }}
-		heritage: {{ .Release.Service }}
+    component: operator
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: {{ template "container-linux-update-operator.name" . }}
-			component: operator
+      component: operator
       release: {{ .Release.Name }}
   template:
     metadata:

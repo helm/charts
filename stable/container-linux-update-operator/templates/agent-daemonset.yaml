@@ -6,10 +6,10 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "container-linux-update-operator.name" . }}
-		component: agent
-		chart: {{ template "container-linux-update-operator.chart" . }}
-		release: {{ .Release.Name }}
-		heritage: {{ .Release.Service }} 
+    component: agent
+    chart: {{ template "container-linux-update-operator.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }} 
 spec:
   updateStrategy:
     type: Recreate
