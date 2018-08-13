@@ -18,9 +18,15 @@ image:
   #   - myRegistrKeySecretName
 
 service:
-  ## Kubernetes service type
+  ## Kubernetes service type, ClusterIP and NodePort are supported at present
   type: ClusterIP
   port: 3306
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
+  #   master: 30001
+  #   slave: 30002
 
 rootUser:
   ## MariaDB admin password
