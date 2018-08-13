@@ -14,7 +14,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "fluentd-elasticsearch.fullname" . }}
-      heritage: "{{ .Release.Service }}"
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
