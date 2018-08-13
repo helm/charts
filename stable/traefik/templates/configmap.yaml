@@ -53,6 +53,7 @@ data:
         [entryPoints.https.proxyProtocol]
         {{ template "traefik.trustedips" . }}
       {{- end }}
+      {{- if not .Values.ssl.upstream }}
         [entryPoints.https.tls]
           {{- if .Values.ssl.tlsMinVersion }}
           minVersion = "{{ .Values.ssl.tlsMinVersion }}"
@@ -60,6 +61,7 @@ data:
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
+      {{- end }}
       {{- else }}
       [entryPoints.httpn]
       {{- if .Values.whiteListSourceRange }}
