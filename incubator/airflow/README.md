@@ -172,6 +172,7 @@ The following table lists the configurable parameters of the Airflow chart and t
 | `workers.replicas`                         | number of workers pods to launch                        | `1`                                                        |
 | `workers.resources`                        | custom resource configuration for worker pod            | `{}`                                                       |
 | `workers.celery.instances`                 | number of parallel celery tasks per worker              | `1`                                                        |
+| `workers.pod.annotations`                  | annotations for the worker pods                         | `{}`                                                       |
 | `ingres.enabled`                           | enable ingress                                          | `false`                                                    |
 | `ingres.web.host`                          | hostname for the webserver ui                           | ""                                                         |
 | `ingres.web.path`                          | path of the werbserver ui (read `values.yaml`)          | ``                                                         |
