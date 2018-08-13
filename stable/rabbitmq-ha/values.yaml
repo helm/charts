@@ -281,6 +281,8 @@ prometheus:
 
     ## Port Prometheus scrapes for metrics
     port: 9090
+    ## Comma-separated list of extended scraping capabilities supported by the target RabbitMQ server
+    capabilities: "bert,no_sort"
 
     ## Allow overriding of container resources
     resources: {}
