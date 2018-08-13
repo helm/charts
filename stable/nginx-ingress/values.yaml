@@ -192,7 +192,7 @@ controller:
       http: ""
       https: ""
 
-  extraContainers: {}
+  extraContainers: []
   ## Additional containers to be added to the controller pod.
   ## See https://github.com/lemonldap-ng-controller/lemonldap-ng-controller as example.
   #  - name: my-sidecar
@@ -216,12 +216,12 @@ controller:
   #    - name: copy-portal-skins
   #      mountPath: /srv/var/lib/lemonldap-ng/portal/skins
 
-  extraVolumeMounts: {}
+  extraVolumeMounts: []
   ## Additional volumeMounts to the controller main container.
   #  - name: copy-portal-skins
   #   mountPath: /var/lib/lemonldap-ng/portal/skins
 
-  extraVolumes: {}
+  extraVolumes: []
   ## Additional volumes to the controller pod.
   #  - name: copy-portal-skins
   #    emptyDir: {}
