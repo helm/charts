@@ -51,6 +51,22 @@ spec:
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
         imagePullPolicy: Always
         command: ["/usr/bin/gencerts.sh", "-n", "{{ .Values.operatorNamespace }}", "-p"]
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sparkoperator-cleanup
+  annotations:
+    "helm.sh/hook": post-delete
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: main
+        image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
+        imagePullPolicy: Always
+        command: ["/usr/bin/delete-resource.sh", "--kind", "namespaces", "--name", "{{ .Values.operatorNamespace }}"]
 {{ else }}
 ---
 apiVersion: v1

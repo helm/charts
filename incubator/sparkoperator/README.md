@@ -26,14 +26,8 @@ The following table lists the configurable parameters of the Spark operator char
 | `operatorImageName` | The name of the operator image                        | `lightbend/sparkoperator` |
 | `operatorVersion`   | The version of the operator to install                | `2.3.1`                   |
 | `operatorNamespace` | K8s namespace where operator is installed             | `sparkoperator`           |
-| `enableWebhook`     | Whether to enable mutating admission webhook          | false                     |
+| `enableWebhook`     | Whether to enable mutating admission webhook          | true                      |
 | `enableMetrics`     | Whether to expose metrics to be scraped by Premetheus | true                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. 
-
-#### Limitations
-
-If the operator chart is installed with the webhook enabled, then when the user deletes the Helm release, she needs to manually delete the operator namespace, which is `sparkoperator` by default.
-
-
 
