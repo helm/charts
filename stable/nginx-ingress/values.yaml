@@ -296,6 +296,8 @@ defaultBackend:
 
   extraArgs: {}
 
+  port: 8080
+
   ## Node tolerations for server scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
