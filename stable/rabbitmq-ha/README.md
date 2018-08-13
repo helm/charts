@@ -78,12 +78,13 @@ and their default values.
 | `persistentVolume.size`            | Persistent volume size                                          | `8Gi`                                                    |
 | `persistentVolume.storageClass`    | Persistent volume storage class                                 | `-`                                                      |
 | `podAntiAffinity`                  | Pod antiaffinity, `hard` or `soft`                              | `hard`                                                   |
-| `prometheus.exporter.enabled`      | Configures Prometheus Exporter to expose and scrape stats       | `true`                                                   |
+| `prometheus.exporter.enabled`      | Configures Prometheus Exporter to expose and scrape stats       | `false`                                                   |
 | `prometheus.exporter.env`          | Environment variables to set for Exporter container             | `{}`                                                   |
 | `prometheus.exporter.image.repository`   | Prometheus Exporter repository                              | `kbudde/rabbitmq-exporter`                                                   |
 | `prometheus.exporter.image.tag`   | Image Tag                          | `latest`                  |
 | `prometheus.exporter.image.pullPolicy`   | Image Pull Policy                          | `IfNotPresent`                  |
 | `prometheus.exporter.port`        | Port Prometheus scrapes for metrics                      | `9090`        |
+| `prometheus.exporter.capabilities`        | Comma-separated list of extended scraping capabilities supported by the target RabbitMQ server. [Click here for details.](https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities)                   | `bert,no_sort`        |
 | `prometheus.exporter.resources`   | Resource Limits for Prometheus Exporter                  | `{}`                                                   |
 | `prometheus.operator.enabled`      | Are you using Prometheus Operator?  [Blog Post](https://coreos.com/blog/the-prometheus-operator.html)                       | `true`                                  |
 | `prometheus.operator.alerts.enabled`         | Create default Alerts for RabbitMQ       | `true`                                                   |
