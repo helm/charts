@@ -89,13 +89,13 @@ server:
 
   ## Secret environment variables are configured in `server.envSecrets`.
   ## Each item in `server.envSecrets` references a Kubernetes Secret.
-  ## These Secrets should be created before they are referenced.
+  ## These Secrets will be created and mapped.
   ##
   # envSecrets:
   #   # The name of a Kubernetes Secret
   #   drone-server-secrets:
-  #     # A list of Secret keys to include as environment variables
-  #     - DRONE_GITHUB_SECRET
+  #     # A map of Secret keys to include as environment variables
+  #     DRONE_GITHUB_SECRET: "secret_value"
 
   ## Additional server annotations.
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
