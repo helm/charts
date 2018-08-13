@@ -30,6 +30,7 @@ spec:
       {{- end }}
     spec:
       serviceAccountName: {{ template "kiam.serviceAccountName.server" . }}
+      hostNetwork: {{ .Values.server.useHostNetwork }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
