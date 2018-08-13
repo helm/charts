@@ -26,6 +26,7 @@ spec:
         component: {{ .Values.artifactory.name }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "artifactory-ha.serviceAccountName" . }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
@@ -58,7 +59,7 @@ spec:
           done;
       containers:
       - name: {{ .Values.artifactory.name }}
-        image: '{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}'
+        image: '{{ .Values.artifactory.image.repository }}:{{ default .Chart.AppVersion .Values.artifactory.image.version }}'
         imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
         lifecycle:
           postStart:
@@ -83,6 +84,9 @@ spec:
                 cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
                 cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys/trusted;
                 chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access/etc;
+                {{- end }}
+                {{- if .Values.artifactory.postStartCommand }}
+                {{ .Values.artifactory.postStartCommand }}
                 {{- end }}
         env:
       {{- if .Values.postgresql.enabled }}
@@ -217,6 +221,18 @@ spec:
           failureThreshold: {{ .Values.artifactory.livenessProbe.failureThreshold }}
           successThreshold: {{ .Values.artifactory.livenessProbe.successThreshold }}
         {{- end }}
+    {{- with .Values.artifactory.primary.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.artifactory.primary.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.artifactory.primary.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       volumes:
       - name: binarystore-xml
         configMap:
