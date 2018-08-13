@@ -7,6 +7,10 @@ metadata:
     chart: {{ template "zookeeper.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.headless.annotations }}
+  annotations:
+{{ .Values.headless.annotations | toYaml | trimSuffix "\n" | indent 4 }}
+{{- end }}
 spec:
   clusterIP: None
   ports:

@@ -38,6 +38,10 @@ service:
       targetPort: client  # Service target port for client port.
       protocol: TCP  # Service port protocol for client port.
 
+## Headless service.
+##
+headless:
+  annotations: {}
 
 ports:
   client:
