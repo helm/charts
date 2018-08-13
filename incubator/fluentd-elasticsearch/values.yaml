@@ -340,10 +340,10 @@ configMaps:
       @id journald-docker
       @type systemd
       filters [{ "_SYSTEMD_UNIT": "docker.service" }]
-      #pos_file /var/log/journald-docker.pos
       <storage>
         @type local
         persistent true
+        path /var/log/journald-docker.pos
       </storage>
       read_from_head true
       tag docker
@@ -355,6 +355,7 @@ configMaps:
       <storage>
         @type local
         persistent true
+        path /var/log/journald-kubelet.pos
       </storage>
       read_from_head true
       tag kubelet
@@ -366,6 +367,7 @@ configMaps:
       <storage>
         @type local
         persistent true
+        path /var/log/journald-node-problem-detector.pos
       </storage>
       read_from_head true
       tag node-problem-detector
