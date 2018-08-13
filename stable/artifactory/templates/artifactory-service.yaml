@@ -4,8 +4,8 @@ metadata:
   name: {{ template "artifactory.fullname" . }}
   labels:
     app: {{ template "artifactory.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.artifactory.name }}"
+    chart: {{ template "artifactory.chart" . }}
+    component: {{ .Values.artifactory.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 {{- if .Values.artifactory.service.annotations }}
