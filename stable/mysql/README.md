@@ -86,6 +86,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `ssl.certificates[0].key`            | Server key (private key)                  | `nil`                                                |
 | `imagePullSecrets`                   | Name of Secret resource containing private registry credentials | `nil`                          |
 | `initializationFiles`                | List of SQL files which are run after the container started        | `nil`                       |
+| `timezone`                           | Container and mysqld timezone (TZ env)    | `nil` (UTC depending on image)                       |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 
