@@ -84,9 +84,11 @@ email:
 
 # Name of the service and what port to expose on the pod
 # Don't change these unless you know what you're doing
+# Internal Loadbalancer only support azure right now.
 service:
   name: sentry
   type: LoadBalancer
+  # enableInternalLB: false
   externalPort: 9000
   internalPort: 9000
   ## External IP addresses of service
@@ -140,9 +142,13 @@ ingress:
 # TODO: add support for plugins https://docs.sentry.io/server/plugins/
 
 postgresql:
+  enabled: false
   postgresDatabase: sentry
   postgresUser: sentry
-  imageTag: "9.5"
+  # Only used when internal PG is disabled
+  # postgresHost: postgres
+  # postgresPassword: postgres
+  imageTag: "9.6"
   persistence:
     enabled: true
 

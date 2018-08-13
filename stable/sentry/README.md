@@ -12,9 +12,9 @@ $ helm install --wait stable/sentry
 
 This chart bootstraps a [Sentry](https://sentry.io/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-It also packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) and [Redis](https://github.com/kubernetes/charts/tree/master/stable/redis) which are required for Sentry.
+It also optionally packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) and [Redis](https://github.com/kubernetes/charts/tree/master/stable/redis) which are required for Sentry.
 
-> **Warning**: This chart does not yet allow for you to specify your own database host or redis host.
+To disable packaged PostgreSQL just set `postgresql.enabled` to `false` and set `postgresql.postgresHost`.
 
 ## Prerequisites
 
