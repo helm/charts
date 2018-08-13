@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "custom-metrics-prometheus.fullname" . }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+  labels:
+    app: {{ template "custom-metrics-prometheus.name" . }}
+    chart: {{ template "custom-metrics-prometheus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 8443
+      protocol: TCP
+      name: https
+  selector:
+    app: {{ template "custom-metrics-prometheus.name" . }}
+    release: {{ .Release.Name }}

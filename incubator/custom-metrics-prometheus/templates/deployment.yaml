@@ -1,0 +1,89 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "custom-metrics-prometheus.fullname" . }}
+  labels:
+    app: {{ template "custom-metrics-prometheus.name" . }}
+    chart: {{ template "custom-metrics-prometheus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "custom-metrics-prometheus.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "custom-metrics-prometheus.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["all"]
+        runAsNonRoot: true
+        runAsUser: 10001
+      serviceAccountName: {{ template "custom-metrics-prometheus.serviceAccountName" . }}
+      containers:
+      - name: {{ template "custom-metrics-prometheus.name" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        - /adapter
+        - --config=/etc/adapter/config.yaml
+        - --secure-port=8443
+        - --logtostderr=true
+        - --prometheus-url={{ .Values.prometheusUrl }}
+        - --metrics-relist-interval=1m
+        - --v=4
+        {{- if .Values.ca.generate }}
+        - --cert-dir=/tmp/certificates
+        {{- else }}
+        - --tls-cert-file=/var/run/certificates/tls.crt
+        - --tls-private-key-file=/var/run/certificates/tls.key
+        {{- end }}
+        ports:
+        - name: https
+          containerPort: 8443
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: https
+            scheme: HTTPS
+          initialDelaySeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: https
+            scheme: HTTPS
+          initialDelaySeconds: 30
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        volumeMounts:
+        - mountPath: /var/run/certificates
+          name: certificates
+          readOnly: true
+        - mountPath: /etc/adapter/
+          name: config
+          readOnly: true
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+      - name: certificates
+        secret:
+          secretName: {{ template "custom-metrics-prometheus.fullname" . }}
+      - name: config
+        configMap:
+          name: {{ template "custom-metrics-prometheus.fullname" . }}
