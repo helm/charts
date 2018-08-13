@@ -1,16 +1,3 @@
-{{ if not .Values.enableWebhook }}
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ .Values.operatorNamespace }}
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: sparkoperator
-  namespace: {{ .Values.operatorNamespace }}
-{{ end }}
----
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
