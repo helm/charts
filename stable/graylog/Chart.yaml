@@ -6,4 +6,3 @@ version: 0.1.0
 home: https://www.graylog.org/
 sources:
 - https://github.com/Graylog2/graylog-docker
-

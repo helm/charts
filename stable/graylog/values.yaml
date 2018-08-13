@@ -6,7 +6,7 @@ image:
   repository: graylog/graylog
   tag: 2.4.5-1
   pullPolicy: IfNotPresent
-  
+
 # Generic Graylog Configs
 timezone: UTC
 batchSize: 5000
@@ -33,7 +33,7 @@ master:
   # requests:
   #  cpu: 500m
   #  memory: 200Mi
-  
+
   # javaOpts: '-Xms3500m -Xmx3500m -XX:NewRatio=1 -XX:MaxMetaspaceSize=256m -server -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow'
 
   host: graylog.example.com
@@ -94,7 +94,3 @@ elasticsearch:
   hosts: elasticsearch
   discovery: true
   compression: true
-
-
-
-
