@@ -1,4 +1,4 @@
-{{ if .Release.IsInstall }}
+{{ if and .Release.IsInstall .Values.job.autoCreateCluster }}
 apiVersion: batch/v1
 kind: Job
 metadata:

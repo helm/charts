@@ -56,6 +56,9 @@ ports:
   metrics:
     containerPort: 8080
 
+job:
+  autoCreateCluster: true
+
 keeper:
   replicaCount: 2
   annotations: {}
