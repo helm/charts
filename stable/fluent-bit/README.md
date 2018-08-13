@@ -1,4 +1,4 @@
-HTTP# Fluent-Bit Chart
+# Fluent-Bit Chart
 
 [Fluent Bit](http://fluentbit.io/) is an open source and multi-platform Log Forwarder.
 

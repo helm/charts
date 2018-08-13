@@ -5,6 +5,9 @@ metadata:
   name: {{ template "fluent-bit.fullname" . }}-config
   labels:
     app: {{ template "fluent-bit.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 data:
   fluent-bit.conf: |-
     [SERVICE]
