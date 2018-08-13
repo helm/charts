@@ -158,6 +158,12 @@ spec:
             protocol: TCP
             containerPort: {{ .Values.prometheus.exporter.port }}
           env:
+            - name: PUBLISH_PORT
+              value: "{{ .Values.prometheus.exporter.port }}"
+            {{ if .Values.prometheus.exporter.capabilities }}  
+            - name: RABBIT_CAPABILITIES
+              value: "{{ .Values.prometheus.exporter.capabilities }}"
+            {{- end }}  
             - name: RABBIT_USER
               value: {{ .Values.rabbitmqUsername | quote }}
             - name: RABBIT_PASSWORD
