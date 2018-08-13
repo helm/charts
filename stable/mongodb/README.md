@@ -57,11 +57,13 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `mongodbPassword`                       | MongoDB custom user password                                                                 | `random alhpanumeric string (10)`                        |
 | `mongodbDatabase`                       | Database to create                                                                           | `nil`                                                    |
 | `mongodbExtraFlags`                     | MongoDB additional command line flags                                                        | []                                                       |
+| `service.annotations`                   | Kubernetes service annotations                                                               | `{}`                                                     |
 | `service.type`                          | Kubernetes Service type                                                                      | `ClusterIP`                                              |
 | `service.nodePort`                      | Port to bind to for NodePort service type                                                    | `nil`                                                    |
 | `port`                                  | MongoDB service port                                                                         | `27017`                                                  |
 | `replicaSet.enabled`                    | Switch to enable/disable replica set configuration                                           | `false`                                                  |
 | `replicaSet.name`                       | Name of the replica set                                                                      | `rs0`                                                    |
+| `replicaSet.useHostnames`               | Enable DNS hostnames in the replica set config                                               | `true` |
 | `replicaSet.key`                        | Key used for authentication in the replica set                                               | `nil`                                                    |
 | `replicaSet.replicas.secondary`         | Number of secondary nodes in the replica set                                                 | `1`                                                      |
 | `replicaSet.replicas.arbiter`           | Number of arbiter nodes in the replica set                                                   | `1`                                                      |
@@ -73,7 +75,9 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `nodeSelector`                          | Node labels for pod assignment                                                               | {}                                                       |
 | `affinity`                              | Affinity for pod assignment                                                                  | {}                                                       |
 | `tolerations`                           | Toleration labels for pod assignment                                                         | {}                                                       |
-| `persistence.enabled`                   | Use a PVC to persist data                                                                    | `true`                                                   |
+| `securityContext.enabled`            | Enable security context                                                                      | `true`                            |
+| `securityContext.fsGroup`            | Group ID for the container                                                                   | `1001`                            |
+| `securityContext.runAsUser`          | User ID for the container                                                                    | `1001`              | `persistence.enabled`                   | Use a PVC to persist data                                                                    | `true`                                                   |
 | `persistence.storageClass`              | Storage class of backing PVC                                                                 | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`                | Use volume as ReadOnly or ReadWrite                                                          | `ReadWriteOnce`                                          |
 | `persistence.size`                      | Size of data volume                                                                          | `8Gi`                                                    |

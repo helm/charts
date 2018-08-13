@@ -52,7 +52,6 @@ Master:
   # Used to create Ingress record (should used with ServiceType: ClusterIP)
   # HostName: jenkins.cluster.local
   # NodePort: <to set explicitly, choose port between 30000-32767
-  ContainerPort: 8080
   # Enable Kubernetes Liveness and Readiness Probes
   # ~ 2 minutes to allow Jenkins to restart when upgrading plugins. Set ReadinessTimeout to be shorter than LivenessTimeout.
   HealthProbes: true
@@ -85,11 +84,11 @@ Master:
   # JMXPort: 4000
   # List of plugins to be install during Jenkins master start
   InstallPlugins:
-    - kubernetes:1.1
+    - kubernetes:1.12.0
+    - workflow-job:2.23
     - workflow-aggregator:2.5
-    - workflow-job:2.15
-    - credentials-binding:1.13
-    - git:3.6.4
+    - credentials-binding:1.16
+    - git:3.9.1
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
   #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
@@ -193,7 +192,9 @@ NetworkPolicy:
 rbac:
   install: false
   serviceAccountName: default
-  # RBAC api version (currently either v1beta1 or v1alpha1)
-  apiVersion: v1beta1
-  # Cluster role reference
+  # RBAC api version (currently either v1, v1beta1, or v1alpha1)
+  apiVersion: v1
+  # Role reference
   roleRef: cluster-admin
+  # Role kind (RoleBinding or ClusterRoleBinding)
+  roleBindingKind: ClusterRoleBinding

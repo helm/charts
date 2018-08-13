@@ -1,3 +1,4 @@
+{{- if .Values.user.create -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -77,3 +78,4 @@ spec:
           value: {{ .Values.email.use_tls | quote }}
         - name: SENTRY_SERVER_EMAIL
           value: {{ .Values.email.from_address | quote }}
+{{- end -}}
