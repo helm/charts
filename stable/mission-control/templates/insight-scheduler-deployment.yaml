@@ -23,6 +23,7 @@ spec:
         component: {{ .Values.insightScheduler.name }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "mission-control.serviceAccountName" . }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
@@ -40,7 +41,7 @@ spec:
           sleep 10
       containers:
       - name: {{ .Values.insightScheduler.name }}
-        image: {{ .Values.insightScheduler.image }}:{{ .Values.insightScheduler.version }}
+        image: {{ .Values.insightScheduler.image }}:{{ default .Chart.AppVersion .Values.insightScheduler.version }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
         - name: CORE_URL
@@ -58,12 +59,25 @@ spec:
             secretKeyRef:
               name: {{ template "mission-control.fullname" . }}-mongodb-cred
               key: insightPassword
+        - name: MONGODB_ADMIN_USERNAME
+          value: '{{ .Values.mongodb.db.adminUser }}'
+        - name: MONGODB_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mission-control.fullname" . }}-mongodb-cred
+              key: adminPassword
         - name: JFMC_SCHEDULER_MONGO_DB
           value: '{{ .Values.mongodb.db.insightSchedulerDb }}'
         ports:
         - containerPort: {{ .Values.insightScheduler.internalPort }}
           protocol: TCP
         livenessProbe:
+          httpGet:
+            path: /schedulerservice/api/status
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 10
+        readinessProbe:
           httpGet:
             path: /schedulerservice/api/status
             port: 8080
