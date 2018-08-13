@@ -1,0 +1,72 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "home-assistant.fullname" . }}
+  labels:
+    app: {{ template "home-assistant.name" . }}
+    chart: {{ template "home-assistant.chart" . }}
+    component: server
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "home-assistant.name" . }}
+      release: {{ .Release.Name }}
+      component: server
+  template:
+    metadata:
+      labels:
+        app: {{ template "home-assistant.name" . }}
+        release: {{ .Release.Name }}
+        component: server
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+              initialDelaySeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+              initialDelaySeconds: 15
+          env:
+            {{- range $key, $value := .Values.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+          volumeMounts:
+          - mountPath: /config
+            name: config
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+      - name: config
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "home-assistant.fullname" . }}{{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{ end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
