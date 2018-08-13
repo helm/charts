@@ -31,13 +31,13 @@ spec:
               name: {{ template "inbucket.name" . }}-configmap
           ports:
             - name: http
-              containerPort: {{ .Values.service.port.http }}
+              containerPort: 9000
               protocol: TCP
             - name: smtp
-              containerPort: {{ .Values.service.port.smtp }}
+              containerPort: 2500
               protocol: TCP
             - name: pop3
-              containerPort: {{ .Values.service.port.pop }}
+              containerPort: 1100
               protocol: TCP
           livenessProbe:
             tcpSocket:

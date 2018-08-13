@@ -1,6 +1,6 @@
 image:
   repository: jhillyerd/inbucket
-  tag: stable
+  tag: release-2.0.0
   pullPolicy: IfNotPresent
 
 service:
@@ -13,13 +13,13 @@ service:
   port:
     http: 9000
     smtp: 2500
-    pop: 1100
+    pop3: 1100
   nodePort:
     http: ""
     smtp: ""
-    pop: ""
+    pop3: ""
 
-config:
+extraEnv:
   INBUCKET_LOGLEVEL: "info"
   INBUCKET_MAILBOXNAMING: "local"
   INBUCKET_SMTP_ADDR: "0.0.0.0:2500"

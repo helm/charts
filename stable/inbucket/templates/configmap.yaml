@@ -8,4 +8,4 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-{{ toYaml .Values.config | indent 2 }}
+{{ toYaml .Values.extraEnv | indent 2 }}
