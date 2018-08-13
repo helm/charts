@@ -40,7 +40,7 @@ spec:
         command:
           - sh
           - -euxc
-          - "kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} pod=${POD_NAME}"
+          - "kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} pod=${POD_NAME} --overwrite"
         env:
           - name: POD_NAME
             valueFrom:
