@@ -1,22 +1,32 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1beta2
+kind: StatefulSet
 metadata:
   name: {{ template "artifactory.fullname" . }}
   labels:
     app: {{ template "artifactory.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.artifactory.name }}"
+    chart: {{ template "artifactory.chart" . }}
+    component: {{ .Values.artifactory.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.artifactory.replicaCount }}
+  serviceName: {{ template "artifactory.name" . }}
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "artifactory.name" . }}
+      role: {{ template "artifactory.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "artifactory.name" . }}
-        component: "{{ .Values.artifactory.name }}"
+        role: {{ template "artifactory.name" . }}
+        component: {{ .Values.artifactory.name }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "artifactory.serviceAccountName" . }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
@@ -47,7 +57,7 @@ spec:
           done;
       containers:
       - name: {{ .Values.artifactory.name }}
-        image: "{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}"
+        image: "{{ .Values.artifactory.image.repository }}:{{ default .Chart.AppVersion .Values.artifactory.image.version }}"
         imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
         lifecycle:
           postStart:
@@ -73,6 +83,9 @@ spec:
                 cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
                 cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys/trusted;
                 chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access/etc;
+                {{- end }}
+                {{- if .Values.artifactory.postStartCommand }}
+                {{ .Values.artifactory.postStartCommand }}
                 {{- end }}
         env:
         {{- if .Values.postgresql.enabled }}
@@ -149,6 +162,18 @@ spec:
       {{- end }}
         resources:
 {{ toYaml .Values.artifactory.resources | indent 10 }}
+    {{- with .Values.artifactory.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.artifactory.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.artifactory.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
         {{- if .Values.artifactory.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
@@ -192,10 +217,29 @@ spec:
         secret:
           secretName: {{ .Values.artifactory.license.secret }}
       {{- end }}
-      - name: artifactory-volume
       {{- if .Values.artifactory.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.artifactory.persistence.existingClaim | default (include "artifactory.fullname" .) }}
+  volumeClaimTemplates:
+  - metadata:
+      name: artifactory-volume
+    spec:
+    {{- if .Values.artifactory.persistence.existingClaim }}
+      selector:
+        matchLabels:
+          app: {{ template "artifactory.name" . }}
+    {{- else }}
+      {{- if .Values.artifactory.persistence.storageClass }}
+      {{- if (eq "-" .Values.artifactory.persistence.storageClass) }}
+      storageClassName: ""
       {{- else }}
+      storageClassName: "{{ .Values.artifactory.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+      accessModes: [ "{{ .Values.artifactory.persistence.accessMode }}" ]
+      resources:
+        requests:
+          storage: {{ .Values.artifactory.persistence.size }}
+    {{- end }}
+      {{- else }}
+      - name: artifactory-volume
         emptyDir: {}
-      {{- end -}}
+      {{- end }}
