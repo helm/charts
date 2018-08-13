@@ -26,16 +26,14 @@ To install the chart with the release name `my-graylog` in the default
 namespace:
 
 ```
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-graylog incubator/graylog
+$ helm install --name my-graylog stable/graylog
 ```
 
 If using a dedicated namespace(recommended) then make sure the namespace exists with:
 
 ```
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 $ kubectl create ns graylog
-$ helm install --name my-graylog --set global.namespace=graylog incubator/graylog
+$ helm install --name my-graylog --set global.namespace=graylog stable/graylog
 ```
 
 The chart can be customized using the following configurable parameters:
@@ -72,7 +70,7 @@ Specify parameters using `--set key=value[,key=value]` argument to `helm install
 Alternatively a YAML file that specifies the values for the parameters can be provided like this:
 
 ```bash
-$ helm install --name my-graylog -f values.yaml incubator/graylog
+$ helm install --name my-graylog -f values.yaml stable/graylog
 ```
 
 ## Known Limitations
