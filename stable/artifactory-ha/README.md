@@ -80,7 +80,7 @@ $ helm install --name artifactory-ha \
 
 Get more details on configuring Artifactory in the [official documentation](https://www.jfrog.com/confluence/).
 
-## Create Distribution Certificates for Artifactory Enterprise Plus
+### Create Distribution Certificates for Artifactory Enterprise Plus
 ```bash
 # Create private.key and root.crt
 $ openssl req -newkey rsa:2048 -nodes -keyout private.key -x509 -days 365 -out root.crt
@@ -158,7 +158,7 @@ $ helm install --name artifactory-ha --set artifactory.masterKey=${MASTER_KEY} s
 ```
 **NOTE:** Make sure to pass the same master key with `--set artifactory.masterKey=${MASTER_KEY}` on all future calls to `helm install` and `helm upgrade`!
 
-#### Install Artifactory HA license
+### Install Artifactory HA license
 For activating Artifactory HA, you must install an appropriate license. There are two ways to manage the license. **Artifactory UI** or a **Kubernetes Secret**.
 The easier and recommended way is the **Artifactory UI**. Using the **Kubernetes Secret** is for advanced users and is better suited for automation.
 **IMPORTANT:** You should use only one of the following methods. Switching between them while a cluster is running might disable your Artifactory HA cluster!
@@ -178,7 +178,7 @@ $ helm install --name artifactory-ha --set artifactory.license.secret=artifactor
 ```
 **NOTE:** You have to keep passing the license secret parameters as `--set artifactory.license.secret=artifactory-cluster-license,artifactory.license.dataKey=art.lic` on all future calls to `helm install` and `helm upgrade`!
 
-## Bootstrapping Artifactory
+### Bootstrapping Artifactory
 **IMPORTANT:** Bootstrapping Artifactory needs license. Pass license as shown in above section.
 
 * User guide to [bootstrap Artifactory Global Configuration](https://www.jfrog.com/confluence/display/RTF/Configuration+Files#ConfigurationFiles-BootstrappingtheGlobalConfiguration)
@@ -201,12 +201,25 @@ Create configMap in Kubernetes:
 ```bash
 $ kubectl apply -f bootstrap-config.yaml
 ```
-# Pass the configMap to helm
+
+#### Pass the configMap to helm
 ```bash
 $ helm install --name artifactory-ha --set artifactory.license.secret=artifactory-cluster-license,artifactory.license.dataKey=art.lic,artifactory.configMapName=my-release-bootstrap-config stable/artifactory-ha
 ```
 
-#### Scaling your Artifactory cluster
+### Use custom nginx.conf with Nginx
+
+Steps to create configMap with nginx.conf
+* Create `nginx.conf` file.
+```bash
+kubectl create configmap nginx-config --from-file=nginx.conf
+```
+* Pass configMap to helm install
+```bash
+helm install --name artifactory-ha --set nginx.customConfigMap=nginx-config stable/artifactory-ha
+```
+
+### Scaling your Artifactory cluster
 A key feature in Artifactory HA is the ability to set an initial cluster size with `--set artifactory.node.replicaCount=${CLUSTER_SIZE}` and if needed, resize it.
 
 ##### Before scaling
@@ -253,6 +266,7 @@ This can be done with the following parameters
 # Make sure your Artifactory Docker image has the MySQL database driver in it
 ...
 --set postgresql.enabled=false \
+--set artifactory.postStartCommand="curl -L -o /opt/jfrog/artifactory/tomcat/lib/mysql-connector-java-5.1.41.jar https://jcenter.bintray.com/mysql/mysql-connector-java/5.1.41/mysql-connector-java-5.1.41.jar && chown 1030:1030 /opt/jfrog/artifactory/tomcat/lib/mysql-connector-java-5.1.41.jar" \
 --set database.type=mysql \
 --set database.host=${DB_HOST} \
 --set database.port=${DB_PORT} \
@@ -293,10 +307,14 @@ The following table lists the configurable parameters of the artifactory chart a
 |         Parameter            |           Description             |                         Default                       |
 |------------------------------|-----------------------------------|-------------------------------------------------------|
 | `imagePullSecrets`           | Docker registry pull secret       |                                                       |
+| `serviceAccount.create`   | Specifies whether a ServiceAccount should be created | `true`                               |
+| `serviceAccount.name`     | The name of the ServiceAccount to create             | Generated using the fullname template |
+| `rbac.create`             | Specifies whether RBAC resources should be created   | `true`                               |
+| `rbac.role.rules`         | Rules to create                   | `[]`                                                     |
 | `artifactory.name`                   | Artifactory name                     | `artifactory`                              |
 | `artifactory.image.pullPolicy`       | Container pull policy                | `IfNotPresent`                             |
 | `artifactory.image.repository`       | Container image                      | `docker.bintray.io/jfrog/artifactory-pro`  |
-| `artifactory.image.version`          | Container image tag                  | `6.0.0`                                    |
+| `artifactory.image.version`          | Container image tag                  | `6.1.0`                                    |
 | `artifactory.masterKey`      | Artifactory Master Key. Can be generated with `openssl rand -hex 32` |`FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF`|
 | `artifactory.license.secret` | Artifactory license secret name              |                                            |
 | `artifactory.license.dataKey`| Artifactory license secret data key          |                                            |
@@ -309,15 +327,15 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.externalPortReplicator` | Replicator service external port | `6061`   |
 | `artifactory.livenessProbe.enabled`              | Enable liveness probe                     |  `true`                                        |
 | `artifactory.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 180                                                   |
-| `artifactory.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
+| `artifactory.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                    |
 | `artifactory.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                                                    |
-| `artifactory.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `artifactory.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1  |
 | `artifactory.livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
-| `artifactory.readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                        |
+| `artifactory.readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                |
 | `artifactory.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 60                                                    |
-| `artifactory.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                   |
+| `artifactory.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                    |
 | `artifactory.readinessProbe.timeoutSeconds`      | When the probe times out                  | 10                                                    |
-| `artifactory.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `artifactory.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 1  |
 | `artifactory.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
 | `artifactory.persistence.mountPath`  | Artifactory persistence volume mount path       | `"/var/opt/jfrog/artifactory"`  |
 | `artifactory.persistence.enabled`    | Artifactory persistence volume enabled          | `true`                          |
@@ -341,9 +359,9 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.persistence.awsS3.credential`          | AWS S3 AWS_SECRET_ACCESS_KEY        |                              |
 | `artifactory.persistence.awsS3.path`                | AWS S3 path in bucket               | `artifactory-ha/filestore`   |
 | `artifactory.javaOpts.other` | Artifactory extra java options (for all nodes) | `-Dartifactory.locking.provider.type=db` |
-| `artifactory.replicator.enabled`            | Enable Artifactory Replicator | `false`  |
-| `artifactory.distributionCerts`            | Name of ConfigMap for Artifactory Distribution Certificate  |   |
-| `artifactory.replicator.publicUrl`            | Artifactory Replicator Public URL |      |
+| `artifactory.replicator.enabled`            | Enable Artifactory Replicator | `false`                                    |
+| `artifactory.distributionCerts`            | Name of ConfigMap for Artifactory Distribution Certificate  |               |
+| `artifactory.replicator.publicUrl`            | Artifactory Replicator Public URL |                                      |
 | `artifactory.primary.resources.requests.memory` | Artifactory primary node initial memory request  |                     |
 | `artifactory.primary.resources.requests.cpu`    | Artifactory primary node initial cpu request     |                     |
 | `artifactory.primary.resources.limits.memory`   | Artifactory primary node memory limit            |                     |
@@ -359,40 +377,41 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.node.javaOpts.xms`                 | Artifactory member node java Xms size            |                     |
 | `artifactory.node.javaOpts.xmx`                 | Artifactory member node java Xms size            |                     |
 | `artifactory.node.javaOpts.other`               | Artifactory member node additional java options  |                     |
-| `ingress.enabled`           | If true, Artifactory Ingress will be created | `false` |
-| `ingress.annotations`       | Artifactory Ingress annotations     | `{}` |
-| `ingress.hosts`             | Artifactory Ingress hostnames       | `[]` |
-| `ingress.tls`               | Artifactory Ingress TLS configuration (YAML) | `[]` |
-| `nginx.enabled`             | Deploy nginx server                      | `true`                                               |
+| `ingress.enabled`           | If true, Artifactory Ingress will be created | `false`                                     |
+| `ingress.annotations`       | Artifactory Ingress annotations     | `{}`                                                 |
+| `ingress.hosts`             | Artifactory Ingress hostnames       | `[]`                                                 |
+| `ingress.tls`               | Artifactory Ingress TLS configuration (YAML) | `[]`                                        |
+| `nginx.enabled`             | Deploy nginx server                      | `true`                                          |
 | `nginx.name`                | Nginx name                        | `nginx`                                                |
 | `nginx.replicaCount`        | Nginx replica count               | `1`                                                    |
 | `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`        |
-| `nginx.image.version`       | Container version                 | `6.0.0`                                                |
+| `nginx.image.version`       | Container version                 | `6.1.0`                                                |
 | `nginx.image.pullPolicy`    | Container pull policy             | `IfNotPresent`                                         |
 | `nginx.service.type`        | Nginx service type                | `LoadBalancer`                                         |
-| `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |  |
-| `nginx.loadBalancerIP`| Provide Static IP to configure with Nginx |  |
-| `nginx.externalPortHttp` | Nginx service external port | `80`   |
-| `nginx.internalPortHttp` | Nginx service internal port | `80`   |
-| `nginx.externalPortHttps` | Nginx service external port | `443`   |
-| `nginx.internalPortHttps` | Nginx service internal port | `443`   |
-| `nginx.internalPortReplicator` | Replicator service internal port | `6061`   |
-| `nginx.externalPortReplicator` | Replicator service external port | `6061`   |
-| `nginx.livenessProbe.enabled`              | Enable liveness probe                     |  `true`                                        |
+| `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |        |
+| `nginx.loadBalancerIP`| Provide Static IP to configure with Nginx |                                 |
+| `nginx.externalPortHttp` | Nginx service external port            | `80`                            |
+| `nginx.internalPortHttp` | Nginx service internal port            | `80`                            |
+| `nginx.externalPortHttps` | Nginx service external port           | `443`                           |
+| `nginx.internalPortHttps` | Nginx service internal port           | `443`                           |
+| `nginx.internalPortReplicator` | Replicator service internal port | `6061`                          |
+| `nginx.externalPortReplicator` | Replicator service external port | `6061`                          |
+| `nginx.livenessProbe.enabled`              | would you like a liveness Probe to be enabled          |  `true`                                  |
 | `nginx.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 100                                                   |
-| `nginx.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
+| `nginx.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                    |
 | `nginx.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                                                    |
-| `nginx.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `nginx.livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1  |
 | `nginx.livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
-| `nginx.readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                        |
+| `nginx.readinessProbe.enabled`             | would you like a readinessProbe to be enabled           |  `true`                                 |
 | `nginx.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 60                                                    |
-| `nginx.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                   |
+| `nginx.readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                    |
 | `nginx.readinessProbe.timeoutSeconds`      | When the probe times out                  | 10                                                    |
-| `nginx.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `nginx.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 1  |
 | `nginx.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 10 |
-| `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |    |
+| `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |                                                 |
 | `nginx.env.ssl`                   | Nginx Environment enable ssl               | `true`                                  |
 | `nginx.env.skipAutoConfigUpdate`  | Nginx Environment to disable auto configuration update | `false`                     |
+| `nginx.customConfigMap`           | Nginx CustomeConfigMap name for `nginx.conf` | ` `                                   |
 | `nginx.resources.requests.memory` | Nginx initial memory request               | `250Mi`                                 |
 | `nginx.resources.requests.cpu`    | Nginx initial cpu request                  | `100m`                                  |
 | `nginx.resources.limits.memory`   | Nginx memory limit                         | `250Mi`                                 |
@@ -428,7 +447,7 @@ helm install --name artifactory-ha \
   stable/artifactory-ha
 ```
 
-If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
+If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [cert-manager](https://github.com/jetstack/cert-manager)), please refer to the documentation for that mechanism.
 
 To manually configure TLS, first create/retrieve a key & certificate pair for the address(es) you wish to protect. Then create a TLS secret in the namespace:
 
