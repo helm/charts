@@ -58,6 +58,7 @@ metadata:
   name: sparkoperator-cleanup
   annotations:
     "helm.sh/hook": post-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   template:
     spec:
