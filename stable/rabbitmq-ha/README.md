@@ -83,7 +83,7 @@ and their default values.
 | `prometheus.exporter.image.repository`   | Prometheus Exporter repository                              | `kbudde/rabbitmq-exporter`                                                   |
 | `prometheus.exporter.image.tag`   | Image Tag                          | `latest`                  |
 | `prometheus.exporter.image.pullPolicy`   | Image Pull Policy                          | `IfNotPresent`                  |
-| `prometheus.exporter.port`        | Port Prometheus scrapes for metrics                      | `9419`        |
+| `prometheus.exporter.port`        | Port Prometheus scrapes for metrics                      | `9090`        |
 | `prometheus.exporter.capabilities`        | Comma-separated list of extended scraping capabilities supported by the target RabbitMQ server. [Click here for details.](https://github.com/kbudde/rabbitmq_exporter#extended-rabbitmq-capabilities)                   | `bert,no_sort`        |
 | `prometheus.exporter.resources`   | Resource Limits for Prometheus Exporter                  | `{}`                                                   |
 | `prometheus.operator.enabled`      | Are you using Prometheus Operator?  [Blog Post](https://coreos.com/blog/the-prometheus-operator.html)                       | `true`                                  |
