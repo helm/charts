@@ -1,0 +1,43 @@
+# Default values for k8s-prometheus-adapter..
+image:
+  repository: directxman12/k8s-prometheus-adapter-amd64
+  tag: v0.2.1
+  pullPolicy: IfNotPresent
+
+replicas: 1
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+resources:
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+tls:
+  enable: false
+  ca: |-
+    # Public CA file that signed the APIService
+  key: |-
+    # Private key of the APIService
+  certificate: |-
+    # Public key of the APIService
+
+# Url to access prometheus
+prometheus:
+  url: http://prometheus.default.svc
+  port: 9090
+
+metricsRelistInterval: 30s
+logLevel: 10
