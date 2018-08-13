@@ -1,5 +1,4 @@
 approvers:
-- krancour
 - emilevauge
 - dtomcej
 - timoreimann
@@ -13,7 +12,6 @@ approvers:
 - SantoDE
 - errm
 reviewers:
-- krancour
 - emilevauge
 - dtomcej
 - timoreimann
