@@ -7,7 +7,7 @@ resources:
       memory: 200Mi
       cpu: 100m
     limits:
-      memory: 700Mi
+      memory: 1Gi
   sentinel:
     requests:
       memory: 200Mi
@@ -22,7 +22,7 @@ nodeSelector: {}
 tolerations: []
 
 ## Redis image version
-redis_image: quay.io/bzumhagen/kube-redis-ha:4.0.9-2
+redis_image: quay.io/smile/redis:4.0.8r0
 ## replicas number for each component
 replicas:
   servers: 3
@@ -46,12 +46,12 @@ serviceAccount:
 ## Defaults to a random 10-character alphanumeric string if not set and auth is true
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/redis-ha/templates/redis-auth-secret.yaml
 ##
-## redisPassword:
+#redisPassword:
+## Configures redis with AUTH (requirepass & masterauth conf params)
+auth: false
 
 ## Redis specific configuration options
 redis:
-  ## Configures redis with AUTH (requirepass & masterauth conf params)
-  auth: false
   # Max memory to use for each redis instance. Default is unlimited.
   maxMemory: ""
   # Max memory policy to use for each redis instance. Default is volatile-lru.
@@ -61,3 +61,18 @@ redis:
   rdbBackups: "false"
   # When enabled, directly sends the RDB over the wire to slaves, without using the disk as intermediate storage. Default is false.
   disklessReplication: "false"
+  ## Data Persistency
+  persistentVolume:
+    enabled: false
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    storageClass: ""
+    name: data
+    accessModes:
+      - ReadWriteOnce
+    size: 1Gi
+    annotations: {}
