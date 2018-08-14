@@ -46,9 +46,9 @@ serviceAccount:
 ## Defaults to a random 10-character alphanumeric string if not set and auth is true
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/redis-ha/templates/redis-auth-secret.yaml
 ##
-#redisPassword:
+redisPassword: test
 ## Configures redis with AUTH (requirepass & masterauth conf params)
-auth: false
+auth: true
 
 ## Redis specific configuration options
 redis:
@@ -63,14 +63,14 @@ redis:
   disklessReplication: "false"
   ## Data Persistency
   persistentVolume:
-    enabled: false
+    enabled: true
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is
     ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
     ##   GKE, AWS & OpenStack)
     ##
-    storageClass: ""
+    storageClass: "default"
     name: data
     accessModes:
       - ReadWriteOnce

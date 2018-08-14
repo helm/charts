@@ -54,10 +54,44 @@ spec:
             value: "redis-sentinel"
           - name: REDIS_CHART_PREFIX
             value: {{ template "redis-ha.fullname" . }}-
+{{- if .Values.auth }}
+          - name: REDIS_PASS
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "redis-ha.fullname" . }}
+                key: auth
+{{- end }}
         ports:
           - containerPort: 6379
         volumeMounts:
           - mountPath: /redis-master-data
-            name: data
+            name: {{ .Values.redis.persistentVolume.name }}
       volumes:
-      - name: data
+      - name: emptydir
+{{- if .Values.redis.persistentVolume.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Values.redis.persistentVolume.name }}
+        annotations:
+        {{- range $key, $value := .Values.redis.persistentVolume.annotations }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      spec:
+        accessModes:
+        {{- range .Values.redis.persistentVolume.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.redis.persistentVolume.size | quote }}
+      {{- if .Values.redis.persistentVolume.storageClass }}
+      {{- if (eq "-" .Values.redis.persistentVolume.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.redis.persistentVolume.storageClass }}"
+      {{- end }}
+      {{- end }}
+{{- else }}
+        - name: data
+          emptyDir: {}
+{{- end }}
