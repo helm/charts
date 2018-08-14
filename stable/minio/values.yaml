@@ -57,10 +57,10 @@ persistence:
   accessMode: ReadWriteOnce
   size: 10Gi
 
-## If subPath is set mount a sub folder of a volume instead of the root of the volume.
-## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
-##
-subPath: ""
+  ## If subPath is set mount a sub folder of a volume instead of the root of the volume.
+  ## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
+  ##
+  subPath: ""
 
 ## Expose the Minio service to be accessed from outside the cluster (LoadBalancer service).
 ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
