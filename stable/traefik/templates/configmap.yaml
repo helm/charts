@@ -188,6 +188,9 @@ data:
     {{- if eq .Values.acme.challengeType "dns-01" }}
       [acme.dnsChallenge]
       provider = "{{ .Values.acme.dnsProvider.name }}"
+      {{- if .Values.acme.delayBeforeCheck }}
+      delayBeforeCheck = {{ .Values.acme.delayBeforeCheck }}
+      {{- end }}
     {{- else if eq .Values.acme.challengeType "http-01" }}
       [acme.httpChallenge]
       entryPoint = "http"
