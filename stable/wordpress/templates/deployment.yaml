@@ -28,7 +28,11 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD
-          value: {{ .Values.allowEmptyPassword | quote }}
+        {{- if .Values.allowEmptyPassword }}
+          value: "yes"
+        {{- else }}
+          value: "no"
+        {{- end }}
         - name: MARIADB_HOST
         {{- if .Values.mariadb.enabled }}
           value: {{ template "mariadb.fullname" . }}
