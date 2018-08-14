@@ -2,7 +2,6 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "keel.fullname" . }}
-  namespace: kube-system
   labels:
     app: {{ template "keel.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -55,6 +54,10 @@ spec:
               value: "{{ .Values.slack.token }}"
             - name: SLACK_CHANNELS
               value: "{{ .Values.slack.channel }}"
+            - name: SLACK_BOT_NAME
+              value: "{{ .Values.slack.botName }}"
+            - name: SLACK_APPROVALS_CHANNEL
+              value: "{{ .Values.slack.approvalsChannel }}"
 {{- end }}
           ports:
             - containerPort: 9300

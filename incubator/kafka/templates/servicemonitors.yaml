@@ -2,15 +2,15 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "kafka.fullname" . }}
+  name: {{ include "kafka.fullname" . }}
   namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
   labels:
 {{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "kafka.name" . }}
-      release: {{ .Release.Name | quote }}
+      app: {{ include "kafka.name" . }}
+      release: {{ .Release.Name }}
   endpoints:
   - port: jmx-exporter
     interval: {{ .Values.prometheus.jmx.interval }}
@@ -22,15 +22,15 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "kafka.fullname" . }}-exporter
+  name: {{ include "kafka.fullname" . }}-exporter
   namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
   labels:
 {{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "kafka.name" . }}-exporter
-      release: {{ .Release.Name | quote }}
+      app: {{ include "kafka.name" . }}-exporter
+      release: {{ .Release.Name }}
   endpoints:
   - port: kafka-exporter
     interval: {{ .Values.prometheus.kafka.interval }}

@@ -20,7 +20,7 @@ This chart bootstraps a [Redis](https://github.com/bitnami/bitnami-docker-redis)
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.8+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -55,7 +55,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `image.repository`                         | Redis Image name                                                                                               | `bitnami/redis`                                      |
 | `image.tag`                                | Redis Image tag                                                                                                | `{VERSION}`                                          |
 | `image.pullPolicy`                         | Image pull policy                                                                                              | `Always`                                             |
-| `image.pullSecrets`                        | Specify docker-ragistry secret names as an array                                                               | `nil`                                                |
+| `image.pullSecrets`                        | Specify docker-registry secret names as an array                                                               | `nil`                                                |
 | `cluster.enabled`                          | Use master-slave topology                                                                                      | `true`                                               |
 | `cluster.slaveCount`                       | Number of slaves                                                                                               | 1                                                    |
 | `existingSecret`                           | Name of existing secret object (for password authentication)                                                   | `nil`                                                |
@@ -63,15 +63,22 @@ The following table lists the configurable parameters of the Redis chart and the
 | `password`                                 | Redis password (ignored if existingSecret set)                                                                 | Randomly generated                                   |
 | `networkPolicy.enabled`                    | Enable NetworkPolicy                                                                                           | `false`                                              |
 | `networkPolicy.allowExternal`              | Don't require client label for connections                                                                     | `true`                                               |
+| `serviceAccount.create`                    | Specifies whether a ServiceAccount should be created                                                           | `false`                                              |
+| `serviceAccount.name`                      | The name of the ServiceAccount to create                                                                       | Generated using the fullname template                |
+| `rbac.create`                              | Specifies whether RBAC resources should be created                                                             | `false`                                              |
+| `rbac.role.rules`                          | Rules to create                                                                                                | `[]`                                                 |
 | `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
-| `metrics.image.registry`                   | Redis Image registry                                                                                           | `docker.io`                                          |
-| `metrics.image.repository`                 | Redis Image name                                                                                               | `bitnami/redis`                                      |
-| `metrics.image.tag`                        | Redis Image tag                                                                                                | `{VERSION}`                                          |
+| `metrics.image.registry`                   | Redis exporter image registry                                                                                  | `docker.io`                                          |
+| `metrics.image.repository`                 | Redis exporter image name                                                                                      | `bitnami/redis`                                      |
+| `metrics.image.tag`                        | Redis exporter image tag                                                                                       | `v0.20.2`                                            |
 | `metrics.image.pullPolicy`                 | Image pull policy                                                                                              | `IfNotPresent`                                       |
 | `metrics.image.pullSecrets`                | Specify docker-registry secret names as an array                                                               | `nil`                                                |
+| `metrics.extraArgs`                        | Extra arguments for the binary; possible values [here](https://github.com/oliver006/redis_exporter#flags)      | {}                                                   |
 | `metrics.podLabels`                        | Additional labels for Metrics exporter pod                                                                     | {}                                                   |
 | `metrics.podAnnotations`                   | Additional annotations for Metrics exporter pod                                                                | {}                                                   |
-| `metrics.targetServiceAnnotations`         | Annotations for the services to monitor  (redis master and redis slave service)                                | {}                                                   |
+| `metrics.service.type`                     | Kubernetes Service type (redis metrics)                                                                        | `LoadBalancer`                                       |
+| `metrics.service.annotations`              | Annotations for the services to monitor  (redis master and redis slave service)                                | {}                                                   |
+| `metrics.service.loadBalancerIP`           | loadBalancerIP if redis metrics service type is `LoadBalancer`                                                 | `nil`                                                |
 | `metrics.resources`                        | Exporter resource requests/limit                                                                               | Memory: `256Mi`, CPU: `100m`                         |
 | `persistence.existingClaim`                | Provide an existing PersistentVolumeClaim                                                                      | `nil`                                                |
 | `master.persistence.enabled`               | Use a PVC to persist data (master node)                                                                        | `true`                                               |
@@ -80,6 +87,8 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.persistence.storageClass`          | Storage class of backing PVC                                                                                   | `generic`                                            |
 | `master.persistence.accessModes`           | Persistent Volume Access Modes                                                                                 | `[ReadWriteOnce]`                                    |
 | `master.persistence.size`                  | Size of data volume                                                                                            | `8Gi`                                                |
+| `master.statefulset.updateStrategy`        | Update strategy for StatefulSet                                                                                | onDelete                                             |
+| `master.statefulset.rollingUpdatePartition`| Partition update strategy                                                                                      | `nil`                                                |
 | `master.podLabels`                         | Additional labels for Redis master pod                                                                         | {}                                                   |
 | `master.podAnnotations`                    | Additional annotations for Redis master pod                                                                    | {}                                                   |
 | `master.port`                              | Redis master port                                                                                              | 6379                                                 |
@@ -88,7 +97,9 @@ The following table lists the configurable parameters of the Redis chart and the
 | `master.extraFlags`                        | Redis master additional command line flags                                                                     | []                                                   |
 | `master.nodeSelector`                      | Redis master Node labels for pod assignment                                                                    | {"beta.kubernetes.io/arch": "amd64"}                 |
 | `master.tolerations`                       | Toleration labels for Redis master pod assignment                                                              | []                                                   |
-| `master.service.type`                      | Kubernetes Service type (redis master)                                                                         | `LoadBalancer`                                       |
+| `master.affinity   `                       | Affinity settings for Redis master pod assignment                                                              | []                                                   |
+| `master.schedulerName`                     | Name of an alternate scheduler                                                                                 | `nil`                                                |
+| `master.service.type`                      | Kubernetes Service type (redis master)                                                                         | `ClusterIP`                                          |
 | `master.service.annotations`               | annotations for redis master service                                                                           | {}                                                   |
 | `master.service.loadBalancerIP`            | loadBalancerIP if redis master service type is `LoadBalancer`                                                  | `nil`                                                |
 | `master.securityContext.enabled`           | Enable security context (redis master pod)                                                                     | `true`                                               |
@@ -128,6 +139,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `slave.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded. (redis slave pod)   | `master.readinessProbe.failureThreshold`             |
 | `slave.podLabels`                          | Additional labels for Redis slave pod                                                                          | `master.podLabels`                                   |
 | `slave.podAnnotations`                     | Additional annotations for Redis slave pod                                                                     | `master.podAnnotations`                              |
+| `slave.schedulerName`                      | Name of an alternate scheduler                                                                                 | `nil`                                                |
 | `slave.securityContext.enabled`            | Enable security context (redis slave pod)                                                                      | `master.securityContext.enabled`                     |
 | `slave.securityContext.fsGroup`            | Group ID for the container (redis slave pod)                                                                   | `master.securityContext.fsGroup`                     |
 | `slave.securityContext.runAsUser`          | User ID for the container (redis slave pod)                                                                    | `master.securityContext.runAsUser`                   |
@@ -153,6 +165,7 @@ $ helm install --name my-release -f values.yaml stable/redis
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
 > **Note for minikube users**: Current versions of minikube (v0.24.1 at the time of writing) provision `hostPath` persistent volumes that are only writable by root. Using chart defaults cause pod failure for the Redis pod as it attempts to write to the `/bitnami` directory. Consider installing Redis with `--set persistence.enabled=false`. See minikube issue [1990](https://github.com/kubernetes/minikube/issues/1990) for more information.
 
 ## NetworkPolicy
@@ -185,7 +198,7 @@ By default, the chart persists both data and configuration. If you wish to persi
 1. Install the chart
 
 ```bash
-$ helm install --set persistence.existingClaim=PVC_NAME redis
+$ helm install --set persistence.existingClaim=PVC_NAME stable/redis
 ```
 
 ## Metrics

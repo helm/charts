@@ -2,14 +2,14 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "kafka.fullname" . }}
+  name: {{ include "kafka.fullname" . }}
   labels:
-    app: {{ include "kafka.name" . | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    app: {{ include "kafka.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
-  serviceName: {{ template "kafka.fullname" . }}-headless
+  serviceName: {{ include "kafka.fullname" . }}-headless
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
@@ -22,8 +22,8 @@ spec:
         prometheus.io/port: {{ .Values.prometheus.jmx.port | quote }}
 {{- end }}
       labels:
-        app: {{ include "kafka.name" . | quote }}
-        release: {{ .Release.Name | quote }}
+        app: {{ include "kafka.name" . }}
+        release: {{ .Release.Name }}
     spec:
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
@@ -40,7 +40,7 @@ spec:
         command:
           - sh
           - -euxc
-          - "kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} pod=${POD_NAME}"
+          - "kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} pod=${POD_NAME} --overwrite"
         env:
           - name: POD_NAME
             valueFrom:
@@ -68,24 +68,32 @@ spec:
       - name: metrics
         image: "{{ .Values.prometheus.jmx.image }}:{{ .Values.prometheus.jmx.imageTag }}"
         command:
-        - java
-        - -XX:+UnlockExperimentalVMOptions
-        - -XX:+UseCGroupMemoryLimitForHeap
-        - -XX:MaxRAMFraction=1
-        - -XshowSettings:vm
-        - -jar
-        - jmx_prometheus_httpserver.jar
-        - {{ .Values.prometheus.jmx.port | quote }}
-        - /etc/jmx-kafka/jmx-kafka-prometheus.yml
+        - sh
+        - -exc
+        - |
+          trap "exit 0" TERM; \
+          while :; do \
+          java \
+          -XX:+UnlockExperimentalVMOptions \
+          -XX:+UseCGroupMemoryLimitForHeap \
+          -XX:MaxRAMFraction=1 \
+          -XshowSettings:vm \
+          -jar \
+          jmx_prometheus_httpserver.jar \
+          {{ .Values.prometheus.jmx.port | quote }} \
+          /etc/jmx-kafka/jmx-kafka-prometheus.yml & \
+          wait $! || sleep 3; \
+          done
         ports:
         - containerPort: {{ .Values.prometheus.jmx.port }}
+          name: prometheus
         resources:
 {{ toYaml .Values.prometheus.jmx.resources | indent 10 }}
         volumeMounts:
         - name: jmx-config
           mountPath: /etc/jmx-kafka
       {{- end }}
-      - name: {{ template "kafka.name" . }}-broker
+      - name: {{ include "kafka.name" . }}-broker
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         livenessProbe:
@@ -94,8 +102,22 @@ spec:
               - sh
               - -ec
               - /usr/bin/jps | /bin/grep -q SupportedKafka
+          {{- if not .Values.livenessProbe }}
           initialDelaySeconds: 30
           timeoutSeconds: 5
+          {{- else }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 30}}
+          {{- if .Values.livenessProbe.periodSeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          {{- end }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds | default 5}}
+          {{- if .Values.livenessProbe.successThreshold }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          {{- end }}
+          {{- if .Values.livenessProbe.failureThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- end }}
         readinessProbe:
           tcpSocket:
             port: kafka
@@ -134,7 +156,7 @@ spec:
             fieldRef:
               fieldPath: status.podIP
         - name: KAFKA_HEAP_OPTS
-          value: {{ .Values.heapOptions }}
+          value: {{ .Values.kafkaHeapOptions }}
         {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
         - name: KAFKA_ZOOKEEPER_CONNECT
           value: {{ include "zookeeper.url" . | quote }}
@@ -159,6 +181,7 @@ spec:
         - sh
         - -exc
         - |
+          unset KAFKA_PORT && \
           export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
           export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           exec /etc/confluent/docker/run
@@ -176,7 +199,7 @@ spec:
           {{- if .Values.jmx.configMap.overrideName }}
           name: {{ .Values.jmx.configMap.overrideName }}
           {{- else }}
-          name: {{ template "kafka.fullname" . }}-metrics
+          name: {{ include "kafka.fullname" . }}-metrics
           {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}

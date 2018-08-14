@@ -19,8 +19,8 @@ If your cluster has RBAC enabled, run this command:
 ```
 helm install \
   --namespace kube-system \
-  --set rbac.enabled=true \
-  incubator/k8s-spot-rescheduler
+  --set rbac.create=true \
+  stable/k8s-spot-rescheduler
 ```
 
 ## Configuration

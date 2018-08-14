@@ -47,12 +47,13 @@ The following table lists the configurable parameters of the Ghost chart and the
 
 | Parameter                     | Description                                                   | Default                                                  |
 |-------------------------------|---------------------------------------------------------------|----------------------------------------------------------|
-| `image.registry`              | Ghost image registry                                          | `docker.io`                                             |
-| `image.repository`            | Ghost Image name                                              | `bitnami/ghost`                                      |
-| `image.tag`                   | Ghost Image tag                                               | `{VERSION}`                                             |
-| `image.pullPolicy`            | Image pull policy                                             | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `image.pullSecrets`           | Specify image pull secrets                                    | `nil`                                                   |
+| `image.registry`              | Ghost image registry                                          | `docker.io`                                              |
+| `image.repository`            | Ghost Image name                                              | `bitnami/ghost`                                          |
+| `image.tag`                   | Ghost Image tag                                               | `{VERSION}`                                              |
+| `image.pullPolicy`            | Image pull policy                                             | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`           | Specify image pull secrets                                    | `nil`                                                    |
 | `ghostHost`                   | Ghost host to create application URLs                         | `nil`                                                    |
+| `ghostPath`                   | Ghost path to create application URLs                         | `nil`                                                    |
 | `ghostPort`                   | Ghost port to create application URLs along with host         | `80`                                                     |
 | `ghostLoadBalancerIP`         | `loadBalancerIP` for the Ghost Service                        | `nil`                                                    |
 | `ghostUsername`               | User of the application                                       | `user@example.com`                                       |
@@ -61,14 +62,15 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `ghostBlogTitle`              | Ghost Blog name                                               | `User's Blog`                                            |
 | `allowEmptyPassword`          | Allow DB blank passwords                                      | `yes`                                                    |
 | `externalDatabase.host`       | Host of the external database                                 | `nil`                                                    |
+| `externalDatabase.port`       | Port of the external database                                 | `nil`                                                    |
 | `externalDatabase.user`       | Existing username in the external db                          | `bn_ghost`                                               |
 | `externalDatabase.password`   | Password for the above username                               | `nil`                                                    |
 | `externalDatabase.database`   | Name of the existing database                                 | `bitnami_ghost`                                          |
 | `mariadb.enabled`             | Whether or not to install MariaDB (disable if using external) | `true`                                                   |
-| `mariadb.mariadbRootPassword` | MariaDB admin password                                        | `nil`                                                    |
-| `mariadb.mariadbDatabase`     | MariaDB Database name to create                               | `bitnami_ghost`                                          |
-| `mariadb.mariadbUser`         | MariaDB Database user to create                               | `bn_ghost`                                               |
-| `mariadb.mariadbPassword`     | MariaDB Password for user                                     | _random 10 character long alphanumeric string_           |
+| `mariadb.rootUser.password` | MariaDB admin password                                        | `nil`                                                    |
+| `mariadb.db.name`     | MariaDB Database name to create                               | `bitnami_ghost`                                          |
+| `mariadb.db.user`         | MariaDB Database user to create                               | `bn_ghost`                                               |
+| `mariadb.db.password`     | MariaDB Password for user                                     | _random 10 character long alphanumeric string_           |
 | `serviceType`                 | Kubernetes Service type                                       | `LoadBalancer`                                           |
 | `persistence.enabled`         | Enable persistence using PVC                                  | `true`                                                   |
 | `persistence.storageClass`    | PVC Storage Class for Ghost volume                            | `nil` (uses alpha storage annotation)                    |

@@ -29,6 +29,12 @@ imageTag: "5.7.14"
 ##
 imagePullPolicy: IfNotPresent
 
+# Optionally specify an array of imagePullSecrets.
+# Secrets must be manually created in the namespace.
+# ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+# imagePullSecrets:
+  # - name: myRegistryKeySecretName
+
 ## Node selector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
@@ -70,7 +76,7 @@ resources:
     cpu: 100m
 
 # Custom mysql configuration files used to override default mysql settings
-configurationFiles:
+configurationFiles: {}
 #  mysql.cnf: |-
 #    [mysqld]
 #    skip-name-resolve
@@ -79,11 +85,21 @@ configurationFiles:
 #    ssl-key=/ssl/server-key.pem
 
 # Custom mysql init SQL files used to initialize the database
-initializationFiles:
+initializationFiles: {}
 #  first-db.sql: |-
 #    CREATE DATABASE IF NOT EXISTS first DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
 #  second-db.sql: |-
 #    CREATE DATABASE IF NOT EXISTS second DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+
+metrics:
+  enabled: false
+  image: prom/mysqld-exporter
+  imageTag: v0.10.0
+  imagePullPolicy: IfNotPresent
+  resources: {}
+  annotations: {}
+    # prometheus.io/scrape: "true"
+    # prometheus.io/port: "9104"
 
 ## Configure the service
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -111,3 +127,10 @@ ssl:
 #      -----BEGIN RSA PRIVATE KEY-----
 #      ...
 #      -----END RSA PRIVATE KEY-----
+
+## Populates the 'TZ' system timezone environment variable
+## ref: https://dev.mysql.com/doc/refman/5.7/en/time-zone-support.html
+##
+## Default: nil (mysql will use image's default timezone, normally UTC)
+## Example: 'Australia/Sydney'
+# timezone:

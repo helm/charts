@@ -1,15 +1,19 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "5.4"
+appVersion: "6.2.4"
 
 image:
-  repository: "centerforopenscience/elasticsearch"
-  tag: "5.4"
+  repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
+  tag: "6.3.1"
   pullPolicy: "IfNotPresent"
 
 cluster:
   name: "elasticsearch"
+  kubernetesDomain: cluster.local
+  # If you want X-Pack installed, switch to an image that includes it, enable this option and toggle the features you want
+  # enabled in the environment variables outlined in the README
+  xpackEnable: false
   config:
   env:
     # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
@@ -21,13 +25,13 @@ client:
   name: client
   replicas: 2
   serviceType: ClusterIP
-
 ## (dict) If specified, apply these annotations to the client service
 #  serviceAnnotations:
 #    example: client-svc-foo
-
   heapSize: "512m"
   antiAffinity: "soft"
+  nodeSelector: {}
+  tolerations: {}
   resources:
     limits:
       cpu: "1"
@@ -35,10 +39,14 @@ client:
     requests:
       cpu: "25m"
       memory: "512Mi"
-
+  priorityClassName: ""
   ## (dict) If specified, apply these annotations to each client Pod
   # podAnnotations:
   #   example: client-foo
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
 
 master:
   name: master
@@ -52,6 +60,8 @@ master:
     size: "4Gi"
     # storageClass: "ssd"
   antiAffinity: "soft"
+  nodeSelector: {}
+  tolerations: {}
   resources:
     limits:
       cpu: "1"
@@ -59,10 +69,14 @@ master:
     requests:
       cpu: "25m"
       memory: "512Mi"
-
+  priorityClassName: ""
   ## (dict) If specified, apply these annotations to each master Pod
   # podAnnotations:
   #   example: master-foo
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 2  # Same as `cluster.env.MINIMUM_MASTER_NODES`
+    # maxUnavailable: 1
 
 data:
   name: data
@@ -77,6 +91,8 @@ data:
     # storageClass: "ssd"
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
+  nodeSelector: {}
+  tolerations: {}
   resources:
     limits:
       cpu: "1"
@@ -84,11 +100,11 @@ data:
     requests:
       cpu: "25m"
       memory: "1536Mi"
-
+  priorityClassName: ""
   ## (dict) If specified, apply these annotations to each data Pod
   # podAnnotations:
   #   example: data-foo
-
-## Install Default RBAC roles and bindings
-rbac:
-  create: false
+  podDisruptionBudget:
+    enabled: false
+    # minAvailable: 1
+    maxUnavailable: 1

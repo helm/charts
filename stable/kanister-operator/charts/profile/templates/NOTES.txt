@@ -1,0 +1,3 @@
+{{ if .Values.create }}
+This chart created a profile with name {{ template "profile.profileName" .}}
+{{ end }}
