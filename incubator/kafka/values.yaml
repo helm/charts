@@ -110,6 +110,13 @@ tolerations: []
 #   value: "value"
 #   effect: "NoSchedule"
 
+## Headless service.
+##
+headless:
+  # annotations:
+  # targetPort:
+  port: 9092
+
 ## External access.
 ##
 external:
