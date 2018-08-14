@@ -38,8 +38,7 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/elasticsearch
+$ helm install --name my-release stable/elasticsearch
 ```
 
 ## Deleting the Charts
@@ -184,5 +183,5 @@ EOF
 Create cluster with Storage class `ssd` on Kubernetes 1.5+
 
 ```
-$ helm install incubator/elasticsearch --name my-release --set data.storageClass=ssd,data.storage=100Gi
+$ helm install stable/elasticsearch --name my-release --set data.storageClass=ssd,data.storage=100Gi
 ```
