@@ -40,7 +40,7 @@ persistentVolume:
 ## The CouchDB image
 image:
   repository: couchdb
-  tag: 2.1.2
+  tag: 2.2.0
   pullPolicy: IfNotPresent
 
 ## Sidecar that connects the individual Pods into a cluster
