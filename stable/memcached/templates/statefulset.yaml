@@ -66,6 +66,16 @@ spec:
           timeoutSeconds: 1
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ .Values.metrics.image }}
+        imagePullPolicy: {{ default "" .Values.metrics.imagePullPolicy | quote }}
+        ports:
+        - name: metrics
+          containerPort: 9150
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
 {{- with .Values.extraContainers }}
 {{ tpl . $ | indent 6 }}
 {{- end }}
