@@ -36,6 +36,7 @@ slack:
   token: ""
   channel: ""
   botName: ""
+  approvalsChannel: ""
 
 # Keel service
 # Enable to receive webhooks from Docker registries
