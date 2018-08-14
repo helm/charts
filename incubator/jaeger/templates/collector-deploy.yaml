@@ -133,7 +133,7 @@ spec:
         {{- end }}
       dnsPolicy: {{ .Values.collector.dnsPolicy }}
       restartPolicy: Always
-      {{- if .Values.collector.samplingStrategiesFile }}
+      {{- if .Values.collector.samplingStrategiesConfigmap }}
       volumes:
         - name: sampling-volume
           configMap:
