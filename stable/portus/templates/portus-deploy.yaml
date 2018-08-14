@@ -224,8 +224,18 @@ spec:
         resources:
 {{ toYaml .Values.portus.background.resources | indent 12 }}
         volumeMounts:
-          - name: secrets
-            mountPath: /secrets
+        - mountPath: /certificates/portus-ca.crt
+          name: tls-cert
+          subPath: portus-ca.crt
+          readOnly: true
+        - mountPath: /secrets/portus.key
+          name: tls-cert
+          subPath: portus.key
+          readOnly: true
+        - mountPath: /srv/Portus/config/config.yml
+          name: config
+          subPath: config.yml
+          readOnly: true
 {{- end }}
 {{- end }}
       securityContext:
