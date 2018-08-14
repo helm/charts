@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "xray.fullname" . }}-setup
+  labels:
+    app: {{ template "xray.name" . }}
+    chart: {{ template "xray.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  setup.sh: |
+    #!/bin/sh
+    # Setup script for Xray microservice
+
+    SCRIPTS_DIR=/scripts
+    XRAYCONFIGPATH={{ .Values.common.xrayConfigPath }}
+    XRAY_CONFIG_DIR=${XRAYCONFIGPATH}/config
+    XRAY_CONFIG_FILE=${XRAY_CONFIG_DIR}/xray_config.yaml
+
+    echo "Creating directories"
+    mkdir -pv ${XRAY_CONFIG_DIR}
+
+    # Wait for DBs to be ready
+    echo "Waiting for DBs..."
+    {{- if .Values.mongodb.enabled }}
+    until nc -z -w 2 {{ .Release.Name }}-postgresql {{ .Values.postgresql.service.port }} && echo postgresql ok; do
+      sleep 2;
+    done;
+    {{- end }}
+    {{- if .Values.postgresql.enabled }}
+    until nc -z -w 2 {{ .Release.Name }}-mongodb 27017 && echo mongodb ok; do
+      sleep 2;
+    done;
+    {{- end }}
+    until nc -z -w 2 {{ .Release.Name }}-rabbitmq-ha {{ index .Values "rabbitmq-ha" "rabbitmqNodePort" }} && echo rabbitmq ok; do
+      sleep 2;
+    done;
+
+    # Prepare Xray config
+    echo "Preparing Xray config (${XRAY_CONFIG_FILE})"
+    if [ -f ${XRAY_CONFIG_FILE} ]; then
+      echo "Config exist. Backing it up..."
+      cp -vf ${XRAY_CONFIG_FILE} ${XRAY_CONFIG_FILE}-$(date +%Y%m%d-%H%M%S)
+    fi
+
+    # Creating Mongodb URL
+    {{- if .Values.mongodb.enabled }}
+    MONGODB_URL="mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@{{ .Release.Name }}-mongodb:27017/?authSource=${MONGODB_DATABASE}\&authMechanism=SCRAM-SHA-1"
+    {{- else }}
+    MONGODB_URL="${MONGODB_URL}"
+    {{- end }}
+
+    # Creating PostgreSQL URL
+    {{- if .Values.postgresql.enabled }}
+    POSTGRESS_URL="postgres://${POSTGRES_USER}:${POSTGRESS_PASSWORD}@{{ .Release.Name }}-postgresql:{{ .Values.postgresql.service.port }}/${POSTGRESS_DB}?sslmode=disable"
+    {{- else }}
+    POSTGRESS_URL="${POSTGRESS_URL}"
+    {{- end }}
+
+    # Creating Rabbitmq-Ha URL
+    RABBITMQ_URL="amqp://${RABBITMQ_USER}:${RABBITMQ_DEFAULT_PASS}@{{ .Release.Name }}-rabbitmq-ha:{{ index .Values "rabbitmq-ha" "rabbitmqNodePort" }}/"
+    cp -vf ${SCRIPTS_DIR}/xray_config.yaml ${XRAY_CONFIG_FILE}
+
+    # Preparing xray_config.yaml
+    sed -i "s RABBITMQ_URL ${RABBITMQ_URL} " ${XRAY_CONFIG_FILE}
+    sed -i "s MONGODB_URL ${MONGODB_URL} " ${XRAY_CONFIG_FILE}
+    sed -i "s POSTGRESS_URL ${POSTGRESS_URL} " ${XRAY_CONFIG_FILE}
+
+  xray_config.yaml: |
+    # Generated Xray config
+    ---
+        ver:            1.0
+        XrayServerPort: "{{ .Values.server.internalPort }}"
+        mqBaseUrl:      "RABBITMQ_URL"
+        mongoUrl:       "MONGODB_URL"
+        postgresqlUrl:  "POSTGRESS_URL"
+        stdOutEnabled:  {{ .Values.common.stdOutEnabled }}
+        skipEntLicCheckForCloud: true
+    # End generated config
+
