@@ -29,6 +29,10 @@ memcached:
   verbosity: v
   extendedOptions: modern
 
+## Define various attributes of the service
+serviceAnnotations: {}
+#  prometheus.io/scrape: "true"
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
@@ -36,6 +40,24 @@ resources:
   requests:
     memory: 64Mi
     cpu: 50m
+
+metrics:
+  ## Expose memcached metrics in Prometheus format
+  enabled: false
+
+  ## Memcached exporter image and tag
+  image: quay.io/prometheus/memcached-exporter:v0.4.1
+
+  ## Specify a imagePullPolicy
+  ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  # imagePullPolicy: IfNotPresent
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
 
 extraContainers: |
 
