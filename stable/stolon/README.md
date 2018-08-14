@@ -34,11 +34,11 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `debug`                                 | Debug mode                                     | `false`                                                      |
 | `persistence.enabled`                   | Use a PVC to persist data                      | `true`                                                       |
 | `persistence.storageClassName`          | Storage class name of backing PVC              | `""`                                                         |
-| `persistence.accessModes`               | Perisistent volumes access modes               | `["ReadWriteOnce"]`                                          |
+| `persistence.accessModes`               | Persistent volumes access modes               | `["ReadWriteOnce"]`                                          |
 | `persistence.size`                      | Size of data volume                            | `10Gi`                                                       |
 | `rbac.create`                           | Specifies if RBAC resources should be created  | `true`                                                       |
 | `serviceAccount.create`                 | Specifies if ServiceAccount should be created  | `true`                                                       |
-| `serviceAccount.name`                   | Name of the generated serviceAccount           | Defaults to fullname template                                |
+| `serviceAccount.name`                   | Name of the generated ServiceAccount           | Defaults to fullname template                                |
 | `superuserUsername`                     | Postgres superuser username                    | `stolon`                                                     |
 | `superuserPassword`                     | Postgres superuser password                    | random 40 characters                                         |
 | `replicationUsername`                   | Replication username                           | `repluser`                                                   |
