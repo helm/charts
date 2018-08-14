@@ -58,9 +58,10 @@ The following table lists the configurable parameters of the Sentry chart and th
 
 | Parameter                            | Description                                 | Default                                                    |
 | -------------------------------      | -------------------------------             | ---------------------------------------------------------- |
-| `image.repository`                   | Sentry image                                | `library/sentry:{VERSION}`                                 |
-| `image.tag`                          | Sentry image tag                            | `8.17`                                                     |
+| `image.repository`                   | Sentry image                                | `library/sentry`                                           |
+| `image.tag`                          | Sentry image tag                            | `9.0`                                                      |
 | `imagePullPolicy`                    | Image pull policy                           | `IfNotPresent`                                             |
+| `web.podAnnotations`                 | Web pod annotations                         | `{}`                                                       |
 | `web.replicacount`                   | Amount of web pods to run                   | `1`                                                        |
 | `web.resources.limits`               | Web resource limits                         | `{cpu: 500m, memory: 500Mi}`                               |
 | `web.resources.requests`             | Web resource requests                       | `{cpu: 300m, memory: 300Mi}`                               |
@@ -69,6 +70,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `web.affinity`                       | Affinity settings for web pod assignment    | `{}`                                                       |
 | `web.schedulerName`                  | Name of an alternate scheduler for web pod  | `nil`                                                      |
 | `web.tolerations`                    | Toleration labels for web pod assignment    | `[]`                                                       |
+| `cron.podAnnotations`                | Cron pod annotations                        | `{}`                                                       |
 | `cron.replicacount`                  | Amount of cron pods to run                  | `1`                                                        |
 | `cron.resources.limits`              | Cron resource limits                        | `{cpu: 200m, memory: 200Mi}`                               |
 | `cron.resources.requests`            | Cron resource requests                      | `{cpu: 100m, memory: 100Mi}`                               |
@@ -76,6 +78,7 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `cron.affinity`                      | Affinity settings for cron pod assignment   | `{}`                                                       |
 | `cron.schedulerName`                 | Name of an alternate scheduler for cron pod | `nil`                                                      |
 | `cron.tolerations`                   | Toleration labels for cron pod assignment   | `[]`                                                       |
+| `worker.podAnnotations`              | Worker pod annotations                      | `{}`                                                       |
 | `worker.replicacount`                | Amount of worker pods to run                | `2`                                                        |
 | `worker.resources.limits`            | Worker resource limits                      | `{cpu: 300m, memory: 500Mi}`                               |
 | `worker.resources.requests`          | Worker resource requests                    | `{cpu: 100m, memory: 100Mi}`                               |
@@ -104,6 +107,8 @@ The following table lists the configurable parameters of the Sentry chart and th
 | `persistence.storageClass`           | PVC Storage Class                           | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | PVC Access Mode                             | `ReadWriteOnce`                                            |
 | `persistence.size`                   | PVC Storage Request                         | `10Gi`                                                     |
+| `config.configYml`                   | Sentry config.yml file                      | ``                                                         |
+| `config.sentryConfPy`                | Sentry sentry.conf.py file                  | ``                                                         |
 
 Dependent charts can also have values overwritten. Preface values with postgresql.* or redis.*
 
