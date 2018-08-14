@@ -64,10 +64,14 @@ spec:
         ports:
           - containerPort: 6379
         volumeMounts:
+{{- if .Values.redis.persistentVolume.enabled }}
           - mountPath: /redis-master-data
             name: {{ .Values.redis.persistentVolume.name }}
+{{- else }}
+          - mountPath: /redis-master-data
+            name: data
+{{- end }}
       volumes:
-      - name: emptydir
 {{- if .Values.redis.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
@@ -92,6 +96,6 @@ spec:
       {{- end }}
       {{- end }}
 {{- else }}
-        - name: data
-          emptyDir: {}
+      - name: data
+        emptyDir: {}
 {{- end }}

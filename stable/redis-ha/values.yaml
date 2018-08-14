@@ -46,7 +46,7 @@ serviceAccount:
 ## Defaults to a random 10-character alphanumeric string if not set and auth is true
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/redis-ha/templates/redis-auth-secret.yaml
 ##
-#redisPassword:
+# redisPassword:
 ## Configures redis with AUTH (requirepass & masterauth conf params)
 auth: false
 
