@@ -1,0 +1,16 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ template "custom-metrics-prometheus.fullname" . }}:writer
+  labels:
+    app: {{ template "custom-metrics-prometheus.name" . }}
+    chart: {{ template "custom-metrics-prometheus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+rules:
+- apiGroups:
+  - custom.metrics.k8s.io
+  resources: ["*"]
+  verbs: ["*"]
+{{- end -}}

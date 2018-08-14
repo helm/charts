@@ -1,0 +1,44 @@
+affinity: {}
+
+apiService:
+  create: true
+
+ca:
+  generate: true
+  crt: |
+  key: |
+
+image:
+  pullPolicy: IfNotPresent
+  repository: directxman12/k8s-prometheus-adapter-amd64
+  tag: v0.2.1
+
+nodeSelector: {}
+
+prometheusUrl: http://prometheus:9090/
+
+rbac:
+  create: true
+
+resources: {}
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 50m
+#    memory: 64Mi
+
+rules:
+  custom: {}
+  default: true
+
+service:
+  annotations: {}
+  port: 443
+  type: ClusterIP
+
+serviceAccount:
+  create: true
+  name: ""
+
+tolerations: []

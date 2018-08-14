@@ -1,0 +1,12 @@
+apiVersion: v1
+appVersion: 0.2.1
+description: An implementation of the custom.metrics.k8s.io API using Prometheus
+home: https://github.com/DirectXMan12/k8s-prometheus-adapter/
+keywords:
+- apiserver
+- metrics
+- prometheus
+name: custom-metrics-prometheus
+sources:
+- https://github.com/DirectXMan12/k8s-prometheus-adapter/
+version: 0.1.0
