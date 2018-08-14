@@ -47,6 +47,16 @@ configuration:
   # additional key/value pairs to be used as environment variables such as "AWS_CLUSTER_NAME: 'yourcluster.domain.tld'"
   extraEnvVars: {}
 
+# Eg:
+# schedules:
+#   mybackup:
+#     schedule: "0 0 * * *"
+#     template:
+#       ttl: "240h"
+#       includedNamespaces:
+#        - foo
+schedules: {}
+
 credentials:
   existingSecret:
   useSecret: true

@@ -61,6 +61,7 @@ Parameter | Description | Default
 `credentials.existingSecret` | If specified and `useSecret` is `true`, uses an existing secret with this name instead of creating one | ``
 `credentials.useSecret` | Whether a secret should be used. Set this to `false` when using `kube2iam` | `true`
 `credentials.secretContents` | Contents for the credentials secret | `{}`
+`schedules` | A dict of schedules | `{}`
 
 
 ## How to
