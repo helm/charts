@@ -33,7 +33,7 @@ fi
 readonly PULL_INFO
 
 main() {
-    git remote add k8s https://github.com/kubernetes/charts
+    git remote add k8s https://github.com/helm/charts
     git fetch k8s master
 
     local config_container_id
