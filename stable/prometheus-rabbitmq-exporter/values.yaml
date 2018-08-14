@@ -36,6 +36,8 @@ rabbitmq:
   capabilities: bert,no_sort
   include_queues: ".*"
   skip_queues: "^$"
+  rabbit_exporters: exchange,node,overview,queue
+  skipverify: false
 
 annotation: {}
 #  prometheus.io/scrape: "true"

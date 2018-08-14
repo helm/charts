@@ -40,24 +40,26 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters and their default values.
 
-| Parameter                | Description                                                            | Default                   |
-| ------------------------ | ---------------------------------------------------------------------- | ------------------------- |
-| `replicaCount`           | desired number of prometheus-rabbitmq-exporter pods                    | `1`                       |
-| `image.repository`       | prometheus-rabbitmq-exporter image repository                          | `kbudde/rabbitmq-exporter`|
-| `image.tag`              | prometheus-rabbitmq-exporter image tag                                 | `v0.28.0`                 |
-| `image.pullPolicy`       | image pull policy                                                      | `IfNotPresent`            |
-| `service.type`           | desired service type                                                   | `ClusterIP`               |
-| `service.internalport`   | service listening port                                                 | `9121`                    |
-| `service.externalPort`   | public service port                                                    | `9419`                    |
-| `resources`              | cpu/memory resource requests/limits                                    | {}                        |
-| `loglevel`               | exporter log level                                                     | {}                        |
-| `rabbitmq.url`           | rabbitm management url                                                  | `http://myrabbit:15672`   |
-| `rabbitmq.user`          | rabbitm user login                                                     | `guest`                   |
-| `rabbitmq.password`      | rabbitm password login                                                 | `guest`                   |
-| `rabbitmq.capabilities`  | comma-separated list of capabilities supported by the RabbitMQ server  | `bert,no_sort`            |
-| `rabbitmq.include_queues`| regex queue filter. just matching names are exported                   | `.*`                      |
-| `rabbitmq.skip_queues`   | regex, matching queue names are not exported                           | `.*`                      |
-| `annotation`             | pod annotations for easier discovery                                   | {}                        |
+| Parameter                    | Description                                                             | Default                        |
+| ---------------------------- | ----------------------------------------------------------------------- | ------------------------------ |
+| `replicaCount`               | desired number of prometheus-rabbitmq-exporter pods                     | `1`                            |
+| `image.repository`           | prometheus-rabbitmq-exporter image repository                           | `kbudde/rabbitmq-exporter`     |
+| `image.tag`                  | prometheus-rabbitmq-exporter image tag                                  | `v0.28.0`                      |
+| `image.pullPolicy`           | image pull policy                                                       | `IfNotPresent`                 |
+| `service.type`               | desired service type                                                    | `ClusterIP`                    |
+| `service.internalport`       | service listening port                                                  | `9121`                         |
+| `service.externalPort`       | public service port                                                     | `9419`                         |
+| `resources`                  | cpu/memory resource requests/limits                                     | {}                             |
+| `loglevel`                   | exporter log level                                                      | {}                             |
+| `rabbitmq.url`               | rabbitm management url                                                  | `http://myrabbit:15672`        |
+| `rabbitmq.user`              | rabbitm user login                                                      | `guest`                        |
+| `rabbitmq.password`          | rabbitm password login                                                  | `guest`                        |
+| `rabbitmq.capabilities`      | comma-separated list of capabilities supported by the RabbitMQ server   | `bert,no_sort`                 |
+| `rabbitmq.include_queues`    | regex queue filter. just matching names are exported                    | `.*`                           |
+| `rabbitmq.skip_queues`       | regex, matching queue names are not exported                            | `.*`                           |
+| `rabbitmq.rabbitmq_exporter` | list of enabled exporters. only "connections" is not enabled by default | `exchange,node,overview,queue` |
+| `rabbitmq.skipverify`        | set to true to ignore certificate errors from the management plugin     | `false`                        |
+| `annotation`                 | pod annotations for easier discovery                                    | {}                             |
 
 For more information please refer to the [rabbitmq_exporter](https://github.com/kbudde/rabbitmq_exporter) documentation.
 

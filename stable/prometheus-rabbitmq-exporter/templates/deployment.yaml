@@ -42,6 +42,10 @@ spec:
               value: "{{ .Values.rabbitmq.include_queues }}"
             - name: SKIP_QUEUES
               value: "{{ .Values.rabbitmq.skip_queues }}"
+            - name: RABBIT_EXPORTERS
+              value: "{{ .Values.rabbitmq.rabbit_exporters }}"
+            - name: SKIPVERIFY
+              value: "{{ .Values.rabbitmq.skipverify }}"
           ports:
             - containerPort: {{ .Values.service.internalPort }}
           livenessProbe:
