@@ -138,6 +138,7 @@ acme:
   challengeType: tls-sni-01
   ## Configure dnsProvider to perform domain verification using dns challenge
   ## Applicable only if using the dns-01 challenge type
+  delayBeforeCheck: 0
   dnsProvider:
     name: nil
     auroradns:
