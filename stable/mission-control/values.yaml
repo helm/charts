@@ -9,6 +9,40 @@ imagePullPolicy: IfNotPresent
 
 imagePullSecrets:
 
+## Role Based Access Control
+## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
+rbac:
+  create: true
+  role:
+    ## Rules to create. It follows the role specification
+    rules:
+    - apiGroups:
+      - ''
+      resources:
+      - services
+      - endpoints
+      - pods
+      verbs:
+      - get
+      - watch
+      - list
+
+## Service Account
+## Ref: https://kubernetes.io/docs/admin/service-accounts-admin/
+##
+serviceAccount:
+  create: true
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:
+
+## Post Install hook to create user in Mongodb
+postInstallHook:
+  image:
+    repository: mvertes/alpine-mongo
+    tag: 3.6.3-0
+    pullPolicy: IfNotPresent
+
 # Sub charts
 ## Configuration values for the mongodb dependency
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/mongodb/README.md
@@ -92,7 +126,8 @@ missionControl:
   replicaCount: 1
   name: mission-control
   image: docker.bintray.io/jfrog/mission-control
-  version: 3.0.0
+  ## Note that by default we use appVersion to get image tag
+  # version: 3.1.1
   missionControlUrl:
   podRestartTime:
   persistence:
@@ -105,7 +140,7 @@ missionControl:
     mountPath: "/var/opt/jfrog/mission-control"
     accessMode: ReadWriteOnce
     size: 100Gi
-    ## artifactory data Persistent Volume Storage Class
+    ## Mission Control data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is
@@ -143,7 +178,8 @@ insightServer:
   replicaCount: 1
   name: insight-server
   image: docker.bintray.io/jfrog/insight-server
-  version: 3.0.0
+  ## Note that by default we use appVersion to get image tag
+  # version: 3.1.1
   service:
     name: insight-server
     type: ClusterIP
@@ -168,7 +204,8 @@ insightScheduler:
   replicaCount: 1
   name: insight-scheduler
   image: docker.bintray.io/jfrog/insight-scheduler
-  version: 3.0.0
+  ## Note that by default we use appVersion to get image tag
+  # version: 3.1.1
   service:
     type: ClusterIP
   externalPort: 8080
@@ -190,7 +227,8 @@ insightExecutor:
   replicaCount: 1
   name: insight-executor
   image: docker.bintray.io/jfrog/insight-executor
-  version: 3.0.0
+  ## Note that by default we use appVersion to get image tag
+  # version: 3.1.1
   persistence:
     enabled: true
     ## A manually managed Persistent Volume and Claim
@@ -201,7 +239,7 @@ insightExecutor:
     mountPath: "/var/cloudbox"
     accessMode: ReadWriteOnce
     size: 100Gi
-    ## artifactory data Persistent Volume Storage Class
+    ## Mission Control data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is
