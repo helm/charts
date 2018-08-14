@@ -38,6 +38,10 @@ daemonset: {}
   # them as necessary, and remove the curly braces after 'resources:'.
   # updateStrategy: RollingUpdate
 
+ebpf:
+  # Enable eBPF support for Falco
+  enabled: false
+
 falco:
   # The location of the rules file(s). This can contain one or more paths to
   # separate rules files.
