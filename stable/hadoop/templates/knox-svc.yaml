@@ -1,0 +1,24 @@
+{{- if .Values.knox.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "hadoop.fullname" . }}-knox-svc
+  labels:
+    app: {{ template "hadoop.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: knox-service
+spec:
+  type: {{ .Values.knox.servicetype }}
+  ports:
+  - port: 8080
+    protocol: TCP
+  selector:
+    app: {{ template "hadoop.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: knox-deployment-pod
+
+{{- end -}}
