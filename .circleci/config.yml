@@ -20,7 +20,7 @@ jobs:
       - run:
           name: lint
           command: |
-            git remote add k8s https://github.com/kubernetes/charts
+            git remote add k8s https://github.com/helm/charts
             git fetch k8s master
             chart_test.sh --config test/.testenv --no-install
   sync:
