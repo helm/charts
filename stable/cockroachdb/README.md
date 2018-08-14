@@ -45,7 +45,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | ----------------------------- | ------------------------------------------ | -------------------------------------------- |
 | `Name`                        | Chart name                                 | `cockroachdb`                                |
 | `Image`                       | Container image name                       | `cockroachdb/cockroach`                      |
-| `ImageTag`                    | Container image tag                        | `v2.0.0`                                     |
+| `ImageTag`                    | Container image tag                        | `v2.0.5`                                     |
 | `ImagePullPolicy`             | Container pull policy                      | `Always`                                     |
 | `Replicas`                    | k8s statefulset replicas                   | `3`                                          |
 | `MaxUnavailable`              | k8s PodDisruptionBudget parameter          | `1`                                          |
@@ -151,10 +151,11 @@ is the admin UI.
 
 If you want to see information about how the cluster is doing, you can try
 pulling up the CockroachDB admin UI by port-forwarding from your local machine
-to one of the pods (replacing "release-cockroachdb-0" with one of your pods' names):
+to one of the pods (replacing "my-release-cockroachdb-0" with one of your pods'
+names):
 
 ```shell
-kubectl port-forward release-cockroachdb-0 8080
+kubectl port-forward my-release-cockroachdb-0 8080
 ```
 
 Once you’ve done that, you should be able to access the admin UI by visiting
