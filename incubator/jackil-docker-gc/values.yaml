@@ -1,0 +1,31 @@
+# Default values for docker-gc.
+image:
+  repository: jackil/docker-gc
+  tag: latest
+  pullPolicy: Always
+docker:
+  socketPath: /var/run/docker.sock
+  volumeName: docker-volume
+statsd:
+  enabled: false
+  #host: localhost
+  #port: 8125
+config:
+  dockerEndpoint: unix:///var/run/docker.sock
+  executionIntervalInMinutes: 60
+  dockerClientTimeoutInSeconds: 180
+  imageDeletionOrder: ByImageLastTouchDate
+  #imageDeletionOrder: ByImageCreationDate
+  strategy: ByDate
+  daysBeforeDeletion: 30
+  #strategy: ByDiskSpace
+  #sizeLimitInGigabyte:
+  containerStateBlacklist: dead,exited
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
