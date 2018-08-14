@@ -16,6 +16,9 @@ spec:
         role: security
     spec:
       serviceAccountName: {{ template "falco.serviceAccountName" .}}
+      {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.hostNetwork) }}
+      hostNetwork: true
+      {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       containers:
@@ -49,7 +52,7 @@ spec:
             - mountPath: /host/usr
               name: usr-fs
               readOnly: true
-            {{- if .Values.ebpf.enabled }}
+            {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
             - mountPath: /host/etc
               name: etc-fs
               readOnly: true
@@ -104,11 +107,11 @@ spec:
         - name: usr-fs
           hostPath:
             path: /usr
-        {{- if .Values.ebpf.enabled }}
+        {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
         - name: etc-fs
           hostPath:
             path: /etc
-            {{- end }}
+        {{- end }}
         - name: config-volume
           configMap:
             name: {{ template "falco.fullname" . }}
