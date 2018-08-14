@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "openam.fullname" . }}
+  labels:
+    app: {{ template "openam.name" . }}
+    chart: {{ template "openam.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  serviceName: {{ template "openam.fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "openam.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "openam.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+            - name: ldap
+              containerPort: 50389
+              protocol: TCP
+          {{- if .Values.livenessProbe.enabled}} 
+          livenessProbe:
+            httpGet:
+              path: /openam/isAlive.jsp
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled}} 
+          readinessProbe:
+            httpGet:
+              path: /openam/isAlive.jsp
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+          env:
+            {{- range $key, $value :=  .Values.env }}
+            - name: {{ $key | upper | replace "-" "_" }}
+              value: {{ $value | quote }}
+            {{- end }}
+          volumeMounts:
+            - mountPath: /files/initial-config.properties
+              name: {{ template "openam.fullname" . }}-initial-config-configmap
+              subPath: initial-config.properties
+            - mountPath: /bin/configure.sh
+              name: {{ template "openam.fullname" . }}-configure-configmap
+              subPath: configure.sh
+            - mountPath: /bin/run_me.sh
+              name: {{ template "openam.fullname" . }}-run-configmap
+              subPath: run_me.sh
+            - mountPath: {{ .Values.env.BASE_DIR }}
+              name: {{ template "openam.fullname" . }}-pvc
+      volumes:
+      - name: {{ template "openam.fullname" . }}-initial-config-configmap
+        ConfigMap:
+          name: {{ template "openam.fullname" . }}-initial-config
+      - name: {{ template "openam.fullname" . }}-configure-configmap
+        ConfigMap:
+          name: {{ template "openam.fullname" . }}-configure
+          defaultMode: 511
+      - name: {{ template "openam.fullname" . }}-run-configmap
+        ConfigMap:
+          name: {{ template "openam.fullname" . }}-run
+          defaultMode: 511
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ template "openam.fullname" . }}-pvc
+    spec:
+      accessModes:
+        - {{ .Values.volumeClaim.accessMode }}
+      resources:
+        requests:
+          storage: {{ .Values.volumeClaim.storage }}
