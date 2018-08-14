@@ -21,7 +21,7 @@ spec:
         component: "portus"
         release: {{ .Release.Name | quote }}
       annotations:
-        checksum/config: {{ include (print $.Chart.Name "/templates/" $.Chart.Name "-cm.yaml") . | sha256sum }}
+        checksum/config: {{ include (print .Chart.Name "/templates/" .Chart.Name "-cm.yaml") . | sha256sum }}
 {{- if $.Values.podAnnotations }}
 {{ toYaml $.Values.podAnnotations | indent 8 }}
 {{- end }}
@@ -36,6 +36,19 @@ spec:
         - name: PORTUS_MACHINE_FQDN_VALUE
           value: {{ .Values.portus.fqdn | quote }}
         {{- if .Values.mariadb.enabled }}
+{{- if gt .Values.portus.image.tag 2.2 }}
+        - name: PORTUS_DB_HOST
+          value: {{ template "mariadb.fullname" . }}
+        - name: PORTUS_DB_DATABASE
+          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+        - name: PORTUS_DB_USERNAME
+          value: {{ .Values.mariadb.mariadbUser | quote }}
+        - name: PORTUS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mariadb.fullname" . }}
+              key: mariadb-password
+{{- else }}
         - name: MARIADB_SERVICE_HOST
           value: {{ template "mariadb.fullname" . }}
         - name: MARIADB_DATABASE
@@ -47,7 +60,30 @@ spec:
             secretKeyRef:
               name: {{ template "mariadb.fullname" . }}
               key: mariadb-password
+{{- end }}
         {{- else }}
+{{- if gt .Values.portus.image.tag 2.2 }}
+        - name: PORTUS_DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "portus.fullname" . }}-db"
+              key: hostname
+        - name: PORTUS_DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "portus.fullname" . }}-db"
+              key: username
+        - name: PORTUS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "portus.fullname" . }}-db"
+              key: password
+        - name: PORTUS_DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: "{{ template "portus.fullname" . }}-db"
+              key: db-name
+{{- else }}
         - name: MARIADB_SERVICE_HOST
           valueFrom:
             secretKeyRef:
@@ -68,6 +104,7 @@ spec:
             secretKeyRef:
               name: "{{ template "portus.fullname" . }}-db"
               key: db-name
+{{- end }}
         {{- end }}
         - name: PORTUS_PORTUS_PASSWORD
           valueFrom:
@@ -125,6 +162,72 @@ spec:
           name: config
           subPath: config.yml
           readOnly: true
+{{- if gt .Values.portus.image.tag 2.2 }}
+{{- if .Values.portus.background.enabled }}
+      - name: "portus-background"
+        image: "{{ .Values.portus.image.repository }}:{{ .Values.portus.image.tag }}"
+        imagePullPolicy: {{ .Values.portus.image.pullPolicy }}
+        env:
+          - name: PORTUS_BACKGROUND
+            value: "true"
+          - name: PORTUS_LOG_LEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "portus.fullname" . }}
+                key: log_level
+          {{- if .Values.mariadb.enabled }}
+          - name: PORTUS_DB_HOST
+            value: {{ template "mariadb.fullname" . }}
+          - name: PORTUS_DB_DATABASE
+            value: {{ .Values.mariadb.mariadbDatabase | quote }}
+          - name: PORTUS_DB_USERNAME
+            value: {{ .Values.mariadb.mariadbUser | quote }}
+          - name: PORTUS_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "mariadb.fullname" . }}
+                key: mariadb-password
+          {{- else }}
+          - name: PORTUS_DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "portus.fullname" . }}-db"
+                key: hostname
+          - name: PORTUS_DB_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "portus.fullname" . }}-db"
+                key: db-name
+          - name: PORTUS_DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "portus.fullname" . }}-db"
+                key: username
+          - name: PORTUS_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "portus.fullname" . }}-db"
+                key: password
+          {{- end }}
+          - name: PORTUS_KEY_PATH
+            value: "/secrets/portus.key"
+          - name: PORTUS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "portus.fullname" . }}
+                key: PORTUS_PASSWORD
+          - name: PORTUS_SECRET_KEY_BASE
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "portus.fullname" . }}
+                key: PORTUS_SECRET_KEY_BASE
+        resources:
+{{ toYaml .Values.portus.background.resources | indent 12 }}
+        volumeMounts:
+          - name: secrets
+            mountPath: /secrets
+{{- end }}
+{{- end }}
       securityContext:
         fsGroup: 8
         # wwwrun(30) is member in group web(8)

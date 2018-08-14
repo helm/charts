@@ -9,13 +9,14 @@ portus:
     #   maxUnavailable: 0
     # type: RollingUpdate
   fqdn: portus.registry.example.com
+  # minio values
   # these need to match the values in docker-registry.configData
   dockerFqdn: docker.registry.example.com
   dockerS3Bucket: registry
   dockerRootDirectory: portus
   image:
     repository: opensuse/portus
-    tag: 2.2
+    tag: 2.3
     pullPolicy: IfNotPresent
   cleanup:
     enabled: true
@@ -63,7 +64,6 @@ portus:
         password: "password"
     ldap:
       bind_password: ""
-
     db:
       host: "example-mariadb.default.svc.cluster.local"
       catalog: "portusdb"
@@ -92,7 +92,14 @@ portus:
       # - hosts:
       #   - portus.registry.example.com
       #   secretName: portus.registry.example.com.tls
-
+  ## background processing
+  ##
+  background:
+    enabled: true
+    resources:
+      requests:
+        memory: 384Mi
+        cpu: 100m
 docker-registry:
   replicaCount: 2
   storage: "filesystem"
