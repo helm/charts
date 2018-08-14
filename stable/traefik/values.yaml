@@ -50,6 +50,7 @@ proxyProtocol:
 ssl:
   enabled: false
   enforced: false
+  upstream: false
   insecureSkipVerify: false
   # https://docs.traefik.io/configuration/entrypoints/#specify-minimum-tls-version
   # tlsMinVersion: VersionTLS12
@@ -137,6 +138,7 @@ acme:
   challengeType: tls-sni-01
   ## Configure dnsProvider to perform domain verification using dns challenge
   ## Applicable only if using the dns-01 challenge type
+  delayBeforeCheck: 0
   dnsProvider:
     name: nil
     auroradns:

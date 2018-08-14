@@ -1,0 +1,107 @@
+
+{{- if .Values.configurator.enabled -}}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "home-assistant.fullname" . }}-configurator
+  labels:
+    app: {{ template "home-assistant.name" . }}
+    chart: {{ template "home-assistant.chart" . }}
+    component: configurator
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.configurator.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "home-assistant.name" . }}
+      release: {{ .Release.Name }}
+      component: configurator
+  template:
+    metadata:
+      labels:
+        app: {{ template "home-assistant.name" . }}
+        component: configurator
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "home-assistant.name" . }}-configurator
+          image: "{{ .Values.configurator.image.repository }}:{{ .Values.configurator.image.tag }}"
+          imagePullPolicy: {{ .Values.configurator.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.configurator.service.port }}
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: http
+              initialDelaySeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: http
+              initialDelaySeconds: 15
+          env:
+            {{- if .Values.configurator.hassApiPassword }}
+            - name: HC_HASS_API_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "home-assistant.fullname" . }}-configurator
+                  key: hass-api-password
+            {{- end }}
+            {{- if (.Values.configurator.username) and (.Values.configurator.password) }}
+            - name: HC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "home-assistant.fullname" . }}-configurator
+                  key: username
+            - name: HC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "home-assistant.fullname" . }}-configurator
+                  key: password
+            {{- end }}
+            {{- if .Values.configurator.hassApiUrl }}
+            - name: HC_HASS_API
+              value: "{{ .Values.configurator.hassApiUrl }}"
+            {{- else }}
+            - name: HC_HASS_API
+              value: "http://{{ template "home-assistant.fullname" . }}:{{ .Values.service.port }}/api/"
+            {{- end }}
+            {{- if .Values.configurator.basepath }}
+            - name: HC_BASEPATH
+              value: "{{ .Values.configurator.basepath }}"
+            {{- end }}
+            {{- if .Values.configurator.enforceBasepath }}
+            - name: HC_ENFORCE_BASEPATH
+              value: "{{ .Values.configurator.enforceBasepath }}"
+            {{- end }}
+            {{- range $key, $value := .Values.configurator.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+          volumeMounts:
+          - mountPath: /config
+            name: config
+          resources:
+{{ toYaml .Values.configurator.resources | indent 12 }}
+      volumes:
+      - name: config
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "home-assistant.fullname" . }}{{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{ end }}
+    {{- with .Values.configurator.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.configurator.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.configurator.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}
