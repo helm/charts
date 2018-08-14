@@ -165,7 +165,8 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `collector.image`                        | Image for jaeger collector          |  jaegertracing/jaeger-collector        |
 | `collector.pullPolicy`                   | Collector image pullPolicy          |  IfNotPresent                          |
 | `collector.tolerations`                  | Node Tolerations                    | `[]`                                   |
-| `collector.samplingStrategiesFile`       | ConfigMap containing sampling file  |  nil                                   |
+| `collector.samplingStrategiesConfigmap`  | ConfigMap containing sampling file  |  nil                                   |
+| `collector.samplingStrategiesFilename`   | Sampling filename within configmap  |  sampling.json                         |
 | `collector.service.annotations`          | Annotations for Collector SVC       |  nil                                   |
 | `collector.service.httpPort`             | Client port for HTTP thrift         |  14268                                 |
 | `collector.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`   |

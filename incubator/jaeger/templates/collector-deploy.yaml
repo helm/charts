@@ -98,9 +98,9 @@ spec:
               configMapKeyRef:
                 name: {{ template "jaeger.fullname" . }}
                 key: collector.zipkin.http-port
-          {{- if .Values.collector.samplingStrategiesFile }}
+          {{- if .Values.collector.samplingStrategiesConfigmap }}
           - name: SAMPLING_STRATEGIES_FILE
-            value: /etc/sampling
+            value: /etc/sampling/{{ template "jaeger.collector.sampling-filename" . }}
           {{- end }}
         ports:
         - containerPort: {{ .Values.collector.service.tchannelPort }}
@@ -125,7 +125,7 @@ spec:
           initialDelaySeconds: 10
         resources:
 {{ toYaml .Values.collector.resources | indent 10 }}
-        {{- if .Values.collector.samplingStrategiesFile }}
+        {{- if .Values.collector.samplingStrategiesConfigmap }}
         volumeMounts:
             - name: sampling-volume
               mountPath: /etc/sampling
@@ -137,6 +137,6 @@ spec:
       volumes:
         - name: sampling-volume
           configMap:
-            name: {{ .Values.collector.samplingStrategiesFile }}
+            name: {{ .Values.collector.samplingStrategiesConfigmap }}
       {{- end }}
 {{- end -}}
