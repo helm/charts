@@ -41,13 +41,13 @@ resources:
 rules:
   default: true
   custom: {}
-  #- seriesQuery: '{__name__=~"^some_metric_count$"}'
-  #  resources:
-  #    template: <<.Resource>>
-  #  name:
-  #    matches: ""
-  #    as: "my_custom_metric"
-  #  metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+# - seriesQuery: '{__name__=~"^some_metric_count$"}'
+#   resources:
+#     template: <<.Resource>>
+#   name:
+#     matches: ""
+#     as: "my_custom_metric"
+#   metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
 
 service:
   annotations: {}
@@ -64,4 +64,3 @@ tls:
     # Public key of the APIService
 
 tolerations: []
-
