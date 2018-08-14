@@ -104,3 +104,7 @@ configData:
       threshold: 3
 
 priorityClassName: ""
+
+nodeSelector: {}
+
+tolerations: []
