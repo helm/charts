@@ -94,7 +94,7 @@ A variety of other parameters are also configurable. See the comments in the
 | `helperImage.tag`               | 0.1.0                                  |
 | `helperImage.pullPolicy`        | IfNotPresent                           |
 | `image.repository`              | couchdb                                |
-| `image.tag`                     | 2.1.1                                  |
+| `image.tag`                     | 2.2.0                                  |
 | `image.pullPolicy`              | IfNotPresent                           |
 | `ingress.enabled`               | false                                  |
 | `ingress.hosts`                 | chart-example.local                    |
