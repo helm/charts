@@ -1,20 +1,26 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
+  # Pay attention to the redis-role label at runtime. The self-determination logic in the image sets this value accordingly.
   name: {{ template "redis-ha.fullname" . }}-sentinel
   labels:
-{{ include "labels.standard" . | indent 4 }}
+    name: {{ template "redis-ha.fullname" . }}-sentinel
+    release: {{ .Release.Name }}
+    app: {{ template "redis-ha.fullname" . }}
 spec:
+  serviceName: {{ template "redis-ha.fullname" . }}-sentinel-svc
   replicas: {{ .Values.replicas.sentinels }}
+  updateStrategy:
+    type: RollingUpdate
   template:
     metadata:
       labels:
-        app: {{ template "redis-ha.name" . }}
-        release: {{ .Release.Name }}
-        component: sentinel
         name: {{ template "redis-ha.fullname" . }}-sentinel
+{{ include "labels.standard" . | indent 8 }}
     spec:
-      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
+      {{ if .Values.rbac.create }}
+      serviceAccountName: {{ template "redis-ha.fullname" . }}
+      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -23,24 +29,22 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
-      affinity:
-{{ tpl .Values.sentinelAffinity . | indent 8 }}
       containers:
       - name: sentinel
         image: {{ .Values.redis_image }}
+        livenessProbe:
+          exec:
+            command: ["redis-cli", "-p", "26379", "ping"]
+          initialDelaySeconds: 5
+          periodSeconds: 5
         resources:
 {{ toYaml .Values.resources.sentinel | indent 10 }}
         env:
           - name: SENTINEL
             value: "true"
+          - name: EXPECTED_NUM_SENTINELS
+            value: {{ .Values.replicas.sentinels | quote }}
           - name: REDIS_CHART_PREFIX
             value: {{ template "redis-ha.fullname" . }}-
-{{- if .Values.auth }}
-          - name: REDIS_PASS
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "redis-ha.fullname" . }}
-                key: auth
-{{- end }}
         ports:
           - containerPort: 26379

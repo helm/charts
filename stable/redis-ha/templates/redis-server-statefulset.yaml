@@ -1,0 +1,97 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  # Pay attention to the redis-role label at runtime. The self-determination logic in the image sets this value accordingly.
+  name: {{ template "redis-ha.fullname" . }}-server
+  labels:
+    name: {{ template "redis-ha.fullname" . }}-server
+    redis-node: "true"
+    release: {{ .Release.Name }}
+    app: {{ template "redis-ha.fullname" . }}
+spec:
+  serviceName: {{ template "redis-ha.fullname" . }}-server-svc
+  replicas: {{ .Values.replicas.servers }}
+  updateStrategy:
+    type: OnDelete
+  template:
+    metadata:
+      labels:
+        name: {{ template "redis-ha.fullname" . }}-server
+        redis-node: "true"
+{{ include "labels.standard" . | indent 8 }}
+    spec:
+      {{ if .Values.rbac.create }}
+      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      containers:
+      - name: redis
+        image: {{ .Values.redis_image }}
+        livenessProbe:
+          exec:
+            command: ["redis-cli", "ping"]
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+{{ toYaml .Values.resources.server | indent 10 }}
+        env:
+          - name: MAX_MEMORY
+            value: {{ .Values.redis.maxMemory }}
+          - name: MAX_MEMORY_POLICY
+            value: {{ .Values.redis.maxMemoryPolicy }}
+          - name: RDB_BACKUPS
+            value: {{ .Values.redis.rdbBackups | quote }}
+          - name: DISKLESS_REPLICATION
+            value: {{ .Values.redis.disklessReplication | quote }}
+          - name: REDIS_SENTINEL_SERVICE_HOST
+            value: "redis-sentinel"
+          - name: REDIS_CHART_PREFIX
+            value: {{ template "redis-ha.fullname" . }}-
+{{- if .Values.auth }}
+          - name: REDIS_PASS
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "redis-ha.fullname" . }}
+                key: auth
+{{- end }}
+        ports:
+          - containerPort: 6379
+        volumeMounts:
+          - mountPath: /redis-master-data
+            name: {{ .Values.redis.persistentVolume.name }}
+      volumes:
+      - name: emptydir
+{{- if .Values.redis.persistentVolume.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Values.redis.persistentVolume.name }}
+        annotations:
+        {{- range $key, $value := .Values.redis.persistentVolume.annotations }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      spec:
+        accessModes:
+        {{- range .Values.redis.persistentVolume.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.redis.persistentVolume.size | quote }}
+      {{- if .Values.redis.persistentVolume.storageClass }}
+      {{- if (eq "-" .Values.redis.persistentVolume.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.redis.persistentVolume.storageClass }}"
+      {{- end }}
+      {{- end }}
+{{- else }}
+        - name: data
+          emptyDir: {}
+{{- end }}
