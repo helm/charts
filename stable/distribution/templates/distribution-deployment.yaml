@@ -1,0 +1,143 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "distribution.fullname" . }}
+  labels:
+    app: {{ template "distribution.name" . }}
+    chart: {{ template "distribution.chart" . }}
+    component: {{ .Values.distribution.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  serviceName: {{ template "distribution.name" . }}
+  replicas: {{ .Values.distribution.replicaCount }}
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "distribution.name" . }}
+      release: {{ .Release.Name }}
+      role: {{ template "distribution.name" . }}
+      component: {{ .Values.distribution.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "distribution.name" . }}
+        component: {{ .Values.distribution.name }}
+        role: {{ template "distribution.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "distribution.serviceAccountName" . }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
+      initContainers:
+      - name: "init-data"
+        image: "{{ .Values.initContainerImage }}"
+        command:
+        - '/bin/sh'
+        - '-c'
+        - >
+          until nc -z -w 2 {{ .Release.Name }}-mongodb 27017 && echo {{ .Release.Name }}-mongodb ok; do sleep 2; done;
+          until nc -z -w 2 {{ .Release.Name }}-redis {{ .Values.redis.master.port }} && echo {{ .Release.Name }}-redis ok; do sleep 2; done;
+      containers:
+      - name: {{ .Values.distribution.name }}
+        image: '{{ .Values.distribution.image.repository }}:{{ default .Chart.AppVersion .Values.distribution.image.version }}'
+        imagePullPolicy: {{ .Values.distribution.image.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.distribution.internalPort }}
+          protocol: TCP
+        env:
+        - name: DEFAULT_JAVA_OPTS
+          value: '-Ddistribution.home={{ .Values.distribution.persistence.mountPath }}
+                  -Djfrog.master.key={{ .Values.distribution.masterKey }}
+                  -Dcom.sun.management.jmxremote.authenticate=false
+                  -Dcom.sun.management.jmxremote.ssl=false -Duser.timezone=UTC
+                  {{- if .Values.distribution.javaOpts.xms }}
+                  -Xms{{ .Values.distribution.javaOpts.xms }}
+                  {{- end}}
+                  {{- if .Values.distribution.javaOpts.xmx }}
+                  -Xmx{{ .Values.distribution.javaOpts.xmx }}
+                  {{- end}}
+                  -Dspring.profiles.active=production'
+        - name: mongo_connectionString
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "distribution.fullname" . }}-mongo-connection
+              key: mongo_connectionString
+        - name: audit_mongo_connectionString
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "distribution.fullname" . }}-mongo-connection
+              key: audit_mongo_connectionString
+        - name: redis_connectionString
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "distribution.fullname" . }}-redis-connection
+              key: redis_connectionString
+        - name: BT_ARTIFACTORY_URL
+          value: {{ .Values.distribution.env.artifactoryUrl | quote }}
+        - name: BT_SERVER_URL
+          value: {{ .Values.distribution.env.btServerUrl | quote }}
+        {{- if .Values.distribution.env.artifactoryEdge1Url }}
+        - name: artifactory_edge_1_url
+          value: {{ .Values.distribution.env.artifactoryEdge1Url }}
+        {{- end }}
+        {{- if .Values.distribution.env.artifactoryEdge2Url }}
+        - name: artifactory_edge_2_url
+          value: {{ .Values.distribution.env.artifactoryEdge2Url }}
+        {{- end }}
+        {{- if .Values.distribution.env.artifactoryEdge3Url }}
+        - name: artifactory_edge_3_url
+          value: {{ .Values.distribution.env.artifactoryEdge3Url }}
+        {{- end }}
+        {{- if .Values.distribution.env.artifactoryCi1Url }}
+        - name: artifactory_ci_1_url
+          value: {{ .Values.distribution.env.artifactoryCi1Url }}
+        {{- end }}
+        volumeMounts:
+        - name: distribution-data
+          mountPath: {{ .Values.distribution.persistence.mountPath | quote }}
+        resources:
+{{ toYaml .Values.distribution.resources | indent 10 }}
+        readinessProbe:
+          httpGet:
+            path: /api/v1/system/ping
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          failureThreshold: 10
+        livenessProbe:
+          httpGet:
+            path: /api/v1/system/ping
+            port: 8080
+          initialDelaySeconds: 180
+          periodSeconds: 10
+      {{- if .Values.distribution.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: distribution-data
+      spec:
+      {{- if .Values.distribution.persistence.existingClaim }}
+        selector:
+          matchLabels:
+            app: {{ template "distribution.name" . }}
+      {{- else }}
+        {{- if .Values.distribution.persistence.storageClass }}
+        {{- if (eq "-" .Values.distribution.persistence.storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: "{{ .Values.distribution.persistence.storageClass }}"
+        {{- end }}
+        {{- end }}
+        accessModes: [ "{{ .Values.distribution.persistence.accessMode }}" ]
+        resources:
+          requests:
+            storage: {{ .Values.distribution.persistence.size }}
+      {{- end }}
+      {{- else }}
+      volumes:
+      - name: distribution-data
+        emptyDir: {}
+      {{- end }}
