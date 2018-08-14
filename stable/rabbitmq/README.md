@@ -49,7 +49,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `image.repository`          | Rabbitmq Image name                                     | `bitnami/rabbitmq`                                       |
 | `image.tag`                 | Rabbitmq Image tag                                      | `{VERSION}`                                              |
 | `image.pullPolicy`          | Image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
-| `image.pullSecrets`         | Specify docker-ragistry secret names as an array        | `nil`                                                    |
+| `image.pullSecrets`         | Specify docker-registry secret names as an array        | `nil`                                                    |
 | `image.debug`               | Specify if debug values should be set                   | `false`                                                  |
 | `rbacEnabled`               | Specify if rbac is enabled in your cluster              | `true`                                                  |
 | `rabbitmq.username`         | RabbitMQ application username                           | `user`                                                   |
@@ -65,6 +65,9 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `persistence.storageClass`  | Storage class of backing PVC                            | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                     | `ReadWriteOnce`                                          |
 | `persistence.size`          | Size of data volume                                     | `8Gi`                                                    |
+| `securityContext.enabled`   | Enable security context                                 | `true`                                                   |
+| `securityContext.fsGroup`   | Group ID for the container                              | `1001`                                                   |
+| `securityContext.runAsUser` | User ID for the container                               | `1001`                                                   |
 | `resources`                  | resource needs and limits to apply to the pod           | {}                                                       |
 | `nodeSelector`              | Node labels for pod assignment                          | {}                                                       |
 | `affinity`                  | Affinity settings for pod assignment                    | {}                                                       |
@@ -73,7 +76,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `ingress.tls`               | enable ingress with tls                                 | `false`                                                  |
 | `ingress.tlsSecret`         | tls type secret to be used                              | `myTlsSecret`                                            |
 | `ingress.annotations`       | ingress annotations as an array                         |  []                                                      |
-| `livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
+| `livenessProbe.enabled`               | would you like a livenessProbed to be enabled             |  `true`                                        |
 | `livenessProbe.initialDelaySeconds`   | number of seconds                                       |  120                                           |
 | `livenessProbe.timeoutSeconds`        | number of seconds                                       |  5                                             |
 | `livenessProbe.failureThreshold`      | number of failures                                      |  6                                             |
