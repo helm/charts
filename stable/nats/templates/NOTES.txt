@@ -59,6 +59,7 @@ To access the Monitoring svc from outside the cluster, follow the steps below:
     export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
     export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "nats.fullname" . }}-monitoring)
     echo "Monitoring URL: http://$NODE_IP:$NODE_PORT/"
+
 {{- else if contains "LoadBalancer" .Values.monitoringService.type }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
@@ -66,11 +67,11 @@ To access the Monitoring svc from outside the cluster, follow the steps below:
 
     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "nats.fullname" . }}-monitoring -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     echo "Monitoring URL: http://$SERVICE_IP/"
+
 {{- else if contains "ClusterIP" .Values.monitoringService.type }}
 
-    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "nats.name" . }}" -o jsonpath="{.items[0].metadata.name}")
     echo "Monitoring URL: http://127.0.0.1:{{ .Values.monitoringService.port }}"
-    kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.monitoringService.port }}:{{ .Values.monitoringService.port }}
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "nats.fullname" . }}-monitoring {{ .Values.monitoringService.port }}:{{ .Values.monitoringService.port }}
 {{- end }}
 
 2. Access the NATS monitoring opening the URL obtained on a browser.

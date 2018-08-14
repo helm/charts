@@ -56,9 +56,12 @@ spec:
             - mountPath: /verdaccio/conf
               name: config
               readOnly: true
+      {{- if .Values.securityContext.enabled }}
       # Allow non-root user to access PersistentVolume
       securityContext:
-        fsGroup: 1000
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      {{- end }}
       volumes:
       - name: config
         configMap:

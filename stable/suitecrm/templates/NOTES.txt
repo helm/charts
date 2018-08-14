@@ -46,12 +46,13 @@ host. To configure SuiteCRM with the URL of your service:
 
 {{- if eq .Values.serviceType "ClusterIP" }}
 
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  echo http://127.0.0.1:8080/
-  kubectl port-forward $POD_NAME 8080:80
+  echo "SuiteCRM URL: http://127.0.0.1:8080/"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "fullname" . }} $POD_NAME 8080:80
+
 {{- else }}
 
-  echo URL : http://{{ include "host" . }}/
+  echo "SuiteCRM URL: http://{{ include "host" . }}/"
+
 {{- end }}
 
 2. Get your SuiteCRM login credentials by running:
