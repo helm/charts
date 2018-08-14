@@ -7,8 +7,6 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  annotations:
-    kubernetes.io/service-account.name: keel
 spec:
   replicas: 1
   template:
@@ -17,8 +15,7 @@ spec:
         app: {{ template "keel.name" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: keel
-      serviceAccount: keel
+      serviceAccountName: {{ template "keel.serviceAccountName" . }}
       containers:
         - name: keel
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
