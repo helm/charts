@@ -37,7 +37,7 @@ $ helm install stable/hlf-couchdb --name cdb1 --set couchdbUsername=couchdb,couc
 
 The above command creates a CouchDB user named `couchdb` with password `secretpassword`.
 
-Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the defualt values.yaml. For example,
+Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the default values.yaml. For example,
 
 ```bash
 $ helm install stable/hlf-couchdb --name cdb1 -f my-values.yaml
