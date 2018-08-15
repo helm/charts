@@ -70,6 +70,7 @@ and their default values.
 | `image.pullPolicy`                 | Image pull policy                                               | `Always` if `image` tag is `latest`, else `IfNotPresent` |
 | `image.repository`                 | RabbitMQ container image repository                             | `rabbitmq`                                               |
 | `image.tag`                        | RabbitMQ container image tag                                    | `3.7-alpine`                                             |
+| `image.pullSecrets`                | Specify docker-registry secret names as an array                | `[]`                                                     |
 | `nodeSelector`                     | Node labels for pod assignment                                  | `{}`                                                     |
 | `persistentVolume.accessMode`      | Persistent volume access modes                                  | `[ReadWriteOnce]`                                        |
 | `persistentVolume.annotations`     | Persistent volume annotations                                   | `{}`                                                     |
