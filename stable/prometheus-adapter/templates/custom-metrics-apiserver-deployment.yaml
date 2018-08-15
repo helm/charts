@@ -22,6 +22,12 @@ spec:
         heritage: {{ .Release.Service }}
       name: {{ template "k8s-prometheus-adapter.name" . }}
     spec:
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["all"]
+        runAsNonRoot: true
+        runAsUser: 10001
       serviceAccountName: {{ template "k8s-prometheus-adapter.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
@@ -43,6 +49,19 @@ spec:
         - --config=/etc/adapter/config.yaml
         ports:
         - containerPort: 6443
+          name: https
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: https
+            scheme: HTTPS
+          initialDelaySeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: https
+            scheme: HTTPS
+          initialDelaySeconds: 30
 {{- if .Values.resources }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -56,6 +75,18 @@ spec:
           name: volume-serving-cert
           readOnly: true
 {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       volumes:
       - name: config
         configMap:
