@@ -1,6 +1,6 @@
 # E-mail domains to authenticate
 emailDomains:
-  - "*" # authenticate all domains
+  - "*"  # authenticate all domains
 
 # Oauth client configuration specifics
 config:
