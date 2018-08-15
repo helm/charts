@@ -21,7 +21,7 @@ data:
 
     /usr/local/bin/kibana-docker $@ &
 
-    echo "waiting up to 30 seconds for kibana to come up..."
+    echo "waiting up to {{ .Values.readinessProbe.initialDelaySeconds }} seconds for kibana to come up..."
 
     for i in {1..{{ .Values.readinessProbe.initialDelaySeconds }}}; do
       curl -Is localhost:5601/api/status | grep "HTTP.*200" > /dev/null && break || sleep 1
