@@ -35,7 +35,7 @@ To connect to your database directly from outside the K8s cluster:
     MYSQL_PORT={{ .Values.service.port }}
 
     # Execute the following command to route the connection:
-    kubectl port-forward svc/{{ template "mysql.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+    kubectl port-forward svc/{{ template "mysql.fullname" . }} {{ .Values.service.port }}
 
     {{- end }}
 
