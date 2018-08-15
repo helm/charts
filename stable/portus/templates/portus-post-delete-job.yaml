@@ -17,6 +17,7 @@ spec:
       name: "{{ .Release.Name }}"
       labels:
         app: {{ template "portus.name" . }}
+        release: {{ .Release.Name | quote }}
         component: portus
     spec:
       restartPolicy: OnFailure
