@@ -11,6 +11,8 @@ kibana:
 
 logstash:
   enabled: true
+  elasticsearch:
+    host: elasticsearch-discovery
 
 fluentd:
   enabled: false
