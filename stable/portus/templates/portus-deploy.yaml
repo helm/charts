@@ -172,11 +172,6 @@ spec:
         env:
           - name: PORTUS_BACKGROUND
             value: "true"
-          - name: PORTUS_LOG_LEVEL
-            valueFrom:
-              configMapKeyRef:
-                name: {{ template "portus.fullname" . }}
-                key: log_level
           {{- if .Values.mariadb.enabled }}
           - name: PORTUS_DB_HOST
             value: {{ template "mariadb.fullname" . }}
