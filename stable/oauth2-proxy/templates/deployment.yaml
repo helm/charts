@@ -34,8 +34,10 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
-        {{- range $domain := .Values.emailDomains }}
+        {{- if .Values.emailDomains }}
+          {{- range $domain := .Values.emailDomains }}
           - --email-domain={{ $domain }}
+          {{- end }}
         {{- end }}
         {{- if .Values.providers.google }}
           - --google-admin-email={{ .Values.providers.google.adminEmail }}
@@ -44,7 +46,7 @@ spec:
           {{- end }}
           - --google-service-account-json=/etc/credentials/google-credentials
         {{- end }}
-        {{ - if .Values.providers.github }}
+        {{- if .Values.providers.github }}
           {{- range $org := .Values.providers.github.orgs }}
           - --github-org={{ $org }}
           {{- end }}

@@ -44,12 +44,12 @@ providers:
   # Additional configuration for the GitHub provider
   # Only required if authentication is limited to certain orgs and teams
   github:
-    # The GitHub orgs to restrict access to
-    orgs:
-      - "xxx"
-    # The GitHub teams to restrict access to
-    teams:
-      - "xxx"
+    # # The GitHub orgs to restrict access to
+    # orgs:
+    #   - "xxx"
+    # # The GitHub teams to restrict access to
+    # teams:
+    #   - "xxx"
 
 image:
   repository: "a5huynh/oauth2_proxy"
