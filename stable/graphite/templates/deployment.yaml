@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "graphite.fullname" . }}
+  labels:
+    app: {{ template "graphite.name" . }}
+    chart: {{ template "graphite.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ template "graphite.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "graphite.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+      - name: create-syncdb
+        image: {{ .Values.image.repository }}
+        command: [ "sh", "-c", "test -f /opt/graphite/storage/graphite.db || /usr/bin/expect /usr/local/bin/django_admin_init.exp"]
+        volumeMounts:
+          - name: {{ template "graphite.fullname" . }}-pvc
+            mountPath: /opt/graphite/storage/
+      containers:
+      - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        name: {{ .Chart.Name }}
+        ports:
+        - name: graphite-gui
+          containerPort: {{ .Values.service.port }}
+        - name: graphite-plain
+          containerPort: 2003
+        - name: graphite-pickle
+          containerPort: 2004
+        - name: aggregate-plain
+          containerPort: 2023
+        - name: aggregate-pickl
+          containerPort: 2024
+        - name: statsd
+          containerPort: 8125
+        - name: statsd-admin
+          containerPort: 8126
+          livenessProbe:
+            httpGet:
+              path: /
+              port: graphite-gui
+          readinessProbe:
+            httpGet:
+              path: /
+              port: graphite-gui
+          resources:
+        volumeMounts:
+          - name: {{ template "graphite.fullname" . }}-configmap
+            mountPath: /opt/graphite/conf/
+          - name: {{ template "graphite.fullname" . }}-pvc
+            mountPath: /opt/graphite/storage/
+      volumes:
+        - name: {{ template "graphite.fullname" . }}-configmap
+          configMap:
+            name: {{ template "graphite.fullname" . }}-configmap
+        - name: {{ template "graphite.fullname" . }}-pvc
+{{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "graphite.fullname" . }}-pvc{{- end }}
+{{- else }}
+          emptyDir: {}
+{{- end }}
+{{- if .Values.resources }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+{{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
