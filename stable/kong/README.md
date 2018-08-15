@@ -60,12 +60,22 @@ and their default values.
 | admin.nodePort                    | Node port when service type is `NodePort`                              |                       |
 | admin.type                        | k8s service type, Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | admin.loadBalancerIP              | Will reuse an existing ingress static IP for the admin service         | `null`                |
+| admin.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               | 
+| admin.ingress.tls                 | Name of secret resource, containing TLS secret                         |                       |
+| admin.ingress.hosts               | List of ingress hosts.                                                 | `[]`                  |
+| admin.ingress.path                | Ingress path.                                                          | `/`                   |
+| admin.ingress.annotations         | Ingress annotations. See documentation for your ingress controller for details | `{}`          |
 | proxy.useTLS                      | Secure Proxy traffic                                                   | `true`                |
 | proxy.servicePort                 | TCP port on which the Kong Proxy Service is exposed                    | `8443`                |
 | proxy.containerPort               | TCP port on which the Kong app listens for Proxy traffic               | `8443`                |
 | proxy.nodePort                    | Node port when service type is `NodePort`                              |                       |
 | proxy.type                        | k8s service type. Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | proxy.loadBalancerIP              | To reuse an existing ingress static IP for the admin service           |                       |
+| proxy.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               | 
+| proxy.ingress.tls                 | Name of secret resource, containing TLS secret                         |                       |
+| proxy.ingress.hosts               | List of ingress hosts.                                                 | `[]`                  |
+| proxy.ingress.path                | Ingress path.                                                          | `/`                   |
+| proxy.ingress.annotations         | Ingress annotations. See documentation for your ingress controller for details | `{}`          |
 | env                               | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)               |
 | runMigrations                     | Run Kong migrations job                                                | `true`                |
 | readinessProbe                    | Kong readiness probe                                                   |                       |
