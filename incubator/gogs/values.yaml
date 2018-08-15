@@ -125,22 +125,6 @@ service:
     ##
     databaseType: postgres
 
-    ## Database host.  Unused unless `postgresql.install` is false.
-    ##
-    databaseHost:
-
-    ## Database user.  Unused unless `postgresql.install` is false.
-    ##
-    databaseUser:
-
-    ## Database password.  Unused unless `postgresql.install` is false.
-    ##
-    databasePassword:
-
-    ## Database password.  Unused unless `postgresql.install` is false.
-    ##
-    databaseName:
-
     ## Hook task queue length, increase if webhook shooting starts hanging
     ##
     webhookQueueLength: 1000
@@ -263,6 +247,10 @@ postgresql:
   ### Install PostgreSQL dependency
   ##
   install: true
+
+  ### PostgreSQL Host to connect (if install=false)
+  ##
+  postgresHost: postgresHost.cluster.local
 
   ### PostgreSQL User to create.
   ##
