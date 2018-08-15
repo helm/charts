@@ -65,7 +65,7 @@ and their default values.
 
 |          Parameter                 |                       Description                               |                         Default                          |
 |------------------------------------|-----------------------------------------------------------------|----------------------------------------------------------|
-| `customConfigMap`                  | Use a custom ConfigMap                                          | `false`                                                  |
+| `existingConfigMap`                  | Use a custom ConfigMap                                          | `false`                                                  |
 | `existingSecret`      | Use an existing secret for password & erlang cookie                 | `""`                                                       |
 | `image.pullPolicy`                 | Image pull policy                                               | `Always` if `image` tag is `latest`, else `IfNotPresent` |
 | `image.repository`                 | RabbitMQ container image repository                             | `rabbitmq`                                               |
@@ -155,7 +155,7 @@ $ helm install --name my-release -f values.yaml stable/rabbitmq-ha
 
 ### Custom ConfigMap
 
-When creating a new chart with this chart as a dependency, `customConfigMap`
+When creating a new chart with this chart as a dependency, `existingConfigMap`
 can be used to override the default configmap.yaml provided. It also allows for
 providing additional configuration files that will be mounted into
 `/etc/rabbitmq`. In the parent chart's values.yaml, set the value to true and
@@ -193,7 +193,7 @@ data:
 Then, install the chart with the above configuration:
 
 ```
-$ helm install --name my-release --set customConfigMap=true stable/rabbitmq-ha
+$ helm install --name my-release --set existingConfigMap=true stable/rabbitmq-ha
 ```
 
 ### Custom Secret
