@@ -1,4 +1,4 @@
-{{- if .Values.DashboardImport.dashboards }}
+{{- if .Values.dashboardImport.dashboards }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  dashboardimport.sh: |
+  dashboardImport.sh: |
     #!/usr/bin/env bash
     #
     # kibana dashboard import script
@@ -30,7 +30,7 @@ data:
     for DASHBOARD_FILE in *; do
       echo -e "\nimporting ${DASHBOARD_FILE}..."
 
-      curl {{ if .Values.DashboardImport.xpackauth.enabled }}--user {{ .Values.DashboardImport.xpackauth.username }}:{{ .Values.DashboardImport.xpackauth.password }}{{ end }} -s --connect-timeout 60 --max-time 60 -XPOST localhost:5601/api/kibana/dashboards/import?force=true -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @./${DASHBOARD_FILE}
+      curl {{ if .Values.dashboardImport.xpackauth.enabled }}--user {{ .Values.dashboardImport.xpackauth.username }}:{{ .Values.dashboardImport.xpackauth.password }}{{ end }} -s --connect-timeout 60 --max-time 60 -XPOST localhost:5601/api/kibana/dashboards/import?force=true -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @./${DASHBOARD_FILE}
 
       if [ "$?" != "0" ]; then
         echo -e "\nimport of ${DASHBOARD_FILE} failed... restarting container..."
@@ -51,7 +51,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-{{- range $key, $value := .Values.DashboardImport.dashboards }}
+{{- range $key, $value := .Values.dashboardImport.dashboards }}
   {{ $key }}: |-
 {{ $value | indent 4 }}
 {{- end -}}

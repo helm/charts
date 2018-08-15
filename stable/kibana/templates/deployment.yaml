@@ -26,15 +26,15 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
-{{- if .Values.DashboardImport.dashboards }}
+{{- if .Values.dashboardImport.dashboards }}
       initContainers:
-      - name: {{ .Chart.Name }}-dashboardimport
+      - name: {{ .Chart.Name }}-dashboardImport
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ["/bin/bash"]
         args:
           - "-c"
-          - "/tmp/dashboardimport.sh"
+          - "/tmp/dashboardImport.sh"
 {{- if .Values.commandline.args }}
 {{ toYaml .Values.commandline.args | indent 10 }}
 {{- end }}
@@ -51,8 +51,8 @@ spec:
         - name: {{ template "kibana.fullname" . }}-dashboards
           mountPath: "/kibanadashboards"
         - name: {{ template "kibana.fullname" . }}-importscript
-          mountPath: "/tmp/dashboardimport.sh"
-          subPath: dashboardimport.sh
+          mountPath: "/tmp/dashboardImport.sh"
+          subPath: dashboardImport.sh
         {{- range $configFile := (keys .Values.files) }}
         - name: {{ template "kibana.name" $ }}
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
@@ -120,7 +120,7 @@ spec:
         - name: {{ template "kibana.name" . }}
           configMap:
             name: {{ template "kibana.fullname" . }}
-{{- if .Values.DashboardImport.dashboards }}
+{{- if .Values.dashboardImport.dashboards }}
         - name: {{ template "kibana.fullname" . }}-dashboards
           configMap:
             name: {{ template "kibana.fullname" . }}-dashboards

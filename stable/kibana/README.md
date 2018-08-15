@@ -66,10 +66,10 @@ The following table lists the configurable parameters of the kibana chart and th
 | `service.annotations`                         | Kubernetes service annotations             | None:                                  |
 | `service.labels`                              | Kubernetes service labels                  | None:                                  |
 | `tolerations`                                 | List of node taints to tolerate            | `[]`                                   |
-| `DashboardImport.xpackauth.enabled`           | Enable Xpack auth                          | `false`                                |
-| `DashboardImport.xpackauth.username`          | Optional Xpack username                    | `myuser`                               |
-| `DashboardImport.xpackauth.password`          | Optional Xpack password                    | `mypass`                               |
-| `DashboardImport.dashboards`                  | Dashboards                                 | `{}`                                   |
+| `dashboardImport.xpackauth.enabled`           | Enable Xpack auth                          | `false`                                |
+| `dashboardImport.xpackauth.username`          | Optional Xpack username                    | `myuser`                               |
+| `dashboardImport.xpackauth.password`          | Optional Xpack password                    | `mypass`                               |
+| `dashboardImport.dashboards`                  | Dashboards                                 | `{}`                                   |
 
 
 
