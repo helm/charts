@@ -28,7 +28,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: post-install-job
-        image: "mvertes/alpine-mongo:{{ .Values.mongodb.image.tag }}-0"
+        image: "{{ .Values.postInstallHook.image.repository }}:{{ .Values.postInstallHook.image.tag }}"
         env:
         - name: MONGODB_ADMIN_PASSWORD
           valueFrom:
