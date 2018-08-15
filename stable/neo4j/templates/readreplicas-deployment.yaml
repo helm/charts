@@ -66,8 +66,6 @@ spec:
         volumeMounts:
         - name: plugins
           mountPath: /plugins
-        securityContext:
-          privileged: true
 {{- if .Values.core.sidecarContainers }}
 {{ toYaml .Values.core.sidecarContainers | indent 6 }}
 {{- end }}
