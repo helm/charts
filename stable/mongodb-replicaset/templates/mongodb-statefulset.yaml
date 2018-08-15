@@ -144,7 +144,7 @@ spec:
 {{ toYaml .Values.extraVars | indent 12 }}
         {{- end }}
           ports:
-            - name: peer
+            - name: mongodb
               containerPort: 27017
           resources:
 {{ toYaml .Values.resources | indent 12 }}
