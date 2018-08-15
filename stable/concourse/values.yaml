@@ -522,7 +522,20 @@ postgresql:
     ## Enable PostgreSQL persistence using Persistent Volume Claims.
     ##
     enabled: true
-
+    ## concourse data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    ## Persistent Volume Access Mode.
+    ##
+    accessMode: ReadWriteOnce
+    ## Persistent Volume Storage Size.
+    ##
+    size: 8Gi
 ## Configuration values for using a Credential Manager. Only one can be enabled.
 ## ref: https://concourse-ci.org/creds.html
 ##
