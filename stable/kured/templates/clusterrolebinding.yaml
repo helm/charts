@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "kured.fullname" . }}
+  labels:
+    app: {{ template "kured.name" . }}
+    chart: {{ template "kured.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "kured.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "kured.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end -}}
