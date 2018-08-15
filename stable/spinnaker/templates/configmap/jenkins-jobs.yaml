@@ -1,4 +1,4 @@
-{{ if .Values.jenkins.enabled -}}
+{{ if or .Values.jenkins.enabled .Values.externalJenkins.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

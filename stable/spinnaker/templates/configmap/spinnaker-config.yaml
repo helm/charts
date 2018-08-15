@@ -442,12 +442,12 @@ data:
         #
         # Note that jenkins is not installed with Spinnaker so you must obtain this
         # on your own if you are interested.
-        enabled: {{ .Values.jenkins.enabled }}
+        enabled: {{ or .Values.jenkins.enabled .Values.externalJenkins.enabled }}
         defaultMaster:
           name: default
-          baseUrl: http://{{ .Release.Name }}-jenkins:8080/
-          username: admin
-          password: admin
+          baseUrl: {{ .Values.externalJenkins.enabled | ternary .Values.externalJenkins.url "http://{{ .Release.Name }}-jenkins:8080/" }}
+          username: {{ .Values.externalJenkins.enabled | ternary .Values.externalJenkins.username .Values.jenkins.username }}
+          password: {{ .Values.externalJenkins.enabled | ternary .Values.externalJenkins.apiKey .Values.jenkins.password }}
 
       redis:
         host: {{ .Release.Name }}-redis

@@ -1,4 +1,4 @@
-{{ if .Values.jenkins.enabled -}}
+{{ if or .Values.jenkins.enabled .Values.externalJenkins.enabled -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -35,13 +35,15 @@ spec:
         - "Content-Type: application/xml"
         - --retry
         - "20"
+        - --user
+        - "{{.Values.externalJenkins.enabled | ternary .Values.externalJenkins.username .Values.jenkins.username }}:{{.Values.externalJenkins.enabled | ternary .Values.externalJenkins.apiKey .Values.jenkins.password }}"
         - --retry-delay
         - "10"
         - --max-time
         - "3"
         - --data-binary
         - "@/jobs/run-script.xml"
-        - "http://{{ .Release.Name }}-jenkins:8080/createItem?name=run-script"
+        - {{ .Values.externalJenkins.enabled | ternary .Values.externalJenkins.url "http://{{ .Release.Name }}-jenkins:8080/createItem?name=run-script" }}
         volumeMounts:
         - name: jenkins-jobs
           mountPath: /jobs
