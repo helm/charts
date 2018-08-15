@@ -3,6 +3,13 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.3.0
+
+### Major Changes
+
+* Add eBPF support for Falco. Falco can now read events via an eBPF program
+  loaded into the kernel instead of the `falco-probe` kernel module.
+
 ## v0.2.1
 
 ### Minor Changes
