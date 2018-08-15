@@ -5,6 +5,7 @@
 ## Statefulset related configurations ss.yaml
 antiAffinity: "hard"
 replicaCount: 3
+nodeSelector: {}
 redis:
   image:
     repository: redis
