@@ -142,4 +142,8 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
     {{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
