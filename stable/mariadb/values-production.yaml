@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.1.34-debian-9
+  tag: 10.1.35-debian-9
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -18,9 +18,15 @@ image:
   #   - myRegistrKeySecretName
 
 service:
-  ## Kubernetes service type
+  ## Kubernetes service type, ClusterIP and NodePort are supported at present
   type: ClusterIP
   port: 3306
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
+  #   master: 30001
+  #   slave: 30002
 
 rootUser:
   ## MariaDB admin password
