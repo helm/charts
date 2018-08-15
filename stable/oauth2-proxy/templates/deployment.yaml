@@ -34,7 +34,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
-        {{- if .Values.emailDomains }}
+        {{- if (not (index .Values.extraArgs "email-domain")) and (.Values.emailDomains) }}
           {{- range $domain := .Values.emailDomains }}
           - --email-domain={{ $domain }}
           {{- end }}
