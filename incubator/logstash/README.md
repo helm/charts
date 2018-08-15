@@ -77,6 +77,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `image.repository`          | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
 | `image.tag`                 | Container image tag                                | `6.3.2`                                          |
 | `image.pullPolicy`          | Container image pull policy                        | `IfNotPresent`                                   |
+| `image.pullSecrets`	      | Container image pull secrets			   		   | `nil`											  |
 | `service.type`              | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.annotations`       | Service annotations                                | `{}`                                             |
 | `service.ports`             | Ports exposed by service                           | beats                                            |

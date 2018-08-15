@@ -10,6 +10,9 @@ image:
   repository: docker.elastic.co/logstash/logstash-oss
   tag: 6.3.2
   pullPolicy: IfNotPresent
+  ## Add secrets manually via kubectl on kubernetes cluster and reference here
+  #  pullSecrets:
+  #    - name: "myKubernetesSecret"
 
 service:
   type: ClusterIP
