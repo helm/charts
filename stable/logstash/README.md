@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install incubator/logstash
+$ helm install stable/logstash
 ```
 
 ## Installing the Chart
@@ -13,7 +13,7 @@ $ helm install incubator/logstash
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/logstash
+$ helm install --name my-release stable/logstash
 ```
 
 ## Uninstalling the Chart
