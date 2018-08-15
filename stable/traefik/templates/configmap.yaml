@@ -29,6 +29,7 @@ data:
     [entryPoints]
       [entryPoints.http]
       address = ":80"
+      compress = {{ .Values.gzip.enabled }}
       {{- if .Values.whiteListSourceRange }}
       {{ template "traefik.whiteListSourceRange" . }}
       {{- end }}
@@ -36,7 +37,6 @@ data:
         [entryPoints.http.proxyProtocol]
         {{ template "traefik.trustedips" . }}
       {{- end }}
-      compress = {{ .Values.gzip.enabled }}
         {{- if .Values.ssl.enforced }}
         [entryPoints.http.redirect]
           regex = "^http://(.*)"
@@ -48,11 +48,12 @@ data:
       {{ template "traefik.whiteListSourceRange" . }}
       {{- end }}
       address = ":443"
+      compress = {{ .Values.gzip.enabled }}
       {{- if .Values.proxyProtocol.enabled }}
         [entryPoints.https.proxyProtocol]
         {{ template "traefik.trustedips" . }}
       {{- end }}
-      compress = {{ .Values.gzip.enabled }}
+      {{- if not .Values.ssl.upstream }}
         [entryPoints.https.tls]
           {{- if .Values.ssl.tlsMinVersion }}
           minVersion = "{{ .Values.ssl.tlsMinVersion }}"
@@ -60,6 +61,7 @@ data:
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
+      {{- end }}
       {{- else }}
       [entryPoints.httpn]
       {{- if .Values.whiteListSourceRange }}
@@ -70,6 +72,9 @@ data:
       {{- end }}
     [kubernetes]
     {{- if .Values.kubernetes}}
+      {{- if .Values.kubernetes.endpoint }}
+    endpoint = {{ .Values.kubernetes.endpoint | quote }}
+      {{- end}}
       {{- if .Values.kubernetes.namespaces }}
     namespaces = [
         {{- range $idx, $element := .Values.kubernetes.namespaces }}
@@ -90,12 +95,88 @@ data:
     {{- if .Values.accessLogs.filePath }}
     filePath = "{{ .Values.accessLogs.filePath }}"
     {{- end}}
-    format = "{{ .Values.accessLogs.format }}"
+      format = "{{ .Values.accessLogs.format }}"
+    [accessLog.fields]
+      defaultMode = {{ .Values.accessLogs.fields.defaultMode | quote }}
+    [accessLog.fields.names]
+    {{- range $field, $action := .Values.accessLogs.fields.names }}
+      {{ printf "\"%s\" = \"%s\"" $field $action }}
     {{- end}}
+    [accessLog.fields.headers]
+      defaultMode = {{ .Values.accessLogs.fields.headers.defaultMode | quote }}
+    [accessLog.fields.headers.names]
+    {{- range $header, $action := .Values.accessLogs.fields.headers.names }}
+      {{ printf "\"%s\" = \"%s\"" $header $action }}
+    {{- end}}
+    {{- end}}
+    {{- if .Values.kvprovider.etcd }}
+    [etcd]
+    endpoint = "{{ .Values.kvprovider.etcd.endpoint }}"
+    watch = {{ .Values.kvprovider.etcd.watch }}
+    prefix = "{{ .Values.kvprovider.etcd.prefix }}"
+    useAPIV3 = {{ .Values.kvprovider.etcd.useAPIV3 }}
+    {{- if .Values.kvprovider.etcd.username }}username = {{ .Values.kvprovider.etcd.username }}{{- end }}
+    {{- if .Values.kvprovider.etcd.password }}password = {{ .Values.kvprovider.etcd.password }}{{- end }}
+      {{- if .Values.kvprovider.etcd.tls }}
+      [etcd.tls]
+      {{- end }}
+      {{ range $key, $value := .Values.kvprovider.etcd.tls }}
+      {{ $key }} = {{ $value }}
+      {{ end }}
+    {{- end }}
+    {{- if .Values.kvprovider.consul }}
+    [consul]
+    endpoint = "{{ .Values.kvprovider.consul.endpoint }}"
+    watch = {{ .Values.kvprovider.consul.watch }}
+    prefix = {{ .Values.kvprovider.consul.prefix }}
+    {{- if .Values.kvprovider.consul.username }}username = {{ .Values.kvprovider.consul.username }}{{- end }}
+    {{- if .Values.kvprovider.consul.password }}password = {{ .Values.kvprovider.consul.password }}{{- end }}
+      {{- if .Values.kvprovider.consul.tls }}
+      [consul.tls]
+      {{- end }}
+      {{ range $key, $value := .Values.kvprovider.consul.tls }}
+      {{ $key }} = {{ $value }}
+      {{ end }}
+    {{- end }}
+    {{- if .Values.kvprovider.boltdb }}
+    [boltdb]
+    endpoint = "{{ .Values.kvprovider.boltdb.endpoint }}"
+    watch = {{ .Values.kvprovider.boltdb.watch }}
+    prefix = {{ .Values.kvprovider.boltdb.prefix }}
+    {{- if .Values.kvprovider.boltdb.username }}username = {{ .Values.kvprovider.boltdb.username }}{{- end }}
+    {{- if .Values.kvprovider.boltdb.password }}password = {{ .Values.kvprovider.boltdb.password }}{{- end }}
+      {{- if .Values.kvprovider.boltdb.tls }}
+      [boltdb.tls]
+      {{- end }}
+      {{ range $key, $value := .Values.kvprovider.boltdb.tls }}
+      {{ $key }} = {{ $value }}
+      {{ end }}
+    {{- end }}
+    {{- if .Values.kvprovider.zookeeper }}
+    [zookeeper]
+    endpoint = "{{ .Values.kvprovider.zookeeper.endpoint }}"
+    watch = {{ .Values.kvprovider.zookeeper.watch }}
+    prefix = {{ .Values.kvprovider.zookeeper.prefix }}
+    {{- if .Values.kvprovider.zookeeper.username }}username = {{ .Values.kvprovider.zookeeper.username }}{{- end }}
+    {{- if .Values.kvprovider.zookeeper.password }}password = {{ .Values.kvprovider.zookeeper.password }}{{- end }}
+      {{- if .Values.kvprovider.zookeeper.tls }}
+      [zookeeper.tls]
+      {{- end }}
+      {{ range $key, $value := .Values.kvprovider.zookeeper.tls }}
+      {{ $key }} = {{ $value }}
+      {{ end }}
+    {{- end }}
     {{- if .Values.acme.enabled }}
     [acme]
     email = "{{ .Values.acme.email }}"
+    {{- if .Values.kvprovider.storeAcme }}
+    storage = "traefik/acme/account"
+    {{- if .Values.kvprovider.importAcme }}
+    storageFile = "/acme/acme.json"
+    {{- end }}
+    {{- else }}
     storage = "/acme/acme.json"
+    {{- end }}
     entryPoint = "https"
     onHostRule = true
     {{- if .Values.acme.staging }}
@@ -107,6 +188,9 @@ data:
     {{- if eq .Values.acme.challengeType "dns-01" }}
       [acme.dnsChallenge]
       provider = "{{ .Values.acme.dnsProvider.name }}"
+      {{- if .Values.acme.delayBeforeCheck }}
+      delayBeforeCheck = {{ .Values.acme.delayBeforeCheck }}
+      {{- end }}
     {{- else if eq .Values.acme.challengeType "http-01" }}
       [acme.httpChallenge]
       entryPoint = "http"
@@ -161,4 +245,39 @@ data:
       {{- if .Values.metrics.statsd.pushinterval }}
       pushinterval = {{ .Values.metrics.statsd.pushinterval | quote }}
       {{- end}}
+    {{- end }}
+    {{- if .Values.tracing.enabled }}
+    [tracing]
+      backend = {{ .Values.tracing.backend | quote }}
+      serviceName = {{ .Values.tracing.serviceName | quote}}
+      {{- if eq .Values.tracing.backend "jaeger" }}
+      [tracing.jaeger]
+        {{- if .Values.tracing.jaeger.localAgentHostPort }}
+        localAgentHostPort = {{ .Values.tracing.jaeger.localAgentHostPort | quote }}
+        {{- end }}
+        {{- if .Values.tracing.jaeger.samplingServerUrl }}
+        samplingServerUrl = {{ .Values.tracing.jaeger.samplingServerUrl | quote }}
+        {{- end }}
+        {{- if .Values.tracing.jaeger.samplingType }}
+        samplingType = {{ .Values.tracing.jaeger.samplingType | quote }}
+        {{- end }}
+        {{- if ne (.Values.tracing.jaeger.samplingParam | quote) "" }}
+        samplingParam = {{ .Values.tracing.jaeger.samplingParam }}
+        {{- end }}
+      {{- end }}
+      {{- if eq .Values.tracing.backend "zipkin" }}
+      [tracing.zipkin]
+        {{- if .Values.tracing.zipkin.httpEndpoint }}
+        httpEndpoint = {{ .Values.tracing.zipkin.httpEndpoint | quote }}
+        {{- end }}
+        {{- if ne (.Values.tracing.zipkin.debug | quote) "" }}
+        debug = {{ .Values.tracing.zipkin.debug }}
+        {{- end }}
+        {{- if ne (.Values.tracing.zipkin.sameSpan | quote) "" }}
+        sameSpan = {{ .Values.tracing.zipkin.sameSpan }}
+        {{- end }}
+        {{- if ne (.Values.tracing.zipkin.id128bit | quote) "" }}
+        id128bit = {{ .Values.tracing.zipkin.id128bit }}
+        {{- end }}
+      {{- end }}
     {{- end }}
