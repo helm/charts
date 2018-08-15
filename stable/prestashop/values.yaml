@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/prestashop
-  tag: 1.7.4-0-debian-9
+  tag: 1.7.4-2-debian-9
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -133,6 +133,15 @@ mariadb:
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
 ##
 serviceType: LoadBalancer
+
+## Set external traffic policy to: "Local" to preserve source IP on providers supporting it
+## ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-type-nodeport
+externalTrafficPolicy: Local
+
+## Control where client requests go, to the same pod or round-robin
+## Values: ClientIP or None
+## ref: https://kubernetes.io/docs/user-guide/services/
+sessionAffinity: "None"
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
