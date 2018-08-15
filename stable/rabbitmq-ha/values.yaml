@@ -59,6 +59,18 @@ rabbitmqAuth:
     # auth_mechanisms.2 = AMQPLAIN
     # auth_mechanisms.3 = EXTERNAL
 
+## Authentication backend
+## Ref: https://github.com/rabbitmq/rabbitmq-auth-backend-http
+rabbitmqAuthHTTP:
+  enabled: false
+
+  config: |
+    # auth_backends.1 = http
+    # auth_http.user_path     = http://some-server/auth/user
+    # auth_http.vhost_path    = http://some-server/auth/vhost
+    # auth_http.resource_path = http://some-server/auth/resource
+    # auth_http.topic_path    = http://some-server/auth/topic
+
 ## LDAP Plugin
 ## Ref: http://www.rabbitmq.com/ldap.html
 rabbitmqLDAPPlugin:
