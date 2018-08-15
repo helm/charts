@@ -220,6 +220,10 @@ spec:
                   values:
                   - "{{ .Release.Name }}-{{ .Values.Component }}"
               topologyKey: kubernetes.io/hostname
+      {{- if .Values.NodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.NodeSelector | indent 8 }}
+      {{- end }}
       containers:
       - name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
