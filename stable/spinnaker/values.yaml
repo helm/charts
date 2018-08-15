@@ -125,7 +125,7 @@ gcs:
 jenkins:
   enabled: true
   username: admin
-  password: admin
+  password: change-this-password-please
 
   Master:
     Cpu: "500m"
@@ -141,7 +141,7 @@ jenkins:
 
 # If you already have a jenkins install you want to hook into, set jenkins.enabled to false and externalJenkins.enabled to true
 externalJenkins:
-        enabled: false
-        username: spinnaker
-        apiToken: apitokenstring
-        url: https://jenkins.example.com
+  enabled: false
+  username: spinnaker
+  apiToken: apitokenstring
+  url: https://jenkins.example.com

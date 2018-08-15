@@ -35,8 +35,10 @@ spec:
         - "Content-Type: application/xml"
         - --retry
         - "20"
+        {{- if .Values.externalJenkins.enabled }}
         - --user
-        - "{{.Values.externalJenkins.enabled | ternary .Values.externalJenkins.username .Values.jenkins.username }}:{{.Values.externalJenkins.enabled | ternary .Values.externalJenkins.apiKey .Values.jenkins.password }}"
+        - "{{ .Values.externalJenkins.username }}:{{ .Values.externalJenkins.apiKey }}"
+        {{- end }}
         - --retry-delay
         - "10"
         - --max-time

@@ -135,7 +135,7 @@ data:
                   sh &apos;gcloud docker -- push $IMAGE_REPO:$IMAGE_TAG&apos;
               }
               archiveArtifacts &apos;properties&apos;
-          }
+        }
       }
       </script>
           <sandbox>true</sandbox>
