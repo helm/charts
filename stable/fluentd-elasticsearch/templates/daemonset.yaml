@@ -66,7 +66,11 @@ spec:
         - name: libsystemddir
           mountPath: /host/lib
           readOnly: true
+{{- if .Values.configVolumeName }}
+        - name: {{ .Values.configVolumeName }}
+{{- else }}
         - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
+{{- end }}
           mountPath: /etc/fluent/config.d
         ports:
 {{- range $port := .Values.service.ports }}
