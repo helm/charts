@@ -22,7 +22,7 @@ serviceAccount:
 
 server:
   image: springcloud/spring-cloud-dataflow-server-kubernetes
-  version: 1.6.0.RELEASE
+  version: 1.6.1.RELEASE
   imagePullPolicy: IfNotPresent
   service:
     type: LoadBalancer
@@ -37,7 +37,7 @@ server:
 
 skipper:
   image: springcloud/spring-cloud-skipper-server
-  version: 1.0.8.RELEASE
+  version: 1.0.9.RELEASE
   imagePullPolicy: IfNotPresent
   platformName: minikube
   service:
