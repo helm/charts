@@ -1,0 +1,11 @@
+apiVersion: v1
+appVersion: "master-c42fff3"
+description: A Helm chart for kured
+name: kured
+version: 0.1.0
+home: https://github.com/weaveworks/kured
+maintainers:
+  - name: plumdog
+    email: plummer574@gmail.com
+sources:
+  - https://github.com/weaveworks/kured
