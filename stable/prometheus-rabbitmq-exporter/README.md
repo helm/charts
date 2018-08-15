@@ -57,7 +57,7 @@ The following table lists the configurable parameters and their default values.
 | `rabbitmq.capabilities`  | comma-separated list of capabilities supported by the RabbitMQ server  | `bert,no_sort`            |
 | `rabbitmq.include_queues`| regex queue filter. just matching names are exported                   | `.*`                      |
 | `rabbitmq.skip_queues`   | regex, matching queue names are not exported                           | `.*`                      |
-| `annotation`             | pod annotations for easier discovery                                   | {}                        |
+| `annotations`             | pod annotations for easier discovery                                   | {}                        |
 
 For more information please refer to the [rabbitmq_exporter](https://github.com/kbudde/rabbitmq_exporter) documentation.
 
