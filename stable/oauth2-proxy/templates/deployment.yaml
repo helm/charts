@@ -34,36 +34,36 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
-        {{- if (not (index .Values.extraArgs "email-domain")) and (.Values.emailDomains) }}
-          {{- range $domain := .Values.emailDomains }}
+{{- if (not (index .Values.extraArgs "email-domain")) and (.Values.emailDomains) }}
+  {{- range $domain := .Values.emailDomains }}
           - --email-domain={{ $domain }}
-          {{- end }}
-        {{- end }}
-        {{- if .Values.providers.google }}
+  {{- end }}
+{{- end }}
+{{- if .Values.providers.google }}
           - --google-admin-email={{ .Values.providers.google.adminEmail }}
-          {{- range $group := .Values.providers.google.groups }}
+  {{- range $group := .Values.providers.google.groups }}
           - --google-group={{ $group }}
-          {{- end }}
+  {{- end }}
           - --google-service-account-json=/etc/credentials/google-credentials
-        {{- end }}
-        {{- if .Values.providers.github }}
-          {{- range $org := .Values.providers.github.orgs }}
+{{- end }}
+{{- if .Values.providers.github }}
+  {{- range $org := .Values.providers.github.orgs }}
           - --github-org={{ $org }}
-          {{- end }}
-          {{- range $team := .Values.providers.github.teams }}
+  {{- end }}
+  {{- range $team := .Values.providers.github.teams }}
           - --github-team={{ $team }}
-          {{- end }}
-        {{- end }}
-        {{- range $key, $value := .Values.extraArgs }}
-          {{- if $value }}
+  {{- end }}
+{{- end }}
+{{- range $key, $value := .Values.extraArgs }}
+  {{- if $value }}
           - --{{ $key }}={{ $value }}
-          {{- else }}
+  {{- else }}
           - --{{ $key }}
-          {{- end }}
-        {{- end }}
-        {{- if .Values.config.configFile }}
+  {{- end }}
+{{- end }}
+{{- if .Values.config.configFile }}
           - --config=/etc/oauth2_proxy/oauth2_proxy.cfg
-        {{- end }}
+{{- end }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:

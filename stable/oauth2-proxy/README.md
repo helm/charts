@@ -45,6 +45,7 @@ Parameter | Description | Default
 `config.clientSecret` | oauth client secret | `""`
 `config.cookieSecret` | server specific cookie for the secret; create a new one with `python -c 'import os,base64; print base64.b64encode(os.urandom(16))'` | `""`
 `config.configFile` | custom [oauth2_proxy.cfg](https://github.com/bitly/oauth2_proxy/blob/master/contrib/oauth2_proxy.cfg.example) contents for settings not overridable via environment nor command line | `""`
+`emailDomains` | list of domains to authenticate | \- "*"
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `a5huynh/oauth2_proxy`
@@ -53,7 +54,8 @@ Parameter | Description | Default
 `ingress.enabled` | enable ingress | `false`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
-`podLabels` | additional labesl to add to each pod | `{}`
+`podLabels` | additional labels to add to each pod | `{}`
+`providers` | provider-specific configuration options, detailed below | None
 `replicaCount` | desired number of pods | `1`
 `resources` | pod resource requests & limits | `{}`
 `priorityClassName` | priorityClassName | `nil` 
@@ -75,3 +77,21 @@ $ helm install stable/oauth2-proxy --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Provider configurations
+#### Google
+> **Tip**: This is only needed if authentication needs to be limited to specific groups
+
+Parameter | Description
+---|---
+`providers.google.adminEmail` | e-mail of admin to impersonate
+`providers.google.groups` | list of groups to authenticate
+`providers.google.jsonCredentials` | contents of the JSON credentials file for the service account
+
+#### GitHub
+> **Tip**: This is only needed if authentication needs to be limited to specific orgs or teams
+
+Parameter | Description
+--- | ---
+`providers.github.orgs` | list of orgs to authenticate
+`providers.github.teams` | list of teams to authenticate
