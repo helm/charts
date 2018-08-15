@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ template "portus.fullname" . }}"
+  name: {{ template "portus.fullname" . }}
   labels:
     app: "{{ template "portus.name" . }}"
     chart: {{ template "portus.chart" . }}
@@ -121,7 +121,7 @@ data:
 
     # By default require ssl to be enabled when running on production
     check_ssl_usage:
-      enabled: true
+      enabled: {{ .Values.portus.tls.enabled }}
 
     # Contains advanced options that tweak how Portus interacts with the
     # Registry. Don't touch any of these values unless you *really* know what you

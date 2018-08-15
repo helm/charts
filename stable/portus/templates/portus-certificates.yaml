@@ -1,0 +1,19 @@
+{{- if .Values.portus.tls.enabled }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "{{ .Values.portus.fqdn }}"
+  labels:
+    app: "{{ template "portus.name" . }}"
+    chart: {{ template "portus.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: portus
+type: Opaque
+data:
+  key: {{ .Values.portus.tls.key | b64enc | quote }}
+  cert: {{ .Values.portus.tls.cert | b64enc | quote }}
+{{- if .Values.portus.tls.portusCA }}
+  portus-ca: {{ .Values.portus.tls.portusCA | b64enc | quote }}
+{{- end }}
+{{- end }}

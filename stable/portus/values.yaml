@@ -81,6 +81,16 @@ portus:
     # nodePort:
     annotations: {}
     # foo.io/bar: "true"
+  tls:
+    enabled: false
+    ## must include key if using tls
+    ##
+    # key:
+    ## must include certificate if using tls
+    ##
+    # cert:
+    ## include ca crt if needed
+    # portusCA:
   ingress:
     annotations:
       # kubernetes.io/ingress.class: nginx

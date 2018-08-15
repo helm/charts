@@ -1,3 +1,4 @@
+{{- if .Values.portus.ingress.enabled }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -25,3 +26,4 @@ spec:
           serviceName: {{ template "portus.fullname" . }}
           servicePort: 443
         path: /
+{{- end }}

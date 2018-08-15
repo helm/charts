@@ -30,6 +30,10 @@ spec:
       - name: "portus"
         image: "{{ .Values.portus.image.repository }}:{{ .Values.portus.image.tag }}"
         imagePullPolicy: {{ .Values.portus.image.pullPolicy }}
+{{- if eq false .Values.portus.tls.enabled }}
+        command: ["/bin/bash"]
+        args: ["-c", "openssl genrsa -out /secrets/portus.key 3072;/init"]
+{{- end }}
         env:
         - name: REGISTRY_SSL_ENABLED
           value: "true"
@@ -150,13 +154,11 @@ spec:
         resources:
 {{ toYaml .Values.portus.resources | indent 10 }}
         volumeMounts:
-        - mountPath: /certificates/portus-ca.crt
-          name: tls-cert
-          subPath: portus-ca.crt
+        - name: certificates
+          mountPath: /certificates
           readOnly: true
-        - mountPath: /secrets/portus.key
-          name: tls-cert
-          subPath: portus.key
+        - name: secrets
+          mountPath: /secrets
           readOnly: true
         - mountPath: /srv/Portus/config/config.yml
           name: config
@@ -224,13 +226,11 @@ spec:
         resources:
 {{ toYaml .Values.portus.background.resources | indent 12 }}
         volumeMounts:
-        - mountPath: /certificates/portus-ca.crt
-          name: tls-cert
-          subPath: portus-ca.crt
+        - name: certificates
+          mountPath: /certificates
           readOnly: true
-        - mountPath: /secrets/portus.key
-          name: tls-cert
-          subPath: portus.key
+        - name: secrets
+          mountPath: /secrets
           readOnly: true
         - mountPath: /srv/Portus/config/config.yml
           name: config
@@ -243,15 +243,31 @@ spec:
         # wwwrun(30) is member in group web(8)
         runAsUser: 30
       volumes:
-      - name: tls-cert
+{{- if .Values.portus.tls.enabled }}
+      - name: certificates
         secret:
           defaultMode: 440
-          secretName: {{ .Values.portus.fqdn }}.tls
+          secretName: "{{ .Values.portus.fqdn }}"
           items:
-          - key: tls.crt
-            path: portus-ca.crt
-          - key: tls.key
-            path: portus.key
+            - key: cert
+              path: portus.crt
+            {{- if .Values.portus.tls.portusCA }}
+            - key: portus-ca
+              path: portus-ca.crt
+            {{- end }}
+      - name: secrets
+        secret:
+          defaultMode: 440
+          secretName: "{{ .Values.portus.fqdn }}"
+          items:
+            - key: key
+              path: portus.key
+{{- else }}
+      - name: certificates
+        emptyDir: {}
+      - name: secrets
+        emptyDir: {}
+{{- end }}
       - name: config
         configMap:
           name: {{ template "portus.fullname" . }}
