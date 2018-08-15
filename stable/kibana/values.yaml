@@ -6,7 +6,7 @@ image:
 commandline:
   args:
 
-env:
+env: {}
   # All Kibana configuration options are adjustable via env vars.
   # To adjust a config option to an env var uppercase + replace `.` with `_`
   # Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
