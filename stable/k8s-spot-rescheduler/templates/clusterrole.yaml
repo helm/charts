@@ -24,6 +24,7 @@ rules:
       - events
     verbs:
       - create
+      - patch
 
   # For listing and watching items
   - apiGroups:
@@ -45,7 +46,7 @@ rules:
   - apiGroups:
     - apps
     resources:
-       - statefulsets
+      - statefulsets
     verbs:
       - list
       - get
@@ -53,7 +54,7 @@ rules:
   - apiGroups:
     - extensions
     resources:
-       - replicasets
+      - replicasets
     verbs:
       - list
       - get
@@ -61,7 +62,7 @@ rules:
   - apiGroups:
     - policy
     resources:
-       - poddisruptionbudgets
+      - poddisruptionbudgets
     verbs:
       - list
       - get
@@ -71,13 +72,22 @@ rules:
   - apiGroups:
     - ""
     resources:
-       - nodes
+      - nodes
     verbs:
       - update
   - apiGroups:
     - ""
     resources:
-       - pods/eviction
+      - pods/eviction
     verbs:
       - create
+
+  - apiGroups:
+      - storage.k8s.io
+    resources:
+      - storageclasses
+    verbs:
+      - list
+      - get
+      - watch
 {{- end }}
