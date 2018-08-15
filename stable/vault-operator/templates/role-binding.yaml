@@ -10,7 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
 subjects:
 - kind: ServiceAccount
-  name: {{ template "serviceAccountName" . }}
+  name: {{ template "vault-operator.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
