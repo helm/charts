@@ -38,6 +38,10 @@ spec:
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
       containers:
 
         ## logstash
