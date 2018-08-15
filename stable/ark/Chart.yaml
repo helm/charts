@@ -12,3 +12,4 @@ maintainers:
     email: d-caruso@hotmail.it
   - name: unguiculus
     email: unguiculus@gmail.com
+tillerVersion: ">=2.10.0"
