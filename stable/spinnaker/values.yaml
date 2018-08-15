@@ -120,7 +120,7 @@ gcs:
 # igor component of Spinnaker. For more info about the Jenkins integration
 # with Spinnaker, visit:
 #   https://www.spinnaker.io/setup/ci/jenkins/
-# 
+#
 # If you want to use an external version of jenkins, set jenkins.enabled to false and edit externalJenkins below.
 jenkins:
   enabled: true
