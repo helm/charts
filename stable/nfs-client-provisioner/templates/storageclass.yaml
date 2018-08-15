@@ -15,4 +15,6 @@ metadata:
 provisioner: {{ template "nfs-client-provisioner.provisionerName" . }}
 allowVolumeExpansion: {{ .Values.storageClass.allowVolumeExpansion }}
 reclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
+parameters:
+  archiveOnDelete: "{{ .Values.storageClass.archiveOnDelete }}"
 {{ end -}}
