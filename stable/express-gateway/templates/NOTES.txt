@@ -1,0 +1,43 @@
+1. Express Gateway Admin can be accessed inside the cluster using:
+     DNS={{ template "eg.fullname" . }}-admin.{{ .Release.Namespace }}.svc.cluster.local
+     PORT={{ .Values.admin.servicePort }}
+
+To connect from outside the K8s cluster:
+   {{- if contains "LoadBalancer" .Values.admin.type }}
+     HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "eg.fullname" . }}-admin -o jsonpath='{.status.loadBalancer.ingress.ip}')
+     PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "eg.fullname" . }}-admin -o jsonpath='{.spec.ports[0].nodePort}')
+
+   {{- else if contains "NodePort" .Values.admin.type }}
+     HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath='{.items[0].status.addresses[0].address}')
+     PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "eg.fullname" . }}-admin -o jsonpath='{.spec.ports[0].nodePort}')
+
+   {{- else if contains "ClusterIP" .Values.admin.type }}
+     HOST=127.0.0.1
+
+     # Execute the following commands to route the connection to Admin SSL port:
+     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "release={{ .Release.Name }}, app={{ template "eg.name" . }}" -o jsonpath="{.items[0].metadata.name}")
+     kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.admin.servicePort }}:{{ .Values.admin.servicePort }}
+   {{- end }}
+
+
+2. Express Gateway Proxy can be accessed inside the cluster using:
+     DNS={{ template "eg.fullname" . }}-proxy.{{ .Release.Namespace }}.svc.cluster.local
+     PORT={{ .Values.proxy.servicePort }}
+
+
+To connect from outside the K8s cluster:
+   {{- if contains "LoadBalancer" .Values.proxy.type }}
+     HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "eg.fullname" . }}-proxy -o jsonpath='{.status.loadBalancer.ingress.ip}')
+     PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "eg.fullname" . }}-proxy -o jsonpath='{.spec.ports[0].nodePort}')
+
+   {{- else if contains "NodePort" .Values.proxy.type }}
+     HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath='{.items[0].status.addresses[0].address}')
+     PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "eg.fullname" . }}-proxy -o jsonpath='{.spec.ports[0].nodePort}')
+
+   {{- else if contains "ClusterIP" .Values.proxy.type }}
+     HOST=127.0.0.1
+
+     # Execute the following commands to route the connection to proxy SSL port:
+     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "release={{ .Release.Name }}, app={{ template "eg.name" . }}" -o jsonpath="{.items[0].metadata.name}")
+     kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.proxy.servicePort }}:{{ .Values.proxy.servicePort }}
+   {{- end }}
