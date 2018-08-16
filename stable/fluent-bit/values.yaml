@@ -41,6 +41,14 @@ backend:
     tls_ca: ""
     # TLS debugging levels = 1-5
     tls_debug: 1
+  splunk:
+    host: 127.0.0.1
+    port: 8088
+    token: ""
+    send_raw: "on"
+    tls: "on"
+    tls_verify: "off"
+    message_key: "kubernetes"
 
   ##
   ## Ref: http://fluentbit.io/documentation/current/output/http.html
