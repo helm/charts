@@ -6,6 +6,8 @@ podDisruptionBudget:
 updateStrategy:
   type: RollingUpdate
 
+terminationGracePeriodSeconds: 30
+
 image:
   repository: docker.elastic.co/logstash/logstash-oss
   tag: 6.3.2
