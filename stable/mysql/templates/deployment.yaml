@@ -58,6 +58,10 @@ spec:
           value: {{ default "" .Values.mysqlUser | quote }}
         - name: MYSQL_DATABASE
           value: {{ default "" .Values.mysqlDatabase | quote }}
+        {{- if .Values.timezone }}
+        - name: TZ
+          value: {{ .Values.timezone }}
+        {{- end }}
         ports:
         - name: mysql
           containerPort: 3306
