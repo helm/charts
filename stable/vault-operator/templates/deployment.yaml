@@ -19,7 +19,7 @@ spec:
         app: {{ template "vault-operator.name" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ template "serviceAccountName" . }}
+      serviceAccountName: {{ template "vault-operator.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
