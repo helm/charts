@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "eg.fullname" . }}-admin
+  annotations:
+    {{- range $key, $value := .Values.admin.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  labels:
+    app: {{ template "eg.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.admin.type }}
+  {{- if and (eq .Values.admin.type "LoadBalancer") .Values.admin.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.admin.loadBalancerIP }}
+  {{- end }}
+  ports:
+  - name: eg-admin
+    port: {{ .Values.admin.servicePort }}
+    targetPort: {{ .Values.admin.containerPort }}
+  {{- if (and (eq .Values.admin.type "NodePort") (not (empty .Values.admin.nodePort))) }}
+    nodePort: {{ .Values.admin.nodePort }}
+  {{- end }}
+    protocol: TCP
+  selector:
+    app: {{ template "eg.name" . }}
+    release: {{ .Release.Name }}
