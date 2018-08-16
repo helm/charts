@@ -44,48 +44,52 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the MySQL chart and their default values.
 
-| Parameter                            | Description                               | Default                                              |
-| ------------------------------------ | ----------------------------------------- | ---------------------------------------------------- |
-| `image`                              | `mysql` image repository.                 | `mysql`                                              |
-| `imageTag`                           | `mysql` image tag.                        | `5.7.14`                                             |
-| `imagePullPolicy`                    | Image pull policy                         | `IfNotPresent`                                       |
-| `existingSecret`                     | Use Existing secret for Password details  | `nil`                                                |
-| `mysqlRootPassword`                  | Password for the `root` user. Ignored if existing secret is provided      | Random 10 characters |
-| `mysqlUser`                          | Username of new user to create.           | `nil`                                                |
-| `mysqlPassword`                      | Password for the new user. Ignored if existing secret is provided         | Random 10 characters |
-| `mysqlDatabase`                      | Name for new database to create.          | `nil`                                                |
-| `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 30                                                   |
-| `livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
-| `livenessProbe.timeoutSeconds`       | When the probe times out                  | 5                                                    |
-| `livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
-| `livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3 |
-| `readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 5                                                    |
-| `readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                   |
-| `readinessProbe.timeoutSeconds`      | When the probe times out                  | 1                                                    |
-| `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
-| `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3 |
-| `persistence.enabled`                | Create a volume to store data             | true                                                 |
-| `persistence.size`                   | Size of persistent volume claim           | 8Gi RW                                               |
-| `persistence.storageClass`           | Type of persistent volume claim           | nil  (uses alpha storage class annotation)           |
-| `persistence.accessMode`             | ReadWriteOnce or ReadOnly                 | ReadWriteOnce                                        |
-| `persistence.existingClaim`          | Name of existing persistent volume        | `nil`                                                |
-| `persistence.subPath`                | Subdirectory of the volume to mount       | `nil`                                                |
-| `nodeSelector`                       | Node labels for pod assignment            | {}                                                   |
-| `metrics.enabled`                    | Start a side-car prometheus exporter      | `false`                                              |
-| `metrics.image`                      | Exporter image                            | `prom/mysqld-exporter`                               |
-| `metrics.imageTag`                   | Exporter image                            | `v0.10.0`                                            |
-| `metrics.imagePullPolicy`            | Exporter image pull policy                | `IfNotPresent`                                       |
-| `metrics.resources`                  | Exporter resource requests/limit          | `nil`                                                |
-| `resources`                          | CPU/Memory resource requests/limits       | Memory: `256Mi`, CPU: `100m`                         |
-| `configurationFiles`                 | List of mysql configuration files         | `nil`                                                |
-| `ssl.enabled`                        | Setup and use SSL for MySQL connections   | `false`                                              |
-| `ssl.secret`                         | Name of the secret containing the SSL certificates                             | mysql-ssl-certs |
-| `ssl.certificates[0].name`           | Name of the secret containing the SSL certificates                                       | `nil` |
-| `ssl.certificates[0].ca`             | CA certificate                            | `nil`                                                |
-| `ssl.certificates[0].cert`           | Server certificate (public key)           | `nil`                                                |
-| `ssl.certificates[0].key`            | Server key (private key)                  | `nil`                                                |
-| `imagePullSecrets`                   | Name of Secret resource containing private registry credentials | `nil`                          |
-| `initializationFiles`                | List of SQL files which are run after the container started        | `nil`                       |
+| Parameter                                    | Description                               | Default                                              |
+| -------------------------------------------- | ----------------------------------------- | ---------------------------------------------------- |
+| `image`                                      | `mysql` image repository.                 | `mysql`                                              |
+| `imageTag`                                   | `mysql` image tag.                        | `5.7.14`                                             |
+| `imagePullPolicy`                            | Image pull policy                         | `IfNotPresent`                                       |
+| `existingSecret`                             | Use Existing secret for Password details  | `nil`                                                |
+| `mysqlRootPassword`                          | Password for the `root` user. Ignored if existing secret is provided      | Random 10 characters |
+| `mysqlUser`                                  | Username of new user to create.           | `nil`                                                |
+| `mysqlPassword`                              | Password for the new user. Ignored if existing secret is provided         | Random 10 characters |
+| `mysqlDatabase`                              | Name for new database to create.          | `nil`                                                |
+| `livenessProbe.initialDelaySeconds`          | Delay before liveness probe is initiated  | 30                                                   |
+| `livenessProbe.periodSeconds`                | How often to perform the probe            | 10                                                   |
+| `livenessProbe.timeoutSeconds`               | When the probe times out                  | 5                                                    |
+| `livenessProbe.successThreshold`             | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `livenessProbe.failureThreshold`             | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3 |
+| `readinessProbe.initialDelaySeconds`         | Delay before readiness probe is initiated | 5                                                    |
+| `readinessProbe.periodSeconds`               | How often to perform the probe            | 10                                                   |
+| `readinessProbe.timeoutSeconds`              | When the probe times out                  | 1                                                    |
+| `readinessProbe.successThreshold`            | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `readinessProbe.failureThreshold`            | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3 |
+| `persistence.enabled`                        | Create a volume to store data             | true                                                 |
+| `persistence.size`                           | Size of persistent volume claim           | 8Gi RW                                               |
+| `persistence.storageClass`                   | Type of persistent volume claim           | nil  (uses alpha storage class annotation)           |
+| `persistence.accessMode`                     | ReadWriteOnce or ReadOnly                 | ReadWriteOnce                                        |
+| `persistence.existingClaim`                  | Name of existing persistent volume        | `nil`                                                |
+| `persistence.subPath`                        | Subdirectory of the volume to mount       | `nil`                                                |
+| `nodeSelector`                               | Node labels for pod assignment            | {}                                                   |
+| `metrics.enabled`                            | Start a side-car prometheus exporter      | `false`                                              |
+| `metrics.image`                              | Exporter image                            | `prom/mysqld-exporter`                               |
+| `metrics.imageTag`                           | Exporter image                            | `v0.10.0`                                            |
+| `metrics.imagePullPolicy`                    | Exporter image pull policy                | `IfNotPresent`                                       |
+| `metrics.resources`                          | Exporter resource requests/limit          | `nil`                                                |
+| `metrics.livenessProbe.initialDelaySeconds`  | Delay before metrics liveness probe is initiated  | 15                                           |
+| `metrics.livenessProbe.timeoutSeconds`       | When the probe times out            | 5                                                          |
+| `metrics.readinessProbe.initialDelaySeconds` | Delay before metrics readiness probe is initiated | 5                                            |
+| `metrics.readinessProbe.timeoutSeconds`      | When the probe times out                  | 1                                                    |
+| `resources`                                  | CPU/Memory resource requests/limits       | Memory: `256Mi`, CPU: `100m`                         |
+| `configurationFiles`                         | List of mysql configuration files         | `nil`                                                |
+| `ssl.enabled`                                | Setup and use SSL for MySQL connections   | `false`                                              |
+| `ssl.secret`                                 | Name of the secret containing the SSL certificates                             | mysql-ssl-certs |
+| `ssl.certificates[0].name`                   | Name of the secret containing the SSL certificates                                       | `nil` |
+| `ssl.certificates[0].ca`                     | CA certificate                            | `nil`                                                |
+| `ssl.certificates[0].cert`                   | Server certificate (public key)           | `nil`                                                |
+| `ssl.certificates[0].key`                    | Server key (private key)                  | `nil`                                                |
+| `imagePullSecrets`                           | Name of Secret resource containing private registry credentials | `nil`                          |
+| `initializationFiles`                        | List of SQL files which are run after the container started        | `nil`                       |
 | `timezone`                           | Container and mysqld timezone (TZ env)    | `nil` (UTC depending on image)                       |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
