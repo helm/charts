@@ -51,6 +51,14 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.http.port`           | TCP port of the target HTTP Server | `80` |
 | `backend.http.uri`            | Specify an optional HTTP URI for the target web server, e.g: /something | `"/"`
 | `backend.http.format`         | Specify the data format to be used in the HTTP request body, by default it uses msgpack, optionally it can be set to json.  | `msgpack` |
+| **Splunk Backend**              |
+| `backend.splunk.host`           | IP address or hostname of the target Splunk Server | `127.0.0.1` |
+| `backend.splunk.port`           | TCP port of the target Splunk Server | `8088` |
+| `backend.splunk.token`            | Specify the Authentication Token for the HTTP Event Collector interface. | `` |
+| `backend.splunk.send_raw`         | If enabled, record keys and values are set in the main map. | `off` |
+| `backend.splunk.tls`           | Enable or disable TLS support | `on` |
+| `backend.splunk.tls_verify`           | Force TLS certificate validation | `off` |
+| `backend.splunk.message_key`           | Tag applied to all incoming logs | `kubernetes` |
 | **Parsers**                   |
 | `parsers.regex`                    | List of regex parsers | `NULL` |
 | `parsers.json`                     | List of json parsers | `NULL` |

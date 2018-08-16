@@ -70,6 +70,18 @@ data:
         Logstash_Format On
         Retry_Limit False
         Type  {{ .Values.backend.es.type }}
+{{ else if eq .Values.backend.type "splunk" }}
+    [OUTPUT]
+        Name  splunk
+        Match *
+        Host  {{ .Values.backend.splunk.host }}
+        Port  {{ .Values.backend.splunk.port }}
+        Splunk_Token  {{ .Values.backend.splunk.token }}
+        Splunk_Send_Raw {{ .Values.backend.splunk.send_raw}}
+        TLS   {{ .Values.backend.splunk.tls }}
+        TLS.Verify   {{ .Values.backend.splunk.tls_verify }}
+        Message_Key   {{ .Values.backend.splunk.message_key }}
+
 {{- if .Values.backend.es.logstash_prefix }}
         Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
 {{ else if .Values.backend.es.index }}
