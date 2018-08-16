@@ -17,6 +17,7 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 spec:
   selector:
+    release: {{ .Release.Name | quote }}
   {{- if .Values.isClusterService }}
     k8s-app: {{ .Chart.Name | quote }}
   {{- else }}
