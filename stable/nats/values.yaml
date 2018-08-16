@@ -15,7 +15,7 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - name: myRegistrKeySecretName
 
 ## NATS replicas
 replicaCount: 1
@@ -243,3 +243,13 @@ ingress:
   # - name: nats.local-tls
   #   key:
   #   certificate:
+
+sidecars:
+## Add sidecars to the pod.
+## e.g.
+# - name: your-image-name
+  # image: your-image
+  # imagePullPolicy: Always
+  # ports:
+  # - name: portname
+  #   containerPort: 1234
