@@ -30,7 +30,7 @@ their default values.
 | `image.pullPolicy`          | Container pull policy                                                                      | `IfNotPresent`  |
 | `image.repository`          | Container image to use                                                                     | `registry`      |
 | `image.tag`                 | Container image tag to deploy                                                              | `2.6.2`         |
-| `imagePullSecrets`                 | Specify image pull secrets                                                          | `nil` (does not add image pull secrets to deployed pods)         |
+| `imagePullSecrets`          | Specify image pull secrets                                                                 | `nil` (does not add image pull secrets to deployed pods) |
 | `persistence.accessMode`    | Access mode to use for PVC                                                                 | `ReadWriteOnce` |
 | `persistence.enabled`       | Whether to use a PVC for the Docker storage                                                | `false`         |
 | `persistence.size`          | Amount of space to claim for PVC                                                           | `10Gi`          |
@@ -45,6 +45,7 @@ their default values.
 | `podAnnotations`            | Annotations for pod                                                                        | `{}`            |
 | `resources.limits.cpu`      | Container requested CPU                                                                    | `nil`           |
 | `resources.limits.memory`   | Container requested memory                                                                 | `nil`           |
+| `priorityClassName      `   | priorityClassName                                                                          | `""`            |
 | `storage`                   | Storage system to use                                                                      | `filesystem`    |
 | `tlsSecretName`             | Name of secret for TLS certs                                                               | `nil`           |
 | `secrets.htpasswd`          | Htpasswd authentication                                                                    | `nil`           |
@@ -60,6 +61,8 @@ their default values.
 | `s3.secure`                 | Use HTTPS                                                                                  | `nil`           |
 | `swift.authurl`             | Swift authurl                                                                              | `nil`           |
 | `swift.container`           | Swift container                                                                            | `nil`           |
+| `nodeSelector`              | node labels for pod assignment                                                             | `{}`            |
+| `tolerations`               | pod tolerations                                                                            | `[]`            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

@@ -13,7 +13,7 @@ image:
 service:
   type: ClusterIP
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 persistence:
   enabled: true
   ## cassandra data Persistent Volume Storage Class
@@ -50,6 +50,10 @@ config:
   cluster_size: 3
   seed_size: 2
   num_tokens: 256
+  # If you want Cassandra to use this datacenter and rack name,
+  # you need to set endpoint_snitch to GossipingPropertyFileSnitch.
+  # Otherwise, these values are ignored and datacenter1 and rack1
+  # are used.
   dc_name: DC1
   rack_name: RAC1
   endpoint_snitch: SimpleSnitch
@@ -61,6 +65,21 @@ config:
     thrift: 9160
     # If a JVM Agent is in place
     # agent: 61621
+
+## Liveness and Readiness probe values.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+livenessProbe:
+  initialDelaySeconds: 90
+  periodSeconds: 30
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  initialDelaySeconds: 90
+  periodSeconds: 30
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
 
 ## Configure node selector. Edit code below for adding selector to pods
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
