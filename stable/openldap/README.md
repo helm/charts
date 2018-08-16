@@ -80,7 +80,7 @@ $ kubectl delete pvc -l release=${RELEASE-NAME}
 
 ## Testing
 
-Helm tests are included and they confirm the first three cluster members have quorum.
+Helm tests are included and they confirm connection to slapd.
 
 ```bash
 helm install . --set test.enabled=true
