@@ -178,6 +178,9 @@ spec:
         # allows us to extract the pod ID for usage as the Kafka Broker ID.
         # See: https://github.com/kubernetes/kubernetes/issues/31218
         command:
+        {{- if .Values.brokers.command }}
+{{ .Values.brokers.command | trimSuffix "\n" | indent 8 }}
+        {{- else }}
         - sh
         - -exc
         - |
@@ -185,6 +188,7 @@ spec:
           export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
           export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           exec /etc/confluent/docker/run
+      {{- end }}
         volumeMounts:
         - name: datadir
           mountPath: {{ .Values.persistence.mountPath | quote }}
