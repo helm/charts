@@ -26,6 +26,10 @@ spec:
         component: "{{ .Values.alertmanager.name }}"
         release: {{ .Release.Name }}
     spec:
+{{- if .Values.alertmanager.affinity }}
+      affinity:
+{{ toYaml .Values.alertmanager.affinity | indent 8 }}
+{{- end }}
 {{- if .Values.alertmanager.schedulerName }}
       schedulerName: "{{ .Values.alertmanager.schedulerName }}"
 {{- end }}
