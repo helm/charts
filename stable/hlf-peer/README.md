@@ -88,12 +88,13 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `caAddress`                        | Address of CA to register/enroll with                | `hlf-ca.local`                                             |
 | `caUsername`                       | Username for registering/enrolling with CA           | `peer1`                                                    |
 | `caPassword`                       | Password for registering/enrolling with CA           | Random 24 alphanumeric characters                          |
+| `peer.hlfToolsVersion`             | Which version of HLF tools we use (e.g. CA client)   | `1.1.0`                                                    |
 | `peer.databaseType`                | Database type to use (`goleveldb` or `CouchDB`)      | `goleveldb`                                                |
 | `peer.couchdbInstance              | CouchDB chart name to use `cdb-peer1`                | `cdb-peer1`                                                |
 | `peer.mspID`                       | ID of MSP the Peer belongs to                        | `Org1MSP`                                                  |
-| `secrets.channel`                  | Secret containing Channel tx for peer to create/join | `hlf--genesis`                                             |
-| `secrets.adminCert`                | Secret containing Peer Org admin certificate         | `hlf--peer-admincert`                                      |
-| `secrets.adminCert`                | Secret containing Peer Org admin private key         | `hlf--peer-adminkey`                                       |
+| `secrets.channel`                  | Secret containing Channel tx for peer to create/join | ``                                                         |
+| `secrets.adminCert`                | Secret containing Peer Org admin certificate         | ``                                                         |
+| `secrets.adminCert`                | Secret containing Peer Org admin private key         | ``                                                         |
 | `resources`                        | CPU/Memory resource requests/limits                  | `{}`                                                       |
 | `nodeSelector`                     | Node labels for pod assignment                       | `{}`                                                       |
 | `tolerations`                      | Toleration labels for pod assignment                 | `[]`                                                       |

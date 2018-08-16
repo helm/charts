@@ -38,6 +38,8 @@ caUsername: peer1
 # caPassword:
 
 peer:
+  # Tools version
+  hlfToolsVersion: 1.1.0
   # Type of database ("goleveldb" or "CouchDB"):
   databaseType: goleveldb
   # If CouchDB is used, which chart holds it
@@ -45,16 +47,17 @@ peer:
   ## MSP ID of the Peer
   mspID: Org1MSP
 
-secrets:
+# Secrets references, empty by default, fill in with your secrets (particularly adminCert) or add Peer Admin certificate manually after launching chart.
+secrets: {}
   ## This should contain "channel" transaction derived from a configtx.yaml
   ## configtxgen -profile ComposerChannel -channelID composerchannel -outputCreateChannelTx composerchannel.tx
-  channel: hlf--channel
+  #channel: hlf--channel
   ## This should contain the Certificate of the Peer Organisation admin
   ## This is necessary to successfully run the peer
-  adminCert: hlf--peer-admincert
+  #adminCert: hlf--peer-admincert
   ## This should contain the Private Key of the Peer Organisation admin
   ## This is necessary to successfully join a channel
-  adminKey: hlf--peer-adminkey
+  #adminKey: hlf--peer-adminkey
 
 resources: {}
   ## We usually recommend not to specify default resources and to leave this as a conscious

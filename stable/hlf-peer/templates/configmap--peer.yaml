@@ -5,7 +5,7 @@ metadata:
   labels:
 {{ include "labels.standard" . | indent 4 }}
 data:
-  HLF_TOOLS_BUILD: linux-amd64-1.1.0
+  HLF_TOOLS_BUILD: linux-amd64-{{ .Values.peer.hlfToolsVersion }}
   CORE_PEER_ADDRESSAUTODETECT: "true"
   CORE_PEER_NETWORKID: nid1
   CORE_PEER_ADDRESS: {{ include "hlf-peer.fullname" . }}:7051

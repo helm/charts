@@ -26,15 +26,21 @@ spec:
         - name: dockersocket
           hostPath:
             path: /var/run/docker.sock
+        {{- if .Values.secrets.channel }}
         - name: channel
           secret:
             secretName: {{ .Values.secrets.channel }}
+        {{- end }}
+        {{- if .Values.secrets.adminCert }}
         - name: admin-cert
           secret:
             secretName: {{ .Values.secrets.adminCert }}
+        {{- end }}
+        {{- if .Values.secrets.adminKey }}
         - name: admin-key
           secret:
             secretName: {{ .Values.secrets.adminKey }}
+        {{- end }}
       containers:
         - name: peer
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -54,6 +60,12 @@ spec:
               # To avoid having separate secrets for CouchDB and HLF
               export CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=$COUCHDB_USER
               export CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=$COUCHDB_PASSWORD
+
+              while [ ! -d /hl_config/admin/admincerts ] || [ -z "$(ls -A /hl_config/admin/admincerts)" ];
+              do
+                echo "\033[0;31m /hl_config/admin/admincerts must contain Peer admin certificates files \033[0m"
+                sleep 60
+              done
             
               # Download Fabric CA-client if it does not exist
               if [ ! -f /bin/fabric-ca-client ]
@@ -129,14 +141,20 @@ spec:
               name: data
             - mountPath: /host/var/run/docker.sock
               name: dockersocket
+            {{- if .Values.secrets.channel }}
             - mountPath: /hl_config/channel
               name: channel
+            {{- end }}
+            {{- if .Values.secrets.adminCert }}
             - mountPath: /hl_config/admin/admincerts
               name: admin-cert
             - mountPath: /hl_config/admin/signcerts
               name: admin-cert
+            {{- end }}
+            {{- if .Values.secrets.adminKey }}
             - mountPath: /hl_config/admin/keystore
               name: admin-key
+            {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
