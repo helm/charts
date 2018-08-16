@@ -3,8 +3,6 @@
 This chart uses a standard Docker image of Elasticsearch (docker.elastic.co/elasticsearch/elasticsearch-oss) and uses a service pointing to the master's transport port for service discovery.
 Elasticsearch does not communicate with the Kubernetes API, hence no need for RBAC permissions.
 
-**Note - this chart has been deprecated and [moved to stable](../../stable/elasticsearch)**.
-
 ## Warning for previous users
 If you are currently using an earlier version of this Chart you will need to redeploy your Elasticsearch clusters. The discovery method used here is incompatible with using RBAC.
 If you are upgrading to Elasticsearch 6 from the 5.5 version used in this chart before, please note that your cluster needs to do a full cluster restart.
@@ -40,8 +38,7 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/elasticsearch
+$ helm install --name my-release stable/elasticsearch
 ```
 
 ## Deleting the Charts
@@ -186,5 +183,5 @@ EOF
 Create cluster with Storage class `ssd` on Kubernetes 1.5+
 
 ```
-$ helm install incubator/elasticsearch --name my-release --set data.storageClass=ssd,data.storage=100Gi
+$ helm install stable/elasticsearch --name my-release --set data.storageClass=ssd,data.storage=100Gi
 ```
