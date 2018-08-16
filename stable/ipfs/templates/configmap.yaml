@@ -1,0 +1,14 @@
+{{- if .Values.config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "ipfs.servicename" . }}
+  labels:
+    app: {{ template "ipfs.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  config: |-
+{{ toYaml .Values.config | indent 4 }}
+{{- end }}

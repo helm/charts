@@ -20,3 +20,24 @@ persistence:
   size: "8Gi"
   accessModes:
     - ReadWriteOnce
+
+config: |-
+  "Addresses": {
+    "Swarm": [
+      "/ip4/0.0.0.0/tcp/4001"
+    ],
+    "API": "/ip4/0.0.0.0/tcp/5001",
+    "Gateway": "/ip4/0.0.0.0/tcp/8080"
+  },
+  "API": {
+    "HTTPHeaders": [
+      "Access-Control-Allow-Origin": [
+        "*"
+      ],
+      "Access-Control-Allow-Methods": [
+        "PUT",
+        "GET",
+        "POST"
+      ]
+    ]
+  }
