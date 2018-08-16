@@ -50,8 +50,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `imageTag`                                   | `mysql` image tag.                                                                           | `5.7.14`                                             |
 | `imagePullPolicy`                            | Image pull policy                                                                            | `IfNotPresent`                                       |
 | `existingSecret`                             | Use Existing secret for Password details                                                     | `nil`                                                |
-| `extraVolumes`                               | Additional volumes                                                                           |                                                      |
-| `extraVolumeMounts`                          | Additional volumeMounts                                                                      |                                                      |
+| `extraVolumes`                               | Additional volumes as a string to be passed to the `tpl` function                            |                                                      |
+| `extraVolumeMounts`                          | Additional volumeMounts as a string to be passed to the `tpl` function                       |                                                      |
 | `extraInitContainers`                        | Additional init containers as a string to be passed to the `tpl` function                    |                                                      |
 | `mysqlRootPassword`                          | Password for the `root` user. Ignored if existing secret is provided                         | Random 10 characters                                 |
 | `mysqlUser`                                  | Username of new user to create.                                                              | `nil`                                                |

@@ -119,7 +119,7 @@ spec:
           mountPath: /ssl
         {{- end }}
         {{- if .Values.extraVolumeMounts }}
-{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{ tpl .Values.extraVolumeMounts . | indent 8 }}
         {{- end }}
       {{- if .Values.metrics.enabled }}
       - name: metrics
@@ -178,5 +178,5 @@ spec:
         emptyDir: {}
       {{- end -}}
       {{- if .Values.extraVolumes }}
-{{ toYaml .Values.extraVolumes | indent 6 }}
+{{ tpl .Values.extraVolumes . | indent 6 }}
       {{- end }}

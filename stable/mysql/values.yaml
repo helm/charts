@@ -29,11 +29,11 @@ imageTag: "5.7.14"
 ##
 imagePullPolicy: IfNotPresent
 
-extraVolumes: []
+extraVolumes: |
   # - name: extras
   #   emptyDir: {}
 
-extraVolumeMounts: []
+extraVolumeMounts: |
   # - name: extras
   #   mountPath: /usr/share/extras
   #   readOnly: true
