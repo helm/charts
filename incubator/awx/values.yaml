@@ -102,7 +102,7 @@ queueReplicaCount: 1
 ## Queue image repository and version
 queueImage:
   repository: rabbitmq
-  tag: 3.7.4
+  tag: 3
   pullPolicy: IfNotPresent
 
 ## Queue username
@@ -158,7 +158,7 @@ cacheReplicaCount: 1
 ## Cache image repository and version
 cacheImage:
   repository: memcached
-  tag: latest
+  tag: alpine
   pullPolicy: IfNotPresent
 
 ## Cache service port
