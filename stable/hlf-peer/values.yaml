@@ -51,13 +51,13 @@ peer:
 secrets: {}
   ## This should contain "channel" transaction derived from a configtx.yaml
   ## configtxgen -profile ComposerChannel -channelID composerchannel -outputCreateChannelTx composerchannel.tx
-  #channel: hlf--channel
+  # channel: hlf--channel
   ## This should contain the Certificate of the Peer Organisation admin
   ## This is necessary to successfully run the peer
-  #adminCert: hlf--peer-admincert
+  # adminCert: hlf--peer-admincert
   ## This should contain the Private Key of the Peer Organisation admin
   ## This is necessary to successfully join a channel
-  #adminKey: hlf--peer-adminkey
+  # adminKey: hlf--peer-adminkey
 
 resources: {}
   ## We usually recommend not to specify default resources and to leave this as a conscious
