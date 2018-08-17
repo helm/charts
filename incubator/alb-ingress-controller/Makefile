@@ -7,4 +7,5 @@ update-from-upstream:
 	sed -i '' \
 		-e 's/Kraig Amador/bigkraig/g' \
 		-e 's/Andrew Tandoc/andrewtandoc/g' \
+		-e 's/name: alb-ingress-controller-helm/name: alb-ingress-controller/' \
 		Chart.yaml

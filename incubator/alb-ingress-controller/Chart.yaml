@@ -11,7 +11,7 @@ maintainers:
     email: kraig.amador@ticketmaster.com
   - name: andrewtandoc
     email: tandoca@amazon.com
-name: alb-ingress-controller-helm
+name: alb-ingress-controller
 sources:
   - https://github.com/kubernetes-sigs/aws-alb-ingress-controller
 version: 0.1.0
