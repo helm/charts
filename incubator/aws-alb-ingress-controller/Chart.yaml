@@ -7,9 +7,9 @@ keywords:
   - aws
   - ingress
 maintainers:
-  - name: Kraig Amador
+  - name: bigkraig
     email: kraig.amador@ticketmaster.com
-  - name: Andrew Tandoc
+  - name: andrewtandoc
     email: tandoca@amazon.com
 name: alb-ingress-controller-helm
 sources:

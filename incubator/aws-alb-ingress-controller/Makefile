@@ -4,3 +4,7 @@ update-from-upstream:
 		tar -xz --strip=2 aws-alb-ingress-controller-master/alb-ingress-controller-helm
 	mv README.md README-upstream.md
 	mv README-tmp.md README.md
+	sed -i '' \
+		-e 's/Kraig Amador/bigkraig/g' \
+		-e 's/Andrew Tandoc/andrewtandoc/g' \
+		Chart.yaml
