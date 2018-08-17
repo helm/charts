@@ -129,6 +129,13 @@ server:
       # custom entrypoint scripts that should be run before starting the GoCD server inside the container.
       dockerEntryPoint: scripts
 
+  # server.hostAliases allows the modification of the hosts file inside a container
+  hostAliases:
+  # - ip: "192.168.1.10"
+  #   hostnames:
+  #   - "example.com"
+  #   - "www.example.com"
+
   security:
     ssh:
       # server.security.ssh.enabled is the toggle to enable/disable mounting of ssh secret on GoCD server pods
