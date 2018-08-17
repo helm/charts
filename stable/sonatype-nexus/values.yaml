@@ -37,6 +37,12 @@ nexus:
     periodSeconds: 30
     failureThreshold: 6
     path: /
+  # hostAliases allows the modification of the hosts file inside a container
+  hostAliases: []
+  # - ip: "192.168.1.10"
+  #   hostnames:
+  #   - "example.com"
+  #   - "www.example.com"
 
 nexusProxy:
   imageName: quay.io/travelaudience/docker-nexus-proxy
