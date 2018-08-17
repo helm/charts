@@ -33,7 +33,7 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.15.1
+    tag: v0.15.2
     pullPolicy: IfNotPresent
 
   ## alertmanager priorityClassName
