@@ -8,8 +8,8 @@ image:
   tag: "6.3.1"
   pullPolicy: "IfNotPresent"
   # If specified, use these secrets to access the image
-  #pullSecrets:
-  #- registry-secret
+  # pullSecrets:
+  #   - registry-secret
 
 cluster:
   name: "elasticsearch"
