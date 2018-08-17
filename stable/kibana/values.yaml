@@ -67,12 +67,12 @@ ingress:
 # serviceAccountName: kibana
 
 livenessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 30
   timeoutSeconds: 10
 
 readinessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 30
   timeoutSeconds: 10
 
