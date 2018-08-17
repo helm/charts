@@ -44,9 +44,9 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
-    {{- if .Values.server.hostAliases }}
+    {{- if .Values.hostAliases }}
       hostAliases:
-{{ toYaml .Values.server.hostAliases | indent 8 }}
+{{ toYaml .Values.hostAliases | indent 8 }}
     {{- end }}
     {{- if .Values.tolerations }}
       tolerations:
