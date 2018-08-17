@@ -113,6 +113,23 @@ securityContext:
   fsGroup: 1000
   runAsUser: 1000
 
+## Useful if using any custom authorizer.
+## Pass any secrets to the kafka pods. Each secret will be passed as an
+## environment variable by default. The secret can also be mounted to a
+## specific path (in addition to environment variable) if required. Environment
+## variable names are generated as: `<secretName>_<secretKey>` (All upper case)
+# secrets:
+# - name: myKafkaSecret
+#   keys:
+#     - username
+#     - password
+#   # mountPath: /opt/kafka/secret
+# - name: myZkSecret
+#   keys:
+#     - user
+#     - pass
+#   mountPath: /opt/zookeeper/secret
+
 persistence:
   enabled: true
   ## zookeeper data Persistent Volume Storage Class
