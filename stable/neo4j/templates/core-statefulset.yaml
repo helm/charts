@@ -73,8 +73,6 @@ spec:
           name: browser
         - containerPort: 7687
           name: bolt
-        securityContext:
-          privileged: true
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.core.persistentVolume.mountPath }}"
