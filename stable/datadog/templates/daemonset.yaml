@@ -125,7 +125,7 @@ spec:
           {{- end }}
           {{- if .Values.datadog.logsEnabled }}
           - name: pointerdir
-            mountPath: /opt/datadog-agent/run
+            mountPath: /var/lib/datadog-agent/logs
           {{- end }}
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
@@ -158,7 +158,7 @@ spec:
         {{- end }}
         {{- if .Values.datadog.logsEnabled }}
         - hostPath:
-            path: /opt/datadog-agent/run
+            path: /var/lib/datadog-agent/logs
           name: pointerdir
         {{- end }}
 {{- if .Values.datadog.volumes }}
