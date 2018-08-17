@@ -120,7 +120,6 @@ Parameter | Description | Default
 `controller.metrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.metrics.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `controller.metrics.service.servicePort` | Prometheus metrics service port | `9913`
-`controller.metrics.service.targetPort` | Prometheus metrics target port | `10254`
 `controller.metrics.service.type` | type of Prometheus metrics service to create | `ClusterIP`
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
