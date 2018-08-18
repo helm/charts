@@ -51,6 +51,7 @@ db:
 
 ## Settings used in configMap "--config"
 config:
+  hlfToolsVersion: 1.1.0
   ## Enable debug logging in ca Server configuration file
   debug: true
   ## CSR pathlength in ca Server configuration file
