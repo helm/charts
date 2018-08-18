@@ -1,0 +1,4 @@
+apiVersion: v1
+description: NFS client provisioner for persistent volumes from https://github.com/kubernetes-incubator/external-storage
+name: nfs-client-provisioner
+version: 0.1.0

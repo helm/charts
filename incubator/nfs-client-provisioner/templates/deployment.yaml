@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "nfs-client-provisioner.fullname" . }}
+  labels:
+    app: {{ template "nfs-client-provisioner.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "nfs-client-provisioner.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      volumes:
+        - name: nfs-client-root
+          nfs:
+            server: {{ .Values.nfs.server }}
+            path: {{ .Values.nfs.path }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: nfs-client-root
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME
+              value: {{ .Values.nfs.provisionerName }}
+            - name: NFS_SERVER
+              value: {{ .Values.nfs.server }}
+            - name: NFS_PATH
+              value: {{ .Values.nfs.path }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}

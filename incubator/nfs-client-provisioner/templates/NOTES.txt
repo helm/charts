@@ -1,0 +1,7 @@
+You are now able to use your new storageclass
+
+  {{ .Values.storageclass.name }}
+
+If the persistent volume claims using this storageclass are not being bound, you can check the logs of the provisioner container using:
+
+  kubectl logs -l "app=nfs-client-provisioner"
