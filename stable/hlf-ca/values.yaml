@@ -51,7 +51,7 @@ caName: org1-ca
 
 ## Settings used in configMap "--db"
 db:
-  chart: postgres-ca-postgresql
+  # chart: postgres-ca-postgresql
   database: fabric_ca
 
 ## Settings used in configMap "--config"
