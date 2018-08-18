@@ -11,7 +11,7 @@ image:
 
 guiService:
   type: ClusterIP
-  port: 8443  
+  port: 8443
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
   ##
@@ -28,7 +28,7 @@ guiService:
 
 controllerService:
   type: NodePort
-  port: 8080  
+  port: 8080
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
   ##
@@ -45,7 +45,7 @@ controllerService:
 
 stunService:
   type: NodePort
-  port: 3478 # udp
+  port: 3478   # udp
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
   ##
@@ -62,7 +62,7 @@ stunService:
 
 discoveryService:
   type: NodePort
-  port: 10001 # udp
+  port: 10001  # udp
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
   ##
