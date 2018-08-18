@@ -1,0 +1,69 @@
+{{ if gt (len .Values.tablespaces) 0 }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "postgresql.fullname" . }}-create-tablespaces
+  labels:
+    app: {{ template "postgresql.name" . }}
+    chart: {{ template "postgresql.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      initContainers:
+      - name: wait-for-db
+        image: jwilder/dockerize
+        command: ['dockerize', '-timeout', '120s', '-wait', 'tcp://{{ template "postgresql.fullname" . }}.{{ .Release.Namespace }}:5432']
+      containers:
+      - name: create-tablespaces
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        command:
+        - /bin/sh
+        - -ec
+        - |
+          {{- if .Values.usePasswordFile }}
+          export PGPASSWORD=$(cat $POSTGRES_PASSWORD_FILE)
+          {{- else }}
+          export PGPASSWORD=$POSTGRES_PASSWORD
+          {{- end }}
+          host={{- template "postgresql.fullname" . -}}.{{- .Release.Namespace -}}
+          {{- range .Values.tablespaces }}
+          psql -h $host -U $POSTGRES_USER -d $POSTGRES_DB -c "CREATE TABLESPACE {{ .name }} OWNER $POSTGRES_USER LOCATION '{{ .mountPath }}';"
+          {{- end }}
+        env:
+        - name: POSTGRES_USER
+          value: {{ default "postgres" .Values.postgresUser | quote }}
+        - name: POSTGRES_DB
+          value: {{ default "postgres" .Values.postgresDatabase | quote }}
+        {{- if .Values.usePasswordFile }}
+        - name: POSTGRES_PASSWORD_FILE
+          value: /conf/postgres-password
+        {{- else }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "postgresql.secretName" . }}
+              key: postgres-password
+        {{- end }}
+        volumeMounts:
+        {{- if .Values.usePasswordFile }}
+        - name: password-file
+          mountPath: /conf
+          readOnly: true
+        {{- end }}
+      volumes:
+      {{- if .Values.usePasswordFile }}
+      - name: password-file
+        secret:
+          secretName: {{ template "postgresql.secretName" . }}
+          items:
+            - key: postgres-password
+              path: postgres-password
+      {{- end }}
+{{ end }}

@@ -92,6 +92,7 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 | `probes.readiness.failureThreshold` | Readiness probe failure threshold      | `5`                                                        |
 | `podAnnotations`           | Annotations for the postgresql pod              | {}                                                         |
 | `deploymentAnnotations`    | Annotations for the postgresql deployment       | {}                                                         |
+| `tablespaces`              | Tablespaces to be created                       | `[]`                                                       |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
 
@@ -154,3 +155,9 @@ With NetworkPolicy enabled, traffic will be limited to just port 5432.
 For more precise policy, set `networkPolicy.allowExternal=false`. This will
 only allow pods with the generated client label to connect to PostgreSQL.
 This label will be displayed in the output of a successful install.
+
+## Tablespaces
+The chart supports tablespaces by using `subPath` on data volume as tablespace data directory. For every tablespace, the chart does the following:
+
+1. change the ownership (`chown`) of the tablespace data directory to `postgres:postgres`
+2. run a sql query to create the tablespace in the database

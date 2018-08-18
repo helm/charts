@@ -50,6 +50,21 @@ spec:
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- end }}
+      {{- if gt (len .Values.tablespaces) 0 }}
+      initContainers:
+      - name: init-tablespaces
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        command:
+          - /bin/sh
+          - -ec
+          - |
+            {{- range .Values.tablespaces }}
+            chown -R postgres:postgres {{ .mountPath }}
+            {{- end }}
+        volumeMounts:
+        {{- template "postgresql.tablespaces.volumeMounts" . }}
+      {{- end }}
       containers:
       - name: {{ template "postgresql.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -70,7 +85,7 @@ spec:
         - name: PGUSER
           value: {{ default "postgres" .Values.postgresUser | quote }}
         - name: POSTGRES_DB
-          value: {{ default "" .Values.postgresDatabase | quote }}
+          value: {{ default "postgres" .Values.postgresDatabase | quote }}
         - name: POSTGRES_INITDB_ARGS
           value: {{ default "" .Values.postgresInitdbArgs | quote }}
         - name: PGDATA
@@ -114,6 +129,7 @@ spec:
         - name: data
           mountPath: {{ .Values.persistence.mountPath }}
           subPath: {{ .Values.persistence.subPath }}
+        {{- template "postgresql.tablespaces.volumeMounts" . }}
         {{- if .Values.usePasswordFile }}
         - name: password-file
           mountPath: /conf

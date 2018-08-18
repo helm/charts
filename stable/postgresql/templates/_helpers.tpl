@@ -48,3 +48,14 @@ Generate chart secret name
 {{- define "postgresql.secretName" -}}
 {{ default (include "postgresql.fullname" .) .Values.existingSecret }}
 {{- end -}}
+
+{{/*
+Return volumeMounts for tablespaces
+*/}}
+{{- define "postgresql.tablespaces.volumeMounts" -}}
+{{- range .Values.tablespaces }}
+        - name: data
+          mountPath: {{ .mountPath }}
+          subPath: {{ .subPath }}
+{{- end }}
+{{- end -}}
