@@ -91,6 +91,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `db.chart`                         | Name of a Database Chart holding CA data         | `postgres-ca-postgresql` supports postgresql               |
 | `db.database`                      | Name of the actual Database holding the CA data  | `fabric_ca`                                                |
 | `config.hlfToolsVersion`           | Version of Hyperledger Fabric tools used         | `1.1.0`                                                    |
+| `config.mountTLS`                  | If TLS secrets are generated, do we mount them?  | `false`                                                    |
 | `config.debug`                     | Enable debug logging                             | `true`                                                     |
 | `config.csr.ca.pathlength`         | Pathlength of CA certificate hierarchy           | `1`                                                        |
 | `config.csr.names.c`               | Country to which CA belongs                      | `US`                                                       |

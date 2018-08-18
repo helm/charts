@@ -52,6 +52,8 @@ db:
 ## Settings used in configMap "--config"
 config:
   hlfToolsVersion: 1.1.0
+  ## Mount the TLS certificate & key to disk?
+  mountTLS: false
   ## Enable debug logging in ca Server configuration file
   debug: true
   ## CSR pathlength in ca Server configuration file

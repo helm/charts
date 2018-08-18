@@ -23,7 +23,7 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
-        {{- if .Values.ingress.tls }}
+        {{- if (and .Values.config.mountTLS .Values.ingress.tls) }}
         - name: tls-secret
           secret:
             secretName: {{ (index .Values.ingress.tls 0).secretName }}
@@ -92,7 +92,7 @@ spec:
             - name: ca-config
               readOnly: true
               mountPath: /var/hyperledger/ca_config
-            {{- if .Values.ingress.tls }}
+            {{- if (and .Values.config.mountTLS .Values.ingress.tls) }}
             - name: tls-secret
               readOnly: true
               mountPath: /var/hyperledger/tls_secret
