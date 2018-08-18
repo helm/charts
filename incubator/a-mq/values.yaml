@@ -1,0 +1,67 @@
+broker:
+  name: broker
+
+  replicas: 1
+
+  image:
+    stream: jboss-amq-63
+    tag: 1.2-6
+    pullPolicy: Always
+
+  # env:
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector: {}
+
+  persistence:
+    size: 10Gi
+
+  config:
+    transports: "openwire"
+
+    user:
+      username: "admin"
+      
+      ## Default: (Randomly generated 10 characters of Alphanumeric chars)
+      # password:
+    
+    ssl:
+      truststore:
+        password: ""
+
+      keystore:
+        body: ""
+        password: ""
+
+
+    queues: ""
+    topics: ""
+
+    splitDir: "false"
+    storageLimit: "10 gb"
+    queueMemoryLimit: "1mb"
+
+drainer:
+  name: drainer
+
+  image:
+    stream: jboss-amq-63
+    tag: 1.2-6
+    pullPolicy: Always
+
+  replicas: 1
+
+  resources: {}
+
+  nodeSelector: {}

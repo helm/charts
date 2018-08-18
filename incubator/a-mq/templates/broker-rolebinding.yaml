@@ -1,0 +1,18 @@
+apiVersion: authorization.openshift.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ template "amq.broker.fullname" . }}
+  labels:
+    app: {{ template "amq.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    component: "{{ .Values.broker.name }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+roleRef:
+  kind: ClusterRole
+  name: view
+  apiVersion: rbac/v1beta1
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "amq.broker.fullname" . }}
+    namespace: "{{ .Release.Namespace }}"

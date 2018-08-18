@@ -1,0 +1,5 @@
+A new persistent messaging service with SSL support has been created in your project.
+
+1. Get your '{{ .Values.broker.config.user.username }}' user password by running:
+
+oc get secret --namespace {{ .Release.Namespace }} {{ template "amq.broker.fullname" . }} -o jsonpath="{.data.amq-password}" | base64 --decode; echo

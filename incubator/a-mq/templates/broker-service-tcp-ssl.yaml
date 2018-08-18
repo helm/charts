@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "amq.broker.fullname" . }}-tcp-ssl
+  labels:
+    app: {{ template "amq.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: "{{ .Release.Name }}"
+    component: "{{ .Values.broker.name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    description: "The broker's OpenWire (SSL) port"
+spec:
+  ports:
+    - port: 61617
+      targetPort: 61617
+  selector:
+    app: {{ template "amq.name" . }}
+    release: "{{ .Release.Name }}"
+    component: "{{ .Values.broker.name }}"

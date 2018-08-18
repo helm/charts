@@ -1,0 +1,141 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: {{ template "amq.broker.fullname" . }}
+  labels:
+    app: {{ template "amq.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    component: "{{ .Values.broker.name }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    template.alpha.openshift.io/wait-for-ready: "true"
+spec:
+  replicas: {{ .Values.broker.replicas }}
+  strategy:
+    type: Rolling
+    rollingParams:
+      maxSurge: 0
+  triggers:
+  - type: ImageChange
+    imageChangeParams:
+      automatic: true
+      containerNames:
+      - {{ template "amq.broker.fullname" . }}
+      from:
+        kind: ImageStreamTag
+        namespace: "openshift"
+        name: "{{ .Values.broker.image.stream }}:{{ .Values.broker.image.tag }}"
+  - type: ConfigChange
+  template:
+    metadata:
+      labels:
+        app: {{ template "amq.name" . }}
+        component: "{{ .Values.broker.name }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: {{ template "amq.broker.fullname" . }}
+          image: "{{ .Values.broker.image.stream }}"
+          imagePullPolicy: "{{ .Values.broker.image.pullPolicy }}"
+          ports:
+            - name: jolokia
+              containerPort: 8778
+              protocol: TCP
+            - name: amqp
+              containerPort: 5672
+              protocol: TCP
+            - name: amqp-ssl
+              containerPort: 5671
+              protocol: TCP
+            - name: mqtt
+              containerPort: 1883
+              protocol: TCP
+            - name: mqtt-ssl
+              containerPort: 8883
+              protocol: TCP
+            - name: stomp
+              containerPort: 61613
+              protocol: TCP
+            - name: stomp-ssl
+              containerPort: 61612
+              protocol: TCP
+            - name: tcp
+              containerPort: 61616
+              protocol: TCP
+            - name: tcp-ssl
+              containerPort: 61617
+              protocol: TCP
+          env:
+            - name: AMQ_KEYSTORE_TRUSTSTORE_DIR
+              value: "/etc/amq-secret-volume"
+            - name: AMQ_MESH_SERVICE_NAME
+              value: {{ template "amq.broker.fullname" . }}-tcp
+            - name: AMQ_MESH_SERVICE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: AMQ_MESH_DISCOVERY_TYPE
+              value: "kube"
+            - name: AMQ_TRANSPORTS
+              value: {{ .Values.broker.config.transports | quote }}
+            - name: AMQ_QUEUES
+              value: {{ .Values.broker.config.queues | quote }}
+            - name: AMQ_TOPICS
+              value: {{ .Values.broker.config.topics | quote }}
+            - name: AMQ_SPLIT
+              value: {{ .Values.broker.config.splitDir | quote }}
+            - name: AMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "amq.broker.fullname" . }}
+                  key: amq-username
+            - name: AMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "amq.broker.fullname" . }}
+                  key: amq-password
+            - name: AMQ_STORAGE_USAGE_LIMIT
+              value: {{ .Values.broker.config.storageLimit | quote }}
+            - name: AMQ_TRUSTSTORE
+              value: "broker.ks"
+            - name: AMQ_TRUSTSTORE_PASSWORD
+              value: {{ .Values.broker.config.ssl.truststore.password | quote }}
+            - name: AMQ_KEYSTORE
+              value: "broker.ks"
+            - name: AMQ_KEYSTORE_PASSWORD
+              value: {{ .Values.broker.config.ssl.keystore.password | quote }}
+            - name: AMQ_QUEUE_MEMORY_LIMIT
+              value: {{ .Values.broker.config.queueMemoryLimit | quote }}
+{{- if .Values.env }}
+{{ toYaml .Values.broker.env | indent 10 }}
+{{- end }}
+          volumeMounts:
+            - name: broker-secret-volume
+              mountPath: "/etc/amq-secret-volume"
+              readOnly: true
+            - mountPath: "/opt/amq/data"
+              name: broker-storage-volume
+          readinessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - /opt/amq/bin/readinessProbe.sh
+          resources:
+{{ toYaml .Values.broker.resources | indent 12 }}
+      {{- if .Values.broker.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.broker.nodeSelector | indent 8 }}
+      {{- end }}
+      securityContext: {}
+      serviceAccount: {{ template "amq.broker.fullname" . }}
+      serviceAccountName: {{ template "amq.broker.fullname" . }}
+      volumes:
+        - name: broker-secret-volume
+          secret:
+            secretName: {{ template "amq.broker.fullname" . }}-tls
+        - name: broker-storage-volume
+          persistentVolumeClaim:
+            claimName: {{ template "amq.broker.fullname" . }}
