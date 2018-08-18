@@ -61,11 +61,11 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `ingress.hosts`                | Ingress accepted hostnames | `chart-example.local` |
 | `ingress.tls`                  | Ingress TLS configuration | `[]` |
 | `timezone`                     | Timezone the Unifi controller should run as, e.g. 'America/New York' | `UTC` |
-| `runas_root`                   | Run the controller as UID0 (root user) | `false` |
+| `runAsRoot`                    | Run the controller as UID0 (root user) | `false` |
 | `mongodb.enabled`              | Use external MongoDB for data storage | `false` |
-| `mongodb.db_uri`               | external MongoDB URI | `mongodb://mongo/unifi` |
-| `mongodb.statdb_uri`           | external MongoDB statdb URI | `mongodb://mongo/unifi_stat` |
-| `mongodb.database_name`        | external MongoDB database name | `unifi` |
+| `mongodb.dbUri`                | external MongoDB URI | `mongodb://mongo/unifi` |
+| `mongodb.statDbUri`            | external MongoDB statdb URI | `mongodb://mongo/unifi_stat` |
+| `mongodb.databaseName`         | external MongoDB database name | `unifi` |
 | `persistence.enabled`      | Use persistent volume to store data | `true` |
 | `persistence.size`         | Size of persistent volume claim | `5Gi` |
 | `persistence.existingClaim`| Use an existing PVC to persist data | `nil` |

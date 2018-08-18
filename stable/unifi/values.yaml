@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: jacobalberty/unifi
-  tag: 5.8.24
+  tag: 5.8.28
   pullPolicy: IfNotPresent
 
 guiService:
@@ -92,14 +92,14 @@ ingress:
 
 timezone: UTC
 
-runas_root: false
+runAsRoot: false
 
   # define an external mongoDB instead of using the built-in mongodb
 mongodb:
   enabled: false
-  db_uri: mongodb://mongo/unifi
-  statdb_uri: mongodb://mongo/unifi_stat
-  database_name: unifi
+  dbUri: mongodb://mongo/unifi
+  statDbUri: mongodb://mongo/unifi_stat
+  databaseName: unifi
 
 persistence:
   enabled: true
