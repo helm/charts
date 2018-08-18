@@ -15,5 +15,4 @@ maintainers:
     email: sasha@aid.technology
   - name: nicolapaoli
     email: nicola@aid.technology
-## Icon not included while sorting out trademark question with Hyperledger project
-# icon: https://www.hyperledger.org/wp-content/uploads/2018/04/fabric-logo.png
+icon: https://www.hyperledger.org/wp-content/uploads/2018/04/fabric-logo.png
