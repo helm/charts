@@ -6,7 +6,7 @@ metadata:
 {{ include "labels.standard" . | indent 4 }}
 data:
   ## Environmental variable defining which version of tools to obtain (for fabric-ca-client)
-  HLF_TOOLS_BUILD: linux-amd64-1.1.0
+  HLF_TOOLS_BUILD: linux-amd64-{{ .Values.ord.hlfToolsVersion }}
   ## Location where fabric-ca-client configuration is saved
   FABRIC_CA_CLIENT_HOME: /var/hyperledger/fabric-ca-client
   ## Orderer defaults
