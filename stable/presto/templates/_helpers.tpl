@@ -32,6 +32,24 @@ If release name contains chart name it will be used as a full name.
 {{ template "presto.fullname" . }}-worker
 {{- end -}}
 
+{{- define "presto.connectors" -}}
+{{ template "presto.fullname" . }}-connectors
+{{- end -}}
+
+{{- define "presto.connectors.volumeMount.nameKeyVal" -}}
+{{- if (eq "configMap" .Values.server.connectors.volumeMount.type) -}}
+{{- if (eq "" .Values.server.connectors.volumeMount.name) -}}
+name: {{ template "presto.connectors" . }}
+{{- else -}}
+name: {{ .Values.server.connectors.volumeMount.name }}
+{{- end -}}
+{{- else -}}
+{{- if (eq "secret" .Values.server.connectors.volumeMount.type) -}}
+secretName: {{ .Values.server.connectors.volumeMount.name }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}

@@ -27,6 +27,9 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "presto.worker" . }}
+        - name: catalog-volume
+          {{ .Values.server.connectors.volumeMount.type }}:
+            {{ template "presto.connectors.volumeMount.nameKeyVal" . }}
       containers:
         - name: {{ .Chart.Name }}-worker
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -37,6 +40,8 @@ spec:
           volumeMounts:
             - mountPath: {{ .Values.server.config.path }}
               name: config-volume
+            - mountPath: {{ .Values.server.connectors.catalogDir }}
+              name: catalog-volume
           livenessProbe:
             exec:
               command:
