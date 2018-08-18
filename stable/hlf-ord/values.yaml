@@ -44,10 +44,10 @@ ord:
   ## MSP ID of the Orderer
   mspID: OrdererMSP
 
-secrets:
+secrets: {}
   ## This should contain "genesis" block derived from a configtx.yaml
   ## configtxgen -profile OrdererGenesis -outputBlock genesis.block
-  genesis: hlf--genesis
+  # genesis: hlf--genesis
   ## This should contain the Certificate of the Orderer Organisation admin
   ## This is necessary to successfully run the orderer
   # adminCert: hlf--ord-admincert
