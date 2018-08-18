@@ -50,7 +50,7 @@ secrets:
   genesis: hlf--genesis
   ## This should contain the Certificate of the Orderer Organisation admin
   ## This is necessary to successfully run the orderer
-  adminCert: hlf--ord-admincert
+  # adminCert: hlf--ord-admincert
 
 resources: {}
   ## We usually recommend not to specify default resources and to leave this as a conscious
