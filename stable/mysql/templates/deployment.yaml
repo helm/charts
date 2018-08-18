@@ -28,10 +28,13 @@ spec:
           {{- if .Values.persistence.subPath }}
           subPath: {{ .Values.persistence.subPath }}
           {{- end }}
+      {{- if .Values.extraInitContainers }}
+{{ tpl .Values.extraInitContainers . | indent 6 }}
+      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
-      {{- end }}          
+      {{- end }}
       containers:
       - name: {{ template "mysql.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -115,6 +118,9 @@ spec:
         - name: certificates
           mountPath: /ssl
         {{- end }}
+        {{- if .Values.extraVolumeMounts }}
+{{ tpl .Values.extraVolumeMounts . | indent 8 }}
+        {{- end }}
       {{- if .Values.metrics.enabled }}
       - name: metrics
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
@@ -147,7 +153,7 @@ spec:
           timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
-      {{- end }}        
+      {{- end }}
       volumes:
       {{- if .Values.configurationFiles }}
       - name: configurations
@@ -171,3 +177,6 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+      {{- if .Values.extraVolumes }}
+{{ tpl .Values.extraVolumes . | indent 6 }}
+      {{- end }}
