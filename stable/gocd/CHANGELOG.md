@@ -1,3 +1,17 @@
+### 1.3.1
+
+* [7b9d6c0](https://github.com/kubernetes/charts/commit/7b9d6c0): Enable use of host aliases
+* [273f042](https://github.com/kubernetes/charts/commit/273f042): Add documentation to hostAliases property
+* [d21a32d](https://github.com/kubernetes/charts/commit/d21a32d): Add hostAliases property to README
+
+### 1.3.0
+
+* [750de42c](https://github.com/kubernetes/charts/commit/750de42c):  Add support for SSH keys on server and agent
+
+### 1.2.0
+
+* [514a1856](https://github.com/kubernetes/charts/commit/514a1856):  Bump up GoCD app version to 18.7.0
+
 ### 1.1.3
 
 * [3df661cc](https://github.com/kubernetes/charts/commit/3df661cc):  Use the gocd-agent-docker-dind image of the tag same as of GoCD app version
