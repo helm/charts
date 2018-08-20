@@ -17,7 +17,7 @@ spec:
       serviceAccountName: tiller
       containers:
         - name:  kubectl
-          image: dtzar/helm-kubectl
+          image: aquatribe/helm-kubectl
           command: ["/bin/sh","-c"]  #command: ["kubectl"]
           args: ["kubectl label ns default --overwrite istio-injection=enabled"]
       restartPolicy: OnFailure
@@ -46,7 +46,7 @@ spec:
       serviceAccountName: tiller
       containers:
         - name:  kubectl
-          image: dtzar/helm-kubectl
+          image: aquatribe/helm-kubectl
           command: ["/bin/sh","-c"]  #command: ["kubectl"]
           args: ["kubectl label ns default --overwrite istio-injection-;kubectl delete crd --all"]
       restartPolicy: OnFailure
