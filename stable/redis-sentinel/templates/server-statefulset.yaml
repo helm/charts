@@ -13,6 +13,12 @@ metadata:
 spec:
   serviceName: {{ template "redis-sentinel.fullname" . }}-{{ .Values.servers.name }}
   replicas: {{ .Values.servers.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "redis-sentinel.name" . }}
+      release: {{ .Release.Name }}
+      component: server
+      redis-node: "true"
   template:
     metadata:
       labels:

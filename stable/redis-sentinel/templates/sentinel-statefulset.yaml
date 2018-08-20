@@ -12,6 +12,11 @@ metadata:
 spec:
   serviceName: {{ template "redis-sentinel.fullname" . }}-{{ .Values.sentinel.name }}
   replicas: {{ .Values.sentinel.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "redis-sentinel.name" . }}
+      release: {{ .Release.Name }}
+      component: "sentinel"
   template:
     metadata:
       labels:
