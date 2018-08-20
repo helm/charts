@@ -1,0 +1,43 @@
+{{- if and (.Values.build.install) (not .Values.serving.install ) -}}
+apiVersion: v1
+data:
+  loglevel.autoscaler: info
+  loglevel.controller: info
+  loglevel.queueproxy: info
+  loglevel.webhook: info
+  zap-logger-config: |
+    {
+      "level": "info",
+      "development": false,
+      "sampling": {
+        "initial": 100,
+        "thereafter": 100
+      },
+      "outputPaths": ["stdout"],
+      "errorOutputPaths": ["stderr"],
+      "encoding": "json",
+      "encoderConfig": {
+        "timeKey": "",
+        "levelKey": "level",
+        "nameKey": "logger",
+        "callerKey": "caller",
+        "messageKey": "msg",
+        "stacktraceKey": "stacktrace",
+        "lineEnding": "",
+        "levelEncoder": "",
+        "timeEncoder": "",
+        "durationEncoder": "",
+        "callerEncoder": ""
+      }
+    }
+kind: ConfigMap
+metadata:
+  name: config-logging
+  namespace: {{ .Values.build.namespace }}
+  labels:
+    app: {{.Chart.Name}}-build
+    component: config-logging
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- end -}}

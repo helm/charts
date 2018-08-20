@@ -1,0 +1,44 @@
+{{- if and (.Values.build.install) (not .Values.serving.install ) -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{.Chart.Name}}-build
+    component: {{ .Values.build.controller.name }}
+    role: {{ .Values.build.controller.name }}
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ .Values.build.controller.name }}
+  namespace: {{ .Values.build.namespace }}
+spec:
+  ports:
+  - name: metrics
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+  selector:
+    app: {{ .Values.build.controller.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+      app: {{.Chart.Name}}-build
+      component: build-webhook
+      role: build-webhook
+      chart: {{.Chart.Name}}-{{.Chart.Version}}
+      release: {{ .Release.Name }}
+      heritage: {{ .Release.Service }}
+  name: build-webhook
+  namespace: {{ .Values.build.namespace }}
+spec:
+  ports:
+  - port: 443
+    targetPort: 443
+  selector:
+    role: build-webhook
+---
+
+{{- end -}}

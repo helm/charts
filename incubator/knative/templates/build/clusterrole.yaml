@@ -1,0 +1,102 @@
+{{- if and (.Values.build.install) (not .Values.serving.install ) -}}
+{{ if .Values.rbac.enable }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: knative-build-admin
+  labels:
+      app: {{.Chart.Name}}-build
+      chart: {{.Chart.Name}}-{{.Chart.Version}}
+      release: {{ .Release.Name }}
+      heritage: {{ .Release.Service }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - namespaces
+  - secrets
+  - events
+  - serviceaccounts
+  - configmaps
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+  - patch
+  - watch
+- apiGroups:
+  - extensions
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+  - patch
+  - watch
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - mutatingwebhookconfigurations
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+  - patch
+  - watch
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+  - patch
+  - watch
+- apiGroups:
+  - build.knative.dev
+  resources:
+  - builds
+  - buildtemplates
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - delete
+  - patch
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: build-controller-admin
+  labels:
+    app: {{.Chart.Name}}-build
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: knative-build-admin
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.build.serviceAccount.name }}
+  namespace: {{ .Values.build.namespace }}
+---
+
+{{ end }}
+{{- end -}}

@@ -1,0 +1,67 @@
+{{- if .Values.eventing.install -}}
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: eventing-controller
+  namespace: {{ .Values.eventing.namespace }}
+spec:
+  replicas: {{.Values.eventing.controller.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: eventing-controller
+        chart: {{.Chart.Name}}-{{.Chart.Version}}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+      containers:
+      - args:
+          {{- range .Values.eventing.controller.args }}
+            - {{ . | title }}
+          {{- end }}
+        image: {{ .Values.eventing.controller.image.repository }}:{{ .Values.eventing.controller.image.tag }}
+        imagePullPolicy: {{ .Values.eventing.controller.image.pullPolicy }}
+        name: eventing-controller
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - mountPath: /etc/config-logging
+          name: config-logging
+      serviceAccountName: {{ .Values.eventing.serviceAccount.name }}
+      volumes:
+      - configMap:
+          name: config-logging
+        name: config-logging
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: webhook
+  namespace: knative-eventing
+spec:
+  replicas: {{.Values.eventing.webhook.replicaCount }}
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: webhook
+        role: webhook
+        chart: {{.Chart.Name}}-{{.Chart.Version}}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+      containers:
+      - image: {{ .Values.eventing.webhook.image.repository }}:{{ .Values.eventing.webhook.image.tag }}
+        name: webhook
+        imagePullPolicy: {{ .Values.eventing.webhook.image.pullPolicy }}
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - mountPath: /etc/config-logging
+          name: config-logging
+      serviceAccountName:  {{ .Values.eventing.serviceAccount.name }}
+      volumes:
+      - configMap:
+          name: config-logging
+        name: config-logging
+{{- end -}}

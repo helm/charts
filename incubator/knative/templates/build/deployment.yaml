@@ -1,0 +1,71 @@
+{{- if and (.Values.build.install) (not .Values.serving.install ) -}}
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.build.controller.name }}
+  namespace: {{ .Values.build.namespace }}
+spec:
+  replicas: {{ .Values.build.controller.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.build.controller.name }}
+        role: {{ .Values.build.controller.name }}
+        chart: {{.Chart.Name}}-{{.Chart.Version}}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    selector:
+      matchLabels:
+        app: {{ .Values.build.controller.name }}
+        role: {{ .Values.build.controller.name }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - args:
+          {{- range .Values.build.controller.args }}
+            - {{ . | title }}
+          {{- end }}
+        image: {{ .Values.build.controller.image.repository  }}:{{ .Values.build.controller.image.tag }}
+        name:  build-controller
+        imagePullPolicy: {{ .Values.build.controller.image.pullPolicy }}
+      serviceAccountName: {{ .Values.build.serviceAccount.name }}
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.build.webhook.name }}
+  namespace: {{ .Values.build.namespace }}
+spec:
+  replicas: {{ .Values.build.webhook.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.build.webhook.name }}
+      role: {{ .Values.build.webhook.name }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.build.webhook.name }}
+        role: {{ .Values.build.webhook.name }}
+        chart: {{.Chart.Name}}-{{.Chart.Version}}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+      containers:
+      - args:|-
+          {{- range .Values.build.webhook.args }}
+            {{ . | title }}
+          {{- end }}
+        image: {{ .Values.build.webhook.image.repository }}:{{ .Values.build.webhook.image.tag }}
+        name: build-webhook
+        imagePullPolicy: {{ .Values.build.webhook.image.pullPolicy }}
+        volumeMounts:
+        - mountPath: /etc/config-logging
+          name: config-logging
+      serviceAccountName: {{ .Values.build.serviceAccount.name }}
+      volumes:
+      - configMap:
+          name: config-logging
+        name: config-logging
+{{- end -}}

@@ -1,0 +1,51 @@
+{{- if .Values.eventing.install -}}
+---
+apiVersion: v1
+data:
+  default-cluster-bus: stub
+kind: ConfigMap
+metadata:
+  name: flow-controller-config
+  namespace:  {{ .Values.eventing.namespace }}
+  labels:
+    app: {{.Chart.Name}}-eventing
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+
+---
+apiVersion: v1
+data:
+  loglevel.controller: info
+  loglevel.webhook: info
+  zap-logger-config: |
+    {
+      "level": "info",
+      "development": false,
+      "outputPaths": ["stdout"],
+      "errorOutputPaths": ["stderr"],
+      "encoding": "json",
+      "encoderConfig": {
+        "timeKey": "ts",
+        "levelKey": "level",
+        "nameKey": "logger",
+        "callerKey": "caller",
+        "messageKey": "msg",
+        "stacktraceKey": "stacktrace",
+        "lineEnding": "",
+        "levelEncoder": "",
+        "timeEncoder": "iso8601",
+        "durationEncoder": "",
+        "callerEncoder": ""
+      }
+    }
+kind: ConfigMap
+metadata:
+  name: config-logging
+  namespace:  {{ .Values.eventing.namespace }}
+  labels:
+    app: {{.Chart.Name}}-eventing
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- end -}}

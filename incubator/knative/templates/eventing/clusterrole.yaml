@@ -1,0 +1,69 @@
+{{- if .Values.eventing.install -}}
+{{ if .Values.rbac.enable }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: knative-channels-bus
+  labels:
+      app: {{.Chart.Name}}-eventing
+      chart: {{.Chart.Name}}-{{.Chart.Version}}
+      release: {{ .Release.Name }}
+      heritage: {{ .Release.Service }}
+rules:
+- apiGroups:
+  - channels.knative.dev
+  resources:
+  - buses
+  - clusterbuses
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
+  - channels.knative.dev
+  resources:
+  - channels
+  - subscriptions
+  verbs:
+  - get
+  - watch
+  - list
+  - update
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: eventing-controller-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: eventing-controller
+  namespace: {{ .Values.eventing.namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: bus-operator-manage
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: knative-channels-bus
+subjects:
+- kind: ServiceAccount
+  name: bus-operator
+  namespace: {{ .Values.eventing.namespace }}
+{{ end }}
+{{- end -}}

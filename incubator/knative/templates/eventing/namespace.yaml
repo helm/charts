@@ -1,0 +1,12 @@
+{{- if .Values.eventing.install -}}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.eventing.namespace }}
+  labels:
+    app: {{.Chart.Name}}-eventing
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- end -}}

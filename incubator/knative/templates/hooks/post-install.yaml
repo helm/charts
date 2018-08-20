@@ -1,0 +1,54 @@
+{{- if .Values.istio.install -}}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: post-installation-job
+  namespace: kube-system
+  annotations:
+      "helm.sh/hook": "pre-install"
+      "helm.sh/hook-weight": "0"
+      "helm.sh/hook-delete-policy": "hook-succeeded,hook-failed"
+spec:
+  template:
+    metadata:
+      name: post-installation-job
+    spec:
+      serviceAccountName: tiller
+      containers:
+        - name:  kubectl
+          image: dtzar/helm-kubectl
+          command: ["/bin/sh","-c"]  #command: ["kubectl"]
+          args: ["kubectl label ns default --overwrite istio-injection=enabled"]
+      restartPolicy: OnFailure
+
+---
+{{- end -}}
+
+
+
+
+{{- if .Values.istio.install -}}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: post-deletion-job
+  namespace: kube-system
+  annotations:
+      "helm.sh/hook": post-delete
+      "helm.sh/hook-delete-policy": "hook-succeeded,hook-failed"
+spec:
+  template:
+    metadata:
+      name: post-deletion-job
+    spec:
+      serviceAccountName: tiller
+      containers:
+        - name:  kubectl
+          image: dtzar/helm-kubectl
+          command: ["/bin/sh","-c"]  #command: ["kubectl"]
+          args: ["kubectl label ns default --overwrite istio-injection-;kubectl delete crd --all"]
+      restartPolicy: OnFailure
+---
+{{- end -}}
