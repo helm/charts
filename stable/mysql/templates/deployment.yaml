@@ -12,6 +12,10 @@ spec:
     metadata:
       labels:
         app: {{ template "mysql.fullname" . }}
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
