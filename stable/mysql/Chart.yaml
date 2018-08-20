@@ -1,5 +1,5 @@
 name: mysql
-version: 0.9.1
+version: 0.9.2
 appVersion: 5.7.14
 description: Fast, reliable, scalable, and easy to use open-source relational database
   system.
@@ -13,6 +13,8 @@ sources:
 - https://github.com/kubernetes/charts
 - https://github.com/docker-library/mysql
 maintainers:
+- name: olemarkus
+  email: o.with@sportradar.com
 - name: viglesiasce
   email: viglesias@google.com
 engine: gotpl
