@@ -55,14 +55,14 @@ Parameter | Description | Default
 `persistence.name` | DB persistence volume name | `data`
 `queueComponent` | Queue component label | `queue`
 `queueImage.repository` | Queue image repository | `rabbitmq`
-`queueImage.tag` | Queue image version | `3.7.4`
+`queueImage.tag` | Queue image version | `3`
 `queueUser` | Queue username | `guest`
 `queuePassword` | Queue user password | `guest`
 `queueVhost` | Queue application vhost | `awx`
 `queueService.port` | Queue service port | `5672`
 `cacheComponent` | Cache component label | `cache`
 `cacheImage.repository` | Cache image repository | `memcached`
-`cacheImage.tag` | Cache image version | `latest`
+`cacheImage.tag` | Cache image version | `alpine`
 `cacheService.port` | Cache service port | `11211`
 `taskComponent` | Awx-task component label | `task`
 `taskImage.repository` | AWX-task image repository | `ansible/awx_task`
