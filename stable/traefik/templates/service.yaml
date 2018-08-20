@@ -38,7 +38,7 @@ spec:
   {{- end }}
   selector:
     app: {{ template "traefik.name" . }}
-    release: {{ .Release.Name }}     
+    release: {{ .Release.Name }}
   ports:
   - port: 80
     name: http
@@ -54,7 +54,7 @@ spec:
     {{- if not .Values.ssl.enabled }}
     targetPort: httpn
     {{- end }}
-  {{- if or .Values.metrics.prometheus.enabled .Values.metrics.datadog.enabled .Values.metrics.statsd.enabled }}
+  {{- if .Values.metrics.prometheus.enabled }}
   - port: 8080
     name: metrics
     targetPort: dash
