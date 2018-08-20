@@ -58,9 +58,17 @@ spec:
             - --ingress-class={{ .Values.controller.ingressClass }}
           {{- end }}
           {{- if (semverCompare ">=0.9.0-beta.1" .Values.controller.image.tag) }}
+          {{- if eq .Values.controller.configMap.name "" }}
             - --configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.controller.fullname" . }}
           {{- else }}
+            - --configmap=={{ .Values.controller.configMap.name }}
+          {{- end }}
+          {{- else }}
+          {{- if eq .Values.controller.configMap.name "" }}
             - --nginx-configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.controller.fullname" . }}
+          {{- else }}
+            - --nginx-configmap=={{ .Values.controller.configMap.name }}
+          {{- end }}
           {{- end }}
           {{- if .Values.tcp }}
             - --tcp-services-configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.fullname" . }}-tcp

@@ -8,6 +8,11 @@ controller:
     tag: "0.19.0"
     pullPolicy: IfNotPresent
 
+  configMap:
+    ## point to an existing configMap rather than creating one
+    name: ""
+
+  # config adds additional configurations to the created configMap when configMap.create=true
   config: {}
   # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
   headers: {}
