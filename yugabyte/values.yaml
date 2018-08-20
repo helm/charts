@@ -19,8 +19,8 @@ resource:
       memory: 7.5Gi
   tserver:
     requests:
-      cpu: 4
-      memory: 15Gi
+      cpu: 2
+      memory: 7.5Gi
 
 replicas:
   master: 3
