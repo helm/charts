@@ -1,0 +1,88 @@
+## Install Default RBAC roles and bindings
+rbac:
+  enable: true
+  apiVersion: v1beta1
+
+build:
+  install: true
+  namespace: knative-build
+  serviceAccount:
+  # Specifies whether a service account should be created
+    name: build-controller
+    create: true
+
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+
+  controller:
+    name: build-controller
+    replicaCount: 1
+    image:
+      repository: gcr.io/build-crd/github.com/knative/build/cmd/controller@sha256
+      tag: 9220968c9aae7e6edac97effc7b693fcf5bbb17edf78aa14347de87b15ac8840
+      pullPolicy: IfNotPresent
+    args:
+      - -builder
+      - cluster
+      - -logtostderr
+      - -stderrthreshold
+      - INFO
+      - -creds-image
+      - gcr.io/build-crd/github.com/knative/build/cmd/creds-init@sha256:cfcc14889abe29b54d17ff6cf414918d9d92ff02bb112525742ec2e30117899f
+      - -git-image
+      - gcr.io/build-crd/github.com/knative/build/cmd/git-init@sha256:d52c29a4a1d83712b048bd32dbb5f97b7d2791af9b892f68fe94e162932ac66e
+
+    credsInit:
+      image:
+        repository: gcr.io/build-crd/github.com/knative/build/cmd/creds-init@sha256
+        tag: cfcc14889abe29b54d17ff6cf414918d9d92ff02bb112525742ec2e30117899f
+    gitInit:
+      image:
+        repository: gcr.io/build-crd/github.com/knative/build/cmd/git-init@sha256
+        tag: d52c29a4a1d83712b048bd32dbb5f97b7d2791af9b892f68fe94e162932ac66e
+
+  webhook:
+    name:
+    replicaCount: 1
+    args:
+        - -builder
+        - cluster
+        - -logtostderr
+        - -stderrthreshold
+        - INFO
+    image:
+      name: build-webhook
+      repository: gcr.io/build-crd/github.com/knative/build/cmd/webhook@sha256
+      tag: a7ed8fb8828f71a6aba3f9f9899eff6c867ceb5a8ceeaed903008c2296f919fb
+      pullPolicy: IfNotPresent
+eventing:
+  install: true
+  namespace: knative-eventing
+  serviceAccount:
+    name: eventing-controller
+    create: true
+  controller:
+      replicaCount: 1
+      image:
+        repository: gcr.io/knative-releases/github.com/knative/eventing/cmd/controller@sha256
+        tag: 242c637589869d16b5be58ede2de1a0ebf1149eeec92fd1da4ed9ce063d8b75b
+        pullPolicy: IfNotPresent
+      args:
+        - -logtostderr
+        - -stderrthreshold
+        - INFO
+
+  webhook:
+     replicaCount: 1
+     image:
+       repository: gcr.io/knative-releases/github.com/knative/eventing/cmd/webhook
+       tag: b8121797d9c5df619984476c35cf90b08bc3ff80ddd931ec41928e268e3f3a34
+       pullPolicy: IfNotPresent
+serving:
+  install: true
+  version: v0.1.1
+  lite: true #Disable this for full deployment
+
+istio:
+  install: true
+  version: 0.8.0
