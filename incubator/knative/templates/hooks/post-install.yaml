@@ -1,4 +1,4 @@
-{{- if .Values.istio.install -}}
+{{ if .Values.istio.install }}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -23,7 +23,7 @@ spec:
       restartPolicy: OnFailure
 
 ---
-{{- end -}}
+{{ end }}
 
 
 
