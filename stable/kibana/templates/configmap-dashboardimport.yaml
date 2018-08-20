@@ -1,0 +1,58 @@
+{{- if .Values.dashboardImport.dashboards }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kibana.fullname" . }}-importscript
+  labels:
+    app: {{ template "kibana.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  dashboardImport.sh: |
+    #!/usr/bin/env bash
+    #
+    # kibana dashboard import script
+    #
+
+    cd /kibanadashboards
+
+    echo "starting kibana..."
+
+    /usr/local/bin/kibana-docker $@ &
+
+    echo "waiting up to {{ .Values.readinessProbe.initialDelaySeconds }} seconds for kibana to come up..."
+
+    for i in {1..{{ .Values.readinessProbe.initialDelaySeconds }}}; do
+      curl -Is localhost:5601/api/status | grep "HTTP.*200" > /dev/null && break || sleep 1
+    done
+
+    for DASHBOARD_FILE in *; do
+      echo -e "\nimporting ${DASHBOARD_FILE}..."
+
+      curl {{ if .Values.dashboardImport.xpackauth.enabled }}--user {{ .Values.dashboardImport.xpackauth.username }}:{{ .Values.dashboardImport.xpackauth.password }}{{ end }} -s --connect-timeout 60 --max-time 60 -XPOST localhost:5601/api/kibana/dashboards/import?force=true -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @./${DASHBOARD_FILE}
+
+      if [ "$?" != "0" ]; then
+        echo -e "\nimport of ${DASHBOARD_FILE} failed... restarting container..."
+        exit 1
+      else
+        echo -e "\nimport of ${DASHBOARD_FILE} finished :-)"
+      fi
+
+    done
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kibana.fullname" . }}-dashboards
+  labels:
+    app: {{ template "kibana.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{- range $key, $value := .Values.dashboardImport.dashboards }}
+  {{ $key }}: |-
+{{ $value | indent 4 }}
+{{- end -}}
+{{- end -}}
