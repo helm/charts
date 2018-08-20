@@ -1,6 +1,6 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.3.1"
+  tag: "6.3.2"
   pullPolicy: "IfNotPresent"
 
 commandline:
@@ -66,6 +66,16 @@ ingress:
 # service account that will run the pod. Leave commented to use the default service account.
 # serviceAccountName: kibana
 
+livenessProbe:
+  enabled: false
+  initialDelaySeconds: 30
+  timeoutSeconds: 10
+
+readinessProbe:
+  enabled: false
+  initialDelaySeconds: 30
+  timeoutSeconds: 10
+
 resources: {}
   # limits:
   #   cpu: 100m
@@ -90,3 +100,14 @@ nodeSelector: {}
 
 podAnnotations: {}
 replicaCount: 1
+revisionHistoryLimit: 3
+
+# to export a dashboard from a running kibana 6.3.x use:
+# curl --user <username>:<password> -XGET https://kibana.yourdomain.com:5601/api/kibana/dashboards/export?dashboard=<some-dashboard-uuid> > my-dashboard.json
+# you can find an example dashboard for kubernests with fluentd-elasticsearch chart here: https://github.com/monotek/kibana-dashboards/blob/master/k8s-fluentd-elasticsearch.json
+dashboardImport:
+  xpackauth:
+    enabled: false
+    username: myuser
+    password: mypass
+  dashboards: {}
