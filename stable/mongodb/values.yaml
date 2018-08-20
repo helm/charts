@@ -39,6 +39,12 @@ usePassword: true
 # mongodbPassword: password
 # mongodbDatabase: database
 
+
+## Whether enable/disable IPv6 on MongoDB
+## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#enabling/disabling-ipv6
+##
+mongodbEnableIPv6: true
+
 ## MongoDB additional command line flags
 ##
 ## Can be used to specify command line flags, for example:
