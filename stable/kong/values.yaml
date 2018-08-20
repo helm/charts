@@ -3,7 +3,7 @@
 
 image:
   repository: kong
-  tag: 0.13.1
+  tag: 0.14.0
   pullPolicy: IfNotPresent
 
 # Specify Kong admin and proxy services configurations
@@ -22,6 +22,19 @@ admin:
   type: NodePort
   # Set a nodePort which is available
   # nodePort: 32444
+  # Kong admin ingress settings.
+  ingress:
+    # Enable/disable exposure using ingress.
+    enabled: false
+    # TLS secret name.
+    # tls: kong-admin.example.com-tls
+    # Array of ingress hosts.
+    hosts: []
+    # Map of ingress annotations.
+    annotations: {}
+    # Ingress path.
+    path: /
+
 proxy:
   # If you want to specify annotations for the proxy service, uncomment the following
   # line, add additional or adjust as needed, and remove the curly braces after 'annotations:'.
@@ -35,6 +48,18 @@ proxy:
   type: NodePort
   # Set a nodePort which is available
   # nodePort: 32443
+  # Kong proxy ingress settings.
+  ingress:
+    # Enable/disable exposure using ingress.
+    enabled: false
+    # TLS secret name.
+    # tls: kong-proxy.example.com-tls
+    # Array of ingress hosts.
+    hosts: []
+    # Map of ingress annotations.
+    annotations: {}
+    # Ingress path.
+    path: /
 
 # Set runMigrations to run Kong migrations
 runMigrations: true
