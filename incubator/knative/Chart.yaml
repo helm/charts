@@ -5,10 +5,16 @@ version: 0.1
 appVersion: 0.1.1
 home: https://github.com/knative/
 icon: https://raw.githubusercontent.com/knative/docs/master/images/logo/rgb/knative-logo-rgb.jpg
+keywords:
+- knative
+- eventing
+- istio
+- serving
+- build
 sources:
 - https://github.com/knative/
 maintainers:
-- name: Tunde Oladipupo
+- name: simplytunde
   email: tunde@aquatribe.com
-- name: Babatunde Olu-isa
+- name: boluisa
   email: babatunde@aquatribe.com
