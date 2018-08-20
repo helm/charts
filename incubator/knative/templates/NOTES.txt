@@ -18,3 +18,8 @@ Verify all Build Pods are running;
 Verify all Serving Pods are running;
   kubectl get pods -n knative-serving
 {{ end }}
+
+{{ if .Values.eventing.install }}
+Verify all Eventing Pods are running;
+  kubectl get pods -n knative-eventing
+{{ end }}
