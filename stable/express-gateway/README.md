@@ -107,7 +107,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install stable/express-gateway --name my-release \
-  --set=image.tag=10.0.2,env.database=cassandra,cassandra.enabled=true
+  --set=image.tag=v1.11.0,redis.enabled=false
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
