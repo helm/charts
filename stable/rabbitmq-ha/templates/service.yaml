@@ -15,7 +15,9 @@ metadata:
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
 spec:
+{{- if ne .Values.service.type "NodePort" }}
   clusterIP: "{{ .Values.service.clusterIP }}"
+{{- end }}
 {{- if .Values.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
@@ -31,14 +33,23 @@ spec:
     - name: http
       protocol: TCP
       port: {{ .Values.rabbitmqManagerPort }}
+     {{- if eq .Values.service.type "NodePort" }}
+      nodePort: {{ .Values.rabbitmqManagerNodePort }}
+     {{- end }}
       targetPort: http
     - name: amqp
       protocol: TCP
       port: {{ .Values.rabbitmqNodePort }}
+      {{- if eq .Values.service.type "NodePort" }}
+      nodePort: {{ .Values.rabbitmqNodeNodePort }}
+      {{- end }}
       targetPort: amqp
     - name: epmd
       protocol: TCP
       port: {{ .Values.rabbitmqEpmdPort }}
+      {{- if eq .Values.service.type "NodePort" }}
+      nodePort: {{ .Values.rabbitmqEpmdNodePort }}
+      {{- end }}
       targetPort: epmd
     {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
     - name: stomp-tcp

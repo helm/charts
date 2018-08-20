@@ -23,12 +23,24 @@ rabbitmqMemoryHighWatermark: 256MB
 ## Ref: https://www.rabbitmq.com/clustering.html
 ##
 rabbitmqEpmdPort: 4369
+## Customize nodePort number when service type is NodePort
+## Ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+##
+# rabbitmqEpmdNodePort: 31369
 
 ## Node port
 rabbitmqNodePort: 5672
+## Customize nodePort number when service type is NodePort
+## Ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+##
+# rabbitmqNodeNodePort: 30672
 
 ## Manager port
 rabbitmqManagerPort: 15672
+## Customize nodePort number when service type is NodePort
+## Ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+##
+# rabbitmqManagerNodePort: 31672
 
 ## Set to true to precompile parts of RabbitMQ with HiPE, a just-in-time
 ## compiler for Erlang. This will increase server throughput at the cost of
