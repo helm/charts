@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/cassandra/
 image:
   repo: "cassandra"
-  tag: "3"
+  tag: "3.11.2"
   pullPolicy: IfNotPresent
   ## Specify ImagePullSecrets for Pods
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -32,13 +32,13 @@ persistence:
 ## Minimum memory for development is 4GB and 2 CPU cores
 ## Minimum memory for production is 8GB and 4 CPU cores
 ## ref: http://docs.datastax.com/en/archived/cassandra/2.0/cassandra/architecture/architecturePlanningHardware_c.html
-resources:
-  requests:
-    memory: 4Gi
-    cpu: 2
-  limits:
-    memory: 4Gi
-    cpu: 2
+resources: {}
+  # requests:
+  #   memory: 4Gi
+  #   cpu: 2
+  # limits:
+  #   memory: 4Gi
+  #   cpu: 2
 
 ## Change cassandra configuration parameters below:
 ## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/configuration/configCassandra_yaml.html
