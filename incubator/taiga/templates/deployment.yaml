@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "taiga.fullname" . }}
+  labels:
+{{ include "taiga.labels" . | indent 4 }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+{{ include "taiga.labels" . | indent 6 }}
+  template:
+    metadata:
+      labels:
+{{ include "taiga.labels" . | indent 8 }}
+    spec:
+      initContainers:
+      - name: init-db
+        image: {{ include "taiga.image" . | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: TAIGA_SLEEP
+          value: "60"
+        - name: TAIGA_DB_CHECK_ONLY
+          value: "True"
+        envFrom:
+{{ include "taiga.envfrom" . | indent 8 }}
+      containers:
+      - name: {{ .Chart.Name }}-front
+        image: {{ include "taiga.image" . | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        env:
+        - name: TAIGA_COMPONENT
+          value: "front"
+        - name: TAIGA_SKIP_DB_CHECK
+          value: "True"
+        envFrom:
+{{ include "taiga.envfrom" . | indent 8 }}
+        volumeMounts:
+        - name: taiga-data
+          mountPath: /usr/src/taiga-back/media
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      - name: {{ .Chart.Name }}-back
+        image: {{ include "taiga.image" . | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /api/v1/projects
+            port: 80
+        readinessProbe:
+          httpGet:
+            path: /api/v1/projects
+            port: 80
+        env:
+        - name: TAIGA_COMPONENT
+          value: "back"
+        - name: TAIGA_SKIP_DB_CHECK
+          value: "True"
+        envFrom:
+{{ include "taiga.envfrom" . | indent 8 }}
+        volumeMounts:
+        - name: taiga-data
+          mountPath: /usr/src/taiga-back/media
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+      - name: taiga-data
+    {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default ( include "taiga.fullname" . ) }}
+    {{- else }}
+        emptyDir: {}
+    {{- end }}

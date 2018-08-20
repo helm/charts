@@ -1,0 +1,132 @@
+### Default values for taiga.
+
+image:
+  repository: mvitale1989/docker-taiga
+  tag: "20180818"
+  initRepository: alpine
+  initTag: 3.7
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+  - chart-example.local
+  tls: []
+  # - secretName: chart-example-tls
+  #   hosts:
+  #   - chart-example.local
+
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+extraLabels: {}
+
+
+### Parameters for the taiga service
+###
+taiga:
+
+  ### The name on which the taiga backend API server will be accessible. In this chart, it's the same name you will use to
+  ### access the frontend.  Notes:
+  ### - Must be formatted exactly as you would type the hostname part of the URL in a browser, including the port number if needed.
+  ### - Must be reachable by ALL clients using the service. See F.A.Q. in the readme, for more informations.
+  ###
+  apiserver: localhost:8080
+
+  ### Whether taiga is behind a TLS termination; if using a TLS ingress, set this to true.
+  ###
+  behindTlsProxy: false
+
+  ### Database access parameters
+  ### If deploying postgres, the dbHost should be `${release_name}-postgresql`
+  ###
+  dbHost: taiga-postgresql
+  dbName: taiga
+  dbUser: taiga
+  dbPassword: "changeme"
+
+  ### If you enable email, also uncomment and configure the parameters below
+  ###
+  emailEnabled: false
+  # emailFrom: "taiga@mycompany.net"
+  # emailUseTls: true
+  # emailSmtpHost: "smtp.example.com"
+  # emailSmtpPort: 587
+  # emailSmtpUser: "user@example.com"
+  # emailSmtpPassword: ""
+
+  ### Configure taiga-back's secret key
+  ### If omitted, a random alphanumeric string of 10 characters will be generated
+  ###
+  # secretKey: "changeme"
+
+
+### Persistent volume and database configuration for the taiga service
+###
+persistence:
+
+  ### Whether or not you want this chart to provision the database for you
+  ### Database parameters must be specified under the `postgres` value
+  ###
+  deployPostgres: true
+
+  ### If you don't want persistence for the taiga media storage, disable this
+  ###
+  enabled: true
+  size: 8Gi
+  accessMode: ReadWriteOnce
+  # annotations:
+  #   "helm.sh/resource-policy": keep
+
+  ### StorageClass for the provisioned PVC.
+  ###
+  # storageClass: ""
+
+  ### If you prefer using a PVC defined outside of this chart instead, uncomment this
+  ### Requires `persistence.enabled: true`
+  ###
+  # existingClaim: ""
+
+
+### Any stable/postgres values can be defined here
+###
+postgresql:
+
+  ### Create a postgres user, password and database
+  ###
+  postgresUser: "taiga"
+  postgresPassword: "changeme"
+  postgresDatabase: "taiga"
+
+  persistence:
+    enabled: true
+    size: 2Gi
+    # annotations:
+    #   "helm.sh/resource-policy": keep
+
+    ### StorageClass for the provisioned PVC.
+    ###
+    # storageClass: ""
+
+    ### If you prefer using a PVC defined outside of this chart instead, uncomment this
+    ### Requires `postgresql.persistence.enabled: true`
+    ###
+    # existingClaim: ""

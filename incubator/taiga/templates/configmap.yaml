@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "taiga.fullname" . }}
+  labels:
+{{ include "taiga.labels" . | indent 4 }}
+data:
+  TAIGA_HOSTNAME: {{ required "taiga.apiserver must be set" .Values.taiga.apiserver }}
+  TAIGA_SSL: "false"
+  TAIGA_SSL_BY_REVERSE_PROXY: {{ .Values.taiga.behindTlsProxy | ternary "True" "False" | quote }}
+  TAIGA_DB_HOST: {{ required "taiga.dbHost must be set" .Values.taiga.dbHost }}
+  TAIGA_DB_NAME: {{ required "taiga.dbName must be set" .Values.taiga.dbName }}
+  TAIGA_DB_USER: {{ required "taiga.dbUser must be set" .Values.taiga.dbUser }}
+  TAIGA_ENABLE_EMAIL: {{ .Values.taiga.emailEnabled | ternary "True" "False" | quote }}
+{{- if .Values.taiga.emailEnabled }}
+  TAIGA_EMAIL_FROM: {{ .Values.taiga.emailFrom | default "taiga@example.com" |  quote }}
+  TAIGA_EMAIL_USE_TLS: {{ .Values.taiga.emailUseTls | default true | ternary "True" "False" | quote }}
+  TAIGA_EMAIL_HOST: {{ required "taiga.emailSmtpHost must be set" .Values.taiga.emailSmtpHost | quote }}
+  TAIGA_EMAIL_PORT: {{ default 587 .Values.taiga.emailSmtpPort | quote }}
+  TAIGA_EMAIL_USER: {{ required "taiga.emailSmtpUser must be set" .Values.taiga.emailSmtpUser | quote }}
+{{- end }}

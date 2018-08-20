@@ -1,0 +1,43 @@
+{{- define "taiga.scheme" -}} http{{ if .Values.ingress.tls }}s{{- end -}} {{- end -}}
+{{- define "taiga.apiserver_url" -}} {{ template "taiga.scheme" . }}://{{ .Values.taiga.apiserver }} {{- end -}}
+
+The Taiga service is now ready for you to use.
+
+IMPORTANT: ALL users, from both inside and outside of the cluster, must be able to reach the service through the URI `{{ template "taiga.apiserver_url" . }}`, where the frontend will expect the API server to be.
+Thus, given your provided `taiga.apiserver`:
+1. If your server is publicly reachable (e.g. using Ingress or NodePort/ExternalIP/LoadBalancer Service), create a corresponding public DNS record pointing to the IP where the service will be reachable.
+2. If you're using using the service in-cluster only, ensure that either `taiga.apiserver` is a cluster-localr name for the service, or create an internal DNS record pointing to it (e.g. by configuring CoreDNS).
+3. If you're testing from your local machine, you can simply alias the given `taiga.apiserver` to the IP you'll be using to test the service, in your local `/etc/hosts` file. E.g. if testing through `kubectl port-forward` or ssh tunnels, you may want to add a line like `127.0.0.1 my-taiga-hostname.mycompany.com`.
+
+In addition to the aforementioned API server URL, you can also access the service in the following ways:
+{{- if .Values.ingress.enabled }}
+- From outside of the cluster, at the names:
+{{- range .Values.ingress.hosts }}
+  * `{{ template "taiga.scheme" $ }}://{{ . }}`
+{{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+- From outside of the cluster, by executing the following:
+    $ export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "taiga.fullname" . }})
+    $ export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+    $ echo "Visit http://$NODE_IP:$NODE_PORT to use your application"
+{{- else if contains "LoadBalancer" .Values.service.type }}
+- From outside of the cluster, by executing the following:
+    $ export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "taiga.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    $ echo "Visit {{ template "taiga.scheme" . }}://$SERVICE_IP:{{ .Values.service.port }} to user your application"
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status of by running 'kubectl get svc -w {{ template "taiga.fullname" . }}'
+{{- else if contains "ClusterIP" .Values.service.type }}
+* From inside of the cluster, by executing the following:
+    $ export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "taiga.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+    $ echo "Visit http://localhost:8080 to use your application"
+    $ kubectl port-forward $POD_NAME 8080:80
+{{- end }}
+{{- if .Release.IsInstall }}
+
+
+The first-time credentials for using Taiga are:
+User name: admin
+Password: 123123
+
+Please change your password on your first login.
+{{- end }}
