@@ -25,6 +25,8 @@ client:
   name: client
   replicas: 2
   serviceType: ClusterIP
+  loadBalancerIP: {}
+  loadBalancerSourceRanges: {}
 ## (dict) If specified, apply these annotations to the client service
 #  serviceAnnotations:
 #    example: client-svc-foo
