@@ -53,8 +53,11 @@ extraEnv: {}
 
 ## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
 ## This can be useful for secret keys, etc
-##
-extraEnvFromSecret: ""
+## This value is in a list format, for example:
+# extraEnvFromSecret:
+#   - secretOne
+#   - secretTwo
+extraEnvFromSecret: {}
 
 persistence:
 
