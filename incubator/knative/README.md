@@ -42,7 +42,7 @@ The command deploys Knative on the Kubernetes cluster in the default configurati
 To uninstall/delete the `knative` deployment:
 
 ```console
-$ helm delete knative
+$ helm delete --purge knative
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
