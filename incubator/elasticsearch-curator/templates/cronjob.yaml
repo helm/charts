@@ -21,6 +21,10 @@ spec:
   successfulJobsHistoryLimit: {{ . }}
   {{- end }}
   jobTemplate:
+    metadata:
+      labels:
+        app: {{ template "elasticsearch-curator.name" . }}
+        release: {{ .Release.Name }}
     spec:
       template:
         metadata:
