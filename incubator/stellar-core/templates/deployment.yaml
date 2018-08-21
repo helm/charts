@@ -108,8 +108,9 @@ spec:
               path: /info
               port: http
           readinessProbe:
-            exec:
-              command: [ /ready.sh ]
+            httpGet:
+              path: /info
+              port: http
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
