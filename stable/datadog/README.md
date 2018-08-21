@@ -50,6 +50,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.logsEnabled`       | Enable log collection              | `nil`                                     |
 | `datadog.logsConfigContainerCollectAll` | Collect logs from all containers | `nil`                           |
 | `datadog.apmEnabled`        | Enable tracing from the host       | `nil`                                     |
+| `datadog.processAgentEnabled` | Enable live process monitoring   | `nil`                                     |
 | `datadog.checksd`           | Additional custom checks as python code  | `nil`                               |
 | `datadog.confd`             | Additional check configurations (static and Autodiscovery) | `nil`             |
 | `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
