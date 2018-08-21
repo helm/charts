@@ -78,10 +78,11 @@ eventing:
       repository: gcr.io/knative-releases/github.com/knative/eventing/cmd/webhook
       tag: b8121797d9c5df619984476c35cf90b08bc3ff80ddd931ec41928e268e3f3a34
       pullPolicy: IfNotPresent
+
+# set lite to false for full deployment
 serving:
   install: true
   version: v0.1.1
-  # set lite to false for full deployment
   lite: true 
 
 
