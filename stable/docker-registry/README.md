@@ -61,6 +61,8 @@ their default values.
 | `s3.secure`                 | Use HTTPS                                                                                  | `nil`           |
 | `swift.authurl`             | Swift authurl                                                                              | `nil`           |
 | `swift.container`           | Swift container                                                                            | `nil`           |
+| `nodeSelector`              | node labels for pod assignment                                                             | `{}`            |
+| `tolerations`               | pod tolerations                                                                            | `[]`            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
