@@ -1,9 +1,5 @@
 1. The node will take a while to sync with the network (~1h or more
-   is not unusual for the default config). During this time the pod
-   is not "ready". You will see the readiness probe fail with
-   'Expected state "Synced!" but got "Joining SCP"' or
-   'Expected state "Synced!" but got "Catching up"' during
-   this time.
+   is not unusual for the default config).
 
 2. Allow other nodes to connect to you
 
