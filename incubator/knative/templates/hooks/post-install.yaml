@@ -26,8 +26,6 @@ spec:
 {{ end }}
 
 
-
-
 {{- if .Values.istio.install -}}
 ---
 apiVersion: batch/v1
