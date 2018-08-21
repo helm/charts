@@ -7,7 +7,7 @@ metadata:
     chart: {{ template "elasticsearch-curator.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  annotations: 
+  annotations:
 {{ toYaml .Values.cronjob.annotations | indent 4 }}
 spec:
   schedule: "{{ .Values.cronjob.schedule }}"
@@ -21,13 +21,17 @@ spec:
   successfulJobsHistoryLimit: {{ . }}
   {{- end }}
   jobTemplate:
+    metadata:
+      labels:
+        app: {{ template "elasticsearch-curator.name" . }}
+        release: {{ .Release.Name }}
     spec:
       template:
         metadata:
           labels:
             app: {{ template "elasticsearch-curator.name" . }}
             release: {{ .Release.Name }}
-          annotations: 
+          annotations:
 {{ toYaml .Values.pod.annotations | indent 12 }}
         spec:
           volumes:
@@ -56,14 +60,14 @@ spec:
               resources:
 {{ toYaml .Values.resources | indent 16 }}
     {{- with .Values.nodeSelector }}
-      nodeSelector:
+          nodeSelector:
 {{ toYaml . | indent 12 }}
     {{- end }}
     {{- with .Values.affinity }}
-      affinity:
+          affinity:
 {{ toYaml . | indent 12 }}
     {{- end }}
     {{- with .Values.tolerations }}
-      tolerations:
+          tolerations:
 {{ toYaml . | indent 12 }}
     {{- end }}
