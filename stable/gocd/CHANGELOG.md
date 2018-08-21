@@ -1,3 +1,8 @@
+### 1.3.2
+
+* [55d9cef](https://github.com/kubernetes/charts/commit/55d9cef): Add support for privileged mode, which is needed for DinD (Docker-in-Docker).
+* [01df97f](https://github.com/kubernetes/charts/commit/01df97f): Enable privileged mode for GoCD agent deployment (if configured).
+
 ### 1.3.1
 
 * [7b9d6c0](https://github.com/kubernetes/charts/commit/7b9d6c0): Enable use of host aliases

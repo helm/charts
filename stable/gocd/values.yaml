@@ -192,6 +192,9 @@ agent:
       homego: homego
       dockerEntryPoint: scripts
 
+  # agent.privileged is needed for running Docker-in-Docker (DinD) agents
+  privileged: false
+
   healthCheck:
    # agent.healthCheck.enable is the toggle for GoCD agent health checks
     enabled: false
