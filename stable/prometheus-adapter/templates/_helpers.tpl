@@ -41,3 +41,11 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{- define "k8s-prometheus-adapter.tls.secretName" -}}
+{{- if .Values.tls.secretName -}}
+    {{ .Values.tls.secretName }}
+{{- else -}}
+    {{ include "k8s-prometheus-adapter.fullname" . }}
+{{- end -}}
+{{- end -}}

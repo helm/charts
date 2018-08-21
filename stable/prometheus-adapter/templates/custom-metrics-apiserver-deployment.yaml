@@ -94,5 +94,5 @@ spec:
 {{- if .Values.tls.enable }}
       - name: volume-serving-cert
         secret:
-          secretName: {{ template "k8s-prometheus-adapter.fullname" . }}
+          secretName: {{ template "k8s-prometheus-adapter.tls.secretName" . }}
 {{- end }}
