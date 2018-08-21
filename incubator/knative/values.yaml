@@ -45,11 +45,11 @@ build:
     name:
     replicaCount: 1
     args:
-        - -builder
-        - cluster
-        - -logtostderr
-        - -stderrthreshold
-        - INFO
+      - -builder
+      - cluster
+      - -logtostderr
+      - -stderrthreshold
+      - INFO
     image:
       name: build-webhook
       repository: gcr.io/build-crd/github.com/knative/build/cmd/webhook@sha256
@@ -62,26 +62,28 @@ eventing:
     name: eventing-controller
     create: true
   controller:
-      replicaCount: 1
-      image:
-        repository: gcr.io/knative-releases/github.com/knative/eventing/cmd/controller@sha256
-        tag: 242c637589869d16b5be58ede2de1a0ebf1149eeec92fd1da4ed9ce063d8b75b
-        pullPolicy: IfNotPresent
-      args:
-        - -logtostderr
-        - -stderrthreshold
-        - INFO
+    replicaCount: 1
+    image:
+      repository: gcr.io/knative-releases/github.com/knative/eventing/cmd/controller@sha256
+      tag: 242c637589869d16b5be58ede2de1a0ebf1149eeec92fd1da4ed9ce063d8b75b
+      pullPolicy: IfNotPresent
+    args:
+      - -logtostderr
+      - -stderrthreshold
+      - INFO
 
   webhook:
-     replicaCount: 1
-     image:
-       repository: gcr.io/knative-releases/github.com/knative/eventing/cmd/webhook
-       tag: b8121797d9c5df619984476c35cf90b08bc3ff80ddd931ec41928e268e3f3a34
-       pullPolicy: IfNotPresent
+    replicaCount: 1
+    image:
+      repository: gcr.io/knative-releases/github.com/knative/eventing/cmd/webhook
+      tag: b8121797d9c5df619984476c35cf90b08bc3ff80ddd931ec41928e268e3f3a34
+      pullPolicy: IfNotPresent
 serving:
   install: true
   version: v0.1.1
-  lite: true #Disable this for full deployment
+  # set lite to false for full deployment
+  lite: true 
+
 
 istio:
   install: true
