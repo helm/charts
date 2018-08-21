@@ -54,26 +54,33 @@ The following table lists the configurable parameters of the cert-manager chart 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `image.repository` | Image repository | `quay.io/jetstack/cert-manager-controller` |
-| `image.tag` | Image tag | `v0.2.5` |
+| `image.tag` | Image tag | `v0.4.1` |
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` |
 | `replicaCount`  | Number of cert-manager replicas  | `1` |
 | `createCustomResource` | Create CRD/TPR with this release | `true` |
+| `clusterResourceNamespace` | Override the namespace used to store DNS provider credentials etc. for ClusterIssuer resources | Same namespace as cert-manager pod
+| `leaderElection.Namespace` | Override the namespace used to store the ConfigMap for leader election | Same namespace as cert-manager pod
 | `certificateResourceShortNames` | Custom aliases for Certificate CRD | `["cert", "certs"]` |
 | `extraArgs` | Optional flags for cert-manager | `[]` |
-| `rbac.create` | If `true`, create and use RBAC resources | `true`
-| `serviceAccount.create` | If `true`, create a new service account | `true`
-| `serviceAccount.name` | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | ``
+| `extraEnv` | Optional environment variables for cert-manager | `[]` |
+| `rbac.create` | If `true`, create and use RBAC resources | `true` |
+| `serviceAccount.create` | If `true`, create a new service account | `true` |
+| `serviceAccount.name` | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |  |
 | `resources` | CPU/memory resource requests/limits | `requests: {cpu: 10m, memory: 32Mi}` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `affinity` | Node affinity for pod assignment | `{}` |
 | `tolerations` | Node tolerations for pod assignment | `[]` |
-| `ingressShim.enabled` | Enable ingress-shim for automatic ingress integration | `true`|
-| `ingressShim.extraArgs` | Optional flags for ingress-shim | `[]` |
-| `ingressShim.resources` | CPU/memory resource requests/limits for ingress-shim | `requests: {cpu: 10m, memory: 32Mi}` |
-| `ingressShim.image.repository` | Image repository for ingress-shim | `quay.io/jetstack/cert-manager-ingress-shim` |
-| `ingressShim.image.tag` | Image tag for ingress-shim. Defaults to `image.tag` if empty | `` |
-| `ingressShim.image.pullPolicy` | Image pull policy for ingress-shim | `IfNotPresent` |
+| `ingressShim.defaultIssuerName` | Optional default issuer to use for ingress resources |  |
+| `ingressShim.defaultIssuerKind` | Optional default issuer kind to use for ingress resources |  |
+| `ingressShim.defaultACMEChallengeType` | Optional default challenge type to use for ingresses using ACME issuers |  |
+| `ingressShim.defaultACMEDNS01ChallengeProvider` | Optional default DNS01 challenge provider to use for ingresses using ACME issuers with DNS01 |  |
 | `podAnnotations` | Annotations to add to the cert-manager pod | `{}` |
+| `podDnsPolicy` | Optional cert-manager pod [DNS policy](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pods-dns-policy) |  |
+| `podDnsConfig` | Optional cert-manager pod [DNS configurations](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pods-dns-config) |  |
+| `podLabels` | Labels to add to the cert-manager pod | `{}` |
+| `http_proxy` | Value of the `HTTP_PROXY` environment variable in the cert-manager pod | |
+| `https_proxy` | Value of the `HTTPS_PROXY` environment variable in the cert-manager pod | |
+| `no_proxy` | Value of the `NO_PROXY` environment variable in the cert-manager pod | |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -83,3 +90,7 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 $ helm install --name my-release -f values.yaml .
 ```
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Contributing
+
+This chart is maintained at [github.com/jetstack/cert-manager](https://github.com/jetstack/cert-manager/tree/master/contrib/charts/cert-manager).

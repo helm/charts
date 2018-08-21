@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "3.10.0"
+imageTag: "3.14.1"
 
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -62,6 +62,10 @@ concourse:
   ## URL used to reach any ATC from the outside world.
   ##
   # externalURL:
+
+  ## Working directory used by various concourse parts
+  ##
+  workingDirectory: /concourse-work-dir
 
   ## The filesystem driver used by baggageclaim on workers, can be values
   ## "btrfs", "overlay", or "naive". As of 3.9 "btrfs" is recommended, while "naive" is most
@@ -194,6 +198,14 @@ web:
       cpu: "100m"
       memory: "128Mi"
 
+  ## Configure additional environment variables for the
+  ## web containers.
+  # env:
+  #   - name: CONCOURSE_LOG_LEVEL
+  #     value: "debug"
+  #   - name: CONCOURSE_TSA_LOG_LEVEL
+  #     value: "debug"
+
   ## Additional affinities to add to the web pods.
   ##
   # additionalAffinities:
@@ -214,6 +226,9 @@ web:
   #   key1: "value1"
   #   key2: "value2"
 
+  ## Node selector for web nodes.
+  nodeSelector: {}
+
   ## Tolerations for the web nodes.
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
@@ -232,11 +247,24 @@ web:
     ##
     type: ClusterIP
 
+    ## When using web.service.type: LoadBalancer, sets the user-specified load balancer IP
+    # loadBalancerIP: 172.217.1.174
+
     ## Annotations to be added to the web service.
     ##
     # annotations:
     #   prometheus.io/probe: "true"
     #   prometheus.io/probe_path: "/"
+    #
+    #   ## When using web.service.type: LoadBalancer, enable HTTPS with an ACM cert
+    #   service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:eu-west-1:123456789:certificate/abc123-abc123-abc123-abc123"
+    #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+    #   service.beta.kubernetes.io/aws-load-balancer-backend-port: "atc"
+    #   service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    #
+    # ## When using web.service.type: LoadBalancer, whitelist the load balancer to particular IPs
+    # loadBalancerSourceRanges:
+    #   - 192.168.1.10/32
 
   # When using web.service.type: NodePort, sets the nodePort for atc
   #  atcNodePort: 30150
@@ -286,6 +314,41 @@ web:
       enabled: false
       port: 9391
 
+    ## Enable the datadog metrics?
+    ##
+    datadog:
+      enabled: false
+
+      ## Datadog agent host to expose metrics
+      agentHost: 127.0.0.1
+
+      ## Use IP of node the pod is scheduled on, overrides `agentHost`
+      agentHostUseHostIP: false
+
+      ## Datadog agent port to expose metrics
+      agentPort: 8125
+
+      ## Optional prefix for all metrics to easily find them in Datadog
+      # prefix: concoursedev
+
+    ## Enable the influxdb metrics?
+    ##
+    influxdb:
+      enabled: false
+
+      ## Influxdb url to which metrics will be emitted
+      url: http://127.0.0.1:8086
+
+      ## InfluxDB database to which metrics will be emitted
+      database: concourse
+
+      ## Skip SSL verification when emitting to InfluxDB
+      insecureSkipVerify: false
+
+      ## Optional username for authorizing access
+      ##
+      # username:
+
 ## Configuration values for Concourse Worker components.
 ##
 worker:
@@ -324,6 +387,12 @@ worker:
   #   - name: CONCOURSE_GARDEN_DNS_PROXY_ENABLE
   #     value: "true"
 
+  ## Configure additional volumeMounts for the
+  ## worker container(s)
+  # additionalVolumeMounts:
+  #   - name: concourse-baggageclaim
+  #     mountPath: /baggageclaim
+
   ## Annotations to be added to the worker pods.
   ##
   # annotations:
@@ -348,6 +417,14 @@ worker:
   #               operator: NotIn
   #               values:
   #                 - "true"
+
+  ## Configure additional volumes for the
+  ## worker container(s)
+  # additionalVolumes:
+  #   - name: concourse-baggageclaim
+  #     hostPath:
+  #       path: /dev/nvme0n1
+  #       type: BlockDevice
 
   ## Whether the workers should be forced to run on separate nodes.
   ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred
@@ -445,7 +522,20 @@ postgresql:
     ## Enable PostgreSQL persistence using Persistent Volume Claims.
     ##
     enabled: true
-
+    ## concourse data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    ## Persistent Volume Access Mode.
+    ##
+    accessMode: ReadWriteOnce
+    ## Persistent Volume Storage Size.
+    ##
+    size: 8Gi
 ## Configuration values for using a Credential Manager. Only one can be enabled.
 ## ref: https://concourse-ci.org/creds.html
 ##
@@ -490,6 +580,26 @@ credentialManager:
     # pipelineSecretTemplate:
 
     ## team-specific template for SSM parameters, defaults to: /concourse/{team}/{secret}
+    ##
+    # teamSecretTemplate: ''
+
+  ## Configuration for AWS Secrets Manager as the Credential Manager. Supported in Concourse 3.11.0.
+  ##
+  awsSecretsManager:
+
+    ## Enable the use of AWS Secrets Manager.
+    ##
+    enabled: false
+
+    ## AWS region to use when reading from Secrets Manager
+    ##
+    # region:
+
+    ## pipeline-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
+    ##
+    # pipelineSecretTemplate:
+
+    ## team-specific template for Secrets Manager parameters, defaults to: /concourse/{team}/{secret}
     ##
     # teamSecretTemplate: ''
 
@@ -542,7 +652,7 @@ secrets:
   create: true
 
   ## Concourse Host Keys.
-  ## ref: https://concourse-ci.org/binaries.html#generating-keys
+  ## ref: https://concourse-ci.org/install.html#generating-keys
   ##
   hostKey: |-
     -----BEGIN RSA PRIVATE KEY-----
@@ -577,7 +687,7 @@ secrets:
     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDYBQ9fG6IML+qsFaMh1Pl+81wyUwRilHdfhItAiAsLVQsOwI5+V4pn5aLhHPBuRQqIqYmbkZ7I1VUIN1+90PVJ3X7l9qqanb85AHMtLujw1j9u0zDyH2XHgpUloknUQzUSLIZjjU3Hn3Uo/XikF+vT8104isO7Ym8Xp7sIcRuvOQ3nuRsFVCRogxpLTVHD/k57rwYVqWWLaKLwvx01ZVXOq4GHk/BVaKa9ODC/dNgbZMfwvVVXuf7/NFGmSMyXb49Si4aoP4Gn7jAX6GngBbm/bgKqO0skQy/ggQm/YVF+s5q4EhleMBLVJKD1VpM5LeLDFpiu/y4bVd8wUcgK+QQ9 Concourse
 
   ## Concourse Session Signing Keys.
-  ## ref: https://concourse-ci.org/binaries.html#generating-keys
+  ## ref: https://concourse-ci.org/install.html#generating-keys
   ##
   sessionSigningKey: |-
     -----BEGIN RSA PRIVATE KEY-----
@@ -609,7 +719,7 @@ secrets:
     -----END RSA PRIVATE KEY-----
 
   ## Concourse Worker Keys.
-  ## ref: https://concourse-ci.org/binaries.html#generating-keys
+  ## ref: https://concourse-ci.org/install.html#generating-keys
   ##
   workerKey: |-
     -----BEGIN RSA PRIVATE KEY-----
@@ -652,6 +762,11 @@ secrets:
   # awsSsmAccessKey:
   # awsSsmSecretKey:
   # awsSsmSessionToken:
+
+  ## Secrets for Secrets Manager AWS access
+  # awsSecretsmanagerAccessKey:
+  # awsSecretsmanagerSecretKey:
+  # awsSecretsmanagerSessionToken:
 
   ## Secrets for Concourse basic auth
   ##
@@ -711,3 +826,8 @@ secrets:
   ## make sure to also set credentialManager.vault.authBackend to `cert`
   ##
   # vaultClientKey: |-
+
+  ## If influxdb metrics are enabled and authentication is required,
+  ## provide a password here to authenticate with the influxdb server configured.
+  ##
+  # influxdbPassword:

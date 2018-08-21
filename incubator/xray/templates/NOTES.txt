@@ -1,0 +1,47 @@
+This Chart is Deprecated. We have moved it to stable.
+
+Congratulations! JFrog Xray services are deployed!
+
+{{- if eq .Values.common.masterKey "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" }}
+
+
+************************************* WARNING *****************************************
+* Your Xray master key is still set to the provided example:                          *
+* common.masterKey=FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF   *
+*                                                                                     *
+* You should change this to your own generated key:                                   *
+* $ export MASTER_KEY=$(openssl rand -hex 32)                                         *
+* $ echo ${MASTER_KEY}                                                                *
+*                                                                                     *
+* Pass the created master key to helm with '--set common.masterKey=${MASTER_KEY}'     *
+***************************************************************************************
+{{- end }}
+
+
+SETUP:
+1. Get the Xray IP and URL
+
+   {{- if contains "NodePort" .Values.server.service.type }}
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "xray-server.fullname" . }})
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo http://${NODE_IP}:${NODE_PORT}/
+
+   {{- else if contains "LoadBalancer" .Values.server.service.type }}
+   NOTE: It may take a few minutes for the LoadBalancer public IP to be available!
+
+   You can watch the status of the service by running 'kubectl get svc -w {{ .Values.server.serviceName }}'
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "xray-server.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   echo http://${SERVICE_IP}/
+
+   {{- else if contains "ClusterIP" .Values.server.service.type }}
+   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ .Values.server.name }}" -o jsonpath="{.items[0].metadata.name}")
+   echo http://127.0.0.1:{{ .Values.server.service.externalPort }}
+   kubectl port-forward --namespace {{ .Release.Namespace }} ${POD_NAME} {{ .Values.server.service.externalPort }}
+
+   {{- end }}
+
+2. Open Xray UI in your browser
+   Default credential for Xray:
+   user:     admin
+   password: password
+

@@ -25,3 +25,11 @@ You can also see the cluster status by run the following:
 
 To tail the logs for the Cassandra pod run the following:
 - kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "cassandra.name" . }},release={{ .Release.Name }} -o jsonpath='{ .items[0].metadata.name }')
+
+{{- if not .Values.persistence.enabled }}
+
+Note that the cluster is running with node-local storage instead of PersistentVolumes. In order to prevent data loss,
+pods will be decommissioned upon termination. Decommissioning may take some time, so you might also want to adjust the
+pod termination gace period, which is currently set to {{ .Values.podSettings.terminationGracePeriodSeconds }} seconds.
+
+{{- end}}

@@ -1,21 +1,21 @@
-image: gcr.io/google-containers/fluentd-elasticsearch
-imageTag: v2.0.4
-
+image:
+  repository: gcr.io/google-containers/fluentd-elasticsearch
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
-imagePullPolicy: IfNotPresent
+  tag: v2.2.0
+  pullPolicy: IfNotPresent
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-resources:
-  limits:
-    cpu: 100m
-    memory: 500Mi
-  requests:
-    cpu: 100m
-    memory: 200Mi
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 500Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 200Mi
 
 elasticsearch:
   host: 'elasticsearch-client'
@@ -33,6 +33,9 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
+livenessProbe:
+  enabled: true
+
 annotations: {}
   # prometheus.io/scrape: "true"
   # prometheus.io/port: "24231"
@@ -41,6 +44,12 @@ tolerations: {}
   # - key: node-role.kubernetes.io/master
   #   operator: Exists
   #   effect: NoSchedule
+
+service: {}
+  # type: ClusterIP
+  # ports:
+  #   - name: "monitor-agent"
+  #     port: 24231
 
 configMaps:
   system.conf: |-

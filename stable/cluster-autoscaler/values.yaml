@@ -94,6 +94,8 @@ resources: {}
   #   cpu: 100m
   #   memory: 300Mi
 
+priorityClassName: ""
+
 service:
   annotations: {}
   clusterIP: ""

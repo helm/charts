@@ -38,7 +38,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters and their default values.
+The following table lists the configurable parameters and their default values.
 
 | Parameter                | Description                                                            | Default                   |
 | ------------------------ | ---------------------------------------------------------------------- | ------------------------- |
@@ -51,13 +51,13 @@ The following tables lists the configurable parameters and their default values.
 | `service.externalPort`   | public service port                                                    | `9419`                    |
 | `resources`              | cpu/memory resource requests/limits                                    | {}                        |
 | `loglevel`               | exporter log level                                                     | {}                        |
-| `rabbitmq.url`           | rabbitm managment url                                                  | `http://myrabbit:15672`   |
+| `rabbitmq.url`           | rabbitm management url                                                  | `http://myrabbit:15672`   |
 | `rabbitmq.user`          | rabbitm user login                                                     | `guest`                   |
 | `rabbitmq.password`      | rabbitm password login                                                 | `guest`                   |
 | `rabbitmq.capabilities`  | comma-separated list of capabilities supported by the RabbitMQ server  | `bert,no_sort`            |
 | `rabbitmq.include_queues`| regex queue filter. just matching names are exported                   | `.*`                      |
 | `rabbitmq.skip_queues`   | regex, matching queue names are not exported                           | `.*`                      |
-| `annotation`             | pod annotations for easier discovery                                   | {}                        |
+| `annotations`             | pod annotations for easier discovery                                   | {}                        |
 
 For more information please refer to the [rabbitmq_exporter](https://github.com/kbudde/rabbitmq_exporter) documentation.
 

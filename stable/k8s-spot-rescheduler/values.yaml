@@ -5,13 +5,14 @@ replicaCount: 1
 
 image:
   repository: quay.io/pusher/k8s-spot-rescheduler
-  tag: v0.1.1
+  tag: v0.2.0
   pullPolicy: IfNotPresent
 
 # The full list of available options https://github.com/pusher/k8s-spot-rescheduler#flags
 cmdOptions:
   v: 2
   running-in-cluster: true
+  kube-api-content-type: application/vnd.kubernetes.protobuf
   housekeeping-interval: 10s
   node-drain-delay: 10m
   pod-eviction-timeout: 2m
@@ -19,6 +20,7 @@ cmdOptions:
   listen-address: 0.0.0.0:9235
   on-demand-node-label: node-role.kubernetes.io/worker
   spot-node-label: node-role.kubernetes.io/spot-worker
+  delete-non-replicated-pods: false
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -31,6 +33,12 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+tolerations: []
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
 
 rbac:
   # Specifies whether RBAC resources should be created

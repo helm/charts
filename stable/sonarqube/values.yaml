@@ -5,6 +5,8 @@ replicaCount: 1
 image:
   repository: sonarqube
   tag: 6.7.3
+  # If using a private repository, the name of the imagePullSecret to use
+  # pullSecret: my-repo-secret
 service:
   name: sonarqube
   type: LoadBalancer
@@ -13,6 +15,9 @@ service:
   annotations:
   # May be used in example for internal load balancing in GCP:
   # cloud.google.com/load-balancer-type: Internal
+  loadBalancerSourceRanges:
+  - 0.0.0.0/0
+  # loadBalancerIP: 1.2.3.4
 ingress:
   enabled: false
   # Used to create an Ingress record.
@@ -38,6 +43,13 @@ tolerations: []
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
+
+# hostAliases allows the modification of the hosts file inside a container
+hostAliases: []
+# - ip: "192.168.1.10"
+#   hostnames:
+#   - "example.com"
+#   - "www.example.com"
 
 readinessProbe:
   initialDelaySeconds: 60
@@ -92,9 +104,14 @@ plugins:
 #   sonar.security.realm=LDAP
 #   ldap.url=ldaps://organization.com
 
-## Configuration values for the postgresql dependency
+## Configuration value to select database type
+## Option to use "postgresql" or "mysql" database type, by default "postgresql" is chosen
+## Set the "enable" field to true of the database type you select (if you want to use internal database) and false of the one you don't select
+database:
+  type: "postgresql"
+
+## Configuration values for postgresql dependency
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
-##
 postgresql:
   # Enable to deploy the PostgreSQL chart
   enabled: true
@@ -107,3 +124,19 @@ postgresql:
   # Specify the TCP port that PostgreSQL should use
   service:
     port: 5432
+
+## Configuration values for the mysql dependency
+## ref: https://github.com/kubernetes/charts/blob/master/stable/mysql/README.md
+##
+mysql:
+  # Enable to deploy the mySQL chart
+  enabled: false
+  # To use an external mySQL instance, set enabled to false and uncomment
+  # the line below:
+  # mysqlServer: ""
+  mysqlUser: "sonarUser"
+  mysqlPassword: "sonarPass"
+  mysqlDatabase: "sonarDB"
+  # Specify the TCP port that mySQL should use
+  service:
+    port: 3306

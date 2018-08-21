@@ -15,11 +15,14 @@ spec:
   selector:
     matchLabels:
       app: {{ template "sematext.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "sematext.name" . }}
-      name: {{ template "sematext.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       {{- if .Values.sematext.useHostNetwork }}
       hostNetwork: {{ .Values.sematext.useHostNetwork }}
@@ -61,4 +64,8 @@ spec:
         - name: localtime
           hostPath:
             path: /etc/localtime
+      nodeSelector:
+{{ toYaml .Values.sematext.nodeSelector | indent 8 }}
+      tolerations:
+{{ toYaml .Values.sematext.tolerations | indent 8 }}
 {{- end }}
