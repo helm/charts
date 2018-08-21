@@ -1,4 +1,5 @@
 replicaCount: 1
+revisionHistoryLimit: 3
 
 image:
   repository: lmenezes/cerebro
@@ -11,6 +12,7 @@ service:
   type: ClusterIP
   port: 80
   annotations: {}
+  labels: {}
 
 ingress:
   enabled: false

@@ -32,7 +32,7 @@ spec:
           readinessProbe:
             exec:
               command: [ "test", "-e", "/opt/draios/logs/draios.log" ]
-              initialDelaySeconds: 10
+            initialDelaySeconds: 10
           volumeMounts:
             - mountPath: /host/var/run/docker.sock
               name: docker-sock

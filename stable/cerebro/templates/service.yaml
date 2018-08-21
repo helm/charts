@@ -7,6 +7,9 @@ metadata:
     chart: {{ template "cerebro.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | indent 4 }}
+{{- end }}
   annotations:
     {{- range $key, $value := .Values.service.annotations }}
       {{ $key }}: {{ $value | quote }}
