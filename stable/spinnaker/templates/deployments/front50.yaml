@@ -25,6 +25,9 @@ spec:
       containers:
         - image: {{ .Values.images.front50 }}
           name: front50
+          env:
+            - name: JAVA_OPTS
+              value: -Xmx{{ .Values.front50.maxmem | (print "1024m") }} -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
           ports:
             - containerPort: 8080
               name: front50

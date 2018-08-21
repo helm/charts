@@ -60,6 +60,7 @@ deck:
   host: localhost
   port: 9000
   protocol: http
+  maxmem: 300m
   ingress:
     enabled: false
     # annotations:
@@ -71,8 +72,24 @@ deck:
     #    hosts:
     #      - domain.com
 
+front50:
+  maxmem: 300m
+
+echo:
+  maxmem: 300m
+
+igor:
+  maxmem: 300m
+
 gate:
   allowedOriginsPattern: '^https?://(?:localhost|127.0.0.1|[^/]+\.example\.com)(?::[1-9]\d*)?/?$'
+  maxmem: 300m
+
+orca:
+  maxmem: 300m
+
+rosco:
+  maxmem: 300m
 
 # Bucket to use when storing config data in S3 compatible storage
 storageBucket: spinnaker

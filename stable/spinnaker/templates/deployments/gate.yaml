@@ -25,6 +25,9 @@ spec:
       containers:
         - image: {{ .Values.images.gate }}
           name: gate
+          env:
+            - name: JAVA_OPTS
+              value: -Xmx{{ .Values.gate.maxmem | (print "1024m") }} -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
           ports:
             - containerPort: 8084
               name: gate

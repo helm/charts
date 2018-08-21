@@ -25,6 +25,9 @@ spec:
       containers:
         - image: {{ .Values.images.orca }}
           name: orca
+          env:
+            - name: JAVA_OPTS
+              value: -Xmx{{ .Values.orca.maxmem | (print "1024m") }} -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
           ports:
             - containerPort: 8083
               name: orca
