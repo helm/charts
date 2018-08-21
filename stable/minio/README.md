@@ -38,7 +38,7 @@ $ helm install --name my-release stable/minio
 
 ### Access and Secret keys
 
-By default a pre-generated access and secret key will be used. To override the default keys, pass the access and secret keys as arguments to helm install.
+If not specified, an access key and a secret key is randomly generated. To override the default keys, pass the access and secret keys as arguments to helm install.
 
 ```bash
 $ helm install --set accessKey=myaccesskey,secretKey=mysecretkey \

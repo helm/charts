@@ -27,8 +27,8 @@ priorityClassName: ""
 ## number of nodes (only used for Minio distributed mode)
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
-accessKey: "AKIAIOSFODNN7EXAMPLE"
-secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+# accessKey:
+# secretKey:
 configPath: "/root/.minio/"
 mountPath: "/export"
 replicas: 4
