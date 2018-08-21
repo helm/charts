@@ -1,0 +1,21 @@
+
+Your Release is named {{ .Release.Name | quote }}
+Portworx Pods should be running on each node in your cluster.
+
+Portworx would create a unified pool of the disks attached to your Kubernetes nodes. 
+No further action should be required and you are ready to consume Portworx Volumes as part of your application data requirements. 
+
+For further information on usage of the Portworx in creating Volumes please refer
+    https://docs.portworx.com/scheduler/kubernetes/preprovisioned-volumes.html
+
+For dynamically provisioning volumes for your Stateful applications as they run on Kubernetes please refer
+    https://docs.portworx.com/scheduler/kubernetes/dynamic-provisioning.html
+
+Want to use Storage Orchestration for hyperconvergence, Please look at STork here. (NOTE: This isnt currently deployed as part of the Helm chart)
+    https://docs.portworx.com/scheduler/kubernetes/stork.html 
+
+Refer application solutions such as Cassandra, Kafka etcetera. 
+    https://docs.portworx.com/scheduler/kubernetes/cassandra-k8s.html
+    https://docs.portworx.com/scheduler/kubernetes/kafka-k8s.html
+    
+For options that you could provide while installing Portworx on your cluster head over to the README.md 
