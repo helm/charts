@@ -29,7 +29,7 @@ metadata:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: sparkoperator
+  name: sparkoperator-init
   namespace: {{ .Values.operatorNamespace }}
   annotations:
     "helm.sh/hook": pre-install
