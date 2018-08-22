@@ -15,7 +15,7 @@ $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incuba
 $ helm install incubator/sparkoperator
 ```
 
-By default, the operator is installed in a namespace called "sparkoperator". It would be created if it does not exist.
+By default, the operator is installed in a namespace called "spark-operator". It would be created if it does not exist.
 
 #### Configuration
 
@@ -25,7 +25,7 @@ The following table lists the configurable parameters of the Spark operator char
 | ------------------- | ----------------------------------------------------- | ------------------------- |
 | `operatorImageName` | The name of the operator image                        | `lightbend/sparkoperator` |
 | `operatorVersion`   | The version of the operator to install                | `2.3.1`                   |
-| `operatorNamespace` | K8s namespace where operator is installed             | `sparkoperator`           |
+| `operatorNamespace` | K8s namespace where operator is installed             | `spark-operator`          |
 | `enableWebhook`     | Whether to enable mutating admission webhook          | true                      |
 | `enableMetrics`     | Whether to expose metrics to be scraped by Premetheus | true                      |
 
