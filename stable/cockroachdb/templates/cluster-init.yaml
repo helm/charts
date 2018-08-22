@@ -53,7 +53,7 @@ spec:
         command:
           - "/bin/bash"
           - "-ecx"
-          - "until /cockroach/cockroach init {{ if .Values.Secure.Enabled }}--certs-dir=/cockroach-certs{{ else }}--insecure{{ end }} --host={{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-0.{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}; do sleep 5; done"
+          - "until /cockroach/cockroach init {{ if .Values.Secure.Enabled }}--certs-dir=/cockroach-certs{{ else }}--insecure{{ end }} --host={{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-0.{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }} --port {{ .Values.InternalGrpcPort }}; do sleep 5; done"
       restartPolicy: OnFailure
 {{- if .Values.Secure.Enabled }}
       volumes:
