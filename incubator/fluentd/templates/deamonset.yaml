@@ -1,5 +1,5 @@
-apiVersion: apps/v1beta1
-kind: Deployment
+apiVersion: apps/v1
+kind: DaemonSet
 metadata:
   name: {{ template "fluentd.fullname" . }}
   labels:
@@ -8,7 +8,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
   selector:
     matchLabels:
       app: {{ template "fluentd.name" . }}
@@ -18,6 +21,8 @@ spec:
       labels:
         app: {{ template "fluentd.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -29,15 +34,26 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          runAsNonRoot: false
+          runAsUser: 0
         env:
-          - name: OUTPUT_HOST
-            value: {{ .Values.output.host | quote }}
-          - name: OUTPUT_PORT
-            value: {{ .Values.output.port | quote }}
-          - name: OUTPUT_BUFFER_CHUNK_LIMIT
-            value: {{ .Values.output.buffer_chunk_limit | quote }}
-          - name: OUTPUT_BUFFER_QUEUE_LIMIT
-            value: {{ .Values.output.buffer_queue_limit | quote }}
+{{- range $name, $value := .Values.env.open }}
+{{- if not (empty $value) }}
+        - name: {{ $name | quote }}
+          value: {{ $value | quote }}
+{{- end }}
+{{- end }}
+{{- $secret_name := include "fluentd.fullname" . }}
+{{- range $name, $value := .Values.env.secret }}
+{{- if not ( empty $value) }}
+        - name: {{ $name | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secret_name }}
+              key: {{ $name | quote }}
+{{- end }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         ports:
@@ -49,23 +65,29 @@ spec:
           - name: http-input
             containerPort: 9880
             protocol: TCP
-        livenessProbe:
-          httpGet:
-            # Use percent encoding for query param.
-            # The value is {"log": "health check"}.
-            # the endpoint itself results in a new fluentd
-            # tag 'fluentd.pod-healthcheck'
-            path: /fluentd.pod.healthcheck?json=%7B%22log%22%3A+%22health+check%22%7D
-            port: 9880
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
         volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+          readOnly: true
+        - name: varlogpos
+          mountPath: /mnt/pos
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/
+          readOnly: true
         - name: config-volume-{{ template "fluentd.fullname" . }}
-          mountPath: /etc/fluent/config.d
+          mountPath: {{ .Values.configDir }}
       volumes:
-        - name: config-volume-{{ template "fluentd.fullname" . }}
-          configMap:
-            name: {{ template "fluentd.fullname" . }}
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlogpos
+        emptyDir: {}
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/
+      - name: config-volume-{{ template "fluentd.fullname" . }}
+        configMap:
+          name: {{ template "fluentd.fullname" . }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

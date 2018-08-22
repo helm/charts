@@ -12,7 +12,7 @@ spec:
   ports:
   {{- range $port := .Values.service.ports }}
     - name: {{ $port.name }}
-      port: {{ $port.containerPort }}
+      port: {{ $port.externalPort }}
       targetPort: {{ $port.containerPort }}
       protocol: {{ $port.protocol }}
   {{- end }}
