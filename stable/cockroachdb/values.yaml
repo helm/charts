@@ -10,8 +10,19 @@ ImagePullPolicy: "Always"
 Replicas: 3
 MaxUnavailable: 1
 Component: "cockroachdb"
-GrpcPort: 26257
-HttpPort: 8080
+
+# You can set a different external and internal GRPC port and service name. If using istio set InternalGrpcName to "cockroach"
+InternalGrpcPort: 26257
+ExternalGrpcPort: 26257
+
+# If the port numbers are different then then port names must be different as well.
+InternalGrpcName: grpc
+ExternalGrpcName: grpc
+
+InternalHttpPort: 8080
+ExternalHttpPort: 8080
+HttpName: http
+
 # Uncomment the following resources definitions or pass them from command line
 # to control the cpu and memory resources allocated by the Kubernetes cluster
 Resources: {}
@@ -35,6 +46,7 @@ NetworkPolicy:
   AllowExternal: true
 Service:
   type: ClusterIP
+  annotations: {}
 PodManagementPolicy: Parallel
 UpdateStrategy:
   type: RollingUpdate
