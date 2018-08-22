@@ -17,7 +17,7 @@ image:
   pullPolicy: IfNotPresent
 extraArgs: {}
 # Additional Environment variables
-env:
+env: {}
   # - name: REDIS_PASSWORD
   #   valueFrom:
   #     secretKeyRef:
