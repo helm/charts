@@ -3,6 +3,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "mysql.fullname" . }}
+  annotations:
+    "helm.sh/resource-policy": {{ .Values.persistence.resourcePolicy }}
   labels:
     app: {{ template "mysql.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
