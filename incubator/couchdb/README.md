@@ -75,7 +75,7 @@ CouchDB chart and their default values:
 |           Parameter             |             Description                               |                Default                 |
 |---------------------------------|-------------------------------------------------------|----------------------------------------|
 | `clusterSize`                   | The initial number of nodes in the CouchDB cluster    | 3                                      |
-| `couchdbConfig`                 | Map allowing override elements of server .ini config  | {}                                     |
+| `couchdbConfig`                 | Map allowing override elements of server .ini config  | chttpd.bind_address=any                |
 | `allowAdminParty`               | If enabled, start cluster without admin account       | false (requires creating a Secret)     |
 | `createAdminSecret`             | If enabled, create an admin account and cookie secret | true                                   |
 | `erlangFlags`                   | Map of flags supplied to the underlying Erlang VM     | name: couchdb, setcookie: monster
