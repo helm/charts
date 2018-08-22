@@ -76,6 +76,8 @@ readinessProbe:
   initialDelaySeconds: 30
   timeoutSeconds: 10
 
+extraContainers: {}
+
 resources: {}
   # limits:
   #   cpu: 100m

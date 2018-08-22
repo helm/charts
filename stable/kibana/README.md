@@ -55,6 +55,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `replicaCount`                                | desired number of pods                     | `1`                                    |
 | `revisionHistoryLimit`                        | revisionHistoryLimit                       | `3`                                    |
 | `serviceAccountName`                          | serviceAccount that will run the pod       | `nil`                                  |
+| `extraContainers`                             | Sidecar containers to add to the kibana pod| `{}`                                   |
 | `resources`                                   | pod resource requests & limits             | `{}`                                   |
 | `priorityClassName`                           | priorityClassName                          | `nil`                                  |
 | `service.externalPort`                        | external port for the service              | `443`                                  |
