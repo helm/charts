@@ -58,7 +58,7 @@ artifactory:
     # repository: "docker.bintray.io/jfrog/artifactory-oss"
     repository: "docker.bintray.io/jfrog/artifactory-pro"
     # Note that by default we use appVersion to get image tag
-    # version: 6.1.0
+    # version: 6.2.0
     pullPolicy: IfNotPresent
 
   ## Artifactory license secret.
@@ -155,7 +155,7 @@ nginx:
   image:
     repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
     # Note that by default we use appVersion to get image tag
-    # version: 6.1.0
+    # version: 6.2.0
     pullPolicy: IfNotPresent
   service:
     ## For minikube, set this to NodePort, elsewhere use LoadBalancer
