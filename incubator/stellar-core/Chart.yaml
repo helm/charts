@@ -9,6 +9,8 @@ maintainers:
   - name: andrenarchy
     email: andre.extern@satoshipay.io
     url: https://github.com/andrenarchy
+  - name: rendhalver
+    email: pete.brown@powerhrg.com
 sources:
   - https://github.com/satoshipay/docker-stellar-core/
 keywords:
