@@ -87,6 +87,11 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `persistence.storageClass`        | PVC Storage Class                        | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`          | PVC Access Mode                          | `ReadWriteOnce`                                         |
 | `persistence.size`                | PVC Storage Request                      | `8Gi`                                                   |
+| `podDisruptionBudget.enabled`     | Pod Disruption Budget toggle             | `false`                                                 |
+| `podDisruptionBudget.minAvailable`| Minimum avaialble pods                   | `1`                                                     |
+| `podDisruptionBudget.maxUnavailable`| Minimum unavaialble pods               | `1`                                                     |
+| `replicas`                        | The number of pod replicas               | `1`                                                     |
+| `resources`                       | Resources allocation (Requests and Limits) | `{requests: {cpu: 1, memory: 1G}, limits: {cpu: 2, memory: 1G}}`|
 
 The above parameters map to the env variables defined in [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine). For more information please refer to the [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine) image documentation.
 
