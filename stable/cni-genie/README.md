@@ -26,7 +26,7 @@ $ kubectl get pods -n kube-system | grep genie
 To uninstall/delete the `cni-genie-release` chart:
 
 ```console
-$ helm delete cni-genie-release
+$ helm delete cni-genie-release --purge
 ```
 
 This command removes all the Kubernetes objects associated with the chart and deletes the release.

@@ -6,7 +6,7 @@
 includePolicy: true
 
 image:
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
   # Paths for fetching genie images
   pluginImagePath: quay.io/huawei-cni-genie/genie-plugin:latest
