@@ -17,7 +17,7 @@ please add a comment [here](https://github.com/kubernetes/kubernetes/issues/2779
 
 ### Reporting a Bug in Helm
 
-This repository is used by Chart developers for maintaining the official charts for Kubernetes Helm. If your issue is in the Helm tool itself, please use the issue tracker in the [kubernetes/helm](https://github.com/kubernetes/helm) repository.
+This repository is used by Chart developers for maintaining the official charts for Kubernetes Helm. If your issue is in the Helm tool itself, please use the issue tracker in the [helm/helm](https://github.com/helm/helm) repository.
 
 ### How to Contribute a Chart
 
@@ -48,10 +48,10 @@ This repository is used by Chart developers for maintaining the official charts 
 * Allow customization of the application configuration
 * Provide a secure default configuration
 * Do not leverage alpha features of Kubernetes
-* Includes a [NOTES.txt](https://github.com/kubernetes/helm/blob/master/docs/charts.md#chart-license-readme-and-notes) explaining how to use the application after install
-* Follows [best practices](https://github.com/kubernetes/helm/tree/master/docs/chart_best_practices)
-  (especially for [labels](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/labels.md)
-  and [values](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md))
+* Includes a [NOTES.txt](https://github.com/helm/helm/blob/master/docs/charts.md#chart-license-readme-and-notes) explaining how to use the application after install
+* Follows [best practices](https://github.com/helm/helm/tree/master/docs/chart_best_practices)
+  (especially for [labels](https://github.com/helm/helm/blob/master/docs/chart_best_practices/labels.md)
+  and [values](https://github.com/helm/helm/blob/master/docs/chart_best_practices/values.md))
 
 #### Documentation requirements
 
