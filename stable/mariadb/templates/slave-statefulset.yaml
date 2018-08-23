@@ -27,6 +27,9 @@ spec:
         fsGroup: 1001
       {{- if eq .Values.slave.antiAffinity "hard" }}
       affinity:
+      {{- with .Values.slave.affinity  }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - topologyKey: "kubernetes.io/hostname"
@@ -36,6 +39,9 @@ spec:
                   release: "{{ .Release.Name }}"
       {{- else if eq .Values.slave.antiAffinity "soft" }}
       affinity:
+      {{- with .Values.slave.affinity  }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
@@ -45,6 +51,15 @@ spec:
                 matchLabels:
                   app: "{{ template "mariadb.name" . }}"
                   release: "{{ .Release.Name }}"
+      {{- else}}
+      {{- with .Values.slave.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- with .Values.slave.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
