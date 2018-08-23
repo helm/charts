@@ -12,7 +12,7 @@ By default this chart install one master pod containing redis master container a
 
 ## Introduction
 
-This chart bootstraps a [Redis](https://github.com/bitnami/bitnami-docker-redis) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [Redis](https://redis.io) highly available master/slave statefulset in a [Kubernetes](http://kubernetes.io) cluster using the Helm package manager. 
 
 ## Prerequisites
 
@@ -27,7 +27,7 @@ To install the chart
 $ helm install stable/redis-ha
 ```
 
-The command deploys Redis on the Kubernetes cluster in the default configuration. By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys Redis on the Kubernetes cluster in the default configuration. By default this chart install one master pod containing redis master container and sentinel container along with 2 redis slave pods each containing their own sentinel sidecars. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -41,18 +41,6 @@ $ helm delete <chart-name>
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Appliance mode
-
-This chart can be used to launch Redis in a black box appliance mode that you can think of like a managed service. To run as an appliance, change the service type for the master and slave LBs to enable local access from within the K8S cluster.
-
-To launch in VPC-only appliance mode, set appliance.serviceType to "LoadBalancer". If using appliance mode in Google Cloud, set appliance.annotations to:
-`cloud.google.com/load-balancer-type:Internal`
-
-```bash
-$ helm install \
-  --set="servers.annotations.cloud\.google\.com/load-balancer-type=Internal,servers.serviceType=LoadBalancer" \
-    stable/redis-ha
-```
 
 ## Configuration
 
@@ -60,27 +48,25 @@ The following table lists the configurable parameters of the Redis chart and the
 
 | Parameter                        | Description                                                                                                                  | Default                                                   |
 | -------------------------------- | -----------------------------------------------------                                                                        | --------------------------------------------------------- |
-| `redis_image`                    | Redis image                                                                                                                  | `quay.io/smile/redis:4.0.6r2`                             |
-| `resources.server`               | CPU/Memory for master/slave nodes resource requests/limits                                                                   | Memory: `200Mi`, CPU: `100m`                              |
-| `resources.sentinel`             | CPU/Memory for sentinel node resource requests/limits                                                                        | Memory: `200Mi`, CPU: `100m`                              |
-| `replicas.servers`               | Number of redis master/slave pods                                                                                            | 3                                                         |
-| `replicas.sentinels`             | Number of sentinel pods                                                                                                      | 3                                                         |
+| `image`                          | Redis image                                                                                                                  | `redis`                                                   |
+| `tag`                            | Redis tag                                                                                                                    | `4.0.11-stretch`                                          |
+| `redis.resources`                | CPU/Memory for master/slave nodes resource requests/limits                                                                   | Memory: `200Mi`, CPU: `100m`                              |
+| `sentinel.resources`             | CPU/Memory for sentinel node resource requests/limits                                                                        | Memory: `200Mi`, CPU: `100m`                              |
+| `replicas`                       | Number of redis master/slave pods                                                                                            | 3                                                         |
 | `nodeSelector`                   | Node labels for pod assignment                                                                                               | {}                                                        |
 | `tolerations`                    | Toleration labels for pod assignment                                                                                         | []                                                        |
-| `podAntiAffinity.sentinel`       | Antiaffinity for pod assignment of sentinels, `hard` or `soft`                                                               | `soft`                                                    |
 | `podAntiAffinity.server`         | Antiaffinity for pod assignment of servers, `hard` or `soft`                                                                 | `soft`                                                    |
-| `servers.serviceType`            | Set to "LoadBalancer" to enable access from the VPC                                                                          | ClusterIP                                                 |
-| `servers.annotations`            | See Appliance mode                                                                                                           | ``                                                        |
-| `rbac.create`                    |  whether RBAC resources should be created                                                                                    | true                                                      |
-| `serviceAccount.create`          | whether a new service account name that the agent will use should be created.                                                | true                                                      |
-| `serviceAccount.name`            | service account to be used.  If not set and serviceAccount.create is `true` a name is generated using the fullname template. | ``                                                        |
+| `annotations`                    | See Appliance mode                                                                                                           | ``                                                        |
+| `redis.config`                   | Valid redis config options can be added prior to install and will be applied to each server                                  | see values.yaml                                           |
+| `sentinel.config`                | Valid sentinel config options can be added prior to install and will be applied to each server                               | see values.yaml                                           |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install \
-  --set redis_image=quay.io/smile/redis:4.0.6r2 \
+  --set image=quay.io/smile/redis \
+  --set tag=4.0.6r2 \
     stable/redis-ha
 ```
 
@@ -93,26 +79,4 @@ $ helm install -f values.yaml stable/redis-ha
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
-
-## Internals
-The customized Redis server image determines whether the pod that executes it will be a Redis Sentinel,
-Master, or Slave and launches the appropriate service. This Helm chart signals Sentinel status with
-environment variables. If not set, the newly launched pod will query K8S for an active master. If none
-exists, it uses a deterministic means of sensing whether it should launch as master then writes "master"
-or "slave" to the label called redis-role as appropriate. It's this label that determines which LB a pod
-can be seen through.
-
-The redis-role=master pod is the key for the cluster to get started. Sentinels will wait for it to appear
-in the LB before they finish launching. All other pods wait for the Sentinels to ID the master. Running
-Pods also set the labels podIP and runID. runID is the first few characters of the unique run_id value
-generated by each Redis server.
-
-During normal operation, there should be only one redis-role=master pod. If it fails, the Sentinels
-will nominate a new master and change all the redis-role values appropriately.
-
-To see the pod roles, run the following:
-
-```bash
-$ kubectl get pods -L redis-role
-```
 
