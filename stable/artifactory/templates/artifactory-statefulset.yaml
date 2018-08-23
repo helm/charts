@@ -74,8 +74,6 @@ spec:
                 {{- if .Values.artifactory.configMapName }}
                 cp -Lrf /bootstrap/* /artifactory_extra_conf/;
                 {{- end }}
-                if [ -d {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys ]; then
-                fi;
                 {{- if .Values.artifactory.replicator.enabled }}
                 mkdir -p {{ .Values.artifactory.persistence.mountPath }}/replicator/etc;
                 cp -fv /tmp/replicator/replicator.yaml {{ .Values.artifactory.persistence.mountPath }}/replicator/etc/replicator.yaml;
