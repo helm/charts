@@ -100,3 +100,7 @@ spec:
       - name: account
         secret:
           secretName: {{ template "ethereum.fullname" . }}-geth-account
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
