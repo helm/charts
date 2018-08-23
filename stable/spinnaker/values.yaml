@@ -120,8 +120,13 @@ gcs:
 # igor component of Spinnaker. For more info about the Jenkins integration
 # with Spinnaker, visit:
 #   https://www.spinnaker.io/setup/ci/jenkins/
+#
+# If you want to use an external version of jenkins, set jenkins.enabled to false and edit externalJenkins below.
 jenkins:
   enabled: true
+  username: admin
+  password: change-this-password-please
+
   Master:
     Cpu: "500m"
     Memory: "512Mi"
@@ -133,3 +138,10 @@ jenkins:
     Cpu: "500m"
     Memory: "512Mi"
     NodeSelector: {}
+
+# If you already have a jenkins install you want to hook into, set jenkins.enabled to false and externalJenkins.enabled to true
+externalJenkins:
+  enabled: false
+  username: spinnaker
+  apiToken: apitokenstring
+  url: https://jenkins.example.com
