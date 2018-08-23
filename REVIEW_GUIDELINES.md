@@ -1,6 +1,6 @@
 # Chart Review Guidelines
 
-Anyone is welcome to review pull requests. Besides our [technical requirements](https://github.com/helm/charts/blob/master/CONTRIBUTING.md#technical-requirements) and [best practices](https://github.com/kubernetes/helm/tree/master/docs/chart_best_practices), here's an overview of process and review guidelines.
+Anyone is welcome to review pull requests. Besides our [technical requirements](https://github.com/helm/charts/blob/master/CONTRIBUTING.md#technical-requirements) and [best practices](https://github.com/helm/helm/tree/master/docs/chart_best_practices), here's an overview of process and review guidelines.
 
 ## Process
 
@@ -147,7 +147,7 @@ spec:
 
 ## Compatibility
 
-We officially support compatibility with the current and the previous minor version of Kubernetes. Generated resources should use the latest possible API versions compatible with these versions. For extended backwards compatibility conditional logic based on capabilities may be used (see [built-in objects](https://github.com/kubernetes/helm/blob/master/docs/chart_template_guide/builtin_objects.md)).
+We officially support compatibility with the current and the previous minor version of Kubernetes. Generated resources should use the latest possible API versions compatible with these versions. For extended backwards compatibility conditional logic based on capabilities may be used (see [built-in objects](https://github.com/helm/helm/blob/master/docs/chart_template_guide/builtin_objects.md)).
 
 ## Kubernetes Native Workloads.
 
