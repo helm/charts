@@ -20,5 +20,4 @@ spec:
       app: {{ template "redmine.name" . }}
       chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
       release: "{{ .Release.Name }}"
-      heritage: "{{ .Release.Service }}"
 {{- end }}
