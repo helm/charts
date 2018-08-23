@@ -31,6 +31,10 @@ spec:
         - -c
         - |
           PATCH='{"spec": {"type":"NodePort"}}'
-          kubectl patch service --namespace {{ .Release.Namespace }} spin-deck --patch "$PATCH"
-          kubectl patch service --namespace {{ .Release.Namespace }} spin-gate --patch "$PATCH"
+          if [ "$(kubectl get service --namespace {{ .Release.Namespace }} spin-deck -o=jsonpath='{.spec.type}')" = "ClusterIP" ]; then
+            kubectl patch service --namespace {{ .Release.Namespace }} spin-deck --patch "$PATCH"
+          fi
+          if [ "$(kubectl get service --namespace {{ .Release.Namespace }} spin-gate -o=jsonpath='{.spec.type}')" = "ClusterIP" ]; then
+            kubectl patch service --namespace {{ .Release.Namespace }} spin-gate --patch "$PATCH"
+          fi
 {{- end }}
