@@ -10,7 +10,7 @@ keywords:
 - jfrog
 sources:
 - https://bintray.com/jfrog/product/JFrog-Artifactory-Pro/view
-- https://github.com/JFrogDev
+- https://github.com/jfrog/charts
 maintainers:
 - name: jainishshah17
   email: jainishs@jfrog.com
