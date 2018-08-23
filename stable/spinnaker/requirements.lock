@@ -1,12 +1,9 @@
 dependencies:
 - name: redis
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.1.6
+  version: 3.6.4
 - name: minio
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.3.4
-- name: jenkins
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 0.13.3
-digest: sha256:7d6af2ea9d43c242a1a352bea988e271e7cb62a9aabe8f3f01266ab76ae737d1
-generated: 2018-07-08T10:50:26.199301358-05:00
+  version: 1.5.0
+digest: sha256:e97bb4b0f7878f6fc3a375b6fca43bcfd778b6629db7dd46cd508b932548de02
+generated: 2018-07-18T13:48:10.143246511-05:00
