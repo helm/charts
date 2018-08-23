@@ -190,6 +190,7 @@ podDisruptionBudget:
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 replicas: 1
 
+## Redmine pods resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#resource-requests-and-limits-of-pod-and-container
 resources: {}
   # requests:
