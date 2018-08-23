@@ -130,7 +130,10 @@ spec:
         - name: pipeline
           configMap:
             name: {{ template "logstash.fullname" . }}-pipeline
-
+{{- if not .Values.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+{{- else }}
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -147,3 +150,4 @@ spec:
         storageClassName: "{{ .Values.persistence.storageClass }}"
         {{- end }}
       {{- end }}
+{{- end }}
