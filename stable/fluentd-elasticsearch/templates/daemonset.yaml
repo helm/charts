@@ -66,7 +66,7 @@ spec:
         - name: libsystemddir
           mountPath: /host/lib
           readOnly: true
-        - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
+        - name: config-volume-{{ include "fluentd-elasticsearch.fullname" . }} | trunc 49 | trimSuffix "-"
           mountPath: /etc/fluent/config.d
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 8 }}
@@ -122,7 +122,7 @@ spec:
       - name: libsystemddir
         hostPath:
           path: /usr/lib64
-      - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
+      - name: config-volume-{{ include "fluentd-elasticsearch.fullname" . | trunc 49 | trimSuffix "-" }}
         configMap:
           name: {{ template "fluentd-elasticsearch.fullname" . }}
 {{- if .Values.extraVolumes }}
