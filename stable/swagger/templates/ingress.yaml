@@ -1,0 +1,37 @@
+{{- if .Values.ingress.enabled -}}
+{{- if not .Values.ingress.oauth.enabled -}}
+{{- $swaggerName := include "swagger.fullname" . -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $swaggerName }}
+  labels:
+    app: {{ template "swagger.name" . }}
+    chart: {{ template "swagger.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- if .Values.ingress.basicAuth.enabled }}
+    nginx.ingress.kubernetes.io/auth-secret: {{ $swaggerName }}-basic-auth
+    {{- range $key, $value := .Values.ingress.basicAuth.basicAuthAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.hostname }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $swaggerName }}
+              servicePort: {{ .Values.service.externalPort }}
+  {{- if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}
+{{- end -}}

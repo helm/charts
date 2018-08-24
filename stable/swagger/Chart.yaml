@@ -1,0 +1,12 @@
+apiVersion: v1
+description: Swagger UI is a collection of HTML, Javascript, and CSS assets that dynamically generate beautiful documentation from a Swagger-compliant API.
+name: swagger
+home: https://swagger.io/
+icon: https://hub.docker.com/v2/users/swaggerapi/avatar/
+version: 0.1.0
+appVersion: 3.13.4
+sources:
+- https://github.com/swagger-api/swagger-ui
+maintainers:
+- name: jeff-knurek
+  email: j.knurek@travelaudience.com

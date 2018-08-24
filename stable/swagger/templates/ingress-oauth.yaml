@@ -1,0 +1,27 @@
+{{- if .Values.ingress.enabled -}}
+{{- if .Values.ingress.oauth.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "swagger.fullname" . }}-oauth
+  labels:
+    app: {{ template "swagger.name" . }}
+    chart: {{ template "swagger.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    {{- range $key, $value := .Values.ingress.oauth.oauthAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.hostname }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ template "swagger.fullname" . }}
+              servicePort: {{ .Values.service.externalPort }}
+
+{{- end -}}
+{{- end -}}
