@@ -1,4 +1,4 @@
-# metric-server
+# metrics-server
 
 Metrics Server is a cluster-wide aggregator of resource usage data.
 
