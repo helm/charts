@@ -15,7 +15,7 @@ spec:
         app: {{ template "kube-consul-register.name" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ .Values.serviceAccountName }}
+      serviceAccountName: {{ template "kube-consul-register.serviceAccountName" . }}
       containers:
       - name: {{ template "kube-consul-register.fullname" . }}
         image: {{ .Values.image }}:{{ .Values.imageTag }}

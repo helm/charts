@@ -1,0 +1,23 @@
+{{- if .Values.rbac.create -}}
+apiVersion: "rbac.authorization.k8s.io/v1"
+kind: ClusterRole
+metadata:
+  name: {{ template "kube-consul-register.fullname" . }}
+  labels:
+    app: {{ template "kube-consul-register.name" . }}
+    chart: {{ template "kube-consul-register.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+rules:
+- nonResourceURLs:
+  - "/version"
+  - "/healthz"
+  verbs: ["get"]
+- apiGroups: [""]
+  resources:
+    - "configmaps"
+    - "pods"
+    - "namespaces"
+    - "nodes"
+  verbs: ["get", "list", "watch"]
+{{- end -}}

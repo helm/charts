@@ -32,7 +32,7 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Get configmap name
+Get ConfigMap name
 */}}
 {{- define "kube-consul-register.configMapName" -}}
 {{- if .Values.config.create -}}
@@ -41,5 +41,19 @@ Get configmap name
 {{- else -}}
 {{- $configMapName := required "configMapName is required" .Values.configMapName -}}
 {{- printf "%s" $configMapName -}}
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+Get ServiceAccount name
+*/}}
+{{- define "kube-consul-register.serviceAccountName" -}}
+{{- if .Values.rbac.create -}}
+{{- $fullname := include "kube-consul-register.fullname" . -}}
+{{- printf "%s" $fullname -}}
+{{- else -}}
+{{- $serviceAccountName := required "serviceAccountName is required" .Values.rbac.serviceAccountName -}}
+{{- printf "%s" $serviceAccountName -}}
 {{- end -}}
 {{- end -}}
