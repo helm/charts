@@ -55,10 +55,10 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.confd`             | Additional check configurations (static and Autodiscovery) | `nil`             |
 | `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
 | `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
-| `resources.requests.cpu`    | CPU resource requests              | `200m`                                    |
-| `resources.limits.cpu`      | CPU resource limits                | `200m`                                    |
-| `resources.requests.memory` | Memory resource requests           | `256Mi`                                   |
-| `resources.limits.memory`   | Memory resource limits             | `256Mi`                                   |
+| `datadog.resources.requests.cpu` | CPU resource requests              | `200m`                                    |
+| `datadog.resources.limits.cpu` | CPU resource limits                | `200m`                                    |
+| `datadog.resources.requests.memory` | Memory resource requests           | `256Mi`                                   |
+| `datadog.resources.limits.memory` | Memory resource limits             | `256Mi`                                   |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
 | `daemonset.nodeSelector`    | Node selectors                     | `nil`                                     |
