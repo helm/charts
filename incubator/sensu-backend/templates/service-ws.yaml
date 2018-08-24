@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "sensu-backend.fullname" . }}-ws
+  labels:
+    app: {{ include "sensu-backend.name" . }}
+    chart: {{ include "sensu-backend.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.ws.type }}
+  ports:
+    - port: {{ .Values.service.ws.port }}
+      targetPort: ws
+      protocol: TCP
+      name: ws
+  selector:
+    app: {{ include "sensu-backend.name" . }}
+    release: {{ .Release.Name }}

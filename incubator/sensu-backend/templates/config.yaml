@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "sensu-backend.fullname" . }}-config
+  labels:
+    app: {{ include "sensu-backend.name" . }}
+    chart: {{ include "sensu-backend.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  backend.yaml: |
+    ##
+    # general configuration
+    ##
+    state-dir: "/var/lib/sensu"
+
+    {{ if .Values.config.tls.enabled }}
+    ##
+    # ssl configuration
+    ##
+    cert-file: "{{ .Values.config.tls.certFile }}"
+    key-file: "{{ .Values.config.tls.keyFile }}"
+    trusted-ca-file: "{{ .Values.config.tls.trustedCaFile }}"
+    insecure-skip-tls-verify: "{{ .Values.config.tls.insecure }}"
+    {{ end }}
+
+    ##
+    # store configuration
+    ##
+    {{ if .Values.config.listenClientUrls -}}
+    listen-client-urls: "{{ .Values.config.listenClientUrls }}"
+    {{- end }}
+    {{ if .Values.config.listenPeerUrls -}}
+    listen-peer-urls: "{{ .Values.config.listenPeerUrls }}"
+    {{- end }}
+    {{ if .Values.config.initialCluster -}}
+    initial-cluster: "{{ .Values.config.initialCluster }}"
+    {{- end }}
+    {{ if .Values.config.initialAdvertisePeerUrls -}}
+    initial-advertise-peer-urls: "{{ .Values.config.initialAdvertisePeerUrls }}"
+    {{- end }}
+    {{ if .Values.config.initialClusterState -}}
+    initial-cluster-state: "{{ .Values.config.initialClusterState }}"
+    {{- end }}
+    {{ if .Values.config.initialClusterToken -}}
+    initial-cluster-token: "{{ .Values.config.initialClusterToken }}"
+    {{- end }}
+    {{ if .Values.name -}}
+    name: "{{ .Values.config.name }}"
+    {{- end }}
+  agent.yaml: |
+    backend-url:
+      - "ws://127.0.0.1:8081"
+    ##
+    # agent configuration
+    ##
+    #agent-id: ""
+    #organization: "default"
+    #environment: "default"
+    #subscriptions: ""
+
+    ##
+    # authentication configuration
+    ##
+    #user: "agent"
+    #password: "P@ssw0rd!"
+
+    ##
+    # other
+    ##
+    #cache-dir: "/var/cache/sensu/sensu-agent"
+    #deregister: false
+    #deregistration-handler: ""
+    #keepalive-timeout: 120
+    #keepalive-internal: 20
