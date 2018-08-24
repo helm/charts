@@ -30,10 +30,6 @@ spec:
           secretName: {{ template "rundeck.fullname" . }}-ssh
           defaultMode: 511
       {{- end}}
-      {{- if .Values.init.enabled}} 
-      initContainers:
-{{ toYaml .Values.init.containers | indent 8 }}
-      {{- end}}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -83,7 +79,6 @@ spec:
             - name: {{ $key | upper | replace "-" "_" }}
               value: {{ $value | quote }}
             {{- end }}
-#{{ toYaml .Values.environment | indent 12 }}
           volumeMounts:  
           - mountPath: {{ .Values.env.RUNDECK_INSTALL_DIR }}/rundeck-config.properties
             name: {{ template "rundeck.fullname" . }}-configmap

@@ -34,12 +34,12 @@ resources:
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  #limits:
-  #  cpu: 1
-  #  memory: 1024Mi
-  #requests:
-  #  cpu: 100m
-  #  memory: 512Mi
+  # limits:
+  #   cpu: 1
+  #   memory: 1024Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 512Mi
 
 nodeSelector: {}
 
@@ -52,8 +52,6 @@ affinity: {}
 
 #######################################
 # Pod Spec Overrides
-
-#appname: rundeck
 
 env:
   SHARED_STORAGE: /rundeck
@@ -68,8 +66,8 @@ env:
   RUNDECK_INSTALL_DIR: /opt/rundeck
   RSA_KEY_DIR: /var/lib/rundeck/.ssh
   JAVA_OPTIONS: -XX:MaxPermSize=256m -Xmx512m -Xms512m -XX:MaxMetaspaceSize=256m -XX:+PrintFlagsFinal
-#UID: 1000
-#GID: 1000
+# UID: 1000
+# GID: 1000
 
 #######################################
 # ConfigMap Overrides
@@ -88,7 +86,7 @@ grails:
   mailfrom: "someone@somewhere.com"
 
 datasource:
-#url: jdbc:postgresql://db.default.svc.cluster.local:5432/rundeck?autoReconnect=true
+# url: jdbc:postgresql://db.default.svc.cluster.local:5432/rundeck?autoReconnect=true
   url: jdbc:h2:file:/var/lib/rundeck/data/rundeckdb;MVCC=true
 
 edgeNodes:
@@ -109,7 +107,7 @@ readinessProbe:
   successThreshold: 1
 secret:
   enabled: false
-#storage preference type for ssh keys. can be file or db
-keys: 
-  storage: 
+# storage preference type for ssh keys. can be file or db
+keys:
+  storage:
     type: file
