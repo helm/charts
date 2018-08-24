@@ -1,9 +1,5 @@
-{{/* store a reference '.' scope so Values can be access in side a loop
-  see https://github.com/kubernetes/helm/issues/1311 */}}
-{{- $root := . -}}
-
-apiVersion: apps/v1beta2
-kind: Deployment
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: {{ template "rundeck.fullname" . }}
   labels:
@@ -12,6 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  serviceName: {{ template "rundeck.fullname" . }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
@@ -24,30 +21,18 @@ spec:
         release: {{ .Release.Name }}
     spec:
       volumes:
-      {{- if .Values.storage.enabled}} 
-      - name: rundeck-pvc
-        persistentVolumeClaim:
-          claimName: {{.Values.storage.claimName}}
-      {{- end}}
       - name: {{ template "rundeck.fullname" . }}-configmap
-        ConfigMap:
+        configMap:
           name: {{ template "rundeck.fullname" . }}
+      {{- if .Values.secret.enabled}}
       - name: {{ template "rundeck.fullname" . }}-ssh-secret
         secret:
           secretName: {{ template "rundeck.fullname" . }}-ssh
           defaultMode: 511
+      {{- end}}
       {{- if .Values.init.enabled}} 
       initContainers:
-        {{- range .Values.init.containers }}
-        - name: {{ .name }}
-          image: {{ .image }}
-          command: {{- range .command }}
-            - {{ .}}
-          {{- end }}
-          volumeMounts:
-            - mountPath: {{ .mountPath }}
-              name: rundeck-pvc
-        {{- end }}
+{{ toYaml .Values.init.containers | indent 8 }}
       {{- end}}
       containers:
         - name: {{ .Chart.Name }}
@@ -57,20 +42,28 @@ spec:
             - name: http
               containerPort: {{ .Values.service.http.port }}
               protocol: TCP
+          {{- if .Values.livenessProbe.enabled}} 
           livenessProbe:
             httpGet:
               path: /
               port: {{ .Values.service.http.port }}
-            initialDelaySeconds: {{ .Values.liveness.delay }}
-            periodSeconds: {{ .Values.liveness.period }}
-            timeoutSeconds: {{ .Values.liveness.timeout }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled}} 
           readinessProbe:
             httpGet:
               path: /
               port: {{ .Values.service.http.port }}
-            initialDelaySeconds: {{ .Values.readiness.delay }}
-            periodSeconds: {{ .Values.readiness.period }}
-            timeoutSeconds: {{ .Values.readiness.timeout }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
@@ -90,6 +83,7 @@ spec:
             - name: {{ $key | upper | replace "-" "_" }}
               value: {{ $value | quote }}
             {{- end }}
+#{{ toYaml .Values.environment | indent 12 }}
           volumeMounts:  
           - mountPath: {{ .Values.env.RUNDECK_INSTALL_DIR }}/rundeck-config.properties
             name: {{ template "rundeck.fullname" . }}-configmap
@@ -97,19 +91,32 @@ spec:
           - mountPath: {{ .Values.env.RUNDECK_INSTALL_DIR }}/framework.properties
             name: {{ template "rundeck.fullname" . }}-configmap
             subPath: framework.properties
-          - mountPath: {{ .Values.env.RUNDECK_INSTALL_DIR }}/project.properties
+          - mountPath: {{ .Values.env.RUNDECK_INSTALL_DIR }}/project.properties.etc
             name: {{ template "rundeck.fullname" . }}-configmap
-            subPath: project.properties
+            subPath: project.properties.etc
           - mountPath: {{ .Values.env.RUNDECK_INSTALL_DIR }}/realm.properties
             name: {{ template "rundeck.fullname" . }}-configmap
             subPath: realm.properties
+          - mountPath: {{ .Values.env.RUNDECK_INSTALL_DIR }}/resources.xml
+            name: {{ template "rundeck.fullname" . }}-configmap
+            subPath: resources.xml
+          - mountPath: {{ .Values.env.RUNDECK_INSTALL_DIR }}/project.properties
+            name: {{ template "rundeck.fullname" . }}-configmap
+            subPath: project.properties
+          {{- if .Values.secret.enabled}}
           - mountPath: {{ .Values.env.RSA_KEY_DIR }}/id_rsa
             name: {{ template "rundeck.fullname" . }}-ssh-secret
             subPath: id_rsa
-            readOnly: false          
-          {{- if .Values.storage.enabled}} 
-          - mountPath: {{ .Values.storage.mountPoint }}
-            name: rundeck-pvc
-            subPath: {{ .Values.storage.remotePath }}
             readOnly: false
-          {{- end }}
+          {{- end}}          
+          - mountPath: {{ .Values.env.SHARED_STORAGE }}
+            name: {{ template "rundeck.fullname" . }}-pvc
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ template "rundeck.fullname" . }}-pvc
+    spec:
+      accessModes:
+        - {{ .Values.volumeClaim.accessMode }}
+      resources:
+        requests:
+          storage: {{ .Values.volumeClaim.storage }}

@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   labels:
     app: {{ template "rundeck.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "rundeck.chart" . }}
     component: "{{ template "rundeck.name" . }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -47,11 +47,10 @@ data:
     # "0" value means wait forever.
     framework.ssh.timeout = 0
     
-    
     # ----------------------------------------------------------------
-    # Auto generated server UUID: 93be48ac-74f4-45f7-a809-bf6139d8a755
+    # Auto generated server UUID
     # ----------------------------------------------------------------
-    rundeck.server.uuid = 93be48ac-74f4-45f7-a809-bf6139d8a755
+    rundeck.server.uuid =
     rundeck.tokens.file={{ .Values.env.SHARED_STORAGE }}/token/tokens.properties
   realm.properties: |-
     #    
@@ -70,7 +69,7 @@ data:
     admin:admin,user,admin
     user:user,user
     {{ .Values.env.RD_USER }}:{{ .Values.env.RD_PASSWORD }},user,admin,architect,deploy,build
-  project.properties: |-
+  project.properties.etc: |-
     #    
     # project.properties
     #
@@ -132,3 +131,24 @@ data:
     dataSource.url = {{ .Values.datasource.url }}
     dataSource.username={{ .Values.env.DB_USER }}
     dataSource.password={{ .Values.env.DB_PASS }}
+    rundeck.storage.provider.1.type={{ .Values.keys.storage.type }}
+    rundeck.storage.provider.1.path=/
+    rundeck.storage.provider.1.config.baseDir={{ .Values.env.SHARED_STORAGE }}/storage
+  project.properties: |-
+    project.name={{ .Values.env.RD_PROJECT }}
+    project.ssh-authentication=privateKey
+    project.ssh-keypath={{ .Values.env.RSA_KEY_DIR }}/id_rsa
+    project.ssh-key-storage-path=/keys/{{ .Values.env.RD_PROJECT }}/id_rsa
+    service.NodeExecutor.default.provider=jsch-ssh
+    service.FileCopier.default.provider=jsch-scp
+    resources.source.1.type=file
+    resources.source.1.config.includeServerNode=true
+    resources.source.1.config.generateFileAutomatically=true
+    resources.source.1.config.file={{ .Values.env.SHARED_STORAGE }}/projects/{{ .Values.env.RD_PROJECT }}/etc/resources.xml
+  resources.xml: |-
+    <?xml version="1.0" encoding="UTF-8"?>
+    <project>
+      {{- range $key, $value := .Values.edgeNodes }}
+      <node name="{{ $key }}" description="Remote Node {{ $key }}" tags="" hostname="{{ $key }}" osArch="amd64" osFamily="unix" osName="Linux" osVersion="3.10.0-514.16.1.el7.x86_64" username="{{ $value }}"/>
+      {{- end }}
+    </project>
