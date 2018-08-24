@@ -1,0 +1,49 @@
+# Default values for beamium.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: kartoch/beamium
+  tag: 1.7.0
+  pullPolicy: Always
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+config:
+  warp:
+    url: "https://warp10.gra1.metrics.ovh.net/api/v0/update"
+    token: "YOUR_WRITE_WARP10_TOKEN"
+  scrapers:
+    scraper-prometheus:
+      url: "http://PROMETHEUS_SERVER_ADDRESS:80/metrics"
+      period: 10000
+      format: "prometheus"
+  labels:
+    host: "tmp"
+  parameters:
+    source-dir: sources
+    sink-dir: sinks
+    scan-period: 1000
+    batch-count: 250
+    batch-size: 200000
+    log-file: beamium.log
+    log-level: 4
+    timeout: 500

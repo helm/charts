@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "beamium.fullname" . }}
+  labels:
+    app: {{ template "beamium.name" . }}
+    chart: {{ template "beamium.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "beamium.fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "beamium.fullname" . }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: [ "/usr/bin/beamium", "--config", "/etc/beamium/config.yaml" ]
+        volumeMounts:
+          - mountPath: /etc/beamium
+            name: {{ template "beamium.fullname" . }}-config
+        resources:
+{{ toYaml .Values.resources | indent 10 }}            
+      volumes:
+        - name: {{ template "beamium.fullname" . }}-config
+          configMap:
+            name: {{ template "beamium.fullname" . }}-config
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
