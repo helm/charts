@@ -187,6 +187,7 @@ podDisruptionBudget:
   # maxUnavailable: 1
 
 ## Define the number of pods the deployment will create
+## Do not change unless your persistent volume allows more than one writer, ie NFS
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 replicas: 1
 
