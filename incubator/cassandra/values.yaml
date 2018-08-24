@@ -26,6 +26,14 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 10Gi
+  ## A label query over volumes to consider for binding.
+  ## ref: https://v1-10.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#labelselector-v1-meta
+  # selector:
+  #   matchLabels:
+  #     label: value
+  ## VolumeName is the binding reference to the PersistentVolume backing this claim.
+  ## Could be templates
+  # volumeName: "{{ .Release.Name }}-data-0"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
