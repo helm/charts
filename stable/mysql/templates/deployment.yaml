@@ -145,13 +145,13 @@ spec:
           containerPort: 9104
         livenessProbe:
           httpGet:
-            path: /metrics
+            path: /
             port: metrics
           initialDelaySeconds: {{ .Values.metrics.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.metrics.livenessProbe.timeoutSeconds }}
         readinessProbe:
           httpGet:
-            path: /metrics
+            path: /
             port: metrics
           initialDelaySeconds: {{ .Values.metrics.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.metrics.readinessProbe.timeoutSeconds }}
