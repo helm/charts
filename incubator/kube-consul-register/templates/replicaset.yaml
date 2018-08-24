@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  name: {{ template "kube-consul-register.fullname" . }}
+  labels:
+    app: {{ template "kube-consul-register.name" . }}
+    chart: {{ template "kube-consul-register.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "kube-consul-register.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      containers:
+      - name: {{ template "kube-consul-register.fullname" . }}
+        image: {{ .Values.image }}:{{ .Values.imageTag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        args:
+        - -logtostderr=true
+        - -configmap={{ template "kube-consul-register.configMapName" . }}

@@ -1,0 +1,12 @@
+name: kube-consul-register
+version: 0.1.0
+appVersion: 0.1.6
+description: A Helm chart for kube-consul-register
+home: https://github.com/tczekajlo/kube-consul-register
+sources:
+  - https://github.com/tczekajlo/kube-consul-register
+keywords:
+  - kube-consul-register
+  - consul-watch
+  - consul
+engine: gotpl

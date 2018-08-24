@@ -1,0 +1,11 @@
+image: tczekajlo/kube-consul-register
+imageTag: 0.1.6
+replicas: 3
+serviceAccountName: default
+config:
+  create: true
+  consulPort: 8500
+  registerMode: node
+  registerSource: pod
+  podLabelSelector:
+configMapName:
