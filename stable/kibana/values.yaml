@@ -33,7 +33,7 @@ service:
   type: ClusterIP
   externalPort: 443
   internalPort: 5601
-  # authProxyPort: 5602 To be used with authProxyEnabled and a proxy extraContainer 
+  # authProxyPort: 5602 To be used with authProxyEnabled and a proxy extraContainer
   ## External IP addresses of service
   ## Default: nil
   ##
@@ -87,7 +87,7 @@ extraContainers: |
 #     - --discovery-url=https://discovery-url
 #     - --client-id=client
 #     - --client-secret=secret
-#     - --listen=0.0.0.0:5602 
+#     - --listen=0.0.0.0:5602
 #     - --upstream-url=http://127.0.0.1:5601
 #   ports:
 #     - name: web
