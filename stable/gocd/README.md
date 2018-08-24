@@ -169,6 +169,7 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.healthCheck.initialDelaySeconds`   | GoCD agent start up time.                                                                                                                                                        | `60`                         |
 | `agent.healthCheck.periodSeconds`         | GoCD agent health check interval period.                                                                                                                                          | `60`                         |
 | `agent.healthCheck.failureThreshold`      | GoCD agent health check failure threshold. Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.                                       | `60`                         |
+| `agent.hostAliases`                       | Aliases for IPs in /etc/hosts                                                                                 | `[]`                |
 | `agent.security.ssh.enabled`              | Enable the use of SSH keys for GoCD agent                                                                                                                                        | `false`                      |
 | `agent.security.ssh.secretName`           | The name of the secret holding the SSH keys                                                                                                                                      | `gocd-agent-ssh`             |
 
