@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "litecoind.fullname" . }}
+  labels:
+    app: {{ template "litecoind.name" . }}
+    chart: {{ template "litecoind.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  ports:
+    - name: rpc
+      port: {{ .Values.service.rpcPort }}
+      targetPort: rpc
+    - name: p2p
+      port: {{ .Values.service.p2pPort }}
+      targetPort: p2p
+    - name: testnet
+      port: {{ .Values.service.testnetPort }}
+  selector:
+    app: {{ template "litecoind.name" . }}
+    release: {{ .Release.Name }}
