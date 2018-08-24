@@ -1,0 +1,30 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "zulip.fullname" . }}-postgresql
+  labels:
+    app: {{ template "zulip.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- if .Values.postgresql.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.postgresql.persistence.annotations | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.postgresql.persistence.selector }}
+  selector:
+{{ toYaml .Values.postgresql.persistence.selector | indent 4 }}
+{{- end }}
+  accessModes:
+    - {{ .Values.postgresql.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.postgresql.persistence.size | quote }}
+{{- if .Values.postgresql.persistence.storageClass }}
+{{- if (eq "-" .Values.postgresql.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.postgresql.persistence.storageClass }}"
+{{- end }}
+{{- end }}

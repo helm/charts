@@ -1,0 +1,30 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "zulip.fullname" . }}-redis
+  labels:
+    app: {{ template "zulip.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- if .Values.redis.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.redis.persistence.annotations | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.redis.persistence.selector }}
+  selector:
+{{ toYaml .Values.redis.persistence.selector | indent 4 }}
+{{- end }}
+  accessModes:
+    - {{ .Values.redis.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.redis.persistence.size | quote }}
+{{- if .Values.redis.persistence.storageClass }}
+{{- if (eq "-" .Values.redis.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.redis.persistence.storageClass }}"
+{{- end }}
+{{- end }}

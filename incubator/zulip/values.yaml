@@ -1,0 +1,128 @@
+# Default values for zulip.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nodeSelector:
+  zulip: "true"
+ingress:
+  enabled: true
+  hosts:
+    - zulip.example.com
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  tls:
+    - secretName: zulip.example.com
+      hosts:
+        - zulip.example.com
+service:
+  type: ClusterIP
+redis:
+  image: quay.io/sameersbn/redis:latest
+  resources: {}
+  persistence:
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    # storageClass: standard
+    # annotations: {}
+    # selector:
+    #   matchLabels:
+    #     app: zulip
+    #     component: redis
+memcached:
+  image: quay.io/sameersbn/memcached:latest
+  resources: {}
+rabbitmq:
+  resources: {}
+  image: rabbitmq:3.5.5
+  env:
+  - name: RABBITMQ_DEFAULT_USER
+    value: "zulip"
+  - name: RABBITMQ_DEFAULT_PASS
+    value: "zulip"
+postgresql:
+  resources: {}
+  image: quay.io/galexrt/zulip-postgresql-tsearchextras:latest
+  env:
+  - name: DB_NAME
+    value: zulip
+  - name: DB_USER
+    value: zulip
+  - name: DB_PASS
+    value: zulip
+  persistence:
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    # storageClass: standard
+    # annotations: {}
+    # selector:
+    #   matchLabels:
+    #     app: zulip
+    #     component: postgresql
+zulip:
+  image: "quay.io/galexrt/zulip:1.8.0-1"
+  env:
+  - name: DB_HOST
+    value: "localhost"
+  - name: DB_HOST_PORT
+    value: "5432"
+  - name: DB_USER
+    value: "zulip"
+  - name: DB_PASS
+    value: "zulip"
+  - name: SETTING_MEMCACHED_LOCATION
+    value: "localhost:11211"
+  - name: SETTING_RABBITMQ_HOST
+    value: "localhost"
+  - name: SETTING_REDIS_HOST
+    value: "localhost"
+  - name: SECRETS_email_password
+    value: "fixme"
+  - name: SECRETS_rabbitmq_password
+    value: "zulip"
+  - name: SECRETS_secret_key
+    value: "put something random here"
+  - name: SETTING_EXTERNAL_HOST
+    value: "zulip.example.com"
+  - name: SETTING_ZULIP_ADMINISTRATOR
+    value: "admin@example.com"
+  - name: SETTING_ADMIN_DOMAIN
+    value: "zulip.example.com"
+  - name: SETTING_NOREPLY_EMAIL_ADDRESS
+    value: "noreply@example.com"
+  - name: SETTING_DEFAULT_FROM_EMAIL
+    value: "Zulip <noreply@example.com>"
+  - name: SETTING_EMAIL_HOST
+    value: "smtp.example.com"
+  - name: SETTING_EMAIL_HOST_USER
+    value: "zulip@example.com"
+  - name: SETTING_EMAIL_PORT
+    value: "587"
+  - name: SETTING_EMAIL_USE_SSL
+    value: "False"
+  - name: SETTING_EMAIL_USE_TLS
+    value: "True"
+  - name: SETTING_EMAIL_BACKEND
+    value: "django.core.mail.backends.smtp.EmailBackend"
+  - name: SETTING_ALLOWED_HOSTS
+    value: "[ '*', '127.0.0.2' ]"
+  - name: ZULIP_AUTH_BACKENDS
+    value: "EmailAuthBackend"
+  - name: DISABLE_HTTPS
+    value: "True"
+  persistence:
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    # storageClass: standard
+    # annotations: {}
+    # selector:
+    #   matchLabels:
+    #     app: zulip
+    #     component: zulip
+  resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
