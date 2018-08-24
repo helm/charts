@@ -178,6 +178,11 @@ controller:
 
     healthCheckNodePort: 0
 
+    # Configure LB session Affinity (None | ClientIP)
+    sessionAffinity: "None"
+    sessionAffinityConfig: {}
+    #  clientIP.timeoutSeconds: 10800
+
     targetPorts:
       http: http
       https: https
