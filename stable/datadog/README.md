@@ -53,6 +53,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.apmEnabled`        | Enable tracing from the host       | `nil`                                     |
 | `datadog.checksd`           | Additional custom checks as python code  | `nil`                               |
 | `datadog.confd`             | Additional check configurations (static and Autodiscovery) | `nil`             |
+| `datadog.tags`              | Set host tags                      | `nil`                                     |
 | `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
 | `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
 | `datadog.resources.requests.cpu` | CPU resource requests              | `200m`                                    |
