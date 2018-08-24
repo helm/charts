@@ -1,0 +1,111 @@
+# Default values for rundeck.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: deepakr11/rundeck
+  tag: 0.2.0
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  http:
+    port: 4440
+  https:
+    port: 4443
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - rundeck.default.svc.cluster.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  #limits:
+  #  cpu: 1
+  #  memory: 1024Mi
+  #requests:
+  #  cpu: 100
+  #  memory: 512Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+#####################################################################
+# Application Configurations
+
+#######################################
+# Pod Spec Overrides
+
+#appname: rundeck
+
+env:
+  SHARED_STORAGE: /rundeck
+  DB_URL: db.default.svc.cluster.local
+  DB_SCHEMA: rundeck
+  DB_USER: rundeck
+  DB_PASS: rundeck
+  RD_URL: "http://localhost:4440"
+  RD_USER: rundeck
+  RD_PASSWORD: rundeck
+  RD_PROJECT: DEFAULT
+  RUNDECK_INSTALL_DIR: /opt/rundeck
+  RSA_KEY_DIR: /var/lib/rundeck/.ssh
+  JAVA_OPTIONS: -Xmx256m -Xms128m -XX:MaxMetaspaceSize=256m -XX:+PrintFlagsFinal
+#UID: 1000
+#GID: 1000
+
+#######################################
+# ConfigMap Overrides
+
+volumeClaim:
+  accessMode: ReadWriteOnce
+  storage: 5Gi
+
+grails:
+  auth: false
+  url: "http://rundeck.default.svc.cluster.local:80"
+  mailhost: localhost
+  mailport: 25
+  mailuser: user
+  mailpass: pass
+  mailfrom: "someone@somewhere.com"
+
+datasource:
+#url: jdbc:postgresql://db.default.svc.cluster.local:5432/rundeck?autoReconnect=true
+  url: jdbc:h2:file:/var/lib/rundeck/data/rundeckdb;MVCC=true
+
+edgeNodes:
+  - 127.0.0.1: rundeck
+livenessProbe:
+  enabled: false
+  initialDelaySeconds: 120
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 6
+  successThreshold: 1
+readinessProbe:
+  enabled: false
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 6
+  successThreshold: 1
+secret:
+  enabled: false
