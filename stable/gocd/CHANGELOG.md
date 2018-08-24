@@ -1,3 +1,7 @@
+### 1.3.3
+
+* [0c5eadd](https://github.com/kubernetes/charts/commit/0c5eadd): hostAliases for agents too (previously only on server)
+
 ### 1.3.2
 
 * [55d9cef](https://github.com/kubernetes/charts/commit/55d9cef): Add support for privileged mode, which is needed for DinD (Docker-in-Docker).
