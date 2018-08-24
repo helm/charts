@@ -17,7 +17,7 @@ please add a comment [here](https://github.com/kubernetes/kubernetes/issues/2779
 
 ### Reporting a Bug in Helm
 
-This repository is used by Chart developers for maintaining the official charts for Kubernetes Helm. If your issue is in the Helm tool itself, please use the issue tracker in the [kubernetes/helm](https://github.com/kubernetes/helm) repository.
+This repository is used by Chart developers for maintaining the official charts for Kubernetes Helm. If your issue is in the Helm tool itself, please use the issue tracker in the [helm/helm](https://github.com/helm/helm) repository.
 
 ### How to Contribute a Chart
 
@@ -34,7 +34,7 @@ This repository is used by Chart developers for maintaining the official charts 
 * All Chart dependencies should also be submitted independently
 * Must pass the linter (`helm lint`)
 * Must successfully launch with default values (`helm install .`)
-    * All pods go to the running state (or NOTES.txt provides further instructions if a required value is missing e.g. [minecraft](https://github.com/kubernetes/charts/blob/master/stable/minecraft/templates/NOTES.txt#L3))
+    * All pods go to the running state (or NOTES.txt provides further instructions if a required value is missing e.g. [minecraft](https://github.com/helm/charts/blob/master/stable/minecraft/templates/NOTES.txt#L3))
     * All services have at least one endpoint
 * Must include source GitHub repositories for images used in the Chart
 * Images should not have any major security vulnerabilities
@@ -48,10 +48,10 @@ This repository is used by Chart developers for maintaining the official charts 
 * Allow customization of the application configuration
 * Provide a secure default configuration
 * Do not leverage alpha features of Kubernetes
-* Includes a [NOTES.txt](https://github.com/kubernetes/helm/blob/master/docs/charts.md#chart-license-readme-and-notes) explaining how to use the application after install
-* Follows [best practices](https://github.com/kubernetes/helm/tree/master/docs/chart_best_practices)
-  (especially for [labels](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/labels.md)
-  and [values](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md))
+* Includes a [NOTES.txt](https://github.com/helm/helm/blob/master/docs/charts.md#chart-license-readme-and-notes) explaining how to use the application after install
+* Follows [best practices](https://github.com/helm/helm/tree/master/docs/chart_best_practices)
+  (especially for [labels](https://github.com/helm/helm/blob/master/docs/chart_best_practices/labels.md)
+  and [values](https://github.com/helm/helm/blob/master/docs/chart_best_practices/values.md))
 
 #### Documentation requirements
 
@@ -73,7 +73,7 @@ Once the Chart has been merged, the release job will automatically run in the CI
 
 Whether you are a user or contributor, official support channels include:
 
-- GitHub issues: https://github.com/kubernetes/charts/issues
+- GitHub issues: https://github.com/helm/charts/issues
 - Slack: Helm Users - #Helm-users room in the [Kubernetes Slack](http://slack.kubernetes.io/)
 - Slack: Helm Developers - #Helm-dev room in the [Kubernetes Slack](http://slack.kubernetes.io/)
 

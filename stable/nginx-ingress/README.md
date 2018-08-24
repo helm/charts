@@ -47,7 +47,7 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.15.0`
+`controller.image.tag` | controller container image tag | `0.17.1`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
@@ -71,6 +71,7 @@ Parameter | Description | Default
 `controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
+`controller.podLabels` | labels to add to the pod container metadata | `{}`
 `controller.replicaCount` | desired number of controller pods | `1`
 `controller.minAvailable` | minimum number of available controller pods for PodDisruptionBudget | `1`
 `controller.resources` | controller pod resource requests & limits | `{}`
@@ -119,21 +120,23 @@ Parameter | Description | Default
 `controller.metrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.metrics.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `controller.metrics.service.servicePort` | Prometheus metrics service port | `9913`
-`controller.metrics.service.targetPort` | Prometheus metrics target port | `10254`
 `controller.metrics.service.type` | type of Prometheus metrics service to create | `ClusterIP`
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `controller.headers` | configMap key:value pairs containing the [custom headers](https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers) for Nginx | `{}`
 `controller.updateStrategy` | allows setting of RollingUpdate strategy | `{}`
+`defaultBackend.enabled` | If false, controller.defaultBackendService must be provided | `true`
 `defaultBackend.name` | name of the default backend component | `default-backend`
 `defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend`
-`defaultBackend.image.tag` | default backend container image tag | `1.3`
+`defaultBackend.image.tag` | default backend container image tag | `1.4`
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
+`defaultBackend.port` | Http port number | `8080`
 `defaultBackend.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `defaultBackend.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `defaultBackend.nodeSelector` | node labels for pod assignment | `{}`
 `defaultBackend.podAnnotations` | annotations to be added to pods | `{}`
+`defaultBackend.podLabels` | labels to add to the pod container metadata | `{}`
 `defaultBackend.replicaCount` | desired number of default backend pods | `1`
 `defaultBackend.minAvailable` | minimum number of available default backend pods for PodDisruptionBudget | `1`
 `defaultBackend.resources` | default backend pod resource requests & limits | `{}`

@@ -15,6 +15,7 @@ image:
   repository: oliver006/redis_exporter
   tag: v0.16.0
   pullPolicy: IfNotPresent
+extraArgs: {}
 service:
   type: ClusterIP
   port: 9121
