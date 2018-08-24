@@ -4,10 +4,11 @@ replicas: 3
 rbac:
   create: true
   serviceAccountName: default
-config:
+configMap:
+  ## ignored if configMap.create=true
+  # name:
   create: true
   consulPort: 8500
   registerMode: node
   registerSource: pod
   podLabelSelector:
-configMapName:

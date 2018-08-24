@@ -1,4 +1,4 @@
-{{- if .Values.config.create -}}
+{{- if .Values.configMap.create -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,8 +9,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  consul_port: {{ .Values.config.consulPort | quote }}
-  register_mode: {{ .Values.config.registerMode | quote }}
-  register_source: {{ .Values.config.registerSource | quote }}
-  pod_label_selector: {{ .Values.config.podLabelSelector | quote }}
+  consul_port: {{ .Values.configMap.consulPort | quote }}
+  register_mode: {{ .Values.configMap.registerMode | quote }}
+  register_source: {{ .Values.configMap.registerSource | quote }}
+  pod_label_selector: {{ .Values.configMap.podLabelSelector | quote }}
 {{- end -}}
