@@ -12,6 +12,5 @@ icon: https://www.postgresql.org/media/img/about/press/elephant.png
 sources:
 - https://github.com/kubernetes/charts
 - https://github.com/docker-library/postgres
-maintainers:
-- name: databus23
+maintainers: []
 engine: gotpl
