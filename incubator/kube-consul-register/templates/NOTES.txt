@@ -1,1 +1,5 @@
-Chart installed
+kube-consul-register has been installed.
+
+To check if kube-consul-register has started, run:
+
+kubectl --namespace {{ .Release.Namespace }} -l "app={{ template "kube-consul-register.name" . }},release={{ .Release.Name }}" get pod
