@@ -58,12 +58,21 @@ spec:
         volumeMounts:
           - name: {{ template "graphite.fullname" . }}-configmap
             mountPath: /opt/graphite/conf/
+          - name: {{ template "graphite.fullname" . }}-statsd-configmap
+            subPath: config_tcp.js
+            mountPath: /opt/statsd/config_tcp.js
+          - name: {{ template "graphite.fullname" . }}-statsd-configmap
+            subPath: config_udp.js
+            mountPath: /opt/statsd/config_udp.js
           - name: {{ template "graphite.fullname" . }}-pvc
             mountPath: /opt/graphite/storage/
       volumes:
         - name: {{ template "graphite.fullname" . }}-configmap
           configMap:
             name: {{ template "graphite.fullname" . }}-configmap
+        - name: {{ template "graphite.fullname" . }}-statsd-configmap
+          configMap:
+            name: {{ template "graphite.fullname" . }}-statsd-configmap
         - name: {{ template "graphite.fullname" . }}-pvc
 {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
