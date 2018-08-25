@@ -8,6 +8,7 @@ configMap:
   ## ignored if configMap.create=true
   # name:
   create: true
+  consulAddress: localhost # used only if registerMode=single
   consulPort: 8500
   registerMode: node
   registerSource: pod

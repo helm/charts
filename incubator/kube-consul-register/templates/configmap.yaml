@@ -9,6 +9,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
+  {{ if eq .Values.configMap.registerMode "single" }}
+  consul_address: {{ required "consulAddress is required" .Values.configMap.consulAddress }}
+  {{ end }}
   consul_port: {{ .Values.configMap.consulPort | quote }}
   register_mode: {{ .Values.configMap.registerMode | quote }}
   register_source: {{ .Values.configMap.registerSource | quote }}
