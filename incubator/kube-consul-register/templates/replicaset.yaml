@@ -21,6 +21,20 @@ spec:
         image: {{ .Values.image }}:{{ .Values.imageTag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         args:
-        - -logtostderr=true
-        - -v={{ .Values.logLevel }}
         - -configmap={{ template "kube-consul-register.configMapName" . }}
+        {{- $args := .Values.commandArgs -}}
+        {{- if $args.logToStdErr }}
+        - -logtostderr={{ $args.logToStdErr }}
+        {{- end }}
+        {{- if $args.logLevel }}
+        - -v={{ $args.logLevel }}
+        {{- end }}
+        {{- if $args.cleanIntervalDuration }}
+        - -clean-interval-duration={{ $args.cleanIntervalDuration  }}
+        {{- end }}
+        {{- if $args.syncInterval }}
+        - -sync-interval={{ $args.syncInterval }}
+        {{- end }}
+        {{- if $args.watchNamespace }}
+        - -watch-namespace={{ $args.watchNamespace }}
+        {{- end }}

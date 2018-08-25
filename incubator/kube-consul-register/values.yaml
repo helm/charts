@@ -6,7 +6,7 @@ rbac:
   serviceAccountName: default
 configMap:
   ## ignored if configMap.create=true
-  # name:
+  # name: namespace/configmap-name
   create: true
   consulAddress: localhost # used only if registerMode=single
   consulPort: 8500
@@ -14,4 +14,11 @@ configMap:
   registerSource: pod
   podLabelSelector:
   k8sTag: kubernetes
-logLevel: 0
+## arguments to be passed to kube-consul-register command
+## https://github.com/tczekajlo/kube-consul-register/#usage
+# commandArgs:
+  # logLevel:
+  # logToStdErr:
+  # cleanIntervalDuration:
+  # syncInterval:
+  # watchNamespace:
