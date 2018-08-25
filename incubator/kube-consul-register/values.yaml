@@ -3,7 +3,8 @@ imageTag: 0.1.6
 replicas: 3
 rbac:
   create: true
-  serviceAccountName: default
+  ## ignored if rbac.create=true
+  # serviceAccountName: default
 configMap:
   ## ignored if configMap.create=true
   # name: namespace/configmap-name
@@ -16,7 +17,7 @@ configMap:
   k8sTag: kubernetes
 ## arguments to be passed to kube-consul-register command
 ## https://github.com/tczekajlo/kube-consul-register/#usage
-# commandArgs:
+commandArgs: {}
   # logLevel:
   # logToStdErr:
   # cleanIntervalDuration:
