@@ -57,7 +57,7 @@ The following table lists the configurable parameters of the kube-concul-registe
 | `configMap.registerSource`          | `kube-consul-register` config, `register_source`                                          | `pod`                            |
 | `configMap.podLabelSelector`        | `kube-consul-register` config, `pod_label_selector`                                       | ``                               |
 | `configMap.k8sTag`                  | `kube-consul-register` config, `k8s_tag`                                                  | `kubernetes`                     |
-| `commandArgs.logToStdErr`           | `kube-consul-register` command argument `-logtostderr`                                    | `nil`                            |
+| `commandArgs.logToStdErr`           | `kube-consul-register` command argument `-logtostderr`                                    | `true`                           |
 | `commandArgs.logLevel`              | `kube-consul-register` command argument `-v`                                              | `nil`                            |
 | `commandArgs.cleanIntervalDuration` | `kube-consul-register` command argument `-clean-interval duration`                        | `nil`                            |
 | `commandArgs.syncInterval`          | `kube-consul-register` command argument `-sync-interval`                                  | `nil`                            |

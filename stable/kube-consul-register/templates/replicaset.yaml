@@ -21,11 +21,9 @@ spec:
         image: {{ .Values.image }}:{{ .Values.imageTag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         args:
+        {{- $args := .Values.commandArgs }}
         - -configmap={{ template "kube-consul-register.configMapName" . }}
-        {{- $args := .Values.commandArgs -}}
-        {{- if $args.logToStdErr }}
         - -logtostderr={{ $args.logToStdErr }}
-        {{- end }}
         {{- if $args.logLevel }}
         - -v={{ $args.logLevel }}
         {{- end }}

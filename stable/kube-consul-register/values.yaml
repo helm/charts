@@ -17,9 +17,9 @@ configMap:
   k8sTag: kubernetes
 ## arguments to be passed to kube-consul-register command
 ## https://github.com/tczekajlo/kube-consul-register/#usage
-commandArgs: {}
+commandArgs:
+  logToStdErr: true
   # logLevel:
-  # logToStdErr:
   # cleanIntervalDuration:
   # syncInterval:
   # watchNamespace:
