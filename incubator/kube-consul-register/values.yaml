@@ -12,3 +12,5 @@ configMap:
   registerMode: node
   registerSource: pod
   podLabelSelector:
+  k8sTag: kubernetes
+logLevel: 0

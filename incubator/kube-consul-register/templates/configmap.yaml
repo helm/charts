@@ -13,4 +13,5 @@ data:
   register_mode: {{ .Values.configMap.registerMode | quote }}
   register_source: {{ .Values.configMap.registerSource | quote }}
   pod_label_selector: {{ .Values.configMap.podLabelSelector | quote }}
+  k8s_tag: {{ .Values.configMap.k8sTag | quote }}
 {{- end -}}

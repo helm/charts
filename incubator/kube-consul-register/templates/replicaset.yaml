@@ -22,4 +22,5 @@ spec:
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         args:
         - -logtostderr=true
+        - -v={{ .Values.logLevel }}
         - -configmap={{ template "kube-consul-register.configMapName" . }}
