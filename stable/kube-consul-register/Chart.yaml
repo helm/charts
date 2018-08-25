@@ -10,3 +10,6 @@ keywords:
   - consul-watch
   - consul
 engine: gotpl
+maintainers:
+  - name: arunvelsriram
+    email: arunvelsriram@gmail.com
