@@ -45,14 +45,14 @@ spec:
           containerPort: 8125
         - name: statsd-admin
           containerPort: 8126
-          livenessProbe:
-            httpGet:
-              path: /
-              port: graphite-gui
-          readinessProbe:
-            httpGet:
-              path: /
-              port: graphite-gui
+        livenessProbe:
+          httpGet:
+            path: /
+            port: graphite-gui
+        readinessProbe:
+          httpGet:
+            path: /
+            port: graphite-gui
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
