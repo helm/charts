@@ -1,0 +1,132 @@
+apiVersion: apps/v1beta2
+kind: DaemonSet
+metadata:
+  name: {{ template "metricbeat.fullname" . }}
+  labels:
+    app: {{ template "metricbeat.name" . }}
+    chart: {{ template "metricbeat.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "metricbeat.name" . }}
+      release: {{ .Release.Name }}
+  minReadySeconds: 10
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "metricbeat.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/daemonset: {{ toYaml .Values.daemonset.modules | sha256sum }}
+        checksum/secret: {{ toYaml .Values.config | sha256sum }}
+{{- if .Values.daemonset.podAnnotations }}
+  {{- range $key, $value := .Values.daemonset.podAnnotations }}
+        {{ $key }}: {{ $value }}
+  {{- end }}
+{{- end }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        - "-e"
+{{- if .Values.plugins }}
+        - "--plugin"
+        - {{ .Values.plugins | join "," | quote }}
+{{- end }}
+        - "-system.hostfs=/hostfs"
+{{- if .Values.daemonset.debug }}
+        - "-d"
+        - "*"
+{{- end }}
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+{{- range $key, $value := .Values.extraVars }}
+        - name: {{ $key }}
+          value: {{ $value }}
+{{- end }}
+        securityContext:
+          runAsUser: 0
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: metricbeat-config
+          mountPath: /usr/share/metricbeat/metricbeat.yml
+          readOnly: true
+          subPath: metricbeat.yml
+        - name: data
+          mountPath: /usr/share/metricbeat/data
+        - name: varlog
+          mountPath: /var/log
+          readOnly: true
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        - name: modules
+          mountPath: /usr/share/metricbeat/modules.d
+          readOnly: true
+        - name: dockersock
+          mountPath: /var/run/docker.sock
+        - name: proc
+          mountPath: /hostfs/proc
+          readOnly: true
+        - name: cgroup
+          mountPath: /hostfs/sys/fs/cgroup
+          readOnly: true
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+      - name: metricbeat-config
+        secret:
+          secretName: {{ template "metricbeat.fullname" . }}
+      - name: data
+        hostPath:
+          path: /var/lib/metricbeat
+          type: DirectoryOrCreate
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: cgroup
+        hostPath:
+          path: /sys/fs/cgroup
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock
+      - name: modules
+        secret:
+          secretName: {{ template "metricbeat.fullname" . }}-modules-daemonset
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+      terminationGracePeriodSeconds: 60
+      serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
+      hostNetwork: true
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}

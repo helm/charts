@@ -1,0 +1,121 @@
+image:
+  repository: docker.elastic.co/beats/metricbeat
+  tag: 6.2.4
+  pullPolicy: IfNotPresent
+
+config:
+  metricbeat.config:
+    modules:
+      path: ${path.config}/modules.d/*.yml
+      # Reload module configs as they change:
+      reload.enabled: false
+
+  processors:
+  - add_cloud_metadata:
+
+  output.file:
+    path: "/usr/share/metricbeat/data"
+    filename: metricbeat
+    rotate_every_kb: 10000
+    number_of_files: 5
+
+daemonset:
+  podAnnotations: []
+  modules:
+    system:
+      enabled: true
+      config:
+        - module: system
+          period: 10s
+          metricsets:
+            - cpu
+            - load
+            - memory
+            - network
+            - process
+            - process_summary
+            #- core
+            #- diskio
+            #- socket
+          processes: ['.*']
+          process.include_top_n:
+            by_cpu: 5      # include top 5 processes by CPU
+            by_memory: 5   # include top 5 processes by memory
+        - module: system
+          period: 1m
+          metricsets:
+            - filesystem
+            - fsstat
+          processors:
+          - drop_event.when.regexp:
+              system.filesystem.mount_point: '^/(sys|cgroup|proc|dev|etc|host|lib)($|/)'
+    kubernetes:
+      enabled: true
+      config:
+        - module: kubernetes
+          metricsets:
+            - node
+            - system
+            - pod
+            - container
+            - volume
+          period: 10s
+          hosts: ["localhost:10255"]
+deployment:
+  podAnnotations: []
+  modules:
+    kubernetes:
+      enabled: true
+      config:
+        - module: kubernetes
+          metricsets:
+            - state_node
+            - state_deployment
+            - state_replicaset
+            - state_pod
+            - state_container
+            # Uncomment this to get k8s events:
+            #- event
+          period: 10s
+          hosts: ["kube-state-metrics:8080"]
+
+# List of beat plugins
+plugins: []
+  # - kinesis.so
+
+# A map of additional environment variables
+extraVars: {}
+  # test_key: "test_val"
+
+# Add additional volumes and mounts, for example to read other log files on the host
+extraVolumes: []
+  # - hostPath:
+  #     path: /var/log
+  #   name: varlog
+extraVolumeMounts: []
+  # - name: varlog
+  #   mountPath: /host/var/log
+  #   readOnly: true
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 200Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 100Mi
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
