@@ -8,6 +8,6 @@ keywords:
 sources:
   - https://github.com/gesellix/couchdb-prometheus-exporter
 maintainers:
-- name: Karthikeyan Govindaraj
+- name: gkarthiks
   email: github.gkarthiks@gmail.com
 engine: gotpl
