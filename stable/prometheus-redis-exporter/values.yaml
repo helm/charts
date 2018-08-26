@@ -16,6 +16,13 @@ image:
   tag: v0.16.0
   pullPolicy: IfNotPresent
 extraArgs: {}
+# Additional Environment variables
+env: {}
+  # - name: REDIS_PASSWORD
+  #   valueFrom:
+  #     secretKeyRef:
+  #       key: redis-password
+  #       name: redis-config-0.0.2
 service:
   type: ClusterIP
   port: 9121
