@@ -8,5 +8,6 @@ maintainers:
     email: username.taken@gmail.com
 keywords:
   - sensu
+home: https://sensu.io
 sources:
   - https://github.com/sensu/sensu-go
