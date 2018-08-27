@@ -13,18 +13,12 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: {{ .Values.operatorNamespace }}
-  annotations:
-    "helm.sh/hook": pre-install
-    "helm.sh/hook-weight": "-10"
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: sparkoperator
   namespace: {{ .Values.operatorNamespace }}
-  annotations:
-    "helm.sh/hook": pre-install
-    "helm.sh/hook-weight": "-5"
 ---
 apiVersion: batch/v1
 kind: Job
@@ -32,8 +26,8 @@ metadata:
   name: sparkoperator-init
   namespace: {{ .Values.operatorNamespace }}
   annotations:
-    "helm.sh/hook": pre-install
-    "helm.sh/hook-weight": "0"
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
   labels:
     app.kubernetes.io/name: sparkoperator
     app.kubernetes.io/version: {{ .Values.operatorVersion }}
@@ -51,23 +45,6 @@ spec:
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
         imagePullPolicy: Always
         command: ["/usr/bin/gencerts.sh", "-n", "{{ .Values.operatorNamespace }}", "-p"]
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: sparkoperator-cleanup
-  annotations:
-    "helm.sh/hook": post-delete
-    "helm.sh/hook-delete-policy": hook-succeeded
-spec:
-  template:
-    spec:
-      restartPolicy: OnFailure
-      containers:
-      - name: main
-        image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
-        imagePullPolicy: Always
-        command: ["/usr/bin/delete-resource.sh", "--kind", "namespaces", "--name", "{{ .Values.operatorNamespace }}"]
 {{ else }}
 ---
 apiVersion: v1
