@@ -1018,3 +1018,6 @@ statsdConfigMaps:
         "port": 8125
       }]
     }
+
+statsd:
+  interface: UDP

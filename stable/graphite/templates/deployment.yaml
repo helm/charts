@@ -42,9 +42,13 @@ spec:
         - name: aggregate-pickl
           containerPort: 2024
         - name: statsd
+          protocol: {{ .Values.statsd.interface }}
           containerPort: 8125
         - name: statsd-admin
           containerPort: 8126
+        env:
+        - name: "STATSD_INTERFACE"
+          value: {{ .Values.statsd.interface | lower }}
         livenessProbe:
           httpGet:
             path: /
