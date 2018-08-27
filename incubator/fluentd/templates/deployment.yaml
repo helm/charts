@@ -13,8 +13,10 @@ spec:
     matchLabels:
       app: {{ template "fluentd.name" . }}
       release: {{ .Release.Name }}
+  {{- if .Values.persistence.enabled }}
   strategy:
     type: Recreate
+  {{- end }}
   template:
     metadata:
       labels:
