@@ -7,7 +7,7 @@ strategyType: Recreate
 
 image:
   repository: quay.io/external_storage/nfs-client-provisioner
-  tag: v3.0.1-k8s1.11
+  tag: v3.0.2-k8s1.11
   pullPolicy: IfNotPresent
 
 nfs:
