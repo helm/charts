@@ -39,7 +39,7 @@ rbac:
   serviceAccountName: default
 # Add extra environment variables if specified (must be specified as a single line object and be quoted)
 extraVars:
- - "{ name: FLUENT_UID, value: '0' }"
+  - "{ name: FLUENT_UID, value: '0' }"
 
 fluentdConfig: |
   <match fluent.**>
