@@ -59,7 +59,7 @@ events.on("pull_request", async function(e, project) {
         ghn.state = "failure";
 
         // Remove the label if already present
-        var j = new Job(`github-label-remover`, "mattfarina/github-label-remover:0.1.0");
+        var j = new Job(`github-label-remover`, "mattfarina/github-label-remover:0.1.1");
         j.env = {
             GITHUB_REPO: project.repo.name,
             GITHUB_ISSUE_LABEL: "Contribution%20Allowed",
