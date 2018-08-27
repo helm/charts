@@ -27,9 +27,16 @@ spec:
         image: {{ .Values.geth.image.repository }}:{{ .Values.geth.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/bin/sh"]
-        args: 
+        args:
         - "-c"
-        - "geth --bootnodes=`cat /root/.ethereum/bootnodes` --mine --etherbase=0 --networkid=${NETWORK_ID} --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SVC} --verbosity=5"
+        - "geth --bootnodes=`cat /root/.ethereum/bootnodes` \
+          --password=/root/.ethereum/account/accountSecret \
+          --unlock=${ACCOUNT_ADDRESS} \
+          --mine \
+          --etherbase=0 \
+          --networkid=${NETWORK_ID} \
+          --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SVC} \
+          --verbosity=5"
         env:
         - name: ETHSTATS_SVC
           value: {{ template "ethereum.fullname" . }}-ethstats.{{ .Release.Namespace }}
@@ -38,6 +45,8 @@ spec:
             secretKeyRef:
               name: {{ template "ethereum.fullname" . }}-ethstats
               key: WS_SECRET
+        - name: ACCOUNT_ADDRESS
+          value: {{ .Values.geth.account.address }}
         - name: NETWORK_ID
           valueFrom:
             configMapKeyRef:
@@ -52,6 +61,9 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /root/.ethereum
+        - name: account
+          readOnly: true
+          mountPath: /root/.ethereum/account
       initContainers:
       - name: init-genesis
         image: {{ .Values.geth.image.repository }}:{{ .Values.geth.image.tag }}
