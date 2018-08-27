@@ -9,7 +9,7 @@ keywords:
 - jfrog
 sources:
 - https://bintray.com/jfrog/product/xray/view
-- https://github.com/JFrogDev
+- https://github.com/jfrog/charts
 maintainers:
 - name: eldada
   email: eldada@jfrog.com
