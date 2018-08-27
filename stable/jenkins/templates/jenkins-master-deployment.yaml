@@ -195,6 +195,9 @@ spec:
               mountPath: /usr/share/jenkins/ref/secrets/
               name: secrets-dir
               readOnly: false
+{{- with .Values.Master.extraContainers }}
+{{ tpl . $ | indent 8 }}
+{{- end }}
       volumes:
 {{- if .Values.Persistence.volumes }}
 {{ toYaml .Values.Persistence.volumes | indent 6 }}

@@ -20,4 +20,13 @@ spec:
       name: slavelistener
   selector:
     component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
-  type: {{ .Values.Master.SlaveListenerServiceType }}
+  type: {{.Values.Master.SlaveListenerServiceType}}
+  {{if eq .Values.Master.SlaveListenerServiceType "LoadBalancer"}}
+{{- if .Values.Master.SlaveLoadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.Master.SlaveLoadBalancerSourceRanges | indent 4 }}
+{{- end }}
+  {{if .Values.Master.SlaveLoadBalancerIP}}
+  loadBalancerIP: {{.Values.Master.SlaveLoadBalancerIP}}
+  {{end}}
+  {{end}}

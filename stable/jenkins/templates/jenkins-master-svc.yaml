@@ -16,7 +16,7 @@ spec:
   ports:
     - port: {{.Values.Master.ServicePort}}
       name: http
-      targetPort: 8080
+      targetPort: {{ .Values.Master.BackendPort }}
       {{if (and (eq .Values.Master.ServiceType "NodePort") (not (empty .Values.Master.NodePort)))}}
       nodePort: {{.Values.Master.NodePort}}
       {{end}}

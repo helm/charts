@@ -25,6 +25,7 @@ Master:
     limits:
       cpu: "2000m"
       memory: "2048Mi"
+  # extraContainers: |
   # Environment variables that get added to the init container (useful for e.g. http_proxy)
   # InitContainerEnv:
   #   - name: http_proxy
@@ -43,6 +44,7 @@ Master:
   # RunAsUser: <defaults to 0>
   # FsGroup: <will be omitted in deployment if RunAsUser is 0>
   ServicePort: 8080
+  BackendPort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
   # Use ClusterIP if your setup includes ingress controller
   ServiceType: LoadBalancer
