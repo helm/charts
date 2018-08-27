@@ -314,7 +314,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `artifactory.name`                   | Artifactory name                     | `artifactory`                              |
 | `artifactory.image.pullPolicy`       | Container pull policy                | `IfNotPresent`                             |
 | `artifactory.image.repository`       | Container image                      | `docker.bintray.io/jfrog/artifactory-pro`  |
-| `artifactory.image.version`          | Container image tag                  | `6.1.0`                                    |
+| `artifactory.image.version`          | Container image tag                  | `6.2.0`                                    |
 | `artifactory.masterKey`      | Artifactory Master Key. Can be generated with `openssl rand -hex 32` |`FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF`|
 | `artifactory.license.secret` | Artifactory license secret name              |                                            |
 | `artifactory.license.dataKey`| Artifactory license secret data key          |                                            |
@@ -385,7 +385,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.name`                | Nginx name                        | `nginx`                                                |
 | `nginx.replicaCount`        | Nginx replica count               | `1`                                                    |
 | `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`        |
-| `nginx.image.version`       | Container version                 | `6.1.0`                                                |
+| `nginx.image.version`       | Container version                 | `6.2.0`                                                |
 | `nginx.image.pullPolicy`    | Container pull policy             | `IfNotPresent`                                         |
 | `nginx.service.type`        | Nginx service type                | `LoadBalancer`                                         |
 | `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |        |
