@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-history-server-env
+data:
+    enablePVC: {{ .Values.pvc.enablePVC | quote }}
+  {{- range $key, $val := .Values.environment }}
+    {{ $key }}: {{ $val | quote }}
+  {{- end }}
+  {{- if .Values.pvc.enablePVC }}
+  {{- range $key, $val := .Values.pvc }}
+    {{ $key }}: {{ $val | quote }}
+  {{- end }}
+  {{- else }}
+  {{- range $key, $val := .Values.hdfs }}
+    {{ $key }}: {{ $val | quote }}
+  {{- end }}
+  {{- end -}}

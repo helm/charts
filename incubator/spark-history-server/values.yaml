@@ -6,16 +6,27 @@ image:
   pullPolicy: Always
 
 service:
-  externalPort: 80
-  internalPort: 18080
-  type: ClusterIP
+  type: LoadBalancer
+  port: 18080
+
+environment:
+# Note: do not configure Spark history events directory using SPARK_HISTORY_OPTS. It will be
+# configured by this chart based on the values in "pvc" or "hdfs" attribute
+  # SPARK_DAEMON_MEMORY: 1g
+  # SPARK_DAEMON_JAVA_OPTS: ...
+  # SPARK_DAEMON_CLASSPATH: ...
+  # SPARK_PUBLIC_DNS: ...
+
+pvc:
+  # to use a file system path for Spark events dir, set 'enablePVC' to true and mention the
+  # name of an already created persistent volume claim in existingClaimName.
+  # The volume will be mounted on /data in the pod
+  enablePVC: true
+  existingClaimName: "spark-hs-pvc"
+  eventsDir: "/"
 
 hdfs:
   hdfsSiteConfigMap: hdfs-site
   coreSiteConfigMap: core-site
   logDirectory: hdfs://hdfs/history/
-
-ingress:
-  baseURL: /spark-history-server
-  controller: traefik
-  label: traefik-ingress-lb
+  HADOOP_CONF_DIR: /etc/hadoop

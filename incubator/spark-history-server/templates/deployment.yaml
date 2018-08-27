@@ -5,40 +5,78 @@ metadata:
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "fullname" . }}
+        release: {{ .Release.Name }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: HADOOP_CONF_DIR
+          value: {{ .Values.hdfs.HADOOP_CONF_DIR }}
+        - name: SPARK_NO_DAEMONIZE
+          value: "true"
+        ports:
+        - name: historyport
+          containerPort: {{ .Values.service.port }}
+          protocol: TCP
+        command:
+        - "/bin/sh"
+        - "-c"
+        - >
+          if [ "$enablePVC" == "true" ]; then
+            export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
+            -Dspark.history.fs.logDirectory=file:/mnt/$eventsDir";
+          else
+            export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
+            -Dspark.history.fs.logDirectory=$logDirectory";
+          fi;
+          /opt/spark/bin/spark-class org.apache.spark.deploy.history.HistoryServer;
+        envFrom:
+        - configMapRef:
+            name: {{ .Release.Name }}-history-server-env
+        livenessProbe:
+          httpGet:
+            path: /
+            port: historyport
+        readinessProbe:
+          httpGet:
+            path: /
+            port: historyport
         volumeMounts:
-        - name: hdfs-site
-          mountPath: /etc/hadoop/hdfs-site.xml
-          subPath: hdfs-site.xml
+        {{- if .Values.pvc.enablePVC }}
+        - name: data
+          mountPath: /mnt
+        {{- else }}
         - name: core-site
           mountPath: /etc/hadoop/core-site.xml
           subPath: core-site.xml
-        env:
-        - name: SPARK_NO_DAEMONIZE
-          value: "true"
-        - name: SPARK_HISTORY_OPTS
-          value: >-
-            -Dspark.history.fs.logDirectory={{ .Values.hdfs.logDirectory }}
-        ports:
-           - containerPort: {{ .Values.service.internalPort }}
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
+        - name: hdfs-site
+          mountPath: /etc/hadoop/hdfs-site.xml
+          subPath: hdfs-site.xml
+        {{- end }}
       volumes:
+      {{- if .Values.pvc.enablePVC }}
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvc.existingClaimName }}
+      {{- else }}
       - name: hdfs-site
         configMap:
           name: {{ .Values.hdfs.hdfsSiteConfigMap }}
       - name: core-site
         configMap:
           name: {{ .Values.hdfs.coreSiteConfigMap }}
+      {{- end }}

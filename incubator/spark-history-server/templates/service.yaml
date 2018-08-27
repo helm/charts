@@ -5,14 +5,15 @@ metadata:
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
-  selector:
-    k8s-app: {{ .Values.ingress.label }}
   type: {{ .Values.service.type }}
   ports:
-  - port: {{ .Values.service.externalPort }}
-    targetPort: {{ .Values.service.internalPort }}
+  - port: {{ .Values.service.port }}
+    targetPort: historyport
     protocol: TCP
-    name: {{ .Chart.Name }}
+    name: historyport
+  selector:
+    app: {{ template "fullname" . }}
+    release: {{ .Release.Name }}
