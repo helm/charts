@@ -75,6 +75,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `Secure.RequestCertsImageTag`  | Image tag to use for requesting TLS certificates | `0.3`                                     |
 | `Secure.ServiceAccount.Create` | Whether to create a new RBAC service account     | `true`                                    |
 | `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | ``                                        |
+| `Tolerations` | [Kubernetes tolerations](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) to label the pods in the StatefulSet with | `` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
