@@ -48,7 +48,7 @@ The following tables lists the configurable parameters of this chart and their d
 | `replicaCount`                    | number of provisioner instances to deployed | `1`                                                         |
 | `strategyType`                    | specifies the strategy used to replace old Pods by new ones | `Recreate`                                  |
 | `image.repository`                | provisioner image                           | `quay.io/external_storage/nfs-client-provisioner`         |
-| `image.tag`                       | version of provisioner image                | `v3.0.1-k8s1.11`                                          |
+| `image.tag`                       | version of provisioner image                | `v3.0.2-k8s1.11`                                          |
 | `image.pullPolicy`                | image pull policy                           | `IfNotPresent`                                            |
 | `storageclass.name`               | name of the storageclass                    | `nfs-client`                                              |
 | `storageclass.defaultClass`       | Set as the default StorageClass             | `false`	                                              |
