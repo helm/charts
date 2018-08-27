@@ -173,6 +173,15 @@ spec:
         - name: KAFKA_JMX_PORT
           value: "{{ .Values.jmx.port }}"
         {{- end }}
+        {{- range $secret := .Values.secrets }}
+          {{- range $key := $secret.keys }}
+        - name: {{ (print $secret.name "_" $key) | upper }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $secret.name }}
+              key: {{ $key }}
+          {{- end }}
+        {{- end }}
         # This is required because the Downward API does not yet support identification of
         # pod numbering in statefulsets. Thus, we are required to specify a command which
         # allows us to extract the pod ID for usage as the Kafka Broker ID.
@@ -188,6 +197,16 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: {{ .Values.persistence.mountPath | quote }}
+        {{- range $secret := .Values.secrets }}
+          {{- if $secret.mountPath }}
+            {{- range $key := $secret.keys }}
+        - name: {{ include "kafka.fullname" $ }}-{{ $secret.name }}
+          mountPath: {{ $secret.mountPath }}
+          subPath: {{ $key }}
+          readOnly: true
+            {{- end }}
+          {{- end }}
+        {{- end }}
       volumes:
       {{- if not .Values.persistence.enabled }}
       - name: datadir
@@ -201,6 +220,11 @@ spec:
           {{- else }}
           name: {{ include "kafka.fullname" . }}-metrics
           {{- end }}
+      {{- end }}
+      {{- range .Values.secrets }}
+      - name: {{ include "kafka.fullname" $ }}-{{ .name }}
+        secret:
+          secretName: {{ .name }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
   {{- if .Values.persistence.enabled }}
