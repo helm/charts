@@ -87,6 +87,11 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `persistence.storageClass`        | PVC Storage Class                        | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`          | PVC Access Mode                          | `ReadWriteOnce`                                         |
 | `persistence.size`                | PVC Storage Request                      | `8Gi`                                                   |
+| `podDisruptionBudget.enabled`     | Pod Disruption Budget toggle             | `false`                                                 |
+| `podDisruptionBudget.minAvailable`| Minimum available pods                   | `nil`                                                     |
+| `podDisruptionBudget.maxUnavailable`| Maximum unavailable pods               | `nil`                                                     |
+| `replicas`                        | The number of pod replicas (See [Replicas](#replicas)) | `1`                                                     |
+| `resources`                       | Resources allocation (Requests and Limits) | `{}` |
 
 The above parameters map to the env variables defined in [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine). For more information please refer to the [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine) image documentation.
 
@@ -107,6 +112,13 @@ $ helm install --name my-release -f values.yaml stable/redmine
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Replicas
+
+Redmine writes uploaded files to a persistent volume. By default that volume
+cannot be shared between pods (RWO). In such a configuration the `replicas` option
+must be set to `1`. If the persistent volume supports more than one writer
+(RWX), ie NFS, `replicas` can be greater than `1`.
 
 ## Persistence
 
