@@ -27,9 +27,19 @@ spec:
         image: {{ .Values.geth.image.repository }}:{{ .Values.geth.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/bin/sh"]
-        args: 
+        args:
         - "-c"
-        - "geth --bootnodes=`cat /root/.ethereum/bootnodes` --rpc --rpcaddr 0.0.0.0 --rpcapi=eth,net,web3 --rpccorsdomain='*' --ws --networkid=${NETWORK_ID} --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SVC} --verbosity=5"
+        - "geth --bootnodes=`cat /root/.ethereum/bootnodes` \
+          --rpc \
+          --rpcaddr 0.0.0.0 \
+          --rpcapi=eth,net,web3 \
+          --rpccorsdomain='*' \
+          --ws \
+          --lightserv 90 \
+          --lightpeers 20 \
+          --networkid=${NETWORK_ID} \
+          --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SVC} \
+          --verbosity=5"
         env:
         - name: ETHSTATS_SVC
           value: {{ template "ethereum.fullname" . }}-ethstats.{{ .Release.Namespace }}
