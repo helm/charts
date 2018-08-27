@@ -26,7 +26,7 @@ This chart bootstraps a [Stellar Core](https://github.com/stellar/stellar-core/)
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release incubator/stellar-core
+$ helm install --name my-release stable/stellar-core
 ```
 
 🚨 **Warning:** Make sure to use your own node seed, either via setting `nodeSeed` or `existingNodeSeedSecret`. See [prerequisites](#prerequisites) for how to generate a new node seed.
