@@ -18,7 +18,11 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.externalPort }}
+{{- if not .Values.authProxyEnabled }}
       targetPort: {{ .Values.service.internalPort }}
+{{- else }}
+      targetPort: {{ .Values.service.authProxyPort }}
+{{- end }}
       protocol: TCP
 {{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
       nodePort: {{ .Values.service.nodePort }}

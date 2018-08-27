@@ -74,10 +74,12 @@ spec:
         - name: "{{ $key }}"
           value: "{{ $value }}"
         {{- end }}
+{{- if (not .Values.authProxyEnabled) }}        
         ports:
         - containerPort: {{ .Values.service.internalPort }}
           name: {{ template "kibana.name" . }}
           protocol: TCP
+{{- end }}          
 {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
@@ -93,6 +95,9 @@ spec:
             port: {{ .Values.service.internalPort }}
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+{{- end }}
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 6 }}
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
