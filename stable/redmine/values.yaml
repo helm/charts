@@ -178,3 +178,25 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
+
+## Define a disruption budget
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+podDisruptionBudget:
+  enabled: false
+  # minAvailable: 1
+  # maxUnavailable: 1
+
+## Define the number of pods the deployment will create
+## Do not change unless your persistent volume allows more than one writer, ie NFS
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+replicas: 1
+
+## Redmine pods resource requests and limits
+## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#resource-requests-and-limits-of-pod-and-container
+resources: {}
+  # requests:
+  #   cpu: "1"
+  #   memory: "1G"
+  # limits:
+  #   cpu: "2"
+  #   memory: "1G"

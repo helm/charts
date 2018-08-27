@@ -8,7 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicas }}
   template:
     metadata:
       labels:
@@ -26,6 +26,8 @@ spec:
       - name: {{ template "redmine.fullname" . }}
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         env:
         {{- if .Values.extraVars }}
 {{ toYaml .Values.extraVars | indent 8 }}
