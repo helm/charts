@@ -6,6 +6,12 @@ ConfigMap-based approach for managing the Spark clusters in Kubernetes and OpenS
 helm install incubator/spark-operator
 ```
 
+or 
+
+```
+helm install --set operator.env.crd=true incubator/spark-operator
+```
+
 The operator needs to create Service Account, Role and Role Binding. If running in Minikube, you may need to
 start it this way:
 
@@ -26,12 +32,25 @@ kind: ConfigMap
 metadata:
   name: my-cluster
   labels:
-    radanalytics.io/kind: cluster
+    radanalytics.io/kind: sparkcluster
 data:
   config: |-
     workerNodes: "2"
 EOF
 ```
 
-For more details consult https://github.com/Jiri-Kremser/spark-operator/blob/master/README.md
-or check the [examples](https://github.com/Jiri-Kremser/spark-operator/tree/master/examples).
+or for CRDs:
+
+```
+cat <<EOF | kubectl create -f -
+apiVersion: radanalytics.io/v1
+kind: sparkcluster
+metadata:
+  name: my-cluster
+spec:
+  workerNodes: "2"
+EOF
+```
+
+For more details consult https://github.com/radanalyticsio/spark-operator/blob/master/README.md
+or check the [examples](https://github.com/radanalyticsio/spark-operator/tree/master/examples).
