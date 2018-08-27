@@ -40,6 +40,21 @@ podManagementPolicy: OrderedReady
 rbac:
   enabled: false
 
+## Useful if using any custom authorizer
+## Pass in some secrets to use (if required)
+# secrets:
+# - name: myKafkaSecret
+#   keys:
+#     - username
+#     - password
+#   # mountPath: /opt/kafka/secret
+# - name: myZkSecret
+#   keys:
+#     - user
+#     - pass
+#   mountPath: /opt/zookeeper/secret
+
+
 ## The name of the storage class which the cluster should use.
 # storageClass: default
 
