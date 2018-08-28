@@ -1,0 +1,53 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "minio.fullname" . }}-test
+  labels:
+    chart: {{ template "minio.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    helm.sh/hook: test-success
+spec:
+  initContainers:
+    - name: setup-credentials
+      image: "{{ .Values.mcImage.repository }}:{{ .Values.mcImage.tag }}"
+      args:
+        - config
+        - host
+        - add
+        - k8s
+        - http://{{ template "minio.fullname" . }}:{{ .Values.service.port }}
+        - $(MINIO_ACCESS_KEY)
+        - $(MINIO_SECRET_KEY)
+      env:
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "minio.fullname" . }}
+              key: accesskey
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "minio.fullname" . }}
+              key: secretkey
+      volumeMounts:
+        - name: home
+          mountPath: /root
+          readOnly: false
+  containers:
+    - name: service-info
+      image: "{{ .Values.mcImage.repository }}:{{ .Values.mcImage.tag }}"
+      command:
+        - /bin/sh
+        - -c
+        - "if mc admin service status --json k8s | grep 'success'; then exit 0; else exit 1; fi"
+      volumeMounts:
+        - name: home
+          mountPath: /root
+          readOnly: false
+  restartPolicy: Never
+  volumes:
+    - name: home
+      emptyDir: {}
