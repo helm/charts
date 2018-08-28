@@ -1,12 +1,8 @@
-# If the admission webhook is enabled, then the following pre-install steps are performed
-# 1. Create the serviceAccount "sparkoperator"
-# 2. Create the namespace ("sparkoperator" by default)
-# 3. Generate and install the secret in the namespace created in step 2.
+# If the admission webhook is enabled, then a post-install step is required
+# to generate and install the secret in the operator namespace.
 
-# Steps above need to be executed in the order presented because the first two steps are the pre-requisites
-# for step 3 (e.g. In step 3, the token corresponding to the service account created in step 1 is used to communicate
-# with the Kubernetes API server to install the secret bundle. The order are specified using helm.sh/hook-weight
-# annotations.
+# In the post-install hook, the token corresponding to the operator service account
+# is used to authenticate with the Kubernetes API server to install the secret bundle.
 
 {{ if .Values.enableWebhook }}
 apiVersion: v1
