@@ -23,14 +23,16 @@ spec:
   selector:
     app: "{{ .label }}"
 
-{{- if .hasLoadBalancer }}
+{{- $service := . -}}
+{{- range $endpoint :=  $root.Values.serviceEndpoints }}
+{{- if eq $service.label $endpoint.app }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ .label }}-ui"
+  name: "{{ $endpoint.name }}"
   labels:
-    app: "{{ .label }}"
+    app: "{{ $endpoint.app }}"
     heritage: {{ $root.Release.Service | quote }}
     release: {{ $root.Release.Name | quote }}
     chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
@@ -38,12 +40,15 @@ metadata:
 spec:
   clusterIP:
   ports:
-    - name: ui
-      port: 7000
+    {{- range $label, $port := $endpoint.ports }}
+    - name: {{ $label | quote }}
+      port: {{ $port }}
+    {{- end}}
   selector:
-    app: "{{ .label }}"
-  type: LoadBalancer
-{{- end }}
+    app: "{{ $endpoint.app }}"
+  type: {{ $endpoint.type }}
+{{- end}}
+{{- end}}
 
 ---
 apiVersion: apps/v1

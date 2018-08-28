@@ -67,5 +67,20 @@ helm install yugabyte --set resource.tserver.requests.cpu=8,resource.tserver.req
 helm install yugabyte --set resource.tserver.limits.cpu=16,resource.tserver.limits.memory=30Gi --namespace yb-demo --name yb-demo --wait
 ```
 
+### Exposing YugaByte service endpoints using LoadBalancer
+By default YugaByte helm would expose the master ui endpoint alone via LoadBalancer. If you wish to expose yql, yedis services
+via LoadBalancer for your app to use, you could do that in couple of different ways.
+
+#### Exposing individual service endpoint
+If you want individual LoadBalancer endpoint for each of the services (YQL, YEDIS), run the following command
+```
+helm install yugabyte expose-all.yaml --namespace yb-demo --name yb-demo --wait
+```
+
+#### Exposing shared service endpoint
+If you want to create a shared LoadBalancer endpoint for all the services (YQL, YEDIS), run the following command
+```
+helm install yugabyte expose-all-shared.yaml --namespace yb-demo --name yb-demo --wait
+```
 
 Follow the instructions on the NOTES section.

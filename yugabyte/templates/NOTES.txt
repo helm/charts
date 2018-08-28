@@ -4,14 +4,8 @@
 2. Get list of YugaByte services that are running:
   kubectl --namespace {{ .Release.Namespace }} get services
 
-{{- $root := . -}}
-{{- range .Values.Services }}
-{{- if .hasLoadBalancer }}
-
-3. Get information about the master UI load balancer:
-  kubectl get svc --namespace {{ $root.Release.Namespace }} yb-master-ui
-{{- end }}
-{{- end }}
+3. Get information about the load balancer services:
+  kubectl get svc --namespace {{ .Release.Namespace }}
 
 4. Connect to one of the tablet server:
   kubectl exec --namespace {{ .Release.Namespace }} -it yb-tserver-0 bash
@@ -22,6 +16,7 @@
 6. Cleanup YugaByte Pods
   helm delete {{ .Release.Name }} --purge
   NOTE: You need to manually delete the persistent volume
+  {{- $root := . -}}
   {{- range .Values.Services }}
   kubectl delete pvc --namespace {{ $root.Release.Namespace }} -l app={{.label}}
   {{- end }}
