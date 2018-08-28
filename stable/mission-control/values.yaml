@@ -127,7 +127,7 @@ missionControl:
   name: mission-control
   image: docker.bintray.io/jfrog/mission-control
   ## Note that by default we use appVersion to get image tag
-  # version: 3.1.1
+  # version: 3.1.2
   missionControlUrl:
   podRestartTime:
   persistence:
@@ -179,7 +179,7 @@ insightServer:
   name: insight-server
   image: docker.bintray.io/jfrog/insight-server
   ## Note that by default we use appVersion to get image tag
-  # version: 3.1.1
+  # version: 3.1.2
   service:
     name: insight-server
     type: ClusterIP
@@ -205,7 +205,7 @@ insightScheduler:
   name: insight-scheduler
   image: docker.bintray.io/jfrog/insight-scheduler
   ## Note that by default we use appVersion to get image tag
-  # version: 3.1.1
+  # version: 3.1.2
   service:
     type: ClusterIP
   externalPort: 8080
@@ -228,7 +228,7 @@ insightExecutor:
   name: insight-executor
   image: docker.bintray.io/jfrog/insight-executor
   ## Note that by default we use appVersion to get image tag
-  # version: 3.1.1
+  # version: 3.1.2
   persistence:
     enabled: true
     ## A manually managed Persistent Volume and Claim

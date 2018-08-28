@@ -2,7 +2,7 @@
 
   Credentials:
 
-    Username      : {{ .Values.rabbitmqUsername }}
+    Username      : {{ .Values.rabbitmqUsername -}}
     {{ if .Values.existingSecret }}
     Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
     ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.secretName" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
@@ -13,7 +13,7 @@
 
   RabbitMQ can be accessed within the cluster on port {{ .Values.rabbitmqNodePort }} at {{ template "rabbitmq-ha.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
-  To access for outside the cluster execute the following commands:
+  To access the cluster externally execute the following commands:
 
 {{- if contains "NodePort" .Values.service.type }}
 
@@ -108,8 +108,3 @@
     URL : http://127.0.0.1:{{ .Values.rabbitmqManagerPort }}
 {{- end }}
 
-
-To enable mirroring for all the host:
-
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "rabbitmq-ha.name" . }}" -o jsonpath="{.items[0].metadata.name}")
-  kubectl exec $POD_NAME --namespace {{ .Release.Namespace }} -- rabbitmqctl set_policy ha-all "." '{"ha-mode":"all", "ha-sync-mode":"automatic"}' --apply-to all --priority 0
