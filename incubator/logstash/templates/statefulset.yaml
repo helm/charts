@@ -38,6 +38,10 @@ spec:
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
       containers:
 
         ## logstash
@@ -118,6 +122,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
         - name: patterns
           configMap:
@@ -125,7 +130,10 @@ spec:
         - name: pipeline
           configMap:
             name: {{ template "logstash.fullname" . }}-pipeline
-
+{{- if not .Values.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+{{- else }}
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -142,3 +150,4 @@ spec:
         storageClassName: "{{ .Values.persistence.storageClass }}"
         {{- end }}
       {{- end }}
+{{- end }}

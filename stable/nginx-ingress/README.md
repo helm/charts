@@ -47,7 +47,7 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.17.1`
+`controller.image.tag` | controller container image tag | `0.18.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
@@ -120,7 +120,6 @@ Parameter | Description | Default
 `controller.metrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.metrics.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `controller.metrics.service.servicePort` | Prometheus metrics service port | `9913`
-`controller.metrics.service.targetPort` | Prometheus metrics target port | `10254`
 `controller.metrics.service.type` | type of Prometheus metrics service to create | `ClusterIP`
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
@@ -132,6 +131,7 @@ Parameter | Description | Default
 `defaultBackend.image.tag` | default backend container image tag | `1.4`
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
+`defaultBackend.port` | Http port number | `8080`
 `defaultBackend.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `defaultBackend.affinity` | node/pod affinities (requires Kubernetes >=1.6) | `{}`
 `defaultBackend.nodeSelector` | node labels for pod assignment | `{}`
