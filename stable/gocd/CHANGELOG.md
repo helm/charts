@@ -1,3 +1,7 @@
+### 1.3.3
+
+* [0c5eadd](https://github.com/kubernetes/charts/commit/0c5eadd): Enable use of hostAliases for agents
+
 ### 1.3.2
 
 * [55d9cef](https://github.com/kubernetes/charts/commit/55d9cef): Add support for privileged mode, which is needed for DinD (Docker-in-Docker).
@@ -5,7 +9,7 @@
 
 ### 1.3.1
 
-* [7b9d6c0](https://github.com/kubernetes/charts/commit/7b9d6c0): Enable use of host aliases
+* [7b9d6c0](https://github.com/kubernetes/charts/commit/7b9d6c0): Enable use of hostAliases for server
 * [273f042](https://github.com/kubernetes/charts/commit/273f042): Add documentation to hostAliases property
 * [d21a32d](https://github.com/kubernetes/charts/commit/d21a32d): Add hostAliases property to README
 
