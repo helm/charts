@@ -76,7 +76,7 @@ spec:
               name: {{ template "distribution.fullname" . }}-redis-connection
               key: redis_connectionString
         - name: BT_SERVER_URL
-          value: 'http://{{ include "distribution.fullname" . }}:{{ .Values.distribution.internalPort }}'
+          value: 'http://{{ include "distribution.fullname" . }}:{{ .Values.distribution.externalPort }}'
         volumeMounts:
         - name: distributor-data
           mountPath: {{ .Values.distributor.persistence.mountPath | quote }}
