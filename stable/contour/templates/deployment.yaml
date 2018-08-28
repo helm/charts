@@ -5,6 +5,7 @@ metadata:
     app: {{ template "contour.fullname" . }}
     release: {{ .Release.Name }}
     chart: {{ template "contour.chart" . }}
+    heritage: {{ .Release.Service }}
   name: {{ template "contour.fullname" . }}
 spec:
   selector:
@@ -67,7 +68,7 @@ spec:
       - name: contour-config
         emptyDir: {}
       dnsPolicy: ClusterFirst
-      serviceAccountName: {{ template "contour.fullname" . }}
+      serviceAccountName: {{ template "contour.serviceAccountName" . }}
       terminationGracePeriodSeconds: 30
       affinity:
         podAntiAffinity:

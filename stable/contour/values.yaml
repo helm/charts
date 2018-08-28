@@ -48,11 +48,14 @@ service:
   loadBalancerType: LoadBalancer
 rbac:
   create: true
+serviceAccount:
+  create: true
+  name:
 hpa:
   create: false
-  minReplicas: 2
-  maxReplicas: 15
-  targetCPUUtilizationPercentage: 70
+#    minReplicas: 2
+#    maxReplicas: 15
+#    targetCPUUtilizationPercentage: 70
 resources:
   limits:
     cpu: "400m"

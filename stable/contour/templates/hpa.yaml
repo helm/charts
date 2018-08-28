@@ -6,6 +6,7 @@ metadata:
     app: {{ template "contour.fullname" . }}
     release: {{ .Release.Name }}
     chart: {{ template "contour.chart" . }}
+    heritage: {{ .Release.Service }}
   name: {{ template "contour.fullname" . }}
 spec:
   scaleTargetRef:

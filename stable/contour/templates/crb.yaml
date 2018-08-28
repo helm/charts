@@ -7,6 +7,7 @@ metadata:
     app: {{ template "contour.fullname" . }}
     chart: {{ template "contour.chart" . }}
     release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   name: {{ template "contour.fullname" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io

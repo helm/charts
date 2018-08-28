@@ -54,6 +54,8 @@ The default configuration values for this chart are listed in `values.yaml`.
 | `service.protocol`                    | Service Protocol                                             | TCP                                               |
 | `service.loadBalancerType`            | Service Load Balancer type                                   | LoadBalancer                                      |
 | `rbac.create`                         | Create rbac role for contour                                 | yes                                               |
+| `serviceAccount.create`               | Create service account for contour                           | yes                                               |
+| `serviceAccount.name`                 | Service account name                                         |                                                   |
 | `hpa.create`                          | Create hpa for contour                                       | no                                                |
 | `hpa.minReplicas`                     | Autoscaling minimum replicaset count                         | 2                                                 |
 | `hpa.maxReplicas`                     | Autoscaling maximum replicaset count                         | 15                                                |

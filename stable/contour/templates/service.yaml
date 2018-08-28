@@ -6,6 +6,7 @@ metadata:
     app: {{ template "contour.fullname" . }}
     chart: {{ template "contour.chart" . }}
     release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 spec:
