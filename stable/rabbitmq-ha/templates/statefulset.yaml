@@ -97,21 +97,29 @@ spec:
               containerPort: 5671
             {{- end }}
           livenessProbe:
-            exec:
-              command:
-                - rabbitmqctl
-                - status
+            httpGet:
+              path: /api/healthchecks/node
+              port: 15672
+              scheme: HTTP
+              httpHeaders:
+              - name: Authorization
+                value: Basic {{ printf "%s:%s" .Values.managementUsername .Values.managementPassword | b64enc }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
-            exec:
-              command:
-                - rabbitmqctl
-                - status
+            httpGet:
+              path: /api/healthchecks/node
+              port: 15672
+              scheme: HTTP
+              httpHeaders:
+              - name: Authorization
+                value: Basic {{ printf "%s:%s" .Values.managementUsername .Values.managementPassword | b64enc }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           env:
             - name: MY_POD_NAME
               valueFrom:
@@ -135,15 +143,6 @@ spec:
             - name: RABBITMQ_HIPE_COMPILE
               value: {{ .Values.rabbitmqHipeCompile | quote }}
             {{- end }}
-            - name: RABBITMQ_DEFAULT_USER
-              value: {{ .Values.rabbitmqUsername | quote }}
-            - name: RABBITMQ_DEFAULT_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "rabbitmq-ha.secretName" . }}
-                  key: rabbitmq-password
-            - name: RABBITMQ_DEFAULT_VHOST
-              value: {{ .Values.rabbitmqVhost | quote }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
@@ -151,6 +150,12 @@ spec:
               mountPath: /var/lib/rabbitmq
             - name: config
               mountPath: /etc/rabbitmq
+              readOnly: true
+            {{- if not .Values.existingSecret }}
+            - name: definitions
+              mountPath: /etc/definitions
+              readOnly: true
+            {{- end }}
             {{- if .Values.rabbitmqCert.enabled }}
             - name: cert
               mountPath: /etc/cert
@@ -171,7 +176,10 @@ spec:
               value: "{{ .Values.prometheus.exporter.capabilities }}"
             {{- end }}  
             - name: RABBIT_USER
-              value: {{ .Values.rabbitmqUsername | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rabbitmq-ha.secretName" . }}
+                  key: rabbitmq-username
             - name: RABBIT_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -219,6 +227,14 @@ spec:
         - name: configmap
           configMap:
             name: {{ template "rabbitmq-ha.fullname" . }}
+        {{- if not .Values.existingSecret }}
+        - name: definitions
+          secret:
+            secretName: {{ template "rabbitmq-ha.fullname" . }}
+            items:
+            - key: definitions.json
+              path: definitions.json
+        {{- end }}
         {{- if .Values.rabbitmqCert.enabled }}
         - name: cert
           secret:

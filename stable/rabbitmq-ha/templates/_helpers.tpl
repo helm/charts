@@ -48,3 +48,41 @@ Generate chart ssl secret name
 {{- define "rabbitmq-ha.certSecretName" -}}
 {{ default (print (include "rabbitmq-ha.fullname" .) "-cert") .Values.rabbitmqCert.existingSecret }}
 {{- end -}}
+
+{{/*
+Defines a JSON file containing definitions of all broker objects (queues, exchanges, bindings, 
+users, virtual hosts, permissions and parameters) to load by the management plugin.
+*/}}
+{{- define "rabbitmq-ha.definitions" -}}
+{
+  "users": [
+    {
+      "name": {{ .Values.managementUsername | quote }},
+      "password": {{ .Values.managementPassword | quote }},
+      "tags": "management"
+    },
+    {
+      "name": {{ .Values.rabbitmqUsername | quote }},
+      "password": {{ .Values.rabbitmqPassword | quote }},
+      "tags": "administrator"
+    }
+  ],
+  "vhosts": [
+    {
+      "name": {{ .Values.rabbitmqVhost | quote }}
+    }
+  ],
+  "permissions": [
+    {
+      "user": {{ .Values.rabbitmqUsername | quote }},
+      "vhost": {{ .Values.rabbitmqVhost | quote }},
+      "configure": ".*",
+      "read": ".*",
+      "write": ".*"
+    }
+  ],
+  "policies": [
+{{ .Values.policies | indent 4 }}
+  ]
+}
+{{- end -}}
