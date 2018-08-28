@@ -7,6 +7,9 @@ image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
   tag: "6.3.2"
   pullPolicy: "IfNotPresent"
+  # If specified, use these secrets to access the image
+  # pullSecrets:
+  #   - registry-secret
 
 cluster:
   name: "elasticsearch"
