@@ -133,6 +133,12 @@ spec:
           name: config
           subPath: log4j2.properties
 {{- end }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecret := .Values.image.pullSecrets }}
+        - name: {{ $pullSecret }}
+      {{- end }}
+{{- end }}
       volumes:
       - name: config
         configMap:
