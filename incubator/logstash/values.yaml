@@ -6,10 +6,15 @@ podDisruptionBudget:
 updateStrategy:
   type: RollingUpdate
 
+terminationGracePeriodSeconds: 30
+
 image:
   repository: docker.elastic.co/logstash/logstash-oss
-  tag: 6.2.2
+  tag: 6.4.0
   pullPolicy: IfNotPresent
+  ## Add secrets manually via kubectl on kubernetes cluster and reference here
+  #  pullSecrets:
+  #    - name: "myKubernetesSecret"
 
 service:
   type: ClusterIP
