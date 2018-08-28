@@ -30,12 +30,12 @@ spec:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: [ "/bin/sh", 
-          "-ce", 
+          command: [ "/bin/sh",
+          "-ce",
           "cp /tmp/config.json {{ .Values.configPath }} &&
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server
           {{- range $i := until $nodeCount }}
-          http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.cluster.local{{ $.Values.mountPath }}
+          http://{{ template `minio.fullname` $ }}-{{ $i }}.{{ template `minio.fullname` $ }}.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}{{ $.Values.mountPath }}
           {{- end }}" ]
           volumeMounts:
             - name: export
