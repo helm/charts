@@ -15,6 +15,6 @@ maintainers:
 name: mission-control
 sources:
 - https://bintray.com/jfrog/product/mission-control/view
-- https://github.com/JFrogDev
-version: 0.4.1
-appVersion: 3.1.1
+- https://github.com/jfrog/charts
+version: 0.4.2
+appVersion: 3.1.2
