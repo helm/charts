@@ -3,7 +3,7 @@ image:
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
-  tag: v2.2.0
+  tag: v2.3.1
   pullPolicy: IfNotPresent
 
 ## Configure resource requests and limits
