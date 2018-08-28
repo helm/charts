@@ -50,7 +50,7 @@ spec:
             {{- end }}
             {{- if .Values.hub.gridJettyMaxThreads }}
             - name: GRID_JETTY_MAX_THREADS
-              value: {{ .Values.hub.gridNewSessionWaitTimeout | quote }}
+              value: {{ .Values.hub.gridJettyMaxThreads | quote }}
             {{- end }}
             {{- if .Values.hub.gridNodePolling }}
             - name: GRID_NODE_POLLING
