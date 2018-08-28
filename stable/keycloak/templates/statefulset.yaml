@@ -21,6 +21,9 @@ spec:
         app: {{ template "keycloak.name" . }}
         release: "{{ .Release.Name }}"
     spec:
+    {{- with .Values.keycloak.serviceAccountName }}
+      serviceAccountName: {{ . }}
+    {{- end }}
       securityContext:
 {{ toYaml .Values.keycloak.securityContext | indent 8 }}
     {{- with .Values.keycloak.image.pullSecrets }}
