@@ -34,9 +34,9 @@ daemonset:
             - network
             - process
             - process_summary
-            #- core
-            #- diskio
-            #- socket
+            # - core
+            # - diskio
+            # - socket
           processes: ['.*']
           process.include_top_n:
             by_cpu: 5      # include top 5 processes by CPU
@@ -75,7 +75,7 @@ deployment:
             - state_pod
             - state_container
             # Uncomment this to get k8s events:
-            #- event
+            # - event
           period: 10s
           hosts: ["kube-state-metrics:8080"]
 
