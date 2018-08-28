@@ -1,3 +1,7 @@
+## set kubernetes cluster domain where minio is running
+##
+clusterDomain: cluster.local
+
 ## Set default image, imageTag, and imagePullPolicy. mode is used to indicate the
 ##
 image:

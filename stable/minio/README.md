@@ -109,6 +109,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `secretKey`                | Default secret key (8 to 40 characters) | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`          |
 | `configPath`               | Default config file location        | `~/.minio`                                              |
 | `mountPath`                | Default mount location for persistent drive| `/export`                                        |
+| `clusterDomain`            | domain name of kubernetes cluster where pod is running.| `cluster.local`                      |
 | `service.type`             | Kubernetes service type             | `ClusterIP`                                             |
 | `service.port`             | Kubernetes port where service is exposed| `9000`                                              |
 | `service.externalIPs`      | service external IP addresses | `nil`                                                         |
