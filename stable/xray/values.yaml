@@ -132,7 +132,7 @@ rabbitmq-ha:
 
 common:
   ## Note that by default we use appVersion to get image tag
-  # xrayVersion: 2.2.4
+  # xrayVersion: 2.3.0
   xrayConfigPath: /var/opt/jfrog/xray/data
   xrayUserId: 1035
   xrayGroupId: 1035
