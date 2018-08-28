@@ -4,6 +4,31 @@
 rabbitmqUsername: guest
 # rabbitmqPassword:
 
+## RabbitMQ Management user used for health checks
+managementUsername: management
+managementPassword: E9R3fjZm4ejFkVFE
+
+## Place any additional key/value configuration to add to rabbitmq.conf
+## Ref: https://www.rabbitmq.com/configure.html#config-items
+extraConfig: |
+#  queue_master_locator = min-masters
+
+## Sets the policies in definitions.json. This can be used to control the high
+## availability of queues by mirroring them to multiple nodes.
+## Ref: https://www.rabbitmq.com/ha.html
+policies: |-
+#  {
+#    "name": "ha-all",
+#    "pattern": ".*",
+#    "vhost": "/",
+#    "definition": {
+#      "ha-mode": "all",
+#      "ha-sync-mode": "automatic",
+#      "ha-sync-batch-size": 1
+#    }
+#  }
+
+
 ## RabbitMQ default VirtualHost
 ## Ref: https://www.rabbitmq.com/vhosts.html
 ##
@@ -18,6 +43,7 @@ rabbitmqVhost: "/"
 ## Ref: http://www.rabbitmq.com/memory.html
 ##
 rabbitmqMemoryHighWatermark: 256MB
+rabbitmqMemoryHighWatermarkType: absolute
 
 ## EPMD port for peer discovery service used by RabbitMQ nodes and CLI tools
 ## Ref: https://www.rabbitmq.com/clustering.html
@@ -276,10 +302,12 @@ ingress:
 
 livenessProbe:
   initialDelaySeconds: 120
+  periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 6
 
 readinessProbe:
+  failureThreshold: 6
   initialDelaySeconds: 10
   timeoutSeconds: 3
   periodSeconds: 5

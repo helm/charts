@@ -74,8 +74,10 @@ data:
     ## via a loopback interface (e.g. localhost)
     loopback_users.guest = false
 
+    management.load_definitions = /etc/definitions/definitions.json
+
     ## Memory-based Flow Control threshold
-    vm_memory_high_watermark.absolute = {{ .Values.rabbitmqMemoryHighWatermark }}
+    vm_memory_high_watermark.{{ .Values.rabbitmqMemoryHighWatermarkType }} = {{ .Values.rabbitmqMemoryHighWatermark }}
 
     ## Auth HTTP Backend Plugin
     {{- if .Values.rabbitmqAuthHTTP.enabled }}
@@ -111,5 +113,7 @@ data:
     {{- if .Values.rabbitmqAmqpsSupport.enabled }}
 {{ .Values.rabbitmqAmqpsSupport.config | indent 4 }}
     {{- end }}
+
+{{ .Values.extraConfig | indent 4 }}
 
 {{- end }}
