@@ -44,6 +44,8 @@ spec:
         - name: copy-rabbitmq-config
           image: busybox
           command: ['sh', '-c', 'cp /configmap/* /etc/rabbitmq; rm -f /var/lib/rabbitmq/.erlang.cookie']
+          resources:
+{{ toYaml .Values.initContainer.resources | indent 12 }}
           volumeMounts:
             - name: configmap
               mountPath: /configmap
