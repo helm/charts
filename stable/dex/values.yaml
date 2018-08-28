@@ -25,6 +25,7 @@ ports:
   - name: http
     containerPort: 8080
     protocol: TCP
+#   nodePort: 32080
   - name: grpc
     containerPort: 5000
     protocol: TCP
