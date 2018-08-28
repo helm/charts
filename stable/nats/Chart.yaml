@@ -1,5 +1,5 @@
 name: nats
-version: 0.0.6
+version: 0.0.7
 appVersion: 1.1.0
 description: An open-source, cloud-native messaging system
 keywords:
