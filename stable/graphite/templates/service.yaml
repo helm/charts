@@ -34,7 +34,7 @@ spec:
       protocol: TCP
     - name: statsd
       port: 8125
-      protocol: TCP
+      protocol: {{ .Values.statsd.interface }}
     - name: statsd-admin
       port: 8126
       protocol: TCP

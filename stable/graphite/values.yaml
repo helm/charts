@@ -992,3 +992,32 @@ configMaps:
     # missing, all metrics will pass through.
     # This file is reloaded automatically when changes are made
     .*
+
+statsdConfigMaps:
+  config_tcp.js: |-
+    {
+      "graphiteHost": "127.0.0.1",
+      "graphitePort": 2003,
+      "port": 8125,
+      "flushInterval": 10000,
+      "servers": [{
+        "server": "./servers/tcp",
+        "address": "0.0.0.0",
+        "port": 8125
+      }]
+    }
+  config_udp.js: |-
+    {
+      "graphiteHost": "127.0.0.1",
+      "graphitePort": 2003,
+      "port": 8125,
+      "flushInterval": 10000,
+      "servers": [{
+        "server": "./servers/udp",
+        "address": "0.0.0.0",
+        "port": 8125
+      }]
+    }
+
+statsd:
+  interface: UDP
