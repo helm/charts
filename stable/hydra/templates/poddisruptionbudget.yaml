@@ -1,0 +1,17 @@
+{{- if .Values.hydra.podDisruptionBudget -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app: {{ template "hydra.name" . }}
+    chart: {{ template "hydra.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "hydra.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "hydra.name" . }}
+      release: {{ .Release.Name }}
+{{ toYaml .Values.hydra.podDisruptionBudget | indent 2 }}
+{{- end -}}

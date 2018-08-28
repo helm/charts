@@ -1,0 +1,30 @@
+{{- $service := .Values.hydra.service -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "hydra.fullname" . }}-http
+{{- with $service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "hydra.name" . }}
+    chart: {{ template "hydra.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- with $service.labels }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  type: {{ $service.type }}
+  ports:
+    - name: http
+      port: {{ $service.port }}
+      targetPort: public
+    {{- if and (eq "NodePort" $service.type) $service.nodePort }}
+      nodePort: {{ $service.nodePort }}
+    {{- end }}
+      protocol: TCP
+  selector:
+    app: {{ template "hydra.name" . }}
+    release: "{{ .Release.Name }}"

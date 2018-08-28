@@ -1,0 +1,23 @@
+appVersion: 1.0.0-beta.8
+description: A security-first open source OAuth2 and OpenID Connect server for
+  existing and new enterprise infrastructures.
+home: https://www.ory.am/products/hydra
+icon: https://github.com/ory/hydra/blob/master/docs/images/logo.png
+sources:
+- https://github.com/ory/hydra
+keywords:
+- hdyra
+- authentication
+- authorization
+- auth
+- oauth
+- jwt
+- sso
+- openid connect
+maintainers:
+- email: wodstrcil@traum-ferienwohnungen.de
+  name: Jelto Wodstrcil
+- email: meybohm@traum-ferienwohnungen.de
+  name: Janis Meybohm
+name: hydra
+version: 0.0.1

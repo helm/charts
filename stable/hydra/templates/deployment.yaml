@@ -1,0 +1,119 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "hydra.fullname" . }}
+  labels:
+    app: {{ template "hydra.name" . }}
+    chart: {{ template "hydra.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.hydra.replicas }}
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "hydra.name" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      securityContext:
+{{ toYaml .Values.hydra.securityContext | indent 8 }}
+    {{- with .Values.hydra.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if or (ne .Values.hydra.persistence.dbVendor "memory") .Values.hydra.extraInitContainers }}
+      initContainers:
+      {{- if ne .Values.hydra.persistence.dbVendor "memory" }}
+        - name: migrate
+          image: "{{ .Values.hydra.image.repository }}:{{ .Values.hydra.image.tag }}"
+          imagePullPolicy: {{ .Values.hydra.image.pullPolicy }}
+          args: ["migrate", "sql", "-e"]
+          env:
+            - name: DISABLE_TELEMETRY
+              value: {{ .Values.hydra.disableTelemetry | quote }}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "hydra.fullname" . }}-db
+                  key: DATABASE_URL
+            - name: SYSTEM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "hydra.fullname" . }}-system-secret
+                  key: SYSTEM_SECRET
+      {{- end }}
+      {{- if .Values.hydra.extraInitContainers }}
+{{ tpl .Values.hydra.extraInitContainers . | indent 8 }}
+      {{- end }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.hydra.image.repository }}:{{ .Values.hydra.image.tag }}"
+          imagePullPolicy: {{ .Values.hydra.image.pullPolicy }}
+          args: ["serve", "all", "--dangerous-force-http"]
+          env:
+            - name: DISABLE_TELEMETRY
+              value: {{ .Values.hydra.disableTelemetry | quote }}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "hydra.fullname" . }}-db
+                  key: DATABASE_URL
+            - name: SYSTEM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "hydra.fullname" . }}-system-secret
+                  key: SYSTEM_SECRET
+{{- with .Values.hydra.extraEnv }}
+{{ tpl . $ | indent 12 }}
+{{- end }}
+          {{- if .Values.hydra.volumeMounts }}
+          volumeMounts:
+{{ tpl .Values.hydra.volumeMounts . | indent 12 }}
+          {{- end }}
+          ports:
+            - name: public
+              containerPort: 4444
+              protocol: TCP
+            - name: admin
+              containerPort: 4445
+              protocol: TCP
+            - name: token
+              containerPort: 5555
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/alive
+              port: http
+            initialDelaySeconds: {{ .Values.hydra.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.hydra.livenessProbe.timeoutSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+            initialDelaySeconds: {{ .Values.hydra.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.hydra.readinessProbe.timeoutSeconds }}
+          resources:
+{{ toYaml .Values.hydra.resources | indent 12 }}
+{{- with .Values.hydra.extraContainers }}
+{{ tpl . $ | indent 8 }}
+{{- end }}
+    {{- with .Values.hydra.affinity }}
+      affinity:
+{{ tpl . $ | indent 8 }}
+    {{- end }}
+    {{- with .Values.hydra.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.hydra.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      terminationGracePeriodSeconds: 60
+{{- if .Values.hydra.volumes }}
+      volumes:
+{{ tpl .Values.hydra.volumes . | indent 8 }}
+{{- end }}
