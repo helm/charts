@@ -28,7 +28,7 @@ spec:
       {{- end }}
 {{- if .Values.dashboardImport.dashboards }}
       initContainers:
-      - name: {{ .Chart.Name }}-dashboardImport
+      - name: {{ .Chart.Name }}-dashboards-import
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ["/bin/bash"]
