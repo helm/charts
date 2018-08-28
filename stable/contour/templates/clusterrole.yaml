@@ -1,0 +1,55 @@
+{{- if .Values.rbac.create -}}
+
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: {{ template "contour.fullname" . }}
+  labels:
+    app: {{ template "contour.fullname" . }}
+    chart: {{ template "contour.chart" . }}
+    release: {{ .Release.Name }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - endpoints
+  - nodes
+  - pods
+  - secrets
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups: ["contour.heptio.com"]
+  resources: ["ingressroutes"]
+  verbs:
+  - get
+  - list
+  - watch
+  - put
+  - post
+  - patch
+
+{{- end -}}

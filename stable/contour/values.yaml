@@ -1,0 +1,60 @@
+deployment:
+  replicas: 2
+contour:
+  image:
+    repository: gcr.io/heptio-images/contour
+    tag: master
+    pullPolicy: Always
+  command: contour
+  args:
+    - serve
+    - --incluster
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9001"
+    prometheus.io/path: "/stats"
+    prometheus.io/format: "prometheus"
+envoy:
+  image:
+    repository: docker.io/envoyproxy/envoy-alpine
+    tag: v1.6.0
+    pullPolicy: IfNotPresent
+  command: envoy
+  args:
+    - --config-path /config/contour.yaml
+    - --service-cluster cluster0
+    - --service-node node0
+    - --log-level info
+    - --v2-config-only
+  container:
+    name: "envoy"
+initcontainer:
+  name: "envoy-initconfig"
+  command: contour
+  args:
+    - bootstrap
+    - /config/contour.yaml
+    - --admin-address=0.0.0.0
+service:
+  annotations:
+    contour.heptio.com/max-connections: "10000"
+    cloud.google.com/load-balancer-type: "Internal"
+    contour.heptio.com/max-requests: "1024"
+  externalHttpPort: 80
+  internalHttpPort: 8080
+  externalHttpsPort: 443
+  internalHttpsPort: 8443
+  protocol: TCP
+  loadBalancerType: LoadBalancer
+rbac:
+  create: true
+hpa:
+  create: false
+  minReplicas: 2
+  maxReplicas: 15
+  targetCPUUtilizationPercentage: 70
+resources:
+  limits:
+    cpu: "400m"
+  requests:
+    cpu: "200m"

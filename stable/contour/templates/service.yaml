@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "contour.service.fullname" . }}
+  labels:
+    app: {{ template "contour.fullname" . }}
+    chart: {{ template "contour.chart" . }}
+    release: {{ .Release.Name }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+spec:
+ ports:
+ - port: {{ .Values.service.externalHttpPort }}
+   name: http
+   protocol: {{ .Values.service.protocol }}
+   targetPort: {{ .Values.service.internalHttpPort }}
+ - port: {{ .Values.service.externalHttpsPort }}
+   name: https
+   protocol: {{ .Values.service.protocol }}
+   targetPort: {{ .Values.service.internalHttpsPort }}
+ selector:
+   app: {{ template "contour.fullname" . }}
+ type: {{ .Values.service.loadBalancerType }}
