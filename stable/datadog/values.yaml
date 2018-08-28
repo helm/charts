@@ -72,6 +72,11 @@ deployment:
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
 ##
+
+# service:
+# type: LoadBalancer
+# annotations: {}
+
 kubeStateMetrics:
   enabled: true
 
