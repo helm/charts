@@ -45,7 +45,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `image.tag`                 | The image tag to pull              | `6.3.2`                                   |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
-| `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
+| `rbac.serviceAccountName`   | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
 | `datadog.logsEnabled`       | Enable log collection              | `nil`                                     |
 | `datadog.logsConfigContainerCollectAll` | Collect logs from all containers | `nil`                           |
@@ -72,7 +72,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `deployment.tolerations`    | List of node taints to tolerate    | `[]`                                      |
 | `kubeStateMetrics.enabled`  | If true, create kube-state-metrics | `true`                                    |
 | `kube-state-metrics.rbac.create`| If true, create & use RBAC resources for kube-state-metrics | `true`       |
-| `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
+| `kube-state-metrics.rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
