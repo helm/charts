@@ -1,3 +1,7 @@
+### 1.3.3
+
+* [57b201d](https://github.com/kubernetes/charts/commit/57b201d): Agent-only deployment should not create server-related k8s resources.
+
 ### 1.3.2
 
 * [55d9cef](https://github.com/kubernetes/charts/commit/55d9cef): Add support for privileged mode, which is needed for DinD (Docker-in-Docker).
