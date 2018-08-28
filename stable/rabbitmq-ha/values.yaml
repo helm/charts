@@ -233,8 +233,6 @@ initContainer: {}
   #     cpu: 100mm
   #     memory: 128Mi
 
-
-
 ## Data Persistency
 persistentVolume:
   enabled: false
