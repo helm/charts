@@ -36,7 +36,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `deploymentStrategy`            | Deployment strategy                           | `RollingUpdate`                                         |
 | `securityContext`               | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `image.repository`              | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                     | Image tag. (`Must be >= 5.0.0`)               | `5.2.2`                                                 |
+| `image.tag`                     | Image tag. (`Must be >= 5.0.0`)               | `5.2.3`                                                 |
 | `image.pullPolicy`              | Image pull policy                             | `IfNotPresent`                                          |
 | `service.type`                  | Kubernetes service type                       | `ClusterIP`                                             |
 | `service.port`                  | Kubernetes port where service is exposed      | `9000`                                                  |
