@@ -37,7 +37,7 @@ spec:
             value: {{ quote .Values.tiller.maxHistory }}
           {{- if .Values.tiller.onlyListenOnLocalhost }}
           command: ["/tiller"]
-          args: ["--listen=localhost:44134"]
+          args: ["--listen=127.0.0.1:44134"]
           {{- else }}
           ports:
           - containerPort: 44134
