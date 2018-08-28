@@ -218,13 +218,20 @@ updateStrategy: OnDelete
 ##   rabbitmqMemoryHighWatermark = 0.4 * resources.limits.memory
 ##
 resources: {}
-# limits:
-#  cpu: 100m
-#  memory: 1Gi
-# requests:
-#  cpu: 100m
-#  memory: 1Gi
-
+  # limits:
+  #   cpu: 100mm
+  #   memory: 1Gi
+  # requests:
+  #   cpu: 100mm
+  #   memory: 1Gi
+initContainer: {}
+  # resources:
+  #   limits:
+  #     cpu: 100mm
+  #     memory: 128Mi
+  #   requests:
+  #     cpu: 100mm
+  #     memory: 128Mi
 
 ## Data Persistency
 persistentVolume:
