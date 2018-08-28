@@ -35,6 +35,7 @@ Master:
   # Set min/max heap here if needed with:
   # JavaOpts: "-Xms512m -Xmx512m"
   # JenkinsOpts: ""
+  # JenkinsUrl: ""
   # JenkinsUriPrefix: "/jenkins"
   # Enable pod security context (must be `true` if RunAsUser or FsGroup are set)
   UsePodSecurityContext: true
