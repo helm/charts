@@ -17,6 +17,8 @@ podAnnotations: {}
 rbac:
   create: true
 
+resources: {}
+
 serviceAccount:
   hook:
     create: true
