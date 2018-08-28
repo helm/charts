@@ -28,7 +28,7 @@ spec:
       {{- end }}
 {{- if .Values.dashboardImport.dashboards }}
       initContainers:
-      - name: {{ .Chart.Name }}-dashboardImport
+      - name: {{ .Chart.Name }}-dashboardimport
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ["/bin/bash"]
@@ -74,12 +74,12 @@ spec:
         - name: "{{ $key }}"
           value: "{{ $value }}"
         {{- end }}
-{{- if (not .Values.authProxyEnabled) }}        
+{{- if (not .Values.authProxyEnabled) }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
           name: {{ template "kibana.name" . }}
           protocol: TCP
-{{- end }}          
+{{- end }}
 {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
