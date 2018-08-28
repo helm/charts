@@ -58,7 +58,9 @@ The following table lists the configurable parameters of the Graphite chart and 
 | `nodeSelector`                 | NodeSelector                                 | `{}`                                   |
 | `tolerations`                  | Tolerations                                  | `[]`                                   |
 | `affinity`                     | Affinity                                     | `{}`                                   |
-| `configMaps`                   | All Config files                             | see values.yaml                        |
+| `configMaps`                   | Graphite Config files                        | see values.yaml                        |
+| `statsdConfigMaps`             | StatsD Config files                          | see values.yaml                        |
+| `statsd.interface`             | StatsD server interface, `TCP` or `UDP`      | `UDP`                                  |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
