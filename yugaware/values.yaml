@@ -1,0 +1,14 @@
+# Default values for yugaware.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: quay.io/yugabyte/yugaware
+  tag: latest
+  pullPolicy: IfNotPresent
+  pullSecret: yugabyte-k8s-pull-secret
+
+yugaware:
+  replicas: 1
+  storage: 100Gi
+  storage_class: standard

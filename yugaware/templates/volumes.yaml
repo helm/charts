@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-yugaware-storage
+  labels:
+    app: {{ template "yugaware.name" . }}
+    chart: {{ template "yugaware.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.yugaware.storage_class }}
+  resources:
+    requests:
+      storage: {{ .Values.yugaware.storage }}
