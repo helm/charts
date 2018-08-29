@@ -59,5 +59,7 @@ The following tables lists the configurable parameters of this chart and their d
 | `nfs.server`                      | Hostname of the NFS server                  | null (ip or hostname)                                     |
 | `nfs.path`                        | Basepath of the mount point to be used      | `/ifs/kubernetes`                                         |
 | `resources`                       | Resources required (e.g. CPU, memory)       | `{}`                                                      |
-| `rbac.create` 		    | Should we create a ServiceAccount		  | `true`						      |
+| `rbac.create` 		    | Use Role-based Access Control		  | `true`						      |
 | `rbac.pspEnabled` 		    | Create & use Pod Security Policy resources  | `false`						      |
+| `serviceAccount.create`	    | Should we create a ServiceAccount	          | `true`						      |
+| `serviceAccount.name`		    | Name of the ServiceAccount to use           | null						      |
