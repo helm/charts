@@ -146,7 +146,7 @@ hydra:
     dbVendor: memory
 
     dbName: hydra
-    dbHost: myhydra
+    dbHost: hydra
     dbPort: 5432
     dbUser: hydra
     dbPassword: ""
