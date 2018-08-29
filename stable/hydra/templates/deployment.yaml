@@ -50,7 +50,12 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.hydra.image.repository }}:{{ .Values.hydra.image.tag }}"
           imagePullPolicy: {{ .Values.hydra.image.pullPolicy }}
-          args: ["serve", "all", "--dangerous-force-http"]
+          args:
+          - serve
+          - all
+          {{- if .Values.hydra.dangerousForceHttp }}
+          - --dangerous-force-http
+          {{- end }}
           envFrom:
             - secretRef:
                 name: {{ template "hydra.fullname" . }}
@@ -82,13 +87,13 @@ spec:
           livenessProbe:
             httpGet:
               path: /health/alive
-              port: http
+              port: admin
             initialDelaySeconds: {{ .Values.hydra.livenessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.hydra.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
               path: /health/ready
-              port: http
+              port: admin
             initialDelaySeconds: {{ .Values.hydra.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.hydra.readinessProbe.timeoutSeconds }}
           resources:

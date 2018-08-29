@@ -22,6 +22,9 @@ hydra:
   ## visit https://ory.gitbooks.io/hydra/content/telemetry.html
   disableTelemetry: 0
 
+  ## Disable HTTP/2 over TLS (HTTPS) and serve HTTP instead. Never use this in production.
+  dangerousForceHttp: false
+
   secrets:
     ## Hydra system secret (at least 16 characters)
     ## If not set, a random 16 secret will be used.
