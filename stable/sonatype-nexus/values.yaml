@@ -25,7 +25,7 @@ nexus:
   dockerPort: 5003
   nexusPort: 8081
   serviceType: NodePort
-  #annotations: {}
+  # annotations: {}
   # securityContext:
   #   fsGroup: 2000
   livenessProbe:
