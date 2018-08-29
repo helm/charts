@@ -122,7 +122,12 @@ spec:
           configMap:
             name: "{{ template "vault.fullname" . }}-config"
         - name: vault-root
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "vault.fullname" .) }}
+        {{- else }}
           emptyDir: {}
+        {{- end }}
         {{- range .Values.vault.customSecrets }}
         - name: {{ .secretName }}
           secret:
