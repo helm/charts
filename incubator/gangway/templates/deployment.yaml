@@ -30,6 +30,13 @@ spec:
                 secretKeyRef:
                   name: {{ template "gangway.fullname" . }}
                   key: sesssionkey
+{{- if .Values.secrets.clientSecret }}
+            - name: GANGWAY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "gangway.fullname" . }}
+                  key: clientSecret
+{{- end }}
           ports:
             - name: http
               containerPort: 8080
