@@ -15,6 +15,10 @@ spec:
     - name: xtrabackup-script
       mountPath: /scripts
   restartPolicy: Never
+  {{- if .Values.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+  {{- end }}
   volumes:
   - name: backups
 {{- if .Values.persistentVolumeClaim }}

@@ -30,6 +30,10 @@ debug: false
 successfulJobsHistoryLimit: 5
 failedJobsHistoryLimit: 5
 
+## Node selector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
 ## set persistentVolumeClaim to use a PVC that already exists.
 ## if set will override any settings under `resistence` otherwise
 ## if not set and `persistence` set to true, will create a PVC.
