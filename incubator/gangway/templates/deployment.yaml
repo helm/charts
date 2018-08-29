@@ -28,7 +28,7 @@ spec:
             - name: GANGWAY_SESSION_SECURITY_KEY
               valueFrom:
                 secretKeyRef:
-                  name: gangway-key
+                  name: {{ template "gangway.fullname" . }}
                   key: sesssionkey
           ports:
             - name: http
@@ -53,11 +53,11 @@ spec:
             - name: gangway
               mountPath: /gangway/
           resources:
+{{ toYaml .Values.resources | indent 12 }}
       volumes:
         - name: gangway
           configMap:
             name: {{ include "gangway.fullname" . }}
-{{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
