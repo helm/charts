@@ -111,7 +111,13 @@ spec:
               readOnly: true
               mountPath: /home/go/.ssh
           {{- end }}
+          securityContext:
+            privileged: {{ .Values.agent.privileged }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.agent.hostAliases }}
+      hostAliases:
+{{ toYaml .Values.agent.hostAliases | indent 8 }}
     {{- end }}
