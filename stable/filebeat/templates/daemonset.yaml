@@ -73,8 +73,10 @@ spec:
         {{- end }}
         securityContext:
           runAsUser: 0
+{{- if .Values.resources }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- end }}
         volumeMounts:
         - name: filebeat-config
           mountPath: /usr/share/filebeat/filebeat.yml
