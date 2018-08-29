@@ -183,7 +183,7 @@ The following table lists the configurable parameters of the xray chart and thei
 | `rabbitmq-ha.persistentVolume.enabled`         | If `true`, persistent volume claims are created | `true`            |
 | `rabbitmq-ha.persistentVolume.size`            | RabbitMQ Persistent volume size              | `20Gi`               |
 | `rabbitmq-ha.rbac.create`                      | If true, create & use RBAC resources         | `true`              |
-| `common.xrayVersion`                           | Xray image tag                               | `2.2.4`              |
+| `common.xrayVersion`                           | Xray image tag                               | `2.3.0`              |
 | `common.xrayConfigPath`                        | Xray config path                   | `/var/opt/jfrog/xray/data`     |
 | `common.xrayUserId`                            | Xray User Id                                 | `1035`               |
 | `common.xrayGroupId`                           | Xray Group Id                                | `1035`               |

@@ -192,6 +192,9 @@ agent:
       homego: homego
       dockerEntryPoint: scripts
 
+  # agent.privileged is needed for running Docker-in-Docker (DinD) agents
+  privileged: false
+
   healthCheck:
    # agent.healthCheck.enable is the toggle for GoCD agent health checks
     enabled: false
@@ -219,6 +222,13 @@ agent:
   #   limits:
   #     cpu: 100m
   #     memory: 1024Mi
+
+  # agent.hostAliases allows the modification of the hosts file inside a container
+  hostAliases:
+  # - ip: "192.168.1.10"
+  #   hostnames:
+  #   - "example.com"
+  #   - "www.example.com"
 
   ## Additional GoCD agent pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/

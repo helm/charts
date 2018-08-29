@@ -1,4 +1,4 @@
-CockroachDB can be accessed via port 26257 (or whatever you set the GrpcPort
+CockroachDB can be accessed via port {{ .Values.ExternalGrpcPort }}
 value to) at the following DNS name from within your cluster:
 {{ .Release.Name }}-public.{{ .Release.Namespace }}.svc.cluster.local
 
@@ -30,12 +30,12 @@ will be able to connect to this cockroachdb cluster.
 Finally, to open up the CockroachDB admin UI, you can port-forward from your
 local machine into one of the instances in the cluster:
 
-    kubectl port-forward {{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-0 8080
+    kubectl port-forward {{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-0 {{ .Values.InternalHttpPort }}
 
 {{- if not .Values.Secure.Enabled }}
-Then you can access the admin UI at http://localhost:8080/ in your web browser.
+Then you can access the admin UI at http://localhost:{{ .Values.InternalHttpPort }}/ in your web browser.
 {{- else }}
-Then you can access the admin UI at https://localhost:8080/ in your web browser.
+Then you can access the admin UI at https://localhost:{{ .Values.InternalHttpPort }}/ in your web browser.
 {{- end }}
 
 For more information on using CockroachDB, please see the project's docs at
