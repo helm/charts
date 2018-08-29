@@ -24,6 +24,9 @@ keycloak:
     fsGroup: 1000
     runAsNonRoot: true
 
+  ## The path keycloak will be served from. To serve keycloak from the root path, use two quotes (e.g. "").
+  basepath: auth
+
   ## Additional init containers, e. g. for providing custom themes
   extraInitContainers: |
 

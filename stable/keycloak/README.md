@@ -48,6 +48,7 @@ Parameter | Description | Default
 `keycloak.image.tag` | The Keycloak image tag | `4.2.1.Final`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
 `keycloak.image.pullSecrets` | Image pull secrets | `[]`
+`keycloak.basepath` | Path keycloak is hosted at | `auth`
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
 `keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
 `keycloak.extraInitContainers` | Additional init containers, e. g. for providing themes, etc. Passed through the `tpl` funtion and thus to be configured a string | `""`
