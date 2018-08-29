@@ -11,16 +11,16 @@ metadata:
 {{- if or .Values.ingress.annotations (and .Values.ingress.tls .Values.ingress.acme) }}
   annotations:
 {{ toYaml .Values.ingress.annotations | indent 4 }}
-{{- if and .Values.ingress.tls .Values.ingress.acme }}
+{{- if and .Values.ingress.tls.enabled .Values.ingress.acme }}
     kubernetes.io/tls-acme: "true"
 {{- end }}
 {{- end }}
 spec:
-{{- if .Values.ingress.tls }}
+{{- if .Values.ingress.tls.enabled }}
   tls:
   - hosts:
     - {{ .Values.ingress.host }}
-    secretName: {{ template "imgproxy.fullname" . }}-tls
+    secretName: {{ .Values.ingress.tls.secretName | default (printf "%s-tls" (include "imgproxy.fullname" .)) | quote }}
 {{- end }}
   rules:
   - host: {{ .Values.ingress.host }}

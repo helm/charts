@@ -50,11 +50,31 @@ livenessProbe:
 # Configuration parameters for Ingress resource
 ingress:
   enabled: false
-  tls: false
+  tls:
+    enabled: false
+    crt: ""
+    key: ""
+    secretName: ""
   acme: false
   host: "example.com"
   annotations: {}
   #   nginx.ingress.kubernetes.io/proxy-body-size: "32m"
+
+serviceMonitor:
+  enabled: false
+  honorLabels: true
+  interval: 0
+  namespace: monitoring
+  selector:
+    release: prometheus-operator
+  targetLabels:
+    - app
+    - release
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 0
+  maxUnavailable: 0
 
 # TLS key & certificate if tls is enable & acme is disabled for Ingress resource.
 tls: {}
