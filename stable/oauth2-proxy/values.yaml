@@ -1,3 +1,7 @@
+# E-mail domains to authenticate
+emailDomains:
+  - "*"  # authenticate all domains
+
 # Oauth client configuration specifics
 config:
   # OAuth client ID
@@ -13,6 +17,40 @@ config:
   #   pass_access_token = true
   configFile: ""
 
+# Provider-specific configuration
+providers:
+  # Additional configuration for the Google provider
+  # Only required if authentication limited to certain Google Groups
+  google:
+    # # The admin e-mail address to impersonate
+    # adminEmail: "xxx@yyy.zzz"
+    # # A list of groups to allow
+    # groups:
+    #   - "xxx@yyy.zzz"
+    # # Service account credentials in JSON format
+    # jsonCredentials: |-
+    #   {
+    #     "type": "",
+    #     "project_id": "",
+    #     "private_key_id": "",
+    #     "private_key": "",
+    #     "client_email": "",
+    #     "client_id": "",
+    #     "auth_uri": "",
+    #     "token_uri": "",
+    #     "auth_provider_x509_cert_url": "",
+    #     "client_x509_cert_url": ""
+    #   }
+  # Additional configuration for the GitHub provider
+  # Only required if authentication is limited to certain orgs and teams
+  github:
+    # # The GitHub orgs to restrict access to
+    # orgs:
+    #   - "xxx"
+    # # The GitHub teams to restrict access to
+    # teams:
+    #   - "xxx"
+
 image:
   repository: "a5huynh/oauth2_proxy"
   tag: "2.2"
@@ -25,7 +63,6 @@ image:
   # - name: myRegistryKeySecretName
 
 extraArgs:
-  email-domain: "*"
   upstream: "file:///dev/null"
   http-address: "0.0.0.0:4180"
 
