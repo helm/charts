@@ -1,0 +1,33 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "imgproxy.fullname" . }}
+  labels:
+    app: {{ template "imgproxy.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- if or .Values.ingress.annotations (and .Values.ingress.tls .Values.ingress.acme) }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+{{- if and .Values.ingress.tls .Values.ingress.acme }}
+    kubernetes.io/tls-acme: "true"
+{{- end }}
+{{- end }}
+spec:
+{{- if .Values.ingress.tls }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.host }}
+    secretName: {{ template "imgproxy.fullname" . }}-tls
+{{- end }}
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "imgproxy.fullname" . }}
+          servicePort: 80
+{{- end -}}

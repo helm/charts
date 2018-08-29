@@ -1,0 +1,122 @@
+apiVersion: {{ .Values.apiVersion }}
+kind: Deployment
+metadata:
+  name: {{ template "imgproxy.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "imgproxy.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "imgproxy.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "imgproxy.fullname" . }}
+        release: {{ .Release.Name | quote }}
+    spec:
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      containers:
+      - name: "imgproxy"
+        image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: IMGPROXY_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "imgproxy.fullname" . }}-secrets
+              key: key
+        - name: IMGPROXY_SALT
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "imgproxy.fullname" . }}-secrets
+              key: salt
+        - name: IMGPROXY_READ_TIMEOUT
+          value: "{{ .Values.readTimeout }}"
+        - name: IMGPROXY_WRITE_TIMEOUT
+          value: "{{ .Values.writeTimeout }}"
+        - name: IMGPROXY_DOWNLOAD_TIMEOUT
+          value: "{{ .Values.downloadTimeout }}"
+        {{- if .Values.concurrency }}
+        - name: IMGPROXY_CONCURRENCY
+          value: "{{ .Values.concurrency }}"
+        {{- end }}
+        {{- if .Values.maxClients }}
+        - name: IMGPROXY_MAX_CLIENTS
+          value: "{{ .Values.maxClients }}"
+        {{- end }}
+        - name: IMGPROXY_TTL
+          value: "{{ .Values.ttl }}"
+        {{- if .Values.useEtag }}
+        - name: IMGPROXY_USE_ETAG
+          value: "{{ .Values.useEtag }}"
+        {{- end }}
+        {{- if .Values.localFileSystemRoot }}
+        - name: IMGPROXY_LOCAL_FILESYSTEM_ROOT
+          value: "{{ .Values.localFileSystemRoot }}"
+        {{- end }}
+        {{- if .Values.allowOrigin }}
+        - name: IMGPROXY_ALLOW_ORIGIN
+          value: "{{ .Values.allowOrigin }}"
+        {{- end }}
+        - name: IMGPROXY_MAX_SRC_DIMENSION
+          value: "{{ .Values.maxSrcDimension }}"
+        - name: IMGPROXY_MAX_SRC_RESOLUTION
+          value: "{{ .Values.maxSrcResolution }}"
+        {{- if .Values.secret }}
+        - name: IMGPROXY_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "imgproxy.fullname" . }}-secrets
+              key: secret
+        {{- end }}
+        - name: IMGPROXY_QUALITY
+          value: "{{ .Values.quality }}"
+        - name: IMGPROXY_GZIP_COMPRESSION
+          value: "{{ .Values.gzipCompression }}"
+        {{- if .Values.jpegProgressive}}
+        - name: IMGPROXY_JPEG_PROGRESSIVE
+          value: "{{ .Values.jpegProgressive }}"
+        {{- end }}
+        {{- if .Values.pngInterlaced }}
+        - name: IMGPROXY_PNG_INTERLACED
+          value: "{{ .Values.pngInterlaced }}"
+        {{- end }}
+        {{- if .Values.baseUrl }}
+        - name: IMGPROXY_BASE_URL
+          value: "{{ .Values.baseUrl }}"
+        {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          {{- with .Values.readinessProbe }}
+          initialDelaySeconds: {{ .initialDelaySeconds | default 10 }}
+          timeoutSeconds: {{ .timeoutSeconds | default 5}}
+          successThreshold: {{ .successThreshold | default 1 }}
+          failureThreshold: {{ .failureThreshold | default 5 }}
+          {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          {{- with .Values.livenessProbe }}
+          initialDelaySeconds: {{ .initialDelaySeconds | default 50 }}
+          timeoutSeconds: {{ .timeoutSeconds | default 5}}
+          successThreshold: {{ .successThreshold | default 1 }}
+          failureThreshold: {{ .failureThreshold | default 5 }}
+          {{- end }}

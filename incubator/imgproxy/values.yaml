@@ -1,0 +1,114 @@
+---
+# How many instances of imgproxy you desire to spin up.
+replicaCount: 1
+
+# A node selector label.
+nodeSelector: {}
+
+# Docker image repository, tag and a policy for Kubernetes to pull it.
+image:
+  repo: darthsim/imgproxy
+  tag: v1.1.6
+  pullPolicy: IfNotPresent
+
+# Kubernetes API version to use for imgproxy Deployment
+apiVersion: apps/v1
+
+# Set kubernetes specific resource limits
+resources: {}
+  # limits:
+  #   cpu: 700m
+  #   memory: 700Mi
+  # requests:
+  #   cpu: 700m
+  #   memory: 700Mi
+
+# Which port should imgproxy and its Kubernetes service listen
+httpPort: 80
+
+# Kubernetes service type
+serviceType: "ClusterIP"
+
+# Timeuouts and counters options for Liveness & Readiness probes for imgproxy
+# Kubernets Deployment
+readinessProbe:
+  initialDelaySeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 5
+livenessProbe:
+  initialDelaySeconds: 50
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 5
+
+# Configuration parameters for Ingress resource
+ingress:
+  enabled: false
+  tls: false
+  acme: false
+  host: "example.com"
+  annotations: {}
+  #   nginx.ingress.kubernetes.io/proxy-body-size: "32m"
+
+# TLS key & certificate if tls is enable & acme is disabled for Ingress resource.
+tls: {}
+  # privateKey: ""
+  # certificate: ""
+
+# Hex-encoded key for URL encoding. CHANGE IT!!!!
+key: 1b147116e57d9e06df3696b21260169902fe201ccdb9715267999176ccbfaae6f2c2b75b78110d0287643d98cde143e7a3f98a46ec825a1ab7ea10af426c2436
+
+# Hex-encoded salt for URL encoding. CHANGE IT!!!!
+salt: 1e4483006c56f05f1b42af2f2b61765f64b8a074bf993922dd5b4bca78f49280683beb368308b7f76d522027b071a25e6d4b26138686b43e1faa4be4c9b674ea
+
+# The maximum duration (in seconds) for reading the entire image request, including the body
+readTimeout: 10
+
+# The maximum duration (in seconds) for writing the response
+writeTimeout: 10
+
+# The maximum duration (in seconds) for downloading the source image
+downloadTimeout: 5
+
+# The maximum number of image requests to be processed simultaneously. Default: double number of CPU cores
+concurrency: ""
+
+# The maximum number of simultaneous active connections. Default: concurrency * 10
+maxClients: ""
+
+# Duration in seconds sent in Expires and Cache-Control: max-age headers.
+ttl: 3600
+
+# When true, enables using ETag header for the cache control|`false`|
+useEtag: false
+
+# Root of the local filesystem. See [Serving local files](https://github.com/darthsim/imgproxy#serving-local-files). Keep empty to disable serving of local files.
+localFileSystemRoot: false
+
+# When set, enables CORS headers with provided origin. CORS headers are disabled by default.
+allowOrigin: ""
+
+# The maximum dimensions of the source image, in pixels, for both width and height. Images with larger real size will be rejected.
+maxSrcDimension: 8192
+
+# The maximum resolution of the source image, in megapixels. Images with larger real size will be rejected
+maxSrcResolution: "16.8"
+
+# The authorization token. If specified, request should contain the `Authorization: Bearer %secret%` header
+secret: "changeme"
+
+# Quality of the resulting image, percentage
+quality: 80
+
+# GZip compression level
+gzipCompression: 5
+
+# When true, enables progressive compression of JPEG
+jpegProgressive: false
+
+# When true, enables interlaced compression of PNG
+pngInterlaced: false
+
+# Base URL part which will be added to every requestsd image URL. For example, if base URL is `http://example.com/images` and `/path/to/image.png` is requested, imgproxy will download the image from `http://example.com/images/path/to/image.png`
+baseUrl: ""

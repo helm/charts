@@ -1,0 +1,29 @@
+imgproxy is now running in your cluster.
+
+It can be accessed:
+
+{{- if contains "NodePort" .Values.serviceType }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "imgproxy.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "$NODE_IP:$NODE_PORT"
+{{- else if contains "LoadBalancer" .Values.serviceType }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status by running 'kubectl get svc -w {{ template "imgproxy.fullname" . }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "imgproxy.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo $SERVICE_IP
+{{- else if contains "ClusterIP"  .Values.serviceType }}
+
+  "{{ template "imgproxy.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+  from within the cluster
+{{- end }}
+
+{{ if .Values.ingress.enabled -}}
+There is also an Ingress resource enabled for this installation.
+It can be accessed outside via the URL:
+  {{ $scheme := "http" -}}
+  {{ if .Values.ingress.tls -}}
+    {{- $scheme := "https" }}
+  {{- end }}
+  "{{ $scheme }}://{{ .Values.ingress.host }}"
+{{- end }}
