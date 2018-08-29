@@ -43,13 +43,13 @@ The following table lists the configurable parameters of the CockroachDB chart a
 
 | Parameter                      | Description                                      | Default                                   |
 | ------------------------------ | ------------------------------------------------ | ----------------------------------------- |
-| `Name`                         | Chart name                                       | `cockroachdb`                             |
-| `Image`                        | Container image name                             | `cockroachdb/cockroach`                   |
-| `ImageTag`                     | Container image tag                              | `v2.0.5`                                  |
-| `ImagePullPolicy`              | Container pull policy                            | `Always`                                  |
+| `Name`                         | Chart name                                       | `cockroachdb`                     |
+| `Image`                        | Container image name                             | `cockroachdb/cockroach`           |
+| `ImageTag`                     | Container image tag                              | `v2.0.5`                          |
+| `ImagePullPolicy`              | Container pull policy                            | `Always`                          |
 | `Replicas`                     | k8s statefulset replicas                         | `3`                                       |
 | `MaxUnavailable`               | k8s PodDisruptionBudget parameter                | `1`                                       |
-| `Component`                    | k8s selector key                                 | `cockroachdb`                             |
+| `Component`                    | k8s selector key                                 | `cockroachdb`                     |
 | `ExternalGrpcPort`             | CockroachDB primary serving port                 | `26257`                                   |
 | `ExternalGrpcName`             | CockroachDB primary serving port name            | `grpc`                                    |
 | `InternalGrpcPort`             | CockroachDB inter-cockroachdb port               | `26257`                                   |
@@ -63,19 +63,21 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `StorageClass`                 | Persistent volume class                          | `null`                                    |
 | `CacheSize`                    | Size of CockroachDB's in-memory cache            | `25%`                                     |
 | `MaxSQLMemory`                 | Max memory to use processing SQL queries         | `25%`                                     |
-| `ClusterDomain`                | Cluster's default DNS domain                     | `cluster.local`                           |
+| `ClusterDomain`                | Cluster's default DNS domain                     | `cluster.local`                   |
 | `NetworkPolicy.Enabled`        | Enable NetworkPolicy                             | `false`                                   |
 | `NetworkPolicy.AllowExternal`  | Don't require client label for connections       | `true`                                    |
 | `Service.Type`                 | Public service type                              | `ClusterIP`                               |
 | `Service.Annotations`          | Annotations to apply to the service              | `{}`                                      |
 | `PodManagementPolicy`          | `OrderedReady` or `Parallel` pod creation/deletion order | `Parallel`                        |
-| `UpdateStrategy.type`          | allows setting of RollingUpdate strategy         | `RollingUpdate`                           |
+| `UpdateStrategy.type`          | allows setting of RollingUpdate strategy         | `RollingUpdate`                   |
 | `Secure.Enabled`               | Whether to run securely using TLS certificates   | `false`                                   |
 | `Secure.RequestCertsImage`     | Image to use for requesting TLS certificates     | `cockroachdb/cockroach-k8s-request-cert`  |
 | `Secure.RequestCertsImageTag`  | Image tag to use for requesting TLS certificates | `0.3`                                     |
 | `Secure.ServiceAccount.Create` | Whether to create a new RBAC service account     | `true`                                    |
-| `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | ``                                        |
-| `Tolerations` | [Kubernetes tolerations](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) to label the pods in the StatefulSet with | `` |
+| `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | ``
+| `NodeSelector` | The Kubernetes nodeSelector to use for the StatefulSet           | `{}`
+| `NodeAffinity`                 | The [Kubernetes nodeAffinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/) to use for the pods in the StatefulSet.  This chart already provides it's own PodAntiAffinity | `{}`
+| `Tolerations` | [Kubernetes tolerations](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) to label the pods in the StatefulSet with | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
