@@ -49,12 +49,14 @@ spec:
         {{- end }}
         livenessProbe:
           httpGet:
+            scheme: HTTPS
             path: /ping
             port: api
           initialDelaySeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
+            scheme: HTTPS
             path: /ping
             port: api
           initialDelaySeconds: 5
@@ -64,7 +66,18 @@ spec:
           mountPath: {{ .Values.config.storage_directory }}
         - name: config
           mountPath: /etc/influxdb
+        - name: ssl
+          mountPath: /etc/ssl/
+          readOnly: true
       volumes:
+      - name: ssl
+        secret:
+          secretName: example-com-tls
+          items:
+            - key: tls.key
+              path: influxdb.key
+            - key: tls.crt
+              path: influxdb.crt
       - name: data
       {{- if .Values.persistence.enabled }}
         {{- if not (empty .Values.persistence.name) }}
