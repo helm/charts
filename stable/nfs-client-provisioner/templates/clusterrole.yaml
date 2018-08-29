@@ -23,3 +23,9 @@ rules:
   - apiGroups: [""]
     resources: ["endpoints"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]
+{{- if .Values.rbac.pspEnabled }}
+  - apiGroups:      ['extensions']
+    resources:      ['podsecuritypolicies']
+    verbs:          ['use']
+    resourceNames:  [{{ template "nfs-client-provisioner.fullname" . }}]
+{{- end }}
