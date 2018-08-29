@@ -62,9 +62,9 @@ The following table lists the configurable parameters of the elasticsearch chart
 
 |              Parameter               |                             Description                             |               Default                |
 | ------------------------------------ | ------------------------------------------------------------------- | ------------------------------------ |
-| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.3.1`                              |
+| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.4.0`                              |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
-| `image.tag`                          | Container image tag                                                 | `6.3.1`                              |
+| `image.tag`                          | Container image tag                                                 | `6.4.0`                              |
 | `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                      |
 | `cluster.kubernetesDomain`           | Kubernetes cluster domain name                                      | `cluster.local`                      |
@@ -81,6 +81,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.tolerations`                 | Client tolerations                                                  | `{}`                                 |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                 |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                          |
+| `client.loadBalancerIP`              | Client loadBalancerIP                                               | `{}`                                 |
+| `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                 |
 | `master.exposeHttp`                  | Expose http port 9200 on master Pods for monitoring, etc            | `false`                              |
 | `master.name`                        | Master component name                                               | `master`                             |
 | `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                  |

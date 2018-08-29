@@ -8,7 +8,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.1-debian-9
+  tag: 4.0.2-debian-9
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -38,6 +38,12 @@ usePassword: true
 # mongodbUsername: username
 # mongodbPassword: password
 # mongodbDatabase: database
+
+
+## Whether enable/disable IPv6 on MongoDB
+## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#enabling/disabling-ipv6
+##
+mongodbEnableIPv6: true
 
 ## MongoDB additional command line flags
 ##

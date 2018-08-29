@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "graphite.fullname" . }}
+  labels:
+    app: {{ template "graphite.name" . }}
+    chart: {{ template "graphite.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | indent 4 }}
+{{- end }}
+{{- with .Values.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: graphite-pickle
+      port: 2004
+      protocol: TCP
+    - name: graphite-plain
+      port: 2003
+      protocol: TCP
+    - name: graphite-gui
+      port: {{ .Values.service.port }}
+      protocol: TCP
+    - name: aggregate-plain
+      port: 2023
+      protocol: TCP
+    - name: aggregate-pickl
+      port: 2024
+      protocol: TCP
+    - name: statsd
+      port: 8125
+      protocol: {{ .Values.statsd.interface }}
+    - name: statsd-admin
+      port: 8126
+      protocol: TCP
+  selector:
+    app: {{ template "graphite.name" . }}
+    release: {{ .Release.Name }}
