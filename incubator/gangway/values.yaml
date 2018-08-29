@@ -76,6 +76,7 @@ config:
 secrets:
   # if this is blank it will be auto generated
   sesssionkey: ""
+  clientSecret: ""
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
