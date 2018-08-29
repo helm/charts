@@ -30,6 +30,9 @@ spec:
           image: "{{ .Values.hydra.image.repository }}:{{ .Values.hydra.image.tag }}"
           imagePullPolicy: {{ .Values.hydra.image.pullPolicy }}
           args: ["migrate", "sql", "-e"]
+          envFrom:
+            - secretRef:
+                name: {{ template "hydra.fullname" . }}
           env:
             - name: DISABLE_TELEMETRY
               value: {{ .Values.hydra.disableTelemetry | quote }}
@@ -38,11 +41,6 @@ spec:
                 secretKeyRef:
                   name: {{ template "hydra.fullname" . }}-db
                   key: DATABASE_URL
-            - name: SYSTEM_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "hydra.fullname" . }}-system-secret
-                  key: SYSTEM_SECRET
       {{- end }}
       {{- if .Values.hydra.extraInitContainers }}
 {{ tpl .Values.hydra.extraInitContainers . | indent 8 }}
@@ -53,6 +51,9 @@ spec:
           image: "{{ .Values.hydra.image.repository }}:{{ .Values.hydra.image.tag }}"
           imagePullPolicy: {{ .Values.hydra.image.pullPolicy }}
           args: ["serve", "all", "--dangerous-force-http"]
+          envFrom:
+            - secretRef:
+                name: {{ template "hydra.fullname" . }}
           env:
             - name: DISABLE_TELEMETRY
               value: {{ .Values.hydra.disableTelemetry | quote }}
@@ -61,11 +62,6 @@ spec:
                 secretKeyRef:
                   name: {{ template "hydra.fullname" . }}-db
                   key: DATABASE_URL
-            - name: SYSTEM_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "hydra.fullname" . }}-system-secret
-                  key: SYSTEM_SECRET
 {{- with .Values.hydra.extraEnv }}
 {{ tpl . $ | indent 12 }}
 {{- end }}

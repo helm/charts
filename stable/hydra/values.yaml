@@ -22,9 +22,13 @@ hydra:
   ## visit https://ory.gitbooks.io/hydra/content/telemetry.html
   disableTelemetry: 0
 
-  ## Hydra system secret (at least 16 characters)
-  ## If not set, a random 16 secret will be used.
-  systemSecret: ""
+  secrets:
+    ## Hydra system secret (at least 16 characters)
+    ## If not set, a random 16 secret will be used.
+    system: ""
+    ## Secret that is used to encrypt cookie sessions.
+    ## If not set, a random 16 secret will be used.
+    cookie: ""
 
   ## Additional init containers, e. g. for providing custom themes
   extraInitContainers: |
@@ -36,6 +40,8 @@ hydra:
   extraEnv: |
     # - name: LOG_LEVEL
     #   value: debug
+    # - name: OAUTH2_SHARE_ERROR_DEBUG
+    #   value: true
 
   affinity: |
     podAntiAffinity:
