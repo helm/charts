@@ -35,7 +35,11 @@ data:
            #auto_policy_sync: true
 
       database:
-        db_connect: "postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}:5432/${ANCHORE_DB}"
+        {{ if .Values.postgresql.enabled }}
+        db_connect: 'postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@{{ template "postgres.fullname" . }}:5432/{{ .Values.postgresql.postgresDatabase }}'
+        {{ else }}
+        db_connect: 'postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@{{ .Values.postgresql.externalEndpoint}}/{{ .Values.postgresql.postgresDatabase }}'
+        {{ end }}
         db_connect_args:
           timeout: 120
           ssl: {{ .Values.globalConfig.dbConfig.ssl }}
@@ -53,4 +57,3 @@ data:
         ssl_cert: {{ .Values.workerConfig.ssl.certDir -}}/{{- .Values.workerConfig.ssl.certSecretCertName }}
         ssl_key: {{ .Values.workerConfig.ssl.certDir -}}/{{ .Values.workerConfig.ssl.certSecretKeyName }}
         ssl_enable: {{ .Values.globalConfig.internalServicesSslEnabled }}
-
