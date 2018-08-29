@@ -113,3 +113,10 @@ data:
     enabled: false
     # minAvailable: 1
     maxUnavailable: 1
+
+# install elasticsearch plugins before services are started
+plugins:
+  command: "/usr/share/elasticsearch/bin/elasticsearch-plugin"
+  install: []
+    # - ingest-attachment
+    # - mapper-size

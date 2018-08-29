@@ -80,6 +80,13 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
+{{- range .Values.plugins.install }}
+      - name: "plugin-install-{{ . | title | lower }}"
+        image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+        imagePullPolicy: {{ $.Values.image.pullPolicy | quote }}
+        command: ["/bin/bash"]
+        args: ["-c", "yes | {{ $.Values.plugins.command }} install {{ . | title | lower }}"]
+{{- end }}          
       containers:
       - name: elasticsearch
         env:
