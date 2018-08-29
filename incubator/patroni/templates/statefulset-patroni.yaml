@@ -61,12 +61,16 @@ spec:
           value: {{ .Values.zookeeper.hosts | quote }}
         {{- end }}
         {{- else if .Values.kubernetesDCS.enable }}
+        - name: DCS_ENABLE_KUBERNETES_API
+          value: {{ .Values.kubernetesDCS.enable | quote }}
         - name: PATRONI_KUBERNETES_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: PATRONI_KUBERNETES_LABELS
-          value: '{app: {{ template "patroni.name" . }},release: {{ .Release.Name }} }'
+        - name: KUBERNETES_LABELS
+          value: '{"app": "{{ template "patroni.name" . }}", "release": "{{ .Release.Name }}"}'
+        - name: KUBERNETES_SCOPE_LABEL
+          value: release
         {{- end }}
         - name: SCOPE
           value: {{ template "patroni.fullname" . }}
