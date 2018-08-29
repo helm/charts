@@ -63,6 +63,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `affinity`                         | List of affinities (requires Kubernetes >=1.6)                                                                             | `{}`                                               |
 | `txtOwnerId`                       | When using the TXT registry, a name that identifies this instance of ExternalDNS (optional)                                | `"default"`                                        |
 | `txtPrefix`                        | When using the TXT registry, a prefix for ownership records that avoids collision with CNAME entries (optional)            | `""`                                               |
+| `zoneIdFilters`                    | Limit possible target zones by zone id (optional)                                                                          | `[]`                                               |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

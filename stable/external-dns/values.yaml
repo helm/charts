@@ -37,6 +37,8 @@ google:
 
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
+## Limit possible target zones by zone id (optional)
+zoneIdFilters: []
 # Filter sources managed by external-dns via annotation using label selector semantics (default: all sources)
 annotationFilter: ""
 
