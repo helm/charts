@@ -20,7 +20,7 @@ spec:
       - "--host"
       - "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-public.{{ .Release.Namespace }}"
       - "--port"
-      - "{{ .Values.GrpcPort }}"
+      - "{{ .Values.ExternalGrpcPort }}"
       - "-e"
       - "SHOW DATABASES;"
   restartPolicy: Never

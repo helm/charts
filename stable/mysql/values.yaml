@@ -80,6 +80,7 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
+  annotations: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -154,3 +155,6 @@ ssl:
 ## Default: nil (mysql will use image's default timezone, normally UTC)
 ## Example: 'Australia/Sydney'
 # timezone:
+
+# To be added to the database server pod(s)
+podAnnotations: {}

@@ -73,6 +73,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `persistence.accessMode`                     | ReadWriteOnce or ReadOnly                                                                    | ReadWriteOnce                                        |
 | `persistence.existingClaim`                  | Name of existing persistent volume                                                           | `nil`                                                |
 | `persistence.subPath`                        | Subdirectory of the volume to mount                                                          | `nil`                                                |
+| `persistence.annotations`                    | Persistent Volume annotations                             				      | {}						     |
 | `nodeSelector`                               | Node labels for pod assignment                                                               | {}                                                   |
 | `metrics.enabled`                            | Start a side-car prometheus exporter                                                         | `false`                                              |
 | `metrics.image`                              | Exporter image                                                                               | `prom/mysqld-exporter`                               |
@@ -94,6 +95,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `imagePullSecrets`                           | Name of Secret resource containing private registry credentials                              | `nil`                                                |
 | `initializationFiles`                        | List of SQL files which are run after the container started                                  | `nil`                                                |
 | `timezone`                                   | Container and mysqld timezone (TZ env)                                                       | `nil` (UTC depending on image)                       |
+| `podAnnotations`                             | Map of annotations to add to the pods                                                        | `{}`                                                 |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 
