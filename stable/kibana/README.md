@@ -43,7 +43,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `files`                                       | Kibana configuration files                 | None                                   |
 | `image.pullPolicy`                            | Image pull policy                          | `IfNotPresent`                         |
 | `image.repository`                            | Image repository                           | `docker.elastic.co/kibana/kibana-oss`  |
-| `image.tag`                                   | Image tag                                  | `6.3.2`                                |
+| `image.tag`                                   | Image tag                                  | `6.4.0`                                |
 | `image.pullSecrets`                           | Specify image pull secrets                 | `nil`                                  |
 | `commandline.args`                            | add additional commandline args            | `nil`                                  |
 | `ingress.enabled`                             | Enables Ingress                            | `false`                                |
@@ -55,10 +55,13 @@ The following table lists the configurable parameters of the kibana chart and th
 | `replicaCount`                                | desired number of pods                     | `1`                                    |
 | `revisionHistoryLimit`                        | revisionHistoryLimit                       | `3`                                    |
 | `serviceAccountName`                          | serviceAccount that will run the pod       | `nil`                                  |
+| `authProxyEnabled`                            | enables authproxy. Create container in extracontainers   | `false`                  |
+| `extraContainers`                             | Sidecar containers to add to the kibana pod| `{}`                                   |
 | `resources`                                   | pod resource requests & limits             | `{}`                                   |
 | `priorityClassName`                           | priorityClassName                          | `nil`                                  |
 | `service.externalPort`                        | external port for the service              | `443`                                  |
 | `service.internalPort`                        | internal port for the service              | `4180`                                 |
+| `service.authProxyPort`                       | port to use when using sidecar authProxy   | None:                                  |
 | `service.externalIPs`                         | external IP addresses                      | None:                                  |
 | `service.loadBalancerIP`                      | Load Balancer IP address                   | None:                                  |
 | `service.nodePort`                            | NodePort value if service.type is NodePort | None:                                  |
