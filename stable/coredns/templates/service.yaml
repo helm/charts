@@ -14,10 +14,7 @@ metadata:
     app: {{ template "coredns.fullname" . }}
     {{- end }}
   annotations:
-    {{- if .Values.plugins.prometheus.enabled }}
-    prometheus.io/scrape: "true"
-    prometheus.io/port: {{ .Values.plugins.prometheus.port | quote }}
-    {{- end }}
+{{ toYaml .Values.service.annotations | indent 4 }}
 spec:
   selector:
   {{- if .Values.isClusterService }}
@@ -25,23 +22,9 @@ spec:
   {{- else }}
     app: {{ template "coredns.fullname" . }}
   {{- end }}
-  {{- if .Values.clusterIP }}
-  clusterIP: {{ .Values.clusterIP }}
+  {{- if .Values.service.clusterIP }}
+  clusterIP: {{ .Values.service.clusterIP }}
   {{- end }}
   ports:
-  {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "UDP") }}
-  - name: dns
-    port: 53
-    protocol: UDP
-  {{- end }}
-  {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "TCP") }}
-  - name: dns-tcp
-    port: 53
-    protocol: TCP
-  {{- end }}
-  {{- if .Values.plugins.prometheus.enabled }}
-  - name: metrics
-    port: {{ .Values.plugins.prometheus.port }}
-    protocol: TCP
-  {{- end }}
+{{ include "coredns.servicePorts" . | indent 2 -}}
   type: {{ default "ClusterIP" .Values.serviceType }}

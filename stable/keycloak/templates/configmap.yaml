@@ -27,6 +27,14 @@ data:
   keycloak.cli: |
     embed-server {{- if $highAvailability }} --server-config=standalone-ha.xml{{ end }} --std-out=echo
 
+{{- if ne .Values.keycloak.basepath "auth" }}
+    # Changes the base path to be /keycloak.basepath instead of /auth
+    /subsystem=keycloak-server:write-attribute(name=web-context,value={{ if eq .Values.keycloak.basepath "" }}ROOT{{ else }}{{ .Values.keycloak.basepath }}{{ end }})
+    {{- if eq .Values.keycloak.basepath "" }}
+    /subsystem=undertow/server=default-server/host=default-host:write-attribute(name=default-web-module,value=keycloak-server.war)
+    {{- end }}
+{{ end }}
+
 {{- with .Values.keycloak.cli }}
 
 {{ .nodeIdentifier | indent 4 }}

@@ -201,7 +201,7 @@ spec:
           {{- if $secret.mountPath }}
             {{- range $key := $secret.keys }}
         - name: {{ include "kafka.fullname" $ }}-{{ $secret.name }}
-          mountPath: {{ $secret.mountPath }}
+          mountPath: {{ $secret.mountPath }}/{{ $key }}
           subPath: {{ $key }}
           readOnly: true
             {{- end }}
