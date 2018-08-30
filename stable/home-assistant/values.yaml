@@ -50,7 +50,7 @@ persistence:
   ## If you want to reuse an existing claim, you can pass the name of the PVC using
   ## the existingClaim variable
   # existingClaim: your-claim
-  accessMode: ReadWriteMany
+  accessMode: ReadWriteOnce
   size: 5Gi
 
 ## Additional hass-configurator container environment variable
