@@ -19,6 +19,12 @@ data:
       echo "Waiting for Zookeeper..."
       sleep 20
     done
+    ## wait until kafka is up
+    until nc -z {{.Release.Name}}-kafka 9092 || (( count++ >= 6 ))
+    do
+      echo "Waiting for Kafka..."
+      sleep 20
+    done
     echo "Applying runtime configuration using {{ .Values.image }}:{{ .Values.imageTag }}"
     {{- range $n, $topic := .Values.topics }}
     {{- if and $topic.partitions $topic.replicationFactor }}
