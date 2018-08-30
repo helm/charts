@@ -49,14 +49,18 @@ spec:
         {{- end }}
         livenessProbe:
           httpGet:
+            {{ if .Values.config.http.https_enabled -}}
             scheme: HTTPS
+            {{ end -}}
             path: /ping
             port: api
           initialDelaySeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
+            {{ if .Values.config.http.https_enabled -}}
             scheme: HTTPS
+            {{ end -}}
             path: /ping
             port: api
           initialDelaySeconds: 5
@@ -66,18 +70,13 @@ spec:
           mountPath: {{ .Values.config.storage_directory }}
         - name: config
           mountPath: /etc/influxdb
-        - name: ssl
-          mountPath: /etc/ssl/
-          readOnly: true
+        {{ if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 8}}
+        {{ end }}
       volumes:
-      - name: ssl
-        secret:
-          secretName: example-com-tls
-          items:
-            - key: tls.key
-              path: influxdb.key
-            - key: tls.crt
-              path: influxdb.crt
+      {{ if .Values.volumes }}
+{{ toYaml .Values.volumes | indent 6}}
+      {{ end }}
       - name: data
       {{- if .Values.persistence.enabled }}
         {{- if not (empty .Values.persistence.name) }}
