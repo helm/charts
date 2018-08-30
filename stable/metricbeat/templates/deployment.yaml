@@ -15,8 +15,8 @@ spec:
         app: {{ template "metricbeat.name" . }}
         release: {{ .Release.Name }}
       annotations:
-        checksum/deployment: {{ toYaml .Values.deployment.modules | sha256sum }}
-        checksum/secret: {{ toYaml .Values.config | sha256sum }}
+        checksum/modules: {{ toYaml .Values.deployment.modules | sha256sum }}
+        checksum/config: {{ toYaml .Values.deployment.config | sha256sum }}
 {{- if .Values.deployment.podAnnotations }}
   {{- range $key, $value := .Values.deployment.podAnnotations }}
         {{ $key }}: {{ $value }}
