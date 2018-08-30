@@ -5,7 +5,6 @@ metadata:
   labels:
     app: {{ template "home-assistant.name" . }}
     chart: {{ template "home-assistant.chart" . }}
-    component: server
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- if .Values.service.labels }}
@@ -38,14 +37,22 @@ spec:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
 {{- end }}
   ports:
-    - name: http
+    - name: api
       port: {{ .Values.service.port }}
       protocol: TCP
       targetPort: 8123
 {{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
       nodePort: {{.Values.service.nodePort}}
 {{ end }}
+{{- if .Values.configurator.enabled }}
+    - name: http
+      port: {{ .Values.configurator.service.port }}
+      protocol: TCP
+      targetPort: 3218
+{{ if (and (eq .Values.configurator.service.type "NodePort") (not (empty .Values.configurator.service.nodePort))) }}
+      nodePort: {{.Values.configurator.service.nodePort}}
+{{ end }}
+{{- end }}
   selector:
     app: {{ template "home-assistant.name" . }}
     release: {{ .Release.Name }}
-    component: server
