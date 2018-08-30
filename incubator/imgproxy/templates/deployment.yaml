@@ -103,6 +103,9 @@ spec:
             path: /health
             port: 8080
             scheme: HTTP
+            httpHeaders:
+            - name: Authorization
+              value: Bearer {{ .Values.secret }}
           {{- with .Values.readinessProbe }}
           initialDelaySeconds: {{ .initialDelaySeconds | default 10 }}
           timeoutSeconds: {{ .timeoutSeconds | default 5}}
@@ -114,6 +117,9 @@ spec:
             path: /health
             port: 8080
             scheme: HTTP
+            httpHeaders:
+            - name: Authorization
+              value: Bearer {{ .Values.secret }}
           {{- with .Values.livenessProbe }}
           initialDelaySeconds: {{ .initialDelaySeconds | default 50 }}
           timeoutSeconds: {{ .timeoutSeconds | default 5}}
