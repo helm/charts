@@ -99,7 +99,7 @@ spec:
           path: /var/lib/docker/containers
       - name: metricbeat-config
         secret:
-          secretName: {{ template "metricbeat.fullname" . }}
+          secretName: {{ template "metricbeat.fullname" . }}-daemonset-config
       - name: data
         hostPath:
           path: /var/lib/metricbeat
@@ -115,7 +115,7 @@ spec:
           path: /var/run/docker.sock
       - name: modules
         secret:
-          secretName: {{ template "metricbeat.fullname" . }}-modules-daemonset
+          secretName: {{ template "metricbeat.fullname" . }}-daemonset-modules
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}

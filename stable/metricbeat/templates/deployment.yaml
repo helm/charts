@@ -69,7 +69,7 @@ spec:
       volumes:
       - name: metricbeat-config
         secret:
-          secretName: {{ template "metricbeat.fullname" . }}
+          secretName: {{ template "metricbeat.fullname" . }}-deployment-config
       - name: modules
         secret:
-          secretName: {{ template "metricbeat.fullname" . }}-modules-deployment
+          secretName: {{ template "metricbeat.fullname" . }}-deployment-modules
