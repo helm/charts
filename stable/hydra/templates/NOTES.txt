@@ -35,7 +35,7 @@ Hydra can be accessed:
   It may take a few minutes for the LoadBalancer IP to be available.
   You can watch the status of by running 'kubectl get svc -w {{ template "hydra.fullname" . }}'
 
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "hydra.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "hydra.fullname" . }}-http -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.hydra.service.port }}
 
 {{- else if contains "ClusterIP" .Values.hydra.service.type }}
