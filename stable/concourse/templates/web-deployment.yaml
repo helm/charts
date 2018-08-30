@@ -30,13 +30,13 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           args:
             - "web"
-            {{- if .Values.credentialManager.ssm.enabled }}
+            {{- if and .Values.credentialManager.ssm.enabled .Values.credentialManager.ssm.region }}
             - "--aws-ssm-region"
-            - "$(CONCOURSE_AWS_SSM_REGION)"
+            - {{ .Values.credentialManager.ssm.region | quote }}
             {{- end }}
-            {{- if .Values.credentialManager.awsSecretsManager.enabled }}
+            {{- if and .Values.credentialManager.awsSecretsManager.enabled .Values.credentialManager.awsSecretsManager.region }}
             - "--aws-secretsmanager-region"
-            - "$(CONCOURSE_AWS_SECRETSMANAGER_REGION)"
+            - {{ .Values.credentialManager.awsSecretsManager.region | quote }}
             {{- end }}
           env:
             - name: CONCOURSE_TSA_HOST_KEY
@@ -469,10 +469,6 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-ssm-session-token
             {{- end }}
-            {{- if .Values.credentialManager.ssm.region }}
-            - name: CONCOURSE_AWS_SSM_REGION
-              value: {{ .Values.credentialManager.ssm.region | quote }}
-            {{- end }}
             {{- if .Values.credentialManager.ssm.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SSM_PIPELINE_SECRET_TEMPLATE
               value: {{ .Values.credentialManager.ssm.pipelineSecretTemplate | quote }}
@@ -499,10 +495,6 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: aws-secretsmanager-session-token
-            {{- end }}
-            {{- if .Values.credentialManager.awsSecretsManager.region }}
-            - name: CONCOURSE_AWS_SECRETSMANAGER_REGION
-              value: {{ .Values.credentialManager.awsSecretsManager.region | quote }}
             {{- end }}
             {{- if .Values.credentialManager.awsSecretsManager.pipelineSecretTemplate }}
             - name: CONCOURSE_AWS_SECRETSMANAGER_PIPELINE_SECRET_TEMPLATE
