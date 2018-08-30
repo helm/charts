@@ -60,8 +60,8 @@ spec:
             echo $RABBITMQ_ERL_COOKIE > /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
             cp /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie /opt/bitnami/rabbitmq/.rabbitmq/
             #change permission so only the user has access to the cookie file
-            chmod 400 /opt/bitnami/rabbitmq/.rabbitmq/.erlang.cookie
-            chmod 400 /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
+            chmod 600 /opt/bitnami/rabbitmq/.rabbitmq/.erlang.cookie
+            chmod 600 /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
 
             #copy the mounted configuration to both places
             cp  /opt/bitnami/rabbitmq/conf/* /opt/bitnami/rabbitmq/etc/rabbitmq
