@@ -111,7 +111,7 @@ config:
 #    - 'http://192.168.42.219:31850/oauth2/callback'
 #    name: 'Example App'
 #    secret: ZXhhbXBsZS1hcHAtc2VjcmV0
-#
+
   enablePasswordDB: true
 # staticPasswords:
 #  - email: "admin@example.com"
