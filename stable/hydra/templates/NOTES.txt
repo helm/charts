@@ -1,4 +1,4 @@
-{{- if eq .Values.dbVendor "memory" }}
+{{- if eq .Values.hydra.persistence.dbVendor "memory" }}
 #########################################################################
 ## WARNING: You are running Hydra with in memory database.             ##
 ##          All data will be lost on Pod/Container restart.            ##
