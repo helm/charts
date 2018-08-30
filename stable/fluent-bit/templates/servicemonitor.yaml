@@ -1,0 +1,25 @@
+{{- if and .Values.metrics.enabled .Values.prometheus.operator.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "fluent-bit.fullname" . }}
+  labels:
+    app: {{ template "fluent-bit.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.prometheus.operator.serviceMonitor.selector }}
+{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "fluent-bit.fullname" . }}
+      release: {{ .Release.Name }}
+  endpoints:
+    - path: /api/v1/metrics/prometheus
+      port: metrics
+      interval: {{ .Values.prometheus.operator.serviceMonitor.interval }}
+  namespaceSelector:
+    any: true
+{{- end }}

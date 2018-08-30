@@ -92,6 +92,9 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
 | `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
 | `input.tail.memBufLimit`           | Specify Mem_Buf_Limit in tail input        | `5MB`                                             |
+| `prometheus.operator.enabled`                  | Are you using Prometheus Operator?  [Blog Post](https://coreos.com/blog/the-prometheus-operator.html) | `false`                           |
+| `prometheus.operator.serviceMonitor.selector`  | Label Selector for Prometheus to find ServiceMonitors                                                 | `{ prometheus: kube-prometheus }` |
+| `prometheus.operator.serviceMonitor.interval`  | How often Prometheus Scrapes metrics                                                                  | `10s`                             |
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
