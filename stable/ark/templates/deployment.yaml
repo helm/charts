@@ -40,6 +40,10 @@ spec:
             - secretRef:
                 name: {{ template "ark.secretName" . }}
           {{- end }}
+          {{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+          {{- end }}
           volumeMounts:
             - name: plugins
               mountPath: /plugins

@@ -36,6 +36,9 @@ spec:
           {{- range .Values.domainFilters }}
             - --domain-filter={{ . }}
           {{- end }}
+          {{- range .Values.zoneIdFilters }}
+            - --zone-id-filter={{ . }}
+          {{- end }}
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
             - --registry={{ .Values.registry }}
@@ -141,5 +144,9 @@ spec:
     {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

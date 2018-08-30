@@ -12,7 +12,7 @@ service:
 
 image:
   # Can use 'latest' but not recommended
-  tag: "docker.io/anchore/anchore-engine:v0.2.3"
+  tag: "docker.io/anchore/anchore-engine:v0.2.4"
   # pullPolicy: IfNotPresent
 
 # Used to create Ingress record (should used with service.type: ClusterIP or NodePort depending on platform)
@@ -98,7 +98,6 @@ globalConfig:
 # Configuration for the core engine service that serves the API
 # The core service handles the user facing APIs and coordination of workers as well as storage interfaces for data
 coreConfig:
-  # For the moment, the replica count should stay at 1. That restriction should change soon.
   replicaCount: 1
   logLevel: INFO
 

@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled }}
 {{- if and .Values.server.persistence.enabled (not .Values.server.persistence.existingClaim) -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -27,3 +28,4 @@ spec:
 {{ toYaml .Values.server.persistence.pvSelector | indent 4 }}
 {{- end }}
 {{- end }}
+{{- end -}}

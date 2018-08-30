@@ -51,6 +51,7 @@ PodManagementPolicy: Parallel
 UpdateStrategy:
   type: RollingUpdate
 NodeSelector: {}
+Tolerations: {}
 Secure:
   Enabled: false
   RequestCertsImage: "cockroachdb/cockroach-k8s-request-cert"
