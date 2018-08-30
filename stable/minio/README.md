@@ -105,10 +105,9 @@ The following table lists the configurable parameters of the Minio chart and the
 | `nodeSelector`             | Node labels for pod assignment      | `{}`                                                    |
 | `affinity`                 | Affinity settings for pod assignment | `{}`                                                   |
 | `tolerations`              | Toleration labels for pod assignment | `[]`                                                   |
-| `defaultBucket.enabled`    | If set to true, a bucket will be created after minio install | `false`                        |
-| `defaultBucket.name`       | Bucket name                         | `bucket`                                                |
-| `defaultBucket.policy`     | Bucket policy                       | `none`                                                  |
-| `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                 |
+| `defaultBuckets[n].name`   | Bucket name                         | `bucket`                                                |
+| `defaultBuckets[n].policy` | Bucket policy                       | `none`                                                  |
+| `defaultBuckets[n].purge`  | Purge the bucket if already exists  | `false`                                                 |
 | `azuregateway.enabled`     | Use minio as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
 | `gcsgateway.enabled`       | Use minio as a [Google Cloud Storage gateway](https://docs.minio.io/docs/minio-gateway-for-gcs)| `false` |
 | `gcsgateway.gcsKeyJson`    | credential json file of service account key | `""` |

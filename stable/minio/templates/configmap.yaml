@@ -8,8 +8,10 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
+{{- if .Values.defaultBuckets }}
   initialize: |-
 {{ include (print $.Template.BasePath "/_helper_create_bucket.txt") . | indent 4 }}
+{{- end }}
   config.json: |-
     {
       "version": "26",

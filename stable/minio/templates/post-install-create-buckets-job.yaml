@@ -1,8 +1,8 @@
-{{- if .Values.defaultBucket.enabled }}
+{{- if .Values.defaultBuckets }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "minio.fullname" . }}-make-bucket-job
+  name: {{ template "minio.fullname" . }}-make-buckets-job
   labels:
     app: {{ template "minio.name" . }}
     chart: {{ template "minio.chart" . }}
