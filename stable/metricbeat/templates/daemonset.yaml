@@ -64,42 +64,33 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - name: metricbeat-config
+        - name: config
           mountPath: /usr/share/metricbeat/metricbeat.yml
           readOnly: true
           subPath: metricbeat.yml
-        - name: data
-          mountPath: /usr/share/metricbeat/data
-        - name: varlog
-          mountPath: /var/log
-          readOnly: true
-        - name: varlibdockercontainers
-          mountPath: /var/lib/docker/containers
-          readOnly: true
         - name: modules
           mountPath: /usr/share/metricbeat/modules.d
           readOnly: true
-        - name: dockersock
-          mountPath: /var/run/docker.sock
+        - name: data
+          mountPath: /usr/share/metricbeat/data
         - name: proc
           mountPath: /hostfs/proc
           readOnly: true
         - name: cgroup
           mountPath: /hostfs/sys/fs/cgroup
           readOnly: true
+        - name: dockersock
+          mountPath: /var/run/docker.sock
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 8 }}
 {{- end }}
       volumes:
-      - name: varlog
-        hostPath:
-          path: /var/log
-      - name: varlibdockercontainers
-        hostPath:
-          path: /var/lib/docker/containers
-      - name: metricbeat-config
+      - name: config
         secret:
           secretName: {{ template "metricbeat.fullname" . }}-daemonset-config
+      - name: modules
+        secret:
+          secretName: {{ template "metricbeat.fullname" . }}-daemonset-modules
       - name: data
         hostPath:
           path: /var/lib/metricbeat
@@ -113,9 +104,6 @@ spec:
       - name: dockersock
         hostPath:
           path: /var/run/docker.sock
-      - name: modules
-        secret:
-          secretName: {{ template "metricbeat.fullname" . }}-daemonset-modules
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
