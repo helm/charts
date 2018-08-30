@@ -23,33 +23,15 @@ spec:
       imagePullSecrets:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- if or (ne .Values.hydra.persistence.dbVendor "memory") .Values.hydra.extraInitContainers }}
+    {{- if .Values.hydra.initContainers }}
       initContainers:
-      {{- if ne .Values.hydra.persistence.dbVendor "memory" }}
-        - name: migrate
-          image: "{{ .Values.hydra.image.repository }}:{{ .Values.hydra.image.tag }}"
-          imagePullPolicy: {{ .Values.hydra.image.pullPolicy }}
-          args: ["migrate", "sql", "-e"]
-          envFrom:
-            - secretRef:
-                name: {{ template "hydra.fullname" . }}
-          env:
-            - name: DISABLE_TELEMETRY
-              value: {{ .Values.hydra.disableTelemetry | quote }}
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "hydra.fullname" . }}-db
-                  key: DATABASE_URL
-      {{- end }}
-      {{- if .Values.hydra.extraInitContainers }}
-{{ tpl .Values.hydra.extraInitContainers . | indent 8 }}
-      {{- end }}
+{{ tpl .Values.hydra.initContainers . | indent 8 }}
     {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.hydra.image.repository }}:{{ .Values.hydra.image.tag }}"
           imagePullPolicy: {{ .Values.hydra.image.pullPolicy }}
+          command: ["/start-hydra.sh"]
           args:
           - serve
           - all
@@ -72,9 +54,12 @@ spec:
 {{- with .Values.hydra.extraEnv }}
 {{ tpl . $ | indent 12 }}
 {{- end }}
-          {{- if .Values.hydra.volumeMounts }}
           volumeMounts:
-{{ tpl .Values.hydra.volumeMounts . | indent 12 }}
+          - name: hydra-startscript
+            mountPath: /start-hydra.sh
+            subPath: start-hydra.sh
+          {{- if .Values.hydra.extraVolumeMounts }}
+{{ tpl .Values.hydra.extraVolumeMounts . | indent 12 }}
           {{- end }}
           ports:
             - name: public
@@ -113,7 +98,12 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
       terminationGracePeriodSeconds: 60
-{{- if .Values.hydra.volumes }}
       volumes:
-{{ tpl .Values.hydra.volumes . | indent 8 }}
-{{- end }}
+      - name: hydra-startscript
+        configMap:
+          name: {{ .Release.Name }}-start-script
+          defaultMode: 0744
+          items:
+          - key : start-hydra.sh
+            path: start-hydra.sh
+{{ tpl .Values.hydra.extraVolumes . | indent 6 }}
