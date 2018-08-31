@@ -1,3 +1,7 @@
+### 1.3.5
+
+* [eab7388](https://github.com/kubernetes/charts/commit/eab7388): Fix typo and whitespace in the README file.
+
 ### 1.3.4
 
 * [57b201d](https://github.com/kubernetes/charts/commit/57b201d): Agent-only deployment should not create server-related k8s resources.
