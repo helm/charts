@@ -17,6 +17,9 @@ cluster:
   # If you want X-Pack installed, switch to an image that includes it, enable this option and toggle the features you want
   # enabled in the environment variables outlined in the README
   xpackEnable: false
+  # Some settings must be placed in a keystore, so they need to be mounted in from a secret.
+  # Use this setting to specify the name of the secret
+  # keystoreSecret: eskeystore
   config:
   env:
     # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
