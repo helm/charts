@@ -75,7 +75,7 @@ persistence:
 metrics:
   enabled: false
   image: wrouesnel/postgres_exporter
-  imageTag: v0.1.1
+  imageTag: v0.4.6
   imagePullPolicy: IfNotPresent
   resources:
     requests:
