@@ -70,6 +70,9 @@ data:
         Logstash_Format On
         Retry_Limit False
         Type  {{ .Values.backend.es.type }}
+{{- if .Values.backend.es.time_key }}
+        Time_Key {{ .Values.backend.es.time_key }}
+{{- end }}
 {{ else if eq .Values.backend.type "splunk" }}
     [OUTPUT]
         Name  splunk
