@@ -5,6 +5,10 @@ image:
   # repository: datadog/dogstatsd         # Standalone DogStatsD6
   tag: 6.3.2  # Use 6.3.2-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
+  ## It is possible to specify docker registry credentials
+  ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+  # pullSecrets:
+  #    - name: regsecret
 
 # NB! Normally you need to keep Datadog DaemonSet enabled!
 # The exceptional case could be a situation when you need to run
