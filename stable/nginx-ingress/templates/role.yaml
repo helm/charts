@@ -79,4 +79,11 @@ rules:
     verbs:
       - create
       - patch
+{{- if .Values.rbac.pspEnabled }}
+  - apiGroups:      ['extensions']
+    resources:      ['podsecuritypolicies']
+    verbs:          ['use']
+    resourceNames:  [{{ template "nginx-ingress.fullname" . }}]
+{{- end }}
+
 {{- end -}}
