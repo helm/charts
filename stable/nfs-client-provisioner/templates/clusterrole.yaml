@@ -23,7 +23,7 @@ rules:
   - apiGroups: [""]
     resources: ["endpoints"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]
-{{- if .Values.rbac.pspEnabled }}
+{{- if .Values.podSecurityPolicy.enabled }}
   - apiGroups:      ['extensions']
     resources:      ['podsecuritypolicies']
     verbs:          ['use']
