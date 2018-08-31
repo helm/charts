@@ -123,17 +123,28 @@ spec:
         - name: redis-data
           mountPath: {{ .Values.master.persistence.path }}
           subPath: {{ .Values.master.persistence.subPath }}
-  {{- if not .Values.master.persistence.enabled }}
+        {{- if .Values.configmap }}
+        - name: config
+          mountPath: /opt/bitnami/redis/etc/redis.conf
+          subPath: redis.conf
+        {{- end }}
       volumes:
+      {{- if .Values.configmap }}
+      - name: config
+        configMap:
+          name: {{ template "redis.fullname" . }}
+      {{- end }}
+      {{- if not .Values.master.persistence.enabled }}
       - name: "redis-data"
         emptyDir: {}
-  {{- else }}
-    {{- if .Values.persistence.existingClaim }}
-      volumes:
+      {{- else }}
+      {{- if .Values.persistence.existingClaim }}
       - name: "redis-data"
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim }}
-    {{- else }}
+      {{- end }}
+      {{- end }}
+  {{- if and .Values.master.persistence.enabled (not .Values.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
         name: redis-data
@@ -158,7 +169,6 @@ spec:
         storageClassName: {{ .Values.master.persistence.storageClass | quote }}
       {{- end }}
       {{- end }}
-    {{- end }}
   {{- end }}
   updateStrategy:
     type: {{ .Values.master.statefulset.updateStrategy }}
