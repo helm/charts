@@ -76,7 +76,7 @@ data:
 {{- if .Values.cluster.config }}
 {{ toYaml .Values.cluster.config | indent 4 }}
 {{- end }}
-{{- if hasPrefix "2." .Values.image.tag }}
+{{- if hasPrefix "2." .Values.appVersion }}
   logging.yml: |-
     # you can override this using by setting a system property, for example -Des.logger.level=DEBUG
     es.logger.level: INFO
@@ -92,7 +92,7 @@ data:
         layout:
           type: consolePattern
           conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
-{{- else if hasPrefix "5." .Values.image.tag }}
+{{- else if hasPrefix "5." .Values.appVersion }}
   log4j2.properties: |-
     status = error
     appender.console.type = Console
@@ -103,7 +103,7 @@ data:
     rootLogger.appenderRef.console.ref = console
     logger.searchguard.name = com.floragunn
     logger.searchguard.level = info
-{{- else if hasPrefix "6." .Values.image.tag }}
+{{- else if hasPrefix "6." .Values.appVersion }}
   log4j2.properties: |-
     status = error
     appender.console.type = Console
