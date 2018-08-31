@@ -14,7 +14,7 @@ fullnameOverride: ""
 
 service:
   type: ClusterIP
-  port: 80
+  port: 8080
 
 ingress:
   enabled: false
@@ -44,18 +44,18 @@ config:
   # The cluster name. Used in UI and kubectl config instructions.
   clusterName: "YourCluster"
   # OAuth2 URL to start authorization flow.
-  authorizeURL: "https://oauth.example.com/authorize"
+  authorizeURL: "https://oauth.example.com:8080/authorize"
   # OAuth2 URL to obtain access tokens.
-  tokenURL: "https://oauth.example.com/oauth/token"
+  tokenURL: "https://oauth.example.com:8080/oauth/token"
   # Endpoint that provides user profile information [optional]. Not all providers
   # will require this.
-  audience: "https://oauth.example.com/userinfo"
+  audience: "https://oauth.example.com:8080/userinfo"
   # Used to specify the scope of the requested Oauth authorization.
   # scopes: ["openid", "profile", "email", "offline_access"]
   # Where to redirect back to. This should be a URL where gangway is reachable.
   # Typically this also needs to be registered as part of the oauth application
   # with the oAuth provider.
-  redirectURL: "https://gangway.yourcluster.com/callback"
+  redirectURL: "https://gangway.yourcluster.com:8080/callback"
   # API client ID as indicated by the identity provider
   clientID: "<your client ID>"
   # The JWT claim to use as the username. This is used in UI.

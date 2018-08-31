@@ -11,9 +11,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: {{ .Values.config.port }}
       protocol: TCP
-      name: http
+      name: gangway
   selector:
     app: {{ include "gangway.name" . }}
     release: {{ .Release.Name }}
