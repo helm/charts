@@ -133,6 +133,12 @@ spec:
           name: config
           subPath: log4j2.properties
 {{- end }}
+{{- if .Values.cluster.keystoreSecret }}
+        - name: keystore
+          mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
+          subPath: elasticsearch.keystore
+          readOnly: true
+{{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range $pullSecret := .Values.image.pullSecrets }}
@@ -143,6 +149,11 @@ spec:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.cluster.keystoreSecret }}
+      - name: keystore
+        secret:
+          secretName: {{ .Values.cluster.keystoreSecret }}
+{{- end }}
   {{- if not .Values.master.persistence.enabled }}
       - name: data
         emptyDir: {}
