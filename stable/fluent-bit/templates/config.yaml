@@ -15,6 +15,9 @@ data:
         Daemon       Off
         Log_Level    info
         Parsers_File parsers.conf
+{{- if .Values.parsers.enabled }}
+        Parsers_File parsers_custom.conf
+{{- end }}
 {{- if .Values.metrics.enabled }}
         HTTP_Server  On
         HTTP_Listen  0.0.0.0
