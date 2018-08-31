@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.kubernetesDomain`           | Kubernetes cluster domain name                                      | `cluster.local`                      |
 | `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                              |
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                 |
+| `cluster.keystoreSecret`             | Name of secret holding secure config options in an es keystore      | `nil`                                |
 | `cluster.env`                        | Cluster environment variables                                       | `{}`                                 |
 | `client.name`                        | Client component name                                               | `client`                             |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                  |
