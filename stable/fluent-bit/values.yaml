@@ -63,6 +63,7 @@ backend:
     format: msgpack
 
 parsers:
+  enabled: false
   ## List the respective parsers in key: value format per entry
   ## Regex required fields are name and regex. JSON required field
   ## is name.
