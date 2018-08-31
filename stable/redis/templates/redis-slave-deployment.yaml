@@ -106,4 +106,14 @@ spec:
         {{ include "redis.slave.readinessProbe" . | indent 8 }}
         resources:
 {{ toYaml (.Values.slave.resources | default .Values.master.resources) | indent 10 }}
+      {{- if .Values.configmap }}
+        volumeMounts:
+        - name: config
+          mountPath: /opt/bitnami/redis/etc/redis.conf
+          subPath: redis.conf
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "redis.fullname" . }}
+      {{- end }}
 {{- end }}
