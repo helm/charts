@@ -62,7 +62,9 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                             |
 | `replication.user`                        | MariaDB replication user                            | `replicator`                                                       |
 | `replication.password`                    | MariaDB replication user password                   | _random 10 character alphanumeric string_                         |
+| `master.affinity`                         | Master affinity (in addition to master.antiAffinity when set)  | `{}`                                                   |
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
+| `master.tolerations`                      | List of node taints to tolerate (master)            | `[]`                                                              |
 | `master.persistence.enabled`              | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
 | `master.persistence.annotations`          | Persistent Volume Claim annotations                 | `{}`                                                              |
 | `master.persistence.storageClass`         | Persistent Volume Storage Class                     | ``                                                                |
@@ -83,7 +85,9 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.readinessProbe.successThreshold`  | Minimum consecutive successes for the probe (master)| `1`                                                               |
 | `master.readinessProbe.failureThreshold`  | Minimum consecutive failures for the probe (master) | `3`                                                               |
 | `slave.replicas`                          | Desired number of slave replicas                    | `1`                                                               |
+| `slave.affinity`                          | Slave affinity (in addition to slave.antiAffinity when set) | `{}`                                                      |
 | `slave.antiAffinity`                      | Slave pod anti-affinity policy                      | `soft`                                                            |
+| `slave.tolerations`                       | List of node taints to tolerate for (slave)         | `[]`                                                              |
 | `slave.persistence.enabled`               | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
 | `slave.persistence.annotations`           | Persistent Volume Claim annotations                 | `{}`                                                              |
 | `slave.persistence.storageClass`          | Persistent Volume Storage Class                     | ``                                                                |
