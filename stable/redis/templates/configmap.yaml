@@ -1,0 +1,14 @@
+{{- if .Values.configmap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "redis.name" . }}
+    chart: {{ template "redis.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "redis.fullname" . }}
+data:
+  redis.conf: |-
+{{ toYaml .Values.configmap | indent 4 }}
+{{- end }}
