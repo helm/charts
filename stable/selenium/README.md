@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.resources` | The resources for the hub container, defaults to minimum half a cpu and maximum 1,000 mb RAM | `{"limits":{"cpu":".5", "memory":"1000Mi"}}` |
 | `hub.serviceType` | The Service type | `NodePort` |
 | `hub.serviceLoadBalancerIP` | The Public IP for the Load Balancer | `nil` |
+| `hub.loadBalancerSourceRanges` | A list of IP CIDRs allowed access to load balancer (if supported) | `[]` |
 | `hub.serviceSessionAffinity` | The session affinity for the hub service| `None` |
 | `hub.gridNewSessionWaitTimeout` | | `nil` |
 | `hub.gridJettyMaxThreads` | | `nil` |
