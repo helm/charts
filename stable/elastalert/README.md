@@ -41,6 +41,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `elasticsearch.host`   | elasticsearch endpoint to use                     | elasticsearch                   |
 | `elasticsearch.port`   | elasticsearch port to use                         | 80                              |
 | `elasticsearch.useSsl` | whether or not to connect to es_host using SSL    | False                           |
+| `elasticsearch.verifyCerts` | whether or not to verify es_host SSL Cert    | True                            |
 | `resources`            | Container resource requests and limits            | {}                              |
 | `rules`                | Rule and alert configuration for Elastalert       | {} example shown in values.yaml |
 | `runIntervalMins`      | Default interval between alert checks, in minutes | 1                               |

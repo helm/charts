@@ -20,5 +20,6 @@ data:
     es_port: {{ .Values.elasticsearch.port }}
     writeback_index: elastalert_status
     use_ssl: {{ .Values.elasticsearch.useSsl }}
+    verify_certs: {{ .Values.elasticsearch.verifyCerts }}
     alert_time_limit:
       days: 2
