@@ -1,7 +1,7 @@
 ## Rocket Chat image version
 ## ref: https://hub.docker.com/r/library/rocket.chat/tags/
 ##
-image: rocket.chat:0.56
+image: rocket.chat:0.68.5
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
