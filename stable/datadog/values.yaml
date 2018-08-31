@@ -8,7 +8,7 @@ image:
   ## It is possible to specify docker registry credentials
   ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
   # pullSecrets:
-  #    - regsecret
+  #    - name: regsecret
 
 # NB! Normally you need to keep Datadog DaemonSet enabled!
 # The exceptional case could be a situation when you need to run
