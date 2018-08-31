@@ -87,6 +87,10 @@ spec:
             - mountPath: /ssl
               name: ssl
             {{- end }}
+{{- if .Values.nodeSelector }}
+          nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 10 }}
+{{- end }}
       volumes:
         {{- if .Values.es.ssl.enabled }}
         - name: ssl
