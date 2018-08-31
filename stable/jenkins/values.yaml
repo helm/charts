@@ -125,6 +125,9 @@ Master:
     # - secretName: jenkins.cluster.local
     #   hosts:
     #     - jenkins.cluster.local
+  # Kubernetes API url. Some cloud providers, e.g Azure Container Service (AKS), Oracle Container Service (OKE), require this
+  # to be set to https://kubernetes.default.svc, as the default is not included on their cluster generated certs.
+  KubernetesServerUrl: https://kubernetes.default
 
 Agent:
   Enabled: true
