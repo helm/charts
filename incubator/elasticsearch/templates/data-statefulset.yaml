@@ -135,6 +135,12 @@ spec:
         - name: config
           mountPath: /post-start-hook.sh
           subPath: post-start-hook.sh
+{{- if .Values.cluster.keystoreSecret }}
+        - name: keystore
+          mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
+          subPath: elasticsearch.keystore
+          readOnly: true
+{{- end }}
         lifecycle:
           preStop:
             exec:
@@ -153,6 +159,11 @@ spec:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.cluster.keystoreSecret }}
+      - name: keystore
+        secret:
+          secretName: {{ .Values.cluster.keystoreSecret }}
+{{- end }}
   {{- if not .Values.data.persistence.enabled }}
       - name: data
         emptyDir: {}
