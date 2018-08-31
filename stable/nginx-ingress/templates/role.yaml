@@ -79,7 +79,7 @@ rules:
     verbs:
       - create
       - patch
-{{- if .Values.rbac.pspEnabled }}
+{{- if .Values.podSecurityPolicy.enabled }}
   - apiGroups:      ['extensions']
     resources:      ['podsecuritypolicies']
     verbs:          ['use']
