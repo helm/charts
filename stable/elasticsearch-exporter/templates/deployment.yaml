@@ -88,8 +88,8 @@ spec:
               name: ssl
             {{- end }}
 {{- if .Values.nodeSelector }}
-          nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 10 }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
       volumes:
         {{- if .Values.es.ssl.enabled }}
