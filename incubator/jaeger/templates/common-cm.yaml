@@ -27,6 +27,7 @@ data:
   span-storage.type: {{ .Values.storage.type | quote }}
   query.health-check-http-port: {{ .Values.query.healthCheckPort | quote }}
   query.port: {{ .Values.query.service.targetPort | quote }}
+  query.base-path: {{ .Values.query.basePath | quote }}
   # Not implemented
   # cassandra.archive.connections-per-host:
   # cassandra.archive.keyspace:

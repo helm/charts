@@ -160,6 +160,7 @@ query:
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
   healthCheckPort: 16687
+  basePath: /
   replicaCount: 1
   service:
     annotations: {}

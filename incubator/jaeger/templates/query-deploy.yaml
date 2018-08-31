@@ -88,6 +88,11 @@ spec:
               configMapKeyRef:
                 name: {{ template "jaeger.fullname" . }}
                 key: query.port
+          - name: QUERY_BASE_PATH
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: query.base-path
           - name: QUERY_HEALTH_CHECK_HTTP_PORT
             valueFrom:
               configMapKeyRef:
