@@ -84,8 +84,8 @@ Master:
   # JMXPort: 4000
   # List of plugins to be install during Jenkins master start
   InstallPlugins:
-    - kubernetes:1.12.0
-    - workflow-job:2.23
+    - kubernetes:1.12.4
+    - workflow-job:2.24
     - workflow-aggregator:2.5
     - credentials-binding:1.16
     - git:3.9.1
