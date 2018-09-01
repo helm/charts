@@ -5,7 +5,7 @@
 
 image:
   repository: k8s.gcr.io/kubernetes-dashboard-amd64
-  tag: v1.8.3
+  tag: v1.10.0
   pullPolicy: IfNotPresent
 
 replicaCount: 1
@@ -56,10 +56,10 @@ service:
 resources:
   limits:
     cpu: 100m
-    memory: 50Mi
+    memory: 100Mi
   requests:
     cpu: 100m
-    memory: 50Mi
+    memory: 100Mi
 
 ingress:
   ## If true, Kubernetes Dashboard Ingress will be created.

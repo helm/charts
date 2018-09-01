@@ -19,4 +19,11 @@ rules:
       - get
       - list
       - watch
+  - apiGroups:
+    - ""
+    resources:
+    - nodes/stats
+    verbs:
+    - get
+    - create
 {{- end -}}

@@ -76,10 +76,10 @@ The following table lists the configurable parameters of the Minio chart and the
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository                    | `minio/minio`                                           |
-| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-07-10T01-42-11Z`|
+| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-08-25T01-56-38Z`|
 | `image.pullPolicy`         | Image pull policy                   | `IfNotPresent`                                          |
 | `mcImage.repository`       | Client image repository             | `minio/mc`                                              |
-| `mcImage.tag`              | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).| `RELEASE.2018-06-09T02-18-09Z`|
+| `mcImage.tag`              | mc image tag. Possible values listed [here](https://hub.docker.com/r/minio/mc/tags/).| `RELEASE.2018-08-18T02-13-04Z`|
 | `mcImage.pullPolicy`       | mc Image pull policy                | `IfNotPresent`                                          |
 | `ingress.enabled`          | Enables Ingress                     | `false`                                                 |
 | `ingress.annotations`      | Ingress annotations                 | `{}`                                                    |
@@ -97,7 +97,7 @@ The following table lists the configurable parameters of the Minio chart and the
 | `persistence.enabled`      | Use persistent volume to store data | `true`                                                  |
 | `persistence.size`         | Size of persistent volume claim     | `10Gi`                                                  |
 | `persistence.existingClaim`| Use an existing PVC to persist data | `nil`                                                   |
-| `persistence.storageClass` | Type of persistent volume claim     | `generic`                                               |
+| `persistence.storageClass` | Storage class name of PVC           | `nil`                                                   |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                                         |
 | `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""`                                  |
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                            |

@@ -29,6 +29,10 @@ spec:
       {{- if .Values.daemonset.useHostPID }}
       hostPID: {{ .Values.daemonset.useHostPID }}
       {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -125,7 +129,7 @@ spec:
           {{- end }}
           {{- if .Values.datadog.logsEnabled }}
           - name: pointerdir
-            mountPath: /opt/datadog-agent/run
+            mountPath: /var/lib/datadog-agent/logs
           {{- end }}
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
@@ -158,7 +162,7 @@ spec:
         {{- end }}
         {{- if .Values.datadog.logsEnabled }}
         - hostPath:
-            path: /opt/datadog-agent/run
+            path: /var/lib/datadog-agent/logs
           name: pointerdir
         {{- end }}
 {{- if .Values.datadog.volumes }}

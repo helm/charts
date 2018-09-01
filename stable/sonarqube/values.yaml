@@ -5,6 +5,8 @@ replicaCount: 1
 image:
   repository: sonarqube
   tag: 6.7.3
+  # If using a private repository, the name of the imagePullSecret to use
+  # pullSecret: my-repo-secret
 service:
   name: sonarqube
   type: LoadBalancer
@@ -41,6 +43,13 @@ tolerations: []
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
+
+# hostAliases allows the modification of the hosts file inside a container
+hostAliases: []
+# - ip: "192.168.1.10"
+#   hostnames:
+#   - "example.com"
+#   - "www.example.com"
 
 readinessProbe:
   initialDelaySeconds: 60

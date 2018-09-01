@@ -34,11 +34,11 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `debug`                                 | Debug mode                                     | `false`                                                      |
 | `persistence.enabled`                   | Use a PVC to persist data                      | `true`                                                       |
 | `persistence.storageClassName`          | Storage class name of backing PVC              | `""`                                                         |
-| `persistence.accessModes`               | Perisistent volumes access modes               | `["ReadWriteOnce"]`                                          |
+| `persistence.accessModes`               | Persistent volumes access modes               | `["ReadWriteOnce"]`                                          |
 | `persistence.size`                      | Size of data volume                            | `10Gi`                                                       |
 | `rbac.create`                           | Specifies if RBAC resources should be created  | `true`                                                       |
 | `serviceAccount.create`                 | Specifies if ServiceAccount should be created  | `true`                                                       |
-| `serviceAccount.name`                   | Name of the generated serviceAccount           | Defaults to fullname template                                |
+| `serviceAccount.name`                   | Name of the generated ServiceAccount           | Defaults to fullname template                                |
 | `superuserUsername`                     | Postgres superuser username                    | `stolon`                                                     |
 | `superuserPassword`                     | Postgres superuser password                    | random 40 characters                                         |
 | `replicationUsername`                   | Replication username                           | `repluser`                                                   |
@@ -48,6 +48,7 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `store.kubeResourceKind`                | Kubernetes resource kind (only for kubernetes) | `configmap`                                                  |
 | `pgParameters`                          | [`postgresql.conf`][pgconf] options used during cluster creation | `{}`                                       |
 | `ports`                                 | Ports to expose on pods                        | `{"stolon":{"containerPort": 5432},"metrics":{"containerPort": 8080}}`|
+| `job.autoCreateCluster                  | Set to `false` to force-disable auto-cluster-creation which may clear pre-existing postgres db data | `true`  |
 | `keeper.replicaCount`                   | Number of keeper nodes                         | `2`                                                          |
 | `keeper.resources`                      | Keeper resource requests/limit                 | `{}`                                                         |
 | `keeper.priorityClassName`              | Keeper priorityClassName                       | `nil`                                                        |
