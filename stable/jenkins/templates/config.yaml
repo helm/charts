@@ -35,7 +35,7 @@ data:
               <name>default</name>
               <instanceCap>2147483647</instanceCap>
               <idleMinutes>0</idleMinutes>
-              <label>{{ .Release.Name }}-{{ .Values.Agent.Component }}</label>
+              <label>{{ .Release.Name }}-{{ .Values.Agent.Component }} {{ .Values.Agent.CustomJenkinsLabels  | join " " }}</label>
               <nodeSelector>
                 {{- $local := dict "first" true }}
                 {{- range $key, $value := .Values.Agent.NodeSelector }}
