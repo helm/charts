@@ -137,16 +137,16 @@ data:
     {{- end }}
     {{- if .Values.kvprovider.consul }}
     [consul]
-    endpoint = "{{ .Values.kvprovider.consul.endpoint }}"
+    endpoint = {{ .Values.kvprovider.consul.endpoint | quote }}
     watch = {{ .Values.kvprovider.consul.watch }}
-    prefix = {{ .Values.kvprovider.consul.prefix }}
-    {{- if .Values.kvprovider.consul.username }}username = {{ .Values.kvprovider.consul.username }}{{- end }}
-    {{- if .Values.kvprovider.consul.password }}password = {{ .Values.kvprovider.consul.password }}{{- end }}
+    prefix = {{ .Values.kvprovider.consul.prefix | quote }}
+    {{- if .Values.kvprovider.consul.username }}username = {{ .Values.kvprovider.consul.username | quote }}{{- end }}
+    {{- if .Values.kvprovider.consul.password }}password = {{ .Values.kvprovider.consul.password | quote  }}{{- end }}
       {{- if .Values.kvprovider.consul.tls }}
       [consul.tls]
       {{- end }}
       {{ range $key, $value := .Values.kvprovider.consul.tls }}
-      {{ $key }} = {{ $value }}
+      {{ $key }} = {{ $value | quote }}
       {{ end }}
     {{- end }}
     {{- if .Values.kvprovider.boltdb }}
