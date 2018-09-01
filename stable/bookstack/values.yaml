@@ -5,8 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: nginx
-  tag: stable
+  repository: solidnerd/bookstack
+  tag: 0.23.2
   pullPolicy: IfNotPresent
 
 service:
@@ -20,7 +20,7 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   path: /
   hosts:
-    - chart-example.local
+    - bookstack-example.local
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
