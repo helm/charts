@@ -130,6 +130,7 @@ Agent:
   Enabled: true
   Image: jenkins/jnlp-slave
   ImageTag: 3.10-1
+  CustomJenkinsLabels: []
 # ImagePullSecret: jenkins
   Component: "jenkins-slave"
   Privileged: false
