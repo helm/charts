@@ -145,9 +145,14 @@ ingress:
 # TODO: add support for plugins https://docs.sentry.io/server/plugins/
 
 postgresql:
+  enabled: true
   postgresDatabase: sentry
   postgresUser: sentry
-  imageTag: "9.5"
+  # Only used when internal PG is disabled
+  # postgresHost: postgres
+  # postgresPassword: postgres
+  # postgresPort: 5432
+  imageTag: "9.6"
   persistence:
     enabled: true
 
