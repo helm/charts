@@ -11,6 +11,8 @@ metadata:
 spec:
   serviceName: {{ template "elasticsearch.data.fullname" . }}
   replicas: {{ .Values.data.replicas }}
+  updateStrategy:
+    type: RollingUpdate
   template:
     metadata:
       labels:
