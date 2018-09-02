@@ -56,6 +56,10 @@ spec:
           - -c
           - '{{ $key | snakecase }}={{ $value }}'
           {{- end }}
+          {{- if .Values.pgHbaConf }}
+          - -c
+          - hba_file=/pg_hba/pg_hba.conf
+          {{- end }}
         env:
         - name: POSTGRES_USER
           value: {{ default "postgres" .Values.postgresUser | quote }}
@@ -112,6 +116,11 @@ spec:
           mountPath: /conf
           readOnly: true
         {{- end }}
+        {{- if .Values.pgHbaConf }}
+        - name: pg-hba-conf
+          mountPath: /pg_hba
+          readOnly: true
+        {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
@@ -154,6 +163,14 @@ spec:
           items:
             - key: postgres-password
               path: postgres-password
+      {{- end }}
+      {{- if .Values.pgHbaConf }}
+      - name: pg-hba-conf
+        configMap:
+          name: {{ template "postgresql.fullname" . }}
+          items:
+            - key: pg_hba.conf
+              path: pg_hba.conf
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
