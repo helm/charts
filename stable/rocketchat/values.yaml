@@ -85,6 +85,10 @@ persistence:
 #     memory: 512Mi
 #     cpu: 300m
 
+securityContext:
+  userId: 999
+  groupId: 999
+
 ## Configure the ingress object to hook into existing infastructure
 ### ref : http://kubernetes.io/docs/user-guide/ingress/
 ###

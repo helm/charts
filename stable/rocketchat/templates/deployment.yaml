@@ -16,8 +16,8 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       securityContext:
-        runAsUser: 999
-        fsGroup: 999
+        runAsUser: {{ .Values.securityContext.userId }}
+        fsGroup: {{ .Values.securityContext.groupId }}
       containers:
       - name: {{ template "rocketchat.fullname" . }}
         image: "{{ .Values.image }}"
