@@ -89,6 +89,14 @@ securityContext:
   userId: 999
   groupId: 999
 
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
 ## Configure the ingress object to hook into existing infastructure
 ### ref : http://kubernetes.io/docs/user-guide/ingress/
 ###
