@@ -36,6 +36,9 @@ spec:
           env:
             - name: REDIS_ADDR
               value: {{ .Values.redisAddress }}
+{{- if .Values.env }}
+{{ toYaml .Values.env | indent 12 }}
+{{- end }}
           livenessProbe:
             httpGet:
               path: /
