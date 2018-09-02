@@ -1,0 +1,15 @@
+{{- if .Values.ingressController.enabled -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: kong-ingress-role-nisa-binding
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kong-ingress-role
+subjects:
+  - kind: ServiceAccount
+    name: kong-serviceaccount
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

@@ -1,14 +1,16 @@
+{{- if .Values.ingressController.enabled -}}
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: "{{ template "kong.fullname" . }}"
+  name: "{{ template "kong.fullname" . }}-controller"
   labels:
     app: "{{ template "kong.name" . }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.ingressController.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "kong.name" . }}
@@ -23,43 +25,22 @@ spec:
         app: {{ template "kong.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: kong-serviceaccount
+{{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.image.imagePullSecrets }}
+{{- end }}
       containers:
-      - name: {{ template "kong.name" . }}
+      - name: admin-api
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
-        {{- if .Values.ingressController.enabled }}
-        - name: KONG_ADMIN_LISTEN
+        - name: KONG_PROXY_LISTEN
           value: 'off'
-        {{- end }}
-        {{- if .Values.admin.useTLS }}
-        - name: KONG_ADMIN_LISTEN
-          value: "0.0.0.0:{{ .Values.admin.containerPort }} ssl"
-        {{- else }}
-        - name: KONG_ADMIN_LISTEN
-          value: 0.0.0.0:{{ .Values.admin.containerPort }}
-        {{- end }}
-        {{- if .Values.proxy.useTLS }}
-        - name: KONG_PROXY_LISTEN
-          value: "0.0.0.0:{{ .Values.proxy.containerPort }} ssl"
-        {{- else }}
-        - name: KONG_PROXY_LISTEN
-          value: 0.0.0.0:{{ .Values.proxy.containerPort }}
-        {{- end }}
-        - name: KONG_NGINX_DAEMON
-          value: "off"
-        - name: KONG_PROXY_ACCESS_LOG
-          value: "/dev/stdout"
         - name: KONG_ADMIN_ACCESS_LOG
           value: "/dev/stdout"
-        - name: KONG_PROXY_ERROR_LOG
-          value: "/dev/stderr"
         - name: KONG_ADMIN_ERROR_LOG
           value: "/dev/stderr"
-        {{- range $key, $val := .Values.env }}
-        - name: KONG_{{ $key | upper}}
-          value: {{ $val | quote }}
-        {{- end}}
         {{- if .Values.postgresql.enabled }}
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
@@ -77,22 +58,38 @@ spec:
         - name: admin
           containerPort: {{ .Values.admin.containerPort }}
           protocol: TCP
-        - name: proxy
-          containerPort: {{ .Values.proxy.containerPort }}
-          protocol: TCP
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
 {{ toYaml .Values.livenessProbe | indent 10 }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
-    {{- if .Values.affinity }}
-      affinity:
-{{ toYaml .Values.affinity | indent 8 }}
-    {{- end }}
-    {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-    {{- end }}
-      tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+      - name: ingress-controller
+        args:
+        - /kong-ingress-controller
+        # the kong URL points to the kong admin api server
+        - --kong-url=http://localhost:{{ .Values.admin.containerPort }}
+        # the default service is the kong proxy service
+        - --default-backend-service={{ .Release.Namespace }}/{{ template "kong.fullname" . }}-proxy
+        # Service from were we extract the IP address/es to use in Ingress status
+        - --publish-service={{ .Release.Namespace }}/{{ template "kong.fullname" . }}-proxy
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        image: "{{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        readinessProbe:
+{{ toYaml .Values.ingressController.readinessProbe | indent 10 }}
+        livenessProbe:
+{{ toYaml .Values.ingressController.livenessProbe | indent 10 }}
+        resources:
+{{ toYaml .Values.ingressController.resources | indent 10 }}
+{{- end -}}
