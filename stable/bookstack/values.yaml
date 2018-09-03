@@ -11,7 +11,7 @@ image:
 
 app:
   # Laravel APP_KEY. Generate one with `php artisan key:generate` and put here if you want a static key.
-  key: 
+  key:
 
 ##
 ## External database configuration
@@ -48,7 +48,7 @@ mariadb:
   ##
   db:
     name: bookstack
-    user: bookstack 
+    user: bookstack
     ## If the password is not specified, mariadb will generates a random password
     ##
     # password:
