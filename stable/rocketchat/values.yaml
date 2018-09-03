@@ -86,8 +86,9 @@ persistence:
 #     cpu: 300m
 
 securityContext:
-  userId: 999
-  groupId: 999
+  enabled: true
+  runAsUser: 999
+  fsGroup: 999
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
