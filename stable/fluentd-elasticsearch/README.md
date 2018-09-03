@@ -47,12 +47,13 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | ---------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
 | `annotations`                      | Optional daemonset annotations             | `NULL`                                                     |
 | `configMaps`                       | Fluentd configmaps                         | `default conf files`                                       |
-| `elasticsearch.host`               | Elstaicsearch Host                         | `elasticsearch-client`                                     |
+| `elasticsearch.host`               | Elasticsearch Host                         | `elasticsearch-client`                                     |
 | `elasticsearch.port`               | Elasticsearch Port                         | `9200`                                                     |
 | `elasticsearch.buffer_chunk_limit` | Elasticsearch buffer chunk limit           | `2M`                                                       |
 | `elasticsearch.buffer_queue_limit` | Elasticsearch buffer queue limit           | `8`                                                        |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                            |
+| `configVolumeName`                 | Name for the `/etc/fluent/config.d` volume | `config-volume-{{ template "fluentd-elasticsearch.fullname" . }}` |
 | `image.repository`                 | Image                                      | `gcr.io/google-containers/fluentd-elasticsearch`           |
 | `image.tag`                        | Image tag                                  | `v2.3.1`                                                   |
 | `image.pullPolicy`                 | Image pull policy                          | `IfNotPresent`                                             |
@@ -63,8 +64,8 @@ The following table lists the configurable parameters of the Fluentd elasticsear
 | `resources.requests.memory`        | Memory request                             | `200Mi`                                                    |
 | `service`                          | Service definition                         | `{}`                                                       |
 | `serviceAccount.create`            | Specifies whether a service account should be created.| `true`                                          |
-| `serviceAccount.name`              | Name of the service account.               |                                                            |   
-| `livenessProbe.enabled`            | Whether to enable livenessProbe             | `true`                                                    |   
+| `serviceAccount.name`              | Name of the service account.               |                                                            |
+| `livenessProbe.enabled`            | Whether to enable livenessProbe            | `true`                                                     |
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                                     |
 
 
