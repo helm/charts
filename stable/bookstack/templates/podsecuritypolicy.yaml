@@ -10,7 +10,7 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   privileged: false
-  allowPrivilegeEscalation: true
+  allowPrivilegeEscalation: false
   volumes:
     - 'configMap'
     - 'downwardAPI'
