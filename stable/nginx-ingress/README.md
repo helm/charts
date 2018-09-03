@@ -174,6 +174,10 @@ as described [here](https://github.com/kubernetes/ingress-nginx/blob/master/docs
 $ helm install stable/nginx-ingress --set controller.extraArgs.v=2
 ```
 
+## PodDisruptionBudget
+Note that the PodDisruptionBudget resource will only be defined if the replicaCount is greater than one,
+else it would make it impossible to evacuate a node. See [gh issue #7127](https://github.com/helm/charts/issues/7127) for more info.
+
 ## Prometheus Metrics
 
 The Nginx ingress controller can export Prometheus metrics. In order for this to work, the VTS dashboard must be enabled as well.
