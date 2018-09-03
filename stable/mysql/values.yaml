@@ -29,6 +29,20 @@ imageTag: "5.7.14"
 ##
 imagePullPolicy: IfNotPresent
 
+extraVolumes: |
+  # - name: extras
+  #   emptyDir: {}
+
+extraVolumeMounts: |
+  # - name: extras
+  #   mountPath: /usr/share/extras
+  #   readOnly: true
+
+extraInitContainers: |
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
+
 # Optionally specify an array of imagePullSecrets.
 # Secrets must be manually created in the namespace.
 # ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -66,6 +80,7 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
+  annotations: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -140,3 +155,6 @@ ssl:
 ## Default: nil (mysql will use image's default timezone, normally UTC)
 ## Example: 'Australia/Sydney'
 # timezone:
+
+# To be added to the database server pod(s)
+podAnnotations: {}

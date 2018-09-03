@@ -47,7 +47,7 @@ The following table lists the configurable parameters of the Fluentd Cloudwatch 
 | Parameter                       | Description                                                               | Default                               |
 | ------------------------------- | ------------------------------------------------------------------------- | --------------------------------------|
 | `image.repository`              | Image repository                                                          | `fluent/fluentd-kubernetes-daemonset` |
-| `image.tag`                     | Image tag                                                                 | `v0.12.33-cloudwatch`                 |
+| `image.tag`                     | Image tag                                                                 | `v0.12.43-cloudwatch`                 |
 | `image.pullPolicy`              | Image pull policy                                                         | `IfNotPresent`                        |
 | `resources.limits.cpu`          | CPU limit                                                                 | `100m`                                |
 | `resources.limits.memory`       | Memory limit                                                              | `200Mi`                               |
@@ -63,6 +63,12 @@ The following table lists the configurable parameters of the Fluentd Cloudwatch 
 | `rbac.serviceAccountName`       | existing ServiceAccount to use (ignored if rbac.create=true)              | `default`                             |
 | `tolerations`                   | Add tolerations                                                           | `[]`                                  |
 | `extraVars`                     | Add pod environment variables (must be specified as a single line object) | `[]`                                  |
+
+Starting with fluentd-kubernetes-daemonset v0.12.43-cloudwatch, the container runs as user fluentd. To be able to write pos files to the host system, you'll need to run fluentd as root. Add the following extraVars value to run as root.
+
+```code
+"{ name: FLUENT_UID, value: '0' }"
+```
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
