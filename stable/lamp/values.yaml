@@ -102,7 +102,7 @@ mysql:
   tag: 5.7
 
   ## mysql.imagePullPolicy Image pull policy
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
 
   ## mysql.sockets Enables communication between MySQL and PHP via sockets instead of TCP
   sockets: true
