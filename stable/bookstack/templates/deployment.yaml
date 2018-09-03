@@ -19,6 +19,7 @@ spec:
         app: {{ template "bookstack.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "bookstack.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -35,17 +36,34 @@ spec:
             httpGet:
               path: /
               port: http
+          env:
+            - name: DB_HOST
+              value: percona01.b-bright
+            - name: DB_DATABASE
+              value: bookstack_test
+            - name: DB_USERNAME
+              value: bookstack_test
+            - name: DB_PASSWORD
+              value: secret
+          volumeMounts:
+          - name: uploads
+            mountPath: /var/www/bookstack/public/uploads
+          - name: storage
+            mountPath: /var/www/bookstack/public/storage
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-    {{- with .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+      volumes:
+        - name: uploads
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: "{{ template "bookstack.fullname" . }}-uploads"
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: storage
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: "{{ template "bookstack.fullname" . }}-storage"
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}
