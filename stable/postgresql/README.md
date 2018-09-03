@@ -66,6 +66,7 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 | `persistence.size`         | Size of data volume                             | `8Gi`                                                      |
 | `persistence.subPath`      | Subdirectory of the volume to mount at          | `postgresql-db`                                            |
 | `persistence.mountPath`    | Mount path of data volume                       | `/var/lib/postgresql/data/pgdata`                          |
+| `persistence.resourcePolicy` | set resource-policy Helm annotation on PVC. Can be nil or "keep" | `nil`                                   |
 | `resources`                | CPU/Memory resource requests/limits             | Memory: `256Mi`, CPU: `100m`                               |
 | `metrics.enabled`          | Start a side-car prometheus exporter            | `false`                                                    |
 | `metrics.image`            | Exporter image                                  | `wrouesnel/postgres_exporter`                              |
