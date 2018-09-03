@@ -1,0 +1,68 @@
+replicaCount: 1
+
+image:
+  repository: postgrest/postgrest
+  tag: v5.1.0
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 3000
+
+env:
+  pgrst_db_uri:
+  pgrst_db_schema:
+  pgrst_db_anon_role:
+  pgrst_db_pool:
+  pgrst_server_host:
+  pgrst_server_proxy_uri:
+  pgrst_jwt_secret:
+  pgrst_secret_is_base64:
+  pgrst_jwt_aud:
+  pgrst_max_rows:
+  pgrst_pre_request:
+  pgrst_role_claim_key:
+
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# PostgreSQL subchart configs
+postgresql:
+  enabled: true
+  postgresPassword: postgres
+  postgresUser: postgres
+  postgresDatabase: postgres
+  persistence:
+    enabled: false

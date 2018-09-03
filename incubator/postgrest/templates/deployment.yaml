@@ -1,0 +1,108 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "postgrest.fullname" . }}
+  labels:
+    app: {{ include "postgrest.name" . }}
+    chart: {{ include "postgrest.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "postgrest.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "postgrest.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: PGRST_DB_URI
+          {{- if .Values.env.pgrst_db_uri }}
+            value: {{ .Values.env.pgrst_db_uri }}
+          {{- else }}
+            value: {{ include "postgrest.postgresql.uri" . }}
+          {{- end }}
+          - name: PGRST_SERVER_PORT
+            value: {{ .Values.service.port | quote }}
+          - name: PGRST_DB_SCHEMA
+          {{- if .Values.env.pgrst_db_schema }}
+            value: {{ .Values.env.pgrst_db_schema | quote }}
+          {{- else if .Values.postgresql.postgresDatabase }}
+            value: {{ .Values.postgresql.postgresDatabase | quote }}
+          {{- end }}
+          - name: PGRST_DB_ANON_ROLE
+          {{- if .Values.env.pgrst_db_anon_role }}
+            value: {{ .Values.env.pgrst_db_anon_role | quote }}
+          {{- else if .Values.postgresql.postgresUser }}
+            value: {{ .Values.env.pgrst_db_anon_role | quote }}
+          {{- end }}
+          {{- if .Values.env.pgrst_db_pool }}
+          - name: PGRST_DB_POOL
+            value: {{ .Values.env.pgrst_db_pool | quote }}
+          {{- end }}
+          {{- if .Values.env.pgrst_server_host }}
+          - name: PGRST_SERVER_HOST
+            value: {{ .Values.env.pgrst_server_host | quote }}
+          {{- end }}
+          {{- if .Values.env.pgrst_server_proxy_uri }}
+          - name: PGRST_SERVER_PROXY_URI
+            value: {{ .Values.env.pgrst_server_proxy_uri | quote }}
+          {{- end }}
+          {{- if .Values.env.pgrst_jwt_secret }}
+          - name: PGRST_JWT_SECRET
+            value: {{ .Values.env.pgrst_jwt_secret | quote }}
+          {{- end }}
+          {{- if .Values.env.pgrst_secret_is_base64 }}
+          - name: PGRST_SECRET_IS_BASE64
+            value: {{ .Values.env.pgrst_secret_is_base64 | quote }}
+          {{- end }}
+          {{- if .Values.env.pgrst_jwt_aud }}
+          - name: PGRST_JWT_AUD
+            value: {{ .Values.env.pgrst_jwt_aud | quote }}
+          {{- end }}
+          {{- if .Values.env.pgrst_max_rows }}
+          - name: PGRST_MAX_ROWS
+            value: {{ .Values.env.pgrst_max_rows | quote }}
+          {{- end }}
+          {{- if .Values.env.pgrst_pre_request }}
+          - name: PGRST_PRE_REQUEST
+            value: {{ .Values.env.pgrst_pre_request | quote }}
+          {{- end }}
+          {{- if .Values.env.pgrst_role_claim_key }}
+          - name: PGRST_ROLE_CLAIM_KEY
+            value: {{ .Values.env.pgrst_role_claim_key | quote }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

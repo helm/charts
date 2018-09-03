@@ -1,0 +1,9 @@
+apiVersion: v1
+appVersion: "v0.5.1"
+icon: http://i66.tinypic.com/70uulf.png
+description: A Helm chart for PostgREST is a standalone web server
+name: postgrest
+version: 0.1.0
+maintainers:
+- name: merqurio
+  email: gabriel@iomed.health
