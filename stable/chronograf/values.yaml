@@ -3,7 +3,7 @@
 image:
   repository: "docker.io/chronograf"
   tag: "1.3-alpine"
-  pullPolicy: "Always"
+  pullPolicy: "IfNotPresent"
 
 ## Specify a service type
 ## ClusterIP is default
