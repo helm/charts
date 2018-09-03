@@ -22,7 +22,7 @@ Component: "consul"
 Replicas: 3
 Image: "consul"
 ImageTag: "1.0.0"
-ImagePullPolicy: "Always"
+ImagePullPolicy: "IfNotPresent"
 Resources: {}
  # requests:
  #   cpu: "100m"
