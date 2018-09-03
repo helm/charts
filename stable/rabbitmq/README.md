@@ -76,14 +76,18 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `ingress.tls`               | enable ingress with tls                                 | `false`                                                  |
 | `ingress.tlsSecret`         | tls type secret to be used                              | `myTlsSecret`                                            |
 | `ingress.annotations`       | ingress annotations as an array                         |  []                                                      |
-| `livenessProbe.enabled`               | would you like a livenessProbed to be enabled             |  `true`                                        |
+| `livenessProbe.enabled`               | would you like a livenessProbed to be enabled           |  `true`                                        |
 | `livenessProbe.initialDelaySeconds`   | number of seconds                                       |  120                                           |
 | `livenessProbe.timeoutSeconds`        | number of seconds                                       |  5                                             |
+| `livenessProbe.periodSeconds`         | number of seconds                                       |  5                                             |
 | `livenessProbe.failureThreshold`      | number of failures                                      |  6                                             |
+| `livenessProbe.successThreshold`      | number of successes                                     |  1                                             |
 | `readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                        |
 | `readinessProbe.initialDelaySeconds`  | number of seconds                                       |  10                                            |
 | `readinessProbe.timeoutSeconds`       | number of seconds                                       |  3                                             |
 | `readinessProbe.periodSeconds   `     | number of seconds                                       |  5                                             |
+| `readinessProbe.failureThreshold`     | number of failures                                      |  3                                             |
+| `readinessProbe.successThreshold`     | number of successes                                     |  1                                             |
 
 The above parameters map to the env variables defined in [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq). For more information please refer to the [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq) image documentation.
 
