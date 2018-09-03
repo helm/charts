@@ -73,14 +73,14 @@ spec:
         - name: uploads
         {{- if .Values.persistence.uploads.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.uploads.existingClaim | default (printf "%s-%s" "bookstack.fullname" "uploads") }}
+            claimName: {{ .Values.persistence.uploads.existingClaim | default (printf "%s-%s" bookstack.fullname "uploads") }}
         {{- else }}
           emptyDir: {}
         {{- end }}
         - name: storage
         {{- if .Values.persistence.storage.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.storage.existingClaim | default (printf "%s-%s" "bookstack.fullname" "storage") }}
+            claimName: {{ .Values.persistence.storage.existingClaim | default (printf "%s-%s" bookstack.fullname "storage") }}
         {{- else }}
           emptyDir: {}
         {{- end -}}
