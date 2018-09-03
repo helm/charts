@@ -50,7 +50,7 @@ client:
   heapSize: "512m"
   antiAffinity: "soft"
   nodeSelector: {}
-  tolerations: {}
+  tolerations: []
   resources:
     limits:
       cpu: "1"
@@ -81,7 +81,7 @@ master:
     # storageClass: fast
   antiAffinity: "soft"
   nodeSelector: {}
-  tolerations: {}
+  tolerations: []
   resources:
     limits:
       cpu: "1"
@@ -113,7 +113,7 @@ data:
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
   nodeSelector: {}
-  tolerations: {}
+  tolerations: []
   resources:
     limits:
       cpu: "1"
