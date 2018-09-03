@@ -19,11 +19,13 @@ apiService:
 
 image:
   repository: gcr.io/google_containers/metrics-server-amd64
-  tag: v0.2.1
+  tag: v0.3.0
   pullPolicy: IfNotPresent
 
 args:
-  - --source=kubernetes.summary_api:''
+  - --logtostderr
+# enable this if you have self-signed certificates, see: https://github.com/kubernetes-incubator/metrics-server
+#  - --kubelet-insecure-tls
 
 resources: {}
 
