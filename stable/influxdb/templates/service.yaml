@@ -58,5 +58,10 @@ spec:
     port: {{ .Values.config.opentsdb.bind_address }}
     targetPort: {{ .Values.config.opentsdb.bind_address }}
   {{- end }}
+  {{- if .Values.config.ifql.enabled }}
+  - name: ifql
+    port: {{ .Values.config.ifql.bind_address }}
+    targetPort: {{ .Values.config.ifql.bind_address }}
+  {{- end }}
   selector:
     app: {{ template "influxdb.fullname" . }}

@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
   repo: "influxdb"
-  tag: "1.4-alpine"
+  tag: "1.5-alpine"
   pullPolicy: IfNotPresent
 
 ## Specify a service type
@@ -128,9 +128,12 @@ config:
     cache_snapshot_memory_size: 26214400
     cache_snapshot_write_cold_duration: 10m0s
     compact_full_write_cold_duration: 4h0m0s
+    index_version: inmem
     max_series_per_database: 1000000
     max_values_per_tag: 100000
+    max_concurrent_compactions: 0
     trace_logging_enabled: false
+    wal_fsync_delay: "0s"
   coordinator:
     write_timeout: 10s
     max_concurrent_queries: 0
@@ -155,6 +158,10 @@ config:
     store_enabled: true
     store_database: _internal
     store_interval: 10s
+  logging:
+    format: auto
+    level: info
+    suppress_logo: false
   subscriber:
     enabled: true
     http_timeout: 30s
@@ -178,6 +185,10 @@ config:
     realm: InfluxDB
     unix_socket_enabled: false
     bind_socket: /var/run/influxdb.sock
+  ifql:
+    enabled: true
+    log_enabled: true
+    bind_address: 8082
   graphite:
     enabled: false
     bind_address: 2003
@@ -230,4 +241,5 @@ config:
   continuous_queries:
     log_enabled: true
     enabled: true
+    query_stats_enabled: false
     run_interval: 1s
