@@ -1,0 +1,21 @@
+{{- if .Values.rbac.create }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "bookstack.fullname" . }}
+  labels:
+    app: {{ template "bookstack.name" . }}
+    chart: {{ template "bookstack.chart" .  }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+rules:
+- apiGroups: [""]
+  resources: ["endpoints"]
+  verbs: ["get"]
+{{- if .Values.podSecurityPolicy.enabled }}
+- apiGroups:      ['extensions']
+  resources:      ['podsecuritypolicies']
+  verbs:          ['use']
+  resourceNames:  [{{ template "bookstack.fullname" . }}]
+{{- end }}
+{{- end }}
