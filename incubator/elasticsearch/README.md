@@ -71,7 +71,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                              |
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                 |
 | `cluster.keystoreSecret`             | Name of secret holding secure config options in an es keystore      | `nil`                                |
-| `cluster.env`                        | Cluster environment variables                                       | `{}`                                 |
+| `cluster.env`                        | Cluster environment variables                                       | `{MINIMUM_MASTER_NODES: "2"}`        |
 | `client.name`                        | Client component name                                               | `client`                             |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                  |
 | `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`  |
