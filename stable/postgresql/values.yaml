@@ -58,6 +58,7 @@ usePasswordFile: false
 ## Persist data to a persistent volume
 persistence:
   enabled: true
+  resourcePolicy:  # set resource-policy Helm annotation on PVC. Can be nil or "keep"
 
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
