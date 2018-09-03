@@ -71,16 +71,16 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
         - name: uploads
-        {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.uploads.enabled }}
           persistentVolumeClaim:
-            claimName: "{{ template "bookstack.fullname" . }}-uploads"
+            claimName: {{ .Values.persistence.uploads.existingClaim | default (printf "%s-%s" "bookstack.fullname" "uploads") }}
         {{- else }}
           emptyDir: {}
         {{- end }}
         - name: storage
-        {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.storage.enabled }}
           persistentVolumeClaim:
-            claimName: "{{ template "bookstack.fullname" . }}-storage"
+            claimName: {{ .Values.persistence.storage.existingClaim | default (printf "%s-%s" "bookstack.fullname" "storage") }}
         {{- else }}
           emptyDir: {}
         {{- end -}}
