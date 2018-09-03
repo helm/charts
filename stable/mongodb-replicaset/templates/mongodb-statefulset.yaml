@@ -252,7 +252,8 @@ spec:
           ports:
             - name: metrics
               containerPort: {{ .Values.metrics.port  }}
-          resources: {{ toYaml .Values.metrics.resources | indent 12 }}
+          resources:
+{{ toYaml .Values.metrics.resources | indent 12 }}
           livenessProbe:
             exec:
               command:
