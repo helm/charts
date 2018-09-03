@@ -31,6 +31,7 @@ resourcesToWatch:
   persistentvolume: false
 
 image:
+  registry: "docker.io"
   repository: "bitnami/kubewatch"
   tag: "0.0.4"
   pullPolicy: "Always"

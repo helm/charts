@@ -26,6 +26,10 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.proxy.priorityClassName }}
+      priorityClassName: "{{ .Values.proxy.priorityClassName }}"
+{{- end }}
+      serviceAccountName: {{ template "stolon.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

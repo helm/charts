@@ -1,6 +1,6 @@
 # Version of the signalfx-agent to deploy.  This will be the default for the
 # docker image tag if not overridden with imageTag
-agentVersion: 3.1.9
+agentVersion: 3.2.2
 
 # The access token for SignalFx.  REQUIRED
 signalFxAccessToken: ""
@@ -19,6 +19,9 @@ image:
 # How many agent pods can be unavailable at a time when rolling out a new
 # version of the agent
 rollingUpdateMaxUnavailable: 1
+
+# Namespace to deploy agent in (Optional: Will default to release namespace)
+namespace:
 
 # RBAC config for the agent
 rbac:

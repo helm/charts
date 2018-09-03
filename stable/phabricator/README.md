@@ -53,6 +53,7 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `image.pullPolicy`                     | Image pull policy                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
 | `image.pullSecrets`                    | Specify image pull secrets                   | `nil`                                                    |
 | `phabricatorHost`                      | Phabricator host to create application URLs  | `nil`                                                    |
+| `phabricatorAlternateFileDomain`       | Phabricator alternate domain to upload files | `nil`                                                    |
 | `phabricatorLoadBalancerIP`            | `loadBalancerIP` for the Phabricator Service | `nil`                                                    |
 | `phabricatorUsername`                  | User of the application                      | `user`                                                   |
 | `phabricatorPassword`                  | Application password                         | _random 10 character long alphanumeric string_           |
@@ -64,7 +65,7 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `smtpUser`                             | SMTP user                                    | `nil`                                                    |
 | `smtpPassword`                         | SMTP password                                | `nil`                                                    |
 | `smtpProtocol`                         | SMTP protocol [`ssl`, `tls`]                 | `nil`                                                    |
-| `mariadb.rootUser.password`          | MariaDB admin password                       | `nil`                                                    |
+| `mariadb.rootUser.password`            | MariaDB admin password                       | `nil`                                                    |
 | `serviceType`                          | Kubernetes Service type                      | `LoadBalancer`                                           |
 | `persistence.enabled`                  | Enable persistence using PVC                 | `true`                                                   |
 | `persistence.apache.storageClass`      | PVC Storage Class for Apache volume          | `nil` (uses alpha storage class annotation)              |

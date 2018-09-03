@@ -1,0 +1,108 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "elasticsearch.fullname" . }}
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "elasticsearch.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
+      initContainers:
+      - name: init-data
+        image: "{{ .Values.initContainerImage }}"
+        securityContext:
+          privileged: true
+        command:
+        - '/bin/sh'
+        - '-c'
+        - >
+          chmod -R 777 {{ .Values.persistence.mountPath }};
+          sysctl -w vm.max_map_count={{ .Values.env.maxMapCount }}
+        volumeMounts:
+        - name: elasticsearch-data
+          mountPath: {{ .Values.persistence.mountPath | quote }}
+      containers:
+      - name: {{ template "elasticsearch.fullname" . }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.version }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: 'cluster.name'
+          value: {{ .Values.env.clusterName }}
+        - name: 'network.host'
+          value: {{ .Values.env.networkHost }}
+        - name: 'transport.host'
+          value: {{ .Values.env.transportHost }}
+        - name: 'xpack.security.enabled'
+          value: {{ .Values.env.xpackSecurityEnabled | quote }}
+        - name: ES_JAVA_OPTS
+          value: "-Xms{{ .Values.resources.requests.memory | trunc 1 }}g -Xmx{{ .Values.resources.requests.memory | trunc 1 }}g"
+        - name: ELASTIC_SEARCH_URL
+          value: {{ .Values.env.esUrl }}
+        - name: ELASTIC_SEARCH_USERNAME
+          value: {{ .Values.env.esUsername }}
+        - name: ELASTIC_SEARCH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "elasticsearch.fullname" . }}
+              key: esPassword
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - '/bin/sh'
+              - '-c'
+              - >
+                sleep 5;
+                mkdir -p /var/log/elasticsearch;
+                bash /scripts/setup.sh > /var/log/elasticsearch/setup-$(date +%Y%m%d%H%M%S).log 2>&1
+        ports:
+        - containerPort: {{ .Values.internalHttpPort }}
+          protocol: TCP
+        - containerPort: {{ .Values.internalTransportPort }}
+          protocol: TCP
+        volumeMounts:
+        - name: setup-script
+          mountPath: "/scripts"
+        - name: elasticsearch-data
+          mountPath: {{ .Values.persistence.mountPath | quote }}
+        resources:
+          requests:
+            memory: "{{ .Values.resources.requests.memory }}"
+            cpu: "{{ .Values.resources.requests.cpu }}"
+          limits:
+            memory: "{{ .Values.resources.limits.memory }}"
+            cpu: "{{ .Values.resources.limits.cpu }}"
+        livenessProbe:
+          httpGet:
+            path: /_cluster/health?local=true
+            port: 9200
+          initialDelaySeconds: 90
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /_cluster/health?local=true
+            port: 9200
+          initialDelaySeconds: 60
+      volumes:
+      - name: setup-script
+        configMap:
+          name: {{ template "elasticsearch.fullname" . }}-setup-script
+      - name: elasticsearch-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{ else }}{{ template "elasticsearch.fullname" . }}{{ end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

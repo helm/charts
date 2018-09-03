@@ -17,6 +17,10 @@ spec:
       annotations:
 {{ toYaml .Values.web.annotations | indent 8 }}
     spec:
+    {{- with .Values.web.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.web.fullname" . }}{{ else }}{{ .Values.rbac.webServiceAccountName }}{{ end }}
       tolerations:
 {{ toYaml .Values.web.tolerations | indent 8 }}
@@ -38,6 +42,10 @@ spec:
             {{- if .Values.credentialManager.ssm.enabled }}
             - "--aws-ssm-region"
             - "$(CONCOURSE_AWS_SSM_REGION)"
+            {{- end }}
+            {{- if .Values.credentialManager.awsSecretsManager.enabled }}
+            - "--aws-secretsmanager-region"
+            - "$(CONCOURSE_AWS_SECRETSMANAGER_REGION)"
             {{- end }}
             {{- if .Values.web.metrics.datadog.enabled }}
             - "--datadog-agent-host"
@@ -263,6 +271,37 @@ spec:
               value: {{ .Values.credentialManager.ssm.teamSecretTemplate | quote }}
             {{- end }}
             {{- end }}
+            {{- if .Values.credentialManager.awsSecretsManager.enabled }}
+            - name: CONCOURSE_AWS_SECRETSMANAGER_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: aws-secretsmanager-access-key
+            - name: CONCOURSE_AWS_SECRETSMANAGER_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: aws-secretsmanager-secret-key
+            {{- if .Values.secrets.awsSsmSessionToken }}
+            - name: CONCOURSE_AWS_SECRETSMANAGER_SESSION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: aws-secretsmanager-session-token
+            {{- end }}
+            {{- if .Values.credentialManager.awsSecretsManager.region }}
+            - name: CONCOURSE_AWS_SECRETSMANAGER_REGION
+              value: {{ .Values.credentialManager.awsSecretsManager.region | quote }}
+            {{- end }}
+            {{- if .Values.credentialManager.awsSecretsManager.pipelineSecretTemplate }}
+            - name: CONCOURSE_AWS_SECRETSMANAGER_PIPELINE_SECRET_TEMPLATE
+              value: {{ .Values.credentialManager.awsSecretsManager.pipelineSecretTemplate | quote }}
+            {{- end }}
+            {{- if .Values.credentialManager.awsSecretsManager.teamSecretTemplate }}
+            - name: CONCOURSE_AWS_SECRETSMANAGER_TEAM_SECRET_TEMPLATE
+              value: {{ .Values.credentialManager.awsSecretsManager.teamSecretTemplate | quote }}
+            {{- end }}
+            {{- end }}
             {{- if .Values.web.metrics.prometheus.enabled }}
             - name: CONCOURSE_PROMETHEUS_BIND_IP
               value: "0.0.0.0"
@@ -296,6 +335,9 @@ spec:
             - name: CONCOURSE_INFLUXDB_INSECURE_SKIP_VERIFY
               value: {{ .Values.web.metrics.influxdb.insecureSkipVerify | quote}}
             {{- end }}
+{{- if .Values.web.env }}
+{{ toYaml .Values.web.env | indent 12 }}
+{{- end }}
           ports:
             - name: atc
               containerPort: {{ .Values.concourse.atcPort }}

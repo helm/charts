@@ -8,16 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
-  master.cnf: |
-    # Apply this config only on the master.
-    [mysqld]
-    log-bin
-    skip_name_resolve
-  slave.cnf: |
-    # Apply this config only on slaves.
-    [mysqld]
-    super-read-only
-    skip_name_resolve
+{{ toYaml .Values.mysqlha.configFiles | indent 2 }}
   server-id.cnf: |
     [mysqld]
     server-id=@@SERVER_ID@@

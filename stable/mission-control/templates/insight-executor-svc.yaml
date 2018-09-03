@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "insight-executor.fullname" . }}
+  labels:
+    app: {{ template "mission-control.name" . }}
+    chart: {{ template "mission-control.chart" . }}
+    component: {{ .Values.insightExecutor.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.insightExecutor.service.type }}
+  ports:
+  - name: http
+    port: {{ .Values.insightExecutor.internalPort }}
+    targetPort: {{ .Values.insightExecutor.externalPort }}
+    protocol: TCP
+  selector:
+    app: {{ template "mission-control.name" . }}
+    component: "{{ .Values.insightExecutor.name }}"
+    release: {{ .Release.Name }}

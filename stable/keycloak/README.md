@@ -45,9 +45,10 @@ Parameter | Description | Default
 `init.image.pullPolicy` | Init image pull policy | `IfNotPresent`
 `keycloak.replicas` | The number of Keycloak replicas | `1`
 `keycloak.image.repository` | The Keycloak image repository | `jboss/keycloak`
-`keycloak.image.tag` | The Keycloak image tag | `3.4.3.Final`
+`keycloak.image.tag` | The Keycloak image tag | `4.2.1.Final`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
 `keycloak.image.pullSecrets` | Image pull secrets | `[]`
+`keycloak.basepath` | Path keycloak is hosted at | `auth`
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
 `keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
 `keycloak.extraInitContainers` | Additional init containers, e. g. for providing themes, etc. Passed through the `tpl` funtion and thus to be configured a string | `""`
@@ -82,10 +83,10 @@ Parameter | Description | Default
 `keycloak.ingress.path` | if `true`, an ingress is created | `/`
 `keycloak.ingress.hosts` | a list of ingress hosts | `[keycloak.example.com]`
 `keycloak.ingress.tls` | a list of [IngressTLS](https://v1-9.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#ingresstls-v1beta1-extensions) items | `[]`
-`keycloak.persistence.deployPostgres` | If true, the PostgreSQL chart is installed | `true`
+`keycloak.persistence.deployPostgres` | If true, the PostgreSQL chart is installed | `false`
 `keycloak.persistence.existingSecret` | Name of an existing secret to be used for the database password (if `keycloak.persistence.deployPostgres=false`). Otherwise a new secret is created | `""`
 `keycloak.persistence.existingSecretKey` | The key for the database password in the existing secret (if `keycloak.persistence.deployPostgres=false`) | `password`
-`keycloak.persistence.dbVendor` | One of `H2`, `POSTGRES`, or `MYSQL` (if `deployPostgres=false`) | `H2`
+`keycloak.persistence.dbVendor` | One of `h2`, `postgres`, `mysql`, or `mariadb` (if `deployPostgres=false`) | `h2`
 `keycloak.persistence.dbName` | The name of the database to connect to (if `deployPostgres=false`) | `keycloak`
 `keycloak.persistence.dbHost` | The database host name (if `deployPostgres=false`) | `mykeycloak`
 `keycloak.persistence.dbPort` | The database host port (if `deployPostgres=false`) | `5432`
@@ -121,12 +122,15 @@ It is important that these values be configured as strings. Otherwise, installat
 
 ### Database Setup
 
-By default, the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) chart is deployed and used as database.
-Please refer to this chart for additional PostgreSQL configuration options. If PostgreSQL is disabled, Keycloak uses an embedded H2 database which is only suitable for testing with a single replica.
+By default, Keycloak uses an embedded H2 database.
+This is only suitable for testing purposes.
+All data is lost when Keycloak is shut down.
+Optionally, the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) chart is deployed and used as database.
+Please refer to this chart for additional PostgreSQL configuration options.
 
 #### Using an External Database
 
-The Keycloak Docker image supports PostgreSQL and MySQL. The password for the database user is read from a Kubernetes secret. It is possible to specify an existing secret that is not managed with this chart. The key in the secret the password is read from may be specified as well (defaults to `password`).
+The Keycloak Docker image supports PostgreSQL, MySQL, MariaDB, and H2. The password for the database user is read from a Kubernetes secret. It is possible to specify an existing secret that is not managed with this chart. The key in the secret the password is read from may be specified as well (defaults to `password`).
 
 ```yaml
 keycloak:
@@ -135,11 +139,14 @@ keycloak:
     # Disable deployment of the PostgreSQL chart
     deployPostgres: false
 
+    # The database vendor. Can be either "postgres", "mysql", "mariadb", or "h2"
+    dbVendor: postgres
+
+    ## The following values only apply if "deployPostgres" is set to "false"
+
     # Optionally specify an existing secret
     existingSecret: "my-database-password-secret"
     existingSecretKey: "password-key in-my-database-secret"
-
-    dbVendor: POSTGRES # for MySQL use "MYSQL"
 
     dbName: keycloak
     dbHost: mykeycloak
@@ -182,7 +189,7 @@ In combination with an `emptyDir` that is shared with the Keycloak container, co
 
 ```yaml
 keycloak:
-  extraInitContainers:
+  extraInitContainers: |
     - name: theme-provider
       image: myuser/mytheme:1
       imagePullPolicy: IfNotPresent
@@ -197,14 +204,15 @@ keycloak:
         - name: theme
           mountPath: /theme
 
-  extraVolumeMounts:
+  extraVolumeMounts: |
     - name: theme
       mountPath: /opt/jboss/keycloak/themes/mytheme
 
-  extraVolumes:
+  extraVolumes: |
     - name: theme
       emptyDir: {}
 ```
+
 ### Setting a Custom Realm
 
 A realm can be added by creating a secret or configmap for the realm json file and then supplying this into the chart.
@@ -251,7 +259,7 @@ keycloak:
       command:
         - /cloud_sql_proxy
       args:
-        - -instances={{ .Values.cloudsql.project }}:{{ .Values.cloudsql.region }}:{{ .Values.cloudsql.instance }}=tcp:5432=tcp:5432
+        - -instances={{ .Values.cloudsql.project }}:{{ .Values.cloudsql.region }}:{{ .Values.cloudsql.instance }}=tcp:5432
         - -credential_file=/secrets/cloudsql/credentials.json
       volumeMounts:
         - name: cloudsql-creds
@@ -265,7 +273,7 @@ keycloak:
 
   persistence:
     deployPostgres: false
-    dbVendor: POSTGRES
+    dbVendor: postgres
     dbName: postgres
     dbHost: 127.0.0.1
     dbPort: 5432

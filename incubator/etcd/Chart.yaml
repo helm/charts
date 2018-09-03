@@ -1,6 +1,6 @@
 name: etcd
 home: https://github.com/coreos/etcd
-version: 0.4.0
+version: 0.4.1
 appVersion: 2.2.5
 description: Distributed reliable key-value store for the most critical data of a
   distributed system.
@@ -8,5 +8,5 @@ icon: https://raw.githubusercontent.com/coreos/etcd/master/logos/etcd-horizontal
 sources:
 - https://github.com/coreos/etcd
 maintainers:
-- name: Lachlan Evenson
+- name: lachie83
   email: lachlan@deis.com

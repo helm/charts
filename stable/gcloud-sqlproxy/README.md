@@ -56,16 +56,19 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Drupal chart and their default values.
 
-| Parameter                         | Description                            | Default                                                   |
-| --------------------------------- | -------------------------------------- | --------------------------------------------------------- |
-| `image`                           | SQLProxy image                         | `b.gcr.io/cloudsql-docker/gce-proxy`                      |
-| `imageTag`                        | SQLProxy image tag                     | `1.09`                                                    |
-| `imagePullPolicy`                 | Image pull policy                      | `IfNotPresent`                                            |
-| `replicasCount`                   | Replicas count                         | `1`                                                       |
-| `serviceAccountKey`               | Service account key JSON file          | Must be provided and base64 encoded                       |
-| `cloudsql.instances`              | List of PostgreSQL/MySQL instances     | [{instance: `instance`, project: `project`, region: `region`, port: 5432}] must be provided                |
-| `resources`                       | CPU/Memory resource requests/limits    | Memory: `100/150Mi`, CPU: `100/150m`                      |
-| `nodeSelector`                    | Node Selector                          |                                                           |
+| Parameter                         | Description                             | Default                                                                                     |
+| --------------------------------- | --------------------------------------  | ---------------------------------------------------------                                   |
+| `image`                           | SQLProxy image                          | `b.gcr.io/cloudsql-docker/gce-proxy`                                                        |
+| `imageTag`                        | SQLProxy image tag                      | `1.11`                                                                                      |
+| `imagePullPolicy`                 | Image pull policy                       | `IfNotPresent`                                                                              |
+| `replicasCount`                   | Replicas count                          | `1`                                                                                         |
+| `serviceAccountKey`               | Service account key JSON file           | Must be provided and base64 encoded when no existing secret is used, in this case a new secret will be created holding this service account |
+| `existingSecret`                  | Name of an existing secret to be used for the cloud-sql credentials | `""`                                                            |
+| `existingSecretKey`               | The key to use in the provided existing secret   | `""`                                                                               |
+| `cloudsql.instances`              | List of PostgreSQL/MySQL instances      | [{instance: `instance`, project: `project`, region: `region`, port: 5432}] must be provided |
+| `resources`                       | CPU/Memory resource requests/limits     | Memory: `100/150Mi`, CPU: `100/150m`                                                        |
+| `nodeSelector`                    | Node Selector                           |                                                                                             |
+| `rbac.create`                     | Create RBAC configuration w/ SA         | `false`                                                                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -74,6 +77,7 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 ```console
 $ helm install --name my-release -f values.yaml stable/gcloud-sqlproxy
 ```
+
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ## Documentation

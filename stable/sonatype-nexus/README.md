@@ -75,13 +75,17 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.livenessProbe.initialDelaySeconds`   | LivenessProbe initial delay         | 30                                      |
 | `nexus.livenessProbe.periodSeconds`         | Seconds between polls               | 30                                      |
 | `nexus.livenessProbe.failureThreshold`      | Number of attempts before failure   | 6                                       |
+| `nexus.livenessProbe.path`                  | Path for LivenessProbe              | /                                       |
 | `nexus.readinessProbe.initialDelaySeconds`  | ReadinessProbe initial delay        | 30                                      |
 | `nexus.readinessProbe.periodSeconds`        | Seconds between polls               | 30                                      |
 | `nexus.readinessProbe.failureThreshold`     | Number of attempts before failure   | 6                                       |
+| `nexus.readinessProbe.path`                 | Path for ReadinessProbe             | /                                       |
+| `nexus.hostAliases`                         | Aliases for IPs in /etc/hosts       | []                                      |
 | `nexusProxy.port`                           | Port for exposing Nexus             | `8080`                                  |
 | `nexusProxy.imageName`                      | Proxy image                         | `quay.io/travelaudience/docker-nexus-proxy` |
 | `nexusProxy.imageTag`                       | Proxy image version                 | `2.1.0`                                 |
 | `nexusProxy.imagePullPolicy`                | Proxy image pull policy             | `IfNotPresent`                          |
+| `nexusProxy.resources`                      | Proxy resource requests and limits  | `{}`                                    |
 | `nexusProxy.env.nexusHttpHost`              | Nexus url to access Nexus           | `nil`                                   |
 | `nexusProxy.env.nexusDockerHost`            | Containers url to be used with docker | `nil`                                 |
 | `nexusProxy.env.enforceHttps`               | Allow only https access or not      | `false`                                 |

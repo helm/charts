@@ -1,7 +1,7 @@
 # Ark-server
 
-This helm chart install ark version v0.8.1
-https://github.com/heptio/ark/tree/v0.8.1
+This helm chart installs Ark version v0.9.0
+https://github.com/heptio/ark/tree/v0.9.0
 
 ## Premise
 In general, Helm cannot install CRDs and resources based on these CRDs in the same Helm chart because CRDs need to be installed before CRD
@@ -11,7 +11,7 @@ As a workaround, the chart creates a Config resource via post-install hook.
 Since resources created by hooks are not managed by Helm, a pre-delete hook removes the Config CRD when the release is deleted.
 
 At the same time the resources created with the hook are completely transparent to Helm, that is, when you delete the
-chart those resources remain there. Hence we need a sencond hook for deleting them (see hook-delete.yaml)
+chart those resources remain there. Hence we need a second hook for deleting them (see hook-delete.yaml)
 
 ## ConfigMap customization
 Since we want to have a customizable chart it's important that the configmap is a template and not a static file.
@@ -22,8 +22,8 @@ To do this we add the keyword `tpl` when reading the file
 ## Prerequisites
 
 ### Secret for cloud provider credentials
-Ark server needs a IAM service account in order to run, if you don't have it you must create it.
-Please follow the official documentation: https://heptio.github.io/ark/v0.8.1/cloud-common
+Ark server needs an IAM service account in order to run, if you don't have it you must create it.
+Please follow the official documentation: https://heptio.github.io/ark/v0.9.0/cloud-common
 
 Don't forget the step to create the secret
 ```
@@ -32,7 +32,7 @@ kubectl create secret generic cloud-credentials --namespace <ARK_NAMESPACE> --fr
 
 ### Configuration
 Please change the values.yaml according to your setup
-See here for the official documentation https://heptio.github.io/ark/v0.8.1/config-definition
+See here for the official documentation https://heptio.github.io/ark/v0.9.0/config-definition
 
 Parameter | Description | Default | Required
 --- | --- | --- | ---
@@ -50,10 +50,10 @@ Parameter | Description | Default | Required
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | Image repository | `gcr.io/heptio-images/ark`
-`image.tag` | Image tag | `v0.8.2`
+`image.tag` | Image tag | `v0.9.1`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
-`kubectl.image.repository` | Image repository | `gcr.io/heptio-images/ark`
-`kubectl.image.tag` | Image tag | `v0.8.2`
+`kubectl.image.repository` | Image repository | `claranet/gcloud-kubectl-docker`
+`kubectl.image.tag` | Image tag | `1.0.0`
 `kubectl.image.pullPolicy` | Image pull policy | `IfNotPresent`
 `podAnnotations` | Annotations for the Ark server pod | `{}`
 `rbac.create` | If true, create and use RBAC resources | `true`
@@ -61,6 +61,7 @@ Parameter | Description | Default
 `rbac.server.serviceAccount.name` | Service account to be used for the server. If not set and `rbac.server.serviceAccount.create` is `true` a name is generated using the fullname template | ``
 `rbac.hook.serviceAccount.create` | Whether a new service account name that the hook will use should be created | `true`
 `rbac.hook.serviceAccount.name` | Service account to be used for the server. If not set and `rbac.hook.serviceAccount.create` is `true` a name is generated using the fullname template | ``
+`resources` | Resource requests and limits | `{}`
 `tolerations` | List of node taints to tolerate | `[]`
 `nodeSelector` | Node labels for pod assignment | `{}`
 `configuration.persistentVolumeProvider.name` | The name of the cloud provider the cluster is using for persistent volumes, if any | `{}`
@@ -88,4 +89,4 @@ helm install --name ark --namespace heptio-ark ./ark
 ```
 
 ## Remove heptio/ark
-Remember that when you remove ark all backups remain untouched
+Remember that when you remove Ark all backups remain untouched

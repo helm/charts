@@ -95,6 +95,11 @@ ingress:
     # kubernetes.io/ingress.class: "nginx"
     # kubernetes.io/tls-acme: "true"
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##

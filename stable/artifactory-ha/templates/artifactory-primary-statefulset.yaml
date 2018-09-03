@@ -26,10 +26,14 @@ spec:
         component: {{ .Values.artifactory.name }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "artifactory-ha.serviceAccountName" . }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
     {{- end }}
+      securityContext:
+        runAsUser: {{ .Values.artifactory.uid }}
+        fsGroup: {{ .Values.artifactory.uid }}
       initContainers:
     {{- if .Values.artifactory.persistence.enabled }}
       - name: "remove-lost-found"
@@ -58,8 +62,10 @@ spec:
           done;
       containers:
       - name: {{ .Values.artifactory.name }}
-        image: '{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}'
+        image: '{{ .Values.artifactory.image.repository }}:{{ default .Chart.AppVersion .Values.artifactory.image.version }}'
         imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
         lifecycle:
           postStart:
             exec:
@@ -71,18 +77,17 @@ spec:
                 cp -Lrfv /bootstrap/* /artifactory_extra_conf/
                 {{- end }}
                 {{- if .Values.artifactory.replicator.enabled }}
-                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access;
                 mkdir -p {{ .Values.artifactory.persistence.mountPath }}/replicator/etc;
                 cp -fv /tmp/replicator/replicator.yaml {{ .Values.artifactory.persistence.mountPath }}/replicator/etc/replicator.yaml;
-                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/replicator;
                 {{- end }}
                 {{- if .Values.artifactory.distributionCerts }}
                 mkdir -p {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys/trusted;
-                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access;
                 cp -fv /tmp/access/etc/keys/private.key {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
                 cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
                 cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys/trusted;
-                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access/etc;
+                {{- end }}
+                {{- if .Values.artifactory.postStartCommand }}
+                {{ .Values.artifactory.postStartCommand }}
                 {{- end }}
         env:
       {{- if .Values.postgresql.enabled }}
@@ -217,6 +222,18 @@ spec:
           failureThreshold: {{ .Values.artifactory.livenessProbe.failureThreshold }}
           successThreshold: {{ .Values.artifactory.livenessProbe.successThreshold }}
         {{- end }}
+    {{- with .Values.artifactory.primary.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.artifactory.primary.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.artifactory.primary.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       volumes:
       - name: binarystore-xml
         configMap:

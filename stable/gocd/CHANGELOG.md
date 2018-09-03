@@ -1,3 +1,42 @@
+### 1.3.5
+
+* [eab7388](https://github.com/kubernetes/charts/commit/eab7388): Fix typo and whitespace in the README file.
+
+### 1.3.4
+
+* [57b201d](https://github.com/kubernetes/charts/commit/57b201d): Agent-only deployment should not create server-related k8s resources.
+
+### 1.3.3
+
+* [0c5eadd](https://github.com/kubernetes/charts/commit/0c5eadd): Enable use of hostAliases for agents
+
+### 1.3.2
+
+* [55d9cef](https://github.com/kubernetes/charts/commit/55d9cef): Add support for privileged mode, which is needed for DinD (Docker-in-Docker).
+* [01df97f](https://github.com/kubernetes/charts/commit/01df97f): Enable privileged mode for GoCD agent deployment (if configured).
+
+### 1.3.1
+
+* [7b9d6c0](https://github.com/kubernetes/charts/commit/7b9d6c0): Enable use of hostAliases for server
+* [273f042](https://github.com/kubernetes/charts/commit/273f042): Add documentation to hostAliases property
+* [d21a32d](https://github.com/kubernetes/charts/commit/d21a32d): Add hostAliases property to README
+
+### 1.3.0
+
+* [750de42c](https://github.com/kubernetes/charts/commit/750de42c):  Add support for SSH keys on server and agent
+
+### 1.2.0
+
+* [514a1856](https://github.com/kubernetes/charts/commit/514a1856):  Bump up GoCD app version to 18.7.0
+
+### 1.1.3
+
+* [3df661cc](https://github.com/kubernetes/charts/commit/3df661cc):  Use the gocd-agent-docker-dind image of the tag same as of GoCD app version
+
+### 1.1.2
+
+* [ec6474b9](https://github.com/kubernetes/charts/commit/ec6474b9):  Fix heath check->health check (#6269)
+
 ### 1.1.1
 
 * [ccd0a08d](https://github.com/kubernetes/charts/commit/ccd0a08d): Do not perform preconfigure_server script if server has already been configured

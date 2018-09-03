@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/drupal
-  tag: 8.5.4
+  tag: 8.5.6-debian-9
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -16,6 +16,11 @@ image:
   ##
   # pullSecrets:
   #   - myRegistrKeySecretName
+
+## Installation Profile
+## ref: https://github.com/bitnami/bitnami-docker-drupal#configuration
+##
+drupalProfile: standard
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-drupal#configuration

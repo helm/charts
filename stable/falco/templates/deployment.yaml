@@ -1,0 +1,21 @@
+{{- if .Values.fakeEventGenerator.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "falco.fullname" . }}-event-generator
+  labels:
+    app: {{ template "falco.fullname" . }}-event-generator
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas:  {{ .Values.fakeEventGenerator.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "falco.fullname" . }}-event-generator
+    spec:
+      containers:
+      - name: {{ template "falco.fullname" . }}-event-generator
+        image: sysdig/falco-event-generator:latest
+{{- end }}

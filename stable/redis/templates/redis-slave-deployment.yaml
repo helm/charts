@@ -16,6 +16,7 @@ spec:
     metadata:
       labels:
         release: "{{ .Release.Name }}"
+        chart: {{ template "redis.chart" . }}
         role: slave
         app: {{ template "redis.name" . }}
       {{- if (.Values.slave.podLabels | default .Values.master.podLabels) }}
@@ -46,7 +47,7 @@ spec:
       {{- if .Values.slave.schedulerName }}
       schedulerName: "{{ .Values.slave.schedulerName }}"
       {{- end }}
-    {{- with .Values.affinity }}
+    {{- with .Values.slave.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
@@ -105,4 +106,14 @@ spec:
         {{ include "redis.slave.readinessProbe" . | indent 8 }}
         resources:
 {{ toYaml (.Values.slave.resources | default .Values.master.resources) | indent 10 }}
+      {{- if .Values.configmap }}
+        volumeMounts:
+        - name: config
+          mountPath: /opt/bitnami/redis/etc/redis.conf
+          subPath: redis.conf
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "redis.fullname" . }}
+      {{- end }}
 {{- end }}

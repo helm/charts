@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hlf-ca.fullname" . }}--db
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+data:
+  DB_TYPE: postgres
+  DB_USERNAME: postgres
+  DB_DATABASE: {{ .Values.db.database | quote }}
+  DB_HOST: {{ .Values.db.chart }}.{{ .Release.Namespace }}.svc.cluster.local
+  DB_PORT: "5432"
+  DB_SSL: disable

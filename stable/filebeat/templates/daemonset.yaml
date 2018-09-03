@@ -24,7 +24,26 @@ spec:
         release: {{ .Release.Name }}
       annotations:
         checksum/secret: {{ toYaml .Values.config | sha256sum }}
+{{- if .Values.annotations }}
+{{ toYaml .Values.annotations | indent 8 }}
+{{- end }}
     spec:
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+{{- if .Values.indexTemplateLoad }}
+      initContainers:
+      - name: "load-es-template"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: "Always"
+        command:
+        - /bin/bash
+        - -c
+        - filebeat setup --template
+          -E output.logstash.enabled=false
+          -E output.file.enabled=false
+          -E output.elasticsearch.hosts=[{{- range $index, $host := .Values.indexTemplateLoad }}{{ if $index }}, {{ end }}{{ $host | quote }}{{- end }}]
+{{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -54,8 +73,10 @@ spec:
         {{- end }}
         securityContext:
           runAsUser: 0
+{{- if .Values.resources }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- end }}
         volumeMounts:
         - name: filebeat-config
           mountPath: /usr/share/filebeat/filebeat.yml
@@ -91,11 +112,15 @@ spec:
 {{- end }}
       terminationGracePeriodSeconds: 60
       serviceAccountName: {{ template "filebeat.serviceAccountName" . }}
-      tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
-{{- if .Values.nodeSelector }}
+    {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-{{- end }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
