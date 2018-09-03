@@ -77,7 +77,7 @@ rest:
 
   config:
     # Composer REST server API key
-    #apiKey:
+    # apiKey:
     # Card for network connection
     composerRestServerCard: admin@test-network
 
