@@ -134,7 +134,8 @@ spec:
             - name: sc-dashboard-volume
               mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
             - name: sc-dashboard-provider
-              mountPath: "/etc/grafana/provisioning/dashboards"
+              mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
+              subPath: provider.yaml
 {{- end}}
 {{- if .Values.sidecar.datasources.enabled }}
             - name: sc-datasources-volume
@@ -271,4 +272,3 @@ spec:
           secret:
             secretName: {{ .secretName }}
       {{- end }}
-
