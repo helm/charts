@@ -1,3 +1,4 @@
+{{- if gt .Values.defaultBackend.replicaCount 1.0 }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -15,3 +16,4 @@ spec:
       release: {{ .Release.Name }}
       component: "{{ .Values.defaultBackend.name }}"
   minAvailable: {{ .Values.defaultBackend.minAvailable }}
+{{- end }}
