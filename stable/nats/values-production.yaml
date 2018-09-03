@@ -5,7 +5,7 @@ image:
   registry: docker.io
   repository: bitnami/nats
   tag: 1.1.0
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
