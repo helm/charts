@@ -49,9 +49,11 @@ spec:
           protocol: TCP
         livenessProbe:
           httpGet:
-            path: /
+            path: /metrics
             port: web
             scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 30
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
