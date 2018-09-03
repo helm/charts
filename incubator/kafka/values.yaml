@@ -138,7 +138,9 @@ external:
   type: NodePort
   # annotations:
   #  service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
-
+  dns:
+    useInternal: false
+    useExternal: true
   # create an A record for each statefulset pod
   distinct: false
   enabled: false
@@ -174,6 +176,11 @@ configurationOverrides:
   #   EXTERNAL://kafka.cluster.local:$((31090 + ${KAFKA_BROKER_ID}))
   # "listener.security.protocol.map": |-
   #   PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+
+## set extra ENVs
+#   key: "value"
+envOverrides: {}
+
 
 ## A collection of additional ports to expose on brokers (formatted as normal containerPort yaml)
 # Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar
