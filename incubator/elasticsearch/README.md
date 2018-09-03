@@ -79,7 +79,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.heapSize`                    | Client node heap size                                               | `512m`                               |
 | `client.podAnnotations`              | Client Deployment annotations                                       | `{}`                                 |
 | `client.nodeSelector`                | Node labels for client pod assignment                               | `{}`                                 |
-| `client.tolerations`                 | Client tolerations                                                  | `{}`                                 |
+| `client.tolerations`                 | Client tolerations                                                  | `[]`                                 |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                 |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                          |
 | `client.loadBalancerIP`              | Client loadBalancerIP                                               | `{}`                                 |
@@ -91,7 +91,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.priorityClassName`           | Master priorityClass                                                | `nil`                                |
 | `master.podAnnotations`              | Master Deployment annotations                                       | `{}`                                 |
 | `master.nodeSelector`                | Node labels for master pod assignment                               | `{}`                                 |
-| `master.tolerations`                 | Master tolerations                                                  | `{}`                                 |
+| `master.tolerations`                 | Master tolerations                                                  | `[]`                                 |
 | `master.heapSize`                    | Master node heap size                                               | `512m`                               |
 | `master.name`                        | Master component name                                               | `master`                             |
 | `master.persistence.enabled`         | Master persistent enabled/disabled                                  | `true`                               |
@@ -111,7 +111,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.persistence.accessMode`        | Data persistent Access Mode                                         | `ReadWriteOnce`                      |
 | `data.podAnnotations`                | Data StatefulSet annotations                                        | `{}`                                 |
 | `data.nodeSelector`                  | Node labels for data pod assignment                                 | `{}`                                 |
-| `data.tolerations`                   | Data tolerations                                                    | `{}`                                 |
+| `data.tolerations`                   | Data tolerations                                                    | `[]`                                 |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                               |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                               |
 
