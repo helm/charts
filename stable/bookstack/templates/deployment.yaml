@@ -62,6 +62,13 @@ spec:
                   name: {{ printf "%s-%s" .Release.Name "externaldb" }}
                   key: db-password
           {{- end }}
+          {{- if .Values.app.key }}
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-%s" .Release.Name "app" }}
+                  key: app-key
+          {{- end }}
           volumeMounts:
           - name: uploads
             mountPath: /var/www/bookstack/public/uploads
@@ -73,14 +80,14 @@ spec:
         - name: uploads
         {{- if .Values.persistence.uploads.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.uploads.existingClaim | default (printf "%s-%s" bookstack.fullname "uploads") }}
+            claimName: {{ .Values.persistence.storage.existingClaim | default (printf "%s-%s" (include "bookstack.fullname" .) "uploads") }}
         {{- else }}
           emptyDir: {}
         {{- end }}
         - name: storage
         {{- if .Values.persistence.storage.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.storage.existingClaim | default (printf "%s-%s" bookstack.fullname "storage") }}
+            claimName: {{ .Values.persistence.storage.existingClaim | default (printf "%s-%s" (include "bookstack.fullname" .) "storage") }}
         {{- else }}
           emptyDir: {}
         {{- end -}}

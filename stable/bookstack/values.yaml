@@ -9,6 +9,10 @@ image:
   tag: 0.23.2
   pullPolicy: IfNotPresent
 
+app:
+  # Laravel APP_KEY. Generate one with `php artisan key:generate` and put here if you want a static key.
+  key: 
+
 ##
 ## External database configuration
 ##
