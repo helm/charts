@@ -29,7 +29,7 @@ $ minikube start --bootstrapper kubeadm
 
 ```bash
 
-$ kubectl create clusterrolebinding clusterRoleBinding \                                                                                                               1 ↵
+$ kubectl create clusterrolebinding clusterRoleBinding \
   --clusterrole=cluster-admin \
   --serviceaccount=kube-system:default
 ```
