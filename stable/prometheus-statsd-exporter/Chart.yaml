@@ -1,0 +1,14 @@
+apiVersion: v1
+name: prometheus-statsd-exporter
+home: https://github.com/prometheus/statsd_exporter
+description: StatsD to Prometheus metrics exporter.
+version: 0.1.0
+appVersion: "v0.7.0"
+keywords:
+- statsd
+- prometheus
+- metrics
+- graphite
+maintainers:
+- name: niclic
+  email: rfallon@360incentives.com

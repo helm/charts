@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "prometheus-statsd-exporter.fullname" . }}-mapping-config
+  labels:
+    app: {{ template "prometheus-statsd-exporter.name" . }}
+    chart: {{ template "prometheus-statsd-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  statsd-mapping.conf: |-
+{{ .Values.statsdMappingConfig | indent 4 }}

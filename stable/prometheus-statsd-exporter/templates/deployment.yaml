@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "prometheus-statsd-exporter.fullname" . }}
+  labels:
+    app: {{ template "prometheus-statsd-exporter.name" . }}
+    chart: {{ template "prometheus-statsd-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-statsd-exporter.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "prometheus-statsd-exporter.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+        {{- end}}
+    spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
+      containers:
+      - name: {{ template "prometheus-statsd-exporter.name" . }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        - --web.listen-address=:{{ .Values.webPort }}
+        - --web.telemetry-path=/metrics
+        - --statsd.listen-udp=:{{ .Values.udpPort }}
+        - --statsd.listen-tcp=:{{ .Values.tcpPort }}
+        - --statsd.mapping-config=/etc/{{ template "prometheus-statsd-exporter.name" . }}/statsd-mapping.conf
+        ports:
+        - name: web
+          containerPort: {{ .Values.webPort }}
+          protocol: TCP
+        - name: statsd-udp
+          containerPort: {{ .Values.udpPort }}
+          protocol: UDP
+        - name: statsd-tcp
+          containerPort: {{ .Values.tcpPort }}
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: web
+            scheme: HTTP
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: statsd-mapping-config
+          mountPath: /etc/{{ template "prometheus-statsd-exporter.name" . }}
+      volumes:
+      - name: statsd-mapping-config
+        configMap:
+          name: {{ template "prometheus-statsd-exporter.fullname" . }}-mapping-config
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
