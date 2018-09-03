@@ -1,3 +1,7 @@
+### 1.3.6
+
+* [b7d596e](https://github.com/helm/charts/pull/7476/commits/b7d596e): Fixed role configuration instructions in README file.
+
 ### 1.3.5
 
 * [eab7388](https://github.com/kubernetes/charts/commit/eab7388): Fix typo and whitespace in the README file.
