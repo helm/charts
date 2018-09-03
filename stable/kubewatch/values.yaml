@@ -34,7 +34,7 @@ image:
   registry: "docker.io"
   repository: "bitnami/kubewatch"
   tag: "0.0.4"
-  pullPolicy: "Always"
+  pullPolicy: "IfNotPresent"
 
 rbac:
   # If true, create & use RBAC resources
