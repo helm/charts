@@ -52,7 +52,7 @@ The following table lists the configurable parameters of the `prometheus-statsd-
 | `nodeSelector`                      | Node labels for pod assignment           | `{}`                                      |
 | `affinity`                          | Node affinity for pod assignment         | `{}`                                      |
 | `tolerations`                       | Node tolerations for pod assignment      | `[]`                                      |
-| `statsdMappingConfig`               | `statsd-exporter` mappings               | `""`                                      |
+| `statsdMappingConfig`               | `statsd-exporter` mappings               | Defaults for `timer_type`, buckets, quantiles, and `match_type`. These will be used by all mappings that do not define them.|
 
 
 Specify each parameter you'd like to override using a YAML file.
