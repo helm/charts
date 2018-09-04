@@ -14,3 +14,7 @@ metadata:
 {{- end }}
 provisioner: {{ template "nfs-provisioner.provisionerName" . }}
 {{ end -}}
+{{- with .Values.storageClass.parameters }}
+parameters:
+{{ toYaml . | indent 2 }}
+{{- end }}
