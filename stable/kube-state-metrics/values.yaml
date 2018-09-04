@@ -2,7 +2,7 @@
 prometheusScrape: true
 image:
   repository: quay.io/coreos/kube-state-metrics
-  tag: v1.3.1
+  tag: v1.4.0
   pullPolicy: IfNotPresent
 service:
   port: 8080
