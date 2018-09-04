@@ -53,6 +53,10 @@ storageClass:
   ## Ignored if storageClass.create is false
   name: nfs
 
+  ## StorageClass parameters
+  parameters:
+    mountOptions: vers=4.1
+
 ## For RBAC support:
 rbac:
   create: true
