@@ -102,7 +102,7 @@ data:
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
 {{- end -}}
           </templates>
-          <serverUrl>https://kubernetes.default</serverUrl>
+          <serverUrl>{{ .Values.Master.KubernetesServerUrl }}</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ default .Release.Namespace .Values.Master.SlaveKubernetesNamespace }}</namespace>
 {{- if .Values.Master.SlaveKubernetesNamespace }}
