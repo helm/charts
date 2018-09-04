@@ -63,7 +63,7 @@ spec:
 {{- end }}
         args:
 {{- if .Values.args }}
-{{ toYaml .Values.arg | indent 8 }}
+{{ toYaml .Values.args | indent 8 }}
 {{- else }}
         - "-e"
 {{- if .Values.plugins }}
