@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/beats/filebeat-oss
-  tag: 6.3.1
+  tag: 6.3.2
   pullPolicy: IfNotPresent
 
 config:
@@ -70,6 +70,14 @@ extraVolumeMounts: []
   # - name: varlog
   #   mountPath: /host/var/log
   #   readOnly: true
+
+extraInitContainers: []
+  # - name: echo
+  #   image: busybox
+  #   imagePullPolicy: Always
+  #   args:
+  #     - echo
+  #     - hello
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
