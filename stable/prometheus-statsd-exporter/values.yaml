@@ -31,13 +31,3 @@ tolerations: []
 statsdMappingConfig: |-
   defaults:
     timer_type: histogram
-    buckets: [.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10]
-    quantiles:
-    - quantile: 0.99
-      error: 0.001
-    - quantile: 0.9
-      error: 0.01
-    - quantile: 0.5
-      error: 0.05
-    match_type: glob
-  mappings: []

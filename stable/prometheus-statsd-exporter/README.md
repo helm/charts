@@ -52,7 +52,7 @@ The following table lists the configurable parameters of the `prometheus-statsd-
 | `nodeSelector`                      | Node labels for pod assignment           | `{}`                                      |
 | `affinity`                          | Node affinity for pod assignment         | `{}`                                      |
 | `tolerations`                       | Node tolerations for pod assignment      | `[]`                                      |
-| `statsdMappingConfig`               | `statsd-exporter` mappings               | Defaults for `timer_type`, buckets, quantiles, and `match_type`. These will be used by all mappings that do not define them.|
+| `statsdMappingConfig`               | `statsd-exporter` mappings               | `timer_type: histogram`                   |
 
 
 Specify each parameter you'd like to override using a YAML file.
@@ -68,3 +68,7 @@ You can also override specific values by using the `--set key=value[,key=value]`
 ```sh
 $ helm install stable/prometheus-statsd-exporter --name my-release --set udpPort=8125
 ```
+
+
+## Metric Mapping and Configuration
+This chart provides a minimal default configuration. To create a custom mapping configuration and review default settings, consult the [official docs](https://github.com/prometheus/statsd_exporter#metric-mapping-and-configuration).
