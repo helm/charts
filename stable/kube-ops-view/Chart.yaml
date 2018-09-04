@@ -12,5 +12,5 @@ icon: https://raw.githubusercontent.com/hjacobs/kube-ops-view/master/kube-ops-vi
 sources:
 - https://github.com/hjacobs/kube-ops-view
 maintainers:
-- name: Henning Jacobs
+- name: hjacobs
   email: henning@jacobs1.de
