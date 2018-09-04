@@ -274,7 +274,7 @@ kubeStateMetrics:
   ##
   image:
     repository: quay.io/coreos/kube-state-metrics
-    tag: v1.3.1
+    tag: v1.4.0
     pullPolicy: IfNotPresent
 
   ## kube-state-metrics priorityClassName
