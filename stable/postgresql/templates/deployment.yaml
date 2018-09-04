@@ -138,6 +138,14 @@ spec:
             mountPath: /conf
             readOnly: true
         {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
