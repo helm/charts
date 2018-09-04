@@ -15,7 +15,7 @@ $ helm install stable/kube-state-metrics
 | Parameter                             | Description                                             | Default                                     |
 |---------------------------------------|---------------------------------------------------------|---------------------------------------------|
 | `image.repository`                    | The image repository to pull from                       | quay.io/coreos/kube-state-metrics           |
-| `image.tag`                           | The image tag to pull from                              | `<latest version>`                          |
+| `image.tag`                           | The image tag to pull from                              | `v1.3.1`                          |
 | `image.pullPolicy`                    | Image pull policy                                       | IfNotPresent                                |
 | `service.port`                        | The port of the container                               | 8080                                        |
 | `prometheusScrape`                    | Whether or not enable prom scrape                       | True                                        |
