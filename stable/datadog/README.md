@@ -44,6 +44,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `image.repository`          | The image repository to pull from  | `datadog/agent`                           |
 | `image.tag`                 | The image tag to pull              | `6.3.2`                                   |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
+| `image.pullSecrets`         | Image pull secrets                 |  `nil`                                    |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
