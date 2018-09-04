@@ -57,11 +57,19 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.command }}
+        command:
+{{ toYaml .Values.command | indent 8 }}
+{{- end }}
         args:
+{{- if .Values.args }}
+{{ toYaml .Values.arg | indent 8 }}
+{{- else }}
         - "-e"
 {{- if .Values.plugins }}
         - "--plugin"
         - {{ .Values.plugins | join "," | quote }}
+{{- end }}
 {{- end }}
         env:
         - name: POD_NAMESPACE

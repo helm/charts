@@ -57,6 +57,12 @@ indexTemplateLoad: []
 plugins: []
   # - kinesis.so
 
+# pass custom command. This is equivalent of Entrypoint in docker
+command: []
+
+# pass custom args. This is equivalent of Cmd in docker
+args: []
+
 # A map of additional environment variables
 extraVars: {}
   # test1: "test2"
