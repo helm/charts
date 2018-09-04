@@ -1,0 +1,6 @@
+operatorImageName: lightbend/sparkoperator
+operatorVersion: 2.3.1
+operatorNamespace: spark-operator
+
+enableWebhook: true
+enableMetrics: true
