@@ -2,7 +2,7 @@
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2018-08-25T01-56-38Z
+  tag: RELEASE.2018-09-01T00-38-25Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -69,7 +69,7 @@ persistence:
 
 service:
   type: ClusterIP
-  clusterIP: None
+  clusterIP: ~
   port: 9000
   # nodePort: 31311
   annotations: {}
@@ -138,9 +138,9 @@ nasgateway:
   enabled: false
   # Number of parallel instances
   replicas: 4
-  # Generally for NAS Gateway, you'd like to bind the PVC to a specific PV. To ensure that happens, PV to bind to should have
+  # For NAS Gateway, you may want to bind the PVC to a specific PV. To ensure that happens, PV to bind to should have
   # a label like "pv: <value>", use value here.
-  pv: ""
+  pv: ~
 
 ## https://docs.minio.io/docs/minio-bucket-notification-guide
 ## https://github.com/minio/minio/blob/master/docs/config
