@@ -132,6 +132,10 @@ spec:
         - name: config
           mountPath: /opt/bitnami/mariadb/conf/my.cnf
           subPath: my.cnf
+{{- if .Values.master.persistence.existingClaim }}
+        - name: {{ .Values.master.persistence.existingClaim | default (include "fullname" .) }}
+          mountPath: {{ .Values.master.persistence.mountPath }}
+{{- end }}
 {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
