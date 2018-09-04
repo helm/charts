@@ -73,20 +73,20 @@ Master:
   SlaveListenerServiceAnnotations: {}
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
-# Optionally assign a known public LB IP
-# LoadBalancerIP: 1.2.3.4
-# Optionally configure a JMX port
-# requires additional JavaOpts, ie
-# JavaOpts: >
-#   -Dcom.sun.management.jmxremote.port=4000
-#   -Dcom.sun.management.jmxremote.authenticate=false
-#   -Dcom.sun.management.jmxremote.ssl=false
-# JMXPort: 4000
-# Optionally configure other ports to expose in the Master container
+  # Optionally assign a known public LB IP
+  # LoadBalancerIP: 1.2.3.4
+  # Optionally configure a JMX port
+  # requires additional JavaOpts, ie
+  # JavaOpts: >
+  #   -Dcom.sun.management.jmxremote.port=4000
+  #   -Dcom.sun.management.jmxremote.authenticate=false
+  #   -Dcom.sun.management.jmxremote.ssl=false
+  # JMXPort: 4000
+  # Optionally configure other ports to expose in the Master container
   ExtraPorts:
-#   - name: BuildInfoProxy
-#     port: 9000
-# List of plugins to be install during Jenkins master start
+  # - name: BuildInfoProxy
+  #   port: 9000
+  # List of plugins to be install during Jenkins master start
   InstallPlugins:
     - kubernetes:1.12.4
     - workflow-job:2.24
@@ -147,20 +147,6 @@ Agent:
       memory: "256Mi"
   # You may want to change this to true while testing a new image
   AlwaysPullImage: false
-  # Time in minutes after which Jenkins kills the slaves. Defaults to 5min.
-  # For long-running jobs like building Docker images etc. 15min or more is recommendable.
-  # RetentionTimeout: 5
-  # Time in seconds to wait for a slave pod to reach the master. Defaults to 0.
-  # In our experience, if you don't set it to 100 or so slave pods never start.
-  # ConnectAndReadTimeout: 100
-  # Image pull secrets to use when pulling from private Docker registries.
-  # The secrets must be created in Jenkins by some other means.
-  imagePullSecrets:
-  # - name: my-secret
-  # Define environment variables as a list of name,value pairs
-  envVars:
-  # - name: FOO
-  #   value: bar
   # Controls how slave pods are retained after the Jenkins build completes
   # Possible values: Always, Never, OnFailure
   PodRetention: Never
@@ -172,26 +158,6 @@ Agent:
   # - type: Secret
   #   secretName: mysecret
   #   mountPath: /var/myapp/mysecret
-  ports:
-  # - name: http
-  #   containerPort: 80
-  #   hostPort: 8080
-  # Liveness probe for the agents
-  # Jenkins master monitors agents and restarts them if they don't connect in less than
-  # ConnectAndReadTimeout above (default 100s).
-  # If your agent has additional requirements to be considered alive, put them here
-  LivenessProbe:
-    enabled: false
-    execAction: "cat /etc/os-release"
-    initialDelay: 10
-    period: 5
-    timeout: 1
-    thresholds:
-      success: 1
-      failure: 1
-  # Enable/disable an EmptyDir as custom workspace volume for the agent
-  # Use this if you don't want the agent to inherit the master-provided workspace
-  UseCustomWorkspaceVolume: false
   NodeSelector: {}
   # Key Value selectors. Ex:
   # jenkins-agent: v1

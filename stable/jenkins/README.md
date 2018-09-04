@@ -85,30 +85,17 @@ The following tables list the configurable parameters of the Jenkins chart and t
 
 ### Jenkins Agent
 
-| Parameter                                | Description                                                | Default                |
-| ---------------------------------------- | ---------------------------------------------------------- | ---------------------- |
-| `Agent.AlwaysPullImage`                  | Always pull agent container image before build             | `false`                |
-| `Agent.CustomJenkinsLabels`              | Append Jenkins labels to the agent                         | `{}`                   |
-| `Agent.Enabled`                          | Enable Kubernetes plugin jnlp-agent podTemplate            | `true`                 |
-| `Agent.Image`                            | Agent image name                                           | `jenkinsci/jnlp-slave` |
-| `Agent.ImagePullSecret`                  | Agent image pull secret                                    | Not set                |
-| `Agent.ImageTag`                         | Agent image tag                                            | `2.62`                 |
-| `Agent.Privileged`                       | Agent privileged container                                 | `false`                |
-| `Agent.resources`                        | Resources allocation (Requests and Limits)                 | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
-| `Agent.volumes`                          | Additional volumes                                         | `nil`                  |
-| `Agent.RetentionTimeout`                 | Time until slave pod is recycled (minutes)                 | `5`                    |
-| `Agent.ConnectAndReadTimeout`            | Time for getting in contact with a slave (sec)             | `0`                    |
-| `Agent.envVars`                          | Additional environment variables                           | `nil`                  |
-| `Agent.imagePullSecrets`                 | Image pull secrets for private Docker repos                | `nil`                  |
-| `Agent.ports`                            | Container-to-host port mapping                             | `nil`                  |
-| `Agent.LivenessProbe.enabled`            | Enable Liveness probe for agents                           | `false`                |
-| `Agent.LivenessProbe.execAction`         | Command to run to check liveness                           | `cat /etc/os-release`  |
-| `Agent.LivenessProbe.initialDelay`       | Seconds to wait until first run of the command             | `10`                   |
-| `Agent.LivenessProbe.period`             | Seconds between command runs                               | `5`                    |
-| `Agent.LivenessProbe.timeout`            | Seconds to wait until command ends a run                   | `5`                    |
-| `Agent.LivenessProbe.thresholds.success` | Times command must end successfully to regard pod as alive | `1`                    |
-| `Agent.LivenessProbe.thresholds.failure` | Times command must end erroneously to regard pod as dead   | `1`                    |
-| `Agent.UseCustomWorkspaceVolume`         | Use a fresh workspace on an EmptyDir volume                | `false`                |
+| Parameter                  | Description                                     | Default                |
+| -------------------------- | ----------------------------------------------- | ---------------------- |
+| `Agent.AlwaysPullImage`    | Always pull agent container image before build  | `false`                |
+| `Agent.CustomJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
+| `Agent.Enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
+| `Agent.Image`              | Agent image name                                | `jenkinsci/jnlp-slave` |
+| `Agent.ImagePullSecret`    | Agent image pull secret                         | Not set                |
+| `Agent.ImageTag`           | Agent image tag                                 | `2.62`                 |
+| `Agent.Privileged`         | Agent privileged container                      | `false`                |
+| `Agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
+| `Agent.volumes`            | Additional volumes                              | `nil`                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
