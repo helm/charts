@@ -13,17 +13,27 @@ hydra:
     pullSecrets: []
     #  - myRegistrKeySecretName
 
-  securityContext:
-    runAsUser: 1000
-    fsGroup: 1000
-    runAsNonRoot: true
-
-  ## Set to "1" to disable telemetry collection and sharing - for more information please
-  ## visit https://ory.gitbooks.io/hydra/content/telemetry.html
-  disableTelemetry: 0
-
   ## Disable HTTP/2 over TLS (HTTPS) and serve HTTP instead. Never use this in production.
   dangerousForceHttp: false
+
+  ## For the various configuration options of Hydra, pleas see `hydra serve --help`
+  ## and https://www.ory.sh/docs/guides/latest/hydra/4-install/.
+  config:
+    # This value must be set to the publicly available URL of Hydra.
+    OAUTH2_ISSUER_URL: ""
+    # This sets the URL of the login provider.
+    OAUTH2_LOGIN_URL: ""
+    # This sets the URL of the consent provider.
+    OAUTH2_CONSENT_URL: ""
+
+    ## Set to "1" to disable telemetry collection and sharing.
+    ## For more information see https://ory.gitbooks.io/hydra/content/telemetry.html
+    DISABLE_TELEMETRY: 0
+    ## Leave empty for text based log format, or set to "json" for JSON formatting.
+    LOG_FORMAT: json
+
+    # LOG_LEVEL: debug
+    # OAUTH2_SHARE_ERROR_DEBUG: true
 
   secrets:
     ## Hydra system secret (at least 16 characters)
@@ -41,10 +51,11 @@ hydra:
 
   ## Allows the specification of additional environment variables for hydra
   extraEnv: |
-    # - name: LOG_LEVEL
-    #   value: debug
-    # - name: OAUTH2_SHARE_ERROR_DEBUG
-    #   value: true
+
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+    runAsNonRoot: true
 
   affinity: |
     podAntiAffinity:
@@ -128,6 +139,7 @@ hydra:
       # ingress.kubernetes.io/affinity: cookie
 
     ## List of hosts for the ingress
+    ## Please set hydra.config.OAUTH2_ISSUER_URL accordingly
     hosts:
       - hydra.example.com
 

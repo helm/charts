@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "hydra.fullname" . }}-start-script
+  labels:
+    app: {{ template "hydra.name" . }}
+    chart: {{ template "hydra.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  start-hydra.sh: |
+    #!/bin/sh
+    set -e
+
+    {{- if ne .Values.hydra.persistence.dbVendor "memory" }}
+    hydra migrate sql -e
+    {{- end }}
+
+    exec "hydra" "$@"
