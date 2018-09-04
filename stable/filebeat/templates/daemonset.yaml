@@ -80,9 +80,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
-{{- range $key, $value := .Values.extraVars }}
-        - name: {{ $key }}
-          value: {{ $value }}
+{{- if .Values.extraVars }}
+{{ toYaml .Values.extraVars | indent 8 }}
 {{- end }}
         {{- if index .Values.config "http.enabled" }}
         ports:
