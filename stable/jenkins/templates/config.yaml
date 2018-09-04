@@ -93,7 +93,6 @@ data:
                 <org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
                   <name>{{ .Values.Agent.ImagePullSecret }}</name>
                 </org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
-{{- end }}
               </imagePullSecrets>
 {{- else }}
               <imagePullSecrets/>
