@@ -16,7 +16,7 @@ spec:
       containers:
       - name: {{ template "factorio.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:

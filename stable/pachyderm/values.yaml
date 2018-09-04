@@ -47,7 +47,7 @@ pachd:
  image:
   repository: pachyderm/pachd
   tag: 1.7.3
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
  worker:
   repository: pachyderm/worker
   tag: 1.7.3

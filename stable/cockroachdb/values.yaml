@@ -6,7 +6,7 @@
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
 ImageTag: "v2.0.5"
-ImagePullPolicy: "Always"
+ImagePullPolicy: "IfNotPresent"
 Replicas: 3
 MaxUnavailable: 1
 Component: "cockroachdb"

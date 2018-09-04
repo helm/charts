@@ -12,7 +12,7 @@ Master:
   Name: jenkins-master
   Image: "jenkins/jenkins"
   ImageTag: "lts"
-  ImagePullPolicy: "Always"
+  ImagePullPolicy: "IfNotPresent"
 # ImagePullSecret: jenkins
   Component: "jenkins-master"
   UseSecurity: true
