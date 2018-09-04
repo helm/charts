@@ -163,6 +163,13 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
+      {{- if (.Values.persistence.enabled) and (.Values.persistence.existingClaim) }}
+        - name: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{ end }}
       {{- if .Values.master.config }}
         - name: config
           configMap:
