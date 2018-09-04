@@ -1,3 +1,11 @@
+### 1.4.0
+* [f5249551](https://github.com/kubernetes/charts/commit/f5249551):  
+  - Bump up GoCD app version to 18.8.0
+  - Updated kubernetes elastic agent plugin version to 1.0.2
+  - Updated post install script
+       * From GoCD version 18.8.0 pipeline created using api is already in
+         unpaused state
+  
 ### 1.3.6
 
 * [b7d596e](https://github.com/helm/charts/pull/7476/commits/b7d596e): Fixed role configuration instructions in README file.
