@@ -35,7 +35,7 @@ spec:
       initContainers:
       - name: "load-es-template"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: "Always"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
         - /bin/bash
         - -c
