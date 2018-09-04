@@ -31,8 +31,8 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
-{{- if .Values.indexTemplateLoad }}
       initContainers:
+{{- if .Values.indexTemplateLoad }}
       - name: "load-es-template"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -43,6 +43,9 @@ spec:
           -E output.logstash.enabled=false
           -E output.file.enabled=false
           -E output.elasticsearch.hosts=[{{- range $index, $host := .Values.indexTemplateLoad }}{{ if $index }}, {{ end }}{{ $host | quote }}{{- end }}]
+{{- end }}
+{{- if .Values.extraInitContainers }}
+{{ toYaml .Values.extraInitContainers | indent 6 }}
 {{- end }}
       containers:
       - name: {{ .Chart.Name }}
