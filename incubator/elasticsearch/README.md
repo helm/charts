@@ -98,6 +98,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.persistence.size`            | Master persistent volume size                                       | `4Gi`                                |
 | `master.persistence.storageClass`    | Master persistent volume Class                                      | `nil`                                |
 | `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                      |
+| `master.updateStrategy`              | Master update strategy                                              | `{ type: OnDelete }`                 |
 | `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                              |
 | `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                  |
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`  |
@@ -113,6 +114,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.tolerations`                   | Data tolerations                                                    | `[]`                                 |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                               |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                               |
+| `data.updateStrategy`                | Data update strategy                                                | `{ type: RollingUpdate }`            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

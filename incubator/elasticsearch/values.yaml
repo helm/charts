@@ -80,6 +80,8 @@ master:
   ## (dict) If specified, apply these annotations to each master Pod
   # podAnnotations:
   #   example: master-foo
+  updateStrategy:
+    type: OnDelete
   podDisruptionBudget:
     enabled: false
     minAvailable: 2  # Same as `cluster.env.MINIMUM_MASTER_NODES`
@@ -111,6 +113,8 @@ data:
   ## (dict) If specified, apply these annotations to each data Pod
   # podAnnotations:
   #   example: data-foo
+  updateStrategy:
+    type: RollingUpdate
   podDisruptionBudget:
     enabled: false
     # minAvailable: 1

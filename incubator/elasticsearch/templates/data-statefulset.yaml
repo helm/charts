@@ -12,7 +12,11 @@ spec:
   serviceName: {{ template "elasticsearch.data.fullname" . }}
   replicas: {{ .Values.data.replicas }}
   updateStrategy:
+  {{- if .Values.data.updateStrategy }}
+{{ toYaml .Values.data.updateStrategy | indent 4 }}
+  {{- else }}
     type: RollingUpdate
+  {{- end }}
   template:
     metadata:
       labels:
