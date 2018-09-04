@@ -1,9 +1,6 @@
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-
-enabled: true
-
 image: redis
 tag: 4.0.11-stretch
 pullPolicy: IfNotPresent
@@ -13,7 +10,7 @@ replicas: 3
 ## Redis specific configuration options
 redis:
   port: 6379
-  masterGroupName: zenko
+  masterGroupName: mymaster
   config:
     min-slaves-to-write: 1
     min-slaves-max-lag: 5   # Value in seconds
