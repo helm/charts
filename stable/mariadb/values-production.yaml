@@ -99,7 +99,7 @@ master:
     enabled: true
     # Enable persistence using an existing PVC
     # existingClaim:
-    # mountPath: 
+    # mountPath:
     ## Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
