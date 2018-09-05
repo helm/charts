@@ -1,5 +1,5 @@
 name: grafana
-version: 1.14.3
+version: 1.14.4
 appVersion: 5.2.3
 kubeVersion: "^1.8.0-0"
 description: The leading tool for querying and visualizing time series and metrics.
