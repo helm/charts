@@ -50,6 +50,10 @@ spec:
 {{- end }}
 {{- end }}
       serviceAccountName: {{ if .Values.rbac.install }}{{ template "jenkins.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+{{- if .Values.Master.HostNetworking }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet 
+{{- end }}
       initContainers:
         - name: "copy-default-config"
           image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
