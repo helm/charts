@@ -165,10 +165,14 @@ livenessProbe:
   enabled: true
   initialDelaySeconds: 120
   timeoutSeconds: 5
+  periodSeconds: 5
   failureThreshold: 6
+  successThreshold: 1
 
 readinessProbe:
   enabled: true
   initialDelaySeconds: 10
   timeoutSeconds: 3
   periodSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
