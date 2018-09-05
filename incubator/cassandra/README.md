@@ -115,6 +115,15 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `readinessProbe.timeoutSeconds`      | When the probe times out                        | `5`                                                        |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed.           | `1` |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.             | `3` |
+| `backup.enabled`                     | Enable backup on chart installation             | `false`                                                    |
+| `backup.schedule`                    | Keyspaces to backup, each with cron time        |                                                            |
+| `backup.history`                     | Backup CronJob history configuration            | successfulJobs: `1`, failedJobs: `3`                       |
+| `backup.annotations`                 | Backup pod annotations                          | iam.amazonaws.com/role: `cain`                             |
+| `backup.image.repo`                  | Backup image repository                         | `maorfr/cain`                                              |
+| `backup.image.tag`                   | Backup image tag                                | `latest`                                                   |
+| `backup.env`                         | Backup environment variables                    | AWS_REGION: `us-east-1`                                    |
+| `backup.resources`                   | Backup CPU/Memory resource requests/limits      | Memory: `1Gi`, CPU: `1`                                    |
+| `backup.destination`                 | Destination to store backup artifacts           | `s3://bucket/cassandra`                                    |
 
 ## Scale cassandra
 When you want to change the cluster size of your cassandra, you can use the helm upgrade command.
