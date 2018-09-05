@@ -133,3 +133,8 @@ persistence:
 #  - mountPath: /var/nothing
 #    name: nothing
 #    readOnly: true
+
+securityContext:
+  enabled: true
+  runAsUser: 100
+  fsGroup: 101
