@@ -29,15 +29,16 @@ spec:
               name: http
           livenessProbe:
             httpGet:
-              path: /grid/console
+              path: /wd/hub/status
               port: {{ .Values.hub.port }}
             initialDelaySeconds: 30
             periodSeconds: 5
             timeoutSeconds: {{ .Values.hub.livenessTimeout }}
           readinessProbe:
             httpGet:
-              path: /grid/console
+              path: /wd/hub/status
               port: {{ .Values.hub.port }}
+            initialDelaySeconds: 15
             timeoutSeconds: {{ .Values.hub.readinessTimeout }}
           env:
             - name: JAVA_TOOL_OPTIONS
