@@ -14,7 +14,7 @@
 
    Then the two files would be mounted in the Docker image when the chart is installed.
 
-2. PersistentVolumeClaim (Only if using HDFS)
+2. PersistentVolumeClaim (Only if NOT using HDFS)
 
    If you are using a PVC as the backing storage for Spark history events, then you'll need to create the PVC before installing the chart. On the Google Kubernetes Engine (GKE), the recommended underlying PersistentVolume is NFS. You can also use Portworx or Gluster. All three options provide sharing capabilities that would allow both the history server pod and the Spark job pods to mount the same PVC. 
 
