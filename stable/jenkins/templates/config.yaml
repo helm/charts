@@ -192,9 +192,15 @@ data:
   apply_config.sh: |-
     mkdir -p /usr/share/jenkins/ref/secrets/;
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
-    cp -n /var/jenkins_config/config.xml /var/jenkins_home;
-    cp -n /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
-    cp -n /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
+{{- if .Values.Master.OverwriteConfig }}
+    cp /var/jenkins_config/config.xml /var/jenkins_home;
+    cp /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
+    cp /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
+{{- else }}
+    cp --no-clobber /var/jenkins_config/config.xml /var/jenkins_home;
+    cp --no-clobber /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
+    cp --no-clobber /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
+{{- end }}
 {{- if .Values.Master.InstallPlugins }}
     # Install missing plugins
     cp /var/jenkins_config/plugins.txt /var/jenkins_home;
