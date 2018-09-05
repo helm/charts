@@ -135,7 +135,7 @@ backup:
   image:
     repos: maorfr/cain
     tag: latest
-  
+
   env:
   - name: AWS_REGION
     value: us-east-1
