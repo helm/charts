@@ -43,6 +43,9 @@ The following table lists the configurable parameters of the oauth2-proxy chart 
 Parameter | Description | Default
 --- | --- | ---
 `affinity` | node/pod affinities | None
+`authenticatedEmailsFile.enabled` | Enables authorize individual email addresses | `false`
+`authenticatedEmailsFile.template` | Name of the configmap what is handled outside of that chart | `""`
+`authenticatedEmailsFile.restricted_access | (email addresses)[https://github.com/bitly/oauth2_proxy#email-authentication] list config | `""`
 `config.clientID` | oauth client ID | `""`
 `config.clientSecret` | oauth client secret | `""`
 `config.cookieSecret` | server specific cookie for the secret; create a new one with `python -c 'import os,base64; print base64.b64encode(os.urandom(16))'` | `""`
