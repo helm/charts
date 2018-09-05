@@ -65,12 +65,16 @@ users, virtual hosts, permissions and parameters) to load by the management plug
       "name": {{ .Values.rabbitmqUsername | quote }},
       "password": {{ .Values.rabbitmqPassword | quote }},
       "tags": "administrator"
-    }
+    }{{- if .Values.definitions.users -}},
+{{ .Values.definitions.users | indent 4 }}
+{{- end }}
   ],
   "vhosts": [
     {
       "name": {{ .Values.rabbitmqVhost | quote }}
-    }
+    }{{- if .Values.definitions.vhosts -}},
+{{ .Values.definitions.vhosts | indent 4 }}
+{{- end }}
   ],
   "permissions": [
     {
@@ -79,10 +83,21 @@ users, virtual hosts, permissions and parameters) to load by the management plug
       "configure": ".*",
       "read": ".*",
       "write": ".*"
-    }
-  ],
+    }{{- if .Values.definitions.permissions -}},
+{{ .Values.definitions.permissions | indent 4 }}
+{{- end }}
+  ]{{- if .Values.definitions.policies -}},
   "policies": [
-{{ .Values.policies | indent 4 }}
-  ]
+{{ .Values.definitions.policies | indent 4 }}
+  ]{{ end }} {{- if .Values.definitions.queues }},
+  "queues": [
+{{ .Values.definitions.queues | indent 4 }}
+  ]{{ end }}{{ if .Values.definitions.exchanges }},
+  "exchanges": [
+{{ .Values.definitions.exchanges | indent 4 }}
+  ]{{ end }}{{ if .Values.definitions.bindings }},
+  "bindings": [
+{{ .Values.definitions.bindings| indent 4 }}
+  ]{{ end }}
 }
 {{- end -}}
