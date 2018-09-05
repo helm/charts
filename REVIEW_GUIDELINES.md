@@ -112,32 +112,51 @@ volumes:
   {{- end -}}
 ```
 
-* Example pvc.yaml
+## AutoScaling / HorizontalPodAutoscaler
+
+* Autoscaling should be disabled by default
+* All options should be shown in README.md
+* Example autoscaling section in values.yaml:
 
 ```yaml
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
-kind: PersistentVolumeClaim
-apiVersion: v1
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
+  targetMemoryUtilizationPercentage: 50
+```
+
+* Example hpa.yaml
+
+```yaml
+{{- if .Values.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ template "fullname" . }}
   labels:
-    app: {{ template "name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "helm-chart.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "helm-chart.fullname" . }}
 spec:
-  accessModes:
-    - {{ .Values.persistence.accessMode | quote }}
-  resources:
-    requests:
-      storage: {{ .Values.persistence.size | quote }}
-{{- if .Values.persistence.storageClass }}
-{{- if (eq "-" .Values.persistence.storageClass) }}
-  storageClassName: ""
-{{- else }}
-  storageClassName: "{{ .Values.persistence.storageClass }}"
-{{- end }}
-{{- end }}
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: {{ template "helm-chart.fullname" . }}
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
 {{- end }}
 ```
 
