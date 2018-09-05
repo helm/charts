@@ -4,9 +4,10 @@ kind: ServiceMonitor
 metadata:
   name: {{ template "kube-controller-manager.fullname" . }}
   labels:
+    k8s-app: kube-controller-manager  
 {{ toYaml .Values.kubeControllerManager.labels | indent 4 }}
 spec:
-  jobLabel: {{ .Values.kubeControllerManager.serviceMonitor.jobLabel }}
+  jobLabel: k8s-app
   selector:
  {{ toYaml .Values.kubeControllerManager.serviceMonitor.selector | indent 4 }}
   namespaceSelector:

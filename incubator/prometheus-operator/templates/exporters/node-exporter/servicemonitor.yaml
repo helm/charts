@@ -4,9 +4,10 @@ kind: ServiceMonitor
 metadata:
   name: {{ template "node-exporter.fullname" . }}
   labels:
+    k8s-app: node-exporter
 {{ toYaml .Values.nodeexporter.labels | indent 4 }}
 spec:
-  jobLabel: {{ .Values.nodeexporter.serviceMonitor.jobLabel }}
+  jobLabel: k8s-app
   selector:
 {{ toYaml .Values.nodeexporter.serviceMonitor.selector | indent 4 }}
     matchNames:

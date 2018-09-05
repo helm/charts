@@ -22,7 +22,7 @@ spec:
     scheme: https
     tlsConfig:
       insecureSkipVerify: true
-  jobLabel: {{ .Values.kubelet.serviceMonitor.jobLabel }}
+  jobLabel: k8s-app
   namespaceSelector:
     matchNames:
     - kube-system

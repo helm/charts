@@ -2,9 +2,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
+  name: {{ template "prometheus.fullname" . }}
   labels:    
+    k8s-app: prometheus
 {{ toYaml .Values.prometheus.labels | indent 4 }}
-  name: prometheus
 spec:
   selector:
 {{ toYaml .Values.prometheus.serviceMonitor.selector | indent 4 }}

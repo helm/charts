@@ -3,10 +3,11 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
+    k8s-app: coredns
 {{ toYaml .Values.coreDns.labels | indent 4}}
   name: coredns
 spec:
-  jobLabel: {{ .Values.coreDns.serviceMonitor.jobLabel }}
+  jobLabel: k8s-app
   selector:
 {{ toYaml .Values.coreDns.serviceMonitor.selector | indent 6 }}
   namespaceSelector:

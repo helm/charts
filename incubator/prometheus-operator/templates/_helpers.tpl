@@ -91,6 +91,15 @@ release: {{ .Release.Name | quote }}
 {{- end }}
 {{- end }}
 
+{{- define "kube-apiserver.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default "kube-apiserver" .Values.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end }}
+{{- end }}
+
 {{- define "kube-controller-manager.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}

@@ -2,9 +2,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  labels:
-{{ toYaml .Values.alertmanager.labels | indent 4 }}
   name: alertmanager
+  labels:
+    k8s-app: alertmanager  
+{{ toYaml .Values.alertmanager.labels | indent 4 }}
 spec:
   selector:
 {{ toYaml .Values.alertmanager.service.selector | indent 4 }}

@@ -21,7 +21,7 @@ spec:
     scheme: https
     tlsConfig:
       insecureSkipVerify: true
-  jobLabel: {{ .Values.kubeStateMetrics.serviceMonitor.jobLabel }}
+  jobLabel: k8s-app
   selector:
 {{ toYaml .Values.kubeStateMetrics.serviceMonitor.selector | indent 4 }}
 {{- end }}

@@ -6,7 +6,7 @@ metadata:
   labels:    
 {{ toYaml .Values.kubeDns.labels | indent 4}}
 spec:
-  jobLabel: {{ .Values.kubeDns.serviceMonitor.jobLabel }}
+  jobLabel: k8s-app
   selector:
 {{ toYaml .Values.kubeDns.serviceMonitor.selector | indent 4 }}
   namespaceSelector:

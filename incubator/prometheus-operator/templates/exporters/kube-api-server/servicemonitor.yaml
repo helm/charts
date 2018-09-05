@@ -2,9 +2,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
+  name: {{ template "kube-apiserver.fullname" . }}
   labels:
+    k8s-app: apiserver
 {{ toYaml .Values.kubeApiServer.labels | indent 4}}
-  name: kube-apiserver
 spec:
   endpoints:
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
@@ -14,7 +15,7 @@ spec:
     tlsConfig:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       serverName: kubernetes
-  jobLabel: {{ .Values.kubeApiServer.serviceMonitor.jobLabel }}
+  jobLabel: component
   namespaceSelector:
     matchNames:
     - default

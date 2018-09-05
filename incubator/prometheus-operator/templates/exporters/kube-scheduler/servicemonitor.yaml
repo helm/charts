@@ -4,9 +4,10 @@ kind: ServiceMonitor
 metadata:
   name: {{ template "kube-scheduler.fullname" . }}
   labels:    
+    k8s-app: kube-scheduler
 {{ toYaml .Values.kubeScheduler.labels | indent 4}}
 spec:
-  jobLabel: {{ .Values.kubeScheduler.serviceMonitor.jobLabel }}
+  jobLabel: k8s-app
   selector:
 {{ toYaml .Values.kubeScheduler.serviceMonitor.selector | indent 4 }}
   namespaceSelector:

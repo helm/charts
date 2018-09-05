@@ -50,10 +50,14 @@ spec:
 {{- if .Values.prometheus.prometheusSpec.serviceMonitorsSelector }}
   serviceMonitorSelector:
 {{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorsSelector | indent 4 }}
+{{ else}}
+  serviceMonitorSelector: {}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector }}
   serviceMonitorNamespaceSelector:
-{{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector | indent 4 }}
+  {{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector | indent 4 }}
+{{ else }}
+  serviceMonitorNamespaceSelector: {}
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.remoteRead }}
   remoteRead:
