@@ -49,12 +49,18 @@ spec:
         {{- end }}
         livenessProbe:
           httpGet:
+            {{ if .Values.config.http.https_enabled -}}
+            scheme: HTTPS
+            {{ end -}}
             path: /ping
             port: api
           initialDelaySeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
+            {{ if .Values.config.http.https_enabled -}}
+            scheme: HTTPS
+            {{ end -}}
             path: /ping
             port: api
           initialDelaySeconds: 5
@@ -64,7 +70,13 @@ spec:
           mountPath: {{ .Values.config.storage_directory }}
         - name: config
           mountPath: /etc/influxdb
+        {{ if .Values.volumeMounts }}
+{{ toYaml .Values.volumeMounts | indent 8}}
+        {{ end }}
       volumes:
+      {{ if .Values.volumes }}
+{{ toYaml .Values.volumes | indent 6}}
+      {{ end }}
       - name: data
       {{- if .Values.persistence.enabled }}
         {{- if not (empty .Values.persistence.name) }}

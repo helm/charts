@@ -112,6 +112,26 @@ env:
   # - name: INFLUXDB_DB
   #   value: "demo"
 
+## Option to attach more volumes to the pod. Primarily useful when
+## attaching HTTPS certificates via kubernetes secrets.
+volumes:
+  # - name: ssl
+  #   secret:
+  #     secretName: influxdb_tls_certs
+  #     items:
+  #     - key: tls.key
+  #       path: influxdb.key
+  #     - key: tls.crt
+  #       path: influxdb.crt
+
+## Option to specify InfluxDB pod volumeMounts. Primarily useful when
+## attaching HTTPS certificates via kubernetes secrets.
+volumeMounts:
+  # volumeMounts:
+  #  - name: ssl
+  #    mountPath: /etc/ssl/
+  #    readOnly: true
+
 ## Change InfluxDB configuration parameters below:
 ## Defaults are indicated
 ## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
