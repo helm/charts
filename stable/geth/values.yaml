@@ -17,7 +17,6 @@ customArgs: {}
 #  cache: 1024
 #  debug:
 #  maxpeers: 128
-  
 
 persistence:
   enabled: true
