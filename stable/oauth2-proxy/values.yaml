@@ -29,6 +29,23 @@ extraArgs:
   upstream: "file:///dev/null"
   http-address: "0.0.0.0:4180"
 
+# To authorize individual email addresses
+# That is part of extraArgs but since this needs special treatment we need to do a separate section
+authenticatedEmailsFile:
+  enabled: false
+  # template is the name of the configmap what contains the email user list but has been configured without this chart.
+  # It's a simpler way to maintain only one configmap (user list) instead changing it for each oauth2-proxy service.
+  # Be aware the value name in the extern config map in data needs to be named to "restricted_user_access".
+  template: ""
+  # One email per line
+  # example:
+  # restricted_access: |-
+  #   name1@domain
+  #   name2@domain
+  # If you override the config with restricted_access it will configure a user list within this chart what takes care of the
+  # config map resource.
+  restricted_access: ""
+
 service:
   type: ClusterIP
   port: 80
