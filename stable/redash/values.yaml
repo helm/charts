@@ -150,8 +150,14 @@ scheduledWorker:
 postgresql:
   imageTag: "9.5.6-alpine"
   postgresUser: redash
-  postgresPassword: redash
+  ## If the password is not specified, a random password will be generated
+  ##
+  # postgresPassword:
   postgresDatabase: redash
+  service:
+    type: ClusterIP
+    port: 5432
+    externalIPs: []
   persistence:
     enabled: true
     ## If defined, storageClassName: <storageClass>
@@ -170,5 +176,9 @@ postgresql:
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/redis/README.md
 ##
 redis:
-  redisPassword: redash
-
+  ## If the password is not specified, a random password will be generated
+  ##
+  # password:
+  databaseNumber: 0
+  master:
+    port: 6379

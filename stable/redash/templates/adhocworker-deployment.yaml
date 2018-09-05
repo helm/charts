@@ -26,18 +26,40 @@ spec:
         - name: {{ template "redash.name" . }}-adhocworker
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/app/bin/docker-entrypoint", "scheduler"]
+          command: ["/bin/sh"]
+          args: ["-c", ". /config/dynamicenv.sh && /app/bin/docker-entrypoint scheduler"]
+          volumeMounts:
+            - name: config
+              mountPath: /config
           env:
-            - name: REDASH_DATABASE_URL
+            - name: REDASH_DATABASE_USER
+              value: "{{ .Values.postgresql.postgresUser }}"
+            - name: REDASH_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "redash.fullname" . }}
-                  key: postgresURL
-            - name: REDASH_REDIS_URL
+                  name: {{ .Release.Name }}-postgresql
+                  key: postgres-password
+            - name: REDASH_DATABASE_HOSTNAME
+              value: {{ template "redash.postgresql.fullname" . }}
+            - name: REDASH_DATABASE_PORT
+              value: "{{ .Values.postgresql.service.port }}"
+            - name: REDASH_DATABASE_DB
+              value: "{{ .Values.postgresql.postgresDatabase }}"
+            - name: REDASH_REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "redash.fullname" . }}
-                  key: redisURL
+                {{- if .Values.redis.existingSecret }}
+                  name: {{ .Values.redis.existingSecret }}
+                {{- else }}
+                  name: {{ .Release.Name }}-redis
+                {{- end }}
+                  key: redis-password
+            - name: REDASH_REDIS_HOSTNAME
+              value: {{ template "redash.redis.fullname" . }}
+            - name: REDASH_REDIS_PORT
+              value: "{{ .Values.redis.master.port }}"
+            - name: REDASH_REDIS_DB
+              value: "{{ .Values.redis.databaseNumber }}"
           {{- range $key, $value := .Values.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
@@ -48,6 +70,10 @@ spec:
           {{- end }}
           resources:
 {{ toYaml .Values.adhocWorker.resources | indent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ template "redash.fullname" . }}
     {{- if .Values.adhocWorker.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.adhocWorker.nodeSelector | indent 8 }}

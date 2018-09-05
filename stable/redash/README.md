@@ -5,7 +5,7 @@
 ## TL;DR
 
 ```bash
-$ helm install incubator/redash
+$ helm install stable/redash
 ```
 
 ## Introduction
@@ -23,7 +23,7 @@ This chart bootstraps a [Redash](https://github.com/getredash/redash) deployment
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release incubator/redash
+$ helm install --name my-release stable/redash
 ```
 
 The command deploys Redash on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -85,7 +85,7 @@ The following table lists the configurable parameters of the Redash chart and th
 | `postgresql.name`                      | Name used for PostgreSQL deployment                   | `postgresql`       |
 | `postgresql.imageTag`                  | PostgreSQL image version                              | `9.5.6-alpine`     |
 | `postgresql.postgresUser`              | PostgreSQL User to create                             | `redash`           |
-| `postgresql.postgresPassword`          | PostgreSQL Password for the new user                  | `redash`           |
+| `postgresql.postgresPassword`          | PostgreSQL Password for the new user                  | random 10 character long alphanumeric string |
 | `postgresql.postgresDatabase`          | PostgreSQL Database to create                         | `redash`           |
 | `postgresql.persistence.enabled`       | Use a PVC to persist PostgreSQL data                  | `true`             |
 | `postgresql.persistence.size`          | PVC Storage Request size for PostgreSQL volume        | `10Gi`             |
@@ -93,14 +93,14 @@ The following table lists the configurable parameters of the Redash chart and th
 | `postgresql.persistence.storageClass`  | Storage Class for PostgreSQL backing PVC              | `nil`<br>(uses alpha storage class annotation) |
 | `postgresql.persistence.existingClaim` | Provide an existing PostgreSQL PersistentVolumeClaim  | `nil`              |
 | `redis.name`                           | Name used for Redis deployment                        | `redis`            |
-| `redis.redisPassword`                  | Redis Password to use                                 | `redash`           |
+| `redis.redisPassword`                  | Redis Password to use                                 | random 10 character long alphanumeric string |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install --name my-release \
   --set cookieSecret=verysecret \
-    incubator/redash
+    stable/redash
 ```
 
 The above command sets the Redash cookie secret to `verysecret`.
@@ -108,6 +108,6 @@ The above command sets the Redash cookie secret to `verysecret`.
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml incubator/redash
+$ helm install --name my-release -f values.yaml stable/redash
 ```
 > **Tip**: You can use the default [values.yaml](values.yaml)
