@@ -8,7 +8,10 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "kubernetes-dashboard.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  # Dashboard doesn't respect the namespace where the pod is deployed and
+  # still tries to create & access 'kubernetes-dashboard-key-holder' secret and
+  # 'kubernetes-dashboard-settings' configmap in the 'kube-system' namespace
+  namespace: kube-system
 rules:
   # Allow Dashboard to create 'kubernetes-dashboard-key-holder' secret.
 - apiGroups:
