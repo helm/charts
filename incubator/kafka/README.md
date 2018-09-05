@@ -233,4 +233,4 @@ into the metric name instead of becoming a label. If you are curious to learn mo
 
 ### Kafka Exporter
 
-The [Kafka Exporter](https://github.com/danielqsj/kafka_exporter) is a complimentary metrics exporter to the JMX Exporter. The Kafka Exporter provides additional statistics on Kafka Consumer Groups.
+The [Kafka Exporter](https://github.com/danielqsj/kafka_exporter) is a complementary metrics exporter to the JMX Exporter. The Kafka Exporter provides additional statistics on Kafka Consumer Groups.
