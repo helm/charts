@@ -1,5 +1,5 @@
 name: oauth2-proxy
-version: 0.5.2
+version: 0.6.0
 # This chart is deprecated and no longer maintained as it's upstream has been abandoned.
 # For details deprecation, including how to un-deprecate a chart see the PROCESSES.md file.
 deprecated: true
