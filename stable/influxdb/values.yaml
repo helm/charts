@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
   repo: "influxdb"
-  tag: "1.4-alpine"
+  tag: "1.6-alpine"
   pullPolicy: IfNotPresent
 
 ## Specify a service type
