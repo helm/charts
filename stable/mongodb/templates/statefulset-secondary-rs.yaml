@@ -61,7 +61,7 @@ spec:
             value: {{ .Values.replicaSet.name | quote }}
             {{- if .Values.replicaSet.useHostnames }}
           - name: MONGODB_ADVERTISED_HOSTNAME
-            value: "$(MONGODB_POD_NAME).{{ template "mongodb.fullname" . }}-headless.{{ .Release.Namespace }}"
+            value: "$(MONGODB_POD_NAME).{{ template "mongodb.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local"
             {{- end }}
             {{- if .Values.usePassword }}
           - name: MONGODB_PRIMARY_ROOT_PASSWORD
