@@ -446,7 +446,7 @@ persistence:
 postgresql:
 
   ## Use the PostgreSQL chart dependency.
-  ## Set to false if bringing your own PostgreSQL, and set secret value postgresql-uri.
+  ## Set to false if bringing your own PostgreSQL, and set secret values for "postgres-*".
   ##
   enabled: true
 
@@ -797,10 +797,33 @@ secrets:
     ## Skip SSL validation
     # skipSslValidation:
 
-  ## If bringing your own PostgreSQL, set this to the full uri to use
-  ## e.g. postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=disable
-  ##
-  # postgresqlUri:
+  ## Configurations for bringing your own PostgreSQL
+  externalPostgres:
+    enabled: false
+
+    ## Use an externally provided postgres (takes precedence over `postgres.enabled` if both are true)
+    # enabled:
+
+    ## The host to connect to.
+    # host:
+
+    ## The port to connect to.
+    port: "5432"
+
+    ## The user to sign in as.
+    # user:
+
+    ## The user's password.
+    # password:
+
+    ## Whether or not to use SSL. [disable|require|verify-ca|verify-full]
+    # sslmode:
+
+    ## Dialing timeout. (0 means wait indefinitely)
+    # connectTimeout:
+
+    ## The name of the database to use.
+    # database:
 
   ## Secrets for using Hashcorp Vault as a credential manager.
   ##

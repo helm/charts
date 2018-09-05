@@ -201,7 +201,14 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.oauthAuth.groupsKey` | OAuth2 Authentication: The groups key indicates which claim to use to map external groups to Concourse teams. | `nil` |
 | `secrets.oauthAuth.caCert` | OAuth2 Authentication: CA Certificate | `nil` |
 | `secrets.oauthAuth.skipSslValidation` | OAuth2 Authentication: Skip SSL validation | `nil` |
-| `secrets.postgresqlUri` | PostgreSQL connection URI when `postgresql.enabled` is `false` | `nil` |
+| `secrets.externalPostgres.enabled` | External Postgres: Use an externally provided postgres | `false` |
+| `secrets.externalPostgres.host` | External Postgres: (Required if external postgres enabled) The host to connect to. | `nil` |
+| `secrets.externalPostgres.port` | External Postgres: The port to connect to. | `5432` |
+| `secrets.externalPostgres.user` | External Postgres: (Required if external postgres enabled) The user to sign in as. | `nil` |
+| `secrets.externalPostgres.password` | External Postgres: (Required if external postgres enabled) The user's password. | `nil` |
+| `secrets.externalPostgres.sslmode` | External Postgres: Whether or not to use SSL. [disable|require|verify-ca|verify-full]  | `nil` |
+| `secrets.externalPostgres.connectTimeout` | External Postgres: Dialing timeout. (0 means wait indefinitely) | `nil` |
+| `secrets.externalPostgres.database` | External Postgres: (Required if external postgres enabled) The name of the database to use.  | `nil` |
 | `secrets.vaultCaCert` | CA certificate   use to verify the vault server SSL cert. | `nil` |
 | `secrets.vaultClientToken` | Vault periodic client token | `nil` |
 | `secrets.vaultAppRoleId` | Vault AppRole RoleID | `nil` |
@@ -237,11 +244,17 @@ rm session-signing-key.pub
 printf "%s:%s" "concourse" "$(pbpaste)" > local-user-auth-local-users
 ```
 
-You'll also need to create/copy secret values for optional features. See [templates/secrets.yaml](templates/secrets.yaml) for possible values. In the example below, we are not using the [PostgreSQL](#postgresql) chart dependency, and so we must set a `postgresql-uri` secret.
+You'll also need to create/copy secret values for optional features. See [templates/secrets.yaml](templates/secrets.yaml)
+for possible values. In the example below, we are not using the [PostgreSQL](#postgresql) chart dependency, and so we
+must set `secrets.externalPostgres.enabled` to true, and create the `external-postgres-*` secrets.
 
 ```console
-# copy a posgres URI to clipboard and paste it to file
-printf "%s" "$(pbpaste)" > postgresql-uri
+# Enable external postgres and copy a postgres host, port, user, password, and database to clipboard and paste them to files
+printf "%s" "$(pbpaste)" > external-postgres-host
+printf "%s" "$(pbpaste)" > external-postgres-port
+printf "%s" "$(pbpaste)" > external-postgres-user
+printf "%s" "$(pbpaste)" > external-postgres-password
+printf "%s" "$(pbpaste)" > external-postgres-database
 # copy Github client id and secrets to clipboard and paste to files
 printf "%s" "$(pbpaste)" > github-auth-client-id
 printf "%s" "$(pbpaste)" > github-auth-client-secret
@@ -331,11 +344,11 @@ web:
 
 By default, this chart will use a PostgreSQL database deployed as a chart dependency, with default values for username, password, and database name. These can be modified by setting the `postgresql.*` values.
 
-You can also bring your own PostgreSQL. To do so, set `postgresql.enabled` to false. You'll then need to specify the full uri to the database, including the username and password, e.g. `postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=require`. You can do this one of two ways:
+You can also bring your own PostgreSQL. To do so, set `postgresql.enabled` to false and `secrets.externalPostgres.enabled` to true. You'll then need to specify the connection parameters. You can do this one of two ways:
 
-1. Set `secrets.postgresqlUri` in your values
+1. Set `secrets.externalPostgres.*` in your values
 
-2. Set `postgresql-uri` in your release's secrets as described in [Secrets](#secrets).
+2. Set `external-postgres-*` values in your release's secrets as described in [Secrets](#secrets).
 
 The only way to completely avoid putting secrets in Helm is to bring your own PostgreSQL, and use option 2 above.
 

@@ -64,26 +64,56 @@ spec:
               value: "/concourse-keys/session_signing_key"
             - name: CONCOURSE_TSA_AUTHORIZED_KEYS
               value: "/concourse-keys/worker_key.pub"
-            {{- if .Values.postgresql.enabled }}
-            - name: POSTGRES_HOST
+            {{- if .Values.secrets.externalPostgres.enabled }}
+            - name: CONCOURSE_POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: postgres-host
+            - name: CONCOURSE_POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: postgres-port
+            - name: CONCOURSE_POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: postgres-user
+            - name: CONCOURSE_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: postgres-password
+            - name: CONCOURSE_POSTGRES_SSLMODE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: postgres-sslmode
+            - name: CONCOURSE_POSTGRES_CONNECT_TIMEOUT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: postgres-connect-timeout
+            - name: CONCOURSE_POSTGRES_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: postgres-database
+            {{- else if .Values.postgresql.enabled }}
+            - name: CONCOURSE_POSTGRES_HOST
               value: {{ template "concourse.postgresql.fullname" . }}
-            - name: POSTGRES_USER
+            - name: CONCOURSE_POSTGRES_USER
               value: {{ .Values.postgresql.postgresUser }}
-            - name: POSTGRES_PASSWORD
+            - name: CONCOURSE_POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.postgresql.fullname" . }}
                   key: postgres-password
-            - name: POSTGRES_DATABASE
+            - name: CONCOURSE_POSTGRES_DATABASE
               value: {{ .Values.postgresql.postgresDatabase | quote }}
-            - name: CONCOURSE_POSTGRES_DATA_SOURCE
-              value: postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST)/$(POSTGRES_DATABASE)?sslmode=disable
-            {{- else }}
-            - name: CONCOURSE_POSTGRES_DATA_SOURCE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: postgresql-uri
+            - name: CONCOURSE_POSTGRES_SSLMODE
+              value: "disable"
             {{- end }}
             {{- if .Values.concourse.encryption.enabled }}
             - name: CONCOURSE_ENCRYPTION_KEY
