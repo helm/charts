@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: prometheus-k8s-config
+  name: {{ template "prometheus.fullname" . }}-config
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

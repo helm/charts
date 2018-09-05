@@ -11,7 +11,7 @@ serviceMonitor:
 ##
 image:
   repository: quay.io/coreos/prometheus-operator
-  tag: v0.22.2
+  tag: v0.23.2
   pullPolicy: IfNotPresent
 
 createCustomResource: true
@@ -26,7 +26,7 @@ serviceAccount:
 ##
 prometheusConfigReloader:
   repository: quay.io/coreos/prometheus-config-reloader
-  tag: v0.22.0
+  tag: v0.23.2	
 
 rules:
   create: true
@@ -52,6 +52,86 @@ global:
 
 kubeletService:
   enable: true
+
+serviceMonitors: []
+  ## Name of the ServiceMonitor to create
+  ##
+  # - name: ""
+
+    ## Labels to set used for the ServiceMonitorSelector.
+    ##
+    # serviceMonitorSelectorLabels: {}
+
+    ## Service label for use in assembling a job name of the form <label value>-<port>
+    ## If no label is specified, the service name is used.
+    ##
+    # jobLabel: ""
+
+    ## Label selector for services to which this ServiceMonitor applies
+    ##
+    # selector: {}
+
+    ## Namespaces from which services are selected
+    ##
+    # namespaceSelector:
+      ## Match any namespace
+      ##
+      # any: false
+
+      ## Explicit list of namespace names to select
+      ##
+      # matchNames: []
+
+    ## Endpoints of the selected service to be monitored
+    ##
+    # endpoints: []
+      ## Name of the endpoint's service port
+      ## Mutually exclusive with targetPort
+      # - port: ""
+
+      ## Name or number of the endpoint's target port
+      ## Mutually exclusive with port
+      # - targetPort: ""
+
+      ## File containing bearer token to be used when scraping targets
+      ##
+      #   bearerTokenFile: ""
+
+      ## Interval at which metrics should be scraped
+      ##
+      #   interval: 30s
+
+      ## HTTP path to scrape for metrics
+      ##
+      #   path: /metrics
+
+      ## HTTP scheme to use for scraping
+      ##
+      #   scheme: http
+
+      ## TLS configuration to use when scraping the endpoint
+      ##
+      #   tlsConfig:
+
+          ## Path to the CA file
+          ##
+          # caFile: ""
+
+          ## Path to client certificate file
+          ##
+          # certFile: ""
+
+          ## Skip certificate verification
+          ##
+          # insecureSkipVerify: false
+
+          ## Path to client key file
+          ##
+          # keyFile: ""
+
+          ## Server name used to verify host name
+          ##
+          # serverName: ""
 
 
 ####################
@@ -86,7 +166,7 @@ alertmanager:
   ##
   image:
     repository: quay.io/prometheus/alertmanager
-    tag: v0.15.0
+    tag: v0.15.2
 
   ingress:
     ## If true, Alertmanager Ingress will be created
@@ -121,7 +201,15 @@ alertmanager:
   labels:
     alertmanager: main
 
-  replicas: 2
+  ## Number of alertmanager replicas desired
+  ##
+  replicaCount: 1
+
+  ## Pod anti-affinity can prevent the scheduler from placing Prometheus replicas on the same node.
+  ## The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided.
+  ## The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node.
+  ## The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured.
+  podAntiAffinity: ""
 
   service:
 
@@ -206,7 +294,7 @@ grafana:
       datasources:
       - name: Prometheus
         type: prometheus
-        url: http://prometheus:9090
+        url: http://10.1.1.222:9090
         access: proxy
         isDefault: true
 
@@ -406,6 +494,7 @@ prometheus:
       #   hosts:
       #     - prometheus.example.com
   labels:
+    app: prometheus
     k8s-app: prometheus
 
   serviceMonitor:
@@ -413,12 +502,12 @@ prometheus:
     selector:
       matchLabels:
         app: prometheus
-        prometheus: k8s
+        k8s-app: prometheus
 
   service:
     selector:
       app: prometheus
-      prometheus: k8s
+      k8s-app: prometheus
 
   prometheusSpec:
 
@@ -472,11 +561,15 @@ prometheus:
     ##
     routePrefix: /
 
+    podMetadata:
+      labels:
+        app: prometheus
+        k8s-app: prometheus
     ## Pod anti-affinity can prevent the scheduler from placing Prometheus replicas on the same node.
     ## The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided.
     ## The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node.
     ## The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured.
-    podAntiAffinity: "soft"
+    podAntiAffinity: ""
 
     ## The remote_read spec configuration for Prometheus.
     ## Ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotereadspec

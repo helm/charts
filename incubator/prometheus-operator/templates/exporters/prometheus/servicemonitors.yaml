@@ -7,7 +7,7 @@ items:
     kind: ServiceMonitor
     metadata:
       labels:
-{{ include "prometheus-operator.labels.global" . | indent 8 }}      
+{{ include "prometheus.labels.global" . | indent 8 }}      
         {{- if .serviceMonitorSelectorLabels }}
 {{ toYaml .serviceMonitorSelectorLabels | indent 8 }}
         {{- end }}

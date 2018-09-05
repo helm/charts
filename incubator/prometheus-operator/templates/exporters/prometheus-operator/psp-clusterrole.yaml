@@ -2,11 +2,13 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: psp-{{ template "prometheus.fullname" . }}
+  labels:
+{{ include "prometheus-operator.labels.standard" . | indent 4 }}
+  name: psp-{{ template "prometheus-operator.fullname" . }}
 rules:
 - apiGroups: ['extensions']
   resources: ['podsecuritypolicies']
   verbs:     ['use']
   resourceNames:
-  - {{ template "prometheus.fullname" . }}
+  - {{ template "prometheus-operator.fullname" . }}
 {{- end }}

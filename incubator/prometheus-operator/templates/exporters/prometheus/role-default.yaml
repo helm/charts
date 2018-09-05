@@ -1,7 +1,8 @@
+{{- if  .Values.global.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: prometheus-k8s
+  name: {{ template "prometheus.fullname" . }}-default
   namespace: default
 rules:
 - apiGroups:
@@ -15,3 +16,4 @@ rules:
   - get
   - list
   - watch
+{{- end }}

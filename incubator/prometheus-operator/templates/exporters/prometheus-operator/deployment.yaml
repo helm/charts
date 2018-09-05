@@ -1,0 +1,51 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels: 
+{{ include "prometheus-operator.labels.standard" . | indent 4 }}
+  name: {{ template "prometheus-operator.fullname" . }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels: 
+{{ include "prometheus-operator.labels.standard" . | indent 8}}
+    spec:
+      containers:
+        - name: {{ template "prometheus-operator.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          args:
+          {{- if .Values.kubelet.enable }}
+            - --kubelet-service={{ .Values.kubelet.namespace }}/{{ .Values.kubelet.name }}
+          {{- end }}
+            - --logtostderr=true
+            - --localhost=127.0.0.1
+            - --prometheus-config-reloader={{ .Values.prometheusConfigReloader.repository }}:{{ .Values.prometheusConfigReloader.tag }}
+            - --config-reloader-image={{ .Values.configmapReload.repository }}:{{ .Values.configmapReload.tag }}
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534          
+    {{- if and .Values.serviceAccount }}
+      serviceAccountName: {{ template "prometheus-operator.fullname" . }}
+    {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

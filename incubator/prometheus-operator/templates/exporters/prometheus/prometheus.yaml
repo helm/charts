@@ -74,6 +74,8 @@ spec:
 {{ toYaml .Values.prometheus.prometheusSpec.storageSpec | indent 4 }}
 {{- end }}
   version: "{{ .Values.prometheus.prometheusSpec.version }}"
+  podMetadata:
+{{ toYaml .Values.prometheus.prometheusSpec.podMetadata | indent 4 }}
   affinity:
     podAntiAffinity:
 {{- if eq .Values.prometheus.prometheusSpec.podAntiAffinity "hard" }}

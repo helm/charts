@@ -1,10 +1,10 @@
 {{- if and .Values.global.rbac.create .Values.global.rbac.pspEnable }}
-kind: ClusterRole
 apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: psp-{{ template "prometheus.fullname" . }}
-
+  labels:
+{{ include "prometheus-operator.labels.standard" . | indent 4 }}
+  name: psp-{{ template "prometheus-operator.fullname" . }}
 spec:
   privileged: false
   # Required to prevent escalations to root.
