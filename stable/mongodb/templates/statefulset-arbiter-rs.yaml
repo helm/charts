@@ -60,7 +60,7 @@ spec:
             value: {{ .Values.replicaSet.name | quote }}
             {{- if .Values.replicaSet.useHostnames }}
           - name: MONGODB_ADVERTISED_HOSTNAME
-            value: "$(MONGODB_POD_NAME).{{ template "mongodb.fullname" . }}-headless.{{ .Release.Namespace }}"
+            value: "$(MONGODB_POD_NAME).{{ template "mongodb.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local"
             {{- end }}
             {{- if .Values.usePassword }}
           - name: MONGODB_PRIMARY_ROOT_PASSWORD
@@ -84,11 +84,8 @@ spec:
             value: {{ default "" .Values.mongodbExtraFlags | join " " }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
-            exec:
-              command:
-                - mongo
-                - --eval
-                - "db.adminCommand('ping')"
+            tcpSocket:
+              port: mongodb
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -97,11 +94,8 @@ spec:
           {{- end }}
           {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
-            exec:
-              command:
-                - mongo
-                - --eval
-                - "db.adminCommand('ping')"
+            tcpSocket:
+              port: mongodb
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
