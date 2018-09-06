@@ -36,9 +36,9 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 
 {{- define "concourse.secret.required" -}}
 {{- if .is }}
-{{- required (printf "secrets.%s is required because secrets.create is true and %s is true" .key .is) (index .root.Values.secrets .key ) | b64enc | quote }}
+{{- required (printf "secrets.%s is required because secrets.create is true and %s is true" .key .is) (index .root .key ) | b64enc | quote }}
 {{- else -}}
-{{- required (printf "secrets.%s is required because secrets.create is true and %s isn't true" .key .isnt) (index .root.Values.secrets .key ) | b64enc | quote }}
+{{- required (printf "secrets.%s is required because secrets.create is true and %s isn't true" .key .isnt) (index .root .key ) | b64enc | quote }}
 {{- end -}}
 {{- end -}}
 

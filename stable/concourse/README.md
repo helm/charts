@@ -73,41 +73,35 @@ The following table lists the configurable parameters of the Concourse chart and
 | `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.atcPort` | Concourse ATC listen port | `8080` |
 | `concourse.tsaPort` | Concourse TSA listen port | `2222` |
-| `concourse.allowSelfSignedCertificates` | Allow self signed certificates | `false` |
 | `concourse.authDuration` | Length of time for which tokens are valid | `24h` |
 | `concourse.resourceCheckingInterval` | Interval on which to check for new versions of resources | `1m` |
-| `concourse.oldResourceGracePeriod` | How long to cache the result of a get step after a newer version of the resource is found | `5m` |
-| `concourse.resourceCacheCleanupInterval` | The interval on which to check for and release old caches of resource versions | `30s` |
 | `concourse.baggageclaimDriver` | The filesystem driver used by baggageclaim | `naive` |
 | `concourse.containerPlacementStrategy` | The selection strategy for placing containers onto workers | `random` |
 | `concourse.dockerRegistry` | A URL pointing to the Docker registry to use to fetch Docker images | `nil` |
 | `concourse.insecureDockerRegistry` | Docker registry(ies) (comma separated) to allow connecting to even if not secure | `nil` |
 | `concourse.encryption.enabled` | Enable encryption of pipeline configuration | `false` |
-| `concourse.basicAuth.enabled` | Enable basic auth for the "main" Concourse team| `true` |
-| `concourse.githubAuth.enabled` | Enable Github auth for the "main" Concourse team| `false` |
-| `concourse.githubAuth.organization` | GitHub organizations (comma separated) whose members will have access | `nil` |
-| `concourse.githubAuth.team` | GitHub teams (comma separated) whose members will have access | `nil` |
-| `concourse.githubAuth.user` | GitHub users (comma separated) to permit access | `nil` |
-| `concourse.githubAuth.authUrl` | Override default endpoint AuthURL for Github Enterprise | `nil` |
-| `concourse.githubAuth.tokenUrl` | Override default endpoint TokenURL for Github Enterprise | `nil` |
-| `concourse.githubAuth.apiUrl` | Override default API endpoint URL for Github Enterprise | `nil` |
-| `concourse.gitlabAuth.enabled` | Enable Gitlab auth for the "main" Concourse team| `false` |
-| `concourse.gitlabAuth.group` | GitLab groups (comma separated) whose members will have access | `nil` |
-| `concourse.gitlabAuth.authUrl` | Endpoint AuthURL for GitLab server | `nil` |
-| `concourse.gitlabAuth.tokenUrl` | Endpoint TokenURL for GitLab server | `nil` |
-| `concourse.gitlabAuth.apiUrl` | API endpoint URL for GitLab server | `nil` |
-| `concourse.genericOauth.enabled` | Enable generic OAuth for the "main" Concourse team| `false` |
-| `concourse.genericOauth.displayName` | Name for this auth method on the web UI | `nil` |
-| `concourse.genericOauth.authUrl` | Generic OAuth provider AuthURL endpoint | `nil` |
-| `concourse.genericOauth.authUrlParam` | Parameters (comma separated) to pass to the authentication server AuthURL | `nil` |
-| `concourse.genericOauth.scope` | Optional scope required to authorize user | `nil` |
-| `concourse.genericOauth.tokenUrl` | Generic OAuth provider TokenURL endpoint | `nil` |
+| `concourse.mainTeam.localUsers` | List of local concourse users with access to the main team | `["concourse"]` |
+| `concourse.mainTeam.allowAllUsers` | Allow all logged in users to access the main team. ALL OF THEM. If, for example, you've configured GitHub, any user with a GitHub account will have access to your main team. | `false` |
+| `concourse.mainTeam.cfUsers` | List of CloudFoundry users with access to the main team | `[]` |
+| `concourse.mainTeam.cfOrgs` | List of CloudFoundry orgs with access to the main team | `[]` |
+| `concourse.mainTeam.cfSpaces` | List of whitelisted CloudFoundry spaces (in `ORG_NAME:SPACE_NAME` format) with access to the main team | `[]` |
+| `concourse.mainTeam.githubUsers` | List of GitHub users with access to the main team | `[]` |
+| `concourse.mainTeam.githubOrgs` | List of GitHub orgs with access to the main team | `[]` |
+| `concourse.mainTeam.githubTeams` | List of GitHub teams (in `ORG_NAME:TEAM_NAME` format) with access to the main team | `[]` |
+| `concourse.mainTeam.gitlabUsers` | List of GitLab users with access to the main team | `[]` |
+| `concourse.mainTeam.gitlabGroups` | List of GitLab groups with access to the main team | `[]` |
+| `concourse.mainTeam.ldapUsers` | List of LDAP users with access to the main team | `[]` |
+| `concourse.mainTeam.ldapGroups` | List of LDAP groups with access to the main team | `[]` |
+| `concourse.mainTeam.oauthUsers` | List of OAuth2 users with access to the main team | `[]` |
+| `concourse.mainTeam.oauthGroups` | List of OAuth2 groups with access to the main team | `[]` |
+| `concourse.mainTeam.oidcUsers` | List of OIDC users with access to the main team | `[]` |
+| `concourse.mainTeam.oidcGroups` | List of OIDC groups with access to the main team | `[]` |
 | `concourse.workingDirectory` | The working directory for concourse | `/concourse-work-dir` |
 | `web.nameOverride` | Override the Concourse Web components name | `nil` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
-| `web.env` | Configure additional environment variables for the web containers | `[]` |
+| `web.extraEnv` | Configure additional environment variables for the web containers | `[]` |
 | `web.annotations`| Concourse Web deployment annotations | `nil` |
 | `web.tolerations` | Tolerations for the web nodes | `[]` |
 | `web.nodeSelector` | Node selector for web nodes | `{}` |
@@ -137,7 +131,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
 | `worker.resources` | Concourse Worker resource requests and limits | `{requests: {cpu: "100m", memory: "512Mi"}}` |
-| `worker.env` | Configure additional environment variables for the worker container(s) | `[]` |
+| `worker.extraEnv` | Configure additional environment variables for the worker container(s) | `[]` |
 | `worker.annotations` | Annotations to be added to the worker pods | `{}` |
 | `worker.additionalVolumeMounts` | VolumeMounts to be added to the worker pods | `nil` |
 | `worker.additionalVolumes` | Volumes to be added to the worker pods | `nil` |
@@ -189,15 +183,73 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.awsSsmAccessKey` | AWS Access Key ID for SSM access | `nil` |
 | `secrets.awsSsmSecretKey` | AWS Secret Access Key ID for SSM access | `nil` |
 | `secrets.awsSsmSessionToken` | AWS Session Token for SSM access | `nil` |
-| `secrets.basicAuthUsername` | Concourse Basic Authentication Username | `concourse` |
-| `secrets.basicAuthPassword` | Concourse Basic Authentication Password | `concourse` |
-| `secrets.githubAuthClientId` | Application client ID for GitHub OAuth | `nil` |
-| `secrets.githubAuthClientSecret` | Application client secret for GitHub OAuth | `nil` |
-| `secrets.gitlabAuthClientId` | Application client ID for GitLab OAuth | `nil` |
-| `secrets.gitlabAuthClientSecret` | Application client secret for GitLab OAuth | `nil` |
-| `secrets.genericOauthClientId` | Application client ID for Generic OAuth | `nil` |
-| `secrets.genericOauthClientSecret` | Application client secret for Generic OAuth | `nil` |
-| `secrets.postgresqlUri` | PostgreSQL connection URI when `postgresql.enabled` is `false` | `nil` |
+| `secrets.localUserAuth.enabled` | Local User Authentication: (Required) Enable Local User authentication | `true` |
+| `secrets.localUserAuth.localUsers` | List of `username:password` combinations for all your local users. The password can be bcrypted - if so, it must have a minimum cost of 10. | `["concourse:<bcrypt hash of 'concourse'>]`
+| `secrets.cfAuth.enabled` | CloudFoundry Authentication: (Required) Enable CloudFoundry authentication | `false` |
+| `secrets.cfAuth.clientId` | CloudFoundry Authentication: (Required if CloudFoundry enabled) Client id | `nil` |
+| `secrets.cfAuth.clientSecret` | CloudFoundry Authentication: (Required if CloudFoundry enabled) Client secret | `nil` |
+| `secrets.cfAuth.apiUrl` | CloudFoundry Authentication: (Required if CloudFoundry enabled) The base API URL of your CF deployment. It will use this information to discover information about the authentication provider. | `nil` |
+| `secrets.cfAuth.caCert` | CloudFoundry Authentication: CA Certificate | `nil` |
+| `secrets.cfAuth.skipSslValidation` | CloudFoundry Authentication: Skip SSL validation | `nil` |
+| `secrets.githubAuth.enabled` | GitHub Authentication: (Required) Enable GitHub authentication | `false` |
+| `secrets.githubAuth.clientId` | GitHub Authentication: (Required if GitHub enabled) Client id | `nil` |
+| `secrets.githubAuth.clientSecret` | GitHub Authentication: (Required if GitHub enabled) Client secret | `nil` |
+| `secrets.githubAuth.host` | GitHub Authentication: Hostname of GitHub Enterprise deployment (No scheme, No trailing slash) | `nil` |
+| `secrets.githubAuth.caCert` | GitHub Authentication: CA certificate of GitHub Enterprise deployment | `nil` |
+| `secrets.gitlabAuth.enabled` | GitLab Authentication: (Required) Enable GitLab authentication | `false` |
+| `secrets.gitlabAuth.clientId` | GitLab Authentication: (Required if GitLab enabled) Client id | `nil` |
+| `secrets.gitlabAuth.clientSecret` | GitLab Authentication: (Required if GitLab enabled) Client secret | `nil` |
+| `secrets.gitlabAuth.host` | GitLab Authentication: Hostname of Gitlab Enterprise deployment (Include scheme, No trailing slash) | `nil` |
+| `secrets.ldapAuth.enabled` | LDAP Authentication: (Required) Enable LDAP authentication | `false` |
+| `secrets.ldapAuth.displayName` | LDAP Authentication: The auth provider name displayed to users on the login page | `nil` |
+| `secrets.ldapAuth.host` | LDAP Authentication: (Required if LDAP enabled) The host and optional port of the LDAP server. If port isn't supplied, it will be guessed based on the TLS configuration. 389 or 636. | `nil` |
+| `secrets.ldapAuth.bindDn` | LDAP Authentication: (Required if LDAP enabled) Bind DN for searching LDAP users and groups. Typically this is a read-only user. | `nil` |
+| `secrets.ldapAuth.bindPw` | LDAP Authentication: (Required if LDAP enabled) Bind Password for the user specified by `secrets.ldapBindDn` | `nil` |
+| `secrets.ldapAuth.insecureNoSsl` | LDAP Authentication: Required if LDAP host does not use TLS. | `nil` |
+| `secrets.ldapAuth.insecureSkipVerify` | LDAP Authentication: Skip certificate verification | `nil` |
+| `secrets.ldapAuth.startTls` | LDAP Authentication: Start on insecure port, then negotiate TLS | `nil` |
+| `secrets.ldapAuth.caCert` | LDAP Authentication: CA certificate | `nil` |
+| `secrets.ldapAuth.userSearchBaseDn` | LDAP Authentication: BaseDN to start the search from. For example `cn=users,dc=example,dc=com` | `nil` |
+| `secrets.ldapAuth.userSearchFilter` | LDAP Authentication: Optional filter to apply when searching the directory. For example `(objectClass=person)` | `nil` |
+| `secrets.ldapAuth.userSearchUsername` | LDAP Authentication: Attribute to match against the inputted username. This will be translated and combined with the other filter as '(<attr>=<username>)'. | `nil` |
+| `secrets.ldapAuth.userSearchScope` | LDAP Authentication: Can either be: `sub` - search the whole sub tree or `one` - only search one level. Defaults to 'sub' when not specified. | `nil` |
+| `secrets.ldapAuth.userSearchIdAttr` | LDAP Authentication: A mapping of attributes on the user entry to claims. Defaults to 'uid' when not specified. | `nil` |
+| `secrets.ldapAuth.userSearchEmailAttr` | LDAP Authentication: A mapping of attributes on the user entry to claims. Defaults to 'mail' when not specified. | `nil` |
+| `secrets.ldapAuth.userSearchNameAttr` | LDAP Authentication: A mapping of attributes on the user entry to claims. | `nil` |
+| `secrets.ldapAuth.groupSearchBaseDn` | LDAP Authentication: BaseDN to start the search from. For example `cn=groups,dc=example,dc=com` | `nil` |
+| `secrets.ldapAuth.groupSearchFilter` | LDAP Authentication: Optional filter to apply when searching the directory. For example `(objectClass=posixGroup)` | `nil` |
+| `secrets.ldapAuth.groupSearchScope` | LDAP Authentication: Can either be: `sub` - search the whole sub tree or `one` - only search one level. Defaults to 'sub' when not specified. | `nil` |
+| `secrets.ldapAuth.groupSearchUserAttr` | LDAP Authentication: Adds an additional requirement to the filter that an attribute in the group match the user's attribute value. The exact filter being added is: (<groupAttr>=<userAttr value>) | `nil` |
+| `secrets.ldapAuth.groupSearchGroupAttr` | LDAP Authentication: Adds an additional requirement to the filter that an attribute in the group match the user's attribute value. The exact filter being added is: (<groupAttr>=<userAttr value>) | `nil` |
+| `secrets.ldapAuth.groupSearchNameAttr` | LDAP Authentication: The attribute of the group that represents its name. | `nil` |
+| `secrets.oauthAuth.enabled` | OAuth2 Authentication: (Required) Enable OAuth2 authentication | `false` |
+| `secrets.oauthAuth.displayName` | OAuth2 Authentication: The auth provider name displayed to users on the login page | `nil` |
+| `secrets.oauthAuth.clientId` | OAuth2 Authentication: (Required if OAuth2 enabled) Client id | `nil` |
+| `secrets.oauthAuth.clientSecret` | OAuth2 Authentication: (Required if OAuth2 enabled) Client secret | `nil` |
+| `secrets.oauthAuth.authUrl` | OAuth2 Authentication: (Required if OAuth2 enabled) Authorization URL | `nil` |
+| `secrets.oauthAuth.tokenUrl` | OAuth2 Authentication: (Required if OAuth2 enabled) Token URL | `nil` |
+| `secrets.oauthAuth.userinfoUrl` | OAuth2 Authentication: Userinfo URL | `nil` |
+| `secrets.oauthAuth.scope` | OAuth2 Authentication: Any additional scopes that need to be requested during authorization | `nil` |
+| `secrets.oauthAuth.groupsKey` | OAuth2 Authentication: The groups key indicates which claim to use to map external groups to Concourse teams. | `nil` |
+| `secrets.oauthAuth.caCert` | OAuth2 Authentication: CA Certificate | `nil` |
+| `secrets.oauthAuth.skipSslValidation` | OAuth2 Authentication: Skip SSL validation | `nil` |
+| `secrets.oidcAuth.enabled` | OIDC Authentication: (Required) Enable OIDC authentication | `false` |
+| `secrets.oidcAuth.displayName` | OIDC Authentication: The auth provider name displayed to users on the login page | `nil` |
+| `secrets.oidcAuth.issuer` | OIDC Authentication: (Required if OIDC enabled) An OIDC issuer URL that will be used to discover provider configuration using the .well-known/openid-configuration | `nil` |
+| `secrets.oidcAuth.clientId` | OIDC Authentication: (Required if OIDC enabled) Client id | `nil` |
+| `secrets.oidcAuth.clientSecret` | OIDC Authentication: (Required if OIDC enabled) Client secret | `nil` |
+| `secrets.oidcAuth.scope` | OIDC Authentication: Any additional scopes that need to be requested during authorization | `nil` |
+| `secrets.oidcAuth.groupsKey` | OIDC Authentication: The groups key indicates which claim to use to map external groups to Concourse teams. | `nil` |
+| `secrets.oidcAuth.caCert` | OIDC Authentication: CA Certificate | `nil` |
+| `secrets.oidcAuth.skipSslValidation` | OIDC Authentication: Skip SSL validation | `nil` |
+| `secrets.externalPostgres.enabled` | External Postgres: Use an externally provided postgres | `false` |
+| `secrets.externalPostgres.host` | External Postgres: (Required if external postgres enabled) The host to connect to. | `nil` |
+| `secrets.externalPostgres.port` | External Postgres: The port to connect to. | `5432` |
+| `secrets.externalPostgres.user` | External Postgres: (Required if external postgres enabled) The user to sign in as. | `nil` |
+| `secrets.externalPostgres.password` | External Postgres: (Required if external postgres enabled) The user's password. | `nil` |
+| `secrets.externalPostgres.sslmode` | External Postgres: Whether or not to use SSL. [disable|require|verify-ca|verify-full]  | `nil` |
+| `secrets.externalPostgres.connectTimeout` | External Postgres: Dialing timeout. (0 means wait indefinitely) | `nil` |
+| `secrets.externalPostgres.database` | External Postgres: (Required if external postgres enabled) The name of the database to use.  | `nil` |
 | `secrets.vaultCaCert` | CA certificate   use to verify the vault server SSL cert. | `nil` |
 | `secrets.vaultClientToken` | Vault periodic client token | `nil` |
 | `secrets.vaultAppRoleId` | Vault AppRole RoleID | `nil` |
@@ -218,7 +270,7 @@ $ helm install --name my-release -f values.yaml stable/concourse
 
 ### Secrets
 
-For your convenience, this chart provides some default values for secrets, but it is recommended that you generate and manage these secrets outside the Helm chart. To do this, set `secrets.create` to `false`, create files for each secret value, and turn it all into a k8s secret. Be careful with introducing trailing newline characters; following the steps below ensures none will end up in your secrets. First, perform the following to create the manditory secret values:
+For your convenience, this chart provides some default values for secrets, but it is recommended that you generate and manage these secrets outside the Helm chart. To do this, set `secrets.create` to `false`, create files for each secret value, and turn it all into a k8s secret. Be careful with introducing trailing newline characters; following the steps below ensures none will end up in your secrets. First, perform the following to create the mandatory secret values:
 
 ```console
 mkdir concourse-secrets
@@ -229,15 +281,21 @@ ssh-keygen -t rsa -f worker-key  -N ''
 mv worker-key.pub worker-key-pub
 ssh-keygen -t rsa -f session-signing-key  -N ''
 rm session-signing-key.pub
-printf "%s" "concourse" > basic-auth-username
-printf "%s" "$(openssl rand -base64 24)" > basic-auth-password
+# copy bcrypted password to clipboard
+printf "%s:%s" "concourse" "$(pbpaste)" > local-user-auth-local-users
 ```
 
-You'll also need to create/copy secret values for optional features. See [templates/secrets.yaml](templates/secrets.yaml) for possible values. In the example below, we are not using the [PostgreSQL](#postgresql) chart dependency, and so we must set a `postgresql-uri` secret.
+You'll also need to create/copy secret values for optional features. See [templates/secrets.yaml](templates/secrets.yaml)
+for possible values. In the example below, we are not using the [PostgreSQL](#postgresql) chart dependency, and so we
+must set `secrets.externalPostgres.enabled` to true, and create the `external-postgres-*` secrets.
 
 ```console
-# copy a posgres URI to clipboard and paste it to file
-printf "%s" "$(pbpaste)" > postgresql-uri
+# Enable external postgres and copy a postgres host, port, user, password, and database to clipboard and paste them to files
+printf "%s" "$(pbpaste)" > external-postgres-host
+printf "%s" "$(pbpaste)" > external-postgres-port
+printf "%s" "$(pbpaste)" > external-postgres-user
+printf "%s" "$(pbpaste)" > external-postgres-password
+printf "%s" "$(pbpaste)" > external-postgres-database
 # copy Github client id and secrets to clipboard and paste to files
 printf "%s" "$(pbpaste)" > github-auth-client-id
 printf "%s" "$(pbpaste)" > github-auth-client-secret
@@ -327,11 +385,11 @@ web:
 
 By default, this chart will use a PostgreSQL database deployed as a chart dependency, with default values for username, password, and database name. These can be modified by setting the `postgresql.*` values.
 
-You can also bring your own PostgreSQL. To do so, set `postgresql.enabled` to false. You'll then need to specify the full uri to the database, including the username and password, e.g. `postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=require`. You can do this one of two ways:
+You can also bring your own PostgreSQL. To do so, set `postgresql.enabled` to false and `secrets.externalPostgres.enabled` to true. You'll then need to specify the connection parameters. You can do this one of two ways:
 
-1. Set `secrets.postgresqlUri` in your values
+1. Set `secrets.externalPostgres.*` in your values
 
-2. Set `postgresql-uri` in your release's secrets as described in [Secrets](#secrets).
+2. Set `external-postgres-*` values in your release's secrets as described in [Secrets](#secrets).
 
 The only way to completely avoid putting secrets in Helm is to bring your own PostgreSQL, and use option 2 above.
 

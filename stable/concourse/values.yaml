@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "3.14.1"
+imageTag: "4.1.0"
 
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -35,10 +35,6 @@ concourse:
   ##
   tsaPort: 2222
 
-  ## Allow self signed certificates.
-  ##
-  allowSelfSignedCertificates: false
-
   ## Length of time for which tokens are valid. Afterwards, users will have to log back in.
   ## Use Go duration format (48h = 48 hours).
   ##
@@ -48,16 +44,6 @@ concourse:
   ## Use Go duration format (1m = 1 minute).
   ##
   resourceCheckingInterval: 1m
-
-  ## How long to cache the result of a get step after a newer version of the resource is found.
-  ## Use Go duration format (1m = 1 minute).
-  ##
-  oldResourceGracePeriod: 5m
-
-  ## The interval on which to check for and release old caches of resource versions.
-  ## Use Go duration format (1m = 1 minute),
-  ##
-  resourceCacheCleanupInterval: 30s
 
   ## URL used to reach any ATC from the outside world.
   ##
@@ -96,88 +82,57 @@ concourse:
   encryption:
     enabled: false
 
-  ## Enable basic auth for the "main" Concourse team.
-  ## See https://concourse-ci.org/teams.html#basic-auth
+  ## Configuration for the main team
+  ## See https://concourse-ci.org/main-team.html
   ##
-  basicAuth:
-    enabled: true
+  mainTeam:
+    ## List of local concourse users with access to the main team
+    localUsers: ["concourse"]
 
-  ## Enable GitHub auth for the "main" Concourse team.
-  ## See https://concourse-ci.org/teams.html#github-auth
-  ##
-  githubAuth:
-    enabled: false
+    ## Allow all logged in users to access the main team. ALL OF THEM. If, for example, you've configured GitHub, any user with a GitHub account will have access to your main team.
+    allowAllUsers: false
 
-    ## GitHub organizations (comma separated) whose members will have access.
-    ##
-    # organization:
+    ## List of CloudFoundry users with access to the main team
+    cfUsers: []
 
-    ## GitHub teams (comma separated) whose members will have access.
-    ##
-    # team:
+    ## List of CloudFoundry orgs with access to the main team
+    cfOrgs: []
 
-    ## GitHub users (comma separated) to permit access.
-    ##
-    # user:
+    ## List of whitelisted CloudFoundry spaces (in `ORG_NAME:SPACE_NAME` format) with access to the main team
+    cfSpaces: []
 
-    ## Override default endpoint AuthURL for Github Enterprise.
-    ##
-    # authUrl:
+    ## List of GitHub users with access to the main team
+    githubUsers: []
 
-    ## Override default endpoint TokenURL for Github Enterprise.
-    ##
-    # tokenUrl:
+    ## List of GitHub orgs with access to the main team
+    githubOrgs: []
 
-    ## Override default API endpoint URL for Github Enterprise.
-    ##
-    # apiUrl:
+    ## List of GitHub teams (in `ORG_NAME:TEAM_NAME` format) with access to the main team
+    githubTeams: []
 
-  ## Enable Gitlab auth for the "main" Concourse team.
-  ##
-  gitlabAuth:
-    enabled: false
+    ## List of GitLab users with access to the main team
+    gitlabUsers: []
 
-    ## GitLab Group (comma separated) whose members will have access.
-    ##
-    # group:
+    ## List of GitLab groups with access to the main team
+    gitlabGroups: []
 
-    ## Endpoint AuthURL for Gitlab server.
-    ##
-    # authUrl:
+    ## List of LDAP users with access to the main team
+    ldapUsers: []
 
-    ## Endpoint TokenURL for Gitlab server.
-    ##
-    # tokenUrl:
+    ## List of LDAP groups with access to the main team
+    ldapGroups: []
 
-    ## API endpoint URL for Gitlab server.
-    ##
-    # apiUrl:
+    ## List of OAuth2 users with access to the main team
+    oauthUsers: []
 
-  ## Enable generic OAuth for the "main" Concourse team.
-  ## See https://concourse-ci.org/teams.html#generic-oauth
-  ##
-  genericOauth:
-    enabled: false
+    ## List of OAuth2 groups with access to the main team
+    oauthGroups: []
 
-    ## Name for this auth method on the web UI.
-    ##
-    # displayName:
+    ## List of OIDC users with access to the main team
+    oidcUsers: []
 
-    ## Generic OAuth provider AuthURL endpoint.
-    ##
-    # authUrl:
-
-    ## Parameters (comma separated) to pass to the authentication server AuthURL.
-    ##
-    # authUrlParam:
-
-    ## Optional scope required to authorize user.
-    ##
-    # scope:
-
-    ## Generic OAuth provider TokenURL endpoint.
-    ##
-    # tokenUrl:
+    ## List of OIDC groups with access to the main team
+    oidcGroups: []
 
 ## Configuration values for Concourse Web components.
 ##
@@ -498,7 +453,7 @@ persistence:
 postgresql:
 
   ## Use the PostgreSQL chart dependency.
-  ## Set to false if bringing your own PostgreSQL, and set secret value postgresql-uri.
+  ## Set to false if bringing your own PostgreSQL, and set secret values for "postgres-*".
   ##
   enabled: true
 
@@ -768,30 +723,232 @@ secrets:
   # awsSecretsmanagerSecretKey:
   # awsSecretsmanagerSessionToken:
 
-  ## Secrets for Concourse basic auth
-  ##
-  basicAuthUsername: concourse
-  basicAuthPassword: concourse
+  ## Secrets for Local User auth.
+  ## See https://concourse-ci.org/install.html#local-auth-config
+  localUserAuth:
+    ## Enable the Local User auth provider
+    enabled: true
 
-  ## Secrets for GitHub OAuth.
-  ##
-  # githubAuthClientId:
-  # githubAuthClientSecret:
+    ## List of username:password combinations for all your local users. The password can be bcrypted - if so, it must have a minimum cost of 10.
+    ## Default password for "concourse" user is "concourse"
+    localUsers:
+      - "concourse:$2a$12$HKPJ1pXLZjJWG0qLJegI9ezG4W.U5bC0blWV37u0vLePc/2uYRykm"
 
-  ## Secrets for GitLab OAuth.
-  ##
-  # gitlabAuthClientId:
-  # gitlabAuthClientSecret:
+  ## Secrets for CloudFoundry auth.
+  ## See https://concourse-ci.org/install.html#cf-auth-config
+  cfAuth:
+    ## Enable the GitHub auth provider
+    enabled: false
 
-  ## Secrets for generic OAuth.
-  ##
-  # genericOauthClientId:
-  # genericOauthClientSecret:
+    ## (Required if CloudFoundry enabled) Client id
+    # clientId:
 
-  ## If bringing your own PostgreSQL, set this to the full uri to use
-  ## e.g. postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=disable
+    ## (Required if CloudFoundry enabled) Client secret
+    # clientSecret:
+
+    ## (Required if CloudFoundry enabled) The base API URL of your CF deployment. It will use this information to discover information about the authentication provider.
+    # apiUrl:
+
+    ## CA Certificate
+    # caCert:
+
+    ## Skip SSL validation
+    # skipSslValidation:
+
+  ## Secrets for GitHub auth.
+  ## See https://concourse-ci.org/install.html#github-auth-config
   ##
-  # postgresqlUri:
+  githubAuth:
+    ## Enable the GitHub auth provider
+    enabled: false
+
+    ## (Required if GitHub enabled) Client id
+    # clientId:
+
+    ## (Required if GitHub enabled) Client secret
+    # clientSecret:
+
+    ## Hostname of GitHub Enterprise deployment (No scheme, No trailing slash)
+    # host:
+
+    ## CA certificate of GitHub Enterprise deployment
+    # caCert:
+
+  ## Secrets for GitLab auth.
+  ## See: https://concourse-ci.org/install.html#gitlab-auth-config
+  gitlabAuth:
+    ## Enable the GitLab auth provider
+    enabled: false
+
+    ## (Required if GitLab enabled) Client id
+    # clientId:
+
+    ## (Required if GitLab enabled) Client secret
+    # clientSecret:
+
+    ## Hostname of Gitlab Enterprise deployment (Include scheme, No trailing slash)
+    # host:
+
+  ldapAuth:
+    ## Enable the LDAP auth provider
+    enabled: false
+
+    ## The auth provider name displayed to users on the login page
+    # displayName:
+
+    ## (Required if LDAP enabled) The host and optional port of the LDAP server. If port isn't supplied, it will be guessed based on the TLS configuration. 389 or 636.
+    # host:
+
+    ## (Required if LDAP enabled) Bind DN for searching LDAP users and groups. Typically this is a read-only user.
+    # bindDn:
+
+    ## (Required if LDAP enabled) Bind Password for the user specified by `secrets.ldapBindDn`
+    # bindPw:
+
+    ## Required if LDAP host does not use TLS.
+    # insecureNoSsl:
+
+    ## Skip certificate verification
+    # insecureSkipVerify:
+
+    ## Start on insecure port, then negotiate TLS
+    # startTls:
+
+    ## CA certificate
+    # caCert:
+
+    ## BaseDN to start the search from. For example `cn=users,dc=example,dc=com`
+    # userSearchBaseDn:
+
+    ## Optional filter to apply when searching the directory. For example `(objectClass=person)`
+    # userSearchFilter:
+
+    ## Attribute to match against the inputted username. This will be translated and combined with the other filter as '(<attr>=<username>)'.
+    # userSearchUsername:
+
+    ## Can either be: `sub` - search the whole sub tree or `one` - only search one level. Defaults to 'sub' when not specified.
+    # userSearchScope:
+
+    ## A mapping of attributes on the user entry to claims. Defaults to 'uid' when not specified.
+    # userSearchIdAttr:
+
+    ## A mapping of attributes on the user entry to claims. Defaults to 'mail' when not specified.
+    # userSearchEmailAttr:
+
+    ## A mapping of attributes on the user entry to claims.
+    # userSearchNameAttr:
+
+    ## BaseDN to start the search from. For example `cn=groups,dc=example,dc=com`
+    # groupSearchBaseDn:
+
+    ## Optional filter to apply when searching the directory. For example `(objectClass=posixGroup)`
+    # groupSearchFilter:
+
+    ## Can either be: `sub` - search the whole sub tree or `one` - only search one level. Defaults to 'sub' when not specified.
+    # groupSearchScope:
+
+    ## Adds an additional requirement to the filter that an attribute in the group match the user's attribute value. The exact filter being added is: (<groupAttr>=<userAttr value>)
+    # groupSearchUserAttr:
+
+    ## Adds an additional requirement to the filter that an attribute in the group match the user's attribute value. The exact filter being added is: (<groupAttr>=<userAttr value>)
+    # groupSearchGroupAttr:
+
+    ## The attribute of the group that represents its name.
+    # groupSearchNameAttr:
+
+  ## Secrets for OAuth2.
+  ## See https://concourse-ci.org/install.html#generic-oauth-config
+  oauthAuth:
+    ## Enable the Oauth2 auth provider
+    enabled: false
+
+    ## The auth provider name displayed to users on the login page
+    # displayName:
+
+    ## (Required if OAuth2 enabled) Client id
+    # clientId:
+
+    ## (Required if OAuth2 enabled) Client secret
+    # clientSecret:
+
+    ## (Required if OAuth2 enabled) Authorization URL
+    # authUrl:
+
+    ## (Required if OAuth2 enabled) Token URL
+    # tokenUrl:
+
+    ## Userinfo URL
+    # userinfoUrl:
+
+    ## Any additional scopes that need to be requested during authorization
+    # scope:
+
+    ## The groups key indicates which claim to use to map external groups to Concourse teams.
+    # groupsKey:
+
+    ## CA Certificate
+    # caCert:
+
+    ## Skip SSL validation
+    # skipSslValidation:
+
+  ## Secrets for OIDC.
+  ## See https://concourse-ci.org/install.html#generic-oidc-config
+  oidcAuth:
+    ## Enable the OIDC auth provider
+    enabled: false
+
+    ## The auth provider name displayed to users on the login page
+    # displayName:
+
+    ## (Required if OIDC enabled) An OIDC issuer URL that will be used to discover provider configuration using the .well-known/openid-configuration
+    # issuer:
+
+    ## (Required if OIDC enabled) Client id
+    # clientId:
+
+    ## (Required if OIDC enabled) Client secret
+    # clientSecret:
+
+    ## Any additional scopes that need to be requested during authorization
+    # scope:
+
+    ## The groups key indicates which claim to use to map external groups to Concourse teams.
+    # groupsKey:
+
+    ## CA Certificate
+    # caCert:
+
+    ## Skip SSL validation
+    # skipSslValidation:
+
+  ## Configurations for bringing your own PostgreSQL
+  externalPostgres:
+    enabled: false
+
+    ## Use an externally provided postgres (takes precedence over `postgres.enabled` if both are true)
+    # enabled:
+
+    ## The host to connect to.
+    # host:
+
+    ## The port to connect to.
+    port: "5432"
+
+    ## The user to sign in as.
+    # user:
+
+    ## The user's password.
+    # password:
+
+    ## Whether or not to use SSL. [disable|require|verify-ca|verify-full]
+    # sslmode:
+
+    ## Dialing timeout. (0 means wait indefinitely)
+    # connectTimeout:
+
+    ## The name of the database to use.
+    # database:
 
   ## Secrets for using Hashcorp Vault as a credential manager.
   ##

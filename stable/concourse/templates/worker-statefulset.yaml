@@ -78,13 +78,7 @@ spec:
                     done
           env:
             - name: CONCOURSE_TSA_HOST
-          {{- if semverCompare "^3.10.x" .Values.imageTag }}
               value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.tsaPort}}"
-          {{- else }}
-              value: {{ template "concourse.web.fullname" . }}
-            - name: CONCOURSE_TSA_PORT
-              value: {{ .Values.concourse.tsaPort | quote }}
-          {{- end }}
             - name: CONCOURSE_GARDEN_DOCKER_REGISTRY
               value: {{ .Values.concourse.dockerRegistry | quote }}
             - name: CONCOURSE_GARDEN_INSECURE_DOCKER_REGISTRY
@@ -99,8 +93,8 @@ spec:
               value: {{ .Values.concourse.baggageclaimDriver | quote }}
             - name: LIVENESS_PROBE_FATAL_ERRORS
               value: {{ .Values.worker.fatalErrors | quote }}
-{{- if .Values.worker.env }}
-{{ toYaml .Values.worker.env | indent 12 }}
+{{- if .Values.worker.extraEnv }}
+{{ toYaml .Values.worker.extraEnv | indent 12 }}
 {{- end }}
           resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
