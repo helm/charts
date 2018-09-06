@@ -112,10 +112,40 @@ volumes:
   {{- end -}}
 ```
 
+* Example pvc.yaml:
+
+```yaml
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size | quote }}
+{{- if .Values.persistence.storageClass }}
+{{- if (eq "-" .Values.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
+```
+
 ## AutoScaling / HorizontalPodAutoscaler
 
 * Autoscaling should be disabled by default
 * All options should be shown in README.md
+
 * Example autoscaling section in values.yaml:
 
 ```yaml
@@ -127,7 +157,7 @@ autoscaling:
   targetMemoryUtilizationPercentage: 50
 ```
 
-* Example hpa.yaml
+* Example hpa.yaml:
 
 ```yaml
 {{- if .Values.autoscaling.enabled }}
