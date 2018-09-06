@@ -77,7 +77,7 @@ serviceAccount:
   name:
 
 config:
-  issuer: https://dex.io
+  issuer: http://dex.io:8080
   storage:
     type: kubernetes
     config:
