@@ -145,10 +145,10 @@ controller:
 
   autoscaling:
     enabled: false
-  #  minReplicas: 1
-  #  maxReplicas: 11
-  #  targetCPUUtilizationPercentage: 50
-  #  targetMemoryUtilizationPercentage: 50
+    minReplicas: 1
+    maxReplicas: 11
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 50
 
   ## Override NGINX template
   customTemplate:
