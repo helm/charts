@@ -22,6 +22,8 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         env:
+          - name: NEO4J_ACCEPT_LICENSE_AGREEMENT
+            value: "{{ .Values.acceptLicenseAgreement }}"
           - name: NEO4J_dbms_mode
             value: READ_REPLICA
           - name: NEO4J_dbms_security_auth__enabled
@@ -64,8 +66,6 @@ spec:
         volumeMounts:
         - name: plugins
           mountPath: /plugins
-        securityContext:
-          privileged: true
 {{- if .Values.core.sidecarContainers }}
 {{ toYaml .Values.core.sidecarContainers | indent 6 }}
 {{- end }}

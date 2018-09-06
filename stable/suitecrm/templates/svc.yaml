@@ -9,10 +9,13 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   type: {{ .Values.serviceType }}
-  {{- if eq .Values.serviceType "LoadBalancer" }}
+  {{- if (and (eq .Values.serviceType "LoadBalancer") (not (empty .Values.suitecrmLoadBalancerIP))) }}
   loadBalancerIP: {{ .Values.suitecrmLoadBalancerIP }}
-  externalTrafficPolicy: Local
   {{- end }}
+  {{- if (or (eq .Values.serviceType "LoadBalancer") (eq .Values.serviceType "NodePort")) }}
+  externalTrafficPolicy: {{ .Values.externalTrafficPolicy | quote }}
+  {{- end }}
+  sessionAffinity: {{ .Values.sessionAffinity | quote }}
   ports:
   - name: http
     port: 80

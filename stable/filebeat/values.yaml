@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/beats/filebeat-oss
-  tag: 6.3.1
+  tag: 6.3.2
   pullPolicy: IfNotPresent
 
 config:
@@ -47,13 +47,31 @@ config:
   http.enabled: false
   http.port: 5066
 
+# Upload index template to Elasticsearch if Logstash output is enabled
+# https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-template.html
+# List of Elasticsearch hosts
+indexTemplateLoad: []
+  # - elasticsearch:9200
+
 # List of beat plugins
 plugins: []
   # - kinesis.so
 
-# A map of additional environment variables
-extraVars: {}
-  # test1: "test2"
+# pass custom command. This is equivalent of Entrypoint in docker
+command: []
+
+# pass custom args. This is equivalent of Cmd in docker
+args: []
+
+# A list of additional environment variables
+extraVars: []
+  # - name: TEST1
+  #   value: TEST2
+  # - name: TEST3
+  #   valueFrom:
+  #     configMapKeyRef:
+  #       name: configmap
+  #       key: config.key
 
 # Add additional volumes and mounts, for example to read other log files on the host
 extraVolumes: []
@@ -64,6 +82,14 @@ extraVolumeMounts: []
   # - name: varlog
   #   mountPath: /host/var/log
   #   readOnly: true
+
+extraInitContainers: []
+  # - name: echo
+  #   image: busybox
+  #   imagePullPolicy: Always
+  #   args:
+  #     - echo
+  #     - hello
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
