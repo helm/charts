@@ -130,6 +130,11 @@ datadog:
   ##
   # apmEnabled: true
 
+  ## Un-comment this to enable live process monitoring
+  ## ref: https://docs.datadoghq.com/graphing/infrastructure/process/#kubernetes-daemonset
+  ##
+  # processAgentEnabled: true
+
   ## The dd-agent supports many environment variables
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#environment-variables
   ##
