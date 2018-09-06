@@ -72,6 +72,8 @@ service:
   clusterIP: ~
   port: 9000
   # nodePort: 31311
+  # externalIPs:
+  #   - externalIp1
   annotations: {}
     # prometheus.io/scrape: 'true'
     # prometheus.io/path:   '/minio/prometheus/metrics'
