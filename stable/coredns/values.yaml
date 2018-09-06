@@ -43,7 +43,7 @@ servers:
     parameters: 30
   - name: errors
   - name: health
-  - name: kubernetes
+  - name: kubernetes 
     parameters: cluster.local
   - name: loadbalance
     parameters: round_robin
@@ -63,6 +63,24 @@ servers:
 #     configBlock: |-      # if the plugin supports extra block style config, supply it here
 #       hello world
 #       foo bar
+
+
+# If you want to connect to an external kubernetes cluster you'll need to set up an endpoint
+#  then use the below section to plug in a base64 encoded cert, key, and cacert.
+#
+#  Example kube config to use endpoint:
+#  servers:
+#    plugins:
+#    - name: kubernetes
+#      parameters: primary.local 
+#      configBlock: |-
+#        endpoint https://1.2.3.4
+
+kubernetesTls:
+  enabled: false
+  cert: ""
+  key: ""
+  cacert: ""
 
 # expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
 # for example:
@@ -103,8 +121,3 @@ zoneFiles: []
 #
 #
 
-kubernetesTls:
-  enabled: false
-  cert: ""
-  key: ""
-  cacert: ""
