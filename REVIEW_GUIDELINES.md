@@ -112,7 +112,7 @@ volumes:
   {{- end -}}
 ```
 
-* Example pvc.yaml
+* Example pvc.yaml:
 
 ```yaml
 {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
@@ -138,6 +138,55 @@ spec:
   storageClassName: "{{ .Values.persistence.storageClass }}"
 {{- end }}
 {{- end }}
+{{- end }}
+```
+
+## AutoScaling / HorizontalPodAutoscaler
+
+* Autoscaling should be disabled by default
+* All options should be shown in README.md
+
+* Example autoscaling section in values.yaml:
+
+```yaml
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
+  targetMemoryUtilizationPercentage: 50
+```
+
+* Example hpa.yaml:
+
+```yaml
+{{- if .Values.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: {{ template "helm-chart.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "helm-chart.fullname" . }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: {{ template "helm-chart.fullname" . }}
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
 {{- end }}
 ```
 
