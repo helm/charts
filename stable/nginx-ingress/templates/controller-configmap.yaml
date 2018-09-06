@@ -1,4 +1,4 @@
-{{- if eq .Values.controller.configMap.name "" }}
+{{ if not (.Values.controller.configMap) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

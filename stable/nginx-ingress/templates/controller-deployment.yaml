@@ -58,10 +58,10 @@ spec:
             - --ingress-class={{ .Values.controller.ingressClass }}
           {{- end }}
           {{- if (semverCompare ">=0.9.0-beta.1" .Values.controller.image.tag) }}
-          {{- if eq .Values.controller.configMap.name "" }}
+          {{- if not (.Values.controller.configMap) }}
             - --configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.controller.fullname" . }}
           {{- else }}
-            - --configmap=={{ .Values.controller.configMap.name }}
+            - --configmap=={{ .Values.controller.configMap }}
           {{- end }}
           {{- else }}
           {{- if eq .Values.controller.configMap.name "" }}

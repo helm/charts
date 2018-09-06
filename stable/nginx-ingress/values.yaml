@@ -8,11 +8,10 @@ controller:
     tag: "0.19.0"
     pullPolicy: IfNotPresent
 
-  configMap:
-    ## point to an existing configMap rather than creating one
-    name: ""
+  ## configMap points to an existing configMap rather than creating one
+  configMap: ~
 
-  # config adds additional configurations to the created configMap when configMap.create=true
+  # config adds additional configurations to the created configMap unless an alternative configMap is set via controller.configMap
   config: {}
   # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
   headers: {}
@@ -150,10 +149,10 @@ controller:
 
   autoscaling:
     enabled: false
-  #  minReplicas: 1
-  #  maxReplicas: 11
-  #  targetCPUUtilizationPercentage: 50
-  #  targetMemoryUtilizationPercentage: 50
+    minReplicas: 1
+    maxReplicas: 11
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 50
 
   ## Override NGINX template
   customTemplate:
