@@ -194,4 +194,5 @@ kafkaTrigger:
       repository: bitnami/kafka-trigger-controller
       tag: v1.0.0-alpha.3
       pullPolicy: IfNotPresent
-  kafkaBrokers: localhost:9092
+  env:
+    kafkaBrokers: localhost:9092
