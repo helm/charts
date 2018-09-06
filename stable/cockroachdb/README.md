@@ -64,6 +64,8 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `CacheSize`                    | Size of CockroachDB's in-memory cache            | `25%`                                     |
 | `MaxSQLMemory`                 | Max memory to use processing SQL queries         | `25%`                                     |
 | `ClusterDomain`                | Cluster's default DNS domain                     | `cluster.local`                           |
+| `JoinExisting`                 | List of already-existing cockroach instances     | `[]`                                      |
+| `Locality`                     | Locality attribute for this deployment           | `""`                                      |
 | `NetworkPolicy.Enabled`        | Enable NetworkPolicy                             | `false`                                   |
 | `NetworkPolicy.AllowExternal`  | Don't require client label for connections       | `true`                                    |
 | `Service.Type`                 | Public service type                              | `ClusterIP`                               |
