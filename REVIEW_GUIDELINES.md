@@ -4,7 +4,7 @@ Anyone is welcome to review pull requests. Besides our [technical requirements](
 
 ## Process
 
-The process to get a pull request merged is fairly simple. First, all required tests need to pass and the contributor needs to have a signed CLA. See [Charts Testing](https://github.com/helm/charts/blob/master/test/README.md) for details on our CI system and how you can provide custom values for testing. If there is a problem with some part of the test, such as a timeout issue, please contact one of the charts repository maintainers by commenting `cc @helm/charts-maintainers`.
+The process to get a pull request merged is fairly simple. First, all required tests need to pass and the contributor needs to have a signed [DCO](https://www.helm.sh/blog/helm-dco/index.html). See [Charts Testing](https://github.com/helm/charts/blob/master/test/README.md) for details on our CI system and how you can provide custom values for testing. If there is a problem with some part of the test, such as a timeout issue, please contact one of the charts repository maintainers by commenting `cc @helm/charts-maintainers`.
 
 The charts repository uses the OWNERS files to provide merge access. If a chart has an OWNERS file, an approver listed in that file can approve the pull request. If the chart does not have an OWNERS file, an approver in the OWNERS file at the root of the repository can approve the pull request.
 
