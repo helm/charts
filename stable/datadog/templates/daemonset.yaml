@@ -25,9 +25,14 @@ spec:
     spec:
       {{- if .Values.daemonset.useHostNetwork }}
       hostNetwork: {{ .Values.daemonset.useHostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
       {{- if .Values.daemonset.useHostPID }}
       hostPID: {{ .Values.daemonset.useHostPID }}
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}

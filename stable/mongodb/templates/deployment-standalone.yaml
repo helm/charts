@@ -9,18 +9,25 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "mongodb.name" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
         app: {{ template "mongodb.name" . }}
         release: "{{ .Release.Name }}"
-        chart: {{ template "mongodb.chart" . }}
     spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end -}}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -54,6 +61,12 @@ spec:
         {{- end }}
         - name: MONGODB_DATABASE
           value: {{ default "" .Values.mongodbDatabase | quote }}
+        - name: MONGODB_ENABLE_IPV6
+        {{- if .Values.mongodbEnableIPv6 }}
+          value: "yes"
+        {{- else }}
+          value: "no"
+        {{- end }}
         - name: MONGODB_EXTRA_FLAGS
           value: {{ default "" .Values.mongodbExtraFlags | join " " }}
         ports:
