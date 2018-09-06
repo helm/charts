@@ -1,3 +1,4 @@
+{{ $kubernetesTls := .Values.kubernetesTls.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -21,6 +22,9 @@ data:
       {{- range .plugins }}
         {{ .name }}{{ if .parameters }} {{ .parameters }}{{ end }}{{ if .configBlock }} {
 {{ .configBlock | indent 12 }}
+{{ if and $kubernetesTls ( eq .name "kubernetes" ) }}
+{{ "tls /tls/tls.pem /tls/tls.key /tls/cacert.pem" | indent 12 }}
+{{ end }}
         }{{ end }}
       {{- end }}
     }

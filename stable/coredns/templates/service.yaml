@@ -26,4 +26,4 @@ spec:
   {{- end }}
   ports:
 {{ include "coredns.servicePorts" . | indent 2 -}}
-  type: {{ default "ClusterIP" .Values.serviceType }}
+  type: {{ default "ClusterIP" .Values.service.type }}

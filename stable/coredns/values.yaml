@@ -100,3 +100,11 @@ zoneFiles: []
 #      example.com.   IN NS  a.iana-servers.net.
 #      example.com.   IN A   192.168.99.102
 #      *.example.com. IN A   192.168.99.102
+#
+#
+
+kubernetesTls:
+  enabled: false
+  cert: ""
+  key: ""
+  cacert: ""

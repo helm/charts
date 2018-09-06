@@ -42,6 +42,7 @@ Generate the list of ports automatically from the server definitions
         {{- range .zones -}}
             {{- if has (default "" .scheme) (list "dns://") -}}
                 {{- $innerdict := set $innerdict "isudp" true -}}
+                {{- $innerdict := set $innerdict "istcp" true -}}
             {{- end -}}
 
             {{- if has (default "" .scheme) (list "tls://" "grpc://") -}}
@@ -52,6 +53,7 @@ Generate the list of ports automatically from the server definitions
         {{/* If none of the zones specify scheme, default to UDP (CoreDNS defaults to dns://) */}}
         {{- if and (not (index $innerdict "istcp")) (not (index $innerdict "isudp")) -}}
             {{- $innerdict := set $innerdict "isudp" true -}}
+            {{- $innerdict := set $innerdict "istcp" true -}}
         {{- end -}}
 
         {{/* Write the dict back into the outer dict */}}
@@ -61,10 +63,10 @@ Generate the list of ports automatically from the server definitions
     {{/* Write out the ports according to the info collected above */}}
     {{- range $port, $innerdict := $ports -}}
         {{- if index $innerdict "isudp" -}}
-            {{- printf "- {port: %v, protocol: UDP}\n" $port -}}
+            {{- printf "- {port: %v, protocol: UDP, name: udp-dns }\n" $port -}}
         {{- end -}}
         {{- if index $innerdict "istcp" -}}
-            {{- printf "- {port: %v, protocol: TCP}\n" $port -}}
+            {{- printf "- {port: %v, protocol: TCP, name: tcp-dns }\n" $port -}}
         {{- end -}}
     {{- end -}}
 {{- end -}}
@@ -96,6 +98,7 @@ Generate the list of ports automatically from the server definitions
         {{- range .zones -}}
             {{- if has (default "" .scheme) (list "dns://") -}}
                 {{- $innerdict := set $innerdict "isudp" true -}}
+                {{- $innerdict := set $innerdict "istcp" true -}}
             {{- end -}}
 
             {{- if has (default "" .scheme) (list "tls://" "grpc://") -}}
@@ -106,6 +109,7 @@ Generate the list of ports automatically from the server definitions
         {{/* If none of the zones specify scheme, default to UDP (CoreDNS defaults to dns://) */}}
         {{- if and (not (index $innerdict "istcp")) (not (index $innerdict "isudp")) -}}
             {{- $innerdict := set $innerdict "isudp" true -}}
+            {{- $innerdict := set $innerdict "istcp" true -}}
         {{- end -}}
 
         {{/* Write the dict back into the outer dict */}}
