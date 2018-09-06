@@ -25,6 +25,8 @@ cluster:
   # Use this setting to specify the name of the secret
   # keystoreSecret: eskeystore
   config: {}
+  # Custom parameters, as string, to be added to ES_JAVA_OPTS environment variable
+  additionalJavaOpts: ""
   env:
     # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
     # To prevent data loss, it is vital to configure the discovery.zen.minimum_master_nodes setting so that each master-eligible
