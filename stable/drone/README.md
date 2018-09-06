@@ -59,6 +59,7 @@ The following table lists the configurable parameters of the drone charts and th
 | `server.nodeSelector`       | Drone **server** node labels for pod assignment                                               | `{}`                        |
 | `server.extraContainers`    | Additional sidecar containers                                                                 | `""`                        |
 | `server.extraVolumes`       | Additional volumes for use in extraContainers                                                 | `""`                        |
+| `server.extraVolumeMounts`  | Additional volumes to mount in server pods                                                    | `[]`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
 | `agent.replicas`            | Drone **agent** replicas                                                                      | `1`                         |
 | `agent.annotations`         | Drone **agent** annotations                                                                   | `{}`                        |
