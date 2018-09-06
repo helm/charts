@@ -70,12 +70,21 @@ spec:
         volumeMounts:
         - name: config-volume-{{ template "fluentd.fullname" . }}
           mountPath: /etc/fluent/config.d
+{{- if .Values.tls }}
+        - name: tls
+          mountPath: /etc/fluentd/pki
+{{- end }}
         - name: buffer
           mountPath: "/var/log/fluentd-buffers"
       volumes:
         - name: config-volume-{{ template "fluentd.fullname" . }}
           configMap:
             name: {{ template "fluentd.fullname" . }}
+{{- if .Values.tls }}
+        - name: "tls"
+          secret:
+            secretName: "{{ template "fluentd.fullname" . }}-tls"
+{{- end }}
         - name: buffer
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:

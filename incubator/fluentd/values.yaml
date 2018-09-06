@@ -42,6 +42,18 @@ ingress:
     #   hosts:
     #     - http-input.local
 
+# Used to store forwarder TLS information. This is made available in the container at /etc/fluend/tls for consumption in
+# the droppoconfiguration
+# tls: {}
+  # tls.crt: |
+  #   -----BEGIN CERTIFICATE-----
+  #   ...
+  # tls.key: |
+  #   -----BEGIN PRIVATE KEY-----
+  #   ...
+  # ca.crt: |
+  #   -----BEGIN CERTIFICATE-----
+
 configMaps:
   general.conf: |
     # Prevent fluentd from handling records containing its own logs. Otherwise
@@ -76,6 +88,17 @@ configMaps:
       @type forward
       port 24224
       bind 0.0.0.0
+
+      # If TLS mutual authentication should be enabled and certificates have been provided, uncomment the following
+      # lines:
+      #
+      #<transport tls>
+      #  client_cert_auth true
+
+      #  cert_path        /etc/fluentd/pki/tls.crt
+      #  private_key_path /etc/fluentd/pki/tls.key
+      #  ca_path          /etc/fluentd/pki/ca.crt
+      #</transport>
     </source>
   output.conf: |
     <match **>
