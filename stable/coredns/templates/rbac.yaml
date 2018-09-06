@@ -1,4 +1,4 @@
-{{- if and .Values.plugins.kubernetes.enabled .Values.rbac.create }}
+{{- if .Values.rbac.create }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
