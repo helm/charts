@@ -190,6 +190,77 @@ spec:
 {{- end }}
 ```
 
+## Ingress
+
+* See the [Ingress resource documentation](https://kubernetes.io/docs/concepts/services-networking/ingress/) for a broader concept overview
+* Ingress should be disabled by default
+* Example ingress section in values.yaml:
+
+```yaml
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.test
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.test
+```
+
+* Example ingress.yaml:
+
+```yaml
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "fullname" }}
+  labels:
+    app: {{ include "name" . }}
+    chart: {{ include "chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.ingress.tls }}
+  tls:
+  {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+          - path: {{ .Values.ingress.path }}
+            backend:
+              serviceName: {{ include "fullname" }}
+              servicePort: http
+  {{- end }}
+{{- end }}
+```
+
+* Example prepend logic for getting an application URL in NOTES.txt:
+
+```
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
+{{- end }}
+```
+
 ## Documentation
 
 `README.md` and `NOTES.txt` are mandatory. `README.md` should contain a table listing all configuration options. `NOTES.txt` should provide accurate and useful information how the chart can be used/accessed.
