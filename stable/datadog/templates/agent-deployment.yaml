@@ -1,5 +1,5 @@
 {{- if .Values.clusterAgent.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "datadog.clusterAgent.fullname" . }}
@@ -10,6 +10,9 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 spec:
   replicas: {{ .Values.clusterAgent.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "datadog.clusterAgent.fullname" . }}
   template:
     metadata:
       labels:
