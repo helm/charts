@@ -162,3 +162,10 @@ vault:
       #   bucket: ""
       #   # Use a custom secret to mount this file.
       #   credentials_file: ""
+
+persistence:
+  enabled: false
+  accessMode: ReadWriteOnce
+  size: 200Mi
+  annotations: {}
+  #existingClaim: ""
