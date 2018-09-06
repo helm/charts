@@ -43,7 +43,7 @@ servers:
     parameters: 30
   - name: errors
   - name: health
-  - name: kubernetes 
+  - name: kubernetes
     parameters: cluster.local
   - name: loadbalance
     parameters: round_robin
