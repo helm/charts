@@ -1,0 +1,28 @@
+{{- if .Values.cluster.storageClass.enabled }}
+apiVersion: {{ if .Capabilities.APIVersions.Has "storage.k8s.io/v1" -}}
+  storage.k8s.io/v1
+{{- else -}}
+  storage.k8s.io/v1beta1
+{{- end }}
+kind: StorageClass
+metadata:
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.client.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ default "fast" .Values.cluster.storageClass.name }}
+# alias for gce pd ssd
+{{- if (eq "gce-pd-ssd" .Values.cluster.storageClass.type) }}
+provisioner: kubernetes.io/gce-pd 
+parameters:
+  type: pd-ssd
+{{- else }}
+provisioner: {{ .Values.cluster.storageClass.provisioner }}
+parameters:
+{{- range $key, $value := .Values.cluster.storageClass.parameters }}
+  {{ $key }}: {{ $value }}
+{{- end }}
+{{- end }}
+{{- end }}
