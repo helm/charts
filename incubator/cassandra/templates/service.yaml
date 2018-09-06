@@ -7,9 +7,12 @@ metadata:
     chart: {{ template "cassandra.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
   clusterIP: None
   type: {{ .Values.service.type }}
+  publishNotReadyAddresses: true
   ports:
   - name: intra
     port: 7000
