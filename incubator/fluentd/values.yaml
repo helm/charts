@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: gcr.io/google-containers/fluentd-elasticsearch
-  tag: v2.0.4
+  tag: v2.3.1
   pullPolicy: IfNotPresent
   # pullSecrets:
   #   - secret1
