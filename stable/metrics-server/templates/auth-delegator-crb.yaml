@@ -15,6 +15,6 @@ roleRef:
   name: system:auth-delegator
 subjects:
   - kind: ServiceAccount
-    name: {{ template "metrics-server.fullname" . }}
+    name: {{ template "metrics-server.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end -}}
