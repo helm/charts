@@ -84,7 +84,7 @@ spec:
       - name: elasticsearch
         env:
         - name: DISCOVERY_SERVICE
-          value: {{ template "elasticsearch.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.cluster.kubernetesDomain }}
+          value: {{ template "elasticsearch.fullname" . }}-discovery
         - name: NODE_MASTER
           value: "false"
         - name: PROCESSORS
