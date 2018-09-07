@@ -129,6 +129,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
         resources:
         {{ if eq .name "yb-masters" }}
 {{ toYaml $root.Values.resource.master | indent 10 }}
@@ -146,12 +150,14 @@ spec:
           - "/home/yugabyte/bin/yb-master"
           - "--fs_data_dirs={{range $index := until (int ($root.Values.persistentVolume.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
           - "--rpc_bind_addresses=$(POD_IP)"
-          - "--master_addresses=yb-masters:7100"
+          - "--server_broadcast_addresses=$(HOSTNAME).yb-masters:7100"
+          - "--master_addresses={{range $index := until (int ($root.Values.replicas.master))}}{{if ne $index 0}},{{end}}yb-master-{{ $index }}.yb-masters:7100{{end}}"
           - "--master_replication_factor={{ $root.Values.replicas.master }}"
         {{ else }}
           - "/home/yugabyte/bin/yb-tserver"
           - "--fs_data_dirs={{range $index := until (int ($root.Values.persistentVolume.count))}}{{if ne $index 0}},{{end}}/mnt/disk{{ $index }}{{end}}"
-          - "--tserver_master_addrs=yb-masters:7100"
+          - "--server_broadcast_addresses=$(HOSTNAME).yb-tservers:9100"
+          - "--tserver_master_addrs={{range $index := until (int ($root.Values.replicas.master))}}{{if ne $index 0}},{{end}}yb-master-{{ $index }}.yb-masters:7100{{end}}"
           - "--tserver_master_replication_factor={{ $root.Values.replicas.master }}"
         {{ end }}
         ports:
