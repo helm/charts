@@ -23,7 +23,7 @@ spec:
   {{- end }}
 {{- end }}
     spec:
-      serviceAccountName: metricbeat
+      serviceAccountName: {{ template "metricbeat.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

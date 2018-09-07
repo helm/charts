@@ -37,6 +37,7 @@ The following table lists the configurable parameters of the metricbeat chart an
 | `image.pullPolicy`                  | Image pull policy                  | `IfNotPresent`                            |
 | `rbac.create`                       | If true, create & use RBAC resources | `true`                                  |
 | `serviceAccount.create`             | If true, create & use ServiceAccount | `true`       |
+| `serviceAccount.name`               | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template |       |
 | `config`                            | The content of the configuration file consumed by metricbeat. See the [metricbeat.reference.yml](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-reference-yml.html) for full details | |
 | `plugins`                           | List of beat plugins               |                                            |
 | `extraVars`                         | A map of additional environment variables |                                    |
