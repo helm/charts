@@ -25,6 +25,7 @@ ports:
   - name: http
     containerPort: 8080
     protocol: TCP
+#   nodePort: 32080
   - name: grpc
     containerPort: 5000
     protocol: TCP
@@ -76,7 +77,7 @@ serviceAccount:
   name:
 
 config:
-  issuer: https://dex.io
+  issuer: http://dex.io:8080
   storage:
     type: kubernetes
     config:

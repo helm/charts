@@ -25,9 +25,14 @@ spec:
     spec:
       {{- if .Values.daemonset.useHostNetwork }}
       hostNetwork: {{ .Values.daemonset.useHostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
       {{- if .Values.daemonset.useHostPID }}
       hostPID: {{ .Values.daemonset.useHostPID }}
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}
@@ -71,6 +76,10 @@ spec:
           {{- if .Values.datadog.apmEnabled }}
           - name: DD_APM_ENABLED
             value: {{ .Values.datadog.apmEnabled | quote }}
+          {{- end }}
+          {{- if .Values.datadog.processAgentEnabled }}
+          - name: DD_PROCESS_AGENT_ENABLED
+            value: {{ .Values.datadog.processAgentEnabled | quote }}
           {{- end }}
           {{- if .Values.datadog.leaderElection }}
           - name: DD_LEADER_ELECTION
@@ -125,7 +134,12 @@ spec:
           {{- end }}
           {{- if .Values.datadog.logsEnabled }}
           - name: pointerdir
-            mountPath: /opt/datadog-agent/run
+            mountPath: /var/lib/datadog-agent/logs
+          {{- end }}
+          {{- if .Values.datadog.processAgentEnabled }}
+          - name: passwd
+            mountPath: /etc/passwd
+            readOnly: true
           {{- end }}
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
@@ -158,8 +172,13 @@ spec:
         {{- end }}
         {{- if .Values.datadog.logsEnabled }}
         - hostPath:
-            path: /opt/datadog-agent/run
+            path: /var/lib/datadog-agent/logs
           name: pointerdir
+        {{- end }}
+        {{- if .Values.datadog.processAgentEnabled }}
+        - hostPath:
+            path: /etc/passwd
+          name: passwd
         {{- end }}
 {{- if .Values.datadog.volumes }}
 {{ toYaml .Values.datadog.volumes | indent 8 }}

@@ -1,0 +1,48 @@
+# Default values for mysqldump.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: mysql
+  tag: "5.7.21"
+  pullPolicy: IfNotPresent
+
+mysql:
+## Without a host set, this chart will not do anything as it is expected
+## to be used only when there's an existing database to backup.
+  host:
+  username: root
+  password:
+  port: 3306
+
+## set to `now` to get a one time job, or a cronjob schedule like `0 0 * * *`
+## to get a cronjob.
+schedule: "0/5 * * * *"
+# schedule: now
+
+## options to pass to mysqldump
+options: "--opt --skip-lock-tables --skip-add-locks --all-databases"
+
+## enable some debug options
+debug: false
+
+## cronjob history
+successfulJobsHistoryLimit: 5
+failedJobsHistoryLimit: 5
+
+## set persistentVolumeClaim to use a PVC that already exists.
+## if set will override any settings under `resistence` otherwise
+## if not set and `persistence` set to true, will create a PVC.
+# persistentVolumeClaim: <existing-PVC>
+
+persistence:
+  enabled: true
+  size: 8Gi
+  accessMode: ReadWriteOnce
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"

@@ -8,7 +8,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.1-debian-9
+  tag: 4.0.2-debian-9
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -39,6 +39,12 @@ usePassword: true
 # mongodbPassword: password
 # mongodbDatabase: database
 
+
+## Whether enable/disable IPv6 on MongoDB
+## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#enabling/disabling-ipv6
+##
+mongodbEnableIPv6: true
+
 ## MongoDB additional command line flags
 ##
 ## Can be used to specify command line flags, for example:
@@ -57,6 +63,7 @@ securityContext:
 
 ## Kubernetes service type
 service:
+  annotations: {}
   type: ClusterIP
   port: 27017
 
@@ -65,10 +72,14 @@ service:
   ##
   # nodePort:
 
-
+## Setting up replication
+## ref: https://github.com/bitnami/bitnami-docker-mongodb#setting-up-a-replication
+#
 replicaSet:
   ## Whether to create a MongoDB replica set for high availability or not
   enabled: false
+  useHostnames: true
+
   ## Name of the replica set
   ##
   name: rs0
