@@ -37,10 +37,10 @@ hydra:
 
   secrets:
     ## Hydra system secret (at least 16 characters)
-    ## If not set, a random 16 secret will be used.
+    ## If not set, a random 32 character secret will be used.
     system: ""
     ## Secret that is used to encrypt cookie sessions.
-    ## If not set, a random 16 secret will be used.
+    ## If not set, a random 16 character secret will be used.
     cookie: ""
 
   ## Additional init containers, e. g. for providing custom themes
