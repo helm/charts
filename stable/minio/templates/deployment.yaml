@@ -95,12 +95,18 @@ spec:
           livenessProbe:
             tcpSocket:
               port: service
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             tcpSocket:
               port: service
-            timeoutSeconds: 1
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
 {{- with .Values.nodeSelector }}
