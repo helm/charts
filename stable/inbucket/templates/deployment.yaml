@@ -12,6 +12,13 @@ spec:
     matchLabels:
       app: {{ template "inbucket.name" . }}
       release: {{ .Release.Name | quote }}
+
+  strategy:
+{{- if .Values.persistence.enabled }}
+    type: Recreate
+{{- else }}
+    type: RollingUpdate
+{{- end }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -26,20 +33,30 @@ spec:
         - name: {{ template "inbucket.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+{{- if .Values.cmdOptions }}
+          args:
+          {{- range $key, $value := .Values.cmdOptions }}
+            - "-{{ $key }}={{ $value }}"
+          {{- end }}
+{{- end }}
           env:
           {{- range $key, $value := .Values.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
           {{- end }}
+          volumeMounts:
+            - name: storage
+              mountPath: /storage
+              readOnly: false
           ports:
             - name: http
-              containerPort: 10080
+              containerPort: 9000
               protocol: TCP
             - name: smtp
-              containerPort: 10025
+              containerPort: 2500
               protocol: TCP
             - name: pop3
-              containerPort: 10110
+              containerPort: 1100
               protocol: TCP
           livenessProbe:
             tcpSocket:
@@ -55,3 +72,11 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+      volumes:
+      - name: storage
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "inbucket.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

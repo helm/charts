@@ -44,8 +44,10 @@ The following table lists the configurable parameters of the Inbucket chart and 
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | container image repository | `jhillyerd/inbucket`
-`image.tag` | container image tag | `release-1.2.0`
-`image.pullPolicy` | container image pull policy | `IfNotPresent`
+`image.tag` | container image tag | `stable`
+`image.pullPolicy` | container image pull policy | `Always`
+`cmdOptions` | inbucket cmd options | `{ "logjson": false "netdebug": false }`
+`env` | environment variables | `{ "INBUCKET_STORAGE_TYPE": "file", "INBUCKET_STORAGE_PARAMS": "path:/storage" }`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
 `resources` | pod resource requests & limits | `{}`
@@ -55,9 +57,9 @@ Parameter | Description | Default
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `service.type` | type of service to create | `ClusterIP`
-`service.node.http` | http port of service | `""`
-`service.node.smtp` | smtp port of service | `""`
-`service.node.pop3` | pop3 port of service | `""`
+`service.port.http` | http port of service | `9000`
+`service.port.smtp` | smtp port of service | `2500`
+`service.port.pop3` | pop3 port of service | `1100`
 `service.nodePort.http` | if `service.type` is `NodePort` and this is non-empty, sets the http node port of the service | `""`
 `service.nodePort.smtp` | if `service.type` is `NodePort` and this is non-empty, sets the smtp node port of the service | `""`
 `service.nodePort.pop3` | if `service.type` is `NodePort` and this is non-empty, sets the pop3 node port of the service | `""`
@@ -66,6 +68,12 @@ Parameter | Description | Default
 `ingress.path` | if `true`, an ingress is created | `/`
 `ingress.hosts` | a list of ingress hosts | `[inbucket.example.com]`
 `ingress.tls` | a list of [IngressTLS](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/#ingresstls-v1beta1-extensions) items | `[]`
+`persistence.enabled` | Use a PVC to persist data | `false`
+`persistence.existingClaim` | Provide an existing PersistentVolumeClaim | `nil`
+`persistence.storageClass` | Storage class of backing PVC | `nil`
+`persistence.accessMode` | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`
+`persistence.annotations` | Persistent Volume annotations | `{}`
+`persistence.size` | Size of data volume | `1Gi`
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

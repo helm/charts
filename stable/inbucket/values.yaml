@@ -1,7 +1,15 @@
 image:
   repository: jhillyerd/inbucket
-  tag: release-1.2.0
-  pullPolicy: IfNotPresent
+  tag: stable
+  pullPolicy: Always
+
+cmdOptions:
+  logjson: false
+  netdebug: false
+
+env:
+  INBUCKET_STORAGE_TYPE: "file"
+  INBUCKET_STORAGE_PARAMS: "path:/storage"
 
 service:
   annotations: {}
@@ -11,13 +19,13 @@ service:
   loadBalancerSourceRanges: []
   type: ClusterIP
   port:
-    http: 10080
-    smtp: 10025
-    pop: 10110
+    http: 9000
+    smtp: 2500
+    pop3: 1100
   nodePort:
     http: ""
     smtp: ""
-    pop: ""
+    pop3: ""
 
 ingress:
   enabled: false
@@ -32,3 +40,23 @@ ingress:
 
 podAnnotations: {}
 resources: {}
+
+## Persist data to a persistent volume
+persistence:
+  enabled: false
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 1Gi
