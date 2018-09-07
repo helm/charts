@@ -24,4 +24,15 @@ rules:
   verbs:
   - list
   - watch
+{{- if .Values.rbac.pspEnable }}
+- apiGroups:
+  - policy
+  - extensions
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+  resourceNames:
+  - {{ template "coredns.fullname" . }}
+{{- end }}
 {{- end }}

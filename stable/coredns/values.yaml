@@ -30,6 +30,8 @@ rbac:
   create: false
   # Ignored if rbac.create is true
   serviceAccountName: default
+  # If true, create and use PodSecurityPolicy
+  pspEnable: false
 
 # isClusterService specifies whether chart should be deployed as cluster-service or normal k8s app.
 isClusterService: true
