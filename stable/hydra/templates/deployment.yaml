@@ -2,9 +2,6 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "hydra.fullname" . }}
-  annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-    checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
   labels:
     app: {{ template "hydra.name" . }}
     chart: {{ template "hydra.chart" . }}
@@ -16,6 +13,9 @@ spec:
     type: RollingUpdate
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
       labels:
         app: {{ template "hydra.name" . }}
         release: "{{ .Release.Name }}"
@@ -44,7 +44,6 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ template "hydra.fullname" . }}
-          envFrom:
             - configMapRef:
                 name: {{ template "hydra.fullname" . }}
           env:
