@@ -53,21 +53,21 @@ spec:
             - name: SPARK_MASTER
               value: "spark://{{ template "master-fullname" . }}:{{ .Values.Master.ServicePort }}"
           volumeMounts:
-          {{- if .Values.Zeppelin.Persistence.Config }}
+          {{- if .Values.Zeppelin.Persistence.Config.Enabled }}
             - name: {{ template "master-fullname" . }}-config
               mountPath: /zeppelin/conf
           {{- end }}
-          {{- if .Values.Zeppelin.Persistence.Notebook }}
+          {{- if .Values.Zeppelin.Persistence.Notebook.Enabled }}
             - name: {{ template "master-fullname" . }}-notebook
               mountPath: /zeppelin/notebook
           {{- end }}
       volumes:
-        {{- if .Values.Zeppelin.Persistence.Config }}
+        {{- if .Values.Zeppelin.Persistence.Config.Enabled }}
         - name: {{ template "master-fullname" . }}-config
           persistentVolumeClaim:
             claimName: {{ template "zeppelin-fullname" . }}-config
         {{- end }}
-        {{- if .Values.Zeppelin.Persistence.Notebook }}
+        {{- if .Values.Zeppelin.Persistence.Notebook.Enabled }}
         - name: {{ template "master-fullname" . }}-notebook
           persistentVolumeClaim:
             claimName: {{ template "zeppelin-fullname" . }}-notebook
