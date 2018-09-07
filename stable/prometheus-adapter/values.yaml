@@ -56,6 +56,8 @@ service:
 
 tls:
   enable: false
+  # Use external tls secret name instead of managing one
+  secretName: ""
   ca: |-
     # Public CA file that signed the APIService
   key: |-
