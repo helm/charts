@@ -68,13 +68,14 @@ and their default values.
 | `existingConfigMap`                            | Use an existing ConfigMap                                                                                                                                                                             | `false`                                                    |
 | `existingSecret`                               | Use an existing secret for password & erlang cookie                                                                                                                                                   | `""`                                                       |
 | `extraConfig`                                  | Additional configuration to add to default configmap                                                                                                                                                  | `{}`                                                         |
-| `definitions.users`                            | Additional users | `{}` |
-| `definitions.vhosts`                           | Additional vhosts | `{}` |
-| `definitions.permissions`                      | Additional permissions | `{}` |
-| `definitions.queues`                           | Pre-created queues | `{}` |
-| `definitions.exchanges`                        | Pre-created exchanges | `{}` |
-| `definitions.bindings`                         | Pre-created bindings | `{}` |
-| `definitions.policies`                         | HA policies to add to definitions.json | `{}` |
+| `definitions.users`                            | Additional users | `""` |
+| `definitions.vhosts`                           | Additional vhosts | `""` |
+| `definitions.parameters`                       | Additional parameters | `""` |
+| `definitions.permissions`                      | Additional permissions | `""` |
+| `definitions.queues`                           | Pre-created queues | `""` |
+| `definitions.exchanges`                        | Pre-created exchanges | `""` |
+| `definitions.bindings`                         | Pre-created bindings | `""` |
+| `definitions.policies`                         | HA policies to add to definitions.json | `""` |
 | `image.pullPolicy`                             | Image pull policy                                                                                                                                                                                     | `Always` if `image` tag is `latest`, else `IfNotPresent`   |
 | `image.repository`                             | RabbitMQ container image repository                                                                                                                                                                   | `rabbitmq`                                                 |
 | `image.tag`                                    | RabbitMQ container image tag                                                                                                                                                                          | `3.7-alpine`                                               |

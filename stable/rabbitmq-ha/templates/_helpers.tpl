@@ -86,18 +86,21 @@ users, virtual hosts, permissions and parameters) to load by the management plug
     }{{- if .Values.definitions.permissions -}},
 {{ .Values.definitions.permissions | indent 4 }}
 {{- end }}
-  ]{{- if .Values.definitions.policies -}},
+  ],
+  "parameters": [
+{{ .Values.definitions.parameters| indent 4 }}
+  ],
   "policies": [
 {{ .Values.definitions.policies | indent 4 }}
-  ]{{ end }} {{- if .Values.definitions.queues }},
+  ],
   "queues": [
 {{ .Values.definitions.queues | indent 4 }}
-  ]{{ end }}{{ if .Values.definitions.exchanges }},
+  ],
   "exchanges": [
 {{ .Values.definitions.exchanges | indent 4 }}
-  ]{{ end }}{{ if .Values.definitions.bindings }},
+  ],
   "bindings": [
 {{ .Values.definitions.bindings| indent 4 }}
-  ]{{ end }}
+  ]
 }
 {{- end -}}
