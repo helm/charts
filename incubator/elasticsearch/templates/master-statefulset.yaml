@@ -90,7 +90,7 @@ spec:
           value: "false"
 {{- end }}
         - name: DISCOVERY_SERVICE
-          value: {{ template "elasticsearch.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.cluster.kubernetesDomain }}
+          value: {{ template "elasticsearch.fullname" . }}-discovery
         - name: PROCESSORS
           valueFrom:
             resourceFieldRef:

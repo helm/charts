@@ -13,7 +13,6 @@ image:
 
 cluster:
   name: "elasticsearch"
-  kubernetesDomain: cluster.local
   # If you want X-Pack installed, switch to an image that includes it, enable this option and toggle the features you want
   # enabled in the environment variables outlined in the README
   xpackEnable: false
