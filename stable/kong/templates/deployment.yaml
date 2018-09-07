@@ -23,6 +23,10 @@ spec:
         app: {{ template "kong.name" . }}
         release: {{ .Release.Name }}
     spec:
+      initContainers:
+      - name: init-kong-database
+        image: busybox
+        command: ['sh', '-c', 'until nslookup {{ template "kong.postgresql.fullname" . }}; do echo waiting for {{ template "kong.postgresql.fullname" . }}; sleep 2; done;']
       containers:
       - name: {{ template "kong.name" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

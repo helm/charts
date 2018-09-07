@@ -85,7 +85,7 @@ readinessProbe:
     path: "/status"
     port: admin
     scheme: HTTPS
-  initialDelaySeconds: 120
+  initialDelaySeconds: 30
   timeoutSeconds: 1
   periodSeconds: 10
   successThreshold: 1
@@ -97,7 +97,7 @@ livenessProbe:
     path: "/status"
     port: admin
     scheme: HTTPS
-  initialDelaySeconds: 180
+  initialDelaySeconds: 30
   timeoutSeconds: 5
   periodSeconds: 30
   successThreshold: 1
