@@ -99,6 +99,21 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+## Liveness and Readiness probe values.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+livenessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 30
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 15
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
