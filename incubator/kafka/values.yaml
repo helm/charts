@@ -150,6 +150,9 @@ external:
     imageTag: "0.4"
     imagePullPolicy: "IfNotPresent"
 
+# Annotation to be added to Kafka pods
+podAnnotations: {}
+
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
 ## here in map format, as defined in the official docs.
 ## ref: https://kafka.apache.org/documentation/#brokerconfigs
