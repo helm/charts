@@ -202,6 +202,12 @@ spec:
             httpGet:
               path: /api/health
               port: 3000
+{{- if .Values.server.persistentVolume.enabled }}
+          fs:
+            securityContext:
+              fsGroup: 472
+{{- end }}
+
           readinessProbe:
             httpGet:
               path: /api/health
