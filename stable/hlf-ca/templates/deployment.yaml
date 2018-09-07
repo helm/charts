@@ -23,7 +23,7 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
-        {{- if .Values.ingress.tls }}
+        {{- if (and .Values.config.mountTLS .Values.ingress.tls) }}
         - name: tls-secret
           secret:
             secretName: {{ (index .Values.ingress.tls 0).secretName }}
@@ -40,6 +40,12 @@ spec:
             - sh
             - -c
             - |
+              while [ -z ${DB_PASSWORD+x} ];
+              do
+                echo "\033[0;31m DB_PASSWORD environmental variable must contain a value (check that you specified 'db.chart' in values.yaml) \033[0m"
+                sleep 60
+              done
+
               export DB_DATASOURCE="host=${DB_HOST} port=${DB_PORT} user=${DB_USERNAME} password=${DB_PASSWORD} dbname=${DB_DATABASE} sslmode=${DB_SSL}"
               mkdir -p $FABRIC_CA_HOME
               cp /var/hyperledger/ca_config/ca.yaml $FABRIC_CA_HOME/fabric-ca-server-config.yaml
@@ -65,11 +71,13 @@ spec:
                 name: {{ include "hlf-ca.fullname" . }}--ca
           env:
             # Database environmental variable
+            {{- if .Values.db.chart }}
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.db.chart | quote }}
                   key: postgres-password
+            {{- end }}
             {{- if .Values.config.intermediate }}
             - name: PARENT_CA_ADMIN
               valueFrom:
@@ -92,7 +100,7 @@ spec:
             - name: ca-config
               readOnly: true
               mountPath: /var/hyperledger/ca_config
-            {{- if .Values.ingress.tls }}
+            {{- if (and .Values.config.mountTLS .Values.ingress.tls) }}
             - name: tls-secret
               readOnly: true
               mountPath: /var/hyperledger/tls_secret
