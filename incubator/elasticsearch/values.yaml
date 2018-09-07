@@ -1,16 +1,18 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "6.2.4"
+appVersion: "6.4.0"
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.3.1"
+  tag: "6.4.0"
   pullPolicy: "IfNotPresent"
+  # If specified, use these secrets to access the image
+  # pullSecrets:
+  #   - registry-secret
 
 cluster:
   name: "elasticsearch"
-  kubernetesDomain: cluster.local
   # If you want X-Pack installed, switch to an image that includes it, enable this option and toggle the features you want
   # enabled in the environment variables outlined in the README
   xpackEnable: false
@@ -25,6 +27,8 @@ client:
   name: client
   replicas: 2
   serviceType: ClusterIP
+  loadBalancerIP: {}
+  loadBalancerSourceRanges: {}
 ## (dict) If specified, apply these annotations to the client service
 #  serviceAnnotations:
 #    example: client-svc-foo
