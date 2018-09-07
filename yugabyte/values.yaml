@@ -38,6 +38,7 @@ serviceEndpoints:
 Services:
   - name: "yb-masters"
     label: "yb-master"
+    memory_limit_to_ram_ratio: 0.85
     ports:
       ui: "7000"
       rpc-port: "7100"
