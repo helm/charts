@@ -78,7 +78,7 @@ spec:
         - name: NODE_MASTER
           value: "false"
         - name: DISCOVERY_SERVICE
-          value: {{ template "elasticsearch.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.cluster.kubernetesDomain }}
+          value: {{ template "elasticsearch.fullname" . }}-discovery
         - name: PROCESSORS
           valueFrom:
             resourceFieldRef:
@@ -121,6 +121,12 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/log4j2.properties
           name: config
           subPath: log4j2.properties
+{{- end }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecret := .Values.image.pullSecrets }}
+        - name: {{ $pullSecret }}
+      {{- end }}
 {{- end }}
       volumes:
       - name: config
