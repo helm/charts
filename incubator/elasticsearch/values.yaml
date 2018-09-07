@@ -7,9 +7,6 @@ image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
   tag: "6.4.0"
   pullPolicy: "IfNotPresent"
-  # If specified, use these secrets to access the image
-  # pullSecrets:
-  #   - registry-secret
 
 cluster:
   name: "elasticsearch"
@@ -27,8 +24,6 @@ client:
   name: client
   replicas: 2
   serviceType: ClusterIP
-  loadBalancerIP: {}
-  loadBalancerSourceRanges: {}
 ## (dict) If specified, apply these annotations to the client service
 #  serviceAnnotations:
 #    example: client-svc-foo
