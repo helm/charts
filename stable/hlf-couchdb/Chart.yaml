@@ -1,7 +1,7 @@
 apiVersion: v1
 description: CouchDB instance for Hyperledger Fabric (these charts are created by AID:Tech and are currently not directly associated with the Hyperledger project)
 name: hlf-couchdb
-version: 1.0.4
+version: 1.0.5
 appVersion: 0.4.9
 keywords:
   - blockchain
@@ -16,5 +16,4 @@ maintainers:
     email: sasha@aid.technology
   - name: nicolapaoli
     email: nicola@aid.technology
-## Icon not included while sorting out trademark question with Hyperledger project
-# icon: https://www.hyperledger.org/wp-content/uploads/2018/04/fabric-logo.png
+icon: https://www.hyperledger.org/wp-content/uploads/2018/04/fabric-logo.png
