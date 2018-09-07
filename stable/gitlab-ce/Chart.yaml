@@ -14,6 +14,3 @@ sources:
 - https://hub.docker.com/r/gitlab/gitlab-ce/
 - https://docs.gitlab.com/omnibus/
 icon: https://gitlab.com/uploads/group/avatar/6543/gitlab-logo-square.png
-maintainers:
-- name: Greg Taylor
-  email: gtaylor@gc-taylor.com
