@@ -57,6 +57,8 @@ spec:
                   component: server
               topologyKey: kubernetes.io/hostname
       {{- end }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
       - name: config-init
         image: {{ .Values.image }}:{{ .Values.tag }}
@@ -85,8 +87,6 @@ spec:
             mountPath: /data
       containers:
       - name: redis
-        securityContext:
-{{ toYaml .Values.securityContext | indent 10 }}
         image: {{ .Values.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.pullPolicy }}
         command:
@@ -98,7 +98,7 @@ spec:
             command: ["redis-cli", "ping"]
           initialDelaySeconds: 15
           periodSeconds: 5
-        readiness:
+        readinessProbe:
           exec:
             command: ["redis-cli", "ping"]
           initialDelaySeconds: 15
@@ -112,8 +112,6 @@ spec:
           - mountPath: /data
             name: data
       - name: sentinel
-        securityContext:
-{{ toYaml .Values.securityContext | indent 10 }}
         image: {{ .Values.image }}:{{ .Values.tag }}
         command:
           - redis-sentinel
@@ -124,7 +122,7 @@ spec:
             command: ["redis-cli", "-p", "{{ .Values.sentinel.port }}", "ping"]
           initialDelaySeconds: 15
           periodSeconds: 5
-        readiness:
+        readinessProbe:
           exec:
             command: ["redis-cli", "-p", "{{ .Values.sentinel.port }}", "ping"]
           initialDelaySeconds: 15

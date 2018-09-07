@@ -29,7 +29,7 @@ data:
     R_PATCH=/data/conf/redis.patch
     S_PATCH=/data/conf/sentinel.patch
     
-    set -ex
+    set -e
     function auth(){
         if [[ "$AUTH" ]]; then
             if [[ "$1" == "sentinel" ]]; then
@@ -143,5 +143,4 @@ data:
         find_master
     fi
     echo "{{ .Values.redis.masterGroupName }}" > /data/conf/group_name
-    chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /data/
     echo "Ready..."
