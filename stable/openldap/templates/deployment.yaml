@@ -27,6 +27,17 @@ spec:
         app: {{ template "openldap.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.customLdifFiles }}
+      initContainers:
+        - name: copy-custom
+          image: busybox
+          command: ["sh", "-c", "cp /custom/* /custom-ldif/"]
+          volumeMounts:
+            - name: customldif-pre
+              mountPath: /custom
+            - name: customldif
+              mountPath: /custom-ldif
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -80,9 +91,11 @@ spec:
     {{- end }}
       volumes:
         {{- if .Values.customLdifFiles }}
-        - name: customldif
+        - name: customldif-pre
           configMap:
             name: {{ template "openldap.fullname" . }}-customldif
+        - name: customldif
+          emptyDir: {}
         {{- end }}
         - name: data
         {{- if .Values.persistence.enabled }}
