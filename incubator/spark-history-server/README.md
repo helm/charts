@@ -18,7 +18,7 @@
 
    If you are using a PVC as the backing storage for Spark history events, then you'll need to create the PVC before installing the chart. On the Google Kubernetes Engine (GKE), the recommended underlying PersistentVolume is NFS. You can also use Portworx or Gluster. All three options provide sharing capabilities that would allow both the history server pod and the Spark job pods to mount the same PVC. 
 
-   For a concise documentation on how to set up an NFS-backed PVC, refer to this [page](https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs). 
+   The chart by default enables PVC backed by an NFS volume. The NFS volume and server are installed as a child chart adapted from the [documentation](https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs) in the kubernetes/examples repo. The NFS PVC provided makes the history server work out of the box. The user is free to replace the PVC with other storage technologies (e.g. Gluster) as long as the history server references the PVC using `pvc.existingClaimName` setting that has been properly set up.
 
 #### Installing the Chart
 

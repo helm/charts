@@ -1,0 +1,7 @@
+gceStorage: 5Gi
+pvcStorage: 1Mi
+pvStorage: 1Mi
+
+pvName: nfs
+pvcName: spark-hs-pvc
+nfsServerServiceName: nfs-server
