@@ -122,7 +122,6 @@ spec:
           name: config
           subPath: log4j2.properties
 {{- end }}
-{{- end }}
       volumes:
       - name: config
         configMap:
