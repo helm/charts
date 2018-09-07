@@ -94,12 +94,12 @@ spec:
             {{- end }}
           livenessProbe:
             tcpSocket:
-              port: 9000
+              port: service
             initialDelaySeconds: 5
             timeoutSeconds: 1
           readinessProbe:
             tcpSocket:
-              port: 9000
+              port: service
             timeoutSeconds: 1
           resources:
 {{ toYaml .Values.resources | indent 12 }}

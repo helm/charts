@@ -62,6 +62,15 @@ spec:
                 secretKeyRef:
                   name: {{ template "minio.fullname" . }}
                   key: secretkey
+          livenessProbe:
+            tcpSocket:
+              port: service
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          readinessProbe:
+            tcpSocket:
+              port: service
+            timeoutSeconds: 1
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
