@@ -88,12 +88,14 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `adminUsername`                    | Admin Username for CA                            | `admin`                                                    |
 | `adminPassword`                    | Admin Password                                   | Random 24 alphanumeric characters                          |
 | `caName`                           | Name of CA                                       | `org1-ca`                                                  |
-| `db.chart`                         | Name of a Database Chart holding CA data         | `postgres-ca-postgresql` supports postgresql           |
+| `db.chart`                         | Name of a Database Chart holding CA data         | `` supports postgresql                                     |
 | `db.database`                      | Name of the actual Database holding the CA data  | `fabric_ca`                                                |
+| `config.hlfToolsVersion`           | Version of Hyperledger Fabric tools used         | `1.1.0`                                                    |
+| `config.mountTLS`                  | If TLS secrets are generated, do we mount them?  | `false`                                                    |
 | `config.debug`                     | Enable debug logging                             | `true`                                                     |
 | `config.csr.ca.pathlength`         | Pathlength of CA certificate hierarchy           | `1`                                                        |
 | `config.csr.names.c`               | Country to which CA belongs                      | `US`                                                       |
-| `config.csr.names.st`              | State to which CA belongs                        | `North Carolina`                                                  |
+| `config.csr.names.st`              | State to which CA belongs                        | `North Carolina`                                           |
 | `config.csr.names.l`               | Locality to which CA belongs                     | ``                                                         |
 | `config.csr.names.o`               | Organization to which CA belongs                 | `Hyperledger`                                              |
 | `config.csr.names.ou`              | Organizational Unit to which CA belongs          | `Fabric`                                                   |
