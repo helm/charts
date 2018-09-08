@@ -1,0 +1,127 @@
+## Default values for Event Store.
+## Duplicate this file and customize.
+
+## Event Store image repository.
+## ref: https://hub.docker.com/r/eventstore/eventstore/
+image: eventstore/eventstore
+##
+## Event Store image tag
+imageTag: release-4.1.1-hotfix1
+##
+## Specify a imagePullPolicy
+## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+imagePullPolicy: IfNotPresent
+##
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+##
+# imagePullSecrets:
+#   - myRegistrKeySecretName
+##
+## The number of nodes in the cluster. When setting up a cluster,
+## you generally want an odd number of nodes as Event Store uses a
+## quorum based algorithm to handle high availability. We recommended
+## you define an odd number of nodes to avoid split brain problems.
+## Common values for the `clusterSize` setting are 3 or 5
+## (to have a majority of 2 nodes and a majority of 3 nodes).
+## ref: https://eventstore.org/docs/server/cluster-without-manager-nodes/index.html
+clusterSize: 3
+##
+## Configure the HTTP admin API. The admin password is set
+## using a post-install hook that makes a POST request to the 
+## Event Store HTTP API. The `admin.password` value should be 
+## set in a separate `creds-values.yaml` file so that you can 
+## keep it out of source control and read during deployment. 
+## See the `ci` directory in this repo for the default values.
+## ref: https://eventstore.org/docs/http-api/security/index.html
+## ref: https://github.com/helm/helm/blob/master/docs/charts_hooks.md
+admin:
+  ##
+  ## Image with curl installed to make POST request for setting credentials.
+  jobImage: tutum/curl
+  jobImageTag: latest
+  ##
+  ## Admin password. Set using a separate `values.yaml` file
+  ## or using `--set admin.password=<your admin password>.
+  # password: changeit
+  ##
+  ## Service type for admin interface.
+  serviceType: ClusterIP
+  ##
+  ## NGINX image used for admin interface proxy.
+  proxyImage: nginx
+  proxyImageTag: latest
+##
+## Configure a pod disruption budget for the Event Store StatefulSet.
+## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+podDisruptionBudget:
+  ##
+  ## Enable a pod disruption budget.
+  enabled: false
+  ##
+  ## Number of pods that must still be available after eviction.
+  minAvailable: 2
+  ##
+  ## Number of pods that can be unavailable after eviction.
+  # maxUnavailable: 1
+##
+## Internal HTTP port.
+intHttpPort: 2112
+##
+## External HTTP port.
+extHttpPort: 2113
+##
+## Internal TCP port.
+intTcpPort: 1112
+##
+## External TCP port.
+extTcpPort: 1113
+##
+## The amount of drift, in ms, between clocks on nodes allowed before gossip is rejected.
+gossipAllowedDiffMs: 600000
+## Additional Event Store parameters as environment variables.
+## ref: https://eventstore.org/docs/server/command-line-arguments/index.html#parameter-list
+## example:
+##  EVENTSTORE_RUN_PROJECTIONS: System
+eventStoreConfig: {}
+
+## Persist data to a persistent volume
+persistence:
+  enabled: false
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 8Gi
+  mountPath: /var/lib/eventstore
+  annotations: {}
+
+resources: {}
+  ## If you want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  ##
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

@@ -1,0 +1,19 @@
+apiVersion: v1
+description: A Helm chart for Kubernetes EventStore.
+name: eventstore
+home: https://eventstore.org/
+version: 0.1.0
+appVersion: 4.1.1
+keywords:
+  - eventstore
+sources:
+  - https://github.com/EventStore/eventstore-docker
+  - https://github.com/EventStore/EventStore
+maintainers:
+  - name: ameier38
+    email: ameier38@gmail.com
+  - name: jhinds
+    email: jhinds2010@gmail.com
+  - name: riccardone
+    email: riccardo@dinuzzo.it
+icon: https://eventstore.org/images/ouro-full.svg

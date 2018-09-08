@@ -1,0 +1,37 @@
+{{- if .Values.admin.password -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "eventstore.fullname" . }}-post-install
+  labels:
+    app.kubernetes.io/name: {{ include "eventstore.name" . }}
+    helm.sh/chart: {{ include "eventstore.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  post-install.sh: |
+    #!/bin/bash
+    set -e
+    endpoint="http://{{ include "eventstore.dns" . }}:{{ .Values.extHttpPort }}"
+    # wait until the admin user is available
+    while [[ "$(curl -s -o /dev/null -w '%{http_code}' $endpoint/users/admin)" != "200" ]]; do 
+    echo "waiting for Event Store at $endpoint..."
+    sleep 5
+    done
+    # check if the password is already set to make this operation idempotent
+    if [[ "$(curl -s -u admin:{{ .Values.admin.password }} -o /dev/null -w '%{http_code}' $endpoint/info)" = "200" ]]; then
+      echo "Password already set"
+    else
+      echo "Setting password"
+      # ref: https://eventstore.org/docs/http-api/swagger/Users/Reset%20password.html
+      curl \
+        -i \
+        -s \
+        -f \
+        -X POST \
+        -u 'admin:changeit' \
+        -H 'Content-Type:application/json' \
+        -d '{"newPassword":"{{ .Values.admin.password }}"}' \
+        "$endpoint/users/admin/command/reset-password"
+    fi
+{{- end -}}

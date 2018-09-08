@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "eventstore.fullname" . }}-admin
+  labels:
+    app.kubernetes.io/name: {{ include "eventstore.name" . }}
+    helm.sh/chart: {{ include "eventstore.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  nginx.conf: |
+    upstream eventstore {
+        server {{ include "eventstore.dns" . }}:{{ .Values.extHttpPort }};
+    }
+    server {
+        listen {{ .Values.extHttpPort }};
+        location = /_liveness {
+            add_header Content-Type text/plain;
+            return 200 'ok';
+        }
+        location = /_readiness {
+            proxy_pass          http://eventstore/stats;
+        }
+        location / {
+            proxy_set_header    X-Real-IP $remote_addr;
+            proxy_set_header    Host      $http_host;
+            proxy_pass          http://eventstore;
+        }
+    }

@@ -1,0 +1,36 @@
+{{- if .Values.admin.password -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "eventstore.fullname" . }}-post-install
+  labels:
+    app.kubernetes.io/name: {{ include "eventstore.name" . }}
+    helm.sh/chart: {{ include "eventstore.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  activeDeadlineSeconds: 60
+  template:
+    metadata:
+      name: {{ include "eventstore.fullname" . }}-post-install
+      labels:
+        app.kubernetes.io/name: {{ include "eventstore.name" . }}-post-install
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      restartPolicy: OnFailure
+      volumes:
+        - name: script
+          configMap:
+            name: {{ include "eventstore.fullname" . }}-post-install
+            defaultMode: 0744
+      containers:
+        - name: {{ include "eventstore.fullname" . }}-post-install
+          image: "{{ .Values.admin.jobImage }}:{{ .Values.admin.jobImageTag }}"
+          command: ["/usr/local/script/post-install.sh"]
+          volumeMounts:
+            - name: script
+              mountPath: "/usr/local/script"
+{{- end -}}

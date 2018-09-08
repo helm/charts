@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "eventstore.fullname" . }}-env
+  labels:
+    app.kubernetes.io/name: {{ include "eventstore.name" . }}
+    helm.sh/chart: {{ include "eventstore.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  ## Internal TCP port.
+  EVENTSTORE_INT_TCP_PORT: {{ quote .Values.intTcpPort }}
+  ## External TCP port.
+  EVENTSTORE_EXT_TCP_PORT: {{ quote .Values.extTcpPort }}
+  ## Internal HTTP port.
+  EVENTSTORE_INT_HTTP_PORT: {{ quote .Values.intHttpPort }}
+  ## External HTTP port.
+  EVENTSTORE_EXT_HTTP_PORT: {{ quote .Values.extHttpPort }}
+  ## The number of nodes in the cluster. 
+  EVENTSTORE_CLUSTER_SIZE: {{ quote .Values.clusterSize }}
+  ## DNS name from which other nodes can be discovered. 
+  EVENTSTORE_CLUSTER_DNS: {{ include "eventstore.dns" . }}
+  ## Port on which nodes should gossip
+  EVENTSTORE_CLUSTER_GOSSIP_PORT: {{ quote .Values.intHttpPort }}
+  ## The amount of drift, in ms, between clocks on nodes allowed before gossip is rejected.
+  EVENTSTORE_GOSSIP_ALLOWED_DIFFERENCE_MS: {{ quote .Values.gossipAllowedDiffMs }}
+  ## The prefixes that the internal HTTP server should respond to. 
+  EVENTSTORE_INT_HTTP_PREFIXES: "http://*:{{ .Values.intHttpPort }}/"
+  ## The prefixes that the external HTTP server should respond to. 
+  EVENTSTORE_EXT_HTTP_PREFIXES: "http://*:{{ .Values.extHttpPort }}/"
+  # Note: changing `Values.eventStoreConfig` won't change the configmap 
+  # checksum and so won't make the pods restart
+  {{- range $setting, $option := .Values.eventStoreConfig }}
+  {{ $setting }}: "{{ $option }}"
+  {{- end }}

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "eventstore.fullname" . }}-admin
+  labels:
+    app.kubernetes.io/name: {{ include "eventstore.name" . }}
+    helm.sh/chart: {{ include "eventstore.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "eventstore.name" . }}-admin
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "eventstore.name" . }}-admin
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: proxy
+          image: "{{ .Values.admin.proxyImage }}:{{ .Values.admin.proxyImageTag }}"
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/usr/sbin/nginx","-s","quit"]
+          volumeMounts:
+            - name: config
+              mountPath: "/etc/nginx/conf.d"
+              readOnly: true
+          ports:
+            - containerPort: {{ .Values.extHttpPort }}
+          livenessProbe:
+            httpGet:
+              path: /_liveness
+              port: {{ .Values.extHttpPort }}
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /_readiness
+              port: {{ .Values.extHttpPort }}
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            periodSeconds: 15
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "eventstore.fullname" . }}-admin

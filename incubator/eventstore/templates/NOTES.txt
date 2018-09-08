@@ -1,0 +1,40 @@
+The Event Store cluster has been installed!
+ _____                 _     ____  _                 
+| ____|_   _____ _ __ | |_  / ___|| |_ ___  _ __ ___ 
+|  _| \ \ / / _ \ '_ \| __| \___ \| __/ _ \| '__/ _ \
+| |___ \ V /  __/ | | | |_   ___) | || (_) | | |  __/
+|_____| \_/ \___|_| |_|\__| |____/ \__\___/|_|  \___|
+
+Event Store can be accessed:
+
+  * Within your cluster, at the following address:
+
+    {{ include "eventstore.dns" . }}:{{ .Values.extHttpPort }}
+
+  * From outside the cluster:
+  
+      kubectl port-forward svc/{{ include "eventstore.fullname" . }} {{ .Values.extHttpPort }}
+
+Event Store admin interface can be accessed:
+  * From outside the cluster:
+    {{- if contains "NodePort" .Values.admin.serviceType }}
+      export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "eventstore.fullname" . }}-admin)
+      export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+      echo http://$NODE_IP:$NODE_PORT
+    {{- else if contains "LoadBalancer" .Values.admin.serviceType }}
+
+        WARNING: You have likely exposed your Event Store cluster directly to the internet.
+
+        NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+              You can watch the status of by running 'kubectl get svc -w {{ include "eventstore.fullname" . }}-admin'
+
+      export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "eventstore.fullname" . }}-admin -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+      echo http://$SERVICE_IP:{{ .Values.extHttpPort }}
+    {{- else if contains "ClusterIP" .Values.admin.serviceType }}
+
+      kubectl port-forward svc/{{ include "eventstore.fullname" . }}-admin {{ .Values.extHttpPort }}
+    {{- end }}
+    {{- if not .Values.admin.password }}
+
+    The default username and password is admin:changeit
+    {{- end }}
