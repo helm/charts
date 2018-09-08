@@ -22,8 +22,10 @@ spec:
       {{- if (.Values.slave.podLabels | default .Values.master.podLabels) }}
 {{ toYaml (.Values.slave.podLabels | default .Values.master.podLabels) | indent 8 }}
       {{- end }}
-      {{- if (.Values.slave.podAnnotations | default .Values.master.podAnnotations) }}
       annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- if (.Values.slave.podAnnotations | default .Values.master.podAnnotations) }}
 {{ toYaml (.Values.slave.podAnnotations | default .Values.master.podAnnotations) | indent 8 }}
       {{- end }}
     spec:
