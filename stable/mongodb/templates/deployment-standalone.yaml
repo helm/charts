@@ -18,6 +18,10 @@ spec:
       labels:
         app: {{ template "mongodb.name" . }}
         release: "{{ .Release.Name }}"
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
