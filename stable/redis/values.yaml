@@ -203,7 +203,7 @@ master:
   ## Update strategy, can be set to RollingUpdate or onDelete by default.
   ## https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
   statefulset:
-    updateStrategy: OnDelete
+    updateStrategy: RollingUpdate
     ## Partition update strategy
     ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
     # rollingUpdatePartition:
