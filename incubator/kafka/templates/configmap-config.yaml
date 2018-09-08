@@ -11,7 +11,7 @@ metadata:
   name: {{ template "kafka.fullname" . }}-config
 data:
   runtimeConfig.sh: |
-    #!/bin/sh
+    #!/bin/bash
     set -e
     cd /usr/bin
     until kafka-configs --zookeeper {{ $zk }} --entity-type topics --describe || (( count++ >= 6 ))
@@ -19,8 +19,7 @@ data:
       echo "Waiting for Zookeeper..."
       sleep 20
     done
-    ## wait until kafka is up
-    until nc -z {{.Release.Name}}-kafka 9092 || (( count++ >= 6 ))
+    until nc -z {{ template "kafka.fullname" . }} 9092 || (( retries++ >= 6 ))
     do
       echo "Waiting for Kafka..."
       sleep 20
