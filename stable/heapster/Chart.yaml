@@ -12,6 +12,6 @@ keywords:
 - cadvisor
 - monitoring
 maintainers:
-- name: Jose Aguirre
+- name: jose5918
   email: jose.g.aguirre@intel.com
 engine: gotpl
