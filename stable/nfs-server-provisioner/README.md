@@ -74,6 +74,7 @@ their default values.
 | `storageClass.defaultClass`    | Whether to set the created StorageClass as the clusters default StorageClass                                    | `false`                                                  |
 | `storageClass.name`            | The name to assign the created StorageClass                                                                     | `nfs`                                                    |
 | `storageClass.parameters`      | Parameters for StorageClass                                                                                     | `mountOptions: vers=4.1`                                 |
+| `storageClass.reclaimPolicy`   | ReclaimPolicy field of the class, which can be either Delete or Retain                                          | `Delete`                                                    |
 | `resources`                    | Resource limits for nfs-server-provisioner pod                                                                          | `{}`                                                     |
 | `nodeSelector`                 | Map of node labels for pod assignment                                                                           | `{}`                                                     |
 | `tolerations`                  | List of node taints to tolerate                                                                                 | `[]`                                                     |
