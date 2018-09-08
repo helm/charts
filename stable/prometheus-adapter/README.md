@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `rbac.create`                   | If true, create & use RBAC resources                                            | `true`                                      |
 | `resources`                     | CPU/Memory resource requests/limits                                             | `{}`                                        |
 | `rules.default`                 | If `true`, enable a set of default rules in the configmap                       | `true`                                      |
-| `rules.custom`                  | A list of custom configmap rules                                                | `{}`                                        |
+| `rules.custom`                  | A list of custom configmap rules                                                | `[]`                                        |
 | `service.annotations`           | Annotations to add to the service                                               | `{}`                                        |
 | `service.port`                  | Service port to expose                                                          | `443`                                       |
 | `service.type`                  | Type of service to create                                                       | `ClusterIP`                                 |
