@@ -70,7 +70,7 @@ spec:
         - name: REDIS_PORT
           value: {{ .Values.slave.port | default .Values.master.port | quote }}
         - name: REDIS_MASTER_PORT_NUMBER
-          value: {{ .Values.master.port | quote }}
+          value: {{ .Values.master.service.port | quote }}
         {{- if .Values.usePassword }}
         - name: REDIS_PASSWORD
           valueFrom:

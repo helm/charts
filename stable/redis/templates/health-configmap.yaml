@@ -15,6 +15,7 @@ data:
         -a $REDIS_PASSWORD \
 {{- end }}
         -h localhost \
+        -p $REDIS_PORT \
         ping
     )
     if [ "$response" != "PONG" ]; then
@@ -28,6 +29,7 @@ data:
         -a $REDIS_MASTER_PASSWORD \
 {{- end }}
         -h $REDIS_MASTER_HOST \
+        -p $REDIS_MASTER_PORT_NUMBER \
         ping
     )
     if [ "$response" != "PONG" ]; then
