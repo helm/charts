@@ -1,4 +1,4 @@
-# JFrog Artifactory High Availability Helm Chart
+# JFrog Artifactory High Availability Helm Chart - DEPRECATED
 
 ## Prerequisites Details
 

@@ -1,4 +1,4 @@
-# JFrog Distribution Helm Chart
+# JFrog Distribution Helm Chart - DEPRECATED
 
 ## Prerequisites Details
 

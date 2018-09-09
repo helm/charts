@@ -1,4 +1,4 @@
-# JFrog Artifactory Helm Chart
+# JFrog Artifactory Helm Chart - DEPRECATED
 
 ## Prerequisites Details
 

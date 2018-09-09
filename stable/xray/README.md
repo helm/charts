@@ -1,4 +1,4 @@
-# JFrog Xray HA on Kubernetes Helm Chart
+# JFrog Xray HA on Kubernetes Helm Chart - DEPRECATED
 
 ## Prerequisites Details
 

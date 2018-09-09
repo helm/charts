@@ -1,4 +1,4 @@
-# JFrog Mission-Control Helm Chart
+# JFrog Mission-Control Helm Chart - DEPRECATED
 
 ## Prerequisites Details
 
