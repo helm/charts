@@ -3,7 +3,7 @@
 replicaCount: 1
 image:
   repository: ravishi/rendertron
-  tag: a6b93ee7ca98687610542ac930597ce5064762d2
+  tag: v2.0.0
   pullPolicy: IfNotPresent
 ## Expose the rendertron service to be accessed from outside the cluster (LoadBalancer service).
 ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
