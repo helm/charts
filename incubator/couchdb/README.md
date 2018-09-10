@@ -103,6 +103,7 @@ A variety of other parameters are also configurable. See the comments in the
 | `persistentVolume.accessModes`  | ReadWriteOnce                          |
 | `persistentVolume.storageClass` | Default for the Kube cluster           |
 | `podManagementPolicy`           | Parallel                               |
+| `affinity`                      |                                        |
 | `resources`                     |                                        |
 | `service.enabled`               | true                                   |
 | `service.type`                  | ClusterIP                              |
