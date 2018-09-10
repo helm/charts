@@ -19,7 +19,7 @@ spec:
   {{- end -}}
   ports:
   - name: redis
-    port: 6379
+    port: {{ .Values.master.service.port }}
     targetPort: redis
     {{- if .Values.master.service.nodePort }}
     nodePort: {{ .Values.master.service.nodePort }}
