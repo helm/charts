@@ -55,9 +55,9 @@ Parameter | Description | Default
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `service.type` | type of service to create | `ClusterIP`
-`service.node.http` | http port of service | `""`
-`service.node.smtp` | smtp port of service | `""`
-`service.node.pop3` | pop3 port of service | `""`
+`service.node.http` | http port of service. Should be the same you set in INBUCKET_WEB_ADDR | `""`
+`service.node.smtp` | smtp port of service. Should be the same you set in INBUCKET_SMTP_ADDR | `""`
+`service.node.pop3` | pop3 port of service. Should be the same you set in INBUCKET_POP3_ADDR | `""`
 `service.nodePort.http` | if `service.type` is `NodePort` and this is non-empty, sets the http node port of the service | `""`
 `service.nodePort.smtp` | if `service.type` is `NodePort` and this is non-empty, sets the smtp node port of the service | `""`
 `service.nodePort.pop3` | if `service.type` is `NodePort` and this is non-empty, sets the pop3 node port of the service | `""`
@@ -66,7 +66,7 @@ Parameter | Description | Default
 `ingress.path` | if `true`, an ingress is created | `/`
 `ingress.hosts` | a list of ingress hosts | `[inbucket.example.com]`
 `ingress.tls` | a list of [IngressTLS](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/#ingresstls-v1beta1-extensions) items | `[]`
-
+`config` | The inbucket config you can use [this configurator](http://www.inbucket.org/configurator/) to adjust you config.| set to defaults
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
