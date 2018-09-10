@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "inbucket.name" . }}-configmap
+  labels:
+    app: {{ template "inbucket.name" . }}
+    chart: {{ template "inbucket.name" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{ toYaml .Values.extraEnv | indent 2 }}

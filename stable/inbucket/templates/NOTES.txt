@@ -7,16 +7,28 @@ Web UI:
 =======
 
 export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "inbucket.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 10080
+kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.service.port.http }}
+
+or
+
+kubectl port-forward --namespace {{ .Release.Namespace }} service/{{ template "inbucket.fullname" . }} {{ .Values.service.port.http }}
 
 SMTP Server:
 ============
 
 export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "inbucket.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 10025
+kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.service.port.smtp }}
+
+or
+
+kubectl port-forward --namespace {{ .Release.Namespace }} service/{{ template "inbucket.fullname" . }} {{ .Values.service.port.smtp }}
 
 POP3 Server:
 ============
 
 export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "inbucket.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 10110
+kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.service.port.pop3 }}
+
+or
+
+kubectl port-forward --namespace {{ .Release.Namespace }} service/{{ template "inbucket.fullname" . }} {{ .Values.service.port.pop3 }}
