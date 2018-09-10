@@ -126,7 +126,7 @@ data:
     mkdir -p /data/conf/
     echo "Initializing config.."
 
-    if [[ ! -f $REDIS_CONF && ! -f SENTINEL_CONF ]]; then
+    if [[ ! -f $REDIS_CONF && ! -f $SENTINEL_CONF ]]; then
         cp /readonly-config/redis.conf $REDIS_CONF
         cp /readonly-config/sentinel.conf $SENTINEL_CONF
         if [[ "$MASTER" ]]; then
