@@ -8,7 +8,9 @@
 $ helm install stable/redis-ha
 ```
 
-By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave.
+By default this chart install 3 pods total:
+ * one pod containing a redis master and sentinel containers
+ * two pods each containing redis slave and sentinel containers.
 
 ## Introduction
 
@@ -18,6 +20,10 @@ This chart bootstraps a [Redis](https://redis.io) highly available master/slave 
 
 - Kubernetes 1.5+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
+
+## Upgrading the Chart
+
+Please note that there have been a number of changes simplifying the redis management strategy (for better failover and elections) in the 3.x version of this chart. These changes allow the use of official [redis](https://hub.docker.com/_/redis/) images that do not require special RBAC or ServiceAccount roles. As a result when upgrading from version >=2.0.1 to >=3.0.0 of this chart, `Role`, `RoleBinding`, and `ServiceAccount` resources should be deleted manually.
 
 ## Installing the Chart
 
@@ -41,7 +47,6 @@ $ helm delete <chart-name>
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-
 ## Configuration
 
 The following table lists the configurable parameters of the Redis chart and their default values.
@@ -56,17 +61,16 @@ The following table lists the configurable parameters of the Redis chart and the
 | `nodeSelector`                   | Node labels for pod assignment                                                                                               | {}                                                        |
 | `tolerations`                    | Toleration labels for pod assignment                                                                                         | []                                                        |
 | `podAntiAffinity.server`         | Antiaffinity for pod assignment of servers, `hard` or `soft`                                                                 | `soft`                                                    |
-| `annotations`                    | See Appliance mode                                                                                                           | ``                                                        |
-| `redis.config`                   | Valid redis config options can be added prior to install and will be applied to each server                                  | see values.yaml                                           |
-| `sentinel.config`                | Valid sentinel config options can be added prior to install and will be applied to each server                               | see values.yaml                                           |
+| `redis.config`                   | Any valid redis config options can be added prior to install and will be applied to each server (see below)                  | see values.yaml                                           |
+| `sentinel.config`                | Any valid sentinel config options can be added prior to install and will be applied to each sentinel (see below)             | see values.yaml                                           |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install \
-  --set image=quay.io/smile/redis \
-  --set tag=4.0.6r2 \
+  --set image=redis \
+  --set tag=4.0.11-stretch \
     stable/redis-ha
 ```
 
@@ -80,3 +84,15 @@ $ helm install -f values.yaml stable/redis-ha
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Custom Redis and Sentinel config options
+
+This chart allow for any valid redis or sentinel config option to be passed as a key value pair through the `values.yaml` file prior to installation.
+
+[Example redis.conf](http://download.redis.io/redis-stable/redis.conf)
+[Example sentinel.conf](http://download.redis.io/redis-stable/sentinel.conf)
+
+For example `repl-timeout 60` would be added to the `redis.config` section of the `values.yaml` as:
+
+```yml
+    repl-timeout: "60"
+```
