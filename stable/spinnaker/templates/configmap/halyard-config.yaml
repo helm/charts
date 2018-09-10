@@ -82,6 +82,8 @@ data:
     {{- end }}
 
     $HAL_COMMAND config provider kubernetes enable
+
+    {{- $root := . -}}
     {{- range $index, $context := .Values.kubeConfig.contexts }}
 
     if $HAL_COMMAND config provider kubernetes account get {{ $context }}; then
@@ -90,9 +92,13 @@ data:
       PROVIDER_COMMAND='add'
     fi
 
-    $HAL_COMMAND config provider kubernetes account $PROVIDER_COMMAND {{ $context }} --docker-registries dockerhub \
+    {{- range $registryindex, $registry := $root.Values.dockerRegistries }}
+
+    $HAL_COMMAND config provider kubernetes account $PROVIDER_COMMAND {{ $context }} --docker-registries {{ $registry.name }} \
                 --context {{ $context }} {{ if not $.Values.kubeConfig.enabled }}--service-account true{{ end }} \
                 {{ if $.Values.kubeConfig.enabled }}--kubeconfig-file /opt/kube/{{ $.Values.kubeConfig.secretKey }}{{ end }} --omit-namespaces=kube-system,kube-public --provider-version v2
+
+    {{- end }}
     {{- end }}
     $HAL_COMMAND config deploy edit --account-name {{ .Values.kubeConfig.deploymentContext }} --type distributed \
                            --location {{ .Release.Namespace }}
