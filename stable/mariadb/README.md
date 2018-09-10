@@ -66,6 +66,8 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
 | `master.tolerations`                      | List of node taints to tolerate (master)            | `[]`                                                              |
 | `master.persistence.enabled`              | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
+| `master.persistence.existingClaim`        | Provide an existing `PersistentVolumeClaim`  | `nil`
+| `master.persistence.mountPath`            | Configure existing `PersistentVolumeClaim` mount path  | `""`  
 | `master.persistence.annotations`          | Persistent Volume Claim annotations                 | `{}`                                                              |
 | `master.persistence.storageClass`         | Persistent Volume Storage Class                     | ``                                                                |
 | `master.persistence.accessModes`          | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |

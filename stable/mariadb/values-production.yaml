@@ -97,6 +97,9 @@ master:
     ## If true, use a Persistent Volume Claim, If false, use emptyDir
     ##
     enabled: true
+    # Enable persistence using an existing PVC
+    # existingClaim:
+    # mountPath:
     ## Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
