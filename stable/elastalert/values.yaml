@@ -9,6 +9,14 @@ runIntervalMins: 1
 # Default rule buffer duration, in minutes
 bufferTimeMins: 15
 
+# For ES 5: The name of the index which stores elastalert's statuses
+# For ES 6: The prefix of the names of indices which store elastalert's statuses.
+#
+# See https://github.com/Yelp/elastalert/commit/c250100b7be07c68a53789569a86f87193ec37f4 for more details about this differentiation.
+#
+# CAUTION: It is recommended to set this to `elastalert` for ES6+. Otherwise elastalert produces confusing index names due to https://github.com/Yelp/elastalert/issues/1479#issuecomment-356380179
+writebackIndex: elastalert_status
+
 image:
   # docker image
   repository: jertel/elastalert-docker

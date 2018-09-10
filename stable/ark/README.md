@@ -50,10 +50,10 @@ Parameter | Description | Default | Required
 Parameter | Description | Default
 --- | --- | ---
 `image.repository` | Image repository | `gcr.io/heptio-images/ark`
-`image.tag` | Image tag | `v0.8.2`
+`image.tag` | Image tag | `v0.9.1`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
-`kubectl.image.repository` | Image repository | `gcr.io/heptio-images/ark`
-`kubectl.image.tag` | Image tag | `v0.8.2`
+`kubectl.image.repository` | Image repository | `claranet/gcloud-kubectl-docker`
+`kubectl.image.tag` | Image tag | `1.0.0`
 `kubectl.image.pullPolicy` | Image pull policy | `IfNotPresent`
 `podAnnotations` | Annotations for the Ark server pod | `{}`
 `rbac.create` | If true, create and use RBAC resources | `true`
@@ -61,6 +61,7 @@ Parameter | Description | Default
 `rbac.server.serviceAccount.name` | Service account to be used for the server. If not set and `rbac.server.serviceAccount.create` is `true` a name is generated using the fullname template | ``
 `rbac.hook.serviceAccount.create` | Whether a new service account name that the hook will use should be created | `true`
 `rbac.hook.serviceAccount.name` | Service account to be used for the server. If not set and `rbac.hook.serviceAccount.create` is `true` a name is generated using the fullname template | ``
+`resources` | Resource requests and limits | `{}`
 `tolerations` | List of node taints to tolerate | `[]`
 `nodeSelector` | Node labels for pod assignment | `{}`
 `configuration.persistentVolumeProvider.name` | The name of the cloud provider the cluster is using for persistent volumes, if any | `{}`
