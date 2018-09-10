@@ -374,10 +374,10 @@ CMD /initdb.sh
 ```
 #!/bin/sh
 
-until mongo --eval "print(\"waited for connection\")"
+until mongo --host $MONGO_HOST -u $ADMIN_USER -p $ADMIN_PASSWORD -authenticationDatabase admin --eval "print(\"waited for connection\")"
   do
-    sleep 60
+    sleep 5
   done
 
-mongo --eval "db.createUser({ user: \"reportsUser\", pwd: \"password\" });"
+mongo --host $MONGO_HOST -u $ADMIN_USER -p $ADMIN_PASSWORD -authenticationDatabase admin --eval="db.createUser({user: 'myTester', pwd: 'xyz123', roles: [ { role: 'readWrite', db: 'test' }, { role: 'read', db: 'reporting' } ] } )"
 ```
