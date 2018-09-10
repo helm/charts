@@ -132,6 +132,10 @@ spec:
         - name: config
           mountPath: /opt/bitnami/mariadb/conf/my.cnf
           subPath: my.cnf
+{{- if .Values.master.persistence.existingClaim }}
+        - name: {{ .Values.master.persistence.existingClaim }}
+          mountPath: {{ .Values.master.persistence.mountPath }}
+{{- end }}
 {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
@@ -163,6 +167,11 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
+      {{- if and .Values.master.persistence.enabled .Values.master.persistence.existingClaim }}
+        - name: {{ .Values.master.persistence.existingClaim }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.master.persistence.existingClaim }}
+      {{ end }}
       {{- if .Values.master.config }}
         - name: config
           configMap:
