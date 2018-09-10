@@ -16,10 +16,13 @@ spec:
   replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
-{{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.operator.enabled) }}
       annotations:
+{{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.operator.enabled) }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.prometheus.jmx.port | quote }}
+{{- end }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
       labels:
         app: {{ include "kafka.name" . }}
