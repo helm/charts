@@ -77,8 +77,9 @@ readinessProbe:
   failureThreshold: {{ $readinessProbe.failureThreshold | default .Values.master.readinessProbe.failureThreshold }}
   exec:
     command:
-    - redis-cli
-    - ping
+    - sh
+    - -c
+    - /health/ping_local_and_master.sh
 {{- end }}
 {{- end -}}
 {{- end -}}
@@ -98,8 +99,9 @@ livenessProbe:
   failureThreshold: {{ $livenessProbe.failureThreshold | default .Values.master.livenessProbe.failureThreshold}}
   exec:
     command:
-    - redis-cli
-    - ping
+    - sh
+    - -c
+    - /health/ping_local_and_master.sh
 {{- end }}
 {{- end -}}
 {{- end -}}
