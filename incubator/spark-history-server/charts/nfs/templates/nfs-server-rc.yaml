@@ -1,3 +1,4 @@
+{{- if .Values.enableExampleNFS }}
 apiVersion: v1
 kind: ReplicationController
 metadata:
@@ -30,3 +31,4 @@ spec:
         - name: mypvc
           persistentVolumeClaim:
             claimName: nfs-pv-provisioning-demo
+{{- end }}

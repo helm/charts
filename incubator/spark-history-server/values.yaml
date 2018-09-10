@@ -25,6 +25,9 @@ pvc:
   existingClaimName: "spark-hs-pvc"
   eventsDir: "/"
 
+nfs:
+  enableExampleNFS: true
+
 hdfs:
   hdfsSiteConfigMap: hdfs-site
   coreSiteConfigMap: core-site

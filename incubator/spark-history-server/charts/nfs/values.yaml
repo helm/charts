@@ -5,3 +5,5 @@ pvStorage: 1Mi
 pvName: nfs
 pvcName: spark-hs-pvc
 nfsServerServiceName: nfs-server
+
+enableExampleNFS: true

@@ -46,11 +46,14 @@ The following tables lists the configurable parameters of the Spark History Seve
 | pvc.enablePVC |Whether to enable PVC or use HDFS|true|
 | pvc.existingClaimName |The pre-created PVC name|spark-hs-pvc|
 | pvc.eventsDir |The log directory when PVC is used|/|
+| nfs.enableExampleNFS |Whether to install demo NFS volume and server|true|
 
 Note that only when `pvc.enablePVC` is set to `true`, the following settings are required:
 
 * pvc.existingClaimName
 * pvc.eventsDir
+
+By default an NFS server and PVC are set up in this case. Optionally they can be disabled by setting `nfs.enableExampleNFS` to false.
 
 Similarly, only when `pvc.enablePVC` is set to `false`, meaning when HDFS is used, the settings below are required:
 
@@ -58,6 +61,8 @@ Similarly, only when `pvc.enablePVC` is set to `false`, meaning when HDFS is use
 * hdfs.hdfsSiteConfigMap
 * hdfs.coreSiteConfigMap
 * hdfs.HADOOP_CONF_DIR
+
+In addition, `nfs.enableExampleNFS` should be set to `false` because NFS is not used when HDFS is used. 
 
 #### Viewing the UI
 
