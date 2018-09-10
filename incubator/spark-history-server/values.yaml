@@ -22,11 +22,14 @@ pvc:
   # name of an already created persistent volume claim in existingClaimName.
   # The volume will be mounted on /data in the pod
   enablePVC: true
-  existingClaimName: "spark-hs-pvc"
+  existingClaimName: nfs-pvc
   eventsDir: "/"
 
+# Settings for the sub-chart
+# nfs.pvcName needs to be the same as pvc.existingClaimName is PVC is used
 nfs:
   enableExampleNFS: true
+  pvcName: nfs-pvc
 
 hdfs:
   hdfsSiteConfigMap: hdfs-site
