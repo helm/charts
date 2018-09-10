@@ -149,6 +149,7 @@ Parameter | Description | Default
 `defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
 `imagePullSecrets` | name of Secret resource containing private registry credentials | `nil`
 `rbac.create` | if `true`, create & use RBAC resources | `true`
+`podSecurityPolicy.enabled` | if `true`, create & use Pod Security Policy resources | `false`
 `serviceAccount.create` | if `true`, create a service account | ``
 `serviceAccount.name` | The name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
@@ -172,6 +173,10 @@ as described [here](https://github.com/kubernetes/ingress-nginx/blob/master/docs
 ```console
 $ helm install stable/nginx-ingress --set controller.extraArgs.v=2
 ```
+
+## PodDisruptionBudget
+Note that the PodDisruptionBudget resource will only be defined if the replicaCount is greater than one,
+else it would make it impossible to evacuate a node. See [gh issue #7127](https://github.com/helm/charts/issues/7127) for more info.
 
 ## Prometheus Metrics
 

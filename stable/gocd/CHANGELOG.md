@@ -1,3 +1,23 @@
+### 1.4.0
+* [f5249551](https://github.com/kubernetes/charts/commit/f5249551):  
+  - Bump up GoCD app version to 18.8.0
+  - Updated kubernetes elastic agent plugin version to 1.0.2
+  - Updated post install script
+       * From GoCD version 18.8.0 pipeline created using api is already in
+         unpaused state
+  
+### 1.3.6
+
+* [b7d596e](https://github.com/helm/charts/pull/7476/commits/b7d596e): Fixed role configuration instructions in README file.
+
+### 1.3.5
+
+* [eab7388](https://github.com/kubernetes/charts/commit/eab7388): Fix typo and whitespace in the README file.
+
+### 1.3.4
+
+* [57b201d](https://github.com/kubernetes/charts/commit/57b201d): Agent-only deployment should not create server-related k8s resources.
+
 ### 1.3.3
 
 * [0c5eadd](https://github.com/kubernetes/charts/commit/0c5eadd): Enable use of hostAliases for agents
