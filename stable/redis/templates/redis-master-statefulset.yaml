@@ -26,6 +26,7 @@ spec:
 {{ toYaml .Values.master.podLabels | indent 8 }}
 {{- end }}
       annotations:
+        checksum/health: {{ include (print $.Template.BasePath "/health-configmap.yaml") . | sha256sum }}
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
       {{- if .Values.master.podAnnotations }}
@@ -83,9 +84,9 @@ spec:
         {{- else }}
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
+        {{- end }}
         - name: REDIS_PORT
           value: {{ .Values.master.port | quote }}
-        {{- end }}
         - name: REDIS_DISABLE_COMMANDS
           value: {{ .Values.master.disableCommands }}
         {{- if .Values.master.extraFlags }}
@@ -104,8 +105,9 @@ spec:
           failureThreshold: {{ .Values.master.livenessProbe.failureThreshold }}
           exec:
             command:
-            - redis-cli
-            - ping
+            - sh
+            - -c
+            - /health/ping_local.sh
         {{- end }}
         {{- if .Values.master.readinessProbe.enabled}}
         readinessProbe:
@@ -116,12 +118,15 @@ spec:
           failureThreshold: {{ .Values.master.readinessProbe.failureThreshold }}
           exec:
             command:
-            - redis-cli
-            - ping
+            - sh
+            - -c
+            - /health/ping_local.sh
         {{- end }}
         resources:
 {{ toYaml .Values.master.resources | indent 10 }}
         volumeMounts:
+        - name: health
+          mountPath: /health
         - name: redis-data
           mountPath: {{ .Values.master.persistence.path }}
           subPath: {{ .Values.master.persistence.subPath }}
@@ -131,6 +136,10 @@ spec:
           subPath: redis.conf
         {{- end }}
       volumes:
+      - name: health
+        configMap:
+          name: {{ template "redis.fullname" . }}-health
+          defaultMode: 0755
       {{- if .Values.configmap }}
       - name: config
         configMap:
