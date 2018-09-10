@@ -25,7 +25,7 @@ spec:
           restartPolicy: OnFailure
           containers:
           - name: ca-helper
-            image: quay.io/munnerz/apiextensions-ca-helper:canary
+            image: quay.io/munnerz/apiextensions-ca-helper:v0.1.0
             imagePullPolicy: IfNotPresent
             args:
             - -config=/config/config
