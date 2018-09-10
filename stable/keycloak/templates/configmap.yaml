@@ -21,7 +21,12 @@ data:
 {{ . | indent 4 }}
   {{- end }}
 
-    exec /opt/jboss/docker-entrypoint.sh -b 0.0.0.0 {{ .Values.keycloak.extraArgs }}{{- if $highAvailability }} --server-config standalone-ha.xml{{ end }}
+    # Keycloak 4.4.0 and later use docker entry point `/opt/jboss/tools/docker-entrypoint.sh`
+    if [ -e "/opt/jboss/docker-entrypoint.sh" ]; then
+      exec /opt/jboss/docker-entrypoint.sh -b 0.0.0.0 {{ .Values.keycloak.extraArgs }}{{- if $highAvailability }} --server-config standalone-ha.xml{{ end }}
+    elif [ -e "/opt/jboss/tools/docker-entrypoint.sh" ]; then
+      exec /opt/jboss/tools/docker-entrypoint.sh -b 0.0.0.0 {{ .Values.keycloak.extraArgs }}{{- if $highAvailability }} --server-config standalone-ha.xml{{ end }}
+    fi
     exit "$?"
 
   keycloak.cli: |
