@@ -56,7 +56,7 @@ The following table lists the configurable parameters of the filebeat chart and 
 | `affinity`                                               |                                                                                                          | `{}`                                               |
 | `rbac.create`                                            | Specifies whether RBAC resources should be created                                                       | `true`                                             |
 | `serviceAccount.create`                                  | Specifies whether a ServiceAccount should be created                                                     | `true`                                             |
-| `serviceAccount.name`                                    | he name of the ServiceAccount to use                                                                     | `""`                                               |
+| `serviceAccount.name`                                    | The name of the ServiceAccount to use                                                                     | `""`                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
