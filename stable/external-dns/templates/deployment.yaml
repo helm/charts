@@ -54,6 +54,16 @@ spec:
           {{- range .Values.sources }}
             - --source={{ . }}
           {{- end }}
+          {{- if .Values.pdns.tlsEnabled }}
+            - --pdns-tls-enabled
+          {{- if .Values.pdns.certificates.ca }}
+            - --tls-ca=/certs/ca.pem
+          {{- end }}
+          {{- if and .Values.pdns.certificates.cert .Values.pdns.certificates.key }}
+            - --tls-client-cert=/certs/client-cert.pem
+            - --tls-client-cert-key=/certs/client-cert-key.pem
+          {{- end }}
+          {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
             {{- if $value }}
             - --{{ $key }}={{ $value }}
@@ -84,6 +94,11 @@ spec:
           {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
           - name: aws-credentials
             mountPath: /root/.aws
+            readOnly: true
+          {{- end }}
+          {{- if and .Values.pdns.tlsEnabled .Values.pdns.certificates }}
+          - name: pdns-certificates
+            mountPath: /certs
             readOnly: true
           {{- end }}
           env:
@@ -145,6 +160,11 @@ spec:
       - name: aws-credentials
         secret:
           secretName: {{ template "external-dns.fullname" . }}
+      {{- end }}
+      {{- if and .Values.pdns.tlsEnabled .Values.pdns.certificates }}
+      - name: pdns-certificates
+        secret:
+          secretName: {{ template "external-dns.fullname" . }}-certificates
       {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
