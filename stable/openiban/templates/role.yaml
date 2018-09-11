@@ -1,0 +1,15 @@
+{{- if .Values.rbac.create }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "openiban.fullname" . }}
+  labels:
+    app: {{ template "openiban.name" . }}
+    chart: {{ template "openiban.chart" .  }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+rules:
+- apiGroups: [""]
+  resources: ["endpoints"]
+  verbs: ["get"]
+{{- end }}
