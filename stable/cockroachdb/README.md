@@ -64,6 +64,8 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `CacheSize`                    | Size of CockroachDB's in-memory cache            | `25%`                                     |
 | `MaxSQLMemory`                 | Max memory to use processing SQL queries         | `25%`                                     |
 | `ClusterDomain`                | Cluster's default DNS domain                     | `cluster.local`                           |
+| `JoinExisting`                 | List of already-existing cockroach instances     | `[]`                                      |
+| `Locality`                     | Locality attribute for this deployment           | `""`                                      |
 | `NetworkPolicy.Enabled`        | Enable NetworkPolicy                             | `false`                                   |
 | `NetworkPolicy.AllowExternal`  | Don't require client label for connections       | `true`                                    |
 | `Service.Type`                 | Public service type                              | `ClusterIP`                               |
@@ -75,6 +77,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `Secure.RequestCertsImageTag`  | Image tag to use for requesting TLS certificates | `0.3`                                     |
 | `Secure.ServiceAccount.Create` | Whether to create a new RBAC service account     | `true`                                    |
 | `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | ``                                        |
+| `Tolerations` | [Kubernetes tolerations](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) to label the pods in the StatefulSet with | `` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
