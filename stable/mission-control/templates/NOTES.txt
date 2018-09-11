@@ -1,5 +1,7 @@
 Congratulations. You have just deployed JFrog Mission Control!
 
+#### THIS CHART IS DEPRECATED! ####
+
 1. Get the JFrog Mission Control URL by running these commands:
 
    {{- if .Values.ingress.enabled }}
