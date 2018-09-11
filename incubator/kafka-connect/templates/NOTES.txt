@@ -2,6 +2,5 @@ Confluent Kafka-Connect is now installed on your Kubernetes cluster. For more in
 Kafka-Connect, please navigate to https://kafka.apache.org/documentation/#connect
 
 1. Get the application URL by running these commands:
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "kafka-connect.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
   echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl port-forward $POD_NAME 8080:{{ .Values.servicePort }}
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "kafka-connect.fullName" .}} 8080:{{ .Values.servicePort }}
