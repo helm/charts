@@ -292,11 +292,13 @@ spec:
               value: {{ .Values.concourse.web.vault.pathPrefix | quote }}
             - name: CONCOURSE_VAULT_AUTH_BACKEND
               value: {{ .Values.concourse.web.vault.authBackend | quote }}
+            {{- if ne (default "" .Values.credentialManager.vault.authBackend) "approle" }}
             - name: CONCOURSE_VAULT_CLIENT_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: vault-client-token
+            {{- end }}
             {{- if .Values.concourse.web.vault.useCaCert }}
             - name: CONCOURSE_VAULT_CA_CERT
               value: "/concourse-vault/ca.cert"
