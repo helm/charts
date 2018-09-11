@@ -20,5 +20,9 @@ data:
     es_port: {{ .Values.elasticsearch.port }}
     writeback_index: {{ .Values.writebackIndex }}
     use_ssl: {{ .Values.elasticsearch.useSsl }}
+    verify_certs: {{ .Values.elasticsearch.verifyCerts }}
+    client_cert: {{ .Values.elasticsearch.clientCert }}
+    client_key: {{ .Values.elasticsearch.clientKey }}
+    ca_certs: {{ .Values.elasticsearch.caCerts }}
     alert_time_limit:
       days: 2
