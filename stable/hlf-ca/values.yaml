@@ -28,7 +28,12 @@ ingress:
 persistence:
   enabled: true
   annotations: {}
-  ## If unset or "", use "default" storage class.
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
   storageClass: ""
   accessMode: ReadWriteOnce
   size: 1Gi
@@ -46,11 +51,14 @@ caName: org1-ca
 
 ## Settings used in configMap "--db"
 db:
-  chart: postgres-ca-postgresql
+  # chart: postgres-ca-postgresql
   database: fabric_ca
 
 ## Settings used in configMap "--config"
 config:
+  hlfToolsVersion: 1.1.0
+  ## Mount the TLS certificate & key to disk?
+  mountTLS: false
   ## Enable debug logging in ca Server configuration file
   debug: true
   ## CSR pathlength in ca Server configuration file
