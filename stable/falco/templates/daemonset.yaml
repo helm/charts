@@ -52,6 +52,8 @@ spec:
             - mountPath: /host/usr
               name: usr-fs
               readOnly: true
+            - mountPath: /dev/shm
+              name: dshm
             {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
             - mountPath: /host/etc
               name: etc-fs
