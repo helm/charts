@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.0.3
+
+### Minor Changes
+
+* Fixed error in ClusterRoleBinding's roleRef
+
 ## v1.0.2
 
 ### Minor Changes
