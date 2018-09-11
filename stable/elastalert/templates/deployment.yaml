@@ -38,6 +38,9 @@ spec:
             mountPath: '/opt/config'
           - name: rules
             mountPath: '/opt/rules'
+{{- if .Values.elasticsearch.certsVolumeMounts }}          
+{{ toYaml .Values.elasticsearch.certsVolumeMounts | indent 10 }}
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
       restartPolicy: Always
@@ -56,4 +59,7 @@ spec:
             items:
             - key: elastalert_config
               path: elastalert_config.yaml
+{{- if .Values.elasticsearch.certsVolumes }}          
+{{ toYaml .Values.elasticsearch.certsVolumes | indent 8 }}
+{{- end }} 
 {{- end }}
