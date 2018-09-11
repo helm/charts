@@ -66,7 +66,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `rules`                  | Rule and alert configuration for Elastalert       | {} example shown in values.yaml |
 | `runIntervalMins`        | Default interval between alert checks, in minutes | 1                               |
 | `realertIntervalMins`    | Time between alarms for same rule, in minutes     | `NULL`                          |
-| `alertRetryLimitMins`    | Time to retry failed alert deliveries, in minutes | `NULL`                          |
+| `alertRetryLimitMins`    | Time to retry failed alert deliveries, in minutes | 2880 (2 days)                   |
 | `bufferTimeMins`         | Default rule buffer time, in minutes              | 15                              |
 | `writebackIndex`         | Name or prefix of elastalert index(es)            | elastalert_status               |
 | `nodeSelector`           | Node selector for deployment                      | {}                              |

@@ -31,4 +31,4 @@ data:
     writeback_index: {{ .Values.writebackIndex }}
     use_ssl: {{ .Values.elasticsearch.useSsl }}
     alert_time_limit:
-      minutes: {{ Values.alertRetryLimitMins }}
+      minutes: {{ .Values.alertRetryLimitMins }}
