@@ -31,6 +31,9 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
     {{- end }}
+      securityContext:
+        runAsUser: {{ .Values.artifactory.uid }}
+        fsGroup: {{ .Values.artifactory.uid }}
       initContainers:
       - name: "remove-lost-found"
         image: "{{ .Values.initContainerImage }}"
@@ -59,6 +62,8 @@ spec:
       - name: {{ .Values.artifactory.name }}
         image: "{{ .Values.artifactory.image.repository }}:{{ default .Chart.AppVersion .Values.artifactory.image.version }}"
         imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
         lifecycle:
           postStart:
             exec:
@@ -69,20 +74,15 @@ spec:
                 {{- if .Values.artifactory.configMapName }}
                 cp -Lrf /bootstrap/* /artifactory_extra_conf/;
                 {{- end }}
-                if [ -d {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys ]; then
-                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
-                fi;
                 {{- if .Values.artifactory.replicator.enabled }}
                 mkdir -p {{ .Values.artifactory.persistence.mountPath }}/replicator/etc;
                 cp -fv /tmp/replicator/replicator.yaml {{ .Values.artifactory.persistence.mountPath }}/replicator/etc/replicator.yaml;
-                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/replicator;
                 {{- end }}
                 {{- if .Values.artifactory.distributionCerts }}
                 mkdir -p {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys/trusted;
                 cp -fv /tmp/access/etc/keys/private.key {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
                 cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys;
                 cp -fv /tmp/access/etc/keys/root.crt    {{ .Values.artifactory.persistence.mountPath }}/access/etc/keys/trusted;
-                chown -R {{ .Values.artifactory.uid }}:{{ .Values.artifactory.uid }} {{ .Values.artifactory.persistence.mountPath }}/access/etc;
                 {{- end }}
                 {{- if .Values.artifactory.postStartCommand }}
                 {{ .Values.artifactory.postStartCommand }}
