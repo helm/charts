@@ -49,19 +49,25 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-|       Parameter        |                    Description                    |             Default             |
-| ---------------------- | ------------------------------------------------- | ------------------------------- |
-| `image.repository`     | docker image                                      | jertel/elastalert-docker        |
-| `image.tag`            | docker image tag                                  | 0.1.33                          |
-| `image.pullPolicy`     | image pull policy                                 | IfNotPresent                    |
-| `command`              | command override for container                    | `NULL`                          |
-| `args`                 | args override for container                       | `NULL`                          |
-| `replicaCount`         | number of replicas to run                         | 1                               |
-| `elasticsearch.host`   | elasticsearch endpoint to use                     | elasticsearch                   |
-| `elasticsearch.port`   | elasticsearch port to use                         | 80                              |
-| `elasticsearch.useSsl` | whether or not to connect to es_host using SSL    | False                           |
-| `resources`            | Container resource requests and limits            | {}                              |
-| `rules`                | Rule and alert configuration for Elastalert       | {} example shown in values.yaml |
-| `runIntervalMins`      | Default interval between alert checks, in minutes | 1                               |
-| `bufferTimeMins`       | Default rule buffer time, in minutes              | 15                              |
-| `writebackIndex`       | Name or prefix of elastalert index(es)            | elastalert_status               |
+|       Parameter          |                    Description                    |             Default             |
+| ------------------------ | ------------------------------------------------- | ------------------------------- |
+| `image.repository`       | docker image                                      | jertel/elastalert-docker        |
+| `image.tag`              | docker image tag                                  | 0.1.33                          |
+| `image.pullPolicy`       | image pull policy                                 | IfNotPresent                    |
+| `command`                | command override for container                    | `NULL`                          |
+| `args`                   | args override for container                       | `NULL`                          |
+| `replicaCount`           | number of replicas to run                         | 1                               |
+| `elasticsearch.host`     | elasticsearch endpoint to use                     | elasticsearch                   |
+| `elasticsearch.port`     | elasticsearch port to use                         | 80                              |
+| `elasticsearch.useSsl`   | whether or not to connect to es_host using SSL    | False                           |
+| `elasticsearch.username` | Username for ES with basic auth                   | `NULL`                          |
+| `elasticsearch.password` | Password for ES with basic auth                   | `NULL`                          |
+| `resources`              | Container resource requests and limits            | {}                              |
+| `rules`                  | Rule and alert configuration for Elastalert       | {} example shown in values.yaml |
+| `runIntervalMins`        | Default interval between alert checks, in minutes | 1                               |
+| `realertIntervalMins`    | Time between alarms for same rule, in minutes     | `NULL`                          |
+| `alertRetryLimitMins`    | Time to retry failed alert deliveries, in minutes | `NULL`                          |
+| `bufferTimeMins`         | Default rule buffer time, in minutes              | 15                              |
+| `writebackIndex`         | Name or prefix of elastalert index(es)            | elastalert_status               |
+| `nodeSelector`           | Node selector for deployment                      | {}                              |
+| `tolerations`            | Tolerations for deployment                        | []                              |
