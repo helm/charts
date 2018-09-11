@@ -42,7 +42,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.apiKey`            | Your Datadog API key               |  `Nil` You must provide your own key      |
 | `datadog.apiKeyExistingSecret` | If set, use the secret with a provided name instead of creating a new one |`nil` |
 | `image.repository`          | The image repository to pull from  | `datadog/agent`                           |
-| `image.tag`                 | The image tag to pull              | `6.3.2`                                   |
+| `image.tag`                 | The image tag to pull              | `6.4.2`                                   |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
 | `image.pullSecrets`         | Image pull secrets                 |  `nil`                                    |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
