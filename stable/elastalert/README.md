@@ -60,6 +60,12 @@ The command removes all the Kubernetes components associated with the chart and 
 | `elasticsearch.host`   | elasticsearch endpoint to use                     | elasticsearch                   |
 | `elasticsearch.port`   | elasticsearch port to use                         | 80                              |
 | `elasticsearch.useSsl` | whether or not to connect to es_host using SSL    | False                           |
+| `elasticsearch.verifyCerts` | whether or not to verify TLS certificates    | True                            |
+| `elasticsearch.clientCert` | path to a PEM certificate to use as the client certificate | /certs/client.pem  |
+| `elasticsearch.clientKey` | path to a private key file to use as the client key | /certs/client-key.pem      |
+| `elasticsearch.caCerts` | path to a CA cert bundle to use to verify SSL connections | /certs/ca.pem          |
+| `elasticsearch.certsVolumes` | certs volumes, required to mount ssl certificates when elasticsearch has tls enabled | `NULL` |
+| `elasticsearch.certsVolumeMounts` | mount certs volumes, required to mount ssl certificates when elasticsearch has tls enabled | `NULL` |
 | `resources`            | Container resource requests and limits            | {}                              |
 | `rules`                | Rule and alert configuration for Elastalert       | {} example shown in values.yaml |
 | `runIntervalMins`      | Default interval between alert checks, in minutes | 1                               |
