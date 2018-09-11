@@ -15,4 +15,5 @@ subjects:
 roleRef:
   kind: ClusterRole
   name: {{ template "sysdig.fullname" .}}
+  apiGroup: rbac.authorization.k8s.io
 {{- end }}
