@@ -1,4 +1,10 @@
-# JFrog Distribution Helm Chart
+# JFrog Distribution Helm Chart - DEPRECATED
+**This chart is deprecated! You can find the new chart in:**
+- **Sources:** https://github.com/jfrog/charts
+- **Charts repository:** https://charts.jfrog.io
+```bash
+helm repo add jfrog https://charts.jfrog.io
+```
 
 ## Prerequisites Details
 

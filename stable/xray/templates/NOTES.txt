@@ -1,5 +1,7 @@
 Congratulations! JFrog Xray services are deployed!
 
+#### THIS CHART IS DEPRECATED! ####
+
 {{- if eq .Values.common.masterKey "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" }}
 
 
