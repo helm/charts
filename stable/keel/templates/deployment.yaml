@@ -56,6 +56,8 @@ spec:
               value: "{{ .Values.slack.channel }}"
             - name: SLACK_BOT_NAME
               value: "{{ .Values.slack.botName }}"
+            - name: SLACK_APPROVALS_CHANNEL
+              value: "{{ .Values.slack.approvalsChannel }}"
 {{- end }}
           ports:
             - containerPort: 9300

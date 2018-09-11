@@ -1,0 +1,66 @@
+# Default values for k8s-prometheus-adapter..
+affinity: {}
+
+image:
+  repository: directxman12/k8s-prometheus-adapter-amd64
+  tag: v0.2.1
+  pullPolicy: IfNotPresent
+
+logLevel: 4
+
+metricsRelistInterval: 30s
+
+nodeSelector: {}
+
+# Url to access prometheus
+prometheus:
+  url: http://prometheus.default.svc
+  port: 9090
+
+replicas: 1
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+resources:
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+rules:
+  default: true
+  custom: []
+# - seriesQuery: '{__name__=~"^some_metric_count$"}'
+#   resources:
+#     template: <<.Resource>>
+#   name:
+#     matches: ""
+#     as: "my_custom_metric"
+#   metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+
+service:
+  annotations: {}
+  port: 443
+  type: ClusterIP
+
+tls:
+  enable: false
+  ca: |-
+    # Public CA file that signed the APIService
+  key: |-
+    # Private key of the APIService
+  certificate: |-
+    # Public key of the APIService
+
+tolerations: []

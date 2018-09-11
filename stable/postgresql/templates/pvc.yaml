@@ -8,8 +8,9 @@ metadata:
     chart: {{ template "postgresql.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- if .Values.persistence.annotations }}
   annotations:
+    "helm.sh/resource-policy": {{ default "" .Values.persistence.resourcePolicy }}
+{{- if .Values.persistence.annotations }}
 {{ toYaml .Values.persistence.annotations | indent 4 }}
 {{- end }}
 spec:

@@ -4,6 +4,31 @@
 rabbitmqUsername: guest
 # rabbitmqPassword:
 
+## RabbitMQ Management user used for health checks
+managementUsername: management
+managementPassword: E9R3fjZm4ejFkVFE
+
+## Place any additional key/value configuration to add to rabbitmq.conf
+## Ref: https://www.rabbitmq.com/configure.html#config-items
+extraConfig: |
+#  queue_master_locator = min-masters
+
+## Sets the policies in definitions.json. This can be used to control the high
+## availability of queues by mirroring them to multiple nodes.
+## Ref: https://www.rabbitmq.com/ha.html
+policies: |-
+#  {
+#    "name": "ha-all",
+#    "pattern": ".*",
+#    "vhost": "/",
+#    "definition": {
+#      "ha-mode": "all",
+#      "ha-sync-mode": "automatic",
+#      "ha-sync-batch-size": 1
+#    }
+#  }
+
+
 ## RabbitMQ default VirtualHost
 ## Ref: https://www.rabbitmq.com/vhosts.html
 ##
@@ -18,6 +43,7 @@ rabbitmqVhost: "/"
 ## Ref: http://www.rabbitmq.com/memory.html
 ##
 rabbitmqMemoryHighWatermark: 256MB
+rabbitmqMemoryHighWatermarkType: absolute
 
 ## EPMD port for peer discovery service used by RabbitMQ nodes and CLI tools
 ## Ref: https://www.rabbitmq.com/clustering.html
@@ -58,6 +84,18 @@ rabbitmqAuth:
     # auth_mechanisms.1 = PLAIN
     # auth_mechanisms.2 = AMQPLAIN
     # auth_mechanisms.3 = EXTERNAL
+
+## Authentication backend
+## Ref: https://github.com/rabbitmq/rabbitmq-auth-backend-http
+rabbitmqAuthHTTP:
+  enabled: false
+
+  config: |
+    # auth_backends.1 = http
+    # auth_http.user_path     = http://some-server/auth/user
+    # auth_http.vhost_path    = http://some-server/auth/vhost
+    # auth_http.resource_path = http://some-server/auth/resource
+    # auth_http.topic_path    = http://some-server/auth/topic
 
 ## LDAP Plugin
 ## Ref: http://www.rabbitmq.com/ldap.html
@@ -142,6 +180,12 @@ image:
   repository: rabbitmq
   tag: 3.7-alpine
   pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 ## Duration in seconds the pod needs to terminate gracefully
 terminationGracePeriodSeconds: 10
@@ -174,13 +218,20 @@ updateStrategy: OnDelete
 ##   rabbitmqMemoryHighWatermark = 0.4 * resources.limits.memory
 ##
 resources: {}
-# limits:
-#  cpu: 100m
-#  memory: 1Gi
-# requests:
-#  cpu: 100m
-#  memory: 1Gi
-
+  # limits:
+  #   cpu: 100mm
+  #   memory: 1Gi
+  # requests:
+  #   cpu: 100mm
+  #   memory: 1Gi
+initContainer: {}
+  # resources:
+  #   limits:
+  #     cpu: 100mm
+  #     memory: 128Mi
+  #   requests:
+  #     cpu: 100mm
+  #     memory: 128Mi
 
 ## Data Persistency
 persistentVolume:
@@ -258,10 +309,12 @@ ingress:
 
 livenessProbe:
   initialDelaySeconds: 120
+  periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 6
 
 readinessProbe:
+  failureThreshold: 6
   initialDelaySeconds: 10
   timeoutSeconds: 3
   periodSeconds: 5
@@ -281,6 +334,8 @@ prometheus:
 
     ## Port Prometheus scrapes for metrics
     port: 9090
+    ## Comma-separated list of extended scraping capabilities supported by the target RabbitMQ server
+    capabilities: "bert,no_sort"
 
     ## Allow overriding of container resources
     resources: {}

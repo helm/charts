@@ -13,13 +13,15 @@ spec:
     metadata:
       labels:
         release: "{{ .Release.Name }}"
+        chart: {{ template "redis.chart" . }}
         role: metrics
         app: {{ template "redis.name" . }}
       {{- if .Values.metrics.podLabels }}
 {{ toYaml .Values.metrics.podLabels | indent 8 }}
       {{- end }}
-      {{- if .Values.metrics.podAnnotations }}
       annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- if .Values.metrics.podAnnotations }}
 {{ toYaml .Values.metrics.podAnnotations | indent 8 }}
       {{- end }}
     spec:

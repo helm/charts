@@ -11,6 +11,10 @@ spec:
   replicas: {{ .Values.web.replicacount }}
   template:
     metadata:
+      {{- if .Values.web.podAnnotations }}
+      annotations:
+{{ toYaml .Values.web.podAnnotations | indent 8 }}
+      {{- end }}
       labels:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
@@ -54,7 +58,11 @@ spec:
         - name: SENTRY_DB_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.postgresql.existingSecret }}
+              name: {{ .Values.postgresql.existingSecret }}
+            {{- else }}
               name: {{ template "postgresql.fullname" . }}
+            {{- end }}
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "postgresql.fullname" . }}
@@ -63,10 +71,14 @@ spec:
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.redis.existingSecret }}
+              name: {{ .Values.redis.existingSecret }}
+            {{- else }}
               name: {{ template "redis.fullname" . }}
+            {{- end }}
               key: redis-password
         - name: SENTRY_REDIS_HOST
-          value: {{ template "redis.fullname" . }}
+          value: {{ template "redis.fullname" . }}-master
         - name: SENTRY_REDIS_PORT
           value: "6379"
         - name: SENTRY_EMAIL_HOST
@@ -88,6 +100,9 @@ spec:
 {{ toYaml .Values.web.env | indent 8 }}
 {{- end }}
         volumeMounts:
+        - mountPath: /etc/sentry
+          name: config
+          readOnly: true
         - mountPath: {{ .Values.persistence.filestore_dir }}
           name: sentry-data
         livenessProbe:
@@ -113,6 +128,9 @@ spec:
         resources:
 {{ toYaml .Values.web.resources | indent 12 }}
       volumes:
+      - name: config
+        configMap:
+          name: {{ template "fullname" . }}
       - name: sentry-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
