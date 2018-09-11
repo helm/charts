@@ -60,6 +60,9 @@ securityContext:
   fsGroup: 1001
   runAsUser: 1001
 
+## Kubernetes Cluster Domain
+clusterDomain: cluster.local
+
 ## Kubernetes service type
 service:
   annotations: {}
@@ -87,7 +90,7 @@ replicaSet:
   ## Key used for replica set authentication
   ##
   # key: key
-  
+
   ## Number of replicas per each node type
   ##
   replicas:
