@@ -3,7 +3,7 @@ image:
   # This chart is compatible with different images, please choose one
   repository: datadog/agent               # Agent6
   # repository: datadog/dogstatsd         # Standalone DogStatsD6
-  tag: 6.3.2  # Use 6.3.2-jmx to enable jmx fetch collection
+  tag: 6.4.2  # Use 6.4.2-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
   ## It is possible to specify docker registry credentials
   ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
