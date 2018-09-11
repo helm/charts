@@ -453,7 +453,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.3.2
+    tag: v2.4.0
     pullPolicy: IfNotPresent
 
   ## prometheus server priorityClassName
