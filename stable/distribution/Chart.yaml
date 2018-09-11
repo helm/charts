@@ -1,20 +1,16 @@
 apiVersion: v1
-description: A Helm chart for JFrog Distribution
+description: DEPRECATED A Helm chart for JFrog Distribution
 home: https://jfrog.com/platform/
 icon: https://raw.githubusercontent.com/JFrogDev/artifactory-dcos/master/images/jfrog_med.png
 keywords:
 - distribution
 - jfrog
-maintainers:
-- email: jainishs@jfrog.com
-  name: jainishshah17
-- email: eldada@jfrog.com
-  name: eldada
-- email: rimasm@jfrog.com
-  name: rimusz
 name: distribution
 sources:
 - https://bintray.com/jfrog/product/distribution/view
 - https://github.com/JFrogDev
-version: 0.4.1
+version: 0.4.2
 appVersion: 1.1.0
+## Deprecated following https://github.com/helm/charts/blob/master/PROCESSES.md#deprecating-a-chart
+## Chart is now maintained in https://github.com/jfrog/charts
+deprecated: true
