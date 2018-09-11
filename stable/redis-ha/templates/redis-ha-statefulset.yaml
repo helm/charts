@@ -18,7 +18,6 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/redis-ha-configmap.yaml") . | sha256sum }}
-        checksum/config: {{ include (print $.Template.BasePath "/redis-auth-secret.yaml") . | sha256sum }}
       {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations . | indent 8 }}
       {{- end }}

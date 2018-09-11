@@ -67,12 +67,8 @@ podAntiAffinity: soft
 podDisruptionBudget:
   maxUnavailable: 1
 
-## Redis password
-## Defaults to a random 10-character alphanumeric string if not set and auth is true
-## ref: https://github.com/kubernetes/charts/blob/master/stable/redis-ha/templates/redis-auth-secret.yaml
-##
-## redisPassword:
-auth: true
+# redisPassword:
+auth: false
 
 persistentVolume:
   enabled: false

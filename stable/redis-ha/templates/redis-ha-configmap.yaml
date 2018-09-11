@@ -13,6 +13,10 @@ data:
     {{- range $key, $value := .Values.redis.config }}
     {{ $key }} {{ $value }}
     {{- end }}
+{{- if .Values.auth }}
+    requirepass replace-default-auth
+    masterauth replace-default-auth
+{{- end }}
 
   sentinel.conf: |
     dir "/data"
@@ -20,127 +24,73 @@ data:
     {{- range $key, $value := .Values.sentinel.config }}
     sentinel {{ $key }} {{ $root.Values.redis.masterGroupName }} {{ $value }}
     {{- end }}
+{{- if .Values.auth }}
+    sentinel auth-pass {{ .Values.redis.masterGroupName }} replace-default-auth
+{{- end }}
 
   init.bash: |
     MASTER=`redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel get-master-addr-by-name {{ .Values.redis.masterGroupName }} | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`
-    GROUP_NAME=`cat /data/conf/group_name`
     REDIS_CONF=/data/conf/redis.conf
     SENTINEL_CONF=/data/conf/sentinel.conf
-    R_PATCH=/data/conf/redis.patch
-    S_PATCH=/data/conf/sentinel.patch
     
     set -e
-    function auth(){
-        if [[ "$AUTH" ]]; then
-            if [[ "$1" == "sentinel" ]]; then
-                if [[ `grep "sentinel auth-pass" $SENTINEL_CONF` ]]; then
-                    sed -i "s/^.*sentinel auth-pass.*/sentinel auth-pass {{ .Values.redis.masterGroupName }} $AUTH /" $SENTINEL_CONF
-                else
-                    sed -i "2s/^/sentinel auth-pass {{ .Values.redis.masterGroupName }} $AUTH \n/" $SENTINEL_CONF
-                fi
-            fi
-            if [[ "$1" == "redis" ]]; then
-                if [[ `grep "$2" $REDIS_CONF` ]]; then
-                    sed -i "s/^.*$2.*/$2 $AUTH /" $REDIS_CONF
-                else
-                   echo "$2 $AUTH" >> $REDIS_CONF
-                fi
-            fi
-        else
-            echo "Could not find auth secret in environment"
-            exit 1
-        fi
-    }
     function sentinel_update(){
-        #if [[ "$OLD_IP" != "" && "$OLD_IP" != "$POD_IP" ]]; then
-        #    echo "Removing references to previous IP"
-        #    sed -i "s/*.sentinel known.*$OLD_IP//" $SENTINEL_CONF
-        #fi
-        if [[ `grep "sentinel monitor" $SENTINEL_CONF` ]]; then
-            sed -i "s/^.*sentinel monitor.*/sentinel monitor {{ .Values.redis.masterGroupName }} $1 {{ .Values.redis.port }} {{ .Values.sentinel.quorum }}/" $SENTINEL_CONF
-        else
-            sed -i "1s/^/sentinel monitor {{ .Values.redis.masterGroupName }} $1 {{ .Values.redis.port }} {{ .Values.sentinel.quorum }} \n/" $SENTINEL_CONF
-        fi
-{{- if .Values.auth }}
-        auth "sentinel"
-{{- end }}
+        echo "Updating sentinel config"
+        sed -i "1s/^/sentinel monitor {{ .Values.redis.masterGroupName }} $1 {{ .Values.redis.port }} {{ .Values.sentinel.quorum }} \n/" $SENTINEL_CONF
     }
     function redis_update(){
-        if [[ `grep "slaveof" $REDIS_CONF` ]]; then
-            sed -i "s/^.*slaveof.*/slaveof $1 {{ .Values.redis.port }}/" $REDIS_CONF
-        else
-           echo "slaveof $1 {{ .Values.redis.port }}" >> $REDIS_CONF
-        fi
-{{- if .Values.auth }}
-        auth "redis" "masterauth"
-{{- end }}
+        echo "Updating redis config"
+        echo "slaveof $1 {{ .Values.redis.port }}" >> $REDIS_CONF
     }
     function setup_defaults(){
+        echo "Setting up defaults"
         if [[ "$HOSTNAME" == "{{ template "redis-ha.fullname" . }}-server-0" ]]; then
             echo "Setting this pod as the default master"
             sed -i "s/^.*slaveof.*//" $REDIS_CONF
-{{- if .Values.auth }}
-            sed -i "s/^.*masterauth.*//" $REDIS_CONF
-            auth "redis" "requirepass"
-            auth "sentinel"
-{{- end }}
             sentinel_update "$POD_IP"
         else
             echo "Setting default slave config.."
-            if [[ `grep "slaveof" $REDIS_CONF` ]]; then
-                sed -i 's/^.*slaveof.*/slaveof {{ template "redis-ha.fullname" . }}-server-0.{{ template "redis-ha.fullname" . }} {{ .Values.redis.port }}/' $REDIS_CONF
-            else
-                echo "slaveof {{ template "redis-ha.fullname" . }}-server-0.{{ template "redis-ha.fullname" . }} {{ .Values.redis.port }}" >> $REDIS_CONF
-            fi
+            echo "slaveof {{ template "redis-ha.fullname" . }}-server-0.{{ template "redis-ha.fullname" . }} {{ .Values.redis.port }}" >> $REDIS_CONF
             sentinel_update "{{ template "redis-ha.fullname" . }}-server-0.{{ template "redis-ha.fullname" . }}"
             redis_update "{{ template "redis-ha.fullname" . }}-server-0.{{ template "redis-ha.fullname" . }}"
-{{- if .Values.redis.auth }}
-            auth "redis" "masterauth"
-            auth "sentinel"
-{{- end }}
         fi
     }
     function find_master(){
+        echo "Attempting to find master"
         if [[ ! `redis-cli -h $MASTER ping` ]]; then
-           echo "Cannot contact master, replacing dead master with default master"
-           setup_defaults
+           echo "Can't ping master, attempting to force failover"
+           if redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel failover {{ .Values.redis.masterGroupName }} | grep -q 'NOGOODSLAVE' ; then 
+               setup_defaults
+               exit 0
+           fi
+           sleep 10
+           MASTER=`redis-cli -h {{ template "redis-ha.fullname" . }} -p {{ .Values.sentinel.port }} sentinel get-master-addr-by-name {{ .Values.redis.masterGroupName }} | grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`
+           if [[ "$MASTER" ]]; then
+               sentinel_update $MASTER
+               redis_update $MASTER
+           else
+              echo "Could not failover, exiting..."
+              exit 1
+           fi
         else
             echo "Found reachable master, updating config"
             sentinel_update $MASTER
             redis_update $MASTER
         fi
     }
-    function patch_conf(){
-        if [[ "$GROUP_NAME" != "{{ .Values.redis.masterGroupName }}" ]]; then
-            echo "Removing references to previous group name"
-            sed -i "s/ $GROUP_NAME / {{ .Values.redis.masterGroupName }} /" $SENTINEL_CONF
-        fi
-        {{- range $key, $value := .Values.redis.config }}
-        sed -i "s/^.*{{ $key }}.*/{{ $key }} {{ $value }}/" $REDIS_CONF
-        {{- end }}
-        {{- $root := . -}}
-        {{- range $key, $value := .Values.sentinel.config }}
-        sed -i "s/^.*sentinel {{ $key }}.*/sentinel {{ $key }} {{ $root.Values.redis.masterGroupName }} {{ $value }}/" $SENTINEL_CONF
-        {{- end }}
-    }
     mkdir -p /data/conf/
     echo "Initializing config.."
 
-    if [[ ! -f $REDIS_CONF && ! -f $SENTINEL_CONF ]]; then
-        cp /readonly-config/redis.conf $REDIS_CONF
-        cp /readonly-config/sentinel.conf $SENTINEL_CONF
-        if [[ "$MASTER" ]]; then
-            find_master
-        else
-            setup_defaults
-        fi
-    elif [[ "$MASTER" == "" ]]; then
-        echo "Found configs but no redis master found! Configuring default master.."
-        patch_conf
-        setup_defaults
-    else
-        patch_conf
+    cp /readonly-config/redis.conf $REDIS_CONF
+    cp /readonly-config/sentinel.conf $SENTINEL_CONF
+
+    if [[ "$MASTER" ]]; then
         find_master
+    else
+        setup_defaults
     fi
-    echo "{{ .Values.redis.masterGroupName }}" > /data/conf/group_name
+    if [[ "$AUTH" ]]; then
+        sed -i "s/replace-default-auth/$AUTH/" $REDIS_CONF $SENTINEl_CONF
+    fi
+
     echo "Ready..."

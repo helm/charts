@@ -61,8 +61,8 @@ The following table lists the configurable parameters of the Redis chart and the
 | `nodeSelector`                   | Node labels for pod assignment                                                                                               | {}                                                        |
 | `tolerations`                    | Toleration labels for pod assignment                                                                                         | []                                                        |
 | `podAntiAffinity.server`         | Antiaffinity for pod assignment of servers, `hard` or `soft`                                                                 | `soft`                                                    |
-| `redis.config`                   | Any valid redis config options can be added prior to install and will be applied to each server (see below)                  | see values.yaml                                           |
-| `sentinel.config`                | Any valid sentinel config options can be added prior to install and will be applied to each sentinel (see below)             | see values.yaml                                           |
+| `redis.config`                   | Any valid redis config options in this section will be applied to each server (see below)                                    | see values.yaml                                           |
+| `sentinel.config`                | Any valid sentinel config options in this section will be applied to each sentinel (see below)                               | see values.yaml                                           |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -86,7 +86,7 @@ $ helm install -f values.yaml stable/redis-ha
 
 ## Custom Redis and Sentinel config options
 
-This chart allow for any valid redis or sentinel config option to be passed as a key value pair through the `values.yaml` file prior to installation.
+This chart allow for any valid redis or sentinel config option to be passed as a key value pair through the `values.yaml` file.
 
 [Example redis.conf](http://download.redis.io/redis-stable/redis.conf)
 [Example sentinel.conf](http://download.redis.io/redis-stable/sentinel.conf)
