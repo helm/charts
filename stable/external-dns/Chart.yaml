@@ -4,7 +4,7 @@ description:
   for Kubernetes Ingresses and Services
 name: external-dns
 version: 0.7.5
-appVersion: 0.5.5
+appVersion: 0.5.6
 home: https://github.com/kubernetes-incubator/external-dns
 sources:
   - https://github.com/kubernetes-incubator/external-dns
