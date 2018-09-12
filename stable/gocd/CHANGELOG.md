@@ -1,3 +1,7 @@
+### 1.4.2
+
+* [499fddf9](https://github.com/kubernetes/charts/commit/499fddf9): Add agent.env.extraEnvVars
+
 ### 1.4.1
 * [15c77caf](https://github.com/kubernetes/charts/commit/15c77caf):
   - Bump up GoCD app version to 18.9.0
