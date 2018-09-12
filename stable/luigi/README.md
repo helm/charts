@@ -31,11 +31,11 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Luigi Configuration
 
-[Luigi](https://github.com/spotify/luigi) configs are set as a block of text through a configmap and mouted as a file in /etc/luigi Any value in this text block should match the defined luigi configuration. There are several values here that will have to match our kubernetes configuration.
+[Luigi](https://github.com/spotify/luigi) configs are set as a block of text through a configmap and mouted as a file in /etc/luigi. Any value in this text block should match the defined luigi configuration. There are several values here that will have to match our kubernetes configuration.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Sentry chart and their default values.
+The following table lists the configurable parameters of the Sentry chart and their default values.
 
 | Parameter                            | Description                                | Default                                                    |
 | -------------------------------      | -------------------------------            | ---------------------------------------------------------- |

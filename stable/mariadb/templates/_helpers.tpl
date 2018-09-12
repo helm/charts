@@ -16,8 +16,13 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{- define "master.fullname" -}}
+{{- if .Values.replication.enabled -}}
 {{- printf "%s-%s" .Release.Name "mariadb-master" | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name "mariadb" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+{{- end -}}
+
 
 {{- define "slave.fullname" -}}
 {{- printf "%s-%s" .Release.Name "mariadb-slave" | trunc 63 | trimSuffix "-" -}}
@@ -33,7 +38,7 @@ Return the proper image name
 {{- define "mariadb.image" -}}
 {{- $registryName :=  .Values.image.registry -}}
 {{- $repositoryName := .Values.image.repository -}}
-{{- $tag := .Values.image.tag -}}
+{{- $tag := .Values.image.tag | toString -}}
 {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
 
@@ -41,8 +46,8 @@ Return the proper image name
 Return the proper image name
 */}}
 {{- define "metrics.image" -}}
-{{- $registryName :=  .Values.metrics.mage.registry -}}
+{{- $registryName :=  .Values.metrics.image.registry -}}
 {{- $repositoryName := .Values.metrics.image.repository -}}
-{{- $tag := .Values.metrics.image.tag -}}
+{{- $tag := .Values.metrics.image.tag | toString -}}
 {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}

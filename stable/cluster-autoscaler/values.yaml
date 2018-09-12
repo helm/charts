@@ -34,7 +34,7 @@ cloudConfigPath: /etc/gce.conf
 
 image:
   repository: k8s.gcr.io/cluster-autoscaler
-  tag: v1.2.0
+  tag: v1.2.2
   pullPolicy: IfNotPresent
 
 tolerations: []
@@ -93,6 +93,8 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 300Mi
+
+priorityClassName: ""
 
 service:
   annotations: {}

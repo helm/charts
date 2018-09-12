@@ -25,7 +25,7 @@ $ helm install --name my-release stable/fluent-bit --set on_minikube=true
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Fluent-Bit chart and the default values.
+The following table lists the configurable parameters of the Fluent-Bit chart and the default values.
 
 | Parameter                  | Description                        | Default                 |
 | -----------------------    | ---------------------------------- | ----------------------- |
@@ -39,6 +39,7 @@ The following tables lists the configurable parameters of the Fluent-Bit chart a
 | `backend.es.port`          | TCP port of the target Elasticsearch instance. | `9200` |
 | `backend.es.index`         | Elastic Index name | `kubernetes_cluster` |
 | `backend.es.type`          | Elastic Type name | `flb_type` |
+| `backend.es.time_key`          | Elastic Time Key | `@timestamp` |
 | `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
 | `backend.es.http_user`        | Optional username credential for Elastic X-Pack access. | `` |
 | `backend.es.http_passwd:`     | Password for user defined in HTTP_User. | `` |
@@ -51,7 +52,16 @@ The following tables lists the configurable parameters of the Fluent-Bit chart a
 | `backend.http.port`           | TCP port of the target HTTP Server | `80` |
 | `backend.http.uri`            | Specify an optional HTTP URI for the target web server, e.g: /something | `"/"`
 | `backend.http.format`         | Specify the data format to be used in the HTTP request body, by default it uses msgpack, optionally it can be set to json.  | `msgpack` |
+| **Splunk Backend**              |
+| `backend.splunk.host`           | IP address or hostname of the target Splunk Server | `127.0.0.1` |
+| `backend.splunk.port`           | TCP port of the target Splunk Server | `8088` |
+| `backend.splunk.token`            | Specify the Authentication Token for the HTTP Event Collector interface. | `` |
+| `backend.splunk.send_raw`         | If enabled, record keys and values are set in the main map. | `off` |
+| `backend.splunk.tls`           | Enable or disable TLS support | `on` |
+| `backend.splunk.tls_verify`           | Force TLS certificate validation | `off` |
+| `backend.splunk.message_key`           | Tag applied to all incoming logs | `kubernetes` |
 | **Parsers**                   |
+| `parsers.enabled`                  | Enable custom parsers | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |
 | `parsers.json`                     | List of json parsers | `NULL` |
 | **General**                   |
@@ -76,6 +86,10 @@ The following tables lists the configurable parameters of the Fluent-Bit chart a
 | `resources.requests.memory`        | Memory request                             | `200Mi`                                           |
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
+| `metrics.enabled`                  | Specifies whether a service for metrics should be exposed | `false`                            |
+| `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
+| `metrics.service.type`             | Service type for metrics                   | `ClusterIP`                                       |
+| `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
 | | | |
 
 

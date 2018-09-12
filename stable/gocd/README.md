@@ -17,7 +17,7 @@ This chart bootstraps a single node GoCD server and GoCD agents on a [Kubernetes
 
 ## Setup
 
-Because of the [known issue] (https://github.com/kubernetes/helm/issues/2224) while creating a role, in order for the `helm install` to work, please ensure to do the following:
+Because of a [known issue](https://github.com/kubernetes/helm/issues/2224) while creating a role, in order for the `helm install` to work, please ensure to do the following:
 
 - On minikube
 
@@ -29,7 +29,7 @@ $ minikube start --bootstrapper kubeadm
 
 ```bash
 
-$ kubectl create clusterrolebinding clusterRoleBinding \                                                                                                               1 ↵
+$ kubectl create clusterrolebinding clusterRoleBinding \
   --clusterrole=cluster-admin \
   --serviceaccount=kube-system:default
 ```
@@ -77,6 +77,7 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.env.goServerSystemProperties`      | GoCD Server system properties                                                                                 | `nil`               |
 | `server.env.extraEnvVars`                  | GoCD Server extra Environment variables                                                                       | `nil`               |
 | `server.service.type`                      | Type of GoCD server Kubernetes service                                                                        | `NodePort`          |
+| `server.service.loadBalancerSourceRanges`  | GoCD server service Load Balancer source IP ranges to whitelist                                               | `nil`               |
 | `server.service.httpPort`                  | GoCD server service HTTP port                                                                                 | `8153`              |
 | `server.service.httpsPort`                 | GoCD server service HTTPS port                                                                                | `8154`              |  
 | `server.service.nodeHttpPort`              | GoCD server service node HTTP port. **Note**: A random nodePort will get assigned if not specified            | `nil`               |  
@@ -86,8 +87,11 @@ The following tables list the configurable parameters of the GoCD chart and thei
 | `server.ingress.annotations`               | GoCD ingress annotations.                                                                                     | `{}`                |
 | `server.ingress.tls`                       | GoCD ingress TLS configuration.                                                                               | `[]`                |
 | `server.healthCheck.initialDelaySeconds`   | Initial delays in seconds to start the health checks. **Note**:GoCD server start up time.                     | `90`                |
-| `server.healthCheck.periodSeconds`         | GoCD server heath check interval period.                                                                      | `15`                |
+| `server.healthCheck.periodSeconds`         | GoCD server health check interval period.                                                                      | `15`                |
 | `server.healthCheck.failureThreshold`      | Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.              | `10`                |
+| `server.hostAliases`                       | Aliases for IPs in /etc/hosts                                                                                 | `[]`                |
+| `server.security.ssh.enabled`              | Enable the use of SSH keys for GoCD server                                                                    | `false`             |
+| `server.security.ssh.secretName`           | The name of the secret holding the SSH keys                                                                   | `gocd-server-ssh`   |
 
 #### Preconfiguring the GoCD Server
 
@@ -129,6 +133,21 @@ The cases when the attempt to preconfigure the GoCD server fails:
 1. The service account token mounted as a secret for the GoCD server pod does not have sufficient permissions. The API call to configure the plugin settings will fail.
 2. If the GoCD server is started with an existing configuration with security configured, then the API calls in the preconfigure script will fail. 
 
+#### SSH keys
+For accessing repositories over SSH in GoCD server, you need to add SSH keys to the GoCD server.
+Generate a new keypair, fetch the host key for the [host] you want to connect to and create the secret.
+The secret is structured to hold the entire contents of the .ssh folder on the GoCD server.
+
+ ```bash
+$ ssh-keygen -t rsa -b 4096 -C "user@example.com" -f gocd-server-ssh -P ''
+$ ssh-keyscan [host] > gocd_known_hosts
+$ kubectl create secret generic gocd-server-ssh \
+    --from-file=id_rsa=gocd-server-ssh \
+    --from-file=id_rsa.pub=gocd-server-ssh.pub \
+    --from-file=known_hosts=gocd_known_hosts
+```
+ The last step is to copy the key over to the host, so GoCD server can connect.
+
 ### GoCD Agent
 
 | Parameter                                 | Description                                                                                                                                                                      | Default                      |
@@ -146,10 +165,15 @@ The cases when the attempt to preconfigure the GoCD server fails:
 | `agent.env.agentAutoRegisterHostname`     | GoCD Agent hostname                                                                                                                                                              | `nil`                        |
 | `agent.env.goAgentBootstrapperArgs`       | GoCD Agent Bootstrapper Args. It can be used to [Configure end-to-end transport security](https://docs.gocd.org/current/installation/ssl_tls/end_to_end_transport_security.html) | `nil`                        |
 | `agent.env.goAgentBootstrapperJvmArgs`    | GoCD Agent Bootstrapper JVM Args.                                                                                                                                                | `nil`                        |
+| `agent.env.extraEnvVars`                  | GoCD Agent extra Environment variables                                                                       | `nil`               |
+| `agent.privileged`                        | Run container in privileged mode (needed for DinD, Docker-in-Docker agents)                                                                                                      | `false`                      |
 | `agent.healthCheck.enabled`               | Enable use of GoCD agent health checks.                                                                                                                                          | `false`                      |
 | `agent.healthCheck.initialDelaySeconds`   | GoCD agent start up time.                                                                                                                                                        | `60`                         |
-| `agent.healthCheck.periodSeconds`         | GoCD agent heath check interval period.                                                                                                                                          | `60`                         |
-| `agent.healthCheck.failureThreshold`      | GoCD agent heath check failure threshold. Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.                                       | `60`                         |
+| `agent.healthCheck.periodSeconds`         | GoCD agent health check interval period.                                                                                                                                          | `60`                         |
+| `agent.healthCheck.failureThreshold`      | GoCD agent health check failure threshold. Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.                                       | `60`                         |
+| `agent.hostAliases`                       | Aliases for IPs in /etc/hosts                                                                                 | `[]`                |
+| `agent.security.ssh.enabled`              | Enable the use of SSH keys for GoCD agent                                                                                                                                        | `false`                      |
+| `agent.security.ssh.secretName`           | The name of the secret holding the SSH keys                                                                                                                                      | `gocd-agent-ssh`             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -161,6 +185,20 @@ $ helm install --namespace gocd --name gocd-app -f values.yaml stable/gocd
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+#### SSH keys
+For accessing repositories over SSH in GoCD agent, you need to add SSH keys to the GoCD agent.
+Generate a new keypair, fetch the host key for the [host] you want to connect to and create the secret.
+The secret is structured to hold the entire contents of the .ssh folder on the GoCD agent.
+
+ ```bash
+$ ssh-keygen -t rsa -b 4096 -C "user@example.com" -f gocd-agent-ssh -P ''
+$ ssh-keyscan [host] > gocd_known_hosts
+$ kubectl create secret generic gocd-agent-ssh \
+    --from-file=id_rsa=gocd-agent-ssh \
+    --from-file=id_rsa.pub=gocd-agent-ssh.pub \
+    --from-file=known_hosts=gocd_known_hosts
+```
+ The last step is to copy the key over to the host, so GoCD agent can connect.
 
 ## Persistence
 

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "nats.fullname" . }}-monitoring
+  labels:
+    app: "{{ template "nats.name" . }}"
+    chart: "{{ template "nats.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  {{- if .Values.monitoringService.annotations }}
+  annotations:
+{{ toYaml .Values.monitoringService.annotations | indent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.monitoringService.type }}
+  {{- if and (eq .Values.monitoringService.type "LoadBalancer") .Values.monitoringService.loadBalancerIP -}}
+  loadBalancerIP: {{ .Values.monitoringService.loadBalancerIP }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.monitoringService.port }}
+      targetPort: monitoring
+      name: monitoring
+      {{- if and (eq .Values.monitoringService.type "NodePort") (not (empty .Values.monitoringService.nodePort)) }}
+      nodePort: {{ .Values.monitoringService.nodePort  }}
+      {{- end }}
+  selector:
+    app: "{{ template "nats.name" . }}"
+    release: {{ .Release.Name | quote }}

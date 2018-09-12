@@ -11,7 +11,7 @@ deploymentStrategy: RollingUpdate
 
 image:
   repository: grafana/grafana
-  tag: 5.1.2
+  tag: 5.2.4
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -20,6 +20,10 @@ image:
   ##
   # pullSecrets:
   #   - myRegistrKeySecretName
+
+securityContext:
+  runAsUser: 472
+  fsGroup: 472
 
 downloadDashboardsImage:
   repository: appropriate/curl
@@ -107,6 +111,14 @@ env: {}
 ## This can be useful for auth tokens, etc
 envFromSecret: ""
 
+## Additional grafana server secret mounts
+# Defines additional mounts with secrets. Secrets must be manually created in the namespace.
+extraSecretMounts: []
+  # - name: secret-files
+  #   mountPath: /etc/secrets
+  #   secretName: grafana-secret-files
+  #   readOnly: true
+
 # Pass the plugins you want installed as a comma separated list.
 # plugins: "digrich-bubblechart-panel,grafana-clock-panel"
 plugins: ""
@@ -127,6 +139,8 @@ datasources: {}
 ## Configure grafana dashboard providers
 ## ref: http://docs.grafana.org/administration/provisioning/#dashboards
 ##
+## `path` must be /var/lib/grafana/dashboards/<provider_name>
+##
 dashboardProviders: {}
 #  dashboardproviders.yaml:
 #    apiVersion: 1
@@ -138,22 +152,36 @@ dashboardProviders: {}
 #      disableDeletion: false
 #      editable: true
 #      options:
-#        path: /var/lib/grafana/dashboards
+#        path: /var/lib/grafana/dashboards/default
 
 ## Configure grafana dashboard to import
 ## NOTE: To use dashboards you must also enable/configure dashboardProviders
 ## ref: https://grafana.com/dashboards
 ##
+## dashboards per provider, use provider name as key.
+##
 dashboards: {}
-#  some-dashboard:
-#    json: |
-#      $RAW_JSON
-#  prometheus-stats:
-#    gnetId: 2
-#    revision: 2
-#    datasource: Prometheus
-#  local-dashboard:
-#    url: https://example.com/repository/test.json
+#  default:
+#    some-dashboard:
+#      json: |
+#        $RAW_JSON
+#    prometheus-stats:
+#      gnetId: 2
+#      revision: 2
+#      datasource: Prometheus
+#    local-dashboard:
+#      url: https://example.com/repository/test.json
+
+## Reference to external ConfigMap per provider. Use provider name as key and ConfiMap name as value.
+## A provider dashboards must be defined either by external ConfigMaps or in values.yaml, not in both.
+## ConfigMap data example:
+##
+## data:
+##   example-dashboard.json: |
+##     RAW_JSON
+##
+dashboardsConfigMaps: {}
+#  default: ""
 
 ## Grafana's primary configuration
 ## NOTE: values in map will be converted to ini format
@@ -164,6 +192,7 @@ grafana.ini:
     data: /var/lib/grafana/data
     logs: /var/log/grafana
     plugins: /var/lib/grafana/plugins
+    provisioning: /etc/grafana/provisioning
   analytics:
     check_for_updates: true
   log:
@@ -206,3 +235,26 @@ smtp:
   # `existingSecret` is a reference to an existing secret containing the smtp configuration
   # for Grafana in keys `user` and `password`.
   existingSecret: ""
+
+## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
+## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
+sidecar:
+  image: kiwigrid/k8s-sidecar:0.0.3
+  imagePullPolicy: IfNotPresent
+  resources:
+#   limits:
+#     cpu: 100m
+#     memory: 100Mi
+#   requests:
+#     cpu: 50m
+#     memory: 50Mi
+  dashboards:
+    enabled: false
+    # label that the configmaps with dashboards are marked with
+    label: grafana_dashboard
+    # folder in the pod that should hold the collected dashboards
+    folder: /tmp/dashboards
+  datasources:
+    enabled: false
+    # label that the configmaps with datasources are marked with
+    label: grafana_datasource

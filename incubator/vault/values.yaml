@@ -2,10 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 3
+## The name of the secret to use if pulling images from a private registry.
+# imagePullSecret:
 image:
   repository: vault
-  tag: 0.10.1
+  tag: 0.11.0
   pullPolicy: IfNotPresent
+
 consulAgent:
   repository: consul
   tag: 1.0.7
@@ -24,14 +27,24 @@ consulAgent:
 service:
   name: vault
   type: ClusterIP
+  # type: LoadBalancer
+  loadBalancerSourceRanges: []
+  #  - 10.0.0.0/8
+  #  - 130.211.204.2/32
   externalPort: 8200
   port: 8200
-  annotations: {}
   # clusterIP: None
-  # annotations:
+  annotations: {}
   #   cloud.google.com/load-balancer-type: "Internal"
+  #
+  # An example using type:loadbalancer and AWS internal ELB on kops
+  # type: LoadBalancer
+  # annotations:
+  #   dns.alpha.kubernetes.io/internal: vault.internal.domain.name
+  #   service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
 ingress:
   enabled: false
+  labels: {}
   # Used to create Ingress record (should used with service.type: ClusterIP).
   # hosts:
   #  - chart-example.local
@@ -64,7 +77,13 @@ affinity: |
           matchLabels:
             app: {{ template "vault.fullname" . }}
             release: {{ .Release.Name }}
+
+## Deployment annotations
+annotations: {}
+
 podAnnotations: {}
+##    Read more about kube2iam to provide access to s3 https://github.com/jtblin/kube2iam
+#     iam.amazonaws.com/role: role-arn
 
 ## Sample for unsealing vault on startup
 ## if automation saves your unseal keys to a k8s secret on deploy
@@ -89,6 +108,26 @@ vault:
   customSecrets: []
     # - secretName: vault-tls
     #   mountPath: /vault/tls
+  #
+  # Configure additional environment variables for the Vault containers
+  extraEnv: {}
+  #   - name: VAULT_API_ADDR
+  #     value: "https://vault.internal.domain.name:8200"
+  extraContainers: {}
+  ## Additional containers to be added to the Vault pod
+  # - name: vault-sidecar
+  #   image: vault-sidecar:latest
+  #   volumeMounts:
+  #   - name: some-mount
+  #     mountPath: /some/path
+  extraVolumes: {}
+  # Log level
+  # https://www.vaultproject.io/docs/commands/server.html#log-level
+  logLevel: "info"
+  ## Additional volumes to the vault pod.
+  # - name: extra-volume
+  #   secret:
+  #     secretName: some-secret
   readiness:
     readyIfSealed: false
     readyIfStandby: true

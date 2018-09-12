@@ -20,11 +20,16 @@ spec:
         release: {{ .Release.Name }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- if .Values.annotations }}
+{{ toYaml .Values.annotations | indent 8 }}
+{{- end}}
     spec:
       serviceAccountName: {{ template "prometheus-postgres-exporter.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
-          env:          
+          args:
+          - "--extend.query-path=/etc/config.yaml"
+          env:
             - name: DATA_SOURCE_NAME
               valueFrom:
                 secretKeyRef:
@@ -48,7 +53,11 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
             - name: queries
-              mountPath: /etc
+              mountPath: /etc/config.yaml
+              subPath: config.yaml
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 8 }}
+{{- end }}
      {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -66,3 +75,6 @@ spec:
           defaultMode: 420
           name: {{ template "prometheus-postgres-exporter.fullname" . }}
         name: queries
+{{- with .Values.extraVolumes }}
+{{ tpl . $ | indent 6 }}
+{{- end }}

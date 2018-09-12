@@ -75,7 +75,7 @@ $ helm install --name my-release -f values.yaml incubator/zookeeper
 ## Deep Dive
 
 ## Image Details
-The image used for this chart is based on Ubuntu 16.04 LTS. This image is larger than Alpine or BusyBox, but it provides glibc, rather than ulibc or mucl, and a JVM release that is built against it. You can easily convert this chart to run against a smaller image with a JVM that is build against that images libc. However, as far as we know, no Hadoop vendor supports, or has verified, ZooKeeper running on such a JVM.
+The image used for this chart is based on Ubuntu 16.04 LTS. This image is larger than Alpine or BusyBox, but it provides glibc, rather than ulibc or mucl, and a JVM release that is built against it. You can easily convert this chart to run against a smaller image with a JVM that is built against that image's libc. However, as far as we know, no Hadoop vendor supports, or has verified, ZooKeeper running on such a JVM.
 
 ## JVM Details
 The Java Virtual Machine used for this chart is the OpenJDK JVM 8u111 JRE (headless).

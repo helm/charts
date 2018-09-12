@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.controller.service.annotations }}
+  annotations:
+{{ toYaml .Values.controller.service.annotations | indent 4 }}
+{{- end }}
+  labels:
+{{- if .Values.controller.service.labels }}
+{{ toYaml .Values.controller.service.labels | indent 4 }}
+{{- end }}
+    app: {{ template "haproxy-ingress.name" . }}
+    chart: {{ template "haproxy-ingress.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "haproxy-ingress.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  clusterIP: "{{ .Values.controller.service.clusterIP }}"
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: {{ .Values.controller.service.targetPorts.http }}
+      {{- if (and (eq .Values.controller.service.type "NodePort") (not (empty .Values.controller.service.nodePorts.http))) }}
+      nodePort: {{ .Values.controller.service.nodePorts.http }}
+      {{- end }}
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: {{ .Values.controller.service.targetPorts.https }}
+      {{- if (and (eq .Values.controller.service.type "NodePort") (not (empty .Values.controller.service.nodePorts.https))) }}
+      nodePort: {{ .Values.controller.service.nodePorts.https }}
+      {{- end }}
+  selector:
+    app: {{ template "haproxy-ingress.name" . }}
+    release: {{ .Release.Name }}
+  type: "{{ .Values.controller.service.type }}"

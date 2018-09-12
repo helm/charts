@@ -25,21 +25,12 @@ Pull requests testing is run via the [Kubernetes Test Infrastructure](https://gi
 
 The configuration of the Pull Request trigger is [in the config.json](https://github.com/kubernetes/test-infra/blob/827797c54b48295045698465b437f463ca9276c2/jobs/config.json#L10285).
 
-This snippet tells Test Infra to run the [test/e2e.sh](https://github.com/kubernetes/charts/blob/master/test/e2e.sh)
-when testing is triggered on a pull request. The e2e.sh script will use the [Charts test image](https://github.com/kubernetes/charts/blob/master/test/Dockerfile)
-to run the [test/changed.sh](https://github.com/kubernetes/charts/blob/master/test/changed.sh) script. This script
+This snippet tells Test Infra to run the [test/e2e.sh](https://github.com/helm/charts/blob/master/test/e2e.sh)
+when testing is triggered on a pull request. The e2e.sh script will use the [Charts test image](https://github.com/helm/charts/blob/master/test/Dockerfile)
+to run the [chart_test.sh](https://github.com/kubernetes-helm/chart-testing/blob/master/chart_test.sh) script. This script
 is the main logic for validation of a pull request. It intends to only test charts that have changed in this PR.
 
-The logic is as follows:
-
-1. [Get credentials for the Kubernetes cluster used for testing.](https://github.com/kubernetes/charts/blob/master/test/changed.sh#L128)
-1. [Install and initialize Helm](https://github.com/kubernetes/charts/blob/master/test/changed.sh#L143)
-1. [For any charts that have changed](https://github.com/kubernetes/charts/blob/master/test/changed.sh#L161):
-    - Download dependent charts, if any, with `helm dep build`
-    - Run `helm install` in a new namespace for this PR build
-    - Use the [test/verify-release.sh](https://github.com/kubernetes/charts/blob/master/test/verify-release.sh) to ensure that if any pods were launched that they get to the `Running` state
-    - Run `helm test` on the release
-    - Delete the release
+The testing logic has been extrated to the [chart-testing](https://github.com/kubernetes-helm/chart-testing) project. A bash library provides the required logic to lint, install, and test charts. It is provided as a Docker image and can be run by anyone on their own charts.
 
 #### Providing Custom Test Values
 
@@ -61,11 +52,11 @@ This check is there to ensure that PRs are spot checked for any nefarious code. 
 ## Repo Syncing
 
 The syncing of charts to the stable and incubator repos happens from a Jenkins instance that is polling for changes
-to the master branch. On each change it will use the [test/repo-sync.sh](https://github.com/kubernetes/charts/blob/master/test/repo-sync.sh)
+to the master branch. On each change it will use the [test/repo-sync.sh](https://github.com/helm/charts/blob/master/test/repo-sync.sh)
 to update the public repositories. The procedure is as follows:
 
-1. [Setup Helm](https://github.com/kubernetes/charts/blob/master/test/repo-sync.sh#L16)
-1. [Authenticate to Google Cloud so that we can upload to the Cloud Storage bucket that hosts the charts](https://github.com/kubernetes/charts/blob/master/test/repo-sync.sh#L27)
+1. [Setup Helm](https://github.com/helm/charts/blob/master/test/repo-sync.sh#L16)
+1. [Authenticate to Google Cloud so that we can upload to the Cloud Storage bucket that hosts the charts](https://github.com/helm/charts/blob/master/test/repo-sync.sh#L27)
 1. For the stable and incubator folders:
    - Download the existing index.yaml from the repository
    - Run `helm dep build` on all the charts in the current repository

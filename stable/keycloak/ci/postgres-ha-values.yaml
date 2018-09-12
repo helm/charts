@@ -1,0 +1,5 @@
+keycloak:
+  replicas: 3
+  persistence:
+    deployPostgres: true
+    dbVendor: postgres

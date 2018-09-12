@@ -1,0 +1,77 @@
+{{- if and .Values.configuration.backupStorageProvider.name .Values.configuration.backupStorageProvider.bucket -}}
+{{- $provider := .Values.configuration.backupStorageProvider.name -}}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "ark.fullname" . }}
+  labels:
+    release: {{ .Release.Name }}
+    app: {{ template "ark.name" . }}
+    chart: {{ template "ark.chart" . }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      release: {{ .Release.Name }}
+      app: {{ template "ark.name" . }}
+  template:
+    metadata:
+      labels:
+        release: {{ .Release.Name }}
+        app: {{ template "ark.name" . }}
+    {{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    spec:
+      restartPolicy: Always
+      serviceAccountName: {{ template "ark.serverServiceAccount" . }}
+      containers:
+        - name: ark
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /ark
+          args:
+            - server
+          {{- if eq $provider "azure" }}
+          envFrom:
+            - secretRef:
+                name: {{ template "ark.secretName" . }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: plugins
+              mountPath: /plugins
+        {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+            - name: cloud-credentials
+              mountPath: /credentials
+          env:
+          {{- if eq $provider "aws" }}
+            - name: AWS_SHARED_CREDENTIALS_FILE
+          {{- else }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+          {{- end }}
+              value: /credentials/cloud
+        {{- end }}
+      volumes:
+        {{- if and .Values.credentials.useSecret (or (eq $provider "aws") (eq $provider "gcp")) }}
+        - name: cloud-credentials
+          secret:
+            secretName: {{ template "ark.secretName" . }}
+        {{- end }}
+        - name: plugins
+          emptyDir: {}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end -}}

@@ -19,6 +19,9 @@ spec:
         - name: {{$sec | quote }}
       {{- end }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
       containers:
         - name: {{ template "external-dns.name" . }}
           image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
@@ -32,6 +35,9 @@ spec:
           {{- end }}
           {{- range .Values.domainFilters }}
             - --domain-filter={{ . }}
+          {{- end }}
+          {{- range .Values.zoneIdFilters }}
+            - --zone-id-filter={{ . }}
           {{- end }}
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
@@ -142,5 +148,9 @@ spec:
     {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

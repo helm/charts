@@ -1,0 +1,83 @@
+{{- $lr := .Values.hyperparams.learningrate -}}
+{{- $batchsize := .Values.hyperparams.batchsize -}}
+
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-ps
+  labels:
+    app: {{ template "distributed-tensorflow.name" . }}
+    chart: {{ template "distributed-tensorflow.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: ps
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "distributed-tensorflow.name" . }}
+      release: {{ .Release.Name }}
+      role: ps
+  serviceName: {{ template "distributed-tensorflow.fullname" . }}-ps
+  podManagementPolicy: {{ .Values.ps.podManagementPolicy }}
+  replicas: {{.Values.ps.number}}
+  template:
+    metadata:
+      labels:
+        app: {{ template "distributed-tensorflow.name" . }}
+        chart: {{ template "distributed-tensorflow.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        role: ps
+    spec:
+{{- if .Values.volumes }}
+      volumes:
+{{ toYaml .Values.volumes | indent  6 }}
+{{- end }}
+      containers:
+      - name: ps
+        image: "{{ .Values.ps.image.repository }}:{{ .Values.ps.image.tag }}"
+        imagePullPolicy: {{ .Values.ps.image.pullPolicy }}
+        command:
+        - "python"
+        - "train_distributed.py"
+        - --learning_rate
+        - {{ $lr | quote }}
+        - --batch_size
+        - {{ $batchsize | quote }}
+        env:
+        - name: WORKER_HOSTS
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "distributed-tensorflow.fullname" . }}
+              key: worker.hostList
+        - name: PS_HOSTS
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "distributed-tensorflow.fullname" . }}
+              key: ps.hostList
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: JOB_NAME
+          value: ps
+       {{- if .Values.ps.env }}            
+       {{- range $key, $value := .Values.ps.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+       {{- end }}
+       {{- end }}
+{{- if .Values.ps.privileged }}
+        securityContext:
+          privileged: true
+{{- end }}
+        ports:
+        - containerPort: {{ .Values.ps.port }}
+{{- if .Values.volumeMounts }}
+        volumeMounts:
+{{ toYaml .Values.volumeMounts | indent 8 }}
+{{- end }}
+{{- if .Values.ps.resources }}
+        resources:
+{{ toYaml .Values.ps.resources | indent 10 }}
+{{- end }}

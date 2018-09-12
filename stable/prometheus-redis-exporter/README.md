@@ -38,19 +38,25 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters and their default values.
+The following table lists the configurable parameters and their default values.
 
 | Parameter              | Description                                         | Default                   |
 | ---------------------- | --------------------------------------------------- | ------------------------- |
 | `replicaCount`         | desired number of prometheus-redis-exporter pods    | `1`                       |
 | `image.repository`     | prometheus-redis-exporter image repository          | `oliver006/redis_exporter`|
-| `image.tag`            | prometheus-redis-exporter image tag                 | `v0.16.0`                 |
+| `image.tag`            | prometheus-redis-exporter image tag                 | `v0.21.1`                 |
 | `image.pullPolicy`     | image pull policy                                   | `IfNotPresent`            |
+| `extraArgs`            | extra arguments for the binary; possible values [here](https://github.com/oliver006/redis_exporter#flags)| {}
+| `env`                  | additional environment variables in YAML format. Can be used to pass credentials as env variables (via secret) as per the image readme [here](https://github.com/oliver006/redis_exporter#environment-variables) | {} |
 | `resources`            | cpu/memory resource requests/limits                 | {}                        |
 | `service.type`         | desired service type                                | `ClusterIP`               |
 | `service.port`         | service external port                               | `9121`                    |
 | `redisAddress`         | address of one or more redis nodes, comma separated | `redis://myredis:6379`    |
 | `annotations`          | pod annotations for easier discovery                | {}                        |
+| `rbac.create`           | Specifies whether RBAC resources should be created.| `true` |
+| `rbac.pspEnabled`       | Specifies whether a PodSecurityPolicy should be created.| `true` |
+| `serviceAccount.create` | Specifies whether a service account should be created.| `true` |
+| `serviceAccount.name`   | Name of the service account.|        |
 
 For more information please refer to the [redis_exporter](https://github.com/oliver006/redis_exporter) documentation.
 

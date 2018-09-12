@@ -94,8 +94,8 @@ spec:
       - name: transactionlog
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          {{- if .Values.persistence.existingLogClaim }}
-          claimName: {{ .Values.persistence.existingLogClaim }}
+          {{- if .Values.persistence.existingTransactionLogClaim }}
+          claimName: {{ .Values.persistence.existingTransactionLogClaim }}
           {{- else }}
           claimName: {{ template "mssql.fullname" . }}-translog
           {{- end }}

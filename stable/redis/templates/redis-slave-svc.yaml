@@ -9,8 +9,8 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-{{- if .Values.master.service.annotations }}
-{{ toYaml .Values.master.service.annotations | indent 4 }}
+{{- if .Values.slave.service.annotations }}
+{{ toYaml .Values.slave.service.annotations | indent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.slave.service.type }}
@@ -22,6 +22,9 @@ spec:
   - name: redis
     port: 6379
     targetPort: redis
+    {{- if .Values.slave.service.nodePort }}
+    nodePort: {{ .Values.slave.service.nodePort }}
+    {{- end }}
   selector:
     app: {{ template "redis.name" . }}
     release: "{{ .Release.Name }}"

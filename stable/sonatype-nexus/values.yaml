@@ -2,7 +2,7 @@ replicaCount: 1
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
-  imageTag: 3.11.0
+  imageTag: 3.12.1
   imagePullPolicy: IfNotPresent
   env:
     - name: install4jAddVmParams
@@ -25,16 +25,25 @@ nexus:
   dockerPort: 5003
   nexusPort: 8081
   serviceType: NodePort
+  # annotations: {}
   # securityContext:
   #   fsGroup: 2000
   livenessProbe:
     initialDelaySeconds: 30
     periodSeconds: 30
     failureThreshold: 6
+    path: /
   readinessProbe:
     initialDelaySeconds: 30
     periodSeconds: 30
     failureThreshold: 6
+    path: /
+  # hostAliases allows the modification of the hosts file inside a container
+  hostAliases: []
+  # - ip: "192.168.1.10"
+  #   hostnames:
+  #   - "example.com"
+  #   - "www.example.com"
 
 nexusProxy:
   imageName: quay.io/travelaudience/docker-nexus-proxy
@@ -54,7 +63,13 @@ nexusProxy:
   # secrets:
   #   keystore: ""
   #   password: ""
-
+  resources: {}
+    # requests:
+      # cpu: 100m
+      # memory: 256Mi
+    # limits:
+      # cpu: 200m
+      # memory: 512Mi
 persistence:
   enabled: true
   accessMode: ReadWriteOnce

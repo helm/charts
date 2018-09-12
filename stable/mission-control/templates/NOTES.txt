@@ -1,0 +1,33 @@
+Congratulations. You have just deployed JFrog Mission Control!
+
+#### THIS CHART IS DEPRECATED! ####
+
+1. Get the JFrog Mission Control URL by running these commands:
+
+   {{- if .Values.ingress.enabled }}
+   {{- range .Values.ingress.hosts }}
+     http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
+   {{- end }}
+   {{- else if contains "NodePort" .Values.missionControl.service.type }}
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "mission-control.fullname" . }})
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo http://$NODE_IP:$NODE_PORT/
+
+   {{- else if contains "LoadBalancer"  .Values.missionControl.service.type }}
+
+   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+         You can watch the status of the service by running 'kubectl get svc -w {{ template "mission-control.fullname" . }}'
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "mission-control.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   echo http://$SERVICE_IP:{{ .Values.missionControl.externalPort }}/
+
+   {{- else if contains "ClusterIP" .Values.missionControl.service.type }}
+   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ .Values.missionControl.name }}" -o jsonpath="{.items[0].metadata.name}")
+   echo http://127.0.0.1:{{ .Values.missionControl.externalPort }}
+   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.missionControl.externalPort }}:{{ .Values.missionControl.internalPort }}
+
+   {{- end }}
+
+2. Open JFrog Mission Control in your browser
+   Default credential for JFrog Mission Control:
+   user: admin
+   password: password

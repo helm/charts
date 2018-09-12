@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hlf-ca.fullname" . }}
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "hlf-ca.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+{{ include "labels.standard" . | indent 8 }}
+    spec:
+      volumes:
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "hlf-ca.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        {{- if (and .Values.config.mountTLS .Values.ingress.tls) }}
+        - name: tls-secret
+          secret:
+            secretName: {{ (index .Values.ingress.tls 0).secretName }}
+        {{- end }}
+        - name: ca-config
+          configMap:
+            name: {{ include "hlf-ca.fullname" . }}--config
+      containers:
+        - name: ca
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # TODO: Add liveness and readiness probes (for health checks)
+          command:
+            - sh
+            - -c
+            - |
+              while [ -z ${DB_PASSWORD+x} ];
+              do
+                echo "\033[0;31m DB_PASSWORD environmental variable must contain a value (check that you specified 'db.chart' in values.yaml) \033[0m"
+                sleep 60
+              done
+
+              export DB_DATASOURCE="host=${DB_HOST} port=${DB_PORT} user=${DB_USERNAME} password=${DB_PASSWORD} dbname=${DB_DATABASE} sslmode=${DB_SSL}"
+              mkdir -p $FABRIC_CA_HOME
+              cp /var/hyperledger/ca_config/ca.yaml $FABRIC_CA_HOME/fabric-ca-server-config.yaml
+              sed -i "s/<<<ADMIN>>>/${CA_ADMIN}/g" ${FABRIC_CA_HOME}/fabric-ca-server-config.yaml
+              sed -i "s/<<<ADMINPW>>>/${CA_PASSWORD}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
+              sed -i "s/<<<DB_TYPE>>>/${DB_TYPE}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
+              sed -i "s/<<<DB_DATASOURCE>>>/${DB_DATASOURCE}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
+
+              {{- if .Values.config.intermediate }}
+              echo ">\033[0;33m Adding Parent CA (typically a Root CA) values to $FABRIC_CA_HOME/fabric-ca-server-config.yaml \033[0m"
+              sed -i "s/<<<PARENT_ADMIN>>>/${PARENT_CA_ADMIN}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
+              sed -i "s/<<<PARENT_ADMINPW>>>/${PARENT_CA_PASSWORD}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
+              {{- end}}
+
+              echo ">\033[0;35m fabric-ca-server start \033[0m"
+              fabric-ca-server start
+          envFrom:
+            - secretRef:
+                name: {{ include "hlf-ca.fullname" . }}
+            - configMapRef:
+                name: {{ include "hlf-ca.fullname" . }}--db
+            - configMapRef:
+                name: {{ include "hlf-ca.fullname" . }}--ca
+          env:
+            # Database environmental variable
+            {{- if .Values.db.chart }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.db.chart | quote }}
+                  key: postgres-password
+            {{- end }}
+            {{- if .Values.config.intermediate }}
+            - name: PARENT_CA_ADMIN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.intermediate.parent.chart | quote }}
+                  key: CA_ADMIN
+            - name: PARENT_CA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.intermediate.parent.chart | quote }}
+                  key: CA_PASSWORD
+            {{- end}}
+          ports:
+            - name: ca-port
+              containerPort: 7054
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /var/hyperledger
+            - name: ca-config
+              readOnly: true
+              mountPath: /var/hyperledger/ca_config
+            {{- if (and .Values.config.mountTLS .Values.ingress.tls) }}
+            - name: tls-secret
+              readOnly: true
+              mountPath: /var/hyperledger/tls_secret
+            {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

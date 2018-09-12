@@ -1,0 +1,138 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "falco.fullname" . }}
+  labels:
+    app: {{ template "falco.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      name: {{ template "falco.fullname" .}}
+      labels:
+        app: {{ template "falco.fullname" .}}
+        role: security
+    spec:
+      serviceAccountName: {{ template "falco.serviceAccountName" .}}
+      {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.hostNetwork) }}
+      hostNetwork: true
+      {{- end }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          securityContext:
+            privileged: true
+          args: [ "/usr/bin/falco", "-K", "/var/run/secrets/kubernetes.io/serviceaccount/token", "-k", "https://kubernetes.default", "-pk"]
+          {{- if .Values.ebpf.enabled }}
+          env:
+            - name: SYSDIG_BPF_PROBE
+              value:
+          {{- end }}
+          volumeMounts:
+            - mountPath: /host/var/run/docker.sock
+              name: docker-socket
+            - mountPath: /host/dev
+              name: dev-fs
+            - mountPath: /host/proc
+              name: proc-fs
+              readOnly: true
+            - mountPath: /host/boot
+              name: boot-fs
+              readOnly: true
+            - mountPath: /host/lib/modules
+              name: lib-modules
+              readOnly: true
+            - mountPath: /host/usr
+              name: usr-fs
+              readOnly: true
+            - mountPath: /dev/shm
+              name: dshm
+            {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
+            - mountPath: /host/etc
+              name: etc-fs
+              readOnly: true
+            {{- end }}
+            - mountPath: /etc/falco
+              name: config-volume
+            {{- if .Values.customRules }}
+            - mountPath: /etc/falco/rules.d
+              name: rules-volume
+            {{- end }}
+            {{- if .Values.integrations.natsOutput.enabled }}
+            - mountPath: /var/run/falco/
+              name: shared-pipe
+              readOnly: false
+            {{- end }}
+      {{- if .Values.integrations.natsOutput.enabled }}
+        - name: {{ .Chart.Name }}-nats
+          image: sysdig/falco-nats:latest
+          imagePullPolicy: Always
+          args: [ "/bin/falco-nats", "-s", {{ .Values.integrations.natsOutput.natsUrl | quote }}]
+          volumeMounts:
+            - mountPath: /var/run/falco/
+              name: shared-pipe
+      initContainers:
+          - name: init-pipe
+            image: busybox
+            command: ['mkfifo','/var/run/falco/nats']
+            volumeMounts:
+            - mountPath: /var/run/falco/
+              name: shared-pipe
+              readOnly: false
+      {{- end }}
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+        - name: docker-socket
+          hostPath:
+            path: /var/run/docker.sock
+        - name: dev-fs
+          hostPath:
+            path: /dev
+        - name: proc-fs
+          hostPath:
+            path: /proc
+        - name: boot-fs
+          hostPath:
+            path: /boot
+        - name: lib-modules
+          hostPath:
+            path: /lib/modules
+        - name: usr-fs
+          hostPath:
+            path: /usr
+        {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
+        - name: etc-fs
+          hostPath:
+            path: /etc
+        {{- end }}
+        - name: config-volume
+          configMap:
+            name: {{ template "falco.fullname" . }}
+            items:
+              - key: falco.yaml
+                path: falco.yaml
+              - key: falco_rules.yaml
+                path: falco_rules.yaml
+              - key: falco_rules.local.yaml
+                path: falco_rules.local.yaml
+        {{- if .Values.customRules }}
+        - name: rules-volume
+          configMap:
+            name: {{ template "falco.fullname" . }}-rules
+        {{- end }}
+        {{- if .Values.integrations.natsOutput.enabled }}
+        - name: shared-pipe
+          emptyDir: {}
+        {{- end }}
+
+  updateStrategy:
+    type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}

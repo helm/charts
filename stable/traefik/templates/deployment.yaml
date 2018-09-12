@@ -1,4 +1,8 @@
-apiVersion: extensions/v1beta1
+{{- if semverCompare "^1.9-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: apps/v1
+{{- else }}
+apiVersion: apps/v1beta1
+{{- end }}
 kind: Deployment
 metadata:
   name: {{ template "traefik.fullname" . }}
@@ -13,11 +17,15 @@ spec:
     matchLabels:
       app: {{ template "traefik.name" . }}
       release: {{ .Release.Name }}
+  {{- if .Values.deploymentStrategy }}
+  strategy:
+{{ toYaml .Values.deploymentStrategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-      {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
+      {{- if and (.Values.tolerations) (semverCompare "<1.6-0" .Capabilities.KubeVersion.GitVersion) }}
         scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
       {{- end }}
       {{- range $key, $value := .Values.deployment.podAnnotations }}
@@ -82,7 +90,7 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: config
-        {{- if .Values.ssl.enabled }}
+        {{- if and .Values.ssl.enabled (not .Values.ssl.upstream) }}
         - mountPath: /ssl
           name: ssl
         {{- end }}
@@ -120,7 +128,7 @@ spec:
       - name: config
         configMap:
           name: {{ template "traefik.fullname" . }}
-      {{- if .Values.ssl.enabled }}
+      {{- if and .Values.ssl.enabled (not .Values.ssl.upstream) }}
       - name: ssl
         secret:
           secretName: {{ template "traefik.fullname" . }}-default-cert
@@ -134,7 +142,7 @@ spec:
         emptyDir: {}
       {{- end }}
       {{- end }}
-      {{- if and (.Values.tolerations) (ge .Capabilities.KubeVersion.Minor "6") }}
+      {{- if and (.Values.tolerations) (semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion) }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}
       {{- end }}

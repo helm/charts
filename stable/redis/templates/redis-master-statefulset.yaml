@@ -11,20 +11,25 @@ spec:
   selector:
     matchLabels:
       release: "{{ .Release.Name }}"
+      chart: {{ template "redis.chart" . }}
       role: master
       app: {{ template "redis.name" . }}
-  serviceName: "redis-master"  
+  serviceName: "redis-master"
   template:
     metadata:
       labels:
         release: "{{ .Release.Name }}"
+        chart: {{ template "redis.chart" . }}
         role: master
         app: {{ template "redis.name" . }}
 {{- if .Values.master.podLabels }}
 {{ toYaml .Values.master.podLabels | indent 8 }}
 {{- end }}
-      {{- if .Values.master.podAnnotations }}
       annotations:
+        checksum/health: {{ include (print $.Template.BasePath "/health-configmap.yaml") . | sha256sum }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- if .Values.master.podAnnotations }}
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
       {{- end }}
     spec:
@@ -39,6 +44,11 @@ spec:
         fsGroup: {{ .Values.master.securityContext.fsGroup }}
         runAsUser: {{ .Values.master.securityContext.runAsUser }}
       {{- end }}
+      serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
+      {{- with .Values.master.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       {{- if .Values.master.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.master.nodeSelector | indent 8 }}
@@ -46,6 +56,9 @@ spec:
       {{- if .Values.master.tolerations }}
       tolerations:
 {{ toYaml .Values.master.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.master.schedulerName }}
+      schedulerName: "{{ .Values.master.schedulerName }}"
       {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
@@ -71,9 +84,9 @@ spec:
         {{- else }}
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
+        {{- end }}
         - name: REDIS_PORT
           value: {{ .Values.master.port | quote }}
-        {{- end }}
         - name: REDIS_DISABLE_COMMANDS
           value: {{ .Values.master.disableCommands }}
         {{- if .Values.master.extraFlags }}
@@ -92,8 +105,9 @@ spec:
           failureThreshold: {{ .Values.master.livenessProbe.failureThreshold }}
           exec:
             command:
-            - redis-cli
-            - ping
+            - sh
+            - -c
+            - /health/ping_local.sh
         {{- end }}
         {{- if .Values.master.readinessProbe.enabled}}
         readinessProbe:
@@ -104,26 +118,44 @@ spec:
           failureThreshold: {{ .Values.master.readinessProbe.failureThreshold }}
           exec:
             command:
-            - redis-cli
-            - ping
+            - sh
+            - -c
+            - /health/ping_local.sh
         {{- end }}
         resources:
 {{ toYaml .Values.master.resources | indent 10 }}
         volumeMounts:
+        - name: health
+          mountPath: /health
         - name: redis-data
           mountPath: {{ .Values.master.persistence.path }}
           subPath: {{ .Values.master.persistence.subPath }}
-  {{- if not .Values.master.persistence.enabled }}
+        {{- if .Values.configmap }}
+        - name: config
+          mountPath: /opt/bitnami/redis/etc/redis.conf
+          subPath: redis.conf
+        {{- end }}
       volumes:
+      - name: health
+        configMap:
+          name: {{ template "redis.fullname" . }}-health
+          defaultMode: 0755
+      {{- if .Values.configmap }}
+      - name: config
+        configMap:
+          name: {{ template "redis.fullname" . }}
+      {{- end }}
+      {{- if not .Values.master.persistence.enabled }}
       - name: "redis-data"
         emptyDir: {}
-  {{- else }}
-    {{- if .Values.persistence.existingClaim }}
-      volumes:
+      {{- else }}
+      {{- if .Values.persistence.existingClaim }}
       - name: "redis-data"
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim }}
-    {{- else }}
+      {{- end }}
+      {{- end }}
+  {{- if and .Values.master.persistence.enabled (not .Values.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
         name: redis-data
@@ -148,5 +180,10 @@ spec:
         storageClassName: {{ .Values.master.persistence.storageClass | quote }}
       {{- end }}
       {{- end }}
-    {{- end }}
   {{- end }}
+  updateStrategy:
+    type: {{ .Values.master.statefulset.updateStrategy }}
+    {{- if .Values.master.statefulset.rollingUpdatePartition }}
+    rollingUpdate:
+      partition: {{ .Values.master.statefulset.rollingUpdatePartition }}
+    {{- end }}

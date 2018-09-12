@@ -15,11 +15,13 @@ resources:
     limits:
       memory: 200Mi
 
-## Node labels and tolerations for pod assignment
+## Node labels, tolerations, and affinities for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-nodeSelector: {}
-tolerations: []
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+podAntiAffinity:
+  sentinel: soft
+  server: soft
 
 ## Redis image version
 redis_image: quay.io/smile/redis:4.0.8r0

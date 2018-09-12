@@ -1,5 +1,9 @@
 # Keycloak
 
+****
+**NOTE: This chart has been DEPRECATED. Please use stable/keycloak.**
+****
+
 [Keycloak](http://www.keycloak.org/) is an open source identity and access management for modern applications and services.
 
 ## TL;DR;
@@ -42,21 +46,30 @@ The following table lists the configurable parameters of the Keycloak chart and 
 
 Parameter | Description | Default
 --- | --- | ---
-`hyperkube.image.repository` | Hyperkube image repository | `quay.io/coreos/hyperkube`
-`hyperkube.image.tag` | Hyperkube image tag | `v1.8.1_coreos.0`
-`hyperkube.image.pullPolicy` | Hyperkube image pull policy | `IfNotPresent`
+`init.image.repository` | Init image repository | `alpine`
+`init.image.tag` | Init image tag | `3.6`
+`init.image.pullPolicy` | Init image pull policy | `IfNotPresent`
 `keycloak.replicas` | The number of Keycloak replicas | `1`
 `keycloak.image.repository` | The Keycloak image repository | `jboss/keycloak`
-`keycloak.image.tag` | The Keycloak image tag | `3.4.0.Final`
+`keycloak.image.tag` | The Keycloak image tag | `3.4.3.Final`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
 `keycloak.image.pullSecrets`| Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods) |
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
 `keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
-`keycloak.additionalEnv` | Allows the specification of additional environment variables for Keycloak | `[]`
+`keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak | `[]`
+`keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes | `[]`
+`keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes | `[]`
+`keycloak.podDisruptionBudget` | Pod disruption budget | `{}`
 `keycloak.resources` | Pod resource requests and limits | `{}`
-`keycloak.podAntiAffinity` | Pod anti-affinity (`soft` or `hard`) | `soft`
+`keycloak.affinity` | Pod affinity | ``
 `keycloak.nodeSelector` | Node labels for pod assignment | `{}`
 `keycloak.tolerations` | Node taints to tolerate | `[]`
+`keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
+`keycloak.preStartScript` | Custom script to run before Keycloak starts up | ``
+`keycloak.livenessProbe.initialDelaySeconds` | Liveness Probe `initialDelaySeconds` | `120`
+`keycloak.livenessProbe.timeoutSeconds` | Liveness Probe `timeoutSeconds` | `5`
+`keycloak.readinessProbe.initialDelaySeconds` | Readiness Probe `initialDelaySeconds` | `30`
+`keycloak.readinessProbe.timeoutSeconds` | Readiness Probe `timeoutSeconds` | `1`
 `keycloak.cli.nodeIdentifier` | WildFly CLI script for setting the node identifier | See `values.yaml`
 `keycloak.cli.logging` | WildFly CLI script for logging configuration | See `values.yaml`
 `keycloak.cli.reverseProxy` | WildFly CLI script for reverse proxy configuration | See `values.yaml`
@@ -67,14 +80,11 @@ Parameter | Description | Default
 `keycloak.service.type` | The service type | `ClusterIP`
 `keycloak.service.port` | The service port | `80`
 `keycloak.service.nodePort` | The node port used if the service is of type `NodePort` | `""`
-`keycloak.ingress.enabled` | If true, an ingress is be created | `false`
-`keycloak.ingress.path` | The ingress path | `/`
-`keycloak.ingress.annotations` | Annotations for the ingress | `{}`
-`keycloak.ingress.hosts` | A list of hosts for the ingress | `[keycloak.example.com]`
-`keycloak.ingress.tls.enabled` | If true, tls is enabled for the ingress | `false`
-`keycloak.ingress.tls.existingSecret` | If tls is enabled, uses an existing secret with this name; otherwise a secret is created | `false`
-`keycloak.ingress.tls.secretContents` | Contents for the tls secret | `{}`
-`keycloak.ingress.tls.secretAnnotations` | Annotations for the newly created tls secret | `{}`
+`keycloak.ingress.enabled` | if `true`, an ingress is created | `false`
+`keycloak.ingress.annotations` | annotations for the ingress | `{}`
+`keycloak.ingress.path` | if `true`, an ingress is created | `/`
+`keycloak.ingress.hosts` | a list of ingress hosts | `[keycloak.example.com]`
+`keycloak.ingress.tls` | a list of [IngressTLS](https://v1-9.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#ingresstls-v1beta1-extensions) items | `[]`
 `keycloak.persistence.deployPostgres` | If true, the PostgreSQL chart is installed | `true`
 `keycloak.persistence.existingSecret` | Name of an existing secret to be used for the database password (if `keycloak.persistence.deployPostgres=false`). Otherwise a new secret is created | `""`
 `keycloak.persistence.existingSecretKey` | The key for the database password in the existing secret (if `keycloak.persistence.deployPostgres=false`) | `password`
@@ -87,9 +97,6 @@ Parameter | Description | Default
 `postgresql.postgresUser` | The PostgreSQL user (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
 `postgresql.postgresPassword` | The PostgreSQL password (if `keycloak.persistence.deployPostgres=true`) | `""`
 `postgresql.postgresDatabase` | The PostgreSQL database (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
-`rbac.create` | Specifies whether RBAC resources should be created | `true`
-`serviceAccount.create` | Specifies whether a ServiceAccount should be created | `true`
-`serviceAccount.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `""`
 `test.image.repository` | Test image repository | `unguiculus/docker-python3-phantomjs-selenium`
 `test.image.tag` | Test image tag | `v1`
 `test.image.pullPolicy` | Test image pull policy | `IfNotPresent`
@@ -144,7 +151,7 @@ See also:
 
 ```yaml
 keycloak:
-  additionalEnv:
+  extraEnv:
     - name: KEYCLOAK_LOGLEVEL
       value: : DEBUG
     - name: WILDFLY_LOGLEVEL

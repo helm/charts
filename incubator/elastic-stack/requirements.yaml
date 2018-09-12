@@ -1,0 +1,27 @@
+dependencies:
+- name: elasticsearch
+  version: ^1.0.0
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+- name: kibana
+  version: ^0.6.0
+  repository: https://kubernetes-charts.storage.googleapis.com/
+- name: logstash
+  version: ^0.6.0
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  condition: logstash.enabled
+- name: fluentd
+  version: ^0.1.0
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  condition: fluentd.enabled
+- name: fluent-bit
+  version: ^0.6.0
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: fluent-bit.enabled
+- name: nginx-ldapauth-proxy
+  version: ^0.1.0
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: nginx-ldapauth-proxy.enabled
+- name: elasticsearch-curator
+  version: ^0.2.0
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  condition: elasticsearch-curator.enabled

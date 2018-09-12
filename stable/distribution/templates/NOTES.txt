@@ -1,0 +1,29 @@
+Congratulations. You have just deployed JFrog Distribution!
+
+#### THIS CHART IS DEPRECATED! ####
+
+1. Get the Distribution URL by running these commands:
+
+   {{- if contains "NodePort" .Values.distribution.service.type }}
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "distribution.fullname" . }})
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo http://$NODE_IP:$NODE_PORT/
+
+   {{- else if contains "LoadBalancer"  .Values.distribution.service.type }}
+
+   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+         You can watch the status of the service by running 'kubectl get svc -w {{ template "distribution.fullname" . }}'
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "distribution.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   echo http://$SERVICE_IP:{{ .Values.distribution.externalPort }}/
+
+   {{- else if contains "ClusterIP" .Values.distribution.service.type }}
+   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ .Values.distribution.name }}" -o jsonpath="{.items[0].metadata.name}")
+   echo http://127.0.0.1:{{ .Values.distribution.externalPort }}
+   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.distribution.externalPort }}:{{ .Values.distribution.internalPort }}
+
+   {{- end }}
+
+2. Open Distribution in your browser
+   Default credential for Distribution:
+   user: admin
+   password: password

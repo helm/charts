@@ -1,0 +1,5 @@
+1. Get the application URL by running these commands:
+
+*** NOTE: It may take a few minutes for the statefulset to be available
+
+*** you can watch the status of statefulset by running 'kubectl get sts --namespace {{ .Release.Namespace }} -w {{ template "horovod.fullname" . }}' ***

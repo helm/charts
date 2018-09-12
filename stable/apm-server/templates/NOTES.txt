@@ -1,0 +1,3 @@
+To verify that apm-server has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "apm-server.name" . }},release={{ .Release.Name }}"

@@ -29,11 +29,12 @@ spec:
     spec:
       containers:
       - name: {{ template "kubewatch.name" . }}
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        image: {{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
         - name: {{ template "kubewatch.name" . }}-config-map
-          mountPath: /root
+          mountPath: /opt/bitnami/kubewatch/.kubewatch.yaml
+          subPath: .kubewatch.yaml
         resources:
 {{ toYaml .Values.resources | indent 10 }}
     {{- if .Values.affinity }}

@@ -1,6 +1,6 @@
 # kubewatch
 
-[kubewatch](https://github.com/skippbox/kubewatch) is a Kubernetes watcher that currently publishes notification to Slack. Run it in your k8s cluster, and you will get event notifications in a slack channel.
+[kubewatch](https://github.com/bitnami-labs/kubewatch) is a Kubernetes watcher that currently publishes notification to Slack. Run it in your k8s cluster, and you will get event notifications in a slack channel.
 
 
 ## TL;DR;
@@ -35,34 +35,43 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the kubewatch chart and their default values.
+The following table lists the configurable parameters of the kubewatch chart and their default values.
 
-Parameter | Description | Default
---- | --- | ---
-`affinity` | node/pod affinities | None
-`image.repository` | Image repository | `tuna/kubewatch`
-`image.tag` | Image tag | `v0.0.3`
-`image.pullPolicy` | Image pull policy | `IfNotPresent`
-`nodeSelector` | node labels for pod assignment | `{}`
-`podAnnotations` | annotations to add to each pod | `{}`
-`podLabels` | additional labesl to add to each pod | `{}`
-`rbac.create` | If true, create & use RBAC resources | `true`
-`serviceAccount.create` | If true, create a serviceAccount | `true`
-`serviceAccount.name` | existing ServiceAccount to use (ignored if rbac.create=true) | ``
-`replicaCount` | desired number of pods | `1`
-`resourcesToWatch` | list of resources which kubewatch should watch and notify slack | `{pod: true, deployment: true}`
-`resourcesToWatch.pod` | watch changes to [Pods](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) | `true`
-`resourcesToWatch.deployment` | watch changes to [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) | `true`
-`resourcesToWatch.replicationcontroller` | watch changes to [ReplicationControllers](https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/) | `false`
-`resourcesToWatch.replicaset` | watch changes to [ReplicaSets](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/) | `false`
-`resourcesToWatch.daemonset` | watch changes to [DaemonSets](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) | `false`
-`resourcesToWatch.services` | watch changes to [Services](https://kubernetes.io/docs/concepts/services-networking/service/) | `false`
-`resourcesToWatch.job` | watch changes to [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/) | `false`
-`resourcesToWatch.persistentvolume` | watch changes to [PersistentVolumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) | `false`
-`resources` | pod resource requests & limits | `{}`
-`slack.channel` | slack channel to notify | `""`
-`slack.token` | slack API token | `""`
-`tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]`
+|               Parameter                  |        Description                   |              Default              |
+| ---------------------------------------- | ------------------------------------ | --------------------------------- |
+| `affinity`                               | node/pod affinities                  | None                              |
+| `image.registry`                         | Image registry                       | `docker.io`                       |
+| `image.repository`                       | Image repository                     | `bitnami/kubewatch`               |
+| `image.tag`                              | Image tag                            | `{VERSION}`                       |
+| `image.pullPolicy`                       | Image pull policy                    | `Always`                          |
+| `nodeSelector`                           | node labels for pod assignment       | `{}`                              |
+| `podAnnotations`                         | annotations to add to each pod       | `{}`                              |
+| `podLabels`                              | additional labesl to add to each pod | `{}`                              |
+| `replicaCount`                           | desired number of pods               | `1`                               |
+| `rbac.create`                            | If true, create & use RBAC resources | `true`                            |
+| `serviceAccount.create`                  | If true, create a serviceAccount     | `true`                            |
+| `serviceAccount.name`                    | existing ServiceAccount to use (ignored if rbac.create=true) | ``        | 
+| `resources`                              | pod resource requests & limits       | `{}`                              |
+| `slack.channel`                          | Slack channel to notify              | `""`                              |
+| `slack.token`                            | Slack API token                      | `""`                              |
+| `hipchat.url`                            | HipChat URL                          | `""`                              |
+| `hipchat.room`                           | HipChat room to notify               | `""`                              |
+| `hipchat.token`                          | HipChat token                        | `""`                              |
+| `mattermost.channel`                     | Mattermost channel to notify         | `""`                              |
+| `mattermost.username`                    | Mattermost user to notify            | `""`                              |
+| `mattermost.url`                         | Mattermost URL                       | `""`                              |
+| `flock.url`                              | Flock URL                            | `""`                              |
+| `webhook.url`                            | Webhook URL                          | `""`                              |
+| `tolerations`                            | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                | `[]`                              |
+| `resourcesToWatch`                       | list of resources which kubewatch should watch and notify slack                                                             | `{pod: true, deployment: true}`   |
+| `resourcesToWatch.pod`                   | watch changes to [Pods](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/)                                   | `true`                            |
+| `resourcesToWatch.deployment`            | watch changes to [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)                       | `true`                            |
+| `resourcesToWatch.replicationcontroller` | watch changes to [ReplicationControllers](https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/) | `false`                           |
+| `resourcesToWatch.replicaset`            | watch changes to [ReplicaSets](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/)                       | `false`                           |
+| `resourcesToWatch.daemonset`             | watch changes to [DaemonSets](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/)                         | `false`                           |
+| `resourcesToWatch.services`              | watch changes to [Services](https://kubernetes.io/docs/concepts/services-networking/service/)                               | `false`                           |
+| `resourcesToWatch.job`                   | watch changes to [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/)                  | `false`                           |
+| `resourcesToWatch.persistentvolume`      | watch changes to [PersistentVolumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)                       | `false`                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

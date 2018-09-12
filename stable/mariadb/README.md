@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the MariaDB chart and their default values.
+The following table lists the configurable parameters of the MariaDB chart and their default values.
 
 |             Parameter                     |                     Description                     |                              Default                              |
 |-------------------------------------------|-----------------------------------------------------|-------------------------------------------------------------------|
@@ -53,16 +53,21 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `image.pullPolicy`                        | MariaDB image pull policy                           | `Always` if `imageTag` is `latest`, else `IfNotPresent`           |
 | `image.pullSecrets`                       | Specify image pull secrets                          | `nil` (does not add image pull secrets to deployed pods)          |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
-| `service.port`                            | MySQL service port                                  | `3306`                                                            |
-| `root.password`                           | Password for the `root` user                        | _random 10 character alphanumeric string_                         |
+| `service.port`                            | MySQL service port                                  | `3306`                                                             |
+| `rootUser.password`                       | Password for the `root` user                        | _random 10 character alphanumeric string_                         |
+| `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
 | `db.user`                                 | Username of new user to create                      | `nil`                                                             |
 | `db.password`                             | Password for the new user                           | _random 10 character alphanumeric string if `db.user` is defined_ |
 | `db.name`                                 | Name for new database to create                     | `my_database`                                                     |
-| `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                            |
-| `replication.user`                        | MariaDB replication user                            | `replicator`                                                      |
+| `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                             |
+| `replication.user`                        | MariaDB replication user                            | `replicator`                                                       |
 | `replication.password`                    | MariaDB replication user password                   | _random 10 character alphanumeric string_                         |
+| `master.affinity`                         | Master affinity (in addition to master.antiAffinity when set)  | `{}`                                                   |
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
+| `master.tolerations`                      | List of node taints to tolerate (master)            | `[]`                                                              |
 | `master.persistence.enabled`              | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
+| `master.persistence.existingClaim`        | Provide an existing `PersistentVolumeClaim`  | `nil`
+| `master.persistence.mountPath`            | Configure existing `PersistentVolumeClaim` mount path  | `""`  
 | `master.persistence.annotations`          | Persistent Volume Claim annotations                 | `{}`                                                              |
 | `master.persistence.storageClass`         | Persistent Volume Storage Class                     | ``                                                                |
 | `master.persistence.accessModes`          | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |
@@ -82,7 +87,9 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `master.readinessProbe.successThreshold`  | Minimum consecutive successes for the probe (master)| `1`                                                               |
 | `master.readinessProbe.failureThreshold`  | Minimum consecutive failures for the probe (master) | `3`                                                               |
 | `slave.replicas`                          | Desired number of slave replicas                    | `1`                                                               |
+| `slave.affinity`                          | Slave affinity (in addition to slave.antiAffinity when set) | `{}`                                                      |
 | `slave.antiAffinity`                      | Slave pod anti-affinity policy                      | `soft`                                                            |
+| `slave.tolerations`                       | List of node taints to tolerate for (slave)         | `[]`                                                              |
 | `slave.persistence.enabled`               | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
 | `slave.persistence.annotations`           | Persistent Volume Claim annotations                 | `{}`                                                              |
 | `slave.persistence.storageClass`          | Persistent Volume Storage Class                     | ``                                                                |
@@ -103,7 +110,7 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `slave.readinessProbe.successThreshold`   | Minimum consecutive successes for the probe (slave) | `1`                                                               |
 | `slave.readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe (slave)  | `3`                                                               |
 | `metrics.enabled`                         | Start a side-car prometheus exporter                | `false`                                                           |
-| `metrics.image.registry`                           | Exporter image registry                                 | `docker.io` | 
+| `metrics.image.registry`                           | Exporter image registry                                 | `docker.io` |
 `metrics.image.repository`                           | Exporter image name                                 | `prom/mysqld-exporter`                                            |
 | `metrics.image.tag`                        | Exporter image tag                                  | `v0.10.0`                                                         |
 | `metrics.image.pullPolicy`                 | Exporter image pull policy                          | `IfNotPresent`                                                    |
@@ -128,6 +135,12 @@ $ helm install --name my-release -f values.yaml stable/mariadb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Initialize a fresh instance
+
+The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, they must be located inside the chart folder `files/docker-entrypoint-initdb.d` so they can be consumed as a ConfigMap.
+
+The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
 
 ## Persistence
 

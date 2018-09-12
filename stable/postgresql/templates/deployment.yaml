@@ -7,17 +7,30 @@ metadata:
     chart: {{ template "postgresql.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.deploymentAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
-  template:
+{{- with .Values.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
+{{- end }}
   selector:
     matchLabels:
       app: {{ template "postgresql.name" . }}
       release: {{ .Release.Name }}
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
         app: {{ template "postgresql.name" . }}
         release: {{ .Release.Name }}
+{{- with .Values.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.affinity }}
       affinity:
@@ -42,6 +55,10 @@ spec:
           {{- range $key, $value := default dict .Values.postgresConfig }}
           - -c
           - '{{ $key | snakecase }}={{ $value }}'
+          {{- end }}
+          {{- if .Values.pgHbaConf }}
+          - -c
+          - hba_file=/pg_hba/pg_hba.conf
           {{- end }}
         env:
         - name: POSTGRES_USER
@@ -76,18 +93,18 @@ spec:
             - sh
             - -c
             - exec pg_isready --host $POD_IP
-          initialDelaySeconds: 120
-          timeoutSeconds: 5
-          failureThreshold: 6
+          initialDelaySeconds: {{ .Values.probes.liveness.initialDelay }}
+          timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+          failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
         readinessProbe:
           exec:
             command:
             - sh
             - -c
             - exec pg_isready --host $POD_IP
-          initialDelaySeconds: 5
-          timeoutSeconds: 3
-          periodSeconds: 5
+          initialDelaySeconds: {{ .Values.probes.readiness.initialDelay }}
+          timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+          periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -97,6 +114,11 @@ spec:
         {{- if .Values.usePasswordFile }}
         - name: password-file
           mountPath: /conf
+          readOnly: true
+        {{- end }}
+        {{- if .Values.pgHbaConf }}
+        - name: pg-hba-conf
+          mountPath: /pg_hba
           readOnly: true
         {{- end }}
 {{- if .Values.metrics.enabled }}
@@ -116,6 +138,14 @@ spec:
             mountPath: /conf
             readOnly: true
         {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
@@ -141,6 +171,14 @@ spec:
           items:
             - key: postgres-password
               path: postgres-password
+      {{- end }}
+      {{- if .Values.pgHbaConf }}
+      - name: pg-hba-conf
+        configMap:
+          name: {{ template "postgresql.fullname" . }}
+          items:
+            - key: pg_hba.conf
+              path: pg_hba.conf
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:

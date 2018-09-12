@@ -1,0 +1,13 @@
+apiVersion: v1
+description: A Helm chart for eventruter (https://github.com/heptiolabs/eventrouter)
+name: eventrouter
+version: 0.2.0
+appVersion: 0.2
+home: https://github.com/heptiolabs/eventrouter
+sources:
+- https://github.com/heptiolabs/eventrouter
+keywords:
+- eventrouter
+maintainers:
+  - name: gianrubio
+    email: gianrubio@gmail.com
