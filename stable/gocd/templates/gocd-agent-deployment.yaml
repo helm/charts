@@ -81,6 +81,9 @@ spec:
             - name: AGENT_BOOTSTRAPPER_ARGS
               value: {{ .Values.agent.env.goAgentBootstrapperArgs }}
             {{- end }}
+            {{- if .Values.agent.env.extraEnvVars }}
+{{ toYaml .Values.agent.env.extraEnvVars | indent 12 }}
+            {{- end }}
           {{- if .Values.agent.healthCheck.enabled }}
           livenessProbe:
             httpGet:
