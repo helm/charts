@@ -170,6 +170,8 @@ agent:
     goAgentBootstrapperArgs:
     # agent.env.goAgentBootstrapperJvmArgs is the GoCD Agent bootstrapper JVM args
     goAgentBootstrapperJvmArgs:
+    # agent.env.extraEnvVars is the list of environment variables passed to GoCD Agent
+    extraEnvVars:
   persistence:
     # agent.persistence.enabled is the toggle for agent volume persistence. Change to true if a persistent volume is available and configured manually.
     enabled: false
