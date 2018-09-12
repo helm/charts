@@ -65,12 +65,12 @@ persistence.accessMode | accessMode to use for PVC | ReadWriteOnce
 persistence.storageClass | storage class to use for PVC |
 
 ```console
-$ helm install stable/nginx-ingress --name my-release \
+$ helm install stable/mysqldump --name my-release \
     --set persistentVolumeClaim=name-of-existing-pvc
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install stable/nginx-ingress --name my-release -f values.yaml
+$ helm install stable/mysqldump --name my-release -f values.yaml
 ```
