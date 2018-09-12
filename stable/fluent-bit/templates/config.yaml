@@ -76,6 +76,9 @@ data:
 {{- if .Values.backend.es.time_key }}
         Time_Key {{ .Values.backend.es.time_key }}
 {{- end }}
+{{- if .Values.backend.es.logstash_prefix }}
+        Logstash_Prefix {{ .Values.backend.es.logstash_prefix }}
+{{- end }}
 {{ else if eq .Values.backend.type "splunk" }}
     [OUTPUT]
         Name  splunk
