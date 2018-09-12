@@ -4,3 +4,7 @@ description: TeamCity Server - Powerful Continuous Integration and Continuous De
 name: teamcity-server
 version: 1.0.0
 icon: file://logo.svg
+home: https://www.jetbrains.com/teamcity
+maintainers:
+- name: samuilovaa
+  email: samuilovaa@gmail.com
