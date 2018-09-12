@@ -41,6 +41,8 @@ resources:
     memory: 64Mi
     cpu: 50m
 
+nodeSelector: {}
+
 metrics:
   ## Expose memcached metrics in Prometheus format
   enabled: false
