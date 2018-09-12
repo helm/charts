@@ -1,0 +1,74 @@
+replicaCount: 1
+
+pod:
+  terminationGracePeriodSeconds: 10
+
+image:
+  repository: jetbrains/teamcity-server
+  tag: 2018.1.2-linux
+  pullPolicy: Always
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8111
+  portName: http
+  
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - teamcity.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+env:
+- name: TEAMCITY_SERVER_MEM_OPTS
+  value: "-Xmx2g -XX:MaxPermSize=270m -XX:ReservedCodeCacheSize=350m"
+
+volumeMounts:
+- name: teamcity-server-data
+  mountPath: /data/teamcity_server/datadir
+- name: teamcity-server-logs
+  mountPath: /opt/teamcity/logs
+  
+volumeClaimTemplates:
+- metadata:
+    name: teamcity-server-data
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+- metadata:
+    name: teamcity-server-logs
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
