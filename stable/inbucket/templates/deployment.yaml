@@ -26,29 +26,29 @@ spec:
         - name: {{ template "inbucket.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-          env:
-          {{- range $key, $value := .Values.env }}
-            - name: "{{ $key }}"
-              value: "{{ $value }}"
-          {{- end }}
+          envFrom:
+          - configMapRef:
+              name: {{ template "inbucket.name" . }}-configmap
           ports:
             - name: http
-              containerPort: 10080
+              containerPort: 9000
               protocol: TCP
             - name: smtp
-              containerPort: 10025
+              containerPort: 2500
               protocol: TCP
             - name: pop3
-              containerPort: 10110
+              containerPort: 1100
               protocol: TCP
           livenessProbe:
             tcpSocket:
               port: smtp
             initialDelaySeconds: 10
-            timeoutSeconds: 1
+            timeoutSeconds: 5
           readinessProbe:
             tcpSocket:
               port: smtp
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
