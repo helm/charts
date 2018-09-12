@@ -33,7 +33,28 @@ Stable charts should not depend on charts in incubator.
 
 ## Names and Labels
 
-Resources and labels should follow some conventions. The standard resource metadata should be this:
+Resources and labels should follow some conventions.
+
+**NOTE:** 
+*The guidelines for standard labels have changed, but due to labels being immutable, charts with the
+legacy labels should continue to use the old label-style, while new charts should start using the updated labels.*
+
+Updated labels, [full list with comments can be found in the best practices guide](https://github.com/helm/helm/blob/master/docs/chart_best_practices/labels.md)
+
+
+```yaml
+name: {{ template "myapp.fullname" . }}
+labels:
+  app.kubernetes.io/name: {{ template "name" . }}
+  helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }} <-- this is mutable!
+  app.kubernetes.io/managed-by: {{ .Release.Service }}
+  app.kubernetes.io/instance: {{ .Release.Name }}
+  app.kubernetes.io/version: {{ .Chart.AppVersion }} <-- this is mutable!!
+  app.kubernetes.io/component: [see best practices guide](https://github.com/helm/helm/blob/master/docs/chart_best_practices/labels.md)
+  app.kubernetes.io/part-of: [see best practices guide](https://github.com/helm/helm/blob/master/docs/chart_best_practices/labels.md)
+```
+
+Legacy labels:
 
 ```yaml
 name: {{ template "myapp.fullname" . }}
