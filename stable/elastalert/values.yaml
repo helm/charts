@@ -1,5 +1,6 @@
 # number of replicas to run
 replicaCount: 1
+
 # number of helm release revisions to retain
 revisionHistoryLimit: 5
 
@@ -8,6 +9,12 @@ runIntervalMins: 1
 
 # Default rule buffer duration, in minutes
 bufferTimeMins: 15
+
+# Amount of time to retry and deliver failed alerts (1440 minutes per day)
+alertRetryLimitMins: 2880
+
+# Default time before realerting, in minutes
+realertIntervalMins: ""
 
 # For ES 5: The name of the index which stores elastalert's statuses
 # For ES 6: The prefix of the names of indices which store elastalert's statuses.
@@ -32,6 +39,10 @@ elasticsearch:
   port: 80
   # whether or not to connect to es_host using TLS
   useSsl: "False"
+  # Username if authenticating to ES with basic auth
+  username: ""
+  # Password if authenticating to ES with basic auth
+  password: ""
   # whether or not to verify TLS certificates
   verifyCerts: "True"
   # path to a PEM certificate to use as the client certificate
@@ -89,3 +100,14 @@ rules: {}
   #   pagerduty:
   #   pagerduty_service_key: dummy
   #   pagerduty_client_name: Elastalert Deadman Switch
+
+# Support using node selectors and tolerations
+# nodeSelector:
+#   "node-role.kubernetes.io/infra_worker": "true"
+nodeSelector: {}
+# tolerations:
+#   - key: "node_role"
+#     operator: "Equal"
+#     value: "infra_worker"
+#     effect: "NoSchedule"
+tolerations: []

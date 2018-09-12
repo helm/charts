@@ -14,10 +14,20 @@ data:
     scan_subdirectories: false
     run_every:
       minutes: {{ .Values.runIntervalMins }}
+{{- if .Values.elasticsearch.realertIntervalMins }}
+    realert:
+      minutes: {{ .Values.elasticsearch.realertIntervalMins }}
+{{- end }}
     buffer_time:
       minutes: {{ .Values.bufferTimeMins }}
     es_host: {{ .Values.elasticsearch.host }}
     es_port: {{ .Values.elasticsearch.port }}
+{{- if .Values.elasticsearch.username }}
+    es_username: {{ .Values.elasticsearch.username }}
+{{- end }}
+{{- if .Values.elasticsearch.password }}
+    es_password: {{ .Values.elasticsearch.password }}
+{{- end }}
     writeback_index: {{ .Values.writebackIndex }}
     use_ssl: {{ .Values.elasticsearch.useSsl }}
     verify_certs: {{ .Values.elasticsearch.verifyCerts }}
@@ -25,4 +35,4 @@ data:
     client_key: {{ .Values.elasticsearch.clientKey }}
     ca_certs: {{ .Values.elasticsearch.caCerts }}
     alert_time_limit:
-      days: 2
+      minutes: {{ .Values.alertRetryLimitMins }}
