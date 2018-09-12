@@ -83,3 +83,7 @@ spec:
       volumes:
 {{ tpl . $ | indent 6 }}
 {{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | trim | indent 8}}
+{{- end }}
