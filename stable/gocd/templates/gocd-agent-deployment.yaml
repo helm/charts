@@ -81,6 +81,9 @@ spec:
             - name: AGENT_BOOTSTRAPPER_ARGS
               value: {{ .Values.agent.env.goAgentBootstrapperArgs }}
             {{- end }}
+            {{- if .Values.agent.env.extraEnvVars }}
+{{ toYaml .Values.agent.env.extraEnvVars | indent 12 }}
+            {{- end }}
           {{- if .Values.agent.healthCheck.enabled }}
           livenessProbe:
             httpGet:
@@ -116,4 +119,8 @@ spec:
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.agent.hostAliases }}
+      hostAliases:
+{{ toYaml .Values.agent.hostAliases | indent 8 }}
     {{- end }}

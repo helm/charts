@@ -36,6 +36,9 @@ spec:
           {{- range .Values.domainFilters }}
             - --domain-filter={{ . }}
           {{- end }}
+          {{- range .Values.zoneIdFilters }}
+            - --zone-id-filter={{ . }}
+          {{- end }}
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
             - --registry={{ .Values.registry }}
