@@ -33,6 +33,7 @@ Stable charts should not depend on charts in incubator.
 
 ## Names and Labels
 
+### Metadata
 Resources and labels should follow some conventions. The standard resource metadata should be this:
 
 ```yaml
@@ -44,7 +45,24 @@ labels:
   heritage: {{ .Release.Service }}
 ```
 
+If a chart has multiple components, a `component` label should be added (e. g. `component: server`). The resource name should get the component as suffix (e. g. `name: {{ template "myapp.fullname" . }}-server`).
+
 Note that templates have to be namespaced. With Helm 2.7+, `helm create` does this out-of-the-box. The `app` label should use the `name` template, not `fullname` as is still the case with older charts.
+
+### Deployments and StatefulSets selectors
+spec.selector.matchLabels for `StatefulSets` and `Deployments` must be specified and must have both `app` and `release` labels.
+It should not contain other labels except for edge cases, and especially MUST NOT contain `chart` label or any label containing a version of the chart.
+
+```yaml
+selector:
+  matchLabels:
+    app: {{ template "myapp.name" . }}
+    release: {{ .Release.Name }}
+```
+
+If a chart has multiple components, a `component` label should be added (see above).
+
+### Service selectors
 
 Label selectors for services must have both `app` and `release` labels.
 
@@ -54,7 +72,7 @@ selector:
   release: {{ .Release.Name }}
 ```
 
-If a chart has multiple components, a `component` label should be added (e. g. `component: server`). The resource name should get the component as suffix (e. g. `name: {{ template "myapp.fullname" . }}-server`). The `component` label must be added to label selectors as well.
+If a chart has multiple components, a `component` label should be added (see above).
 
 ## Formatting
 
