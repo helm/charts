@@ -44,6 +44,14 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 12 }}
       restartPolicy: Always
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       volumes:
         - name: rules
           configMap:
