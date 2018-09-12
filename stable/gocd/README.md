@@ -17,7 +17,7 @@ This chart bootstraps a single node GoCD server and GoCD agents on a [Kubernetes
 
 ## Setup
 
-Because of the [known issue] (https://github.com/kubernetes/helm/issues/2224) while creating a role, in order for the `helm install` to work, please ensure to do the following:
+Because of a [known issue](https://github.com/kubernetes/helm/issues/2224) while creating a role, in order for the `helm install` to work, please ensure to do the following:
 
 - On minikube
 
@@ -29,7 +29,7 @@ $ minikube start --bootstrapper kubeadm
 
 ```bash
 
-$ kubectl create clusterrolebinding clusterRoleBinding \                                                                                                               1 ↵
+$ kubectl create clusterrolebinding clusterRoleBinding \
   --clusterrole=cluster-admin \
   --serviceaccount=kube-system:default
 ```
