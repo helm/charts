@@ -15,6 +15,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
     type: {{ .Values.updateStrategy }}
+  podManagementPolicy: Parallel
   template:
     metadata:
       labels:
