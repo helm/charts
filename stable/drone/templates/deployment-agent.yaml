@@ -38,6 +38,10 @@ spec:
       - name: {{ template "drone.fullname" . }}-agent
         image: "{{ .Values.images.agent.repository }}:{{ .Values.images.agent.tag }}"
         imagePullPolicy: {{ .Values.images.agent.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
         env:
           - name: DRONE_SERVER
             value: {{ template "drone.fullname" . }}:9000
@@ -57,11 +61,11 @@ spec:
         livenessProbe:
           httpGet:
             path: "/healthz"
-            port: 3000
+            port: http
         readinessProbe:
           httpGet:
             path: "/healthz"
-            port: 3000
+            port: http
         resources:
 {{ toYaml .Values.agent.resources | indent 10 }}
 {{- if not .Values.dind.enabled }}
