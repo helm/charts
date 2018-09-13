@@ -29,7 +29,7 @@ spec:
       serviceAccountName: {{ template "ark.serverServiceAccount" . }}
       containers:
         - name: ark
-          image: "{{ .Values.image.repository }}:{{ tpl .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ tpl .Values.image.tag . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - /ark

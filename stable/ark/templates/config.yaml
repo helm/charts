@@ -1,7 +1,7 @@
 apiVersion: ark.heptio.com/v1
 kind: Config
 metadata:
-  name: {{ template "ark.fullname" . }}
+  name: default
   labels:
     chart: {{ template "ark.chart" . }}
     heritage: {{ .Release.Service }}
