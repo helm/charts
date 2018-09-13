@@ -57,6 +57,8 @@ spec:
           {{- end }}
           {{ if .Values.dryRun }}
             - --dry-run
+          {{- if .Values.istio.ingressGateway }}
+            - --istio-ingress-gateway={{ .Values.istio.ingressGateway }}
           {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
             {{- if $value }}

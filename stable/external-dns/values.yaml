@@ -6,7 +6,7 @@ image:
   pullPolicy: IfNotPresent
 
 ## This controls which types of resource external-dns should 'watch' for new
-## DNS entries.
+## DNS entries (options: fake, service, ingress or istio-gateway)
 sources:
   - service
   - ingress
@@ -70,6 +70,10 @@ infoblox:
   wapiVersion: ""
   wapiConnectionPoolSize: ""
   wapiHttpTimeout: ""
+
+# Set custom istio ingress gateway, omit to use the default (istio-system/istio-ingressgateway)
+istio:
+  ingressGateway: ""
 
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
