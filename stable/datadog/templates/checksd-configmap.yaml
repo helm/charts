@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
   annotations:
-    checksum/checksd-config: {{ toYaml .Values.datadog.checksd | sha256sum }}
+    checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
 data:
-{{ toYaml .Values.datadog.checksd | indent 2 }}
+{{ tpl (toYaml .Values.datadog.checksd) . | indent 2 }}
 {{- end -}}
