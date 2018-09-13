@@ -194,6 +194,9 @@ spec:
           resources:
 {{ toYaml .Values.prometheus.exporter.resources | indent 12 }}
         {{ end }}
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 8   }}
+{{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -243,6 +246,9 @@ spec:
             defaultMode: 420
             secretName: {{ template "rabbitmq-ha.certSecretName" . }}
         {{- end }}
+{{- with .Values.extraVolumes }}
+{{ tpl . $ | indent 8 }}
+{{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:

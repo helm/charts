@@ -136,6 +136,8 @@ and their default values.
 | `terminationGracePeriodSeconds`                | Duration pod needs to terminate gracefully                                                                                                                                                            | `10`                                                       |
 | `updateStrategy`                               | Statefulset update strategy                                                                                                                                                                           | `OnDelete`                                                 |
 | `extraLabels`                                  | Labels to add to the Resources                                                                                                                                                                        | `{}`                                                       |
+| `extraContainers`                              | Additional containers to add                                                                                                                                                                          | ``                                                         |
+| `extraVolumes`                                 | Additional volumes to add                                                                                                                                                                             | ``                                                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -322,6 +322,10 @@ readinessProbe:
 # Specifies an existing secret to be used for RMQ password and Erlang Cookie
 existingSecret: ""
 
+extraContainers: |
+
+extraVolumes: |
+
 prometheus:
   ## Configures Prometheus Exporter to expose and scrape stats.
   exporter:
