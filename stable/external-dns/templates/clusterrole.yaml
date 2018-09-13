@@ -18,4 +18,16 @@ rules:
       - get
       - list
       - watch
+{{- range .Values.sources }}
+{{- if eq . "istio-gateway" }}
+  - apiGroups:
+      - networking.istio.io
+    resources:
+      - gateways
+    verbs:
+      - get
+      - list
+      - watch
+{{- end }}
+{{- end }}
 {{- end -}}
