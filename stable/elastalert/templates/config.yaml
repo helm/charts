@@ -31,8 +31,14 @@ data:
     writeback_index: {{ .Values.writebackIndex }}
     use_ssl: {{ .Values.elasticsearch.useSsl }}
     verify_certs: {{ .Values.elasticsearch.verifyCerts }}
+{{- if .Values.elasticsearch.clientCert }}
     client_cert: {{ .Values.elasticsearch.clientCert }}
+{{- end }}
+{{- if .Values.elasticsearch.clientKey }}
     client_key: {{ .Values.elasticsearch.clientKey }}
+{{- end }}
+{{- if .Values.elasticsearch.caCerts }}
     ca_certs: {{ .Values.elasticsearch.caCerts }}
+{{- end }}
     alert_time_limit:
       minutes: {{ .Values.alertRetryLimitMins }}
