@@ -1,17 +1,12 @@
 # Ark-server
 
-This helm chart installs Ark version v0.9.0
-https://github.com/heptio/ark/tree/v0.9.0
+This helm chart installs Ark version v0.9
+
+https://github.com/heptio/ark/tree/release-0.9
 
 ## Premise
-In general, Helm cannot install CRDs and resources based on these CRDs in the same Helm chart because CRDs need to be installed before CRD
-resources can be created and Helm cannot guarantee the correct ordering for this to work.
-
-As a workaround, the chart creates a Config resource via post-install hook.
-Since resources created by hooks are not managed by Helm, a pre-delete hook removes the Config CRD when the release is deleted.
-
-At the same time the resources created with the hook are completely transparent to Helm, that is, when you delete the
-chart those resources remain there. Hence we need a second hook for deleting them (see hook-delete.yaml)
+We leverage the `crd-install` hook of Helm, which was introduced in Helm 2.10.
+You must therefore use Helm 2.10 or higher.
 
 ## ConfigMap customization
 Since we want to have a customizable chart it's important that the configmap is a template and not a static file.
