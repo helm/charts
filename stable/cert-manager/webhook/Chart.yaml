@@ -1,0 +1,5 @@
+apiVersion: v1
+appVersion: "v0.5.0"
+description: A Helm chart for deploying the cert-manager webhook component
+name: webhook
+version: "v0.5.0"
