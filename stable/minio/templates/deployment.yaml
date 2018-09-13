@@ -93,7 +93,8 @@ spec:
                   key: gcs_key.json
             {{- end }}
           livenessProbe:
-            tcpSocket:
+            httpGet:
+              path: /minio/health/live
               port: service
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -101,7 +102,8 @@ spec:
             successThreshold: {{ .Values.livenessProbe.successThreshold }}
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
-            tcpSocket:
+            httpGet:
+              path: /minio/health/ready
               port: service
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
