@@ -14,9 +14,9 @@ data:
     scan_subdirectories: false
     run_every:
       minutes: {{ .Values.runIntervalMins }}
-{{- if .Values.elasticsearch.realertIntervalMins }}
+{{- if .Values.realertIntervalMins }}
     realert:
-      minutes: {{ .Values.elasticsearch.realertIntervalMins }}
+      minutes: {{ .Values.realertIntervalMins }}
 {{- end }}
     buffer_time:
       minutes: {{ .Values.bufferTimeMins }}
