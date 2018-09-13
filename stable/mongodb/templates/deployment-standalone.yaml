@@ -18,6 +18,10 @@ spec:
       labels:
         app: {{ template "mongodb.name" . }}
         release: "{{ .Release.Name }}"
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -31,6 +35,10 @@ spec:
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
