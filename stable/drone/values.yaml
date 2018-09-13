@@ -212,6 +212,11 @@ dind:
   #    memory: 2Gi
   #    cpu: 1
 
+## Enable scraping of the /metrics endpoint for Prometheus
+metrics:
+  prometheus:
+    enabled: false
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
