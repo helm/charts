@@ -40,6 +40,8 @@ configuration:
   backupStorageProvider:
     name:
     bucket:
+    # <bucket>[/<prefix>], MUST be a different bucket than the main Ark bucket
+    resticLocation:
     config: {}
     #  region:
     #  s3ForcePathStyle:
