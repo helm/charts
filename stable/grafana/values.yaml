@@ -239,7 +239,7 @@ smtp:
 ## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
 ## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
 sidecar:
-  image: kiwigrid/k8s-sidecar:0.0.3
+  image: kiwigrid/k8s-sidecar:0.0.6
   imagePullPolicy: IfNotPresent
   resources:
 #   limits:
@@ -254,6 +254,8 @@ sidecar:
     label: grafana_dashboard
     # folder in the pod that should hold the collected dashboards
     folder: /tmp/dashboards
+    # namespace that will search for config-maps, defaults to where grafana runs, can specify ALL
+    # namespace: ALL
   datasources:
     enabled: false
     # label that the configmaps with datasources are marked with
