@@ -23,6 +23,8 @@ priorityClassName: ""
 
 nodeSelector: {}
 
+tolerations: {}
+
 service:
   type: ClusterIP
   httpPort: 9108
