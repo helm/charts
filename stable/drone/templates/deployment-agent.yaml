@@ -54,6 +54,14 @@ spec:
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
+        livenessProbe:
+          httpGet:
+            path: "/healthz"
+            port: 3000
+        readinessProbe:
+          httpGet:
+            path: "/healthz"
+            port: 3000
         resources:
 {{ toYaml .Values.agent.resources | indent 10 }}
 {{- if not .Values.dind.enabled }}
