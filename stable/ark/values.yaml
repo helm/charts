@@ -56,3 +56,9 @@ credentials:
   existingSecret:
   useSecret: true
   secretContents: {}
+  #  aws: |
+  #   [default]
+  #   aws_access_key_id=<KEY>
+  #   aws_secret_access_key=<SECRET>
+  #    gcp: |
+  #      <gcloud iam service-accounts keys create - --iam-account $SERVICE_ACCOUNT_EMAIL>
