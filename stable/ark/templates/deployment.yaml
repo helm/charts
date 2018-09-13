@@ -34,7 +34,13 @@ spec:
           command:
             - /ark
           args:
+          {{- if eq .Values.logging.to "both" }}
+            - --alsologtostderr
+          {{- else if eq .Values.logging.to "stderr" }}
+            - --logtostderr
+          {{- end }}
             - server
+            - --log-level={{ .Values.logging.level }}
           {{- if eq $provider "azure" }}
           envFrom:
             - secretRef:

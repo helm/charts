@@ -12,6 +12,10 @@ rbac:
 
 resources: {}
 
+logging:
+  level: info
+  to: stderr  # or files or both
+
 serviceAccount:
   hook:
     create: true
