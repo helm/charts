@@ -34,7 +34,7 @@ Stable charts should not depend on charts in incubator.
 ## Names and Labels
 
 ### Metadata
-Resources and labels should follow some conventions. The standard resource metadata should be this:
+Resources and labels should follow some conventions. The standard resource metadata (`metadata.labels` and `spec.template.metadata.labels`) should be this:
 
 ```yaml
 name: {{ template "myapp.fullname" . }}
@@ -48,8 +48,6 @@ labels:
 If a chart has multiple components, a `component` label should be added (e. g. `component: server`). The resource name should get the component as suffix (e. g. `name: {{ template "myapp.fullname" . }}-server`).
 
 Note that templates have to be namespaced. With Helm 2.7+, `helm create` does this out-of-the-box. The `app` label should use the `name` template, not `fullname` as is still the case with older charts.
-
-In case of a controller like `Deployment` or `StatefulSet`, those labels should also be set in `spec.template.metadata.labels`.
 
 ### Deployments and StatefulSets selectors
 `spec.selector.matchLabels` for `StatefulSets` and `Deployments` must be specified and must have both `app` and `release` labels.
