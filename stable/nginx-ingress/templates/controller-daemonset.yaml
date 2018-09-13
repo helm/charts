@@ -48,20 +48,12 @@ spec:
           args:
             - /nginx-ingress-controller
             - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
-          {{- if and (semverCompare ">=0.9.0-beta.1" .Values.controller.image.tag) .Values.controller.publishService.enabled }}
+          {{- if .Values.controller.publishService.enabled }}
             - --publish-service={{ template "nginx-ingress.controller.publishServicePath" . }}
           {{- end }}
-          {{- if (semverCompare ">=0.9.0-beta.1" .Values.controller.image.tag) }}
             - --election-id={{ .Values.controller.electionID }}
-          {{- end }}
-          {{- if (semverCompare ">=0.9.0-beta.1" .Values.controller.image.tag) }}
             - --ingress-class={{ .Values.controller.ingressClass }}
-          {{- end }}
-          {{- if (semverCompare ">=0.9.0-beta.1" .Values.controller.image.tag) }}
             - --configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.controller.fullname" . }}
-          {{- else }}
-            - --nginx-configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.controller.fullname" . }}
-          {{- end }}
           {{- if .Values.tcp }}
             - --tcp-services-configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.fullname" . }}-tcp
           {{- end }}
