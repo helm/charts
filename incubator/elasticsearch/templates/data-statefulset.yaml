@@ -1,3 +1,4 @@
+{{- if .Values.data }}
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -196,3 +197,4 @@ spec:
         requests:
           storage: "{{ .Values.data.persistence.size }}"
   {{- end }}
+{{- end }}
