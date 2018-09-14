@@ -10,26 +10,24 @@ metadata:
     k8s-app: {{ .Chart.Name | quote }}
     kubernetes.io/cluster-service: "true"
     kubernetes.io/name: "CoreDNS"
-    {{- else }}
-    app: {{ template "coredns.fullname" . }}
     {{- end }}
+    app: {{ template "coredns.name" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
+      release: {{ .Release.Name | quote }}
       {{- if .Values.isClusterService }}
       k8s-app: {{ .Chart.Name | quote }}
-      {{- else }}
-      app: {{ template "coredns.fullname" . }}
       {{- end }}
+      app: {{ template "coredns.name" . }}
   template:
     metadata:
       labels:
         {{- if .Values.isClusterService }}
         k8s-app: {{ .Chart.Name | quote }}
-        {{- else }}
-        app: {{ template "coredns.fullname" . }}
         {{- end }}
+        app: {{ template "coredns.fullname" . }}
         release: {{ .Release.Name | quote }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
