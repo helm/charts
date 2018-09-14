@@ -10,6 +10,8 @@ metadata:
 spec:
   serviceName: {{ template "etcd.fullname" . }}
   replicas: {{ .Values.replicas }}
+  updateStrategy:
+    type: RollingUpdate
   template:
     metadata:
       name: {{ template "etcd.fullname" . }}
