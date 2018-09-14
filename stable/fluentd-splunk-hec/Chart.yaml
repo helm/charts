@@ -1,5 +1,5 @@
 name: fluentd-splunk-hec
-version: 1.0
+version: "1.0"
 appVersion: v0.12.43
 home: https://www.fluentd.org
 description: Creates fluentd daemonset that runs the splunk HEC plugin for sending logs to a Splunk HTTP event collector
