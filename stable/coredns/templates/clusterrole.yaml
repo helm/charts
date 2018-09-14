@@ -1,0 +1,27 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: {{ template "coredns.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.isClusterService }}
+    k8s-app: {{ .Chart.Name | quote }}
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "CoreDNS"
+    {{- end }}
+    app: {{ template "coredns.name" . }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  - services
+  - pods
+  - namespaces
+  verbs:
+  - list
+  - watch
+{{- end }}
