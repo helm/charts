@@ -11,35 +11,40 @@ metadata:
     heritage: {{ $base.Release.Service }}
     release: {{ $base.Release.Name }}
   annotations:
-    "helm.sh/hook": post-install
-    "helm.sh/hook-delete-policy": hook-succeeded
+    helm.sh/hook: post-install
+    helm.sh/hook-delete-policy: hook-succeeded
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "mongodb-replicaset.name" $base }}
+      release: {{ $base.Release.Name }}
   template:
     metadata:
       labels:
+        app: {{ template "mongodb-replicaset.name" $base }}
         release: {{ $base.Release.Name }}
     spec:
       containers:
-      - name: job
-        image: "{{ $job.image }}"
-        imagePullPolicy: "{{ $base.Values.image.pullPolicy }}"
-        env:
-        - name: MONGO_HOST
-          value: {{ template "mongodb-replicaset.fullname" $base }}
-      {{- if $base.Values.auth.enabled }}
-        - name: AUTH
-          value: "true"
-        - name: ADMIN_USER
-          valueFrom:
-            secretKeyRef:
-              name: "{{ template "mongodb-replicaset.adminSecret" $base }}"
-              key: user
-        - name: ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: "{{ template "mongodb-replicaset.adminSecret" $base }}"
-              key: password
-      {{- end }}
+        - name: job
+          image: {{ $job.image }}
+          imagePullPolicy: {{ $base.Values.image.pullPolicy }}
+          env:
+            - name: MONGO_HOST
+              value: {{ template "mongodb-replicaset.fullname" $base }}
+          {{- if $base.Values.auth.enabled }}
+            - name: AUTH
+              value: "true"
+            - name: ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "mongodb-replicaset.adminSecret" $base }}"
+                  key: user
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "mongodb-replicaset.adminSecret" $base }}"
+                  key: password
+          {{- end }}
       restartPolicy: Never
 ---      
 {{- end }}
