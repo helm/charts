@@ -1,21 +1,25 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "keel.fullname" . }}
+  name: {{ include "keel.fullname" . }}
   labels:
-    app: {{ template "keel.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "keel.name" . }}
+    helm.sh/chart: {{ include "keel.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "keel.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "keel.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "keel.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ template "keel.serviceAccountName" . }}
+      serviceAccountName: {{ include "keel.serviceAccountName" . }}
       containers:
         - name: keel
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -80,12 +84,12 @@ spec:
             - name: KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "keel.fullname" . }}-webhookrelay
+                  name: {{ include "keel.fullname" . }}-webhookrelay
                   key: key
             - name: SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "keel.fullname" . }}-webhookrelay
+                  name: {{ include "keel.fullname" . }}-webhookrelay
                   key: secret
             - name: BUCKET
               value: "{{ .Values.webhookRelay.bucket }}"

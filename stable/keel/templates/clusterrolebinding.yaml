@@ -1,14 +1,19 @@
-{{- if .Values.rbac.enabled }}
+{{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ template "keel.fullname" . }}
+  name: {{ include "keel.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "keel.name" . }}
+    helm.sh/chart: {{ include "keel.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ template "keel.fullname" . }}
+  name: {{ include "keel.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "keel.serviceAccountName" . }}
+    name: {{ include "keel.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{ end }}
