@@ -10,18 +10,17 @@ metadata:
     k8s-app: {{ .Chart.Name | quote }}
     kubernetes.io/cluster-service: "true"
     kubernetes.io/name: "CoreDNS"
-    {{- else }}
-    app: {{ template "coredns.fullname" . }}
     {{- end }}
+    app: {{ template "coredns.name" . }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 spec:
   selector:
-  {{- if .Values.isClusterService }}
+    release: {{ .Release.Name | quote }}
+    {{- if .Values.isClusterService }}
     k8s-app: {{ .Chart.Name | quote }}
-  {{- else }}
-    app: {{ template "coredns.fullname" . }}
-  {{- end }}
+    {{- end }}
+    app: {{ template "coredns.name" . }}
   {{- if .Values.service.clusterIP }}
   clusterIP: {{ .Values.service.clusterIP }}
   {{- end }}
