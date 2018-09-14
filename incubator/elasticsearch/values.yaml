@@ -84,6 +84,8 @@ master:
     enabled: false
     minAvailable: 2  # Same as `cluster.env.MINIMUM_MASTER_NODES`
     # maxUnavailable: 1
+  updateStrategy:
+    type: OnDelete
 
 data:
   name: data
@@ -115,3 +117,5 @@ data:
     enabled: false
     # minAvailable: 1
     maxUnavailable: 1
+  updateStrategy:
+    type: OnDelete
