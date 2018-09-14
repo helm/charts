@@ -23,15 +23,15 @@ metadata:
 {{ end }}
 spec:
   rules:
-    {{ range $host := $ingress.hosts }}
-    - host: {{ $host }}
-      http:
-        paths:
-          - path: {{ $ingress.path }}
-            backend:
-              serviceName: {{ $serviceName }}
-              servicePort: {{ $servicePort }}
-    {{ end }}
+  {{ range $host := $ingress.hosts }}
+  - host: {{ $host }}
+    http:
+      paths:
+      - path: {{ $ingress.path }}
+        backend:
+          serviceName: {{ $serviceName }}
+          servicePort: {{ $servicePort }}
+  {{ end }}
   {{ if $ingress.tls }}
   tls:
 {{ toYaml $ingress.tls | indent 4 }}

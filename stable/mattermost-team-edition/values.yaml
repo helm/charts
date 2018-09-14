@@ -4,7 +4,7 @@
 image:
   repository: mattermost/mattermost-team-edition
   tag: 5.2.1
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -90,14 +90,14 @@ externalDB:
 
 mysql:
   enabled: true
-  mysqlRootPassword: root_password
-  mysqlUser: mmuser
-  mysqlPassword: mmpasswd
+  mysqlRootPassword: ""
+  mysqlUser: ""
+  mysqlPassword: ""
   mysqlDatabase: mattermost
 
   repository: mysql
   tag: 5.7
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
 
   persistence:
     enabled: true
