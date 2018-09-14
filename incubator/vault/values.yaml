@@ -78,6 +78,18 @@ affinity: |
             app: {{ template "vault.fullname" . }}
             release: {{ .Release.Name }}
 
+
+## Support using node selectors and tolerations
+# nodeSelector:
+#   "node-role.kubernetes.io/infra_worker": "true"
+nodeSelector: {}
+#   - key: "node_role"
+#     operator: "Equal"
+#     value: "infra_worker"
+#     effect: "NoSchedule"
+tolerations: []
+
+
 ## Deployment annotations
 annotations: {}
 
