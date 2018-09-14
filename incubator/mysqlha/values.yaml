@@ -4,6 +4,12 @@
 mysqlImage: mysql:5.7.13
 xtraBackupImage: gcr.io/google-samples/xtrabackup:1.0
 
+initializationFiles:
+  #first-db.sql: |-
+  #  CREATE DATABASE IF NOT EXISTS first DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+  #second-db.sql: |-
+  #  CREATE DATABASE IF NOT EXISTS second DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+
 mysqlha:
   replicaCount: 3
 
