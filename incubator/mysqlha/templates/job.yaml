@@ -1,0 +1,58 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "fullname" . }}-db-initialization
+  annotations:
+    "helm.sh/hook": "post-install"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: db-init
+        image: {{ .Values.mysqlImage }}
+        env:
+        - name: MYSQL_DATABASE
+          value: {{ default "" .Values.mysqlha.mysqlDatabase | quote }}
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: mysql-root-password
+        command:
+          - bash
+          - "-c"
+          - |
+            set -ex
+            echo "Waiting for xtrabackup be ready (accepting connections)"
+            until echo -n > /dev/tcp/{{ template "fullname" . }}-1.{{ template "fullname" . }}/3307; do sleep 1; done
+            mysql=(mysql -uroot -h{{ template "fullname" . }}-0.{{ template "fullname" . }} -p$(MYSQL_ROOT_PASSWORD))
+            for f in /docker-entrypoint-initdb.d/*; do
+               case "$f" in
+                 *.sh)     echo "$0: running $f"; . "$f" ;;
+                 *.sql)    echo "$0: running $f"; "${mysql[@]}" < "$f"; echo ;;
+                 *.sql.gz) echo "$0: running $f"; gunzip -c "$f" | "${mysql[@]}"; echo ;;
+                 *)        echo "$0: ignoring $f" ;;
+               esac
+               echo
+             done 
+        volumeMounts:
+        {{- if .Values.initializationFiles }}
+          - name: migrations
+            mountPath: /docker-entrypoint-initdb.d
+        {{- end }}
+      volumes:
+      {{- if .Values.initializationFiles }}
+      - name: migrations
+        configMap:
+          name: {{ template "fullname" . }}-initialization
+      {{- end }}
+      restartPolicy: Never
