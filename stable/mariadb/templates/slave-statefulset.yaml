@@ -51,6 +51,7 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
+      {{- if .Values.slave.persistence.enabled }}
       initContainers:
       - name: init-{{ template "mariadb.fullname" . }}
         image: "{{ template "mariadb.image" . }}"
