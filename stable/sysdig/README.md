@@ -66,3 +66,27 @@ $ helm install --name my-release -f values.yaml stable/sysdig
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## On-Premise deployment settings
+
+There are several people who runs Sysdig platform On-Premise, in its own infrastructure.
+
+This is also supported by the Helm chart, and you can enable it with the following parameters:
+
+| Parameter                                | Description                                              | Default |
+| ---                                      | ---                                                      | ---     |
+| `sysdig.settings.collector`              | The IP address or hostname of the collector              | ` `     |
+| `sysdig.settings.collector_port`         | The port where collector is listening                    | ` `
+| `sysdig.settings.ssl`                    | The collector accepts SSL                                | `true`  |
+| `sysdig.settings.ssl_verify_certificate` | Set to false if you don't want to verify SSL certificate | `true`  |
+
+For example:
+
+```bash
+$ helm install --name sysdig-agent-on-prem \
+    --set sysdig.accessKey=YOUR-KEY-HERE \
+    --set sysdig.settings.collector=42.32.196.18 \
+    --set sysdig.settings.collector_port=6443 \
+    --set sysdig.settings.ssl_verify_certificate=false \
+    stable/sysdig
+```
