@@ -51,10 +51,7 @@ Note that templates have to be namespaced. With Helm 2.7+, `helm create` does th
 
 ### Deployments, StatefulSets and DaemonSets selectors
 
-`spec.selector.matchLabels` must be specified and must have both `app` and `release` labels.
-
-It should not contain other labels except for edge cases, and especially MUST NOT contain `chart` label or any label containing a version of the chart.
-This is because the chart label string contains the version, so whenever the the Chart.yaml version changes, Helm's attempt to change this immutable field would cause the upgrade to fail.
+`spec.selector.matchLabels` must be specified should follow some conventions. The standard selector should be this:
 
 ```yaml
 selector:
@@ -63,7 +60,23 @@ selector:
     release: {{ .Release.Name }}
 ```
 
-If a chart has multiple components, a `component` label should be added (see above).
+If a chart has multiple components, a `component` label should be added (e. g. `component: server`). The resource name should get the component as suffix (e. g. `name: {{ template "myapp.fullname" . }}-server`).
+
+`spec.selector.matchLabels` defined in `Deployments`/`StatefulSets`/`DaemonSets` `>=v1/beta2` **must not** contain `chart` label or any label containing a version of the chart, because the selector is immutable.
+The chart label string contains the version, so if is is specified, whenever the the Chart.yaml version changes, Helm's attempt to change this immutable field would cause the upgrade to fail.
+
+#### Fixing selectors
+
+##### For Deployments, StatefulSets and DaemonSets apps/v1beta1 or extensions/v1beta1
+
+- If it does not specify `spec.selector.matchLabel`, set it
+- Remove `chart` label in `spec.selector.matchLabel` if it exists
+- Bump patch version of the Chart
+
+##### For Deployments, StatefulSets and DaemonSets >=apps/v1beta2
+
+- Remove `chart` label in `spec.selector.matchLabel` if it exists
+- Bump major version of the Chart as it is a breaking change
 
 ### Service selectors
 
@@ -75,7 +88,7 @@ selector:
   release: {{ .Release.Name }}
 ```
 
-If a chart has multiple components, a `component` label should be added (see above).
+If a chart has multiple components, a `component` label should be added (e. g. `component: server`). The resource name should get the component as suffix (e. g. `name: {{ template "myapp.fullname" . }}-server`).
 
 ## Formatting
 
