@@ -48,6 +48,7 @@ The following table lists the configurable parameters of the Memcached chart and
 | `persistence.annotations` | Extra annotations for the persistent volume claim. | `{}` |
 | `persistence.accessModes` | List of access modes for use with the persistent volume claim | `["ReadWriteOnce"]` |
 | `persistence.size` | Size of the PVC for each IPFS pod, used as persistent cache | `8Gi`  |
+| `profile` | The profile to apply when creating a new IPFS configuration | none |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -34,6 +34,11 @@ spec:
         volumeMounts:
           - name: ipfs-storage
             mountPath: /data/ipfs
+        {{- if .Values.profile }}
+        env:
+        - name: IPFS_PROFILE
+          value: {{ .Values.profile }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 
