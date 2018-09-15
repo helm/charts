@@ -121,6 +121,9 @@ vault:
   #   - name: some-mount
   #     mountPath: /some/path
   extraVolumes: {}
+  # Log level
+  # https://www.vaultproject.io/docs/commands/server.html#log-level
+  logLevel: "info"
   ## Additional volumes to the vault pod.
   # - name: extra-volume
   #   secret:

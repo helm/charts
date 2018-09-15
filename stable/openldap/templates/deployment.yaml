@@ -27,6 +27,17 @@ spec:
         app: {{ template "openldap.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.customLdifFiles }}
+      initContainers:
+      - name: {{ .Chart.Name }}-init
+        image: busybox
+        command: ['sh', '-c', 'cp /customldif/* /ldifworkingdir']
+        volumeMounts:
+        - name: customldif
+          mountPath: /customldif
+        - name: ldifworkingdir
+          mountPath: /ldifworkingdir
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -49,7 +60,7 @@ spec:
               mountPath: /etc/ldap/slapd.d
               subPath: config-data
             {{- if .Values.customLdifFiles }}
-            - name: customldif
+            - name: ldifworkingdir
               mountPath: /container/service/slapd/assets/config/bootstrap/ldif/custom
             {{- end }}
           livenessProbe:
@@ -83,6 +94,8 @@ spec:
         - name: customldif
           configMap:
             name: {{ template "openldap.fullname" . }}-customldif
+        - name: ldifworkingdir
+          emptyDir: {}
         {{- end }}
         - name: data
         {{- if .Values.persistence.enabled }}
