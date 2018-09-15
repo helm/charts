@@ -34,8 +34,26 @@ spec:
         volumeMounts:
           - name: ipfs-storage
             mountPath: /data/ipfs
+          {{- if .Values.keysSecretName }}
+          - name: ipfs-keys-volume
+            readOnly: true
+            mountPath: "/data/ipfs/keystore"
+          {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+
+  {{- if or (not .Values.persistence.enabled) .Values.keysSecretName }}
+      volumes:
+      {{- if (not .Values.persistence.enabled) }}
+        - name: ipfs-storage
+          emptyDir: {}
+      {{- end }}
+      {{- if .Values.keysSecretName }}
+        - name: ipfs-keys-volume
+          secret:
+            secretName: {{ .Values.keysSecretName }}
+      {{- end }}
+  {{- end }}
 
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
@@ -59,8 +77,4 @@ spec:
         storageClassName: "{{ .Values.persistence.storageClass }}"
       {{- end }}
       {{- end }}
-  {{- else }}
-      volumes:
-        - name: ipfs-storage
-          emptyDir: {}
   {{- end }}

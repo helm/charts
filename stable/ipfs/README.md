@@ -48,6 +48,7 @@ The following table lists the configurable parameters of the Memcached chart and
 | `persistence.annotations` | Extra annotations for the persistent volume claim. | `{}` |
 | `persistence.accessModes` | List of access modes for use with the persistent volume claim | `["ReadWriteOnce"]` |
 | `persistence.size` | Size of the PVC for each IPFS pod, used as persistent cache | `8Gi`  |
+| `keysSecretName` | The name of the secret which contains shared IPFS keys to use | `""` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -66,3 +67,16 @@ $ helm install --name my-release -f values.yaml stable/ipfs
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml) as a base for customization.
+
+### Installing shared IPFS keys
+
+To include pre-created shared keys in the IPFS configuration, install the keys in a Kubernetes Secret, and specify the `keysSecretName` configuration option when installing the IPFS chart. For example,
+
+```bash
+$ kubectl create secret generic ipfs-keys-secret \
+  --from-file=${HOME}/.ipfs/keystore/my-shared-key \
+  --from-file=${HOME}/.ipfs/keystore/my-other-shared-key
+$ helm install --name my-release \
+  --set keysSecretName=ipfs-keys-secret \
+    stable/ipfs
+```
