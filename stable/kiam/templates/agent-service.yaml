@@ -1,4 +1,5 @@
-{{- if and .Values.agent.enabled .Values.agent.prometheus.scrape -}}
+{{- if .Values.agent.enabled -}}
+{{- if .Values.agent.prometheus.scrape -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -20,4 +21,5 @@ spec:
       port: {{ .Values.agent.prometheus.port }}
       targetPort: {{ .Values.agent.prometheus.port }}
       protocol: TCP
+{{- end -}}
 {{- end }}
