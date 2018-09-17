@@ -40,7 +40,7 @@ spec:
         - name: data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "kapacitor.fullname" . }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "kapacitor.fullname" .) }}
         {{- else }}
           emptyDir: {}
         {{- end }}
