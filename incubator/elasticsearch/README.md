@@ -67,7 +67,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `appVersion`                         | Application Version (Elasticsearch)                                 | `6.4.2`                                             |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
 | `image.tag`                          | Container image tag                                                 | `6.4.2`                                             |
-| `image.pullPolicy`                   | Container pull policy                                               | `IfNotPresent`                                      |
+| `image.pullPolicy`                   | Container pull policy                                               | `Always`                                            |
 | `initImage.repository`               | Init container image name                                           | `busybox`                                           |
 | `initImage.tag`                      | Init container image tag                                            | `latest`                                            |
 | `initImage.pullPolicy`               | Init container pull policy                                          | `Always`                                            |
@@ -108,9 +108,6 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                                     |
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
-| `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
-| `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                                 |
-| `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`                 |
 | `data.priorityClassName`             | Data priorityClass                                                  | `nil`                                               |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                                             |
 | `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                                              |
@@ -125,6 +122,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                                              |
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
 | `extraInitContainers`                | Additional init container passed through the tpl 	                 | ``                                                  |
+| `dataTypes`                          | Array with different data node types (see `data.` properties)       | `[]`                                                |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
