@@ -62,7 +62,7 @@ spec:
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           command:
-          {{- if (semverCompare ">=3.0" .Values.agent.image.tag) }}
+          {{- if semverCompare ">=3.0.0-0" .Values.agent.image.tag }}
             - /kiam
             - agent
           {{- else }}
