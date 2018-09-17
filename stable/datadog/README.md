@@ -78,7 +78,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `kubeStateMetrics.enabled`  | If true, create kube-state-metrics | `true`                                    |
 | `kube-state-metrics.rbac.create`| If true, create & use RBAC resources for kube-state-metrics | `true`       |
 | `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
-| `clusterAgent.enabled`                   | Use the cluster-agent for cluster metrics | `false`                           |
+| `clusterAgent.enabled`                   | Use the cluster-agent for cluster metrics (Kubernetes 1.10+ only) | `false`                           |
 | `clusterAgent.token`                     | A cluster-internal secret for agent-to-agent communication. Must be 32+ characters a-zA-Z | `Nil` You must provide your own token|
 | `clusterAgent.image.repository`          | The image repository for the cluster-agent | `datadog/cluster-agent`                           |
 | `clusterAgent.image.tag`                 | The image tag to pull              | `0.9.1`                                   |

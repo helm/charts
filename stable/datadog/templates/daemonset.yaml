@@ -96,7 +96,7 @@ spec:
           {{- end }}
           {{- else }}
           - name: DD_CLUSTER_AGENT_ENABLED
-            value: "true"
+            value: {{ .Values.clusterAgent.enabled | quote }}
           - name: DD_CLUSTER_AGENT_AUTH_TOKEN
             valueFrom:
               secretKeyRef:
