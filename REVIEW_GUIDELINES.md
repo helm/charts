@@ -49,7 +49,7 @@ If a chart has multiple components, a `component` label should be added (e. g. `
 
 Note that templates have to be namespaced. With Helm 2.7+, `helm create` does this out-of-the-box. The `app` label should use the `name` template, not `fullname` as is still the case with older charts.
 
-### Deployments, StatefulSets and DaemonSets selectors
+### Deployments, StatefulSet, DaemonSets selectors
 
 `spec.selector.matchLabels` must be specified should follow some conventions. The standard selector should be this:
 
@@ -60,22 +60,22 @@ selector:
     release: {{ .Release.Name }}
 ```
 
-If a chart has multiple components, a `component` label should be added (e. g. `component: server`). The resource name should get the component as suffix (e. g. `name: {{ template "myapp.fullname" . }}-server`).
+If a chart has multiple components, a `component` label should be added to the selector (see above).
 
 `spec.selector.matchLabels` defined in `Deployments`/`StatefulSets`/`DaemonSets` `>=v1/beta2` **must not** contain `chart` label or any label containing a version of the chart, because the selector is immutable.
 The chart label string contains the version, so if is is specified, whenever the the Chart.yaml version changes, Helm's attempt to change this immutable field would cause the upgrade to fail.
 
 #### Fixing selectors
 
-##### For Deployments, StatefulSets and DaemonSets apps/v1beta1 or extensions/v1beta1
+##### For Deployments, StatefulSets, DaemonSets apps/v1beta1 or extensions/v1beta1
 
-- If it does not specify `spec.selector.matchLabel`, set it
-- Remove `chart` label in `spec.selector.matchLabel` if it exists
+- If it does not specify `spec.selector.matchLabels`, set it
+- Remove `chart` label in `spec.selector.matchLabels` if it exists
 - Bump patch version of the Chart
 
-##### For Deployments, StatefulSets and DaemonSets >=apps/v1beta2
+##### For Deployments, StatefulSets, DaemonSets >=apps/v1beta2
 
-- Remove `chart` label in `spec.selector.matchLabel` if it exists
+- Remove `chart` label in `spec.selector.matchLabels` if it exists
 - Bump major version of the Chart as it is a breaking change
 
 ### Service selectors
@@ -88,7 +88,19 @@ selector:
   release: {{ .Release.Name }}
 ```
 
-If a chart has multiple components, a `component` label should be added (e. g. `component: server`). The resource name should get the component as suffix (e. g. `name: {{ template "myapp.fullname" . }}-server`).
+If a chart has multiple components, a `component` label should be added to the selector (see above).
+
+### Persistence labels
+
+In case of a `Statefulset`, `spec.volumeClaimTemplates.metadata.labels` must have both `app` and `release` labels, and **must not** contain `chart` label or any label containing a version of the chart, because `spec.volumeClaimTemplates` is immutable.
+
+```yaml
+labels:
+  app: {{ template "myapp.name" . }}
+  release: {{ .Release.Name }}
+```
+
+If a chart has multiple components, a `component` label should be added to the selector (see above).
 
 ## Formatting
 
