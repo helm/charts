@@ -62,7 +62,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `smtpProtocol`                        | SMTP protocol [`ssl`, `tls`]                                | `nil`                                          |
 | `service.type`                        | Kubernetes Service type                                     | `LoadBalancer`                                 |
 | `service.loadBalancer`                | Kubernetes LoadBalancerIP to request                        | `nil`                                          |
-| `service.externalTrafficPolicy`       | Enable client source IP preservation                        | `Local`                                        |
+| `service.externalTrafficPolicy`       | Enable client source IP preservation                        | `Cluster`                                        |
 | `service.nodePort`                    | Kubernetes http node port                                   | `""`                                           |
 | `ingress.enabled`                     | Enable ingress controller resource                          | `false`                                        |
 | `ingress.hosts[0].name`               | Hostname to your Odoo installation                          | `odoo.local`                                   |
