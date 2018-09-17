@@ -119,9 +119,11 @@ extraSecretMounts: []
   #   secretName: grafana-secret-files
   #   readOnly: true
 
-# Pass the plugins you want installed as a comma separated list.
-# plugins: "digrich-bubblechart-panel,grafana-clock-panel"
-plugins: ""
+## Pass the plugins you want installed as a list.
+##
+plugins: []
+  # - digrich-bubblechart-panel
+  # - grafana-clock-panel
 
 ## Configure grafana datasources
 ## ref: http://docs.grafana.org/administration/provisioning/#datasources
