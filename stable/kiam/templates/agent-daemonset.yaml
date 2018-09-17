@@ -62,7 +62,12 @@ spec:
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           command:
+          {{- if (semverCompare ">=3.0" .Values.agent.image.tag) }}
+            - /kiam
+            - agent
+          {{- else }}
             - /agent
+          {{- end }}
           args:
             {{- if .Values.agent.host.iptables }}
             - --iptables

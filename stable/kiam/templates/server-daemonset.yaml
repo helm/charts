@@ -51,7 +51,12 @@ spec:
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           command:
+          {{- if (semverCompare ">=3.0" .Values.server.image.tag) }}
+            - /kiam
+            - server
+          {{- else }}
             - /server
+          {{- end }}
           args:
             {{- if .Values.server.log.jsonOutput }}
             - --json-log
@@ -98,7 +103,12 @@ spec:
           livenessProbe:
             exec:
               command:
+                {{- if (semverCompare ">=3.0" .Values.server.image.tag) }}
+                - /kiam
+                - health
+                {{- else }}
                 - /health
+                {{- end }}
                 - --cert=/etc/kiam/tls/cert
                 - --key=/etc/kiam/tls/key
                 - --ca=/etc/kiam/tls/ca
@@ -112,7 +122,12 @@ spec:
           readinessProbe:
             exec:
               command:
+                {{- if (semverCompare ">=3.0" .Values.server.image.tag) }}
+                - /kiam
+                - health
+                {{- else }}
                 - /health
+                {{- end }}
                 - --cert=/etc/kiam/tls/cert
                 - --key=/etc/kiam/tls/key
                 - --ca=/etc/kiam/tls/ca
