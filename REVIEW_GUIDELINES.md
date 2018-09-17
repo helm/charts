@@ -4,7 +4,7 @@ Anyone is welcome to review pull requests. Besides our [technical requirements](
 
 ## Process
 
-The process to get a pull request merged is fairly simple. First, all required tests need to pass and the contributor needs to have a signed CLA. See [Charts Testing](https://github.com/helm/charts/blob/master/test/README.md) for details on our CI system and how you can provide custom values for testing. If there is a problem with some part of the test, such as a timeout issue, please contact one of the charts repository maintainers by commenting `cc @helm/charts-maintainers`.
+The process to get a pull request merged is fairly simple. First, all required tests need to pass and the contributor needs to have a signed [DCO](https://www.helm.sh/blog/helm-dco/index.html). See [Charts Testing](https://github.com/helm/charts/blob/master/test/README.md) for details on our CI system and how you can provide custom values for testing. If there is a problem with some part of the test, such as a timeout issue, please contact one of the charts repository maintainers by commenting `cc @helm/charts-maintainers`.
 
 The charts repository uses the OWNERS files to provide merge access. If a chart has an OWNERS file, an approver listed in that file can approve the pull request. If the chart does not have an OWNERS file, an approver in the OWNERS file at the root of the repository can approve the pull request.
 
@@ -112,7 +112,7 @@ volumes:
   {{- end -}}
 ```
 
-* Example pvc.yaml
+* Example pvc.yaml:
 
 ```yaml
 {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
@@ -138,6 +138,126 @@ spec:
   storageClassName: "{{ .Values.persistence.storageClass }}"
 {{- end }}
 {{- end }}
+{{- end }}
+```
+
+## AutoScaling / HorizontalPodAutoscaler
+
+* Autoscaling should be disabled by default
+* All options should be shown in README.md
+
+* Example autoscaling section in values.yaml:
+
+```yaml
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
+  targetMemoryUtilizationPercentage: 50
+```
+
+* Example hpa.yaml:
+
+```yaml
+{{- if .Values.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: {{ template "helm-chart.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "helm-chart.fullname" . }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: {{ template "helm-chart.fullname" . }}
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
+{{- end }}
+```
+
+## Ingress
+
+* See the [Ingress resource documentation](https://kubernetes.io/docs/concepts/services-networking/ingress/) for a broader concept overview
+* Ingress should be disabled by default
+* Example ingress section in values.yaml:
+
+```yaml
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.test
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.test
+```
+
+* Example ingress.yaml:
+
+```yaml
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "fullname" }}
+  labels:
+    app: {{ include "name" . }}
+    chart: {{ include "chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.ingress.tls }}
+  tls:
+  {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+          - path: {{ .Values.ingress.path }}
+            backend:
+              serviceName: {{ include "fullname" }}
+              servicePort: http
+  {{- end }}
+{{- end }}
+```
+
+* Example prepend logic for getting an application URL in NOTES.txt:
+
+```
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
 {{- end }}
 ```
 

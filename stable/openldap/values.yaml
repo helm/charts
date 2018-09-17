@@ -47,7 +47,7 @@ env:
 # configPassword: config
 
 # Custom openldap configuration files used to override default settings
-customLdifFiles:
+# customLdifFiles:
   # 01-default-users.ldif: |-
     # Predefine users here
 
