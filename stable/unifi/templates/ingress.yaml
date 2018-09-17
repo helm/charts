@@ -33,6 +33,6 @@ spec:
           - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $fullName }}-gui
-              servicePort: 8443
+              servicePort: https-gui
   {{- end }}
 {{- end }}
