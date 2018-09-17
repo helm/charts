@@ -365,6 +365,22 @@ worker:
   ##
   minAvailable: 1
 
+  ## Configure Horizontal Pod Autoscaler for worker pods
+  ## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale
+  hpa:
+    enabled: false
+    mainReplicas: 1
+    maxReplicas: 10
+    metrics: {}
+#     - type: Pods
+#       pods:
+#         metricName: concourse_workers_containers
+#         targetAverageValue: 70
+#     - type: Resource
+#       resource:
+#         name: cpu
+#         targetAverageUtilization: 50
+
   ## Configure resource requests and limits.
   ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
   ##

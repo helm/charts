@@ -148,6 +148,10 @@ The following table lists the configurable parameters of the Concourse chart and
 | `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
 | `worker.podManagementPolicy` | `OrderedReady` or `Parallel` (requires Kubernetes >= 1.7) | `Parallel` |
 | `worker.hardAntiAffinity` | Should the workers be forced (as opposed to preferred) to be on different nodes? | `false` |
+| `worker.hpa.enabled` | Enabled the Horizontal Pod Autoscaler for workers? | `false` |
+| `worker.hpa.minReplicas` | Minimum worker replicas | `1` |
+| `worker.hpa.maxReplicas` | Maximum worker replicas | `10` |
+| `worker.hpa.metrics` | List of metrics to be used to scale the worker pods. *See [https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough]*  | `false` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.storageClass` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
