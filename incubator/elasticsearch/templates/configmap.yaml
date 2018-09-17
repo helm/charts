@@ -117,6 +117,7 @@ data:
 {{- end }}
   pre-stop-hook.sh: |-
     #!/bin/bash
+    exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
     NODE_NAME=${HOSTNAME}
     echo "Prepare to migrate data of the node ${NODE_NAME}"
     echo "Move all data from node ${NODE_NAME}"
@@ -138,6 +139,7 @@ data:
     echo "Node ${NODE_NAME} is ready to shutdown"
   post-start-hook.sh: |-
     #!/bin/bash
+    exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
     NODE_NAME=${HOSTNAME}
     CLUSTER_SETTINGS=$(curl -s -XGET "http://localhost:9200/_cluster/settings")
     if echo "${CLUSTER_SETTINGS}" | grep -E "${NODE_NAME}"; then
