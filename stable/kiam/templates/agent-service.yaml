@@ -1,4 +1,4 @@
-{{- if .Values.agent.enabled -}}
+{{- if and .Values.agent.enabled .Values.agent.prometheus.scrape -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -16,14 +16,8 @@ spec:
     component: "{{ .Values.agent.name }}"
     release: {{ .Release.Name }}
   ports:
-    {{- if Values.agent.prometheus.scrape }}
     - name: metrics
-      port: {{ Values.agent.prometheus.port }}
-      targetPort: {{ Values.agent.prometheus.port }}
-      protocol: TCP
-    {{- end }}
-    - name: grpc
-      port: {{ .Values.agent.service.port }}
-      targetPort: {{ .Values.agent.service.targetPort }}
+      port: {{ .Values.agent.prometheus.port }}
+      targetPort: {{ .Values.agent.prometheus.port }}
       protocol: TCP
 {{- end }}

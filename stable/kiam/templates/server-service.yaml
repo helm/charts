@@ -16,10 +16,10 @@ spec:
     component: "{{ .Values.server.name }}"
     release: {{ .Release.Name }}
   ports:
-    {{- if Values.server.prometheus.scrape }}
+    {{- if .Values.server.prometheus.scrape }}
     - name: metrics
-      port: {{ Values.server.prometheus.port }}
-      targetPort: {{ Values.server.prometheus.port }}
+      port: {{ .Values.server.prometheus.port }}
+      targetPort: {{ .Values.server.prometheus.port }}
       protocol: TCP
     {{- end }}
     - name: grpclb
