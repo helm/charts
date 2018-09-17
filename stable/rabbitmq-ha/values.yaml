@@ -63,7 +63,7 @@ rabbitmqManagerPort: 15672
 rabbitmqHipeCompile: false
 
 ## SSL certificates
-## Red: http://www.rabbitmq.com/ssl.html
+## Ref: http://www.rabbitmq.com/ssl.html
 rabbitmqCert:
   enabled: false
 
