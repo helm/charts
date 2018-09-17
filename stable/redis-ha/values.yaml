@@ -1,9 +1,10 @@
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-image: redis
-tag: 4.0.11-stretch
-pullPolicy: IfNotPresent
+image:
+  repository: redis
+  tag: 4.0.11-stretch
+  pullPolicy: IfNotPresent
 ## replicas number for each component
 replicas: 3
 
@@ -71,7 +72,7 @@ podDisruptionBudget:
 auth: false
 
 persistentVolume:
-  enabled: false
+  enabled: true
   ## redis-ha data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning

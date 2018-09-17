@@ -60,8 +60,8 @@ spec:
 {{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
       - name: config-init
-        image: {{ .Values.image }}:{{ .Values.tag }}
-        imagePullPolicy: {{ .Values.pullPolicy }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
           - bash
         args:
@@ -86,8 +86,8 @@ spec:
             mountPath: /data
       containers:
       - name: redis
-        image: {{ .Values.image }}:{{ .Values.tag }}
-        imagePullPolicy: {{ .Values.pullPolicy }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
           - redis-server
         args:
@@ -111,7 +111,8 @@ spec:
           - mountPath: /data
             name: data
       - name: sentinel
-        image: {{ .Values.image }}:{{ .Values.tag }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
           - redis-sentinel
         args:

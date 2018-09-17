@@ -9,7 +9,7 @@ metadata:
 spec:
   containers:
   - name: "{{ .Release.Name }}-service-test"
-    image: {{ .Values.image }}:{{ .Values.tag }}
+    image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
     command:
       - sh
       - -c
