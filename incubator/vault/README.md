@@ -51,7 +51,7 @@ The following table lists the configurable parameters of the Vault chart and the
 | `imagePullSecret`                 | The name of the secret to use if pulling from a private registry | `nil`       |
 | `image.pullPolicy`                | Container pull policy                    | `IfNotPresent`                      |
 | `image.repository`                | Container image to use                   | `vault`                             |
-| `image.tag`                       | Container image tag to deploy            | `0.11.0`                            |
+| `image.tag`                       | Container image tag to deploy            | `0.11.1`                            |
 | `vault.dev`                       | Use Vault in dev mode                    | true (set to false in production)   |
 | `vault.extraEnv`                  | Extra env vars for Vault pods            | `{}`                                |
 | `vault.extraContainers`           | Sidecar containers to add to the vault pod | `{}`                              |
