@@ -11,7 +11,7 @@ spec:
   type: {{ .Values.controllerService.type }}
   ports:
     - port: {{ .Values.controllerService.port }}
-      targetPort: 8080
+      targetPort: controller
       protocol: TCP
       name: controller
   selector:

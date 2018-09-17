@@ -24,28 +24,28 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: gui
-              containerPort: {{ .Values.guiService.port }}
+            - name: https-gui
+              containerPort: 8443
               protocol: TCP
             - name: controller
-              containerPort: {{ .Values.controllerService.port }}
+              containerPort: 8080
               protocol: TCP
             - name: discovery
-              containerPort: {{ .Values.discoveryService.port }}
+              containerPort: 10001
               protocol: UDP
             - name: stun
-              containerPort: {{ .Values.stunService.port }}
+              containerPort: 3478
               protocol: UDP
           livenessProbe:
             httpGet:
               path: /status
-              port: gui
+              port: https-gui
               scheme: HTTPS
               initialDelaySeconds: 30
           readinessProbe:
             httpGet:
               path: /status
-              port: gui
+              port: https-gui
               scheme: HTTPS
               initialDelaySeconds: 15
           env:

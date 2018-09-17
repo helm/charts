@@ -1,6 +1,5 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "unifi.fullname" . -}}
-{{- $servicePort := .Values.guiService.port -}}
 {{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -34,6 +33,6 @@ spec:
           - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $fullName }}-gui
-              servicePort: {{ $servicePort }}
+              servicePort: 8443
   {{- end }}
 {{- end }}

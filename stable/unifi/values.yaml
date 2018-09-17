@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: jacobalberty/unifi
-  tag: 5.8.28
+  tag: 5.8.30
   pullPolicy: IfNotPresent
 
 guiService:

@@ -11,7 +11,7 @@ spec:
   type: {{ .Values.stunService.type }}
   ports:
     - port: {{ .Values.stunService.port }}
-      targetPort: 10001
+      targetPort: stun
       protocol: UDP
       name: stun
   selector:

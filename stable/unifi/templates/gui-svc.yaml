@@ -37,10 +37,10 @@ spec:
 {{ toYaml .Values.guiService.externalIPs | indent 4 }}
 {{- end }}
   ports:
-    - name: https
+    - name: https-gui
       port: {{ .Values.guiService.port }}
       protocol: TCP
-      targetPort: 8443
+      targetPort: https-gui
 {{ if (and (eq .Values.guiService.type "NodePort") (not (empty .Values.guiService.nodePort))) }}
       nodePort: {{.Values.guiService.nodePort}}
 {{ end }}

@@ -11,7 +11,7 @@ spec:
   type: {{ .Values.discoveryService.type }}
   ports:
     - port: {{ .Values.discoveryService.port }}
-      targetPort: http
+      targetPort: discovery
       protocol: UDP
       name: discovery
   selector:
