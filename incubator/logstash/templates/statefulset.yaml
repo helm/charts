@@ -77,8 +77,6 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
 {{ toYaml .Values.volumeMounts | indent 12 }}
-          volumes:
-{{ toYaml .Values.volumes | indent 12 }}
 
 {{- if .Values.exporter.logstash.enabled }}
         ## logstash-exporter
@@ -112,6 +110,10 @@ spec:
 {{ toYaml .Values.exporter.logstash.resources | indent 12 }}
 {{- end }}
 
+    {{- with .Values.volumes }}
+      volumes:
+{{ toYaml .Values.volumes | indent 8 }}
+    {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
