@@ -20,6 +20,10 @@ spec:
       labels:
         app: {{ template "keycloak.name" . }}
         release: "{{ .Release.Name }}"
+{{- if .Values.keycloak.podAnnotations }}
+      annotations:
+{{ toYaml .Values.keycloak.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       securityContext:
 {{ toYaml .Values.keycloak.securityContext | indent 8 }}
