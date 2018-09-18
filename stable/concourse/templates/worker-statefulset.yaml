@@ -66,6 +66,7 @@ spec:
             failureThreshold: 1
             initialDelaySeconds: 10
             periodSeconds: 10
+            timeoutSeconds: 5
           lifecycle:
             preStop:
               exec:
