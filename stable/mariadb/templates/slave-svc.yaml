@@ -19,6 +19,13 @@ spec:
   - name: mysql
     port: {{ .Values.service.port }}
     targetPort: mysql
+{{- if (eq .Values.service.type "NodePort") }}
+{{- if .Values.service.nodePort }}
+{{- if .Values.service.nodePort.slave }}
+    nodePort: {{ .Values.service.nodePort.slave }}
+{{- end }}
+{{- end }}
+{{- end }}
 {{- if .Values.metrics.enabled }}
   - name: metrics
     port: 9104

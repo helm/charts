@@ -2,7 +2,7 @@
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2018-07-10T01-42-11Z
+  tag: RELEASE.2018-09-12T18-49-56Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -10,7 +10,7 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2018-06-09T02-18-09Z
+  tag: RELEASE.2018-09-10T23-39-12Z
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
@@ -53,14 +53,14 @@ persistence:
   ##
   ## Storage class of PV to bind. By default it looks for standard storage class.
   ## If the PV uses a different storage class, specify that here.
-  storageClass: standard
+  # storageClass: standard
   accessMode: ReadWriteOnce
   size: 10Gi
 
-## If subPath is set mount a sub folder of a volume instead of the root of the volume.
-## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
-##
-subPath: ""
+  ## If subPath is set mount a sub folder of a volume instead of the root of the volume.
+  ## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
+  ##
+  subPath: ""
 
 ## Expose the Minio service to be accessed from outside the cluster (LoadBalancer service).
 ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
@@ -69,8 +69,11 @@ subPath: ""
 
 service:
   type: ClusterIP
-  clusterIP: None
+  clusterIP: ~
   port: 9000
+  # nodePort: 31311
+  # externalIPs:
+  #   - externalIp1
   annotations: {}
     # prometheus.io/scrape: 'true'
     # prometheus.io/path:   '/minio/prometheus/metrics'
@@ -95,6 +98,21 @@ ingress:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+## Liveness and Readiness probe values.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+livenessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 30
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 15
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -137,9 +155,9 @@ nasgateway:
   enabled: false
   # Number of parallel instances
   replicas: 4
-  # Generally for NAS Gateway, you'd like to bind the PVC to a specific PV. To ensure that happens, PV to bind to should have
+  # For NAS Gateway, you may want to bind the PVC to a specific PV. To ensure that happens, PV to bind to should have
   # a label like "pv: <value>", use value here.
-  pv: ""
+  pv: ~
 
 ## https://docs.minio.io/docs/minio-bucket-notification-guide
 ## https://github.com/minio/minio/blob/master/docs/config

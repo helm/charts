@@ -17,12 +17,12 @@ data:
     allow_awsecr_iam_auto: {{ .Values.globalConfig.allowECRUseIAMRole }}
     cleanup_images: {{ .Values.globalConfig.cleanupImages }}
 
-    # docker_conn: 'unix://var/run/docker.sock'
-    # docker_conn_timeout: 600
-
     log_level: {{ .Values.coreConfig.logLevel }}
-    host_id: ${ANCHORE_HOST_ID}
+    host_id: ${ANCHORE_POD_NAME}
     internal_ssl_verify: {{ .Values.globalConfig.internalServicesSslVerifyCerts }}
+
+    metrics:
+      enabled: {{ .Values.globalConfig.enableMetrics }}
 
     # Uncomment if you have a local endpoint that can accept
     # notifications from the anchore-engine, as configured below
@@ -32,19 +32,21 @@ data:
 {{ toYaml .Values.coreConfig.webhooks.config | indent 6 }}
     {{ end }}
 
-    # A feeds section is available for override, but shouldn't be
-    # needed. By default, the 'admin' credentials are used if present,
-    # otherwise anonymous access for feed sync is used
-
-    #feeds:
-    #  selective_sync:
-    #    # If enabled only sync specific feeds instead of all.
-    #    enabled: True
-    #    feeds:
-    #      vulnerabilities: True
-    #      # Warning: enabling the package sync causes the service to require much
-    #      #   more memory to do process the significant data volume. We recommend at least 4GB available for the container
-    #      packages: False
+    # Configure what feeds to sync. The 'admin' anchoreIO credentials are used if present, but not required.
+    # The 'anonymous' user is used for the sync otherwise.
+    # The sync will hit http://ancho.re/feeds, if any outbound firewall config needs to be set in your environment.
+    feeds:
+      selective_sync:
+        # If enabled only sync specific feeds instead of all that are found.
+        enabled: True
+        feeds:
+          # Vulnerabilities feed is the feed for distro cve sources (redhat, debian, ubuntu, oracle, alpine....)
+          vulnerabilities: True
+          # NVD Data is used for non-distro CVEs (jars, npm, etc) that are not packaged and released by distros as rpms, debs, etc
+          nvd: True
+          # Warning: enabling the package sync causes the service to require much
+          #   more memory to do process the significant data volume. We recommend at least 4GB available for the container
+          packages: False
     #  anonymous_user_username: anon@ancho.re
     #  anonymous_user_password: pbiU2RYZ2XrmYQ
     #  url: 'https://ancho.re/v1/service/feeds'
@@ -109,6 +111,10 @@ data:
         ssl_enable: {{ .Values.globalConfig.internalServicesSslEnabled }}
         ssl_cert: {{ .Values.coreConfig.ssl.certDir -}}/{{- .Values.coreConfig.ssl.certSecretCertName }}
         ssl_key: {{ .Values.coreConfig.ssl.certDir -}}/{{- .Values.coreConfig.ssl.certSecretKeyName }}
+        event_log:
+{{ toYaml .Values.coreConfig.events | indent 10 }}
+        archive:
+{{ toYaml .Values.coreConfig.archive | indent 10 }}
       simplequeue:
         enabled: True
         require_auth: True
@@ -118,8 +124,6 @@ data:
         ssl_enable: {{ .Values.globalConfig.internalServicesSslEnabled }}
         ssl_cert: {{ .Values.coreConfig.ssl.certDir -}}/{{- .Values.coreConfig.ssl.certSecretCertName }}
         ssl_key: {{ .Values.coreConfig.ssl.certDir -}}/{{- .Values.coreConfig.ssl.certSecretKeyName }}
-      analyzer:
-        enabled: False
       policy_engine:
         enabled: True
         require_auth: True

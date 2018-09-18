@@ -9,7 +9,7 @@ keycloak:
 
   image:
     repository: jboss/keycloak
-    tag: 4.1.0.Final
+    tag: 4.2.1.Final
     pullPolicy: IfNotPresent
 
     ## Optionally specify an array of imagePullSecrets.
@@ -23,6 +23,9 @@ keycloak:
     runAsUser: 1000
     fsGroup: 1000
     runAsNonRoot: true
+
+  ## The path keycloak will be served from. To serve keycloak from the root path, use two quotes (e.g. "").
+  basepath: auth
 
   ## Additional init containers, e. g. for providing custom themes
   extraInitContainers: |
@@ -81,6 +84,9 @@ keycloak:
 
   nodeSelector: {}
   tolerations: []
+
+  ## Extra Annotations to be added to pod
+  podAnnotations: {}
 
   livenessProbe:
     initialDelaySeconds: 120

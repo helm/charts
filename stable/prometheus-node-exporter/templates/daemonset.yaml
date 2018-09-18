@@ -2,27 +2,23 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: {{ template "prometheus-node-exporter.fullname" . }}
-  labels:
-    app: {{ template "prometheus-node-exporter.name" . }}
-    chart: {{ template "prometheus-node-exporter.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+  labels: {{ include "prometheus-node-exporter.labels" . | indent 4 }}
 spec:
   selector:
     matchLabels:
       app: {{ template "prometheus-node-exporter.name" . }}
-      release: {{ .Release.Name }}
+      release: {{ .Release.Name }}  
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 1      
   template:
     metadata:
-      labels:
-        app: {{ template "prometheus-node-exporter.name" . }}
-        release: {{ .Release.Name }}
+      labels: {{ include "prometheus-node-exporter.labels" . | indent 8 }}
     spec:
+{{- if and .Values.rbac.create .Values.serviceAccount.create }}
       serviceAccountName: {{ template "prometheus-node-exporter.serviceAccountName" . }}
+{{- end }}      
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
