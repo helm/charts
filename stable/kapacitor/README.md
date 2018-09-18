@@ -2,7 +2,7 @@
 
 ##  An Open-Source Time Series ETL and Alerting Engine
 
-[Kapacitor](https://github.com/influxdata/kapacitor) is an open-source framework built by the folks over at [InfluxData](https://influxdata.com) and written in Go for processing, monitoring, and alerting on time series data 
+[Kapacitor](https://github.com/influxdata/kapacitor) is an open-source framework built by the folks over at [InfluxData](https://influxdata.com) and written in Go for processing, monitoring, and alerting on time series data
 
 ## QuickStart
 
@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the Kapacitor chart and
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image.repository` | Kapacitor image | `kapacitor` |
-| `image.tag` | Kapacitor image version | `1.6.2-alpine` |
+| `image.tag` | Kapacitor image version | `1.5.1-alpine` |
 | `image.pullPolicy` | Kapacitor image pull policy |  `IfNotPresent` |
 | `service.type` | Kapacitor web service type  | `ClusterIP` |
 | `persistence.enabled` | Enable Kapacitor persistence using Persistent Volume Claims | `false` |
