@@ -41,3 +41,4 @@ persistentVolume:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+extraEnv: []
