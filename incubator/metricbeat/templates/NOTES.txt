@@ -1,0 +1,9 @@
+Metricbeat has been deployed
+
+Metricbeat is trying to communicate to the following elasticsearch cluster:
+
+	{{ .Values.env.ELASTICSEARCH_HOST }}:{{ .Values.env.ELASTICSEARCH_PORT }}
+
+To check logs run the following:
+
+	kubectl logs -l app={{ template "metricbeat.fullname" . }}
