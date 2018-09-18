@@ -1,0 +1,118 @@
+apiVersion: apps/v1beta2
+kind: DaemonSet
+metadata:
+  labels: {{ include "fluentd-splunk-hec.labels" . | indent 4 }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+  name: {{ template "fluentd-splunk-hec.fullname" . }}
+spec:
+  selector:
+    matchLabels: {{ include "fluentd-splunk-hec.labels" . | indent 8 }}
+  template:
+    metadata:
+      labels: {{ include "fluentd-splunk-hec.labels" . | indent 8 }}
+      # This annotation ensures that fluentd does not get evicted if the node
+      # supports critical pod annotation based priority scheme.
+      # Note that this does not guarantee admission on the nodes (#40573).
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+{{- if .Values.annotations }}
+{{ toYaml .Values.annotations | indent 8 }}
+{{- end }}
+    spec:
+      serviceAccountName: {{ template "fluentd-splunk-hec.fullname" . }}
+      containers:
+      - name: fluentd
+        image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        env:
+        - name: K8S_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: FLUENTD_ARGS
+          value: "{{ .Values.fluentd_settings.args }}"
+        - name: FLUENT_UID
+          value: "{{ .Values.fluentd_settings.uid }}"
+        - name: FLUENT_SPLUNK_HEC_CA_FILE
+          value: "{{ .Values.ssl_cert_bundle_path }}"
+        - name: FLUENT_SPLUNK_HEC_HOST
+          value: "{{ .Values.splunk_hec.host }}"
+        - name: FLUENT_SPLUNK_HEC_PORT
+          value: "{{ .Values.splunk_hec.port }}"
+        - name: FLUENT_SPLUNK_HEC_SOURCE
+          value: "{{ .Values.splunk_hec.source_name }}"
+        - name: FLUENT_SPLUNK_HEC_SOURCE_TYPE
+          value: "{{ .Values.splunk_hec.source_type }}"
+        - name: FLUENT_SPLUNK_HEC_USE_SSL
+          value: "{{ .Values.splunk_hec.use_ssl }}"
+        - name: FLUENT_SPLUNK_HEC_SSL_VERIFY
+          value: "{{ .Values.splunk_hec.ssl_verify }}"
+        - name: FLUENT_SPLUNK_HEC_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fluentd-splunk-hec.fullname" . }}
+              key: token
+{{- range $key, $value := .Values.environment }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+{{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: ssl-certs
+          mountPath: {{ .Values.ssl_cert_bundle_path }}
+          readOnly: true
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+{{- if .Values.livenessProbe.enabled }}
+        # Liveness probe is aimed to help in situarions where fluentd
+        # silently hangs for no apparent reasons until manual restart.
+        # The idea of this probe is that if fluentd is not queueing or
+        # flushing chunks for 5 minutes, something is not right. If
+        # you want to change the fluentd configuration, reducing amount of
+        # logs fluentd collects, consider changing the threshold or turning
+        # liveness probe off completely.
+        livenessProbe:
+          initialDelaySeconds: 600
+          periodSeconds: 60
+          exec:
+            command:
+            - '/bin/sh'
+            - '-c'
+            - >
+              LIVENESS_THRESHOLD_SECONDS=${LIVENESS_THRESHOLD_SECONDS:-300};
+              STUCK_THRESHOLD_SECONDS=${LIVENESS_THRESHOLD_SECONDS:-900};
+              if [ ! -e /var/log/fluentd-buffers ];
+              then
+                exit 1;
+              fi;
+              touch -d "${STUCK_THRESHOLD_SECONDS} seconds ago" /tmp/marker-stuck;
+              if [[ -z "$(find /var/log/fluentd-buffers -type f -newer /tmp/marker-stuck -print -quit)" ]];
+              then
+                rm -rf /var/log/fluentd-buffers;
+                exit 1;
+              fi;
+              touch -d "${LIVENESS_THRESHOLD_SECONDS} seconds ago" /tmp/marker-liveness;
+              if [[ -z "$(find /var/log/fluentd-buffers -type f -newer /tmp/marker-liveness -print -quit)" ]];
+              then
+                exit 1;
+              fi;
+{{- end }}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: ssl-certs
+        hostPath:
+          path: "{{ .Values.ssl_cert_bundle_path }}"
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
+{{- end }}

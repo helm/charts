@@ -1,0 +1,6 @@
+To verify that the fluentd pods have started run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ .Chart.Name }},release={{ .Release.Name }}"
+
+Fluentd sends all console output from containers to your Splunk installation. This could include
+things that might be identifying such as IP addresses, container images and log data.

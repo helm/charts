@@ -1,0 +1,20 @@
+name: fluentd-splunk-hec
+version: "1.0"
+appVersion: v0.12.43
+home: https://www.fluentd.org
+description: Creates fluentd daemonset that runs the splunk HEC plugin for sending logs to a Splunk HTTP event collector
+icon: https://raw.githubusercontent.com/fluent/fluentd-docs/master/public/logo/Fluentd_square.png
+keywords:
+- fluentd
+- splunk
+- multiline
+- logging
+sources:
+- https://github.com/kubernetes/charts/stable/fluentd-splunk-hec
+- https://github.com/fluent/fluentd-kubernetes-daemonset
+- https://github.com/fluent/fluent-plugin-splunk/blob/master/README.hec.md
+- https://hub.docker.com/r/fluent/fluentd-kubernetes-daemonset/
+maintainers:
+- name: max-rocket-internet
+  email: max.williams@deliveryhero.com
+engine: gotpl

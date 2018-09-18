@@ -1,0 +1,54 @@
+image:
+  repository: fluent/fluentd-kubernetes-daemonset
+  tag: v0.12.43-splunkhec
+  pullPolicy: IfNotPresent
+
+rbac:
+  create: true
+
+# Path to the SSL CA bundle file
+# GKE
+# ssl_cert_bundle_path: /etc/srv/kubernetes/pki/ca-certificates.crt
+# kops
+# ssl_cert_bundle_path: /etc/ssl/certs/ca-certificates.crt
+# EKS
+# ssl_cert_bundle_path: /etc/ssl/certs/ca-bundle.crt
+ssl_cert_bundle_path: /etc/ssl/certs/ca-bundle.crt
+
+fluentd_settings:
+  uid: 0
+  args: '--no-supervisor -q'
+
+splunk_hec:
+  host: hec.example.com
+  port: 8088
+  token: change_me
+  use_ssl: "true"
+  ssl_verify: "true"
+  source_name: fluentd-splunk-hec
+  source_type: fluentd-splunk-hec
+
+# Any extra environment variables
+# See here for some optional settings:
+#   https://github.com/fluent/fluentd-kubernetes-daemonset/blob/master/docker-image/v0.12/alpine-splunkhec/conf/fluent.conf
+environment: {}
+#   VARIABLE_1: VALUE_1
+#   VARIABLE_2: VALUE_2
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 500Mi
+  requests:
+    cpu: 100m
+    memory: 200Mi
+
+annotations: {}
+
+tolerations: {}
+  # - key: node-role.kubernetes.io/master
+  #   operator: Exists
+  #   effect: NoSchedule
+
+livenessProbe:
+  enabled: true
