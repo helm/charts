@@ -26,8 +26,9 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
-{{- if .Values.dashboardImport.dashboards }}
+{{- if or (.Values.dashboardImport.dashboards) (.Values.plugins) }}
       initContainers:
+{{- if .Values.dashboardImport.dashboards }}
       - name: {{ .Chart.Name }}-dashboardimport
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -58,6 +59,41 @@ spec:
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
         {{- end }}
+{{- end }}
+{{- if .Values.plugins}}
+      - name: {{ .Chart.Name }}-plugins-install
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - /bin/bash
+          - "-c"
+          - |
+            set -e
+            plugins=(
+            {{- range .Values.plugins }}
+            {{ . }}
+            {{- end }}
+            )
+            for i in "${plugins[@]}"
+            do
+               ./bin/kibana-plugin install $i
+            done
+        env:
+        {{- range $key, $value := .Values.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+          name: {{ template "kibana.name" . }}
+          protocol: TCP
+        volumeMounts:
+        {{- range $configFile := (keys .Values.files) }}
+        - name: {{ template "kibana.name" $ }}
+          mountPath: "/usr/share/kibana/config/{{ $configFile }}"
+          subPath: {{ $configFile }}
+        {{- end }}
+{{- end }}
 {{- end }}
       containers:
       - name: {{ .Chart.Name }}
