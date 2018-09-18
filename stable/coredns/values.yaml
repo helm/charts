@@ -76,6 +76,10 @@ servers:
 #            - master
 affinity: {}
 
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
 # expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#toleration-v1-core
 # for example:
 #   tolerations:
