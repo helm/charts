@@ -90,6 +90,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `metrics.service.port`             | Port on where metrics should be exposed    | `2020`                                            |
 | `metrics.service.type`             | Service type for metrics                   | `ClusterIP`                                       |
 | `trackOffsets`                     | Specify whether to track the file offsets for tailing docker logs. This allows fluent-bit to pick up where it left after pod restarts but requires access to a `hostPath` | `false` |
+| `inputParser`                      | Input parser to use                        | `docker`                                          |
 | | | |
 
 

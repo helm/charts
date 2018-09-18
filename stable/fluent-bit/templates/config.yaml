@@ -27,7 +27,7 @@ data:
     [INPUT]
         Name             tail
         Path             /var/log/containers/*.log
-        Parser           docker
+        Parser           {{ .Values.inputParser }}
         Tag              {{ .Values.filter.kubeTag }}.*
         Refresh_Interval 5
         Mem_Buf_Limit    5MB
@@ -139,7 +139,7 @@ data:
         Name        {{ .name }}
         Format      json
 {{- if .timeKeep }}
-        Time_Keep    {{ .timeKeep }}
+        Time_Keep   {{ .timeKeep }}
 {{- end }}
 {{- if .timeKey }}
         Time_Key    {{ .timeKey }}
@@ -147,8 +147,10 @@ data:
 {{- if .timeFormat }}
         Time_Format {{ .timeFormat }}
 {{- end }}
-{{- if .decodeFieldAs  }}
-        Decode_Field_As {{ .decodeFieldAs }} {{ .decodeField | default "log" }}
+{{- if .decodeFieldAs }}
+{{- range .decodeFieldAs }}
+        Decode_Field_As {{ .decoder }} {{ .decodeField | default "log" }} {{ .decodeAction | default "" }}
+{{- end }}
 {{- end }}
 {{ end }}
 {{- end }}

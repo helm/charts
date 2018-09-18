@@ -18,6 +18,9 @@ metrics:
 # When enabled, fluent-bit will keep track of tailing offsets across pod restarts.
 trackOffsets: false
 
+# Input parser to use
+inputParser: docker
+
 backend:
   type: forward
   forward:
@@ -69,6 +72,14 @@ parsers:
   ## is name.
   regex: []
   json: []
+#    - name: custom
+#      timeKey: time
+#      timeFormat: "%Y-%m-%dT%H:%M:%S.%L"
+#      timeKeep: "On"
+#      decodeFieldAs:
+#        - decoder: escaped
+#          decodeAction: do_next
+#        - decoder: json
 
 env: []
 
