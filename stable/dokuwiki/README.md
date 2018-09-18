@@ -88,7 +88,9 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `readinessProbe.timeoutSeconds`      | When the probe times out                                   | 5                                             |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed       | 6                                             |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes to be considered successful  | 1                                             |
-
+| `nodeSelector`                       | Node labels for pod assignment                             | `{}`                                          |
+| `affinity`                           | Affinity settings for pod assignment                       | `{}`                                          |
+| `tolerations`                        | Toleration labels for pod assignment                       | `[]`                                          |
 
 The above parameters map to the env variables defined in [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki). For more information please refer to the [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki) image documentation.
 
