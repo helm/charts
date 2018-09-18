@@ -6,7 +6,7 @@ imagePullPolicy: IfNotPresent
 # The version of the hadoop libraries being used in the image.
 hadoopVersion: 2.7.3
 
-# Select antiAffinity as either hard or soft, default is hard
+# Select antiAffinity as either hard or soft, default is soft
 antiAffinity: "soft"
 
 hdfs:

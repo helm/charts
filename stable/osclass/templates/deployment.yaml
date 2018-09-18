@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app: {{ template "osclass.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

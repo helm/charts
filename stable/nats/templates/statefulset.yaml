@@ -8,6 +8,7 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  serviceName: {{ template "nats.fullname" . }}-headless
   replicas: {{ .Values.replicaCount }}
   updateStrategy:
     type: {{ .Values.statefulset.updateStrategy }}
@@ -18,11 +19,13 @@ spec:
   selector:
     matchLabels:
       app: "{{ template "nats.name" . }}"
+      chart: "{{ template "nats.chart" . }}"
       release: {{ .Release.Name | quote }}
   template:
     metadata:
       labels:
         app: "{{ template "nats.name" . }}"
+        chart: "{{ template "nats.chart" . }}"
         release: {{ .Release.Name | quote }}
         {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
@@ -32,6 +35,10 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}

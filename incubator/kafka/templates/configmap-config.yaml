@@ -11,12 +11,17 @@ metadata:
   name: {{ template "kafka.fullname" . }}-config
 data:
   runtimeConfig.sh: |
-    #!/bin/sh
+    #!/bin/bash
     set -e
     cd /usr/bin
     until kafka-configs --zookeeper {{ $zk }} --entity-type topics --describe || (( count++ >= 6 ))
     do
       echo "Waiting for Zookeeper..."
+      sleep 20
+    done
+    until nc -z {{ template "kafka.fullname" . }} 9092 || (( retries++ >= 6 ))
+    do
+      echo "Waiting for Kafka..."
       sleep 20
     done
     echo "Applying runtime configuration using {{ .Values.image }}:{{ .Values.imageTag }}"

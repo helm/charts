@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         app: {{ template "parse.name" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         component: "dashboard"
     spec:

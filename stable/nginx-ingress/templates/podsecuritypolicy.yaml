@@ -1,0 +1,47 @@
+{{- if .Values.podSecurityPolicy.enabled}}
+apiVersion: extensions/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "nginx-ingress.fullname" . }} 
+  labels:
+    app: {{ template "nginx-ingress.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  allowedCapabilities:
+    - NET_BIND_SERVICE
+  privileged: false
+  allowPrivilegeEscalation: true
+  # Allow core volume types.
+  volumes:
+    - 'configMap'
+    #- 'emptyDir'
+    #- 'projected'
+    - 'secret'
+    #- 'downwardAPI'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    # Require the container to run without root privileges.
+    rule: 'MustRunAsNonRoot'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: false
+  seLinux:
+    rule: 'RunAsAny'
+  hostPorts:
+    - max: 65535
+      min: 1
+{{- end }}
