@@ -81,6 +81,7 @@ spec:
           - name: DD_PROCESS_AGENT_ENABLED
             value: {{ .Values.datadog.processAgentEnabled | quote }}
           {{- end }}
+          {{- if not .Values.clusterAgent.enabled }}
           {{- if .Values.datadog.leaderElection }}
           - name: DD_LEADER_ELECTION
             value: {{ .Values.datadog.leaderElection | quote}}
@@ -92,6 +93,15 @@ spec:
           {{- if .Values.datadog.collectEvents }}
           - name: DD_COLLECT_KUBERNETES_EVENTS
             value: {{.Values.datadog.collectEvents | quote}}
+          {{- end }}
+          {{- else }}
+          - name: DD_CLUSTER_AGENT_ENABLED
+            value: {{ .Values.clusterAgent.enabled | quote }}
+          - name: DD_CLUSTER_AGENT_AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "datadog.clusterAgent.fullname" . }}
+                key: token
           {{- end }}
           - name: KUBERNETES
             value: "yes"
