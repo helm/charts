@@ -1,0 +1,21 @@
+{{- if .Values.rbac.create -}}
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "node-problem-detector.fullname" . }}
+  labels:
+    app: {{ template "node-problem-detector.name" . }}
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "node-problem-detector.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ template "node-problem-detector.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end -}}

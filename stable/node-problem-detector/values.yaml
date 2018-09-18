@@ -1,0 +1,27 @@
+settings:
+  log_monitors:
+    - /config/kernel-monitor.json
+    - /config/docker-monitor.json
+
+image:
+  repository: k8s.gcr.io/node-problem-detector
+  tag: v0.5.0
+  pullPolicy: IfNotPresent
+
+rbac:
+  create: true
+
+resources:
+  limits:
+    cpu: "200m"
+    memory: "100Mi"
+  requests:
+    cpu: "20m"
+    memory: "20Mi"
+
+annotations: {}
+
+tolerations: {}
+  # - key: node-role.kubernetes.io/master
+  #   operator: Exists
+  #   effect: NoSchedule
