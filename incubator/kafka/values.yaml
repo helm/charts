@@ -343,6 +343,17 @@ topics: []
   #   replicationFactor: 3
   #   defaultConfig: "segment.bytes,segment.ms"
   #   config: "cleanup.policy=compact,delete.retention.ms=604800000"
+  # - name: myAclTopicPartitions
+  #   partitions: 8
+  #   acls:
+  #     - user: read
+  #       operations: [ Read ]
+  #     - user: read_and_write
+  #       operations:
+  #         - Read
+  #         - Write
+  #     - user: all
+  #       operations: [ All ]
 
 # ------------------------------------------------------------------------------
 # Zookeeper:

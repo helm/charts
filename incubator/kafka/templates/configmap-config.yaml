@@ -53,7 +53,7 @@ data:
     {{- if $topic.acls }}
       {{- range $a, $acl := $topic.acls }}
         {{ if and $acl.user $acl.operations }}
-    kafka-acls --authorizer-properties zookeeper.connect={{ $zk }} --force --add --allow-principal User:{{ $acl.user }}  --operation {{ $acl.operations }} --topic {{ $topic.name }} {{ $topic.extraParams }}
+    kafka-acls --authorizer-properties zookeeper.connect={{ $zk }} --force --add --allow-principal User:{{ $acl.user }}{{- range $operation := $acl.operations }} --operation {{ $operation }} {{- end }} --topic {{ $topic.name }} {{ $topic.extraParams }}
         {{- end }}
       {{- end }}
     {{- end }}
