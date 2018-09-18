@@ -40,6 +40,21 @@ podManagementPolicy: OrderedReady
 rbac:
   enabled: false
 
+## Useful if using any custom authorizer
+## Pass in some secrets to use (if required)
+# secrets:
+# - name: myKafkaSecret
+#   keys:
+#     - username
+#     - password
+#   # mountPath: /opt/kafka/secret
+# - name: myZkSecret
+#   keys:
+#     - user
+#     - pass
+#   mountPath: /opt/zookeeper/secret
+
+
 ## The name of the storage class which the cluster should use.
 # storageClass: default
 
@@ -134,6 +149,9 @@ external:
     image: "lwolf/kubectl_deployer"
     imageTag: "0.4"
     imagePullPolicy: "IfNotPresent"
+
+# Annotation to be added to Kafka pods
+podAnnotations: {}
 
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
 ## here in map format, as defined in the official docs.

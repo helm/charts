@@ -3,7 +3,7 @@
 ##
 image:
   repository: "kapacitor"
-  tag: "1.4-alpine"
+  tag: "1.5.1-alpine"
   pullPolicy: "IfNotPresent"
 
 ## Specify a service type, defaults to NodePort
@@ -16,7 +16,7 @@ service:
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  enabled: false
+  enabled: true
   ## kapacitor data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -27,6 +27,7 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
+  # existingClaim: ""
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

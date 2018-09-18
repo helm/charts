@@ -62,6 +62,15 @@ spec:
                 secretKeyRef:
                   name: {{ template "minio.fullname" . }}
                   key: secretkey
+          livenessProbe:
+            httpGet:
+              path: /minio/health/live
+              port: service
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

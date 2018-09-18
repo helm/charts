@@ -48,6 +48,7 @@ Parameter | Description | Default
 `keycloak.image.tag` | The Keycloak image tag | `4.2.1.Final`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
 `keycloak.image.pullSecrets` | Image pull secrets | `[]`
+`keycloak.basepath` | Path keycloak is hosted at | `auth`
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
 `keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
 `keycloak.extraInitContainers` | Additional init containers, e. g. for providing themes, etc. Passed through the `tpl` funtion and thus to be configured a string | `""`
@@ -60,6 +61,7 @@ Parameter | Description | Default
 `keycloak.affinity` | Pod affinity. Passed through the `tpl` funtion and thus to be configured a string | `Hard node and soft zone anti-affinity`
 `keycloak.nodeSelector` | Node labels for pod assignment | `{}`
 `keycloak.tolerations` | Node taints to tolerate | `[]`
+`keycloak.podAnnotations` | Extra annotations to add to pod | `{}`
 `keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
 `keycloak.preStartScript` | Custom script to run before Keycloak starts up | ``
 `keycloak.extraArgs` | Additional arguments to the start command | ``

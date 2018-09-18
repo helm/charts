@@ -1,4 +1,10 @@
-# JFrog Xray HA on Kubernetes Helm Chart
+# JFrog Xray HA on Kubernetes Helm Chart - DEPRECATED
+**This chart is deprecated! You can find the new chart in:**
+- **Sources:** https://github.com/jfrog/charts
+- **Charts repository:** https://charts.jfrog.io
+```bash
+helm repo add jfrog https://charts.jfrog.io
+```
 
 ## Prerequisites Details
 
@@ -183,7 +189,7 @@ The following table lists the configurable parameters of the xray chart and thei
 | `rabbitmq-ha.persistentVolume.enabled`         | If `true`, persistent volume claims are created | `true`            |
 | `rabbitmq-ha.persistentVolume.size`            | RabbitMQ Persistent volume size              | `20Gi`               |
 | `rabbitmq-ha.rbac.create`                      | If true, create & use RBAC resources         | `true`              |
-| `common.xrayVersion`                           | Xray image tag                               | `2.2.4`              |
+| `common.xrayVersion`                           | Xray image tag                               | `2.3.0`              |
 | `common.xrayConfigPath`                        | Xray config path                   | `/var/opt/jfrog/xray/data`     |
 | `common.xrayUserId`                            | Xray User Id                                 | `1035`               |
 | `common.xrayGroupId`                           | Xray Group Id                                | `1035`               |

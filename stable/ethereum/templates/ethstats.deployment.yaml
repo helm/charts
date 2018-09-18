@@ -35,3 +35,7 @@ spec:
             secretKeyRef:
               name: {{ template "ethereum.fullname" . }}-ethstats
               key: WS_SECRET
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}

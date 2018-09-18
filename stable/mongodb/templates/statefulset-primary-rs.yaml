@@ -24,6 +24,10 @@ spec:
         chart: {{ template "mongodb.chart" . }}
         release: {{ .Release.Name }}
         component: primary
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -58,7 +62,7 @@ spec:
             value: {{ .Values.replicaSet.name | quote }}
             {{- if .Values.replicaSet.useHostnames }}
           - name: MONGODB_ADVERTISED_HOSTNAME
-            value: "$(MONGODB_POD_NAME).{{ template "mongodb.fullname" . }}-headless.{{ .Release.Namespace }}"
+            value: "$(MONGODB_POD_NAME).{{ template "mongodb.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
             {{- end }}
           - name: MONGODB_USERNAME
             value: {{ .Values.mongodbUsername | quote }}
@@ -83,6 +87,12 @@ spec:
                 name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
                 key: mongodb-replica-set-key
             {{- end }}
+          - name: MONGODB_ENABLE_IPV6
+          {{- if .Values.mongodbEnableIPv6 }}
+            value: "yes"
+          {{- else }}
+            value: "no"
+          {{- end }}
           - name: MONGODB_EXTRA_FLAGS
             value: {{ default "" .Values.mongodbExtraFlags | join " " }}
           {{- if .Values.livenessProbe.enabled }}
