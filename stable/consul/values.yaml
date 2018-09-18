@@ -133,7 +133,7 @@ tolerations: []
 ## Should be a list of FQDN's and ports to join
 #
 # Added to agent command with -retry-join
-joinPeers: [] 
+joinPeers: []
 
 # Added to agent command with -retry-join-wan
 joinWan: []
