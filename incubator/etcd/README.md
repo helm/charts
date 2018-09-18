@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the etcd chart and thei
 | `affinity`              | affinity settings for pod assignment | `{}`                                               |
 | `nodeSelector`          | Node labels for pod assignment       | `{}`                                               |
 | `tolerations`           | Toleration labels for pod assignment | `[]`                                               |
+| `extraEnv`              | Optional environment variables       | `[]`                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
