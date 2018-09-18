@@ -164,3 +164,9 @@ readinessProbe:
   timeoutSeconds: 5
   failureThreshold: 6
   successThreshold: 1
+
+## Configuration options for nodeSelector, tolerations and affinity for pod
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+nodeSelector: {}
+tolerations: []
+affinity: {}
