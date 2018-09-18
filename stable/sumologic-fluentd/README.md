@@ -65,6 +65,7 @@ The following table lists the configurable parameters of the sumologic-fluentd c
 | `sumologic.collectorUrl` | An HTTP collector in SumoLogic that the container can send logs to via HTTP | `Nil` You must provide your own |
 | `sumologic.fluentdSource` | The fluentd input source, `file` or `systemd` | `file` |
 | `sumologic.fluentdUserConfigDir` | A directory of user-defined fluentd configuration files, which must be in the `*.conf` directory in the container | `/fluentd/conf.d/user` |
+| `sumologic.fluentdUserConfig` | Provide user-defined fluentd configuration files—each key will become a file in `fluentdUserConfigDir` | `Nil` |
 | `sumologic.flushInterval` | How frequently to push logs to sumo, in seconds | `5` |
 | `sumologic.numThreads` | The number of http threads sending data to sumo | `1` |
 | `sumologic.sourceName` | Set the sumo `_sourceName` | `%{namespace}.%{pod}.%{container}` |
