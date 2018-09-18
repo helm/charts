@@ -1,4 +1,4 @@
-{{- if .Values.rbac.create -}}
+{{- if and .Values.rbac.create .Values.clusterAgent.enabled -}}
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRole
 metadata:
@@ -7,9 +7,8 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-  name: {{ template "datadog.fullname" . }}
+  name: {{ template "datadog.clusterAgent.fullname" . }}
 rules:
-{{- if not .Values.clusterAgent.enabled }}
 - apiGroups:
   - ""
   resources:
@@ -23,6 +22,13 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - "autoscaling"
+  resources:
+  - horizontalpodautoscalers
+  verbs:
+  - list
+  - watch
 {{- if .Values.datadog.collectEvents }}
 - apiGroups:
   - ""
@@ -34,13 +40,15 @@ rules:
   - get
   - update
 {{- end }}
-{{- if .Values.datadog.leaderElection }}
 - apiGroups:
   - ""
   resources:
   - configmaps
   resourceNames:
   - datadog-leader-election  # Leader election token
+{{- if .Values.clusterAgent.metricsProvider.enabled }}
+  - datadog-hpa
+{{- end }}
   verbs:
   - get
   - update
@@ -50,19 +58,9 @@ rules:
   - configmaps
   verbs:
   - create
-{{- end }}
 - nonResourceURLs:
   - "/version"
   - "/healthz"
-  verbs:
-  - get
-{{- end }}
-- apiGroups:  # Kubelet connectivity
-  - ""
-  resources:
-  - nodes/metrics
-  - nodes/spec
-  - nodes/proxy
   verbs:
   - get
 {{- end -}}
