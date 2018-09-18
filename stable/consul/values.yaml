@@ -17,6 +17,9 @@ ConsulDnsPort: 8600
 ## This will be passed as a -domain parameter
 Domain: consul
 
+## You can specify a different ClusterDomain if you've configured custom DNS
+ClusterDomain: cluster.local
+
 ## Used as selector
 Component: "consul"
 Replicas: 3
@@ -125,3 +128,12 @@ test:
 
 nodeSelector: {}
 tolerations: []
+
+## Configure joining an existing cluster as either a peer or a WAN group
+## Should be a list of FQDN's and ports to join
+#
+# Added to agent command with -retry-join
+joinPeers: [] 
+
+# Added to agent command with -retry-join-wan
+joinWan: []

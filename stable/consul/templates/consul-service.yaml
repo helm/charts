@@ -10,6 +10,7 @@ metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
+  publishNotReadyAddresses: true
   ports:
   - name: http
     port: {{ .Values.HttpPort }}

@@ -110,7 +110,8 @@ spec:
           - "-ec"
           - |
             IP=$(hostname -i)
-
+            FQDN_SUFFIX="${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc{{- if .Values.ClusterDomain }}.{{ .Values.ClusterDomain }}{{- end -}}"
+            NODE_NAME="$(hostname -s).${FQDN_SUFFIX}"
             {{- if .Values.Gossip.Encrypt }}
             if [ -e /etc/consul/secrets/gossip-key ]; then
               echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
@@ -120,21 +121,41 @@ spec:
 
             for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
                 while true; do
-                    echo "Waiting for ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME} to come up"
-                    ping -W 1 -c 1 ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc > /dev/null && break
+                    echo "Waiting for ${STATEFULSET_NAME}-${i}.${FQDN_SUFFIX} to come up"
+                    ping -W 1 -c 1 ${STATEFULSET_NAME}-${i}.${FQDN_SUFFIX} > /dev/null && break
                     sleep 1s
                 done
             done
 
+            JOIN_PEERS=""
+            for i in $( seq 0 $((${INITIAL_CLUSTER_SIZE} - 1)) ); do
+              JOIN_PEERS="${JOIN_PEERS}${JOIN_PEERS:+ }${STATEFULSET_NAME}-${i}.${FQDN_SUFFIX}"
+            done
+            {{- range .Values.joinPeers }}
+              JOIN_PEERS="${JOIN_PEERS}${JOIN_PEERS:+ }{{ . }}"
+            {{- end }}
             PEERS=""
-            for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-              NEXT_PEER="$(ping -c 1 ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc | awk -F'[()]' '/PING/{print $2}')"
+            for THIS_PEER in ${JOIN_PEERS}; do
+              NEXT_PEER="$(ping -c 1 $THIS_PEER | awk -F'[()]' '/PING/{print $2}')"
               if [ "${NEXT_PEER}" != "${POD_IP}" ]; then
-                PEERS="${PEERS}${PEERS:+ } -retry-join ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc"
+                PEERS="${PEERS}${PEERS:+ } -retry-join $THIS_PEER"
+              fi
+            done
+
+            JOIN_WAN=""
+            {{- range .Values.joinWan }}
+              JOIN_WAN="${JOIN_WAN}${JOIN_WAN:+ }{{ . }}"
+            {{- end }}
+            WAN=""
+            for THIS_PEER in ${JOIN_WAN}; do
+              NEXT_PEER="$(ping -c 1 $THIS_PEER | awk -F'[()]' '/PING/{print $2}')"
+              if [ "${NEXT_PEER}" != "${POD_IP}" ]; then
+                WAN="${WAN}${WAN:+ } -retry-join-wan $THIS_PEER"
               fi
             done
 
             exec /bin/consul agent \
+              -node $NODE_NAME \
             {{- range .Values.ConsulConfig }}
               -config-dir /etc/consul/userconfig/{{ .name }} \
             {{- end}}
@@ -157,12 +178,14 @@ spec:
               -bind=0.0.0.0 \
               -advertise=${IP} \
               ${PEERS} \
+              ${WAN} \
             {{- if .Values.Gossip.Encrypt }}
               ${GOSSIP_KEY} \
             {{- end }}
               -client=0.0.0.0 \
               -dns-port=${DNSPORT} \
               -http-port={{ .Values.HttpPort }}
+
       volumes:
       - name: gossip-key
         secret:
