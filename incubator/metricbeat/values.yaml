@@ -11,7 +11,7 @@ resources:
     memory: 200Mi
   requests:
     cpu: 100m
-    memory: 100Mi 
+    memory: 100Mi
 hostpath: '/var/lib/metricbeat'
 config:
   reload:
@@ -27,9 +27,9 @@ daemonset:
         network:
         process:
         process_summary:
-        #core:
-        #diskio:
-        #socket:
+        # core:
+        # diskio:
+        # socket:
     filesystem:
       period: 1m
       metricsets:
@@ -47,14 +47,13 @@ daemonset:
 deployment:
   data:
     kubernetes:
-      metricsets: 
+      metricsets:
         state_node:
         state_deployment:
         state_replicaset:
         state_pod:
         state_container:
         # Uncomment this to get k8s events:
-        #- event
+        # event:
       period: 10s
       hosts: '["kube-state-metrics.kube-system:8080"]'
-
