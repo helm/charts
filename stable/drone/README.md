@@ -66,12 +66,23 @@ The following table lists the configurable parameters of the drone charts and th
 | `agent.schedulerName`       | Drone **agent** alternate scheduler name                                                      | `nil`                       |
 | `agent.affinity`            | Drone **agent** scheduling preferences                                                        | `{}`                        |
 | `agent.nodeSelector`        | Drone **agent** node labels for pod assignment                                                | `{}`                        |
+| `agent.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated                                        | 0                           |
+| `agent.livenessProbe.periodSeconds` | How often to perform the probe                                                        | 10                          |
+| `agent.livenessProbe.timeoutSeconds` | When the probe times out                                                             | 1                           |
+| `agent.livenessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                 |
+| `agent.livenessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3                   |
+| `agent.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated                                     | 0                            |
+| `agent.readinessProbe.periodSeconds` | How often to perform the probe                                                      | 10                           |
+| `agent.readinessProbe.timeoutSeconds` | When the probe times out                                                           | 1                            |
+| `agent.readinessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1                |
+| `agent.readinessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3                  |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
 | `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |
 | `dind.env`                  | **DinD** environment variables                                                                | `nil`                       |
 | `dind.command`              | **DinD** custom command instead of default entry point                                        | `nil`                       |
 | `dind.args`                 | **DinD** arguments for custom command or entry point                                          | `nil`                       |
+| `metrics.prometheus.enabled` | Enable Prometheus metrics endpoint                                                          | `false`                     |
 | `persistence.enabled`       | Use a PVC to persist data                                                                     | `true`                      |
 | `persistence.existingClaim` | Use an existing PVC to persist data                                                           | `nil`                       |
 | `persistence.storageClass`  | Storage class of backing PVC                                                                  | `nil`                       |
