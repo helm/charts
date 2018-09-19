@@ -92,6 +92,8 @@ If a chart has multiple components, a `component` label should be added to the s
 
 ### Persistence labels
 
+### StatefulSet
+
 In case of a `Statefulset`, `spec.volumeClaimTemplates.metadata.labels` must have both `app` and `release` labels, and **must not** contain `chart` label or any label containing a version of the chart, because `spec.volumeClaimTemplates` is immutable.
 
 ```yaml
@@ -101,6 +103,11 @@ labels:
 ```
 
 If a chart has multiple components, a `component` label should be added to the selector (see above).
+
+### PersistentVolumeClaim
+
+In case of a `PersistentVolumeClaim`, unless special needs, `matchLabels` should not be specified
+because it would prevent automatic `PersistentVolume` provisionning.
 
 ## Formatting
 
