@@ -21,17 +21,13 @@ Expand the name of the chart.
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec)
-If release name contains chart name it will be used as a full name.
 */}}
 {{- define "jaeger.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s" $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
@@ -75,50 +71,20 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 {{- end -}}
 
-{{- define "cassandra.host" -}}
-{{- if .Values.provisionDataStore.cassandra -}}
-{{- if .Values.storage.cassandra.nameOverride }}
-{{- printf "%s" .Values.storage.cassandra.nameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name "cassandra" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- else }}
-{{- .Values.storage.cassandra.host }}
-{{- end -}}
-{{- end -}}
-
-{{- define "cassandra.contact_points" -}}
-{{- $port := .Values.storage.cassandra.port | toString }}
-{{- if .Values.provisionDataStore.cassandra -}}
-{{- if .Values.storage.cassandra.nameOverride }}
-{{- $host := printf "%s" .Values.storage.cassandra.nameOverride | trunc 63 | trimSuffix "-" -}}
-{{- printf "%s:%s" $host $port }}
-{{- else }}
-{{- $host := printf "%s-%s" .Release.Name "cassandra" | trunc 63 | trimSuffix "-" -}}
-{{- printf "%s:%s" $host $port }}
-{{- end -}}
-{{- else }}
-{{- printf "%s:%s" .Values.storage.cassandra.host $port }}
-{{- end -}}
-{{- end -}}
-
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "elasticsearch.client.url" -}}
 {{- $port := .Values.storage.elasticsearch.port | toString -}}
-{{- if .Values.provisionDataStore.elasticsearch -}}
 {{- if .Values.storage.elasticsearch.nameOverride }}
 {{- $host := printf "%s" .Values.storage.elasticsearch.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme $host $port }}
 {{- else }}
-{{- $host := printf "%s-%s-%s" .Release.Name "elasticsearch" "client" | trunc 63 | trimSuffix "-" -}}
+{{- $host := printf "%s-%s" "elasticsearch" "client" | trunc 63 | trimSuffix "-" -}}
 {{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme $host $port }}
 {{- end -}}
-{{- else }}
 {{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme .Values.storage.elasticsearch.host $port }}
-{{- end -}}
 {{- end -}}
 
 {{- define "jaeger.collector.host-port" -}}
@@ -127,11 +93,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- else }}
 {{- printf "%s:%s" (include "jaeger.collector.name" .) (default .Values.collector.service.tchannelPort .Values.agent.collector.port | toString) }}
 {{- end -}}
-{{- end -}}
-
-{{- define "jaeger.hotrod.tracing.host" -}}
-{{- $host := printf "%s-agent" (include "jaeger.agent.name" .) -}}
-{{- default $host .Values.hotrod.tracing.host -}}
 {{- end -}}
 
 {{/*

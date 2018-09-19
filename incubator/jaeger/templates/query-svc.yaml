@@ -1,4 +1,3 @@
-{{- if .Values.query.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -8,8 +7,6 @@ metadata:
     jaeger-infra: query-service
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     component: query
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
 {{- if .Values.query.service.annotations }}
   annotations:
 {{ toYaml .Values.query.service.annotations | indent 4 }}
@@ -23,8 +20,6 @@ spec:
   selector:
     app: {{ template "jaeger.name" . }}
     component: query
-    release: {{ .Release.Name }}
     jaeger-infra: query-pod
   type: {{ .Values.query.service.type }}
 {{- template "loadBalancerSourceRanges" .Values.query }}
-{{- end -}}
