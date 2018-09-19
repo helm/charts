@@ -87,6 +87,7 @@ email:
 service:
   name: sentry
   type: LoadBalancer
+  loadBalancerIP:
   externalPort: 9000
   internalPort: 9000
   ## External IP addresses of service
