@@ -3,7 +3,7 @@ kind: Service
 metadata:
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
-  label:
+  labels:
     app: {{ template "k8s-prometheus-adapter.name" . }}
     chart: {{ template "k8s-prometheus-adapter.chart" . }}
     release: {{ .Release.Name }}
