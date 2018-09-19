@@ -220,3 +220,87 @@ The `tpl` function allows us to pass string values from `values.yaml` through th
 * `extraInitContainers`
 
 It is important that these values be configured as strings. Otherwise, installation will fail.
+
+## Using heterogeneus data node types
+
+
+In order to use different types of data node, we can declare a list named `dataTypes` in our `values.yaml` file.
+Each item can have the same attributes as the `data` attribute, plus its own config.
+
+For example, if we want to implement hot/warm architecture we could declare the list as follows:
+```
+ dataTypes:
+ - name: data-hot
+   exposeHttp: false
+   replicas: 2
+   heapSize: "32000m"
+   persistence:
+     enabled: false
+     name: data-hot
+   terminationGracePeriodSeconds: 3600
+   antiAffinity: "soft"
+   nodeSelector:
+     my-elasticsearch-label: my-hot-node
+   tolerations:
+   - key: type
+     operator: Equal
+     value: elasticsearch
+     effect: NoSchedule
+   resources:
+     limits:
+       cpu: "4"
+     requests:
+       cpu: "4"
+       memory: "52000Mi"
+   config:
+     node.attr.temperature: "hot"
+   priorityClassName: ""
+   podDisruptionBudget:
+     enabled: false
+   updateStrategy:
+     type: OnDelete
+ - name: data-warm
+   exposeHttp: false
+   replicas: 6
+   heapSize: "16000m"
+   persistence:
+     enabled: true
+     accessMode: ReadWriteOnce
+     name: data-warm
+     size: "30Gi"
+     storageClass: "cheap-but-slow"
+   terminationGracePeriodSeconds: 3600
+   antiAffinity: "soft"
+   nodeSelector:
+     my-elasticsearch-label: my-warm-node
+   tolerations:
+   - key: type
+     operator: Equal
+     value: elasticsearch
+     effect: NoSchedule
+   resources:
+     limits:
+       cpu: "2"
+     requests:
+       cpu: "2"
+       memory: "26000Mi"
+   config:
+     node.attr.temperature: "warm"
+   priorityClassName: ""
+   podDisruptionBudget:
+     enabled: false
+   updateStrategy:
+     type: OnDelete
+```
+
+In this example, we specify two data node types: _hot_ and _warm_. Each type will seek
+a specific node type (marked in nodeSelector), which will be tainted in order to avoid
+other pods being allocated in such nodes.
+
+When the `data` attribute is not declared, we will create only the data nodes declared
+in the `dataTypes` list. This is the recommended way to deploy this chart from scratch.
+
+However, if we already have deployed a version with `data` declared, we could simplify
+the migration by first adding `dataTypes`, and later removing the `data` attribute in
+another deploy.
+>>>>>>> improve README

@@ -200,4 +200,3 @@ extraInitContainers: |
 #     maxUnavailable: 1
 #  updateStrategy:
 #    type: OnDelete
->>>>>>> add different node type topology
