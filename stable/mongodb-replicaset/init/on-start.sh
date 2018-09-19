@@ -116,7 +116,11 @@ for peer in "${peers[@]}"; do
     if mongo admin --host "$peer" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.isMaster()" | grep '"ismaster" : true'; then
         log "Found master: $peer"
         log "Adding myself ($service_name) to replica set..."
-        mongo admin --host "$peer" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.add('$service_name')"
+        if mongo admin --host "$peer" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.add('$service_name')" | grep 'Quorum check failed'; then
+            log 'Quorum check failed, unable to join replicaset. Exiting prematurely.'
+            shutdown_mongo
+            exit 1
+        fi
 
         sleep 3
 
