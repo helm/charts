@@ -136,6 +136,6 @@ Backwards compatibility is not guaranteed unless you modify the labels used on t
 Use the workaround below to upgrade from versions previous to 5.0.0. The following example assumes that the release name is ghost:
 
 ```console
-$ kubectl patch deployment ghost-ghost --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/app"}]'
+$ kubectl patch deployment ghost-ghost --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
 $ kubectl delete statefulset ghost-mariadb --cascade=false
 ```
