@@ -16,6 +16,11 @@ env: {}
   # LOGGING_VERBOSE: "true"
   # SERVER_DEFAULTROUTE: "/app/kibana"
 
+extraEnv: []
+  # Extra environment directly mapped to containers.env
+  # - configMapRef:
+  #     name: "some-configmap"
+
 files:
   kibana.yml:
     ## Default Kibana configuration from kibana-docker.

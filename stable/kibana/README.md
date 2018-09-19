@@ -40,6 +40,7 @@ The following table lists the configurable parameters of the kibana chart and th
 |-----------------------------------------------|--------------------------------------------|----------------------------------------|
 | `affinity`                                    | node/pod affinities                        | None                                   |
 | `env`                                         | Environment variables to configure Kibana  | `{}`                                   |
+| `extraEnv`                                    | `containers[].env` entries to configure Kibana, for example allows using ConfigMaps | `{}` |
 | `files`                                       | Kibana configuration files                 | None                                   |
 | `image.pullPolicy`                            | Image pull policy                          | `IfNotPresent`                         |
 | `image.repository`                            | Image repository                           | `docker.elastic.co/kibana/kibana-oss`  |
@@ -73,8 +74,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `dashboardImport.xpackauth.username`          | Optional Xpack username                    | `myuser`                               |
 | `dashboardImport.xpackauth.password`          | Optional Xpack password                    | `mypass`                               |
 | `dashboardImport.dashboards`                  | Dashboards                                 | `{}`                                   |
-| `plugins`                             | List of URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
-
+| `plugins`                                     | List of URLs pointing to zip files of Kibana plugins to install | None:             |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
