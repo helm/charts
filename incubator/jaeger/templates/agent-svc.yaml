@@ -1,4 +1,3 @@
-{{- if .Values.agent.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -8,12 +7,6 @@ metadata:
     jaeger-infra: agent-service
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     component: agent
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-{{- if .Values.agent.service.annotations }}
-  annotations:
-{{ toYaml .Values.agent.service.annotations | indent 4 }}
-{{- end }}
 spec:
   ports:
   - name: agent-zipkin-thrift
@@ -36,7 +29,5 @@ spec:
   selector:
     app: {{ template "jaeger.name" . }}
     component: agent
-    release: {{ .Release.Name }}
     jaeger-infra: agent-instance
 {{- template "loadBalancerSourceRanges" .Values.agent }}
-{{- end -}}

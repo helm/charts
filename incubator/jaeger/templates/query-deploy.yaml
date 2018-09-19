@@ -1,4 +1,3 @@
-{{- if .Values.query.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -8,37 +7,17 @@ metadata:
     jaeger-infra: query-deployment
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     component: query
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-{{- if .Values.query.annotations }}
-  annotations:
-{{ toYaml .Values.query.annotations | indent 4 }}
-{{- end }}
 spec:
   replicas: {{ .Values.query.replicaCount }}
   strategy:
     type: Recreate
   template:
     metadata:
-{{- if .Values.query.podAnnotations }}
-      annotations:
-{{ toYaml .Values.query.podAnnotations | indent 8 }}
-{{- end }}
       labels:
         app: {{ template "jaeger.name" . }}
         component: query
-        release: {{ .Release.Name }}
         jaeger-infra: query-pod
-{{- if .Values.query.podLabels }}
-{{ toYaml .Values.query.podLabels | indent 8 }}
-{{- end }}
     spec:
-      nodeSelector:
-{{ toYaml .Values.query.nodeSelector | indent 8 }}
-{{- if .Values.query.tolerations }}
-      tolerations:
-{{ toYaml .Values.query.tolerations | indent 8 }}
-{{- end }}
       containers:
       - name: {{ template "jaeger.query.name" . }}
         image: {{ .Values.query.image }}:{{ .Values.tag }}
@@ -49,24 +28,6 @@ spec:
               configMapKeyRef:
                 name: {{ template "jaeger.fullname" . }}
                 key: span-storage.type
-          {{- if eq .Values.storage.type "cassandra" }}
-          - name: CASSANDRA_SERVERS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ template "jaeger.fullname" . }}
-                key: cassandra.servers
-          - name: CASSANDRA_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ template "jaeger.fullname" . }}
-                key: cassandra.port
-          - name: CASSANDRA_KEYSPACE
-            valueFrom:
-              configMapKeyRef:
-                name: {{ template "jaeger.fullname" . }}
-                key: cassandra.keyspace
-          {{- end }}
-          {{- if eq .Values.storage.type "elasticsearch" }}
           - name: ES_PASSWORD
             valueFrom:
               configMapKeyRef:
@@ -82,7 +43,6 @@ spec:
               configMapKeyRef:
                 name: {{ template "jaeger.fullname" . }}
                 key: es.username
-          {{- end }}
           - name: QUERY_PORT
             valueFrom:
               configMapKeyRef:
@@ -96,12 +56,8 @@ spec:
         ports:
         - containerPort: {{ .Values.query.service.targetPort }}
           protocol: TCP
-        resources:
-{{ toYaml .Values.query.resources | indent 10 }}
         readinessProbe:
           httpGet:
             path: /
             port: {{ .Values.query.healthCheckPort }}
-      dnsPolicy: {{ .Values.query.dnsPolicy }}
       restartPolicy: Always
-{{- end -}}
