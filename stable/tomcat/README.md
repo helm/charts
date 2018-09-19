@@ -48,6 +48,7 @@ Parameter                       | Description                           | Defaul
 `image.tomcat.repository`       | Tomact image source repository name   | `tomcat`
 `image.tomcat.tag`              | `tomcat` release tag.                 | `7.0`
 `image.pullPolicy`              | Image pull policy                     | `IfNotPresent`
+`image.pullSecrets`             | Image pull secrets                    | `[]`
 `deploy.directory`              | Webarchive deployment directory       | `/usr/local/tomcat/webapps`
 `service.name`                  | Tomcat service name                   | `http`
 `service.externalPort`          | Kubernetes service port               | `80`
