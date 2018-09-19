@@ -44,7 +44,9 @@ spec:
         - name: "{{ $key }}"
           value: "{{ $value }}"
         {{- end }}
-{{ toYaml .Values.extraEnv | indent 8 }}
+{{- with .Values.extraEnv }}
+{{ toYaml . | indent 8 }}
+{{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
           name: {{ template "kibana.name" . }}
@@ -84,7 +86,9 @@ spec:
         - name: "{{ $key }}"
           value: "{{ $value }}"
         {{- end }}
-{{ toYaml .Values.extraEnv | indent 8 }}
+{{- with .Values.extraEnv }}
+{{ toYaml . | indent 8 }}
+{{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
           name: {{ template "kibana.name" . }}
@@ -112,7 +116,9 @@ spec:
         - name: "{{ $key }}"
           value: "{{ $value }}"
         {{- end }}
-{{ toYaml .Values.extraEnv | indent 8 }}
+{{- with .Values.extraEnv }}
+{{ toYaml . | indent 8 }}
+{{- end }}
 {{- if (not .Values.authProxyEnabled) }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
