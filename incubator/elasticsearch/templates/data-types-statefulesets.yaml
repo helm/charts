@@ -176,7 +176,10 @@ spec:
   {{- if not $data.persistence.enabled }}
       - name: {{ $data.persistence.name }}
         emptyDir: {}
-  {{- else }}
+  {{- end }}
+  updateStrategy:
+    type: {{ .Values.data.updateStrategy.type }}
+  {{- if .Values.data.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: {{ $data.persistence.name }}
