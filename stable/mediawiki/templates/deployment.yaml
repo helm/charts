@@ -11,7 +11,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ template "mediawiki.fullname" . }}
+      app: {{ template "mediawiki.name" . }}
       release: "{{ .Release.Name }}"
   replicas: 1
   template:
