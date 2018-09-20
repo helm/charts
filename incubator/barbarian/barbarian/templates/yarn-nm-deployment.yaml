@@ -1,0 +1,68 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: yarn-nm
+  labels:
+    app: yarn-nm
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  serviceName: {{ .Values.yarn_nm.service.name }}
+  replicas: {{ .Values.yarn_nm.count }}
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  template:
+    metadata:
+      labels:
+        app: yarn-nm
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - image: {{ .Values.global.repo }}/{{ .Values.yarn_nm.image }}
+        name: yarn-nm
+        securityContext:
+          allowPrivilegeEscalation: false
+        resources:
+          requests:
+            memory: "{{ .Values.yarn_nm.mem }}"
+            cpu: "{{ .Values.yarn_nm.cpu }}"
+        volumeMounts:
+        - mountPath: /opt/barbarian/hadoop/etc/hadoop
+          name: yarn-cfg-volume
+        - name: datadir
+          mountPath: /grid/0
+        - name: slider-cfg-volume
+          mountPath: /opt/barbarian/slider/conf
+        - name: tez-cfg-volume
+          mountPath: /opt/barbarian/tez/conf
+        ports:
+        - containerPort: 45454
+          name: server
+        - containerPort: 8042
+          name: webui-address
+        - containerPort: 15551
+          name: llap-shuffle
+        - containerPort: 15002
+          name: llap-daemon
+        - containerPort: 15003
+          name: llap-rpc
+        command:
+        - sh
+        - -c
+        - "/opt/barbarian/control/start-yarn-nm"
+      volumes:
+      - name: yarn-cfg-volume
+        configMap:
+          name: {{ template "fullname" . }}-hadoop-conf
+      - name: datadir
+        emptyDir: {}
+      - name: slider-cfg-volume
+        configMap:
+          name: {{ template "fullname" . }}-slider-conf
+      - name: tez-cfg-volume
+        configMap:
+          name: {{ template "fullname" . }}-tez-conf

@@ -1,0 +1,144 @@
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+global:
+  repo: dockerbarbarians
+  hadoop_conf_dir: /opt/barbarian/hadoop/etc/hadoop
+  log_level: INFO
+  log_dir: /tmp
+
+hive_hms:
+  image: hive:0.1.0
+  count: 3
+  cpu: 1
+  ps_mem: 8g
+  mem: 8Gi
+
+  # set db_auto: true if you want Helm to automatically install a mariadb
+  # for hive metastore persistent backend
+  db_auto: false
+
+  # specify if the database schema should be initialized on deployment.
+  # will fail with an error if the schema is already present
+  db_init: false
+
+  # specify the jdbc uri for your hive metastore persistent backend.
+  # Barbarian supports postgres, mssql, mariadb or mysql
+  db_uri: YOUR_DB_URI
+
+  # specify the type of database for your hive metastore persistent backend.
+  # Barbarian supports the following values here: postgres, mssql or mysql.
+  # If you want to use MariaDB, then you should specify "mysql".
+  # NB. currently tested with MariaDB.
+  db_type: mysql
+
+  # specify the driver class to use. Currently tested with MariaDb, other
+  # drivers will follow
+  db_driver: "org.mariadb.jdbc.Driver"
+
+  # specify the username for your hive metastore persistent backend.
+  db_username: barbarian
+
+  # specify the password for your hive metastore persistent backend.
+  # if db_auto is true then you should set the password for mariadb.db.password instead
+  # (see below in mariadb section).
+  db_password: "YOUR_DB_PASSWORD"
+
+  service:
+    name: hms-serv
+
+hive_hs2:
+  image: hive:0.1.0
+  count: 1
+  llapd_enabled: true
+  llapd_count: 4
+  ps_mem: 8g
+  mem: 8Gi
+  cpu: 1
+  llapd_mem: 24g
+  log_level: INFO
+
+  # if you want to expose HiveServer2 to the outside world
+  ingress_enabled: false
+
+  service:
+    name: hs2-serv
+
+yarn_rm:
+  image: yarn-rm:0.1.0
+  count: 1
+  cpu: 1
+  mem: 4Gi
+
+  service:
+    name: yarn-rm-serv
+
+yarn_nm:
+  image: yarn-nm:0.1.0
+  count: 5
+  cpu: 8
+  mem: 30Gi
+  container_mem: 30g
+  container_vcpu: 8
+
+  service:
+    name: yarn-nm-serv
+
+zookeeper:
+  image: zookeeper:0.1.0
+  count: 5
+  cpu: 0.5
+  mem: 2Gi
+  ps_mem: 1g
+
+  service:
+    name: zk-serv
+
+ignite:
+  image: ignite:0.1.0
+  count: 5
+  cpu: 2
+  mem: 8Gi
+  ps_mem: 7g
+
+  # currently only supports s3a. support for adls, google cloud storage and ceph
+  # will follow
+  secondary_fs_uri: s3a://YOUR_BUCKET/
+  hadoop_conf_dir: /opt/hadoop/etc/hadoop
+
+  s3a:
+    access_key_id: YOUR_ACCESS_KEY_ID
+    secret_access_key: YOUR_SECRET_ACCESS_KEY
+    endpoint: s3-eu-west-1.amazonaws.com
+    ssl_enabled: true
+    s3guard_ddb:
+      create: true
+      region: eu-west-1
+      capacity:
+        read: 3
+        write: 3
+
+  service:
+    name: ignite-serv
+
+# A bitnami mariadb can optionally be deployed by Helm for testing purposes.
+# For production deployments a dedicated external database is recommended.
+# Barbarians supports connection to postgres, mssql, mariadb and mysql.
+mariadb:
+  replication:
+    enabled: false
+  db:
+    name: hive_metastore
+    user: barbarian
+
+    #If the password is not specified, mariadb will generate a random password
+    password: "YOUR_DB_PASSWORD"
+
+  #rootUser:
+    #password:
+
+  master:
+    persistence:
+      enabled: true
+      accessMode: ReadWriteOnce
+      size: 10Gi

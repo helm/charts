@@ -1,0 +1,5 @@
+dependencies:
+  - name: mariadb
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    version: 4.x.x
+    condition: hive_hms.db_auto

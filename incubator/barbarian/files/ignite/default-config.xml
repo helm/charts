@@ -1,0 +1,100 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!--
+        Optional description.
+    -->
+    <description>
+        Spring file for Ignite node configuration with IGFS and Apache Hadoop map-reduce support enabled.
+        Ignite node will start with this configuration by default.
+    </description>
+
+    <!--
+        Initialize property configurer so we can reference environment variables.
+    -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_FALLBACK"/>
+        <property name="searchSystemEnvironment" value="true"/>
+    </bean>
+
+    <!--
+        Configuration of Ignite node.
+    -->
+    <bean id="grid.cfg" class="org.apache.ignite.configuration.IgniteConfiguration">
+        <property name="fileSystemConfiguration">
+            <list>
+                <bean class="org.apache.ignite.configuration.FileSystemConfiguration">
+                    <!-- IGFS name you will use to access IGFS through Hadoop API. -->
+                    <property name="name" value="igfs"/>
+                    <property name="defaultMode" value="DUAL_SYNC" />
+                    <!-- Configure TCP endpoint for communication with the file system instance. -->
+                    <property name="ipcEndpointConfiguration">
+                        <bean class="org.apache.ignite.igfs.IgfsIpcEndpointConfiguration">
+                            <property name="type" value="TCP" />
+                            <property name="host" value="0.0.0.0" />
+                            <property name="port" value="10500" />
+                        </bean>
+                    </property>
+
+                    <!--
+                        Configure secondary file system if needed.
+                    -->
+
+                    <property name="secondaryFileSystem">
+                        <bean class="org.apache.ignite.hadoop.fs.IgniteHadoopIgfsSecondaryFileSystem">
+                            <property name="fileSystemFactory">
+                                <bean class="org.apache.ignite.hadoop.fs.CachingHadoopFileSystemFactory">
+                                    <property name="uri" value="{{ .Values.ignite.secondary_fs_uri }}"/>
+                                    {{- if regexMatch "^s3a.*$" .Values.ignite.secondary_fs_uri  }}
+                                    <property name="configPaths" value="{{ .Values.global.hadoop_conf_dir }}/s3-site.xml"/>
+                                    {{ end }}
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+       <property name="discoverySpi">
+         <bean class="org.apache.ignite.spi.discovery.zk.ZookeeperDiscoverySpi">
+         <property name="zkConnectionString" value="{{ .Values.zookeeper.service.name }}:2181"/>
+         <property name="sessionTimeout" value="30000"/>
+         <property name="zkRootPath" value="/apacheIgnite"/>
+         <property name="joinTimeout" value="10000"/>
+         </bean>
+       </property>
+
+       <property name="memoryConfiguration">
+        <bean class="org.apache.ignite.configuration.MemoryConfiguration">
+            <!-- Setting a name of the default memory policy -->
+            <property name="defaultMemoryPolicyName" value="Default_Region"/>
+            <!-- Setting the page size to 4 KB -->
+            <property name="pageSize" value="4096"/>
+            <property name="systemCacheInitialSize" value="#{512 * 1024 * 1024}"/>
+            <property name="systemCacheMaxSize" value="#{512 * 1024 * 1024}"/>
+
+            <!-- Defining several memory policies for different memory regions -->
+            <property name="memoryPolicies">
+                <list>
+                    <!--
+                        Default memory region that grows endlessly. A cache is bound to this memory region
+                        unless it sets another one in its CacheConfiguration.
+                    -->
+                    <bean class="org.apache.ignite.configuration.MemoryPolicyConfiguration">
+                        <property name="name" value="Default_Region"/>
+                        <!-- 100 MB memory region with disabled eviction -->
+                        <property name="initialSize" value="#{20 * 1024 * 1024}"/>
+                        <property name="maxSize" value="#{4L * 1024 * 1024 * 1024}"/>
+                    </bean>
+
+                </list>
+            </property>
+        </bean>
+    </property>
+  </bean>
+</beans>

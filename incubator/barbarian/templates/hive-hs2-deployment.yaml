@@ -1,0 +1,138 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-hive-hs2
+  labels:
+    app: {{ template "fullname" . }}-hive-hs2
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.hive_hs2.count }}
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}-hive-hs2
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - image: {{ .Values.global.repo }}/{{ .Values.hive_hs2.image }}
+        name: {{ template "fullname" . }}-hive-hs2
+        securityContext:
+          allowPrivilegeEscalation: false
+        resources:
+          requests:
+            memory: "{{ .Values.hive_hs2.mem }}"
+            cpu: "{{ .Values.hive_hs2.cpu }}"
+        volumeMounts:
+        - mountPath: /opt/barbarian/hadoop/etc/hadoop
+          name: yarn-cfg-volume
+        - name: hive-cfg-volume
+          mountPath: /opt/barbarian/hive/conf
+        - name: tez-cfg-volume
+          mountPath: /opt/barbarian/tez/conf
+        - name: slider-cfg-volume
+          mountPath: /opt/barbarian/slider/conf
+        ports:
+        - containerPort: 10000
+          name: server
+        - containerPort: 10002
+          name: webui-address
+        command:
+        - sh
+        - -c
+        - "/opt/barbarian/control/start-hiveserver2"
+      initContainers:
+      - name: sleep-30
+        image: {{ .Values.global.repo }}/{{ .Values.hive_hs2.image }}
+        command:
+        - sh
+        - -c 
+        - "sleep 30"
+      - name: mkdir-tmp
+        image: {{ .Values.global.repo }}/{{ .Values.hive_hs2.image }}
+        command:
+        - sh
+        - -c 
+        - "/opt/barbarian/hadoop/bin/hadoop fs \
+          -mkdir -p /tmp"
+        volumeMounts:
+        - name: yarn-cfg-volume
+          mountPath: "/opt/barbarian/hadoop/etc/hadoop"
+      - name: mkdir-apps-tez
+        image: {{ .Values.global.repo }}/{{ .Values.hive_hs2.image }}
+        command:
+        - sh
+        - -c 
+        - "/opt/barbarian/hadoop/bin/hadoop fs \
+          -mkdir -p /apps/tez"
+        volumeMounts:
+        - name: yarn-cfg-volume
+          mountPath: "/opt/barbarian/hadoop/etc/hadoop"
+      - name: put-tez-tgz
+        image: {{ .Values.global.repo }}/{{ .Values.hive_hs2.image }}
+        command:
+        - sh
+        - -c 
+        - "/opt/barbarian/hadoop/bin/hadoop fs \
+          -put -f /opt/barbarian/tez.tar.gz /apps/tez/tez.tar.gz"
+        volumeMounts:
+        - name: yarn-cfg-volume
+          mountPath: "/opt/barbarian/hadoop/etc/hadoop"
+      - name: mkdir-user-hadoop
+        image: {{ .Values.global.repo }}/{{ .Values.hive_hs2.image }}
+        command:
+        - sh
+        - -c 
+        - "/opt/barbarian/hadoop/bin/hadoop fs \
+          -mkdir -p /user/hadoop"
+        volumeMounts:
+        - name: yarn-cfg-volume
+          mountPath: "/opt/barbarian/hadoop/etc/hadoop"
+      {{- if .Values.hive_hs2.llapd_enabled }}
+      - name: start-hive-llap
+        image: {{ .Values.global.repo }}/{{ .Values.hive_hs2.image }}
+        command:
+        - sh
+        - -c 
+        - "HADOOP_CLASSPATH=/opt/barbarian/hadoop/etc/hadoop:/opt/barbarian/hadoop/share/hadoop/yarn/*:/opt/barbarian/hadoop/share/hadoop/yarn/lib/*:/opt/barbarian/tez/conf \
+          /opt/barbarian/control/start-llap \
+          --llapd_count={{ .Values.hive_hs2.llapd_count }} \
+          --llapd_ram={{ .Values.hive_hs2.llapd_mem }}"
+        volumeMounts:
+        - name: hive-cfg-volume
+          mountPath: "/opt/barbarian/hive/conf"
+        - name: tez-cfg-volume
+          mountPath: "/opt/barbarian/tez/conf"
+        - name: yarn-cfg-volume
+          mountPath: "/opt/barbarian/hadoop/etc/hadoop"
+        - name: slider-cfg-volume
+          mountPath: "/opt/barbarian/slider/conf"
+      - name: await-llap
+        image: {{ .Values.global.repo }}/{{ .Values.hive_hs2.image }}
+        command:
+        - sh
+        - -c 
+        - "/opt/barbarian/control/await-llap"
+        volumeMounts:
+        - name: yarn-cfg-volume
+          mountPath: "/opt/barbarian/hadoop/etc/hadoop"
+      {{- end }}
+      volumes:
+      - name: yarn-cfg-volume
+        configMap:
+          name: {{ template "fullname" . }}-hadoop-conf
+      - name: hive-cfg-volume
+        configMap:
+          name: {{ template "fullname" . }}-hive-conf
+      - name: tez-cfg-volume
+        configMap:
+          name: {{ template "fullname" . }}-tez-conf
+      - name: slider-cfg-volume
+        configMap:
+          name: {{ template "fullname" . }}-slider-conf

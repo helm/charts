@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-yarn-rm
+  labels:
+    app: {{ template "fullname" . }}-yarn-rm
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  serviceName: {{ .Values.yarn_rm.service.name }}
+  replicas: {{ .Values.yarn_rm.count }}
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}-yarn-rm
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - image: {{ .Values.global.repo }}/{{ .Values.yarn_rm.image }}
+        name: {{ template "fullname" . }}-yarn-rm
+        securityContext:
+          allowPrivilegeEscalation: false
+        resources:
+          requests:
+            memory: "{{ .Values.yarn_rm.mem }}"
+            cpu: "{{ .Values.yarn_rm.cpu }}"
+        volumeMounts:
+        - mountPath: /opt/barbarian/hadoop/etc/hadoop
+          name: yarn-cfg-volume
+        ports:
+        - containerPort: 8050
+          name: server
+        - containerPort: 8088
+          name: webui-address
+        - containerPort: 8025
+          name: tracker
+        - containerPort: 8030
+          name: scheduler
+        - containerPort: 8141
+          name: admin
+        command:
+        - sh
+        - -c
+        - "/opt/barbarian/control/start-yarn-rm"
+      volumes:
+      - name: yarn-cfg-volume
+        configMap:
+          name: {{ template "fullname" . }}-yarn-rm-hadoop-conf

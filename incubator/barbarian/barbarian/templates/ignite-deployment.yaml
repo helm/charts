@@ -1,0 +1,81 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-ignite
+  labels:
+    app: {{ template "fullname" . }}-ignite
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  serviceName: {{ .Values.ignite.service.name }}
+  replicas: {{ .Values.ignite.count }}
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}-ignite
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "app"
+                    operator: In
+                    values:
+                    - {{ template "fullname" . }}-ignite
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+      - image: {{ .Values.global.repo }}/{{ .Values.ignite.image }}
+        name: {{ template "fullname" . }}-ignite
+        securityContext:
+          allowPrivilegeEscalation: false
+        volumeMounts:
+        - mountPath: /opt/barbarian/ignite/config
+          name: igfs-cfg-volume
+        - mountPath: /opt/barbarian/ignite/work
+          name: igfs-work-volume
+        - mountPath: /opt/barbarian/hadoop/etc/hadoop
+          name: hadoop-cfg-volume
+        resources:
+          requests:
+            memory: "{{ .Values.ignite.mem }}"
+            cpu: "{{ .Values.ignite.cpu }}"
+        ports:
+        - containerPort: 10500
+          name: server
+        command:
+        - sh
+        - -c
+        - "/opt/barbarian/control/start-ignite"
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "/opt/barbarian/control/ignite-ready 10500"
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "/opt/barbarian/control/ignite-ready 10500"
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+      volumes:
+      - name: igfs-cfg-volume
+        configMap:
+          name: {{ template "fullname" . }}-ignite-conf
+      - name: hadoop-cfg-volume
+        configMap:
+          name: {{ template "fullname" . }}-hadoop-conf
+      - name: igfs-work-volume
+        emptyDir: {}

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}-ignite-conf
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  default-config.xml: |-
+{{ tpl (.Files.Get "files/ignite/default-config.xml") . | indent 4 }}
+  java.util.logging.properties: |-
+{{ tpl (.Files.Get "files/ignite/java.util.logging.properties") . | indent 4 }}

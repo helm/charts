@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<configuration>
+
+<property>
+<name>tez.cluster.additional.classpath.prefix</name>
+<value>/opt/barbarian/hadoop/share/hadoop/common/lib/*</value>
+</property>
+
+<property>
+<name>hive.llap.daemon.rpc.port</name>
+<value>0</value>
+</property>
+
+<property>
+<name>tez.lib.uris.ignore</name>
+<value>false</value>
+</property>
+
+<property>
+<name>tez.lib.uris.classpath</name>
+<value>/opt/barbarian/hadoop/share/hadoop/yarn/*:/opt/barbarian/hadoop/share/hadoop/yarn/lib/*:./tezlib/*:./tezlib/lib/*</value>
+</property>
+
+<property>
+  <name>tez.use.cluster.hadoop-libs</name>
+  <value>false</value>
+</property>
+
+<property>
+  <name>tez.am.mode.session</name>
+  <value>false</value>
+</property>
+
+<property>
+  <name>tez.am.acl.enabled</name>
+  <value>false</value>
+</property>
+
+<property>
+  <name>tez.am.log.level</name>
+  <value>WARN</value>
+</property>
+<property>
+  <name>tez.task.log.level</name>
+  <value>WARN</value>
+</property>
+
+<property>
+  <name>tez.runtime.io.sort.mb</name>
+  <value>1024</value>
+</property>
+
+<property>
+  <name>tez.shuffle-vertex-manager.enable.auto-parallel</name>
+  <value>true</value>
+</property>
+
+<property>
+  <name>tez.am.max.app.attempts</name>
+  <value>1</value>
+</property>
+
+<property>
+  <name>tez.am.task.max.failed.attempts</name>
+  <value>1</value>
+</property>
+
+<!--
+<property>
+  <name>tez.shuffle-vertex-manager.desired-task-input-size</name>
+  <value>true</value>
+</property>
+-->
+
+<property>
+  <name>tez.shuffle-vertex-manager.min-src-fraction</name>
+  <value>0.10</value>
+</property>
+<property>
+  <name>tez.shuffle-vertex-manager.max-src-fraction</name>
+  <value>1.00</value>
+</property>
+
+<property>
+  <name>tez.am.launch.cmd-opts</name>
+  <value>-server -Xdiag -Djava.net.preferIPv4Stack=true -XX:+UseNUMA -XX:+UseParallelGC -Dhadoop.metrics.log.level=WARN</value>
+</property>
+<property>
+  <name>tez.am.resource.memory.mb</name>
+  <value>750</value>
+</property>
+
+<property>
+  <name>tez.task.launch.cmd-opts</name>
+  <value>-server -Djava.net.preferIPv4Stack=true -XX:+UseNUMA -XX:+UseParallelGC -Dhadoop.metrics.log.level=WARN</value>
+</property>
+
+<property>
+  <name>tez.task.resource.memory.mb</name>
+  <value>2048</value>
+</property>
+
+<property>
+  <name>tez.task.resource.cpu.vcores</name>
+  <value>1</value>
+</property>
+<!--
+<property>
+  <name>tez.runtime.sort.spill.percent</name>
+  <value>0.5</value>
+</property>
+<property>
+  <name>tez.runtime.shuffle.merge.percent</name>
+  <value>0.5</value>
+</property>
+<property>
+  <name>tez.runtime.shuffle.buffersize</name>
+  <value>8192</value>
+</property>
+-->
+<property>
+  <name>tez.runtime.sort.threads</name>
+  <value>1</value>
+</property>
+<property>
+  <name>tez.runtime.io.sort.factor</name>
+  <value>100</value>
+</property>
+<!--
+<property>
+  <name>tez.runtime.task.input.buffer.percent</name>
+  <value>0.2</value>
+</property>
+<property>
+  <name>shuffle.memory.limit.percent</name>
+  <value>0.5</value>
+</property>
+-->
+<property>
+  <name>tez.runtime.shuffle.memory-to-memory.enable</name>
+  <value>true</value>
+</property>
+
+<property>
+  <name>tez.am.shuffle.auxiliary-service.id</name>
+  <value>mapreduce_shuffle</value>
+</property>
+
+<property>
+  <name>tez.runtime.optimize.local.fetch</name>
+  <value>true</value>
+</property>
+
+<property>
+  <name>tez.am.staging.scratch-data.auto-delete</name>
+  <value>true</value>
+</property>
+
+<property>
+  <name>tez.staging-dir</name>
+  <value>/grid/0/tez</value>
+</property>
+
+<property>
+  <name>tez.lib.uris</name>
+  <value>/apps/tez/tez.tar.gz</value>
+</property>
+
+</configuration>
+

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}-hive-conf
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  hive-site.xml: |-
+{{ tpl (.Files.Get "files/hive/hive-site.xml") . | indent 4 }}
+  beeline-log4j2.properties: |-
+{{ tpl (.Files.Get "files/hive/beeline-log4j2.properties") . | indent 4 }}
+  hive-log4j2.properties: |-
+{{ tpl (.Files.Get "files/hive/hive-log4j2.properties") . | indent 4 }}
+  llap-daemon-log4j2.properties: |-
+{{ tpl (.Files.Get "files/hive/llap-daemon-log4j2.properties") . | indent 4 }}

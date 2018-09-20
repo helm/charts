@@ -1,0 +1,12 @@
+The following parameters are prerequisite to successfully deploying this chart.
+
+- If you specify hive_hms.db_auto = true, then you must specify mariadb.db.user and mariadb.db.password
+- Otherwise you need to specify hive_hms.db_username, hive_hms.db_password, hive_hms.db_uri.
+
+For the AWS S3 integration to work, you need to specify
+- ignite.secondary_fs_uri = s3a://YOUR_BUCKET/
+- ignite.s3a.access_key_id = AWS_ACCESS_KEY_ID
+- ignite.s3a.secret_access_key = AWS_SECRET_ACCESS_KEY
+
+To expose ingress traffic to Hiveserver2 (thrift port 10000), set hive_hs2.ingress_enabled = true
+ 
