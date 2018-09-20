@@ -96,6 +96,11 @@ service:
   type: ClusterIP
   port: 9000
 
+  ## superset service annotations
+  ##
+  annotations: {}
+  #   service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+
 ingress:
   ## If true, superset Ingress will be created
   ##
