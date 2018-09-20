@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create }}
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    app: {{ template "nfs-client-provisioner.name" . }}
+    chart: {{ template "nfs-client-provisioner.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: leader-locking-{{ template "nfs-client-provisioner.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "nfs-client-provisioner.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: leader-locking-{{ template "nfs-client-provisioner.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
