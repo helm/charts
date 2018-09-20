@@ -143,6 +143,17 @@ volumeMounts:
   - name: pipeline
     mountPath: /usr/share/logstash/pipeline
 
+volumes: []
+  # - name: tls
+  #   secret:
+  #     secretName: logstash-tls
+  # - name: pipeline
+  #   configMap:
+  #     name: logstash-pipeline
+  # - name: certs
+  #   hostPath:
+  #     path: /tmp
+
 exporter:
   logstash:
     enabled: false
