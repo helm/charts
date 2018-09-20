@@ -26,6 +26,10 @@ spec:
         - name: war
           image: {{ .Values.image.webarchive.repository }}:{{ .Values.image.webarchive.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "sh"
+            - "-c"
+            - "cp /*.war /app"
           volumeMounts:
             - name: app-volume
               mountPath: /app
