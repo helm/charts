@@ -163,3 +163,14 @@ To horizontally scale this chart, run the following command to scale the number 
 ```console
 $ kubectl scale statefulset my-release-nats --replicas=3
 ```
+
+## Upgrading
+
+### To 1.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 1.0.0. The following example assumes that the release name is nats:
+
+```console
+$ kubectl delete statefulset nats-nats --cascade=false
+```
