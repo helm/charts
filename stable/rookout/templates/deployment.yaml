@@ -25,8 +25,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           resources:
           limits:
-            memory: "0.5Gi"
-            cpu: "0.5"
+            memory: {{ .Values.memoryLimit }}
+            cpu: {{ .Values.cpuLimit }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: ROOKOUT_TOKEN
