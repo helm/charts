@@ -143,7 +143,7 @@ volumeMounts:
   - name: pipeline
     mountPath: /usr/share/logstash/pipeline
 
-volumes:
+volumes: []
   # - name: tls
   #   secret:
   #     secretName: logstash-tls

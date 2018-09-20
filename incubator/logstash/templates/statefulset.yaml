@@ -112,7 +112,7 @@ spec:
 
     {{- with .Values.volumes }}
       volumes:
-{{ toYaml .Values.volumes | indent 8 }}
+{{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
