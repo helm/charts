@@ -179,3 +179,15 @@ The [Bitnami Moodle](https://github.com/bitnami/bitnami-docker-moodle) image sto
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, vpshere, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
 You may want to review the [PV reclaim policy](https://kubernetes.io/docs/tasks/administer-cluster/change-pv-reclaim-policy/) and update as required. By default, it's set to delete, and when Moodle is uninstalled, data is also removed.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is moodle:
+
+```console
+$ kubectl patch deployment moodle-moodle --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl delete statefulset moodle-mariadb --cascade=false
+```
