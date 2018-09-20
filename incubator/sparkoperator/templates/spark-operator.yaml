@@ -111,6 +111,7 @@ spec:
         - -enable-metrics=true
         - -metrics-labels=app_type
         - -enable-webhook=true
+        - -webhook-svc-namespace={{ .Values.operatorNamespace }}
         - -logtostderr
         {{- else if (.Values.enableMetrics) }}
         args:
@@ -120,6 +121,7 @@ spec:
         {{- else if (.Values.enableWebhook) }}
         args:
         - -enable-webhook=true
+        - -webhook-svc-namespace={{ .Values.operatorNamespace }}
         - -logtostderr
         {{- else }}
         args:
