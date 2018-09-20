@@ -9,6 +9,10 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "mediawiki.name" . }}
+      release: "{{ .Release.Name }}"
   replicas: 1
   template:
     metadata:
