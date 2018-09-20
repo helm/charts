@@ -14,6 +14,9 @@ spec:
       targetPort: controller
       protocol: TCP
       name: controller
+{{ if (and (eq .Values.controllerService.type "NodePort") (not (empty .Values.controllerService.nodePort))) }}
+      nodePort: {{.Values.controllerService.nodePort}}
+{{ end }}
   selector:
     app: {{ template "unifi.name" . }}
     release: {{ .Release.Name }}

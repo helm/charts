@@ -14,6 +14,9 @@ spec:
       targetPort: stun
       protocol: UDP
       name: stun
+{{ if (and (eq .Values.stunService.type "NodePort") (not (empty .Values.stunService.nodePort))) }}
+      nodePort: {{.Values.stunService.nodePort}}
+{{ end }}
   selector:
     app: {{ template "unifi.name" . }}
     release: {{ .Release.Name }}
