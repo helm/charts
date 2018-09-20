@@ -1,0 +1,18 @@
+{{- if .Values.nexus.nexusBackup.persistence.pdName -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.nexus.nexusBackup.persistence.pdName }}
+  labels:
+{{ include "nexus.labels" . | indent 4 }}
+spec:
+  capacity:
+    storage: {{ .Values.nexus.nexusBackup.persistence.storageSize }}
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    name: {{ template "nexus.fullname" . }}-backup
+  gcePersistentDisk:
+    pdName: {{ .Values.nexus.nexusBackup.persistence.pdName }}
+    fsType: {{ .Values.nexus.nexusBackup.persistence.fsType }}
+{{- end }}

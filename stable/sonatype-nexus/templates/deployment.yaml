@@ -166,3 +166,7 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
