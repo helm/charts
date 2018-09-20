@@ -9,6 +9,11 @@ metadata:
     heritage: "{{ .Release.Service }}"
     component: "server"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "parse.name" . }}
+      release: "{{ .Release.Name }}"
+      component: "server"
   replicas: 1
   template:
     metadata:
