@@ -130,3 +130,14 @@ The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/pers
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
 ```
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is opencart:
+
+```console
+$ kubectl delete statefulset rabbitmq --cascade=false
+```
