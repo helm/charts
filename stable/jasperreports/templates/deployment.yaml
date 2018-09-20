@@ -8,6 +8,10 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "jasperreports.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
