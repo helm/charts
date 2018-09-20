@@ -9,6 +9,11 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      release: "{{ .Release.Name }}"
+      component: "master"
+      app: {{ template "mariadb.name" . }}
   serviceName: "{{ template "master.fullname" . }}"
   replicas: 1
   updateStrategy:
