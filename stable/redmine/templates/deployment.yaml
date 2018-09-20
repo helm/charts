@@ -8,6 +8,10 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "redmine.fullname" . }}
+      release: "{{ .Release.Name }}"
   replicas: {{ .Values.replicas }}
   template:
     metadata:
