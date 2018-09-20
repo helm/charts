@@ -131,11 +131,11 @@ mariadb:
     name: hive_metastore
     user: barbarian
 
-    #If the password is not specified, mariadb will generate a random password
+    # If the password is not specified, mariadb will generate a random password
     password: "YOUR_DB_PASSWORD"
 
-  #rootUser:
-    #password:
+  # rootUser:
+    # password:
 
   master:
     persistence:

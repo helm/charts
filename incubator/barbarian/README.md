@@ -22,10 +22,7 @@ This repo contains the Helm charts for installing the Barbarian big data system 
 
 Install the charts with the following commands. Note that some configuration parameters must be supplied.
 
-<<<<<<< HEAD:README.md
-=======
 - ```helm repo add barbarians http://charts.barbarians.org/barbarian```
->>>>>>> d3b1714c99b283e94fb571325854e7e29558d8ec:README.md
 - ```helm install -f my-custom-config.yaml barbarians/barbarian```
 
 ## Configuration Parameters
@@ -44,11 +41,7 @@ Barbarian exposes many configuration parameters. Some important ones are listed 
 | hive_hs2.llapd_enabled | true | automatically deploy Hive LLAP? |
 | hive_hs2.llapd_count | 4 | How many LLAP daemons to deploy |
 | hive_hs2.llapd_mem | 24g | How much RAM to allocate to each LLAP daemon |
-<<<<<<< HEAD:README.md
 | hive_hs2.ingress_enabled | false | should Hiveserver2 be exposed to the outside? |
-=======
-| hive_hs2.ingress_enabled | false | Expose HiveServer2 to the outside? |
->>>>>>> d3b1714c99b283e94fb571325854e7e29558d8ec:README.md
 | yarn_rm.count | 1 | How many YARN RMs to deploy. Currently only supports 1 |
 | yarn_nm.count | 5 | How many YARN NodeManagers to deploy |
 | zookeeper.count | 5 | How many ZooKeepers to deploy |
