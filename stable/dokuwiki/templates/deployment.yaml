@@ -8,6 +8,10 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "dokuwiki.name" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
