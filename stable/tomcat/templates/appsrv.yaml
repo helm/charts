@@ -22,7 +22,7 @@ spec:
       volumes:
         - name: app-volume
           emptyDir: {}
-      containers:
+      initContainers:
         - name: war
           image: {{ .Values.image.webarchive.repository }}:{{ .Values.image.webarchive.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -33,6 +33,7 @@ spec:
           volumeMounts:
             - name: app-volume
               mountPath: /app
+      containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.tomcat.repository }}:{{ .Values.image.tomcat.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
