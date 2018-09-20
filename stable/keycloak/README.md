@@ -38,67 +38,67 @@ $ helm delete keycloak
 
 The following table lists the configurable parameters of the Keycloak chart and their default values.
 
-Parameter | Description | Default
---- | --- | ---
-`init.image.repository` | Init image repository | `alpine`
-`init.image.tag` | Init image tag | `3.7`
-`init.image.pullPolicy` | Init image pull policy | `IfNotPresent`
-`keycloak.replicas` | The number of Keycloak replicas | `1`
-`keycloak.image.repository` | The Keycloak image repository | `jboss/keycloak`
-`keycloak.image.tag` | The Keycloak image tag | `4.2.1.Final`
-`keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
-`keycloak.image.pullSecrets` | Image pull secrets | `[]`
-`keycloak.basepath` | Path keycloak is hosted at | `auth`
-`keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
-`keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
-`keycloak.extraInitContainers` | Additional init containers, e. g. for providing themes, etc. Passed through the `tpl` funtion and thus to be configured a string | `""`
-`keycloak.extraContainers` | Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy. Passed through the `tpl` funtion and thus to be configured a string | `""`
-`keycloak.extraEnv` | Allows the specification of additional environment variables for Keycloak. Passed through the `tpl` funtion and thus to be configured a string | `""`
-`keycloak.extraVolumeMounts` | Add additional volumes mounts, e. g. for custom themes. Passed through the `tpl` funtion and thus to be configured a string | `""`
-`keycloak.extraVolumes` | Add additional volumes, e. g. for custom themes. Passed through the `tpl` funtion and thus to be configured a string | `""`
-`keycloak.podDisruptionBudget` | Pod disruption budget | `{}`
-`keycloak.resources` | Pod resource requests and limits | `{}`
-`keycloak.affinity` | Pod affinity. Passed through the `tpl` funtion and thus to be configured a string | `Hard node and soft zone anti-affinity`
-`keycloak.nodeSelector` | Node labels for pod assignment | `{}`
-`keycloak.tolerations` | Node taints to tolerate | `[]`
-`keycloak.podAnnotations` | Extra annotations to add to pod | `{}`
-`keycloak.securityContext` | Security context for the pod | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}`
-`keycloak.preStartScript` | Custom script to run before Keycloak starts up | ``
-`keycloak.extraArgs` | Additional arguments to the start command | ``
-`keycloak.livenessProbe.initialDelaySeconds` | Liveness Probe `initialDelaySeconds` | `120`
-`keycloak.livenessProbe.timeoutSeconds` | Liveness Probe `timeoutSeconds` | `5`
-`keycloak.readinessProbe.initialDelaySeconds` | Readiness Probe `initialDelaySeconds` | `30`
-`keycloak.readinessProbe.timeoutSeconds` | Readiness Probe `timeoutSeconds` | `1`
-`keycloak.cli.nodeIdentifier` | WildFly CLI script for setting the node identifier | See `values.yaml`
-`keycloak.cli.logging` | WildFly CLI script for logging configuration | See `values.yaml`
-`keycloak.cli.reverseProxy` | WildFly CLI script for reverse proxy configuration | See `values.yaml`
-`keycloak.cli.discovery` | WildFly CLI script for cluster discovery | See `values.yaml`
-`keycloak.cli.custom` | Additional custom WildFly CLI script | `""`
-`keycloak.service.annotations` | Annotations for the Keycloak service | `{}`
-`keycloak.service.labels` | Additional labels for the Keycloak service | `{}`
-`keycloak.service.type` | The service type | `ClusterIP`
-`keycloak.service.port` | The service port | `80`
-`keycloak.service.nodePort` | The node port used if the service is of type `NodePort` | `""`
-`keycloak.ingress.enabled` | if `true`, an ingress is created | `false`
-`keycloak.ingress.annotations` | annotations for the ingress | `{}`
-`keycloak.ingress.path` | if `true`, an ingress is created | `/`
-`keycloak.ingress.hosts` | a list of ingress hosts | `[keycloak.example.com]`
-`keycloak.ingress.tls` | a list of [IngressTLS](https://v1-9.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#ingresstls-v1beta1-extensions) items | `[]`
-`keycloak.persistence.deployPostgres` | If true, the PostgreSQL chart is installed | `false`
-`keycloak.persistence.existingSecret` | Name of an existing secret to be used for the database password (if `keycloak.persistence.deployPostgres=false`). Otherwise a new secret is created | `""`
-`keycloak.persistence.existingSecretKey` | The key for the database password in the existing secret (if `keycloak.persistence.deployPostgres=false`) | `password`
-`keycloak.persistence.dbVendor` | One of `h2`, `postgres`, `mysql`, or `mariadb` (if `deployPostgres=false`) | `h2`
-`keycloak.persistence.dbName` | The name of the database to connect to (if `deployPostgres=false`) | `keycloak`
-`keycloak.persistence.dbHost` | The database host name (if `deployPostgres=false`) | `mykeycloak`
-`keycloak.persistence.dbPort` | The database host port (if `deployPostgres=false`) | `5432`
-`keycloak.persistence.dbUser` |The database user (if `deployPostgres=false`) | `keycloak`
-`keycloak.persistence.dbPassword` |The database password (if `deployPostgres=false`) | `""`
-`postgresql.postgresUser` | The PostgreSQL user (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
-`postgresql.postgresPassword` | The PostgreSQL password (if `keycloak.persistence.deployPostgres=true`) | `""`
-`postgresql.postgresDatabase` | The PostgreSQL database (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
-`test.image.repository` | Test image repository | `unguiculus/docker-python3-phantomjs-selenium`
-`test.image.tag` | Test image tag | `v1`
-`test.image.pullPolicy` | Test image pull policy | `IfNotPresent`
+| Parameter                                     | Description                             | Default                               |
+| --------------------------------------------- | --------------------------------------- | ------------------------------------- |
+| `init.image.repository`                       | Init image repository                   | `alpine`                              |
+| `init.image.tag`                              | Init image tag                          | `3.7`                                 |
+| `init.image.pullPolicy`                       | Init image pull policy                  | `IfNotPresent`                        |
+| `keycloak.replicas`                           | The number of Keycloak replicas         | `1`                                   |
+| `keycloak.image.tag`                          | The Keycloak image tag                  | `4.4.0.Final`                         |
+| `keycloak.image.repository`                   | The Keycloak image repository           | `jboss/keycloak`                      |
+| `keycloak.image.pullPolicy`                   | The Keycloak image pull policy          | `IfNotPresent`                        |
+| `keycloak.image.pullSecrets`                  | Image pull secrets                      | `[]`                                  |
+| `keycloak.username`                           | Username for the initial Keycloak admin user | `keycloak`                       |
+| `keycloak.basepath`                           | Path keycloak is hosted at              | `auth`                                |
+| `keycloak.password`                           | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""` |
+| `keycloak.extraInitContainers`                | Additional init containers, e. g. for providing themes, etc. Passed through the `tpl` funtion and thus to be configured a string | `""` |
+| `keycloak.extraContainers`                    | Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy. Passed through the `tpl` funtion and thus to be configured a string | `""` |
+| `keycloak.extraEnv`                           | Allows the specification of additional environment variables for Keycloak. Passed through the `tpl` funtion and thus to be configured a string | `""` |
+| `keycloak.extraVolumeMounts`                  | Add additional volumes mounts, e. g. for custom themes. Passed through the `tpl` funtion and thus to be configured a string | `""` |
+| `keycloak.extraVolumes`                       | Add additional volumes, e. g. for custom themes. Passed through the `tpl` funtion and thus to be configured a string | `""` |
+| `keycloak.podDisruptionBudget`                | Pod disruption budget                   | `{}`                                  |
+| `keycloak.resources`                          | Pod resource requests and limits        | `{}`                                  |
+| `keycloak.affinity`                           | Pod affinity. Passed through the `tpl` funtion and thus to be configured a string | `Hard node and soft zone anti-affinity` |
+| `keycloak.nodeSelector`                       | Node labels for pod assignment          | `{}`                                  |
+| `keycloak.tolerations`                        | Node taints to tolerate                 | `[]`                                  |
+| `keycloak.podAnnotations`                     | Extra annotations to add to pod         | `{}`                                  |
+| `keycloak.preStartScript`                     | Custom script to run before Keycloak starts up | ``                             |
+| `keycloak.securityContext`                    | Security context for the pod            | `{runAsUser: 1000, fsGroup: 1000, runAsNonRoot: true}` |
+| `keycloak.extraArgs`                          | Additional arguments to the start command | ``                                  |
+| `keycloak.livenessProbe.initialDelaySeconds`  | Liveness Probe `initialDelaySeconds`    | `120`                                 |
+| `keycloak.livenessProbe.timeoutSeconds`       | Liveness Probe `timeoutSeconds`         | `5`                                   |
+| `keycloak.readinessProbe.initialDelaySeconds` | Readiness Probe `initialDelaySeconds`   | `30`                                  |
+| `keycloak.cli.nodeIdentifier`                 | WildFly CLI script for setting the node identifier | See `values.yaml`          |
+| `keycloak.readinessProbe.timeoutSeconds`      | Readiness Probe `timeoutSeconds`        | `1`                                   |
+| `keycloak.cli.logging`                        | WildFly CLI script for logging configuration | See `values.yaml`                |
+| `keycloak.cli.reverseProxy`                   | WildFly CLI script for reverse proxy configuration | See `values.yaml`          |
+| `keycloak.cli.discovery`                      | WildFly CLI script for cluster discovery | See `values.yaml`                    |
+| `keycloak.cli.custom`                         | Additional custom WildFly CLI script    | `""`                                  |
+| `keycloak.service.annotations`                | Annotations for the Keycloak service    | `{}`                                  |
+| `keycloak.service.labels`                     | Additional labels for the Keycloak service | `{}`                               |
+| `keycloak.service.type`                       | The service type                        | `ClusterIP`                           |
+| `keycloak.service.port`                       | The service port                        | `80`                                  |
+| `keycloak.service.nodePort`                   | The node port used if the service is of type `NodePort` | `""`                  |
+| `keycloak.ingress.enabled`                    | if `true`, an ingress is created        | `false`                               |
+ |`keycloak.ingress.annotations`                | annotations for the ingress             | `{}`                                  |
+| `keycloak.ingress.path`                       | if `true`, an ingress is created        | `/`                                   |
+| `keycloak.ingress.hosts`                      | a list of ingress hosts                 | `[keycloak.example.com]`              |
+| `keycloak.ingress.tls`                        | a list of [IngressTLS](https://v1-9.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#ingresstls-v1beta1-extensions) items | `[]` |
+| `keycloak.persistence.deployPostgres`         | If true, the PostgreSQL chart is installed | `false`                            |
+| `keycloak.persistence.existingSecret`         | Name of an existing secret to be used for the database password (if `keycloak.persistence.deployPostgres=false`). Otherwise a new secret is created           | `""` |
+| `keycloak.persistence.existingSecretKey`      | The key for the database password in the existing secret (if `keycloak.persistence.deployPostgres=false`) | `password` |
+| `keycloak.persistence.dbVendor`               | One of `h2`, `postgres`, `mysql`, or `mariadb` (if `deployPostgres=false`) | `h2` |
+| `keycloak.persistence.dbName`                 | The name of the database to connect to (if `deployPostgres=false`) | `keycloak` |
+| `keycloak.persistence.dbHost`                 | The database host name (if `deployPostgres=false`) | `mykeycloak`               |
+| `keycloak.persistence.dbPort`                 | The database host port (if `deployPostgres=false`) | `5432`                     |
+| `keycloak.persistence.dbUser`                 | The database user (if `deployPostgres=false`) | `keycloak`                      |
+| `keycloak.persistence.dbPassword`             |The database password (if `deployPostgres=false`) | `""`                         |
+| `postgresql.postgresUser`                     | The PostgreSQL user (if `keycloak.persistence.deployPostgres=true`) | `keycloak` |
+| `postgresql.postgresPassword`                 | The PostgreSQL password (if `keycloak.persistence.deployPostgres=true`) | `""`  |
+| `postgresql.postgresDatabase`                 | The PostgreSQL database (if `keycloak.persistence.deployPostgres=true`) | `keycloak` |
+| `test.image.repository`                       | Test image repository | `unguiculus/docker-python3-phantomjs-selenium`          |
+| `test.image.tag`                              | Test image tag                          | `v1`                                  |
+| `test.image.pullPolicy`                       | Test image pull policy                  | `IfNotPresent`                        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
