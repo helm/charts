@@ -54,6 +54,8 @@ Parameter                       | Description                           | Defaul
 `service.externalPort`          | Kubernetes service port               | `80`
 `service.internalPort`          | Tomcat front port                     | `8080`
 `service.type`                  | Kubernetes service type               | `LoadBalancer`
+`readinessProbe.path`           | HTTP path to check for readiness      | `/sample`
+`livenessProbe.path`            | HTTP path to check for readiness      | `/sample`
 `resources`                     | CPU/Memory resource requests/limits   | `{}`
 `nodeSelector`                  | Node affinity                         | `{}`
 `tolerations`                   | Node tolerations                      | `{}`
