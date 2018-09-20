@@ -19,7 +19,6 @@ spec:
   selector:
     matchLabels:
       app: "{{ template "nats.name" . }}"
-      chart: "{{ template "nats.chart" . }}"
       release: {{ .Release.Name | quote }}
   template:
     metadata:
