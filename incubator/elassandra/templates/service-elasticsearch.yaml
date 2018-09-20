@@ -1,0 +1,21 @@
+{{- if .Values.elasticsearch.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "elasticsearch"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "elassandra.name" . }}
+    chart: {{ template "elassandra.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: elasticsearch
+    port: {{ default 9200 .Values.config.ports.elasticsearch }}
+    targetPort: {{ default 9200 .Values.config.ports.elasticsearch }}
+  selector:
+    app: {{ template "elassandra.name" . }}
+    release: {{ .Release.Name }}
+{{- end -}}

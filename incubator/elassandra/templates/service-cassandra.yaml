@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "cassandra"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "elassandra.name" . }}
+    chart: {{ template "elassandra.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: cql
+    port: {{ default 9042 .Values.config.ports.cql }}
+    targetPort: {{ default 9042 .Values.config.ports.cql }}
+  - name: thrift
+    port: {{ default 9160 .Values.config.ports.thrift }}
+    targetPort: {{ default 9160 .Values.config.ports.thrift }}
+  selector:
+    app: {{ template "elassandra.name" . }}
+    release: {{ .Release.Name }}

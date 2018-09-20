@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "elassandra.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    # https://github.com/kubernetes/examples/issues/89
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  labels:
+    app: {{ template "elassandra.name" . }}
+    chart: {{ template "elassandra.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  clusterIP: None
+  ports:
+  - name: jmx
+    port: 7199
+    targetPort: 7199
+  - name: intra
+    port: 7000
+    targetPort: 7000
+  - name: tls
+    port: 7001
+    targetPort: 7001
+  - name: transport
+    port: {{ default 9300 .Values.config.ports.transport }}
+    targetPort: {{ default 9300 .Values.config.ports.transport }}
+  - name: cql
+    port: {{ default 9042 .Values.config.ports.cql }}
+    targetPort: {{ default 9042 .Values.config.ports.cql }}
+  - name: thrift
+    port: {{ default 9160 .Values.config.ports.thrift }}
+    targetPort: {{ default 9160 .Values.config.ports.thrift }}
+  - name: elasticsearch
+    port: {{ default 9200 .Values.config.ports.elasticsearch }}
+    targetPort: {{ default 9200 .Values.config.ports.elasticsearch }}
+  selector:
+    app: {{ template "elassandra.name" . }}
+    release: {{ .Release.Name }}

@@ -1,0 +1,20 @@
+name: elassandra
+version: 0.1
+appVersion: 6.2.3.7
+description: Elassandra is a fork of Elasticsearch modified to run on top of Apache Cassandra in a scalable and 
+  resilient peer-to-peer architecture. Elasticsearch code is embedded in Cassanda nodes providing advanced 
+  search features on Cassandra tables and Cassandra serve as an Elasticsearch data and configuration store. 
+icon: https://github.com/strapdata/elassandra.io/blob/gh-pages/elassandra.svg
+keywords:
+- cassandra
+- elasticsearch
+- elassandra
+- database
+- nosql
+home: http://www.elassandra.io
+maintainers:
+- name: Vincent Royer
+  email: vroyer@strapdata.com
+- name: Barthelemy Delemotte
+  email: barth@strapdata.com
+engine: gotpl

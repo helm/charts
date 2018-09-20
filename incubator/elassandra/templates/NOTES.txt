@@ -1,0 +1,27 @@
+Elassandra can be accessed through CQL ({{ .Values.config.ports.cql }}/tcp) and HTTP Elasticsearch (9200/tcp) on the clustered services cassandra and elasticsearch or on each node {{ template "elassandra.fullname" . }}-<index>.
+
+Check your cassandra cluster status:
+kubectl exec -it -n {{ .Release.Namespace }} $(kubectl get pods -n {{ .Release.Namespace }} -l app={{ template "elassandra.name" . }},release={{ .Release.Name }} -o jsonpath='{.items[0].metadata.name}') -- nodetool status
+
+Check your Elasticsearch cluster status, nodes or indices:
+kubectl exec -it -n {{ .Release.Namespace }} $(kubectl get pods -n {{ .Release.Namespace }} -l app={{ template "elassandra.name" . }},release={{ .Release.Name }} -o jsonpath='{.items[0].metadata.name}') -- curl http://localhost:9200/_cluster/state?pretty
+kubectl exec -it -n {{ .Release.Namespace }} $(kubectl get pods -n {{ .Release.Namespace }} -l app={{ template "elassandra.name" . }},release={{ .Release.Name }} -o jsonpath='{.items[0].metadata.name}') -- curl http://localhost:9200/_cat/nodes
+kubectl exec -it -n {{ .Release.Namespace }} $(kubectl get pods -n {{ .Release.Namespace }} -l app={{ template "elassandra.name" . }},release={{ .Release.Name }} -o jsonpath='{.items[0].metadata.name}') -- curl http://localhost:9200/_cat/indices?v
+
+To index a JSON document in Elassandra, run:
+kubectl exec -it -n elassandra $(kubectl get pods -n elassandra -l app=elassandra,release=elassandra -o jsonpath='{.items[0].metadata.name}') -- curl -XPUT -H "Content-Type: application/json" http://localhost:9200/test/mytype/1 -d '{ "foo":"bar" }'
+
+If you want to connect to the Cassandra CQL run the following:
+kubectl exec -it -n {{ .Release.Namespace }} $(kubectl get pods -n {{ .Release.Namespace }} -l "app={{ template "elassandra.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}") -- cqlsh
+
+Elassandra pod logs:
+kubectl logs -f -n {{ .Release.Namespace }} $(kubectl get pods -n {{ .Release.Namespace }} -l app={{ template "elassandra.name" . }},release={{ .Release.Name }} -o jsonpath='{ .items[0].metadata.name }')
+
+To forward the API port to localhost:9042 run the following:
+- kubectl port-forward -n {{ .Release.Namespace }} $(kubectl get pods -n {{ .Release.Namespace }} -l app={{ template "elassandra.name" . }},release={{ .Release.Name }} -o jsonpath='{ .items[0].metadata.name }') 9042:{{ .Values.config.ports.cql }}
+
+{{- if not .Values.persistence.enabled }}
+Note that the cluster is running with node-local storage instead of PersistentVolumes. In order to prevent data loss,
+pods will be decommissioned upon termination. Decommissioning may take some time, so you might also want to adjust the
+pod termination gace period, which is currently set to {{ .Values.podSettings.terminationGracePeriodSeconds }} seconds.
+{{- end}}
