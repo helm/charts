@@ -24,6 +24,14 @@ Return secret name to be used based on provided values.
 {{- end -}}
 
 {{/*
+Return secret name to be used based on provided values.
+*/}}
+{{- define "datadog.appKeySecretName" -}}
+{{- $fullName := printf "%s-appkey" (include "datadog.fullname" .) -}}
+{{- default $fullName .Values.datadog.appKeyExistingSecret | quote -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified confd name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
@@ -37,6 +45,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "datadog.checksd.fullname" -}}
 {{- printf "%s-datadog-checksd" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Create a default fully qualified cluster-agent name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "datadog.clusterAgent.fullname" -}}
+{{- printf "%s-cluster-agent" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*

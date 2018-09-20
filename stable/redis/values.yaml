@@ -157,6 +157,7 @@ master:
   service:
     ##  Redis Master Service type
     type: ClusterIP
+    port: 6379
 
     ## Specify the nodePort value for the LoadBalancer and NodePort service types.
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
@@ -203,7 +204,7 @@ master:
   ## Update strategy, can be set to RollingUpdate or onDelete by default.
   ## https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
   statefulset:
-    updateStrategy: OnDelete
+    updateStrategy: RollingUpdate
     ## Partition update strategy
     ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
     # rollingUpdatePartition:

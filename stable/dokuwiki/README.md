@@ -56,14 +56,14 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `dokuwikiEmail`                      | User email                                                 | `user@example.com`                            |
 | `dokuwikiWikiName`                   | Wiki name                                                  | `My Wiki`                                     |
 | `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                       | `nil`                                         |
-| `service.externalTrafficPolicy`      | Enable client source IP preservation                       | `Cluster`                                       |
+| `service.externalTrafficPolicy`      | Enable client source IP preservation                       | `Cluster`                                     |
 | `service.nodePorts.http`             | Kubernetes http node port                                  | `""`                                          |
 | `service.nodePorts.https`            | Kubernetes https node port                                 | `""`                                          |
 | `ingress.enabled`                    | Enable ingress controller resource                         | `false`                                       |
-| `ingress.hosts[0].name`              | Hostname to your Joomla! installation                      | `joomla.local`                                |
+| `ingress.hosts[0].name`              | Hostname to your DokuWiki installation                     | `dokuwiki.local`                              |
 | `ingress.hosts[0].path`              | Path within the url structure                              | `/`                                           |
 | `ingress.hosts[0].tls`               | Utilize TLS backend in ingress                             | `false`                                       |
-| `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                                  | `joomla.local-tls-secret`                     |
+| `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                                  | `dokuwiki.local-tls`                          |
 | `ingress.hosts[0].annotations`       | Annotations for this host's ingress record                 | `[]`                                          |
 | `ingress.secrets[0].name`            | TLS Secret Name                                            | `nil`                                         |
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                                     | `nil`                                         |
@@ -88,7 +88,9 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `readinessProbe.timeoutSeconds`      | When the probe times out                                   | 5                                             |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed       | 6                                             |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes to be considered successful  | 1                                             |
-
+| `nodeSelector`                       | Node labels for pod assignment                             | `{}`                                          |
+| `affinity`                           | Affinity settings for pod assignment                       | `{}`                                          |
+| `tolerations`                        | Toleration labels for pod assignment                       | `[]`                                          |
 
 The above parameters map to the env variables defined in [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki). For more information please refer to the [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki) image documentation.
 

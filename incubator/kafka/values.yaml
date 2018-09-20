@@ -150,6 +150,9 @@ external:
     imageTag: "0.4"
     imagePullPolicy: "IfNotPresent"
 
+# Annotation to be added to Kafka pods
+podAnnotations: {}
+
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
 ## here in map format, as defined in the official docs.
 ## ref: https://kafka.apache.org/documentation/#brokerconfigs
@@ -308,6 +311,8 @@ prometheus:
 ## Topic creation and configuration.
 ## The job will be run on a deployment only when the config has been changed.
 ## - If 'partitions' and 'replicationFactor' are specified we create the topic (with --if-not-exists.)
+## - If 'partitions', 'replicationFactor' and 'reassignPartitions' are specified we reassign the partitions to
+## increase the replication factor of an existing topic.
 ## - If 'partitions' is specified we 'alter' the number of partitions. This will
 ## silently and safely fail if the new setting isn’t strictly larger than the old (i.e. a NOOP.) Do be aware of the
 ## implications for keyed topics (ref: https://docs.confluent.io/current/kafka/post-deployment.html#admin-operations)
@@ -315,9 +320,15 @@ prometheus:
 ## it will silently and safely fail.
 ## - If 'config' is specified it's added to the topic configuration.
 ##
+## Note: To increase the 'replicationFactor' of a topic, 'reassignPartitions' must be set to true (see above).
+##
 topics: []
   # - name: myExistingTopicConfig
   #   config: "cleanup.policy=compact,delete.retention.ms=604800000"
+  # - name: myExistingTopicReassignPartitions
+  #   partitions: 8
+  #   replicationFactor: 5
+  #   reassignPartitions: true
   # - name: myExistingTopicPartitions
   #   partitions: 8
   # - name: myNewTopicWithConfig
