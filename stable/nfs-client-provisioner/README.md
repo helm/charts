@@ -5,7 +5,7 @@ The [NFS client provisioner](https://github.com/kubernetes-incubator/external-st
 ## TL;DR;
 
 ```console
-$ helm install stable/nfs-client-provisioner
+$ helm install --set nfs.server=x.x.x.x --set nfs.path=/exported/path stable/nfs-client-provisioner
 ```
 
 ## Introduction
