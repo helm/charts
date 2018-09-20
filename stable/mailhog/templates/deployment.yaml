@@ -18,6 +18,8 @@ spec:
         app: {{ template "mailhog.name" . }}
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+        runAsUser: 1000
       containers:
         - name: {{ template "mailhog.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
