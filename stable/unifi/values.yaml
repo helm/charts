@@ -21,10 +21,14 @@ guiService:
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
   ##
   annotations: {}
+  labels: {}
   ## Use loadBalancerIP to request a specific static IP,
   ## otherwise leave blank
   ##
   loadBalancerIP:
+  # loadBalancerSourceRanges: []
+  ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+  # externalTrafficPolicy: Cluster
 
 controllerService:
   type: NodePort
@@ -38,10 +42,14 @@ controllerService:
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
   ##
   annotations: {}
+  labels: {}
   ## Use loadBalancerIP to request a specific static IP,
   ## otherwise leave blank
   ##
   loadBalancerIP:
+  # loadBalancerSourceRanges: []
+  ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+  # externalTrafficPolicy: Cluster
 
 stunService:
   type: NodePort
@@ -55,10 +63,14 @@ stunService:
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
   ##
   annotations: {}
+  labels: {}
   ## Use loadBalancerIP to request a specific static IP,
   ## otherwise leave blank
   ##
   loadBalancerIP:
+  # loadBalancerSourceRanges: []
+  ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+  # externalTrafficPolicy: Cluster
 
 discoveryService:
   type: NodePort
@@ -72,10 +84,14 @@ discoveryService:
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
   ##
   annotations: {}
+  labels: {}
   ## Use loadBalancerIP to request a specific static IP,
   ## otherwise leave blank
   ##
   loadBalancerIP:
+  # loadBalancerSourceRanges: []
+  ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+  # externalTrafficPolicy: Cluster
 
 ingress:
   enabled: false

@@ -36,6 +36,9 @@ spec:
   externalIPs:
 {{ toYaml .Values.guiService.externalIPs | indent 4 }}
 {{- end }}
+  {{- if .Values.guiService.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.guiService.externalTrafficPolicy }}
+  {{- end }}
   ports:
     - name: https-gui
       port: {{ .Values.guiService.port }}

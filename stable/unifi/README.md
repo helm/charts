@@ -5,7 +5,7 @@ This is a helm chart for [Ubiqiti Network's](https://www.ubnt.com/) [Unifi Contr
 ## TL;DR;
 
 ```console
-$ helm install stable/unifi
+helm install stable/unifi
 ```
 
 ## Introduction
@@ -17,14 +17,15 @@ This code is adopted from [this original repo](https://github.com/jacobalberty/u
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/unifi
+helm install --name my-release stable/unifi
 ```
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
 
 ```console
-$ helm delete my-release --purge
+helm delete my-release --purge
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -41,19 +42,31 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `guiService.type`             | Kubernetes service type for the Unifi GUI | `ClusterIP` |
 | `guiService.port`             | Kubernetes port where the Unifi GUI is exposed| `8443` |
 | `guiService.annotations`      | Service annotations for the Unifi GUI | `{}` |
+| `guiService.labels`           | Custom labels | `{}` |
 | `guiService.loadBalancerIP`   | Loadbalance IP for the Unifi GUI | `{}` |
+| `guiService.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported)      | None
+| `guiService.externalTrafficPolicy` | Set the externalTrafficPolicy in the Service to either Cluster or Local | `Cluster`
 | `controllerService.type`             | Kubernetes service type for the Unifi Controller communication | `NodePort` |
 | `controllerService.port`             | Kubernetes port where the Unifi Controller is exposed - this needs to be reachable by the unifi devices on the network | `8080` |
 | `controllerService.annotations`      | Service annotations for the Unifi Controller | `{}` |
+| `controllerService.labels`           | Custom labels | `{}` |
 | `controllerService.loadBalancerIP`   | Loadbalance IP for the Unifi Controller | `{}` |
+| `controllerService.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported)      | None
+| `controllerService.externalTrafficPolicy` | Set the externalTrafficPolicy in the Service to either Cluster or Local | `Cluster`
 | `stunService.type`             | Kubernetes service type for the Unifi STUN | `NodePort` |
 | `stunService.port`             | Kubernetes UDP port where the Unifi STUN is exposed | `3478` |
 | `stunService.annotations`      | Service annotations for the Unifi STUN | `{}` |
+| `stunService.labels`           | Custom labels | `{}` |
 | `stunService.loadBalancerIP`   | Loadbalance IP for the Unifi STUN | `{}` |
+| `stunService.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported)      | None
+| `stunService.externalTrafficPolicy` | Set the externalTrafficPolicy in the Service to either Cluster or Local | `Cluster`
 | `discoveryService.type`             | Kubernetes service type for AP discovery | `NodePort` |
 | `discoveryService.port`             | Kubernetes UDP port for AP discovery | `10001` |
 | `discoveryService.annotations`      | Service annotations for AP discovery | `{}` |
+| `discoveryService.labels`           | Custom labels | `{}` |
 | `discoveryService.loadBalancerIP`   | Loadbalance IP for AP discovery | `{}` |
+| `discoveryService.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported)      | None
+| `discoveryService.externalTrafficPolicy` | Set the externalTrafficPolicy in the Service to either Cluster or Local | `Cluster`
 | `ingress.enabled`              | Enables Ingress | `false` |
 | `ingress.annotations`          | Ingress annotations | `{}` |
 | `ingress.labels`               | Custom labels                       | `{}`
@@ -91,7 +104,6 @@ helm install --name my-release -f values.yaml stable/unifi
 ```
 
 Read through the [values.yaml](values.yaml) file. It has several commented out suggested values.
-
 
 ## Regarding the services
 
