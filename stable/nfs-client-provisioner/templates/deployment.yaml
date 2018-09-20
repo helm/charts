@@ -38,6 +38,10 @@ spec:
               value: {{ .Values.nfs.path }}
       volumes:
         - name: nfs-client-root
+{{- if .Values.buildMode }}
+          emptyDir: {}
+{{- else -}}
           nfs:
             server: {{ .Values.nfs.server }}
             path: {{ .Values.nfs.path }}
+{{- end }}
