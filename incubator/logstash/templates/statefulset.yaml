@@ -110,6 +110,10 @@ spec:
 {{ toYaml .Values.exporter.logstash.resources | indent 12 }}
 {{- end }}
 
+    {{- with .Values.volumes }}
+      volumes:
+{{ toYaml . | indent 8 }}
+    {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
