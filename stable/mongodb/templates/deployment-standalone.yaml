@@ -55,7 +55,7 @@ spec:
         - name: MONGODB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "mongodb.fullname" . }}
+              name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
               key: mongodb-root-password
         {{- end }}
         - name: MONGODB_USERNAME
@@ -64,7 +64,7 @@ spec:
         - name: MONGODB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "mongodb.fullname" . }}
+              name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
               key: mongodb-password
         {{- end }}
         - name: MONGODB_DATABASE
