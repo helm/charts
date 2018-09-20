@@ -12,7 +12,6 @@ spec:
   selector:
     matchLabels:
       app: {{ template "phpmyadmin.name" . }}
-      chart: {{ template "phpmyadmin.chart" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
