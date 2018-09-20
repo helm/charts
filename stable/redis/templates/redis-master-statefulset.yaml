@@ -135,6 +135,16 @@ spec:
           mountPath: /opt/bitnami/redis/etc/redis.conf
           subPath: redis.conf
         {{- end }}
+      {{- if and .Values.master.persistence.enabled (not .Values.persistence.existingClaim) | and .Values.master.securityContext.enabled }}
+      initContainers:
+      - name: redis-init
+        image: alpine:3.8
+        command: ["/bin/chown", "-R", "{{ .Values.master.securityContext.runAsUser }}:{{ .Values.master.securityContext.fsGroup }}", "{{ .Values.master.persistence.path }}"]
+        volumeMounts:
+        - name: redis-data
+          mountPath: {{ .Values.master.persistence.path }}
+          subPath: {{ .Values.master.persistence.subPath }}
+      {{- end }}
       volumes:
       - name: health
         configMap:
