@@ -92,7 +92,23 @@ podAnnotations: {}
 # lifecycle: |
 #   postStart:
 #     exec:
-#       command: ["./unseal -s my-unseal-keys"]
+#       command:
+#       - /bin/sh
+#       - -c
+#       - |
+#         sleep 5
+#         [ -f /vault/unseal-keys/key1 ] || exit 0
+#         for key in /vault/unseal-keys/key1 /vault/unseal-keys/key2 /vault/unseal-keys/key3; do
+#           vault operator unseal -address=http://127.0.0.1:8200 `cat ${key}`
+#         done
+#
+## The example above requires a secret that may be created as such
+# kubectl create secret generic my-unseal-keys \
+#     --from-literal=key1= \
+#     --from-literal=key2= \
+#     --from-literal=key3= \
+#     --from-literal=key4= \
+#     --from-literal=key5=
 
 vault:
   # Only used to enable dev mode. When in dev mode, the rest of this config
@@ -106,28 +122,37 @@ vault:
   # the Kubernetes secret (created outside of this chart), and the mountPath
   # at which it should be mounted in the Vault container.
   customSecrets: []
-    # - secretName: vault-tls
-    #   mountPath: /vault/tls
+  # - secretName: vault-tls
+  #   mountPath: /vault/tls
   #
   # Configure additional environment variables for the Vault containers
-  extraEnv: {}
-  #   - name: VAULT_API_ADDR
-  #     value: "https://vault.internal.domain.name:8200"
-  extraContainers: {}
+  extraEnv: []
+  # - name: VAULT_API_ADDR
+  #   value: "https://vault.internal.domain.name:8200"
+  #
   ## Additional containers to be added to the Vault pod
+  extraContainers: []
   # - name: vault-sidecar
   #   image: vault-sidecar:latest
   #   volumeMounts:
   #   - name: some-mount
   #     mountPath: /some/path
-  extraVolumes: {}
+  #
+  ## Additional volumes to be added to the Vault pod
+  extraVolumes: []
+  # - name: my-unseal-keys
+  #   secret:
+  #     secretName: my-unseal-keys
+  #     optional: true
+  #
+  ## Additional volumeMounts to be added to the Vault pod
+  extraVolumeMounts: []
+  # - mountPath: /vault/unseal-keys
+  #   name: my-unseal-keys
+  #
   # Log level
   # https://www.vaultproject.io/docs/commands/server.html#log-level
   logLevel: "info"
-  ## Additional volumes to the vault pod.
-  # - name: extra-volume
-  #   secret:
-  #     secretName: some-secret
   readiness:
     readyIfSealed: false
     readyIfStandby: true
