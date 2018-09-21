@@ -1,8 +1,16 @@
-{{- if .Values.rbac.create }}
+{{- if and .Values.rbac.create (or .Values.sidecar.dashboards.enabled .Values.sidecar.datasources.enabled) }}
+{{- if .Values.sidecar.useCurrentNamespace  }}
+kind: RoleBinding
+{{- else}}
 kind: ClusterRoleBinding
+{{- end}}
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
+{{- if .Values.sidecar.useCurrentNamespace  }}
+  name: {{ template "grafana.fullname" . }}-rolebinding
+{{- else}}
   name: {{ template "grafana.fullname" . }}-clusterrolebinding
+{{- end}}
   labels:
     app: {{ template "grafana.name" . }}
     chart: {{ template "grafana.chart" . }}
@@ -17,7 +25,12 @@ subjects:
     name: {{ template "grafana.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 roleRef:
+{{- if .Values.sidecar.useCurrentNamespace  }}
+  kind: ClusterRole
+  name: {{ template "grafana.fullname" . }}-role
+{{- else}}
   kind: ClusterRole
   name: {{ template "grafana.fullname" . }}-clusterrole
+{{- end}}
   apiGroup: rbac.authorization.k8s.io
 {{- end}}

@@ -1,5 +1,9 @@
-{{- if .Values.rbac.create }}
+{{- if and .Values.rbac.create (or .Values.sidecar.dashboards.enabled .Values.sidecar.datasources.enabled) }}
+{{- if .Values.sidecar.useCurrentNamespace  }}
+kind: Role
+{{- else}}
 kind: ClusterRole
+{{- end}}
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
@@ -11,13 +15,15 @@ metadata:
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}
+{{- if .Values.sidecar.useCurrentNamespace  }}
+  name: {{ template "grafana.fullname" . }}-role
+{{- else}}
   name: {{ template "grafana.fullname" . }}-clusterrole
-{{- if or .Values.sidecar.dashboards.enabled .Values.sidecar.datasources.enabled }}
+{{- end}}
 rules:
 - apiGroups: [""] # "" indicates the core API group
   resources: ["configmaps"]
   verbs: ["get", "watch", "list"]
 {{- else }}
 rules: []
-{{- end}}
 {{- end}}
