@@ -12,3 +12,4 @@ maintainers:
   - name: paulczar
     email: username.taken@gmail.com
 engine: gotpl
+home: https://github.com/kubernetes/ingress-gce
