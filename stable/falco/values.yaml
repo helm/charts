@@ -38,6 +38,12 @@ daemonset: {}
   # them as necessary, and remove the curly braces after 'resources:'.
   # updateStrategy: RollingUpdate
 
+# If is behind a proxy you can set the proxy server
+proxy:
+  httpProxy:
+  httpsProxy:
+  noProxy:
+
 ebpf:
   # Enable eBPF support for Falco
   enabled: false
