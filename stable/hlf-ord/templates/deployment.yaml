@@ -111,8 +111,15 @@ spec:
               # Create TLS certificate for Orderer
               if [ ! -f ${ORDERER_GENERAL_TLS_PRIVATEKEY} ]
               then
-                echo ">\033[0;35m fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_USERNAME}:${CA_PASSWORD}@http://${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-ord.fullname" . }} \033[0m"
+
+                {{- if .Values.secrets.caServerTls }}
+                echo ">\033[0;35m fabric-ca-client enroll -d --enrollment.profile tls -u https://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-ord.fullname" . }} --tls.certfiles /hl_config/ca_server/tls/tls.crt \033[0m"
+                fabric-ca-client enroll -d --enrollment.profile tls -u https://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-ord.fullname" . }} --tls.certfiles /hl_config/ca_server/tls/tls.crt
+                {{- else }}
+                echo ">\033[0;35m fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-ord.fullname" . }} \033[0m"
                 fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-ord.fullname" . }}
+                {{- end }}
+
 
                 mkdir -p $(dirname $ORDERER_GENERAL_TLS_PRIVATEKEY)
                 cp /tmp/tls/keystore/* $ORDERER_GENERAL_TLS_PRIVATEKEY
