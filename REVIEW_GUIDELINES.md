@@ -36,7 +36,7 @@ Stable charts should not depend on charts in incubator.
 Resources and labels should follow some conventions.
 
 **NOTE:** 
-*The guidelines for standard labels have changed, but due to labels being immutable, charts with the
+*The guidelines for standard labels have changed, but due to labels being immutable when using apps/v1, charts with the
 legacy labels should continue to use the old label-style, while new charts should start using the updated labels.*
 
 Updated labels, [full list with comments can be found in the best practices guide](https://github.com/helm/helm/blob/master/docs/chart_best_practices/labels.md)
