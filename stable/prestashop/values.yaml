@@ -53,6 +53,11 @@ prestashopFirstName: Bitnami
 ##
 prestashopLastName: User
 
+## Cookie Check IP
+## ref: https://github.com/bitnami/bitnami-docker-prestashop#configuration
+##
+prestashopCookieCheckIP: "no"
+
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-prestashop#environment-variables
 allowEmptyPassword: "yes"
