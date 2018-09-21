@@ -1,0 +1,22 @@
+{{- if .Values.kylo.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "kylo.name" . }}-kylo
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kylo.name" . }}-kylo
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    ingress.kubernetes.io/custom-request-headers: X-ProxyScheme:http||X-ProxyHost:{{ .Values.kylo.ingress.domain }}||X-ProxyPort:80
+spec:
+  rules:
+  - host: {{ .Values.kylo.ingress.domain }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "kylo.name" . }}-kylo-ui
+          servicePort: 8400
+{{- end -}}

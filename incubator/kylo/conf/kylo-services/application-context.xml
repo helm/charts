@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  thinkbig-service-app
+  %%
+  Copyright (C) 2017 ThinkBig Analytics
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <bean id="applicationConfig"
+        class="com.thinkbiganalytics.server.KyloServerApplication"/>
+
+  <context:component-scan base-package="com.thinkbiganalytics">
+    <context:exclude-filter type="assignable"
+                            expression="com.thinkbiganalytics.server.KyloServerApplication"/>
+  </context:component-scan>
+
+  <!-- Deprecate the use of the name component-context.xml in favor of plugin-context.xml.
+      The latter more clearly states its purpose: how we identify and bootstrap a plugin's configuration.
+      Leaving both in place for now. -->
+  <import resource="classpath*:plugin/component-context.xml"/>
+  <import resource="classpath*:plugin/plugin-context.xml"/>
+  <import resource="classpath*:conf/*.xml"/>
+  <import resource="classpath*:feed-manager/*.xml"/>
+
+  <bean id="mainConfigurationClassPostProcessor"
+        class="org.springframework.context.annotation.ConfigurationClassPostProcessor"/>
+</beans>

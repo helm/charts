@@ -1,0 +1,23 @@
+{{- if .Values.nifi.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "kylo.name" . }}-nifi
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kylo.name" . }}-nifi
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    ingress.kubernetes.io/custom-request-headers: X-ProxyScheme:http||X-ProxyHost:{{ .Values.nifi.ingress.domain }}||X-ProxyPort:80
+spec:
+  rules:
+  - host: {{ .Values.nifi.ingress.domain }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "kylo.fullname" . }}-nifi-headless
+          servicePort: {{ .Values.nifi.properties.httpPort }}
+{{- end -}}

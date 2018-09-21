@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kylo.name" . }}-kylo-ui
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kylo.name" . }}-kylo
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+{{ (tpl (.Files.Glob "conf/kylo-ui/*").AsConfig . ) | indent 2 }}

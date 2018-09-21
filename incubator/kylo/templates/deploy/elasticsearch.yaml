@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kylo.fullname" . }}-elasticsearch
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kylo.fullname" . }}-elasticsearch
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: {{ template "kylo.fullname" . }}-elasticsearch
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.elasticsearch.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+        - name: {{ template "kylo.name" . }}-elasticsearch
+          imagePullPolicy: {{ .Values.elasticsearch.image.pullPolicy | quote }}
+          image: "{{ .Values.elasticsearch.image.repository }}:{{ .Values.elasticsearch.image.tag }}"
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - "sh"
+                  - "-c"
+                  - >
+                    while ! curl --output /dev/null --silent --head --fail http://localhost:9200; do sleep 1; done;
+                    /opt/kylo/bin/create-kylo-indexes-es.sh localhost 9200 1 1
+          ports:
+            - containerPort: 9200
+            - containerPort: 9300
+          resources:
+{{ toYaml .Values.elasticsearch.resources | indent 12 }}
+          volumeMounts:
+            - name: elasticsearchvol
+              mountPath: /usr/share/elasticsearch/data
+              subPath: govcloud/kylo/elasticsearch/data
+      restartPolicy: Always
+      volumes:
+        - name: elasticsearchvol
+          persistentVolumeClaim:
+            claimName: {{ template "kylo.fullname" . }}-elasticsearch

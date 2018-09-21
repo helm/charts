@@ -1,0 +1,30 @@
+
+*****************************************************************************
+*** PLEASE BE PATIENT: Kylo may take a few minutes to download / install ***
+*****************************************************************************
+
+1. Get the application URL by running these commands:
+
+{{- if .Values.kylo.ingress.enabled }}
+
+  You should be able to access your new Kylo installation at:
+
+  http://{{- .Values.kylo.ingress.domain }}
+  http://{{- .Values.nifi.ingress.domain }}
+
+{{- else if contains "NodePort" .Values.serviceType }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "kylo.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+
+{{- else if contains "LoadBalancer" .Values.serviceType }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ template "kylo.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "kylo.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.nifi.properties.httpPort }}
+
+{{- else if contains "ClusterIP" .Values.serviceType }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "kylo.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl port-forward $POD_NAME 8080:80
+{{- end }}

@@ -1,0 +1,19 @@
+{{- if .Values.nifi.loadBalancer.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kylo.fullname" . }}-nifi-lb
+  labels:
+    app: {{ template "kylo.fullname" . }}-nifi
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: "LoadBalancer"
+  ports:
+    - port: {{ .Values.nifi.properties.httpPort }}
+      name: http
+  selector:
+    app: {{ template "kylo.fullname" . }}-nifi
+    release: {{ .Release.Name }}
+{{- end -}}
