@@ -65,7 +65,7 @@ spec:
           -passWord {{ .Values.hive_hms.db_password }} \
           {{- end }} 
           {{- if .Values.hive_hms.db_auto }}
-          -url {{ printf "jdbc:mariadb://%s:3306/%s" (include "mariadb.fullname" .) .Values.mariadb.db.name }} \
+          -url {{ printf "jdbc:mariadb://%s:3306/%s" (include "mariadb.servicename" .) .Values.mariadb.db.name }} \
           {{- else }}
           -url {{ .Values.hive_hms.db_uri }} \ 
           {{- end }}

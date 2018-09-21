@@ -16,11 +16,11 @@ hive_hms:
 
   # set db_auto: true if you want Helm to automatically install a mariadb
   # for hive metastore persistent backend
-  db_auto: false
+  db_auto: true
 
   # specify if the database schema should be initialized on deployment.
   # will fail with an error if the schema is already present
-  db_init: false
+  db_init: true
 
   # specify the jdbc uri for your hive metastore persistent backend.
   # Barbarian supports postgres, mssql, mariadb or mysql
@@ -55,7 +55,7 @@ hive_hs2:
   ps_mem: 8g
   mem: 8Gi
   cpu: 1
-  llapd_mem: 24g
+  llapd_mem: 2g
   log_level: INFO
 
   # if you want to expose HiveServer2 to the outside world
@@ -101,6 +101,14 @@ ignite:
   mem: 8Gi
   ps_mem: 7g
 
+  # set to true to enable an ingress flow to expose IGFS to the outside
+  ingress_enabled: false
+
+  # set to true to enable secondary storage system
+  # otherwise ignite in-memory filesystem will be the primary
+  # storage backend (useful for evaluation/testing only)
+  secondary_fs_enabled: false
+
   # currently only supports s3a. support for adls, google cloud storage and ceph
   # will follow
   secondary_fs_uri: s3a://YOUR_BUCKET/
@@ -130,12 +138,10 @@ mariadb:
   db:
     name: hive_metastore
     user: barbarian
+    password: password123!
 
-    # If the password is not specified, mariadb will generate a random password
-    password: "YOUR_DB_PASSWORD"
-
-  # rootUser:
-    # password:
+    # rootUser:
+      # password:
 
   master:
     persistence:

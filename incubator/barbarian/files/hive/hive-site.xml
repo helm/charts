@@ -603,7 +603,6 @@
     {{- else }}
     <value>{{ .Values.hive_hms.db_password }}</value>
     {{- end }}
-    <value>{{ .Values.hive_hms.db_password }}</value>
     <description>password to use against metastore database</description>
   </property>
   <property>
@@ -619,7 +618,7 @@
   <property>
     <name>javax.jdo.option.ConnectionURL</name>
     {{- if .Values.hive_hms.db_auto }}
-      <value>{{ printf "jdbc:mariadb://%s:3306/%s" (include "mariadb.fullname" .) .Values.mariadb.db.name }}</value>
+      <value>{{ printf "jdbc:mariadb://%s:3306/%s" (include "mariadb.servicename" .) .Values.mariadb.db.name }}</value>
     {{- else }}
       <value>{{ .Values.hive_hms.db_uri }}</value>
     {{- end }}

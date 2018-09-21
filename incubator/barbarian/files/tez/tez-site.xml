@@ -15,11 +15,12 @@
 -->
 <configuration>
 
+<!--
 <property>
 <name>tez.cluster.additional.classpath.prefix</name>
-<value>/opt/barbarian/hadoop/share/hadoop/common/lib/*</value>
+<value>/opt/barbarian/hadoop/share/hadoop/common/lib/*:/opt/barbarian/hadoop/share/hadoop/common/*</value>
 </property>
-
+-->
 <property>
 <name>hive.llap.daemon.rpc.port</name>
 <value>0</value>

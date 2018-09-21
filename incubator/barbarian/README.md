@@ -1,51 +1,106 @@
 # Barbarian
 
-Barbarian is the world's best cloud-first, cloud-agnostic big data system founded on Apache Hadoop for enterprise-ready parallel distributed data processing at scale.
+Barbarian is the world's best cloud-first, cloud-agnostic big data system founded on Apache Hadoop for enterprise-ready, low-latency parallel distributed data processing.
 
 This release brings:
 - Apache Hadoop 2.8.4
 - Apache Hive 3.1, with LLAP & Tez
 - Apache Zookeeper 3.5
-- Apache Ignite as a distributed, parallel write-through cache of your big data backing store (nb. only s3 is supported by Barbarian today)
+- Apache Ignite 2.6
+
+Barbarian is designed to run as a horizontally scalable parallel, distributed, *in memory* data warehouse - a bit like SAP Hana™ but with a low TCO.
+
+Barbarian can ingest data from Amazon S3 or a remote HDFS cluster for high performance, low latency analysis, or alternatively Barbarian can be configured to run as a Big Data solution accessing Amazon S3 and using its own storage as an in-memory write-through cache.
+
+We will be adding support for more storage backends including Azure ADLS, GCP Cloud Storage, and Ceph in coming releases.
+
+By default, Barbarian comes with Hive transactional table support, meaning inline record updates are possible for slowly changing dimensions and change-data-capture. You need to use the appropriate Hive syntax when creating a table for this to work:
+
+```
+CREATE TABLE mytable (id string, value1 string, value2 int)
+CLUSTERED BY (id) INTO 5 BUCKETS
+STORED AS ORC
+TBLPROPERTIES ("transactional"="true");
+```
+
+More info at Apache https://cwiki.apache.org/confluence/display/Hive/Hive+Transactions.
+
+You can load data into Barbarian by declaring an external table over a directory in S3, like this:
+```
+CREATE EXTERNAL TABLE mys3table (id string, value1 string, value2 int)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION 's3a://my-bucket/my-prefix';
+INSERT INTO mytable SELECT id, value1, value2 FROM mys3table;
+```
 
 Read more at:
-
 https://barbarians.io/
-  
 
 ## Helm Charts
 
-This repo contains the Helm charts for installing the Barbarian big data system on Kubernetes.
+This repo contains the Helm charts for installing the Barbarian Data System on Kubernetes.
 
 
 ## Installing
 
-Install the charts with the following commands. Note that some configuration parameters must be supplied.
+Install the Barbarian Data System with the following commands.
 
-- ```helm repo add barbarians http://charts.barbarians.org/barbarian```
-- ```helm install -f my-custom-config.yaml barbarians/barbarian```
+- ```helm install --name my-barbarian incubator/barbarian```
+
+## Uninstalling
+
+To uninstall/delete the ```my-barbarian``` deployment:
+
+- ```helm delete my-barbarian```
+
+The command removes all the Kubernetes components associated with the chart and deletes the release.
+
+## Trying it out
+
+To quickly run a query from the shell, connect to the hiveserver2 node and fire up beeline:
+```
+HS2_HOST=$(kubectl get pods | grep hive-hs2 | awk '{ print $1 }' | tail -n 1)
+kubectl exec -it $HS2_HOST /bin/bash
+/opt/barbarian/hive/bin/beeline
+!connect jdbc:hive2://localhost:10000
+< hit enter twice >
+set hive.execution.engine=tez;
+set hive.llap.io.memory.mode=cache;
+set hive.llap.execution.mode=all;
+set hive.llap.io.enabled=true;
+set hive.llap.daemon.service.hosts=@llap;
+set hive.execution.mode=llap;
+CREATE TABLE mytable (id string, value1 string, value2 int);
+INSERT INTO mytable SELECT 'one', 'world', 1);
+SELECT * FROM mytable;
+```
 
 ## Configuration Parameters
 
-Barbarian exposes many configuration parameters. Some important ones are listed below
+Barbarian exposes many configuration parameters. Some important ones are listed below.
 
 | parameter | default | description
 |--|--|--|
 | hive_hms.count | 3 | how many Metastores to deploy |
-| hive_hms.db_auto | false | automatically deploy a MariaDb instance for the HMS? |
-| hive_hms.db_uri | n/a | JDBC URI for your HMS RDBMS |
-| hive_hms.db_username | n/a | Username for your HMS RDBMS |
-| hive_hms.db_password | n/a | Password for your HMS RDBMS |
+| hive_hms.db_auto | true | automatically deploy a MariaDb instance for the HMS? |
+| hive_hms.db_init | true | automatically initialize the db schema for HMS? |
+| hive_hms.db_uri | n/a | JDBC URI for your remote HMS RDBMS |
+| hive_hms.db_username | n/a | Username for your remote HMS RDBMS |
+| hive_hms.db_password | n/a | Password for your remote HMS RDBMS |
 | hive_hms.db_type | mysql | Currently only tested against Mariadb
 | hive_hms.db_driver | org.mariadb.jdbc.Driver | Currently only tested against Mariadb
 | hive_hs2.llapd_enabled | true | automatically deploy Hive LLAP? |
-| hive_hs2.llapd_count | 4 | How many LLAP daemons to deploy |
-| hive_hs2.llapd_mem | 24g | How much RAM to allocate to each LLAP daemon |
+| hive_hs2.llapd_count | 4 | How many LLAP daemons to deploy. You can elastically scale Tez but not LLAP, so choose wisely  |
+| hive_hs2.llapd_mem | 2g | How much RAM to allocate to each LLAP daemon in production contexts this should be at least 24G, preferably more |
 | hive_hs2.ingress_enabled | false | should Hiveserver2 be exposed to the outside? |
 | yarn_rm.count | 1 | How many YARN RMs to deploy. Currently only supports 1 |
 | yarn_nm.count | 5 | How many YARN NodeManagers to deploy |
 | zookeeper.count | 5 | How many ZooKeepers to deploy |
 | ignite.count | 5 | How many IGFS servers to deploy |
+| ignite.ingress_enabled | false | should the Ignite in-memory filesystem be exposed to the outside? |
+| ignite.secondary_fs_enabled | false | Enable a persistent backing store? |
 | ignite.secondary_fs_uri | n/a | Filesystem URI in the form s3a://YOUR_BUCKET/. Currently only supports S3a. Other filesystem will be supported in the future |
 | ignite.s3a.access_key_id | n/a | AWS S3 access key ID |
 | ignite.s3a.secret_access_key | n/a | AWS S3 secret access key |
@@ -55,5 +110,3 @@ Barbarian exposes many configuration parameters. Some important ones are listed 
 | ignite.s3a.s3guard_ddb.region | eu-west-1 | AWS Dyanomdb region for the table |
 | ignite.s3a.s3guard_ddb.capacity.read | 3 | You pay AWS for this whether you use it or not |
 | ignite.s3a.s3guard_ddb.capacity.write | 3 | You pay AWS for this whether you use it or not |
-
-

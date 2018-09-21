@@ -30,7 +30,11 @@
                 <bean class="org.apache.ignite.configuration.FileSystemConfiguration">
                     <!-- IGFS name you will use to access IGFS through Hadoop API. -->
                     <property name="name" value="igfs"/>
+                    {{- if .Values.ignite.secondary_fs_enabled }}
                     <property name="defaultMode" value="DUAL_SYNC" />
+                    {{- else }}
+                    <property name="defaultMode" value="PRIMARY" />
+                    {{- end }}
                     <!-- Configure TCP endpoint for communication with the file system instance. -->
                     <property name="ipcEndpointConfiguration">
                         <bean class="org.apache.ignite.igfs.IgfsIpcEndpointConfiguration">
@@ -40,10 +44,10 @@
                         </bean>
                     </property>
 
+                    {{- if .Values.ignite.secondary_fs_enabled }}
                     <!--
                         Configure secondary file system if needed.
                     -->
-
                     <property name="secondaryFileSystem">
                         <bean class="org.apache.ignite.hadoop.fs.IgniteHadoopIgfsSecondaryFileSystem">
                             <property name="fileSystemFactory">
@@ -56,6 +60,8 @@
                             </property>
                         </bean>
                     </property>
+                    {{- end }}
+
                 </bean>
             </list>
         </property>

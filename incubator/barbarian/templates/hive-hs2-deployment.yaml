@@ -48,12 +48,12 @@ spec:
         - -c
         - "/opt/barbarian/control/start-hiveserver2"
       initContainers:
-      - name: sleep-30
+      - name: sleep-20
         image: {{ .Values.global.repo }}/{{ .Values.hive_hs2.image }}
         command:
         - sh
         - -c 
-        - "sleep 30"
+        - "sleep 20"
       - name: mkdir-tmp
         image: {{ .Values.global.repo }}/{{ .Values.hive_hs2.image }}
         command:

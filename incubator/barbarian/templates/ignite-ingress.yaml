@@ -1,0 +1,15 @@
+{{ if .Values.ignite.ingress_enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.ignite.service.name }}-ingress
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  backend:
+    serviceName: {{ .Values.ignite.service.name }}
+    servicePort: 10500
+{{ end }}
