@@ -125,8 +125,10 @@ However, you can use manually created secret by setting the `datadog.apiKeyExist
 
 ### confd and checksd
 
-The Datadog entrypoint will copy files found in `/conf.d` and `/check.d` to
-`/etc/datadog-agent/conf.d` and `/etc/datadog-agent/checks.d` respectively. The keys for
+The Datadog [entrypoint
+](https://github.com/DataDog/datadog-agent/blob/master/Dockerfiles/agent/entrypoint/89-copy-customfiles.sh)
+will copy files with a `.yaml` extension found in `/conf.d` and files with `.py` extension in 
+`/check.d` to `/etc/datadog-agent/conf.d` and `/etc/datadog-agent/checks.d` respectively. The keys for
 `datadog.confd` and `datadog.checksd` should mirror the content found in their
 respective ConfigMaps, ie
 
