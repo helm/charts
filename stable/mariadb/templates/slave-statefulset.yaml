@@ -99,9 +99,9 @@ spec:
           value: {{ template "mariadb.fullname" . }}
         - name: MARIADB_MASTER_PORT
           value: "3306"
-        - name: MARIADB_MASTER_USER
+        - name: MARIADB_MASTER_ROOT_USER
           value: "root"
-        - name: MARIADB_MASTER_PASSWORD
+        - name: MARIADB_MASTER_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mariadb.fullname" . }}
