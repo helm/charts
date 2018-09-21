@@ -4,6 +4,9 @@ metadata:
   name: {{ .Values.zookeeper.service.name }}
   labels:
     app: {{ template "fullname" . }}-zookeeper
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   ports:
   - port: 2181

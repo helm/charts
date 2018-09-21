@@ -4,6 +4,9 @@ metadata:
   name: {{ .Values.ignite.service.name }}
   labels:
     app: {{ template "fullname" . }}-ignite
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   ports:
   - port: 10500

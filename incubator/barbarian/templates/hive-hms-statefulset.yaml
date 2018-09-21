@@ -1,5 +1,5 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: {{ template "fullname" . }}-hive-hms
   labels:

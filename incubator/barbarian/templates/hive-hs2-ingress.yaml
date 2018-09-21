@@ -8,7 +8,6 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
 spec:
   backend:
     serviceName: {{ .Values.hive_hs2.service.name }}

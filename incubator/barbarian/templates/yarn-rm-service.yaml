@@ -4,6 +4,9 @@ metadata:
   name: {{ .Values.yarn_rm.service.name }}
   labels:
     app: {{ template "fullname" . }}-yarn-rm
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   ports:
   - port: 8050

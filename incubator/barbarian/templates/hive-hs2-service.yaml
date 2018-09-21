@@ -4,6 +4,9 @@ metadata:
   name: {{ .Values.hive_hs2.service.name }}
   labels:
     app: {{ template "fullname" . }}-hive-hs2
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   ports:
   - port: 10000
