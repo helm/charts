@@ -97,7 +97,7 @@ spec:
           value: "slave"
         - name: MARIADB_MASTER_HOST
           value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_MASTER_PORT
+        - name: MARIADB_MASTER_PORT_NUMBER
           value: "3306"
         - name: MARIADB_MASTER_ROOT_USER
           value: "root"
