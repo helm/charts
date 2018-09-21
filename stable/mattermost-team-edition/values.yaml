@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: mattermost/mattermost-team-edition
-  tag: 5.2.1
+  tag: 5.3.1
   imagePullPolicy: IfNotPresent
 
 ## Enable persistence using Persistent Volume Claims
@@ -25,7 +25,7 @@ persistence:
 
 # Mattermost configuration:
 config:
-  siteUrl: "http://mattermost.example.com"
+  siteUrl: ""
   siteName: "Mattermost"
   filesAccessKey:
   filesSecretKey:
