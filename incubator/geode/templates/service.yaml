@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "geode.fullname" . }}
+  labels:
+    app: {{ template "geode.name" . }}
+    chart: {{ template "geode.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: locator-traffic
+      port: 10334
+      targetPort: 10334
+      protocol: TCP
+    - name: pulse-traffic
+      port: 7070
+      targetPort: 7070
+      protocol: TCP
+  selector:
+    app: {{ template "geode.name" . }}
+    release: {{ .Release.Name }}
