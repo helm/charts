@@ -63,6 +63,7 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 | `suitecrmSmtpUser`                  | SMTP user                                       | `nil`                                                   |
 | `suitecrmSmtpPassword`              | SMTP password                                   | `nil`                                                   |
 | `suitecrmSmtpProtocol`              | SMTP protocol [`ssl`, `tls`]                    | `nil`                                                   |
+| `suitecrmValidateUserIP`            | Whether to validate the user IP address or not  | `no`                                                    |
 | `allowEmptyPassword`                | Allow DB blank passwords                        | `yes`                                                   |
 | `externalDatabase.host`             | Host of the external database                   | `nil`                                                   |
 | `externalDatabase.port`             | Port of the external database                   | `3306`                                                  |
