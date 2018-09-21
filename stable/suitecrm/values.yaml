@@ -22,6 +22,11 @@ image:
 ##
 # suitecrmHost:
 
+## SuiteCRM validate user IP
+## ref: https://github.com/bitnami/bitnami-docker-suitecrm#configuration
+##
+suitecrmValidateUserIP: "no"
+
 ## loadBalancerIP for the SuiteCRM Service (optional, cloud specific)
 ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
 ##
