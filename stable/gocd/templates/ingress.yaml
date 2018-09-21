@@ -15,12 +15,25 @@ metadata:
       {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
-  backend:
-    serviceName: {{ template "gocd.fullname" . }}-server
-    servicePort: {{ .Values.server.service.httpPort }}
+  {{- if .Values.server.ingress.tls }}
+  tls:
+  {{- range .Values.server.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+  {{- end }}
   rules:
     {{- range $host := .Values.server.ingress.hosts }}
     - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ template "gocd.fullname" $ }}-server
+              servicePort: {{ $.Values.server.service.httpPort }}
     {{- end -}}
   {{- if .Values.server.ingress.tls }}
   tls:
