@@ -37,4 +37,4 @@ even continue reviewing your changes.
 [Place an '[x]' (no spaces) in all applicable fields. Please remove unrelated fields.]
 - [ ] [DCO](https://www.helm.sh/blog/helm-dco/index.html) signed
 - [ ] Chart Version bumped
-- [ ] Variables are in the README.md
+- [ ] Variables are documented in the README.md
