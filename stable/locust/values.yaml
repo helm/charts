@@ -37,3 +37,6 @@ worker:
     requests:
       cpu: 100m
       memory: 128Mi
+
+# Flag to create the test script from this chart or not.
+createTestScripts: true
