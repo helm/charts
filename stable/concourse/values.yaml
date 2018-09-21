@@ -83,18 +83,8 @@ concourse:
       port: 5432
       ## Path to a UNIX domain socket to connect to.
       # socket:
-      ## The user to sign in as.
-      # user:
-      ## The user's password.
-      # password:
       ## Whether or not to use SSL.
       sslmode: disable
-      ## CA cert file location, to verify when connecting with SSL.
-      # caCert:
-      ## Client cert file location.
-      # clientCert:
-      ## Client key file location.
-      # clientKey:
       ## Dialing timeout. (0 means wait indefinitely)
       connectTimeout: 5m
       ## The name of the database to use.
@@ -341,7 +331,7 @@ concourse:
         ## (Required) The base API URL of your CF deployment. It will use this information to discover information about the authentication provider.
         # apiUrl: https://api.run.pivotal.io
         ## CA Certificate
-        useCaCert: false
+        # useCaCert:
         ## Skip SSL validation
         # skipSslValidation:
       ## Authentication (GitHub)
@@ -427,10 +417,6 @@ concourse:
         # displayName:
         ## (Required) An OIDC issuer URL that will be used to discover provider configuration using the .wellKnown/openid-configuration
         # issuer:
-        ## (Required) Client id
-        # clientId:
-        ## (Required) Client secret
-        # clientSecret:
         ## Any additional scopes that need to be requested during authorization
         # scope:
         ## The groups key indicates which claim to use to map external groups to Concourse teams.
@@ -1089,6 +1075,13 @@ secrets:
 
   workerKeyPub: |-
     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC496FSYFcBAKgDtMsBAJiF/6/NxlXKP5UZecyEsedYuTt1GOgJTwaA1qZ1LmHsbfLDE68oDdiM4uvxfI4wtLhz57w3u0jOUxZ2JeF7SVwEf1nVqLn4Gh/f8GUNQGSyIp1zUD5Bx9fq0PAyQ47mt7Ufi84rcf8LKl7nzAIHTcdg2BvTkQN9bUGPaq/Pb1W2bKPAQy4OzXTSIyrAJ89TH2jFeaZfyxQFGbD9jVHH/yl0oiMrDeaRYgccE5II+KY7WoLjsBry/9Qf2ERELKTK4UeIGIqWci9lab1ti+GxFPPiC3krNFjo4jShV4eUs4cNIrjwNrxVaKPXmU6o7Y3Hpayx Concourse
+
+  ## Secrets for DB access
+  # postgresUser:
+  # postgresPassword:
+  # postgresCaCert:
+  # postgresClientCert:
+  # postgresClientKey:
 
   ## Secrets for DB encryption
   ##

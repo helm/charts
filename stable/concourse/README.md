@@ -123,6 +123,11 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.sessionSigningKey` | Concourse Session Signing Private Key | *See [values.yaml](values.yaml)* |
 | `secrets.workerKey` | Concourse Worker Private Key | *See [values.yaml](values.yaml)* |
 | `secrets.workerKeyPub` | Concourse Worker Public Key | *See [values.yaml](values.yaml)* |
+| `secrets.postgresqlUser` | PostgreSQL User Name | `nil` |
+| `secrets.postgresqlPassword` | PostgreSQL User Password | `nil` |
+| `secrets.postgresqlCaCert` | PostgreSQL CA certificate | `nil` |
+| `secrets.postgresqlClientCert` | PostgreSQL Client certificate | `nil` |
+| `secrets.postgresqlClientKey` | PostgreSQL Client key | `nil` |
 | `secrets.encryptionKey` | current encryption key | `nil` |
 | `secrets.oldEncryptionKey` | old encryption key, used for key rotation | `nil` |
 | `secrets.awsSsmAccessKey` | AWS Access Key ID for SSM access | `nil` |
@@ -149,7 +154,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `secrets.influxdbPassword` | Password used to authenticate with influxdb | `nil` |
 | `secrets.syslogCaCert` | SSL certificate to verify Syslog server | `nil` |
 
-For configurable concourse parameters, refer to [values.yaml](values.yaml) `concourse` section. All parameters under this section are strickly mapped from concourse binary commands. For example if one needs to config concourse external URL, the param `concourse` -> `web` -> `externalUrl` should be set, which is equivalent to running concourse binary as `concourse web --external-url`. For those sub-sections have `enabled`, one will need to set `enabled` to be `true` to use the following params within the section.
+For configurable concourse parameters, refer to [values.yaml](values.yaml) `concourse` section. All parameters under this section are strictly mapped from concourse binary commands. For example if one needs to configure the concourse external URL, the param `concourse` -> `web` -> `externalUrl` should be set, which is equivalent to running concourse binary as `concourse web --external-url`. For those sub-sections have `enabled`, one will need to set `enabled` to be `true` to use the following params within the section.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
