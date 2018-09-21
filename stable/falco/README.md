@@ -54,6 +54,9 @@ The following table lists the configurable parameters of the Falco chart and the
 | `serviceAccount.name`                           | Use this value as serviceAccountName                                 | ` `                                                                                    |
 | `fakeEventGenerator.enabled`                    | Run falco-event-generator for sample events                          | `false`                                                                                |
 | `fakeEventGenerator.replicas`                   | How many replicas of falco-event-generator to run                    | `1`                                                                                    |
+| `proxy.httpProxy`                                  | Set the Proxy server if is behind a firewall | ``                                                                                |
+| `proxy.httpsProxy`                                  | Set the Proxy server if is behind a firewall | ``                                                                                |
+| `proxy.noProxy`                                  | Set the Proxy server if is behind a firewall | ``
 | `ebpf.enabled`                                  | Enable eBPF support for Falco instead of `falco-probe` kernel module | `false`                                                                                |
 | `ebpf.settings.hostNetwork`                     | Needed to enable eBPF JIT at runtime for performance reasons         | `true`                                                                                 |
 | `ebpf.settings.mountEtcVolume`                  | Needed to detect which kernel version are running in Google COS      | `true`                                                                                 |
