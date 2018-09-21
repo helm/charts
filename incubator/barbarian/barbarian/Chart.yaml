@@ -1,9 +1,0 @@
-apiVersion: v1
-description: Barbarian is a big data system founded on Apache Hadoop offering Hive, LLAP and Tez for fast SQL datawarehousing at scale.
-name: barbarian
-version: 0.1.2-badh0.1.0
-icon: https://barbarians.io/barbarians.png
-maintainers:
-- name: rob gibbon
-  email: rob@barbarians.io
-
