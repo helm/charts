@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "teamcity-server.fullname" . }}
+  labels:
+    app: {{ template "teamcity-server.name" . }}
+    chart: {{ template "teamcity-server.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.portName }}
+      protocol: TCP
+      name: {{ .Values.service.portName }}
+  selector:
+    app: {{ template "teamcity-server.name" . }}
+    release: {{ .Release.Name }}

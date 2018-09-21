@@ -1,0 +1,56 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "teamcity-server.fullname" . }}
+  labels:
+    app: {{ template "teamcity-server.name" . }}
+    chart: {{ template "teamcity-server.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "teamcity-server.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "teamcity-server.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.pod.terminationGracePeriodSeconds }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: {{ .Values.service.portName }}
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          {{- with .Values.env }}
+          env:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+  {{- with .Values.volumeClaimTemplates }}
+  volumeClaimTemplates:
+{{ toYaml . | indent 4 }}
+    {{- end }}
