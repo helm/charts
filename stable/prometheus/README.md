@@ -219,6 +219,7 @@ Parameter | Description | Default
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
 `server.global.scrape_timeout` | How long until a scrape request times out | `10s`
 `server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
+`server.scrapeConfigs` | Map of scrape configs for `prometheus.yaml`, using job name as the key | example configuration
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``

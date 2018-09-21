@@ -16,6 +16,13 @@ data:
 {{- if eq $key "prometheus.yml" }}
     global:
 {{ $root.Values.server.global | toYaml | indent 6 }}
+{{- if empty $value.scrape_configs }}
+    scrape_configs:
+    {{- range $name, $config := $root.Values.server.scrapeConfigs }}
+      - job_name: {{ $name | quote }}
+{{ $config | toYaml | indent 8 }}
+    {{- end }}
+{{- end }}
 {{- end }}
 {{ toYaml $value | default "{}" | indent 4 }}
 {{- if eq $key "prometheus.yml" -}}
