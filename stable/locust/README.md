@@ -21,7 +21,7 @@ This chart will do the following:
 To install the chart with the release name `locust-nymph` in the default namespace:
 
 ```bash
-helm install -n locust-nymph --set master.config.target-host=http://site.example.com stable/locust
+helm install -n locust-nymph --set master.config.target-url=http://site.example.com stable/locust
 ```
 
 | Parameter                    | Description                             | Default                                               |
@@ -34,7 +34,7 @@ helm install -n locust-nymph --set master.config.target-host=http://site.example
 | `service.nodePort`           | Port on cluster to expose master        | `0`                                                   |
 | `service.annotations`        | KV containing custom annotations        | `{}`                                                  |
 | `service.extraLabels`        | KV containing extra labels              | `{}`                                                  |
-| `master.config.target-host`  | locust target host                      | `http://site.example.com`                             |
+| `master.config.target-url`  | locust target host                      | `http://site.example.com`                             |
 | `worker.config.locust-script`| locust script to run                    | `/locust-tasks/tasks.py`                              |
 | `worker.replicaCount`        | Number of workers to run                | `2`                                                   |
 

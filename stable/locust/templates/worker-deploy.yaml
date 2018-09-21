@@ -38,13 +38,15 @@ spec:
           value: {{ $value | quote }}
         {{- end }}
         - name: LOCUST_MODE
-          value: "worker"
-        - name: LOCUST_MASTER
+          value: "slave"
+        - name: LOCUST_MASTER_HOST
           value: {{ template "locust.master-svc" . }}
         - name: LOCUST_MASTER_WEB
-          value: "{{ .Values.service.internalPort }}"
-        - name: TARGET_HOST
-          value: {{ index .Values.master.config "target-host" | quote }}
+          value: {{ .Values.service.internalPort }}"
+        - name: TARGET_URL
+          value: {{ index .Values.master.config "target-url" | quote }}
+        - name: LOCUSTFILE_PATH
+          value: {{ index .Values.worker.config "locust-script" | quote }}
         resources:
 {{ toYaml .Values.worker.resources | indent 10 }}
       restartPolicy: Always

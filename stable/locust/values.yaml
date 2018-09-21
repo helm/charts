@@ -1,8 +1,8 @@
 Name: locust
 
 image:
-  repository: quay.io/honestbee/locust
-  tag: 0.7.5
+  repository: garland/locust
+  tag: 0.9.0
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -16,7 +16,7 @@ service:
   extraLabels: {}
 master:
   config:
-    target-host: https://site.example.com
+    target-url: https://site.example.com
   resources:
     limits:
       cpu: 100m

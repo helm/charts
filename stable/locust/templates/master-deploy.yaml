@@ -39,7 +39,7 @@ spec:
         {{- end }}
         - name: LOCUST_MODE
           value: "master"
-        - name: LOCUST_SCRIPT
+        - name: LOCUSTFILE_PATH
           value: {{ index .Values.worker.config "locust-script" | quote }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
