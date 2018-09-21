@@ -1,0 +1,33 @@
+{{ if .Values.ingress.enable }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "locust.ingress" . }}
+  namespace: {{ .Values.namespace }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "locust.fullname" . }}
+    component: "ingress"
+  annotations:
+    kubernetes.io/ingress.class: "{{ .Values.ingress.ingressClass }}"
+    # Setup Let's Encrypt Certificates
+    kubernetes.io/tls-acme: "{{ .Values.ingress.enableTlsAcme }}"
+    {{ if .Values.ingress.annotations.enable }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: "{{ .Values.ingress.annotations.whitelistSourceRange }}"
+    {{ end }}
+spec:
+  tls:
+  - hosts:
+    - "{{ .Values.ingress.hostname }}"
+    secretName: {{ .Values.namePrefix }}-locust-tls
+  rules:
+  - host: "{{ .Values.ingress.hostname }}"
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "locust.master-svc" . }}
+          servicePort: {{ .Values.service.internalPort }}
+{{ end }}
