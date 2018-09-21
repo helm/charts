@@ -27,10 +27,6 @@ class WebsiteTasks(TaskSet):
     def tour(self):
         self.client.get("/tour")
 
-    @task
-    def api(self):
-        self.client.get('/api?action=setUserAttributes&apiVersion=1.0.6.&appId=app_WHWSfAt5LCeLRxWuRaBEiawqkr2vhSG62ZbfyyqAPcE&clientKey=dev_XeURceHkZ4jEfzOBAQD7Fv9j148eByWfxxvzr7eqlrE&userId=99e4f0ee79b3680e&userAttributes={"email":"praveen+20180806@leanplum.com", "horoscope_sign":"leo", "plum_pod":"dataPlatform", "favorite_color":"turquoise"}')
-
 class WebsiteUser(HttpLocust):
     task_set = WebsiteTasks
     min_wait = 5000
