@@ -16,6 +16,9 @@ spec:
         role: security
     spec:
       serviceAccountName: {{ template "falco.serviceAccountName" .}}
+      {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.hostNetwork) }}
+      hostNetwork: true
+      {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       containers:
@@ -27,6 +30,11 @@ spec:
           securityContext:
             privileged: true
           args: [ "/usr/bin/falco", "-K", "/var/run/secrets/kubernetes.io/serviceaccount/token", "-k", "https://kubernetes.default", "-pk"]
+          {{- if .Values.ebpf.enabled }}
+          env:
+            - name: SYSDIG_BPF_PROBE
+              value:
+          {{- end }}
           volumeMounts:
             - mountPath: /host/var/run/docker.sock
               name: docker-socket
@@ -44,12 +52,41 @@ spec:
             - mountPath: /host/usr
               name: usr-fs
               readOnly: true
+            - mountPath: /dev/shm
+              name: dshm
+            {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
+            - mountPath: /host/etc
+              name: etc-fs
+              readOnly: true
+            {{- end }}
             - mountPath: /etc/falco
               name: config-volume
             {{- if .Values.customRules }}
             - mountPath: /etc/falco/rules.d
               name: rules-volume
             {{- end }}
+            {{- if .Values.integrations.natsOutput.enabled }}
+            - mountPath: /var/run/falco/
+              name: shared-pipe
+              readOnly: false
+            {{- end }}
+      {{- if .Values.integrations.natsOutput.enabled }}
+        - name: {{ .Chart.Name }}-nats
+          image: sysdig/falco-nats:latest
+          imagePullPolicy: Always
+          args: [ "/bin/falco-nats", "-s", {{ .Values.integrations.natsOutput.natsUrl | quote }}]
+          volumeMounts:
+            - mountPath: /var/run/falco/
+              name: shared-pipe
+      initContainers:
+          - name: init-pipe
+            image: busybox
+            command: ['mkfifo','/var/run/falco/nats']
+            volumeMounts:
+            - mountPath: /var/run/falco/
+              name: shared-pipe
+              readOnly: false
+      {{- end }}
       volumes:
         - name: dshm
           emptyDir:
@@ -72,6 +109,11 @@ spec:
         - name: usr-fs
           hostPath:
             path: /usr
+        {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
+        - name: etc-fs
+          hostPath:
+            path: /etc
+        {{- end }}
         - name: config-volume
           configMap:
             name: {{ template "falco.fullname" . }}
@@ -86,6 +128,10 @@ spec:
         - name: rules-volume
           configMap:
             name: {{ template "falco.fullname" . }}-rules
+        {{- end }}
+        {{- if .Values.integrations.natsOutput.enabled }}
+        - name: shared-pipe
+          emptyDir: {}
         {{- end }}
 
   updateStrategy:

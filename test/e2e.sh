@@ -18,7 +18,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-readonly IMAGE_TAG=v2.0.2
+readonly IMAGE_TAG=v2.0.5
 readonly IMAGE_REPOSITORY="gcr.io/kubernetes-charts-ci/test-image"
 readonly REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel)}"
 
@@ -33,7 +33,7 @@ fi
 readonly PULL_INFO
 
 main() {
-    git remote add k8s https://github.com/kubernetes/charts
+    git remote add k8s https://github.com/helm/charts
     git fetch k8s master
 
     local config_container_id

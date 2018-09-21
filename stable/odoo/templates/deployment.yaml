@@ -8,10 +8,16 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "odoo.name" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
         app: {{ template "odoo.name" . }}
+        chart: {{ template "odoo.chart" . }}
+        release: {{ .Release.Name | quote }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

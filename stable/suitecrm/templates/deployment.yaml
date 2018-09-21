@@ -9,11 +9,16 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "name" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
         app: {{ template "name" . }}
         release: "{{ .Release.Name }}"
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

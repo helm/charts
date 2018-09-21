@@ -26,7 +26,7 @@ $ helm install --name my-release stable/falco
 
 After a few seconds, Falco should be running.
 
-> **Tip**: List all releases using `helm list`, a release is a name used to track an specific deployment
+> **Tip**: List all releases using `helm list`, a release is a name used to track a specific deployment
 
 ## Uninstalling the Chart
 
@@ -43,40 +43,45 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Falco chart and their default values.
 
-| Parameter                                       | Description                                                         | Default                                                                                |
-| ---                                             | ---                                                                 | ---                                                                                    |
-| `image.repository`                              | The image repository to pull from                                   | `sysdig/falco`                                                                         |
-| `image.tag`                                     | The image tag to pull                                               | `latest`                                                                               |
-| `image.pullPolicy`                              | The image pull policy                                               | `Always`                                                                               |
-| `resources`                                     | Specify container resources                                         | `{}`                                                                                   |
-| `rbac.create`                                   | If true, create & use RBAC resources                                | `true`                                                                                 |
-| `serviceAccount.create`                         | Create serviceAccount                                               | `true`                                                                                 |
-| `serviceAccount.name`                           | Use this value as serviceAccountName                                | ` `                                                                                    |
-| `fakeEventGenerator.enabled`                    | Run falco-event-generator for sample events                         | `false`                                                                                |
-| `fakeEventGenerator.replicas`                   | How many replicas of falco-event-generator to run                   | `1`                                                                                    |
-| `falco.rulesFile`                               | The location of the rules files                                     | `[/etc/falco/falco_rules.yaml, /etc/falco/falco_rules.local.yaml, /etc/falco/rules.d]` |
-| `falco.jsonOutput`                              | Output events in json or text                                       | `false`                                                                                |
-| `falco.jsonIncludeOutputProperty`               | Include output property in json output                              | `true`                                                                                 |
-| `falco.logStderr`                               | Send Falco debugging information logs to stderr                     | `true`                                                                                 |
-| `falco.logSyslog`                               | Send Falco debugging information logs to syslog                     | `true`                                                                                 |
-| `falco.logLevel`                                | The minimum level of Falco debugging information to include in logs | `info`                                                                                 |
-| `falco.priority`                                | The minimum rule priority level to load an run                      | `debug`                                                                                |
-| `falco.bufferedOutputs`                         | Use buffered outputs to channels                                    | `false`                                                                                |
-| `falco.outputs.rate`                            | Number of tokens gained per second                                  | `1`                                                                                    |
-| `falco.outputs.maxBurst`                        | Maximum number of tokens outstanding                                | `1000`                                                                                 |
-| `falco.syslogOutput.enabled`                    | Enable syslog output for security notifications                     | `true`                                                                                 |
-| `falco.fileOutput.enabled`                      | Enable file output for security notifications                       | `false`                                                                                |
-| `falco.fileOutput.keepAlive`                    | Open file once or every time a new notification arrives             | `false`                                                                                |
-| `falco.fileOutput.filename`                     | The filename for logging notifications                              | `./events.txt`                                                                         |
-| `falco.stdoutOutput.enabled`                    | Enable stdout output for security notifications                     | `true`                                                                                 |
-| `falco.programOutput.enabled`                   | Enable program output for security notifications                    | `false`                                                                                |
-| `falco.programOutput.keepAlive`                 | Start the program once or re-spawn when a notification arrives      | `false`                                                                                |
-| `falco.programOutput.program`                   | Command to execute for program output                               | `mail -s "Falco Notification" someone@example.com`                                     |
-| `customRules`                                   | Third party rules enabled for Falco                                 | `{}`                                                                                   |
-| `integrations.gcscc.enabled`                    | Enable Google Cloud Security Command Center integration             | `false`                                                                                |
-| `integrations.gcscc.webhookUrl`                 | The URL where sysdig-gcscc-connector webhook is listening           | `http://sysdig-gcscc-connector.default.svc.cluster.local:8080/events`                  |
-| `integrations.gcscc.webhookAuthenticationToken` | Token used for authentication and webhook                           | `b27511f86e911f20b9e0f9c8104b4ec4`                                                     |
-| `tolerations`                                   | The tolerations for scheduling                                      | `node-role.kubernetes.io/master:NoSchedule`                                            |
+| Parameter                                       | Description                                                          | Default                                                                                |
+| ---                                             | ---                                                                  | ---                                                                                    |
+| `image.repository`                              | The image repository to pull from                                    | `sysdig/falco`                                                                         |
+| `image.tag`                                     | The image tag to pull                                                | `latest`                                                                               |
+| `image.pullPolicy`                              | The image pull policy                                                | `Always`                                                                               |
+| `resources`                                     | Specify container resources                                          | `{}`                                                                                   |
+| `rbac.create`                                   | If true, create & use RBAC resources                                 | `true`                                                                                 |
+| `serviceAccount.create`                         | Create serviceAccount                                                | `true`                                                                                 |
+| `serviceAccount.name`                           | Use this value as serviceAccountName                                 | ` `                                                                                    |
+| `fakeEventGenerator.enabled`                    | Run falco-event-generator for sample events                          | `false`                                                                                |
+| `fakeEventGenerator.replicas`                   | How many replicas of falco-event-generator to run                    | `1`                                                                                    |
+| `ebpf.enabled`                                  | Enable eBPF support for Falco instead of `falco-probe` kernel module | `false`                                                                                |
+| `ebpf.settings.hostNetwork`                     | Needed to enable eBPF JIT at runtime for performance reasons         | `true`                                                                                 |
+| `ebpf.settings.mountEtcVolume`                  | Needed to detect which kernel version are running in Google COS      | `true`                                                                                 |
+| `falco.rulesFile`                               | The location of the rules files                                      | `[/etc/falco/falco_rules.yaml, /etc/falco/falco_rules.local.yaml, /etc/falco/rules.d]` |
+| `falco.jsonOutput`                              | Output events in json or text                                        | `false`                                                                                |
+| `falco.jsonIncludeOutputProperty`               | Include output property in json output                               | `true`                                                                                 |
+| `falco.logStderr`                               | Send Falco debugging information logs to stderr                      | `true`                                                                                 |
+| `falco.logSyslog`                               | Send Falco debugging information logs to syslog                      | `true`                                                                                 |
+| `falco.logLevel`                                | The minimum level of Falco debugging information to include in logs  | `info`                                                                                 |
+| `falco.priority`                                | The minimum rule priority level to load and run                      | `debug`                                                                                |
+| `falco.bufferedOutputs`                         | Use buffered outputs to channels                                     | `false`                                                                                |
+| `falco.outputs.rate`                            | Number of tokens gained per second                                   | `1`                                                                                    |
+| `falco.outputs.maxBurst`                        | Maximum number of tokens outstanding                                 | `1000`                                                                                 |
+| `falco.syslogOutput.enabled`                    | Enable syslog output for security notifications                      | `true`                                                                                 |
+| `falco.fileOutput.enabled`                      | Enable file output for security notifications                        | `false`                                                                                |
+| `falco.fileOutput.keepAlive`                    | Open file once or every time a new notification arrives              | `false`                                                                                |
+| `falco.fileOutput.filename`                     | The filename for logging notifications                               | `./events.txt`                                                                         |
+| `falco.stdoutOutput.enabled`                    | Enable stdout output for security notifications                      | `true`                                                                                 |
+| `falco.programOutput.enabled`                   | Enable program output for security notifications                     | `false`                                                                                |
+| `falco.programOutput.keepAlive`                 | Start the program once or re-spawn when a notification arrives       | `false`                                                                                |
+| `falco.programOutput.program`                   | Command to execute for program output                                | `mail -s "Falco Notification" someone@example.com`                                     |
+| `customRules`                                   | Third party rules enabled for Falco                                  | `{}`                                                                                   |
+| `integrations.gcscc.enabled`                    | Enable Google Cloud Security Command Center integration              | `false`                                                                                |
+| `integrations.gcscc.webhookUrl`                 | The URL where sysdig-gcscc-connector webhook is listening            | `http://sysdig-gcscc-connector.default.svc.cluster.local:8080/events`                  |
+| `integrations.gcscc.webhookAuthenticationToken` | Token used for authentication and webhook                            | `b27511f86e911f20b9e0f9c8104b4ec4`                                                     |
+| `integrations.natsOutput.enabled`               | Enable NATS Output integration                                       | `false`                                                                                |
+| `integrations.natsOutput.natsUrl`               | The NATS' URL where Falco is going to publish security alerts        | `nats://nats.nats-io.svc.cluster.local:4222`                                           |
+| `tolerations`                                   | The tolerations for scheduling                                       | `node-role.kubernetes.io/master:NoSchedule`                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -156,7 +161,7 @@ And this means that our Falco installation has loaded the rules and is ready to 
 
 ### Automating the generation of custom-rules.yaml file
 
-Sometimes edit YAML files with multistrings is a bit error prone, so we added an script for automating this step and make your life easier.
+Sometimes edit YAML files with multistrings is a bit error prone, so we added a script for automating this step and make your life easier.
 
 This script lives in [falco-extras repository](https://github.com/draios/falco-extras) in the scripts directory.
 

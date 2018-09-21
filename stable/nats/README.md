@@ -69,13 +69,13 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `securityContext.enabled`            | Enable security context                                                                      | `true`                            |
 | `securityContext.fsGroup`            | Group ID for the container                                                                   | `1001`                            |
 | `securityContext.runAsUser`          | User ID for the container                                                                    | `1001`                            |
-| `updateStrategy`                     | Replicaset Update strategy                                                                   | `OnDelete`                        |
+| `statefulset.updateStrategy`         | Statefulsets Update strategy                                                                | `OnDelete`                        |
 | `rollingUpdatePartition`             | Partition for Rolling Update strategy                                                        | `nil`                             |
 | `podLabels`                          | Additional labels to be added to pods                                                        | {}                                |
 | `podAnnotations`                     | Annotations to be added to pods                                                              | {}                                |
 | `nodeSelector`                       | Node labels for pod assignment                                                               | `nil`                             |
 | `schedulerName`                      | Name of an alternate                                                                         | `nil`                             |
-| `antiAffinity`                       | Anti-affinity for pod assignment                                                             | {}                                |
+| `antiAffinity`                       | Anti-affinity for pod assignment                                                             | `soft`                            |
 | `tolerations`                        | Toleration labels for pod assignment                                                         | `nil`                             |
 | `resources`                          | CPU/Memory resource requests/limits                                                          | {}                                |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                                     | `30`                              |
@@ -114,8 +114,10 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `ingress.secrets[0].key`             | TLS Secret Key                                                                               | `nil`                             |
 | `networkPolicy.enabled`              | Enable NetworkPolicy                                                                         | `false`                           |
 | `networkPolicy.allowExternal`        | Allow external connections                                                                   | `true`                            |
+| `sidecars`                           | Attach additional containers to the pod.                                                     | `nil`                             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+
 
 ```bash
 $ helm install --name my-release \
@@ -133,6 +135,20 @@ $ helm install --name my-release -f values.yaml stable/nats
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Sidecars
+
+If you have a need for additional containers to run within the same pod as NATS (e.g. an additional metrics or logging exporter), you can do so via the `sidecars` config parameter. Simply define your container according to the Kubernetes container spec.
+
+```yaml
+sidecars:
+- name: your-image-name
+  image: your-image
+  imagePullPolicy: Always
+  ports:
+  - name: portname
+   containerPort: 1234
+```
+
 ## Production settings and horizontal scaling
 
 The [values-production.yaml](values-production.yaml) file consists a configuration to deploy a scalable and high-available NATS deployment for production environments. We recommend that you base your production configuration on this template and adjust the parameters appropriately.
@@ -146,4 +162,15 @@ To horizontally scale this chart, run the following command to scale the number 
 
 ```console
 $ kubectl scale statefulset my-release-nats --replicas=3
+```
+
+## Upgrading
+
+### To 1.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 1.0.0. The following example assumes that the release name is nats:
+
+```console
+$ kubectl delete statefulset nats-nats --cascade=false
 ```

@@ -9,11 +9,17 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "joomla.fullname" . }}
+      release: "{{ .Release.Name }}"
   replicas: 1
   template:
     metadata:
       labels:
         app: {{ template "joomla.fullname" . }}
+        chart: {{ template "joomla.chart" . }}
+        release: {{ .Release.Name | quote }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

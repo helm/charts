@@ -10,11 +10,17 @@ metadata:
     heritage: "{{ .Release.Service }}"
     component: "dashboard"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "parse.name" . }}
+      release: "{{ .Release.Name }}"
+      component: "dashboard"
   replicas: 1
   template:
     metadata:
       labels:
         app: {{ template "parse.name" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         component: "dashboard"
     spec:

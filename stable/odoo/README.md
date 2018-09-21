@@ -62,7 +62,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `smtpProtocol`                        | SMTP protocol [`ssl`, `tls`]                                | `nil`                                          |
 | `service.type`                        | Kubernetes Service type                                     | `LoadBalancer`                                 |
 | `service.loadBalancer`                | Kubernetes LoadBalancerIP to request                        | `nil`                                          |
-| `service.externalTrafficPolicy`       | Enable client source IP preservation                        | `Local`                                        |
+| `service.externalTrafficPolicy`       | Enable client source IP preservation                        | `Cluster`                                        |
 | `service.nodePort`                    | Kubernetes http node port                                   | `""`                                           |
 | `ingress.enabled`                     | Enable ingress controller resource                          | `false`                                        |
 | `ingress.hosts[0].name`               | Hostname to your Odoo installation                          | `odoo.local`                                   |
@@ -121,3 +121,15 @@ The [Bitnami Odoo](https://github.com/bitnami/bitnami-docker-odoo) image stores 
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is odoo:
+
+```console
+$ kubectl patch deployment odoo-odoo --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl patch deployment odoo-postgresql --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+```

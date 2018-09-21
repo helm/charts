@@ -8,10 +8,16 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "jasperreports.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
         app: {{ template "jasperreports.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

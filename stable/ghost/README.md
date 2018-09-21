@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `ghostBlogTitle`              | Ghost Blog name                                               | `User's Blog`                                            |
 | `allowEmptyPassword`          | Allow DB blank passwords                                      | `yes`                                                    |
 | `externalDatabase.host`       | Host of the external database                                 | `nil`                                                    |
+| `externalDatabase.port`       | Port of the external database                                 | `nil`                                                    |
 | `externalDatabase.user`       | Existing username in the external db                          | `bn_ghost`                                               |
 | `externalDatabase.password`   | Password for the above username                               | `nil`                                                    |
 | `externalDatabase.database`   | Name of the existing database                                 | `bitnami_ghost`                                          |
@@ -126,3 +127,15 @@ The [Bitnami Ghost](https://github.com/bitnami/bitnami-docker-ghost) image store
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Upgrading
+
+### To 5.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 5.0.0. The following example assumes that the release name is ghost:
+
+```console
+$ kubectl patch deployment ghost-ghost --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl delete statefulset ghost-mariadb --cascade=false
+```

@@ -17,6 +17,7 @@ spec:
     metadata:
       labels:
         app: {{ template "phpmyadmin.name" . }}
+        chart: {{ template "phpmyadmin.chart" . }}
         release: {{ .Release.Name }}
     spec:
       {{- if .Values.image.pullSecrets }}

@@ -1,6 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+{{- if .Values.server.deploymentAnnotations }}
+  annotations:
+{{ toYaml .Values.server.deploymentAnnotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -25,6 +29,13 @@ spec:
         component: "{{ .Values.server.name }}"
         release: {{ .Release.Name }}
     spec:
+{{- if .Values.server.affinity }}
+      affinity:
+{{ toYaml .Values.server.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.server.priorityClassName }}
+      priorityClassName: "{{ .Values.server.priorityClassName }}"
+{{- end }}
 {{- if .Values.server.schedulerName }}
       schedulerName: "{{ .Values.server.schedulerName }}"
 {{- end }}
@@ -49,7 +60,7 @@ spec:
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
-            - --webhook-url=http://localhost:9090{{ .Values.server.prefixURL }}/-/reload
+            - --webhook-url=http://127.0.0.1:9090{{ .Values.server.prefixURL }}/-/reload
           {{- range $key, $value := .Values.configmapReload.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}

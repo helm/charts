@@ -2,6 +2,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+{{- if .Values.kubeStateMetrics.deploymentAnnotations }}
+  annotations:
+{{ toYaml .Values.kubeStateMetrics.deploymentAnnotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -26,6 +30,9 @@ spec:
 {{- end }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.kubeStateMetrics" . }}
+{{- if .Values.kubeStateMetrics.priorityClassName }}
+      priorityClassName: "{{ .Values.kubeStateMetrics.priorityClassName }}"
+{{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.kubeStateMetrics.name }}
           image: "{{ .Values.kubeStateMetrics.image.repository }}:{{ .Values.kubeStateMetrics.image.tag }}"

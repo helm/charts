@@ -9,11 +9,17 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "mediawiki.name" . }}
+      release: "{{ .Release.Name }}"
   replicas: 1
   template:
     metadata:
       labels:
         app: {{ template "mediawiki.name" . }}
+        chart: {{ template "mediawiki.chart" . }}
+        release: {{ .Release.Name | quote }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:

@@ -51,7 +51,7 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 | `image.pullSecrets`                  | Specify image pull secrets               | `nil`                                                   |
 | `service.type`            | type of service for phpMyAdmin frontend             | `ClusterIP`                                                  |
 | `service.port`        | port to expose service                   | `80`                                                   |
-| `db.port`            | database port to use to connect                  | `3360`                                     |
+| `db.port`            | database port to use to connect                  | `3306`                                     |
 | `db.chartName`                | Database suffix if included in the same release                  | `nil`                                          |
 | `db.host`            | database host to connect to               | `nil`          |
 | `ingress.enabled`            | ingress resource to be added              | `false`          |
@@ -70,7 +70,7 @@ $ helm install --name my-release \
   --set db.host=mymariadb,db.port=3306 stable/phpmyadmin
 ```
 
-The above command sets the phpMyAdmin to connect to a database in `mymariadb` host and `3306` port respectively. 
+The above command sets the phpMyAdmin to connect to a database in `mymariadb` host and `3306` port respectively.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
@@ -79,3 +79,14 @@ $ helm install --name my-release -f values.yaml stable/phpmyadmin
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Upgrading
+
+### To 1.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to `1.0.0`. The following example assumes that the release name is `phpmyadmin`:
+
+```console
+$ kubectl patch deployment phpmyadmin-phpmyadmin --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+```

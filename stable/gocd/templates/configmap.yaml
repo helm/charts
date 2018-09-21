@@ -46,7 +46,7 @@ data:
         "properties": [
           {
             "key": "Image",
-            "value": "gocd/gocd-agent-docker-dind:v18.2.0"
+            "value": "gocd/gocd-agent-docker-dind:v{{ .Chart.AppVersion }}"
           },
           {
             "key": "PodConfiguration",
@@ -132,12 +132,5 @@ data:
                       ]
                     }
                   }' >> /godata/logs/preconfigure.log )
-
-    echo "Unpausing the pipeline." >> /godata/logs/preconfigure.log
-
-    (curl --fail -i 'http://localhost:8153/go/api/pipelines/hello_world/unpause' \
-           -H 'Accept: application/vnd.go.cd.v1+json' \
-           -H 'X-GoCD-Confirm: true' \
-           -X POST >> /godata/logs/preconfigure.log)
 
     echo "Done preconfiguring the GoCD server" > /godata/logs/preconfigure_complete.log

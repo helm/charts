@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/ghost
-  tag: 1.24.6
+  tag: 2.1.3-debian-9
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -82,6 +82,9 @@ externalDatabase:
   ## Database host
   # host:
 
+  ## Database port
+  # port:
+
   ## Database user
   # user: bn_ghost
 
@@ -114,7 +117,7 @@ mariadb:
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##
-  # root:
+  # rootUser:
   #   password:
 
   ## Enable persistence using Persistent Volume Claims

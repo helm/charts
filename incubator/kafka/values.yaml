@@ -9,7 +9,7 @@ replicas: 3
 image: "confluentinc/cp-kafka"
 
 ## The kafka image tag
-imageTag: "4.1.1-2"
+imageTag: "4.1.2-2"
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -39,6 +39,21 @@ podManagementPolicy: OrderedReady
 ## with permissisions sufficient to apply pod labels
 rbac:
   enabled: false
+
+## Useful if using any custom authorizer
+## Pass in some secrets to use (if required)
+# secrets:
+# - name: myKafkaSecret
+#   keys:
+#     - username
+#     - password
+#   # mountPath: /opt/kafka/secret
+# - name: myZkSecret
+#   keys:
+#     - user
+#     - pass
+#   mountPath: /opt/zookeeper/secret
+
 
 ## The name of the storage class which the cluster should use.
 # storageClass: default
@@ -110,9 +125,22 @@ tolerations: []
 #   value: "value"
 #   effect: "NoSchedule"
 
+## Headless service.
+##
+headless:
+  # annotations:
+  # targetPort:
+  port: 9092
+
 ## External access.
 ##
 external:
+  type: NodePort
+  # annotations:
+  #  service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+
+  # create an A record for each statefulset pod
+  distinct: false
   enabled: false
   servicePort: 19092
   firstListenerPort: 31090
@@ -121,6 +149,9 @@ external:
     image: "lwolf/kubectl_deployer"
     imageTag: "0.4"
     imagePullPolicy: "IfNotPresent"
+
+# Annotation to be added to Kafka pods
+podAnnotations: {}
 
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
 ## here in map format, as defined in the official docs.
@@ -246,7 +277,7 @@ prometheus:
     image: danielqsj/kafka-exporter
 
     ## The image tag to use for the metrics collector
-    imageTag: v1.0.1
+    imageTag: v1.2.0
 
     ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
     interval: 10s
@@ -280,6 +311,8 @@ prometheus:
 ## Topic creation and configuration.
 ## The job will be run on a deployment only when the config has been changed.
 ## - If 'partitions' and 'replicationFactor' are specified we create the topic (with --if-not-exists.)
+## - If 'partitions', 'replicationFactor' and 'reassignPartitions' are specified we reassign the partitions to
+## increase the replication factor of an existing topic.
 ## - If 'partitions' is specified we 'alter' the number of partitions. This will
 ## silently and safely fail if the new setting isn’t strictly larger than the old (i.e. a NOOP.) Do be aware of the
 ## implications for keyed topics (ref: https://docs.confluent.io/current/kafka/post-deployment.html#admin-operations)
@@ -287,9 +320,15 @@ prometheus:
 ## it will silently and safely fail.
 ## - If 'config' is specified it's added to the topic configuration.
 ##
+## Note: To increase the 'replicationFactor' of a topic, 'reassignPartitions' must be set to true (see above).
+##
 topics: []
   # - name: myExistingTopicConfig
   #   config: "cleanup.policy=compact,delete.retention.ms=604800000"
+  # - name: myExistingTopicReassignPartitions
+  #   partitions: 8
+  #   replicationFactor: 5
+  #   reassignPartitions: true
   # - name: myExistingTopicPartitions
   #   partitions: 8
   # - name: myNewTopicWithConfig
@@ -311,8 +350,10 @@ zookeeper:
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   resources: ~
 
-  ## The JVM heap size to allocate to Zookeeper
-  heap: "1G"
+  ## Environmental variables to set in Zookeeper
+  env:
+    ## The JVM heap size to allocate to Zookeeper
+    ZK_HEAP_SIZE: "1G"
 
   persistence:
     enabled: false
@@ -321,7 +362,8 @@ zookeeper:
 
   ## Specify a Zookeeper imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-  imagePullPolicy: "IfNotPresent"
+  image:
+    PullPolicy: "IfNotPresent"
 
   ## If the Zookeeper Chart is disabled a URL and port are required to connect
   url: ""

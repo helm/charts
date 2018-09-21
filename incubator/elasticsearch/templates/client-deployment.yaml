@@ -21,6 +21,9 @@ spec:
 {{ toYaml .Values.client.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+{{- if .Values.client.priorityClassName }}
+      priorityClassName: "{{ .Values.client.priorityClassName }}"
+{{- end }}
       securityContext:
         fsGroup: 1000
       {{- if eq .Values.client.antiAffinity "hard" }}
@@ -75,7 +78,7 @@ spec:
         - name: NODE_MASTER
           value: "false"
         - name: DISCOVERY_SERVICE
-          value: {{ template "elasticsearch.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.cluster.kubernetesDomain }}
+          value: {{ template "elasticsearch.fullname" . }}-discovery
         - name: PROCESSORS
           valueFrom:
             resourceFieldRef:
@@ -119,7 +122,24 @@ spec:
           name: config
           subPath: log4j2.properties
 {{- end }}
+{{- if .Values.cluster.keystoreSecret }}
+        - name: keystore
+          mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
+          subPath: elasticsearch.keystore
+          readOnly: true
+{{- end }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecret := .Values.image.pullSecrets }}
+        - name: {{ $pullSecret }}
+      {{- end }}
+{{- end }}
       volumes:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.cluster.keystoreSecret }}
+      - name: keystore
+        secret:
+          secretName: {{ .Values.cluster.keystoreSecret }}
+{{- end }}

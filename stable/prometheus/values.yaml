@@ -33,8 +33,12 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.15.0
+    tag: v0.15.2
     pullPolicy: IfNotPresent
+
+  ## alertmanager priorityClassName
+  ##
+  priorityClassName: ""
 
   ## Additional alertmanager container arguments
   ##
@@ -107,6 +111,10 @@ alertmanager:
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
+
+  ## Pod affinity
+  ##
+  affinity: {}
 
   ## Use an alternate scheduler, e.g. "stork".
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -266,8 +274,12 @@ kubeStateMetrics:
   ##
   image:
     repository: quay.io/coreos/kube-state-metrics
-    tag: v1.3.1
+    tag: v1.4.0
     pullPolicy: IfNotPresent
+
+  ## kube-state-metrics priorityClassName
+  ##
+  priorityClassName: ""
 
   ## kube-state-metrics container arguments
   ##
@@ -345,6 +357,10 @@ nodeExporter:
     repository: prom/node-exporter
     tag: v0.16.0
     pullPolicy: IfNotPresent
+
+  ## node-exporter priorityClassName
+  ##
+  priorityClassName: ""
 
   ## Custom Update Strategy
   ##
@@ -437,8 +453,12 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.3.1
+    tag: v2.4.0
     pullPolicy: IfNotPresent
+
+  ## prometheus server priorityClassName
+  ##
+  priorityClassName: ""
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
@@ -543,6 +563,10 @@ server:
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
+
+  ## Pod affinity
+  ##
+  affinity: {}
 
   ## Use an alternate scheduler, e.g. "stork".
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -653,6 +677,10 @@ pushgateway:
     repository: prom/pushgateway
     tag: v0.5.2
     pullPolicy: IfNotPresent
+
+  ## pushgateway priorityClassName
+  ##
+  priorityClassName: ""
 
   ## Additional pushgateway container arguments
   ##

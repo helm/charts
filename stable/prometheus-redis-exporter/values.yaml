@@ -13,8 +13,16 @@ serviceAccount:
 replicaCount: 1
 image:
   repository: oliver006/redis_exporter
-  tag: v0.16.0
+  tag: v0.21.1
   pullPolicy: IfNotPresent
+extraArgs: {}
+# Additional Environment variables
+env: {}
+  # - name: REDIS_PASSWORD
+  #   valueFrom:
+  #     secretKeyRef:
+  #       key: redis-password
+  #       name: redis-config-0.0.2
 service:
   type: ClusterIP
   port: 9121

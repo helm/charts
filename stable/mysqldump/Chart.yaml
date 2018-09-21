@@ -1,0 +1,17 @@
+apiVersion: v1
+appVersion: 5.7.21
+description: A Helm chart to help backup MySQL databases using mysqldump
+name: mysqldump
+version: 1.0.0
+keywords:
+- mysql
+- mysqldump
+- backup
+home: https://www.mysql.com/
+icon: https://www.mysql.com/common/logos/logo-mysql-170x115.png
+sources:
+- https://github.com/kubernetes/charts
+- https://dev.mysql.com/doc/refman/5.7/en/mysqldump.html
+maintainers:
+- name: paulczar
+  email: username.taken@gmail.com

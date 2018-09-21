@@ -1,3 +1,5 @@
+THIS CHART IS DEPRECATED.
+
 For general information about Google Cloud Endpoints, see
 https://cloud.google.com/endpoints/
 

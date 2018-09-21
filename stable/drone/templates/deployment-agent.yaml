@@ -38,6 +38,10 @@ spec:
       - name: {{ template "drone.fullname" . }}-agent
         image: "{{ .Values.images.agent.repository }}:{{ .Values.images.agent.tag }}"
         imagePullPolicy: {{ .Values.images.agent.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
         env:
           - name: DRONE_SERVER
             value: {{ template "drone.fullname" . }}:9000
@@ -54,6 +58,28 @@ spec:
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
+{{- if .Values.agent.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: "/healthz"
+            port: http
+          initialDelaySeconds: {{ .Values.agent.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.agent.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.agent.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.agent.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.agent.livenessProbe.failureThreshold }}
+{{- end }}
+{{- if .Values.agent.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: "/healthz"
+            port: http
+          initialDelaySeconds: {{ .Values.agent.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.agent.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.agent.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.agent.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.agent.readinessProbe.failureThreshold }}
+{{- end }}
         resources:
 {{ toYaml .Values.agent.resources | indent 10 }}
 {{- if not .Values.dind.enabled }}
