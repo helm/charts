@@ -13,5 +13,6 @@ spec:
     name: server
   - port: 10002
     name: webui-address
+  clusterIP: None
   selector:
     app: {{ template "fullname" . }}-hive-hs2

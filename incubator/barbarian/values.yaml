@@ -7,12 +7,18 @@ global:
   log_level: INFO
   log_dir: /tmp
 
+  # set to true if you want to automatically install the Tez sharelib to 
+  # the cluster's distributed filesystem
+  tez_init: true
+
 hive_hms:
   image: hive:0.1.0
-  count: 3
+
+  # set to true to enable N+N HA for the Hive Metastore
+  ha_enabled: true
+
   cpu: 1
-  ps_mem: 8g
-  mem: 8Gi
+  mem: 2Gi
 
   # set db_auto: true if you want Helm to automatically install a mariadb
   # for hive metastore persistent backend
@@ -52,8 +58,7 @@ hive_hs2:
   count: 1
   llapd_enabled: true
   llapd_count: 4
-  ps_mem: 8g
-  mem: 8Gi
+  mem: 2Gi
   cpu: 1
   llapd_mem: 2g
   log_level: INFO
@@ -66,9 +71,11 @@ hive_hs2:
 
 yarn_rm:
   image: yarn-rm:0.1.0
-  count: 1
+
+  # set to true to enable YARN RM HA
+  ha_enabled: true
   cpu: 1
-  mem: 4Gi
+  mem: 2Gi
 
   service:
     name: yarn-rm-serv
@@ -76,10 +83,10 @@ yarn_rm:
 yarn_nm:
   image: yarn-nm:0.1.0
   count: 5
-  cpu: 8
-  mem: 30Gi
-  container_mem: 30g
-  container_vcpu: 8
+  cpu: 2
+  mem: 4Gi
+  container_mem: 4g
+  container_vcpu: 2
 
   service:
     name: yarn-nm-serv
@@ -89,7 +96,6 @@ zookeeper:
   count: 5
   cpu: 0.5
   mem: 2Gi
-  ps_mem: 1g
 
   service:
     name: zk-serv
@@ -98,8 +104,7 @@ ignite:
   image: ignite:0.1.0
   count: 5
   cpu: 2
-  mem: 8Gi
-  ps_mem: 7g
+  mem: 4Gi
 
   # set to true to enable an ingress flow to expose IGFS to the outside
   ingress_enabled: false

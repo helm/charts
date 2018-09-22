@@ -398,38 +398,34 @@
       <value>HTTP_ONLY</value>
     </property> 
 
-    <!-- ResourceManager HA settings
-
     <property> 
-      <name>yarn.resourcemanager.ha.enabled</name> 
+      <name>yarn.resourcemanager.ha.enabled</name>
+      {{- if .Values.yarn_rm.ha_enabled }} 
+      <value>true</value>
+      {{- else }}
       <value>false</value>
+      {{- end }}
     </property>
 
-    <property> 
+   <property> 
+    <name>yarn.resourcemanager.cluster-id</name> 
+    <value>yarncluster1</value> 
+   </property>
+
+
+   <property> 
     <name>yarn.resourcemanager.ha.rm-ids</name> 
-    <value>rm1,rm2</value> 
+    <value>rm0,rm1</value> 
    </property>
    
    <property> 
+      <name>yarn.resourcemanager.hostname.rm0</name> 
+      <value>{{ template "fullname" . }}-yarn-rm-0.{{ .Values.yarn_rm.service.name }}</value> 
+   </property> 
+   
+   <property> 
       <name>yarn.resourcemanager.hostname.rm1</name> 
-      <value>TODO-RESOURCEMANAGERNODE1-HOSTNAME</value> 
-   </property> 
-   
-   <property> 
-      <name>yarn.resourcemanager.hostname.rm2</name> 
-      <value>TODO-RESOURCEMANAGERNODE2-HOSTNAME</value> 
-   </property> 
-   
-   <property> 
-      <name>yarn.resourcemanager.webapp.address.rm1</name> 
-      <value>TODO-RESOURCEMANAGERNODE1-HOSTNAME:8088</value> 
-      <description>We can set rm1_web_address separately. If not, it will use 
-      ${yarn.resourcemanager.hostname.rm1}:DEFAULT_RM_WEBAPP_PORT</description> 
-   </property> 
-   
-   <property> 
-      <name>yarn.resourcemanager.webapp.address.rm2</name> 
-      <value>TODO-RESOURCEMANAGERNODE2-HOSTNAME:8088</value> 
+      <value>{{ template "fullname" . }}-yarn-rm-1.{{ .Values.yarn_rm.service.name }}</value> 
    </property> 
    
    <property> 
@@ -446,8 +442,6 @@
      <name>yarn.client.failover-proxy-provider</name> 
      <value>org.apache.hadoop.yarn.client.ConfiguredRMFailoverProxyProvider</value> 
    </property>
-
-    -->
 
     <!-- Secure cluster configurations section start
 

@@ -21,3 +21,5 @@ data:
 {{ tpl (.Files.Get "files/yarn-rm/log4j.properties") . | indent 4 }}
   hadoop-env.sh: |-
 {{ tpl (.Files.Get "files/yarn-rm/hadoop-env.sh") . | indent 4 }}
+  yarn.exclude: |-
+    dead.ignoreme.local

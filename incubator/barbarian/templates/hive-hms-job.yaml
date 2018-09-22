@@ -1,0 +1,67 @@
+{{- if .Values.hive_hms.db_init }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "fullname" . }}-hive-hms-init
+  labels:
+    app: {{ template "fullname" . }}-hive-hms-init
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}-hive-hms-init
+    spec:
+      restartPolicy: OnFailure
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: init-hive-hms
+        image: {{ .Values.global.repo }}/{{ .Values.hive_hms.image }}
+        command:
+        - sh
+        - -c
+        - "/opt/barbarian/hive/bin/schematool -initSchema \
+          -dbType {{ .Values.hive_hms.db_type }} \
+          {{- if .Values.hive_hms.db_auto }}
+          -userName {{ .Values.mariadb.db.user }} \
+          {{- else }}
+          -userName {{ .Values.hive_hms.db_username }} \
+          {{- end }}
+          {{- if .Values.hive_hms.db_auto }}
+          -passWord {{ .Values.mariadb.db.password }} \
+          {{- else }}
+          -passWord {{ .Values.hive_hms.db_password }} \
+          {{- end }} 
+          {{- if .Values.hive_hms.db_auto }}
+          -url {{ printf "jdbc:mariadb://%s:3306/%s" (include "mariadb.servicename" .) .Values.mariadb.db.name }} \
+          {{- else }}
+          -url {{ .Values.hive_hms.db_uri }} \ 
+          {{- end }}
+          -ifNotExists"
+        volumeMounts:
+        - name: hive-cfg-volume
+          mountPath: "/opt/barbarian/hive/conf"
+        - name: tez-cfg-volume
+          mountPath: "/opt/barbarian/tez/conf"
+        - name: yarn-cfg-volume
+          mountPath: "/opt/barbarian/hadoop/etc/hadoop"
+        - name: slider-cfg-volume
+          mountPath: "/opt/barbarian/slider/conf"
+      volumes:
+      - name: yarn-cfg-volume
+        configMap:
+          name: {{ template "fullname" . }}-hadoop-conf
+      - name: hive-cfg-volume
+        configMap:
+          name: {{ template "fullname" . }}-hive-conf
+      - name: tez-cfg-volume
+        configMap:
+          name: {{ template "fullname" . }}-tez-conf
+      - name: slider-cfg-volume
+        configMap:
+          name: {{ template "fullname" . }}-slider-conf
+{{- end }}

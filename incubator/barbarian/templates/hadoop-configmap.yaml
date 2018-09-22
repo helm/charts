@@ -23,3 +23,5 @@ data:
 {{ tpl (.Files.Get "files/hadoop/hadoop-env.sh") . | indent 4 }}
   s3-site.xml: |-
 {{ tpl (.Files.Get "files/hadoop/s3-site.xml") . | indent 4 }}
+  yarn.exclude: |-
+    dead.ignoreme.local

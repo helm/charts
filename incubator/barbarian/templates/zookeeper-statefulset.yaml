@@ -69,7 +69,7 @@ spec:
           --tick_time=2000 \
           --init_limit=10 \
           --sync_limit=5 \
-          --heap={{ .Values.zookeeper.ps_mem }} \
+          --heap={{ .Values.zookeeper.mem | trimSuffix "i" | lower }} \
           --max_client_cnxns=60 \
           --snap_retain_count=3 \
           --purge_interval=12 \

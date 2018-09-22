@@ -8,7 +8,11 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: {{ .Values.hive_hms.count }}
+  {{- if .Values.hive_hms.ha_enabled }}
+  replicas: 3
+  {{- else }}
+  replicas: 1
+  {{- end }}
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel
@@ -45,41 +49,6 @@ spec:
         - sh
         - -c
         - "/opt/barbarian/control/start-metastore"
-      {{- if .Values.hive_hms.db_init }}
-      initContainers:
-      - name: init-hive-hms
-        image: {{ .Values.global.repo }}/{{ .Values.hive_hms.image }}
-        command:
-        - sh
-        - -c
-        - "/opt/barbarian/hive/bin/schematool -initSchema \
-          -dbType {{ .Values.hive_hms.db_type }} \
-          {{- if .Values.hive_hms.db_auto }}
-          -userName {{ .Values.mariadb.db.user }} \
-          {{- else }}
-          -userName {{ .Values.hive_hms.db_username }} \
-          {{- end }}
-          {{- if .Values.hive_hms.db_auto }}
-          -passWord {{ .Values.mariadb.db.password }} \
-          {{- else }}
-          -passWord {{ .Values.hive_hms.db_password }} \
-          {{- end }} 
-          {{- if .Values.hive_hms.db_auto }}
-          -url {{ printf "jdbc:mariadb://%s:3306/%s" (include "mariadb.servicename" .) .Values.mariadb.db.name }} \
-          {{- else }}
-          -url {{ .Values.hive_hms.db_uri }} \ 
-          {{- end }}
-          -ifNotExists"
-        volumeMounts:
-        - name: hive-cfg-volume
-          mountPath: "/opt/barbarian/hive/conf"
-        - name: tez-cfg-volume
-          mountPath: "/opt/barbarian/tez/conf"
-        - name: yarn-cfg-volume
-          mountPath: "/opt/barbarian/hadoop/etc/hadoop"
-        - name: slider-cfg-volume
-          mountPath: "/opt/barbarian/slider/conf"
-      {{- end }}
       volumes:
       - name: yarn-cfg-volume
         configMap:

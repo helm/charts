@@ -1,5 +1,5 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: {{ template "fullname" . }}-yarn-rm
   labels:
@@ -9,7 +9,11 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   serviceName: {{ .Values.yarn_rm.service.name }}
-  replicas: {{ .Values.yarn_rm.count }}
+  {{- if .Values.yarn_rm.ha_enabled }}
+  replicas: 2
+  {{- else }}
+  replicas: 1
+  {{- end }}
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel
@@ -23,6 +27,7 @@ spec:
         fsGroup: 1000
       containers:
       - image: {{ .Values.global.repo }}/{{ .Values.yarn_rm.image }}
+        imagePullPolicy: Always
         name: {{ template "fullname" . }}-yarn-rm
         securityContext:
           allowPrivilegeEscalation: false

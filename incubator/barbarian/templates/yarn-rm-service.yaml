@@ -19,5 +19,6 @@ spec:
     name: scheduler
   - port: 8141
     name: admin
+  clusterIP: None
   selector:
     app: {{ template "fullname" . }}-yarn-rm

@@ -1,6 +1,6 @@
 # Barbarian
 
-Barbarian is the world's best cloud-first, cloud-agnostic big data system founded on Apache Hadoop for enterprise-ready, low-latency parallel distributed data processing.
+The Barbarian Data System is the world's best cloud-first, cloud-agnostic data processing system founded on Apache Hadoop for enterprise-ready, low-latency parallel distributed data processing.
 
 This release brings:
 - Apache Hadoop 2.8.4
@@ -10,7 +10,7 @@ This release brings:
 
 Barbarian is designed to run as a horizontally scalable parallel, distributed, *in memory* data warehouse - a bit like SAP Hana™ but with a low TCO.
 
-Barbarian can ingest data from Amazon S3 or a remote HDFS cluster for high performance, low latency analysis, or alternatively Barbarian can be configured to run as a Big Data solution accessing Amazon S3 and using its own storage as an in-memory write-through cache.
+Barbarian can ingest data from Amazon S3 or a remote HDFS cluster for high performance, low latency analysis, or alternatively Barbarian can be configured to run as a Big Data solution accessing Amazon S3 - using its own storage as an in-memory write-through cache.
 
 We will be adding support for more storage backends including Azure ADLS, GCP Cloud Storage, and Ceph in coming releases.
 
@@ -73,7 +73,7 @@ set hive.llap.io.enabled=true;
 set hive.llap.daemon.service.hosts=@llap;
 set hive.execution.mode=llap;
 CREATE TABLE mytable (id string, value1 string, value2 int);
-INSERT INTO mytable SELECT 'one', 'world', 1);
+INSERT INTO mytable SELECT 'one', 'world', 1;
 SELECT * FROM mytable;
 ```
 
@@ -81,9 +81,10 @@ SELECT * FROM mytable;
 
 Barbarian exposes many configuration parameters. Some important ones are listed below.
 
-| parameter | default | description
+| parameter | default | description |
 |--|--|--|
-| hive_hms.count | 3 | how many Metastores to deploy |
+| global.tez_init | true | automatically install the Tez sharelib? |
+| hive_hms.ha_enabled | true | deploy Hive Metastore in HA N+N setup? |
 | hive_hms.db_auto | true | automatically deploy a MariaDb instance for the HMS? |
 | hive_hms.db_init | true | automatically initialize the db schema for HMS? |
 | hive_hms.db_uri | n/a | JDBC URI for your remote HMS RDBMS |
@@ -95,7 +96,7 @@ Barbarian exposes many configuration parameters. Some important ones are listed 
 | hive_hs2.llapd_count | 4 | How many LLAP daemons to deploy. You can elastically scale Tez but not LLAP, so choose wisely  |
 | hive_hs2.llapd_mem | 2g | How much RAM to allocate to each LLAP daemon in production contexts this should be at least 24G, preferably more |
 | hive_hs2.ingress_enabled | false | should Hiveserver2 be exposed to the outside? |
-| yarn_rm.count | 1 | How many YARN RMs to deploy. Currently only supports 1 |
+| yarn_rm.ha_enabled | true | Should YARN ResourceManager be deployed as an HA pair? |
 | yarn_nm.count | 5 | How many YARN NodeManagers to deploy |
 | zookeeper.count | 5 | How many ZooKeepers to deploy |
 | ignite.count | 5 | How many IGFS servers to deploy |
@@ -110,3 +111,27 @@ Barbarian exposes many configuration parameters. Some important ones are listed 
 | ignite.s3a.s3guard_ddb.region | eu-west-1 | AWS Dyanomdb region for the table |
 | ignite.s3a.s3guard_ddb.capacity.read | 3 | You pay AWS for this whether you use it or not |
 | ignite.s3a.s3guard_ddb.capacity.write | 3 | You pay AWS for this whether you use it or not |
+| mariadb.db.password | password123! | change this to something else! |
+| mariadb.rootUser.password | n/a | Set this if you need to |
+
+## Troubleshooting
+
+If you encounter provisioning issues with MariaDb where it gets stuck on "pending", this is likely to be because you haven't enabled persistent storage claims. To enable persistent storage on AWS EKS you can run something like:
+
+```
+echo "\
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: gp2
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+reclaimPolicy: Retain
+mountOptions:
+  - debug
+" > /tmp/storage-class.yaml
+
+kubectl create -f /tmp/storage-class.yaml
+kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+```

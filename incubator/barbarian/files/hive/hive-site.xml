@@ -4327,7 +4327,7 @@
   </property>
   <property>
     <name>hive.server2.tez.interactive.queue</name>
-    <value/>
+    <value>llap</value>
     <description>
       A single YARN queues to use for Hive Interactive sessions. When this is specified,
       workload management is enabled and used for these sessions.
