@@ -1,6 +1,6 @@
 # ChartMuseum Helm Chart
 
-Deploy your own private ChartMuseum.   
+Deploy your own private ChartMuseum.
 
 Please also see https://github.com/kubernetes-helm/chartmuseum
 
@@ -25,7 +25,7 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
 - [Uninstall](#uninstall)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
- 
+
 
 ## Prerequisites
 
@@ -39,14 +39,14 @@ By default this chart will not have persistent storage, and the API service
 will be *DISABLED*.  This protects against unauthorized access to the API
 with default configuration values.
 
-For a more robust solution supply helm install with a custom values.yaml   
-You are also required to create the StorageClass resource ahead of time:   
+For a more robust solution supply helm install with a custom values.yaml
+You are also required to create the StorageClass resource ahead of time:
 ```
 kubectl create -f /path/to/storage_class.yaml
 ```
 
 The following table lists common configurable parameters of the chart and
-their default values. See values.yaml for all available options. 
+their default values. See values.yaml for all available options.
 
 |       Parameter                        |           Description                       |                         Default                     |
 |----------------------------------------|---------------------------------------------|-----------------------------------------------------|
@@ -165,7 +165,7 @@ env:
     STORAGE_AMAZON_REGION: us-east-1
   secret:
     AWS_ACCESS_KEY_ID: "********" ## aws access key id value
-    AWS_SECRET_ACCESS_KEY: "********" ## aws access key secret value 
+    AWS_SECRET_ACCESS_KEY: "********" ## aws access key secret value
 ```
 
 Run command to install
@@ -231,7 +231,7 @@ env:
   open:
     STORAGE: google
     STORAGE_GOOGLE_BUCKET: my-gcs-bucket
-    STORAGE_GOOGLE_PREFIX:    
+    STORAGE_GOOGLE_PREFIX:
 ```
 
 ### Using with Google Cloud Storage and a Google Service Account
@@ -256,6 +256,7 @@ env:
     STORAGE: google
     STORAGE_GOOGLE_BUCKET: my-gcs-bucket
     STORAGE_GOOGLE_PREFIX:
+    DISABLE_API: false
 
 gcp:
   secret:
@@ -315,10 +316,10 @@ env:
     STORAGE: microsoft
     STORAGE_MICROSOFT_CONTAINER: mycontainer
     # prefix to store charts for microsoft storage backend
-    STORAGE_MICROSOFT_PREFIX:    
+    STORAGE_MICROSOFT_PREFIX:
   secret:
     AZURE_STORAGE_ACCOUNT: "********" ## azure storage account
-    AZURE_STORAGE_ACCESS_KEY: "********" ## azure storage account access key 
+    AZURE_STORAGE_ACCESS_KEY: "********" ## azure storage account access key
 ```
 
 Run command to install
@@ -346,7 +347,7 @@ env:
     STORAGE_ALIBABA_ENDPOINT: oss-cn-beijing.aliyuncs.com
   secret:
     ALIBABA_CLOUD_ACCESS_KEY_ID: "********" ## alibaba OSS access key id
-    ALIBABA_CLOUD_ACCESS_KEY_SECRET: "********" ## alibaba OSS access key secret 
+    ALIBABA_CLOUD_ACCESS_KEY_SECRET: "********" ## alibaba OSS access key secret
 ```
 
 Run command to install
@@ -389,8 +390,8 @@ helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Using with local filesystem storage
-By default chartmuseum uses local filesystem storage. 
-But on pod recreation it will lose all charts, to prevent that enable persistent storage. 
+By default chartmuseum uses local filesystem storage.
+But on pod recreation it will lose all charts, to prevent that enable persistent storage.
 
 ```yaml
 env:
@@ -423,7 +424,7 @@ helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 
 #### Example storage class
 
-Example storage-class.yaml provided here for use with a Ceph cluster.   
+Example storage-class.yaml provided here for use with a Ceph cluster.
 
 ```
 kind: StorageClass
@@ -438,13 +439,13 @@ parameters:
   adminSecretNamespace: default
   pool: chartstore
   userId: user
-  userSecretName: thesecret 
+  userSecretName: thesecret
 ```
 
-## Uninstall 
+## Uninstall
 
-By default, a deliberate uninstall will result in the persistent volume 
-claim being deleted.   
+By default, a deliberate uninstall will result in the persistent volume
+claim being deleted.
 
 ```shell
 helm delete my-chartmuseum
