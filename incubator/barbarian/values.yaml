@@ -7,7 +7,7 @@ global:
   log_level: INFO
   log_dir: /tmp
 
-  # set to true if you want to automatically install the Tez sharelib to 
+  # set to true if you want to automatically install the Tez sharelib to
   # the cluster's distributed filesystem
   tez_init: true
 
