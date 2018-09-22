@@ -1,8 +1,10 @@
-{{ if .Values.rbac.enabled -}}
+{{ if .Values.rbac.create -}}
+{{ if .Values.serviceAccount.create -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "gce-ingress.fullname" . }}
+  name: {{ include "gce-ingress.serviceAccountName" . }}
+{{ end -}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -29,6 +31,6 @@ roleRef:
   name: {{ include "gce-ingress.fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ include "gce-ingress.fullname" . }}
+  name: {{ include "gce-ingress.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 {{ end -}}

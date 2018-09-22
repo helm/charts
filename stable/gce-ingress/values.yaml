@@ -7,7 +7,15 @@ nameOverride: ""
 fullnameOverride: ""
 
 rbac:
-  enabled: true
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
 
 # gce-ingress needs credentials to log into GCE.  Create a secret with the key
 # of key.json with the contents of a GCE service account that has permissions to create
