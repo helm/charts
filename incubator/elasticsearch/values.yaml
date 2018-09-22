@@ -119,3 +119,6 @@ data:
     maxUnavailable: 1
   updateStrategy:
     type: OnDelete
+
+## Additional init containers
+extraInitContainers: |
