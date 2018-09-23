@@ -40,7 +40,7 @@ The following table lists the configurable parameters of the metricbeat chart an
 | `serviceAccount.name`               | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template |       |
 | `config`                            | The content of the configuration file consumed by metricbeat. See the [metricbeat.reference.yml](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-reference-yml.html) for full details | |
 | `plugins`                           | List of beat plugins               |                                            |
-| `extraEnv`                          | additional environment |                                    |
+| `extraEnv`                          | Additional environment |                                    |
 | `extraVolumes`, `extraVolumeMounts` | Additional volumes and mounts, for example to provide other configuration files | |
 | `resources.requests.cpu`            | CPU resource requests              |                                           |
 | `resources.limits.cpu`              | CPU resource limits                |                                           |
