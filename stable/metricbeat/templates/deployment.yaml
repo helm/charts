@@ -51,9 +51,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
-{{- range $key, $value := .Values.extraVars }}
-        - name: {{ $key }}
-          value: {{ $value }}
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 8 }}
 {{- end }}
         securityContext:
           runAsUser: 0

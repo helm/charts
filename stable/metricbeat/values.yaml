@@ -3,7 +3,7 @@ image:
   tag: 6.4.0
   pullPolicy: IfNotPresent
 
-
+# The instances created by daemonset retrieve most metrics from the host
 daemonset:
   podAnnotations: []
   config:
@@ -58,6 +58,7 @@ daemonset:
             - volume
           period: 10s
           hosts: ["localhost:10255"]
+# The instance created by deployment retrieves metrics that are unique for the whole cluster, like Kubernetes events or kube-state-metrics
 deployment:
   podAnnotations: []
   config:
@@ -92,9 +93,12 @@ deployment:
 plugins: []
   # - kinesis.so
 
-# A map of additional environment variables
-extraVars: {}
-  # test_key: "test_val"
+# additional environment
+# extraEnv:
+#  - name: test1
+#    value: "test1"
+#  - name: test2
+#    value: "test2"
 
 # Add additional volumes and mounts, for example to read other log files on the host
 extraVolumes: []
