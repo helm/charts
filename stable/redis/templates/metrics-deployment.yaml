@@ -9,6 +9,11 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+        release: "{{ .Release.Name }}"
+        role: metrics
+        app: {{ template "redis.name" . }}
   template:
     metadata:
       labels:
