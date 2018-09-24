@@ -4,7 +4,7 @@
 
 image:
   repository: hyperledger/fabric-orderer
-  tag: x86_64-1.1.0
+  tag: 1.2.0
   pullPolicy: IfNotPresent
 
 service:
@@ -38,7 +38,7 @@ caUsername: ord1
 
 ord:
   # Tools version
-  hlfToolsVersion: 1.1.0
+  hlfToolsVersion: 1.2.0
   ## Type of Orderer, `solo` or `kafka`
   type: solo
   ## MSP ID of the Orderer
@@ -51,6 +51,8 @@ secrets: {}
   ## This should contain the Certificate of the Orderer Organisation admin
   ## This is necessary to successfully run the orderer
   # adminCert: hlf--ord-admincert
+  ## This should contain the CA server's TLS details under the key tls.crt (e.g. a Let's Encrypt Certificate PEM)
+  # caServerTls: ca--tls
 
 resources: {}
   ## We usually recommend not to specify default resources and to leave this as a conscious
