@@ -347,6 +347,14 @@ nodeExporter:
   ##
   enabled: true
 
+  ## If true, node-exporter pods share the host network namespace
+  ##
+  hostNetwork: true
+
+  ## If true, node-exporter pods share the host PID namespace
+  ##
+  hostPID: true
+
   ## node-exporter container name
   ##
   name: node-exporter
