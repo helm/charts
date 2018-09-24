@@ -4,7 +4,7 @@
 
 image:
   repository: hyperledger/fabric-peer
-  tag: x86_64-1.1.0
+  tag: 1.2.0
   pullPolicy: IfNotPresent
 
 service:
@@ -39,7 +39,7 @@ caUsername: peer1
 
 peer:
   # Tools version
-  hlfToolsVersion: 1.1.0
+  hlfToolsVersion: 1.2.0
   # Type of database ("goleveldb" or "CouchDB"):
   databaseType: goleveldb
   # If CouchDB is used, which chart holds it
@@ -58,6 +58,8 @@ secrets: {}
   ## This should contain the Private Key of the Peer Organisation admin
   ## This is necessary to successfully join a channel
   # adminKey: hlf--peer-adminkey
+  ## This should contain the CA server's TLS details under the key tls.crt (e.g. a Let's Encrypt Certificate PEM)
+  # caServerTls: ca--tls
 
 resources: {}
   ## We usually recommend not to specify default resources and to leave this as a conscious
