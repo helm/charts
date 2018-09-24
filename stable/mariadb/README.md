@@ -150,6 +150,14 @@ The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-
 
 ## Upgrading
 
+It's necessary to set the `rootUser.password` parameter when upgrading for readiness/liveness probes to work properly. When you install this chart for the first time, some notes will be displayed providing the credentials you must use under the 'Administrator credentials' section. Please note down the password and run the command below to upgrade your chart:
+
+```bash
+$ helm upgrade my-release stable/mariadb --set rootUser.password=[ROOT_PASSWORD]
+```
+
+| Note: you need to substitue the placeholder _[ROOT_PASSWORD]_ with the value obtained in the installation notes.
+
 ### To 5.0.0
 
 Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
