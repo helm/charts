@@ -41,6 +41,11 @@ spec:
           secret:
             secretName: {{ .Values.secrets.adminKey }}
         {{- end }}
+        {{- if .Values.secrets.caServerTls }}
+        - name: ca-server-tls
+          secret:
+            secretName: {{ .Values.secrets.caServerTls }}
+        {{- end }}
       containers:
         - name: peer
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -85,8 +90,13 @@ spec:
 
               while [ ! -f ${CORE_PEER_MSPCONFIGPATH}/signcerts/cert.pem ];
               do
+                {{- if .Values.secrets.caServerTls }}
+                echo ">\033[0;35m fabric-ca-client enroll -d -u https://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${CORE_PEER_MSPCONFIGPATH} --tls.certfiles /hl_config/ca_server/tls/tls.crt \033[0m"
+                fabric-ca-client enroll -d -u https://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${CORE_PEER_MSPCONFIGPATH} --tls.certfiles /hl_config/ca_server/tls/tls.crt
+                {{- else }}
                 echo ">\033[0;35m fabric-ca-client enroll -d -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${CORE_PEER_MSPCONFIGPATH} \033[0m"
                 fabric-ca-client enroll -d -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M ${CORE_PEER_MSPCONFIGPATH}
+                {{- end }}
 
                 if [ ! -f ${CORE_PEER_MSPCONFIGPATH}/signcerts/cert.pem ]
                 then
@@ -108,8 +118,13 @@ spec:
               # Create TLS certificate for Peer
               if [ ! -f ${CORE_PEER_TLS_PRIVATEKEY} ]
               then
-                echo ">\033[0;35m fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_USERNAME}:${CA_PASSWORD}@http://${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-peer.fullname" . }} \033[0m"
+                {{- if .Values.secrets.caServerTls }}
+                echo ">\033[0;35m fabric-ca-client enroll -d --enrollment.profile tls -u https://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-peer.fullname" . }} --tls.certfiles /hl_config/ca_server/tls/tls.crt \033[0m"
+                fabric-ca-client enroll -d --enrollment.profile tls -u https://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-peer.fullname" . }} --tls.certfiles /hl_config/ca_server/tls/tls.crt
+                {{- else }}
+                echo ">\033[0;35m fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-peer.fullname" . }} \033[0m"
                 fabric-ca-client enroll -d --enrollment.profile tls -u http://${CA_USERNAME}:${CA_PASSWORD}@${CA_ADDRESS} -M /tmp/tls --csr.hosts {{ include "hlf-peer.fullname" . }}
+                {{- end }}
 
                 mkdir -p $(dirname $CORE_PEER_TLS_PRIVATEKEY)
                 cp /tmp/tls/keystore/* $CORE_PEER_TLS_PRIVATEKEY
@@ -154,6 +169,10 @@ spec:
             {{- if .Values.secrets.adminKey }}
             - mountPath: /hl_config/admin/keystore
               name: admin-key
+            {{- end }}
+            {{- if .Values.secrets.caServerTls }}
+            - mountPath: /hl_config/ca_server/tls
+              name: ca-server-tls
             {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

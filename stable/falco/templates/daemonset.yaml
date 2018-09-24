@@ -30,10 +30,22 @@ spec:
           securityContext:
             privileged: true
           args: [ "/usr/bin/falco", "-K", "/var/run/secrets/kubernetes.io/serviceaccount/token", "-k", "https://kubernetes.default", "-pk"]
-          {{- if .Values.ebpf.enabled }}
           env:
+          {{- if .Values.ebpf.enabled }}
             - name: SYSDIG_BPF_PROBE
               value:
+          {{- end }}
+          {{- if .Values.proxy.httpProxy }}
+            - name: http_proxy
+              value: {{ .Values.proxy.httpProxy }}
+          {{- end }}
+          {{- if .Values.proxy.httpsProxy }}
+            - name: https_proxy
+              value: {{ .Values.proxy.httpsProxy }}
+          {{- end }}
+          {{- if .Values.proxy.noProxy }}
+            - name: no_proxy
+              value: {{ .Values.proxy.noProxy }}
           {{- end }}
           volumeMounts:
             - mountPath: /host/var/run/docker.sock
@@ -52,6 +64,8 @@ spec:
             - mountPath: /host/usr
               name: usr-fs
               readOnly: true
+            - mountPath: /dev/shm
+              name: dshm
             {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.mountEtcVolume) }}
             - mountPath: /host/etc
               name: etc-fs
