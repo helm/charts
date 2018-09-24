@@ -7,20 +7,26 @@ metadata:
 {{- end }}
   name: {{ include "prometheus-postgresql-adapter.fullname" . }}
   labels:
-    app: {{ include "prometheus-postgresql-adapter.name" . }}
-    chart: {{ include "prometheus-postgresql-adapter.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app: "{{ include "prometheus-postgresql-adapter.name" . }}"
+    chart: "{{ include "prometheus-postgresql-adapter.chart" . }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
-  type: {{ .Values.service.type }}
-{{- if eq .Values.service.type "LoadBalancer"}}
-  loadBalancerSourceRanges: {{ .Values.service.loadBalancerSourceRanges }}
-{{- if .Values.service.loadBalancerIP }}
-  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  type: "{{ .Values.service.type }}"
+  clusterIP: "{{ .Values.service.clusterIP }}"
+{{- if .Values.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.service.externalIPs | indent 4 }}
 {{- end }}
+{{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.service.loadBalancerIP }}"
+{{- end }}
+{{- if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
 {{- if (or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort")) }}
-  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy | quote }}
+  externalTrafficPolicy: "{{ .Values.service.externalTrafficPolicy }}"
 {{- end }}
   ports:
     - name: http
@@ -29,7 +35,7 @@ spec:
 {{- end }}
       port: {{ .Values.service.port }}
       targetPort: {{ .Values.webListenAddress }}
-      protocol: TCP
+      protocol: "TCP"
   selector:
-    app: {{ include "prometheus-postgresql-adapter.name" . }}
-    release: {{ .Release.Name }}
+    app: "{{ include "prometheus-postgresql-adapter.name" . }}"
+    release: "{{ .Release.Name }}"

@@ -3,22 +3,22 @@ kind: Deployment
 metadata:
   name: {{ include "prometheus-postgresql-adapter.fullname" . }}
   labels:
-    app: {{ include "prometheus-postgresql-adapter.name" . }}
-    chart: {{ include "prometheus-postgresql-adapter.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app: "{{ include "prometheus-postgresql-adapter.name" . }}"
+    chart: "{{ include "prometheus-postgresql-adapter.chart" . }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "prometheus-postgresql-adapter.name" . }}
-      release: {{ .Release.Name }}
+      app: "{{ include "prometheus-postgresql-adapter.name" . }}"
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: {{ include "prometheus-postgresql-adapter.name" . }}
-        chart: {{ include "prometheus-postgresql-adapter.chart" . }}
-        release: {{ .Release.Name }}
+        app: "{{ include "prometheus-postgresql-adapter.name" . }}"
+        chart: "{{ include "prometheus-postgresql-adapter.chart" . }}"
+        release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -27,12 +27,12 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-        - name: {{ include "prometheus-postgresql-adapter.name" . }}
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: "{{ include "prometheus-postgresql-adapter.name" . }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args:
           - -log.level={{ .Values.logLevel }}
-          - -pg.host={{ .Values.pgHost }}
+          - -pg.host={{ required "A valid PostgreSQL endpoint .Values.pgHost is required!" .Values.pgHost }}
           - -web.listen-address={{ .Values.webListenAddress }}
           {{- if .Values.pgDatabase }}
           - -pg.database={{ .Values.pgDatabase }}

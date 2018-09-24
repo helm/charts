@@ -5,7 +5,7 @@ Installs [prometheus-postgresql-adapter](https://github.com/timescale/prometheus
 ## TL;DR;
 
 ```console
-$ helm install stable/prometheus-postgresql-adapter
+$ helm install incubator/prometheus-postgresql-adapter
 ```
 
 ## Introduction
@@ -24,7 +24,7 @@ You should _at least_ provide the parameter `pgHost`, since prometheus-postgresq
 To install the chart with the release name `prom-pg-adapter`:
 
 ```console
-$ helm install stable/prometheus-postgresql-adapter --name prom-pg-adapter
+$ helm install incubator/prometheus-postgresql-adapter --name prom-pg-adapter
 ```
 
 The command deploys prometheus-postgresql-adapter on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -64,9 +64,11 @@ Parameter | Description | Default
 `resources.requests.cpu` | CPU resource requests | `100m` |
 `resources.requests.memory` | Memory resource requests | `128Mi` |
 `service.annotations` | Kubernetes service annotations | `{}`
+`service.clusterIP` | Cluster IP address to assign to service | None
+`service.externalIP` | Service external IP addresses | `[]`
 `service.externalTrafficPolicy` | Enable client source IP preservation | `Cluster`
 `service.loadBalancerIP` | Kubernetes service LB Optional fixed external IP | None
-`service.loadBalancerSourceRanges` | Kubernetes service LB allowed inbound IP addresses | `0.0.0.0/0`
+`service.loadBalancerSourceRanges` | Kubernetes service LB allowed inbound IP addresses | `[]`
 `service.nodePort` | Kubernetes service LB Optional fixed external IP | None
 `service.port` | Kubernetes service LB Optional fixed external IP | `9201`
 `service.type` | Kubernetes service type | `ClusterIP`
@@ -78,15 +80,14 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```console
 $ helm upgrade \
   --install \
-  --set=extraArgs."log\.level"=debug \
   --set=extraArgs."pg\.prometheus-chunk-interval"=24h0m0s \
   --set=pgSchema=timeseries \
-prom-pg-adapter
-stable/prometheus-postgresql-adapter
+prom-pg-adapter \
+incubator/prometheus-postgresql-adapter
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install stable/prometheus-postgresql-adapter --name prom-pg-adapter -f values.yaml
+$ helm install incubator/prometheus-postgresql-adapter --name prom-pg-adapter -f values.yaml
 ```

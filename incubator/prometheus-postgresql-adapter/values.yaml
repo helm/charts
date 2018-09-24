@@ -6,26 +6,24 @@ extraArgs: {}
 
 extraEnv: {}
 
+replicaCount: 1
+
 image:
   repository: timescale/prometheus-postgresql-adapter
   tag: 0.3
   pullPolicy: IfNotPresent
 
 logLevel: info
-pgDatabase: postgres
-pgHost: postgresql
-pgPort: 5432
-pgSchema: public
-pgTablePrefix: metrics
-pgUser: postgres
 webListenAddress: 9201
 
 service:
   annotations: {}
-  externalTrafficPolicy: Cluster
-  loadBalancerSourceRanges:
-  - 0.0.0.0/0
-  port: 9201
+  clusterIP: ""
+  externalIPs: []
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  nodePort: ""
+  port: 9021
   type: ClusterIP
 
 resources:
