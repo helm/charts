@@ -71,6 +71,12 @@ php:
   #    cpu: 1m
   #    memory: 1Mi
 
+  ## php.securityContext PHP container securityContext and capabilities
+  securityContext: {}
+  #  capabilities:
+  #    add:
+  #    - SYS_ADMIN
+
 httpd:
   ## httpd.resources HTTPD container resource requests/limits
   resources: false

@@ -469,6 +469,16 @@ spec:
           mountPath: /usr/local/etc/php/conf.d/additional.ini
           subPath: additional.ini
         {{- end }}
+        {{- if .Values.php.securityContext }}
+        securityContext:
+          {{- if .Values.php.securityContext.capabilities }}
+          capabilities:
+            {{- if .Values.php.securityContext.capabilities.add }}
+            add:
+{{ toYaml .Values.php.securityContext.capabilities.add | indent 14 }}
+            {{- end -}}
+          {{- end -}}
+        {{- end }}
         resources:
         {{- if .Values.php.resources }}
 {{ toYaml .Values.php.resources | indent 12 }}
