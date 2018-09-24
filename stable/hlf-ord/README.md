@@ -102,6 +102,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `ord.mspID`                        | ID of MSP the Orderer belongs to                 | `OrdererMSP`                                               |
 | `secrets.genesis`                  | Secret containing Genesis Block for orderer      | `hlf--genesis`                                             |
 | `secrets.adminCert`                | Secret containing Orderer Org admin certificate  | `hlf--ord-admincert`                                       |
+| `secrets.caServerTls`              | Secret containing CA Server TLS certificate      | `ca--tls`                                                  |
 | `resources`                        | CPU/Memory resource requests/limits              | `{}`                                                       |
 | `nodeSelector`                     | Node labels for pod assignment                   | `{}`                                                       |
 | `tolerations`                      | Toleration labels for pod assignment             | `[]`                                                       |
