@@ -1,0 +1,43 @@
+## prometheus-postgresql-adapter image version
+## ref: https://hub.docker.com/r/timescale/prometheus-postgresql-adapter/tags/
+##
+
+extraArgs: {}
+
+extraEnv: {}
+
+image:
+  repository: timescale/prometheus-postgresql-adapter
+  tag: 0.3
+  pullPolicy: IfNotPresent
+
+logLevel: info
+pgDatabase: postgres
+pgHost: postgresql
+pgPort: 5432
+pgSchema: public
+pgTablePrefix: metrics
+pgUser: postgres
+webListenAddress: 9201
+
+service:
+  annotations: {}
+  externalTrafficPolicy: Cluster
+  loadBalancerSourceRanges:
+  - 0.0.0.0/0
+  port: 9201
+  type: ClusterIP
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+affinity: {}
+
+nodeSelector: {}
+
+tolerations: []

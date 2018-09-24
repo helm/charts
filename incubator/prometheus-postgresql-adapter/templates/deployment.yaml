@@ -1,0 +1,96 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "prometheus-postgresql-adapter.fullname" . }}
+  labels:
+    app: {{ include "prometheus-postgresql-adapter.name" . }}
+    chart: {{ include "prometheus-postgresql-adapter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "prometheus-postgresql-adapter.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "prometheus-postgresql-adapter.name" . }}
+        chart: {{ include "prometheus-postgresql-adapter.chart" . }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      containers:
+        - name: {{ include "prometheus-postgresql-adapter.name" . }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+          - -log.level={{ .Values.logLevel }}
+          - -pg.host={{ .Values.pgHost }}
+          - -web.listen-address={{ .Values.webListenAddress }}
+          {{- if .Values.pgDatabase }}
+          - -pg.database={{ .Values.pgDatabase }}
+          {{- end }}
+          {{- if .Values.pgPassword }}
+          - -pg.password={{ .Values.pgPassword }}
+          {{- end }}
+          {{- if .Values.pgPort }}
+          - -pg.port={{ .Values.pgPort }}
+          {{- end }}
+          {{- if .Values.pgSchema }}
+          - -pg.schema={{ .Values.pgSchema }}
+          {{- end }}
+          {{- if .Values.pgTablePrefix }}
+          - -pg.table={{ .Values.pgTablePrefix }}
+          {{- end }}
+          {{- if .Values.pgUser }}
+          - -pg.user={{ .Values.pgUser }}
+          {{- end }}
+          {{- range $key, $value := .Values.extraArgs }}
+            {{- if $value }}
+          - -{{ $key }}={{ $value }}
+            {{- else }}
+          - -{{ $key }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.extraEnv }}
+          env:
+            {{- range $key, $value := .Values.extraEnv }}
+          - name: {{ $key }}
+            value: "{{ $value }}"
+            {{- end }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.webListenAddress }}
+              protocol: TCP
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.webListenAddress }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.webListenAddress }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

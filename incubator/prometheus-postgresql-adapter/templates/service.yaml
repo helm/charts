@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+  name: {{ include "prometheus-postgresql-adapter.fullname" . }}
+  labels:
+    app: {{ include "prometheus-postgresql-adapter.name" . }}
+    chart: {{ include "prometheus-postgresql-adapter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+{{- if eq .Values.service.type "LoadBalancer"}}
+  loadBalancerSourceRanges: {{ .Values.service.loadBalancerSourceRanges }}
+{{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end }}
+{{- end }}
+{{- if (or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort")) }}
+  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy | quote }}
+{{- end }}
+  ports:
+    - name: http
+{{- if and (eq "NodePort" .Values.service.type) (hasKey .Values.service "nodePort") }}
+      nodePort: {{ .Values.service.nodePort }}
+{{- end }}
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.webListenAddress }}
+      protocol: TCP
+  selector:
+    app: {{ include "prometheus-postgresql-adapter.name" . }}
+    release: {{ .Release.Name }}

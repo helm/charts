@@ -1,0 +1,23 @@
+appVersion: v0.3
+description: Prometheus remote storage adapter for PostgreSQL.
+engine: gotpl
+home: https://www.timescale.com/
+icon: https://www.timescale.com/img/timescale-tiger-mark.svg
+keywords:
+  - database
+  - postgres
+  - postgresql
+  - prometheus
+  - sql
+  - timescale
+  - timescaledb
+maintainers:
+  - name: sc250024
+    email: scott.crooks@gmail.com
+  - name: niksajakovljevic
+    email: niksa.jakovljevic@gmail.com
+name: prometheus-postgresql-adapter
+sources:
+  - https://github.com/kubernetes/charts
+  - https://github.com/timescale/prometheus-postgresql-adapter
+version: 0.1.0
