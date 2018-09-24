@@ -6,6 +6,8 @@ metadata:
 {{ toYaml .Values.annotations | indent 4 }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
     {{- range $key, $value := .Values.labels }}
     {{ $key }}: {{ $value }}
     {{- end }}
