@@ -7,9 +7,9 @@ metadata:
     chart: {{ template "redis.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+{{- with .Values.master.service.annotations }}
   annotations:
-{{- if .Values.master.service.annotations }}
-{{ toYaml .Values.master.service.annotations | indent 4 }}
+{{ toYaml . | indent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.master.service.type }}
