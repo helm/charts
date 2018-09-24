@@ -13,10 +13,9 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: {{ template "fluentd-elasticsearch.fullname" . }}
-  apiGroup: ""
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: {{ template "fluentd-elasticsearch.fullname" . }}
-  apiGroup: ""
+  apiGroup: rbac.authorization.k8s.io
 {{- end -}}
