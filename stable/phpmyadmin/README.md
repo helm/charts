@@ -60,6 +60,9 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 | `ingress.host`            | ingress host               | `nil`          |
 | `ingress.tls`            | tls for ingress               | `[]`          |
 | `resources`                          | CPU/Memory resource requests/limits      | `{}`      |
+| `nodeSelector`                   | Node labels for pod assignment             | `{}`                                                    |
+| `tolerations`                    | List of node taints to tolerate            | `[]`                                                    |
+| `affinity`                       | Map of node/pod affinities                 | `{}`                                                    |
 
 For more information please refer to the [bitnami/phpmyadmin](http://github.com/bitnami/bitnami-docker-Phpmyadmin) image documentation.
 
