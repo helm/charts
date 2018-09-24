@@ -81,9 +81,9 @@ spec:
         - name: epmd
           containerPort: 4369
         - name: amqp
-          containerPort: {{ .Values.rabbitmq.nodePort }}
+          containerPort: {{ .Values.rabbitmq.amqpPort }}
         - name: dist
-          containerPort: {{ .Values.rabbitmq.nodePort | add 20000 }}
+          containerPort: {{ .Values.rabbitmq.distPort }}
         - name: stats
           containerPort: {{ .Values.rabbitmq.managerPort }}
         {{- if .Values.livenessProbe.enabled }}
