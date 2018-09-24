@@ -173,6 +173,8 @@ Parameter | Description | Default
 `nodeExporter.extraArgs` | Additional node-exporter container arguments | `{}`
 `nodeExporter.extraHostPathMounts` | Additional node-exporter hostPath mounts | `[]`
 `nodeExporter.extraConfigmapMounts` | Additional node-exporter configMap mounts | `[]`
+`nodeExporter.hostNetwork` | If true, node-exporter pods share the host network namespace | `true`
+`nodeExporter.hostPID` | If true, node-exporter pods share the host PID namespace | `true`
 `nodeExporter.nodeSelector` | node labels for node-exporter pod assignment | `{}`
 `nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
 `nodeExporter.pod.labels` | labels to be added to node-exporter pods | `{}`
