@@ -97,10 +97,12 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `caAddress`                        | Address of CA to register/enroll with            | `hlf-ca.local`                                             |
 | `caUsername`                       | Username for registering/enrolling with CA       | `ord1`                                                     |
 | `caPassword`                       | Password for registering/enrolling with CA       | Random 24 alphanumeric characters                          |
+| `ord.hlfToolsVersion`              | Version of Hyperledger Fabric tools used         | `1.1.0`                                                    |
 | `ord.type`                         | Type of Orderer (`solo` or `kafka`)              | `solo`                                                     |
 | `ord.mspID`                        | ID of MSP the Orderer belongs to                 | `OrdererMSP`                                               |
 | `secrets.genesis`                  | Secret containing Genesis Block for orderer      | `hlf--genesis`                                             |
 | `secrets.adminCert`                | Secret containing Orderer Org admin certificate  | `hlf--ord-admincert`                                       |
+| `secrets.caServerTls`              | Secret containing CA Server TLS certificate      | `ca--tls`                                                  |
 | `resources`                        | CPU/Memory resource requests/limits              | `{}`                                                       |
 | `nodeSelector`                     | Node labels for pod assignment                   | `{}`                                                       |
 | `tolerations`                      | Toleration labels for pod assignment             | `[]`                                                       |

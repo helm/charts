@@ -4,7 +4,7 @@
 
 image:
   repository: hyperledger/fabric-orderer
-  tag: x86_64-1.1.0
+  tag: 1.2.0
   pullPolicy: IfNotPresent
 
 service:
@@ -15,7 +15,12 @@ service:
 persistence:
   enabled: true
   annotations: {}
-  ## If unset or "", use "default" storage class.
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
   storageClass: ""
   accessMode: ReadWriteOnce
   size: 1Gi
@@ -32,18 +37,22 @@ caUsername: ord1
 # caPassword:
 
 ord:
+  # Tools version
+  hlfToolsVersion: 1.2.0
   ## Type of Orderer, `solo` or `kafka`
   type: solo
   ## MSP ID of the Orderer
   mspID: OrdererMSP
 
-secrets:
+secrets: {}
   ## This should contain "genesis" block derived from a configtx.yaml
   ## configtxgen -profile OrdererGenesis -outputBlock genesis.block
-  genesis: hlf--genesis
+  # genesis: hlf--genesis
   ## This should contain the Certificate of the Orderer Organisation admin
   ## This is necessary to successfully run the orderer
-  adminCert: hlf--ord-admincert
+  # adminCert: hlf--ord-admincert
+  ## This should contain the CA server's TLS details under the key tls.crt (e.g. a Let's Encrypt Certificate PEM)
+  # caServerTls: ca--tls
 
 resources: {}
   ## We usually recommend not to specify default resources and to leave this as a conscious

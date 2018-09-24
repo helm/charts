@@ -1,4 +1,4 @@
-> This chart is deprecated in favor of the [official GitLab chart](http://docs.gitlab.com/ce/install/kubernetes/gitlab_omnibus.html).
+> This chart is deprecated in favor of the [official GitLab chart](https://docs.gitlab.com/ee/install/kubernetes/gitlab_chart.html).
 
 # GitLab Community Edition
 

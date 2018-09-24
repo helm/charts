@@ -9,6 +9,10 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "prestashop.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
@@ -29,6 +33,8 @@ spec:
         env:
         - name: ALLOW_EMPTY_PASSWORD
           value: {{ .Values.allowEmptyPassword | quote }}
+        - name: PRESTASHOP_COOKIE_CHECK_IP
+          value: {{ .Values.prestashopCookieCheckIP | quote }}
         {{- if .Values.mariadb.enabled }}
         - name: MARIADB_HOST
           value: {{ template "prestashop.mariadb.fullname" . }}

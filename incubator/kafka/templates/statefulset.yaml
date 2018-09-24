@@ -16,10 +16,13 @@ spec:
   replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
-{{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.operator.enabled) }}
       annotations:
+{{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.operator.enabled) }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.prometheus.jmx.port | quote }}
+{{- end }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
       labels:
         app: {{ include "kafka.name" . }}
@@ -174,12 +177,14 @@ spec:
           value: "{{ .Values.jmx.port }}"
         {{- end }}
         {{- range $secret := .Values.secrets }}
-          {{- range $key := $secret.keys }}
+          {{- if not $secret.mountPath }}
+            {{- range $key := $secret.keys }}
         - name: {{ (print $secret.name "_" $key) | upper }}
           valueFrom:
             secretKeyRef:
               name: {{ $secret.name }}
               key: {{ $key }}
+            {{- end }}
           {{- end }}
         {{- end }}
         # This is required because the Downward API does not yet support identification of

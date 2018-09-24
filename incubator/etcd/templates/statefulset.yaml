@@ -47,6 +47,9 @@ spec:
           value: {{ .Values.replicas | quote }}
         - name: SET_NAME
           value: {{ template "etcd.fullname" . }}
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 8 }}
+{{- end }}
         volumeMounts:
         - name: datadir
           mountPath: /var/run/etcd

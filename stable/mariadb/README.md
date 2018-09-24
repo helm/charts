@@ -66,6 +66,8 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
 | `master.tolerations`                      | List of node taints to tolerate (master)            | `[]`                                                              |
 | `master.persistence.enabled`              | Enable persistence using a `PersistentVolumeClaim`  | `true`                                                            |
+| `master.persistence.existingClaim`        | Provide an existing `PersistentVolumeClaim`  | `nil`
+| `master.persistence.mountPath`            | Configure existing `PersistentVolumeClaim` mount path  | `""`  
 | `master.persistence.annotations`          | Persistent Volume Claim annotations                 | `{}`                                                              |
 | `master.persistence.storageClass`         | Persistent Volume Storage Class                     | ``                                                                |
 | `master.persistence.accessModes`          | Persistent Volume Access Modes                      | `[ReadWriteOnce]`                                                 |
@@ -145,3 +147,14 @@ The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
 The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image stores the MariaDB data and configurations at the `/bitnami/mariadb` path of the container.
 
 The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning, by default. An existing PersistentVolumeClaim can be defined.
+
+## Upgrading
+
+### To 5.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 5.0.0. The following example assumes that the release name is mariadb:
+
+```console
+$ kubectl delete statefulset opencart-mariadb --cascade=false
+```
