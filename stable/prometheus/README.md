@@ -173,6 +173,8 @@ Parameter | Description | Default
 `nodeExporter.extraArgs` | Additional node-exporter container arguments | `{}`
 `nodeExporter.extraHostPathMounts` | Additional node-exporter hostPath mounts | `[]`
 `nodeExporter.extraConfigmapMounts` | Additional node-exporter configMap mounts | `[]`
+`nodeExporter.hostNetwork` | If true, node-exporter pods share the host network namespace | `true`
+`nodeExporter.hostPID` | If true, node-exporter pods share the host PID namespace | `true`
 `nodeExporter.nodeSelector` | node labels for node-exporter pod assignment | `{}`
 `nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
 `nodeExporter.pod.labels` | labels to be added to node-exporter pods | `{}`
@@ -213,7 +215,7 @@ Parameter | Description | Default
 `rbac.create` | If true, create & use RBAC resources | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.4.0`
+`server.image.tag` | Prometheus server container image tag | `v2.4.2`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.enableAdminApi` |  If true, Prometheus administrative HTTP API will be enabled. Please note, that you should take care of administrative API access protection (ingress or some frontend Nginx with auth) before enabling it. | `false`
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
