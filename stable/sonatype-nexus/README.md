@@ -113,7 +113,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `ingress.tls.enabled`                       | Enable TLS                          | `false`                                 |
 | `ingress.tls.secretName`                    | Name of the secret storing TLS cert, `false` to use the Ingress' default certificate | `nexus-tls`                             |
 | `ingress.path`                              | Path for ingress rules. GCP users should set to `/*` | `/`                    |
-| `tolerations`                    | tolerations list | `[]` |
+| `tolerations`                               | tolerations list                    | `[]`                                    |
 
 If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables need to be configured
 
