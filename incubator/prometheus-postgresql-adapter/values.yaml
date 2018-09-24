@@ -23,7 +23,7 @@ service:
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
   nodePort: ""
-  port: 9021
+  port: 9201
   type: ClusterIP
 
 resources:
