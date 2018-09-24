@@ -20,12 +20,8 @@ metadata:
 {{- else}}
   name: {{ template "grafana.fullname" . }}-clusterrole
 {{- end}}
-{{- if or .Values.sidecar.dashboards.enabled .Values.sidecar.datasources.enabled }}
 rules:
 - apiGroups: [""] # "" indicates the core API group
   resources: ["configmaps"]
   verbs: ["get", "watch", "list"]
-{{- else }}
-rules: []
-{{- end}}
 {{- end}}

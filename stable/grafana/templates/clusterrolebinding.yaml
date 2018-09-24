@@ -26,7 +26,7 @@ subjects:
     namespace: {{ .Release.Namespace }}
 roleRef:
 {{- if .Values.sidecar.useCurrentNamespace  }}
-  kind: ClusterRole
+  kind: Role
   name: {{ template "grafana.fullname" . }}-role
 {{- else}}
   kind: ClusterRole
