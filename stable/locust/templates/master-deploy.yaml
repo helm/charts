@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "locust.master" . }}
@@ -10,6 +10,10 @@ metadata:
     component: master
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      component: master
+      app: {{ template "locust.fullname" . }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -64,6 +68,14 @@ spec:
           httpGet:
             path: /
             port: {{ .Values.service.internalPort }}
+      {{ if .Values.master.nodeSelectors.enable }}
+      nodeSelector:
+{{ toYaml .Values.master.nodeSelectors.items | indent 8 }}
+      {{- end }}
+      {{ if .Values.master.tolerations.enable }}
+      tolerations:
+{{ toYaml .Values.master.tolerations.items | indent 6 }}
+      {{- end }}
       volumes:
       - name: "locust-tasks"
         configMap:

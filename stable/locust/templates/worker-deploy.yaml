@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "locust.worker" . }}
@@ -10,6 +10,10 @@ metadata:
     component: worker
 spec:
   replicas: {{ default 2 .Values.worker.replicaCount }}
+  selector:
+    matchLabels:
+      component: worker
+      app: {{ template "locust.fullname" . }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -49,6 +53,14 @@ spec:
           value: {{ index .Values.worker.config "locust-script" | quote }}
         resources:
 {{ toYaml .Values.worker.resources | indent 10 }}
+      {{ if .Values.worker.nodeSelectors.enable }}
+      nodeSelector:
+{{ toYaml .Values.worker.nodeSelectors.items | indent 8 }}
+      {{- end }}
+      {{ if .Values.worker.tolerations.enable }}
+      tolerations:
+{{ toYaml .Values.worker.tolerations.items | indent 6 }}
+      {{- end }}
       restartPolicy: Always
       volumes:
         - name: "locust-tasks"

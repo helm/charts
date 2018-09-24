@@ -24,6 +24,17 @@ master:
     requests:
       cpu: 100m
       memory: 128Mi
+  nodeSelectors:
+    enable: false
+    items:
+      k8s.info/application: locust
+  tolerations:
+    enable: false
+    items:
+    - key: "application"
+      operator: "Equal"
+      value: "locust"
+      effect: "NoSchedule"
 worker:
   config:
 
@@ -37,6 +48,17 @@ worker:
     requests:
       cpu: 100m
       memory: 128Mi
+  nodeSelectors:
+    enable: false
+    items:
+      k8s.info/application: locust
+  tolerations:
+    enable: false
+    items:
+    - key: "application"
+      operator: "Equal"
+      value: "locust"
+      effect: "NoSchedule"
 
 # Flag to create the test script from this chart or not.
 createTestScripts: true
