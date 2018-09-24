@@ -317,6 +317,18 @@ metrics:
   # podAnnotations: {}
   # podLabels: {}
 
+##
+## Init containers parameters:
+## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
+##
+
+volumePermissions:
+  image:
+    registry: docker.io
+    repository: alpine
+    tag: 3.8
+    pullPolicy: IfNotPresent
+
 ## Redis config file
 ##
 configmap: |-
