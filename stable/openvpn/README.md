@@ -80,6 +80,10 @@ Parameter | Description | Default
 `openvpn.OVPN_K8S_POD_SUBNET`  | Kubernetes pod network subnet (optional)                             | `255.0.0.0`
 `openvpn.OVPN_K8S_SVC_NETWORK` | Kubernetes service network (optional)                                | `nil`
 `openvpn.OVPN_K8S_SVC_SUBNET`  | Kubernetes service network subnet (optional)                         | `nil`
+`openvpn.CERTS_KEY`            | base64 value of /etc/openvpn/certs/pki/private/server.key            | `nil`
+`openvpn.CERTS_CA`             | base64 value of /etc/openvpn/certs/pki/ca.crt                        | `nil`
+`openvpn.CERTS_CRT`            | base64 value of /etc/openvpn/certs/pki/issued/server.crt             | `nil`
+`openvpn.CERTS_DH`             | base64 value of /etc/openvpn/certs/pki/dh.pem                        | `nil`
 `openvpn.dhcpOptionDomain`     | Push a `dhcp-option DOMAIN` config                                   | `true`
 `openvpn.conf`                 | Arbitrary lines appended to the end of the server configuration file | `nil`
 `openvpn.redirectGateway`      | Redirect all client traffic through VPN                              | `true`
@@ -93,6 +97,9 @@ If openvpn.OVPN_K8S_SVC_NETWORK and openvpn.OVPN_K8S_SVC_SUBNET are defined, an 
 
 ### Certificates
 
-New certificates are generated with each deployment.
+New certificates are generated with each deployment, if certificate options (`openvpn.CERTS_KEY`, `openvpn.CERTS_CA`, `openvpn.CERTS_CRT`, `openvpn.CERTS_DH`) are not defined.
 If persistence is enabled certificate data will be persisted across pod restarts.
 Otherwise new client certs will be needed after each deployment or pod restart.
+
+Certificates can be passed via `openvpn.CERTS_KEY`, `openvpn.CERTS_CA`, `openvpn.CERTS_CRT`, `openvpn.CERTS_DH` value, which are the content of corresponding certificate files,
+packed in base64, without new lines (base64 -w0). If these values are defined, they will be applied on each deployment or pod restart, so persistence is not needed. 
