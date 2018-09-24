@@ -45,6 +45,31 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Upgrading an existing Release to a new major version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
+incompatible breaking change needing manual actions.
+
+### 4.0.0
+
+This version removes the `chart` label from the `spec.selector.matchLabels`
+which is immutable since `StatefulSet apps/v1beta2`. It has been inadvertently
+added, causing any subsequent upgrade to fail. See https://github.com/helm/charts/issues/7726.
+
+It also fixes https://github.com/helm/charts/issues/7726 where a deployment `extensions/v1beta1` can not be upgraded if `spec.selector` is not explicitely set.
+
+Finally, it fixes https://github.com/helm/charts/issues/7803 by removing mutable labels in `spec.VolumeClaimTemplate.metadata.labels` so that it is upgradable.
+
+In order to upgrade, delete the Redis StatefulSet before upgrading:
+```bash
+$ kubectl delete statefulsets.apps --cascade=false my-release-redis-master
+```
+And edit the Redis slave (and metrics if enabled) deployment:
+```bash
+kubectl patch deployments my-release-redis-slave --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+kubectl patch deployments my-release-redis-metrics --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+```
+
 ## Configuration
 
 The following table lists the configurable parameters of the Redis chart and their default values.
