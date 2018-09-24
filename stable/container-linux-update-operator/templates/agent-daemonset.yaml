@@ -1,0 +1,69 @@
+
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "container-linux-update-operator.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "container-linux-update-operator.name" . }}
+    component: agent
+    chart: {{ template "container-linux-update-operator.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }} 
+spec:
+  updateStrategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ template "container-linux-update-operator.name" . }}
+        component: agent
+        chart: {{ template "container-linux-update-operator.chart" . }}
+        release: {{ .Release.Name }}
+    spec:
+      strategy:
+        type: Recreate
+      {{- if .Values.rbac.create }}
+      serviceAccountName: container-linux-update-operator
+      {{- end }}
+      containers:
+      - name: update-agent
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        command:
+        - "/bin/update-agent"
+        volumeMounts:
+          - mountPath: /var/run/dbus
+            name: var-run-dbus
+          - mountPath: /etc/coreos
+            name: etc-coreos
+          - mountPath: /usr/share/coreos
+            name: usr-share-coreos
+          - mountPath: /etc/os-release
+            name: etc-os-release
+        env:
+        # read by update-agent as the node name to manage reboots for
+        - name: UPDATE_AGENT_NODE
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      volumes:
+      - name: var-run-dbus
+        hostPath:
+          path: /var/run/dbus
+      - name: etc-coreos
+        hostPath:
+          path: /etc/coreos
+      - name: usr-share-coreos
+        hostPath:
+          path: /usr/share/coreos
+      - name: etc-os-release
+        hostPath:
+          path: /etc/os-release

@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "container-linux-update-operator.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "container-linux-update-operator.name" . }}
+    chart: {{ template "container-linux-update-operator.chart" . }}
+    component: operator
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "container-linux-update-operator.name" . }}
+      component: operator
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "container-linux-update-operator.name" . }}
+        chart: {{ template "container-linux-update-operator.chart" . }}
+        component: operator
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.rbac.create }}
+      serviceAccountName: container-linux-update-operator
+      {{- end }}
+      containers:
+      - name: update-operator
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        command:
+        - "/bin/update-operator"
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule

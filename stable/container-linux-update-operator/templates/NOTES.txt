@@ -1,0 +1,9 @@
+Container Linux Update Operator has been installed
+
+It is installed in the namespace: {{ .Release.Namespace }}
+
+You can check if it's working by issuing the following command:
+
+  kubectl describe nodes
+
+And finding annotations/labels with the name: container-linux-update.v1.coreos.com
