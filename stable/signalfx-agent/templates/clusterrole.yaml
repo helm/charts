@@ -22,6 +22,7 @@ rules:
   - replicationcontrollers
   - replicationcontrollers/status
   - services
+  - resourcequotas
   # Only need to be able to view secrets if using k8s annotation
   # agent.signalfx.com/configWithSecret.*.  You can also whitelist specific
   # secrets for finer-grain permission sets.

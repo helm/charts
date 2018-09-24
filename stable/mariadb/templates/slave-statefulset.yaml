@@ -10,6 +10,11 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      release: "{{ .Release.Name }}"
+      component: "slave"
+      app: {{ template "mariadb.name" . }}
   serviceName: "{{ template "slave.fullname" . }}"
   replicas: {{ .Values.slave.replicas }}
   updateStrategy:
@@ -92,11 +97,11 @@ spec:
           value: "slave"
         - name: MARIADB_MASTER_HOST
           value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_MASTER_PORT
+        - name: MARIADB_MASTER_PORT_NUMBER
           value: "3306"
-        - name: MARIADB_MASTER_USER
+        - name: MARIADB_MASTER_ROOT_USER
           value: "root"
-        - name: MARIADB_MASTER_PASSWORD
+        - name: MARIADB_MASTER_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mariadb.fullname" . }}
