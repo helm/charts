@@ -12,6 +12,10 @@ tags: ''
 rookout:
   token: ''
 
+limits:
+  memory: 0.5Gi
+  cpu: 0.5
+
 nodeSelector: {}
 
 tolerations: []
