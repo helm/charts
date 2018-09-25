@@ -191,7 +191,6 @@ spec:
         name: data
         labels:
           app: "{{ template "mariadb.name" . }}"
-          chart: {{ template "mariadb.chart" . }}
           component: "master"
           release: {{ .Release.Name | quote }}
           heritage: {{ .Release.Service | quote }}
