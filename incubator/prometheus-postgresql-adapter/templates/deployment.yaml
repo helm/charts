@@ -33,7 +33,7 @@ spec:
           args:
           - -log.level={{ .Values.logLevel }}
           - -pg.host={{ required "A valid PostgreSQL endpoint .Values.pgHost is required!" .Values.pgHost }}
-          - -web.listen-address={{ .Values.webListenAddress }}
+          - -web.listen-address=:{{ .Values.webListenAddress }}
           {{- if .Values.pgDatabase }}
           - -pg.database={{ .Values.pgDatabase }}
           {{- end }}
