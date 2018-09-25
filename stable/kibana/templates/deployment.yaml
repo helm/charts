@@ -145,9 +145,9 @@ spec:
 {{- if .Values.plugins}}
         - name: plugins
           mountPath: /usr/share/kibana/plugins
+{{- end }}        
 {{- with .Values.extraContainers }}
 {{ tpl . $ | indent 6 }}
-{{- end }}        
 {{- end }}
     {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
