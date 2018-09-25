@@ -1,4 +1,4 @@
-1. The rendertron server can be accessed via port {{ .Values.service.port }} on the following DNS name from within your cluster:
+1. The rendertron server can be accessed via port {{ .Values.service.externalPort }} on the following DNS name from within your cluster:
 
    {{ template "rendertron.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 {{ if .Values.ingress.enabled }}
@@ -16,7 +16,7 @@
    NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "rendertron.fullname" . }}'
      export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "rendertron.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-     http://$SERVICE_IP:{{ .Values.service.port -}}
+     http://$SERVICE_IP:{{ .Values.service.externalPort -}}
 {{ else if contains "ClusterIP"  .Values.service.type }}
      export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "rendertron.fullname" . }},component={{ .Values.name }}" -o jsonpath="{.items[0].metadata.name}")
      kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080

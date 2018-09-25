@@ -43,7 +43,7 @@ spec:
               subPath: config.json
           ports:
             - name: service
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.service.internalPort }}
               protocol: TCP
           env:
 {{- range $key, $value := .Values.env }}
@@ -53,11 +53,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: {{ .Values.service.port }}
+              port: {{ .Values.service.internalPort }}
           readinessProbe:
             httpGet:
               path: /
-              port: {{ .Values.service.port }}
+              port: {{ .Values.service.internalPort }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

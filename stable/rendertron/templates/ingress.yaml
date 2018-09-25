@@ -1,6 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "rendertron.fullname" . -}}
-{{- $servicePort := .Values.service.port -}}
+{{- $servicePort := .Values.service.externalPort -}}
 {{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress

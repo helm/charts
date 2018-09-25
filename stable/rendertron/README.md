@@ -40,7 +40,8 @@ The following tables list the configurable parameters of the Rendertron chart an
 | `config.analyticsTrackingId` | Google Analytics tracking ID. See [config options](https://github.com/GoogleChrome/rendertron#config). | `""` |
 | `config.renderOnly`          | Restricted Domains. See [config options](https://github.com/GoogleChrome/rendertron#config). | `[]` |
 | `service.type`               | Kubernetes service type | `ClusterIP` |
-| `service.port`               | Kubernetes port where service is exposed| `8080` |
+| `service.externalPort`       | external port for the service| `8080` |
+| `service.internalPort`       | internal port for the service| `3000` |
 | `service.annotations`        | Service annotations | `{}` |
 | `service.labels`             | Custom labels | `{}`
 | `ingress.enabled`            | Enables Ingress | `false` |

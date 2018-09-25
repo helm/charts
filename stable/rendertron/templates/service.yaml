@@ -38,9 +38,9 @@ spec:
 {{- end }}
   ports:
     - name: service
-      port: {{ .Values.service.port }}
+      port: {{ .Values.service.externalPort }}
       protocol: TCP
-      targetPort: 8080
+      targetPort: {{ .Values.service.internalPort }}
 {{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
       nodePort: {{.Values.service.nodePort}}
 {{ end }}

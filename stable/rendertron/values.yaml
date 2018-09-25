@@ -11,7 +11,8 @@ image:
 ##
 service:
   type: ClusterIP
-  port: 8080
+  internalPort: 3000
+  externalPort: 8080
   annotations: {}
   labels: {}
 ingress:
