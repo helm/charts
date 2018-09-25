@@ -42,12 +42,8 @@ spec:
         - name: {{ $key | upper | replace "-" "_" }}
           value: {{ $value | quote }}
         {{- end }}
-        - name: LOCUST_MODE
-          value: "slave"
         - name: LOCUST_MASTER_HOST
           value: {{ template "locust.master-svc" . }}
-        - name: LOCUST_MASTER_WEB
-          value: "{{ .Values.service.internalPort }}"
         - name: TARGET_URL
           value: {{ index .Values.master.config "target-url" | quote }}
         - name: LOCUSTFILE_PATH

@@ -42,8 +42,6 @@ spec:
         - name: {{ $key | upper | replace "-" "_" }}
           value: {{ $value | quote }}
         {{- end }}
-        - name: LOCUST_MODE
-          value: "master"
         - name: TARGET_URL
           value: {{ index .Values.master.config "target-url" | quote }}
         - name: LOCUSTFILE_PATH
