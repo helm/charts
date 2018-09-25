@@ -178,8 +178,8 @@ spec:
         emptyDir: {}
   {{- end }}
   updateStrategy:
-    type: {{ .Values.data.updateStrategy.type }}
-  {{- if .Values.data.persistence.enabled }}
+    type: {{ $data.updateStrategy.type }}
+  {{- if $data.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: {{ $data.persistence.name }}
