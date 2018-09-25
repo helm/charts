@@ -16,6 +16,7 @@ Master:
 # ImagePullSecret: jenkins
   Component: "jenkins-master"
   UseSecurity: true
+  #SecurityRealm:
   HostNetworking: false
   AdminUser: admin
   # AdminPassword: <defaults to random>
