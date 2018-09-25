@@ -1,4 +1,4 @@
-{{- if or .Values.autoDiscovery.clusterName .Values.autoscalingGroups }}
+{{- if or .Values.autoDiscovery.clusterName .Values.autoscalingGroups .Values.autoscalingNodeGroupname }}
 {{/* one of the above is required */}}
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -60,10 +60,14 @@ spec:
           {{- if eq .Values.cloudProvider "gce" }}
             - --cloud-config={{ .Values.cloudConfigPath }}
             {{- end }}
+          {{- if eq .Values.cloudProvider "azure" }}
+            {{- range .Values.autoscalingNodeGroupname }}
+            - --nodes={{ .minSize }}:{{ .maxSize }}:{{ .name }}
+            {{- end }}
+          {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
             - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}
           {{- end }}
-
           env:
           {{- if eq .Values.cloudProvider "aws" }}
             - name: AWS_REGION
@@ -73,6 +77,38 @@ spec:
               value: "{{ .Values.spotinst.token }}"
             - name: SPOTINST_ACCOUNT
               value: "{{ .Values.spotinst.account }}"
+          {{- end }}
+          {{- if eq .Values.cloudProvider "azure" }}
+            - name: ARM_SUBSCRIPTION_ID
+              valueFrom:
+                secretKeyRef:
+                  key: SubscriptionID
+                  name: cluster-autoscaler-azure
+            - name: ARM_RESOURCE_GROUP
+              valueFrom:
+                secretKeyRef:
+                  key: ResourceGroup
+                  name: cluster-autoscaler-azure
+            - name: ARM_TENANT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: TenantID
+                  name: cluster-autoscaler-azure
+            - name: ARM_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: ClientID
+                  name: cluster-autoscaler-azure
+            - name: ARM_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: ClientSecret
+                  name: cluster-autoscaler-azure
+            - name: ARM_VM_TYPE
+              valueFrom:
+              secretKeyRef:
+                key: VMType
+                name: cluster-autoscaler-azure
           {{- end }}
           {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}

@@ -1,4 +1,4 @@
-{{- if or .Values.autoDiscovery.clusterName .Values.autoscalingGroups -}}
+{{- if or .Values.autoDiscovery.clusterName .Values.autoscalingGroups .Values.autoscalingNodeGroupname -}}
 
 To verify that cluster-autoscaler has started, run:
 
@@ -6,10 +6,10 @@ To verify that cluster-autoscaler has started, run:
 
 {{- else -}}
 
-##############################################################################
-####   ERROR: You must specify values for either                          ####
-####   autoDiscovery.clusterName or autoscalingGroups[]                   ####
-##############################################################################
+##########################################################################################
+####         ERROR: You must specify values for either                                ####
+####   autoDiscovery.clusterName or autoscalingGroups[] or autoscalingNodeGroupname[] ####
+##########################################################################################
 
 The deployment and pod will not be created and the installation is not functional
 See README:

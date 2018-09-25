@@ -24,7 +24,7 @@ autoscalingGroupsnamePrefix: []
 # Required if cloudProvider=aws
 awsRegion: us-east-1
 
-# Currently only `gce`, `aws` & `spotinst` are supported
+# Currently only `gce`, `aws`, `spotinst` and 'azure' are supported
 cloudProvider: aws
 
 sslCertPath: /etc/ssl/certs/ca-certificates.crt
@@ -32,6 +32,17 @@ sslCertPath: /etc/ssl/certs/ca-certificates.crt
 # Configuration file for cloud provider
 cloudConfigPath: /etc/gce.conf
 
+# Required if cloudProvider=azure
+autoscalingNodeGroupname: []
+# At least one agent group element required
+  # - name: vmss1
+  #   maxSize: 10
+  #   minSize: 1
+  # - name: agentpool1
+  #   maxSize: 10
+  #   minSize: 1
+
+## nodes= min number of nodes:maximum number of nodes:agentpool name
 image:
   repository: k8s.gcr.io/cluster-autoscaler
   tag: v1.2.2
@@ -118,3 +129,17 @@ spotinst:
     repository: spotinst/kubernetes-cluster-autoscaler
     tag: 0.6.0
     pullPolicy: IfNotPresent
+
+## Configuration details only for azure
+##
+azure:
+  clientID:
+  ClientSecret:
+  ResourceGroup:
+  SubscriptionID:
+  TenantID:
+  VMType:
+## Cluster autoscaler supports four VM types with Azure cloud provider:
+## vmss for virtual scale set, standard for VMAS instances
+## aks for managed kubernetes service
+## acs for managed container service
