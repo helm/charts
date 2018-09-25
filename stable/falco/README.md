@@ -84,6 +84,11 @@ The following table lists the configurable parameters of the Falco chart and the
 | `integrations.gcscc.webhookAuthenticationToken` | Token used for authentication and webhook                            | `b27511f86e911f20b9e0f9c8104b4ec4`                                                     |
 | `integrations.natsOutput.enabled`               | Enable NATS Output integration                                       | `false`                                                                                |
 | `integrations.natsOutput.natsUrl`               | The NATS' URL where Falco is going to publish security alerts        | `nats://nats.nats-io.svc.cluster.local:4222`                                           |
+| `integrations.snsOutput.enabled`                | Enable Amazon SNS Output integration                                 | `false`                                                                                |
+| `integrations.snsOutput.topic`                  | The SNS topic where Falco is going to publish security alerts        | ` `                                                                                    |
+| `integrations.snsOutput.aws_access_key_id`      | The AWS Access Key Id credentials for access to SNS n                | ` `                                                                                    |
+| `integrations.snsOutput.aws_secret_access_key`  | The AWS Secret Access Key credential to access to SNS                | ` `                                                                                    |
+| `integrations.snsOutput.aws_default_region`     | The AWS region where SNS is deployed                                 | ` `                                                                                    |
 | `tolerations`                                   | The tolerations for scheduling                                       | `node-role.kubernetes.io/master:NoSchedule`                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
