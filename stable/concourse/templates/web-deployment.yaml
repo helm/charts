@@ -61,7 +61,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.externalUrl }}
             - name: CONCOURSE_EXTERNAL_URL
-              value: {{ .Values.concourse.externalURL | quote }}
+              value: {{ .Values.concourse.web.externalUrl | quote }}
             {{- end }}
             {{- if .Values.concourse.web.peerUrl }}
             - name: CONCOURSE_PEER_URL
@@ -431,7 +431,7 @@ spec:
             - name: CONCOURSE_PROMETHEUS_BIND_IP
               value: {{ .Values.concourse.web.prometheus.bindIp | quote }}
             - name: CONCOURSE_PROMETHEUS_BIND_PORT
-              value: {{ .Values.concouse.web.prometheus.port | quote }}
+              value: {{ .Values.concourse.web.prometheus.bindPort | quote }}
             {{- end }}
 
             {{- if .Values.concourse.web.riemann.enabled }}
@@ -860,17 +860,17 @@ spec:
               containerPort: {{ .Values.concourse.web.bindPort }}
             - name: tsa
               containerPort: {{ .Values.concourse.web.tsa.bindPort }}
-            {{- if .Values.concourse.web.bindDebugPort }}
-            - name: prometheus
-              containerPort: {{ .Values.concourse.web.bindDebugPort }}
+            {{- if .Values.concourse.web.debugBindPort }}
+            - name: atc-debug
+              containerPort: {{ .Values.concourse.web.debugBindPort }}
             {{- end }}
             {{- if .Values.concourse.web.tsa.bindDebugPort }}
-            - name: prometheus
+            - name: tsa-debug
               containerPort: {{ .Values.concourse.web.tsa.bindDebugPort }}
             {{- end }}
             {{- if .Values.concourse.web.prometheus.enabled }}
             - name: prometheus
-              containerPort: {{ .Values.concourse.web.prometheus.port }}
+              containerPort: {{ .Values.concourse.web.prometheus.bindPort }}
             {{- end }}
           livenessProbe:
             httpGet:
