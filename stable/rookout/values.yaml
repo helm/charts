@@ -14,7 +14,7 @@ rookout:
 
 limits:
   memory: 0.5Gi
-  cpu: 0.5
+  cpu: 50m
 
 nodeSelector: {}
 

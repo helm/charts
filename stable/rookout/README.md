@@ -49,7 +49,7 @@ The following table lists the configurable parameters of the Rookout Router char
 | `listenAll`                       | Configuring the agent to listen on all addresses instead of only localhost.                      | `True` You must provide your own token |   
 | `image.registry`                  | Rookout image registry                   | `docker.io`                                             |
 | `limits.memory`                   | Memory limit                             | `0.5Gi`                                                 |
-| `limits.cpu`                      | CPU limit                                | `0.5`                                                   |
+| `limits.cpu`                      | CPU limit                                | `50m`                                                   |
 | `image.repository`                | Rookout image name                       | `rookout/agent`                                         |
 | `image.tag`                       | Rookout image tag                        | `{VERSION}`                                             |
 | `image.pullPolicy`                | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
