@@ -80,6 +80,9 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
+{{- if .Values.extraInitContainers }}
+{{ tpl .Values.extraInitContainers . | indent 6 }}
+{{- end }}
       containers:
       - name: elasticsearch
         env:
@@ -167,7 +170,10 @@ spec:
   {{- if not .Values.data.persistence.enabled }}
       - name: data
         emptyDir: {}
-  {{- else }}
+  {{- end }}
+  updateStrategy:
+    type: {{ .Values.data.updateStrategy.type }}
+  {{- if .Values.data.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: {{ .Values.data.persistence.name }}
