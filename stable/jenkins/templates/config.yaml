@@ -16,7 +16,11 @@ data:
       <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
         <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
       </authorizationStrategy>
+{{- if .Values.Master.SecurityRealm }}
+{{ .Values.Master.SecurityRealm | indent 6 }}
+{{- else }}
       <securityRealm class="hudson.security.LegacySecurityRealm"/>
+{{- end }}
       <disableRememberMe>false</disableRememberMe>
       <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
       <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
