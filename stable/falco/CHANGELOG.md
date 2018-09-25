@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.4.0
+
+### Major Changes
+
+* Add Amazon SNS Output integration
+
 ## v0.3.1
 
 ### Minor Changes
