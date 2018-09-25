@@ -303,4 +303,3 @@ in the `dataTypes` list. This is the recommended way to deploy this chart from s
 However, if we already have deployed a version with `data` declared, we could simplify
 the migration by first adding `dataTypes`, and later removing the `data` attribute in
 another deploy.
->>>>>>> improve README
