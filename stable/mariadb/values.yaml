@@ -165,7 +165,7 @@ master:
     failureThreshold: 3
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 15
+    initialDelaySeconds: 30
     ##
     ## Default Kubernetes values
     periodSeconds: 10
@@ -250,7 +250,7 @@ slave:
     failureThreshold: 3
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 15
+    initialDelaySeconds: 45
     ##
     ## Default Kubernetes values
     periodSeconds: 10
