@@ -80,7 +80,7 @@ There are two paths to becoming a trusted collaborator. One only needs follow on
 The process to get added is:
 
 * File an issue asking to be a trusted collaborator
-* A Helm Chart Maintainer can then add the persona as a read only collaborator to the repository
+* A Helm Chart Maintainer can then add the user as a read only collaborator to the repository
 
 ## Review Process
 
