@@ -103,6 +103,10 @@ spec:
         chart: "{{ $root.Chart.Name }}-{{ $root.Chart.Version }}"
         component: "{{ $root.Values.Component }}"
     spec:
+      {{- if $root.Values.Image.pullSecretName }}
+      imagePullSecrets:
+      - name: {{ $root.Values.Image.pullSecretName }}
+      {{ end }}
       {{- if $root.Values.nodeSelector }}
       nodeSelector:
       {{ toYaml $root.Values.nodeSelector | indent 8 }}
