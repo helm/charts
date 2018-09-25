@@ -34,6 +34,7 @@ spec:
       - name: locust
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: ["-f", "$(LOCUSTFILE_PATH)", "-H", "$(TARGET_URL)", "--master", "--loglevel=DEBUG"]
         resources:
 {{ toYaml .Values.worker.resources | indent 10 }}
         env:
@@ -43,6 +44,8 @@ spec:
         {{- end }}
         - name: LOCUST_MODE
           value: "master"
+        - name: TARGET_URL
+          value: {{ index .Values.master.config "target-url" | quote }}
         - name: LOCUSTFILE_PATH
           value: {{ index .Values.worker.config "locust-script" | quote }}
         ports:
