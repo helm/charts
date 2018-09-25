@@ -55,6 +55,7 @@ Parameter | Description | Default
 `logLevel` | The log level to use [`error`, `warn`, `info`, `debug`] | `info`
 `nodeSelector` | Node labels for pod assignment | `{}`
 `pgDatabase` | The PostgreSQL database | `postgres`
+`pgPassword` | The PostgreSQL password | None
 `pgPort` | The PostgreSQL port | `5432`
 `pgSchema` | The PostgreSQL schema | `postgres`
 `pgTablePrefix` | Override prefix for internal tables. It is also a view name used for querying | `metrics`
