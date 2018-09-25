@@ -1,4 +1,5 @@
-{{- if ( .Values.data ) and ( .Values.data.podDisruptionBudget.enabled ) }}
+{{- if .Values.data }}
+{{- if .Values.data.podDisruptionBudget.enabled }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -21,4 +22,5 @@ spec:
       app: {{ template "elasticsearch.name" . }}
       component: "{{ .Values.data.name }}"
       release: {{ .Release.Name }}
+{{- end }}
 {{- end }}
