@@ -1,9 +1,9 @@
 apiVersion: v1
 description: A Helm chart for Rookout agent on Kubernetes
 icon: https://app.rookout.com/static/rookout/img/logo.svg
+version: 0.1.1
 name: rookout
 home: "http://rookout.com/"
 maintainers:
 - name: Zohar2506
   email: zohar@rookout.com
-
