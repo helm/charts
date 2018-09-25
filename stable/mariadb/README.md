@@ -81,7 +81,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.livenessProbe.successThreshold`   | Minimum consecutive successes for the probe (master)| `1`                                                               |
 | `master.livenessProbe.failureThreshold`   | Minimum consecutive failures for the probe (master) | `3`                                                               |
 | `master.readinessProbe.enabled`           | Turn on and off readiness probe (master)            | `true`                                                            |
-| `master.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (master) | `15`                                                              |
+| `master.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (master) | `30`                                                              |
 | `master.readinessProbe.periodSeconds`     | How often to perform the probe (master)             | `10`                                                              |
 | `master.readinessProbe.timeoutSeconds`    | When the probe times out (master)                   | `1`                                                               |
 | `master.readinessProbe.successThreshold`  | Minimum consecutive successes for the probe (master)| `1`                                                               |
@@ -104,7 +104,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.livenessProbe.successThreshold`    | Minimum consecutive successes for the probe (slave) | `1`                                                               |
 | `slave.livenessProbe.failureThreshold`    | Minimum consecutive failures for the probe (slave)  | `3`                                                               |
 | `slave.readinessProbe.enabled`            | Turn on and off readiness probe (slave)             | `true`                                                            |
-| `slave.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (slave)   | `15`                                                              |
+| `slave.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (slave)   | `45`                                                              |
 | `slave.readinessProbe.periodSeconds`      | How often to perform the probe (slave)              | `10`                                                              |
 | `slave.readinessProbe.timeoutSeconds`     | When the probe times out (slave)                    | `1`                                                               |
 | `slave.readinessProbe.successThreshold`   | Minimum consecutive successes for the probe (slave) | `1`                                                               |
