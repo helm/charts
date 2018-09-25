@@ -52,6 +52,7 @@ Parameter | Description | Default
 `resources` | resource requests & limits | `{}`
 `priorityClassName` | priorityClassName | `nil` |
 `nodeSelector` | Node labels for pod assignment | `{}` |
+`podAnnotations` | Pod annotations | `{}` |
 `service.type` | type of service to create | `ClusterIP`
 `service.httpPort` | port for the http service | `9108`
 `es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
