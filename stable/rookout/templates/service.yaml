@@ -15,4 +15,4 @@ spec:
   type: ClusterIP
   ports:
     - protocol: TCP
-      port: 7486
+      port: 7486 
