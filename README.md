@@ -68,6 +68,20 @@ Individual charts can be maintained by one or more members of the Kubernetes com
 
 Once these two steps are done a chart approver can merge pull requests following the directions in the [REVIEW_GUIDELINES.md](REVIEW_GUIDELINES.md) file.
 
+## Trusted Collaborator
+
+The `pull-charts-e2e` test run, that installs a chart to test it, is required before a pull request can be merged. These tests run automatically for members of the Helm Org and for chart OWNERS, listed in OWNERS files. For regular contributors who are trusted, in a manner similar to Kubernetes community members, we have trusted collaborators. These individuals can have their tests run automatically as well as mark other pull requests as ok to test by adding a comment of `/ok-to-test` on pull requests.
+
+There are two paths to becoming a trusted collaborator. One only needs follow one of them.
+
+1. If you are a Kubernetes GitHub org member and have your Kubernetes org membership public you can become a trusted collaborator for Helm Charts
+2. Get sponsorship from one of the Charts Maintainers listed in the OWNERS file at the root of this repository
+
+The process to get added is:
+
+* File an issue asking to be a trusted collaborator
+* A Helm Chart Maintainer can then add the user as a read only collaborator to the repository
+
 ## Review Process
 
 For information related to the review procedure used by the Chart repository maintainers, see [Merge approval and release process](CONTRIBUTING.md#merge-approval-and-release-process).
