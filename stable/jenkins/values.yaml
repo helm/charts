@@ -201,8 +201,6 @@ NetworkPolicy:
 rbac:
   install: false
   serviceAccountName: default
-  # RBAC api version (currently either v1, v1beta1, or v1alpha1)
-  apiVersion: v1
   # Role reference
   roleRef: cluster-admin
   # Role kind (RoleBinding or ClusterRoleBinding)
