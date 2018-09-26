@@ -51,7 +51,7 @@ The following table lists the configurable parameters of the Rookout Router char
 | `limits.memory`                   | Memory chart limit                             | `0.5Gi`                                                 |
 | `limits.cpu`                      | CPU chart limit                                | `50m`                                                   |
 | `image.repository`                | Rookout image name                       | `rookout/agent`                                         |
-| `image.tag`                       | Rookout image tag                        | `{VERSION}`                                             |
+| `image.tag`                       | Rookout image tag                        | 0.2.3                                             |
 | `image.pullPolicy`                | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `image.pullSecrets`               | Specify image pull secrets               | `nil`                                                   |
 
