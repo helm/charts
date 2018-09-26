@@ -27,7 +27,6 @@ spec:
         fsGroup: 1000
       containers:
       - image: {{ .Values.global.repo }}/{{ .Values.yarn_rm.image }}
-        imagePullPolicy: Always
         name: {{ template "fullname" . }}-yarn-rm
         securityContext:
           allowPrivilegeEscalation: false

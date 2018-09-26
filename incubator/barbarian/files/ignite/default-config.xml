@@ -35,12 +35,41 @@
                     {{- else }}
                     <property name="defaultMode" value="PRIMARY" />
                     {{- end }}
+
+                    {{- if .Values.ignite.hybrid }}
+                    <property name="pathModes">
+                        <map>
+                            <entry key="/apps" value="PRIMARY"/>      
+                            <entry key="/tmp" value="PRIMARY"/>      
+                            <entry key="/user" value="PRIMARY"/>      
+                            <entry key="/hive" value="PRIMARY"/>      
+                            <entry key="/slider" value="PRIMARY"/>      
+                        </map>
+                    </property>
+                    {{- end }}
+
                     <!-- Configure TCP endpoint for communication with the file system instance. -->
                     <property name="ipcEndpointConfiguration">
                         <bean class="org.apache.ignite.igfs.IgfsIpcEndpointConfiguration">
                             <property name="type" value="TCP" />
                             <property name="host" value="0.0.0.0" />
                             <property name="port" value="10500" />
+                        </bean>
+                    </property>
+
+                    <property name="dataCacheConfiguration">
+                        <bean class="org.apache.ignite.configuration.CacheConfiguration">
+                            <property name="atomicityMode" value="TRANSACTIONAL" />
+                            <property name="cacheMode" value="PARTITIONED" />
+                            <property name="backups" value="{{ (sub .Values.ignite.data.replicas 1) }}" />
+                        </bean>
+                    </property>
+
+                    <property name="metaCacheConfiguration">
+                        <bean class="org.apache.ignite.configuration.CacheConfiguration">
+                            <property name="atomicityMode" value="TRANSACTIONAL" />
+                            <property name="cacheMode" value="PARTITIONED" />
+                            <property name="backups" value="{{ (sub .Values.ignite.meta.replicas 1) }}" />
                         </bean>
                     </property>
 

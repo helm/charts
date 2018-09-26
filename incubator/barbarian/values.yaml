@@ -7,7 +7,7 @@ global:
   log_level: INFO
   log_dir: /tmp
 
-  # set to true if you want to automatically install the Tez sharelib to
+  # set to true if you want to automatically install the Tez sharelib to 
   # the cluster's distributed filesystem
   tez_init: true
 
@@ -113,6 +113,18 @@ ignite:
   # otherwise ignite in-memory filesystem will be the primary
   # storage backend (useful for evaluation/testing only)
   secondary_fs_enabled: false
+
+  # hybrid mode allows igfs to act as the primary storage system with the secondary filesystem
+  # mounted at the path '/external'
+  hybrid: false
+
+  # how many data replicas igfs should maintain for durability
+  data:
+    replicas: 3
+
+  # how many metadata replicas igfs should maintain for durability
+  meta:
+    replicas: 3  
 
   # currently only supports s3a. support for adls, google cloud storage and ceph
   # will follow

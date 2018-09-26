@@ -10,7 +10,7 @@ This release brings:
 
 Barbarian is designed to run as a horizontally scalable parallel, distributed, *in memory* data warehouse - a bit like SAP Hana™ but with a low TCO.
 
-Barbarian can ingest data from Amazon S3 or a remote HDFS cluster for high performance, low latency analysis, or alternatively Barbarian can be configured to run as a Big Data solution accessing Amazon S3 - using its own storage as an in-memory write-through cache.
+Barbarian can ingest data from Amazon S3 or a remote HDFS cluster for high performance, low latency analysis, or alternatively Barbarian can be configured to run as a Big Data solution accessing Amazon S3 - using its own storage as an in-memory write-through cache. There is also a hybrid mode whereby Barbarian mounts common paths in memory and acts as a write-through cache for everything else.
 
 We will be adding support for more storage backends including Azure ADLS, GCP Cloud Storage, and Ceph in coming releases.
 
@@ -102,6 +102,9 @@ Barbarian exposes many configuration parameters. Some important ones are listed 
 | ignite.count | 5 | How many IGFS servers to deploy |
 | ignite.ingress_enabled | false | should the Ignite in-memory filesystem be exposed to the outside? |
 | ignite.secondary_fs_enabled | false | Enable a persistent backing store? |
+| ignite.hybrid | false | Enable hybrid storage configuration? |
+| ignite.data.replicas | 3 | IGFS data replication factor |
+| ignite.meta.replicas | 3 | IGFS metadata replication factor |
 | ignite.secondary_fs_uri | n/a | Filesystem URI in the form s3a://YOUR_BUCKET/. Currently only supports S3a. Other filesystem will be supported in the future |
 | ignite.s3a.access_key_id | n/a | AWS S3 access key ID |
 | ignite.s3a.secret_access_key | n/a | AWS S3 secret access key |

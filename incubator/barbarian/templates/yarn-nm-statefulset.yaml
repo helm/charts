@@ -23,7 +23,6 @@ spec:
         fsGroup: 1000
       containers:
       - image: {{ .Values.global.repo }}/{{ .Values.yarn_nm.image }}
-        imagePullPolicy: Always
         name: yarn-nm
         securityContext:
           allowPrivilegeEscalation: false
