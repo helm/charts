@@ -26,6 +26,7 @@ nexus:
   nexusPort: 8081
   serviceType: NodePort
   # annotations: {}
+  # labels: {}
   # securityContext:
   #   fsGroup: 2000
   livenessProbe:
