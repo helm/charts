@@ -49,6 +49,8 @@ Master:
   ServiceType: LoadBalancer
   # Master Service annotations
   ServiceAnnotations: {}
+  # Master Service Labels
+  ServiceLabels: {}
   #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
   # Used to create Ingress record (should used with ServiceType: ClusterIP)
   # HostName: jenkins.cluster.local
