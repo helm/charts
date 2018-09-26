@@ -325,8 +325,8 @@ metrics:
 volumePermissions:
   image:
     registry: docker.io
-    repository: alpine
-    tag: 3.8
+    repository: busybox
+    tag: latest
     pullPolicy: IfNotPresent
 
 ## Redis config file
