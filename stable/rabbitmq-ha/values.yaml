@@ -259,6 +259,9 @@ nodeSelector: {}
 ##
 tolerations: []
 
+## Extra Annotations to be added to pod
+podAnnotations: {}
+
 ## Pod affinity
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 podAntiAffinity: soft

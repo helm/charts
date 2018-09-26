@@ -165,6 +165,7 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.env.agentAutoRegisterHostname`     | GoCD Agent hostname                                                                                                                                                              | `nil`                        |
 | `agent.env.goAgentBootstrapperArgs`       | GoCD Agent Bootstrapper Args. It can be used to [Configure end-to-end transport security](https://docs.gocd.org/current/installation/ssl_tls/end_to_end_transport_security.html) | `nil`                        |
 | `agent.env.goAgentBootstrapperJvmArgs`    | GoCD Agent Bootstrapper JVM Args.                                                                                                                                                | `nil`                        |
+| `agent.env.extraEnvVars`                  | GoCD Agent extra Environment variables                                                                       | `nil`               |
 | `agent.privileged`                        | Run container in privileged mode (needed for DinD, Docker-in-Docker agents)                                                                                                      | `false`                      |
 | `agent.healthCheck.enabled`               | Enable use of GoCD agent health checks.                                                                                                                                          | `false`                      |
 | `agent.healthCheck.initialDelaySeconds`   | GoCD agent start up time.                                                                                                                                                        | `60`                         |
@@ -228,30 +229,70 @@ The value pvSelector must be specified so that the right persistence volume will
 $ helm install --name gocd-app --set server.persistence.existingClaim=PVC_NAME stable/gocd
 ```
 
+#### Additional Volumes
+
+Additional volumes, such as `ConfigMaps` and `secrets`, can be mounted on the server and agent deployments.
+
+To mount a `secret`:
+```
+  persistence:
+    enabled: true
+    extraVolumeMounts:
+      - name: github-key
+        mountPath: /etc/config/keys/
+        readOnly: true
+    extraVolumes:
+      - name: github-key
+        secret:
+          secretName: github-key
+          defaultMode: 0744
+```
+
+To mount a `ConfigMap` containing `/docker-entrypoint.d/` scripts:
+```
+  persistence:
+    enabled: true
+    name:
+      dockerEntryPoint: gocd-init-scripts
+    subpath:
+      dockerEntryPoint: ""
+    extraVolumes:
+      - name: gocd-init-scripts
+        configMap:
+          name: gocd-init-scripts
+          defaultMode: 0755
+```
+
 ### Server persistence Values
 
-| Parameter                                     | Description                                         | Default              |
-| --------------------------------------------- | --------------------------------------------------- | -------------------- |
-| `server.persistence.enabled`                  | Enable the use of a GoCD server PVC                 | `true`              |
-| `server.persistence.accessMode`               | The PVC access mode                                 | `ReadWriteOnce`      |
-| `server.persistence.size`                     | The size of the PVC                                 | `2Gi`                |
-| `server.persistence.storageClass`             | The PVC storage class name                          | `nil`                |
-| `server.persistence.pvSelector`               | The godata Persistence Volume Selectors             | `nil`                |
-| `server.persistence.subpath.godata`           | The /godata path on Persistence Volume              | `godata`             |
-| `server.persistence.subpath.homego`           | The /home/go path on Persistence Volume             | `homego`             |
-| `server.persistence.subpath.dockerEntryPoint` | The /docker-entrypoint.d path on Persistence Volume | `scripts`            |
+| Parameter                                     | Description                                             | Default              |
+| --------------------------------------------- | ------------------------------------------------------- | -------------------- |
+| `server.persistence.enabled`                  | Enable the use of a GoCD server PVC                     | `true`               |
+| `server.persistence.accessMode`               | The PVC access mode                                     | `ReadWriteOnce`      |
+| `server.persistence.size`                     | The size of the PVC                                     | `2Gi`                |
+| `server.persistence.storageClass`             | The PVC storage class name                              | `nil`                |
+| `server.persistence.pvSelector`               | The godata Persistence Volume Selectors                 | `nil`                |
+| `server.persistence.name.dockerEntryPoint`    | The Persitence Volume to mount at /docker-entrypoint.d/ | `goserver-vol`       |
+| `server.persistence.subpath.godata`           | The /godata path on Persistence Volume                  | `godata`             |
+| `server.persistence.subpath.homego`           | The /home/go path on Persistence Volume                 | `homego`             |
+| `server.persistence.subpath.dockerEntryPoint` | The /docker-entrypoint.d path on Persistence Volume     | `scripts`            |
+| `server.persistence.extraVolumes`             | Additional server volumes                               | `[]`                 |
+| `server.persistence.extraVolumeMounts`        | Additional server volumeMounts                          | `[]`                 |
 
 ### Agent persistence Values
 
-| Parameter                                     | Description                                          | Default              |
-| --------------------------------------------- | ---------------------------------------------------- | -------------------- |
-| `agent.persistence.enabled`                   | Enable the use of a GoCD agent PVC                   | `false`              |
-| `agent.persistence.accessMode`                | The PVC access mode                                  | `ReadWriteOnce`      |
-| `agent.persistence.size`                      | The size of the PVC                                  | `1Gi`                |
-| `agent.persistence.storageClass`              | The PVC storage class name                           | `nil`                |
-| `agent.persistence.pvSelector`                | The godata Persistence Volume Selectors              | `nil`                |
-| `agent.persistence.subpath.homego`            | The /home/go path on Persistence Volume              | `homego`             |
-| `agent.persistence.subpath.dockerEntryPoint`  | The /docker-entrypoint.d path on Persistence Volume  | `scripts`            |
+| Parameter                                     | Description                                             | Default              |
+| --------------------------------------------- | ------------------------------------------------------- | -------------------- |
+| `agent.persistence.enabled`                   | Enable the use of a GoCD agent PVC                      | `false`              |
+| `agent.persistence.accessMode`                | The PVC access mode                                     | `ReadWriteOnce`      |
+| `agent.persistence.size`                      | The size of the PVC                                     | `1Gi`                |
+| `agent.persistence.storageClass`              | The PVC storage class name                              | `nil`                |
+| `agent.persistence.pvSelector`                | The godata Persistence Volume Selectors                 | `nil`                |
+| `agent.persistence.name.dockerEntryPoint`     | The Persitence Volume to mount at /docker-entrypoint.d/ | `goagent-vol`        |
+| `agent.persistence.subpath.homego`            | The /home/go path on Persistence Volume                 | `homego`             |
+| `agent.persistence.subpath.dockerEntryPoint`  | The /docker-entrypoint.d path on Persistence Volume     | `scripts`            |
+| `agent.persistence.extraVolumes`              | Additional agent volumes                                | `[]`                 |
+| `agent.persistence.extraVolumeMounts`         | Additional agent volumeMounts                           | `[]`                 |
 
 ##### Note:
 

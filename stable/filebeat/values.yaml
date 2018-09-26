@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/beats/filebeat-oss
-  tag: 6.3.2
+  tag: 6.4.1
   pullPolicy: IfNotPresent
 
 config:
@@ -57,9 +57,21 @@ indexTemplateLoad: []
 plugins: []
   # - kinesis.so
 
-# A map of additional environment variables
-extraVars: {}
-  # test1: "test2"
+# pass custom command. This is equivalent of Entrypoint in docker
+command: []
+
+# pass custom args. This is equivalent of Cmd in docker
+args: []
+
+# A list of additional environment variables
+extraVars: []
+  # - name: TEST1
+  #   value: TEST2
+  # - name: TEST3
+  #   valueFrom:
+  #     configMapKeyRef:
+  #       name: configmap
+  #       key: config.key
 
 # Add additional volumes and mounts, for example to read other log files on the host
 extraVolumes: []

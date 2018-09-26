@@ -1,11 +1,11 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "6.4.0"
+appVersion: "6.4.1"
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.4.0"
+  tag: "6.4.1"
   pullPolicy: "IfNotPresent"
   # If specified, use these secrets to access the image
   # pullSecrets:
@@ -13,7 +13,6 @@ image:
 
 cluster:
   name: "elasticsearch"
-  kubernetesDomain: cluster.local
   # If you want X-Pack installed, switch to an image that includes it, enable this option and toggle the features you want
   # enabled in the environment variables outlined in the README
   xpackEnable: false
@@ -85,6 +84,8 @@ master:
     enabled: false
     minAvailable: 2  # Same as `cluster.env.MINIMUM_MASTER_NODES`
     # maxUnavailable: 1
+  updateStrategy:
+    type: OnDelete
 
 data:
   name: data
@@ -116,3 +117,8 @@ data:
     enabled: false
     # minAvailable: 1
     maxUnavailable: 1
+  updateStrategy:
+    type: OnDelete
+
+## Additional init containers
+extraInitContainers: |
