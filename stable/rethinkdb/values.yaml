@@ -32,7 +32,6 @@ cluster:
     annotations: {}
   # RethinkDB Cache Size in MB
   rethinkCacheSize: 100
-  
   livenessProbe:
     exec:
       command:
