@@ -75,7 +75,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `podDisruptionBudget`           | Pod disruption budget                              | `maxUnavailable: 1`                              |
 | `updateStrategy`                | Update strategy                                    | `type: RollingUpdate`                            |
 | `image.repository`              | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
-| `image.tag`                     | Container image tag                                | `6.4.0`                                          |
+| `image.tag`                     | Container image tag                                | `6.4.1`                                          |
 | `image.pullPolicy`              | Container image pull policy                        | `IfNotPresent`                                   |
 | `service.type`                  | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.annotations`           | Service annotations                                | `{}`                                             |
@@ -100,6 +100,7 @@ The following table lists the configurable parameters of the chart and its defau
 | `persistence.accessMode`        | Access mode for PVCs                               | `ReadWriteOnce`                                  |
 | `persistence.size`              | Size for PVCs                                      | `2Gi`                                            |
 | `volumeMounts`                  | Volume mounts to configure for logstash container  | (see `values.yaml`)                              |
+| `volumes`                       | Volumes to configure for logstash container        | []                              |
 | `terminationGracePeriodSeconds` | Duration the pod needs to terminate gracefully     | `30`
 | `exporter.logstash`             | Prometheus logstash-exporter settings              | (see `values.yaml`)                              |
 | `exporter.logstash.enabled`     | Enables Prometheus logstash-exporter               | `false`                                          |
