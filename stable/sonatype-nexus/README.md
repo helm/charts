@@ -114,6 +114,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `ingress.tls.enabled`                       | Enable TLS                          | `false`                                 |
 | `ingress.tls.secretName`                    | Name of the secret storing TLS cert, `false` to use the Ingress' default certificate | `nexus-tls`                             |
 | `ingress.path`                              | Path for ingress rules. GCP users should set to `/*` | `/`                    |
+| `tolerations`                               | tolerations list                    | `[]`                                    |
 
 If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables need to be configured
 
@@ -125,6 +126,7 @@ If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables
 | `nexusProxy.env.redirectUrl`     | OAuth callback url. example `https://nexus.example.com/oauth/callback` | `nil`            |
 | `nexusProxy.secrets.keystore`    | base-64 encoded value of the keystore file needed for the proxy to sign user tokens. Example: cat keystore.jceks &#124; base64 | `nil`  |
 | `nexusProxy.secrets.password`    | Password to the Java Keystore file | `nil`                                                |
+
 
 ```bash
 $ helm install --name my-release --set persistence.enabled=false stable/sonatype-nexus
