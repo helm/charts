@@ -2,7 +2,7 @@ replicaCount: 1
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
-  imageTag: 3.12.1
+  imageTag: 3.13.0_alpine_3.8.1
   imagePullPolicy: IfNotPresent
   env:
     - name: install4jAddVmParams
@@ -47,7 +47,7 @@ nexus:
 
 nexusProxy:
   imageName: quay.io/travelaudience/docker-nexus-proxy
-  imageTag: 2.1.0
+  imageTag: 2.3.0
   imagePullPolicy: IfNotPresent
   port: 8080
   env:
@@ -84,11 +84,14 @@ persistence:
   #  "helm.sh/resource-policy": keep
   # storageClass: "-"
   storageSize: 8Gi
+  # If PersistentDisk already exists you can create a PV for it by including the 2 following keypairs.
+  # pdName: nexus-data-disk
+  # fsType: ext4
 
 nexusBackup:
   enabled: false
   imageName: quay.io/travelaudience/docker-nexus-backup
-  imageTag: 1.2.0
+  imageTag: 1.3.0
   imagePullPolicy: IfNotPresent
   env:
     targetBucket:
@@ -102,6 +105,9 @@ nexusBackup:
     # See comment above for information on setting the backup storageClass
     # storageClass: "-"
     storageSize: 8Gi
+    # If PersistentDisk already exists you can create a PV for it by including the 2 following keypairs.
+    # pdName: nexus-backup-disk
+    # fsType: ext4
 
 ingress:
   enabled: false
@@ -115,3 +121,5 @@ ingress:
   tls:
     enabled: true
     secretName: nexus-tls
+
+tolerations: []
