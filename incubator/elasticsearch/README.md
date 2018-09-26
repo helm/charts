@@ -202,3 +202,10 @@ Create cluster with Storage class `ssd` on Kubernetes 1.5+
 $ helm install incubator/elasticsearch --name my-release --set data.storageClass=ssd,data.storage=100Gi
 ```
 
+### Usage of the `tpl` Function
+
+The `tpl` function allows us to pass string values from `values.yaml` through the templating engine. It is used for the following values:
+
+* `extraInitContainers`
+
+It is important that these values be configured as strings. Otherwise, installation will fail.
