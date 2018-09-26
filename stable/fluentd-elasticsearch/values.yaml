@@ -50,6 +50,10 @@ service: {}
   # ports:
   #   - name: "monitor-agent"
   #     port: 24231
+  
+#Define alternative install locations for custom docker installs
+docker:
+  containers_location: "/var/lib/docker/containers"
 
 configMaps:
   system.conf: |-
