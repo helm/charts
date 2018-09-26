@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-history-server-env
+  namespace: {{ .Values.namespace }}
 data:
     enablePVC: {{ .Values.pvc.enablePVC | quote }}
   {{- range $key, $val := .Values.environment }}

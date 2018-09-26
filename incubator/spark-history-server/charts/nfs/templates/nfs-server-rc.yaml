@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ReplicationController
 metadata:
   name: {{ .Values.nfsServerServiceName }}
+  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   selector:

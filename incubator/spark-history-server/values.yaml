@@ -1,5 +1,7 @@
 replicaCount: 1
 
+namespace: test-hs
+
 image:
   repository: lightbend/spark
   tag: k8s-daily
@@ -26,10 +28,13 @@ pvc:
   eventsDir: "/"
 
 # Settings for the sub-chart
-# nfs.pvcName needs to be the same as pvc.existingClaimName is PVC is used
+# When pvc/enablePVC is true, make sure:
+# pvc.existingClaimName == nfs.pvcName
+# namespace == nfs.namespace
 nfs:
   enableExampleNFS: true
   pvcName: nfs-pvc
+  namespace: test-hs
 
 hdfs:
   hdfsSiteConfigMap: hdfs-site

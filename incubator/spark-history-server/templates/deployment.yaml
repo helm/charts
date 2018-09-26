@@ -1,7 +1,19 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespace }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spark-history-server
+  namespace: {{ .Values.namespace }}
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: spark-history-server
+  namespace: {{ .Values.namespace }}
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -19,6 +31,7 @@ spec:
         app: {{ template "fullname" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: spark-history-server
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -87,16 +100,26 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: cleanup-history-server
+  namespace: {{ .Values.namespace }}
   annotations:
     "helm.sh/hook": pre-delete
     "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   template:
     spec:
+      serviceAccountName: spark-history-server
       restartPolicy: OnFailure
       containers:
       - name: main
-        image: "lachlanevenson/k8s-kubectl:v1.11.2"
+        image: "lightbend/curl:latest"
         imagePullPolicy: Always
-        command: ["/bin/sh", "-c", 'kubectl delete deployment {{ template "fullname" . }} --cascade=true && kubectl delete pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }},release={{ .Release.Name }}"']
+        command:
+          - "/bin/sh"
+          - "-c"
+          - "curl -ik \
+              -X DELETE \
+              -H 'Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)' \
+              -H 'Accept: application/json' \
+              -H 'Content-Type: application/json' \
+            https://kubernetes.default.svc/api/v1/deployments/spark-history-server"
 {{- end }}

@@ -1,3 +1,5 @@
+namespace: spark-history-server
+
 gceStorage: 5Gi
 pvcStorage: 1Mi
 pvStorage: 1Mi

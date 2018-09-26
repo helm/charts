@@ -3,6 +3,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: nfs-pv-provisioning-demo
+  namespace: {{ .Values.namespace }}
   labels:
     demo: nfs-pv-provisioning
 spec:
