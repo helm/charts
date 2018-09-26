@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "grpc-http-proxy.fullname" .  }}
+  labels: {{ include "grpc-http-proxy.labels" . | indent 4 }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+{{- if .Values.annotations }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
+{{- end }}
+spec:
+  selector:
+    matchLabels: {{ include "grpc-http-proxy.labels" . | indent 6 }}
+      chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels: {{ include "grpc-http-proxy.labels" . | indent 8 }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    spec:
+      containers:
+      - name: grpc-http-proxy
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        ports:
+        - containerPort: 3000
+        env:
+          - name: LOG_LEVEL
+            value: {{ .Values.logLevel }}
+          - name: TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "grpc-http-proxy.fullname" . }}-access-token
+                key: accessToken
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 3000
+            scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 3000
+            scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+{{- if .Values.resources }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+{{- end }}

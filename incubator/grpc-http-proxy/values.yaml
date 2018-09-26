@@ -1,0 +1,24 @@
+replicaCount: 1
+
+image:
+  repository: mercari/grpc-http-proxy
+  tag: "v0.1.0"
+  pullPolicy: IfNotPresent
+
+# Access token for grpc-http-proxy
+accessToken: changeme
+
+# Log level for grpc-http-proxy
+logLevel: INFO
+
+service:
+  type: NodePort
+  port: 3000
+
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi

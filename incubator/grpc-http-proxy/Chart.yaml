@@ -1,0 +1,15 @@
+apiVersion: v1
+appVersion: "v0.1.0"
+description: A Helm chart for grpc-http-proxy
+name: grpc-http-proxy
+version: 0.1.0
+home: https://github.com/mercari/grpc-http-proxy
+sources:
+- https://github.com/mercari/grpc-http-proxy
+maintainers:
+- name: tomoyat1
+  email: t@tomoyat1.com
+- name: vbanthia
+  email: vishal@mercari.com
+- name: tcnksm
+  email: tcnksm@mercari.com
