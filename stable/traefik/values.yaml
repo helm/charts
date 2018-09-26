@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.6.6
+imageTag: 1.7.0
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
@@ -36,12 +36,19 @@ tolerations: []
 #   value: "value"
 #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 ## Kubernetes ingress filters
-# kubernetes:
+kubernetes: {}
   # endpoint:
   # namespaces:
   # - default
   # labelSelector:
   # ingressClass:
+
+## Enable ingressEndpoint configuration.
+## This will allow Traefik to update the status section of ingress objects, if desired.
+# ingressEndpoint:
+  # ip: 127.0.0.1
+  # hostname: localhost
+  # publishedService: "namespace/servicename"
 proxyProtocol:
   enabled: false
   # trustedIPs is required when enabled

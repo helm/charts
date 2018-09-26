@@ -101,6 +101,21 @@ data:
     ingressClass = {{ .Values.kubernetes.ingressClass | quote }}
       {{- end}}
     {{- end}}
+    {{- if .Values.kubernetes.ingressEndpoint }}
+    [kubernetes.ingressEndpoint]
+      {{- if .Values.kubernetes.ingressEndpoint.ip }}
+      ip = {{ .Values.kubernetes.ingressEndpoint.ip | quote }}
+      {{- end }}
+      {{- if .Values.kubernetes.ingressEndpoint.hostname }}
+      hostname = {{ .Values.kubernetes.ingressEndpoint.hostname | quote }}
+      {{- end }}
+      {{- if .Values.kubernetes.ingressEndpoint.publishedService }}
+      publishedService = {{ .Values.kubernetes.ingressEndpoint.publishedService | quote }}
+      {{- end }}
+    {{- else }}
+    [kubernetes.ingressEndpoint]
+      publishedService = "{{ .Release.Namespace }}/{{ template "traefik.fullname" . }}"
+    {{- end }}
     {{- if .Values.accessLogs.enabled }}
     [accessLog]
     {{- if .Values.accessLogs.filePath }}
