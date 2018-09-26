@@ -37,6 +37,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.ImagePullSecret`          | Master image pull secret             | Not set                                                                      |
 | `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
 | `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
+| `Master.SecurityRealm`            | Custom Security Realm                | Not set                                                                      |
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 | `Master.AdminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value                                  |
 | `Master.JenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set                                               |
