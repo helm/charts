@@ -204,6 +204,11 @@ data:
     cp --no-clobber /var/jenkins_config/config.xml /var/jenkins_home;
     cp --no-clobber /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
     cp --no-clobber /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
+{{- if .Values.Master.AdditionalConfig }}
+{{- range $key, $val := .Values.Master.AdditionalConfig }}
+    cp /var/jenkins_config/{{- $key }} /var/jenkins_home;
+{{- end }}
+{{- end }}
 {{- end }}
 {{- if .Values.Master.InstallPlugins }}
     # Install missing plugins
@@ -245,3 +250,6 @@ data:
 {{ else }}
 {{ include "override_config_map" . }}
 {{- end -}}
+{{- if .Values.Master.AdditionalConfig }}
+{{- toYaml .Values.Master.AdditionalConfig | indent 2 }}
+{{- end }}
