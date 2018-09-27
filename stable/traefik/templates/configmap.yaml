@@ -81,6 +81,11 @@ data:
         {{- end }}
         {{- end }}
       {{- end }}
+      [entryPoints.ping]
+      address = ":81"
+    [ping]
+    entryPoint = "ping"
+
     [kubernetes]
     {{- if .Values.kubernetes}}
       {{- if .Values.kubernetes.endpoint }}
@@ -124,14 +129,14 @@ data:
     [accessLog.fields.names]
     {{- range $field, $action := .Values.accessLogs.fields.names }}
       {{ printf "\"%s\" = \"%s\"" $field $action }}
-    {{- end}}
+    {{- end }}
     [accessLog.fields.headers]
       defaultMode = {{ .Values.accessLogs.fields.headers.defaultMode | quote }}
     [accessLog.fields.headers.names]
     {{- range $header, $action := .Values.accessLogs.fields.headers.names }}
       {{ printf "\"%s\" = \"%s\"" $header $action }}
-    {{- end}}
-    {{- end}}
+    {{- end }}
+    {{- end }}
     {{- if .Values.kvprovider.etcd }}
     [etcd]
     endpoint = "{{ .Values.kvprovider.etcd.endpoint }}"

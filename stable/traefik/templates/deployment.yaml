@@ -62,16 +62,18 @@ spec:
             cpu: "{{ .Values.cpuLimit }}"
             memory: "{{ .Values.memoryLimit }}"
         readinessProbe:
-          tcpSocket:
-            port: 80
+          httpGet:
+            path: /ping
+            port: ping
           failureThreshold: 1
           initialDelaySeconds: 10
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
         livenessProbe:
-          tcpSocket:
-            port: 80
+          httpGet:
+            path: /ping
+            port: ping
           failureThreshold: 3
           initialDelaySeconds: 10
           periodSeconds: 10
@@ -122,6 +124,9 @@ spec:
           {{- end }}
           protocol: TCP
         {{- end }}
+        - name: ping
+          containerPort: 81
+          protocol: TCP
         args:
         - --configfile=/config/traefik.toml
       volumes:
