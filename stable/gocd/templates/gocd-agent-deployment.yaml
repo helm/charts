@@ -10,9 +10,6 @@ metadata:
     component: agent
 spec:
   replicas: {{ .Values.agent.replicaCount }}
-  {{- if .Values.serviceAccount.create }}
-  serviceAccountName: {{ template "gocd.serviceAccountName" . }}
-  {{- end }}
   selector:
     matchLabels:
       app: {{ template "gocd.name" . }}
@@ -25,6 +22,9 @@ spec:
         release: {{ .Release.Name | quote }}
         component: agent
     spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ template "gocd.serviceAccountName" . }}
+      {{- end }}
       {{- if or .Values.agent.persistence.enabled .Values.agent.security.ssh.enabled }}
       volumes:
       {{- end }}
