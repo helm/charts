@@ -40,6 +40,7 @@ annotations: {}
 
 # mysql connection
 mysql:
+  db: "exporter"
   host: "localhost"
   pass: "password"
   port: 3306
