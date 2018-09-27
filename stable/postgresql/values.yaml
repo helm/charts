@@ -55,6 +55,13 @@ usePasswordFile: false
 #   host all all localhost trust
 #   host mydatabase mysuser 192.168.0.0/24 md5
 
+## Specify a secret containing initdb.d files
+# initdbdSecret:
+
+## Specify initdb.d files mount path
+## Default: /docker-entrypoint-initdb.d
+initdbdMountPath: /docker-entrypoint-initdb.d
+
 ## Persist data to a persistent volume
 persistence:
   enabled: true

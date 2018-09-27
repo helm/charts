@@ -121,6 +121,11 @@ spec:
           mountPath: /pg_hba
           readOnly: true
         {{- end }}
+        {{- if .Values.initdbdSecret }}
+        - name: {{ .Values.initdbdSecret }}
+          mountPath: {{ .Values.initdbdMountPath }}
+          readOnly: true
+        {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
@@ -180,6 +185,12 @@ spec:
           items:
             - key: pg_hba.conf
               path: pg_hba.conf
+      {{- end }}
+      {{- if .Values.initdbdSecret }}
+      - name: {{ .Values.initdbdSecret }}
+        secret:
+          secretName: {{ .Values.initdbdSecret }}
+          defaultMode: 0744
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
