@@ -71,9 +71,14 @@ The command removes all the Kubernetes components associated with the chart and 
 | `annotations`                   | Deployment annotations                        | `{}`                                                    |
 | `podAnnotations`                | Pod annotations                               | `{}`                                                    |
 | `sidecar.dashboards.enabled`    | Enabled the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
-| `sidecar.dashboards.label`      | Label that config maps with dashboards should have to be added | `false`                                |
+| `sidecar.dashboards.label`      | Label that config maps with dashboards should have to be added | `grafana_dashboard`       
+| `sidecar.dashboards.provider.name`      | Unique name of the grafana provider | `sidecarProvider`                  
+| `sidecar.dashboards.provider.orgid`      | Id of the organisation, to which the dashboards should be added | `1`    
+| `sidecar.dashboards.provider.folder`      | Logical folder in which grafana groups dashboards | `""`               |
+| `sidecar.dashboards.provider.disableDelete`      | Activate to avoid the deletion of imported dashboards | `false`  
+| `sidecar.dashboards.provider.type`      | Provider type | `file`  
 | `sidecar.datasources.enabled`   | Enabled the cluster wide search for datasources and adds/updates/deletes them in grafana |`false`       |
-| `sidecar.datasources.label`     | Label that config maps with datasources should have to be added | `false`                               |
+| `sidecar.datasources.label`     | Label that config maps with datasources should have to be added | `grafana_datasource`                               |
 | `smtp.existingSecret`           | The name of an existing secret containing the SMTP credentials, this must have the keys `user` and `password`. | `""` |
 
 ## Sidecar for dashboards
