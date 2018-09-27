@@ -64,6 +64,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.LoadBalancerIP`           | Optional fixed external IP           | Not set                                                                      |
 | `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
 | `Master.CustomConfigMap`          | Use a custom ConfigMap               | `false`                                                                      |
+| `Master.AdditionalConfig`          | Add additional config files         | `{}`                                                                      |
 | `Master.OverwriteConfig`          | Replace config w/ ConfigMap on boot  | `false`                                                                      |
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
@@ -159,8 +160,8 @@ It is possible to mount several volumes using `Persistence.volumes` and `Persist
 #### Existing PersistentVolumeClaim
 
 1. Create the PersistentVolume
-1. Create the PersistentVolumeClaim
-1. Install the chart
+2. Create the PersistentVolumeClaim
+3. Install the chart
 
 ```bash
 $ helm install --name my-release --set Persistence.ExistingClaim=PVC_NAME stable/jenkins

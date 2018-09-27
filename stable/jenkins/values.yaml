@@ -133,6 +133,7 @@ Master:
     # - secretName: jenkins.cluster.local
     #   hosts:
     #     - jenkins.cluster.local
+  AdditionalConfig: {}
 
 Agent:
   Enabled: true
