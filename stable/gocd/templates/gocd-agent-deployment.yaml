@@ -10,6 +10,9 @@ metadata:
     component: agent
 spec:
   replicas: {{ .Values.agent.replicaCount }}
+  {{- if .Values.serviceAccount.create }}
+  serviceAccountName: {{ template "gocd.serviceAccountName" . }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "gocd.name" . }}
