@@ -43,7 +43,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `files`                                       | Kibana configuration files                 | None                                   |
 | `image.pullPolicy`                            | Image pull policy                          | `IfNotPresent`                         |
 | `image.repository`                            | Image repository                           | `docker.elastic.co/kibana/kibana-oss`  |
-| `image.tag`                                   | Image tag                                  | `6.4.0`                                |
+| `image.tag`                                   | Image tag                                  | `6.4.1`                                |
 | `image.pullSecrets`                           | Specify image pull secrets                 | `nil`                                  |
 | `commandline.args`                            | add additional commandline args            | `nil`                                  |
 | `ingress.enabled`                             | Enables Ingress                            | `false`                                |
@@ -64,6 +64,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `service.authProxyPort`                       | port to use when using sidecar authProxy   | None:                                  |
 | `service.externalIPs`                         | external IP addresses                      | None:                                  |
 | `service.loadBalancerIP`                      | Load Balancer IP address                   | None:                                  |
+| `service.loadBalancerSourceRanges`            | Limit load balancer source IPs to list of CIDRs (where available)) | `[]`           |
 | `service.nodePort`                            | NodePort value if service.type is NodePort | None:                                  |
 | `service.type`                                | type of service                            | `ClusterIP`                            |
 | `service.annotations`                         | Kubernetes service annotations             | None:                                  |
@@ -73,6 +74,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `dashboardImport.xpackauth.username`          | Optional Xpack username                    | `myuser`                               |
 | `dashboardImport.xpackauth.password`          | Optional Xpack password                    | `mypass`                               |
 | `dashboardImport.dashboards`                  | Dashboards                                 | `{}`                                   |
+| `plugins`                             | List of URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
 
 
 
@@ -80,7 +82,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 * The Kibana configuration files config properties can be set through the `env` parameter too.
 * All the files listed under this variable will overwrite any existing files by the same name in kibana config directory.
-* Files not mentioned under this variable will remain unaffected.              
+* Files not mentioned under this variable will remain unaffected.
 
 ```console
 $ helm install stable/kibana --name my-release \

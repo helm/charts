@@ -30,10 +30,22 @@ spec:
           securityContext:
             privileged: true
           args: [ "/usr/bin/falco", "-K", "/var/run/secrets/kubernetes.io/serviceaccount/token", "-k", "https://kubernetes.default", "-pk"]
-          {{- if .Values.ebpf.enabled }}
           env:
+          {{- if .Values.ebpf.enabled }}
             - name: SYSDIG_BPF_PROBE
               value:
+          {{- end }}
+          {{- if .Values.proxy.httpProxy }}
+            - name: http_proxy
+              value: {{ .Values.proxy.httpProxy }}
+          {{- end }}
+          {{- if .Values.proxy.httpsProxy }}
+            - name: https_proxy
+              value: {{ .Values.proxy.httpsProxy }}
+          {{- end }}
+          {{- if .Values.proxy.noProxy }}
+            - name: no_proxy
+              value: {{ .Values.proxy.noProxy }}
           {{- end }}
           volumeMounts:
             - mountPath: /host/var/run/docker.sock
@@ -65,7 +77,7 @@ spec:
             - mountPath: /etc/falco/rules.d
               name: rules-volume
             {{- end }}
-            {{- if .Values.integrations.natsOutput.enabled }}
+            {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
             - mountPath: /var/run/falco/
               name: shared-pipe
               readOnly: false
@@ -78,6 +90,33 @@ spec:
           volumeMounts:
             - mountPath: /var/run/falco/
               name: shared-pipe
+      {{- end }}
+      {{- if .Values.integrations.snsOutput.enabled }}
+        - name: {{ .Chart.Name }}-sns
+          image: sysdig/falco-sns:latest
+          imagePullPolicy: Always
+          args: [ "/bin/falco-sns", "-t", {{ .Values.integrations.snsOutput.topic | quote }}]
+          volumeMounts:
+            - mountPath: /var/run/falco/
+              name: shared-pipe
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "falco.fullname" . }}
+                  key: aws_access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "falco.fullname" . }}
+                  key: aws_secret_access_key
+            - name: AWS_DEFAULT_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "falco.fullname" . }}
+                  key: aws_default_region
+      {{- end }}
+      {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
       initContainers:
           - name: init-pipe
             image: busybox
@@ -129,7 +168,7 @@ spec:
           configMap:
             name: {{ template "falco.fullname" . }}-rules
         {{- end }}
-        {{- if .Values.integrations.natsOutput.enabled }}
+        {{- if (or .Values.integrations.natsOutput.enabled .Values.integrations.snsOutput.enabled) }}
         - name: shared-pipe
           emptyDir: {}
         {{- end }}

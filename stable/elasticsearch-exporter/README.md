@@ -53,6 +53,7 @@ Parameter | Description | Default
 `priorityClassName` | priorityClassName | `nil`
 `nodeSelector` | Node labels for pod assignment | `{}`
 `tolerations` | Node tolerations for pod assignment | `{}`
+`podAnnotations` | Pod annotations | `{}` |
 `service.type` | type of service to create | `ClusterIP`
 `service.httpPort` | port for the http service | `9108`
 `service.annotations` | Annotations on the http service | `{}`
