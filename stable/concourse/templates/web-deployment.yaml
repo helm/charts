@@ -313,7 +313,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.vault.authParam }}
             - name: CONCOURSE_VAULT_AUTH_PARAM
-              value: {{ .Values.concourse.web.vault.authParam }}
+              value: {{ .Values.concourse.web.vault.authParam | quote }}
             {{- end }}
             {{- if .Values.concourse.web.vault.cache }}
             - name: CONCOURSE_VAULT_CACHE
@@ -361,7 +361,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.staticWorker.resource }}
             - name: CONCOURSE_WORKER_RESOURCE
-              value: {{ .Values.concourse.web.staticWorker.resource }}
+              value: {{ .Values.concourse.web.staticWorker.resource | quote }}
             {{- end }}
             {{- end }}
 
@@ -371,7 +371,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.metrics.attribute }}
             - name: CONCOURSE_METRICS_ATTRIBUTE
-              value: {{ .Values.concourse.web.metrics.attribute }}
+              value: {{ .Values.concourse.web.metrics.attribute | quote }}
             {{- end }}
 
             {{- if .Values.concourse.web.datadog.enabled }}
@@ -505,7 +505,7 @@ spec:
 
             {{- if .Values.concourse.web.auth.mainTeam.localUser }}
             - name: CONCOURSE_MAIN_TEAM_LOCAL_USER
-              value: {{ .Values.concourse.web.auth.mainTeam.localUser }}
+              value: {{ .Values.concourse.web.auth.mainTeam.localUser | quote }}
             {{- end }}
             {{- if .Values.concourse.web.auth.mainTeam.allowAllUsers }}
             - name: CONCOURSE_MAIN_TEAM_ALLOW_ALL_USERS
@@ -514,68 +514,68 @@ spec:
 
             {{- if .Values.concourse.web.auth.mainTeam.cf.org }}
             - name: CONCOURSE_MAIN_TEAM_CF_ORG
-              value: {{ .Values.concourse.web.auth.mainTeam.cf.org }}
+              value: {{ .Values.concourse.web.auth.mainTeam.cf.org | quote }}
             {{- end }}
             {{- if .Values.concourse.web.auth.mainTeam.cf.space }}
             - name: CONCOURSE_MAIN_TEAM_CF_SPACE
-              value: {{ .Values.concourse.web.auth.mainTeam.cf.space }}
+              value: {{ .Values.concourse.web.auth.mainTeam.cf.space | quote }}
             {{- end }}
             {{- if .Values.concourse.web.auth.mainTeam.cf.spaceGuid }}
             - name: CONCOURSE_MAIN_TEAM_CF_SPACE_GUID
-              value: {{ .Values.concourse.web.auth.mainTeam.cf.spaceGuid }}
+              value: {{ .Values.concourse.web.auth.mainTeam.cf.spaceGuid | quote }}
             {{- end }}
             {{- if .Values.concourse.web.auth.mainTeam.cf.user }}
             - name: CONCOURSE_MAIN_TEAM_CF_USER
-              value: {{ .Values.concourse.web.auth.mainTeam.cf.user }}
+              value: {{ .Values.concourse.web.auth.mainTeam.cf.user | quote }}
             {{- end }}
 
             {{- if .Values.concourse.web.auth.mainTeam.github.user }}
             - name: CONCOURSE_MAIN_TEAM_GITHUB_USER
-              value: {{ .Values.concourse.web.auth.mainTeam.github.user }}
+              value: {{ .Values.concourse.web.auth.mainTeam.github.user | quote }}
             {{- end }}
             {{- if .Values.concourse.web.auth.mainTeam.github.org }}
             - name: CONCOURSE_MAIN_TEAM_GITHUB_ORG
-              value: {{ .Values.concourse.web.auth.mainTeam.github.org }}
+              value: {{ .Values.concourse.web.auth.mainTeam.github.org | quote }}
             {{- end }}
             {{- if .Values.concourse.web.auth.mainTeam.github.team }}
             - name: CONCOURSE_MAIN_TEAM_GITHUB_TEAM
-              value: {{ .Values.concourse.web.auth.mainTeam.github.team }}
+              value: {{ .Values.concourse.web.auth.mainTeam.github.team | quote }}
             {{- end }}
 
             {{- if .Values.concourse.web.auth.mainTeam.gitlab.user }}
             - name: CONCOURSE_MAIN_TEAM_GITLAB_USER
-              value: {{ .Values.concourse.web.auth.mainTeam.gitlab.user }}
+              value: {{ .Values.concourse.web.auth.mainTeam.gitlab.user | quote }}
             {{- end }}
             {{- if .Values.concourse.web.auth.mainTeam.gitlab.group }}
             - name: CONCOURSE_MAIN_TEAM_GITLAB_GROUP
-              value: {{ .Values.concourse.web.auth.mainTeam.gitlab.group }}
+              value: {{ .Values.concourse.web.auth.mainTeam.gitlab.group | quote }}
             {{- end }}
 
             {{- if .Values.concourse.web.auth.mainTeam.ldap.user }}
             - name: CONCOURSE_MAIN_TEAM_LDAP_USER
-              value: {{ .Values.concourse.web.auth.mainTeam.ldap.user }}
+              value: {{ .Values.concourse.web.auth.mainTeam.ldap.user | quote }}
             {{- end }}
             {{- if .Values.concourse.web.auth.mainTeam.ldap.group }}
             - name: CONCOURSE_MAIN_TEAM_LDAP_GROUP
-              value: {{ .Values.concourse.web.auth.mainTeam.ldap.group }}
+              value: {{ .Values.concourse.web.auth.mainTeam.ldap.group | quote }}
             {{- end }}
 
             {{- if .Values.concourse.web.auth.mainTeam.oauth.user }}
             - name: CONCOURSE_MAIN_TEAM_OAUTH_USER
-              value: {{ .Values.concourse.web.auth.mainTeam.oauth.user }}
+              value: {{ .Values.concourse.web.auth.mainTeam.oauth.user | quote }}
             {{- end }}
             {{- if .Values.concourse.web.auth.mainTeam.oauth.group }}
             - name: CONCOURSE_MAIN_TEAM_OAUTH_GROUP
-              value: {{ .Values.concourse.web.auth.mainTeam.oauth.group }}
+              value: {{ .Values.concourse.web.auth.mainTeam.oauth.group | quote }}
             {{- end }}
 
             {{- if .Values.concourse.web.auth.mainTeam.oidc.group }}
             - name: CONCOURSE_MAIN_TEAM_OIDC_GROUP
-              value: {{ .Values.concourse.web.auth.mainTeam.oidc.group }}
+              value: {{ .Values.concourse.web.auth.mainTeam.oidc.group | quote }}
             {{- end }}
             {{- if .Values.concourse.web.auth.mainTeam.oidc.user }}
             - name: CONCOURSE_MAIN_TEAM_OIDC_USER
-              value: {{ .Values.concourse.web.auth.mainTeam.oidc.user }}
+              value: {{ .Values.concourse.web.auth.mainTeam.oidc.user | quote }}
             {{- end }}
 
             {{- if .Values.concourse.web.auth.cf.enabled }}
@@ -802,7 +802,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.auth.oidc.hostedDomains }}
             - name: CONCOURSE_OIDC_HOSTED_DOMAINS
-              value: {{ .Values.concourse.web.auth.oidc.hostedDomains }}
+              value: {{ .Values.concourse.web.auth.oidc.hostedDomains | quote }}
             {{- end }}
             {{- if .Values.concourse.web.auth.oidc.useCaCert }}
             - name: CONCOURSE_OIDC_CA_CERT
