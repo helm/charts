@@ -1,6 +1,7 @@
 replicaCount: 1
 
-namespace: test-hs
+namespace: spark-history-server
+createNamespace: true
 
 image:
   repository: lightbend/spark
@@ -13,7 +14,8 @@ service:
 
 environment:
 # Note: do not configure Spark history events directory using SPARK_HISTORY_OPTS. It will be
-# configured by this chart based on the values in "pvc" or "hdfs" attribute
+# configured by this chart based on the values in "pvc", "gcs" or "hdfs" attribute.
+  # SPARK_HISTORY_OPTS: ...
   # SPARK_DAEMON_MEMORY: 1g
   # SPARK_DAEMON_JAVA_OPTS: ...
   # SPARK_DAEMON_CLASSPATH: ...
@@ -28,13 +30,19 @@ pvc:
   eventsDir: "/"
 
 # Settings for the sub-chart
-# When pvc/enablePVC is true, make sure:
+# When pvc.enablePVC is true, make sure:
 # pvc.existingClaimName == nfs.pvcName
 # namespace == nfs.namespace
 nfs:
   enableExampleNFS: true
   pvcName: nfs-pvc
-  namespace: test-hs
+  namespace: spark-history-server
+
+gcs:
+  enableGCS: false
+  secret: history-secrets
+  key: sparkonk8s.json
+  logDirectory: gs://spark-hs/
 
 hdfs:
   hdfsSiteConfigMap: hdfs-site

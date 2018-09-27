@@ -1,7 +1,9 @@
+{{- if .Values.createNamespace }}
 apiVersion: v1
 kind: Namespace
 metadata:
   name: {{ .Values.namespace }}
+{{- end }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -52,7 +54,11 @@ spec:
           if [ "$enablePVC" == "true" ]; then
             export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
             -Dspark.history.fs.logDirectory=file:/mnt/$eventsDir";
-          else
+          elif [ "$enableGCS" == "true" ]; then
+            export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
+            -Dspark.hadoop.google.cloud.auth.service.account.json.keyfile=/etc/secrets/$key \
+            -Dspark.history.fs.logDirectory=$logDirectory";
+          else:
             export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS \
             -Dspark.history.fs.logDirectory=$logDirectory";
           fi;
@@ -72,6 +78,9 @@ spec:
         {{- if .Values.pvc.enablePVC }}
         - name: data
           mountPath: /mnt
+        {{- else if .Values.gcs.enableGCS }}
+        - name: secrets-volume
+          mountPath: /etc/secrets
         {{- else }}
         - name: core-site
           mountPath: /etc/hadoop/core-site.xml
@@ -85,6 +94,10 @@ spec:
       - name: data
         persistentVolumeClaim:
           claimName: {{ .Values.pvc.existingClaimName }}
+      {{- else if .Values.gcs.enableGCS }}
+      - name: secrets-volume
+        secret:
+          secretName: {{ .Values.gcs.secret }}
       {{- else }}
       - name: hdfs-site
         configMap:
