@@ -1,3 +1,7 @@
+### 1.4.4
+
+* [9a41c6f1](https://github.com/kubernetes/charts/commit/9a41c6f1): Add service account to agent spec.
+
 ### 1.4.3
 
 * [52120886](https://github.com/kubernetes/charts/commit/52120886): Add extra volumes and volumeMounts options on the server and agents
