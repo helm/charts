@@ -104,12 +104,19 @@ $ helm install stable/magic-namespace \
 
 ## Uninstalling the Chart
 
-Deleting a release of a Magic Namespace will _not_ delete the namespace. It will
+Deleting a release of a Magic Namespace will _not_ delete the namespace, 
+unless you have used the optional ```namespace``` setting. It will
 only delete the Tiller, service accounts, role bindings, etc. from that
 namespace. This is actually desirable behavior, as anything the team has
 deployed within that namespace is likely to be unaffected, though further
 deployments to and management of that namespace will not be possible by anyone
-other than the cluster operator.
+other than the cluster operator. 
+
+If you have used the ```namespace``` setting, deleting the release will cleanup
+all releases deployed with the tiller in the Magic Namespace, along with the
+namespace.  If other tillers, such as the one in ```kube-system``` have
+deployed charts into the Magic Namespace, they will get orphaned when the namespace is
+removed, but they can still be removed with the standard ```helm delete <name> --purge``` command.
 
 ```bash
 $ helm delete foo --purge
@@ -139,3 +146,4 @@ reference the default `values.yaml` to understand further options.
 | `roleBindings[n].role.name` | Identify the name of the role to be used in the role binding | |
 | `roleBindings[n].subject.kind` | Identify the kind of subject (`User`, `Group`, or `ServiceAccount` ) to be used in the role binding | |
 | `roleBindings[n].subject.name` | Identify the name of the subject to be used in the role binding | |
+| `namespace` | Specify a namespace to be created and used, overriding the one on the command line | |
