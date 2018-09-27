@@ -41,6 +41,13 @@ spec:
           - --{{ $key }}
           {{- end }}
         {{- end }}
+        {{- range $key, $value := .Values.dupExtraArgs }}
+          {{- if $value }}
+          - --{{ $key }}={{ $value }}
+          {{- else }}
+          - --{{ $key }}
+          {{- end }}
+        {{- end }}
         {{- if .Values.config.configFile }}
           - --config=/etc/oauth2_proxy/oauth2_proxy.cfg
         {{- end }}
