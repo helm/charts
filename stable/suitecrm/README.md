@@ -63,6 +63,7 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 | `suitecrmSmtpUser`                  | SMTP user                                       | `nil`                                                   |
 | `suitecrmSmtpPassword`              | SMTP password                                   | `nil`                                                   |
 | `suitecrmSmtpProtocol`              | SMTP protocol [`ssl`, `tls`]                    | `nil`                                                   |
+| `suitecrmValidateUserIP`            | Whether to validate the user IP address or not  | `no`                                                    |
 | `allowEmptyPassword`                | Allow DB blank passwords                        | `yes`                                                   |
 | `externalDatabase.host`             | Host of the external database                   | `nil`                                                   |
 | `externalDatabase.port`             | Port of the external database                   | `3306`                                                  |
@@ -126,3 +127,15 @@ The [Bitnami SuiteCRM](https://github.com/bitnami/bitnami-docker-suitecrm) image
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is suitecrm:
+
+```console
+$ kubectl patch deployment suitecrm-suitecrm --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl delete statefulset suitecrm-mariadb --cascade=false
+```
