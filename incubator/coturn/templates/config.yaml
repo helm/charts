@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "coturn.fullname" . }}-configmap
+  labels:
+    app: {{ template "coturn.name" . }}
+    chart: {{ template "coturn.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+    turnserver.conf: |+
+    {{ template "config_turnserver" .Values.config }}
