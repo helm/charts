@@ -18,6 +18,7 @@ spec:
       labels:
         app: {{ template "mongodb.name" . }}
         release: "{{ .Release.Name }}"
+        chart: {{ template "mongodb.chart" . }}
       {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
