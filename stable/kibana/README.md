@@ -64,6 +64,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `service.authProxyPort`                       | port to use when using sidecar authProxy   | None:                                  |
 | `service.externalIPs`                         | external IP addresses                      | None:                                  |
 | `service.loadBalancerIP`                      | Load Balancer IP address                   | None:                                  |
+| `service.loadBalancerSourceRanges`            | Limit load balancer source IPs to list of CIDRs (where available)) | `[]`           |
 | `service.nodePort`                            | NodePort value if service.type is NodePort | None:                                  |
 | `service.type`                                | type of service                            | `ClusterIP`                            |
 | `service.annotations`                         | Kubernetes service annotations             | None:                                  |

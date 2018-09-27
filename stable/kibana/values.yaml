@@ -50,6 +50,8 @@ service:
   labels:
     ## Label example: show service URL in `kubectl cluster-info`
     # kubernetes.io/cluster-service: "true"
+  ## Limit load balancer source ips to list of CIDRs (where available)
+  # loadBalancerSourceRanges: []
 
 ingress:
   enabled: false
