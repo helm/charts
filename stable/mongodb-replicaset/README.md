@@ -68,14 +68,13 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `auth.existingKeySecret`            | If set, an existing secret with this name for the key is used             | ``                                                  |
 | `auth.adminUser`                    | MongoDB admin user                                                        | ``                                                  |
 | `auth.adminPassword`                | MongoDB admin password                                                    | ``                                                  |
-| `auth.dbUser`                       | MongoDB db user                                                           | ``                                                  |
-| `auth.dbPassword`                   | MongoDB db password                                                       | ``                                                  |
+| `auth.additionalUser.username`      | MongoDB db user                                                           | ``                                                  |
+| `auth.additionalUser.password`      | MongoDB db password                                                       | ``                                                  |
+| `auth.additionalUser.dbname`        | Database name for the user role to be associated with                     | ``                                                  |
+| `auth.additionalUser.role`          | Database role permissions for the user                                    | ``                                                  |
 | `auth.metricsUser`                  | MongoDB clusterMonitor user                                               | ``                                                  |
 | `auth.metricsPassword`              | MongoDB clusterMonitor password                                           | ``                                                  |
 | `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     | ``                                                  |
-| `db.enabled`                        | If auth.enabled and this `true`, creates new db user role                 | `false`                                             |
-| `db.name`                           | Database name for the user role to be associated with                     | ``                                                  |
-| `db.role`                           | Database role permissions for the user                                    | `readWrite`                                         |
 | `serviceAnnotations`                | Annotations to be added to the service                                    | `{}`                                                |
 | `configmap`                         | Content of the MongoDB config file                                        | ``                                                  |
 | `nodeSelector`                      | Node labels for pod assignment                                            | `{}`                                                |

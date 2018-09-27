@@ -11,8 +11,11 @@ auth:
   enabled: false
   # adminUser: username
   # adminPassword: password
-  # dbUser: username
-  # dbPassword: password
+  # additionalUser:
+  #   username: myuser
+  #   password: mypass
+  #   role: readWrite
+  #   dbname: mydb
   # metricsUser: metrics
   # metricsPassword: password
   # key: keycontent
@@ -37,12 +40,6 @@ image:
 extraVars: {}
 # - name: TCMALLOC_AGGRESSIVE_DECOMMIT
 #   value: "true"
-
-# Additional DB User and Role
-db:
-  enabled: false
-  name: mydatabase
-  role: readWrite
 
 # Prometheus Metrics Exporter
 metrics:

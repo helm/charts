@@ -115,7 +115,7 @@ spec:
                 secretKeyRef:
                   name: "{{ template "mongodb-replicaset.adminSecret" . }}"
                   key: password
-          {{- if .Values.db.enabled }}
+          {{- if .Values.auth.additionalUser }}
             - name: DB_ENABLED
               value: "true"
             - name: DB_USER
@@ -129,9 +129,9 @@ spec:
                   name: "{{ template "mongodb-replicaset.dbSecret" . }}"
                   key: password
             - name: DB_NAME
-              value: "{{ .Values.db.name }}"
+              value: "{{ .Values.auth.additionalUser.dbname }}"
             - name: DB_ROLE
-              value: "{{ .Values.db.role }}"
+              value: "{{ .Values.auth.additionalUser.role }}"
           {{- end }}
           {{- if .Values.metrics.enabled }}
             - name: METRICS
