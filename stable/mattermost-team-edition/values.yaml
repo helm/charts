@@ -80,14 +80,9 @@ ingress:
     #     - mattermost.example.com
 
 auth:
-  gitlab:
-  #   Enable: false
-  #   Secret: ""
-  #   Id: ""
-  #   Scope: ""
-  #   AuthEndpoint: ""
-  #   TokenEndpoint: ""
-  #   UserApiEndpoint: ""
+  # gitlab is deprecated in favor of extraConfig.GitLabSettings
+  gitlab: {}
+
 
 ## If use this please disable the mysql chart, setting the config mysql.enable to false
 externalDB:
@@ -179,6 +174,8 @@ extraInitContainers: |
   #       PGPASSWORD=$POSTGRES_PASSWORD_GITLAB createdb -h $POSTGRES_HOST_GITLAB -p $POSTGRES_PORT_GITLAB -U $POSTGRES_USER_GITLAB $POSTGRES_DB_NAME_MATTERMOST
   #       echo "Done"
   #       fi
+
+extraConfig: {}
 
 defaultConfig: {
   "ServiceSettings": {

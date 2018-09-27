@@ -25,3 +25,7 @@ To expose Mattermost via an Ingress you need to set host and enable ingress.
 
 helm install --set host=mattermost.yourdomain.com --set ingress.enabled=true stable/mattermost-team-edition
 {{ end }}
+
+{{ if .Values.auth.gitlab }}
+{{ fail "HARD DEPRECATION: 'auth.gitlab' is deprecated, please use 'extraConfig.GitLabSettings' instead." }}
+{{ end }}

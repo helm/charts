@@ -8,9 +8,14 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "mattermost-team-edition.chart" . }}
 data:
-  {{- /* Reference the default config and update it's values. */}}
-  {{- $c := .Values.defaultConfig }}
+  {{- /* Make a deep enough copy of the default config */}}
+  {{- $c := dict }}
+  {{- range $key, $dictVal := .Values.defaultConfig }}
+  {{- $dictCopy := merge (dict) $dictVal }}
+  {{- $_ := set $c $key $dictCopy }}
+  {{- end }}
 
+  {{- /* Update the copied default config based on .Values */}}
   {{- $_ := set $c.ServiceSettings "SiteURL" (.Values.config.siteUrl | default "") }}
 
   {{- $_ := set $c.TeamSettings "SiteName" (.Values.config.siteName | default "Mattermost") }}
@@ -54,6 +59,13 @@ data:
   {{- $_ := set $c.EmailSettings "ConnectionSecurity" (.Values.config.smtpConnection | default "") }}
   {{- $_ := set $c.EmailSettings "InviteSalt" (randAlphaNum 32) }}
 
-  {{- $_ := set $c "GitLabSettings" .Values.auth.gitlab }}
+  {{- /* Override the config with .Values.extraConfig */}}
+  {{- range $key, $extraDict := .Values.extraConfig }}
+  {{- $defaultDict := pluck $key $c | first }}
+  {{- $mergedDict := merge (dict) $extraDict $defaultDict }}
+  {{- $_ := set $c $key $mergedDict }}
+  {{- end }}
 
-  config.json: {{ $c | toJson }}
+  {{- /* Render the processed config as a JSON string */}}
+  {{- /* NOTE: Mounted at /mattermost/config/config.json on the mattermost pod */}}
+  config.json: {{ $c | toJson | squote }}
