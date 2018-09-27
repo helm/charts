@@ -1,8 +1,8 @@
 {{ if .Values.rbac.install }}
 {{- $serviceName := include "jenkins.fullname" . -}}
-{{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
+{{- if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1" }}
 apiVersion: rbac.authorization.k8s.io/v1
-{{- else }}
+{{- else if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1beta1" }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 {{- end }}
 kind: {{ .Values.rbac.roleBindingKind }}
