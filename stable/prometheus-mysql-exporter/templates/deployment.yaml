@@ -35,7 +35,7 @@ spec:
           env:
             - name: DATA_SOURCE_NAME
               value: {{ .Values.datasource }}
-              value: "{{ .Values.mysql.user }}:{{ .Values.mysql.pass }}@({{ .Values.mysql.host }}:{{ .Values.mysql.port }})/{{ .Values.mysql.db }}"
+              value: "{{ .Values.mysql.user }}:{{ .Values.mysql.pass }}@{{ .Values.mysql.host }}:{{ .Values.mysql.port }}/{{ .Values.mysql.db }}"
           ports:
             - containerPort: {{ .Values.service.internalPort }}
           livenessProbe:
