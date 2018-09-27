@@ -36,7 +36,7 @@ tolerations: []
 #   value: "value"
 #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 ## Kubernetes ingress filters
-# kubernetes:
+kubernetes: {}
   # endpoint:
   # namespaces:
   # - default
