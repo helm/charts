@@ -8,5 +8,52 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "mattermost-team-edition.chart" . }}
 data:
-  config.json: |
-{{ include "config.tpl" . | printf "%s" | indent 4 }}
+  {{- /* Reference the default config and update it's values. */}}
+  {{- $c := .Values.defaultConfig }}
+
+  {{- $_ := set $c.ServiceSettings "SiteURL" (.Values.config.siteUrl | default "") }}
+
+  {{- $_ := set $c.TeamSettings "SiteName" (.Values.config.siteName | default "Mattermost") }}
+
+  {{- $_ := set $c.SqlSettings "DriverName" (.Values.config.siteName | default "Mattermost") }}
+  {{- if .Values.externalDB.enabled }}
+  {{- $_ := set $c.SqlSettings "DriverName" (.Values.externalDB.externalDriverType) }}
+  {{- $_ := set $c.SqlSettings "DataSource" (.Values.externalDB.externalConnectionString) }}
+  {{- else }}
+  {{- $_ := set $c.SqlSettings "DriverName" "mysql" }}
+  {{- $_ := set $c.SqlSettings "DataSource" (print .Values.mysql.mysqlUser ":" .Values.mysql.mysqlPassword "@tcp(" .Release.Name "-mysql:3306)/" .Values.mysql.mysqlDatabase "?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s") }}
+  {{- end }}
+  {{- $_ := set $c.SqlSettings "AtRestEncryptKey" (randAlphaNum 32) }}
+
+  {{- if .Values.config.filesAccessKey }}
+  {{- $_ := set $c.FileSettings "DriverName" "amazons3" }}
+  {{- else }}
+  {{- $_ := set $c.FileSettings "DriverName" "local" }}
+  {{- end }}
+  {{- $_ := set $c.FileSettings "PublicLinkSalt" (randAlphaNum 32) }}
+  {{- $_ := set $c.FileSettings "AmazonS3AccessKeyId" (.Values.config.filesAccessKey | default "") }}
+  {{- $_ := set $c.FileSettings "AmazonS3SecretAccessKey" (.Values.config.filesSecretKey | default "") }}
+  {{- $_ := set $c.FileSettings "AmazonS3Bucket" (.Values.config.fileBucketName | default "") }}
+
+  {{- if .Values.config.smtpServer }}
+  {{- $_ := set $c.EmailSettings "SendEmailNotifications" true }}
+  {{- else }}
+  {{- $_ := set $c.EmailSettings "SendEmailNotifications" false }}
+  {{- end }}
+  {{- $_ := set $c.EmailSettings "FeedbackName" (.Values.config.feedbackName | default "") }}
+  {{- $_ := set $c.EmailSettings "FeedbackEmail" (.Values.config.feedbackEmail | default "") }}
+  {{- $_ := set $c.EmailSettings "SMTPUsername" (.Values.config.smtpUsername | default "") }}
+  {{- $_ := set $c.EmailSettings "SMTPPassword" (.Values.config.smtpPassword | default "") }}
+  {{- if and .Values.config.smtpUsername .Values.config.smtpPassword }}
+  {{- $_ := set $c.EmailSettings "EnableSMTPAuth" true }}
+  {{- else }}
+  {{- $_ := set $c.EmailSettings "EnableSMTPAuth" false }}
+  {{- end }}
+  {{- $_ := set $c.EmailSettings "SMTPServer" (.Values.config.smtpServer | default "") }}
+  {{- $_ := set $c.EmailSettings "SMTPPort" (.Values.config.smtpPort | default "") }}
+  {{- $_ := set $c.EmailSettings "ConnectionSecurity" (.Values.config.smtpConnection | default "") }}
+  {{- $_ := set $c.EmailSettings "InviteSalt" (randAlphaNum 32) }}
+
+  {{- $_ := set $c "GitLabSettings" .Values.auth.gitlab }}
+
+  config.json: {{ $c | toJson }}
