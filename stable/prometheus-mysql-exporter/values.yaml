@@ -38,8 +38,12 @@ annotations: {}
 #  prometheus.io/path: "/metrics"
 #  prometheus.io/port: "{{ .Values.service.internalPort }}"
 
-# Scraper datasource
-datasource: "username:password@(localhost:3306)/"
+# mysql connection
+mysql:
+  host: "localhost"
+  pass: "password"
+  port: 3306
+  user: "username"
 
 # cloudsqlproxy https://cloud.google.com/sql/docs/mysql/sql-proxy
 cloudsqlproxy:

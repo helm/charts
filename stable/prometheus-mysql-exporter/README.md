@@ -40,7 +40,7 @@ The following table lists the configurable parameters of the mysql exporter char
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
 | `replicaCount`                           | Amount of pods for the deployment                                                                                    | `1`                                     |
 | `image.repository`                       | Image repository                                                                                                     | `prom/mysqld-exporter`                  |
-| `image.tag`                              | Image tag                                                                                                            | `v0.10.0`                               |
+| `image.tag`                              | Image tag                                                                                                            | `v0.11.0`                               |
 | `image.pullPolicy`                       | Image pull policy                                                                                                    | `IfNotPresent`                          |
 | `service.name`                           | Service name                                                                                                         | `mysql-exporter`                        |
 | `service.type`                           | Service type                                                                                                         | `ClusterIP`                             |
@@ -48,7 +48,10 @@ The following table lists the configurable parameters of the mysql exporter char
 | `service.internalPort`                   | The target port of the container                                                                                     | `9104`                                  |
 | `resources`                              | CPU/Memory resource requests/limits                                                                                  | `{}`                                    |
 | `annotations`                            | pod annotations for easier discovery                                                                                 | `{}`                                    |
-| `datasource`                             | Exporter datasource pointing to the mysql server to be monitored                                                     | `username:password@(localhost:3306)/`   |
+| `mysql.host`                             | MySQL connection host                                                                                                | `localhost`                             |
+| `mysql.pass`                             | MySQL connection password                                                                                            | `password`                              |
+| `mysql.port`                             | MySQL connection port                                                                                                | `3306`                                  |
+| `mysql.user`                             | MySQL connection username                                                                                            | `username`                              |
 | `cloudsqlproxy.enabled`                  | Flag to enable the connection using Cloud SQL Proxy                                                                  | `false`                                 |
 | `cloudsqlproxy.image.repo`               | Cloud SQL Proxy image repository                                                                                     | `gcr.io/cloudsql-docker/gce-proxy`      |
 | `cloudsqlproxy.image.tag`                | Cloud SQL Proxy image tag                                                                                            | `1.11`                                  |
@@ -62,7 +65,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install --name my-release \
-  --set datasource="username:password@(db:3306)/"  \
+  --set mysql.user="username",mysq.password="password",mysql.host="localhost",mysql.port="3306"  \
     stable/prometheus-mysql-exporter
 ```
 
