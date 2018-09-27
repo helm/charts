@@ -28,7 +28,7 @@ helm install -n locust-nymph --set master.config.target-url=http://site.example.
 | ---------------------------- | ----------------------------------      | ----------------------------------------------------- |
 | `Name`                       | Locust master name                      | `locust`                                              |
 | 'createTestScripts'          | Use Helm to create the test scripts     | 'true'                                                |
-| `image.repository`           | Locust container image name             | `quay.io/honestbee/locust`                            |
+| `image.repository`           | Locust container image name             | `garland/locust          `                            |
 | `image.tag`                  | Locust Container image tag              | `0.7.5`                                               |
 | `image.pullSecrets`          | Locust Container image registry secret  | `None`                                                |
 | 'ingress.enable'             | Enable ingress to expose the master     | 'false'                                               |
