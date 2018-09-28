@@ -65,7 +65,7 @@ podAnnotations: {}
 
 podLabels: {}
 
-# Verbosity of the logs (options: panic, debug, info, warn, error, fatal)
+# Verbosity of the logs (options: debug, info, warning, error, fatal, panic)
 logLevel: info
 
 extraArgs: {}
