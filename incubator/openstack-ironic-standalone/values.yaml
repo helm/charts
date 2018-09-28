@@ -22,7 +22,6 @@ config:
     api_workers: 8
   pxe:
     pxe_append_params: "console=tty0 console=ttyS0,115200 coreos.autologin=tty0"
-    pxe_config_template: /etc/ironic/pxe_config.template
     ipxe_enabled: false
   deploy:
     enable_ata_secure_erase: false

@@ -3999,7 +3999,11 @@ instance_master_path = /storage/httpboot/master-path
 
 # On ironic-conductor node, template file for PXE
 # configuration. (string value)
-pxe_config_template = {{ .Values.config.pxe.pxe_config_template | default "$pybasedir/drivers/modules/pxe_config.template" }}
+{{- if .Values.config.pxe.ipxe_enabled }}
+pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
+{{- else }}
+#pxe_config_template = $pybasedir/drivers/modules/pxe_config.template
+{{- end }}
 
 # On ironic-conductor node, template file for PXE
 # configuration for UEFI boot loader. (string value)
