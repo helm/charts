@@ -40,13 +40,13 @@ annotations:
 
 # mysql connection
 mysql:
-  db: "exporter"
+  db: ""
   host: "localhost"
   param: ""
   pass: "password"
   port: 3306
   protocol: ""
-  user: "username"
+  user: "exporter"
 
 # cloudsqlproxy https://cloud.google.com/sql/docs/mysql/sql-proxy
 cloudsqlproxy:
