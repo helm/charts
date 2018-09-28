@@ -64,6 +64,10 @@ The following table lists the configurable parameters of the Vault chart and the
 | `affinity`                        | Affinity settings                        | See values.yaml                     |
 | `service.loadBalancerSourceRanges`| IP whitelist for service type loadbalancer   | `[]`                            |
 | `service.annotations`             | Annotations for service                  | `{}`                                |
+| `service.externalPort`            | External port for the service            | `8200`                              |
+| `service.port`                    | The API port Vault is using              | `8200`                              |
+| `service.clusterExternalPort`     | External cluster port for the service    | `8201`                              |
+| `service.clusterPort`             | The cluster port Vault is using          | `8201`                              |
 | `annotations`                     | Annotations for deployment               | `{}`                                |
 | `ingress.labels`                  | Labels for ingress                       | `{}`                                |
 | `podAnnotations`                  | Annotations for pods                     | `{}`                                |
