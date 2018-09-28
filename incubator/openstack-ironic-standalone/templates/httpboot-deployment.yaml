@@ -33,8 +33,15 @@ spec:
             runAsUser: 0
             fsGroup: 0
           volumeMounts:
-            - mountPath: /storage
+            - mountPath: /storage/httpboot
               name: ironic
+              subPath: httpboot
+            - mountPath: /storage/tftpboot
+              name: ironic
+              subPath: tftpboot
+            - mountPath: /storage/mgmt-scripts
+              name: ironic
+              subPath: mgmt-scripts
         - name: cp-pxelinux
           image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
           command:
