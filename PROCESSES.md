@@ -43,6 +43,7 @@ When promoting a chart from incubator to stable there are several steps that nee
 1. The chart should be copied, not moved, from the incubator directory to the stable directory.
 1. The chart in the incubator directory should be deprecated according to the [deprecation process](#deprecating-a-chart) described above with a comment noting that the chart has been promoted to stable.
 1. The version of the chart in the stable directory should be updated so that any documentation or other details points to stable rather than incubator. The chart `version` will, also, need to be incremented.
+1. Finally, delete the chart in the incubator directory in a separate PR referencing the PR where the chart was promoted to stable.
 
 ## Reviewing A Pull Request
 
