@@ -4,7 +4,7 @@ kind: Service
 metadata:
   labels:
 {{ toYaml .Values.kubeDns.labels | indent 4 }}
-  name: kube-dns
+  name: {{ template "kube-dns.fullname" . }}
   namespace: kube-system
 spec:
   clusterIP: None

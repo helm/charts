@@ -104,7 +104,7 @@ release: {{ .Release.Name | quote }}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- $name := default "kube-controller-manager" .Values.nameOverride -}}
+{{- $name := default "kube-controller-manager-prometheus-discovery" .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end }}
 {{- end }}
@@ -113,7 +113,16 @@ release: {{ .Release.Name | quote }}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- $name := default "kube-scheduler" .Values.nameOverride -}}
+{{- $name := default "kube-scheduler-prometheus-discovery" .Values.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end }}
+{{- end }}
+
+{{- define "kube-dns.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default "kube-dns-prometheus-discovery" .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end }}
 {{- end }}
