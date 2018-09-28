@@ -132,15 +132,15 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.defaultBuildLogsToRetain }}
             - name: CONCOURSE_DEFAULT_BUILD_LOGS_TO_RETAIN
-              value: {{ .Values.concourse.web.defaultBuildLogsToRetain }}
+              value: {{ .Values.concourse.web.defaultBuildLogsToRetain | quote }}
             {{- end }}
             {{- if .Values.concourse.web.maxBuildLogsToRetain }}
             - name: CONCOURSE_MAX_BUILD_LOGS_TO_RETAIN
-              value: {{ .Values.concourse.web.maxBuildLogsToRetain }}
+              value: {{ .Values.concourse.web.maxBuildLogsToRetain | quote }}
             {{- end }}
             {{- if .Values.concourse.web.defaultTaskCpuLimit }}
             - name: CONCOURSE_DEFAULT_TASK_CPU_LIMIT
-              value: {{ .Values.concourse.web.defaultTaskCpuLimit }}
+              value: {{ .Values.concourse.web.defaultTaskCpuLimit | quote }}
             {{- end }}
             {{- if .Values.concourse.web.defaultTaskMemoryLimit }}
             - name: CONCOURSE_DEFAULT_TASK_MEMORY_LIMIT
