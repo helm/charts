@@ -5,14 +5,16 @@
 
 image:
   repository: k8s.gcr.io/kubernetes-dashboard-amd64
-  tag: v1.8.1
+  tag: v1.10.0
   pullPolicy: IfNotPresent
 
-## Here labels can be added to the kubernets dashboard deployment
+replicaCount: 1
+
+## Here labels can be added to the kubernetes dashboard deployment
 ##
 labels: {}
 # kubernetes.io/cluster-service: "true"
-# kubernetes.io/name: "Kuberetes Dashboard"
+# kubernetes.io/name: "Kubernetes Dashboard"
 
 ## Additional container arguments
 ##
@@ -25,11 +27,18 @@ labels: {}
 ##
 nodeSelector: {}
 
+## List of node taints to tolerate (requires Kubernetes >= 1.6)
+tolerations: []
+#  - key: "key"
+#    operator: "Equal|Exists"
+#    value: "value"
+#    effect: "NoSchedule|PreferNoSchedule|NoExecute"
+
 service:
   type: ClusterIP
-  externalPort: 80
+  externalPort: 443
 
-  ## This allows an overide of the heapster service name
+  ## This allows an override of the heapster service name
   ## Default: {{ .Chart.Name }}
   ##
   # nameOverride:
@@ -47,10 +56,10 @@ service:
 resources:
   limits:
     cpu: 100m
-    memory: 50Mi
+    memory: 100Mi
   requests:
     cpu: 100m
-    memory: 50Mi
+    memory: 100Mi
 
 ingress:
   ## If true, Kubernetes Dashboard Ingress will be created.
@@ -61,7 +70,12 @@ ingress:
   ##
   # annotations:
   #   kubernetes.io/ingress.class: nginx
+  #   nginx.ingress.kubernetes.io/secure-backends: "true"
   #   kubernetes.io/tls-acme: 'true'
+
+  ## Kubernetes Dashboard Ingress path
+  ##
+  path: /
 
   ## Kubernetes Dashboard Ingress hostnames
   ## Must be provided if Ingress is enabled
@@ -78,10 +92,16 @@ ingress:
   #       - kubernetes-dashboard.domain.com
 
 rbac:
-  ## If true, create & use RBAC resources
-  #
-  create: false
+  # Specifies whether RBAC resources should be created
+  create: true
 
-  ## Ignored if rbac.create is true
-  #
-  serviceAccountName: default
+  # Specifies whether cluster-admin ClusterRole will be used for dashboard
+  # ServiceAccount (NOT RECOMMENDED).
+  clusterAdminRole: false
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:

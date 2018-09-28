@@ -1,12 +1,21 @@
 ## Bitnami WordPress image version
 ## ref: https://hub.docker.com/r/bitnami/wordpress/tags/
 ##
-image: bitnami/wordpress:4.9.4-r0
-
-## Specify a imagePullPolicy
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-##
-imagePullPolicy: IfNotPresent
+image:
+  registry: docker.io
+  repository: bitnami/wordpress
+  tag: 4.9.8-debian-9
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
@@ -39,9 +48,14 @@ wordpressLastName: LastName
 ##
 wordpressBlogName: User's Blog!
 
-## Set to `yes` to allow the container to be started with blank passwords
+## Table prefix
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
-allowEmptyPassword: yes
+##
+wordpressTablePrefix: wp_
+
+## Set to `false` to allow the container to be started with blank passwords
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
+allowEmptyPassword: true
 
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress/#smtp-configuration
@@ -53,19 +67,18 @@ allowEmptyPassword: yes
 # smtpUsername:
 # smtpProtocol:
 
+replicaCount: 1
+
 externalDatabase:
 ## All of these values are only used when mariadb.enabled is set to false
   ## Database host
   host: localhost
 
-  ## Database Root User (so wordpress can create the db schema etc)
-  # rootPassword:
-
   ## non-root Username for Wordpress Database
   user: bn_wordpress
 
   ## Database password
-  # password:
+  password: ""
 
   ## Database name
   database: bitnami_wordpress
@@ -77,50 +90,61 @@ externalDatabase:
 ## MariaDB chart configuration
 ##
 mariadb:
-  ## Whether to use the database specified as a requirement or not.
-  ## If you want to use an external database set this to false and supply details to externalDatabase above
+  ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
   enabled: true
+  ## Disable MariaDB replication
+  replication:
+    enabled: false
+
+  ## Create a database and a database user
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  db:
+    name: bitnami_wordpress
+    user: bn_wordpress
+    ## If the password is not specified, mariadb will generates a random password
+    ##
+    # password:
 
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##
-  # mariadbRootPassword:
-
-  ## Create a database
-  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
-  ##
-  mariadbDatabase: bitnami_wordpress
-
-  ## Create a database user
-  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
-  ##
-  mariadbUser: bn_wordpress
-
-  ## Password for mariadbUser
-  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
-  ##
-  # mariadbPassword:
+  # rootUser:
+  #   password:
 
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
-  persistence:
-    enabled: true
-    ## mariadb data Persistent Volume Storage Class
-    ## If defined, storageClassName: <storageClass>
-    ## If set to "-", storageClassName: "", which disables dynamic provisioning
-    ## If undefined (the default) or set to null, no storageClassName spec is
-    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-    ##   GKE, AWS & OpenStack)
-    ##
-    # storageClass: "-"
-    accessMode: ReadWriteOnce
-    size: 8Gi
+  master:
+    persistence:
+      enabled: true
+      ## mariadb data Persistent Volume Storage Class
+      ## If defined, storageClassName: <storageClass>
+      ## If set to "-", storageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      # storageClass: "-"
+      accessMode: ReadWriteOnce
+      size: 8Gi
 
 ## Kubernetes configuration
-## For minikube, set this to NodePort, elsewhere use LoadBalancer
+## For minikube, set this to NodePort, elsewhere use LoadBalancer or ClusterIP
 ##
 serviceType: LoadBalancer
+##
+## serviceType: NodePort
+## nodePorts:
+##   http: <to set explicitly, choose port between 30000-32767>
+##   https: <to set explicitly, choose port between 30000-32767>
+nodePorts:
+  http: ""
+  https: ""
+## Enable client source IP preservation
+## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+##
+serviceExternalTrafficPolicy: Cluster
 
 ## Allow health checks to be pointed at the https port
 healthcheckHttps: false
@@ -140,8 +164,8 @@ readinessProbe:
   failureThreshold: 6
   successThreshold: 1
 
-## Configure ingress resource that allow you to access the
-## Wordpress instalation. Set up the URL
+## Configure the ingress resource that allows you to access the
+## Wordpress installation. Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:
@@ -199,6 +223,10 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  ##
+  ## If you want to reuse an existing claim, you can pass the name of the PVC using
+  ## the existingClaim variable
+  # existingClaim: your-claim
   accessMode: ReadWriteOnce
   size: 10Gi
 
@@ -214,3 +242,13 @@ resources:
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
 nodeSelector: {}
+
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}

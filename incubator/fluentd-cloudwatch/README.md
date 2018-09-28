@@ -42,25 +42,33 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Fluentd Cloudwatch chart and their default values.
+The following table lists the configurable parameters of the Fluentd Cloudwatch chart and their default values.
 
-| Parameter                       | Description                                | Default                                                    |
-| ------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
-| `image`                         | Image                                      | `fluent/fluentd-kubernetes-daemonset`                      |
-| `imageTag`                      | Image tag                                  | `v0.12.33-cloudwatch`                                      |
-| `imagePullPolicy`               | Image pull policy                          | `Always` if `imageTag` is `imagePullPolicy`                |
-| `resources.limits.cpu`          | CPU limit                                  | `100m`                                                     |
-| `resources.limits.memory`       | Memory limit                               | `200Mi`                                                    |
-| `resources.requests.cpu`        | CPU request                                | `100m`                                                     |
-| `resources.requests.memory`     | Memory request                             | `200Mi`                                                    |
-| `hostNetwork`                   | Host network                               | `false`                                                    |
-| `annotations` (removed for now) | Annotations                                | `nil`                                                      |
-| `awsRegion`                     | AWS Cloudwatch region                      | `us-east-1`                                                |
-| `awsRole`                       | AWS IAM Role To Use                        | `nil`                                                      |
-| `fluentdConfig`                 | Fluentd configuration                      | `example configuration`                                    |
-| `logGroupName`                  | AWS Cloudwatch log group                   | `kubernetes`                                               |
-| `rbac.create`                   | If true, create & use RBAC resources       | `false`                                                    |
-| `rbac.serviceAccountName`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`                                |
+| Parameter                       | Description                                                               | Default                               |
+| ------------------------------- | ------------------------------------------------------------------------- | --------------------------------------|
+| `image.repository`              | Image repository                                                          | `fluent/fluentd-kubernetes-daemonset` |
+| `image.tag`                     | Image tag                                                                 | `v0.12.43-cloudwatch`                 |
+| `image.pullPolicy`              | Image pull policy                                                         | `IfNotPresent`                        |
+| `resources.limits.cpu`          | CPU limit                                                                 | `100m`                                |
+| `resources.limits.memory`       | Memory limit                                                              | `200Mi`                               |
+| `resources.requests.cpu`        | CPU request                                                               | `100m`                                |
+| `resources.requests.memory`     | Memory request                                                            | `200Mi`                               |
+| `hostNetwork`                   | Host network                                                              | `false`                               |
+| `annotations` (removed for now) | Annotations                                                               | `nil`                                 |
+| `awsRegion`                     | AWS Cloudwatch region                                                     | `us-east-1`                           |
+| `awsRole`                       | AWS IAM Role To Use                                                       | `nil`                                 |
+| `fluentdConfig`                 | Fluentd configuration                                                     | `example configuration`               |
+| `logGroupName`                  | AWS Cloudwatch log group                                                  | `kubernetes`                          |
+| `rbac.create`                   | If true, create & use RBAC resources                                      | `false`                               |
+| `rbac.serviceAccountName`       | existing ServiceAccount to use (ignored if rbac.create=true)              | `default`                             |
+| `tolerations`                   | Add tolerations                                                           | `[]`                                  |
+| `extraVars`                     | Add pod environment variables (must be specified as a single line object) | `[]`                                  |
+
+Starting with fluentd-kubernetes-daemonset v0.12.43-cloudwatch, the container runs as user fluentd. To be able to write pos files to the host system, you'll need to run fluentd as root. Add the following extraVars value to run as root.
+
+```code
+"{ name: FLUENT_UID, value: '0' }"
+```
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -1,0 +1,17 @@
+apiVersion: v1
+description: The SignalFx Kubernetes agent
+name: signalfx-agent
+appVersion: 3.6.1
+version: 0.3.0
+keywords:
+- monitoring
+- alerting
+- metrics
+- stats
+home: https://signalfx.com
+sources:
+- https://github.com/signalfx/signalfx-agent
+maintainers:
+- name: keitwb
+  email: bkeith@signalfx.com
+icon: https://signalfx-82c9.kxcdn.com/wp-content/uploads/2015/12/signalfx-main-logo1.png

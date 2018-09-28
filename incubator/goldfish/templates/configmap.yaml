@@ -8,5 +8,5 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 data:
-  docker.json: |
-    {{ .Values.config | toJson }}
+  config: |-
+{{ toJson .Values.config| indent 4 }}

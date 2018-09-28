@@ -3,7 +3,7 @@
 
 image:
   repository: kong
-  tag: 0.12.1
+  tag: 0.14.0
   pullPolicy: IfNotPresent
 
 # Specify Kong admin and proxy services configurations
@@ -14,15 +14,27 @@ admin:
   #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 
   # HTTPS traffic on the admin port
-  https:
-    servicePort: 8444
-    containerPort: 8444
-  http:
-    servicePort: 8001
-    containerPort: 8001
+  # if set to false also set readinessProbe and livenessProbe httpGet scheme's to 'HTTP'
+  useTLS: true
+  servicePort: 8444
+  containerPort: 8444
   # Kong admin service type
   type: NodePort
-  nodePort: 32444
+  # Set a nodePort which is available
+  # nodePort: 32444
+  # Kong admin ingress settings.
+  ingress:
+    # Enable/disable exposure using ingress.
+    enabled: false
+    # TLS secret name.
+    # tls: kong-admin.example.com-tls
+    # Array of ingress hosts.
+    hosts: []
+    # Map of ingress annotations.
+    annotations: {}
+    # Ingress path.
+    path: /
+
 proxy:
   # If you want to specify annotations for the proxy service, uncomment the following
   # line, add additional or adjust as needed, and remove the curly braces after 'annotations:'.
@@ -30,14 +42,24 @@ proxy:
   #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 
   # HTTPS traffic on the proxy port
-  https:
-    servicePort: 8443
-    containerPort: 8443
-  http:
-    servicePort: 8000
-    containerPort: 8000
+  useTLS: true
+  servicePort: 8443
+  containerPort: 8443
   type: NodePort
-  nodePort: 32443
+  # Set a nodePort which is available
+  # nodePort: 32443
+  # Kong proxy ingress settings.
+  ingress:
+    # Enable/disable exposure using ingress.
+    enabled: false
+    # TLS secret name.
+    # tls: kong-proxy.example.com-tls
+    # Array of ingress hosts.
+    hosts: []
+    # Map of ingress annotations.
+    annotations: {}
+    # Ingress path.
+    path: /
 
 # Set runMigrations to run Kong migrations
 runMigrations: true
@@ -61,11 +83,11 @@ resources: {}
 readinessProbe:
   httpGet:
     path: "/status"
-    port: admin-ssl
+    port: admin
     scheme: HTTPS
-  initialDelaySeconds: 300
-  timeoutSeconds: 60
-  periodSeconds: 60
+  initialDelaySeconds: 120
+  timeoutSeconds: 1
+  periodSeconds: 10
   successThreshold: 1
   failureThreshold: 5
 
@@ -73,11 +95,11 @@ readinessProbe:
 livenessProbe:
   httpGet:
     path: "/status"
-    port: admin-ssl
+    port: admin
     scheme: HTTPS
-  initialDelaySeconds: 300
-  timeoutSeconds: 60
-  periodSeconds: 60
+  initialDelaySeconds: 180
+  timeoutSeconds: 5
+  periodSeconds: 30
   successThreshold: 1
   failureThreshold: 5
 

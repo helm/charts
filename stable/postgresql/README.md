@@ -41,7 +41,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the PostgreSQL chart and their default values.
+The following table lists the configurable parameters of the PostgreSQL chart and their default values.
 
 | Parameter                  | Description                                     | Default                                                    |
 | -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
@@ -51,8 +51,13 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `imagePullSecrets`         | Image pull secrets                              | `nil`                                                      |
 | `postgresUser`             | Username of new user to create.                 | `postgres`                                                 |
 | `postgresPassword`         | Password for the new user.                      | random 10 characters                                       |
+| `usePasswordFile`          | Inject the password via file instead of env var | `false`                                                    |
 | `postgresDatabase`         | Name for new database to create.                | `postgres`                                                 |
 | `postgresInitdbArgs`       | Initdb Arguments                                | `nil`                                                      |
+| `schedulerName`            | Name of an alternate scheduler                  | `nil`                                                      |
+| `existingSecret`           | Use Existing secret for Admin password          | `nil`                                                      |
+| `postgresConfig`           | Runtime Config Parameters                       | `nil`                                                      |
+| `pgHbaConf`                | Content of pg\_hba.conf                         | `nil (do not create pg_hba.conf)`                          |
 | `persistence.enabled`      | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `nil`                                                      |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
@@ -61,6 +66,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `persistence.size`         | Size of data volume                             | `8Gi`                                                      |
 | `persistence.subPath`      | Subdirectory of the volume to mount at          | `postgresql-db`                                            |
 | `persistence.mountPath`    | Mount path of data volume                       | `/var/lib/postgresql/data/pgdata`                          |
+| `persistence.resourcePolicy` | set resource-policy Helm annotation on PVC. Can be nil or "keep" | `nil`                                   |
 | `resources`                | CPU/Memory resource requests/limits             | Memory: `256Mi`, CPU: `100m`                               |
 | `metrics.enabled`          | Start a side-car prometheus exporter            | `false`                                                    |
 | `metrics.image`            | Exporter image                                  | `wrouesnel/postgres_exporter`                              |
@@ -77,6 +83,14 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `nodeSelector`             | Node labels for pod assignment                  | {}                                                         |
 | `affinity`                 | Affinity settings for pod assignment            | {}                                                         |
 | `tolerations`              | Toleration labels for pod assignment            | []                                                         |
+| `probes.liveness.initialDelay`      | Liveness probe initial delay           | `60`                                                       |
+| `probes.liveness.timeoutSeconds`    | Liveness probe timeout seconds         | `5`                                                        |
+| `probes.liveness.failureThreshold`  | Liveness probe failure threshold       | `6`                                                        |
+| `probes.readiness.initialDelay`     | Readiness probe initial delay          | `5`                                                        |
+| `probes.readiness.timeoutSeconds`   | Readiness probe timeout seconds        | `3`                                                        |
+| `probes.readiness.failureThreshold` | Readiness probe failure threshold      | `5`                                                        |
+| `podAnnotations`           | Annotations for the postgresql pod              | {}                                                         |
+| `deploymentAnnotations`    | Annotations for the postgresql deployment       | {}                                                         |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
 
@@ -88,7 +102,7 @@ $ helm install --name my-release \
     stable/postgresql
 ```
 
-The above command creates a PostgreSQL user named `root` with password `secretpassword`. Additionally it creates a database named `my-database`.
+The above command creates a PostgreSQL user named `my-user` with password `secretpassword`. Additionally it creates a database named `my-database`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
@@ -102,7 +116,9 @@ $ helm install --name my-release -f values.yaml stable/postgresql
 
 The [postgres](https://github.com/docker-library/postgres) image stores the PostgreSQL data and configurations at the `/var/lib/postgresql/data/pgdata` path of the container.
 
-The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning. If the PersistentVolumeClaim should not be managed by the chart, define `persistence.existingClaim`.
+The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning. If the PersistentVolumeClaim should not be managed by the chart, define `persistence.existingClaim`.
+
+Note: When using persistence ensure that you either provide a `postgresPassword` or use `existingSecret`, otherwise `helm update` will generate a new random password which is ignored by postgres. That will cause confusing behaviour especially if services depend on the secret
 
 ### Existing PersistentVolumeClaims
 

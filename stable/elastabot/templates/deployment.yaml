@@ -1,0 +1,89 @@
+{{ if .Values.elasticsearch.host }}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "elastabot.fullname" . }}
+  labels:
+    app: {{ template "elastabot.name" . }}
+    chart: {{ template "elastabot.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "elastabot.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ template "elastabot.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+{{ if .Values.extraSpec }}
+      {{- toYaml .Values.extraSpec | indent 6 }}
+{{ end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ template "elastabot.fullname" . }}-config
+            items:
+            - key: elastabot.json
+              path: elastabot.json
+      containers:
+        - name: elastabot
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{ if .Values.extraContainer }}
+          {{- .Values.extraContainer | indent 10 }}
+{{ end }}
+          env:
+{{ if .Values.extraEnvs }}
+            {{- .Values.extraEnvs | indent 12 }}
+{{ end }}
+            - name: ELASTICSEARCH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "elastabot.fullname" . }}-secrets
+                  key: elasticsearchUsername
+            - name: ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "elastabot.fullname" . }}-secrets
+                  key: elasticsearchPassword
+            - name: SLACK_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "elastabot.fullname" . }}-secrets
+                  key: slackBotToken
+            - name: SMTP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "elastabot.fullname" . }}-secrets
+                  key: smtpUsername
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "elastabot.fullname" . }}-secrets
+                  key: smtpPassword
+          volumeMounts:
+            - name: config
+              mountPath: /opt/elastabot/elastabot.json
+              subPath: elastabot.json
+          resources:
+            {{- toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{ end }}

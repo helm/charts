@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "jaeger.query.name" . }}-query
+  name: {{ template "jaeger.query.name" . }}
   labels:
     app: {{ template "jaeger.name" . }}
     jaeger-infra: query-deployment
@@ -20,6 +20,10 @@ spec:
     type: Recreate
   template:
     metadata:
+{{- if .Values.query.podAnnotations }}
+      annotations:
+{{ toYaml .Values.query.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "jaeger.name" . }}
         component: query
@@ -31,9 +35,13 @@ spec:
     spec:
       nodeSelector:
 {{ toYaml .Values.query.nodeSelector | indent 8 }}
+{{- if .Values.query.tolerations }}
+      tolerations:
+{{ toYaml .Values.query.tolerations | indent 8 }}
+{{- end }}
       containers:
-      - name: {{ template "jaeger.query.name" . }}-query
-        image: {{ .Values.query.image }}:{{ .Values.query.tag }}
+      - name: {{ template "jaeger.query.name" . }}
+        image: {{ .Values.query.image }}:{{ .Values.tag }}
         imagePullPolicy: {{ .Values.query.pullPolicy }}
         env:
           - name: SPAN_STORAGE_TYPE

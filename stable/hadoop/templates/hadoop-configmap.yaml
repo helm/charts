@@ -35,7 +35,6 @@ data:
     if [[ "${HOSTNAME}" =~ "hdfs-nn" ]]; then
       mkdir -p /root/hdfs/namenode
       $HADOOP_PREFIX/bin/hdfs namenode -format -force -nonInteractive
-      sed -i s/{{ template "hadoop.fullname" . }}-hdfs-nn/0.0.0.0/ /usr/local/hadoop/etc/hadoop/core-site.xml
       $HADOOP_PREFIX/sbin/hadoop-daemon.sh start namenode
     fi
 
@@ -50,7 +49,6 @@ data:
     fi
 
     if [[ "${HOSTNAME}" =~ "yarn-rm" ]]; then
-      sed -i s/{{ template "hadoop.fullname" . }}-yarn-rm/0.0.0.0/ $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
       cp ${CONFIG_DIR}/start-yarn-rm.sh $HADOOP_PREFIX/sbin/
       cd $HADOOP_PREFIX/sbin
       chmod +x start-yarn-rm.sh
@@ -138,6 +136,18 @@ data:
         <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
         <value>false</value>
       </property>
+
+      <!-- Bind to all interfaces -->
+      <property>
+        <name>dfs.namenode.rpc-bind-host</name>
+        <value>0.0.0.0</value>
+      </property>
+      <property>
+        <name>dfs.namenode.servicerpc-bind-host</name>
+        <value>0.0.0.0</value>
+      </property>
+      <!-- /Bind to all interfaces -->
+      
     </configuration>
 
   mapred-site.xml: |
@@ -245,6 +255,21 @@ data:
         <name>yarn.resourcemanager.hostname</name>
         <value>{{ template "hadoop.fullname" . }}-yarn-rm</value>
       </property>
+
+      <!-- Bind to all interfaces -->
+      <property>
+        <name>yarn.resourcemanager.bind-host</name>
+        <value>0.0.0.0</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.bind-host</name>
+        <value>0.0.0.0</value>
+      </property>
+      <property>
+        <name>yarn.timeline-service.bind-host</name>
+        <value>0.0.0.0</value>
+      </property>
+      <!-- /Bind to all interfaces -->
 
       <property>
         <name>yarn.nodemanager.vmem-check-enabled</name>

@@ -1,0 +1,91 @@
+{{- if .Values.tiller.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tiller-deploy
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+  labels:
+    app: helm
+    name: tiller
+    chart: {{ template "magic-namespace.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.tiller.replicaCount }}
+  selector:
+    matchLabels:
+      app: helm
+      name: tiller
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: helm
+        name: tiller
+        chart: {{ template "magic-namespace.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+      serviceAccountName: tiller
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.tiller.image.repository }}:{{ .Values.tiller.image.tag }}"
+          imagePullPolicy: {{ .Values.tiller.image.pullPolicy }}
+          env:
+          - name: TILLER_NAMESPACE
+            {{- if hasKey .Values "namespace" }}
+            value: {{ .Values.namespace }}
+            {{- else }}
+            value: {{ .Release.Namespace }}
+            {{- end }}
+          - name: TILLER_HISTORY_MAX
+            value: {{ quote .Values.tiller.maxHistory }}
+          {{- if .Values.tiller.onlyListenOnLocalhost }}
+          command: ["/tiller"]
+          args: ["--listen=127.0.0.1:44134"]
+          {{- else }}
+          ports:
+          - containerPort: 44134
+            name: tiller
+            protocol: TCP
+          - containerPort: 44135
+            name: http
+            protocol: TCP
+          {{- end }}
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /liveness
+              port: 44135
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /readiness
+              port: 44135
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+{{ toYaml .Values.tiller.resources | indent 12 }}
+    {{- with .Values.tiller.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tiller.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tiller.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}

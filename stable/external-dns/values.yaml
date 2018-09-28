@@ -1,8 +1,8 @@
 ## Details about the image to be pulled.
 image:
   name: registry.opensource.zalan.do/teapot/external-dns
-  tag: v0.4.8
-
+  tag: v0.5.6
+  pullSecrets: []
   pullPolicy: IfNotPresent
 
 ## This controls which types of resource external-dns should 'watch' for new
@@ -21,6 +21,7 @@ provider: aws
 aws:
   secretKey: ""
   accessKey: ""
+  roleArn: ""
   region: "us-east-1"
   # Filter for zones of this type (optional, options: public, private)
   zoneType: ""
@@ -32,11 +33,17 @@ cloudflare:
 # When using the Google provider, specify the Google project (required when provider=google)
 google:
   project: ""
+  serviceAccountSecret: ""
 
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
+## Limit possible target zones by zone id (optional)
+zoneIdFilters: []
 # Filter sources managed by external-dns via annotation using label selector semantics (default: all sources)
 annotationFilter: ""
+
+# Registry to use for ownership (txt or noop)
+registry: "txt"
 
 # When using the TXT registry, a name that identifies this instance of ExternalDNS
 txtOwnerId: ""
@@ -97,3 +104,5 @@ service:
   loadBalancerSourceRanges: []
   servicePort: 7979
   type: ClusterIP
+
+priorityClassName: ""

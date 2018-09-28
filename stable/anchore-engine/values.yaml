@@ -11,21 +11,26 @@ service:
     k8sImagePolicyWebhook: 8338
 
 image:
-  # Specific version tags are also available, e.g. v0.1.5, v0.1.6,...
-  tag: docker.io/anchore/anchore-engine:latest
+  # Can use 'latest' but not recommended
+  tag: "docker.io/anchore/anchore-engine:v0.2.4"
   # pullPolicy: IfNotPresent
 
 # Used to create Ingress record (should used with service.type: ClusterIP or NodePort depending on platform)
 ingress:
   enabled: false
-  annotations:
+  annotations: {}
     # kubernetes.io/ingress.allow-http: False
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: true
-
+  path: /
+  # You can bound on specific hostnames
+  # hosts:
+  #   - chart-example.local
+  tls: []
   # Secrets must be manually created in the namespace.
-  tls:
-  # - secretName: tlstestsecret
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 # Dependency on Postgresql, configure here
 postgresql:
@@ -42,6 +47,9 @@ postgresql:
 
 # Global configuration shared by both core and worker
 globalConfig:
+  # Set where default configs are placed at startup. This must be a writable location for the pod.
+  configDir: /anchore_service_config
+
   dbConfig:
     timeout: 120
     # Use ssl, but the default postgresql config in helm's stable repo does not support ssl on server side, so this should be set for external dbs only for the time being
@@ -89,14 +97,16 @@ globalConfig:
     # Interval for policy bundle sync from anchore.io if enabled
     policy_bundle_sync: 300
 
+  # Enable prometheus metrics
+  enableMetrics: false
 
 # Configuration for the core engine service that serves the API
 # The core service handles the user facing APIs and coordination of workers as well as storage interfaces for data
 coreConfig:
-  # For the moment, the replica count should stay at 1. That restriction should change soon.
   replicaCount: 1
-  hostId: "anchore-engine-core-host"
   logLevel: INFO
+
+  # Policy bundle sync enables the engine to download a policy bundle from anchore.io if you have an account there with a custom bundle. Requires providing your login credentials in the globalConfig.users.anchoreIOCredentials section
   policyBundleSyncEnabled: false
 
   ssl:
@@ -109,7 +119,7 @@ coreConfig:
 
   # Configure webhook outputs here. The service provides these webhooks for notifying external systems of updates
   webhooks:
-    enabled: "True"
+    enabled: True
     config:
       # User and password to be set (using HTTP basic auth) on all webhook calls if necessary
       user: null
@@ -128,6 +138,62 @@ coreConfig:
       # Endpoint for fatal system errors to be delivery
       error_event: {}
         # url: 'http://somehost:9090/error_event/'
+  # Event log configuration
+  events:
+    notification:
+      enabled: true
+      # Send notifications for events with severity level that matches items in this list
+      level:
+        - error
+#        - info
+  archive:
+    compression:
+      enabled: true
+      min_size_kbytes: 100
+    storage_driver:
+      # Valid storage driver names: 'db', 'localfs', 's3', 'swift'
+      # It is strongly recommended to only use localfs for local testing using persisent volumes or a shared FS and generally not in a k8s deployment.
+      name: db
+      config: {}
+
+      # Example S3 Configuration:
+      # name: s3
+      # config:
+      #   # All objects are stored in a single bucket, defined here
+      #   bucket: "anchore-engine-testing"
+      #   # A prefix for keys in the bucket if desired (optional)
+      #   prefix: "internaltest"
+      #   # Create the bucket if it doesn't already exist
+      #   create_bucket: False
+          # Url only needed for non-AWS S3 implementations (e.g. minio). Otherwise, configure the region instead
+      #   #url: "https://s3.amazonaws.com"
+      #   # AWS region to connect to if 'url' not specified, if both are set, then 'url' has precedent
+      #   region: us-west-2
+      #   # For Auth can provide access/secret keys or use 'iamauto' which will use an instance profile or any credentials found in normal aws search paths/metadata service
+      #   access_key: XXXX
+      #   secret_key: YYYY
+      #   iamauto: False
+
+      # Example Minio configuration (basically same as s3 example):
+      # name: s3
+      # config:
+      #   url: http://<minio url>:9000
+      #   bucket: mybucket
+      #   access_key: xxxxxx
+      #   secret_key: yyyyyy
+      #   create_bucket: True
+
+      # Example Swift Configuration:
+      # name: swift
+      # config:
+      #     # Config for swift has a few options, just add the keys and names as used to configure a swiftclient here. All are passed directly to the client impl.
+      #     user: "test:tester"
+      #     key: "testing"
+      #     auth: "http://swift_ephemeral:8080/auth/v1.0"
+      #     # The swift container where data will be stored
+      #     container: "local_test_anchore"
+      #     # Create the container if it is not already present
+      #     create_container: False
 
   # resources:
   #  limits:
@@ -137,21 +203,21 @@ coreConfig:
   #    cpu: 100m
   #    memory: 4Gi
 
+  ## Node labels for pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
 # Configuration for the worker pods that perform image analysis
 # There may be many of these workers but best practice is to not have more than one per node since analysis
 # is very IO intensive. Use of affinity/anti-affinity rules for scheduling the workers is future work.
 workerConfig:
   replicaCount: 1
   logLevel: INFO
-
-  # Analyzer driver determines how the worker performs download and extraction of images
-  #
-  # "nodocker" does not require docker and pulls content directly from the registry and assembles it directly. This has the side-effect
-  #    of not handling images with V1 manifests as cleanly due to missing metadata in those manifests.
-  #
-  # "localanchore" requires the docker socket mounted into the worker container and uses docker itself to pull and extract the image into the container.
-  #    this is the legacy mode.
-  analyzerMode: nodocker
 
   # The cycle timer is the interval between checks to the work queue for new jobs
   cycleTimerSeconds: 1
@@ -167,6 +233,8 @@ workerConfig:
     details:
       emptyDir: {}
 
+  port: 8084
+
   # Configuration for ssl used for internal node communications between components
   ssl:
     certDir: "/certs"
@@ -181,3 +249,12 @@ workerConfig:
   #  requests:
   #    cpu: 100m
   #    memory: 2Gi
+
+  ## Node labels for pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}

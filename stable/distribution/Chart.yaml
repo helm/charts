@@ -1,0 +1,16 @@
+apiVersion: v1
+description: DEPRECATED A Helm chart for JFrog Distribution
+home: https://jfrog.com/platform/
+icon: https://raw.githubusercontent.com/JFrogDev/artifactory-dcos/master/images/jfrog_med.png
+keywords:
+- distribution
+- jfrog
+name: distribution
+sources:
+- https://bintray.com/jfrog/product/distribution/view
+- https://github.com/JFrogDev
+version: 0.4.2
+appVersion: 1.1.0
+## Deprecated following https://github.com/helm/charts/blob/master/PROCESSES.md#deprecating-a-chart
+## Chart is now maintained in https://github.com/jfrog/charts
+deprecated: true

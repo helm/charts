@@ -45,29 +45,37 @@ chart and deletes the release.
 
 ### General Configuration Parameters
 
-The following tables lists the configurable parameters of the Kong chart
+The following table lists the configurable parameters of the Kong chart
 and their default values.
 
 | Parameter                         | Description                                                            | Default               |
 | ------------------------------    | --------------------------------------------------------------------   | -------------------   |
 | image.repository                  | Kong image                                                             | `kong`                |
-| image.tag                         | Kong image version                                                     | `0.11.2`              |
+| image.tag                         | Kong image version                                                     | `0.14.0`              |
 | image.pullPolicy                  | Image pull policy                                                      | `IfNotPresent`        |
 | replicaCount                      | Kong instance count                                                    | `1`                   |
-| admin.http.servicePort            | TCP port on which the Kong admin service is exposed                    | `8001`                |
-| admin.https.servicePort           | Secure TCP port on which the Kong admin service is exposed             | `8444`                |
-| admin.http.containerPort          | TCP port on which Kong app listens for admin traffic                   | `8001`                |
-| admin.https.containerPort         | Secure TCP port on which Kong app listens for admin traffic            | `8444`                |
-| admin.nodePort                    | Node port when service type is `NodePort`                              | `32444`               |
+| admin.useTLS                      | Secure Admin traffic                                                   | `true`                |
+| admin.servicePort                 | TCP port on which the Kong admin service is exposed                    | `8444`                |
+| admin.containerPort               | TCP port on which Kong app listens for admin traffic                   | `8444`                |
+| admin.nodePort                    | Node port when service type is `NodePort`                              |                       |
 | admin.type                        | k8s service type, Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | admin.loadBalancerIP              | Will reuse an existing ingress static IP for the admin service         | `null`                |
-| proxy.http.servicePort            | TCP port on which the Kong proxy service is exposed                    | `8000`                |
-| proxy.https.servicePort           | Secure TCP port on which the Kong Proxy Service is exposed             | `8443`                |
-| proxy.http.containerPort          | TCP port on which the Kong app listens for Proxy traffic               | `8000`                |
-| proxy.https.containerPort         | Secure TCP port on which the Kong app listens for Proxy traffic        | `8443`                |
-| proxy.nodePort                    | Node port when service type is `NodePort`                              | `32443`               |
+| admin.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               | 
+| admin.ingress.tls                 | Name of secret resource, containing TLS secret                         |                       |
+| admin.ingress.hosts               | List of ingress hosts.                                                 | `[]`                  |
+| admin.ingress.path                | Ingress path.                                                          | `/`                   |
+| admin.ingress.annotations         | Ingress annotations. See documentation for your ingress controller for details | `{}`          |
+| proxy.useTLS                      | Secure Proxy traffic                                                   | `true`                |
+| proxy.servicePort                 | TCP port on which the Kong Proxy Service is exposed                    | `8443`                |
+| proxy.containerPort               | TCP port on which the Kong app listens for Proxy traffic               | `8443`                |
+| proxy.nodePort                    | Node port when service type is `NodePort`                              |                       |
 | proxy.type                        | k8s service type. Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | proxy.loadBalancerIP              | To reuse an existing ingress static IP for the admin service           |                       |
+| proxy.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               | 
+| proxy.ingress.tls                 | Name of secret resource, containing TLS secret                         |                       |
+| proxy.ingress.hosts               | List of ingress hosts.                                                 | `[]`                  |
+| proxy.ingress.path                | Ingress path.                                                          | `/`                   |
+| proxy.ingress.annotations         | Ingress annotations. See documentation for your ingress controller for details | `{}`          |
 | env                               | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)               |
 | runMigrations                     | Run Kong migrations job                                                | `true`                |
 | readinessProbe                    | Kong readiness probe                                                   |                       |

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "prometheus-node-exporter.fullname" . }}
+  labels: {{ include "prometheus-node-exporter.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: metrics
+  selector:
+    app: {{ template "prometheus-node-exporter.name" . }}
+    release: {{ .Release.Name }}

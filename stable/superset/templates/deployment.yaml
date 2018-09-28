@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "superset.fullname" . }}
+  labels:
+    app: {{ template "superset.name" . }}
+    chart: {{ template "superset.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "superset.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      name: {{ template "superset.fullname" . }}
+      labels:
+        app: {{ template "superset.name" . }}
+        chart: {{ template "superset.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+      securityContext:
+        runAsUser: 0
+        fsGroup: 0
+      volumes:
+        - name: superset-init
+          secret:
+            secretName: {{ template "superset.fullname" . }}
+        - name: superset-server-config
+          configMap:
+            name: {{ template "superset.fullname" . }}
+        - name: storage-volume
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "superset.fullname" . }}{{- end }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/bash"]
+          args: ["/home/superset/init_superset.sh" ]
+          volumeMounts:
+            - name: superset-init
+              mountPath: /home/superset
+            - name: superset-server-config
+              mountPath: /etc/superset
+            - name: storage-volume
+              mountPath: /var/lib/superset
+          ports:
+            - name: http
+              containerPort: 8088
+              protocol: TCP
+          env:
+          {{- range $key, $value := .Values.extraEnv }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+        {{- if .Values.extraEnvFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.extraEnvFromSecret }}
+        {{- end }}
+    {{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+    {{- with .Values.livenessProbe }}
+          livenessProbe:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+    {{- with .Values.readinessProbe }}
+          readinessProbe:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

@@ -1,0 +1,81 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "quassel.fullname" . }}
+  labels:
+    app: {{ template "quassel.name" . }}
+    chart: {{ template "quassel.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "quassel.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ template "quassel.name" . }}
+        chart: {{ template "quassel.chart" . }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: quassel
+              containerPort: 4242
+              protocol: TCP
+          env:
+            - name: PUID
+              value: {{ .Values.uid | quote }}
+            - name: PGID
+              value: {{ .Values.gid | quote }}
+{{- if .Values.postgresql.enabled }}
+            - name: POSTGRESQL_HOST
+              value: {{ template "quassel.postgresql.fullname" . }}
+            - name: POSTGRESQL_PORT
+              value: "3306"
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "quassel.postgresql.fullname" . }}
+                  key: postgres-password
+{{- end }}
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      {{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 12 }}
+      {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
+      volumes:
+        - name: config
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "quassel.fullname" . }}-config{{- end }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}

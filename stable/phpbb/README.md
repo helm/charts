@@ -43,12 +43,15 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the phpBB chart and their default values.
+The following table lists the configurable parameters of the phpBB chart and their default values.
 
 |             Parameter             |              Description              |                         Default                         |
 |-----------------------------------|---------------------------------------|---------------------------------------------------------|
-| `image`                           | phpBB image                           | `bitnami/phpbb:{VERSION}`                               |
-| `imagePullPolicy`                 | Image pull policy                     | `IfNotPresent`                                          |
+| `image.registry`                  | phpBB image registry                  | `docker.io`                                             |
+| `image.repository`                | phpBB image name                      | `bitnami/phpbb`                                         |
+| `image.tag`                       | phpBB image tag                       | `{VERSION}`                                             |
+| `image.pullPolicy`                | Image pull policy                     | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`               | Specify image pull secrets            | `nil`                                                   |
 | `phpbbUser`                       | User of the application               | `user`                                                  |
 | `phpbbPassword`                   | Application password                  | _random 10 character long alphanumeric string_          |
 | `phpbbEmail`                      | Admin email                           | `user@example.com`                                      |
@@ -60,12 +63,12 @@ The following tables lists the configurable parameters of the phpBB chart and th
 | `externalDatabase.host`           | Host of the external database         | `nil`                                                   |
 | `externalDatabase.user`           | Existing username in the external db  | `bn_phpbb`                                              |
 | `externalDatabase.password`       | Password for the above username       | `nil`                                                   |
-| `externalDatabase.database`       | Name of the existing database          | `bitnami_phpbb`                                         |
-| `mariadb.enabled`                 | Use or not the mariadb chart          | `true`                                                  |
-| `mariadb.mariadbRootPassword`     | MariaDB admin password                | `nil`                                                   |
-| `mariadb.mariadbDatabase`         | Database name to create               | `bitnami_phpbb`                                         |
-| `mariadb.mariadbUser`             | Database user to create               | `bn_phpbb`                                              |
-| `mariadb.mariadbPassword`         | Password for the database             | _random 10 character long alphanumeric string_          |
+| `externalDatabase.database`       | Name of the existing database         | `bitnami_phpbb`                                         |
+| `mariadb.enabled`                 | Use or not the MariaDB chart          | `true`                                                  |
+| `mariadb.rootUser.password`     | MariaDB admin password                | `nil`                                                   |
+| `mariadb.db.name`         | Database name to create               | `bitnami_phpbb`                                         |
+| `mariadb.db.user`             | Database user to create               | `bn_phpbb`                                              |
+| `mariadb.db.password`         | Password for the database             | _random 10 character long alphanumeric string_          |
 | `serviceType`                     | Kubernetes Service type               | `LoadBalancer`                                          |
 | `persistence.enabled`             | Enable persistence using PVC          | `true`                                                  |
 | `persistence.apache.storageClass` | PVC Storage Class for Apache volume   | `nil` (uses alpha storage class annotation)             |
@@ -86,7 +89,7 @@ $ helm install --name my-release \
     stable/phpbb
 ```
 
-The above command sets the phpBB administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the phpBB administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
@@ -102,3 +105,15 @@ The [Bitnami phpBB](https://github.com/bitnami/bitnami-docker-phpbb) image store
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is phpbb:
+
+```console
+$ kubectl patch deployment phpbb-phpbb --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl delete statefulset phpbb-mariadb --cascade=false
+```

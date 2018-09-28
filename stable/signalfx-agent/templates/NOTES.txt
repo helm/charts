@@ -1,0 +1,27 @@
+{{- if not .Values.clusterName -}}
+ERROR: You must set the value 'clusterName' to identify your cluster in
+SignalFx.  It can be any name you like.
+{{- end }}
+
+{{- if not .Values.signalFxAccessToken }}
+ERROR: You must set the value 'signalFxAccessToken' to your organization's
+access token.
+
+If you do not have an access token, visit
+
+https://docs.signalfx.com/en/latest/getting-started/index.html
+
+and request a free trial.
+{{- end }}
+
+{{- if and .Values.signalFxAccessToken .Values.clusterName }}
+The SignalFx agent is being deployed in your Kubernetes cluster.  You should
+see metrics flowing once the agent image is downloaded and started (this may
+take a few minutes since it has to download the agent container image).
+
+Assuming you are logged into SignalFx in your browser, visit
+
+https://app.signalfx.com/#/navigator/kubernetes%20pods/kubernetes%20pods
+
+to see all of the pods in your cluster.
+{{- end }}

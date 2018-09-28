@@ -1,0 +1,18 @@
+{{ if .Values.jupyter.enabled -}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "dask.fullname" . }}-jupyter-config
+  labels:
+    app: {{ template "dask.name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "dask.chart" . }}
+    component: jupyter
+data:
+  jupyter_notebook_config.py: |
+    c = get_config()
+    c.NotebookApp.password = '{{ .Values.jupyter.password }}'
+
+{{ end }}

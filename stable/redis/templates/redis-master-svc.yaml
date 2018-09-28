@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "redis.fullname" . }}-master
+  labels:
+    app: {{ template "redis.name" . }}
+    chart: {{ template "redis.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- with .Values.master.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.master.service.type }}
+  {{ if eq .Values.master.service.type "LoadBalancer" -}} {{ if .Values.master.service.loadBalancerIP -}}
+  loadBalancerIP: {{ .Values.master.service.loadBalancerIP }}
+  {{ end -}}
+  {{- end -}}
+  ports:
+  - name: redis
+    port: {{ .Values.master.service.port }}
+    targetPort: redis
+    {{- if .Values.master.service.nodePort }}
+    nodePort: {{ .Values.master.service.nodePort }}
+    {{- end }}
+  selector:
+    app: {{ template "redis.name" . }}
+    release: "{{ .Release.Name }}"
+    role: master

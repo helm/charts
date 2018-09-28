@@ -43,6 +43,8 @@ The chart can be customized using the following configurable parameters:
 | `image.tag`                     | Aerospike Container image tag                                   | `3.14.1.2`                   |
 | `image.pullPolicy`              | Aerospike Container pull policy                                 | `Always`                     |
 | `replicaCount`                  | Aerospike Brokers                                               | `1`                          |
+| `command`                       | Custom command (Docker Entrypoint)                              | `[]`                         |
+| `args`                          | Custom args (Docker Cmd)                                        | `[]`                         |
 | `persistentVolume`              | config of persistent volumes for storage-engine                 | `{}`                         |
 | `confFile`                      | config filename. This file should be included in the chart path | `aerospike.conf`             |
 | `resources`                     | resource requests and limits                                    | `{}`                         |

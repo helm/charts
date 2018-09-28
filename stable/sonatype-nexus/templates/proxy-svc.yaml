@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "nexus.fullname" . }}
+  labels:
+{{ include "nexus.labels" . | indent 4 }}
+{{- if .Values.nexus.labels }}
+{{ toYaml .Values.nexus.labels | indent 4 }}
+{{- end }}
+{{- if .Values.nexus.annotations }}
+  annotations:
+{{ toYaml .Values.nexus.annotations | indent 4 }}
+{{- end }}
+spec:
+  ports:
+    - name: {{ .Values.nexusProxy.name }}
+      port: {{ .Values.nexusProxy.port }}
+      protocol: TCP
+      targetPort: {{ .Values.nexusProxy.port }}
+  selector:
+    app: {{ template "nexus.name" . }}
+    release: {{ .Release.Name }}
+  type: {{ .Values.nexus.serviceType }}

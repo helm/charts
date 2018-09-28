@@ -22,7 +22,11 @@ spec:
 {{ toYaml .Values.data.podAnnotations | indent 8 }}
         {{- end }}
     spec:
-      serviceAccountName: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.data.priorityClassName }}
+      priorityClassName: "{{ .Values.data.priorityClassName }}"
+{{- end }}
+      securityContext:
+        fsGroup: 1000
       {{- if eq .Values.data.antiAffinity "hard" }}
       affinity:
         podAntiAffinity:
@@ -46,6 +50,14 @@ spec:
                   release: "{{ .Release.Name }}"
                   component: "{{ .Values.data.name }}"
       {{- end }}
+{{- if .Values.data.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.data.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.data.tolerations }}
+      tolerations:
+{{ toYaml .Values.data.tolerations | indent 8 }}
+{{- end }}
       initContainers:
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
@@ -68,17 +80,14 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
+{{- if .Values.extraInitContainers }}
+{{ tpl .Values.extraInitContainers . | indent 6 }}
+{{- end }}
       containers:
       - name: elasticsearch
         env:
-        - name: SERVICE
-          value: {{ template "elasticsearch.master.fullname" . }}
-        - name: KUBERNETES_MASTER
-          value: kubernetes.default.svc.cluster.local
-        - name: KUBERNETES_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
+        - name: DISCOVERY_SERVICE
+          value: {{ template "elasticsearch.fullname" . }}-discovery
         - name: NODE_MASTER
           value: "false"
         - name: PROCESSORS
@@ -126,19 +135,45 @@ spec:
         - name: config
           mountPath: /pre-stop-hook.sh
           subPath: pre-stop-hook.sh
+        - name: config
+          mountPath: /post-start-hook.sh
+          subPath: post-start-hook.sh
+{{- if .Values.cluster.keystoreSecret }}
+        - name: keystore
+          mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
+          subPath: elasticsearch.keystore
+          readOnly: true
+{{- end }}
         lifecycle:
           preStop:
             exec:
               command: ["/bin/bash","/pre-stop-hook.sh"]
+          postStart:
+            exec:
+              command: ["/bin/bash","/post-start-hook.sh"]
       terminationGracePeriodSeconds: {{ .Values.data.terminationGracePeriodSeconds }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecret := .Values.image.pullSecrets }}
+        - name: {{ $pullSecret }}
+      {{- end }}
+{{- end }}
       volumes:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.cluster.keystoreSecret }}
+      - name: keystore
+        secret:
+          secretName: {{ .Values.cluster.keystoreSecret }}
+{{- end }}
   {{- if not .Values.data.persistence.enabled }}
       - name: data
         emptyDir: {}
-  {{- else }}
+  {{- end }}
+  updateStrategy:
+    type: {{ .Values.data.updateStrategy.type }}
+  {{- if .Values.data.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: {{ .Values.data.persistence.name }}

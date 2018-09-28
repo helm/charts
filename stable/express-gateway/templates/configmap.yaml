@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "eg.fullname" . }}"
+  labels:
+    app: "{{ template "eg.name" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  system.config.yml: |-
+    db:
+      redis:
+        emulate: {{ .Values.storage.emulate }}
+        sentinels:
+        - host: {{ template "eg.redis.fullname" . }}-master
+          port: 6379
+        - host: {{ template "eg.redis.fullname" . }}-slave
+          port: 6379
+        name: {{ template "eg.redis.fullname" . }}-master
+        password: express-gateway
+        namespace: {{ .Values.storage.namespace }}
+
+    cli:
+      url: http://localhost:{{ .Values.admin.containerPort }}
+
+    crypto:
+{{ toYaml .Values.crypto | indent 6 }}
+    session:
+{{ toYaml .Values.session | indent 6 }}
+    accessTokens:
+{{ toYaml .Values.accessTokens | indent 6 }}
+    refreshTokens:
+{{ toYaml .Values.refreshTokens | indent 6 }}
+    authorizationCodes:
+{{ toYaml .Values.authorizationCodes | indent 6 }}
+
+  gateway.config.yml: |-
+    admin:
+      port: {{ .Values.admin.containerPort }}
+      hostname: {{ .Values.admin.hostname }}
+  {{- if .Values.proxy.https }}
+    https:
+      port: {{ .Values.proxy.containerPort }}
+      tls:
+{{ toYaml .Values.proxy.tls | indent 8 }}
+  {{- else }}
+    http:
+      port: {{ .Values.proxy.containerPort }}
+  {{- end }}
+    apiEndpoints:
+    serviceEndpoints:
+    policies:
+      - proxy
+      - cors
+      - expression
+      - jwt
+      - terminate
+    pipelines:

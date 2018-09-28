@@ -12,7 +12,7 @@ $ helm install stable/magento
 
 This chart bootstraps a [Magento](https://github.com/bitnami/bitnami-docker-magento) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the Magento application.
+It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment as a database for the Magento application.
 
 ## Prerequisites
 
@@ -43,12 +43,15 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Magento chart and their default values.
+The following table lists the configurable parameters of the Magento chart and their default values.
 
 |             Parameter              |               Description                |                         Default                          |
 |------------------------------------|------------------------------------------|----------------------------------------------------------|
-| `image`                            | Magento image                            | `bitnami/magento:{VERSION}`                              |
-| `imagePullPolicy`                  | Image pull policy                        | `Always` if `image` tag is `latest`, else `IfNotPresent` |
+| `image.registry`                   | Magento image registry                   | `docker.io`                                              |
+| `image.repository`                 | Magento Image name                       | `bitnami/magento`                                        |
+| `image.tag`                        | Magento Image tag                        | `{VERSION}`                                              |
+| `image.pullPolicy`                 | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`                | Specify image pull secrets               | `nil`                                                    |
 | `magentoHost`                      | Magento host to create application URLs  | `nil`                                                    |
 | `magentoLoadBalancerIP`            | `loadBalancerIP` for the magento Service | `nil`                                                    |
 | `magentoUsername`                  | User of the application                  | `user`                                                   |
@@ -63,12 +66,12 @@ The following tables lists the configurable parameters of the Magento chart and 
 | `externalDatabase.port`            | Port of the external database            | `3306`                                                   |
 | `externalDatabase.user`            | Existing username in the external db     | `bn_magento`                                             |
 | `externalDatabase.password`        | Password for the above username          | `nil`                                                    |
-| `externalDatabase.database`        | Name of the existing databse             | `bitnami_magento`                                        |
-| `mariadb.enabled`                  | Use or not the mariadb chart             | `true`                                                   |
-| `mariadb.mariadbRootPassword`      | MariaDB admin password                   | `nil`                                                    |
-| `mariadb.mariadbDatabase`          | Database name to create                  | `bitnami_magento`                                        |
-| `mariadb.mariadbUser`              | Database user to create                  | `bn_magento`                                             |
-| `mariadb.mariadbPassword`          | Password for the database                | _random 10 character long alphanumeric string_           |
+| `externalDatabase.database`        | Name of the existing database            | `bitnami_magento`                                        |
+| `mariadb.enabled`                  | Whether to use the MariaDB chart           | `true`                                                   |
+| `mariadb.rootUser.password`      | MariaDB admin password                   | `nil`                                                    |
+| `mariadb.db.name`          | Database name to create                  | `bitnami_magento`                                        |
+| `mariadb.db.user`              | Database user to create                  | `bn_magento`                                             |
+| `mariadb.db.password`          | Password for the database                | _random 10 character long alphanumeric string_           |
 | `serviceType`                      | Kubernetes Service type                  | `LoadBalancer`                                           |
 | `persistence.enabled`              | Enable persistence using PVC             | `true`                                                   |
 | `persistence.apache.storageClass`  | PVC Storage Class for Apache volume      | `nil`  (uses alpha storage annotation)                   |
@@ -103,7 +106,7 @@ $ helm install --name my-release \
     stable/magento
 ```
 
-The above command sets the Magento administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the Magento administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
@@ -119,3 +122,14 @@ The [Bitnami Magento](https://github.com/bitnami/bitnami-docker-magento) image s
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is magento:
+
+```console
+$ kubectl patch deployment magento-magento --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl delete statefulset magento-mariadb --cascade=false

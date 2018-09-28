@@ -5,8 +5,18 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 0.12.11
+    tag: 0.13.0
   pullPolicy: Always
+
+# When enabled, exposes json and prometheus metrics on {{ .Release.Name }}-metrics service
+metrics:
+  enabled: false
+  service:
+    port: 2020
+    type: ClusterIP
+
+# When enabled, fluent-bit will keep track of tailing offsets across pod restarts.
+trackOffsets: false
 
 backend:
   type: forward
@@ -16,6 +26,31 @@ backend:
   es:
     host: elasticsearch
     port: 9200
+    # Elastic Index Name
+    index: kubernetes_cluster
+    type: flb_type
+    logstash_prefix: kubernetes_cluster
+    time_key: "@timestamp"
+    # Optional username credential for Elastic X-Pack access
+    http_user:
+    # Password for user defined in HTTP_User
+    http_passwd:
+    # Optional TLS encryption to ElasticSearch instance
+    tls: "off"
+    tls_verify: "on"
+    # TLS certificate for the Elastic (in PEM format). Use if tls=on and tls_verify=on.
+    tls_ca: ""
+    # TLS debugging levels = 1-5
+    tls_debug: 1
+  splunk:
+    host: 127.0.0.1
+    port: 8088
+    token: ""
+    send_raw: "on"
+    tls: "on"
+    tls_verify: "off"
+    message_key: "kubernetes"
+
   ##
   ## Ref: http://fluentbit.io/documentation/current/output/http.html
   ##
@@ -27,7 +62,18 @@ backend:
     ## Can be either 'msgpack' or 'json'
     format: msgpack
 
+parsers:
+  enabled: false
+  ## List the respective parsers in key: value format per entry
+  ## Regex required fields are name and regex. JSON required field
+  ## is name.
+  regex: []
+  json: []
+
 env: []
+
+## Annotations to add to the DaemonSet's Pods
+podAnnotations: {}
 
 ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.existingConfigMap}}
 ## Defining existingConfigMap will cause templates/config.yaml
@@ -67,14 +113,31 @@ tolerations: []
 ##
 nodeSelector: {}
 
-filter: {}
+filter:
+  kubeURL: https://kubernetes.default.svc:443
+  kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+  kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+  kubeTag: kube
 # If true, check to see if the log field content is a JSON string map, if so,
 # it append the map fields as part of the log structure.
 #  mergeJSONLog: true
 
-## Install Default RBAC roles and bindings
+# If true, enable the use of monitoring for a pod annotation of
+# fluentbit.io/parser: parser_name. parser_name must be the name
+# of a parser contained within parsers.conf
+#  enableParser: true
+
+# If true, enable the use of monitoring for a pod annotation of
+# fluentbit.io/exclude: true. If present, discard logs from that pod.
+#  enableExclude: true
+
 rbac:
-  ## If true, create & use RBAC resources
-  create: false
-  ## Ignored if rbac.create is true
-  serviceAccountName: default
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:

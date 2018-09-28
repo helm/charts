@@ -13,7 +13,7 @@ service:
   replicas: 1
   type: ClusterIP
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 ##
 persistence:
   enabled: false
@@ -73,7 +73,7 @@ oauth:
     # eg. http://chronograf.foobar.com
     public_url: ""
     # This is a comma separated list of Google Apps domains (OPTIONAL)
-    google_domains: ""
+    domains: ""
   heroku:
     enabled: false
     client_id: CHANGE_ME

@@ -1,11 +1,14 @@
 {{- if .Values.daemonset.enabled }}
-{{- if .Values.datadog.apiKey }}
+{{- if (or (.Values.datadog.apiKeyExistingSecret) (.Values.datadog.apiKey)) }}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: {{ template "datadog.fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "datadog.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   template:
     metadata:
@@ -13,15 +16,23 @@ spec:
         app: {{ template "datadog.fullname" . }}
       name: {{ template "datadog.fullname" . }}
       annotations:
-        checksum/autoconf-config: {{ toYaml .Values.datadog.autoconf | sha256sum }}
-        checksum/confd-config: {{ toYaml .Values.datadog.confd | sha256sum }}
-        checksum/checksd-config: {{ toYaml .Values.datadog.checksd | sha256sum }}
+        checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
+        checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
+        checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
       {{- if .Values.daemonset.podAnnotations }}
 {{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
       {{- end }}
     spec:
       {{- if .Values.daemonset.useHostNetwork }}
       hostNetwork: {{ .Values.daemonset.useHostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      {{- if .Values.daemonset.useHostPID }}
+      hostPID: {{ .Values.daemonset.useHostPID }}
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}
@@ -43,22 +54,19 @@ spec:
           {{- end }}
           name: traceport
           protocol: TCP
-        - containerPort: 7777
-          name: legacytraceport
-          protocol: TCP
         {{- end }}
         env:
           - name: DD_API_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ template "datadog.fullname" . }}
+                name: {{ template "datadog.apiSecretName" . }}
                 key: api-key
           {{- if .Values.datadog.logLevel }}
           - name: DD_LOG_LEVEL
             value: {{ .Values.datadog.logLevel | quote }}
           {{- end }}
           {{- if .Values.datadog.nonLocalTraffic }}
-          - name: NON_LOCAL_TRAFFIC
+          - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
             value: {{ .Values.datadog.nonLocalTraffic | quote }}
           {{- end }}
           {{- if .Values.datadog.tags }}
@@ -69,16 +77,48 @@ spec:
           - name: DD_APM_ENABLED
             value: {{ .Values.datadog.apmEnabled | quote }}
           {{- end }}
-          - name: KUBERNETES_LEADER_CANDIDATE
-            value: {{ .Values.datadog.leaderElection | quote}}
-          {{- if .Values.datadog.leaderElection }}
-          - name: KUBERNETES_LEADER_LEASE_DURATION
-            value: {{ default "600" .Values.datadog.leaderLeaseDuration | quote }}
+          {{- if .Values.datadog.processAgentEnabled }}
+          - name: DD_PROCESS_AGENT_ENABLED
+            value: {{ .Values.datadog.processAgentEnabled | quote }}
           {{- end }}
-          - name: SD_BACKEND
-            value: docker
+          {{- if not .Values.clusterAgent.enabled }}
+          {{- if .Values.datadog.leaderElection }}
+          - name: DD_LEADER_ELECTION
+            value: {{ .Values.datadog.leaderElection | quote}}
+          {{- end }}
+          {{- if .Values.datadog.leaderLeaseDuration }}
+          - name: DD_LEADER_LEASE_DURATION
+            value: {{ .Values.datadog.leaderLeaseDuration | quote }}
+          {{- end }}
+          {{- if .Values.datadog.collectEvents }}
+          - name: DD_COLLECT_KUBERNETES_EVENTS
+            value: {{.Values.datadog.collectEvents | quote}}
+          {{- end }}
+          {{- else }}
+          - name: DD_CLUSTER_AGENT_ENABLED
+            value: {{ .Values.clusterAgent.enabled | quote }}
+          - name: DD_CLUSTER_AGENT_AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "datadog.clusterAgent.fullname" . }}
+                key: token
+          {{- end }}
           - name: KUBERNETES
             value: "yes"
+          {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
+          - name: DD_KUBERNETES_KUBELET_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          {{- end }}
+          {{- if .Values.datadog.logsEnabled }}
+          - name: DD_LOGS_ENABLED
+            value: {{.Values.datadog.logsEnabled | quote}}
+          {{- end }}
+          {{- if .Values.datadog.logsConfigContainerCollectAll }}
+          - name: DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL
+            value: {{.Values.datadog.logsConfigContainerCollectAll | quote}}
+          {{- end }}
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
 {{- end }}
@@ -92,7 +132,7 @@ spec:
           - name: cgroups
             mountPath: /host/sys/fs/cgroup
             readOnly: true
-          {{- if .Values.datadog.confd }}
+          {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
           - name: confd
             mountPath: /conf.d
             readOnly: true
@@ -102,18 +142,24 @@ spec:
             mountPath: /checks.d
             readOnly: true
           {{- end }}
-          {{- if .Values.datadog.autoconf }}
-          - name: autoconf
-            {{- if hasSuffix "-alpine" .Values.image.tag }}
-            mountPath: /opt/datadog-agent/agent/conf.d/auto_conf
-            {{- else }}
-            mountPath: /etc/dd-agent/conf.d/auto_conf
-            {{- end }}
+          {{- if .Values.datadog.logsEnabled }}
+          - name: pointerdir
+            mountPath: /var/lib/datadog-agent/logs
+          {{- end }}
+          {{- if .Values.datadog.processAgentEnabled }}
+          - name: passwd
+            mountPath: /etc/passwd
             readOnly: true
           {{- end }}
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
 {{- end }}
+        livenessProbe:
+          exec:
+            command:
+            - ./probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 5
       volumes:
         - hostPath:
             path: /var/run/docker.sock
@@ -124,7 +170,7 @@ spec:
         - hostPath:
             path: /sys/fs/cgroup
           name: cgroups
-        {{- if .Values.datadog.confd }}
+        {{- if (or (.Values.datadog.confd) (.Values.datadog.autoconf)) }}
         - name: confd
           configMap:
             name: {{ template "datadog.confd.fullname" . }}
@@ -134,10 +180,15 @@ spec:
           configMap:
             name: {{ template "datadog.checksd.fullname" . }}
         {{- end }}
-        {{- if .Values.datadog.autoconf }}
-        - name: autoconf
-          configMap:
-            name: {{ template "datadog.autoconf.fullname" . }}
+        {{- if .Values.datadog.logsEnabled }}
+        - hostPath:
+            path: /var/lib/datadog-agent/logs
+          name: pointerdir
+        {{- end }}
+        {{- if .Values.datadog.processAgentEnabled }}
+        - hostPath:
+            path: /etc/passwd
+          name: passwd
         {{- end }}
 {{- if .Values.datadog.volumes }}
 {{ toYaml .Values.datadog.volumes | indent 8 }}
@@ -146,7 +197,15 @@ spec:
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.daemonset.affinity }}
+      affinity:
+{{ toYaml .Values.daemonset.affinity | indent 8 }}
+      {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      {{- if .Values.daemonset.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
+      {{- end }}
   updateStrategy:
     type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
 {{ end }}

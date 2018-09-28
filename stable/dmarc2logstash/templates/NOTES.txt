@@ -1,0 +1,16 @@
+{{- if .Values.filebeat.logstash.host -}}
+The dmarc2logstash application has been deployed. If the pod enounters crash-
+looping you might have missed the step to set the POP3 secrets. Review the 
+chart's README.md for more information.
+
+If successfully configured to reach the POP3 account containing the DMARC
+reports, and if filebeat is successfully connecting to your logstash service, 
+then you are ready to start reviewing the DMARC data in Kibana. 
+
+Optionally, if you use Grafana for visualizations, consider importing the DMARC
+dashboard, available in the https://github.com/jertel/dmarc2logstash project.
+{{- else -}}
+NOTE: The logstash.host and logstash.port values must be correctly defined in order for this deployment to be created. By default, no logstash service endpoint is provided.
+
+Additionally, the POP3 secrets must be applied so that the application can login to the POP3 host.
+{{- end -}}

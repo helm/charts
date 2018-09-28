@@ -1,0 +1,178 @@
+{{- if .Values.nginx.enabled -}}
+{{- $serviceName := include "artifactory-ha.fullname" . -}}
+{{- $servicePort := .Values.artifactory.externalPort -}}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "artifactory-ha.nginx.fullname" . }}
+  labels:
+    app: {{ template "artifactory-ha.name" . }}
+    chart: {{ template "artifactory-ha.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: {{ .Values.nginx.name }}
+spec:
+  replicas: {{ .Values.nginx.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "artifactory-ha.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.nginx.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "artifactory-ha.name" . }}
+        component: {{ .Values.nginx.name }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "artifactory-ha.serviceAccountName" . }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
+      initContainers:
+    {{- if .Values.nginx.persistence.enabled }}
+      - name: "remove-lost-found"
+        image: "{{ .Values.initContainerImage }}"
+        imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+        command:
+        - '/bin/sh'
+        - '-c'
+        - 'rm -rfv {{ .Values.nginx.persistence.mountPath }}/lost+found'
+        volumeMounts:
+        - mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
+          name: nginx-volume
+    {{- end }}
+      - name: "wait-for-artifactory"
+        image: "{{ .Values.initContainerImage }}"
+        command:
+        - 'sh'
+        - '-c'
+        - >
+          until nc -z -w 2 {{ $serviceName }} {{ $servicePort }} && echo artifactory ok; do
+            sleep 2;
+          done;
+      containers:
+      - name: {{ .Values.nginx.name }}
+        image: '{{ .Values.nginx.image.repository }}:{{ default .Chart.AppVersion .Values.nginx.image.version }}'
+        imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - '/bin/sh'
+              - '-c'
+              - >
+                {{- if .Values.nginx.customConfigMap }}
+                cp -Lrf /tmp/nginx.conf /etc/nginx/nginx.conf;
+                {{- end }}
+                if [ -f /tmp/replicator-nginx.conf ]; then
+                cp -fv /tmp/replicator-nginx.conf /etc/nginx/conf.d/replicator-nginx.conf;
+                fi;
+                if [ -f /tmp/ssl/*.crt ]; then
+                rm -rf /var/opt/jfrog/nginx/ssl/example.*;
+                cp -fv /tmp/ssl/* /var/opt/jfrog/nginx/ssl;
+                fi;
+                until [ -f /etc/nginx/conf.d/artifactory.conf ]; do sleep 1; done;
+                if ! grep -q 'upstream' /etc/nginx/conf.d/artifactory.conf; then
+                sed -i -e 's,proxy_pass .*,proxy_pass     http://{{ $serviceName }}:{{ $servicePort }}/artifactory/;,g' \
+                    -e 's,server_name .*,server_name ~(?<repo>.+)\\.{{ $serviceName }} {{ $serviceName }};,g' \
+                    /etc/nginx/conf.d/artifactory.conf;
+                fi;
+                if ! grep -q 'proxy_http_version' /etc/nginx/conf.d/artifactory.conf; then
+                sed -i 's,\(proxy_next_upstream .*\),proxy_http_version  1.1;\n    \1,g' /etc/nginx/conf.d/artifactory.conf;
+                fi;
+                sleep 5; nginx -s reload; touch /var/log/nginx/conf.done
+        env:
+        - name: ART_BASE_URL
+          {{- if .Values.nginx.env.artUrl }}
+          value: {{ .Values.nginx.env.artUrl }}
+          {{- else }}
+          value: 'http://{{ $serviceName }}:{{ $servicePort }}/artifactory'
+          {{- end }}
+        - name: SSL
+          value: "{{ .Values.nginx.env.ssl }}"
+        - name: SKIP_AUTO_UPDATE_CONFIG
+          value: "{{ .Values.nginx.env.skipAutoConfigUpdate }}"
+        ports:
+        - containerPort: {{ .Values.nginx.internalPortHttp }}
+        - containerPort: {{ .Values.nginx.internalPortHttps }}
+        {{- if .Values.artifactory.replicator.enabled }}
+        - containerPort: {{ .Values.nginx.internalPortReplicator }}
+        {{- end }}
+        volumeMounts:
+        - name: nginx-volume
+          mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
+        {{- if .Values.artifactory.replicator.enabled }}
+        - name: replicator-nginx-config
+          mountPath: "/tmp/replicator-nginx.conf"
+          subPath: replicator-nginx.conf
+        {{- end }}
+        {{- if .Values.nginx.tlsSecretName }}
+        - name: ssl-secret-volume
+          mountPath: "/tmp/ssl"
+        {{- end }}
+        {{- if .Values.nginx.customConfigMap }}
+        - name: nginx-config
+          mountPath: "/tmp/"
+        {{- end }}
+        resources:
+{{ toYaml .Values.nginx.resources | indent 10 }}
+        {{- if .Values.nginx.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: '/artifactory/webapp/#/login'
+            port: 80
+          initialDelaySeconds: {{ .Values.nginx.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.nginx.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.nginx.readinessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.nginx.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.nginx.readinessProbe.successThreshold }}
+        {{- end }}
+        {{- if .Values.nginx.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: '/artifactory/webapp/#/login'
+            port: 80
+          initialDelaySeconds: {{ .Values.nginx.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.nginx.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.nginx.livenessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.nginx.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.nginx.livenessProbe.successThreshold }}
+        {{- end }}
+    {{- with .Values.nginx.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.nginx.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.nginx.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+      {{- if .Values.artifactory.replicator.enabled }}
+      - name: replicator-nginx-config
+        configMap:
+          name: {{ template "artifactory-ha.fullname" . }}-replicator-nginx-config
+      {{- end}}
+      {{- if .Values.nginx.customConfigMap }}
+      - name: nginx-config
+        configMap:
+          name: {{ .Values.nginx.customConfigMap }}
+      {{- end }}
+      - name: nginx-volume
+      {{- if .Values.nginx.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.nginx.persistence.existingClaim | default (include "artifactory-ha.nginx.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
+      {{- if .Values.nginx.tlsSecretName }}
+      - name: ssl-secret-volume
+        secret:
+          secretName: {{ .Values.nginx.tlsSecretName }}
+      {{- end }}
+{{- end }}

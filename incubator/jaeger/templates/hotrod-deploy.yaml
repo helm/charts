@@ -25,16 +25,11 @@ spec:
           image: {{ .Values.hotrod.image.repository }}:{{ .Values.hotrod.image.tag }}
           imagePullPolicy: {{ .Values.hotrod.image.pullPolicy }}
           env:
-            - name: AGENT_HOST
+            - name: JAEGER_AGENT_HOST_PORT
               valueFrom:
                 configMapKeyRef:
                   name: {{ template "jaeger.fullname" . }}
-                  key: hotrod.agent-host
-            - name: AGENT_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "jaeger.fullname" . }}
-                  key: hotrod.agent-port
+                  key: hotrod.agent-host-port
           ports:
             - containerPort: {{ .Values.hotrod.service.internalPort }}
           livenessProbe:

@@ -29,15 +29,36 @@ mysqlha:
   ## Create database with name and grant all permissions to user on startup, if needed
   # mysqlDatabase:
 
+  ## Configuration files for the master and slaves
+  ##
+  configFiles:
+    master.cnf: |
+      # Apply this config only on the master.
+      [mysqld]
+      log-bin
+      skip_name_resolve
+    slave.cnf: |
+      # Apply this config only on slaves.
+      [mysqld]
+      super-read-only
+      skip_name_resolve
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
   enabled: true
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, azure-disk on
+  ##   Azure, standard on GKE, AWS & OpenStack)
   ##
-  accessMode: ReadWriteOnce
+  # storageClass: "-"
+  accessModes:
+  - ReadWriteOnce
   size: 10Gi
+  annotations: {}
 
 resources:
   requests:

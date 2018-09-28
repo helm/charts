@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "keycloak-proxy.fullname" . }}
+  labels:
+    app: {{ template "keycloak-proxy.name" . }}
+    chart: {{ template "keycloak-proxy.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  proxy.json: |
+    {
+       "target-url":"{{ .Values.configmap.targetUrl }}",
+       "bind-address":"0.0.0.0",
+       "http-port":"8080",
+       "applications":[
+          {
+             "base-path":"/",
+             "adapter-config":{
+                "realm":"{{ .Values.configmap.realm }}",
+              {{- if .Values.configmap.realmPublicKey }}
+                "realm-public-key": "{{ .Values.configmap.realmPublicKey }}",
+              {{- end }}
+                "auth-server-url":"{{ .Values.configmap.authServerUrl }}",
+                "ssl-required":"external",
+                "resource":"{{ .Values.configmap.resource }}",
+                "credentials": {
+                  "secret": "{{ .Values.configmap.secret }}"
+                }
+             },
+             "constraints":[
+               {
+                  "pattern":"{{ .Values.configmap.pattern }}",
+                  "roles-allowed":[
+                    "{{ .Values.configmap.rolesAllowed }}"
+                  ]
+               }
+             ],
+             "proxy-address-forwarding": true
+          }
+       ]
+    }

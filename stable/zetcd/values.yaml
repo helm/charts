@@ -33,6 +33,15 @@ etcd:
   operatorEnabled: true
   endpoints: localhost:2379
 
+  # Communication with etcd can be encrypted and authenticated with a certificate.
+  # In order to enable it, add 'tls' section providing existing secret
+  # containing CA certificate, client certificate and client key.
+  # tls:
+  #   existingSecret: etcd-tls-secret
+  #   cert: client.crt
+  #   key: client.key
+  #   ca: ca.crt
+
 etcd-operator:
   cluster:
     enabled: true

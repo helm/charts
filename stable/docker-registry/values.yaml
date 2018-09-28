@@ -2,18 +2,32 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
+
+updateStrategy:
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
+
+podAnnotations: {}
+
 image:
   repository: registry
   tag: 2.6.2
   pullPolicy: IfNotPresent
+# imagePullSecrets:
+    # - name: docker
 service:
   name: registry
   type: ClusterIP
+  # clusterIP:
   port: 5000
+  # nodePort:
   annotations: {}
   # foo.io/bar: "true"
 ingress:
   enabled: false
+  path: /
   # Used to create an Ingress record.
   hosts:
     - chart-example.local
@@ -42,7 +56,7 @@ persistence:
   size: 10Gi
   # storageClass: '-'
 
-# set the type of filesystem to use
+# set the type of filesystem to use: filesystem, s3
 storage: filesystem
 
 # Set this to name of secret for tls certs
@@ -54,6 +68,23 @@ secrets:
 #   s3:
 #     accessKey: ""
 #     secretKey: ""
+# Secrets for Swift username and password
+#   swift:
+#     username: ""
+#     password: ""
+
+# Options for s3 storage type:
+# s3:
+#  region: us-east-1
+#  bucket: my-bucket
+#  encrypt: false
+#  secure: true
+
+# Options for swift storage type:
+# swift:
+#  authurl: http://swift.example.com/
+#  container: my-container
+
 configData:
   version: 0.1
   log:
@@ -71,3 +102,14 @@ configData:
       enabled: true
       interval: 10s
       threshold: 3
+
+securityContext:
+  enabled: true
+  runAsUser: 1000
+  fsGroup: 1000
+
+priorityClassName: ""
+
+nodeSelector: {}
+
+tolerations: []

@@ -1,0 +1,58 @@
+{{- if and .Values.vaultAddress .Values.vaultToken .Values.vaultRootMountPath }}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "vaultingkube.fullname" . }}
+  labels:
+    app: {{ template "vaultingkube.name" . }}
+    chart: {{ template "vaultingkube.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "vaultingkube.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "vaultingkube.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        env:
+        - name: VAULT_ADDR
+          value: {{ .Values.vaultAddress | quote }}
+        - name: VAULT_TOKEN
+          value: {{ .Values.vaultToken | quote }}
+        - name: VK_DELETE_OLD
+          value: {{ .Values.deleteOld | quote }}
+        - name: VK_SYNC_PERIOD
+          value: {{ .Values.syncPeriod | quote }}
+        - name: VK_VAULT_ROOT_MOUNT_PATH
+          value: {{ .Values.vaultRootMountPath | quote }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ template "vaultingkube.serviceAccountName" . }}
+{{- end }}

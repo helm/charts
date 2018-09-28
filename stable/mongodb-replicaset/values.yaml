@@ -1,30 +1,61 @@
-replicaSet: rs0
 replicas: 3
-minAvailable: 1
 port: 27017
+
+replicaSetName: rs0
+
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
 
 auth:
   enabled: false
   # adminUser: username
   # adminPassword: password
+  # metricsUser: metrics
+  # metricsPassword: password
   # key: keycontent
   # existingKeySecret:
   # existingAdminSecret:
+  # exisitingMetricsSecret:
 
 # Specs for the Docker image for the init container that establishes the replica set
 installImage:
-  name: k8s.gcr.io/mongodb-install
-  tag: 0.5
+  repository: k8s.gcr.io/mongodb-install
+  tag: 0.6
   pullPolicy: IfNotPresent
 
 # Specs for the MongoDB image
 image:
-  name: mongo
-  tag: 3.4
+  repository: mongo
+  tag: 3.6
   pullPolicy: IfNotPresent
+
+# Additional environment variables to be set in the container
+extraVars: {}
+# - name: TCMALLOC_AGGRESSIVE_DECOMMIT
+#   value: "true"
+
+# Prometheus Metrics Exporter
+metrics:
+  enabled: false
+  image:
+    repository: ssalaues/mongodb-exporter
+    tag: 0.6.1
+    pullPolicy: IfNotPresent
+  port: 9216
+  path: "/metrics"
+  socketTimeout: 3s
+  syncTimeout: 1m
+  prometheusServiceDiscovery: true
+  resources: {}
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
+
+securityContext:
+  runAsUser: 999
+  fsGroup: 999
+  runAsNonRoot: true
 
 resources: {}
 # limits:
@@ -41,6 +72,8 @@ nodeSelector: {}
 affinity: {}
 
 tolerations: []
+
+extraLabels: {}
 
 persistentVolume:
   enabled: true
@@ -73,18 +106,19 @@ tls:
 
 # Entries for the MongoDB config file
 configmap:
-  storage:
-    dbPath: /data/db
-  net:
-    port: 27017
-    # Uncomment for TLS support
-    # ssl:
-    #   mode: requireSSL
-    #   CAFile: /ca/tls.crt
-    #   PEMKeyFile: /work-dir/mongo.pem
-  replication:
-    replSetName: rs0
-  # Uncomment for TLS support or keyfile access control without TLS
-  # security:
-  #   authorization: enabled
-  #   keyFile: /keydir/key.txt
+
+# Readiness probe
+readinessProbe:
+  initialDelaySeconds: 5
+  timeoutSeconds: 1
+  failureThreshold: 3
+  periodSeconds: 10
+  successThreshold: 1
+
+# Liveness probe
+livenessProbe:
+  initialDelaySeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 3
+  periodSeconds: 10
+  successThreshold: 1

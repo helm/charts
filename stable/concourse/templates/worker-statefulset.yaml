@@ -15,32 +15,37 @@ spec:
     metadata:
       labels:
         app: {{ template "concourse.worker.fullname" . }}
+        release: "{{ .Release.Name }}"
       annotations:
         {{- range $key, $value := .Values.worker.annotations }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.worker.fullname" . }}{{ else }}{{ .Values.rbac.serviceAccountName }}{{ end }}
+    {{- with .Values.worker.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.worker.fullname" . }}{{ else }}{{ .Values.rbac.workerServiceAccountName }}{{ end }}
       tolerations:
 {{ toYaml .Values.worker.tolerations | indent 8 }}
       terminationGracePeriodSeconds: {{ .Values.worker.terminationGracePeriodSeconds }}
       containers:
         - name: {{ template "concourse.worker.fullname" . }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           command:
             - /bin/sh
           args:
             - -c
             - |-
-              cp /dev/null /concourse-work-dir/.liveness_probe
-              rm -rf /concourse-work-dir/*
+              cp /dev/null /tmp/.liveness_probe
+              rm -rf ${CONCOURSE_WORK_DIR:-/concourse-work-dir}/*
               while ! concourse retire-worker --name=${HOSTNAME} | grep -q worker-not-found; do
-                touch /concourse-work-dir/.pre_start_cleanup
+                touch /tmp/.pre_start_cleanup
                 sleep 5
               done
-              rm -f /concourse-work-dir/.pre_start_cleanup
-              concourse worker --name=${HOSTNAME} | tee -a /concourse-work-dir/.liveness_probe
+              rm -f /tmp/.pre_start_cleanup
+              concourse worker --name=${HOSTNAME} | tee -a /tmp/.liveness_probe
           livenessProbe:
             exec:
               command:
@@ -48,13 +53,13 @@ spec:
                 - -c
                 - |-
                   FATAL_ERRORS=$( echo "${LIVENESS_PROBE_FATAL_ERRORS}" | grep -q '\S' && \
-                      grep -F "${LIVENESS_PROBE_FATAL_ERRORS}" /concourse-work-dir/.liveness_probe )
-                  cp /dev/null /concourse-work-dir/.liveness_probe
+                      grep -F "${LIVENESS_PROBE_FATAL_ERRORS}" /tmp/.liveness_probe )
+                  cp /dev/null /tmp/.liveness_probe
                   if [ ! -z "${FATAL_ERRORS}" ]; then
                     >&2 echo "Fatal error detected: ${FATAL_ERRORS}"
                     exit 1
                   fi
-                  if [ -f /concourse-work-dir/.pre_start_cleanup ]; then
+                  if [ -f /tmp/.pre_start_cleanup ]; then
                     >&2 echo "Still trying to clean up before starting concourse. 'fly prune-worker -w ${HOSTNAME}' might need to be called to force cleanup."
                     exit 1
                   fi
@@ -73,41 +78,27 @@ spec:
                     done
           env:
             - name: CONCOURSE_TSA_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: concourse-tsa-host
+          {{- if semverCompare "^3.10.x" .Values.imageTag }}
+              value: "{{ template "concourse.web.fullname" . }}:{{ .Values.concourse.tsaPort}}"
+          {{- else }}
+              value: {{ template "concourse.web.fullname" . }}
             - name: CONCOURSE_TSA_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: concourse-tsa-port
+              value: {{ .Values.concourse.tsaPort | quote }}
+          {{- end }}
             - name: CONCOURSE_GARDEN_DOCKER_REGISTRY
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: garden-docker-registry
+              value: {{ .Values.concourse.dockerRegistry | quote }}
             - name: CONCOURSE_GARDEN_INSECURE_DOCKER_REGISTRY
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: garden-insecure-docker-registry
+              value: {{ .Values.concourse.insecureDockerRegistry | quote }}
             - name: CONCOURSE_TSA_PUBLIC_KEY
               value: "/concourse-keys/host_key.pub"
             - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
               value: "/concourse-keys/worker_key"
             - name: CONCOURSE_WORK_DIR
-              value: "/concourse-work-dir"
+              value: {{ .Values.concourse.workingDirectory | quote }}
             - name: CONCOURSE_BAGGAGECLAIM_DRIVER
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: concourse-baggageclaim-driver
+              value: {{ .Values.concourse.baggageclaimDriver | quote }}
             - name: LIVENESS_PROBE_FATAL_ERRORS
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: worker-fatal-errors
+              value: {{ .Values.worker.fatalErrors | quote }}
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 12 }}
 {{- end }}
@@ -120,12 +111,23 @@ spec:
               mountPath: /concourse-keys
               readOnly: true
             - name: concourse-work-dir
-              mountPath: /concourse-work-dir
+              mountPath: {{ .Values.concourse.workingDirectory | default "/concourse-work-dir" | quote }}
+{{- if .Values.worker.additionalVolumeMounts }}
+{{ toYaml .Values.worker.additionalVolumeMounts | indent 12 }}
+{{- end }}
       affinity:
 {{- if .Values.worker.additionalAffinities }}
 {{ toYaml .Values.worker.additionalAffinities | indent 8 }}
 {{- end }}
         podAntiAffinity:
+          {{- if .Values.worker.hardAntiAffinity }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: {{ template "concourse.worker.fullname" . }}
+                release: {{ .Release.Name | quote }}
+            topologyKey: kubernetes.io/hostname
+          {{- else }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
             podAffinityTerm:
@@ -134,7 +136,11 @@ spec:
                 matchLabels:
                   app: {{ template "concourse.worker.fullname" . }}
                   release: {{ .Release.Name | quote }}
+          {{- end }}
       volumes:
+{{- if .Values.worker.additionalVolumes }}
+{{ toYaml .Values.worker.additionalVolumes | indent 8 }}
+{{- end }}
         - name: concourse-keys
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}
@@ -167,7 +173,7 @@ spec:
         - name: concourse-work-dir
           emptyDir: {}
   {{- end }}
-{{- if and (eq .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "7") }}
+{{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
   updateStrategy:
     type: {{ .Values.worker.updateStrategy }}
 {{- end }}

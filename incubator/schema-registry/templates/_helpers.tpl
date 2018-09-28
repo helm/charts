@@ -19,11 +19,21 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Form the Kafka URL. If Kafka is installed as part of this chart, use k8s service discovery,
 else use user-provided URL
 */}}
-{{- define "kafka-zookeeper.url" }}
-{{- $port := .Values.kafka.zookeeperPort | toString }}
-{{- if .Values.kafka.enabled -}}
-{{- printf "%s-zookeeper:%s" .Release.Name $port }}
+{{- define "schema-registry.kafkaStore.bootstrapServers" }}
+{{- if .Values.kafkaStore.overrideBootstrapServers -}}
+{{- .Values.kafkaStore.overrideBootstrapServers }}
 {{- else -}}
-{{- printf "%s:%s" .Values.kafka.zookeeperUrl $port }}
+{{- printf "PLAINTEXT://%s-kafka-headless:9092" .Release.Name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Default GroupId to Release Name but allow it to be overridden
+*/}}
+{{- define "schema-registry.kafkaStore.groupId" -}}
+{{- if .Values.kafkaStore.overrideGroupId -}}
+{{- .Values.kafkaStore.overrideGroupId -}}
+{{- else -}}
+{{- .Release.Name -}}
 {{- end -}}
 {{- end -}}

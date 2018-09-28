@@ -1,6 +1,7 @@
 name: elasticsearch
 home: https://www.elastic.co/products/elasticsearch
-version: 0.4.7
+version: 1.8.1
+appVersion: 6.4.1
 description: Flexible and powerful open source, distributed real-time search and analytics
   engine.
 icon: https://static-www.elastic.co/assets/blteb1c97719574938d/logo-elastic-elasticsearch-lt.svg
@@ -9,8 +10,12 @@ sources:
 - https://github.com/jetstack/elasticsearch-pet
 - https://github.com/giantswarm/kubernetes-elastic-stack
 - https://github.com/GoogleCloudPlatform/elasticsearch-docker
+- https://github.com/clockworksoul/helm-elasticsearch
+- https://github.com/pires/kubernetes-elasticsearch-cluster
 maintainers:
-- name: Christian Simon
+- name: simonswine
   email: christian@jetstack.io
-- name: Michael Haselton
+- name: icereval
   email: michael.haselton@gmail.com
+- name: rendhalver
+  email: pete.brown@powerhrg.com

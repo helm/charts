@@ -19,9 +19,16 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
+priorityClassName: ""
+
+nodeSelector: {}
+
+podAnnotations: {}
+
 service:
   type: ClusterIP
   httpPort: 9108
+  annotations: {}
 
 es:
   ## Address (host and port) of the Elasticsearch node we should connect to.

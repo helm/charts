@@ -67,6 +67,8 @@ spec:
           value: {{ default "" .Values.mysqlUser | quote }}
         - name: MYSQL_DATABASE
           value: {{ default "" .Values.mysqlDatabase | quote }}
+        - name: ALLOW_ROOT_FROM
+          value: {{ .Values.allowRootFrom | quote }}
         - name: CLUSTER_NAME
           value: {{ template "percona-xtradb-cluster.fullname" . }}
         - name: K8S_SERVICE_NAME
@@ -150,6 +152,10 @@ spec:
       {{- if not .Values.persistence.enabled }}
       - name: mysql-data
         emptyDir: {}
+      {{- end -}}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end -}}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:

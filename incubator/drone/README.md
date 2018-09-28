@@ -1,6 +1,7 @@
 # Drone.io
 
 [Drone](http://readme.drone.io/) is a Continuous Integration platform built on container technology.
+**NOTE: this chart has been DEPRECATED. Please see stable/drone.**
 
 ## TL;DR;
 
@@ -29,15 +30,15 @@ chart and deletes the release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the drone charts and their default values.
+The following table lists the configurable parameters of the drone charts and their default values.
 
 | Parameter                   | Description                                                                                   | Default                     |
 |-----------------------------|-----------------------------------------------------------------------------------------------|-----------------------------|
 | `images.server.repository`  | Drone **server** image                                                                        | `docker.io/drone/drone`     |
-| `images.server.tag`         | Drone **server** image tag                                                                    | `0.8.4`                     |
+| `images.server.tag`         | Drone **server** image tag                                                                    | `0.8.5`                     |
 | `images.server.pullPolicy`  | Drone **server** image pull policy                                                            | `IfNotPresent`              |
 | `images.agent.repository`   | Drone **agent** image                                                                         | `docker.io/drone/agent`     |
-| `images.agent.tag`          | Drone **agent** image tag                                                                     | `0.8.4`                     |
+| `images.agent.tag`          | Drone **agent** image tag                                                                     | `0.8.5`                     |
 | `images.agent.pullPolicy`   | Drone **agent** image pull policy                                                             | `IfNotPresent`              |
 | `images.dind.repository`    | Docker **dind** image                                                                         | `docker.io/library/docker`  |
 | `images.dind.tag`           | Docker **dind** image tag                                                                     | `17.12.0-ce-dind`           |
@@ -51,18 +52,30 @@ The following tables lists the configurable parameters of the drone charts and t
 | `ingress.tls`               | Ingress TLS configuration                                                                     | `[]`                        |
 | `server.host`               | Drone **server** scheme and hostname                                                          | `(internal hostname)`       |
 | `server.env`                | Drone **server** environment variables                                                        | `(default values)`          |
+| `server.envSecrets`         | Drone **server** secret environment variables                                                 | `(default values)`          |
+| `server.annotations`        | Drone **server** annotations                                                                  | `{}`                        |
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
-| `server.afinity`            | Drone **server** scheduling preferences                                                       | `{}`                        |
+| `server.schedulerName`      | Drone **server** alternate scheduler name                                                     | `nil`                       |
+| `server.affinity`           | Drone **server** scheduling preferences                                                       | `{}`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
 | `agent.replicas`            | Drone **agent** replicas                                                                      | `1`                         |
+| `agent.annotations`         | Drone **agent** annotations                                                                   | `{}`                        |
 | `agent.resources`           | Drone **agent** pod resource requests & limits                                                | `{}`                        |
-| `agent.afinity`             | Drone **agent** scheduling preferences                                                        | `{}`                        |
+| `agent.schedulerName`       | Drone **agent** alternate scheduler name                                                      | `nil`                       |
+| `agent.affinity`            | Drone **agent** scheduling preferences                                                        | `{}`                        |
 | `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
 | `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |
+| `dind.env`                  | **DinD** environment variables                                                                | `nil`                       |
+| `dind.command`              | **DinD** custom command instead of default entry point                                        | `nil`                       |
+| `dind.args`                 | **DinD** arguments for custom command or entry point                                          | `nil`                       |
 | `persistence.enabled`       | Use a PVC to persist data                                                                     | `true`                      |
 | `persistence.existingClaim` | Use an existing PVC to persist data                                                           | `nil`                       |
 | `persistence.storageClass`  | Storage class of backing PVC                                                                  | `nil`                       |
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                                                           | `ReadWriteOnce`             |
 | `persistence.size`          | Size of data volume                                                                           | `1Gi`                       |
 | `sharedSecret`              | Drone server and agent shared secret (Note: The Default random value changes on every `helm upgrade` causing a rolling update of server and agents) | `(random value)`            |
+| `rbac.create`               | Specifies whether RBAC resources should be created.                                           | `true`                      |
+| `rbac.apiVersion`           | RBAC API version                                                                              | `v1`                        |
+| `serviceAccount.create`     | Specifies whether a ServiceAccount should be created.                                         | `true`                      |
+| `serviceAccount.name`       | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template. | `(fullname template)` |

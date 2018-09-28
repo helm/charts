@@ -1,0 +1,52 @@
+{{- if .Values.external.enabled }}
+  {{- $fullName := include "kafka.fullname" . }}
+  {{- $replicas := .Values.replicas | int }}
+  {{- $servicePort := .Values.external.servicePort }}
+  {{- $dnsPrefix := printf "%s" .Release.Name }}
+  {{- $root := . }}
+  {{- range $i, $e := until $replicas }}
+    {{- $externalListenerPort := add $root.Values.external.firstListenerPort $i }}
+    {{- $responsiblePod := printf "%s-%d" (printf "%s" $fullName) $i }}
+    {{- $distinctPrefix := printf "%s-%d" $dnsPrefix $i }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    {{- if $root.Values.external.distinct }}
+    dns.alpha.kubernetes.io/internal: "{{ $distinctPrefix }}.{{ $root.Values.external.domain }}"
+    external-dns.alpha.kubernetes.io/hostname: "{{ $distinctPrefix }}.{{ $root.Values.external.domain }}"
+    {{- else }}
+    dns.alpha.kubernetes.io/internal: "{{ $dnsPrefix }}.{{ $root.Values.external.domain }}"
+    external-dns.alpha.kubernetes.io/hostname: "{{ $dnsPrefix }}.{{ $root.Values.external.domain }}"
+    {{- end }}
+    {{- if $root.Values.external.annotations }}
+{{ toYaml $root.Values.external.annotations | indent 4 }}
+    {{- end }}
+  name: {{ $root.Release.Name }}-{{ $i }}-external
+  labels:
+    app: {{ include "kafka.name" $root }}
+    chart: {{ $root.Chart.Name }}-{{ $root.Chart.Version }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+    pod: {{ $responsiblePod | quote }}
+spec:
+  type: {{ $root.Values.external.type }}
+  ports:
+    - name: external-broker
+      {{- if eq $root.Values.external.type "LoadBalancer" }}
+      port: {{ $externalListenerPort }}
+      {{- else }}
+      port: {{ $servicePort }}
+      {{- end }}
+      targetPort: {{ $externalListenerPort }}
+      {{- if eq $root.Values.external.type "NodePort" }}
+      nodePort: {{ $externalListenerPort }}
+      {{- end }}
+      protocol: TCP
+  selector:
+    app: {{ include "kafka.name" $root }}
+    release: {{ $root.Release.Name }}
+    pod: {{ $responsiblePod | quote }}
+  {{- end }}
+{{- end }}

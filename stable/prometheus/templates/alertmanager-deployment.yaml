@@ -26,7 +26,17 @@ spec:
         component: "{{ .Values.alertmanager.name }}"
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.alertmanager.fullname" . }}{{ else }}"{{ .Values.alertmanager.serviceAccountName }}"{{ end }}
+{{- if .Values.alertmanager.affinity }}
+      affinity:
+{{ toYaml .Values.alertmanager.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.alertmanager.schedulerName }}
+      schedulerName: "{{ .Values.alertmanager.schedulerName }}"
+{{- end }}
+      serviceAccountName: {{ template "prometheus.serviceAccountName.alertmanager" . }}
+{{- if .Values.alertmanager.priorityClassName }}
+      priorityClassName: "{{ .Values.alertmanager.priorityClassName }}"
+{{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}
           image: "{{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}"
@@ -78,6 +88,10 @@ spec:
     {{- if .Values.alertmanager.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.alertmanager.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.alertmanager.securityContext }}
+      securityContext:
+{{ toYaml .Values.alertmanager.securityContext | indent 8 }}
     {{- end }}
     {{- if .Values.alertmanager.tolerations }}
       tolerations:

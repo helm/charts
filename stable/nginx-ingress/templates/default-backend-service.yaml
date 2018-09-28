@@ -27,8 +27,10 @@ spec:
 {{ toYaml .Values.defaultBackend.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
   ports:
-    - port: {{ .Values.defaultBackend.service.servicePort }}
-      targetPort: 8080
+    - name: http
+      port: {{ .Values.defaultBackend.service.servicePort }}
+      protocol: TCP
+      targetPort: http
   selector:
     app: {{ template "nginx-ingress.name" . }}
     component: "{{ .Values.defaultBackend.name }}"

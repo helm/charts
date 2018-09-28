@@ -12,7 +12,7 @@ $ helm install incubator/webpagetest-agent
 
 This chart deploys [WebPageTest Private Instance Containers](https://github.com/WPO-Foundation/webpagetest-docs/blob/master/user/Private%20Instances/README.md) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-Depending on your configuration you can then use Official WPT agent instances to test your websites
+Depending on your configuration you can then use Official WPT agent instances to test your websites.
 
 ## Prerequisites
 
@@ -27,7 +27,7 @@ $ helm install --name my-release incubator/webpagetest-agent
 ```
 
 The command deploys a WebPageTest agent on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
-Please note the default install probably won't do much without some configuration of the values.yaml file
+Please note the default install probably won't do much without some configuration of the values.yaml file.
 
 
 > **Tip**: List all releases using `helm list`
@@ -44,13 +44,13 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the WordPress chart and their default values.
+The following table lists the configurable parameters of the WordPress chart and their default values.
 
 | Parameter                            | Description                                | Default                                                    |
 | -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
 | `image`                              | WebPageTest server image                   | `webpagetest/server:{VERSION}`                              |
 | `imagePullPolicy`                    | Image pull policy                          | `IfNotPresent`                                             |
-| `agent.key`                          | API Key for agent to auth the the master   | `nil`                                                      |
+| `agent.key`                          | API Key for agent to auth the master   | `nil`                                                      |
 | `agent.server`                       | Hostname of the WPT server (see below)     | `agent-web-page-test.local`                                |
 | `agent.location`                     | WPT location tag                           | `Test`                                                     |
 | `agent.shaper`                       | Traffic shaping method the agent uses      | `none`                                                      |
@@ -75,7 +75,7 @@ $ helm install --name my-release -f values.yaml incubator/webpagetest-agent
 
 
 ## Ingress
-There are none. This is a worker node. the standard operation is for it to poll the
+There are none. This is a worker node. The standard operation is for it to poll the
 WebPageTest Server for work.
 
 ## WebPageTest Server Config
@@ -87,7 +87,7 @@ As such these charts will get an environment up and working, but if you want mor
 ### Defaults
 A default install of the server will have a location of 'Test' with a blank key.
 This config makes use of that. To use different values you will probably need to update
-settings/locations.ini and or settings/keys.ini on the WebPageTest server
+settings/locations.ini and or settings/keys.ini on the WebPageTest server.
 
 ### agent.server
 **You'll probably want to update this one.**
@@ -95,7 +95,7 @@ This is the host header that the agent will use to speak to the master.
 
 ### agent.shaper
 This is the method that the agent will use to throttle bandwidth or add latency. Some methods require root access.
-The default method did not work when this chart was being created so a value of 'none' was selected to disable this feature
+The default method did not work when this chart was being created so a value of 'none' was selected to disable this feature.
 
 ### agent.key
 The API key is used by the agent to authenticate itself to the WebPageTest server.

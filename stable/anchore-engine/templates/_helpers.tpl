@@ -33,7 +33,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s-%s-%s" .Release.Name $name "core"| trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-
 {{/*
 Create a default fully qualified dependency name for the db.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).

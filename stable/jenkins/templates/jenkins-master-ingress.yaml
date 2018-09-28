@@ -1,5 +1,5 @@
 {{- if .Values.Master.HostName }}
-apiVersion: {{ .Values.NetworkPolicy.ApiVersion }}
+apiVersion: {{ .Values.Master.Ingress.ApiVersion }}
 kind: Ingress
 metadata:
 {{- if .Values.Master.Ingress.Annotations }}

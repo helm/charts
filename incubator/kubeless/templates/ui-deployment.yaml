@@ -15,6 +15,9 @@ spec:
         app: {{ template "kubeless.name"  . }}
         release: {{ .Release.Name | quote }}
     spec:
+{{- if .Values.rbac.create }}
+      serviceAccountName: kubeless-ui
+{{- end }}
       containers:
       - name: ui
         image: "{{ .Values.ui.deployment.ui.image.repository }}:{{ .Values.ui.deployment.ui.image.tag }}"

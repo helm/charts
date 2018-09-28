@@ -1,0 +1,26 @@
+{{- if .Values.kafkaTrigger.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: kafka-controller-deployer
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - configmaps
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - kubeless.io
+  resources:
+  - functions
+  - kafkatriggers
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - delete
+{{- end }}

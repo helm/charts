@@ -8,16 +8,28 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "drupal.fullname" . }}
+      release: "{{ .Release.Name }}"
   replicas: 1
   template:
     metadata:
       labels:
         app: {{ template "drupal.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "drupal.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD
         {{- if .Values.allowEmptyPassword }}
@@ -35,13 +47,13 @@ spec:
           value: "3306"
         - name: DRUPAL_DATABASE_NAME
         {{- if .Values.mariadb.enabled }}
-          value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+          value: {{ default "" .Values.mariadb.db.name | quote }}
         {{- else }}
           value: {{ default "" .Values.externalDatabase.database | quote }}
         {{- end }}
         - name: DRUPAL_DATABASE_USER
         {{- if .Values.mariadb.enabled }}
-          value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+          value: {{ default "" .Values.mariadb.db.user | quote }}
         {{- else }}
           value: {{ default "" .Values.externalDatabase.user | quote }}
         {{- end }}
@@ -54,15 +66,23 @@ spec:
         {{- else }}
           value: {{ default "" .Values.externalDatabase.password | quote }}
         {{- end }}
+        {{- if .Values.drupalProfile }}
+        - name: DRUPAL_PROFILE
+          value: {{ .Values.drupalProfile | quote }}
+        {{- end }}
+        {{- if .Values.drupalUsername }}
         - name: DRUPAL_USERNAME
-          value: {{ default "" .Values.drupalUsername | quote }}
+          value: {{ .Values.drupalUsername | quote }}
+        {{- end }}
         - name: DRUPAL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "drupal.fullname" . }}
               key: drupal-password
+        {{- if .Values.drupalEmail }}
         - name: DRUPAL_EMAIL
-          value: {{ default "" .Values.drupalEmail | quote }}
+          value: {{ .Values.drupalEmail | quote }}
+        {{- end }}
 {{- if .Values.extraVars }}
 {{ toYaml .Values.extraVars | indent 8 }}
 {{- end }}
@@ -84,10 +104,6 @@ spec:
         - name: apache-data
           mountPath: {{ .Values.volumeMounts.apache.mountPath }}
         {{- end }}
-      {{- if .Values.imagePullSecrets }}
-      imagePullSecrets:
-{{ toYaml .Values.imagePullSecrets | indent 8 }}
-      {{- end }}
       volumes:
       - name: drupal-data
       {{- if .Values.persistence.enabled }}

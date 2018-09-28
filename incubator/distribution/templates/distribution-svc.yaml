@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "distribution.fullname" . }}
+  labels:
+    app: {{ template "distribution.name" . }}
+    chart: {{ template "distribution.chart" . }}
+    component: "{{ .Values.distribution.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.distribution.service.annotations }}
+  annotations:
+{{ toYaml .Values.distribution.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.distribution.service.type }}
+  ports:
+  - port: {{ .Values.distribution.externalPort }}
+    protocol: TCP
+    targetPort: {{ .Values.distribution.internalPort }}
+  selector:
+    app: {{ template "distribution.name" . }}
+    component: "{{ .Values.distribution.name }}"
+    release: {{ .Release.Name }}

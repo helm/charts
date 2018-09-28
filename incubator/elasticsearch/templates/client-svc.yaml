@@ -18,11 +18,17 @@ spec:
     - name: http
       port: 9200
       targetPort: http
-    - name: transport
-      port: 9300
-      targetPort: transport
   selector:
     app: {{ template "elasticsearch.name" . }}
     component: "{{ .Values.client.name }}"
     release: {{ .Release.Name }}
   type: {{ .Values.client.serviceType }}
+{{- if .Values.client.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.client.loadBalancerIP }}"
+{{- end }}
+  {{if .Values.client.loadBalancerSourceRanges}}
+  loadBalancerSourceRanges:
+    {{range $rangeList := .Values.client.loadBalancerSourceRanges}}
+    - {{ $rangeList }}
+    {{end}}
+  {{end}}

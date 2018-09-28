@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "luigi.fullname" . }}
+  labels:
+    app: {{ template "luigi.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.externalPort }}
+      targetPort: 8082
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "luigi.name" . }}
+    release: {{ .Release.Name }}

@@ -31,7 +31,11 @@ replicas: 3
 ##
 # mysqlDatabase: test
 
-## Persist data to a persitent volume
+## hosts to allow root user access from
+# set to "127.0.0.1" to deny remote root.
+allowRootFrom: "%"
+
+## Persist data to a persistent volume
 persistence:
   enabled: false
   ## percona data Persistent Volume Storage Class
@@ -44,6 +48,11 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

@@ -22,7 +22,7 @@ init:
   resources: false
 
 php:
-  ## php.version default php repository version, you can specify a differnt version like 5 or 7.0
+  ## php.version default php repository version, you can specify a different version like 5 or 7.0
   version: "7"
 
   ## php.repository If not empty, repository is chosen over default php repo
@@ -42,7 +42,7 @@ php:
   ## sockets instead of TCP
   sockets: true
 
-  ## php.oldHTTPRoot Additionaly mounts the webroot at `php.oldHTTPRoot` to compansate
+  ## php.oldHTTPRoot Additionally mounts the webroot at `php.oldHTTPRoot` to compensate
   ## for absolute path file links
   # oldHTTPRoot: /var/www/html
 

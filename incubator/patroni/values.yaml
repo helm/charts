@@ -1,62 +1,107 @@
-Name: patroni
+replicaCount: 5
 
-Component: patroni
-ImagePullPolicy: IfNotPresent
-
-# The image to use. Spilo is the dockerized Patroni
-Spilo:
-  # this image was built from https://github.com/zalando/spilo/tree/master/postgres-appliance
-  Image: registry.opensource.zalan.do/acid/spilo-9.6
-  Version: 1.2-p17
-
-# How many postgres containers to spawn
-Replicas: 5
-
-# Resource limits per replica
-Resources:
-  Cpu: 100m
-  Memory: 512Mi
-
-# Node selector for Patroni pods
-# NodeSelector:
-#  cloud.google.com/gke-nodepool: highmem-pool
+image:
+  # Image was built from
+  # https://github.com/zalando/spilo/tree/master/postgres-appliance
+  repository: registry.opensource.zalan.do/acid/spilo-10
+  tag: 1.4-p7
+  pullPolicy: IfNotPresent
 
 # Credentials used by Patroni
-# * more information: https://github.com/zalando/patroni/blob/master/docs/SETTINGS.rst#postgresql
-Credentials:
-  Superuser: tea
-  Admin: cola
-  Standby: pinacolada
+# https://github.com/zalando/patroni/blob/master/docs/SETTINGS.rst#postgresql
+# https://github.com/zalando/spilo/blob/master/ENVIRONMENT.rst
+credentials:
+  superuser: tea
+  admin: cola
+  standby: pinacolada
 
-## Distribution Configuration stores. Please note that only one of the following stores should be selected.
-Etcd:
-  Enable: true
-  DeployChart: true
-  # if not deploying etcd chart, fill-in value for etcd host (etcd.default.svc.cluster.local)
-  Host:
-  # leave blank to use vendored etcd chart
-  Discovery:
-Zookeeper:
-  Enable: false
-  DeployChart: false
-  # if not deploying etcd chart, fill-in list of ZooKeeper cluster members in format: 'host1:port1','host2:port2','etc...'
-  Hosts:
+# Distribution Configuration stores
+# Please note that only one of the following stores should be enabled.
+etcd:
+  enable: true
+  deployChart: true
+  # If not deploying etcd chart, fill-in value for etcd service
+  # <service>.<namespace>.svc.cluster.local
+  host:
+  # Leave blank to use vendored etcd chart
+  discovery:
+zookeeper:
+  enable: false
+  deployChart: false
+  # If not deploying etcd chart, fill-in list of ZooKeeper members in format:
+  # 'host1:port1','host2:port2','etc...'
+  hosts:
 
-WalE:
-  Enable: false
-  Schedule_Cron_Job: 00 01 * * *
-  Retain_Backups: 2
-  S3_Bucket:
-  GCS_Bucket:
-  Kubernetes_Secret:
-  Backup_Threshold_Megabytes: 1024
-  Backup_Threshold_Percentage: 30
+walE:
+  # Specifies whether Wal-E should be enabled
+  enable: false
+  # Cron schedule for doing base backups
+  scheduleCronJob: 00 01 * * *
+  # Amount of base backups to retain
+  retainBackups: 2
+  # Path to the S3 or GCS bucket used for WAL-E base backups
+  s3Bucket:
+  gcsBucket:
+  # Name of the secret that holds the credentials to the bucket
+  kubernetesSecret:
+  # Maximum size of the WAL segments accumulated after the base backup to
+  # consider WAL-E restore instead of pg_basebackup
+  backupThresholdMegabytes: 1024
+  # Maximum ratio (in percents) of the accumulated WAL files to the base backup
+  # to consider WAL-E restore instead of pg_basebackup
+  backupThresholdPercentage: 30
 
 persistentVolume:
   size: 1G
-  storageClass: ""
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: "-"
   subPath: ""
   mountPath: "/home/postgres/pgdata"
   annotations: {}
   accessModes:
     - ReadWriteOnce
+
+resources: {}
+  # If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
+# https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+# https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: |
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        topologyKey: "kubernetes.io/hostname"
+        labelSelector:
+          matchLabels:
+            app:  {{ template "patroni.name" . }}
+            release: {{ .Release.Name | quote }}
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:

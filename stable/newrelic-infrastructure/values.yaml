@@ -1,14 +1,22 @@
 # IMPORTANT: Specify your New Relic API key here.
 # licenseKey:
 
+# IMPORTANT: The Kubernetes cluster name
+# https://docs.newrelic.com/docs/kubernetes-monitoring-integration
+# cluster: ""
+
+# kubeStateMetricsUrl - if provided, the discovery process for kube-state-metrics endpoint won't be triggered
+# Only HTTP is accepted. This is an example value: http://172.17.0.3:8080
+# kubeStateMetricsUrl:
+
 verboseLog: false
 
 # This can be set, the default is shown below
 # logFile: /var/log/nr-infra.log
 
 image:
-  repository: newrelic/infrastructure
-  tag: 0.0.12
+  repository: newrelic/infrastructure-k8s
+  tag: 1.0.0
   pullPolicy: IfNotPresent
 
 resources:
@@ -18,6 +26,17 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
 
 # If you wish to provide additional labels to apply to the pod(s), specify
 # them here
@@ -62,3 +81,11 @@ resources:
   #  service: login service
   #  team: alpha-team
   #
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+tolerations: []
+
+updateStrategy: RollingUpdate
