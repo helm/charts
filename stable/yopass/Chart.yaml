@@ -1,0 +1,14 @@
+name: yopass
+appVersion: 1.0.0
+version: 0.1.0
+description: Yopass
+keywords:
+- secrets
+- secure
+- one-time
+home: https://yopass.se/
+sources:
+- https://github.com/jhaals/yopass
+maintainers:
+- name: Jberlinsky
+  email: jason@barefootcoders.com

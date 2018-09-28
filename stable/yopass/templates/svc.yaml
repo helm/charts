@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "yopass.fullname" . }}
+  labels:
+    app: {{ template "yopass.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.serviceType }}
+  ports:
+  - name: http
+    port: {{ .Values.httpPort | int }}
+    targetPort: http
+  selector:
+    app: {{ template "yopass.fullname" . }}

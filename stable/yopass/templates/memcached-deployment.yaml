@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "yopass.memcache.fullname" . }}
+  labels:
+    app: {{ template "yopass.memcache.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "yopass.memcache.fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "yopass.memcache.fullname" . }}
+        image: memcached
+        ports:
+        - name: memcached
+          containerPort: 11211
+        volumeMounts:
+        - mountPath: /var/lib/memcached
+          name: data
+      volumes:
+      - name: data
+        emptyDir: {}

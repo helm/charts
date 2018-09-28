@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "yopass.fullname" . }}
+  labels:
+    app: {{ template "yopass.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - host: {{ .Values.externalUrl }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "yopass.fullname" . }}
+          servicePort: http

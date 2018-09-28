@@ -1,0 +1,15 @@
+# image is the name and tag of the Yopass image to deploy
+image: jhaals/yopass:latest
+# serviceType is the type of Kubernetes Service to expose Yopass pods
+serviceType: ClusterIP
+# httpPort is the port on which traffic will be served
+httpPort: 80
+
+# resources are Kubernetes resource requests and limits
+resources:
+  requests:
+    memory: 128Mi
+    cpu: 100m
+  limits:
+    memory: 512Mi
+    cpu: 250m
