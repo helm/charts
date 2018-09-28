@@ -114,7 +114,7 @@ spec:
         - name: REMOVE_OLD_MODS
           value: "TRUE"
         {{- end }}
-        {{- end}}
+        {{- end }}
         - name: ONLINE_MODE
           value: {{ .Values.minecraftServer.onlineMode | quote }}
         - name: JVM_OPTS
@@ -135,6 +135,7 @@ spec:
           value: "true"
         - name: QUERY_PORT
           value: {{ .Values.minecraftServer.query.port }}
+        {{- end }}
 
         ports:
         - name: minecraft
