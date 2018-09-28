@@ -24,6 +24,9 @@ data:
       alertmanagers:
       - kubernetes_sd_configs:
           - role: pod
+            namespaces:
+              names:
+                - {{ $root.Release.Namespace }}
         tls_config:
           ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
