@@ -1,0 +1,86 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "openstackIronicStandalone.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.conductor.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "openstackIronicStandalone.conductor.fullname" . }}
+spec:
+  replicas: {{ .Values.conductor.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "openstackIronicStandalone.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        component: "{{ .Values.conductor.name }}"
+        release: {{ .Release.Name }}
+      name: {{ template "openstackIronicStandalone.conductor.fullname" . }}
+      annotations:
+        configmap-etc-hash: {{ include (print $.Template.BasePath "/etc-configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+        - name: {{ template "openstackIronicStandalone.name" . }}-{{ .Values.conductor.name }}
+          image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          resources:
+{{ toYaml .Values.conductor.resources | indent 12 }}
+          command:
+            - /usr/bin/ironic-conductor
+          args:
+            - --config-file
+            - /etc/ironic/ironic.conf
+          env:
+            - name: IRONIC_URL
+              value: "http://{{ .Release.Name }}-ironic-api:{{ .Values.api.portExternal }}/"
+            - name: OS_AUTH_TOKEN
+              value: "fake-token"
+#          livenessProbe:
+#            exec:
+#              command:
+#                - /bin/bash
+#                - -c
+#                - ironic driver-list | grep "$HOSTNAME"
+#            initialDelaySeconds: 30
+#            timeoutSeconds: 10
+          volumeMounts:
+            - mountPath: /storage
+              name: ironic
+            - mountPath: /etc/ironic
+              name: ironic-etc
+              readOnly: true
+      initContainers:
+        - name: wait-for-mysql
+          image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
+          command: 
+            - /usr/local/bin/wait-for-mysql.sh
+          volumeMounts:
+            - mountPath: /usr/local/bin/wait-for-mysql.sh
+              name: ironic-db-scripts
+              subPath: wait-for-mysql.sh
+              readOnly: true
+        - name: update-database-schema
+          image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
+          command: 
+            - ironic-dbsync
+            - --config-file
+            - /etc/ironic/ironic.conf
+            - upgrade
+          volumeMounts:
+            - mountPath: /etc/ironic
+              name: ironic-etc
+              readOnly: true
+      volumes:
+        - name: ironic-etc
+          configMap:
+            name: {{ template "openstackIronicStandalone.name" . }}-etc
+            defaultMode: 0644
+        - name: ironic-db-scripts
+          configMap:
+            name: {{ template "openstackIronicStandalone.name" . }}-db-scripts
+            defaultMode: 0755
+        - name: ironic
+          persistentVolumeClaim:
+            claimName: "{{ .Values.persistentVolumeClaimName }}"

@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: {{ template "openstackIronicStandalone.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.tftp.name }}
+    release: {{ .Release.Name }}
+  name: {{ template "openstackIronicStandalone.tftp.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "openstackIronicStandalone.name" . }}
+      chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+      component: "{{ .Values.tftp.name }}"
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "openstackIronicStandalone.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        component: "{{ .Values.tftp.name }}"
+        release: {{ .Release.Name }}
+      name: {{ template "openstackIronicStandalone.tftp.fullname" . }}
+    spec:
+      securityContext:
+        runAsUser: 0
+        fsGroup: 0
+      hostNetwork: true
+      containers:
+        - name: {{ template "openstackIronicStandalone.fullname" . }}-{{ .Values.tftp.name }}
+          image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          tty: true
+          command: 
+          - /usr/sbin/in.tftpd
+          - --ipv4
+          - -v
+          - --foreground
+          - --map-file
+          - /etc/tftp-map-file
+          - /tftpboot
+          volumeMounts:
+            - mountPath: /tftpboot
+              name: ironic
+              subPath: tftpboot
+            - mountPath: /etc/tftp-map-file
+              name: ironic-etc
+              subPath: tftp-map-file
+              readOnly: true
+            - mountPath: /dev/log
+              name: devlog
+              readOnly: false
+          resources:
+{{ toYaml .Values.tftp.resources | indent 12 }}
+      volumes:
+        - name: ironic
+          persistentVolumeClaim:
+            claimName: "{{ .Values.persistentVolumeClaimName }}"
+        - name: ironic-etc
+          configMap:
+            name: {{ template "openstackIronicStandalone.name" . }}-etc
+            defaultMode: 0644
+        - name: devlog
+          hostPath:
+            path: /dev/log

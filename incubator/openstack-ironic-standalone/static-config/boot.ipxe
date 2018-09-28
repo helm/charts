@@ -1,0 +1,16 @@
+#!ipxe
+
+isset ${mac:hexhyp} && goto boot_system ||
+chain ipxe.pxe
+
+# load the MAC-specific file or fail if it's not found
+:boot_system
+chain pxelinux.cfg/${mac:hexhyp} || goto inspector_ipa
+
+:inspector_ipa
+chain pxelinux.cfg/default || goto error_no_config
+
+:error_no_config
+echo PXE boot failed. No configuration found for MAC ${mac}
+echo Continuing to next boot device
+exit 1

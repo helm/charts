@@ -1,0 +1,184 @@
+ironicServerName: DEFINE-SERVER-NAME.IO
+
+## Ironic container image used for all Ironic components
+##
+image:
+  name: jakubdlu/centos-openstack-ironic
+  version: rocky-0.0.7
+  pullPolicy: IfNotPresent
+
+# Existing persistent volume claim
+persistentVolumeClaimName: DEFINE-EXISTING-PV-CLAIM
+
+## _Some_ of the /etc/ironic/ironic.conf
+## configuration options.
+## If you need more, please extract and create PR.
+##
+config:
+  default:
+    debug: false
+    enabled_hardware_types: ipmi
+  api:
+    api_workers: 8
+  pxe:
+    pxe_append_params: "console=tty0 console=ttyS0,115200 coreos.autologin=tty0"
+    pxe_config_template: /etc/ironic/pxe_config.template
+    ipxe_enabled: false
+  deploy:
+    enable_ata_secure_erase: false
+    erase_devices_priority: 0
+    erase_devices_metadata_priority: 0
+    power_off_after_deploy_failure: false
+  conductor:
+    heartbeat_interval: 30
+    heartbeat_timeout: 300
+    deploy_callback_timeout: 3600
+    power_state_sync_max_retries: 32
+    automated_clean: false
+    clean_callback_timeout: 3600
+
+api:
+  ## Ironic API container name
+  ##
+  name: api
+
+  ## Ironic API scaling settings
+  ##
+  replicas: 1
+
+  ## Ironic API ports
+  ##
+  portInternal: 8080
+  portExternal: 6387
+
+  ## Ironic API external IP
+  ##
+  externalIPs:
+    - DEFINE-IP-HERE
+
+  ## Ironic API resources
+  ##
+  resources:
+    requests:
+      memory: "8G"
+      cpu: "8"
+    limits:
+      memory: "8G"
+      cpu: "8"
+
+
+httpboot:
+  ## Ironic www name
+  ##
+  name: httpboot
+ 
+  ## Ironic www external IP
+  ##
+  externalIPs:
+    - DEFINE-IP-HERE
+
+  ## Ironic www scaling
+  ##
+  replicas: 1
+
+  ## Ironic www container image info
+  ##
+  image:
+    name: nginx
+    version: 1.13.5-alpine
+    pullPolicy: IfNotPresent
+
+  ## Ironic www resources
+  ##
+  resources:
+    requests:
+      memory: "2G"
+      cpu: "2"
+    limits:
+      memory: "4G"
+      cpu: "4"
+
+mgmt:
+  ## Ironic management pod name
+  ##
+  name: mgmt
+
+  ## Ironic management pod scaling
+  ##
+  replicas: 1
+
+tftp:
+  ## Ironic tftp name
+  ##
+  name: tftp
+
+  ## Ironic tftp network configuration
+  ##
+  externalIPs:
+    - DEFINE-IP-HERE
+
+  ## TFTP image information
+  image:
+    name: jakubdlu/docker-ubuntu-atftpd
+    version: latest
+    pullPolicy: IfNotPresent
+
+  ## Ironic tftp resources
+  ##
+  resources:
+    requests:
+      memory: "2G"
+      cpu: "2"
+    limits:
+      memory: "4G"
+      cpu: "4"
+
+conductor:
+  ## Ironic Conductor name
+  ##
+  name: conductor
+
+  ## Ironic Conductor scaling
+  ##
+  replicas: 1
+
+  ## Ironic Conductor resources
+  ##
+  resources:
+    requests:
+      memory: "8G"
+      cpu: "8"
+    limits:
+      memory: "8G"
+      cpu: "8"
+
+mysql:
+  image: mysql
+  imageTag: "5.7.14"
+  mysqlUser: ironic
+  mysqlPassword: DEFINE-THIS-SECRET
+  mysqlDatabase: ironic
+  mysqlRootPassword: DEFINE-THIS-SECRET
+  imagePullPolicy: IfNotPresent
+  readinessProbe:
+    initialDelaySeconds: 60
+  livenessProbe:
+    initialDelaySeconds: 120
+  persistence:
+    enabled: true
+    subPath: mysql
+    existingClaim: DEFINE-EXISTING-PV-CLAIM
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+
+rabbitmq:
+  replicas: 1
+  rabbitmq:
+    username: rabbitmq
+    password: DEFINE-THIS-SECRET
+  image:
+    pullPolicy: IfNotPresent
+  persistence:
+    enabled: false

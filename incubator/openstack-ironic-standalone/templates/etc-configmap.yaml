@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "openstackIronicStandalone.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "openstackIronicStandalone.name" . }}-etc
+data:
+  ironic.conf: |
+{{ include (print .Template.BasePath "/etc/_ironic.conf.tpl") . | indent 4 }}
+{{ (.Files.Glob "static-config/*").AsConfig | indent 2 }}

@@ -1,0 +1,81 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "openstackIronicStandalone.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.httpboot.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "openstackIronicStandalone.httpboot.fullname" . }}
+spec:
+  replicas: {{ .Values.httpboot.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "openstackIronicStandalone.name" . }}
+        component: "{{ .Values.httpboot.name }}"
+        release: {{ .Release.Name }}
+      name: {{ template "openstackIronicStandalone.httpboot.fullname" . }}
+      annotations:
+        configmap-etc-hash: {{ include (print $.Template.BasePath "/httpboot-configmap.yaml") . | sha256sum }}
+    spec:
+      initContainers:
+        - name: storage-dir-permissions
+          image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
+          command: 
+            - chown
+            - "ironic:ironic"
+            - "/storage/httpboot"
+            - "/storage/tftpboot"
+            - "/storage/mgmt-scripts"
+          securityContext:
+            runAsUser: 0
+            fsGroup: 0
+          volumeMounts:
+            - mountPath: /storage
+              name: ironic
+        - name: cp-pxelinux
+          image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
+          command:
+            - cp
+            - "/usr/share/syslinux/pxelinux.0"
+            - "/usr/share/ipxe/ipxe.efi"
+            - "/tftpboot/"
+          securityContext:
+            runAsUser: 0
+            fsGroup: 0
+          volumeMounts:
+            - mountPath: /tftpboot
+              name: ironic
+              subPath: tftpboot
+      containers:
+      - name: {{ template "openstackIronicStandalone.fullname" . }}-{{ .Values.httpboot.name }}
+        image:  "{{ .Values.httpboot.image.name }}:{{ .Values.httpboot.image.version }}"
+        resources:
+{{ toYaml .Values.httpboot.resources | indent 10 }}
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /etc/nginx/nginx.conf
+          name: nginx-conf
+          subPath: nginx.conf
+          readOnly: true
+        - mountPath: /var/www
+          name: ironic
+          subPath: httpboot
+          readOnly: true
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          timeoutSeconds: 30
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: {{ template "openstackIronicStandalone.httpboot.fullname" . }}
+          defaultMode: 0644
+      - name: ironic
+        persistentVolumeClaim:
+          claimName: "{{ .Values.persistentVolumeClaimName }}"

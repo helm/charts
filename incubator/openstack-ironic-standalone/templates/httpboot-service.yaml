@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "openstackIronicStandalone.name" .  }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.httpboot.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "openstackIronicStandalone.httpboot.fullname" . }}
+spec:
+  selector:
+    app: {{ template "openstackIronicStandalone.name" . }}
+    component: "{{ .Values.httpboot.name }}"
+    release: {{ .Release.Name }}
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  externalIPs:
+    {{- range .Values.httpboot.externalIPs }}
+    - {{ . }}
+    {{- end }}

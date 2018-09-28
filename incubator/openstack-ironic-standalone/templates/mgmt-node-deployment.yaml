@@ -1,0 +1,66 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "openstackIronicStandalone.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.mgmt.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "openstackIronicStandalone.mgmt.fullname" . }}
+spec:
+  replicas: {{ .Values.api.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "openstackIronicStandalone.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        component: {{ .Values.mgmt.name }}
+        release: {{ .Release.Name }}
+      name: {{ template "openstackIronicStandalone.mgmt.fullname" . }}
+      annotations:
+        configmap-etc-hash: {{ include (print $.Template.BasePath "/etc-configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+        - name: {{ template "openstackIronicStandalone.mgmt.fullname" . }}
+          image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          command: [ "/usr/bin/sleep" ]
+          args: [ "infinity" ]
+          env:
+          - name: HISTFILE
+            value: /mnt/mgmt-scripts/.bash_history
+          - name: IRONIC_API_VERSION
+            value: latest
+          - name: IRONIC_URL
+            value: "http://{{ template "openstackIronicStandalone.api.fullname" . }}:{{ .Values.api.portExternal }}/"
+          - name: OS_URL
+            value: "http://{{ template "openstackIronicStandalone.api.fullname" . }}:{{ .Values.api.portExternal }}/"
+          - name: OS_TOKEN
+            value: "fake-token"
+          - name: OS_AUTH_TOKEN
+            value: "fake-token"
+          volumeMounts:
+            - mountPath: /usr/local/bin/wait-for-mysql.sh
+              name: ironic-db-scripts
+              subPath: wait-for-mysql.sh
+              readOnly: true
+            - mountPath: /storage
+              name: ironic
+            - mountPath: /mnt/mgmt-scripts
+              name: ironic
+              subPath: mgmt-scripts
+            - mountPath: /etc/ironic
+              name: ironic-etc
+              readOnly: true
+      volumes:
+        - name: ironic
+          persistentVolumeClaim:
+            claimName: "{{ .Values.persistentVolumeClaimName }}"
+        - name: ironic-etc
+          configMap:
+            name: {{ template "openstackIronicStandalone.name" . }}-etc
+        - name: ironic-db-scripts
+          configMap:
+            name: {{ template "openstackIronicStandalone.name" . }}-db-scripts
+            defaultMode: 0755

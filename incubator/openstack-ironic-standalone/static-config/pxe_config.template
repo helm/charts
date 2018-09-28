@@ -1,0 +1,24 @@
+default deploy
+
+label deploy
+kernel {{ pxe_options.deployment_aki_path }}
+append initrd={{ pxe_options.deployment_ari_path }} selinux=0 troubleshoot=0 text {{ pxe_options.pxe_append_params|default("", true) }} ipa-api-url={{ pxe_options['ipa-api-url'] }} coreos.configdrive=0
+ipappend 2
+
+
+label boot_partition
+kernel {{ pxe_options.aki_path }}
+append initrd={{ pxe_options.ari_path }} root={{ ROOT }} ro text {{ pxe_options.pxe_append_params|default("", true) }}
+
+
+label boot_whole_disk
+COM32 chain.c32
+append mbr:{{ DISK_IDENTIFIER }}
+
+label trusted_boot
+kernel mboot
+append tboot.gz --- {{pxe_options.aki_path}} root={{ ROOT }} ro text {{ pxe_options.pxe_append_params|default("", true) }} intel_iommu=on --- {{pxe_options.ari_path}}
+
+label boot_ramdisk
+kernel {{ pxe_options.aki_path }}
+append initrd={{ pxe_options.ari_path }} root=/dev/ram0 text {{ pxe_options.pxe_append_params|default("", true) }} {{ pxe_options.ramdisk_opts|default('', true) }}

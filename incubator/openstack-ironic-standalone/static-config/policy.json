@@ -1,0 +1,244 @@
+# Legacy rule for cloud admin access
+#"admin_api": "role:admin or role:administrator"
+
+# Internal flag for public API routes
+#"public_api": "is_public_api:True"
+
+# Show or mask secrets within node driver information in API responses
+#"show_password": "!"
+
+# Show or mask secrets within instance information in API responses
+#"show_instance_secrets": "!"
+
+# May be used to restrict access to specific projects
+#"is_member": "(project_domain_id:default or project_domain_id:None) and (project_name:demo or project_name:baremetal)"
+
+# Read-only API access
+#"is_observer": "rule:is_member and (role:observer or role:baremetal_observer)"
+
+# Full read/write API access
+#"is_admin": "rule:admin_api or (rule:is_member and role:baremetal_admin)"
+
+# Create Node records
+# POST  /nodes
+#"baremetal:node:create": "rule:is_admin"
+
+# Retrieve Node records
+# GET  /nodes
+# GET  /nodes/detail
+# GET  /nodes/{node_ident}
+#"baremetal:node:get": "rule:is_admin or rule:is_observer"
+
+# Update Node records
+# PATCH  /nodes/{node_ident}
+#"baremetal:node:update": "rule:is_admin"
+
+# Delete Node records
+# DELETE  /nodes/{node_ident}
+#"baremetal:node:delete": "rule:is_admin"
+
+# Request active validation of Nodes
+# GET  /nodes/{node_ident}/validate
+#"baremetal:node:validate": "rule:is_admin"
+
+# Set maintenance flag, taking a Node out of service
+# PUT  /nodes/{node_ident}/maintenance
+#"baremetal:node:set_maintenance": "rule:is_admin"
+
+# Clear maintenance flag, placing the Node into service again
+# DELETE  /nodes/{node_ident}/maintenance
+#"baremetal:node:clear_maintenance": "rule:is_admin"
+
+# Retrieve Node boot device metadata
+# GET  /nodes/{node_ident}/management/boot_device
+# GET  /nodes/{node_ident}/management/boot_device/supported
+#"baremetal:node:get_boot_device": "rule:is_admin or rule:is_observer"
+
+# Change Node boot device
+# PUT  /nodes/{node_ident}/management/boot_device
+#"baremetal:node:set_boot_device": "rule:is_admin"
+
+# Inject NMI for a node
+# PUT  /nodes/{node_ident}/management/inject_nmi
+#"baremetal:node:inject_nmi": "rule:is_admin"
+
+# View Node power and provision state
+# GET  /nodes/{node_ident}/states
+#"baremetal:node:get_states": "rule:is_admin or rule:is_observer"
+
+# Change Node power status
+# PUT  /nodes/{node_ident}/states/power
+#"baremetal:node:set_power_state": "rule:is_admin"
+
+# Change Node provision status
+# PUT  /nodes/{node_ident}/states/provision
+#"baremetal:node:set_provision_state": "rule:is_admin"
+
+# Change Node RAID status
+# PUT  /nodes/{node_ident}/states/raid
+#"baremetal:node:set_raid_state": "rule:is_admin"
+
+# Get Node console connection information
+# GET  /nodes/{node_ident}/states/console
+#"baremetal:node:get_console": "rule:is_admin"
+
+# Change Node console status
+# PUT  /nodes/{node_ident}/states/console
+#"baremetal:node:set_console_state": "rule:is_admin"
+
+# List VIFs attached to node
+# GET  /nodes/{node_ident}/vifs
+#"baremetal:node:vif:list": "rule:is_admin"
+
+# Attach a VIF to a node
+# POST  /nodes/{node_ident}/vifs
+#"baremetal:node:vif:attach": "rule:is_admin"
+
+# Detach a VIF from a node
+# DELETE  /nodes/{node_ident}/vifs/{node_vif_ident}
+#"baremetal:node:vif:detach": "rule:is_admin"
+
+# List node traits
+# GET  /nodes/{node_ident}/traits
+#"baremetal:node:traits:list": "rule:is_admin or rule:is_observer"
+
+# Add a trait to, or replace all traits of, a node
+# PUT  /nodes/{node_ident}/traits
+# PUT  /nodes/{node_ident}/traits/{trait}
+#"baremetal:node:traits:set": "rule:is_admin"
+
+# Remove one or all traits from a node
+# DELETE  /nodes/{node_ident}/traits
+# DELETE  /nodes/{node_ident}/traits/{trait}
+#"baremetal:node:traits:delete": "rule:is_admin"
+
+# Retrieve Node BIOS information
+# GET  /nodes/{node_ident}/bios
+# GET  /nodes/{node_ident}/bios/{setting}
+#"baremetal:node:bios:get": "rule:is_admin or rule:is_observer"
+
+# Retrieve Port records
+# GET  /ports
+# GET  /ports/detail
+# GET  /ports/{port_id}
+# GET  /nodes/{node_ident}/ports
+# GET  /nodes/{node_ident}/ports/detail
+# GET  /portgroups/{portgroup_ident}/ports
+# GET  /portgroups/{portgroup_ident}/ports/detail
+#"baremetal:port:get": "rule:is_admin or rule:is_observer"
+
+# Create Port records
+# POST  /ports
+#"baremetal:port:create": "rule:is_admin"
+
+# Delete Port records
+# DELETE  /ports/{port_id}
+#"baremetal:port:delete": "rule:is_admin"
+
+# Update Port records
+# PATCH  /ports/{port_id}
+#"baremetal:port:update": "rule:is_admin"
+
+# Retrieve Portgroup records
+# GET  /portgroups
+# GET  /portgroups/detail
+# GET  /portgroups/{portgroup_ident}
+# GET  /nodes/{node_ident}/portgroups
+# GET  /nodes/{node_ident}/portgroups/detail
+#"baremetal:portgroup:get": "rule:is_admin or rule:is_observer"
+
+# Create Portgroup records
+# POST  /portgroups
+#"baremetal:portgroup:create": "rule:is_admin"
+
+# Delete Portgroup records
+# DELETE  /portgroups/{portgroup_ident}
+#"baremetal:portgroup:delete": "rule:is_admin"
+
+# Update Portgroup records
+# PATCH  /portgroups/{portgroup_ident}
+#"baremetal:portgroup:update": "rule:is_admin"
+
+# Retrieve Chassis records
+# GET  /chassis
+# GET  /chassis/detail
+# GET  /chassis/{chassis_id}
+#"baremetal:chassis:get": "rule:is_admin or rule:is_observer"
+
+# Create Chassis records
+# POST  /chassis
+#"baremetal:chassis:create": "rule:is_admin"
+
+# Delete Chassis records
+# DELETE  /chassis/{chassis_id}
+#"baremetal:chassis:delete": "rule:is_admin"
+
+# Update Chassis records
+# PATCH  /chassis/{chassis_id}
+#"baremetal:chassis:update": "rule:is_admin"
+
+# View list of available drivers
+# GET  /drivers
+# GET  /drivers/{driver_name}
+#"baremetal:driver:get": "rule:is_admin or rule:is_observer"
+
+# View driver-specific properties
+# GET  /drivers/{driver_name}/properties
+#"baremetal:driver:get_properties": "rule:is_admin or rule:is_observer"
+
+# View driver-specific RAID metadata
+# GET  /drivers/{driver_name}/raid/logical_disk_properties
+#"baremetal:driver:get_raid_logical_disk_properties": "rule:is_admin or rule:is_observer"
+
+# Access vendor-specific Node functions
+# GET  nodes/{node_ident}/vendor_passthru/methods
+# GET  nodes/{node_ident}/vendor_passthru?method={method_name}
+# PUT  nodes/{node_ident}/vendor_passthru?method={method_name}
+# POST  nodes/{node_ident}/vendor_passthru?method={method_name}
+# PATCH  nodes/{node_ident}/vendor_passthru?method={method_name}
+# DELETE  nodes/{node_ident}/vendor_passthru?method={method_name}
+#"baremetal:node:vendor_passthru": "rule:is_admin"
+
+# Access vendor-specific Driver functions
+# GET  drivers/{driver_name}/vendor_passthru/methods
+# GET  drivers/{driver_name}/vendor_passthru?method={method_name}
+# PUT  drivers/{driver_name}/vendor_passthru?method={method_name}
+# POST  drivers/{driver_name}/vendor_passthru?method={method_name}
+# PATCH  drivers/{driver_name}/vendor_passthru?method={method_name}
+# DELETE  drivers/{driver_name}/vendor_passthru?method={method_name}
+#"baremetal:driver:vendor_passthru": "rule:is_admin"
+
+# Send heartbeats from IPA ramdisk
+# POST  /heartbeat/{node_ident}
+#"baremetal:node:ipa_heartbeat": "rule:public_api"
+
+# Access IPA ramdisk functions
+# GET  /lookup
+#"baremetal:driver:ipa_lookup": "rule:public_api"
+
+# Retrieve Volume connector and target records
+# GET  /volume
+# GET  /volume/connectors
+# GET  /volume/connectors/{volume_connector_id}
+# GET  /volume/targets
+# GET  /volume/targets/{volume_target_id}
+# GET  /nodes/{node_ident}/volume
+# GET  /nodes/{node_ident}/volume/connectors
+# GET  /nodes/{node_ident}/volume/targets
+#"baremetal:volume:get": "rule:is_admin or rule:is_observer"
+
+# Create Volume connector and target records
+# POST  /volume/connectors
+# POST  /volume/targets
+#"baremetal:volume:create": "rule:is_admin"
+
+# Delete Volume connector and target records
+# DELETE  /volume/connectors/{volume_connector_id}
+# DELETE  /volume/targets/{volume_target_id}
+#"baremetal:volume:delete": "rule:is_admin"
+
+# Update Volume connector and target records
+# PATCH  /volume/connectors/{volume_connector_id}
+# PATCH  /volume/targets/{volume_target_id}
+#"baremetal:volume:update": "rule:is_admin"
+

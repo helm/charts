@@ -1,0 +1,58 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "openstackIronicStandalone.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.api.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "openstackIronicStandalone.api.fullname" . }}
+spec:
+  replicas: {{ .Values.api.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "openstackIronicStandalone.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        component: "{{ .Values.api.name }}"
+        release: {{ .Release.Name }}
+      name: {{ template "openstackIronicStandalone.api.fullname" . }}
+      annotations:
+        configmap-etc-hash: {{ include (print $.Template.BasePath "/etc-configmap.yaml") . | sha256sum }}
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ template "openstackIronicStandalone.name" . }}
+            component: "{{ .Values.api.name }}"
+            release: {{ .Release.Name }}
+      containers:
+        - name: {{ template "openstackIronicStandalone.name" . }}-{{ .Values.api.name }}
+          image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          resources:
+{{ toYaml .Values.api.resources | indent 12 }}
+          command:
+            - /usr/bin/ironic-api
+          args:
+            - --config-file
+            - /etc/ironic/ironic.conf
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.api.portInternal }}
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+          ports:
+            - name: "ironic-api-port"
+              containerPort: {{ .Values.api.portInternal }}
+          volumeMounts:
+            - mountPath: /etc/ironic
+              name: ironic-etc
+              readOnly: true
+      volumes:
+        - name: ironic-etc
+          configMap:
+            name: {{ template "openstackIronicStandalone.name" . }}-etc
+            defaultMode: 0644
