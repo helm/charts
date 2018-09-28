@@ -1,0 +1,89 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: {{ template "kubevirt.fullname" . }}-apiserver
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+      - delete
+      - update
+      - create
+  - apiGroups:
+      - ''
+    resources:
+      - configmaps
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: {{ template "kubevirt.fullname" . }}-apiserver
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+roleRef:
+  kind: Role
+  name: {{ template "kubevirt.fullname" . }}-apiserver
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "kubevirt.serviceAccountName.apiserver" . }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: {{ template "kubevirt.fullname" . }}-apiserver
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+rules:
+  - apiGroups:
+      - apiregistration.k8s.io
+    resources:
+      - apiservices
+    verbs:
+      - get
+      - create
+      - update
+  - apiGroups:
+      - ''
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - ''
+    resources:
+      - pods/exec
+    verbs:
+      - create
+  - apiGroups:
+      - kubevirt.io
+    resources:
+      - virtualmachines
+    verbs:
+      - get
+      - list
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "kubevirt.fullname" . }}-apiserver
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+roleRef:
+  kind: ClusterRole
+  name: {{ template "kubevirt.fullname" . }}-apiserver
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "kubevirt.serviceAccountName.apiserver" . }}
+{{- end -}}

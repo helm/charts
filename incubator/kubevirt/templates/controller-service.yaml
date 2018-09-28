@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kubevirt.fullname" . }}-controller
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    component: "virt-api-server"
+spec:
+  ports:
+    - port: 8182
+      targetPort: virt-controller
+  selector:
+{{ include "selectors.standard" . | indent 4 }}
+    component: "virt-api-server"

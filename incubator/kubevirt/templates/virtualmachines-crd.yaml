@@ -1,0 +1,367 @@
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+  name: virtualmachines.kubevirt.io
+spec:
+  group: kubevirt.io
+  names:
+    kind: VirtualMachine
+    plural: virtualmachines
+    shortNames:
+    - vm
+    - vms
+    singular: virtualmachine
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      description: VirtualMachine is *the* VM Definition. It represents a virtual
+        machine in the runtime environment of kubernetes.
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata: {}
+        spec:
+          description: VirtualMachineSpec is a description of a VirtualMachine.
+          properties:
+            affinity:
+              description: Affinity groups all the affinity rules related to a VM
+              properties:
+                nodeAffinity: {}
+            domain:
+              properties:
+                clock:
+                  description: Represents the clock and timers of a vm
+                  properties:
+                    timezone:
+                      description: Timezone sets the guest clock to the specified
+                        timezone. Zone name follows the TZ environment variable format
+                        (e.g. 'America/New_York')
+                      type: string
+                    utc:
+                      description: UTC sets the guest clock to UTC on each boot.
+                      properties:
+                        offsetSeconds:
+                          description: OffsetSeconds specifies an offset in seconds,
+                            relative to UTC. If set, guest changes to the clock will
+                            be kept during reboots and not reset.
+                          format: int32
+                          type: integer
+                cpu:
+                  description: CPU allow specifying the CPU topology
+                  properties:
+                    cores:
+                      description: Cores specifies the number of cores inside the
+                        vm. Must be a value greater or equal 1.
+                      format: int64
+                      type: integer
+                devices:
+                  properties:
+                    disks:
+                      description: Disks describes disks, cdroms, floppy and luns
+                        which are connected to the vm
+                      items:
+                        properties:
+                          cdrom:
+                            properties:
+                              bus:
+                                description: 'Bus indicates the type of disk device
+                                  to emulate. supported values: virtio, sata, scsi,
+                                  ide'
+                                type: string
+                              readonly:
+                                description: ReadOnly Defaults to true
+                                type: boolean
+                              tray:
+                                description: Tray indicates if the tray of the device
+                                  is open or closed. Allowed values are "open" and
+                                  "closed" Defaults to closed
+                                type: string
+                          disk:
+                            properties:
+                              bus:
+                                description: 'Bus indicates the type of disk device
+                                  to emulate. supported values: virtio, sata, scsi,
+                                  ide'
+                                type: string
+                              readonly:
+                                description: ReadOnly Defaults to false
+                                type: boolean
+                          floppy:
+                            properties:
+                              readonly:
+                                description: ReadOnly Defaults to false
+                                type: boolean
+                              tray:
+                                description: Tray indicates if the tray of the device
+                                  is open or closed. Allowed values are "open" and
+                                  "closed" Defaults to closed
+                                type: string
+                          lun:
+                            properties:
+                              bus:
+                                description: 'Bus indicates the type of disk device
+                                  to emulate. supported values: virtio, sata, scsi,
+                                  ide'
+                                type: string
+                              readonly:
+                                description: ReadOnly Defaults to false
+                                type: boolean
+                          name:
+                            description: Name is the device name
+                            type: string
+                          volumeName:
+                            description: Name of the volume which is referenced Must
+                              match the Name of a Volume.
+                            type: string
+                        required:
+                        - name
+                        - volumeName
+                      type: array
+                    watchdog:
+                      description: Named watchdog device
+                      properties:
+                        i6300esb:
+                          description: i6300esb watchdog device
+                          properties:
+                            action:
+                              description: The action to take. Valid values are poweroff,
+                                reset, shutdown. Defaults to reset
+                              type: string
+                        name:
+                          description: Name of the watchdog
+                          type: string
+                      required:
+                      - name
+                features:
+                  properties:
+                    acpi:
+                      description: Represents if a feature is enabled or disabled
+                      properties:
+                        enabled:
+                          description: Enabled determines if the feature should be
+                            enabled or disabled on the guest Defaults to true
+                          type: boolean
+                    apic:
+                      properties:
+                        enabled:
+                          description: Enabled determines if the feature should be
+                            enabled or disabled on the guest Defaults to true
+                          type: boolean
+                        endOfInterrupt:
+                          description: EndOfInterrupt enables the end of interrupt
+                            notification in the guest Defaults to false
+                          type: boolean
+                    hyperv:
+                      description: Hyperv specific features
+                      properties:
+                        relaxed:
+                          description: Represents if a feature is enabled or disabled
+                          properties:
+                            enabled:
+                              description: Enabled determines if the feature should
+                                be enabled or disabled on the guest Defaults to true
+                              type: boolean
+                        reset:
+                          description: Represents if a feature is enabled or disabled
+                          properties:
+                            enabled:
+                              description: Enabled determines if the feature should
+                                be enabled or disabled on the guest Defaults to true
+                              type: boolean
+                        runtime:
+                          description: Represents if a feature is enabled or disabled
+                          properties:
+                            enabled:
+                              description: Enabled determines if the feature should
+                                be enabled or disabled on the guest Defaults to true
+                              type: boolean
+                        spinlocks:
+                          properties:
+                            enabled:
+                              description: Enabled determines if the feature should
+                                be enabled or disabled on the guest Defaults to true
+                              type: boolean
+                            spinlocks:
+                              description: Retries indicates the number of retries
+                                Must be a value greater or equal 4096 Defaults to
+                                4096
+                              format: int64
+                              type: integer
+                        synic:
+                          description: Represents if a feature is enabled or disabled
+                          properties:
+                            enabled:
+                              description: Enabled determines if the feature should
+                                be enabled or disabled on the guest Defaults to true
+                              type: boolean
+                        synictimer:
+                          description: Represents if a feature is enabled or disabled
+                          properties:
+                            enabled:
+                              description: Enabled determines if the feature should
+                                be enabled or disabled on the guest Defaults to true
+                              type: boolean
+                        vapic:
+                          description: Represents if a feature is enabled or disabled
+                          properties:
+                            enabled:
+                              description: Enabled determines if the feature should
+                                be enabled or disabled on the guest Defaults to true
+                              type: boolean
+                        vendorid:
+                          properties:
+                            enabled:
+                              description: Enabled determines if the feature should
+                                be enabled or disabled on the guest Defaults to true
+                              type: boolean
+                            vendorid:
+                              description: VendorID sets the hypervisor vendor id,
+                                visible to the vm String up to twelve characters
+                              type: string
+                        vpindex:
+                          description: Represents if a feature is enabled or disabled
+                          properties:
+                            enabled:
+                              description: Enabled determines if the feature should
+                                be enabled or disabled on the guest Defaults to true
+                              type: boolean
+                firmware:
+                  properties:
+                    uuid:
+                      description: UUID reported by the vm bios Defaults to a random
+                        generated uid
+                      type: string
+                machine:
+                  properties:
+                    type:
+                      description: QEMU machine type is the actual chipset of the
+                        VM.
+                      type: string
+                  required:
+                  - type
+                resources:
+                  properties:
+                    limits:
+                      description: Limits describes the maximum amount of compute
+                        resources allowed. Valid resource keys are "memory" and "cpu".
+                      type: object
+                    requests:
+                      description: Requests is a description of the initial vm resources.
+                        Valid resource keys are "memory" and "cpu".
+                      type: object
+              required:
+              - devices
+            nodeSelector:
+              description: 'NodeSelector is a selector which must be true for the
+                vm to fit on a node. Selector which must match a node''s labels for
+                the vm to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/'
+              type: object
+            terminationGracePeriodSeconds:
+              description: Grace period observed after signalling a VM to stop after
+                which the VM is force terminated.
+              format: int64
+              type: integer
+            volumes:
+              description: List of volumes that can be mounted by disks belonging
+                to the vm.
+              items:
+                description: Volume represents a named volume in a vm.
+                properties:
+                  cloudInitNoCloud:
+                    description: 'Represents a cloud-init nocloud user data source
+                      More info: http://cloudinit.readthedocs.io/en/latest/topics/datasources/nocloud.html'
+                    properties:
+                      secretRef: {}
+                      userData:
+                        description: UserData contains NoCloud inline cloud-init userdata
+                        type: string
+                      userDataBase64:
+                        description: UserDataBase64 contains NoCloud cloud-init userdata
+                          as a base64 encoded string
+                        type: string
+                  emptyDisk:
+                    description: EmptyDisk represents a temporary disk which shares
+                      the vms lifecycle
+                    properties:
+                      capacity: {}
+                    required:
+                    - capacity
+                  ephemeral:
+                    properties:
+                      persistentVolumeClaim: {}
+                  name:
+                    description: 'Volume''s name. Must be a DNS_LABEL and unique within
+                      the vm. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                    type: string
+                  persistentVolumeClaim: {}
+                  registryDisk:
+                    description: Represents a docker image with an embedded disk
+                    properties:
+                      image:
+                        description: Image is the name of the image with the embedded
+                          disk
+                        type: string
+                      imagePullSecret:
+                        description: ImagePullSecret is the name of the Docker registry
+                          secret required to pull the image. The secret must already
+                          exist.
+                        type: string
+                    required:
+                    - image
+                required:
+                - name
+              type: array
+          required:
+          - domain
+        status:
+          description: VirtualMachineStatus represents information about the status
+            of a VM. Status may trail the actual state of a system.
+          properties:
+            conditions:
+              description: Conditions are specific points in VM's pod runtime.
+              items:
+                properties:
+                  lastProbeTime: {}
+                  lastTransitionTime: {}
+                  message:
+                    type: string
+                  reason:
+                    type: string
+                  status:
+                    type: string
+                  type:
+                    type: string
+                required:
+                - type
+                - status
+              type: array
+            interfaces:
+              description: Interfaces represent the details of available network interfaces.
+              items:
+                properties:
+                  ipAddress:
+                    description: IP address of a Virtual Machine interface
+                    type: string
+                  mac:
+                    description: Hardware address of a Virtual Machine interface
+                    type: string
+              type: array
+            nodeName:
+              description: NodeName is the name where the VM is currently running.
+              type: string
+            phase:
+              description: Phase is the status of the VM in kubernetes world. It is
+                not the VM status, but partially correlates to it.
+              type: string
+  version: v1alpha1

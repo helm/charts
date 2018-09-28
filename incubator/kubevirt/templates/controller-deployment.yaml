@@ -1,0 +1,49 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "kubevirt.fullname" . }}-virt-controller
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    component: "virt-controller"
+spec:
+  selector:
+    matchLabels:
+{{ include "selectors.standard" . | indent 6 }}
+      component: "virt-controller"
+  replicas: 2
+  template:
+    metadata:
+      labels:
+{{ include "labels.standard" . | indent 8 }}
+        component: "virt-controller"
+    spec:
+      serviceAccountName: {{ template "kubevirt.serviceAccountName.controller" . }}
+      containers:
+        - name: virt-controller
+          image: "{{ .Values.kubevirt.image.repository }}/virt-controller:{{ .Values.kubevirt.image.tag }}"
+          imagePullPolicy: {{ .Values.kubevirt.image.pullPolicy }}
+          command:
+            - "/virt-controller"
+            - "--launcher-image"
+            - "{{ .Values.kubevirt.image.repository }}/virt-launcher:{{ .Values.kubevirt.image.tag }}"
+            - "--port"
+            - "8182"
+          ports:
+            - containerPort: 8182
+              name: "virt-controller"
+              protocol: "TCP"
+          livenessProbe:
+            failureThreshold: 8
+            httpGet:
+              port: 8182
+              path: /healthz
+            initialDelaySeconds: 15
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              port: 8182
+              path: /leader
+            initialDelaySeconds: 15
+            timeoutSeconds: 10
+          securityContext:
+            runAsNonRoot: true

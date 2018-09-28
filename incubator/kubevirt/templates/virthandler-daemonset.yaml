@@ -1,0 +1,58 @@
+apiVersion: apps/v1beta2
+kind: DaemonSet
+metadata:
+  name: {{ template "kubevirt.fullname" . }}-virt-handler
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    component: "virt-handler"
+spec:
+  selector:
+    matchLabels:
+{{ include "selectors.standard" . | indent 6 }}
+      component: "virt-handler"
+  template:
+    metadata:
+      name: {{ template "kubevirt.fullname" . }}-virt-handler
+      labels:
+{{ include "labels.standard" . | indent 8 }}
+        component: "virt-handler"
+    spec:
+      serviceAccountName: {{ template "kubevirt.serviceAccountName.privileged" . }}
+      hostPID: true
+      containers:
+        - name: virt-handler
+          ports:
+            - containerPort: 8185
+              hostPort: 8185
+          image: "{{ .Values.kubevirt.image.repository }}/virt-handler:{{ .Values.kubevirt.image.tag }}"
+          imagePullPolicy: {{ .Values.kubevirt.image.pullPolicy }}
+          command:
+            - "/virt-handler"
+            - "-v"
+            - "3"
+            - "--hostname-override"
+            - "$(NODE_NAME)"
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: libvirt-runtime
+              mountPath: /var/run/libvirt
+            - name: virt-share-dir
+              mountPath: /var/run/kubevirt
+            - name: virt-private-dir
+              mountPath: /var/run/kubevirt-private
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+      volumes:
+        - name: libvirt-runtime
+          hostPath:
+            path: /var/run/libvirt
+        - name: virt-share-dir
+          hostPath:
+            path: /var/run/kubevirt
+        - name: virt-private-dir
+          hostPath:
+            path: /var/run/kubevirt-private

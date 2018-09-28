@@ -1,0 +1,5 @@
+The KubeVirt components have been installed.
+
+The VM API can be accessed via kubectl.
+For example to get all vms you can run:
+# kubectl get vms

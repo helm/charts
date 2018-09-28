@@ -1,0 +1,21 @@
+kubevirt:
+  image:
+    repository: "kubevirt"
+    tag: "v0.4.1"
+    pullPolicy: IfNotPresent
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a service accounts should be created
+  apiserver:
+    create: true
+    name: ""
+  controller:
+    create: true
+    name: ""
+  privileged:
+    create: true
+    name: ""
