@@ -16,13 +16,13 @@ imagePullPolicy: IfNotPresent
 
 ## Resource limits and requests
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-#resources:
-#  limits:
-#    cpu: 1
-#    memory: 1Gi
-#  requests:
-#    cpu: 1
-#    memory: 1Gi
+# resources:
+#   limits:
+#     cpu: 1
+#     memory: 1Gi
+#   requests:
+#     cpu: 1
+#     memory: 1Gi
 
 ## Bootstrapping and ClickHouse server settings and links to configuration files
 initdb_args: ['--user=default', '--database=default', '--multiquery']
