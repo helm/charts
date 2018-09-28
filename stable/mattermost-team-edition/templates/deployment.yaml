@@ -8,7 +8,11 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
+  strategy:
+    type: Recreate
+    rollingUpdate: null
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
       app: {{ template "mattermost-team-edition.fullname" . }}
