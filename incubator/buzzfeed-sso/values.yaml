@@ -1,0 +1,32 @@
+image: buzzfeed/sso
+tag: latest
+name: buzzsso
+google:
+  # https://github.com/buzzfeed/sso/blob/master/docs/google_provider_setup.md
+  clientId: oauthclientid
+  clientSecret: oauthclientSecret
+  adminEmail: admin@yourorganization.com
+  serviceAccountJSON: |
+    { "serviceJSON": "filler"}
+ingress:
+  annotations: {}
+sso_secrets:
+  # random strings here
+  proxy-client-id: RUmb3aEsFvxjPlBXZHSxJheGMLLwHFYHKEDntcRMp9g=
+  proxy-client-secret: RUmb3aEsFvxjPlBXZHSxJheGMLLwHFYHKEDntcRMp9g=
+  auth-code-secret: RUmb3aEsFvxjPlBXZHSxJheGMLLwHFYHKEDntcRMp9g=
+  proxy-auth-code-secret: RUmb3aEsFvxjPlBXZHSxJheGMLLwHFYHKEDntcRMp9g=
+  auth-cookie-secret: RUmb3aEsFvxjPlBXZHSxJheGMLLwHFYHKEDntcRMp9g=
+  proxy-cookie-secret: RUmb3aEsFvxjPlBXZHSxJheGMLLwHFYHKEDntcRMp9g=
+sso_auth:
+  restrictDomain: "*"
+  host: sso-auth.localtest.me
+  redirectURL: http://sso-auth.localtest.me
+  proxyRootDomain: localtest.me
+  cluster: test
+sso_proxy:
+  hostPattern: "*.sso.mydomain.com"
+statsd:
+  host: localhost
+  port: "11111"
+  cookiesecure: true

@@ -1,0 +1,88 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}-sso-proxy
+  labels:
+    app.kubernetes.io/name: {{ .Values.name }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.name }}-sso-proxy
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    spec:
+      containers:
+      - image: {{.Values.image}}:{{.Values.tag}}
+        name: {{.Values.name}}-sso-proxy
+        command: ["/bin/sso-proxy"]
+        ports:
+        - containerPort: 4180
+        env:
+          - name: EMAIL_DOMAIN
+            value: {{.Values.sso_auth.restrictDomain | quote}}
+          - name: UPSTREAM_CONFIGS
+            value: /sso/upstream_configs.yml
+          - name: PROVIDER_URL
+            value: {{.Values.sso_auth.redirectURL}}
+          - name: CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{.Values.name}}-sso-secrets
+                key: proxy-client-id
+          - name: CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{.Values.name}}-sso-secrets
+                key: proxy-client-secret
+          - name: AUTH_CODE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{.Values.name}}-sso-secrets
+                key: proxy-auth-code-secret
+          - name: COOKIE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{.Values.name}}-sso-secrets
+                key: proxy-cookie-secret
+          # STATSD_HOST and STATSD_PORT must be defined or the app wont launch, they dont need to be a real host / port, but they do need to be defined.
+          - name: STATSD_HOST
+            value: {{.Values.statsd.host}}
+          - name: STATSD_PORT
+            value: {{.Values.statsd.port | quote}}
+          - name: COOKIE_SECURE
+            value: {{.Values.statsd.cookiesecure | quote}}
+          - name: CLUSTER
+            value: {{.Values.sso_auth.cluster}}
+          - name: VIRTUAL_HOST
+            value: {{.Values.sso_auth.host}}
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 4180
+            scheme: HTTP
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 4180
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        volumeMounts:
+        - name: upstream-configs
+          mountPath: /sso
+      volumes:
+        - name: upstream-configs
+          configMap:
+            name: {{.Values.name}}-upstreams

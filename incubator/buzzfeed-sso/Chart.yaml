@@ -1,0 +1,10 @@
+name: buzzfeed-sso
+home: https://github.com/buzzfeed/sso
+version: 0.1.0
+appVersion: latest
+description: SSO for internal services
+sources:
+  - https://github.com/buzzfeed/sso
+maintainers:
+  - name: freyert
+    email: fulton.byrne@commercetools.de
