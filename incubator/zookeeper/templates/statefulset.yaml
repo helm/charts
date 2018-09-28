@@ -77,6 +77,11 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/zookeeper
+            {{- if (.Values.secret) and (.Values.secret.enabled) }}
+            - name: secret
+              mountPath: {{ .Values.secret.mountPath }}
+              readOnly: true
+            {{- end }}
 
 {{- if .Values.exporters.jmx.enabled }}
         - name: jmx-exporter
@@ -150,6 +155,11 @@ spec:
     {{- end }}
       {{- if (or .Values.exporters.jmx.enabled (not .Values.persistence.enabled)) }}
       volumes:
+        {{- if (.Values.secret) and (.Values.secret.enabled) }}
+        - name: secret
+          secret:
+            secretName: {{ .Values.secret.secretName }}
+        {{- end }}
         {{- if .Values.exporters.jmx.enabled }}
         - name: config-jmx-exporter
           configMap:

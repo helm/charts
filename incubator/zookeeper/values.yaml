@@ -126,6 +126,13 @@ persistence:
   accessMode: ReadWriteOnce
   size: 5Gi
 
+secret:
+  ## Mounting secret (e.g. JAAS config or Kerberos keytab).
+  ##
+  enabled: false
+  mountPath: /opt/zookeeper/secret
+  secretName: zookeeper-secret
+
 ## Exporters query apps for metrics and make those metrics available for
 ## Prometheus to scrape.
 exporters:
@@ -282,6 +289,9 @@ env:
   ## The number of wall clock ms that corresponds to a Tick for the ensembles
   ## internal time.
   ZK_TICK_TIME: 2000
+
+  ## Example for passing JAAS config.
+  # SERVER_JVMFLAGS: -Djava.security.auth.login.config=/opt/zookeeper/secret/zookeeper_server_jaas.conf
 
 jobs:
   ## ref: http://zookeeper.apache.org/doc/r3.4.10/zookeeperProgrammers.html#ch_zkSessions
