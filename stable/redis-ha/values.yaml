@@ -52,3 +52,5 @@ auth: false
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/redis-ha/templates/redis-auth-secret.yaml
 ##
 ## redisPassword:
+pdb:
+  enabled: true
