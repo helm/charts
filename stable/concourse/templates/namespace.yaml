@@ -1,10 +1,10 @@
-{{- if .Values.credentialManager.kubernetes.enabled -}}
-{{- range .Values.credentialManager.kubernetes.teams }}
+{{- if .Values.concourse.web.kubernetes.enabled -}}
+{{- range .Values.concourse.web.kubernetes.teams }}
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-{{- if $.Values.credentialManager.kubernetes.keepNamespaces }}
+{{- if $.Values.concourse.web.kubernetes.keepNamespaces }}
   annotations:
     "helm.sh/resource-policy": keep
 {{- end }}
