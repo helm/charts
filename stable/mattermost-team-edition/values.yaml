@@ -6,6 +6,9 @@ image:
   tag: 5.3.1
   imagePullPolicy: IfNotPresent
 
+## How many old ReplicaSets for Mattermost Deployment you want to retain
+revisionHistoryLimit: 1
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ## ref: https://docs.gitlab.com/ee/install/requirements.html#storage
