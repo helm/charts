@@ -33,17 +33,19 @@ tolerations: []
 
 affinity: {}
 
-annotations: {}
-#  prometheus.io/scrape: "true"
-#  prometheus.io/path: "/metrics"
-#  prometheus.io/port: "{{ .Values.service.internalPort }}"
+annotations:
+  # prometheus.io/scrape: "true"
+  # prometheus.io/path: "/metrics"
+  # prometheus.io/port: 9104
 
 # mysql connection
 mysql:
   db: "exporter"
   host: "localhost"
+  param: ""
   pass: "password"
   port: 3306
+  protocol: ""
   user: "username"
 
 # cloudsqlproxy https://cloud.google.com/sql/docs/mysql/sql-proxy
