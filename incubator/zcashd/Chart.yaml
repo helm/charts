@@ -1,0 +1,17 @@
+name: zcashd
+version: 0.1.0
+appVersion: 1.0.12
+description: Zcash is the first open, permissionless cryptocurrency that can fully protect the privacy of transactions using zero-knowledge cryptography.
+keywords:
+  - zcashd
+  - cryptocurrency
+  - blockchain
+home: https://z.cash
+icon: https://z.cash/theme/images/golden-cash.svg
+sources:
+  - https://github.com/kubernetes/charts
+  - https://github.com/kuberstack/zcashd
+maintainers:
+  - name: daniel-yavorovich
+    email: daniel@arilot.com
+engine: gotpl

@@ -1,0 +1,10 @@
+zcashd RPC can be accessed via port {{ .Values.service.rpcPort }} on the following DNS name from within your cluster:
+{{ template "zcashd.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+1. Forward the port for the node:
+
+  $ kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "zcashd.name" . }},release={{ .Release.Name }}" -o jsonpath='{ .items[0].metadata.name }') {{ .Values.service.rpcPort }}
+
+2. Test connection with user and password provided in configuration file:
+
+  $ curl --user rpcuser:rpcpassword -k http://127.0.0.1:{{ .Values.service.rpcPort }} --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getinfo", "params": [] }' -H 'content-type: text/plain;'
