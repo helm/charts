@@ -22,7 +22,9 @@ spec:
         release: {{ .Release.Name | quote }}
         component: agent
     spec:
-      {{- if .Values.serviceAccount.create }}
+      {{- if .Values.agent.serviceAccountName }}
+      serviceAccountName: {{ .Values.agent.serviceAccountName }}
+      {{- else if .Values.serviceAccount.create }}
       serviceAccountName: {{ template "gocd.serviceAccountName" . }}
       {{- end }}
       {{- if or .Values.agent.persistence.enabled .Values.agent.security.ssh.enabled }}

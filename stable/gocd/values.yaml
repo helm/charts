@@ -241,6 +241,9 @@ agent:
   # agent.privileged is needed for running Docker-in-Docker (DinD) agents
   privileged: false
 
+  # agent.serviceAccountName is used for when GoCD agents needs a custom service account to access the Kubernetes API. Otherwise rbac.roleRef can be used.
+  serviceAccountName:
+
   healthCheck:
    # agent.healthCheck.enable is the toggle for GoCD agent health checks
     enabled: false

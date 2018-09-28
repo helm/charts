@@ -138,7 +138,7 @@ For accessing repositories over SSH in GoCD server, you need to add SSH keys to 
 Generate a new keypair, fetch the host key for the [host] you want to connect to and create the secret.
 The secret is structured to hold the entire contents of the .ssh folder on the GoCD server.
 
- ```bash
+```bash
 $ ssh-keygen -t rsa -b 4096 -C "user@example.com" -f gocd-server-ssh -P ''
 $ ssh-keyscan [host] > gocd_known_hosts
 $ kubectl create secret generic gocd-server-ssh \
@@ -167,6 +167,7 @@ $ kubectl create secret generic gocd-server-ssh \
 | `agent.env.goAgentBootstrapperJvmArgs`    | GoCD Agent Bootstrapper JVM Args.                                                                                                                                                | `nil`                        |
 | `agent.env.extraEnvVars`                  | GoCD Agent extra Environment variables                                                                       | `nil`               |
 | `agent.privileged`                        | Run container in privileged mode (needed for DinD, Docker-in-Docker agents)                                                                                                      | `false`                      |
+| `agent.serviceAccountName`                | Kubernetes Service Account name to use (when agents need to access the Kubernetes API and `rbac.roleRef` isn't enough)                                                     | `nil`                      |
 | `agent.healthCheck.enabled`               | Enable use of GoCD agent health checks.                                                                                                                                          | `false`                      |
 | `agent.healthCheck.initialDelaySeconds`   | GoCD agent start up time.                                                                                                                                                        | `60`                         |
 | `agent.healthCheck.periodSeconds`         | GoCD agent health check interval period.                                                                                                                                          | `60`                         |
