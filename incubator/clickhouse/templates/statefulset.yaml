@@ -1,5 +1,5 @@
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "clickhouse.name" . }}
@@ -57,13 +57,10 @@ spec:
             httpGet:
               path: /
               port: 8123
+{{- with .Values.resources  }}
           resources:
-            requests:
-              cpu: {{ .Values.resources.requests.cpu }}
-              memory: {{ .Values.resources.requests.memory }}
-            limits:
-              cpu: {{ .Values.resources.limits.cpu }}
-              memory: {{ .Values.resources.limits.memory }}
+{{ toYaml . | indent 12 }}
+{{- end }}
           volumeMounts:
             - name: clickhouse-data-volume
               mountPath: /var/lib/clickhouse/
