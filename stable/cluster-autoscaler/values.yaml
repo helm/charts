@@ -67,6 +67,9 @@ podDisruptionBudget: |
   maxUnavailable: 1
   # minAvailable: 2
 
+## Whether to use the hostNetwork (e.g., to utliize an AWS IAM instance profile for credentials)
+hostNetwork: false
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 nodeSelector: {}
