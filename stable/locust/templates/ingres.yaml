@@ -21,7 +21,7 @@ spec:
   tls:
   - hosts:
     - "{{ .Values.ingress.hostname }}"
-    secretName: {{ .Values.namePrefix }}-locust-tls
+    secretName: {{ template "locust.ingress" . }}-locust-tls
   rules:
   - host: "{{ .Values.ingress.hostname }}"
     http:
