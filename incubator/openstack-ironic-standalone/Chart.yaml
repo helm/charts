@@ -1,5 +1,5 @@
 description: A Helm chart for Kubernetes
-name: openstack-standalone-ironic
+name: openstack-ironic-standalone
 version: 0.1.1
 appVersion: rocky
 engine: gotpl
@@ -7,3 +7,4 @@ tillerVersion: ">=2.8.0"
 maintainers:
   - name: jakub-d
     email: jakub.dlugolecki@gmail.com
+home: https://wiki.openstack.org/wiki/Ironic
