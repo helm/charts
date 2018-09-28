@@ -26,6 +26,10 @@ replicas:
   master: 3
   tserver: 3
 
+partition:
+  master: 3
+  tserver: 3
+
 PodManagementPolicy: Parallel
 
 serviceEndpoints:
