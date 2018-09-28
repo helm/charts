@@ -2,12 +2,17 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+elasticsearch:
+  fullnameOverride: elasticsearch
+
 kibana:
   env:
-    ELASTICSEARCH_URL: http://http.default.svc.cluster.local:9200
+    ELASTICSEARCH_URL: http://elasticsearch-discovery:9200
 
 logstash:
   enabled: true
+  elasticsearch:
+    host: elasticsearch-discovery
 
 fluentd:
   enabled: false
