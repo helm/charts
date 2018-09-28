@@ -1,0 +1,32 @@
+{{- if .Values.nodes.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "graylog.fullname" . }}-node
+  labels:  
+    app: {{ template "graylog.name" . }}-node
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: graylog-node
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: {{ template "graylog.fullname" . }}-node
+  minReplicas: {{ .Values.nodes.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.nodes.autoscaling.maxReplicas }}
+  metrics:
+  {{ if .Values.nodes.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.nodes.autoscaling.targetCPUUtilizationPercentage }}
+  {{ end }}
+  {{ if .Values.nodes.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.nodes.autoscaling.targetMemoryUtilizationPercentage }}
+  {{ end }}
+{{- end }}

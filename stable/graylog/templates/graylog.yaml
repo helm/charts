@@ -1,0 +1,111 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "graylog.fullname" . }}
+  labels:
+    app: {{ template "graylog.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: graylog-master
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: {{ template "graylog.name" . }}
+      role: graylog-master
+  template:
+    metadata:
+      labels:
+        app: {{ template "graylog.name" . }}
+        role: graylog-master
+    spec:
+      initContainers:
+        - name: install-plugins
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["sh",
+            "-c",
+            "cp /tmp/scripts/install_plugins.sh /usr/share/graylog/plugin/install_plugins.sh &&
+            chmod 0775 /usr/share/graylog/plugin/install_plugins.sh &&
+            /usr/share/graylog/plugin/install_plugins.sh &&
+            cp /usr/share/graylog/plugin/* /usr/share/graylog/plugin_install
+            "
+          ]
+          volumeMounts:
+            - mountPath: /usr/share/graylog/plugin_install
+              name: graylog-plugins
+              subPath: plugin
+            - name: install-plugins
+              mountPath: /tmp/scripts/
+          resources:
+{{ toYaml .Values.plugins.resources | indent 12 }}
+      containers:
+      - name: graylog
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.nodes.resources | indent 10 }}
+        ports:
+        - containerPort: {{ .Values.master.service.port }}
+          name: api
+          protocol: TCP
+        env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: "GRAYLOG_ELASTICSEARCH_HOSTS"
+          value: {{ .Values.elasticsearch.hosts | quote }}
+        - name: "GRAYLOT_ELASTICSEARCH_DISCOVERY_ENABLED"
+          value: {{ .Values.elasticsearch.discovery | quote }}
+        - name: "GRAYLOG_ELASTICSEARCH_COMPRESSION_ENABLED"
+          value: {{ .Values.elasticsearch.compression | quote }}
+{{- if .Values.master.javaOpts }}
+        - name: "GRAYLOG_SERVER_JAVA_OPTS"
+          value: {{ .Values.master.javaOpts }}
+{{- end }}
+        - name: "GRAYLOG_MONGODB_URI"
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "graylog.fullname" . }}
+              key: mongodb_uri
+        - name: "GRAYLOG_ROOT_TIMEZONE"
+          value: {{ .Values.timezone | quote }}
+        - name: "GRAYLOG_WEB_ENDPOINT_URI"
+          value: "https://{{ .Values.master.host }}/api/"
+        - name: "GRAYLOG_REST_LISTEN_URI"
+          value: "http://0.0.0.0:{{ .Values.master.service.port }}/api/"
+        - name: "GRAYLOG_WEB_LISTEN_URI"
+          value: "http://0.0.0.0:{{ .Values.master.service.port }}"
+        - name: "GRAYLOG_PASSWORD_SECRET"
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "graylog.fullname" . }}
+              key: password_secret
+        - name: "GRAYLOG_ROOT_PASSWORD_SHA2"
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "graylog.fullname" . }}
+              key: root_password
+        volumeMounts:
+          - mountPath: /usr/share/graylog/plugin
+            name: graylog-plugins
+            subPath: plugin
+      volumes:
+      - name: install-plugins
+        configMap:
+          name: {{ template "graylog.fullname" . }}-install-plugins
+          items:
+            - key: install_plugins.sh
+              path: install_plugins.sh
+      - name: graylog-plugins
+              

@@ -1,0 +1,96 @@
+# Default values for graylog.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: graylog/graylog
+  tag: 2.4.5-1
+  pullPolicy: IfNotPresent
+
+# Generic Graylog Configs
+timezone: UTC
+batchSize: 5000
+
+# Used to create all secrets: http://docs.graylog.org/en/2.3/pages/installation/manual_setup.html#configuration
+secrets:
+  # Mongo connection string: https://docs.mongodb.com/manual/reference/connection-string/
+  # NOTE: Must escape any commas in this string
+  mongo: mongodb://r1.example.net:27017,r2.example.net:27017/
+  # WARNING: Change this password with `pwgen -N 1 -s 96`
+  passwordSecret: ""
+  # WARNING: Change this password with `echo -n yourpassword | shasum -a 256`
+  rootPasword: ""
+
+master:
+  resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 500m
+  #  memory: 200Mi
+  # requests:
+  #  cpu: 500m
+  #  memory: 200Mi
+
+  # javaOpts: '-Xms3500m -Xmx3500m -XX:NewRatio=1 -XX:MaxMetaspaceSize=256m -server -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow'
+
+  host: graylog.example.com
+  service:
+    port: 9000
+    protocol: TCP
+  ingress:
+    annotations:
+      # kubernetes.io/ingress.class: nginx
+
+
+nodes:
+  replicas: 3
+
+  autoscaling:
+    enabled: false
+  #  minReplicas: 3
+  #  maxReplicas: 8
+  #  targetCPUUtilizationPercentage: 50
+  #  targetMemoryUtilizationPercentage: 50
+
+  resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 500m
+  #  memory: 200Mi
+  # requests:
+  #  cpu: 500m
+  #  memory: 200Mi
+
+  # javaOpts: '-Xms3500m -Xmx3500m -XX:NewRatio=1 -XX:MaxMetaspaceSize=256m -server -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow'
+
+  # Used to create a service to expose node api
+  apiService:
+    port: 1337
+
+  # Used to create a Service for the system inputs
+  inputService:
+    type: LoadBalancer
+    ports:
+    - name: gelf
+      containerPort: 12201
+      protocol: TCP
+    annotations:
+      # external-dns.alpha.kubernetes.io/hostname: graylog-inputs.example.com
+
+plugins:
+  install: []
+  resources: {}
+  # We allow the plugins init container to have a separate resources declaration because
+  # the initContainer does not take as much resources.
+
+elasticsearch:
+  # Host Name for elasticsearch
+  hosts: elasticsearch
+  discovery: true
+  compression: true
