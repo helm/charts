@@ -1,0 +1,290 @@
+## Override the name of the Chart.
+##
+# nameOverride:
+
+## Kubernetes configuration
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+##
+serviceType: LoadBalancer
+
+replicaCount: 1
+
+image: gitea/gitea
+imageTag: 1.3.2
+imagePullPolicy: IfNotPresent
+
+service:
+  ## Override the components name (defaults to service).
+  ##
+  # nameOverride:
+
+  ## HTTP listen port.
+  ## ref: https://docs.gitea.io/en-us/config-cheat-sheet
+  ##
+  httpPort: 80
+
+  ## SSH listen port.
+  ## ref: https://docs.gitea.io/en-us/config-cheat-sheet
+  ##
+  sshPort: 22
+
+  ## SSH_DOMAIN - Domain name to be exposed in SSH clone URL.
+  ## ref: https://docs.gitea.io/en-us/config-cheat-sheet
+  ##
+  sshDomain: localhost
+
+  ## Gitea configuration values
+  ## ref: https://docs.gitea.io/en-us/config-cheat-sheet
+  ##
+  gitea:
+
+    ## Application name, can be your company or team name.
+    ##
+    appName: 'Gitea'
+
+    ## Either "dev", "prod" or "test".
+    ##
+    runMode: 'prod'
+
+    ## Force every new repository to be private.
+    ##
+    forcePrivate: false
+
+    ## Indicates whether or not to disable Git clone through HTTP/HTTPS. When
+    ## disabled, users can only perform Git operations via SSH.
+    ##
+    disableHttpGit: false
+
+    ## Indicates whether or not to enable repository file upload feature.
+    ##
+    repositoryUploadEnabled: true
+
+    ## File types that are allowed to be uploaded, e.g. image/jpeg|image/png.
+    ## Leave empty means allow any file typ
+    ##
+    repositoryUploadAllowedTypes:
+
+    ## Maximum size of each file in MB.
+    ##
+    repositoryUploadMaxFileSize: 3
+
+    ## Maximum number of files per upload.
+    ##
+    repositoryUploadMaxFiles: 5
+
+    ## Enable this to use captcha validation for registration.
+    ##
+    serviceEnableCaptcha: true
+
+    ## Users need to confirm e-mail for registration
+    ##
+    serviceRegisterEmailConfirm: false
+
+    ## Weather or not to allow users to register.
+    ##
+    serviceDisableRegistration: false
+
+    ## Weather or not sign in is required to view anything.
+    ##
+    serviceRequireSignInView: false
+
+    ## Mail notification
+    ##
+    serviceEnableNotifyMail: false
+
+    ## Either "memory", "redis", or "memcache", default is "memory"
+    ##
+    cacheAdapter: memory
+
+    ## For "memory" only, GC interval in seconds, default is 60
+    ##
+    cacheInterval: 60
+
+    ## For "redis" and "memcache", connection host address
+    ## redis: network=tcp,addr=:6379,password=macaron,db=0,pool_size=100,idle_timeout=180
+    ## memcache: `127.0.0.1:11211`
+    ##
+    cacheHost:
+
+    ## Enable this to use captcha validation for registration.
+    ##
+    serverDomain: gitea.example.com
+
+    ## Full public URL of Gitea server.
+    ##
+    serverRootUrl: http://gitea.example.com/
+
+    ## Landing page for non-logged users, can be "home" or "explore"
+    ##
+    serverLandingPage: home
+
+    ## Either "mysql", "postgres" or "sqlite3", you can connect to TiDB with
+    ## MySQL protocol.  Default is to use the postgresql configuration included
+    ## with this chart.
+    ##
+    databaseType: postgres
+
+    ## Database host.  Unused unless `postgresql.install` is false.
+    ##
+    databaseHost:
+
+    ## Database user.  Unused unless `postgresql.install` is false.
+    ##
+    databaseUser:
+
+    ## Database password.  Unused unless `postgresql.install` is false.
+    ##
+    databasePassword:
+
+    ## Database password.  Unused unless `postgresql.install` is false.
+    ##
+    databaseName:
+
+    ## postgres (database access) only, either "disable", "require" or "verify-full"
+    databaseSSLMode: disable
+
+    ## Hook task queue length, increase if webhook shooting starts hanging
+    ##
+    webhookQueueLength: 1000
+
+    ## Deliver timeout in seconds
+    ##
+    webhookDeliverTimeout: 5
+
+    ## Allow insecure certification
+    ##
+    webhookSkipTlsVerify: true
+
+    ## Number of history information in each page
+    ##
+    webhookPagingNum: 10
+
+    ## Can be "console" and "file", default is "console"
+    ## Use comma to separate multiple modes, e.g. "console, file"
+    ##
+    logMode: console
+
+    ## Either "Trace", "Info", "Warn", "Error", "Fatal", default is "Trace"
+    ##
+    logLevel: Trace
+
+    ## Undocumented, but you can take a guess.
+    ##
+    otherShowFooterBranding: false
+
+    ## Show version information about Gitea and Go in the footer
+    ##
+    otherShowFooterVersion: true
+
+    ## Show time of template execution in the footer
+    ##
+    otherShowFooterTemplateLoadTime: true
+
+    ## Change this value for your installation.
+    ##
+    securitySecretKey: "changeme"
+
+    ## Number of repositories that are showed in one explore page
+    ##
+    uiExplorePagingNum: 20
+
+    ## Number of issues that are showed in one page
+    ##
+    uiIssuePagingNum: 10
+
+    ## Number of maximum commits showed in one activity feed.
+    ## NOTE: This value is also used in how many commits a webhook will send.
+    ##
+    uiFeedMaxCommitNum: 5
+
+  ## Ingress configuration.
+  ## ref: https://kubernetes.io/docs/user-guide/ingress/
+  ##
+  ingress:
+    ## Enable Ingress.
+    ##
+    enabled: false
+
+    ## Annotations.
+    ##
+    # annotations:
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: 'true'
+
+    ## Hostnames.
+    ## Must be provided if Ingress is enabled.
+    ##
+    # hosts:
+    #   - gitea.domain.com
+
+    ## TLS configuration.
+    ## Secrets must be manually created in the namespace.
+    ##
+    # tls:
+    #   - secretName: gitea-tls
+    #     hosts:
+    #       - gitea.domain.com
+
+  ## Service annotations.
+  ## Allows attaching metadata to services for kubernetes components to act on.
+  ##
+  # annotations:
+  #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+
+
+## Persistent Volume Storage configuration.
+## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
+##
+persistence:
+  ## Enable persistence using Persistent Volume Claims.
+  ##
+  enabled: true
+
+  ## gitea data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  ## If you are using minikube, use "standard" as the name, see:
+  ## https://github.com/kubernetes/minikube/issues/2256
+  # storageClass: "-"
+
+  ## Persistent Volume Access Mode.
+  ##
+  accessMode: ReadWriteOnce
+
+  ## Persistent Volume Storage Size.
+  ##
+  size: 1Gi
+
+## Configuration values for the postgresql dependency.
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
+##
+postgresql:
+
+  ### Install PostgreSQL dependency
+  ##
+  install: true
+
+  ### PostgreSQL User to create.
+  ##
+  postgresUser: gitea
+
+  ## PostgreSQL Password for the new user.
+  ## If not set, a random 10 characters password will be used.
+  ##
+  postgresPassword: gitea
+
+  ## PostgreSQL Database to create.
+  ##
+  postgresDatabase: gitea
+
+  ## Persistent Volume Storage configuration.
+  ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
+  ##
+  persistence:
+    ## Enable PostgreSQL persistence using Persistent Volume Claims.
+    ##
+    enabled: true
