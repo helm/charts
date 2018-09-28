@@ -1,0 +1,39 @@
+image:
+  repository: "arilot/docker-dashd"
+  tag: "1.0"
+  pullPolicy: IfNotPresent
+
+service:
+  rpcPort: 9998
+  p2pPort: 9999
+  testnetPort: 19998
+
+persistence:
+  enabled: true
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 300Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources: {}
+  # requests:
+  #   memory: 512Mi
+  #   cpu: 300m
+
+# Custom dashd configuration file used to override default dashd settings
+configurationFile:
+  dash.conf: |-
+    testnet=0
+    disablewallet=1
+    printtoconsole=1
+    rpcuser=rpcuser
+    rpcpassword=rpcpassword

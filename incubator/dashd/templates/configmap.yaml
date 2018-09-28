@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "dashd.fullname" . }}
+  labels:
+    app: {{ template "dashd.name" . }}
+    chart: {{ template "dashd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{ toYaml .Values.configurationFile | indent 2 }}

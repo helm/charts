@@ -1,0 +1,18 @@
+name: dashd
+version: 0.1.1
+appVersion: 0.12.1.5
+description: Dash is an experimental new digital currency that enables anonymous, instant payments to anyone, anywhere in the world.
+keywords:
+  - dashd
+  - cryptocurrency
+  - blockchain
+home: https://www.dash.org
+icon: https://www.dash.org/assets/img/logo-white.png
+sources:
+  - https://github.com/kubernetes/charts
+  - https://github.com/kuberstack/dashd
+  - https://github.com/dashpay/docker-dashd
+maintainers:
+  - name: daniel-yavorovich
+    email: daniel@arilot.com
+engine: gotpl

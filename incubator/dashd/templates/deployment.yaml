@@ -1,0 +1,67 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "dashd.fullname" . }}
+  labels:
+    app: {{ template "dashd.name" . }}
+    chart: {{ template "dashd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "dashd.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "dashd.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.configurationFile }}
+      initContainers:
+        - name: copy-bitcoind-config
+          image: busybox
+          command: ['sh', '-c', 'cp /configmap/dash.conf /dash/.dashcore/dash.conf']
+          volumeMounts:
+            - name: configmap
+              mountPath: /configmap
+            - name: config
+              mountPath: /dash/.dashcore/
+      {{- end }}
+      containers:
+        - name: {{ template "dashd.fullname" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          resources:
+  {{ toYaml .Values.resources | indent 10 }}
+          ports:
+            - name: rpc
+              containerPort: {{ .Values.service.rpcPort }}
+            - name: p2p
+              containerPort: {{ .Values.service.p2pPort }}
+            - name: testnet
+              containerPort: {{ .Values.service.testnetPort }}
+          volumeMounts:
+            - name: data
+              mountPath: /dash
+            {{- if .Values.configurationFile }}
+            - name: config
+              mountPath: /dash/.dashcore/dash.conf
+              subPath: dash.conf
+            {{- end }}
+      volumes:
+        {{- if .Values.configurationFile }}
+        - name: config
+          emptyDir: {}
+        - name: configmap
+          configMap:
+            name: {{ template "dashd.fullname" . }}
+        {{- end }}
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "dashd.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}
