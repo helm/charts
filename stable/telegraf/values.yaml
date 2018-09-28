@@ -238,10 +238,10 @@ single:
 ##        topic: "telegraf"
 ##        data_format: "influx"
     inputs:
-      cpu:
-        percpu: false
-        totalcpu: true
-      system:
+##      cpu:
+##        percpu: false
+##        totalcpu: true
+##      system:
 ##      aerospike:
 ##        servers:
 ##          - "localhost:3000"
