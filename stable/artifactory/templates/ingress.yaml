@@ -15,9 +15,6 @@ metadata:
       {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
-  backend:
-    serviceName: {{ $serviceName }}
-    servicePort: {{ $servicePort }}
 {{- if .Values.ingress.hosts }}
   rules:
   {{- range $host := .Values.ingress.hosts }}
