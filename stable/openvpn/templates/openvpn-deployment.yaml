@@ -54,6 +54,10 @@ spec:
             {{- end }}
             name: certs
             readOnly: false
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
       volumes:
       - name: openvpn
         configMap:
