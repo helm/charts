@@ -1,0 +1,31 @@
+Atlassian Confluence is starting now.
+It takes a few minutes to bootstrap a container.
+
+
+{{- if .Values.ingress.enabled }}
+1. Open the Confluence URL:
+{{- range .Values.ingress.hosts }}
+   https://{{ . }}
+{{- end }}
+
+{{- else if contains "NodePort" .Values.service.type }}
+1. Get the Confluence URL by running:
+  export NODE_PORT=$(kubectl get -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "atlassian-confluence.fullname" . }})
+  export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo https://$NODE_IP:$NODE_PORT/
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+1. Get the Confluence URL by running:
+  export SERVICE_IP=$(kubectl get svc {{ template "atlassian-confluence.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo https://$SERVICE_IP/
+
+{{- else if contains "ClusterIP"  .Values.service.type }}
+1. Get the Confluence URL by running:
+  export POD_NAME=$(kubectl get pods -n {{ .Release.Namespace }} -l "app={{ template "atlassian-confluence.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo https://127.0.0.1:80/
+  kubectl -n {{ .Release.Namespace }} port-forward $POD_NAME 8443:8443
+
+{{- end }}
+
+2. Proceed the Confluence Setup Wizard.
+   See also: https://confluence.atlassian.com/doc/confluence-setup-guide-135691.html

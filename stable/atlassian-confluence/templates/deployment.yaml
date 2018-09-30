@@ -1,0 +1,94 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "atlassian-confluence.fullname" . }}
+  labels:
+    app: {{ template "atlassian-confluence.name" . }}
+    chart: {{ template "atlassian-confluence.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ template "atlassian-confluence.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "atlassian-confluence.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+        - name: chown-data-volume
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["chown", "daemon:daemon", "-R", "/var/atlassian/application-data/confluence"]
+          volumeMounts:
+          - name: data
+            mountPath: /var/atlassian/application-data/confluence
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: CATALINA_CONNECTOR_PROXYNAME
+              value: {{ .Values.confluence.reverseProxyHost | quote }}
+            - name: CATALINA_CONNECTOR_PROXYPORT
+              value: {{ .Values.confluence.reverseProxyPort | quote }}
+            - name: CATALINA_CONNECTOR_SCHEME
+              value: {{ .Values.confluence.reverseProxyScheme | quote }}
+            - name: CATALINA_CONNECTOR_SECURE
+              value: {{ (eq "https" .Values.confluence.reverseProxyScheme) | quote }}
+            - name: JVM_MINIMUM_MEMORY
+              value: {{ .Values.confluence.javaHeapSize | quote }}
+            - name: JVM_MAXIMUM_MEMORY
+              value: {{ .Values.confluence.javaHeapSize | quote }}
+            - name: JVM_SUPPORT_RECOMMENDED_ARGS
+              value: {{ printf "%s %s -Dsynchrony.memory.max=%s" .Values.confluence.javaMemoryOptions .Values.confluence.javaOptions .Values.synchrony.javaHeapSize | quote }}
+          ports:
+            - name: http
+              containerPort: 8090
+              protocol: TCP
+            - name: synchrony
+              containerPort: 8091
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 15
+            timeoutSeconds: 3
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 3
+          volumeMounts:
+            - name: data
+              mountPath: /var/atlassian/application-data/confluence
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "atlassian-confluence.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}

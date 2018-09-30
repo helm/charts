@@ -1,0 +1,49 @@
+# https://hub.docker.com/r/atlassian/confluence-server
+
+image:
+  repository: atlassian/confluence-server
+  tag: 6.9.0
+  pullPolicy: IfNotPresent
+
+confluence:
+  reverseProxyHost: confluence.example.com
+  reverseProxyPort: 443
+  reverseProxyScheme: https
+  javaHeapSize: 2048m
+  javaMemoryOptions: "-XX:MaxMetaspaceSize=512m -XX:MaxDirectMemorySize=10m"
+  javaOptions: ""
+
+synchrony:
+  ## disable Synchrony by default
+  javaHeapSize: 0m
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - confluence.example.com
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 8Gi
+  # existingClaim: existing-pvc
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
