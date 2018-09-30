@@ -13,15 +13,19 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "{{ .Values.ingress.ingressClass }}"
     # Setup Let's Encrypt Certificates
+    {{ if .Values.ingress.enableTLS }}
     kubernetes.io/tls-acme: "{{ .Values.ingress.enableTlsAcme }}"
+    {{ end }}
     {{ if .Values.ingress.annotations.enable }}
     nginx.ingress.kubernetes.io/whitelist-source-range: "{{ .Values.ingress.annotations.whitelistSourceRange }}"
     {{ end }}
 spec:
+  {{ if .Values.ingress.enableTLS }}
   tls:
   - hosts:
     - "{{ .Values.ingress.hostname }}"
     secretName: {{ template "locust.ingress" . }}-locust-tls
+  {{ end }}
   rules:
   - host: "{{ .Values.ingress.hostname }}"
     http:

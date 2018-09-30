@@ -67,6 +67,7 @@ createTestScripts: true
 
 ingress:
   enable: false
+  enableTLS: false
   ingressClass: nginx
   enableTlsAcme: false
   hostname: locust.example.com
