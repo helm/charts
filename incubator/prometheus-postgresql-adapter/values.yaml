@@ -14,7 +14,7 @@ image:
   pullPolicy: IfNotPresent
 
 logLevel: info
-# pgHost: postgres
+pgHost: postgres
 webListenAddress: 9201
 
 service:
