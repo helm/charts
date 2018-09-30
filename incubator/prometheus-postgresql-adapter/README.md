@@ -51,7 +51,7 @@ Parameter | Description | Default
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.pullSecrets` | Image pull secrets | None
 `image.repository` | Image repository | `timescale/prometheus-postgresql-adapter`
-`image.tag` | Image tag | `0.3`
+`image.tag` | Image tag | `0.4`
 `logLevel` | The log level to use [`error`, `warn`, `info`, `debug`] | `info`
 `nodeSelector` | Node labels for pod assignment | `{}`
 `pgDatabase` | The PostgreSQL database | `postgres`

@@ -1,4 +1,4 @@
-appVersion: v0.3
+appVersion: v0.4
 description: Prometheus remote storage adapter for PostgreSQL.
 engine: gotpl
 home: https://www.timescale.com/

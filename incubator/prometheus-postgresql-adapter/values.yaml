@@ -10,7 +10,7 @@ replicaCount: 1
 
 image:
   repository: timescale/prometheus-postgresql-adapter
-  tag: 0.3
+  tag: 0.4
   pullPolicy: IfNotPresent
 
 logLevel: info
