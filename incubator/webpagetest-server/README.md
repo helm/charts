@@ -5,6 +5,7 @@
 ## TL;DR;
 
 ```console
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 $ helm install incubator/webpagetest-server
 ```
 
