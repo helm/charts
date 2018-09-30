@@ -31,12 +31,16 @@ spec:
             httpGet:
               path: /
               port: api
-              initialDelaySeconds: 30
+            initialDelaySeconds: 30
+            failureThreshold: 5
+            timeoutSeconds: 5
           readinessProbe:
             httpGet:
               path: /
               port: api
-              initialDelaySeconds: 15
+            initialDelaySeconds: 30
+            failureThreshold: 5
+            timeoutSeconds: 5
           env:
             {{- range $key, $value := .Values.extraEnv }}
             - name: {{ $key }}
