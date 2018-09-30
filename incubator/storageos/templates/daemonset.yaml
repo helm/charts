@@ -1,0 +1,133 @@
+{{- if not .Values.csi.enable }}
+
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "storageos.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "storageos.name" . }}
+  template:
+    metadata:
+      name: {{ template "storageos.fullname" . }}
+      labels:
+        app: {{ template "storageos.name" . }}
+        chart: {{ template "storageos.chart" . }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+    spec:
+      hostPID: true
+      hostNetwork: true
+      {{- if .Values.rbacEnabled }}
+      serviceAccountName: {{ template "storageos.fullname" . }}
+      {{- end }}
+      initContainers:
+      - name: enable-lio
+        image: "{{ .Values.initContainer.repository }}:{{ .Values.initContainer.tag }}"
+        imagePullPolicy: {{ .Values.initContainer.pullPolicy }}
+        volumeMounts:
+          - name: kernel-modules
+            mountPath: /lib/modules
+            readOnly: true
+          - name: sys
+            mountPath: /sys
+            mountPropagation: Bidirectional
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+            - SYS_ADMIN
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        - server
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+          name: api
+        livenessProbe:
+          initialDelaySeconds: 65
+          timeoutSeconds: 10
+          failureThreshold: 5
+          httpGet:
+            path: /v1/health
+            port: api
+        readinessProbe:
+          initialDelaySeconds: 65
+          timeoutSeconds: 10
+          failureThreshold: 5
+          httpGet:
+            path: /v1/health
+            port: api
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        {{- if .Values.cluster.join }}
+        - name: JOIN
+          value: {{ .Values.cluster.join }}
+        {{- else }}
+        - name: JOIN
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        {{- end }}
+        - name: ADVERTISE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: NAMESPACE
+          value: {{ .Values.namespace }}
+        {{- if .Values.cluster.sharedDir }}
+        - name: DEVICE_DIR
+          value: {{ .Values.cluster.sharedDir }}/devices
+        {{- end }}
+        volumeMounts:
+          - name: fuse
+            mountPath: /dev/fuse
+          - name: sys
+            mountPath: /sys
+          - name: state
+            mountPath: /var/lib/storageos
+            mountPropagation: Bidirectional
+          {{- if .Values.cluster.sharedDir }}
+          - name: shared
+            mountPath: {{ .Values.cluster.sharedDir }}
+            mountPropagation: Bidirectional
+          {{- end }}
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+            - SYS_ADMIN
+      volumes:
+        - name: kernel-modules
+          hostPath:
+            path: /lib/modules
+        - name: fuse
+          hostPath:
+            path: /dev/fuse
+        - name: sys
+          hostPath:
+            path: /sys
+        - name: state
+          hostPath:
+            path: /var/lib/storageos
+        {{- if .Values.cluster.sharedDir }}
+        - name: shared
+          hostPath:
+            path: {{ .Values.cluster.sharedDir }}
+        {{- end }}
+
+{{- end }}

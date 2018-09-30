@@ -1,0 +1,10 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: {{ .Values.namespace }}
+  labels:
+    name: {{ .Values.namespace }}
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}

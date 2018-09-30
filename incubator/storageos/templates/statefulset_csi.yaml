@@ -1,0 +1,60 @@
+{{- if .Values.csi.enable }}
+
+kind: StatefulSet
+apiVersion: apps/v1beta1
+metadata:
+  name: {{ template "storageos.fullname" . }}-statefulset
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  serviceName: {{ .Chart.Name }}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "storageos.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "storageos.name" . }}
+        chart: {{ template "storageos.chart" . }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccount: {{ template "storageos.fullname" . }}-statefulset-sa
+      containers:
+      - name: csi-external-provisioner
+        image: "{{ .Values.csiExternalProvisioner.repository }}:{{ .Values.csiExternalProvisioner.tag }}"
+        imagePullPolicy: {{ .Values.csiExternalProvisioner.pullPolicy }}
+        args:
+          - "--v=5"
+          - "--provisioner=storageos"
+          - "--csi-address=$(ADDRESS)"
+        env:
+          - name: ADDRESS
+            value: /csi/csi.sock # plugin-dir is mounted at /csi
+        volumeMounts:
+          - name: plugin-dir
+            mountPath: /csi
+      - name: csi-external-attacher
+        image: "{{ .Values.csiExternalAttacher.repository }}:{{ .Values.csiExternalAttacher.tag }}"
+        imagePullPolicy: {{ .Values.csiExternalAttacher.pullPolicy }}
+        args:
+          - "--v=5"
+          - "--csi-address=$(ADDRESS)"
+        env:
+          - name: ADDRESS
+            value: /csi/csi.sock
+        volumeMounts:
+          - name: plugin-dir
+            mountPath: /csi
+      volumes:
+        - name: plugin-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins/storageos/
+            type: DirectoryOrCreate
+
+{{- end }}

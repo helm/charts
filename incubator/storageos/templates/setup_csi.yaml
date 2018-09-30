@@ -1,0 +1,268 @@
+{{- if .Values.csi.enable }}
+
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: {{ .Values.storageclass.name }}
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+provisioner: storageos
+parameters:
+  pool: {{ .Values.storageclass.pool }}
+  # Value with space is an invalid label in CSI volumes.
+  # description: Kubernetes volume
+  fsType: {{ .Values.storageclass.fsType }}
+
+  # CSI credentials config.
+  {{- if .Values.csi.provisionCreds.enable }}
+  csiProvisionerSecretName: {{ .Values.csi.provisionCreds.secretName }}
+  csiProvisionerSecretNamespace: {{ .Values.namespace }}
+  {{- end }}
+
+  {{- if .Values.csi.controllerPublishCreds.enable }}
+  csiControllerPublishSecretName: {{ .Values.csi.controllerPublishCreds.secretName }}
+  csiControllerPublishSecretNamespace: {{ .Values.namespace }}
+  {{- end}}
+
+  {{- if .Values.csi.nodeStageCreds.enable }}
+  csiNodeStageSecretName: {{ .Values.csi.nodeStageCreds.secretName }}
+  csiNodeStageSecretNamespace: {{ .Values.namespace }}
+  {{- end }}
+
+  {{- if .Values.csi.nodePublishCreds.enable }}
+  csiNodePublishSecretName: {{ .Values.csi.nodePublishCreds.secretName }}
+  csiNodePublishSecretNamespace: {{ .Values.namespace }}
+  {{- end }}
+
+---
+
+# Role for Key Management.
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: key-management-role
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "create", "delete"]
+
+---
+
+# Role for Driver Registrar.
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: driver-registrar-role
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "update"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["list", "watch", "create", "update", "patch"]
+
+---
+
+# Service account for StorageOS DaemonSet.
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: {{ template "storageos.fullname" . }}-daemonset-sa
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+
+---
+
+# Bind DaemonSet Service account to Driver Registrar role.
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: driver-registrar-binding
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "storageos.fullname" . }}-daemonset-sa
+    namespace: {{ .Values.namespace }}
+roleRef:
+  kind: ClusterRole
+  name: driver-registrar-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+# Bind DaemonSet Service account to Key Management role.
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: key-management-binding
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "storageos.fullname" . }}-daemonset-sa
+    namespace: {{ .Values.namespace }}
+roleRef:
+  kind: ClusterRole
+  name: key-management-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+# Role for CSI External Provisioner.
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-provisioner-role
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+rules:
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["list", "watch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["list", "watch", "get"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["list", "watch", "create", "update", "patch"]
+
+---
+
+# Role for CSI External Attacher.
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-attacher-role
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+rules:
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["list", "watch", "get"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["volumeattachments"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["list", "watch", "create", "update", "patch"]
+
+---
+
+# Service Account for StorageOS StatefulSet.
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: {{ template "storageos.fullname" . }}-statefulset-sa
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+
+---
+
+# Bind StatefulSet service account to External Provisioner role.
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-provisioner-binding
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "storageos.fullname" . }}-statefulset-sa
+    namespace: {{ .Values.namespace }}
+roleRef:
+  kind: ClusterRole
+  name: csi-provisioner-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+# Bind StatefulSet service account to External Attacher role.
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-attacher-binding
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "storageos.fullname" . }}-statefulset-sa
+    namespace: {{ .Values.namespace }}
+roleRef:
+  kind: ClusterRole
+  name: csi-attacher-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+# Bind StatefulSet service account to Key Management role.
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: sidecar-key-management-binding
+  labels:
+    app: {{ template "storageos.name" . }}
+    chart: {{ template "storageos.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "storageos.fullname" . }}-statefulset-sa
+    namespace: {{ .Values.namespace }}
+roleRef:
+  kind: ClusterRole
+  name: key-management-role
+  apiGroup: rbac.authorization.k8s.io
+
+{{- end }}

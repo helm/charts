@@ -1,0 +1,18 @@
+name: storageos
+version: 0.1.0
+description: Converged storage for containers
+appVersion: 1.0.0-rc2
+apiVersion: v1
+keywords:
+- storage
+- block-storage
+- volume
+home: https://storageos.com
+icon: https://storageos.com/wp-content/themes/storageOS/images/logo.svg
+sources:
+- https://github.com/storageos
+maintainers:
+- name: croomes
+  email: simon.croome@storageos.com
+- name: darkowlzz
+  email: sunny.gogoi@storageos.com
