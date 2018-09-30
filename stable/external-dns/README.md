@@ -22,7 +22,7 @@ The following table lists the configurable parameters of the external-dns chart 
 
 
 | Parameter                          | Description                                                                                                                | Default                                            |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+|:-----------------------------------|:---------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------|
 | `annotationFilter`                 | Filter sources managed by external-dns via annotation using label selector semantics (default: all sources) (optional).    | `""`                                               |
 | `aws.accessKey`                    | `AWS_ACCESS_KEY_ID` to set in the environment (optional).                                                                  | `""`                                               |
 | `aws.secretKey`                    | `AWS_SECRET_ACCESS_KEY` to set in the environment (optional).                                                              | `""`                                               |
@@ -40,6 +40,9 @@ The following table lists the configurable parameters of the external-dns chart 
 | `image.pullPolicy`                 | Container pull policy.                                                                                                     | `IfNotPresent`                                     |
 | `image.tag`                        | Container image tag.                                                                                                       | `v0.5.6`                                           |
 | `image.pullSecrets`                | Array of pull secret names                                                                                                 | `[]`                                               |
+| `istio.enabled`                    | Whether external-dns will handle creating host entries for istio gateways                                                  | `false`                                            |
+| `istio.ingressGateway`             | Sets the Istio IngressController name. When empty this will default to `istio-system/istio-ingressgateway`                 | `null`                                             |
+| `istio.enabled`                    | Whether external-dns will handle creating host entries for istio gateways                                                  | `false`                                            |
 | `logLevel`                         | Verbosity of the logs (options: panic, debug, info, warn, error, fatal)                                                    | `info`                                             |
 | `nodeSelector`                     | Node labels for pod assignment                                                                                             | `{}`                                               |
 | `podAnnotations`                   | Additional annotations to apply to the pod.                                                                                | `{}`                                               |
