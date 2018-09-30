@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "locust.master" . }}
@@ -10,6 +10,10 @@ metadata:
     component: master
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      component: master
+      app: {{ template "locust.fullname" . }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -30,6 +34,7 @@ spec:
       - name: locust
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: ["-f", "$(LOCUSTFILE_PATH)", "-H", "$(TARGET_URL)", "--master"]
         resources:
 {{ toYaml .Values.worker.resources | indent 10 }}
         env:
@@ -37,9 +42,7 @@ spec:
         - name: {{ $key | upper | replace "-" "_" }}
           value: {{ $value | quote }}
         {{- end }}
-        - name: LOCUST_MODE
-          value: "master"
-        - name: LOCUST_SCRIPT
+        - name: LOCUSTFILE_PATH
           value: {{ index .Values.worker.config "locust-script" | quote }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
