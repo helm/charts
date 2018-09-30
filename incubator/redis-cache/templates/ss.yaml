@@ -18,6 +18,10 @@ spec:
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
     spec:
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       terminationGracePeriodSeconds: 60 
       affinity:
         podAntiAffinity:
