@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "graphite-statsd.fullname" . }}
+  labels:
+    app: {{ template "graphite-statsd.name" . }}
+    chart: {{ template "graphite-statsd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: ui
+      port: {{ .Values.service.port }}
+    - name: rec-plaintext
+      port: 2003
+    - name: rec-pickle
+      port: 2004
+    - name: agg-plaintext
+      port: 2023
+    - name: agg-pickle
+      port: 2024
+    - name: statsd
+      port: 8125
+    - name: statsd-admin
+      port: 8126
+  selector:
+    app: {{ template "graphite-statsd.name" . }}
+    release: {{ .Release.Name }}

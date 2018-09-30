@@ -1,0 +1,6 @@
+apiVersion: v1
+appVersion: "1.0"
+description: A Helm chart to install graphite and statsd
+name: graphite-statsd
+home: https://hub.docker.com/r/graphiteapp/graphite-statsd/
+version: 0.1.0
