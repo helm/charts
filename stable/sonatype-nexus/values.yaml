@@ -1,4 +1,10 @@
 replicaCount: 1
+deploymentStrategy: {}
+namespace: default
+  # rollingUpdate:
+  #   maxSurge: 25%
+  #   maxUnavailable: 25%
+  # type: RollingUpdate
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
