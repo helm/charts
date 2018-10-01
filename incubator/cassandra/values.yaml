@@ -110,6 +110,17 @@ securityContext:
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # name:
+
 ## Backup cronjob configuration
 ## Ref: https://github.com/maorfr/cain
 backup:
@@ -151,3 +162,4 @@ backup:
   # Additional support can added.
   # Ref: https://github.com/maorfr/skbn
   destination: s3://bucket/cassandra
+

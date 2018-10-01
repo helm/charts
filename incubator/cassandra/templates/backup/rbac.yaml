@@ -1,14 +1,17 @@
 {{- if .Values.backup.enabled }}
+{{- if .Values.serviceAccount.create }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ template "cassandra.fullname" . }}-backup
+  name: {{ template "cassandra.serviceAccountName" . }}
   labels:
     app: {{ template "cassandra.name" . }}
     chart: {{ template "cassandra.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 ---
+{{- end }}
+{{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -41,6 +44,7 @@ roleRef:
   name: {{ template "cassandra.fullname" . }}-backup
 subjects:
 - kind: ServiceAccount
-  name: {{ template "cassandra.fullname" . }}-backup
+  name: {{ template "cassandra.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
+{{- end }}
 {{- end }}
