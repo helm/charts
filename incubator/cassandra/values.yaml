@@ -130,7 +130,7 @@ backup:
 
   image:
     repos: maorfr/cain
-    tag: latest
+    tag: 0.1.0
 
   env:
   - name: AWS_REGION
