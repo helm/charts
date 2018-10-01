@@ -15,8 +15,6 @@ metadata:
     heritage: "{{ $release.Service }}"
 spec:
   schedule: {{ $schedule.cron | quote }}
-  successfulJobsHistoryLimit: {{ $backup.history.successfulJobs }}
-  failedJobsHistoryLimit: {{ $backup.history.failedJobs }}
   concurrencyPolicy: Forbid
   startingDeadlineSeconds: 120
   jobTemplate:

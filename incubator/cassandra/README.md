@@ -117,7 +117,6 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.             | `3` |
 | `backup.enabled`                     | Enable backup on chart installation             | `false`                                                    |
 | `backup.schedule`                    | Keyspaces to backup, each with cron time        |                                                            |
-| `backup.history`                     | Backup CronJob history configuration            | successfulJobs: `1`, failedJobs: `3`                       |
 | `backup.annotations`                 | Backup pod annotations                          | iam.amazonaws.com/role: `cain`                             |
 | `backup.image.repo`                  | Backup image repository                         | `maorfr/cain`                                              |
 | `backup.image.tag`                   | Backup image tag                                | `latest`                                                   |

@@ -123,10 +123,6 @@ backup:
   - keyspace: keyspace2
     cron: "30 7 * * *"
 
-  history:
-    successfulJobs: 1
-    failedJobs: 3
-
   annotations:
     # Example for authorization using kube2iam
     # Can also be done using environment variables
