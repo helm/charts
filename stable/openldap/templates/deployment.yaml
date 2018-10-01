@@ -12,6 +12,11 @@ metadata:
 {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- if .Values.strategy }}
+  strategy:
+{{ toYaml .Values.strategy | indent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "openldap.name" . }}
@@ -23,13 +28,17 @@ spec:
 {{- if .Values.customLdifFiles}}
         checksum/configmap-customldif: {{ include (print $.Template.BasePath "/configmap-customldif.yaml") . | sha256sum }}
 {{- end }}
+{{- if .Values.customSchemaFiles}}
+        checksum/configmap-customldif: {{ include (print $.Template.BasePath "/configmap-customschema.yaml") . | sha256sum }}
+{{- end }}
       labels:
         app: {{ template "openldap.name" . }}
         release: {{ .Release.Name }}
     spec:
-      {{- if .Values.customLdifFiles }}
+      {{- if or .Values.customLdifFiles .Values.customSchemaFiles }}
       initContainers:
-      - name: {{ .Chart.Name }}-init
+      {{- if .Values.customLdifFiles }}
+      - name: {{ .Chart.Name }}-initldif
         image: busybox
         command: ['sh', '-c', 'cp /customldif/* /ldifworkingdir']
         volumeMounts:
@@ -37,6 +46,17 @@ spec:
           mountPath: /customldif
         - name: ldifworkingdir
           mountPath: /ldifworkingdir
+      {{- end }}
+      {{- if .Values.customSchemaFiles }}
+      - name: {{ .Chart.Name }}-initschema
+        image: busybox
+        command: ['sh', '-c', 'cp /customschema/* /schemaworkingdir']
+        volumeMounts:
+        - name: customschema
+          mountPath: /customschema
+        - name: schemaworkingdir
+          mountPath: /schemaworkingdir
+        {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -62,6 +82,10 @@ spec:
             {{- if .Values.customLdifFiles }}
             - name: ldifworkingdir
               mountPath: /container/service/slapd/assets/config/bootstrap/ldif/custom
+            {{- end }}
+            {{- if .Values.customSchemaFiles }}
+            - name: schemaworkingdir
+              mountPath: /container/service/slapd/assets/config/bootstrap/schema/custom
             {{- end }}
           livenessProbe:
             tcpSocket:
@@ -95,6 +119,13 @@ spec:
           configMap:
             name: {{ template "openldap.fullname" . }}-customldif
         - name: ldifworkingdir
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.customSchemaFiles }}
+        - name: customschema
+          configMap:
+            name: {{ template "openldap.fullname" . }}-customschema
+        - name: schemaworkingdir
           emptyDir: {}
         {{- end }}
         - name: data
