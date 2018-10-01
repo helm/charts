@@ -132,7 +132,9 @@ backup:
     repos: maorfr/cain
     tag: 0.1.0
 
+  # Add additional environment variables
   env:
+  # Example environment variable required for AWS credentials chain
   - name: AWS_REGION
     value: us-east-1
 
