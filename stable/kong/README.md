@@ -1,6 +1,6 @@
 ## Kong
 
-[Kong](https://getkong.org/) is an open-source API Gateway and Microservices
+[Kong](https://www.KongHQ.com/) is the world's most popular open-source API Gateway and Microservices
 Management Layer, delivering high performance and reliability.
 
 ## TL;DR;
@@ -60,7 +60,7 @@ and their default values.
 | admin.nodePort                    | Node port when service type is `NodePort`                              |                       |
 | admin.type                        | k8s service type, Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | admin.loadBalancerIP              | Will reuse an existing ingress static IP for the admin service         | `null`                |
-| admin.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               | 
+| admin.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               |
 | admin.ingress.tls                 | Name of secret resource, containing TLS secret                         |                       |
 | admin.ingress.hosts               | List of ingress hosts.                                                 | `[]`                  |
 | admin.ingress.path                | Ingress path.                                                          | `/`                   |
@@ -71,7 +71,7 @@ and their default values.
 | proxy.nodePort                    | Node port when service type is `NodePort`                              |                       |
 | proxy.type                        | k8s service type. Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | proxy.loadBalancerIP              | To reuse an existing ingress static IP for the admin service           |                       |
-| proxy.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               | 
+| proxy.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               |
 | proxy.ingress.tls                 | Name of secret resource, containing TLS secret                         |                       |
 | proxy.ingress.hosts               | List of ingress hosts.                                                 | `[]`                  |
 | proxy.ingress.path                | Ingress path.                                                          | `/`                   |
