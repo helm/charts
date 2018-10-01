@@ -1,4 +1,3 @@
----
 # Deploy singleton instance in the whole cluster for some unique data sources, like kube-state-metrics
 apiVersion: apps/v1beta1
 kind: Deployment

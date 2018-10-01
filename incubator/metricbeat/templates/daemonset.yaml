@@ -1,4 +1,3 @@
----
 # Deploy a Metricbeat instance per node for node metrics retrieval
 apiVersion: extensions/v1beta1
 kind: DaemonSet
