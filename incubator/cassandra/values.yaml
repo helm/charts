@@ -109,3 +109,56 @@ securityContext:
 ## Affinity for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # name:
+
+## Backup cronjob configuration
+## Ref: https://github.com/maorfr/cain
+backup:
+  enabled: false
+
+  # Schedule to run jobs. Must be in cron time format
+  # Ref: https://crontab.guru/
+  schedule:
+  - keyspace: keyspace1
+    cron: "0 7 * * *"
+  - keyspace: keyspace2
+    cron: "30 7 * * *"
+
+  annotations:
+    # Example for authorization using kube2iam
+    # Can also be done using environment variables
+    iam.amazonaws.com/role: cain
+
+  image:
+    repos: maorfr/cain
+    tag: 0.1.0
+
+  # Add additional environment variables
+  env:
+  # Example environment variable required for AWS credentials chain
+  - name: AWS_REGION
+    value: us-east-1
+
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 1
+    limits:
+      memory: 1Gi
+      cpu: 1
+
+  # Destination to store the backup artifacts
+  # Currently only s3 is supported
+  # Additional support can added.
+  # Ref: https://github.com/maorfr/skbn
+  destination: s3://bucket/cassandra
