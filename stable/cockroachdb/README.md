@@ -45,7 +45,7 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | ------------------------------ | ------------------------------------------------ | ----------------------------------------- |
 | `Name`                         | Chart name                                       | `cockroachdb`                             |
 | `Image`                        | Container image name                             | `cockroachdb/cockroach`                   |
-| `ImageTag`                     | Container image tag                              | `v2.0.5`                                  |
+| `ImageTag`                     | Container image tag                              | `v2.0.6`                                  |
 | `ImagePullPolicy`              | Container pull policy                            | `Always`                                  |
 | `Replicas`                     | k8s statefulset replicas                         | `3`                                       |
 | `MaxUnavailable`               | k8s PodDisruptionBudget parameter                | `1`                                       |
@@ -64,6 +64,8 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `CacheSize`                    | Size of CockroachDB's in-memory cache            | `25%`                                     |
 | `MaxSQLMemory`                 | Max memory to use processing SQL queries         | `25%`                                     |
 | `ClusterDomain`                | Cluster's default DNS domain                     | `cluster.local`                           |
+| `JoinExisting`                 | List of already-existing cockroach instances     | `[]`                                      |
+| `Locality`                     | Locality attribute for this deployment           | `""`                                      |
 | `NetworkPolicy.Enabled`        | Enable NetworkPolicy                             | `false`                                   |
 | `NetworkPolicy.AllowExternal`  | Don't require client label for connections       | `true`                                    |
 | `Service.Type`                 | Public service type                              | `ClusterIP`                               |

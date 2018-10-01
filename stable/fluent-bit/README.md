@@ -39,6 +39,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.es.port`          | TCP port of the target Elasticsearch instance. | `9200` |
 | `backend.es.index`         | Elastic Index name | `kubernetes_cluster` |
 | `backend.es.type`          | Elastic Type name | `flb_type` |
+| `backend.es.time_key`          | Elastic Time Key | `@timestamp` |
 | `backend.es.logstash_prefix`  | Index Prefix. If Logstash_Prefix is equals to 'mydata' your index will become 'mydata-YYYY.MM.DD'. | `kubernetes_cluster` |
 | `backend.es.http_user`        | Optional username credential for Elastic X-Pack access. | `` |
 | `backend.es.http_passwd:`     | Password for user defined in HTTP_User. | `` |
@@ -60,6 +61,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.splunk.tls_verify`           | Force TLS certificate validation | `off` |
 | `backend.splunk.message_key`           | Tag applied to all incoming logs | `kubernetes` |
 | **Parsers**                   |
+| `parsers.enabled`                  | Enable custom parsers | `false` |
 | `parsers.regex`                    | List of regex parsers | `NULL` |
 | `parsers.json`                     | List of json parsers | `NULL` |
 | **General**                   |

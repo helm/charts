@@ -73,8 +73,12 @@ spec:
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+    {{- if .Values.nodeExporter.hostNetwork }}
       hostNetwork: true
+    {{- end }}
+    {{- if .Values.nodeExporter.hostPID }}
       hostPID: true
+    {{- end }}
     {{- if .Values.nodeExporter.tolerations }}
       tolerations:
 {{ toYaml .Values.nodeExporter.tolerations | indent 8 }}
