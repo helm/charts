@@ -26,6 +26,7 @@ The following table lists the configurable parameters of the openldap chart and 
 | Parameter                          | Description                                                               | Default           |
 | ---------------------------------- | ------------------------------------------------------------------------- | ------------------|
 | `replicaCount`                     | Number of replicas                                                        | `1`               |
+| `revisionHistoryLimit`             | revisionHistoryLimit                                                      | `3`               |
 | `image.repository`                 | Container image repository                                                | `osixia/openldap` |
 | `image.tag`                        | Container image tag                                                       | `1.1.10`          |
 | `image.pullPolicy`                 | Container pull policy                                                     | `IfNotPresent`    |
@@ -43,11 +44,13 @@ The following table lists the configurable parameters of the openldap chart and 
 | `adminPassword`                    | Password for admin user. Unset to auto-generate the password              | None              |
 | `configPassword`                   | Password for config user. Unset to auto-generate the password             | None              |
 | `customLdifFiles`                  | Custom ldif files to seed the LDAP server. List of filename -> data pairs | None              |
+| `customSchemaFiles`                | Custom schema files to seed the LDAP server. List of filename -> data pairs | None            |
 | `persistence.enabled`              | Whether to use PersistentVolumes or not                                   | `false`           |
 | `persistence.storageClass`         | Storage class for PersistentVolumes.                                      | `<unset>`         |
 | `persistence.accessMode`           | Access mode for PersistentVolumes                                         | `ReadWriteOnce`   |
 | `persistence.size`                 | PersistentVolumeClaim storage size                                        | `8Gi`             |
 | `resources`                        | Container resource requests and limits in yaml                            | `{}`              |
+| `strategy`                         | Deployment Strategy                                                       | None              |
 | `test.enabled`                     | Conditionally provision test resources                                    | `false`           |
 | `test.image.repository`            | Test container image requires bats framework                              | `dduportal/bats`  |
 | `test.image.tag`                   | Test container tag                                                        | `0.4.0`           |

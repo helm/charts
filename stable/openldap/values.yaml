@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
+revisionHistoryLimit: 3
 image:
   # From repository https://github.com/osixia/docker-openldap
   repository: osixia/openldap
@@ -51,6 +52,11 @@ env:
   # 01-default-users.ldif: |-
     # Predefine users here
 
+# Custom openldap schemas files
+# customSchemaFiles:
+  # 01-my.schema: |-
+    # Predefine schema here
+
 ## Persist data to a persistent volume
 persistence:
   enabled: false
@@ -78,6 +84,12 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+## Deployment Strategy
+# strategy:
+#   rollingUpdate:
+#     maxUnavailable: 100%
+#     maxSurge: 0
 
 ## test container details
 test:
