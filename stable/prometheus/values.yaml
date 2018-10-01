@@ -932,6 +932,11 @@ serverFiles:
             regex: (.+)
             target_label: __metrics_path__
             replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+        metric_relabel_configs:
+          - regex: (container_network_(tcp|udp)_usage_total|container_tasks_state)
+            source_labels: [__name__]
+            action: drop
+
 
       # Scrape config for service endpoints.
       #
