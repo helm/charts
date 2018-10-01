@@ -1,0 +1,5 @@
+Thanks for using the Gerrit helm chart!
+
+The Service and Ingress are completely configurable, as are resource utilization.
+
+Please see https://github.com/helm/charts/tree/master/incubator/gerrit for more info. In particular, consult `values.yaml` for configurable values.

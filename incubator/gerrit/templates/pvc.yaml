@@ -1,0 +1,19 @@
+{{ if .Values.persistence.enabled }}
+{{- $releaseName := .Release.Name -}}
+{{ range .Values.persistence.volumes }}
+{{ if not .configMap }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ $releaseName }}-{{ .name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: {{ .size }}
+{{end}}
+{{end}}
+{{end}}

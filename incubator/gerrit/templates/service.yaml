@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "gerrit.name" . }}
+  labels:
+    app: {{ include "gerrit.name" . }}
+    chart: {{ include "gerrit.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.ports.http.port }}
+      targetPort: {{ .Values.service.ports.http.targetPort }}
+      protocol: TCP
+      name: http
+    - port: {{ .Values.service.ports.ssh.port }}
+      targetPort: {{ .Values.service.ports.ssh.targetPort }}
+      protocol: TCP
+      name: ssh
+  selector:
+    app: {{ include "gerrit.name" . }}
+    release: {{ .Release.Name }}

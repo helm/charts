@@ -1,0 +1,108 @@
+{{- $volumes := .Values.persistence.volumes }}
+{{- $releaseName := .Release.Name }}
+
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "gerrit.fullname" . }}
+  labels:
+    app: {{ include "gerrit.name" . }}
+    chart: {{ include "gerrit.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "gerrit.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "gerrit.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+        - name: fix-volume-permissions
+          image: busybox
+          command: ["sh", "-c", "chown -R 1000:1000 /var/gerrit"]
+          resources:
+            requests:
+              memory: 1 Gi
+              cpu: 1
+            limits:
+              memory: 1Gi
+              cpu: 1
+          volumeMounts:
+  {{- range $volumes }}
+            - name: gerrit-{{ .name }}
+              mountPath: {{ .path }}
+  {{end}}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: IfNotPresent
+          command: ["sh", "-c", "cp /var/gerrit/config/initialize-gerrit.sh /var/gerrit && sh /var/gerrit/initialize-gerrit.sh"]
+          resources:
+            requests:
+              memory: {{ .Values.resources.requests.memory }}
+              cpu: {{ .Values.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.resources.limits.memory }}
+              cpu: {{ .Values.resources.limits.cpu }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: ssh
+              containerPort: 29418
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+{{ if .Values.persistence.enabled }}
+          volumeMounts:
+            - name: gerrit-config
+              mountPath: /var/gerrit/config
+  {{- range $volumes }}
+            - name: gerrit-{{ .name }}
+              mountPath: {{ .path }}
+  {{end}}
+{{end}}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{ if .Values.persistence.enabled }}
+      volumes:
+        - name: gerrit-config
+          configMap:
+            name: gerrit-config
+            items:
+            - key: gerrit.config
+              path: gerrit.config
+            - key: initialize-gerrit.sh
+              path: initialize-gerrit.sh
+  {{- range $volumes }}
+        - name: gerrit-{{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ $releaseName }}-{{ .name }}
+  {{end}}
+{{end}}

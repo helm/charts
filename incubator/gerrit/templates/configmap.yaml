@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gerrit-config
+data:
+  gerrit.config: |-
+
+    [gerrit]
+      basePath = git
+    {{- $releaseName := .Release.Name }}
+    {{- with .Values.config }}
+
+    [database]
+      type = postgresql
+      hostname = {{ $releaseName }}-postgres
+      database = {{ .database.database }}
+      username = {{ .database.username }}
+      password = {{ .database.password }}
+
+    [index]
+      type = {{ .index.type }}
+
+    [auth]
+    {{- with .auth}}
+      {{if .type }}type = {{ .type }}{{end}}
+    {{end}}
+
+    [cache]
+      directory = {{ .cache.directory }}
+    {{- end }}
+
+  initialize-gerrit.sh: |-
+    set -ex
+
+    GERRIT_HOME=/var/gerrit
+    GERRIT_CONFIG=$GERRIT_HOME/etc/gerrit.config
+    GERRIT_BIN=/var/gerrit/bin
+    GERRIT_WAR=$GERRIT_BIN/gerrit.war
+
+    if [ ! -f /var/gerrit/.gerrit-initialized ]; then
+
+      # Delete everything 
+      find $GERRIT_HOME/ -maxdepth 1 ! -regex ".*\(\/\|bin\|cache\|config\|db\|index\|git\|etc\)$" -exec rm -r {} \;
+
+      # Copy config from configmap/gerrit-config
+      cp $GERRIT_HOME/config/gerrit.config $GERRIT_HOME/etc
+
+      # Initialize gerrit dirs if they're empty 
+      java -jar $GERRIT_WAR init --batch --install-all-plugins -d $GERRIT_HOME
+      java -jar $GERRIT_WAR reindex -d $GERRIT_HOME
+
+      git config -f $GERRIT_CONFIG container.javaOptions "-Djava.security.egd=file:/dev/./urandom"
+      git config -f $GERRIT_CONFIG gerrit.canonicalWebUrl http://$HOSTNAME:8080/
+      git config -f $GERRIT_CONFIG noteDb.changes.autoMigrate true
+      
+      touch $GERRIT_HOME/etc/.gerrit-initialized
+    fi
+
+    sh -c "$GERRIT_BIN/gerrit.sh run"
