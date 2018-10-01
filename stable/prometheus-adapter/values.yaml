@@ -16,6 +16,7 @@ nodeSelector: {}
 prometheus:
   url: http://prometheus.default.svc
   port: 9090
+  route-prefix:
 
 replicas: 1
 

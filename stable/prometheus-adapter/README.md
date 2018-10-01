@@ -45,6 +45,7 @@ The following table lists the configurable parameters of the Prometheus Adapter 
 | `nodeSelector`                  | Node labels for pod assignment                                                  | `{}`                                        |
 | `prometheus.url`                | Url of where we can find the Prometheus service                                 | `http://prometheus.default.svc`             |
 | `prometheus.port`               | Port of where we can find the Prometheus service                                | `9090`                                      |
+| `prometheus.route-prefix`       | Prefix used by the Prometheus server                                            | ``                                          |
 | `rbac.create`                   | If true, create & use RBAC resources                                            | `true`                                      |
 | `resources`                     | CPU/Memory resource requests/limits                                             | `{}`                                        |
 | `rules.default`                 | If `true`, enable a set of default rules in the configmap                       | `true`                                      |
