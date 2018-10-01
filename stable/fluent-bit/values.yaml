@@ -12,6 +12,11 @@ image:
 metrics:
   enabled: false
   service:
+    annotations: {}
+    # In order for Prometheus to consume metrics automatically use the following annotations:
+    # prometheus.io/path: "/api/v1/metrics/prometheus"
+    # prometheus.io/port: "2020"
+    # prometheus.io/scrape: "true"
     port: 2020
     type: ClusterIP
 
