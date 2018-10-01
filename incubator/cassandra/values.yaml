@@ -124,7 +124,7 @@ serviceAccount:
 ## Backup cronjob configuration
 ## Ref: https://github.com/maorfr/cain
 backup:
-  enabled: true
+  enabled: false
 
   # Schedule to run jobs. Must be in cron time format
   # Ref: https://crontab.guru/
