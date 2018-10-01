@@ -78,6 +78,6 @@ the protocols you define in your zones. This means that you could potentially
 use both "TCP" and "UDP" on a single port.
 Some cloud environments like "GCE" or "Azure container service" cannot
 create external loadbalancers with both "TCP" and "UDP" protocols. So
-When deploying CoreDNS with `serviceType="LoadBalancer"` on such cloud
+When deploying CoreDNS with `service.type="LoadBalancer"` on such cloud
 environments, make sure you do not attempt to use both protocols at the same
 time.
