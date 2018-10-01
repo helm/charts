@@ -55,12 +55,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "minio.fullname" . }}
+                  name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "minio.fullname" . }}
+                  name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
                   key: secretkey
           livenessProbe:
             httpGet:
@@ -88,7 +88,7 @@ spec:
       volumes:
         - name: minio-user
           secret:
-            secretName: {{ template "minio.fullname" . }}
+            secretName: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
         - name: minio-server-config
           configMap:
             name: {{ template "minio.fullname" . }}
