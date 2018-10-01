@@ -11,6 +11,10 @@ image:
   # pullSecrets:
   #   - registry-secret
 
+busybox:
+  image:
+    repository: "busybox"
+
 cluster:
   name: "elasticsearch"
   # If you want X-Pack installed, switch to an image that includes it, enable this option and toggle the features you want

@@ -61,7 +61,7 @@ spec:
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
       - name: "sysctl"
-        image: "busybox"
+        image: "{{ .Values.busybox.image.repository }}"
         imagePullPolicy: "Always"
         command: ["sysctl", "-w", "vm.max_map_count=262144"]
         securityContext:
