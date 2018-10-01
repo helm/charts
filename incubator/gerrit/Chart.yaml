@@ -1,8 +1,8 @@
 apiVersion: v1
-appVersion: "1.0"
+appVersion: "2.15.3"
 description: A Helm chart for Kubernetes
 name: gerrit
-version: 0.1.2
+version: 0.1.0
 home: https://www.gerritcodereview.com/
 maintainers:
   - name: wbrefvem
