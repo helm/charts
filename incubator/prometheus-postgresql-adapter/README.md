@@ -15,7 +15,7 @@ This chart bootstraps a [prometheus-postgresql-adapter](https://github.com/times
 ## Prerequisites
   - Kubernetes 1.8+ with Beta APIs enabled
   - Prometheus instance
-  - PostgreSQL database (recommended to use either [pg_prometheus](https://github.com/timescale/pg_prometheus) or [TimescaleDB](https://github.com/timescale/timescaledb))
+  - [pg_prometheus](https://github.com/timescale/pg_prometheus). Using [TimescaleDB](https://github.com/timescale/timescaledb) is optional.
 
 ## Installing the Chart
 
