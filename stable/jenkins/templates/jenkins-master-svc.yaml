@@ -32,3 +32,7 @@ spec:
   loadBalancerIP: {{.Values.Master.LoadBalancerIP}}
   {{end}}
   {{end}}
+{{- if .Values.Master.ExternalIPs }}
+  externalIPs:
+{{ toYaml .Values.Master.ExternalIPs | indent 4 }}  
+{{- end }}
