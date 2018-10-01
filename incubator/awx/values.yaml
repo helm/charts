@@ -158,7 +158,7 @@ cacheReplicaCount: 1
 ## Cache image repository and version
 cacheImage:
   repository: memcached
-  tag: alpine
+  tag: 1.5.10
   pullPolicy: IfNotPresent
 
 ## Cache service port
@@ -205,7 +205,7 @@ taskReplicaCount: 1
 ## Awx-task image and tag
 taskImage:
   repository: ansible/awx_task
-  tag: latest
+  tag: "1.0.8"
   pullPolicy: IfNotPresent
 
 ## AWX secret key
@@ -246,7 +246,7 @@ webReplicaCount: 1
 ## Web image and tag
 webImage:
   repository: ansible/awx_web
-  tag: latest
+  tag: "1.0.8"
   pullPolicy: IfNotPresent
 
 ## Web service info
