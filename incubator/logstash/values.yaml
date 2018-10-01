@@ -18,6 +18,7 @@ image:
 
 service:
   type: ClusterIP
+  # clusterIP: None
   annotations: {}
     ## AWS example for use with LoadBalancer service type.
     # external-dns.alpha.kubernetes.io/hostname: logstash.cluster.local
