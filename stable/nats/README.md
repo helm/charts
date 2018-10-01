@@ -69,13 +69,13 @@ The following table lists the configurable parameters of the NATS chart and thei
 | `securityContext.enabled`            | Enable security context                                                                      | `true`                            |
 | `securityContext.fsGroup`            | Group ID for the container                                                                   | `1001`                            |
 | `securityContext.runAsUser`          | User ID for the container                                                                    | `1001`                            |
-| `updateStrategy`                     | Replicaset Update strategy                                                                   | `OnDelete`                        |
+| `statefulset.updateStrategy`         | Statefulsets Update strategy                                                                | `OnDelete`                        |
 | `rollingUpdatePartition`             | Partition for Rolling Update strategy                                                        | `nil`                             |
 | `podLabels`                          | Additional labels to be added to pods                                                        | {}                                |
 | `podAnnotations`                     | Annotations to be added to pods                                                              | {}                                |
 | `nodeSelector`                       | Node labels for pod assignment                                                               | `nil`                             |
 | `schedulerName`                      | Name of an alternate                                                                         | `nil`                             |
-| `antiAffinity`                       | Anti-affinity for pod assignment                                                             | {}                                |
+| `antiAffinity`                       | Anti-affinity for pod assignment                                                             | `soft`                            |
 | `tolerations`                        | Toleration labels for pod assignment                                                         | `nil`                             |
 | `resources`                          | CPU/Memory resource requests/limits                                                          | {}                                |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated                                                     | `30`                              |
@@ -162,4 +162,15 @@ To horizontally scale this chart, run the following command to scale the number 
 
 ```console
 $ kubectl scale statefulset my-release-nats --replicas=3
+```
+
+## Upgrading
+
+### To 1.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 1.0.0. The following example assumes that the release name is nats:
+
+```console
+$ kubectl delete statefulset nats-nats --cascade=false
 ```

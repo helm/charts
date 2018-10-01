@@ -40,6 +40,13 @@ spec:
       {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort.smtp))) }}
       nodePort: {{ .Values.service.nodePort.smtp }}
       {{- end }}
+    - name: pop3
+      port: {{ .Values.service.port.pop3 }}
+      protocol: TCP
+      targetPort: pop3
+      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort.pop3))) }}
+      nodePort: {{ .Values.service.nodePort.pop3 }}
+      {{- end }}
   selector:
     app: {{ template "inbucket.name" . }}
     release: {{ .Release.Name }}

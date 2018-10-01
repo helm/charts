@@ -12,7 +12,7 @@ $ helm install stable/elasticsearch-exporter
 
 ## Introduction
 
-This chart creates an Elasticsearch-Exporter deployment on a [Kubernetes](http://kubernetes.io) 
+This chart creates an Elasticsearch-Exporter deployment on a [Kubernetes](http://kubernetes.io)
 cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
@@ -50,9 +50,13 @@ Parameter | Description | Default
 `image.tag` | container image tag | `1.0.2`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `resources` | resource requests & limits | `{}`
-`priorityClassName` | priorityClassName | `nil` |
+`priorityClassName` | priorityClassName | `nil`
+`nodeSelector` | Node labels for pod assignment | `{}`
+`tolerations` | Node tolerations for pod assignment | `{}`
+`podAnnotations` | Pod annotations | `{}` |
 `service.type` | type of service to create | `ClusterIP`
 `service.httpPort` | port for the http service | `9108`
+`service.annotations` | Annotations on the http service | `{}`
 `es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
 `es.all` | if `true`, query stats for all nodes in the cluster, rather than just the node we connect to | `true`
 `es.indices` | if true, query stats for all indices in the cluster | `true`

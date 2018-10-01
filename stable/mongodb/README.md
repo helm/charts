@@ -56,6 +56,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `mongodbUsername`                       | MongoDB custom user                                                                          | `nil`                                                    |
 | `mongodbPassword`                       | MongoDB custom user password                                                                 | `random alhpanumeric string (10)`                        |
 | `mongodbDatabase`                       | Database to create                                                                           | `nil`                                                    |
+| `mongodbEnableIPv6`                     | Switch to enable/disable IPv6 on MongoDB                                                     | `true`                                                   |
 | `mongodbExtraFlags`                     | MongoDB additional command line flags                                                        | []                                                       |
 | `service.annotations`                   | Kubernetes service annotations                                                               | `{}`                                                     |
 | `service.type`                          | Kubernetes Service type                                                                      | `ClusterIP`                                              |
@@ -75,13 +76,15 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `nodeSelector`                          | Node labels for pod assignment                                                               | {}                                                       |
 | `affinity`                              | Affinity for pod assignment                                                                  | {}                                                       |
 | `tolerations`                           | Toleration labels for pod assignment                                                         | {}                                                       |
-| `securityContext.enabled`            | Enable security context                                                                      | `true`                            |
-| `securityContext.fsGroup`            | Group ID for the container                                                                   | `1001`                            |
-| `securityContext.runAsUser`          | User ID for the container                                                                    | `1001`              | `persistence.enabled`                   | Use a PVC to persist data                                                                    | `true`                                                   |
+| `securityContext.enabled`               | Enable security context                                                                      | `true`                                                   |
+| `securityContext.fsGroup`               | Group ID for the container                                                                   | `1001`                                                   |
+| `securityContext.runAsUser`             | User ID for the container                                                                    | `1001`                                                   |
+| `persistence.enabled`                   | Use a PVC to persist data                                                                    | `true`                                                   |
 | `persistence.storageClass`              | Storage class of backing PVC                                                                 | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`                | Use volume as ReadOnly or ReadWrite                                                          | `ReadWriteOnce`                                          |
 | `persistence.size`                      | Size of data volume                                                                          | `8Gi`                                                    |
 | `persistence.annotations`               | Persistent Volume annotations                                                                | `{}`                                                     |
+| `persistence.existingClaim`             | Name of an existing PVC to use (avoids creating one if this is given)                        | `nil`                                                    | 
 | `livenessProbe.initialDelaySeconds`     | Delay before liveness probe is initiated                                                     | `30`                                                     |
 | `livenessProbe.periodSeconds`           | How often to perform the probe                                                               | `10`                                                     |
 | `livenessProbe.timeoutSeconds`          | When the probe times out                                                                     | `5`                                                      |

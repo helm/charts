@@ -40,9 +40,9 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `serviceAccount.create`                 | Specifies if ServiceAccount should be created  | `true`                                                       |
 | `serviceAccount.name`                   | Name of the generated ServiceAccount           | Defaults to fullname template                                |
 | `superuserUsername`                     | Postgres superuser username                    | `stolon`                                                     |
-| `superuserPassword`                     | Postgres superuser password                    | random 40 characters                                         |
+| `superuserPassword`                     | Postgres superuser password                    | (Required)                                         |
 | `replicationUsername`                   | Replication username                           | `repluser`                                                   |
-| `replicationPassword`                   | Replication password                           | random 40 characters                                         |
+| `replicationPassword`                   | Replication password                           | (Required)                                         |
 | `store.backend`                         | Store backend (kubernetes/consul/etcd)         | `kubernetes`                                                 |
 | `store.endpoints`                       | Store backend endpoints                        | `nil`                                                        |
 | `store.kubeResourceKind`                | Kubernetes resource kind (only for kubernetes) | `configmap`                                                  |

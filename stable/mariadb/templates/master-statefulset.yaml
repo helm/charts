@@ -9,6 +9,11 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      release: "{{ .Release.Name }}"
+      component: "master"
+      app: {{ template "mariadb.name" . }}
   serviceName: "{{ template "master.fullname" . }}"
   replicas: 1
   updateStrategy:
@@ -26,6 +31,9 @@ spec:
         fsGroup: 1001
       {{- if eq .Values.master.antiAffinity "hard" }}
       affinity:
+      {{- with .Values.master.affinity  }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - topologyKey: "kubernetes.io/hostname"
@@ -35,6 +43,9 @@ spec:
                   release: "{{ .Release.Name }}"
       {{- else if eq .Values.master.antiAffinity "soft" }}
       affinity:
+      {{- with .Values.master.affinity  }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
@@ -44,6 +55,15 @@ spec:
                 matchLabels:
                   app: "{{ template "mariadb.name" . }}"
                   release: "{{ .Release.Name }}"
+      {{- else}}
+      {{- with .Values.master.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- with .Values.master.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -117,6 +137,10 @@ spec:
         - name: config
           mountPath: /opt/bitnami/mariadb/conf/my.cnf
           subPath: my.cnf
+{{- if .Values.master.persistence.existingClaim }}
+        - name: {{ .Values.master.persistence.existingClaim }}
+          mountPath: {{ .Values.master.persistence.mountPath }}
+{{- end }}
 {{- end }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
@@ -148,6 +172,11 @@ spec:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
       volumes:
+      {{- if and .Values.master.persistence.enabled .Values.master.persistence.existingClaim }}
+        - name: {{ .Values.master.persistence.existingClaim }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.master.persistence.existingClaim }}
+      {{ end }}
       {{- if .Values.master.config }}
         - name: config
           configMap:
@@ -162,7 +191,6 @@ spec:
         name: data
         labels:
           app: "{{ template "mariadb.name" . }}"
-          chart: {{ template "mariadb.chart" . }}
           component: "master"
           release: {{ .Release.Name | quote }}
           heritage: {{ .Release.Service | quote }}

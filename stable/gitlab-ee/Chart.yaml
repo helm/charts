@@ -1,6 +1,7 @@
 name: gitlab-ee
 deprecated: true
-version: 0.2.1
+version: 0.2.2
+appVersion: 9.4.1
 description: GitLab Enterprise Edition
 keywords:
 - git
@@ -14,6 +15,3 @@ sources:
 - https://hub.docker.com/r/gitlab/gitlab-ee/
 - https://docs.gitlab.com/omnibus/
 icon: https://gitlab.com/uploads/group/avatar/6543/gitlab-logo-square.png
-maintainers:
-- name: Quentin Rousseau
-  email: contact@quent.in

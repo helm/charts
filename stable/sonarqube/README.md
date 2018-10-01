@@ -65,10 +65,12 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `mysql.mysqlUser`                           | Mysql database user                       | `sonarUser`                                |
 | `mysql.mysqlPassword`                       | Mysql database password                   | `sonarPass`                                |
 | `mysql.mysqlDatabase`                       | Mysql database name                       | `sonarDB`                                  |
+| `mysql.mysqlParams`                         | Mysql parameters for JDBC connection string     | `{}`                                 |
 | `mysql.service.port`                        | Mysql port                                | `3306`                                     |
 | `resources`                                 | Sonarqube Pod resource requests & limits  | `{}`                                       |
 | `affinity`                                  | Node / Pod affinities                     | `{}`                                       |
 | `nodeSelector`                              | Node labels for pod assignment            | `{}`                                       |
+| `hostAliases`                               | Aliases for IPs in /etc/hosts             | `[]`                                       |
 | `tolerations`                               | List of node taints to tolerate           | `[]`                                       |
 | `plugins.install`                           | List of plugins to install                | `[]`                                       |
 | `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |

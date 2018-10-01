@@ -3,8 +3,12 @@ image:
   # This chart is compatible with different images, please choose one
   repository: datadog/agent               # Agent6
   # repository: datadog/dogstatsd         # Standalone DogStatsD6
-  tag: 6.3.2  # Use 6.3.2-jmx to enable jmx fetch collection
+  tag: 6.4.2  # Use 6.4.2-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
+  ## It is possible to specify docker registry credentials
+  ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+  # pullSecrets:
+  #    - name: regsecret
 
 # NB! Normally you need to keep Datadog DaemonSet enabled!
 # The exceptional case could be a situation when you need to run
@@ -72,8 +76,38 @@ deployment:
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
 ##
+
+# service:
+# type: LoadBalancer
+# annotations: {}
+
 kubeStateMetrics:
   enabled: true
+
+# This is the new cluster agent implementation that handles cluster-wide
+# metrics more cleanly, separates concerns for better rbac, and implements
+# the external metrics API so you can autoscale HPAs based on datadog
+# metrics
+clusterAgent:
+  image:
+    repository: datadog/cluster-agent
+    tag: 0.9.1
+    pullPolicy: IfNotPresent
+  enabled: false
+  ## This needs to be at least 32 characters a-zA-z
+  ## It is a preshared key between the node agents and the cluster agent
+  token: ""
+  replicas: 1
+  ## Enable the metricsProvider to be able to scale based on metrics in Datadog
+  metricsProvider:
+    enabled: false
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
 
 datadog:
   ## You'll need to set this to your Datadog API key before the agent will run.
@@ -83,6 +117,13 @@ datadog:
 
   ## Use existing Secret which stores API key instead of creating a new one
   # apiKeyExistingSecret:
+
+  ## If you are using clusterAgent.metricsProvider.enabled = true, you'll need
+  ## a datadog app key for read access to the metrics
+  # appKey:
+
+  ## Use existing Secret which stores APP key instead of creating a new one
+  # appKeyExistingSecret:
 
   ## dd-agent container name
   ##
@@ -120,6 +161,11 @@ datadog:
   ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
   ##
   # apmEnabled: true
+
+  ## Un-comment this to enable live process monitoring
+  ## ref: https://docs.datadoghq.com/graphing/infrastructure/process/#kubernetes-daemonset
+  ##
+  # processAgentEnabled: true
 
   ## The dd-agent supports many environment variables
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#environment-variables

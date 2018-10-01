@@ -20,6 +20,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nexus.nodeSelector | indent 8 }}
       {{- end }}
+      {{- if .Values.nexus.hostAliases }}
+      hostAliases:
+{{ toYaml .Values.nexus.hostAliases | indent 8 }}
+      {{- end }}
       containers:
         - name: nexus
           image: {{ .Values.nexus.imageName }}:{{ .Values.nexus.imageTag }}
@@ -162,3 +166,7 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

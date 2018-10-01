@@ -70,6 +70,17 @@ data:
       address = ":8880"
       compress = {{ .Values.gzip.enabled }}
       {{- end }}
+      {{- if .Values.dashboard.enabled }}
+      [entryPoints.traefik]
+      address = ":8080"
+        {{- if .Values.dashboard.auth }}
+        {{- if .Values.dashboard.auth.basic }}
+        [entryPoints.traefik.auth]
+          [entryPoints.traefik.auth.basic]
+            users = [{{ range $key, $value := .Values.dashboard.auth.basic }}"{{ $key }}:{{ $value }}",{{ end }}]
+        {{- end }}
+        {{- end }}
+      {{- end }}
     [kubernetes]
     {{- if .Values.kubernetes}}
       {{- if .Values.kubernetes.endpoint }}
@@ -88,6 +99,18 @@ data:
       {{- end}}
       {{- if .Values.kubernetes.ingressClass }}
     ingressClass = {{ .Values.kubernetes.ingressClass | quote }}
+      {{- end}}
+      {{- if .Values.kubernetes.ingressEndpoint }}
+      [kubernetes.ingressEndpoint]
+        {{- if .Values.kubernetes.ingressEndpoint.hostname }}
+      hostname = {{ .Values.kubernetes.ingressEndpoint.hostname | quote }}
+        {{- end}}
+        {{- if .Values.kubernetes.ingressEndpoint.ip }}
+      ip = {{ .Values.kubernetes.ingressEndpoint.ip | quote }}
+        {{- end}}
+        {{- if .Values.kubernetes.ingressEndpoint.publishedService }}
+      publishedService = {{ .Values.kubernetes.ingressEndpoint.publishedService | quote }}
+        {{- end}}
       {{- end}}
     {{- end}}
     {{- if .Values.accessLogs.enabled }}
@@ -126,16 +149,16 @@ data:
     {{- end }}
     {{- if .Values.kvprovider.consul }}
     [consul]
-    endpoint = "{{ .Values.kvprovider.consul.endpoint }}"
+    endpoint = {{ .Values.kvprovider.consul.endpoint | quote }}
     watch = {{ .Values.kvprovider.consul.watch }}
-    prefix = {{ .Values.kvprovider.consul.prefix }}
-    {{- if .Values.kvprovider.consul.username }}username = {{ .Values.kvprovider.consul.username }}{{- end }}
-    {{- if .Values.kvprovider.consul.password }}password = {{ .Values.kvprovider.consul.password }}{{- end }}
+    prefix = {{ .Values.kvprovider.consul.prefix | quote }}
+    {{- if .Values.kvprovider.consul.username }}username = {{ .Values.kvprovider.consul.username | quote }}{{- end }}
+    {{- if .Values.kvprovider.consul.password }}password = {{ .Values.kvprovider.consul.password | quote  }}{{- end }}
       {{- if .Values.kvprovider.consul.tls }}
       [consul.tls]
       {{- end }}
       {{ range $key, $value := .Values.kvprovider.consul.tls }}
-      {{ $key }} = {{ $value }}
+      {{ $key }} = {{ $value | quote }}
       {{ end }}
     {{- end }}
     {{- if .Values.kvprovider.boltdb }}
@@ -199,53 +222,50 @@ data:
     {{- if .Values.acme.domains.domainsList }}{{ template "traefik.acme.domains" . }}{{- end }}
     {{- end }}
     {{- end }}
-    {{- if or .Values.dashboard.enabled .Values.metrics.prometheus.enabled .Values.metrics.statsd.enabled .Values.metrics.datadog.enabled }}
-    [web]
-    address = ":8080"
-    {{- end }}
     {{- if .Values.dashboard.enabled }}
-      {{- if .Values.dashboard.auth }}
-      {{- if .Values.dashboard.auth.basic }}
-      [web.auth.basic]
-        users = [{{ range $key, $value := .Values.dashboard.auth.basic }}"{{ $key }}:{{ $value }}",{{ end }}]
-      {{- end}}
-      {{- end}}
+    [api]
+      entryPoint = "traefik"
+      dashboard = true
       {{- if .Values.dashboard.statistics }}
       {{- if .Values.dashboard.statistics.recentErrors }}
-      [web.statistics]
-        RecentErrors = {{ .Values.dashboard.statistics.recentErrors }}
-      {{- end}}
-      {{- end}}
+      [api.statistics]
+        recentErrors = {{ .Values.dashboard.statistics.recentErrors }}
+      {{- end }}
+      {{- end }}
     {{- end }}
-    {{- if .Values.metrics.prometheus.enabled }}
-    [web.metrics.prometheus]
-      {{- if .Values.metrics.prometheus.buckets }}
-      buckets = [
-        {{- range $idx, $element := .Values.metrics.prometheus.buckets }}
-            {{- if $idx }},{{ end }}
-            {{- printf "%.1f" $element }}
+    {{- if or .Values.metrics.prometheus.enabled .Values.metrics.statsd.enabled .Values.metrics.datadog.enabled }}
+    [metrics]
+    {{- end }}
+      {{- if .Values.metrics.prometheus.enabled }}
+      [metrics.prometheus]
+        entryPoint = "traefik"
+        {{- if .Values.metrics.prometheus.buckets }}
+        buckets = [
+          {{- range $idx, $element := .Values.metrics.prometheus.buckets }}
+              {{- if $idx }},{{ end }}
+              {{- printf "%.1f" $element }}
+          {{- end -}}
+          ]
         {{- end -}}
-        ]
-        {{- end -}}
-    {{- end }}
-    {{- if .Values.metrics.datadog.enabled }}
-    [web.metrics.datadog]
-      {{- if .Values.metrics.datadog.address }}
-      address = {{ .Values.metrics.datadog.address | quote }}
-      {{- end}}
-      {{- if .Values.metrics.datadog.pushinterval }}
-      pushinterval = {{ .Values.metrics.datadog.pushinterval | quote }}
-      {{- end}}
-    {{- end }}
-    {{- if .Values.metrics.statsd.enabled }}
-    [web.metrics.statsd]
-      {{- if .Values.metrics.statsd.address }}
-      address = {{ .Values.metrics.statsd.address | quote }}
-      {{- end}}
-      {{- if .Values.metrics.statsd.pushinterval }}
-      pushinterval = {{ .Values.metrics.statsd.pushinterval | quote }}
-      {{- end}}
-    {{- end }}
+      {{- end }}
+      {{- if .Values.metrics.datadog.enabled }}
+      [metrics.datadog]
+        {{- if .Values.metrics.datadog.address }}
+        address = {{ .Values.metrics.datadog.address | quote }}
+        {{- end}}
+        {{- if .Values.metrics.datadog.pushinterval }}
+        pushinterval = {{ .Values.metrics.datadog.pushinterval | quote }}
+        {{- end}}
+      {{- end }}
+      {{- if .Values.metrics.statsd.enabled }}
+      [metrics.statsd]
+        {{- if .Values.metrics.statsd.address }}
+        address = {{ .Values.metrics.statsd.address | quote }}
+        {{- end}}
+        {{- if .Values.metrics.statsd.pushinterval }}
+        pushinterval = {{ .Values.metrics.statsd.pushinterval | quote }}
+        {{- end}}
+      {{- end }}
     {{- if .Values.tracing.enabled }}
     [tracing]
       backend = {{ .Values.tracing.backend | quote }}

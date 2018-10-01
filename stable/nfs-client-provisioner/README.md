@@ -5,7 +5,7 @@ The [NFS client provisioner](https://github.com/kubernetes-incubator/external-st
 ## TL;DR;
 
 ```console
-$ helm install stable/nfs-client-provisioner
+$ helm install --set nfs.server=x.x.x.x --set nfs.path=/exported/path stable/nfs-client-provisioner
 ```
 
 ## Introduction
@@ -45,17 +45,21 @@ The following tables lists the configurable parameters of this chart and their d
 
 | Parameter                         | Description                                 | Default                                                   |
 | --------------------------------- | -------------------------------------       | --------------------------------------------------------- |
-| `replicaCount`                    | number of provisioner instances to deployed | `1`                                                         |
-| `strategyType`                    | specifies the strategy used to replace old Pods by new ones | `Recreate`                                  |
-| `image.repository`                | provisioner image                           | `quay.io/external_storage/nfs-client-provisioner`         |
-| `image.tag`                       | version of provisioner image                | `v3.0.1-k8s1.11`                                          |
-| `image.pullPolicy`                | image pull policy                           | `IfNotPresent`                                            |
-| `storageclass.name`               | name of the storageclass                    | `nfs-client`                                              |
+| `replicaCount`                    | Number of provisioner instances to deployed | `1`                                                         |
+| `strategyType`                    | Specifies the strategy used to replace old Pods by new ones | `Recreate`                                  |
+| `image.repository`                | Provisioner image                           | `quay.io/external_storage/nfs-client-provisioner`         |
+| `image.tag`                       | Version of provisioner image                | `v3.1.0-k8s1.11`                                          |
+| `image.pullPolicy`                | Image pull policy                           | `IfNotPresent`                                            |
+| `storageclass.name`               | Name of the storageclass                    | `nfs-client`                                              |
 | `storageclass.defaultClass`       | Set as the default StorageClass             | `false`	                                              |
 | `storageclass.allowVolumeExpansion`       | Allow expanding the volume          | `true`	                                              |
-| `storageclass.reclaimPolicy`    | Method used to reclaim an obsoleted volume                 | `Delete` 	                                      |
-| `storageclass.provisionerName`    | name of the provisionerName                 | null 	                                              |
-| `storageclass.archiveOnDelete`    | archive pvc when deleting                   | `true` 	                                              |
-| `nfs.server`                      | hostname of the NFS server                  | null (ip or hostname)                                     |
-| `nfs.path`                        | basepath of the mount point to be used      | `/ifs/kubernetes`                                         |
+| `storageclass.reclaimPolicy`    | Method used to reclaim an obsoleted volume                 | `Delete` 	                              |
+| `storageclass.provisionerName`    | Name of the provisionerName                 | null 	                                              |
+| `storageclass.archiveOnDelete`    | Archive pvc when deleting                   | `true` 	                                              |
+| `nfs.server`                      | Hostname of the NFS server                  | null (ip or hostname)                                     |
+| `nfs.path`                        | Basepath of the mount point to be used      | `/ifs/kubernetes`                                         |
 | `resources`                       | Resources required (e.g. CPU, memory)       | `{}`                                                      |
+| `rbac.create` 		    | Use Role-based Access Control		  | `true`						      |
+| `podSecurityPolicy.enabled`	    | Create & use Pod Security Policy resources  | `false`						      |
+| `serviceAccount.create`	    | Should we create a ServiceAccount	          | `true`						      |
+| `serviceAccount.name`		    | Name of the ServiceAccount to use           | null						      |

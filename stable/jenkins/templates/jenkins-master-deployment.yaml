@@ -10,7 +10,7 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: RollingUpdate
+    type: {{ if .Values.Persistence.Enabled }}Recreate{{ else }}RollingUpdate{{ end }}
   selector:
     matchLabels:
       component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
@@ -50,6 +50,10 @@ spec:
 {{- end }}
 {{- end }}
       serviceAccountName: {{ if .Values.rbac.install }}{{ template "jenkins.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+{{- if .Values.Master.HostNetworking }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet 
+{{- end }}
       initContainers:
         - name: "copy-default-config"
           image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"

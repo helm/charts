@@ -1,4 +1,8 @@
+{{- if .Capabilities.APIVersions.Has "apps/v1beta1" }}
+apiVersion: apps/v1beta1
+{{- else }}
 apiVersion: apps/v1
+{{- end }}
 kind: Deployment
 metadata:
   name: {{ include "chaoskube.fullname" . }}
@@ -33,6 +37,7 @@ spec:
             {{- if .Values.debug }}
             - --debug
             {{- end }}
+            - --minimum-age={{ .Values.minimumAge }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
 {{- if .Values.priorityClassName }}

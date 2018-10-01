@@ -10,6 +10,11 @@ metadata:
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      release: "{{ .Release.Name }}"
+      component: "slave"
+      app: {{ template "mariadb.name" . }}
   serviceName: "{{ template "slave.fullname" . }}"
   replicas: {{ .Values.slave.replicas }}
   updateStrategy:
@@ -27,6 +32,9 @@ spec:
         fsGroup: 1001
       {{- if eq .Values.slave.antiAffinity "hard" }}
       affinity:
+      {{- with .Values.slave.affinity  }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - topologyKey: "kubernetes.io/hostname"
@@ -36,6 +44,9 @@ spec:
                   release: "{{ .Release.Name }}"
       {{- else if eq .Values.slave.antiAffinity "soft" }}
       affinity:
+      {{- with .Values.slave.affinity  }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
@@ -45,6 +56,15 @@ spec:
                 matchLabels:
                   app: "{{ template "mariadb.name" . }}"
                   release: "{{ .Release.Name }}"
+      {{- else}}
+      {{- with .Values.slave.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- with .Values.slave.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -77,11 +97,11 @@ spec:
           value: "slave"
         - name: MARIADB_MASTER_HOST
           value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_MASTER_PORT
+        - name: MARIADB_MASTER_PORT_NUMBER
           value: "3306"
-        - name: MARIADB_MASTER_USER
+        - name: MARIADB_MASTER_ROOT_USER
           value: "root"
-        - name: MARIADB_MASTER_PASSWORD
+        - name: MARIADB_MASTER_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mariadb.fullname" . }}
@@ -167,7 +187,6 @@ spec:
         name: data
         labels:
           app: "{{ template "mariadb.name" . }}"
-          chart: {{ template "mariadb.chart" . }}
           component: "slave"
           release: {{ .Release.Name | quote }}
           heritage: {{ .Release.Service | quote }}
