@@ -1,0 +1,32 @@
+---
+credentialsSecret: google-cloud-tasks-pull-to-push-credentials
+project: my-project
+#location: us-central1
+#queue: pull-to-push
+#rate: 1s
+#leaseDuration: 1m
+#pull:
+#  minBackoff: 2s
+#  maxBackoff: 30s
+#  maxDoublings: 4
+#push:
+#  minBackoff: 5s
+#  maxBackoff: 1h
+#  maxDoublings: 5
+
+image:
+  repository: tclift/google-cloud-tasks-pull-to-push
+  tag: 0.1.0
+#  pullPolicy: IfNotPresent
+
+# max memory will depend on your task payload sizes
+#resources:
+#  requests:
+#    cpu: '0.002'
+#    memory: '30Mi'
+#  limits:
+#    cpu: '0.05'
+#    memory: '100Mi'
+
+#nameOverride: google-cloud-tasks-pull-to-push
+#restartPolicy: Always
