@@ -62,6 +62,13 @@ data:
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
       {{- end }}
+        {{- if .Values.ssl.auth }}
+        {{- if .Values.ssl.auth.basic }}
+        [entryPoints.https.auth]
+          [entryPoints.https.auth.basic]
+            users = [{{ range $key, $value := .Values.ssl.auth.basic }}"{{ $key }}:{{ $value }}",{{ end }}]
+        {{- end }}
+        {{- end }}
       {{- else }}
       [entryPoints.httpn]
       {{- if .Values.whiteListSourceRange }}
