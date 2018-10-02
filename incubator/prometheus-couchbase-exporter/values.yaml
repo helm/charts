@@ -1,0 +1,53 @@
+## number of exporter instances
+##
+replicaCount: 1
+
+image:
+  repository: vdimitrov/couchbase-exporter
+  tag: 1.0-alpine
+  pullPolicy: IfNotPresent
+
+service:
+  name: prometheus-couchbase-exporter
+  type: ClusterIP
+  port: 9420
+  annotations: {}
+
+couchbase:
+  ## Host of the Couchbase cluster to connect to.
+  ## This could be a local node (localhost, for instance), or the address
+  ## of a remote Couchbase server. If server is running in Kubernetes,
+  ## this should be the name of the Service
+  ##
+  host: cb-example
+
+  ## Port of the Couchbase cluster to connect to.
+  ##
+  port: 8091
+
+  ## Username of the Couchbase cluster to connect to.
+  ##
+  username: Administrator
+
+  ## Password of the Couchbase cluster to connect to.
+  ##
+  password: password
+
+resources: {}
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+annotations: {}
+#  prometheus.io/scrape: "true"
+#  prometheus.io/path: "/"
+#  prometheus.io/port: "{{ .Values.service.port }}"
