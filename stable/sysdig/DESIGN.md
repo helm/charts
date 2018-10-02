@@ -28,3 +28,5 @@ Eventually, they will be fixed. But meanwhile a workaround is to create a
 serviceAccount using the `oc` utility. Also manage permissions for creating privileged
 containers and allowing hostPath mount with `oc` and deploy the Chart with the
 `serviceAccount.name` created with `oc`.
+
+You can see more details about this workaround on [Sysdig Documentation about OpenShift](https://sysdigdocs.atlassian.net/wiki/spaces/Platform/pages/256671843/).

@@ -130,4 +130,4 @@ $ helm install --name sysdig-agent-1 \
 
 And that's all, you will have your Custom App Check up and running.
 
-You can get more information about [Custom App Checks in Sysdig's Official Documentation](https://sysdigdocs.atlassian.net/wiki/spaces/Monitor/pages/204767436/Create+a+Custom+App+Check).
+You can get more information about [Custom App Checks in Sysdig's Official Documentation](https://sysdigdocs.atlassian.net/wiki/spaces/Monitor/pages/204767436/).
