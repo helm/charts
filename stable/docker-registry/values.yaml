@@ -58,6 +58,7 @@ persistence:
 
 # set the type of filesystem to use: filesystem, s3
 storage: filesystem
+storageRedirectDisable: false
 
 # Set this to name of secret for tls certs
 # tlsSecretName: registry.docker.example.com
@@ -76,6 +77,7 @@ secrets:
 # Options for s3 storage type:
 # s3:
 #  region: us-east-1
+#  regionendpoint: http://<my-s3-address>:<my-s3-port>
 #  bucket: my-bucket
 #  encrypt: false
 #  secure: true

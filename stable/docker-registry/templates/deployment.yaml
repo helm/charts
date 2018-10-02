@@ -83,6 +83,10 @@ spec:
             - name: REGISTRY_HTTP_TLS_KEY
               value: /etc/ssl/docker/tls.key
 {{- end }}
+{{- if .Values.storageRedirectDisable }}
+            - name: REGISTRY_STORAGE_REDIRECT_DISABLE
+              value: true
+{{- end }}
 {{- if eq .Values.storage "filesystem" }}
             - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
               value: "/var/lib/registry"
@@ -101,6 +105,10 @@ spec:
             {{- end }}
             - name: REGISTRY_STORAGE_S3_REGION
               value: {{ required ".Values.s3.region is required" .Values.s3.region }}
+          {{- if .Values.s3.regionendpoint }}
+            - name: REGISTRY_STORAGE_S3_REGIONENDPOINT
+              value: {{ .Values.s3.regionendpoint }}
+          {{- end }}
             - name: REGISTRY_STORAGE_S3_BUCKET
               value: {{ required ".Values.s3.bucket is required" .Values.s3.bucket }}
           {{- if .Values.s3.encrypt }}
