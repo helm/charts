@@ -131,3 +131,18 @@ $ helm install --name sysdig-agent-1 \
 And that's all, you will have your Custom App Check up and running.
 
 You can get more information about [Custom App Checks in Sysdig's Official Documentation](https://sysdigdocs.atlassian.net/wiki/spaces/Monitor/pages/204767436/).
+
+### Automating the generation of custom-app-checks.yaml file
+
+Sometimes edit YAML files with multistrings is a bit cumbersome and error prone, so we added a script for automating this step and make your life easier.
+
+This script lives in [Helm Chart repository](https://github.com/helm/charts) in the `stable/sysdig/scripts` directory.
+
+Imagine that you would like to add rules for your Redis, MongoDB and Traefik containers, you have to:
+
+```bash
+$ git clone https://github.com/kubernetes/charts.git
+$ cd stable/sysdig
+$ ./scripts/appchecks2helm appChecks/solr.py appChecks/traefik.py appChecks/nats.py > custom-app-checks.yaml
+$ helm install --name sysdig -f custom-app-checks.yaml stable/sysdig
+```
