@@ -3,13 +3,15 @@
 # Declare variables to be passed into your templates.
 image:
   repository: quay.io/prometheus/node-exporter
-  tag: v0.15.2
+  tag: v0.16.0
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 9100
   targetPort: 9100
+  annotations:
+    prometheus.io/scrape: "true"
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
