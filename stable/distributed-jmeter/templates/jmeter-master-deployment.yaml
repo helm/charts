@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-master
+  labels:
+    app.kubernetes.io/name: {{ include "distributed-jmeter.name" . }}
+    helm.sh/chart: {{ include "distributed-jmeter.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    role: master
+spec:
+  replicas: {{ .Values.master.replicaCount }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "distributed-jmeter.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}-master
+      role: master
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name:  {{ include "distributed-jmeter.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}-master
+        role: master
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.master.image.repository }}:{{ .Values.master.tag }}"
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          args: ["master"]
+          ports:
+            - containerPort: 60000

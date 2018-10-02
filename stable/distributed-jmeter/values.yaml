@@ -1,0 +1,19 @@
+# Default values for distributed-jmeter.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+master:
+  name: master
+  replicaCount: 1
+  image:
+    repository: pedrocesarti/jmeter-docker
+    tag: 3.3
+
+server:
+  name: server
+  replicaCount: 3
+  image:
+    repository: pedrocesarti/jmeter-docker
+    tag: 3.3
+
+pullPolicy: IfNotPresent

@@ -1,0 +1,2 @@
+JMeter is now starting.
+
