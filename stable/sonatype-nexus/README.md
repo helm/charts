@@ -64,7 +64,6 @@ The following table lists the configurable parameters of the Nexus chart and the
 | ------------------------------------------  | ----------------------------------  | ----------------------------------------|
 | `replicaCount`                              | Number of Nexus service replicas    | `1`                                     |
 | `deploymentStrategy`                        | Deployment Strategy     |  `rollingUpdate` |
-| `namespace`                        | pvc namespace     |  `default` |
 | `nexus.imageName`                           | Nexus image                         | `quay.io/travelaudience/docker-nexus`   |
 | `nexus.imageTag`                            | Version of Nexus                    | `3.9.0`                                 |
 | `nexus.imagePullPolicy`                     | Nexus image pull policy             | `IfNotPresent`                          |

@@ -5,7 +5,6 @@ deploymentStrategy: {}
   #   maxSurge: 25%
   #   maxUnavailable: 25%
   # type: RollingUpdate
-namespace: default
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
