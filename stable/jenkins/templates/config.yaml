@@ -107,10 +107,10 @@ data:
           <namespace>{{ default .Release.Namespace .Values.Master.SlaveKubernetesNamespace }}</namespace>
 {{- if .Values.Master.SlaveKubernetesNamespace }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{.Release.Namespace}}:50000</jenkinsTunnel>
+          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{.Release.Namespace}}:{{ .Values.Master.SlaveListenerPort }}</jenkinsTunnel>
 {{- else }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:50000</jenkinsTunnel>
+          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:{{ .Values.Master.SlaveListenerPort }}</jenkinsTunnel>
 {{- end }}
           <containerCap>10</containerCap>
           <retentionTimeout>5</retentionTimeout>
@@ -131,7 +131,7 @@ data:
         </hudson.model.AllView>
       </views>
       <primaryView>All</primaryView>
-      <slaveAgentPort>50000</slaveAgentPort>
+      <slaveAgentPort>{{ .Values.Master.SlaveListenerPort }}</slaveAgentPort>
       <disabledAgentProtocols>
 {{- range .Values.Master.DisabledAgentProtocols }}
         <string>{{ . }}</string>
@@ -192,9 +192,15 @@ data:
   apply_config.sh: |-
     mkdir -p /usr/share/jenkins/ref/secrets/;
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
-    cp -n /var/jenkins_config/config.xml /var/jenkins_home;
-    cp -n /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
-    cp -n /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
+{{- if .Values.Master.OverwriteConfig }}
+    cp /var/jenkins_config/config.xml /var/jenkins_home;
+    cp /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
+    cp /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
+{{- else }}
+    cp --no-clobber /var/jenkins_config/config.xml /var/jenkins_home;
+    cp --no-clobber /var/jenkins_config/jenkins.CLI.xml /var/jenkins_home;
+    cp --no-clobber /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
+{{- end }}
 {{- if .Values.Master.InstallPlugins }}
     # Install missing plugins
     cp /var/jenkins_config/plugins.txt /var/jenkins_home;

@@ -80,6 +80,9 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
+{{- if .Values.extraInitContainers }}
+{{ tpl .Values.extraInitContainers . | indent 6 }}
+{{- end }}
       containers:
       - name: elasticsearch
         env:
@@ -90,7 +93,7 @@ spec:
           value: "false"
 {{- end }}
         - name: DISCOVERY_SERVICE
-          value: {{ template "elasticsearch.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.cluster.kubernetesDomain }}
+          value: {{ template "elasticsearch.fullname" . }}-discovery
         - name: PROCESSORS
           valueFrom:
             resourceFieldRef:
@@ -157,7 +160,10 @@ spec:
   {{- if not .Values.master.persistence.enabled }}
       - name: data
         emptyDir: {}
-  {{- else }}
+  {{- end }}
+  updateStrategy:
+    type: {{ .Values.master.updateStrategy.type }}
+  {{- if .Values.master.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: {{ .Values.master.persistence.name }}

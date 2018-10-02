@@ -62,12 +62,11 @@ The following table lists the configurable parameters of the elasticsearch chart
 
 |              Parameter               |                             Description                             |               Default                |
 | ------------------------------------ | ------------------------------------------------------------------- | ------------------------------------ |
-| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.4.0`                              |
+| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.4.1`                              |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
-| `image.tag`                          | Container image tag                                                 | `6.4.0`                              |
+| `image.tag`                          | Container image tag                                                 | `6.4.1`                              |
 | `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                      |
-| `cluster.kubernetesDomain`           | Kubernetes cluster domain name                                      | `cluster.local`                      |
 | `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                              |
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                 |
 | `cluster.keystoreSecret`             | Name of secret holding secure config options in an es keystore      | `nil`                                |
@@ -114,6 +113,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.tolerations`                   | Data tolerations                                                    | `[]`                                 |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                               |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                               |
+| `extraInitContainers`                | Additional init container passed through the tpl 	                 | ``                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -127,7 +127,7 @@ The YAML value of cluster.config is appended to elasticsearch.yml file for addit
 
 ## Application Version
 
-This chart aims to support Elasticsearch v2 and v5 deployments by specifying the `values.yaml` parameter `appVersion`.
+This chart aims to support Elasticsearch v2 to v6 deployments by specifying the `values.yaml` parameter `appVersion`.
 
 ### Version Specific Features
 
@@ -167,6 +167,19 @@ Elasticsearch v5 terminology has updated, and now refers to a `Client Node` as a
 
 More info: https://www.elastic.co/guide/en/elasticsearch/reference/5.5/modules-node.html#coordinating-node
 
+## Enabling elasticsearch interal monitoring 
+Requires version 6.3+ and standard non `oss` repository defined. Starting with 6.3 Xpack is partially free and enabled by default. You need to set a new config to enable the collection of these internal metrics. (https://www.elastic.co/guide/en/elasticsearch/reference/6.3/monitoring-settings.html)
+
+To do this through this helm chart override with the three following changes:
+```
+image.repository: docker.elastic.co/elasticsearch/elasticsearch
+cluster.xpackEnable: true
+cluster.env.XPACK_MONITORING_ENABLED: true
+```
+
+Note: to see these changes you will need to update your kibana repo to `image.repository: docker.elastic.co/kibana/kibana` instead of the `oss` version
+
+
 ## Select right storage class for SSD volumes
 
 ### GCE + Kubernetes 1.5
@@ -189,3 +202,11 @@ Create cluster with Storage class `ssd` on Kubernetes 1.5+
 ```
 $ helm install incubator/elasticsearch --name my-release --set data.storageClass=ssd,data.storage=100Gi
 ```
+
+### Usage of the `tpl` Function
+
+The `tpl` function allows us to pass string values from `values.yaml` through the templating engine. It is used for the following values:
+
+* `extraInitContainers`
+
+It is important that these values be configured as strings. Otherwise, installation will fail.

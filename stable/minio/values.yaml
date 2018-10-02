@@ -2,7 +2,7 @@
 ##
 image:
   repository: minio/minio
-  tag: RELEASE.2018-09-01T00-38-25Z
+  tag: RELEASE.2018-09-12T18-49-56Z
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
@@ -10,7 +10,7 @@ image:
 ##
 mcImage:
   repository: minio/mc
-  tag: RELEASE.2018-08-18T02-13-04Z
+  tag: RELEASE.2018-09-10T23-39-12Z
   pullPolicy: IfNotPresent
 
 ## minio server mode, i.e. standalone or distributed.
@@ -27,6 +27,7 @@ priorityClassName: ""
 ## number of nodes (only used for Minio distributed mode)
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
+existingSecret: ""
 accessKey: "AKIAIOSFODNN7EXAMPLE"
 secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 configPath: "/root/.minio/"
@@ -72,6 +73,8 @@ service:
   clusterIP: ~
   port: 9000
   # nodePort: 31311
+  # externalIPs:
+  #   - externalIp1
   annotations: {}
     # prometheus.io/scrape: 'true'
     # prometheus.io/path:   '/minio/prometheus/metrics'
@@ -96,6 +99,21 @@ ingress:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+## Liveness and Readiness probe values.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+livenessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 30
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 15
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
