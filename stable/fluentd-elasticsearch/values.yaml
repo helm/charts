@@ -18,6 +18,8 @@ resources: {}
   #   memory: 200Mi
 
 elasticsearch:
+  # scheme defaults to http if not set
+  # scheme: https
   host: 'elasticsearch-client'
   port: 9200
   buffer_chunk_limit: 2M
