@@ -73,7 +73,7 @@ clusterDomain: cluster.local
 service:
   annotations: {}
   type: ClusterIP
-  #clusterIP: None
+  # clusterIP: None
   port: 27017
 
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
