@@ -87,7 +87,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | `fullnameOverride`                     | Override the full resource names                                                                                             | `{release-name}-traefik` (or traefik if release-name is traefik) |
 | `image`                                | Traefik image name                                                                                                           | `traefik`                                         |
-| `imageTag`                             | The version of the official Traefik image to use                                                                             | `1.7.0`                                           |
+| `imageTag`                             | The version of the official Traefik image to use                                                                             | `1.7.1`                                           |
 | `serviceType`                          | A valid Kubernetes service type                                                                                              | `LoadBalancer`                                    |
 | `loadBalancerIP`                       | An available static IP you have reserved on your cloud platform                                                              | None                                              |
 | `loadBalancerSourceRanges`             | List of IP CIDRs allowed access to load balancer (if supported)                                                              | None                                              |
@@ -228,7 +228,7 @@ Given you have:
 * a running [etcd operator](https://github.com/helm/charts/tree/master/stable/etcd-operator):
 * you have created a master chart requiring this traefik chart
 * an existing pvc with an `acme.json` called `acme-certs-pvc`
-* you have an etcd template like: 
+* you have an etcd template like:
   ```
   apiVersion: "etcd.database.coreos.com/v1beta2"
   kind: "EtcdCluster"
