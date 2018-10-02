@@ -16,9 +16,9 @@ image:
   pullPolicy: IfNotPresent
 
   ## The repository and image
-  ## ref: https://hub.docker.com/r/pedrocesarti/jmeter-docker/ 
+  ## ref: https://hub.docker.com/r/pedrocesarti/jmeter-docker/
   repository: "pedrocesarti/jmeter-docker"
 
   ## The tag for the image
-  ## ref: https://hub.docker.com/r/pedrocesarti/jmeter-docker/tags/ 
+  ## ref: https://hub.docker.com/r/pedrocesarti/jmeter-docker/tags/
   tag: 3.3
