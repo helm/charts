@@ -25,8 +25,8 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.master.image.repository }}:{{ .Values.master.tag }}"
-          imagePullPolicy: {{ .Values.pullPolicy }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: ["master"]
           ports:
             - containerPort: 60000
