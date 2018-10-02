@@ -7,7 +7,8 @@ serviceAccount:
 
 replicas: 1
 
-deploymentStrategy: RollingUpdate
+updateStrategy:
+  type: RollingUpdate
 
 image:
   repository: grafana/grafana

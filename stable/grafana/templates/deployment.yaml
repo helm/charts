@@ -18,10 +18,7 @@ spec:
       app: {{ template "grafana.name" . }}
       release: {{ .Release.Name }}
   strategy:
-    type: {{ .Values.deploymentStrategy }}
-  {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
-    rollingUpdate: null
-  {{- end }}    
+{{ toYaml .Values.updateStrategy | indent 4 }}   
   template:
     metadata:
       labels:

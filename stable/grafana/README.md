@@ -32,7 +32,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                       | Description                                   | Default                                                 |
 |---------------------------------|-----------------------------------------------|---------------------------------------------------------|
 | `replicas`                      | Number of nodes                               | `1`                                                     |
-| `deploymentStrategy`            | Deployment strategy                           | `RollingUpdate`                                         |
+| `updateStrategy`            | Deployment strategy                           | `{"type": "RollingUpdate"}`                                         |
 | `securityContext`               | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `image.repository`              | Image repository                              | `grafana/grafana`                                       |
 | `image.tag`                     | Image tag. (`Must be >= 5.0.0`)               | `5.2.4`                                                 |
