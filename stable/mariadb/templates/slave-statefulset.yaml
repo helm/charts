@@ -55,7 +55,7 @@ spec:
       initContainers:
       - name: init-{{ template "mariadb.fullname" . }}
         image: "{{ template "mariadb.image" . }}"
-        command: ["sh", "-c", "chmod 0777 /bitnami/mariadb"]
+        command: ["sh", "-c", "chown 1001 /bitnami/mariadb"]
         securityContext:
           fsGroup: 0
           runAsUser: 0
