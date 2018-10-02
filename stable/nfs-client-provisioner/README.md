@@ -50,12 +50,12 @@ The following tables lists the configurable parameters of this chart and their d
 | `image.repository`                | Provisioner image                           | `quay.io/external_storage/nfs-client-provisioner`         |
 | `image.tag`                       | Version of provisioner image                | `v3.1.0-k8s1.11`                                          |
 | `image.pullPolicy`                | Image pull policy                           | `IfNotPresent`                                            |
-| `storageclass.name`               | Name of the storageclass                    | `nfs-client`                                              |
-| `storageclass.defaultClass`       | Set as the default StorageClass             | `false`	                                              |
-| `storageclass.allowVolumeExpansion`       | Allow expanding the volume          | `true`	                                              |
-| `storageclass.reclaimPolicy`    | Method used to reclaim an obsoleted volume                 | `Delete` 	                              |
-| `storageclass.provisionerName`    | Name of the provisionerName                 | null 	                                              |
-| `storageclass.archiveOnDelete`    | Archive pvc when deleting                   | `true` 	                                              |
+| `storageClass.name`               | Name of the storageClass                    | `nfs-client`                                              |
+| `storageClass.defaultClass`       | Set as the default StorageClass             | `false`	                                              |
+| `storageClass.allowVolumeExpansion`       | Allow expanding the volume          | `true`	                                              |
+| `storageClass.reclaimPolicy`    | Method used to reclaim an obsoleted volume                 | `Delete` 	                              |
+| `storageClass.provisionerName`    | Name of the provisionerName                 | null 	                                              |
+| `storageClass.archiveOnDelete`    | Archive pvc when deleting                   | `true` 	                                              |
 | `nfs.server`                      | Hostname of the NFS server                  | null (ip or hostname)                                     |
 | `nfs.path`                        | Basepath of the mount point to be used      | `/ifs/kubernetes`                                         |
 | `resources`                       | Resources required (e.g. CPU, memory)       | `{}`                                                      |
