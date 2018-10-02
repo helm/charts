@@ -111,8 +111,20 @@ If you have known set of commands that you'd like to run after the base config s
 you'd like to override some settings before the Spinnaker deployment is applied, you can enable
 the `halyard.additionalConfig.enabled` flag. You will need to create a config map that contains a key
 containing the `hal` commands you'd like to run. You can set the key via the config map name via `halyard.additionalConfig.configMapName` and the key via `halyard.additionalConfig.configMapKey`. The `DAEMON_ENDPOINT` environment variable can be used in your custom commands to
-get a prepopulated URL that points to your Halyard daemon within the cluster. For example:
+get a prepopulated URL that points to your Halyard daemon within the cluster. The `HAL_COMMAND` environment variable does this for you. For example:
 
 ```shell
 hal --daemon-endpoint $DAEMON_ENDPOINT config security authn oauth2 enable
+$HAL_COMMAND config security authn oauth2 enable
+```
+
+If you would rather the chart make the config file for you, you can set `halyard.additionalConfig.createConfig` to `true` and then populate `halyard.additionalConfig.bashScript` with the bash script you'd like to run:
+
+```yaml
+halyard:
+  additionalConfig:
+    createConfig: true
+    bashScript: |
+      echo "Setting oauth2 security"
+      $HAL_COMMAND config security authn oauth2 enable
 ```

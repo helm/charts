@@ -18,6 +18,9 @@ data:
     {{ if .Values.halyard.additionalConfig.enabled }}
     bash /opt/halyard/additional/{{ .Values.halyard.additionalConfig.configMapKey }}
     {{ end }}
+    {{ if  and .Values.halyard.additionalConfig.createConfig .Values.halyard.additionalConfig.bashScript }}
+    bash -xe /opt/halyard/scripts/additionalConfig.sh
+    {{ end }}
 
     $HAL_COMMAND deploy apply
   clean.sh: |
@@ -101,3 +104,7 @@ data:
     {{- range $index, $feature := .Values.spinnakerFeatureFlags }}
     $HAL_COMMAND config features edit --{{ $feature }} true
     {{- end }}
+{{ if  and .Values.halyard.additionalConfig.createConfig .Values.halyard.additionalConfig.bashScript }}
+  additionalConfig.sh: |
+{{ .Values.halyard.additionalConfig.bashScript | indent 4 }}
+{{ end }}
