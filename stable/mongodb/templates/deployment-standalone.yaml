@@ -34,7 +34,7 @@ spec:
       initContainers:
       - name: init-{{ template "mongodb.fullname" . }}
         image: "{{ template "mongodb.image" . }}"
-        command: ["sh", "-c", "chmod 0777 /bitnami/mongodb"]
+        command: ["sh", "-c", "chown 1001 /bitnami/mongodb"]
         securityContext:
           fsGroup: 0
           runAsUser: 0
