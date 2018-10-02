@@ -116,7 +116,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed.           | `1` |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.             | `3` |
 | `rbac.create`                        | Specifies whether RBAC resources should be created                                                  | `true` |
-| `serviceAccount.create`              | Specifies whether a ServiceAccount should be created                                               | `false` |
+| `serviceAccount.create`              | Specifies whether a ServiceAccount should be created                                                | `true` |
 | `serviceAccount.name`                | The name of the ServiceAccount to use           |                                                            |
 | `backup.enabled`                     | Enable backup on chart installation             | `false`                                                    |
 | `backup.schedule`                    | Keyspaces to backup, each with cron time        |                                                            |
