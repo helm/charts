@@ -17,6 +17,11 @@ credentials:
 
 # Distribution Configuration stores
 # Please note that only one of the following stores should be enabled.
+kubernetes:
+  dcs:
+    enable: false
+  configmaps:
+    enable: false
 etcd:
   enable: true
   deployChart: true
