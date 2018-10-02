@@ -3,6 +3,12 @@
 This file documents all notable changes to Sysdig Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v1.1.0
+
+### Major Changes
+
+* Add support for uploading custom app checks for Sysdig Agent
+
 ## v1.0.4
 
 ### Minor Changes

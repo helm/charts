@@ -56,6 +56,17 @@ secure:
   # true here enables Sysdig Secure: container run-time security & forensics
   enabled: false
 
+customAppChecks: {}
+  # Allow passing custom app checks for Sysdig Agent.
+  # Example:
+  #
+  # sample.py: |-
+  #   from checks import AgentCheck
+  #
+  #   class MyCustomCheck(AgentCheck):
+  #       def check(self, instance):
+  #           self.gauge("testhelm", 1)
+
 # Allow sysdig to run on Kubernetes 1.6 masters.
 tolerations:
   - effect: NoSchedule
