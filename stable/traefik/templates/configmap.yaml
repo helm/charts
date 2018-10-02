@@ -224,6 +224,8 @@ data:
     {{- else if eq .Values.acme.challengeType "http-01" }}
       [acme.httpChallenge]
       entryPoint = "http"
+    {{- else if eq .Values.acme.challengeType "tls-alpn-01" }}
+      [acme.tlsChallenge]
     {{- end }}
     {{- if .Values.acme.domains.enabled }}
     {{- if .Values.acme.domains.domainsList }}{{ template "traefik.acme.domains" . }}{{- end }}
