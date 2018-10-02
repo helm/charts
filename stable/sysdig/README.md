@@ -38,18 +38,19 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Sysdig chart and their default values.
 
-| Parameter               | Description                             | Default                                     |
-| ---                     | ---                                     | ---                                         |
-| `image.repository`      | The image repository to pull from       | `sysdig/agent`                              |
-| `image.tag`             | The image tag to pull                   | `latest`                                    |
-| `image.pullPolicy`      | The Image pull policy                   | `Always`                                    |
-| `rbac.create`           | If true, create & use RBAC resources    | `true`                                      |
-| `serviceAccount.create` | Create serviceAccount                   | `true`                                      |
-| `serviceAccount.name`   | Use this value as serviceAccountName    | ` `                                         |
-| `sysdig.accessKey`      | Your Sysdig Monitor Access Key          | `Nil` You must provide your own key         |
-| `sysdig.settings`       | Settings for agent's configuration file | `{}`                                        |
-| `secure.enabled`        | Enable Sysdig Secure                    | `false`                                     |
-| `tolerations`           | The tolerations for scheduling          | `node-role.kubernetes.io/master:NoSchedule` |
+| Parameter               | Description                                    | Default                                     |
+| ---                     | ---                                            | ---                                         |
+| `image.repository`      | The image repository to pull from              | `sysdig/agent`                              |
+| `image.tag`             | The image tag to pull                          | `latest`                                    |
+| `image.pullPolicy`      | The Image pull policy                          | `Always`                                    |
+| `rbac.create`           | If true, create & use RBAC resources           | `true`                                      |
+| `serviceAccount.create` | Create serviceAccount                          | `true`                                      |
+| `serviceAccount.name`   | Use this value as serviceAccountName           | ` `                                         |
+| `sysdig.accessKey`      | Your Sysdig Monitor Access Key                 | `Nil` You must provide your own key         |
+| `sysdig.settings`       | Settings for agent's configuration file        | `{}`                                        |
+| `secure.enabled`        | Enable Sysdig Secure                           | `false`                                     |
+| `customAppChecks`       | The custom app checks deployed with your agent | `{}`                                        |
+| `tolerations`           | The tolerations for scheduling                 | `node-role.kubernetes.io/master:NoSchedule` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -90,3 +91,43 @@ $ helm install --name sysdig-agent-on-prem \
     --set sysdig.settings.ssl_verify_certificate=false \
     stable/sysdig
 ```
+
+## Custom App Checks
+
+Application checks are integrations that allow the Sysdig agent to poll specific metrics exposed by any application. Sysdig Monitor has several built-in app checks, but sometimes you need to create your own.
+
+You can deploy them with the following YAML:
+
+```yaml
+customAppChecks:
+  sample.py: |-
+    from checks import AgentCheck
+
+    class MyCustomCheck(AgentCheck):
+        def check(self, instance):
+            self.gauge("testhelm", 1)
+
+sysdig:
+  settings:
+    app_checks:
+      - name: sample
+        interval: 10
+        pattern: # pattern to match the application
+          comm: systemd
+        conf:
+          key: value
+```
+
+The first section, deploys the Custom App Check in a Kubernetes configmap, and the second configures it using dragent.yaml file. So that deploy Sysdig Chart using this file:
+
+```bash
+$ helm install --name sysdig-agent-1 \
+  --set sysdig.accessKey=SYSDIG_ACCESS_KEY \
+  -f custom-appchecks.yaml \
+  stable/sysdig
+
+```
+
+And that's all, you will have your Custom App Check up and running.
+
+You can get more information about [Custom App Checks in Sysdig's Official Documentation](https://sysdigdocs.atlassian.net/wiki/spaces/Monitor/pages/204767436/Create+a+Custom+App+Check).
