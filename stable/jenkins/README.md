@@ -91,17 +91,18 @@ The following tables list the configurable parameters of the Jenkins chart and t
 
 ### Jenkins Agent
 
-| Parameter                  | Description                                     | Default                |
-| -------------------------- | ----------------------------------------------- | ---------------------- |
-| `Agent.AlwaysPullImage`    | Always pull agent container image before build  | `false`                |
-| `Agent.CustomJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
-| `Agent.Enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
-| `Agent.Image`              | Agent image name                                | `jenkinsci/jnlp-slave` |
-| `Agent.ImagePullSecret`    | Agent image pull secret                         | Not set                |
-| `Agent.ImageTag`           | Agent image tag                                 | `3.27-1`                 |
-| `Agent.Privileged`         | Agent privileged container                      | `false`                |
-| `Agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
-| `Agent.volumes`            | Additional volumes                              | `nil`                  |
+| Parameter                  | Description                                       | Default                |
+| -------------------------- | ------------------------------------------------- | ---------------------- |
+| `Agent.AlwaysPullImage`    | Always pull agent container image before build    | `false`                |
+| `Agent.CustomJenkinsLabels`| Append Jenkins labels to the agent                | `{}`                   |
+| `Agent.Enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate   | `true`                 |
+| `Agent.Image`              | Agent image name                                  | `jenkinsci/jnlp-slave` |
+| `Agent.ImagePullSecret`    | Agent image pull secret                           | Not set                |
+| `Agent.ImageTag`           | Agent image tag                                   | `2.62`                 |
+| `Agent.Privileged`         | Agent privileged container                        | `false`                |
+| `Agent.resources`          | Resources allocation (Requests and Limits)        | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
+| `Agent.ContainerEnv`       | Environment variables for Jenkins Agent Container | Not set                |
+| `Agent.volumes`            | Additional volumes                                | `nil`                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

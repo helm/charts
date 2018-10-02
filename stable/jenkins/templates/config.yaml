@@ -82,19 +82,24 @@ data:
                   <resourceRequestMemory>{{.Values.Agent.Memory | default .Values.Agent.resources.requests.memory}}</resourceRequestMemory>
                   <resourceLimitCpu>{{.Values.Agent.Cpu | default .Values.Agent.resources.limits.cpu}}</resourceLimitCpu>
                   <resourceLimitMemory>{{.Values.Agent.Memory | default .Values.Agent.resources.limits.memory}}</resourceLimitMemory>
-                  <envVars>
-                    <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
-                      <key>JENKINS_URL</key>
-{{- if .Values.Master.SlaveKubernetesNamespace }}
-                      <value>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</value>
-{{- else }}
-                      <value>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</value>
-{{- end }}
-                    </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
-                  </envVars>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
-              <envVars/>
+              <envVars>
+                <org.csanchez.jenkins.plugins.kubernetes.model.KeyValueEnvVar>
+                  <key>JENKINS_URL</key>
+{{- if .Values.Master.SlaveKubernetesNamespace }}
+                  <value>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</value>
+{{- else }}
+                  <value>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</value>
+{{- end }}
+                </org.csanchez.jenkins.plugins.kubernetes.model.KeyValueEnvVar>
+{{- range $index, $env := .Values.Agent.ContainerEnv }}
+                <org.csanchez.jenkins.plugins.kubernetes.model.KeyValueEnvVar>
+                  <key>{{ $env.key }}</key>
+                  <value>{{ $env.value }}</value>
+                </org.csanchez.jenkins.plugins.kubernetes.model.KeyValueEnvVar>
+{{- end }}
+              </envVars>
               <annotations/>
 {{- if .Values.Agent.ImagePullSecret }}
               <imagePullSecrets>

@@ -165,6 +165,10 @@ Agent:
     limits:
       cpu: "200m"
       memory: "256Mi"
+  # Custom environment variables that will be placed in agent container
+  # ContainerEnv:
+  #   - key: APPLICATION_ENVIRONMENT
+  #     value: staging
   # You may want to change this to true while testing a new image
   AlwaysPullImage: false
   # Controls how slave pods are retained after the Jenkins build completes
