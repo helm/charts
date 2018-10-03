@@ -19,6 +19,7 @@ spec:
         app: {{ template "prometheus-couchdb-exporter.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "prometheus-couchdb-exporter.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
