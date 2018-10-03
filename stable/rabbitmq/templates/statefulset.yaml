@@ -14,7 +14,6 @@ spec:
     matchLabels:
       app: {{ template "rabbitmq.name" . }}
       release: "{{ .Release.Name }}"
-      chart: {{ template "rabbitmq.chart" .  }}
   template:
     metadata:
       labels:
@@ -60,12 +59,11 @@ spec:
             echo $RABBITMQ_ERL_COOKIE > /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
             cp /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie /opt/bitnami/rabbitmq/.rabbitmq/
             #change permission so only the user has access to the cookie file
-            chmod 600 /opt/bitnami/rabbitmq/.rabbitmq/.erlang.cookie
-            chmod 600 /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
-
+            chmod 600 /opt/bitnami/rabbitmq/.rabbitmq/.erlang.cookie /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
             #copy the mounted configuration to both places
             cp  /opt/bitnami/rabbitmq/conf/* /opt/bitnami/rabbitmq/etc/rabbitmq
-
+            # Apply resources limits
+            ulimit -n "${RABBITMQ_ULIMIT_NOFILES}"
             #replace the default password that is generated
             sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
             exec rabbitmq-server
@@ -82,17 +80,15 @@ spec:
         - name: epmd
           containerPort: 4369
         - name: amqp
-          containerPort: {{ .Values.rabbitmq.nodePort }}
+          containerPort: {{ .Values.rabbitmq.amqpPort }}
         - name: dist
-          containerPort: {{ .Values.rabbitmq.nodePort | add 20000 }}
+          containerPort: {{ .Values.rabbitmq.distPort }}
         - name: stats
           containerPort: {{ .Values.rabbitmq.managerPort }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
-            command:
-            - rabbitmqctl
-            - status
+            command: ["sh", "-c", "curl -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.rabbitmq.managerPort }}/api/healthchecks/node"]
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -102,9 +98,7 @@ spec:
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           exec:
-            command:
-            - rabbitmqctl
-            - status
+            command: ["sh", "-c", "curl -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.rabbitmq.managerPort }}/api/healthchecks/node"]
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -133,7 +127,7 @@ spec:
           - name: K8S_SERVICE_NAME
             value: "{{ template "rabbitmq.fullname" . }}-headless"
           - name: K8S_ADDRESS_TYPE
-            value: {{ default "ip" .Values.rabbitmq.clustering.address_type }}
+            value: {{ .Values.rabbitmq.clustering.address_type }}
           {{- if (eq "hostname" .Values.rabbitmq.clustering.address_type) }}
           - name: RABBITMQ_NODENAME
             value: "rabbit@$(MY_POD_NAME).$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.cluster.local"
@@ -143,6 +137,8 @@ spec:
           - name: RABBITMQ_NODENAME
             value: "rabbit@$(MY_POD_IP)"
           {{- end }}
+          - name: RABBITMQ_ULIMIT_NOFILES
+            value: {{ .Values.rabbitmq.ulimitNofiles | quote }}
           - name: RABBITMQ_USE_LONGNAME
             value: "true"
           - name: RABBITMQ_ERL_COOKIE
@@ -178,7 +174,6 @@ spec:
         name: data
         labels:
           app: {{ template "rabbitmq.name" . }}
-          chart: {{ template "rabbitmq.chart" .  }}
           release: "{{ .Release.Name }}"
           heritage: "{{ .Release.Service }}"
       spec:
