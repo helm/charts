@@ -28,13 +28,13 @@ rbacEnabled: true
 
 ## section of specific values for rabbitmq
 rabbitmq:
-   ## RabbitMQ application username
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#environment-variables
+  ## RabbitMQ application username
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   username: user
 
   ## RabbitMQ application password
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#environment-variables
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   # password:
 

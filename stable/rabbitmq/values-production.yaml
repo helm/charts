@@ -30,12 +30,12 @@ rbacEnabled: true
 ## section of specific values for rabbitmq
 rabbitmq:
   ## RabbitMQ application username
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#creating-a-database-user-on-first-run
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   username: user
 
   ## RabbitMQ application password
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#creating-a-database-user-on-first-run
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   # password:
 
