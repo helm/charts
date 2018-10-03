@@ -48,7 +48,12 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
+          {{- if .Values.command }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - {{ toYaml .Values.command }}
+          {{- end }}
+                ports:
             - name: monitor
               containerPort: {{ .Values.exporter.logstash.target.port }}
               protocol: TCP

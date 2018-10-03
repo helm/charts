@@ -123,6 +123,8 @@ readinessProbe:
   # failureThreshold: 6
   # successThreshold: 1
 
+# command: logstash-plugin install logstash-filter-uuid; /usr/local/bin/docker-entrypoint
+
 persistence:
   enabled: true
   ## logstash data Persistent Volume Storage Class

@@ -96,13 +96,14 @@ The following table lists the configurable parameters of the chart and its defau
 | `podLabels`                     | Pod labels                                         | `{}`                                             |
 | `livenessProbe`                 | Liveness probe settings for logstash container     | (see `values.yaml`)                              |
 | `readinessProbe`                | Readiness probe settings for logstash container    | (see `values.yaml`)                              |
+| `command`                       | Command to run when starting the logstash container| `nil`                                            |
 | `persistence.enabled`           | Enable persistence                                 | `true`                                           |
 | `persistence.storageClass`      | Storage class for PVCs                             | unset                                            |
 | `persistence.accessMode`        | Access mode for PVCs                               | `ReadWriteOnce`                                  |
 | `persistence.size`              | Size for PVCs                                      | `2Gi`                                            |
 | `volumeMounts`                  | Volume mounts to configure for logstash container  | (see `values.yaml`)                              |
-| `volumes`                       | Volumes to configure for logstash container        | []                              |
-| `terminationGracePeriodSeconds` | Duration the pod needs to terminate gracefully     | `30`
+| `volumes`                       | Volumes to configure for logstash container        | []                                               |
+| `terminationGracePeriodSeconds` | Duration the pod needs to terminate gracefully     | `30`                                             |
 | `exporter.logstash`             | Prometheus logstash-exporter settings              | (see `values.yaml`)                              |
 | `exporter.logstash.enabled`     | Enables Prometheus logstash-exporter               | `false`                                          |
 | `elasticsearch.host`            | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
