@@ -12,9 +12,9 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
-#env:
-#- name: ALERTMANAGER_URI
-#  value: http://monitoring-prometheus-alertmanager
+# env:
+# - name: ALERTMANAGER_URI
+#   value: http://monitoring-prometheus-alertmanager
 
 service:
   type: ClusterIP
