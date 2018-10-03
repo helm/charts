@@ -1,0 +1,98 @@
+
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  labels:
+{{ toYaml .Values.prometheus.labels | indent 4 }}
+  name: {{ template "prometheus.fullname" . }}
+spec:
+  alerting:
+    alertmanagers:
+{{- if .Values.prometheus.prometheusSpec.alertingEndpoints }}
+{{ toYaml .Values.prometheus.prometheusSpec.alertingEndpoints | indent 6 }}
+{{- else }}
+      - namespace: {{ .Release.Namespace }}
+        name: {{ template "alertmanager.fullname" .}}
+        port: http
+{{- end }}
+  baseImage: "{{ .Values.prometheus.prometheusSpec.baseImage }}"
+{{- if .Values.prometheus.prometheusSpec.externalLabels }}
+  externalLabels:
+{{ toYaml .Values.prometheus.prometheusSpec.externalLabels | indent 4}}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.externalUrl }}
+  externalUrl: "{{ .Values.externalUrl }}"
+{{- else if .Values.prometheus.ingress.enable }}
+  externalUrl: "http://{{ index .Values.prometheus.ingress.hosts 0 }}{{ .Values.routePrefix }}"
+{{- else }}
+  externalUrl: http://{{ template "prometheus.fullname" . }}.{{ .Release.Namespace }}:9090
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.prometheus.prometheusSpec.nodeSelector | indent 4 }}
+{{- end }}
+  paused: {{ .Values.prometheus.prometheusSpec.paused }}
+  replicas: {{ .Values.prometheus.prometheusSpec.replicaCount }}
+  logLevel:  {{ .Values.prometheus.prometheusSpec.logLevel }}
+  resources:
+{{ toYaml .Values.prometheus.prometheusSpec.resources | indent 4 }}
+  retention: "{{ .Values.retention }}"
+{{- if .Values.prometheus.prometheusSpec.routePrefix }}
+  routePrefix: "{{ .Values.routePrefix }}"
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.secrets }}
+  secrets:
+{{ toYaml .Values.prometheus.prometheusSpec.secrets | indent 4 }}
+{{- end }}
+{{- if .Values.global.rbac.create }}
+  serviceAccountName: {{ template "prometheus.serviceAccountName" .}}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.serviceMonitorsSelector }}
+  serviceMonitorSelector:
+{{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorsSelector | indent 4 }}
+{{ else}}
+  serviceMonitorSelector: {}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector }}
+  serviceMonitorNamespaceSelector:
+  {{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector | indent 4 }}
+{{ else }}
+  serviceMonitorNamespaceSelector: {}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.remoteRead }}
+  remoteRead:
+{{ toYaml .Values.prometheus.prometheusSpec.remoteRead | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.remoteWrite }}
+  remoteWrite:
+{{ toYaml .Values.prometheus.prometheusSpec.remoteWrite | indent 4 }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.ruleNamespaceSelector }}
+  ruleNamespaceSelector:
+{{ toYaml .Values.prometheus.prometheusSpec.ruleNamespaceSelector | indent 4 }}
+{{- end }}
+  ruleSelector:
+{{ toYaml .Values.prometheus.prometheusSpec.ruleSelector | indent 4}}
+{{- if .Values.prometheus.prometheusSpec.storageSpec }}
+  storage:
+{{ toYaml .Values.prometheus.prometheusSpec.storageSpec | indent 4 }}
+{{- end }}
+  version: "{{ .Values.prometheus.prometheusSpec.version }}"
+  podMetadata:
+{{ toYaml .Values.prometheus.prometheusSpec.podMetadata | indent 4 }}
+  affinity:
+    podAntiAffinity:
+{{- if eq .Values.prometheus.prometheusSpec.podAntiAffinity "hard" }}
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: kubernetes.io/hostname
+{{- else if eq .Values.prometheus.prometheusSpec.podAntiAffinity "soft" }}
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
+{{- end }}
+        labelSelector:
+          matchLabels:
+{{ toYaml .Values.prometheus.labels | indent 12 }}
+  imagePullSecrets:
+{{ toYaml .Values.global.imagePullSecrets | indent 4 }}

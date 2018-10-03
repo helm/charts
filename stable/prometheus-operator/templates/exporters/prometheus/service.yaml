@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+{{ toYaml .Values.prometheus.labels | indent 4 }}
+  name: prometheus-k8s
+spec:
+  ports:
+  - name: web
+    port: 9090
+    targetPort: web
+  selector:
+{{ toYaml .Values.prometheus.service.selector | indent 4 }}

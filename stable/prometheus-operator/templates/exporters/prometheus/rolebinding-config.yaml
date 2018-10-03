@@ -1,0 +1,14 @@
+{{- if .Values.global.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ template "prometheus.fullname" . }}-config
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "prometheus.serviceAccountName" . }}-config
+subjects:
+- kind: ServiceAccount
+  name: {{ template "prometheus.serviceAccountName" . }} 
+  namespace: {{ .Release.Namespace }}
+{{- end }}

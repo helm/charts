@@ -1,0 +1,589 @@
+# Default values for prometheus-operator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## If true, create a serviceMonitor for prometheus-operator
+##
+serviceMonitor:
+  selfMonitor: true
+
+## Prometheus-operator image
+##
+image:
+  repository: quay.io/coreos/prometheus-operator
+  tag: v0.23.2
+  pullPolicy: IfNotPresent
+
+createCustomResource: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+## Prometheus-config-reloader image to use for config and rule reloading
+##
+prometheusConfigReloader:
+  repository: quay.io/coreos/prometheus-config-reloader
+  tag: v0.23.2
+
+rules:
+  create: true
+  labels:
+    prometheus: k8s
+    role: alert-rules
+## Configmap-reload image to use for reloading configmaps
+##
+configmapReload:
+  repository: quay.io/coreos/configmap-reload
+  tag: v0.0.1
+
+## If true, create & use RBAC resources resp. Pod Security Policies
+##
+global:
+  rbac:
+    create: true
+    pspEnable: true
+
+  # Reference to one or more secrets to be used when pulling images
+  imagePullSecrets: []
+  #  - name: "image-pull-secret"
+
+kubeletService:
+  enable: true
+
+serviceMonitors: []
+  ## Name of the ServiceMonitor to create
+  ##
+  # - name: ""
+
+    ## Labels to set used for the ServiceMonitorSelector.
+    ##
+    # serviceMonitorSelectorLabels: {}
+
+    ## Service label for use in assembling a job name of the form <label value>-<port>
+    ## If no label is specified, the service name is used.
+    ##
+    # jobLabel: ""
+
+    ## Label selector for services to which this ServiceMonitor applies
+    ##
+    # selector: {}
+
+    ## Namespaces from which services are selected
+    ##
+    # namespaceSelector:
+      ## Match any namespace
+      ##
+      # any: false
+
+      ## Explicit list of namespace names to select
+      ##
+      # matchNames: []
+
+    ## Endpoints of the selected service to be monitored
+    ##
+    # endpoints: []
+      ## Name of the endpoint's service port
+      ## Mutually exclusive with targetPort
+      # - port: ""
+
+      ## Name or number of the endpoint's target port
+      ## Mutually exclusive with port
+      # - targetPort: ""
+
+      ## File containing bearer token to be used when scraping targets
+      ##
+      #   bearerTokenFile: ""
+
+      ## Interval at which metrics should be scraped
+      ##
+      #   interval: 30s
+
+      ## HTTP path to scrape for metrics
+      ##
+      #   path: /metrics
+
+      ## HTTP scheme to use for scraping
+      ##
+      #   scheme: http
+
+      ## TLS configuration to use when scraping the endpoint
+      ##
+      #   tlsConfig:
+
+          ## Path to the CA file
+          ##
+          # caFile: ""
+
+          ## Path to client certificate file
+          ##
+          # certFile: ""
+
+          ## Skip certificate verification
+          ##
+          # insecureSkipVerify: false
+
+          ## Path to client key file
+          ##
+          # keyFile: ""
+
+          ## Server name used to verify host name
+          ##
+          # serverName: ""
+
+
+####################
+### Alertmanager ###
+####################
+
+alertmanager:
+  ## Alertmanager configuration directives
+  ## Ref: https://prometheus.io/docs/alerting/configuration/
+  ##
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: ['job']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'null'
+      routes:
+      - match:
+          alertname: DeadMansSwitch
+        receiver: 'null'
+    receivers:
+    - name: 'null'
+
+  ## External URL at which Alertmanager will be reachable
+  ##
+  externalUrl: ""
+
+  ## Alertmanager container image
+  ##
+  image:
+    repository: quay.io/prometheus/alertmanager
+    tag: v0.15.2
+
+  ingress:
+    ## If true, Alertmanager Ingress will be created
+    ##
+    enable: false
+
+    ## Annotations for Alertmanager Ingress
+    ##
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+
+    ## Labels to be added to the Ingress
+    ##
+    labels: {}
+
+    ## Hostnames.
+    ## Must be provided if Ingress is enable.
+    ##
+    # hosts:
+    #   - alertmanager.domain.com
+    hosts: []
+
+    ## TLS configuration for Alertmanager Ingress
+    ## Secret must be manually created in the namespace
+    ##
+    tls: []
+      # - secretName: alertmanager-general-tls
+      #   hosts:
+      #     - alertmanager.example.com
+
+  labels:
+    alertmanager: main
+
+  ## Number of alertmanager replicas desired
+  ##
+  replicaCount: 1
+
+  ## Pod anti-affinity can prevent the scheduler from placing Prometheus replicas on the same node.
+  ## The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided.
+  ## The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node.
+  ## The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured.
+  podAntiAffinity: ""
+
+  service:
+
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 30903
+
+    ## Service type
+    ##
+    type: ClusterIP
+
+    selector:
+      component: metrics
+
+  ## If true, create a serviceMonitor for alertmanager
+  ##
+  serviceMonitor:
+    selfMonitor: true
+    selector:
+      matchLabels:
+        component: metrics
+
+  serviceAccount:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  ## Alertmanager template files to include
+  #
+  templateFiles: {}
+  #
+  # An example template:
+  #   template_1.tmpl: |-
+  #       {{ define "cluster" }}{{ .ExternalURL | reReplaceAll ".*alertmanager\\.(.*)" "$1" }}{{ end }}
+  #
+  #       {{ define "slack.myorg.text" }}
+  #       {{- $root := . -}}
+  #       {{ range .Alerts }}
+  #         *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
+  #         *Cluster:*  {{ template "cluster" $root }}
+  #         *Description:* {{ .Annotations.description }}
+  #         *Graph:* <{{ .GeneratorURL }}|:chart_with_upwards_trend:>
+  #         *Runbook:* <{{ .Annotations.runbook }}|:spiral_note_pad:>
+  #         *Details:*
+  #           {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+  #           {{ end }}
+
+coreDns:
+  ## If true, create a serviceMonitor for coredns
+  ##
+  serviceMonitor:
+    selfMonitor: true
+    jobLabel: coredns
+    selector:
+      matchLabels:
+        component: metrics
+        k8s-app: coredns
+
+  labels:
+    k8s-app: coredns
+
+  # Port that core DNS Metrics are exposed on
+  service:
+
+    port: 9153
+
+    # The k8s-app label coredns service is deployed with
+    selector:
+      component: metrics
+      k8s-app: coredns
+
+grafana:
+  # Using default values from https://github.com/helm/charts/blob/master/stable/grafana/values.yaml
+  deploy: true
+
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://10.1.1.222:9090
+        access: proxy
+        isDefault: true
+
+kubeApiServer:
+
+  labels:
+    k8s-app: kube-apiserver
+
+  serviceMonitor:
+    jobLabel: kube-apiserver
+    selfMonitor: true
+    selector:
+      matchLabels:
+        component: apiserver
+        provider: kubernetes
+
+  service:
+    selector:
+      component: apiserver
+      provider: kubernetes
+
+kubelet:
+
+  namespace: kube-system
+  name: kubelet
+
+  labels:
+    k8s-app: kubelet
+
+  serviceMonitor:
+    jobLabel: kubelet
+    selfMonitor: true
+    selector:
+      matchLabels:
+        k8s-app: kubelet
+
+  service:
+    selector:
+      k8s-app: kubelet
+
+kubeControllerManager:
+
+  labels:
+    k8s-app: kube-controller-manager
+
+  serviceMonitor:
+    jobLabel: kube-controller-manager
+    selfMonitor: true
+    selector:
+      matchLabels:
+        k8s-app: kube-controller-manager
+
+  service:
+    port: 10252
+    targetPort:
+    selector:
+      k8s-app: kube-controller-manager
+
+
+kubeDns:
+
+  serviceMonitor:
+    jobLabel: kube-dns
+    selfMonitor: true
+    selector:
+      matchLabels:
+        k8s-app: kube-dns
+
+  labels:
+    k8s-app: kube-dns
+
+  service:
+    selector:
+      k8s-app: kube-dns
+
+kubeScheduler:
+
+  serviceMonitor:
+    selfMonitor: true
+    jobLabel: k8s-app
+    selector:
+      matchLabels:
+        k8s-app: kube-scheduler
+
+  labels:
+    k8s-app: kube-scheduler
+
+  service:
+    selector:
+      k8s-app: kube-scheduler
+
+kubeStateMetrics:
+  deploy: true
+
+  serviceMonitor:
+    selfMonitor: true
+    jobLabel: k8s-app
+    selector:
+      matchLabels:
+        k8s-app: kube-state-metrics
+
+  labels:
+    k8s-app: kube-scheduler
+
+  service:
+    selector:
+      k8s-app: kube-state-metrics
+
+nodeexporter:
+  deploy: true
+
+  serviceMonitor:
+    selfMonitor: true
+    jobLabel: k8s-app
+    selector:
+      matchLabels:
+        k8s-app: node-exporter
+
+  serviceAccount:
+    name: prom-operator-node-exporter
+    create: true
+
+  labels:
+    k8s-app: node-exporter
+
+  service:
+    selector:
+      k8s-app: node-exporter
+
+prometheusOperator:
+  labels:
+    k8s-app: prometheus-operator
+
+  serviceMonitor:
+    selfMonitor: true
+    selector:
+      matchLabels:
+        k8s-app: prometheus-operator
+
+  service:
+    selector:
+      k8s-app: prometheus-operator
+
+prometheus:
+
+  affinity: {}
+
+  serviceAccount:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/manifests/0prometheus-operator-deployment.yaml#L29-L35
+    limits:
+      cpu: 200m
+      memory: 100Mi
+    requests:
+      cpu: 100m
+      memory: 50Mi
+
+  tolerations: []
+
+  ingress:
+    ## If true, Prometheus Ingress will be created
+    ##
+    enable: false
+
+    ## Annotations for Prometheus Ingress
+    ##
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+
+    ## Labels to be added to the Ingress
+    ##
+    labels: {}
+
+    ## Hostnames.
+    ## Must be provided if Ingress is enable.
+    ##
+    # hosts:
+    #   - prometheus.domain.com
+    hosts: []
+
+    ## TLS configuration for prometheus Ingress
+    ## Secret must be manually created in the namespace
+    ##
+    tls: []
+      # - secretName: prometheus-general-tls
+      #   hosts:
+      #     - prometheus.example.com
+  labels:
+    app: prometheus
+    k8s-app: prometheus
+
+  serviceMonitor:
+    selfMonitor: true
+    selector:
+      matchLabels:
+        app: prometheus
+        k8s-app: prometheus
+
+  service:
+    selector:
+      app: prometheus
+      k8s-app: prometheus
+
+  prometheusSpec:
+
+    baseImage: quay.io/prometheus/prometheus
+    version: v2.3.2
+
+    ## Alertmanagers to which alerts will be sent
+    ## Ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#alertmanagerendpoints
+    ##
+    alertingEndpoints: []
+    #   - name: ""
+    #     namespace: ""
+    #     port: http
+    #     scheme: http
+
+    ## External labels to add to any time series or alerts when communicating with external systems
+    ##
+    externalLabels: {}
+
+    ## External URL at which Prometheus will be reachable
+    ##
+    externalUrl: ""
+
+    ruleSelector:
+      matchLabels:
+        prometheus: k8s
+        role: alert-rules
+
+    serviceMonitorSelector:
+      matchLabels:
+        prometheus: bla
+
+    ## How long to retain metrics
+    ##
+    retention: 240h
+
+    ## If true, the Operator won't process any Prometheus configuration changes
+    ##
+    paused: false
+
+    ## Number of Prometheus replicas desired
+    ##
+    replicaCount: 1
+
+    ## Log level for Prometheus be configured in
+    ##
+    logLevel: info
+
+    ## Prefix used to register routes, overriding externalUrl route.
+    ## Useful for proxies that rewrite URLs.
+    ##
+    routePrefix: /
+
+    podMetadata:
+      labels:
+        app: prometheus
+        k8s-app: prometheus
+    ## Pod anti-affinity can prevent the scheduler from placing Prometheus replicas on the same node.
+    ## The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided.
+    ## The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node.
+    ## The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured.
+    podAntiAffinity: ""
+
+    ## The remote_read spec configuration for Prometheus.
+    ## Ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotereadspec
+    remoteRead: {}
+      # remoteRead:
+      #   - url: http://remote1/read
+
+    ## The remote_write spec configuriation for Prometheus.
+    ## Ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotewritespec
+    remoteWrite: {}
+      # remoteWrite:
+      #   - url: http://remote1/push
+
+    ## Resource limits & requests
+    resources: {}
+      # requests:
+      #   memory: 400Mi

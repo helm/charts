@@ -1,0 +1,18 @@
+{{- if .Values.nodeexporter.endpoints }}
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: {{ template "node-exporter.fullname" . }}
+  labels:
+    {{ .Values.nodeexporter.labels | indent 4}}
+    {{ include "prometheus-operator.labels.global" . | indent 4 }}        
+subsets:
+  - addresses:
+      {{- range .Values.nodeexporter.endpoints }}
+      - ip: {{ . }}
+      {{- end }}
+    ports:
+      - name: metrics
+        port: {{ .Values.nodeexporter.port }}
+        protocol: TCP
+{{- end }}
