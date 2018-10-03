@@ -30,6 +30,10 @@ helm ls --all
 helm delete `my-release`
 ```
 
+## Apply OpenEBS StorageClasses
+```
+kubectl apply -f https://raw.githubusercontent.com/openebs/openebs/v0.6/k8s/openebs-storageclasses.yaml
+```
 
 ## Configuration
 
