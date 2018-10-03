@@ -120,5 +120,25 @@ data:
   updateStrategy:
     type: OnDelete
 
+prometheusExporter:
+  # The values within here are responsible for setting up service ports and sidecar exporter containers.
+  repository: justwatch/elasticsearch_exporter
+  tag: 1.0.2
+  pullPolicy: "IfNotPresent"
+  clientName: client-exporter
+  internalPort: 9108
+  externalPort: 9108
+  metricsEndpoint: /metrics
+
+serviceMonitor:
+  enabled: false
+  interval: 15s
+  namespace: monitoring
+  # This installs your ServiceMonitor in a different namespace from the Release.
+  # This field is optional. If this field resolves to false, the Release's namespace is used.
+  labels:
+    prometheus: kube-prometheus
+    # This is the default `spec.serviceMonitorSelector` for the kube-prometheus Prometheus resource
+
 ## Additional init containers
 extraInitContainers: |
