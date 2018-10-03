@@ -65,6 +65,12 @@ rabbitmq:
   ##
   diskFreeLimit: '"6GiB"'
 
+  ## RabbitMQ Max File Descriptors
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ## ref: https://www.rabbitmq.com/install-debian.html#kernel-resource-limits
+  ##
+  ulimitNofiles: '65536'
+
   ## Plugins to enable
   plugins: |-
       [rabbitmq_management,rabbitmq_peer_discovery_k8s].
