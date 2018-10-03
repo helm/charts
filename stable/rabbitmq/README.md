@@ -51,25 +51,29 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `image.pullPolicy`          | Image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
 | `image.pullSecrets`         | Specify docker-registry secret names as an array        | `nil`                                                    |
 | `image.debug`               | Specify if debug values should be set                   | `false`                                                  |
-| `rbacEnabled`               | Specify if rbac is enabled in your cluster              | `true`                                                  |
+| `rbacEnabled`               | Specify if rbac is enabled in your cluster              | `true`                                                   |
 | `rabbitmq.username`         | RabbitMQ application username                           | `user`                                                   |
 | `rabbitmq.password`         | RabbitMQ application password                           | _random 10 character long alphanumeric string_           |
 | `rabbitmq.erlangCookie`     | Erlang cookie                                           | _random 32 character long alphanumeric string_           |
-| `rabbitmq.nodePort`         | Node port                                               | `5672`                                                   |
+| `rabbitmq.amqpPort`         | Amqp port                                               | `5672`                                                   |
+| `rabbitmq.distPort`         | Erlang distribution server port                         | `25672`                                                  |
+| `rabbitmq.nodePort`         | Node port override, if serviceType NodePort             | _random avaliable between 30000-32767_                   |
 | `rabbitmq.managerPort`      | RabbitMQ Manager port                                   | `15672`                                                  |
 | `rabbitmq.diskFreeLimit`    | Disk free limit                                         | `"6GiB"`                                                 |
 | `rabbitmq.plugins`         | configuration file for plugins to enable                 | `[rabbitmq_management,rabbitmq_peer_discovery_k8s].`  |
 | `rabbitmq.clustering.address_type` | Switch clustering mode                           | `ip` or `hostname`
-| `rabbitmq.configuration`    | rabbitmq.conf content                                   | see values.yaml                                                 |
+
+| `rabbitmq.ulimitNofiles`    | Max File Descriptor limit                               | `65536`                                                  |
+| `rabbitmq.configuration`    | rabbitmq.conf content                                   | see values.yaml                                          |
 | `serviceType`               | Kubernetes Service type                                 | `ClusterIP`                                              |
-| `persistence.enabled`       | Use a PVC to persist data                               | `false`                                                   |
+| `persistence.enabled`       | Use a PVC to persist data                               | `false`                                                  |
 | `persistence.storageClass`  | Storage class of backing PVC                            | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                     | `ReadWriteOnce`                                          |
 | `persistence.size`          | Size of data volume                                     | `8Gi`                                                    |
 | `securityContext.enabled`   | Enable security context                                 | `true`                                                   |
 | `securityContext.fsGroup`   | Group ID for the container                              | `1001`                                                   |
 | `securityContext.runAsUser` | User ID for the container                               | `1001`                                                   |
-| `resources`                  | resource needs and limits to apply to the pod           | {}                                                       |
+| `resources`                 | resource needs and limits to apply to the pod           | {}                                                       |
 | `nodeSelector`              | Node labels for pod assignment                          | {}                                                       |
 | `affinity`                  | Affinity settings for pod assignment                    | {}                                                       |
 | `tolerations`               | Toleration labels for pod assignment                    | []                                                       |
@@ -130,4 +134,15 @@ The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/pers
 
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
+```
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is opencart:
+
+```console
+$ kubectl delete statefulset rabbitmq --cascade=false
 ```
