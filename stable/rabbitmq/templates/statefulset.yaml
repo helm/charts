@@ -59,12 +59,11 @@ spec:
             echo $RABBITMQ_ERL_COOKIE > /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
             cp /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie /opt/bitnami/rabbitmq/.rabbitmq/
             #change permission so only the user has access to the cookie file
-            chmod 600 /opt/bitnami/rabbitmq/.rabbitmq/.erlang.cookie
-            chmod 600 /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
-
+            chmod 600 /opt/bitnami/rabbitmq/.rabbitmq/.erlang.cookie /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
             #copy the mounted configuration to both places
             cp  /opt/bitnami/rabbitmq/conf/* /opt/bitnami/rabbitmq/etc/rabbitmq
-
+            # Apply resources limits
+            ulimit -n "${RABBITMQ_ULIMIT_NOFILES}"
             #replace the default password that is generated
             sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
             exec rabbitmq-server
@@ -89,9 +88,7 @@ spec:
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
-            command:
-            - rabbitmqctl
-            - status
+            command: ["sh", "-c", "curl -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.rabbitmq.managerPort }}/api/healthchecks/node"]
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -101,9 +98,7 @@ spec:
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           exec:
-            command:
-            - rabbitmqctl
-            - status
+            command: ["sh", "-c", "curl -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.rabbitmq.managerPort }}/api/healthchecks/node"]
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -123,6 +118,8 @@ spec:
                 fieldPath: status.podIP
           - name: RABBITMQ_USE_LONGNAME
             value: "true"
+          - name: RABBITMQ_ULIMIT_NOFILES
+            value: {{ .Values.rabbitmq.ulimitNofiles | quote }}
           - name: RABBITMQ_NODENAME
             value: "rabbit@$(MY_POD_IP)"
           - name: K8S_SERVICE_NAME
