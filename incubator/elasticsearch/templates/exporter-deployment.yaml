@@ -1,0 +1,95 @@
+{{- if .Values.prometheus.exporter.enabled }}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "elasticsearch.fullname" . }}-exporter
+  labels:
+    app: "{{ template "elasticsearch.name" . }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+
+spec:
+  replicas: {{ .Values.prometheus.exporter.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "elasticsearch.name" . }}
+      release: "{{ .Release.Name }}"
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "elasticsearch.name" . }}
+        release: "{{ .Release.Name }}"
+      {{- if .Values.prometheus.exporter.podAnnotations }}
+      annotations:
+{{ toYaml .Values.prometheus.exporter.podAnnotations | indent 8 }}
+      {{- end }}
+    spec:
+{{- if .Values.prometheus.exporter.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+      restartPolicy: {{ .Values.prometheus.exporter.restartPolicy }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: {{ template "elasticsearch.fullname" . }}-exporter
+          image: "{{ .Values.prometheus.exporter.image.repository }}:{{ .Values.prometheus.exporter.image.tag }}"
+          imagePullPolicy: {{ .Values.prometheus.exporter.image.pullPolicy }}
+          command: ["elasticsearch_exporter",
+                    "-es.uri={{ template "elasticsearch.client.fullname" . }}:9200",
+                    "-es.all={{ .Values.prometheus.exporter.es.all }}",
+                    "-es.indices={{ .Values.prometheus.exporter.es.indices }}",
+                    "-es.timeout={{ .Values.prometheus.exporter.es.timeout }}",
+                    "-web.listen-address=:{{ .Values.prometheus.exporter.service.httpPort }}",
+                    "-web.telemetry-path={{ .Values.prometheus.exporter.web.path }}"]
+          securityContext:
+            capabilities:
+              drop:
+                - SETPCAP
+                - MKNOD
+                - AUDIT_WRITE
+                - CHOWN
+                - NET_RAW
+                - DAC_OVERRIDE
+                - FOWNER
+                - FSETID
+                - KILL
+                - SETGID
+                - SETUID
+                - NET_BIND_SERVICE
+                - SYS_CHROOT
+                - SETFCAP
+            readOnlyRootFilesystem: true
+          resources:
+{{ toYaml .Values.prometheus.exporter.resources | indent 12 }}
+          ports:
+            - containerPort: {{ .Values.prometheus.exporter.service.httpPort }}
+              name: http
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+{{- if .Values.prometheus.exporter.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.prometheus.exporter.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.prometheus.exporter.tolerations }}
+      tolerations:
+{{ toYaml .Values.prometheus.exporter.tolerations | indent 8 }}
+{{- end }}
+
+{{- end }}
