@@ -130,9 +130,9 @@ spec:
             value: {{ .Values.rabbitmq.clustering.address_type }}
           {{- if (eq "hostname" .Values.rabbitmq.clustering.address_type) }}
           - name: RABBITMQ_NODENAME
-            value: "rabbit@$(MY_POD_NAME).$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.cluster.local"
+            value: "rabbit@$(MY_POD_NAME).$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.{{ .Values.rabbitmq.clustering.k8s_domain }}"
           - name: K8S_HOSTNAME_SUFFIX
-            value: ".$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.cluster.local"
+            value: ".$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.{{ .Values.rabbitmq.clustering.k8s_domain }}"
           {{- else }}
           - name: RABBITMQ_NODENAME
             value: "rabbit@$(MY_POD_IP)"

@@ -87,6 +87,7 @@ rabbitmq:
   ## Clustering settings
   clustering:
     address_type: ip
+    k8s_domain: cluster.local
 
   ## Configution file content
   configuration: |-
