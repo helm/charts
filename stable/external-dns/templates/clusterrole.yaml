@@ -9,6 +9,11 @@ rules:
   - apiGroups:
       - ""
       - extensions
+      {{ if .Values.istio.enabled }}
+      - apiGroups: ["networking.istio.io"]
+        resources: ["gateways"]
+        verbs: ["get,"watch","list"]
+      {{ end }}
     resources:
       - ingresses
       - services
