@@ -50,6 +50,18 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
+      {{- if .Values.master.persistence.enabled }}
+      initContainers:
+      - name: init-{{ template "mariadb.fullname" . }}
+        image: "{{ template "mariadb.image" . }}"
+        command: ["sh", "-c", "chown 1001 /bitnami/mariadb"]
+        securityContext:
+          fsGroup: 0
+          runAsUser: 0
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/mariadb
+      {{- end }}
       containers:
       - name: "mariadb"
         image: {{ template "mariadb.image" . }}
