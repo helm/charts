@@ -53,7 +53,7 @@ spec:
           args:
             - {{ toYaml .Values.command }}
           {{- end }}
-                ports:
+          ports:
             - name: monitor
               containerPort: {{ .Values.exporter.logstash.target.port }}
               protocol: TCP
