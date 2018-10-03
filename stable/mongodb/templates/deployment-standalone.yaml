@@ -30,6 +30,18 @@ spec:
         - name: {{ . }}
       {{- end}}
       {{- end }}
+      {{- if .Values.persistence.enabled }}
+      initContainers:
+      - name: init-{{ template "mongodb.fullname" . }}
+        image: "{{ template "mongodb.image" . }}"
+        command: ["sh", "-c", "chown 1001 /bitnami/mongodb"]
+        securityContext:
+          fsGroup: 0
+          runAsUser: 0
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/mongodb
+      {{- end }}
       containers:
       - name: {{ template "mongodb.fullname" . }}
         image: {{ template "mongodb.image" . }}
