@@ -185,6 +185,11 @@ metadata:
 spec:
   serviceName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
   replicas: {{ default 3 .Values.Replicas }}
+  selector:
+    matchLabels:
+      heritage: {{ .Release.Service | quote }}
+      release: {{ .Release.Name | quote }}
+      component: "{{ .Release.Name }}-{{ .Values.Component }}"
   template:
     metadata:
       labels:
