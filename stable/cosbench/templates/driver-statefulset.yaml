@@ -1,0 +1,58 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "cosbench-driver.fullname" . }}
+  labels:
+    app: {{ template "cosbench.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  serviceName: {{ template "cosbench-driver.fullname" . }}
+  replicas: {{ .Values.driver.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "cosbench.name" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+        role: driver
+    spec:
+      containers:
+        - name: {{ template "cosbench-driver.fullname" . }}
+          image: "{{ .Values.driver.image.repository }}:{{ .Values.driver.image.tag }}"
+          imagePullPolicy: {{ .Values.driver.image.pullPolicy }}
+          ports:
+            - name: driver
+              containerPort: 18088
+              protocol: TCP
+          env:
+            - name: LOG_LEVEL
+              value: "{{ .Values.driver.logLevel }}"
+          args: ['java','-Dcosbench.tomcat.config=conf/driver-tomcat-server.xml','-server','-cp','main/*','org.eclipse.equinox.launcher.Main','-configuration','conf/.driver','-console','18089']
+          resources:
+{{ toYaml .Values.driver.resources | indent 12 }}
+      affinity:
+        podAntiAffinity:
+        {{- if eq .Values.driver.antiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app:  {{ template "cosbench.name" . }}
+                release: {{ .Release.Name | quote }}
+        {{- else if eq .Values.driver.antiAffinity "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 5
+            podAffinityTerm:
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app:  {{ template "cosbench.name" . }}
+                  release: {{ .Release.Name | quote }}
+        {{- end }}
+      {{- if .Values.driver.hostAliases }}
+      hostAliases:
+{{ toYaml .Values.driver.hostAliases | indent 8 }}
+      {{- end }}
