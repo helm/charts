@@ -88,7 +88,7 @@ spec:
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
-            command: ["sh", "-c", "curl -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.rabbitmq.managerPort }}/api/healthchecks/node"]
+            command: ["sh", "-c", "test \"$(curl -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.rabbitmq.managerPort }}/api/healthchecks/node)\" = '{\"status\":\"ok\"}'"]
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -98,7 +98,7 @@ spec:
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           exec:
-            command: ["sh", "-c", "curl -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.rabbitmq.managerPort }}/api/healthchecks/node"]
+            command: ["sh", "-c", "test \"$(curl -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.rabbitmq.managerPort }}/api/healthchecks/node)\" = '{\"status\":\"ok\"}'"]
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
