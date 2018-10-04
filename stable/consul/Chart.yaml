@@ -1,6 +1,6 @@
 name: consul
 home: https://github.com/hashicorp/consul
-version: 3.3.0
+version: 3.4.0
 appVersion: 1.0.0
 description: Highly available and distributed service discovery and key-value store
   designed with support for the modern data center to make distributed systems and
