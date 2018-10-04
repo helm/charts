@@ -1,0 +1,97 @@
+# Default values for gangway.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: gcr.io/heptio-images/gangway
+  tag: v2.0.0
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 8080
+  nodePort:
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - gangway.example.com
+  tls: []
+  #  - secretName: gangway-example-tls
+  #    hosts:
+  #      - gangway.example.com
+
+config:
+  # The address to listen on. Defaults to 0.0.0.0 to listen on all interfaces.
+  host: 0.0.0.0
+  # The port to listen on. Defaults to 8080.
+  port: 8080
+  # Should Gangway serve TLS vs. plain HTTP? Default: false
+  serveTLS: false
+  # The public cert file (including root and intermediates) to use when serving
+  # TLS.
+  # certFile: /etc/gangway/tls/tls.crt
+  # The private key file when serving TLS.
+  # keyFile: /etc/gangway/tls/tls.key
+  # The cluster name. Used in UI and kubectl config instructions.
+  clusterName: "YourCluster"
+  # OAuth2 URL to start authorization flow.
+  authorizeURL: "https://oauth.example.com:8080/authorize"
+  # OAuth2 URL to obtain access tokens.
+  tokenURL: "https://oauth.example.com:8080/oauth/token"
+  # Endpoint that provides user profile information [optional]. Not all providers
+  # will require this.
+  audience: "https://oauth.example.com:8080/userinfo"
+  # Used to specify the scope of the requested Oauth authorization.
+  # scopes: ["openid", "profile", "email", "offline_access"]
+  # Where to redirect back to. This should be a URL where gangway is reachable.
+  # Typically this also needs to be registered as part of the oauth application
+  # with the oAuth provider.
+  redirectURL: "https://gangway.yourcluster.com:8080/callback"
+  # API client ID as indicated by the identity provider
+  clientID: "<your client ID>"
+  # The JWT claim to use as the username. This is used in UI.
+  # Default is "nickname".
+  usernameClaim: "sub"
+  # The JWT claim to use as the email claim. This is used to name the
+  # "user" part of the config. Default is "email".
+  emailClaim: "email"
+  # The API server endpoint used to configure kubectl
+  apiServerURL: "mycluster.example.com"
+  # The path to find the CA bundle for the API server. Used to configure kubectl.
+  # This is typically mounted into the default location for workloads running on
+  # a Kubernetes cluster and doesn't need to be set.
+  # cluster_ca_path: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+
+secrets:
+  # if this is blank it will be auto generated
+  sesssionkey: ""
+  # API client secret as indicated by the identity provider
+  clientSecret: ""
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

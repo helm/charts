@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gangway.fullname" . }}
+  labels:
+    app: {{ include "gangway.name" . }}
+    chart: {{ include "gangway.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  gangway.yaml: |-
+{{ toYaml .Values.config | indent 4 }}

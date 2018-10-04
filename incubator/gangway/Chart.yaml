@@ -1,0 +1,14 @@
+apiVersion: v1
+description: A Helm chart for setting up Gangway
+name: gangway
+version: 0.1.0
+appVersion: 2.0.0
+home: https://github.com/heptiolabs/gangway
+icon: https://avatars3.githubusercontent.com/u/30631996?s=200&v=4
+sources:
+  - https://github.com/heptiolabs/gangway
+maintainers:
+  - name: rendhalver
+    email: pete.brown@powerhrg.com
+  - name: jar361
+    email: jrodgers@powerhrg.com
