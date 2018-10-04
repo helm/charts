@@ -42,7 +42,7 @@ spec:
           image: "{{ .Values.prometheus.exporter.image.repository }}:{{ .Values.prometheus.exporter.image.tag }}"
           imagePullPolicy: {{ .Values.prometheus.exporter.image.pullPolicy }}
           command: ["elasticsearch_exporter",
-                    "-es.uri={{ template "elasticsearch.client.fullname" . }}:9200",
+                    "-es.uri=http://{{ template "elasticsearch.client.fullname" . }}:9200",
                     "-es.all={{ .Values.prometheus.exporter.es.all }}",
                     "-es.indices={{ .Values.prometheus.exporter.es.indices }}",
                     "-es.timeout={{ .Values.prometheus.exporter.es.timeout }}",
