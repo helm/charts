@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: timothyclarke/wptagent
-  tag: 2018-01-08
+  tag: "2018-01-23"
   pullPolicy: IfNotPresent
 
 agent:
