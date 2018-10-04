@@ -1,0 +1,6 @@
+mysql:
+  enabled: true
+  mysqlRootPassword: "rootpassword"
+  mysqlUser: "mmuser"
+  mysqlPassword: "mmpassword"
+  mysqlDatabase: mattermost
