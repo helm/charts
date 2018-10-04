@@ -113,6 +113,17 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.tolerations`                   | Data tolerations                                                    | `[]`                                 |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                               |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                               |
+| `prometheusExporter.repository`      | Prometheus exporter image                                           | `justwatch/elasticsearch_exporter`   |
+| `prometheusExporter.tag`             | Prometheus exporter image tag                                       | `1.0.2`                              |
+| `prometheusExporter.pullPolicy`      | Prometheus exporter image pull policy                               | `"IfNotPresent"`                     |
+| `prometheusExporter.clientName`      | Name given to sidecar container and port, used by servicemonitor    | `client-exporter`                    |
+| `prometheusExporter.internalPort`    | Internal port to sidecar container                                  | `9108`                               |
+| `prometheusExporter.externalPort`    | External port to sidecar container                                  | `9108`                               |
+| `prometheusExporter.metricsEndpoint` | Path for exported metrics (`http://localhost:9108/metrics`)         | `/metrics`                           |
+| `serviceMonitor.enabled`             | If true, servicemonitor object is deployed with chart               | `false`                              |
+| `serviceMonitor.interval`            | Interval at which the servicemonitor scrapes for metrics            | `15s`                                |
+| `serviceMonitor.namespace`           | Namespace to which the servicemonitor is deployed to                | `monitoring`                         |
+| `serviceMonitor.labels.prometheus`   | This label is necessary for recognition by the prometheus operator  | `kube-prometheus`                    |
 | `extraInitContainers`                | Additional init container passed through the tpl 	                 | ``                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
@@ -179,6 +190,15 @@ cluster.env.XPACK_MONITORING_ENABLED: true
 
 Note: to see these changes you will need to update your kibana repo to `image.repository: docker.elastic.co/kibana/kibana` instead of the `oss` version
 
+## Enabling elasticsearch prometheus monitoring
+
+Works with `oss` repository defined. Prometheus is an open source tool for monitoring metrics.
+
+Prometheus works by having an operator instance look for servicemonitor objects, which enable the communication between prometheus exporters and the prometheus operator.
+
+The prometheus exporter runs as a sidecar container within elasticsearch client pod. It translates elasticsearch metrics to ones that prometheus can read.
+
+By default, the servicemonitor object is disabled. If you would like to connect internal metrics from elasticsearch to prometheus, set `serviceMonitor.enabled: true`.
 
 ## Select right storage class for SSD volumes
 
