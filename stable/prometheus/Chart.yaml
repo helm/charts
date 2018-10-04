@@ -1,5 +1,5 @@
 name: prometheus
-version: 7.1.4
+version: 7.1.5
 appVersion: 2.4.2
 description: Prometheus is a monitoring system and time series database.
 home: https://prometheus.io/
