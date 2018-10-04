@@ -54,6 +54,13 @@ spec:
             - name: sys
               mountPath: /host/sys
               readOnly: true
+            {{- if .Values.extraHostVolumeMounts }}
+            {{- range $_, $mount := .Values.extraHostVolumeMounts }}
+            - name: {{ $mount.name }}
+              mountPath: {{ $mount.mountPath }}
+              readOnly: {{ $mount.readOnly }}
+            {{- end }}
+            {{- end }}
       hostNetwork: true
       hostPID: true
     {{- with .Values.tolerations }}
@@ -67,3 +74,10 @@ spec:
         - name: sys
           hostPath:
             path: /sys
+        {{- if .Values.extraHostVolumeMounts }}
+        {{- range $_, $mount := .Values.extraHostVolumeMounts }}
+        - name: {{ $mount.name }}
+          hostPath:
+            path: {{ $mount.hostPath }}
+        {{- end }}
+        {{- end }}
