@@ -124,7 +124,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.logDbQueries }}
             - name: CONCOURSE_LOG_DB_QUERIES
-              value: {{ .Values.concourse.web.logDbQueries }}
+              value: "true"
             {{- end }}
             {{- if .Values.concourse.web.buildTrackerInterval }}
             - name: CONCOURSE_BUILD_TRACKER_INTERVAL
@@ -317,7 +317,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.vault.cache }}
             - name: CONCOURSE_VAULT_CACHE
-              value: {{ .Values.concourse.web.vault.cache }}
+              value: "true"
             {{- end }}
             {{- if .Values.concourse.web.vault.caPath }}
             - name: CONCOURSE_VAULT_CA_PATH
@@ -325,7 +325,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.vault.insecureSkipVerify }}
             - name: CONCOURSE_VAULT_INSECURE_SKIP_VERIFY
-              value: {{ .Values.concourse.web.vault.insecureSkipVerify }}
+              value: "true"
             {{- end }}
             {{- if .Values.concourse.web.vault.maxLease }}
             - name: CONCOURSE_VAULT_MAX_LEASE
@@ -403,13 +403,15 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: influxdb-password
+            {{- if .Values.concourse.web.influxdb.insecureSkipVerify }}
             - name: CONCOURSE_INFLUXDB_INSECURE_SKIP_VERIFY
-              value: {{ .Values.concourse.web.influxdb.insecureSkipVerify | quote}}
+              value: "true"
+            {{- end }}
             {{- end }}
 
             {{- if .Values.concourse.web.emitToLogs }}
             - name: CONCOURSE_EMIT_TO_LOGS
-              value: {{ .Values.concourse.web.emitToLogs }}
+              value: "true"
             {{- end }}
 
             {{- if .Values.concourse.web.newrelic.enabled }}
@@ -494,7 +496,7 @@ spec:
 
             {{- if .Values.concourse.web.auth.cookieSecure }}
             - name: CONCOURSE_COOKIE_SECURE
-              value: {{ .Values.concourse.web.auth.cookieSecure }}
+              value: "true"
             {{- end }}
             {{- if .Values.concourse.web.auth.duration }}
             - name: CONCOURSE_AUTH_DURATION
@@ -509,7 +511,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.auth.mainTeam.allowAllUsers }}
             - name: CONCOURSE_MAIN_TEAM_ALLOW_ALL_USERS
-              value: {{ .Values.concourse.web.auth.mainTeam.allowAllUsers }}
+              value: "true"
             {{- end }}
 
             {{- if .Values.concourse.web.auth.mainTeam.cf.org }}
@@ -599,7 +601,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.auth.cf.skipSslValidation }}
             - name: CONCOURSE_CF_SKIP_SSL_VALIDATION
-              value: {{ .Values.concourse.web.auth.cf.skipSslValidation }}
+              value: "true"
             {{- end }}
             {{- end }}
 
@@ -688,15 +690,15 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.auth.ldap.insecureNoSsl }}
             - name: CONCOURSE_LDAP_INSECURE_NO_SSL
-              value: {{ .Values.concourse.web.auth.ldap.insecureNoSsl }}
+              value: "true"
             {{- end }}
             {{- if .Values.concourse.web.auth.ldap.insecureSkipVerify }}
             - name: CONCOURSE_LDAP_INSECURE_SKIP_VERIFY
-              value: {{ .Values.concourse.web.auth.ldap.insecureSkipVerify }}
+              value: "true"
             {{- end }}
             {{- if .Values.concourse.web.auth.ldap.startTls }}
             - name: CONCOURSE_LDAP_START_TLS
-              value: {{ .Values.concourse.web.auth.ldap.startTls }}
+              value: "true"
             {{- end }}
             {{- if .Values.concourse.web.auth.ldap.userSearchBaseDn }}
             - name: CONCOURSE_LDAP_USER_SEARCH_BASE_DN
@@ -769,7 +771,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.auth.oauth.skipSslValidation }}
             - name: CONCOURSE_OAUTH_SKIP_SSL_VALIDATION
-              value: {{ .Values.concourse.web.auth.oauth.skipSslValidation }}
+              value: "true"
             {{- end }}
             {{- end }}
 
@@ -810,7 +812,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.web.auth.oidc.skipSslValidation }}
             - name: CONCOURSE_OIDC_SKIP_SSL_VALIDATION
-              value: {{ .Values.concourse.web.auth.oidc.skipSslValidation }}
+              value: "true"
             {{- end }}
             {{- end }}
 
