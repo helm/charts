@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ template "elasticsearch.fullname" . }}-exporter
   labels:
-    app: "{{ template "elasticsearch.name" . }}"
+    app: {{ template "elasticsearch.fullname" . }}-exporter
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
@@ -13,7 +13,7 @@ spec:
   replicas: {{ .Values.prometheus.exporter.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "elasticsearch.name" . }}
+      app: {{ template "elasticsearch.fullname" . }}-exporter
       release: "{{ .Release.Name }}"
   strategy:
     rollingUpdate:
@@ -23,7 +23,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "elasticsearch.name" . }}
+        app: {{ template "elasticsearch.fullname" . }}-exporter
         release: "{{ .Release.Name }}"
       {{- if .Values.prometheus.exporter.podAnnotations }}
       annotations:
