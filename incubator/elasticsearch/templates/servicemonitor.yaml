@@ -1,0 +1,19 @@
+{{ if and .Values.prometheus.exporter.enabled .Values.prometheus.operator.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "elasticsearch.fullname" . }}-servicemonitor
+  namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
+  labels:
+{{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "elasticsearch.name" . }}-servicemonitor
+      release: {{ .Release.Name }}
+  endpoints:
+  - port: {{ template "elasticsearch.fullname" . }}-exporter
+    interval: {{ .Values.prometheus.operator.interval }}
+  namespaceSelector:
+    any: true
+{{ end }}
