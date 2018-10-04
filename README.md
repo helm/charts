@@ -74,13 +74,13 @@ via LoadBalancer for your app to use, you could do that in couple of different w
 #### Exposing individual service endpoint
 If you want individual LoadBalancer endpoint for each of the services (YQL, YEDIS), run the following command
 ```
-helm install yugabyte expose-all.yaml --namespace yb-demo --name yb-demo --wait
+helm install yugabyte -f expose-all.yaml --namespace yb-demo --name yb-demo --wait
 ```
 
 #### Exposing shared service endpoint
 If you want to create a shared LoadBalancer endpoint for all the services (YQL, YEDIS), run the following command
 ```
-helm install yugabyte expose-all-shared.yaml --namespace yb-demo --name yb-demo --wait
+helm install yugabyte -f expose-all-shared.yaml --namespace yb-demo --name yb-demo --wait
 ```
 
 Follow the instructions on the NOTES section.
