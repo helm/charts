@@ -44,6 +44,14 @@
 
   The chart by default creates a PVC backed by an NFS volume. The NFS volume and server are installed as a child chart adapted from the [documentation](https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs) in the kubernetes/examples repo. The NFS PVC provided makes the history server work out of the box. The user is free to replace the PVC with other storage technologies (e.g. Gluster) as long as the history server references the PVC using `pvc.existingClaimName` setting that has been properly set up.
 
+NOTE: If installing the chart on an OpenShift cluster, run
+
+```bash
+oc adm policy add-scc-to-user privileged -nspark-history-server -z default
+```
+
+beforehand to allow creation of privileged containers in the `spark-history-server` project (or any project the chart is to be installed in).
+
 #### Discussions of Storage Options
 
 Becuase a PVC is a namespaced Kubernetes resource, the fact that it is created in the same namespace where the chart is installed means that Spark jobs that would like to log events to it also need to be deployed in the same namespace. If this is an issue for you (e.g. you have a dedicated namespace for your Spark jobs), then use one of the other two options.
