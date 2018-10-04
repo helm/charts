@@ -299,7 +299,7 @@ concourse:
           user:
           ## List of whitelisted GitHub orgs
           org:
-          ## List of whitelisted GitHub teams
+          ## List of whitelisted GitHub teams (GitHub org and team separated by colon)
           team:
         ## Authentication (Main Team) (GitLab)
         gitlab:
