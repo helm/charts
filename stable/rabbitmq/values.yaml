@@ -28,13 +28,13 @@ rbacEnabled: true
 
 ## section of specific values for rabbitmq
 rabbitmq:
-   ## RabbitMQ application username
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#creating-a-database-user-on-first-run
+  ## RabbitMQ application username
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   username: user
 
   ## RabbitMQ application password
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#creating-a-database-user-on-first-run
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   # password:
 
@@ -46,7 +46,17 @@ rabbitmq:
   ## Node port
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
-  nodePort: 5672
+  # nodePort: 30672
+
+  ## Amqp port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  amqpPort: 5672
+
+  ## Dist port
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ##
+  distPort: 25672
 
   ## Node name to cluster with. e.g.: `clusternode@hostname`
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
@@ -63,6 +73,12 @@ rabbitmq:
   ## ref: https://www.rabbitmq.com/disk-alarms.html
   ##
   diskFreeLimit: '"6GiB"'
+
+  ## RabbitMQ Max File Descriptors
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ## ref: https://www.rabbitmq.com/install-debian.html#kernel-resource-limits
+  ##
+  ulimitNofiles: '65536'
 
   ## Plugins to enable
   plugins: |-
