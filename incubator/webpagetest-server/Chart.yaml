@@ -1,8 +1,8 @@
 apiVersion: v1
 description: A Helm chart for Kubernetes
 name: webpagetest-server
-version: 0.1.5
-appVersion: "2018-01-12"
+version: 0.2.0
+appVersion: "2018-03-08"
 home: https://www.webpagetest.org/
 icon: https://www.webpagetest.org/images/logo_wpt.png
 sources:
