@@ -1,0 +1,46 @@
+{{- $fullName := include "sso.fullname" . -}}
+{{- $authDomain := .Values.auth.domain -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    app: {{ template "sso.name" . }}
+    chart: {{ template "sso.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  tls:
+    - hosts:
+        - {{ $authDomain }}
+      secretName: sso-auth-tls-secret
+  {{- with .Values.ingress }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ .domain }}
+      {{- end }}
+      secretName: star-sso-tls-secret
+  {{- end }}
+  rules:
+    # Upstreams that need SSO authentication
+  {{- range .Values.ingress.hosts }}
+    - host: {{ .domain }}
+      http:
+        paths:
+          - path: {{ .path }}
+            backend:
+              serviceName: {{ $fullName }}-proxy
+              servicePort: http
+  {{- end }}
+    # Global SSO used in the callback for login
+    - host: {{ $authDomain }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $fullName }}-auth
+              servicePort: http

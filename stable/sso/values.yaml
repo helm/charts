@@ -1,0 +1,68 @@
+# Default values for sso.
+# Commented values are required for SSO to work
+
+# emailDomain: 'email.mydomain.foo'
+# rootDomain: 'mydomain.foo'
+
+auth:
+  # domain: "sso-auth.mydomain.foo"
+  replicaCount: 1
+  resources:
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  service:
+    type: ClusterIP
+    port: 80
+  # Generate these secrets with the command:
+  # 'openssl rand -base64 32 | head -c 32 | base64'
+  secret: {}
+    # codeSecret: ''
+    # cookieSecret: ''
+
+proxy:
+  # virtualHost: "*.mydomain.foo"
+  replicaCount: 1
+  resources:
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  service:
+    type: ClusterIP
+    port: 80
+  # Generate these secrets with the command:
+  # 'openssl rand -base64 32 | head -c 32 | base64'
+  secret: {}
+    # clientId: ''
+    # clientSecret: ''
+    # codeSecret: ''
+    # cookieSecret: ''
+
+provider: {}
+  # google:
+  #    adminEmail: me@mydomain.foo
+  #    clientId: foo123123-fake123123.apps.googleusercontent.com
+  #    clientSecret: googleOauthClientSecret
+  #    serviceAccount: 'service account content in JSON format'
+
+image:
+  repository: buzzfeed/sso
+  tag: v1.0.0
+  pullPolicy: IfNotPresent
+
+ingress:
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # certmanager.k8s.io/cluster-issuer: my-letsencrypt-issuer
+    # ingress.kubernetes.io/ssl-redirect: "true"
+  hosts: []
+  #  - serviceName: mybackend
+  #    serviceUrl: http://mybackend.mynamespace.svc.cluster.local:9091
+  #    domain: mybackend.mydomain.foo
+  #    path: /

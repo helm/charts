@@ -1,0 +1,138 @@
+{{- $fullName := include "sso.fullname" . -}}
+{{- $authDomain := .Values.auth.domain -}}
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $fullName }}-auth
+  labels:
+    app: {{ template "sso.name" . }}-auth
+    chart: {{ template "sso.chart" . }}-auth
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.proxy.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "sso.name" . }}-auth
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        app: {{ template "sso.name" . }}-auth
+        release: {{ .Release.Name }}
+    spec:
+    {{- if .Values.provider.google }}
+      volumes:
+        - name: google-service-account
+          secret:
+            secretName: {{ $fullName }}-google
+            items:
+            - key: service-account
+              path: sso-serviceaccount.json
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-auth
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sso-auth"]
+          ports:
+            - name: http
+              containerPort: 4180
+              protocol: TCP
+          env:
+            - name: SSO_EMAIL_DOMAIN
+              value: {{ .Values.emailDomain }}
+            - name: HOST
+              value: {{ $authDomain }}
+            - name: REDIRECT_URL
+              value: https://{{ $authDomain }}
+            - name: PROXY_ROOT_DOMAIN
+              value: {{ .Values.rootDomain }}
+            - name: PROXY_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}
+                  key: proxy-client-id
+            - name: PROXY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}
+                  key: proxy-client-secret
+            - name: AUTH_CODE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}
+                  key: auth-code-secret
+            - name: COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}
+                  key: auth-cookie-secret
+            # # OLD_COOKIE_SECRET is the same as COOKIE_SECRET, not sure why its even needed at this point
+            - name: OLD_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}
+                  key: auth-cookie-secret
+            # STATSD_HOST and STATSD_PORT must be defined or the app wont launch, they dont need to be a real host / port
+            - name: STATSD_HOST
+              value: localhost
+            - name: STATSD_PORT
+              value: "11111"
+            - name: COOKIE_SECURE
+              value: "false"
+            - name: CLUSTER
+              value: dev
+            - name: VIRTUAL_HOST
+              value: {{ $authDomain }}
+            # Provider variables
+          {{- with .Values.provider.google }}
+            - name: GOOGLE_ADMIN_EMAIL
+              value: {{ .adminEmail }}
+            - name: GOOGLE_SERVICE_ACCOUNT_JSON
+              value: /creds/sso-serviceaccount.json
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}-google
+                  key: google-client-id
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}-google
+                  key: google-client-secret
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 4180
+              scheme: HTTP
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 4180
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+        {{- if .Values.provider.google }}
+          volumeMounts:
+            - name: google-service-account
+              mountPath: /creds
+              readOnly: true
+        {{- end }}
+          resources:
+{{ toYaml .Values.proxy.resources | indent 12 }}
+    {{- with .Values.proxy.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.proxy.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.proxy.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

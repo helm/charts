@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "sso.fullname" . }}
+  labels:
+    app: {{ template "sso.name" . }}
+    chart: {{ template "sso.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  upstream_configs.yml: |-
+  {{- range .Values.ingress.hosts }}
+    - service: {{ .serviceName }}
+      default:
+        from: {{ .domain }}
+        to: {{ .serviceUrl }}
+  {{- end }}

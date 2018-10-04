@@ -1,0 +1,104 @@
+{{- $fullName := include "sso.fullname" . -}}
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $fullName }}-proxy
+  labels:
+    app: {{ template "sso.name" . }}-proxy
+    chart: {{ template "sso.chart" . }}-proxy
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.proxy.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "sso.name" . }}-proxy
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        app: {{ template "sso.name" . }}-proxy
+        release: {{ .Release.Name }}
+    spec:
+      volumes:
+        - name: {{ $fullName }}
+          configMap:
+            name: {{ $fullName }}
+      containers:
+        - name: {{ .Chart.Name }}-proxy
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sso-proxy"]
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}
+                  key: proxy-client-id
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}
+                  key: proxy-client-secret
+            - name: AUTH_CODE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}
+                  key: proxy-auth-code-secret
+            - name: COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "sso.fullname" . }}
+                  key: proxy-cookie-secret
+            - name: EMAIL_DOMAIN
+              value: {{ .Values.emailDomain }}
+            - name: UPSTREAM_CONFIGS
+              value: /sso/upstream_configs.yml
+            - name: PROVIDER_URL
+              value: https://{{ .Values.auth.domain }}
+            # STATSD_HOST and STATSD_PORT must be defined or the app wont launch, they dont need to be a real host / port, but they do need to be defined.
+            - name: STATSD_HOST
+              value: localhost
+            - name: STATSD_PORT
+              value: "11111"
+            - name: COOKIE_SECURE
+              value: "false"
+            - name: CLUSTER
+              value: dev
+            - name: VIRTUAL_HOST
+              value: "{{ .Values.proxy.virtualHost }}"
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 4180
+              scheme: HTTP
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 4180
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+          volumeMounts:
+            - name: {{ $fullName }}
+              mountPath: /sso
+          resources:
+{{ toYaml .Values.proxy.resources | indent 12 }}
+    {{- with .Values.proxy.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.proxy.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.proxy.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

@@ -1,0 +1,4 @@
+1. Visit the external application URLs to use your application:
+{{- range .Values.ingress.hosts }}
+  https://{{ .domain }}{{ .path }}
+{{- end }}
