@@ -213,6 +213,11 @@ Jobs can be created (and overwritten) by providing jenkins config xml within the
 The keys of the map will become a directory within the jobs directory.
 The values of the map will become the `config.xml` file in the respective directory.
 
+### Jobs in Folders
+Folders can be created the same way jobs are created.  
+However to put a job in a folder, you must include the folder name with the job name.
+The folder and job are separated by three hyphens `---`.
+
 Below is an example of a `values.yaml` file and the directory structure created:
 
 #### values.yaml
@@ -250,6 +255,46 @@ Master:
         <builders/>
         <publishers/>
         <buildWrappers/>
+    folder-1: |-
+      <?xml version='1.0' encoding='UTF-8'?>
+      <com.cloudbees.hudson.plugins.folder.Folder plugin="cloudbees-folder@6.5.1">
+        <description></description>
+        <properties/>
+        <folderViews class="com.cloudbees.hudson.plugins.folder.views.DefaultFolderViewHolder">
+          <views>
+            <hudson.model.AllView>
+              <owner class="com.cloudbees.hudson.plugins.folder.Folder" reference="../../../.."/>
+              <name>All</name>
+              <filterExecutors>false</filterExecutors>
+              <filterQueue>false</filterQueue>
+              <properties class="hudson.model.View$PropertyList"/>
+            </hudson.model.AllView>
+          </views>
+          <tabBar class="hudson.views.DefaultViewsTabBar"/>
+        </folderViews>
+        <healthMetrics>
+          <com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric>
+            <nonRecursive>false</nonRecursive>
+          </com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric>
+        </healthMetrics>
+        <icon class="com.cloudbees.hudson.plugins.folder.icons.StockFolderIcon"/>
+      </com.cloudbees.hudson.plugins.folder.Folder>
+    folder-1---test-job-3: |-
+      <?xml version='1.0' encoding='UTF-8'?>
+      <project>
+        <keepDependencies>false</keepDependencies>
+        <properties/>
+        <scm class="hudson.scm.NullSCM"/>
+        <canRoam>false</canRoam>
+        <disabled>false</disabled>
+        <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+        <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+        <triggers/>
+        <concurrentBuild>false</concurrentBuild>
+        <builders/>
+        <publishers/>
+        <buildWrappers/>
+
 ```
 
 #### Directory structure of jobs directory
@@ -259,6 +304,10 @@ Master:
 |   └── config.xml
 ├── _test-job-2
 |   └── config.xml
+├── _folder-1
+|   └── config.xml
+├── folder-1/jobs/_test-job-3
+|                 └── config.xml
 ```
 
 Docs taken from https://github.com/jenkinsci/docker/blob/master/Dockerfile:

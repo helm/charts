@@ -224,8 +224,10 @@ data:
 {{- end }}
 {{- if .Values.Master.Jobs }}
     for job in $(ls /var/jenkins_jobs); do
-      mkdir -p /var/jenkins_home/jobs/$job
-      cp -n /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
+      # --- allows for jobs to be created in folders
+      tocreate="$(echo $job | sed -e 's/---/\/jobs\//g')"
+      mkdir -p /var/jenkins_home/jobs/$tocreate
+      cp -n /var/jenkins_jobs/$job /var/jenkins_home/jobs/$tocreate/config.xml
     done
 {{- end }}
 {{- range $key, $val := .Values.Master.InitScripts }}
