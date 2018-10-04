@@ -1,8 +1,8 @@
 ## Cassandra image version
 ## ref: https://hub.docker.com/r/library/cassandra/
 image:
-  repo: "cassandra"
-  tag: "3.11.2"
+  repo: cassandra
+  tag: 3.11.3
   pullPolicy: IfNotPresent
   ## Specify ImagePullSecrets for Pods
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
