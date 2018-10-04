@@ -2,14 +2,14 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "elasticsearch.fullname" . }}-servicemonitor
+  name: {{ include "elasticsearch.fullname" . }}-exporter
   namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
   labels:
 {{ toYaml .Values.prometheus.operator.serviceMonitor.selector | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "elasticsearch.name" . }}-servicemonitor
+      app: {{ include "elasticsearch.name" . }}-exporter
       release: {{ .Release.Name }}
   endpoints:
   - port: {{ template "elasticsearch.fullname" . }}-exporter

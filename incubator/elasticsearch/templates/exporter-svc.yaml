@@ -1,0 +1,20 @@
+{{ if and .Values.prometheus.exporter.enabled .Values.prometheus.operator.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "elasticsearch.fullname" . }}-exporter
+  labels:
+    app: {{ include "elasticsearch.name" . }}-exporter
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  ports:
+  - name: {{ template "elasticsearch.fullname" . }}-exporter
+    protocol: TCP
+    port: {{ .Values.prometheus.exporter.service.httpPort }}
+    targetPort: {{ .Values.prometheus.exporter.service.httpPort }}
+  selector:
+    app: {{ include "elasticsearch.name" . }}-exporter
+    release: {{ .Release.Name }}
+{{ end }}
