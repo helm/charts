@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "rabbitmq.fullname" . }}-headless
+  labels:
+    app: {{ template "rabbitmq.name" . }}
+    chart: {{ template "rabbitmq.chart" .  }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  clusterIP: None
+  ports:
+  - name: epmd
+    port: 4369
+    targetPort: epmd
+  - name: amqp
+    port: {{ .Values.rabbitmq.nodePort }}
+    targetPort: amqp
+    {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.rabbitmq.nodePort))) }}
+    nodePort: {{ .Values.rabbitmq.nodePort }}
+    {{- end }}
+  - name: dist
+    port: {{ .Values.rabbitmq.nodePort | add 20000 }}
+    targetPort: dist
+  - name: stats
+    port: {{ .Values.rabbitmq.managerPort }}
+    targetPort: stats
+  selector:
+    app: {{ template "rabbitmq.name" . }}
+    release: "{{ .Release.Name }}"
