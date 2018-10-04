@@ -44,6 +44,10 @@ spec:
             - name: smtp
               containerPort: 1025
               protocol: TCP
+          {{- if .Values.auth.enabled }}
+          args:
+            - "-auth-file=/authdir/{{ .Values.auth.fileName }}"
+          {{- end }}
           livenessProbe:
             tcpSocket:
               port: smtp
