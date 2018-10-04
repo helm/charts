@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: {{ include "elasticsearch.fullname" . }}-exporter
   labels:
-    app: {{ include "elasticsearch.name" . }}-exporter
+    app: {{ include "elasticsearch.fullname" . }}-exporter
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -15,6 +15,6 @@ spec:
     port: {{ .Values.prometheus.exporter.service.httpPort }}
     targetPort: {{ .Values.prometheus.exporter.service.httpPort }}
   selector:
-    app: {{ include "elasticsearch.name" . }}-exporter
+    app: {{ include "elasticsearch.fullname" . }}-exporter
     release: {{ .Release.Name }}
 {{ end }}
