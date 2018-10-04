@@ -21,6 +21,12 @@ spec:
     type: RollingUpdate
   template:
     metadata:
+      {{- if .Values.slave.annotations }}
+      annotations:
+        {{- range .Values.slave.annotations }}
+        {{ .key }}: '{{ .value }}'
+        {{- end }}
+      {{- end }}
       labels:
         app: "{{ template "mariadb.name" . }}"
         component: "slave"
