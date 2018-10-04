@@ -56,6 +56,8 @@ The following table lists the configurable parameters of the karma chart and the
 | `nodeSelector`                      | Settings for nodeselector          | `{}`                                      |
 | `tolerations`                       | Settings for toleration            | `{}`                                      |
 | `affinity`                          | Settings for affinity              | `{}`                                      |
+| `serviceAccount.create`             | Create service-account             | `true`                                    |
+| `serviceAccount.name`               | Override service-account name      | ``                                        |
 
 
 
