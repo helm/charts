@@ -84,12 +84,16 @@ rabbitmq:
   plugins: |-
       [rabbitmq_management, rabbitmq_peer_discovery_k8s].
 
+  ## Clustering settings
+  clustering:
+    address_type: ip
+    k8s_domain: cluster.local
+
   ## Configution file content
   configuration: |-
       ## Clustering
       cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
       cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
-      cluster_formation.k8s.address_type = ip
       cluster_formation.node_cleanup.interval = 10
       cluster_formation.node_cleanup.only_log_warning = true
       cluster_partition_handling = autoheal
