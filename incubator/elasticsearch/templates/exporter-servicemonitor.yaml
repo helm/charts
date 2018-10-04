@@ -11,7 +11,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ include "elasticsearch.name" . }}-exporter
+      app: {{ template "elasticsearch.fullname" . }}-exporter
       release: {{ .Release.Name }}
   endpoints:
   - port: {{ template "elasticsearch.fullname" . }}-exporter
