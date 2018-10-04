@@ -8,7 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  serviceName: {{ template "rabbitmq.fullname" . }}
+  serviceName: {{ template "rabbitmq.fullname" . }}-headless
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
@@ -116,14 +116,31 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
-          - name: RABBITMQ_USE_LONGNAME
-            value: "true"
-          - name: RABBITMQ_ULIMIT_NOFILES
-            value: {{ .Values.rabbitmq.ulimitNofiles | quote }}
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: MY_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: K8S_SERVICE_NAME
+            value: "{{ template "rabbitmq.fullname" . }}-headless"
+          - name: K8S_ADDRESS_TYPE
+            value: {{ .Values.rabbitmq.clustering.address_type }}
+          {{- if (eq "hostname" .Values.rabbitmq.clustering.address_type) }}
+          - name: RABBITMQ_NODENAME
+            value: "rabbit@$(MY_POD_NAME).$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.{{ .Values.rabbitmq.clustering.k8s_domain }}"
+          - name: K8S_HOSTNAME_SUFFIX
+            value: ".$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.{{ .Values.rabbitmq.clustering.k8s_domain }}"
+          {{- else }}
           - name: RABBITMQ_NODENAME
             value: "rabbit@$(MY_POD_IP)"
-          - name: K8S_SERVICE_NAME
-            value: "{{ template "rabbitmq.fullname" . }}"
+          {{- end }}
+          - name: RABBITMQ_ULIMIT_NOFILES
+            value: {{ .Values.rabbitmq.ulimitNofiles | quote }}
+          - name: RABBITMQ_USE_LONGNAME
+            value: "true"
           - name: RABBITMQ_ERL_COOKIE
             valueFrom:
               secretKeyRef:
