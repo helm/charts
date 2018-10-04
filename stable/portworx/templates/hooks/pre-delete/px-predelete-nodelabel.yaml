@@ -1,0 +1,40 @@
+{{- $customRegistryURL := .Values.customRegistryURL | default "none" }}
+{{- $registrySecret := .Values.registrySecret | default "none" }}
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: kube-system
+  name: px-hook-predelete-nodelabel
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    app.kubernetes.io/managed-by: {{.Release.Service | quote }}
+    app.kubernetes.io/instance: {{.Release.Name | quote }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+{{ if semverCompare ">= 1.8" .Capabilities.KubeVersion.GitVersion }}
+  backoffLimit: 0
+{{ else }}
+  activeDeadlineSeconds: 30
+{{ end }}
+  template:
+    spec:
+      {{- if not (eq $registrySecret "none") }}
+      imagePullSecrets:
+        - name: {{ $registrySecret }}
+      {{- end }}
+      serviceAccountName: {{ template "px.hookServiceAccount" . }}
+      restartPolicy: Never
+      containers:
+      - name: pre-delete-job
+        {{- if eq $customRegistryURL "none" }}
+        image: "lachlanevenson/k8s-kubectl:{{ template "px.kubernetesVersion" . }}"
+        {{- else}}
+        image: "{{ $customRegistryURL }}/lachlanevenson/k8s-kubectl:{{ template "px.kubernetesVersion" . }}"
+        {{- end}}
+        args: ['label','nodes','--all','px/enabled=remove','--overwrite']

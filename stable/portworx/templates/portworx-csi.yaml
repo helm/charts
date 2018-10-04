@@ -1,0 +1,96 @@
+{{- if (.Values.csi) and (eq .Values.csi true)}}
+{{- $customRegistryURL := .Values.customRegistryURL | default "none" }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: px-csi-account
+  namespace: kube-system
+---
+kind: ClusterRole
+apiVersion: {{ template "rbac.apiVersion" . }}
+metadata:
+   name: px-csi-role
+rules:
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["persistentvolumes"]
+  verbs: ["get", "list", "watch", "create", "delete", "update"]
+- apiGroups: [""]
+  resources: ["persistentvolumeclaims"]
+  verbs: ["get", "list", "watch", "update"]
+- apiGroups: ["storage.k8s.io"]
+  resources: ["storageclasses"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["storage.k8s.io"]
+  resources: ["volumeattachments"]
+  verbs: ["get", "list", "watch", "update"]
+---
+kind: ClusterRoleBinding
+apiVersion: {{ template "rbac.apiVersion" . }}
+metadata:
+  name: px-csi-role-binding
+subjects:
+- kind: ServiceAccount
+  name: px-csi-account
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: px-csi-role
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: px-csi-service
+  namespace: kube-system
+spec:
+  clusterIP: None
+---
+kind: StatefulSet
+apiVersion: apps/v1beta1
+metadata:
+  name: px-csi-ext
+  namespace: kube-system
+spec:
+  serviceName: "px-csi-service"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: px-csi-driver
+    spec:
+      serviceAccount: px-csi-account
+      containers:
+        - name: csi-external-provisioner
+          imagePullPolicy: Always
+          image: "{{ template "px.getcsiProvisioner" . }}/csi-provisioner:v0.2.0"
+          args:
+            - "--v=5"
+            - "--provisioner=com.openstorage.pxd"
+            - "--csi-address=$(ADDRESS)"
+          env:
+            - name: ADDRESS
+              value: /csi/csi.sock
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+        - name: csi-attacher
+          imagePullPolicy: Always
+          image: "{{ template "px.getcsiImages" . }}/csi-attacher:v0.2.0"
+          args:
+            - "--v=5"
+            - "--csi-address=$(ADDRESS)"
+          env:
+            - name: ADDRESS
+              value: /csi/csi.sock
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+      volumes:
+        - name: socket-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins/com.openstorage.pxd
+            type: DirectoryOrCreate
+{{- end }}

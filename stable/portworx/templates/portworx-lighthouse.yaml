@@ -1,0 +1,104 @@
+{{- if (.Values.lighthouse) and (eq .Values.lighthouse true) -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: px-lh-account
+  namespace: kube-system
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+   name: px-lh-role
+   namespace: kube-system
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "create", "update"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: px-lh-role-binding
+  namespace: kube-system
+subjects:
+- kind: ServiceAccount
+  name: px-lh-account
+  namespace: kube-system
+roleRef:
+  kind: Role
+  name: px-lh-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: px-lighthouse
+  namespace: kube-system
+  labels:
+    tier: px-web-console
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 80
+      nodePort: 32678
+    - name: https
+      port: 443
+      nodePort: 32679
+  selector:
+    tier: px-web-console
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: px-lighthouse
+  namespace: kube-system
+  labels:
+    tier: px-web-console
+spec:
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      tier: px-web-console
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        tier: px-web-console
+    spec:
+      initContainers:
+      - name: config-init
+        image: "{{ template "px.getk8sImages" . }}/lh-config-sync:0.2"
+        imagePullPolicy: Always
+        args:
+        - "init"
+        volumeMounts:
+        - name: config
+          mountPath: /config/lh
+      containers:
+      - name: px-lighthouse
+        image: "{{ template "px.getk8sImages" . }}/px-lighthouse:{{ required "A valid lighthouse image version is required" .Values.lighthouseVersion}}"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        volumeMounts:
+        - name: config
+          mountPath: /config/lh
+      - name: config-sync
+        image: "{{ template "px.getk8sImages" . }}/lh-config-sync:0.2"
+        imagePullPolicy: Always
+        args:
+        - "sync"
+        volumeMounts:
+        - name: config
+          mountPath: /config/lh
+      serviceAccountName: px-lh-account
+      volumes:
+      - name: config
+        emptyDir: {}
+{{- end -}}

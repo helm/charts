@@ -1,0 +1,66 @@
+{{- $customRegistryURL := .Values.customRegistryURL | default "none" }}
+{{- $registrySecret := .Values.registrySecret | default "none" }}
+{{- $etcdCertPath := .Values.etcd.certPath | default "none" }}
+
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: kube-system
+  name: px-hook-etcd-preinstall
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    app.kubernetes.io/managed-by: {{.Release.Service | quote }}
+    app.kubernetes.io/instance: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+{{ if semverCompare ">=1.8-0" .Capabilities.KubeVersion.GitVersion }}
+  backoffLimit: 0
+{{ else }}
+  activeDeadlineSeconds: 30
+{{ end }}
+  template:
+    spec:
+      {{- if not (eq $registrySecret "none") }}
+      imagePullSecrets:
+        - name: {{ $registrySecret }}
+      {{- end }}
+      restartPolicy: Never
+      containers:
+      - name: pre-install-job
+        terminationMessagePath: '/dev/termination-log'
+        terminationMessagePolicy: 'FallbackToLogsOnError'
+        imagePullPolicy: Always
+
+        {{- if eq $customRegistryURL "none" }}
+        image: "hrishi/px-etcd-preinstall-hook:v2"
+        {{- else}}
+        image: "{{ $customRegistryURL }}/hrishi/px-etcd-preinstall-hook:v2"
+        {{- end }}
+
+        {{- if  not (eq $etcdCertPath "none") }}
+        command: ['/bin/bash']
+        args: ['/usr/bin/etcdStatus.sh',"{{ .Values.etcdEndPoint }}","{{.Values.etcd.ca}}","{{.Values.etcd.cert}}","{{.Values.etcd.key}}"]
+        volumeMounts:
+        - mountPath: /etc/pwx/etcdcerts
+          name: etcdcerts
+      volumes:
+      - name: etcdcerts
+        secret:
+          secretName: px-etcd-certs
+          items:
+          - key: ca.pem
+            path: ca.pem
+          - key: client.pem
+            path: client.pem
+          - key: client-key.pem
+            path: client-key.pem
+        {{- else}}
+        command: ['/bin/bash']
+        args: ['/usr/bin/etcdStatus.sh',"{{ .Values.etcdEndPoint }}"]
+        {{- end}}

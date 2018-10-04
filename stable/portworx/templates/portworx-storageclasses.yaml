@@ -1,0 +1,56 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+  name: portworx-db-sc
+provisioner: kubernetes.io/portworx-volume
+parameters:
+  repl: "3"
+  io_profile: "db"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+  name: portworx-db2-sc
+provisioner: kubernetes.io/portworx-volume
+parameters:
+   repl: "3"
+   block_size: "512b"
+   io_profile: "db"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+  name: portworx-shared-sc
+provisioner: kubernetes.io/portworx-volume
+parameters:
+   repl: "3"
+   shared: "true"
+---
+#
+# NULL StorageClass that documents all possible
+# Portworx StorageClass parameters
+#
+# Please refer to : https://docs.portworx.com/scheduler/kubernetes/dynamic-provisioning.html
+#
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+  name: portworx-null-sc
+  annotations:
+       params/docs:  'https://docs.portworx.com/scheduler/kubernetes/dynamic-provisioning.html'
+       params/fs:  "Filesystem to be laid out: none|xfs|ext4 "
+       params/block_size: "Block size"
+       params/repl:        "Replication factor for the volume: 1|2|3"
+       params/shared:     "Flag to create a globally shared namespace volume which can be used by multiple pods : true|false"
+       params/priority_io: "IO Priority: low|medium|high"
+       params/io_profile:  "IO Profile can be used to override the I/O algorithm Portworx uses for the volumes. Supported values are [db](/maintain/performance/tuning.html#db), [sequential](/maintain/performance/tuning.html#sequential), [random](/maintain/performance/tuning.html#random), [cms](/maintain/performance/tuning.html#cms)"
+       params/group:       "The group a volume should belong too. Portworx will restrict replication sets of volumes of the same group on different nodes. If the force group option 'fg' is set to true, the volume group rule will be strictly enforced. By default, it's not strictly enforced."
+       params/fg:          "This option enforces volume group policy. If a volume belonging to a group cannot find nodes for it's replication sets which don't have other volumes of same group, the volume creation will fail."
+       params/label:       "List of comma-separated name=value pairs to apply to the Portworx volume"
+       params/nodes:       "Comma-separated Portworx Node ID's to use for replication sets of the volume"
+       params/aggregation_level:     "Specifies the number of replication sets the volume can be aggregated from"
+       params/snap_schedule:     "Snapshot schedule. Following are the accepted formats:  periodic=_mins_,_snaps-to-keep_ daily=_hh:mm_,_snaps-to-keep_ weekly=_weekday@hh:mm_,_snaps-to-keep_  monthly=_day@hh:mm_,_snaps-to-keep_ _snaps-to-keep_ is optional. Periodic, Daily, Weekly and Monthly keep last 5, 7, 5 and 12 snapshots by default respectively"
+       params/sticky:         "Flag to create sticky volumes that cannot be deleted until the flag is disabled"
+       params/journal:         "Flag to indicate if you want to use journal device for the volume's metadata. This will use the journal device that you used when installing Portworx. As of PX version 1.3, it is recommended to use a journal device to absorb PX metadata writes"
+provisioner: kubernetes.io/portworx-volume
+parameters:

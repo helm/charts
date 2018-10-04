@@ -1,0 +1,393 @@
+{{/* Setting defaults if they are omitted. */}}
+{{- $usefileSystemDrive := .Values.usefileSystemDrive | default false }}
+{{- $drives := .Values.drives | default "none" }}
+{{- $usedrivesAndPartitions := .Values.usedrivesAndPartitions | default false }}
+{{- $secretType := .Values.secretType | default "none" }}
+{{- $journalDevice := .Values.journalDevice | default "none" }}
+{{- $customRegistryURL := .Values.customRegistryURL | default "none" }}
+{{- $registrySecret := .Values.registrySecret | default "none" }}
+
+{{- $dataInterface := .Values.dataInterface | default "none" }}
+{{- $managementInterface := .Values.managementInterface | default "none" }}
+
+{{- $envVars := .Values.envVars | default "none" }}
+{{- $isCoreOS := .Values.isTargetOSCoreOS | default false }}
+
+{{- $pksInstall := .Values.pksInstall | default false }}
+{{- $internalKVDB := .Values.internalKVDB | default false }}
+{{- $csi := .Values.csi | default false }}
+
+{{- $etcdCredentials := .Values.etcd.credentials | default "none:none" }}
+{{- $etcdCertPath := .Values.etcd.certPath | default "none" }}
+{{- $etcdCA := .Values.etcd.ca | default "none" }}
+{{- $etcdCert := .Values.etcd.cert | default "none" }}
+{{- $etcdKey := .Values.etcd.key | default "none" }}
+{{- $consulToken := .Values.consul.token | default "none" }}
+{{- $etcdEndPoints := .Values.etcdEndPoint }}
+{{- $misc := .Values.misc | default "" | split " " }}
+
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: portworx
+  namespace: kube-system
+spec:
+  minReadySeconds: 0
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: portworx
+        name: portworx
+        # {{- include "px.labels" . | indent 8 }}
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: px/enabled
+                operator: NotIn
+                values:
+                - "false"
+              {{- if (.Values.openshiftInstall) and (eq .Values.openshiftInstall true)}}
+              - key: openshift-infra
+                operator: DoesNotExist
+              {{- else if (not .Values.deployOnMaster) or (eq .Values.deployOnMaster false)}}
+              - key: node-role.kubernetes.io/master
+                operator: DoesNotExist
+              {{- end }}
+      hostNetwork: true
+      hostPID: true
+      {{- if not (eq $registrySecret "none") }}
+      imagePullSecrets:
+        - name: {{ $registrySecret }}
+      {{- end }}
+      containers:
+      # {{ template "px.getImage"}}
+        - name: portworx
+          image: {{ template "px.getImage" . }}:{{ required "A valid Image tag is required in the SemVer format" .Values.imageVersion }}
+          terminationMessagePath: "/tmp/px-termination-log"
+          imagePullPolicy: Always
+          args:
+          {{- with .Values }}
+            [
+              {{- if eq $drives "none" }}
+                {{- if eq $usedrivesAndPartitions true }}
+              "-A",
+                {{- else }}
+              "-a",
+                {{- end -}}
+                {{- if eq $usefileSystemDrive true }}
+              "-f",
+                {{- end }}
+              {{- else }}
+                {{- $driveNames := .drives | split ";" }}
+                {{- range $index, $name := $driveNames }}
+              "-s", "{{ $name }}",
+                {{- end -}}
+              {{- end -}}
+
+              {{- if eq $internalKVDB true }}
+              "-b",
+              {{- else }}
+                  {{required ".etcdEndPoint is required" .etcdEndPoint  }}
+              {{- end -}}
+
+              {{- if ne $journalDevice "none" }}
+              "-j", "{{ $journalDevice }}",
+              {{- end -}}
+
+
+              {{- if $etcdEndPoints }}
+              "-k", "{{ regexReplaceAllLiteral "(;)" .etcdEndPoint "," }}",
+              {{ end -}}
+
+              "-c", "{{ required "Clustername cannot be empty" .clusterName }}",
+
+              {{- if ne $secretType "none" }}
+              "-secret_type", "{{ $secretType }}",
+              {{- end -}}
+
+              {{- if ne $dataInterface "none" }}
+              "-d", "{{ $dataInterface }}",
+              {{- end -}}
+
+              {{- if ne $managementInterface "none" }}
+              "-m", "{{ $managementInterface }}",
+              {{- end -}}
+
+              {{- if ne $etcdCredentials "none:none" }}
+              "-userpwd", "{{ $etcdCredentials }}",
+              {{- end -}}
+
+              {{- if ne $etcdCA "none" }}
+              "-ca", "{{ $etcdCA }}",
+              {{- end -}}
+
+              {{- if ne $etcdCert "none" }}
+              "-cert", "{{ $etcdCert }}",
+              {{- end -}}
+
+              {{- if ne $etcdKey "none" }}
+              "-key", "{{ $etcdKey }}",
+              {{- end -}}
+
+              {{- if ne $consulToken "none" }}
+              "-acltoken", "{{ $consulToken }}",
+              {{- end -}}
+
+              {{- if .misc }}
+                {{- range $index, $name := $misc }}
+              "{{ $name }}",
+                {{- end }}
+              {{ end -}}
+
+              "-x", "kubernetes"
+             ]
+           {{- end }}
+          env:
+            - name: "PX_TEMPLATE_VERSION"
+              value: "v2"
+              {{ if not (eq $envVars "none") }}
+              {{- $vars := $envVars | split ";" }}
+              {{- range $key, $val := $vars }}
+              {{-  $envVariable := $val | split "=" }}
+            - name: {{ $envVariable._0 | trim | quote }}
+              value: {{ $envVariable._1 | trim | quote }}
+              {{ end }}
+              {{- end }}
+
+           {{- if not (eq $registrySecret "none") }}
+            - name: REGISTRY_CONFIG
+              valueFrom:
+                secretKeyRef:
+                {{- if (semverCompare ">=1.9" .Capabilities.KubeVersion.GitVersion) or (.Values.openshiftInstall and semverCompare ">=1.8" .Capabilities.KubeVersion.GitVersion) }}
+                  key: ".dockerconfigjson"
+                {{- else }}
+                  key: ".dockercfg"
+                {{- end }}
+                  name: "{{ $registrySecret }}"
+            {{- end }}
+
+            {{- if eq $pksInstall true }}
+            - name: "PRE-EXEC"
+              value: "if [ ! -x /bin/systemctl ]; then apt-get update; apt-get install -y systemd; fi"
+            {{- end }}
+
+            {{- if eq $csi true }}
+            - name: CSI_ENDPOINT
+              value: unix:///var/lib/kubelet/plugins/com.openstorage.pxd/csi.sock
+            {{- end }}
+
+          livenessProbe:
+            periodSeconds: 30
+            initialDelaySeconds: 840 # allow image pull in slow networks
+            httpGet:
+              host: 127.0.0.1
+              path: /status
+              port: 9001
+          readinessProbe:
+            periodSeconds: 10
+            httpGet:
+              host: 127.0.0.1
+          {{- if eq (.Values.deploymentType | upper | lower) "oci" }}
+              path: /health
+              port: 9015
+          {{- else }}
+              path: /v1/cluster/nodehealth
+              port: 9001
+          {{- end}}
+          securityContext:
+            privileged: true
+          volumeMounts:
+          {{- if not (eq $etcdCertPath "none") }}
+            - mountPath: /etc/pwx/etcdcerts
+              name: etcdcerts
+          {{- end }}
+            - name: dockersock
+              mountPath: /var/run/docker.sock
+            - name: etcpwx
+              mountPath: /etc/pwx
+            - name: cores
+              mountPath: /var/cores
+          {{- if eq (.Values.deploymentType | upper | lower) "oci" }}
+            - name: optpwx
+              mountPath: /opt/pwx
+            - name: sysdmount
+              mountPath: /etc/systemd/system
+            - name: dbusmount
+              mountPath: /var/run/dbus
+          {{- if (.Values.openshiftInstall) and (eq .Values.openshiftInstall true)}}
+            - name: proc1nsmount
+              mountPath: /host_proc
+          {{- else }}
+            - name: proc1nsmount
+              mountPath: /host_proc/1/ns
+          {{- end }}
+
+          {{- else if eq (.Values.deploymentType | upper | lower) "docker" }}
+            - name: dev
+              mountPath: /dev
+            - name: optpwx
+              mountPath: /export_bin
+            - name: dockerplugins
+              mountPath: /run/docker/plugins
+            - name: hostproc
+              mountPath: /hostproc
+          {{- if semverCompare "< 1.10" .Capabilities.KubeVersion.GitVersion }}
+            - name: libosd
+              mountPath: /var/lib/osd:shared
+          {{- if (.Values.openshiftInstall) and (eq .Values.openshiftInstall true)}}
+            - name: kubelet
+              mountPath: /var/lib/origin/openshift.local.volumes:shared
+          {{- else }}
+            - name: kubelet
+              mountPath: /var/lib/kubelet:shared
+          {{- end }}
+
+          {{- else }}
+            - name: libosd
+              mountPath: /var/lib/osd
+              mountPropagation: "Bidirectional"
+          {{- if (.Values.openshiftInstall) and (eq .Values.openshiftInstall true)}}
+            - name: kubelet
+              mountPath: /var/lib/origin/openshift.local.volumes
+              mountPropagation: "Bidirectional"
+          {{- else }}
+            - name: kubelet
+              mountPath: /var/lib/kubelet:shared
+              mountPropagation: "Bidirectional"
+          {{- end }}
+
+          {{- end }}
+
+          {{- if eq $isCoreOS true}}
+            - name: src
+              mountPath: /lib/modules
+          {{- else }}
+            - name: src
+              mountPath: /usr/src
+          {{- end }}
+          {{- end }}
+
+          {{- if eq $csi true }}
+        - name: csi-driver-registrar
+          imagePullPolicy: Always
+          {{- if eq $customRegistryURL "none" }}
+          image: "quay.io/k8scsi/driver-registrar:v0.2.0"
+          {{- else }}
+          image: "{{ $customRegistryURL }}/quay.io/k8scsi/driver-registrar:v0.2.0"
+          {{- end}}
+          args:
+            - "--v=5"
+            - "--csi-address=$(ADDRESS)"
+          env:
+            - name: ADDRESS
+              value: /csi/csi.sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: csi-driver-path
+              mountPath: /csi
+           {{- end }}
+
+      restartPolicy: Always
+      serviceAccountName: px-account
+      volumes:
+          {{- if not (eq $etcdCertPath "none") }}
+        - name: etcdcerts
+          secret:
+            secretName: px-etcd-certs
+            items:
+            - key: ca.pem
+              path: ca.pem
+            - key: client.pem
+              path: client.pem
+            - key: client-key.pem
+              path: client-key.key
+          {{- end}}
+        - name: dockersock
+          hostPath:
+          {{- if eq $pksInstall true }}
+            path: /var/vcap/sys/run/docker/docker.sock
+          {{- else }}
+            path: /var/run/docker.sock
+          {{- end}}
+          {{- if eq $csi true}}
+        - name: csi-driver-path
+          hostPath:
+            path: /var/lib/kubelet/plugins/com.openstorage.pxd
+            type: DirectoryOrCreate
+          {{- end}}
+        - name: etcpwx
+          hostPath:
+            path: /etc/pwx
+        - name: cores
+          hostPath:
+            path: /var/cores
+        {{- if eq (.Values.deploymentType | upper | lower) "oci" }}
+        {{- if eq $pksInstall true }}
+        - name: optpwx
+          hostPath:
+            path: /var/vcap/store/opt/pwx
+        {{- else }}
+        - name: optpwx
+          hostPath:
+            path: /opt/pwx
+        {{- end }}
+        - name: dbusmount
+          hostPath:
+            path: /var/run/dbus
+        {{- if (.Values.openshiftInstall) and (eq .Values.openshiftInstall true) }}
+        - name: proc1nsmount
+          hostPath:
+            path: /proc
+        {{- else }}
+        - name: proc1nsmount
+          hostPath:
+            path: /proc/1/ns
+        {{- end }}
+        - name: sysdmount
+          hostPath:
+            path: /etc/systemd/system
+        {{- else if eq (.Values.deploymentType | upper | lower) "docker" }}
+        - name: libosd
+          hostPath:
+            path: /var/lib/osd
+        - name: optpwx
+          hostPath:
+            path: /opt/pwx/bin
+        - name: dev
+          hostPath:
+            path: /dev
+        {{- if (.Values.openshiftInstall) and (eq .Values.openshiftInstall true)}}
+        - name: kubelet
+          hostPath:
+            path: /var/lib/origin/openshift.local.volumes
+        {{- else }}
+        - name: kubelet
+          hostPath:
+            path: /var/lib/kubelet
+        {{- end }}
+        {{- if eq $isCoreOS true}}
+        - name: src
+          hostPath:
+            path: /lib/modules
+        {{- else }}
+        - name: src
+          hostPath:
+            path: /usr/src
+        {{- end }}
+        - name: dockerplugins
+          hostPath:
+            path: /run/docker/plugins
+        - name: hostproc
+          hostPath:
+            path: /proc
+        {{- end }}

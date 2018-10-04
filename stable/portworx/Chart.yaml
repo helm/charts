@@ -1,0 +1,16 @@
+name: portworx
+version: 1.0.0
+appVersion: 1.0.0
+description: A Helm chart for installing Portworx on Kubernetes.
+tillerversion: ">=2.9.0"
+home: https://portworx.com/
+sources:
+  - https://github.com/portworx/helm
+maintainers:
+  - name: harsh-px
+    email: harsh@portworx.com
+  - name: hr1sh1kesh
+    email: hrishi@portworx.com
+  - name: satchpx
+    email: sathya@portworx.com
+icon: https://raw.githubusercontent.com/portworx/helm/master/doc/media/px-logo.png

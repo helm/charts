@@ -1,0 +1,50 @@
+# Please uncomment and specify values for these options as per your requirements.
+
+deploymentType: oci                     # accepts "oci" or "docker"
+imageType: none                         #
+imageVersion: 1.5.1                   # Version of the PX Image.
+
+openshiftInstall: false                 # Defaults to false for installing Portworx on Openshift .
+isTargetOSCoreOS: false                 # Is your target OS CoreOS? Defaults to false.
+pksInstall: false                       # installation on PKS (Pivotal Container Service)
+AKSorEKSInstall: false                  # installation on AKS or EKS.
+etcdEndPoint:                         # The ETCD endpoint. Should be in the format etcd:http://<your-etcd-endpoint>:2379. If there are multiple etcd endpoints they need to be ";" seperated.
+                                        # the default value is empty since it requires to be explicity set using either the --set option of -f values.yaml.
+clusterName: mycluster                # This is the default. please change it to your cluster name.
+usefileSystemDrive: false             # true/false Instructs PX to use an unmounted Drive even if it has a filesystem.
+usedrivesAndPartitions: false         # Defaults to false. Change to true and PX will use unmounted drives and partitions.
+secretType: none                      # Defaults to None, but can be AWS / KVDB / Vault.
+drives: none                          # NOTE: This is a ";" seperated list of drives. For eg: "/dev/sda;/dev/sdb;/dev/sdc" Defaults to use -A switch.
+dataInterface: none                   # Name of the interface <ethX>
+managementInterface: none             # Name of the interface <ethX>
+envVars: none                         # NOTE: This is a ";" seperated list of environment variables. For eg: MYENV1=myvalue1;MYENV2=myvalue2
+
+stork: true                           # Use Stork https://docs.portworx.com/scheduler/kubernetes/stork.html for hyperconvergence.
+storkVersion: 1.2.0
+
+customRegistryURL:
+registrySecret:
+
+lighthouse: false
+lighthouseVersion: 1.5.0
+
+journalDevice:
+
+deployOnMaster: false                # For POC only
+csi: false                            # Enable CSI
+
+internalKVDB: false                   # internal KVDB
+
+etcd:
+  credentials: none:none              # Username and password for ETCD authentication in the form user:password
+  certPath: none                      # Base path where the certificates are placed. (example: if the certificates ca,crt and the key are in /etc/pwx/etcdcerts the value should be provided as /etc/pwx/etcdcerts)
+  ca: none                            # Location of CA file for ETCD authentication. Should be /path/to/server.ca
+  cert: none                          # Location of certificate for ETCD authentication. Should be /path/to/server.crt
+  key: none                           # Location of certificate key for ETCD authentication Should be /path/to/servery.key
+consul:
+  token: none                           # ACL token value used for Consul authentication. (example: 398073a8-5091-4d9c-871a-bbbeb030d1f6)
+
+serviceAccount:
+  hook:
+    create: true
+    name:
