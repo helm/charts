@@ -18,10 +18,12 @@ spec:
     - name: http
       port: 9200
       targetPort: http
+{{- if .Values.prometheusExporter.enabled }}
     - name: {{ .Values.prometheusExporter.clientName }}
       port: {{ .Values.prometheusExporter.externalPort }}
       targetPort: {{ .Values.prometheusExporter.internalPort }}
       protocol: TCP
+{{- end }}
   selector:
     app: {{ template "elasticsearch.name" . }}
     component: "{{ .Values.client.name }}"

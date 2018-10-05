@@ -131,6 +131,7 @@ spec:
           subPath: elasticsearch.keystore
           readOnly: true
 {{- end }}
+{{- if .Values.prometheusExporter.enabled }}
       - name: {{ .Values.prometheusExporter.clientName }}
         image: "{{ .Values.prometheusExporter.repository }}:{{ .Values.prometheusExporter.tag }}"
         imagePullPolicy: {{ .Values.prometheusExporter.pullPolicy }}
@@ -142,6 +143,7 @@ spec:
           - "-web.listen-address=:{{ .Values.prometheusExporter.internalPort }}"
           - "-web.telemetry-path={{ .Values.prometheusExporter.metricsEndpoint }}"
           - "-es.timeout=30s"
+{{- end }}
 {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range $pullSecret := .Values.image.pullSecrets }}

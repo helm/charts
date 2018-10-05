@@ -122,6 +122,7 @@ data:
 
 prometheusExporter:
   # The values within here are responsible for setting up service ports and sidecar exporter containers.
+  enabled: false
   repository: justwatch/elasticsearch_exporter
   tag: 1.0.2
   pullPolicy: "IfNotPresent"
@@ -130,6 +131,10 @@ prometheusExporter:
   externalPort: 9108
   metricsEndpoint: /metrics
 
+# operator which listens to servicemonitor objects:
+# https://github.com/coreos/prometheus-operator
+# article describing how to use servicemonitors:
+# https://devops.college/prometheus-operator-how-to-monitor-an-external-service-3cb6ac8d5acb
 serviceMonitor:
   enabled: false
   interval: 15s
