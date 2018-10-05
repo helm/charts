@@ -177,12 +177,12 @@ prometheus:
 
     ## Resource limits
     resources: {}
-#      limits:
-#        cpu: 200m
-#        memory: 1Gi
-#      requests:
-#        cpu: 100m
-#        memory: 100Mi
+#     requests:
+#       cpu: 100m
+#       memory: 128Mi
+#     limits:
+#       cpu: 100m
+#       memory: 128Mi
 
   operator:
     ## Are you using Prometheus Operator?
