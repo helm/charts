@@ -131,18 +131,8 @@ ingress:
 
 tolerations: []
 
-deployment:
-  # # Uncomment this to add any additional volume to nexus.
-  # # e.g. commented code shows how to mount configmap
-  additionalVolumes:
-  # - name: sonatype-nexus-conf
-    # configMap:
-      # name: sonatype-nexus-conf
-  additionalVolumesMounts:
-  # - name: sonatype-nexus-conf
-    # mountPath: /sonatype-nexus-conf
-
-# # Uncomment this to add data in configmap
+# # Enable configmap and add data in configmap
 config:
   enabled: false
+  mountPath: /sonatype-nexus-conf
   data:
