@@ -66,6 +66,10 @@ Parameter | Description | Default
 `es.ssl.client.pem` | PEM that contains the client cert to connect to Elasticsearch |
 `es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |
 `web.path` | path under which to expose metrics | `/metrics`
+`serviceMonitor.enabled` | if `true`, creates a Prometheus Operator ServiceMonitor | `false`
+`serviceMonitor.interval` | Interval that Prometheus scrapes Elasticsearch metrics | `10s`
+`serviceMonitor.namespace` | Namespace which Prometheus is running in | `monitoring`
+`serviceMonitor.selector` | Default to kube-prometheus install (CoreOS recommended), but should be set according to Prometheus install | `{ prometheus: kube-prometheus }`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

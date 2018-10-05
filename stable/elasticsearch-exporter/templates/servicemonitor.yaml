@@ -1,0 +1,21 @@
+{{ if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "elasticsearch-exporter.fullname" . }}
+  namespace: {{ .Values.serviceMonitor.namespace }}
+  labels:
+    {{- range $key, $value := .Values.serviceMonitor.selector }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "elasticsearch-exporter.name" . }}
+      release: {{ .Release.Name }}
+  endpoints:
+  - port: http
+    interval: {{ .Values.serviceMonitor.interval }}
+  namespaceSelector:
+    any: true
+{{ end }}

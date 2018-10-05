@@ -78,3 +78,16 @@ web:
   ## Path under which to expose metrics.
   ##
   path: /metrics
+
+## Are you using Prometheus Operator?
+serviceMonitor:
+  enabled: false
+
+  # Namespace Prometheus is installed in
+  namespace: monitoring
+
+  ## Defaults to whats used if you follow CoreOS [Prometheus Install Instructions](https://github.com/coreos/prometheus-operator/tree/master/helm#tldr)
+  ## [Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/prometheus/templates/prometheus.yaml#L65)
+  ## [Kube Prometheus Selector Label](https://github.com/coreos/prometheus-operator/blob/master/helm/kube-prometheus/values.yaml#L298)
+  selector:
+    prometheus: kube-prometheus
