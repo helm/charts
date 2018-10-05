@@ -114,8 +114,8 @@ spec:
                 # re-join member
                 ETCDCTL_ENDPOINT=$(eps) etcdctl member update ${member_id} http://${HOSTNAME}.${SET_NAME}:2380
                 exec etcd --name ${HOSTNAME} \
-                    --listen-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                    --listen-client-urls http://${HOSTNAME}.${SET_NAME}:2379,http://127.0.0.1:2379 \
+                    --listen-peer-urls http://0.0.0.0:2380 \
+                    --listen-client-urls http://0.0.0.0:2379\
                     --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
                     --data-dir /var/run/etcd/default.etcd
             fi
@@ -151,8 +151,8 @@ spec:
                 collect_member &
 
                 exec etcd --name ${HOSTNAME} \
-                    --listen-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                    --listen-client-urls http://${HOSTNAME}.${SET_NAME}:2379,http://127.0.0.1:2379 \
+                    --listen-peer-urls http://0.0.0.0:2380 \
+                    --listen-client-urls http://0.0.0.0:2379 \
                     --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
                     --data-dir /var/run/etcd/default.etcd \
                     --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
@@ -178,8 +178,8 @@ spec:
             # join member
             exec etcd --name ${HOSTNAME} \
                 --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                --listen-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                --listen-client-urls http://${HOSTNAME}.${SET_NAME}:2379,http://127.0.0.1:2379 \
+                --listen-peer-urls http://0.0.0.0:2380 \
+                --listen-client-urls http://0.0.0.0:2379 \
                 --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
                 --initial-cluster-token etcd-cluster-1 \
                 --initial-cluster ${PEERS} \
