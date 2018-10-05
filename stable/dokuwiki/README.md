@@ -88,7 +88,9 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `readinessProbe.timeoutSeconds`      | When the probe times out                                   | 5                                             |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed       | 6                                             |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes to be considered successful  | 1                                             |
-
+| `nodeSelector`                       | Node labels for pod assignment                             | `{}`                                          |
+| `affinity`                           | Affinity settings for pod assignment                       | `{}`                                          |
+| `tolerations`                        | Toleration labels for pod assignment                       | `[]`                                          |
 
 The above parameters map to the env variables defined in [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki). For more information please refer to the [bitnami/dokuwiki](http://github.com/bitnami/bitnami-docker-dokuwiki) image documentation.
 
@@ -116,3 +118,14 @@ The [Bitnami DokuWiki](https://github.com/bitnami/bitnami-docker-dokuwiki) image
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is dokuwiki:
+
+```console
+$ kubectl patch deployment dokuwiki-dokuwiki --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+```

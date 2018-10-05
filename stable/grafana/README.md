@@ -29,11 +29,12 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-
 | Parameter                       | Description                                   | Default                                                 |
 |---------------------------------|-----------------------------------------------|---------------------------------------------------------|
 | `replicas`                      | Number of nodes                               | `1`                                                     |
 | `deploymentStrategy`            | Deployment strategy                           | `RollingUpdate`                                         |
+| `livenessProbe`            | Liveness Probe settings                           | `{ "httpGet": { "path": "/api/health", "port": 3000 } }`                                         |
+| `readinessProbe`            | Rediness Probe settings                           | `{ "httpGet": { "path": "/api/health", "port": 3000 } "initialDelaySeconds": 60, "timeoutSeconds": 30, "failureThreshold": 10, "periodSeconds": 10 }`                                         |
 | `securityContext`               | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `image.repository`              | Image repository                              | `grafana/grafana`                                       |
 | `image.tag`                     | Image tag. (`Must be >= 5.0.0`)               | `5.2.4`                                                 |
@@ -61,6 +62,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `env`                           | Extra environment variables passed to pods    | `{}`                                                    |
 | `envFromSecret`                 | Name of a Kubenretes secret (must be manually created in the same namespace) containing values to be added to the environment | `""` |
 | `extraSecretMounts`             | Additional grafana server secret mounts       | `[]`                                                    |
+| `plugins`                       | Plugins to be loaded along with Grafana       | `[]`                                                    |
 | `datasources`                   | Configure grafana datasources                 | `{}`                                                    |
 | `dashboardProviders`            | Configure grafana dashboard providers         | `{}`                                                    |
 | `dashboards`                    | Dashboards to import                          | `{}`                                                    |

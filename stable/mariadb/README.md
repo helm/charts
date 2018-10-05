@@ -53,6 +53,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `image.pullPolicy`                        | MariaDB image pull policy                           | `Always` if `imageTag` is `latest`, else `IfNotPresent`           |
 | `image.pullSecrets`                       | Specify image pull secrets                          | `nil` (does not add image pull secrets to deployed pods)          |
 | `service.type`                            | Kubernetes service type                             | `ClusterIP`                                                       |
+| `service.clusterIp`                       | Specific cluster IP when service type is cluster IP. Use None for headless service | `nil`                                                                  |
 | `service.port`                            | MySQL service port                                  | `3306`                                                             |
 | `rootUser.password`                       | Password for the `root` user                        | _random 10 character alphanumeric string_                         |
 | `rootUser.forcePassword`                  | Force users to specify a password                   | `false`                                                           |
@@ -62,6 +63,8 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `replication.enabled`                     | MariaDB replication enabled                         | `true`                                                             |
 | `replication.user`                        | MariaDB replication user                            | `replicator`                                                       |
 | `replication.password`                    | MariaDB replication user password                   | _random 10 character alphanumeric string_                         |
+| `master.annotations[].key`                | key for the the annotation list item                |  `nil`                                                  |
+| `master.annotations[].value`              | value for the the annotation list item              |  `nil`                                                  |
 | `master.affinity`                         | Master affinity (in addition to master.antiAffinity when set)  | `{}`                                                   |
 | `master.antiAffinity`                     | Master pod anti-affinity policy                     | `soft`                                                            |
 | `master.tolerations`                      | List of node taints to tolerate (master)            | `[]`                                                              |
@@ -81,12 +84,14 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `master.livenessProbe.successThreshold`   | Minimum consecutive successes for the probe (master)| `1`                                                               |
 | `master.livenessProbe.failureThreshold`   | Minimum consecutive failures for the probe (master) | `3`                                                               |
 | `master.readinessProbe.enabled`           | Turn on and off readiness probe (master)            | `true`                                                            |
-| `master.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (master) | `15`                                                              |
+| `master.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (master) | `30`                                                              |
 | `master.readinessProbe.periodSeconds`     | How often to perform the probe (master)             | `10`                                                              |
 | `master.readinessProbe.timeoutSeconds`    | When the probe times out (master)                   | `1`                                                               |
 | `master.readinessProbe.successThreshold`  | Minimum consecutive successes for the probe (master)| `1`                                                               |
 | `master.readinessProbe.failureThreshold`  | Minimum consecutive failures for the probe (master) | `3`                                                               |
 | `slave.replicas`                          | Desired number of slave replicas                    | `1`                                                               |
+| `slave.annotations[].key`                 | key for the the annotation list item                | `nil`                                                   |
+| `slave.annotations[].value`               | value for the the annotation list item              | `nil`                                                   |
 | `slave.affinity`                          | Slave affinity (in addition to slave.antiAffinity when set) | `{}`                                                      |
 | `slave.antiAffinity`                      | Slave pod anti-affinity policy                      | `soft`                                                            |
 | `slave.tolerations`                       | List of node taints to tolerate for (slave)         | `[]`                                                              |
@@ -104,7 +109,7 @@ The following table lists the configurable parameters of the MariaDB chart and t
 | `slave.livenessProbe.successThreshold`    | Minimum consecutive successes for the probe (slave) | `1`                                                               |
 | `slave.livenessProbe.failureThreshold`    | Minimum consecutive failures for the probe (slave)  | `3`                                                               |
 | `slave.readinessProbe.enabled`            | Turn on and off readiness probe (slave)             | `true`                                                            |
-| `slave.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (slave)   | `15`                                                              |
+| `slave.readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated (slave)   | `45`                                                              |
 | `slave.readinessProbe.periodSeconds`      | How often to perform the probe (slave)              | `10`                                                              |
 | `slave.readinessProbe.timeoutSeconds`     | When the probe times out (slave)                    | `1`                                                               |
 | `slave.readinessProbe.successThreshold`   | Minimum consecutive successes for the probe (slave) | `1`                                                               |
@@ -147,3 +152,22 @@ The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
 The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image stores the MariaDB data and configurations at the `/bitnami/mariadb` path of the container.
 
 The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning, by default. An existing PersistentVolumeClaim can be defined.
+
+## Upgrading
+
+It's necessary to set the `rootUser.password` parameter when upgrading for readiness/liveness probes to work properly. When you install this chart for the first time, some notes will be displayed providing the credentials you must use under the 'Administrator credentials' section. Please note down the password and run the command below to upgrade your chart:
+
+```bash
+$ helm upgrade my-release stable/mariadb --set rootUser.password=[ROOT_PASSWORD]
+```
+
+| Note: you need to substitue the placeholder _[ROOT_PASSWORD]_ with the value obtained in the installation notes.
+
+### To 5.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 5.0.0. The following example assumes that the release name is mariadb:
+
+```console
+$ kubectl delete statefulset opencart-mariadb --cascade=false
+```
