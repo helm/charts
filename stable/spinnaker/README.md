@@ -76,7 +76,7 @@ Spinnaker will only give you access to Docker images that have been whitelisted,
     # - name: gcr
     #   address: https://gcr.io
     #   username: _json_key
-    #   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
+    #   password: '<INSERT YOUR SERVICE ACCOUNT ACCESS TOKEN>'
     #   email: 1234@5678.com
     ```
 
