@@ -38,7 +38,7 @@ configuration:
   #  name:
   #  config:
   #    region:
-  #    apiTimeout:
+  #    apitimeout:
 
   backupStorageProvider:
     name:
