@@ -14,6 +14,8 @@ This chart bootstraps a [phpBB](https://github.com/bitnami/bitnami-docker-phpbb)
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the phpBB application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
