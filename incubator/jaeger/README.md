@@ -101,6 +101,7 @@ To install the chart with the release name `myrel` using a new ElasticSearch clu
 ```bash
 $ helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=false  --set provisionDataStore.elasticsearch=true --set storage.type=elasticsearch
 ```
+Note: If your ElasticSearch is not secured then provide `""` as unsername and password.
 
 After a few minutes, you should see 2 ElasticSearch client nodes, 2 ElasticSearch data nodes, 3 ElasticSearch master nodes, a Jaeger DaemonSet, a Jaeger Collector, and a Jaeger Query (UI) pod deployed into your Kubernetes cluster.
 
@@ -113,7 +114,7 @@ If you already have an existing running ElasticSearch cluster, you can configure
 ```bash
 helm install incubator/jaeger --name myrel --set provisionDataStore.cassandra=false --set provisionDataStore.elasticsearch=false --set storage.type=elasticsearch --set storage.elasticsearch.host=<HOST> --set storage.elasticsearch.port=<PORT> --set storage.elasticsearch.user=<USER> --set storage.elasticsearch.password=<password>
 ```
-
+Note: If your ElasticSearch is not secured then provide `""` as unsername and password.
 > **Tip**: It is highly encouraged to run the ElasticSearch cluster with storage persistence.
 
 
@@ -207,10 +208,10 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `storage.cassandra.port`                 | Provisioned cassandra port          |  9042                                  |
 | `storage.cassandra.user`                 | Provisioned cassandra username      |  user                                  |
 | `storage.elasticsearch.host`             | Provisioned elasticsearch host      |  elasticsearch                         |
-| `storage.elasticsearch.password`         | Provisioned elasticsearch password  |  changeme                              |
+| `storage.elasticsearch.password`         | Provisioned elasticsearch password, use "" if no password  |  changeme       |
 | `storage.elasticsearch.port`             | Provisioned elasticsearch port      |  9200                                  |
 | `storage.elasticsearch.scheme`           | Provisioned elasticsearch scheme    |  http                                  |
-| `storage.elasticsearch.user`             | Provisioned elasticsearch user      |  elastic                               |
+| `storage.elasticsearch.user`             | Provisioned elasticsearch user, use "" if no user          |  elastic        |
 | `storage.elasticsearch.nodesWanOnly`     | Only access specified es host       |  false                                 |
 | `storage.type`                           | Storage type (ES or Cassandra)      |  cassandra                             |
 | `tag`                                    | Image tag/version                   |  1.4.1                                 |
