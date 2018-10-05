@@ -1,3 +1,4 @@
+{{- $highAvailability := gt (int .Values.keycloak.replicas) 1 -}}
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -67,7 +68,11 @@ spec:
                   name: {{ template "keycloak.fullname" . }}-http
                   key: password
           {{- end }}
-{{ include "keycloak.dbEnvVars" . | indent 12 }}
+          {{- if and ($highAvailability) (eq .Values.keycloak.persistence.dbVendor "mysql") }}
+            - name: MYSQL_PORT
+              value: {{ .Values.keycloak.persistence.dbPort }}
+          {{- end }}
+{{- include "keycloak.dbEnvVars" . | indent 12 }}
 {{- with .Values.keycloak.extraEnv }}
 {{ tpl . $ | indent 12 }}
 {{- end }}
