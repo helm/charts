@@ -1,0 +1,115 @@
+{{/* store a reference '.' scope so Values can be access in side a loop
+  see https://github.com/kubernetes/helm/issues/1311 */}}
+{{- $root := . -}}
+
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "rundeck.fullname" . }}
+  labels:
+    app: {{ template "rundeck.name" . }}
+    chart: {{ template "rundeck.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "rundeck.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "rundeck.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      volumes:
+      {{- if .Values.storage.enabled}} 
+      - name: rundeck-pvc
+        persistentVolumeClaim:
+          claimName: {{.Values.storage.claimName}}
+      {{- end}}
+      - name: {{ template "rundeck.fullname" . }}-configmap
+        ConfigMap:
+          name: {{ template "rundeck.fullname" . }}
+      - name: {{ template "rundeck.fullname" . }}-ssh-secret
+        secret:
+          secretName: {{ template "rundeck.fullname" . }}-ssh
+          defaultMode: 511
+      {{- if .Values.init.enabled}} 
+      initContainers:
+        {{- range .Values.init.containers }}
+        - name: {{ .name }}
+          image: {{ .image }}
+          command: {{- range .command }}
+            - {{ .}}
+          {{- end }}
+          volumeMounts:
+            - mountPath: {{ .mountPath }}
+              name: rundeck-pvc
+        {{- end }}
+      {{- end}}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.http.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.http.port }}
+            initialDelaySeconds: {{ .Values.liveness.delay }}
+            periodSeconds: {{ .Values.liveness.period }}
+            timeoutSeconds: {{ .Values.liveness.timeout }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.http.port }}
+            initialDelaySeconds: {{ .Values.readiness.delay }}
+            periodSeconds: {{ .Values.readiness.period }}
+            timeoutSeconds: {{ .Values.readiness.timeout }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+          env:
+            {{- range $key, $value :=  .Values.env }}
+            - name: {{ $key | upper | replace "-" "_" }}
+              value: {{ $value | quote }}
+            {{- end }}
+          volumeMounts:  
+          - mountPath: {{ .Values.env.RUNDECK_INSTALL_DIR }}/rundeck-config.properties
+            name: {{ template "rundeck.fullname" . }}-configmap
+            subPath: rundeck-config.properties
+          - mountPath: {{ .Values.env.RUNDECK_INSTALL_DIR }}/framework.properties
+            name: {{ template "rundeck.fullname" . }}-configmap
+            subPath: framework.properties
+          - mountPath: {{ .Values.env.RUNDECK_INSTALL_DIR }}/project.properties
+            name: {{ template "rundeck.fullname" . }}-configmap
+            subPath: project.properties
+          - mountPath: {{ .Values.env.RUNDECK_INSTALL_DIR }}/realm.properties
+            name: {{ template "rundeck.fullname" . }}-configmap
+            subPath: realm.properties
+          - mountPath: {{ .Values.env.RSA_KEY_DIR }}/id_rsa
+            name: {{ template "rundeck.fullname" . }}-ssh-secret
+            subPath: id_rsa
+            readOnly: false          
+          {{- if .Values.storage.enabled}} 
+          - mountPath: {{ .Values.storage.mountPoint }}
+            name: rundeck-pvc
+            subPath: {{ .Values.storage.remotePath }}
+            readOnly: false
+          {{- end }}

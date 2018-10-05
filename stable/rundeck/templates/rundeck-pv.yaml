@@ -1,0 +1,15 @@
+{{- if .Values.volumeclaim.enabled}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "rundeck.fullname" . }}
+spec:
+  capacity:
+    storage: {{ .Values.volumeclaim.storage }}
+  accessModes:
+    - {{ .Values.volumeclaim.accessmode }} 
+  storageClassName: {{ .Values.volumeclaim.classname }}
+  persistentVolumeReclaimPolicy: Retain 
+  hostPath:
+    path: {{ .Values.volumeclaim.path }} 
+{{- end}}
