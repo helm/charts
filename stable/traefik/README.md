@@ -113,6 +113,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `ssl.upstream`                         | Whether to skip configuring certs (ie: SSL is terminated by L4 ELB)                                                          | `false`                                           |
 | `ssl.insecureSkipVerify`               | Whether to verify certs on SSL connections                                                                                   | `false`                                           |
 | `ssl.tlsMinVersion`                    | Minimum TLS version for https entrypoint                                                                                     | None                                              |
+| `ssl.cipherSuites`                     | Specify a non-empty list of TLS ciphers to override the default one | None |
 | `ssl.defaultCert`                      | Base64 encoded default certificate                                                                                           | A self-signed certificate                         |
 | `ssl.defaultKey`                       | Base64 encoded private key for the certificate above                                                                         | The private key for the certificate above         |
 | `ssl.auth.basic`                       | Basic auth for all SSL endpoints, see Authentication section                                          | unset by default; this means basic auth is disabled |

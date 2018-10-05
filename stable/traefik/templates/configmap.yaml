@@ -58,6 +58,9 @@ data:
           {{- if .Values.ssl.tlsMinVersion }}
           minVersion = "{{ .Values.ssl.tlsMinVersion }}"
           {{- end }}
+          {{- if .Values.ssl.cipherSuites }}
+          {{ template "traefik.ssl.cipherSuites" . }}
+          {{- end }}
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
