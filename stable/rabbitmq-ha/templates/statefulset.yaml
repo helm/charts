@@ -246,6 +246,9 @@ spec:
             defaultMode: 420
             secretName: {{ template "rabbitmq-ha.certSecretName" . }}
         {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:
