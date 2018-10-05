@@ -145,11 +145,11 @@ deployment:
     # command: ['chown','-R', '200', '/nexus-data']
     # volumeMounts:
       # - name: nexus-data
-        # mountPath: /nexus-data  
+        # mountPath: /nexus-data
   # # Uncomment and modify this to run a command after starting the nexus container.
   postStart:
-    command: # '["/bin/sh", "-c", "ls"]'
-    
+    command:    # '["/bin/sh", "-c", "ls"]'
+
 # # To use an additional secret, set enable to true and add data
 secret:
   enabled: false
