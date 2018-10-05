@@ -77,10 +77,12 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.livenessProbe.initialDelaySeconds`   | LivenessProbe initial delay         | 30                                      |
 | `nexus.livenessProbe.periodSeconds`         | Seconds between polls               | 30                                      |
 | `nexus.livenessProbe.failureThreshold`      | Number of attempts before failure   | 6                                       |
+| `nexus.livenessProbe.timeoutSeconds`        | Time in seconds after liveness probe times out    | `nil`                     |
 | `nexus.livenessProbe.path`                  | Path for LivenessProbe              | /                                       |
 | `nexus.readinessProbe.initialDelaySeconds`  | ReadinessProbe initial delay        | 30                                      |
 | `nexus.readinessProbe.periodSeconds`        | Seconds between polls               | 30                                      |
 | `nexus.readinessProbe.failureThreshold`     | Number of attempts before failure   | 6                                       |
+| `nexus.readinessProbe.timeoutSeconds`       | Time in seconds after readiness probe times out    | `nil`                    |
 | `nexus.readinessProbe.path`                 | Path for ReadinessProbe             | /                                       |
 | `nexus.hostAliases`                         | Aliases for IPs in /etc/hosts       | []                                      |
 | `nexusProxy.port`                           | Port for exposing Nexus             | `8080`                                  |
@@ -116,6 +118,11 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `ingress.tls.secretName`                    | Name of the secret storing TLS cert, `false` to use the Ingress' default certificate | `nexus-tls`                             |
 | `ingress.path`                              | Path for ingress rules. GCP users should set to `/*` | `/`                    |
 | `tolerations`                               | tolerations list                    | `[]`                                    |
+| `deployment.annotations`                    | Annotations to enhance deployment configuration  | `{}`                       |
+| `deployment.initContainers`                 | Init containers to run before main containers  | `nil`                        |
+| `deployment.postStart.command`              | Command to run after starting the nexus container  | `nil`                    |
+| `secret.enabled`                            | Enable secret                    | `false`                                    |
+| `secret.data`                               | Secret data                      | `nil`                                      |
 
 If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables need to be configured
 
