@@ -1,5 +1,5 @@
 name: phpbb
-version: 3.0.2
+version: 3.0.3
 appVersion: 3.2.3
 description: Community forum that supports the notion of users and groups, file attachments,
   full-text search, notifications and more.
