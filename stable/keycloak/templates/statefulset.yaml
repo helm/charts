@@ -83,13 +83,13 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /{{ .Values.keycloak.basepath }}
+              path: /{{ .Values.keycloak.basepath }}/
               port: http
             initialDelaySeconds: {{ .Values.keycloak.livenessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.keycloak.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
-              path: /{{ .Values.keycloak.basepath }}
+              path: /{{ .Values.keycloak.basepath }}/
               port: http
             initialDelaySeconds: {{ .Values.keycloak.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.keycloak.readinessProbe.timeoutSeconds }}
