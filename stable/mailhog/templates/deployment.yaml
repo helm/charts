@@ -29,10 +29,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-          {{- if .Values.auth.enabled }}
-            - name: MH_AUTH_FILE
-              value: /authdir/{{ .Values.auth.fileName }}
-          {{- end }}
           {{- range $key, $value := .Values.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
