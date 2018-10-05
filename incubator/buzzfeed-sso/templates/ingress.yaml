@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{.Values.name}}-ingress
+  labels:
+    app.kubernetes.io/name: {{ .Values.name }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+spec:
+  tls:
+    - secretName: {{.Values.name}}-proxy-tls-secret
+      hosts:
+        - "{{.Values.sso_proxy.hostPattern}}"
+    - secretName: {{.Values.name}}-auth-mydomain-tls-secret
+      hosts:
+        - "{{.Values.sso_auth.host}}"
+  rules:
+    - host: "{{.Values.sso_proxy.hostPattern}}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: "{{.Values.name}}-proxy"
+              servicePort: 80
+    - host: "{{.Values.sso_auth.host}}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ .Values.name }}-sso-auth
+              servicePort: 80
