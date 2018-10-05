@@ -36,11 +36,10 @@ The default set of resources assigned to the pods is shown below:
 
     resources:
       limits:
-        cpu: 100m
-        memory: 128Mi
+        memory: 200M
       requests:
         cpu: 100m
-        memory: 128Mi
+        memory: 30M
 
 # Config file
 

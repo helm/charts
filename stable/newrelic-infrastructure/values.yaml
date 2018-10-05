@@ -21,11 +21,10 @@ image:
 
 resources:
   limits:
-    cpu: 100m
-    memory: 128Mi
+    memory: 200M
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 30M
 
 rbac:
   # Specifies whether RBAC resources should be created
