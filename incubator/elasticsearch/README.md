@@ -62,9 +62,9 @@ The following table lists the configurable parameters of the elasticsearch chart
 
 |              Parameter               |                             Description                             |               Default                |
 | ------------------------------------ | ------------------------------------------------------------------- | ------------------------------------ |
-| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.4.1`                              |
+| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.4.2`                              |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
-| `image.tag`                          | Container image tag                                                 | `6.4.1`                              |
+| `image.tag`                          | Container image tag                                                 | `6.4.2`                              |
 | `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                      |
 | `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                              |
@@ -166,6 +166,19 @@ More info: https://www.elastic.co/guide/en/elasticsearch/guide/1.x/_important_co
 Elasticsearch v5 terminology has updated, and now refers to a `Client Node` as a `Coordinating Node`.
 
 More info: https://www.elastic.co/guide/en/elasticsearch/reference/5.5/modules-node.html#coordinating-node
+
+## Enabling elasticsearch interal monitoring 
+Requires version 6.3+ and standard non `oss` repository defined. Starting with 6.3 Xpack is partially free and enabled by default. You need to set a new config to enable the collection of these internal metrics. (https://www.elastic.co/guide/en/elasticsearch/reference/6.3/monitoring-settings.html)
+
+To do this through this helm chart override with the three following changes:
+```
+image.repository: docker.elastic.co/elasticsearch/elasticsearch
+cluster.xpackEnable: true
+cluster.env.XPACK_MONITORING_ENABLED: true
+```
+
+Note: to see these changes you will need to update your kibana repo to `image.repository: docker.elastic.co/kibana/kibana` instead of the `oss` version
+
 
 ## Select right storage class for SSD volumes
 

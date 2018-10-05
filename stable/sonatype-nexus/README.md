@@ -63,6 +63,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | Parameter                                   | Description                         | Default                                 |
 | ------------------------------------------  | ----------------------------------  | ----------------------------------------|
 | `replicaCount`                              | Number of Nexus service replicas    | `1`                                     |
+| `deploymentStrategy`                        | Deployment Strategy     |  `rollingUpdate` |
 | `nexus.imageName`                           | Nexus image                         | `quay.io/travelaudience/docker-nexus`   |
 | `nexus.imageTag`                            | Version of Nexus                    | `3.9.0`                                 |
 | `nexus.imagePullPolicy`                     | Nexus image pull policy             | `IfNotPresent`                          |
@@ -72,6 +73,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.nexusPort`                           | Internal port for Nexus service     | `8081`                                  |
 | `nexus.serviceType`                         | Service for Nexus                   | `NodePort`                              |
 | `nexus.securityContext`                     | Security Context (for enabling official image use `fsGroup: 2000`) | `{}`     |
+| `nexus.labels`                              | Service labels                      | `{}`                                    |
 | `nexus.livenessProbe.initialDelaySeconds`   | LivenessProbe initial delay         | 30                                      |
 | `nexus.livenessProbe.periodSeconds`         | Seconds between polls               | 30                                      |
 | `nexus.livenessProbe.failureThreshold`      | Number of attempts before failure   | 6                                       |
@@ -113,6 +115,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `ingress.tls.enabled`                       | Enable TLS                          | `false`                                 |
 | `ingress.tls.secretName`                    | Name of the secret storing TLS cert, `false` to use the Ingress' default certificate | `nexus-tls`                             |
 | `ingress.path`                              | Path for ingress rules. GCP users should set to `/*` | `/`                    |
+| `tolerations`                               | tolerations list                    | `[]`                                    |
 
 If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables need to be configured
 
@@ -124,6 +127,7 @@ If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables
 | `nexusProxy.env.redirectUrl`     | OAuth callback url. example `https://nexus.example.com/oauth/callback` | `nil`            |
 | `nexusProxy.secrets.keystore`    | base-64 encoded value of the keystore file needed for the proxy to sign user tokens. Example: cat keystore.jceks &#124; base64 | `nil`  |
 | `nexusProxy.secrets.password`    | Password to the Java Keystore file | `nil`                                                |
+
 
 ```bash
 $ helm install --name my-release --set persistence.enabled=false stable/sonatype-nexus
