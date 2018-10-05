@@ -168,8 +168,25 @@ controller:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
 
-    enableHttp: true
-    enableHttps: true
+    ## List of ports on which controller services are available.
+    ## target http/https can be exposed on different ports at controller service level.
+    ports:
+     - name: http
+       port: 80
+       targetPort: http
+       nodePort: ""
+     # - name: 8080-http
+     #   port: 8080
+     #   targetPort: http
+     #   nodePort: ""
+     - name: https
+       port: 443
+       targetPort: https
+       nodePort: ""
+     # - name: 8443-https
+     #   port: 8443
+     #   targetPort: https
+     #   nodePort: ""
 
     ## Set external traffic policy to: "Local" to preserve source IP on
     ## providers supporting it
@@ -178,19 +195,7 @@ controller:
 
     healthCheckNodePort: 0
 
-    targetPorts:
-      http: http
-      https: https
-
     type: LoadBalancer
-
-    # type: NodePort
-    # nodePorts:
-    #   http: 32080
-    #   https: 32443
-    nodePorts:
-      http: ""
-      https: ""
 
   extraContainers: []
   ## Additional containers to be added to the controller pod.
