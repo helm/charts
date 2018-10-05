@@ -153,4 +153,6 @@ deployment:
 # # To use an additional secret, set enable to true and add data
 secret:
   enabled: false
+  mountPath: /etc/secret-volume
+  readOnly: true
   data:

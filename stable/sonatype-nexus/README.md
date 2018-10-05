@@ -122,6 +122,8 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `deployment.initContainers`                 | Init containers to run before main containers  | `nil`                        |
 | `deployment.postStart.command`              | Command to run after starting the nexus container  | `nil`                    |
 | `secret.enabled`                            | Enable secret                    | `false`                                    |
+| `secret.mountPath`                          | Path to mount the secret         | `/etc/secret-volume`                       |
+| `secret.readOnly`                           | Secret readonly state            | `true`                                     |
 | `secret.data`                               | Secret data                      | `nil`                                      |
 
 If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables need to be configured
