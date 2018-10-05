@@ -171,18 +171,18 @@ controller:
     ## List of ports on which controller services are available.
     ## target http/https can be exposed on different ports at controller service level.
     ports:
-     - name: http
-       port: 80
-       targetPort: http
-       nodePort: ""
+      - name: http
+        port: 80
+        targetPort: http
+        nodePort: ""
      # - name: 8080-http
      #   port: 8080
      #   targetPort: http
      #   nodePort: ""
-     - name: https
-       port: 443
-       targetPort: https
-       nodePort: ""
+      - name: https
+        port: 443
+        targetPort: https
+        nodePort: ""
      # - name: 8443-https
      #   port: 8443
      #   targetPort: https
