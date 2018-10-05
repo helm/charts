@@ -260,7 +260,7 @@ keycloak:
       command:
         - /cloud_sql_proxy
       args:
-        - -instances={{ .Values.cloudsql.project }}:{{ .Values.cloudsql.region }}:{{ .Values.cloudsql.instance }}=tcp:5432
+        - -instances={{ .Values.gcloudsql.project }}:{{ .Values.gcloudsql.region }}:{{ .Values.gcloudsql.instance }}=tcp:5432
         - -credential_file=/secrets/cloudsql/credentials.json
       volumeMounts:
         - name: cloudsql-creds
