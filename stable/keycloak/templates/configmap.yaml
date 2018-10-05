@@ -21,7 +21,15 @@ data:
 {{ . | indent 4 }}
   {{- end }}
 
-    exec /opt/jboss/docker-entrypoint.sh -b 0.0.0.0 {{ .Values.keycloak.extraArgs }}{{- if $highAvailability }} --server-config standalone-ha.xml{{ end }}
+    if [ -f "/opt/jboss/tools/docker-entrypoint.sh" ]
+    then
+      # version <= 4.3.0.Final
+      ENTRYPOINT="/opt/jboss/tools/docker-entrypoint.sh"
+    else
+      # version >= 4.4.0.Final
+      ENTRYPOINT="/opt/jboss/docker-entrypoint.sh"
+    fi
+    exec "${ENTRYPOINT}" -b 0.0.0.0 {{ .Values.keycloak.extraArgs }}{{- if $highAvailability }} --server-config standalone-ha.xml{{ end }}
     exit "$?"
 
   keycloak.cli: |
