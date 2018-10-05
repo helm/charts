@@ -27,7 +27,7 @@ dockerRegistries:
 # - name: gcr
 #   address: https://gcr.io
 #   username: _json_key
-#   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
+#   password: '<INSERT YOUR SERVICE ACCOUNT ACCESS TOKEN HERE>'
 #   email: 1234@5678.com
 
 # If you don't want to put your passwords into a values file
