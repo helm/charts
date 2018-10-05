@@ -13,6 +13,8 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 | `config`                  | A `newrelic.yml` file if you wish to provide.                |                         |
 | `kubeStateMetricsUrl`     | If provided, the discovery process for kube-state-metrics endpoint won't be triggered. Example: http://172.17.0.3:8080 |
 | `kubeStateMetricsTimeout` | Timeout for accessing kube-state-metrics in milliseconds. If not set the newrelic default is 5000 | |
+| `kubernetesServiceHost`   | If provided, it will use this host to contact Kubernetes service instead of `kubernetes.default`. | |
+| `kubernetesServicePort`   | If provided, it will use this port to contact Kubernetes service instead of `443`. | |
 | `image.name`              | The container to pull.                                       | `newrelic/infrastructure`  |
 | `image.pullPolicy`        | The pull policy.                                             | `IfNotPresent`             |
 | `image.tag`               | The version of the container to pull.                        | `1.2.0`            |

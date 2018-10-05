@@ -43,6 +43,14 @@ spec:
             - name: "KUBE_STATE_METRICS_URL"
               value: "{{ .Values.kubeStateMetricsUrl }}"
            {{- end }}
+           {{- if .Values.kubernetesServiceHost }}
+            - name: "KUBERNETES_SERVICE_HOST"
+              value: "{{ .Values.kubernetesServiceHost }}"
+           {{- end }}
+           {{- if .Values.kubernetesServicePort }}
+            - name: "KUBERNETES_SERVICE_PORT"
+              value: "{{ .Values.kubernetesServicePort }}"
+           {{- end }}
            {{- if .Values.kubeStateMetricsTimeout }}
             - name: TIMEOUT
               value: {{ .Values.kubeStateMetricsTimeout | quote }}
