@@ -1,10 +1,11 @@
+{{- $name := include "buzzfeed-sso.name" . -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "sso.fullname" . }}-auth
+  name: {{ template "buzzfeed-sso.fullname" . }}-auth
   labels:
-    app: {{ template "sso.name" . }}-auth
-    chart: {{ template "sso.chart" . }}
+    app: {{ $name }}-auth
+    chart: {{ template "buzzfeed-sso.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -15,5 +16,5 @@ spec:
       targetPort: 4180
       protocol: TCP
   selector:
-    app: {{ template "sso.name" . }}-auth
+    app: {{ $name }}-auth
     release: {{ .Release.Name }}

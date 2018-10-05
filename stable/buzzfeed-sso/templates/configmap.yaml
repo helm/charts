@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "sso.fullname" . }}
+  name: {{ template "buzzfeed-sso.fullname" . }}
   labels:
-    app: {{ template "sso.name" . }}
-    chart: {{ template "sso.chart" . }}
+    app: {{ template "buzzfeed-sso.name" . }}
+    chart: {{ template "buzzfeed-sso.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:

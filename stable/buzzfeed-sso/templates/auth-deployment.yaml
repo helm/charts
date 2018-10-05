@@ -1,26 +1,27 @@
-{{- $fullName := include "sso.fullname" . -}}
+{{- $fullName := include "buzzfeed-sso.fullname" . -}}
+{{- $name := include "buzzfeed-sso.name" . -}}
 {{- $authDomain := .Values.auth.domain -}}
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ $fullName }}-auth
   labels:
-    app: {{ template "sso.name" . }}-auth
-    chart: {{ template "sso.chart" . }}-auth
+    app: {{ $name }}-auth
+    chart: {{ template "buzzfeed-sso.chart" . }}-auth
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.proxy.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "sso.name" . }}-auth
+      app: {{ $name }}-auth
       release: {{ .Release.Name }}
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
-        app: {{ template "sso.name" . }}-auth
+        app: {{ $name }}-auth
         release: {{ .Release.Name }}
     spec:
     {{- if .Values.provider.google }}

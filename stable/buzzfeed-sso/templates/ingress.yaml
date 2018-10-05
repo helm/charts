@@ -1,12 +1,12 @@
-{{- $fullName := include "sso.fullname" . -}}
+{{- $fullName := include "buzzfeed-sso.fullname" . -}}
 {{- $authDomain := .Values.auth.domain -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app: {{ template "sso.name" . }}
-    chart: {{ template "sso.chart" . }}
+    app: {{ template "buzzfeed-sso.name" . }}
+    chart: {{ template "buzzfeed-sso.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- with .Values.ingress.annotations }}

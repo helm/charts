@@ -1,4 +1,4 @@
-# Default values for sso.
+# Default values for buzzfeed-sso.
 # Commented values are required for SSO to work
 
 # emailDomain: 'email.mydomain.foo'

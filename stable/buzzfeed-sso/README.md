@@ -1,4 +1,4 @@
-# SSO
+# Buzzfeed SSO
 
 Single sign-on for your Kubernetes services using Google OAuth (more providers are welcomed)
 
