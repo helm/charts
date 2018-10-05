@@ -6,13 +6,13 @@ metadata:
   labels:
     app: {{ template "postgresql.name" . }}
     chart: {{ template "postgresql.chart" . }}
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name | quote}}
+    heritage: {{ .Release.Service | quote }}
 spec:
   template:
     metadata:
       labels:
-        release: "{{ .Release.Name }}"
+        release: {{ .Release.Name | quote }}
         app: {{ template "postgresql.name" . }}
         chart: {{ template "postgresql.chart" . }}
         role: metrics

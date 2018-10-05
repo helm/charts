@@ -4,11 +4,11 @@
  WARNING
 
     By specifying "serviceType=LoadBalancer" and not specifying "postgresqlPassword"
-    you have most  likely exposed the PostgreSQL service externally without any
+    you have most likely exposed the PostgreSQL service externally without any
     authentication mechanism.
 
     For security reasons, we strongly suggest that you switch to "ClusterIP" or
-    "NodePort". As alternative, you can also specify a valid password on the
+    "NodePort". As an alternative, you can also specify a valid password on the
     "postgresqlPassword" parameter.
 
 -------------------------------------------------------------------------------
