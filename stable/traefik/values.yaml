@@ -13,7 +13,7 @@ podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2
 
-rootCAs: []
+# rootCAs: []
 
 cpuRequest: 100m
 memoryRequest: 20Mi
