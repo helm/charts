@@ -59,7 +59,7 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 | `postgresConfig`           | Runtime Config Parameters                       | `nil`                                                      |
 | `pgHbaConf`                | Content of pg\_hba.conf                         | `nil (do not create pg_hba.conf)`                          |
 | `initdbdSecret`            | Secret containing initdb.d files                | `nil`                                                      |
-| `initdbdMountPath`         | initdb.d files mount path                       | `/docker-entrypoint-initdb.d`                              |
+| `initdbdMountPath`         | initdb.d files mount path. Only used if initdbdSecret is set | `/docker-entrypoint-initdb.d`                 |
 | `persistence.enabled`      | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `nil`                                                      |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |

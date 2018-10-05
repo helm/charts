@@ -59,6 +59,7 @@ usePasswordFile: false
 # initdbdSecret:
 
 ## Specify initdb.d files mount path
+## Only used if initdbdSecret is set
 ## Default: /docker-entrypoint-initdb.d
 initdbdMountPath: /docker-entrypoint-initdb.d
 
