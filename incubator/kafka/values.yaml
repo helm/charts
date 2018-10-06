@@ -138,7 +138,9 @@ external:
   type: NodePort
   # annotations:
   #  service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
-
+  dns:
+    useInternal: false
+    useExternal: true
   # create an A record for each statefulset pod
   distinct: false
   enabled: false
@@ -174,6 +176,11 @@ configurationOverrides:
   #   EXTERNAL://kafka.cluster.local:$((31090 + ${KAFKA_BROKER_ID}))
   # "listener.security.protocol.map": |-
   #   PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+
+## set extra ENVs
+#   key: "value"
+envOverrides: {}
+
 
 ## A collection of additional ports to expose on brokers (formatted as normal containerPort yaml)
 # Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar
@@ -258,6 +265,9 @@ prometheus:
     ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
     interval: 10s
 
+    ## Timeout at which Prometheus timeouts scrape run, note: only used by Prometheus Operator
+    scrapeTimeout: 10s
+
     ## Port jmx-exporter exposes Prometheus format metrics to scrape
     port: 5556
 
@@ -281,6 +291,9 @@ prometheus:
 
     ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
     interval: 10s
+
+    ## Timeout at which Prometheus timeouts scrape run, note: only used by Prometheus Operator
+    scrapeTimeout: 10s
 
     ## Port kafka-exporter exposes for Prometheus to scrape metrics
     port: 9308
@@ -336,6 +349,17 @@ topics: []
   #   replicationFactor: 3
   #   defaultConfig: "segment.bytes,segment.ms"
   #   config: "cleanup.policy=compact,delete.retention.ms=604800000"
+  # - name: myAclTopicPartitions
+  #   partitions: 8
+  #   acls:
+  #     - user: read
+  #       operations: [ Read ]
+  #     - user: read_and_write
+  #       operations:
+  #         - Read
+  #         - Write
+  #     - user: all
+  #       operations: [ All ]
 
 # ------------------------------------------------------------------------------
 # Zookeeper:
