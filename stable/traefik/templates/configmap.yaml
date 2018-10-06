@@ -18,6 +18,9 @@ data:
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true
     {{- end }}
+    {{- if .Values.rootCAs }}
+    {{ template "traefik.rootCAs" . }}
+    {{- end }}
     {{- if .Values.ssl.insecureSkipVerify }}
     InsecureSkipVerify = true
     {{- end }}

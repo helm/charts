@@ -81,3 +81,14 @@ Create custom cipherSuites block
           {{- end }}
           ]
 {{- end -}}
+
+Create the block for RootCAs.
+*/}}
+{{- define "traefik.rootCAs" -}}
+         rootCAs = [
+	   {{- range $idx, $ca := .Values.rootCAs }}
+	     {{- if $idx }}, {{ end }}
+	     {{- $ca | quote }}
+	   {{- end -}}
+         ]
+{{- end -}}
