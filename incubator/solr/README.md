@@ -1,10 +1,10 @@
-# incubator/solr
+# Apache SOLR Cloud Helm Chart
 
 This helm chart provides an implementation of Apache Solr [StatefulSet](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/).
 
 <!-- TOC -->
 
-- [incubator/solr](#incubatorsolr)
+- [Apache SOLR Cloud Helm Chart](#apache-solr-cloud-helm-chart)
     - [Prerequisites](#prerequisites)
     - [Chart Components](#chart-components)
     - [Installing the Chart](#installing-the-chart)
