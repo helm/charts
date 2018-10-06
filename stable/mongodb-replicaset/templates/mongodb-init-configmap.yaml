@@ -13,3 +13,8 @@ metadata:
 data:
   on-start.sh: |
 {{ .Files.Get "init/on-start.sh" | indent 4 }}
+{{- if .Values.initMongodStandalone }}
+  initMongodStandalone.js: |
+{{ .Values.initMongodStandalone | indent 4 }}
+{{- end }}
+
