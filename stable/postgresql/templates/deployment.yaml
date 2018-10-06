@@ -128,11 +128,14 @@ spec:
         env:
         - name: DATA_SOURCE_NAME
           value: postgresql://{{ default "postgres" .Values.postgresUser }}@127.0.0.1:5432?sslmode=disable
+        {{- if .Values.metrics.customMetrics }}
+        - name: PG_EXPORTER_EXTEND_QUERY_PATH
+          value: /conf/custom-metrics.yaml
+        {{- end }}
         ports:
         - name: metrics
           containerPort: 9187
         {{- if .Values.metrics.customMetrics }}
-        args: ["-extend.query-path", "/conf/custom-metrics.yaml"]
         volumeMounts:
           - name: custom-metrics
             mountPath: /conf
