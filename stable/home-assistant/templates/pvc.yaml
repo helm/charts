@@ -1,4 +1,5 @@
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+{{- if .Values.persistence.enabled -}}
+{{- if not .Values.persistence.existingClaim -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -6,7 +7,6 @@ metadata:
   labels:
     app: {{ template "home-assistant.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: server
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -22,4 +22,5 @@ spec:
   storageClassName: "{{ .Values.persistence.storageClass }}"
 {{- end }}
 {{- end }}
+{{- end -}}
 {{- end -}}

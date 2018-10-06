@@ -87,7 +87,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | `fullnameOverride`                     | Override the full resource names                                                                                             | `{release-name}-traefik` (or traefik if release-name is traefik) |
 | `image`                                | Traefik image name                                                                                                           | `traefik`                                         |
-| `imageTag`                             | The version of the official Traefik image to use                                                                             | `1.6.5`                                           |
+| `imageTag`                             | The version of the official Traefik image to use                                                                             | `1.7.1`                                           |
 | `serviceType`                          | A valid Kubernetes service type                                                                                              | `LoadBalancer`                                    |
 | `loadBalancerIP`                       | An available static IP you have reserved on your cloud platform                                                              | None                                              |
 | `loadBalancerSourceRanges`             | List of IP CIDRs allowed access to load balancer (if supported)                                                              | None                                              |
@@ -96,6 +96,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `externalTrafficPolicy`                | Set the externalTrafficPolicy in the Service to either Cluster or Local                                                      | `Cluster`                                         |
 | `replicas`                             | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
 | `podDisruptionBudget`                  | Pod disruption budget                                                                                                        | `{}`                                              |
+| `rootCAs`                              | Register Certificates in the RootCA. These certificates will be use for backends calls. __NOTE:__ You can use file path or cert content directly | `[]`                                              |
 | `cpuRequest`                           | Initial share of CPU requested per Traefik pod                                                                               | `100m`                                            |
 | `memoryRequest`                        | Initial share of memory requested per Traefik pod                                                                            | `20Mi`                                            |
 | `cpuLimit`                             | CPU limit per Traefik pod                                                                                                    | `200m`                                            |
@@ -113,10 +114,12 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `ssl.upstream`                         | Whether to skip configuring certs (ie: SSL is terminated by L4 ELB)                                                          | `false`                                           |
 | `ssl.insecureSkipVerify`               | Whether to verify certs on SSL connections                                                                                   | `false`                                           |
 | `ssl.tlsMinVersion`                    | Minimum TLS version for https entrypoint                                                                                     | None                                              |
+| `ssl.cipherSuites`                     | Specify a non-empty list of TLS ciphers to override the default one | None |
 | `ssl.defaultCert`                      | Base64 encoded default certificate                                                                                           | A self-signed certificate                         |
 | `ssl.defaultKey`                       | Base64 encoded private key for the certificate above                                                                         | The private key for the certificate above         |
+| `ssl.auth.basic`                       | Basic auth for all SSL endpoints, see Authentication section                                          | unset by default; this means basic auth is disabled |
 | `acme.enabled`                         | Whether to use Let's Encrypt to obtain certificates                                                                          | `false`                                           |
-| `acme.challengeType`                   | Type of ACME challenge to perform domain validation. `tls-sni-01`, `http-01` or `dns-01`                                     | `tls-sni-01`                                      |
+| `acme.challengeType`                   | Type of ACME challenge to perform domain validation. `tls-sni-01` (deprecated), `tls-alpn-01` (recommended), `http-01` or `dns-01` | `tls-sni-01`                                |
 | `acme.delayBeforeCheck`         | By default, the provider will verify the TXT DNS challenge record before letting ACME verify. If delayBeforeCheck is greater than zero, this check is delayed for the configured duration in seconds. Useful when Traefik cannot resolve external DNS queries. | `0` |
 | `acme.dnsProvider.name`                | Which DNS provider to use. See [here](https://github.com/xenolf/lego/tree/master/providers/dns) for the list of possible values. | `nil`                                         |
 | `acme.dnsProvider.$name`               | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. See [here](#example-aws-route-53). | `{}`                         |
@@ -133,19 +136,19 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.persistence.accessMode`          | `ReadWriteOnce` or `ReadOnly`                                                                                                | `ReadWriteOnce`                                   |
 | `acme.persistence.existingClaim`       | An Existing PVC name                                                                                                         | `nil`                                             |
 | `acme.persistence.size`                | Minimum size of the volume requested                                                                                         | `1Gi`                                             |
-| `kvprovider.storeAcme`                 | Store acme certificates in KV Provider (needed for [HA](https://docs.traefik.io/configuration/acme/#as-a-key-value-store-entry)) | false                                         |
-| `kvprovider.importAcme`                | Import acme certificates from acme.json of a mounted pvc (see: acme.persistence.existingClaim)                               | false                                             |
-| `kvprovider.$name.endpoint`            | Endpoint of the provider like \<kv-provider-fqdn>:\<port>                                                                      | none                                              |
-| `kvprovider.$name.watch`               | Wether traefik should watch for changes                                                                                      | true                                              |
+| `kvprovider.storeAcme`                 | Store acme certificates in KV Provider (needed for [HA](https://docs.traefik.io/configuration/acme/#as-a-key-value-store-entry)) | `false`                                       |
+| `kvprovider.importAcme`                | Import acme certificates from acme.json of a mounted pvc (see: acme.persistence.existingClaim)                               | `false`                                           |
+| `kvprovider.$name.endpoint`            | Endpoint of the provider like \<kv-provider-fqdn>:\<port>                                                                    | None                                              |
+| `kvprovider.$name.watch`               | Wether traefik should watch for changes                                                                                      | `true`                                            |
 | `kvprovider.$name.prefix`              | Prefix where traefik data will be stored                                                                                     | traefik                                           |
 | `kvprovider.$name.filename`            | Advanced configuration. See: https://docs.traefik.io/                                                                        | provider default                                  |
-| `kvprovider.$name.username`            | Optional username                                                                                                            | none                                              |
-| `kvprovider.$name.password`            | Optional password                                                                                                            | none                                              |
-| `kvprovider.$name.tls.ca`              | Optional TLS certificate authority                                                                                           | none                                              |
-| `kvprovider.$name.tls.cert`            | Optional TLS certificate                                                                                                     | none                                              |
-| `kvprovider.$name.tls.key`             | Optional TLS keyfile                                                                                                         | none                                              |
-| `kvprovider.$name.tls.insecureSkipVerify`    | Optional Wether to skip verify                                                                                         | none                                              |
-| `kvprovider.etcd.useAPIV3              | Use V3 or use V2 API of ETCD                                                                                                 | false                                             |
+| `kvprovider.$name.username`            | Optional username                                                                                                            | None                                              |
+| `kvprovider.$name.password`            | Optional password                                                                                                            | None                                              |
+| `kvprovider.$name.tls.ca`              | Optional TLS certificate authority                                                                                           | None                                              |
+| `kvprovider.$name.tls.cert`            | Optional TLS certificate                                                                                                     | None                                              |
+| `kvprovider.$name.tls.key`             | Optional TLS keyfile                                                                                                         | None                                              |
+| `kvprovider.$name.tls.insecureSkipVerify`    | Optional Wether to skip verify                                                                                         | None                                              |
+| `kvprovider.etcd.useAPIV3`             | Use V3 or use V2 API of ETCD                                                                                                 | `false`                                           |
 | `dashboard.enabled`                    | Whether to enable the Traefik dashboard                                                                                      | `false`                                           |
 | `dashboard.domain`                     | Domain for the Traefik dashboard                                                                                             | `traefik.example.com`                             |
 | `dashboard.service.annotations`        | Annotations for the Traefik dashboard Service definition, specified as a map                                                 | None                                              |
@@ -161,6 +164,9 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `kubernetes.namespaces`                | List of Kubernetes namespaces to watch                                                                                       | All namespaces                                    |
 | `kubernetes.labelSelector`             | Valid Kubernetes ingress label selector to watch (e.g `realm=public`).                                                       | No label filter                                   |
 | `kubernetes.ingressClass`              | Value of `kubernetes.io/ingress.class` annotation to watch - must start with `traefik` if set                                | None                                              |
+| `kubernetes.ingressEndpoint.hostname`  | Desired static hostname to update for ingress status spec                                                                    | None                                              |
+| `kubernetes.ingressEndpoint.ip`        | Desired static IP to update for ingress status spec                                                                          | None                                              |
+| `kubernetes.ingressEndpoint.publishedService` | Desired `namespace/service` to source ingress status spec from                                                        | None                                              |
 | `accessLogs.enabled`                   | Whether to enable Traefik's access logs                                                                                      | `false`                                           |
 | `accessLogs.filePath`                  | The path to the log file. Logs to stdout if omitted                                                                          | None                                              |
 | `accessLogs.format`                    | What format the log entries should be in. Either `common` or `json`                                                          | `common`                                          |
@@ -182,7 +188,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `deployment.hostPort.dashboardEnabled` | Whether to enable hostPort binding to host for dashboard.                                                                    | `false`                                           |
 | `sendAnonymousUsage`                   | Send anonymous usage statistics.                                                                                             | `false`                                           |
 | `tracing.enabled`                      | Whether to enable request tracing                                                                                            | `false`                                           |
-| `tracing.backend`                      | Tracing backend to use, either `jaeger` or `zipkin`                                                                       | None                                              |
+| `tracing.backend`                      | Tracing backend to use, either `jaeger` or `zipkin`                                                                          | None                                              |
 | `tracing.serviceName`                  | Service name to be used in tracing backend                                                                                   | `traefik`                                         |
 | `tracing.jaeger.localAgentHostPort`    | Location of the Jaeger agent where spans will be sent                                                                        | `127.0.0.1:6831`                                  |
 | `tracing.jaeger.samplingServerUrl`     | Address of the Jaeger agent HTTP sampling server                                                                             | `http://localhost:5778/sampling`                  |
@@ -224,7 +230,7 @@ Given you have:
 * a running [etcd operator](https://github.com/helm/charts/tree/master/stable/etcd-operator):
 * you have created a master chart requiring this traefik chart
 * an existing pvc with an `acme.json` called `acme-certs-pvc`
-* you have an etcd template like: 
+* you have an etcd template like:
   ```
   apiVersion: "etcd.database.coreos.com/v1beta2"
   kind: "EtcdCluster"
