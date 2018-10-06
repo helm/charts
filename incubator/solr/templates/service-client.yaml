@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "solr.fullname" . }}
+  labels:
+    app: {{ template "solr.name" . }}
+    chart: {{ template "solr.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.ports.client.containerPort }}
+      protocol: TCP
+      name: solr-http
+  selector:
+    app: {{ template "solr.name" . }}
+    release: {{ .Release.Name }}

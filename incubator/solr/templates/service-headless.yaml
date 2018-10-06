@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "solr.fullname" . }}-headless
+  labels:
+    app: {{ template "solr.name" . }}
+    chart: {{ template "solr.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.ports.client.containerPort }}
+      protocol: TCP
+      name: solr-container
+  selector:
+    app: {{ template "solr.name" . }}
+    release: {{ .Release.Name }}
