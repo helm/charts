@@ -1,12 +1,8 @@
 ## Default values for Traefik
 image: traefik
-<<<<<<< HEAD
 ## can switch the deploy type to DaemonSet if you prefer
 deployType: Deployment
-imageTag: 1.7.0
-=======
-imageTag: 1.7.1
->>>>>>> [stable/treafik] Upgrade to Træfik v1.7.1 (#8116)
+imageTag: 1.7.2
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
