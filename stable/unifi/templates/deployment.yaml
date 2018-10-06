@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "unifi.fullname" . }}
+  labels:
+    app: {{ template "unifi.name" . }}
+    chart: {{ template "unifi.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "unifi.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "unifi.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: https-gui
+              containerPort: 8443
+              protocol: TCP
+            - name: controller
+              containerPort: 8080
+              protocol: TCP
+            - name: discovery
+              containerPort: 10001
+              protocol: UDP
+            - name: stun
+              containerPort: 3478
+              protocol: UDP
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: https-gui
+              scheme: HTTPS
+              initialDelaySeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: https-gui
+              scheme: HTTPS
+              initialDelaySeconds: 15
+          env:
+            - name: TZ
+              value: "{{ .Values.timezone }}"
+            - name: RUNAS_UID0
+              value: "{{ .Values.runAsRoot }}"
+            {{- if .Values.mongodb.enabled }}
+            - name: DB_URI
+              value: "{{ .Values.mongodb.dbUri }}"
+            - name: STATDB_URI
+              value: "{{ .Values.mongodb.statDbUri }}"
+            - name: DB_NAME
+              value: "{{ .Values.mongodb.databaseName }}"
+            {{- end }}
+          volumeMounts:
+            - mountPath: /unifi/data
+              name: unifi-data
+              subPath: data
+            - mountPath: /unifi/log
+              name: unifi-data
+              subPath: log
+            - mountPath: /unifi/cert
+              name: unifi-data
+              subPath: cert
+            - mountPath: /unifi/init.d
+              name: unifi-data
+              subPath: init.d
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: unifi-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "unifi.fullname" . }}{{- end }}
+        {{- else }}
+          emptyDir: {}
+        {{ end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
