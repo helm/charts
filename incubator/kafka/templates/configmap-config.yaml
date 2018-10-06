@@ -25,7 +25,7 @@ data:
       sleep 20
     done
     echo "Applying runtime configuration using {{ .Values.image }}:{{ .Values.imageTag }}"
-    {{- range $n, $topic := .Values.topics }}
+  {{- range $n, $topic := .Values.topics }}
     {{- if and $topic.partitions $topic.replicationFactor $topic.reassignPartitions }}
     cat << EOF > {{ $topic.name }}-increase-replication-factor.json
       {"version":1, "partitions":[
@@ -50,5 +50,12 @@ data:
     kafka-configs --zookeeper {{ $zk }} --entity-type topics --entity-name {{ $topic.name }} --alter --force --add-config {{ nospace $topic.config }}
     {{- end }}
     kafka-configs --zookeeper {{ $zk }} --entity-type topics --entity-name {{ $topic.name }} --describe
+    {{- if $topic.acls }}
+      {{- range $a, $acl := $topic.acls }}
+        {{ if and $acl.user $acl.operations }}
+    kafka-acls --authorizer-properties zookeeper.connect={{ $zk }} --force --add --allow-principal User:{{ $acl.user }}{{- range $operation := $acl.operations }} --operation {{ $operation }} {{- end }} --topic {{ $topic.name }} {{ $topic.extraParams }}
+        {{- end }}
+      {{- end }}
     {{- end }}
+  {{- end }}
 {{- end -}}

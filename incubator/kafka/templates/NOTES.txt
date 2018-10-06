@@ -51,12 +51,12 @@ clients to point at the following brokers. Please allow a few minutes for all
 associated resources to become healthy.
   {{  $fullName := include "kafka.fullname" . }}
   {{- $replicas := .Values.replicas | int }}
-  {{- $servicePort := .Values.external.servicePort }}
+  {{- $servicePort := .Values.external.servicePort | int}}
   {{- $root := . }}
   {{- range $i, $e := until $replicas }}
     {{- $externalListenerPort := add $root.Values.external.firstListenerPort $i }}
     {{- if $root.Values.external.distinct }}
-{{ printf "%s-%d.%s:%d" $root.Release.Name $i $root.Values.external.domain  $externalListenerPort | indent 2 }}
+{{ printf "%s-%d.%s:%d" $root.Release.Name $i $root.Values.external.domain $servicePort | indent 2 }}
     {{- else }}
 {{ printf "%s.%s:%d" $root.Release.Name $root.Values.external.domain $externalListenerPort | indent 2 }}
     {{- end }}
