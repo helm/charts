@@ -107,6 +107,14 @@ tls:
 # Entries for the MongoDB config file
 configmap:
 
+# Javascript code to execute on each replica at initContainer time
+# This is the recommended way to create indexes on replicasets.
+# Below is an example that creates indexes in foreground on each replica in standalone mode.
+# ref: https://docs.mongodb.com/manual/tutorial/build-indexes-on-replica-sets/
+# initMongodStandalone: |+
+#   db = db.getSiblingDB("mydb")
+#   db.my_users.createIndex({email: 1})
+
 # Readiness probe
 readinessProbe:
   initialDelaySeconds: 5
