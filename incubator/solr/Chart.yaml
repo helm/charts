@@ -1,0 +1,14 @@
+name: solr
+home: http://lucene.apache.org/solr/
+version: 0.1.0
+appVersion: "7.5.0"
+description: Solr is the popular, blazing-fast, open source enterprise search platform built on Apache Lucene™
+icon: http://lucene.apache.org/solr/5_0_0/images/solr.svg
+sources:
+- https://hub.docker.com/_/solr/
+- https://github.com/apache/lucene-solr
+maintainers:
+- name: thomasliddledba
+  email: tliddle30@gmail.com
+
+

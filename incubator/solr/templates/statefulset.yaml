@@ -1,0 +1,115 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "solr.fullname" . }}
+  labels:
+    app: {{ template "solr.name" . }}
+    chart: {{ template "solr.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  serviceName: {{ template "solr.fullname" . }}-headless
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      app: {{ template "solr.name" . }}
+      release: {{ .Release.Name }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "solr.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+      {{- if .Values.podAnnotations }}
+        ## Custom pod annotations
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      initContainers:
+        - name: {{ .Chart.Name }}-init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["solr","zk","ls","/","-z","{{ .Release.Name }}-zookeeper:{{ .Values.zookeeper.ports.client.containerPort }}"]
+          env:
+            - name: ZK_CLIENT_TIMEOUT
+              value: "{{ .Values.zkClientTimeout }}"
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["bin/solr"]
+          args: ["-f", "-cloud"]
+          env:
+            - name: SOLR_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: SOLR_HOST
+              value: $(SOLR_POD_NAME).{{ template "solr.fullname" . }}-headless
+            - name: ZK_HOST
+              value: "{{ .Release.Name }}-zookeeper:{{ .Values.zookeeper.ports.client.containerPort }}"
+            - name: SOLR_TIMEZONE
+              value: "{{ .Values.timeZone }}"
+            - name: SOLR_HEAP
+              value: "{{ .Values.heap }}"
+            - name: SOLR_LOG_LEVEL
+              value: "{{ .Values.logLevel }}"
+          ports:
+            - name: solr-port
+              containerPort: {{ .Values.ports.client.containerPort }}
+              protocol: TCP
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          volumeMounts:
+          - name: data
+            mountPath: /opt/solr/server/data
+            subPath: data
+          lifecycle:
+            preStop:
+              exec:
+                command: ["solr","stop", "-p", "{{ .Values.zookeeper.ports.client.containerPort }}"]
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    volumes:
+      {{- if not .Values.persistence.enabled }}
+      - name: data
+        emptyDir: {}
+      {{- end }}
+{{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+        - {{ .Values.persistence.accessMode | quote }}
+      resources:
+        requests:
+          storage: {{ .Values.persistence.size | quote }}
+    {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.persistence.storageClass }}"
+      {{- end }}
+    {{- end }}
+  {{- end }}

@@ -1,0 +1,6 @@
+1. View the SOLR Cloud GUI via the url:
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
+{{- end }}
+{{- end }}

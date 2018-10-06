@@ -1,0 +1,77 @@
+replicaCount: 3
+
+revisionHistoryLimit: 5
+
+updateStrategy:
+  type: RollingUpdate
+
+terminationGracePeriodSeconds: 1800
+
+ports:
+  client:
+    containerPort: 8983
+
+livenessProbe:
+  # tcpSocket:
+    # port: 8983
+  # initialDelaySeconds: 20
+  # periodSeconds: 30
+  # timeoutSeconds: 30
+  # failureThreshold: 6
+  # successThreshold: 1
+
+readinessProbe:
+  # tcpSocket:
+    # port: 8983
+  # initialDelaySeconds: 20
+  # periodSeconds: 30
+  # timeoutSeconds: 30
+  # failureThreshold: 6
+  # successThreshold: 1
+
+heap: "2g"
+timeZone: "UTC"
+logLevel: "INFO"
+
+image:
+  repository: solr
+  tag: 7.5
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+  path: /
+  hosts:
+    - solr-admin.local
+
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+persistence:
+  enabled: true
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 1Gi
+
+zookeeper:
+  replicaCount: 3
+  ports:
+    client:
+      containerPort: 2181
