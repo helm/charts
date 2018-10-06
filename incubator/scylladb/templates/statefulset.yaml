@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "scylladb.fullname" . }}
+  labels:
+    app: {{ template "scylladb.name" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "scylladb.name" . }}
+  serviceName: {{ template "scylladb.fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "scylladb.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      terminationGracePeriodSeconds: 120
+      containers:
+      - name: {{ template "scylladb.fullname" . }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        resources: 
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+          - containerPort: {{ .Values.service.cqlPort }}
+          - containerPort: {{ .Values.service.internodePort }}
+          - containerPort: {{ .Values.service.sslinternodePort }}
+          - containerPort: {{ .Values.service.jmxPort }}
+          - containerPort: {{ .Values.service.restPort }}
+          - containerPort: {{ .Values.service.prometheusPort }}
+          - containerPort: {{ .Values.service.nodeExporterPort }}
+          - containerPort: {{ .Values.service.thriftPort }}
+        env:
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_SERVICE_NAME
+          value: {{ template "scylladb.fullname" . }}
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        args:
+          - --seeds 
+          - {{ template "scylladb.fullname" . }}-0.{{ template "scylladb.fullname" . }}.default.svc.cluster.local
+          {{- if .Values.config.overprovisioned }}
+          - --overprovisioned
+          - {{ .Values.config.overprovisioned | quote }}
+          {{- end }}
+          {{- if .Values.config.cpu }}
+          - --smp
+          - {{ .Values.config.cpu | quote }}
+          {{- end }}
+          {{- if .Values.config.memory }}
+          - --memory
+          - {{ .Values.config.memory | quote }}
+          {{- end }}
+          {{- if .Values.config.endpointSnitch }}
+          - --endpoint-snitch
+          - {{ .Values.config.endpointSnitch | quote }}
+          {{- end }}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/usr/bin/nodetool","decommission"]
+        readinessProbe:
+          exec:
+            command: ["/bin/sh", "-c", "exec", "/opt/ready-probe.sh"]
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        volumeMounts:
+          - name: scylla-ready-probe
+            mountPath: /opt/ready-probe.sh
+          {{- if .Values.persistence.size }}
+          - name: datadir
+            mountPath: /var/lib/scylla
+          {{- end }}
+      volumes:
+        - name: scylla-ready-probe
+          configMap:
+            name: scylla 
+  volumeClaimTemplates:
+    - metadata:
+        name: datadir
+      spec:
+        accessModes: 
+          - {{ .Values.persistence.accessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
+        {{- if .Values.persistence.storageClass }}
+        storageClassName: {{ .Values.persistence.storageClass | quote }}
+        {{- end }}

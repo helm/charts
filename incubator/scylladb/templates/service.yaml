@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "scylladb.fullname" . }}
+  labels:
+    app: {{ template "scylladb.name" . }}
+    chart: {{ template "scylladb.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.service.cqlPort }}
+      name: cql
+    - port: {{ .Values.service.internodePort }}
+      name: internode
+    - port: {{ .Values.service.sslinternodePort }}
+      name: sslinternode
+    - port: {{ .Values.service.jmxPort }}
+      name: jmx
+    - port: {{ .Values.service.restPort }}
+      name: rest
+    - port: {{ .Values.service.prometheusPort }}
+      name: prometeus
+    - port: {{ .Values.service.nodeExporterPort }}
+      name: nodeexporter
+    - port: {{ .Values.service.thriftPort }}
+      name: thrift
+
+  selector:
+    app: {{ template "scylladb.name" . }}
+    release: {{ .Release.Name }}
