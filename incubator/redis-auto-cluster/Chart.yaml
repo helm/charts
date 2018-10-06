@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Creates a Redis cluster automatically
+name: redis-auto-cluster
+version: 0.2.0

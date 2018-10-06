@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "redis-auto-cluster.name" . }}
+    chart: {{ template "redis-auto-cluster.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  redis.conf: |+
+    cluster-enabled yes
+    cluster-require-full-coverage no
+    cluster-node-timeout {{ .Values.config.clusterNodeTimeout }}
+    cluster-config-file /data/nodes.conf
+    cluster-migration-barrier 1
+
+    protected-mode no
+
+    maxmemory {{ .Values.shards.sizeGb }}Gb
+    maxmemory-policy {{ .Values.config.maxMemoryPolicy }}
+
+    appendonly {{ .Values.config.appendOnly }}
+
+{{ .Values.config.saveOptions | indent 4 }}

@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "redis-auto-cluster.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "redis-auto-cluster.name" . }}
+    chart: {{ template "redis-auto-cluster.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "false"
+    {{- if .Values.metrics.enabled }}
+    prometheus.io/path: /metrics
+    prometheus.io/port: metrics
+    prometheus.io/scrape: "true"
+    {{- end }}
+spec:
+  clusterIP: None
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+      name: client
+    - port: 26379
+      targetPort: 26379
+      name: gossip
+    {{- if .Values.metrics.enabled }}
+    - port: 9121
+      targetPort: 9121
+      name: metrics
+    {{- end }}
+  publishNotReadyAddresses: true
+  selector:
+    app: {{ template "redis-auto-cluster.name" . }}
+    release: {{ .Release.Name }}

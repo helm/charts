@@ -1,0 +1,50 @@
+{{- if .Values.autoCluster.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "redis-auto-cluster.fullname" . }}-auto-builder
+  labels:
+    app: {{ template "redis-auto-cluster.name" . }}
+    chart: {{ template "redis-auto-cluster.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "0"
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ template "redis-auto-cluster.name" . }}
+        chart: {{ template "redis-auto-cluster.chart" . }}
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+        - name: wait-until-ready
+          image: "{{ .Values.autoCluster.image.repository }}:{{ .Values.autoCluster.image.tag }}"
+          imagePullPolicy: {{ .Values.autoCluster.image.pullPolicy }}
+          command: ["./wait.sh"]
+          env:
+            - name: REDIS_SERVICE
+              value: {{ template "redis-auto-cluster.fullname" . }}
+            - name: CLUSTER_SIZE
+              value: {{ add .Values.shards.count (mul .Values.shards.count .Values.shards.replicationFactor) | quote }}
+          securityContext:
+            privileged: true
+      containers:
+        - name: {{ template "redis-auto-cluster.fullname" . }}-builder
+          image: "{{ .Values.autoCluster.image.repository }}:{{ .Values.autoCluster.image.tag }}"
+          imagePullPolicy: {{ .Values.autoCluster.image.pullPolicy }}
+          command: ["./setup.sh"]
+          env:
+            - name: REDIS_SERVICE
+              value: {{ template "redis-auto-cluster.fullname" . }}
+            - name: REPLICATION_FACTOR
+              value: {{ .Values.shards.replicationFactor | quote }}
+            - name: CLUSTER_SIZE
+              value: {{ add .Values.shards.count (mul .Values.shards.count .Values.shards.replicationFactor) | quote }}
+      restartPolicy: Never
+{{- end }}

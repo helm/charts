@@ -1,0 +1,53 @@
+nameOverride: ""
+serviceNameOverride: ""
+
+shards:
+  count: 3
+  replicationFactor: 1
+  sizeGb: 1
+
+nodeSelector: {}
+
+tolerations: []
+
+persistence:
+  storageClassName: standard
+
+antiAffinity: false
+
+image:
+  repository: redis
+  tag: 4.0.9-alpine
+  pullPolicy: IfNotPresent
+
+config:
+  appendOnly: "yes"
+  clusterNodeTimeout: 15000
+  maxMemoryPolicy: "noeviction"
+  saveOptions: |
+    save 900 1
+    save 300 10
+    save 60 10000
+
+autoCluster:
+  enabled: true
+  image:
+    repository: uenicontrib/redis-auto-cluster-builder
+    tag: 1.0.0
+    pullPolicy: IfNotPresent
+
+security:
+  enabled: false
+
+tuning: false
+
+metrics:
+  enabled: false
+  image:
+    repository: oliver006/redis_exporter
+    tag: v0.17.2
+    pullPolicy: IfNotPresent
+  resources: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9121"
