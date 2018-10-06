@@ -10,7 +10,7 @@ terminationGracePeriodSeconds: 30
 
 image:
   repository: docker.elastic.co/logstash/logstash-oss
-  tag: 6.4.0
+  tag: 6.4.2
   pullPolicy: IfNotPresent
   ## Add secrets manually via kubectl on kubernetes cluster and reference here
   #  pullSecrets:
@@ -18,6 +18,7 @@ image:
 
 service:
   type: ClusterIP
+  # clusterIP: None
   annotations: {}
     ## AWS example for use with LoadBalancer service type.
     # external-dns.alpha.kubernetes.io/hostname: logstash.cluster.local
