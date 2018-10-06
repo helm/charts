@@ -29,6 +29,8 @@ annotations: {}
 
 awsRegion: us-east-1
 awsRole:
+awsAccessKeyId:
+awsSecretAccessKey:
 logGroupName: kubernetes
 
 rbac:
