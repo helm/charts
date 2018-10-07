@@ -55,6 +55,8 @@ spec:
          - bash
          - -ec
          - |
+            mkdir -p /opt/bitnami/rabbitmq/.rabbitmq/
+            mkdir -p /opt/bitnami/rabbitmq/etc/rabbitmq/
             #persist the erlang cookie in both places for server and cli tools
             echo $RABBITMQ_ERL_COOKIE > /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
             cp /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie /opt/bitnami/rabbitmq/.rabbitmq/
@@ -108,9 +110,9 @@ spec:
         env:
         {{- if .Values.image.debug}}
           - name: BASH_DEBUG
-            value: 1
+            value: "1"
           - name: NAMI_DEBUG
-            value: 1
+            value: "1"
         {{- end }}
           - name: MY_POD_IP
             valueFrom:
