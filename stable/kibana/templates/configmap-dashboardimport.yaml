@@ -21,9 +21,9 @@ data:
 
     /usr/local/bin/kibana-docker $@ &
 
-    echo "Waiting up to 60 seconds for Kibana to get in green overall state..."
+    echo "Waiting up to {{ .Values.dashboardImport.timeout }} seconds for Kibana to get in green overall state..."
 
-    for i in {1..60}; do
+    for i in {1..{{ .Values.dashboardImport.timeout }}}; do
       curl -s localhost:5601/api/status | python -c 'import sys, json; print json.load(sys.stdin)["status"]["overall"]["state"]' 2> /dev/null | grep green > /dev/null && break || sleep 1
     done
 

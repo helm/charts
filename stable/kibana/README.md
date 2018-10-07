@@ -70,6 +70,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `service.annotations`                         | Kubernetes service annotations             | None:                                  |
 | `service.labels`                              | Kubernetes service labels                  | None:                                  |
 | `tolerations`                                 | List of node taints to tolerate            | `[]`                                   |
+| `dashboardImport.timeout`                     | Time in seconds waiting for Kibana to be in green overall state | `60`                                   |
 | `dashboardImport.xpackauth.enabled`           | Enable Xpack auth                          | `false`                                |
 | `dashboardImport.xpackauth.username`          | Optional Xpack username                    | `myuser`                               |
 | `dashboardImport.xpackauth.password`          | Optional Xpack password                    | `mypass`                               |
