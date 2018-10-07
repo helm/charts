@@ -74,7 +74,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `dashboardImport.xpackauth.username`          | Optional Xpack username                    | `myuser`                               |
 | `dashboardImport.xpackauth.password`          | Optional Xpack password                    | `mypass`                               |
 | `dashboardImport.dashboards`                  | Dashboards                                 | `{}`                                   |
-| `plugins`                             | List of URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
+| `plugins`                                     | List of URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
 
 
 
