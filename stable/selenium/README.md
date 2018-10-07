@@ -64,6 +64,11 @@ The following table lists the configurable parameters of the Selenium chart and 
 | `hub.seOpts` | Command line arguments to pass to hub | `nil` |
 | `hub.timeZone` | The time zone for the container | `nil` |
 | `hub.nodeselector` | Node label to use for scheduling of the hub if set this takes precedence over the global value | `nil` |
+| `hub.ingress.enabled` | Configure an ingress for the selenium hub | `false` |
+| `hub.ingress.annotations` | Annotations for the ingress for the selenium hub | `nil` |
+| `hub.ingress.path` | The path for this ingress from which to route the traffic to the selenium hub | `/` |
+| `hub.ingress.hosts` | The list hosts for which this ingress should resolve the selenium hub | `[selenium-hub.local]` |
+| `hub.ingress.tls` | The tls secret to configure ssl for this ingress | `[]` |
 | `chrome.enabled` | Schedule a chrome node pod | `false` |
 | `chrome.image` | The selenium node chrome image | `selenium/node-chrome` |
 | `chrome.tag` | The selenium node chrome tag | `3.14.0` |
