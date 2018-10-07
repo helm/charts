@@ -90,6 +90,18 @@ hub:
   ## NodeSelector to be used for the hub
   nodeSelector:
   #  label: value
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - selenium-hub.local
+    tls: []
+    #  - secretName: selenium-hub-tls
+    #    hosts:
+    #      - selenium-hub.local
 
 
 chrome:
