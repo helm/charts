@@ -40,6 +40,10 @@ data:
         [entryPoints.http.proxyProtocol]
         {{ template "traefik.trustedips" . }}
       {{- end }}
+      {{- if .Values.forwardedHeaders.enabled }}
+        [entryPoints.http.forwardedHeaders]
+        {{ template "traefik.forwardedHeadersTrustedIPs" . }}
+      {{- end }}
         {{- if .Values.ssl.enforced }}
         [entryPoints.http.redirect]
           regex = "^http://(.*)"
@@ -55,6 +59,10 @@ data:
       {{- if .Values.proxyProtocol.enabled }}
         [entryPoints.https.proxyProtocol]
         {{ template "traefik.trustedips" . }}
+      {{- end }}
+      {{- if .Values.forwardedHeaders.enabled }}
+        [entryPoints.https.forwardedHeaders]
+        {{ template "traefik.forwardedHeadersTrustedIPs" . }}
       {{- end }}
       {{- if not .Values.ssl.upstream }}
         [entryPoints.https.tls]
