@@ -39,6 +39,18 @@ Create the block for the ProxyProtocol's Trusted IPs.
 {{- end -}}
 
 {{/*
+Create the block for the forwardedHeaders's Trusted IPs.
+*/}}
+{{- define "traefik.forwardedHeadersTrustedIPs" -}}
+         trustedIPs = [
+	   {{- range $idx, $ips := .Values.forwardedHeaders.trustedIPs }}
+	     {{- if $idx }}, {{ end }}
+	     {{- $ips | quote }}
+	   {{- end -}}
+         ]
+{{- end -}}
+
+{{/*
 Create the block for whiteListSourceRange.
 */}}
 {{- define "traefik.whiteListSourceRange" -}}

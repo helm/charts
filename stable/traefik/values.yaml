@@ -53,6 +53,11 @@ proxyProtocol:
   # trustedIPs is required when enabled
   trustedIPs: []
   # - 10.0.0.0/8
+forwardedHeaders:
+  enabled: false
+  # trustedIPs is required when enabled
+  trustedIPs: []
+  # - 10.0.0.0/8
 ssl:
   enabled: false
   enforced: false
