@@ -34,11 +34,11 @@ tolerations: []
 affinity: {}
 
 annotations:
-  # prometheus.io/scrape: "true"
-  # prometheus.io/path: "/metrics"
-  # prometheus.io/port: 9104
+  prometheus.io/scrape: "true"
+  prometheus.io/path: "/metrics"
+  prometheus.io/port: 9104
 
-# mysql connection
+# mysql connection params for datasource variable
 mysql:
   db: ""
   host: "localhost"

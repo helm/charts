@@ -67,7 +67,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install --name my-release \
-  --set mysql.user="username",mysq.password="password",mysql.host="localhost",mysql.port="3306"  \
+  --set mysql.user="username",mysql.password="password",mysql.host="localhost",mysql.port="3306"  \
     stable/prometheus-mysql-exporter
 ```
 
