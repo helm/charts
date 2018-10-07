@@ -12,6 +12,8 @@ $ helm install stable/mongodb
 
 This chart bootstraps a [MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -84,6 +86,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `persistence.accessMode`                | Use volume as ReadOnly or ReadWrite                                                          | `ReadWriteOnce`                                          |
 | `persistence.size`                      | Size of data volume                                                                          | `8Gi`                                                    |
 | `persistence.annotations`               | Persistent Volume annotations                                                                | `{}`                                                     |
+| `persistence.existingClaim`             | Name of an existing PVC to use (avoids creating one if this is given)                        | `nil`                                                    | 
 | `livenessProbe.initialDelaySeconds`     | Delay before liveness probe is initiated                                                     | `30`                                                     |
 | `livenessProbe.periodSeconds`           | How often to perform the probe                                                               | `10`                                                     |
 | `livenessProbe.timeoutSeconds`          | When the probe times out                                                                     | `5`                                                      |

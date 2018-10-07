@@ -1,5 +1,5 @@
 name: wordpress
-version: 3.0.1
+version: 3.0.3
 appVersion: 4.9.8
 description: Web publishing platform for building blogs and websites.
 icon: https://bitnami.com/assets/stacks/wordpress/img/wordpress-stack-220x234.png
@@ -15,6 +15,6 @@ home: http://www.wordpress.com/
 sources:
 - https://github.com/bitnami/bitnami-docker-wordpress
 maintainers:
-- name: bitnami-bot
+- name: Bitnami
   email: containers@bitnami.com
 engine: gotpl
