@@ -130,7 +130,7 @@ dashboardImport:
     username: myuser
     password: mypass
   dashboards: {}
-    # k8s: https://github.com/monotek/kibana-dashboards/blob/master/k8s-fluentd-elasticsearch.json
+    # k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json
 
 # List of pluginns to install using initContainer
 plugins:
