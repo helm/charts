@@ -18,7 +18,7 @@ To install the chart with the release name `my-release`, retrieve your SignalSci
 $ helm install --name my-release \
     --set signalsciences.accessKeyId=YOUR-ACCESS-KEY-ID \
     --set signalsciences.secretAccessKey=YOUR-SECRET-ACCESS-KEY \
-    incubator/signalsciences
+    stable/signalsciences
 ```
 
 After a few minutes, you should see the agent in your SignalSciences dashboard.
@@ -62,13 +62,13 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
     --set signalsciences.accessKeyId=YOUR-ACCESS-KEY-ID,signalsciences.secretAccessKey=YOUR-SECRET-ACCESS-KEY \
-    incubator/signalsciences
+    stable/signalsciences
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f my-values.yaml incubator/signalsciences
+$ helm install --name my-release -f my-values.yaml stable/signalsciences
 ```
 
 **Tip**: You can copy and customize the default [values.yaml](values.yaml)

@@ -18,7 +18,7 @@ Then run:
     helm upgrade {{ .Release.Name }} \
         --set signalsciences.accessKeyId=YOUR-ACCESSKEYID \
         --set signalsciences.secretAccessKey=YOUR-SECRETACCESSKEY \
-        incubator/signalsciences
+        stable/signalsciences
 {{- end }}
 
 
