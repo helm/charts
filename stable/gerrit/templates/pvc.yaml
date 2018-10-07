@@ -1,5 +1,8 @@
 {{ if .Values.persistence.enabled }}
 {{- $releaseName := .Release.Name -}}
+{{- $releaseService := .Release.Service -}}
+{{- $gerritName := "gerrit.name" -}}
+{{- $gerritChart := "gerrit.chart" -}}
 {{ range .Values.persistence.volumes }}
 {{ if not .configMap }}
 ---
@@ -7,6 +10,11 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ $releaseName }}-{{ .name }}
+  labels:
+    app.kubernetes.io/name: {{ $gerritName}}
+    helm.sh/chart: {{ $gerritChart }}
+    app.kubernetes.io/instance: {{ $releaseName }}
+    app.kubernetes.io/managed-by: {{ $releaseService }}
 spec:
   accessModes:
     - ReadWriteOnce

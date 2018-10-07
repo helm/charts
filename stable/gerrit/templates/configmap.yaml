@@ -2,6 +2,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: gerrit-config
+  labels:
+    app.kubernetes.io/name: {{ include "gerrit.name" . }}
+    helm.sh/chart: {{ include "gerrit.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
   gerrit.config: |-
 
