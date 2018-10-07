@@ -6,7 +6,7 @@ notReadyMinTime: 60000  # in ms
 ## Configuration for the deployment:
 image:
   repository: willwill/kube-slack
-  tag: v3.4.0
+  tag: v3.5.0
   pullPolicy: IfNotPresent
 
 resources: {}
