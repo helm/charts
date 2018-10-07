@@ -274,6 +274,7 @@ Parameter | Description | Default
 `serverFiles.alerts` | Prometheus server alerts configuration | `{}`
 `serverFiles.rules` | Prometheus server rules configuration | `{}`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
+`extraScrapeConfigs` | Prometheus server additional scrape configuration | ""
 `networkPolicy.enabled` | Enable NetworkPolicy | `false` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
