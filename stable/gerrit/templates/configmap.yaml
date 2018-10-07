@@ -13,25 +13,26 @@ data:
     [gerrit]
       basePath = git
     {{- $releaseName := .Release.Name }}
+    {{- $database := .Values.postgres.postgresDatabase }}
+    {{- $dbUser := .Values.postgres.postgresUser }}
+    {{- $dbPass := .Values.postgres.postgresPassword }}
     {{- with .Values.config }}
 
     [database]
       type = postgresql
       hostname = {{ $releaseName }}-postgres
-      database = {{ .database.database }}
-      username = {{ .database.username }}
-      password = {{ .database.password }}
+      database = {{ $database }}
+      username = {{ $dbUser }}
+      password = {{ $dbPass }}
 
     [index]
       type = {{ .index.type }}
 
     [auth]
-    {{- with .auth}}
-      {{if .type }}type = {{ .type }}{{end}}
-    {{end}}
+      type = {{ .auth.type }}
 
     [cache]
-      directory = {{ .cache.directory }}
+      directory = cache
     {{- end }}
 
   initialize-gerrit.sh: |-

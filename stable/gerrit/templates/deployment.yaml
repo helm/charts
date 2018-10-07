@@ -74,7 +74,7 @@ spec:
               mountPath: /var/gerrit/config
   {{- range $volumes }}
             - name: gerrit-{{ .name }}
-              mountPath: {{ .path }}
+              mountPath: /var/gerrit/{{ .name }}
   {{end}}
 {{end}}
           resources:
