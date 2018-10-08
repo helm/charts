@@ -62,6 +62,8 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /etc/coredns
+        - name: zone-volume
+          mountPath: /etc/coredns/zones
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
@@ -86,3 +88,7 @@ spec:
             - key: {{ .filename }}
               path: {{ .filename }}
             {{ end }}
+        - name: zone-volume
+          configMap:
+            name: {{ .Values.externalZonesConfigMap }}
+            optional: true

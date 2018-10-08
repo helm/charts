@@ -50,6 +50,8 @@ servers:
     parameters: 0.0.0.0:9153
   - name: proxy
     parameters: . /etc/resolv.conf
+  - name: auto
+    parameters: '{ directory /etc/coredns/zones db\.(.*) {1} 45 }'  # recheck every 45s
 
 # Complete example with all the options:
 # - zones:                 # the `zones` block can be left out entirely, defaults to "."
@@ -99,3 +101,7 @@ zoneFiles: []
 #      example.com.   IN NS  a.iana-servers.net.
 #      example.com.   IN A   192.168.99.102
 #      *.example.com. IN A   192.168.99.102
+
+# Use an external config map of RFC1035 style zone files
+# ie, kubectl create configmap nameserver-zones --from-file=/etc/bind/zones/
+externalZonesConfigMap: "nameserver-zones"
