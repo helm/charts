@@ -1,3 +1,4 @@
+{{- if .Values.rbac.create }}
 {{- if .Values.nodeExporter.podSecurityPolicy.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
@@ -16,4 +17,5 @@ rules:
   verbs:     ['use']
   resourceNames:
   - {{ template "prometheus.nodeExporter.fullname" . }}
+{{- end }}
 {{- end }}
