@@ -1,0 +1,31 @@
+{{- if .Values.ccm.service.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "ccm.name" . }}
+  labels:
+    app: {{ template "ccm.name" . }}
+    vsphere-ccm-infra: vsphere-ccm-service
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: cloud-controller
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  namespace: kube-system
+{{- if .Values.ccm.service.annotations }}
+  annotations:
+{{ toYaml .Values.ccm.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  ports:
+  - name: ccm-api
+    port: {{ .Values.ccm.service.endpointPort }}
+    protocol: TCP
+    targetPort: {{ .Values.ccm.service.targetPort }}
+  selector:
+    app: {{ template "ccm.name" . }}
+    component: cloud-controller
+    release: {{ .Release.Name }}
+    vsphere-ccm-infra: vsphere-ccm-daemonset
+  type: {{ .Values.ccm.service.type }}
+{{- template "loadBalancerSourceRanges" .Values.ccm }}
+{{- end -}}

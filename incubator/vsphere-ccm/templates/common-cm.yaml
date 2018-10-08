@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "ccm.fullname" . }}
+  labels:
+    app: {{ template "ccm.name" . }}
+    vsphere-ccm-infra: common-configmap
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  namespace: kube-system
+data:
+  api.binding: "{{ template "api.binding" . }}"

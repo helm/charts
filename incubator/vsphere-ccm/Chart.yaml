@@ -1,0 +1,17 @@
+apiVersion: v1
+appVersion: 0.1.0
+description: A vSphere Cloud Controller Manager (CCM) Helm chart for Kubernetes
+name: vsphere-ccm
+version: 0.1.0
+keywords:
+  - vsphere
+  - vmware
+  - cloud
+  - provider
+home: https://github.com/kubernetes/cloud-provider-vsphere
+icon: https://raw.githubusercontent.com/kubernetes/cloud-provider-vsphere/master/docs/vmware_logo.png
+sources:
+  - http://gcr.io/cloud-provider-vsphere/vsphere-cloud-controller-manager
+maintainers:
+  - name: dvonthenen
+    email: vonthenend@vmware.com

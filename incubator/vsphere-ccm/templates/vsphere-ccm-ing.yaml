@@ -1,0 +1,34 @@
+{{- if .Values.ccm.ingress.enabled -}}
+{{- $servicePort := .Values.ccm.service.endpointPort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "ccm.name" . }}
+  labels:
+    app: {{ template "ccm.name" . }}
+    vsphere-ccm-infra: vsphere-ccm-ingress
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: cloud-controller
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  namespace: kube-system
+  {{- if .Values.ccm.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ccm.ingress.annotations | indent 4 }}
+  {{- end }}
+spec:
+  rules:
+    {{- range $host := .Values.ccm.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ template "ccm.name" $ }}
+              servicePort: {{ $servicePort }}
+    {{- end -}}
+  {{- if .Values.ccm.ingress.tls }}
+  tls:
+{{ toYaml .Values.ccm.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}
