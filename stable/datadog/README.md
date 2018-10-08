@@ -68,7 +68,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `image.pullSecrets`         | Image pull secrets                 |  `nil`                                    |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
-| `datadog.name`              | Container name if Daemonset or Deployment | `datadog`                          |
+| `datadog.name`              | Container name if Deamonset        | `datadog`                                 |
 | `datadog.site`              | Site ('datadoghq.com' or 'datadoghq.eu') | `nil`                                |
 | `datadog.dd_url`            | Datadog intake server              | `nil`                                     |
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
@@ -83,8 +83,8 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.tags`              | Set host tags                      | `nil`                                     |
 | `datadog.nonLocalTraffic` | Enable statsd reporting from any external ip | `False`                           |
 | `datadog.useCriSocketVolume` | Enable mounting the container runtime socket in Agent containers | `True` |
-| `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
-| `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
+| `datadog.volumes`           | Additional volumes for the daemonset | `nil`                                   |
+| `datadog.volumeMounts`      | Additional volumeMounts for the daemonset | `nil`                              |
 | `datadog.podAnnotationsAsTags` | Kubernetes Annotations to Datadog Tags mapping | `nil`                      |
 | `datadog.podLabelsAsTags`   | Kubernetes Labels to Datadog Tags mapping      | `nil`                         |
 | `datadog.resources.requests.cpu` | CPU resource requests         | `200m`                                    |
@@ -103,9 +103,6 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.leaderElection`    | Enable the leader Election feature | `false`                                   |
 | `datadog.leaderLeaseDuration`| The duration for which a leader stays elected.| `nil`                         |
 | `datadog.collectEvents`     | Enable Kubernetes event collection. Requires leader election. | `false`        |
-| `deployment.affinity`       | Node / Pod affinities              | `{}`                                      |
-| `deployment.tolerations`    | List of node taints to tolerate    | `[]`                                      |
-| `deployment.priorityClassName` | Which Priority Class to associate with the deployment | `nil`               |
 | `kubeStateMetrics.enabled`  | If true, create kube-state-metrics | `true`                                    |
 | `kube-state-metrics.rbac.create`| If true, create & use RBAC resources for kube-state-metrics | `true`       |
 | `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
@@ -124,6 +121,18 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `clusterAgent.tolerations`               | List of node taints to tolerate    | `[]`                                      |
 | `clusterAgent.livenessProbe`             | Overrides the default liveness probe | http port 443 if external metrics enabled       |
 | `clusterAgent.readinessProbe`            | Overrides the default readiness probe | http port 443 if external metrics enabled      |
+| `statsd.enabled`                         | Enable collection of custom metrics via statsd
+| `statsd.image.repository`    | The image repository to pull from for statsd  | `datadog/dogstatsd`          |
+| `statsd.image.tag`           | The image tag to pull              | `6.5.2`                                 |
+| `statsd.image.pullPolicy`    | Image pull policy                  | `IfNotPresent`                          |
+| `statsd.image.pullSecrets`   | Image pull secrets                 |  `nil`                                  |
+| `statsd.volumes`             | Additional volumes for the statsd deployment| `[]`                           |
+| `statsd.volumeMounts`        | Additional volumeMounts for the statsd deployment | `[]`                     |
+| `statsd.env`                 | Additional Datadog environment variables | `[]`                              |
+| `statsd.tolerations`         | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]`          |
+| `statsd.affinity`            | Node affinities                    | `{}`                                    |
+| `statsd.service.type`        | DogStatsD Service type             | `ClusterIP`                             |
+| `statsd.service.annotations` | DogStatsD Service type             | `{}`                                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -146,12 +155,6 @@ helm install --name my-release -f my-values.yaml stable/datadog
 Datadog [offers two variants](https://hub.docker.com/r/datadog/agent/tags/), switch to a `-jmx` tag if you need to run JMX/java integrations. The chart also supports running [the standalone dogstatsd image](https://hub.docker.com/r/datadog/dogstatsd/tags/).
 
 Starting with version 1.0.0, this chart does not support deploying Agent 5.x anymore. If you cannot upgrade to Agent 6.x, you can use a previous version of the chart by calling helm install with `--version 0.18.0`.
-
-### DaemonSet and Deployment
-
-By default, the Datadog Agent runs in a DaemonSet. It can alternatively run inside a Deployment for special use cases.
-
-**Note:** simultaneous DaemonSet + Deployment installation within a single release will be deprecated in a future version, requiring two releases to achieve this.
 
 ### Secret
 

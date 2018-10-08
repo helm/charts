@@ -44,12 +44,6 @@ spec:
         resources:
 {{ toYaml .Values.datadog.resources | indent 12 }}
         ports:
-        - containerPort: 8125
-          {{- if .Values.daemonset.useHostPort }}
-          hostPort: 8125
-          {{- end }}
-          name: dogstatsdport
-          protocol: UDP
         {{- if .Values.datadog.apmEnabled }}
         - containerPort: 8126
           {{- if .Values.daemonset.useHostPort }}
@@ -75,10 +69,6 @@ spec:
           {{- if .Values.datadog.logLevel }}
           - name: DD_LOG_LEVEL
             value: {{ .Values.datadog.logLevel | quote }}
-          {{- end }}
-          {{- if .Values.datadog.nonLocalTraffic }}
-          - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
-            value: {{ .Values.datadog.nonLocalTraffic | quote }}
           {{- end }}
           {{- if .Values.datadog.tags }}
           - name: DD_TAGS

@@ -58,35 +58,33 @@ daemonset:
   ## Sets PriorityClassName if defined
   # priorityClassName:
 
-# Apart from DaemonSet, deploy Datadog agent pods and related service for
-# applications that want to send custom metrics. Provides DogStasD service.
-#
-# HINT: If you want to use datadog.collectEvents, keep deployment.replicas set to 1.
-deployment:
-  enabled: false
-  replicas: 1
-  # Affinity for pod assignment
-  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-  affinity: {}
-  # Tolerations for pod assignment
-  # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  tolerations: []
-  # If you're using a NodePort-type service and need a fixed port, set this parameter.
-  # dogstatsdNodePort: 8125
-  # traceNodePort: 8126
-
-  service:
-    type: ClusterIP
-    annotations: {}
-
-  ## Sets PriorityClassName if defined
-  # priorityClassName:
+service:
+  annotations: {}
+  # type: LoadBalancer
 
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
-
+##
 kubeStateMetrics:
   enabled: true
+
+# Enable the statsd deployment to be able to send statsd metrics to a Service
+# via UDP port 8125
+statsd:
+  enabled: false
+  image:
+    repository: datadog/dogstatsd
+    tag: 6.5.2
+
+  ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
+  volumeMounts: []
+  volumes: []
+  env: []
+  tolerations: []
+  affinity: {}
+  service:
+    type: ClusterIP
+    annotations: {}
 
 # This is the new cluster agent implementation that handles cluster-wide
 # metrics more cleanly, separates concerns for better rbac, and implements

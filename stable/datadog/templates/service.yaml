@@ -1,4 +1,4 @@
-{{ if .Values.deployment.enabled }}
+{{- if .Values.datadog.apmEnabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -8,28 +8,16 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-  {{- if .Values.deployment.service.annotations }}
+  {{- if .Values.service.annotations }}
   annotations:
-  {{ toYaml .Values.deployment.service.annotations | indent 4 }}
+  {{ toYaml .Values.service.annotations | indent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.deployment.service.type }}
+  type: {{ .Values.service.type }}
   selector:
     app: {{ template "datadog.fullname" . }}
-    type: deployment
   ports:
-  - port: 8125
-    name: dogstatsdport
-    protocol: UDP
-  {{- if .Values.deployment.dogstatsdNodePort }}
-    nodePort: {{ .Values.deployment.dogstatsdNodePort }}
-  {{- end }}
-  {{- if .Values.datadog.apmEnabled }}
   - port: 8126
     name: traceport
     protocol: TCP
-  {{- if .Values.deployment.traceNodePort }}
-    nodePort: {{ .Values.deployment.traceNodePort }}
-  {{- end }}
-  {{- end }}
 {{ end }}

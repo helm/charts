@@ -1,0 +1,24 @@
+{{- if .Values.statsd.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "datadog.statsd.fullname" . }}
+  labels:
+    app: "{{ template "datadog.statsd.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  {{- if .Values.statsd.service.annotations }}
+  annotations:
+  {{ toYaml .Values.statsd.service.annotations | indent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.statsd.service.type }}
+  selector:
+    app: {{ template "datadog.statsd.fullname" . }}
+    type: deployment
+  ports:
+  - port: 8125
+    name: dogstatsdport
+    protocol: UDP
+{{ end }}

@@ -1,0 +1,73 @@
+{{- if .Values.statsd.enabled }}
+{{- if (or (.Values.datadog.apiKeyExistingSecret) (.Values.datadog.apiKey)) }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "datadog.statsd.fullname" . }}
+  labels:
+    app: "{{ template "datadog.statsd.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "datadog.statsd.fullname" . }}
+        type: deployment
+      name: {{ template "datadog.statsd.fullname" . }}
+      annotations:
+        checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
+        checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
+        checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
+    spec:
+      {{- if .Values.statsd.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.statsd.image.pullSecrets | indent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.statsd.image.repository }}:{{ .Values.statsd.image.tag }}"
+        imagePullPolicy: {{ .Values.statsd.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.statsd.resources | indent 12 }}
+        ports:
+        - containerPort: 8125
+          name: dogstatsdport
+          protocol: UDP
+        env:
+          - name: DD_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "datadog.apiSecretName" . }}
+                key: api-key
+          {{- if .Values.datadog.logLevel }}
+          - name: DD_LOG_LEVEL
+            value: {{ .Values.datadog.logLevel | quote }}
+          {{- end }}
+          - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC
+            value: "true"
+          - name: DD_ENABLE_METADATA_COLLECTION
+            value: "false"
+{{- if .Values.statsd.env }}
+{{ toYaml .Values.statsd.env | indent 10 }}
+{{- end }}
+        volumeMounts:
+{{- if .Values.statsd.volumeMounts }}
+{{ toYaml .Values.statsd.volumeMounts | indent 10 }}
+{{- end }}
+      volumes:
+{{- if .Values.statsd.volumes }}
+{{ toYaml .Values.datadog.volumes | indent 8 }}
+{{- end }}
+      {{- if .Values.statsd.tolerations }}
+      tolerations:
+{{ toYaml .Values.statsd.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.statsd.affinity }}
+      affinity:
+{{ toYaml .Values.statsd.affinity | indent 8 }}
+      {{- end }}
+{{ end }}
+{{ end }}

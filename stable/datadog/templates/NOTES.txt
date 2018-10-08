@@ -61,23 +61,6 @@ This token is used to secure the communication between the Agents and the Cluste
 The datadog agent is listening on port 8126.
 {{- end }}
 
-{{- if (and (.Values.daemonset.enabled) (.Values.deployment.enabled)) }}
-
-#################################################################
-####               WARNING: Deprecation notice               ####
-#################################################################
-
-Simultaneous DaemonSet + Deployment installation within a single
-release will be deprecated in a future version. You will still be
-able to run both as separate releases with separate value files.
-
-Running as a Deployment is not necessary for event collection
-anymore, thanks to the leader election feature.
-
-We encourage you to migrate to a single DaemonSet, or split your
-chart if your use case still requires a separate Deployment.
-{{- end }}
-
 {{- if .Values.datadog.autoconf }}
 
 #################################################################
