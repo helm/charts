@@ -135,6 +135,8 @@ spec:
               mountPath: /data/configdb
             - name: datadir
               mountPath: /data/db
+          resources:
+{{ toYaml .Values.init.resources | indent 12 }}        
       containers:
         - name: {{ template "mongodb-replicaset.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
