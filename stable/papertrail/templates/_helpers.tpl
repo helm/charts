@@ -59,3 +59,20 @@ Return secret name to be used based on provided values.
 {{- $fullName := printf "%s-syslog" (include "papertrail.fullname" .) -}}
 {{- default $fullName .Values.papertrail.logspout.syslogSecretName | quote -}}
 {{- end -}}
+
+{{/*
+Returns the syslog tags
+*/}}
+{{- define "papertrail.logspout.syslogtag" -}}
+{{- $tag := printf "{{ index .Container.Config.Labels \"io.kubernetes.pod.namespace\" }}[{{ index .Container.Config.Labels \"io.kubernetes.pod.name\" }}]}}" -}}
+{{- default $tag "" | quote -}}
+{{- end -}}
+
+{{/*
+Returns the syslog hostname
+*/}}
+{{- define "papertrail.logspout.sysloghostname" -}}
+{{- $hostname := printf "{{ index .Container.Config.Labels \"io.kubernetes.container.name\" }}" -}}
+{{- default $hostname "" | quote -}}
+{{- end -}}
+

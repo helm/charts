@@ -39,13 +39,13 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           env:
             - name: SYSLOG_TAG
-              value: "{{ printf "e3sgaW5kZXggLkNvbnRhaW5lci5Db25maWcuTGFiZWxzICJpby5rdWJlcm5ldGVzLnBvZC5uYW1lc3BhY2UiIH19W3t7IGluZGV4IC5Db250YWluZXIuQ29uZmlnLkxhYmVscyAiaW8ua3ViZXJuZXRlcy5wb2QubmFtZSIgfX1d" | b64dec }}"
+              value: {{ template "papertrail.logspout.syslogtag" }}
             - name: SYSLOG_HOSTNAME
-              value: "{{ printf "e3sgaW5kZXggLkNvbnRhaW5lci5Db25maWcuTGFiZWxzICJpby5rdWJlcm5ldGVzLmNvbnRhaW5lci5uYW1lIiB9fQ==" | b64dec }}"
+              value: {{ template "papertrail.logspout.sysloghostname" }}
             - name: ROUTE_URIS
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "papertrail.logspout.secretName" . }}"
+                  name: {{ template "papertrail.logspout.secretName" . }}
                   key: papertrail-destination
           volumeMounts:
             - name: log
