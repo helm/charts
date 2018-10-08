@@ -18,6 +18,7 @@ spec:
       serviceAccountName: {{ template "falco.serviceAccountName" .}}
       {{- if (and .Values.ebpf.enabled .Values.ebpf.settings.hostNetwork) }}
       hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
