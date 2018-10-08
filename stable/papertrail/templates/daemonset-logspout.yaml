@@ -49,9 +49,9 @@ spec:
                   key: papertrail-destination
           volumeMounts:
             - name: log
-              mountPath: {{ .Values.papertrail.logspout.dockerSock }}
+              mountPath: {{ .Values.papertrail.logspout.dockerSockPath }}
       volumes:
         - name: log
           hostPath:
-              path: {{ .Values.papertrail.logspout.dockerSock }}
+            path: {{ .Values.papertrail.logspout.dockerSockPath }}
 {{- end }}

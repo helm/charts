@@ -42,7 +42,7 @@ Return the papertrail host
 Return the papertrail port
 */}}
 {{- define "papertrail.port" -}}
-{{- default "MISSING" .Values.papertrail.host }}
+{{- default "MISSING" .Values.papertrail.port }}
 {{- end -}}
 
 {{/*
