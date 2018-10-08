@@ -37,27 +37,28 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the cerebro chart and their default values.
 
-|             Parameter               |            Description             |                    Default                |
-|-------------------------------------|------------------------------------|-------------------------------------------|
-| `replicaCount`                      | Number of replicas                 | `1`                                       |
-| `image.repository`                  | The image to run                   | `lmenezes/cerebro`                        |
-| `image.tag`                         | The image tag to pull              | `0.8.1`                                   |
-| `image.pullPolicy`                  | Image pull policy                  | `IfNotPresent`                            |
-| `service.type`                      | Type of Service                    | `ClusterIP`                               |
-| `service.port`                      | Port for kubernetes service        | `80`                                      |
-| `service.annotations`               | Annotations to add to the service  | `{}`                                      |
-| `service.labels`                    | Labels to add to the service       | `{}`                                      |
-| `resources.requests.cpu`            | CPU resource requests              |                                           |
-| `resources.limits.cpu`              | CPU resource limits                |                                           |
-| `resources.requests.memory`         | Memory resource requests           |                                           |
-| `resources.limits.memory`           | Memory resource limits             |                                           |
-| `ingress`                           | Settings for ingress               | `{}`                                      |
-| `nodeSelector`                      | Settings for nodeselector          | `{}`                                      |
-| `tolerations`                       | Settings for toleration            | `{}`                                      |
-| `affinity`                          | Settings for affinity              | `{}`                                      |
-| `config.basePath`                   | Application base path              | `/`                                       |
-| `config.restHistorySize`            | Rest request history size per user | `50`                                      |
-| `config.hosts`                      | A list of known hosts              | `[]`                                      |
+|             Parameter               |            Description              |                    Default                |
+|-------------------------------------|-------------------------------------|-------------------------------------------|
+| `replicaCount`                      | Number of replicas                  | `1`                                       |
+| `image.repository`                  | The image to run                    | `lmenezes/cerebro`                        |
+| `image.tag`                         | The image tag to pull               | `0.8.1`                                   |
+| `image.pullPolicy`                  | Image pull policy                   | `IfNotPresent`                            |
+| `service.type`                      | Type of Service                     | `ClusterIP`                               |
+| `service.port`                      | Port for kubernetes service         | `80`                                      |
+| `service.annotations`               | Annotations to add to the service   | `{}`                                      |
+| `service.labels`                    | Labels to add to the service        | `{}`                                      |
+| `resources.requests.cpu`            | CPU resource requests               |                                           |
+| `resources.limits.cpu`              | CPU resource limits                 |                                           |
+| `resources.requests.memory`         | Memory resource requests            |                                           |
+| `resources.limits.memory`           | Memory resource limits              |                                           |
+| `ingress`                           | Settings for ingress                | `{}`                                      |
+| `nodeSelector`                      | Settings for nodeselector           | `{}`                                      |
+| `tolerations`                       | Settings for toleration             | `{}`                                      |
+| `affinity`                          | Settings for affinity               | `{}`                                      |
+| `config.basePath`                   | Application base path               | `/`                                       |
+| `config.restHistorySize`            | Rest request history size per user  | `50`                                      |
+| `config.hosts`                      | A list of known hosts               | `[]`                                      |
+| `config.secret`                     | Secret used to sign session cookies | `(random alphanumeric 64 length string)`  |
 
 
 
