@@ -44,7 +44,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.appKey`            | Datadog APP key required to use metricsProvider |  `Nil` You must provide your own key      |
 | `datadog.appKeyExistingSecret` | If set, use the secret with a provided name instead of creating a new one |`nil` |
 | `image.repository`          | The image repository to pull from  | `datadog/agent`                           |
-| `image.tag`                 | The image tag to pull              | `6.4.2`                                   |
+| `image.tag`                 | The image tag to pull              | `6.5.2`                                   |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
 | `image.pullSecrets`         | Image pull secrets                 |  `nil`                                    |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
@@ -81,7 +81,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `clusterAgent.enabled`                   | Use the cluster-agent for cluster metrics (Kubernetes 1.10+ only) | `false`                           |
 | `clusterAgent.token`                     | A cluster-internal secret for agent-to-agent communication. Must be 32+ characters a-zA-Z | `Nil` You must provide your own token|
 | `clusterAgent.image.repository`          | The image repository for the cluster-agent | `datadog/cluster-agent`                           |
-| `clusterAgent.image.tag`                 | The image tag to pull              | `0.9.1`                                   |
+| `clusterAgent.image.tag`                 | The image tag to pull              | `0.10.0`                                   |
 | `clusterAgent.image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
 | `clusterAgent.image.pullSecrets`         | Image pull secrets                 |  `nil`                                    |
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling |  `false`                  |
@@ -127,7 +127,7 @@ However, you can use manually created secret by setting the `datadog.apiKeyExist
 
 The Datadog [entrypoint
 ](https://github.com/DataDog/datadog-agent/blob/master/Dockerfiles/agent/entrypoint/89-copy-customfiles.sh)
-will copy files with a `.yaml` extension found in `/conf.d` and files with `.py` extension in 
+will copy files with a `.yaml` extension found in `/conf.d` and files with `.py` extension in
 `/check.d` to `/etc/datadog-agent/conf.d` and `/etc/datadog-agent/checks.d` respectively. The keys for
 `datadog.confd` and `datadog.checksd` should mirror the content found in their
 respective ConfigMaps, ie
