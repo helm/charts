@@ -10,3 +10,4 @@ keywords:
 - logs
 sources:
 - https://github.com/solarwinds/fluent-plugin-papertrail
+- https://github.com/gliderlabs/logspout

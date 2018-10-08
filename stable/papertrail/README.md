@@ -51,10 +51,10 @@ The following table lists the configurable parameters of the SignalSciences char
 | `logspoutImage.repository`                     | The image repository to pull from when running the logspout DaemonSet                | `gliderlabs/logspout`                   |
 | `logspoutImage.tag`                            | The image tag to pull when running the logspout DaemonSet                            | `master`                                |
 | `logspoutImage.pullPolicy`                     | Image pull policy when running the logspout DeemonSet                                | `IfNotPresent`                          |
-| `resources.requests.cpu`                       | CPU resource requests                                                                | `200m`                                  |
-| `resources.limits.cpu`                         | CPU resource limits                                                                  | `200m`                                  |
-| `resources.requests.memory`                    | Memory resource requests                                                             | `256Mi`                                 |
-| `resources.limits.memory`                      | Memory resource limits                                                               | `256Mi`                                 |
+| `resources.requests.cpu`                       | CPU resource requests                                                                | `50m`                                  |
+| `resources.limits.cpu`                         | CPU resource limits                                                                  | `100m`                                  |
+| `resources.requests.memory`                    | Memory resource requests                                                             | `400Mi`                                 |
+| `resources.limits.memory`                      | Memory resource limits                                                               | `400Mi`                                 |
 | `daeamonset.type`                              | Type of DaemonSet to deploy (can be `logspout` or `fluentd`)                         | `logspout`                              |
 | `daemonset.podAnnotations`                     | Annotations to add to the DaemonSet's Pods                                           | `nil`                                   |
 | `daemonset.tolerations`                        | List of node taints to tolerate (requires Kubernetes >= 1.6)                         | `nil`                                   |
