@@ -8,6 +8,9 @@ image:
   tag: v0.5.0
   pullPolicy: IfNotPresent
 
+nameOverride: ""
+fullnameOverride: ""
+
 rbac:
   create: true
 
@@ -32,3 +35,5 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+affinity: {}

@@ -1,15 +1,26 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  labels: {{ include "node-problem-detector.labels" . | indent 4 }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-  name: {{ template "node-problem-detector.fullname" . }}
+  name: {{ include "node-problem-detector.fullname" . }}
+  labels:
+    app: {{ template "node-problem-detector.name" . }}
+    chart: {{ template "node-problem-detector.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
+    helm.sh/chart: {{ include "node-problem-detector.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
-    matchLabels: {{ include "node-problem-detector.labels" . | indent 8 }}
+    matchLabels:
+      app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
-      labels: {{ include "node-problem-detector.labels" . | indent 8 }}
+      labels:
+        app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
 {{- if .Values.annotations }}
@@ -18,7 +29,7 @@ spec:
     spec:
       serviceAccountName: {{ template "node-problem-detector.serviceAccountName" . }}
       containers:
-      - name: npd
+      - name: {{ .Chart.Name }}
         image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         command:
@@ -53,3 +64,5 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}
 {{- end }}
+      affinity:
+{{ toYaml . | indent 8 }}
