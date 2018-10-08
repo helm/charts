@@ -9,11 +9,13 @@ rules:
   - apiGroups:
       - ""
       - extensions
+      - networking.istio.io
     resources:
       - ingresses
       - services
       - pods
       - nodes
+      - gateways
     verbs:
       - get
       - list
