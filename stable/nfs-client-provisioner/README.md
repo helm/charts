@@ -63,3 +63,8 @@ The following tables lists the configurable parameters of this chart and their d
 | `podSecurityPolicy.enabled`	    | Create & use Pod Security Policy resources  | `false`						      |
 | `serviceAccount.create`	    | Should we create a ServiceAccount	          | `true`						      |
 | `serviceAccount.name`		    | Name of the ServiceAccount to use           | null						      |
+| `persistentVolume.create`         | Should we create a PersistentVolume (need it for mountOptions) | `false`                                |
+| `persistentVolume.capacity`       | PersistentVolume capacity                   | `10Gi`                                                    |
+| `persistentVolume.name`           | PersistentVolume name                       | `nfs-client`                                              |
+| `persistentVolume.reclaimPolicy`  | PersistentVolume Reclaim Policy             | `Delete`                                                  |
+| `persistentVolume.mountOptions`   | Mount options (e.g. 'nfsvers=3')            | null                                                      |
