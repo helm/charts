@@ -297,9 +297,6 @@ In this example, we specify two data node types: _hot_ and _warm_. Each type wil
 a specific node type (marked in nodeSelector), which will be tainted in order to avoid
 other pods being allocated in such nodes.
 
-When the `data` attribute is not declared, we will create only the data nodes declared
-in the `dataTypes` list. This is the recommended way to deploy this chart from scratch.
-
-However, if we already have deployed a version with `data` declared, we could simplify
-the migration by first adding `dataTypes`, and later removing the `data` attribute in
-another deploy.
+For backward compatibility purposes, if we want to use only `dataTypes` node types,
+we need to set `data.replicas` to 0: this way a stateful set will be created
+for `data` (with 0 replicas) and another for `dataTypes` (with specified amount of replicas).
