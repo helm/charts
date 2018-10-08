@@ -10,7 +10,6 @@ metadata:
   annotations:
     # see https://github.com/kubernetes/kubernetes/issues/39363 , to have dns entries available immediately
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "{{ .Values.tolerateUnreadyEndpoints }}"
-
 spec:
   type: {{ .Values.service.type }}
   {{- if .Values.service.clusterIP }}
