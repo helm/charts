@@ -83,6 +83,7 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 | `nodeSelector`             | Node labels for pod assignment                  | {}                                                         |
 | `affinity`                 | Affinity settings for pod assignment            | {}                                                         |
 | `tolerations`              | Toleration labels for pod assignment            | []                                                         |
+| `terminationGracePeriodSeconds`     | Optional duration in seconds the pod needs to terminate gracefully | `nil`                          |
 | `probes.liveness.initialDelay`      | Liveness probe initial delay           | `60`                                                       |
 | `probes.liveness.timeoutSeconds`    | Liveness probe timeout seconds         | `5`                                                        |
 | `probes.liveness.failureThreshold`  | Liveness probe failure threshold       | `6`                                                        |

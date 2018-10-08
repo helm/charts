@@ -43,6 +43,11 @@ usePasswordFile: false
 ##
 # schedulerName:
 
+## Optional duration in seconds the pod needs to terminate gracefully.
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
+##
+# terminationGracePeriodSeconds: 30
+
 ## Specify runtime config parameters as a dict, using camelCase, e.g.
 ## {"sharedBuffers": "500MB"}
 ## ref: https://www.postgresql.org/docs/current/static/runtime-config.html
