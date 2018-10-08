@@ -1,5 +1,5 @@
 {{- $authPwd := default (randAlphaNum 10) .Values.auth.password -}}
-{{- $clusterAuthPwd := default (randAlphaNum 10) .Values.clusterAuth.password -}}
+{{- $clusterAuthPwd := default (include "nats.randomPassword" .) .Values.clusterAuth.password -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

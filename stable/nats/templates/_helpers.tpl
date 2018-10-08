@@ -29,6 +29,14 @@ Return the proper image name
 {{- end -}}
 
 {{/*
+Create a random alphanumeric password string.
+We prepend a random letter to the string to avoid password validation errors
+*/}}
+{{- define "nats.randomPassword" -}}
+{{- randAlpha 1 -}}{{- randAlphaNum 9 -}}
+{{- end -}}
+
+{{/*
 Return the appropriate apiVersion for networkpolicy.
 */}}
 {{- define "networkPolicy.apiVersion" -}}
