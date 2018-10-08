@@ -123,7 +123,7 @@ filter:
   mergeJSONLog: true
 
 # When mergeJSONLog is enabled and mergeJSONLogKey is set (a string name), all the new structured fields
-# taken from the original log content are inserted under the new key.   
+# taken from the original log content are inserted under the new key.
   mergeJSONLogKey: log_fields
 
 # If true, enable the use of monitoring for a pod annotation of
