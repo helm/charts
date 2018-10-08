@@ -95,6 +95,7 @@ Parameter | Description | Default
 `agent.tlsFiles.key` | Base64 encoded strings for the agent's private key | `null`
 `agent.tolerations` | Tolerations to be applied to agent pods | `[]`
 `agent.updateStrategy` | Strategy for agent DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
+`agent.whitelistRouteRegexp` | Agent proxies routes matching this regular expression only | `^$` (all routes are proxied)
 `server.enabled` | If true, create server | `true`
 `server.name` | Server container name | `server`
 `server.gatewayTimeoutCreation` | Server's timeout when creating the kiam gateway | `50ms`
