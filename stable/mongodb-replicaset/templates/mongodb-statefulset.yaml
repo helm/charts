@@ -126,6 +126,10 @@ spec:
                   key: password
           {{- end }}
           {{- end }}
+          {{- if .Values.existingPrimary }}
+            - name: PRIMARY_NODE
+              value: {{ .Values.existingPrimary }}
+          {{- end }}
           volumeMounts:
             - name: workdir
               mountPath: /work-dir

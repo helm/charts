@@ -3,6 +3,9 @@ port: 27017
 
 replicaSetName: rs0
 
+## If `existingPrimary` contains value, mongodb will start as replica mode and join this existing primary node
+# existingPrimary: primary_host_name
+
 podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 2

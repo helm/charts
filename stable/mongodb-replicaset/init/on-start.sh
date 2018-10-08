@@ -71,6 +71,11 @@ while read -ra line; do
     peers=("${peers[@]}" "$line")
 done
 
+# Append external replica set primary
+if [[ -v PRIMARY_NODE ]]; then
+    peers+=("$PRIMARY_NODE")
+fi
+
 # Generate the ca cert
 ca_crt=/data/configdb/tls.crt
 if [ -f "$ca_crt"  ]; then
