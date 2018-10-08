@@ -1,25 +1,23 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ include "common.fullname" . }}
+  name: {{ include "chartmuseum.fullname" . }}
   annotations:
 {{ toYaml .Values.deployment.annotations | indent 4 }}
   labels:
-{{ include "common.labels.standard" . | indent 4 }}
+{{ include "chartmuseum.labels.standard" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 0
+{{ toYaml .Values.strategy | indent 4 }}
   revisionHistoryLimit: 10
   template:
     metadata:
-      name: {{ include "common.fullname" . }}
+      name: {{ include "chartmuseum.fullname" . }}
       annotations:
 {{ toYaml .Values.replica.annotations | indent 8 }}
       labels:
-        app: {{ template "common.name" . }}
+        app: {{ template "chartmuseum.name" . }}
         release: {{ .Release.Name | quote }}
     spec:
       containers:
@@ -33,7 +31,7 @@ spec:
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
-{{- $secret_name := include "common.fullname" . }}
+{{- $secret_name := include "chartmuseum.fullname" . }}
 {{- range $name, $value := .Values.env.secret }}
 {{- if not ( empty $value) }}
         - name: {{ $name | quote }}
@@ -44,36 +42,50 @@ spec:
 {{- end }}
 {{- end }}
         args:
-        - --port={{ .Values.service.internalPort }}
+        - --port=8080
 {{- if eq .Values.env.open.STORAGE "local" }}
         - --storage-local-rootdir=/storage
 {{- end }}
         ports:
-        - containerPort: {{ .Values.service.internalPort }}
+        - name: http
+          containerPort: 8080
         livenessProbe:
           httpGet:
-            path: /health
-            port: {{ .Values.service.internalPort }}
-          initialDelaySeconds: 5
-          periodSeconds: 10
+            path: {{ .Values.env.open.CONTEXT_PATH }}/health
+            port: http
+{{ toYaml .Values.probes.liveness | indent 10 }}
         readinessProbe:
           httpGet:
-            path: /health
-            port: {{ .Values.service.internalPort }}
-          initialDelaySeconds: 5
-          periodSeconds: 10
+            path: {{ .Values.env.open.CONTEXT_PATH }}/health
+            port: http
+{{ toYaml .Values.probes.readiness | indent 10 }}
 {{- if eq .Values.env.open.STORAGE "local" }}
         volumeMounts:
         - mountPath: /storage
           name: storage-volume
 {{- end }}
+      {{- with .Values.resources }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml . | indent 10 }}
+      {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
       volumes:
       - name: storage-volume
-      {{- if .Values.persistence.Enabled }}
+      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.ExistingClaim | default (include "common.fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "chartmuseum.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

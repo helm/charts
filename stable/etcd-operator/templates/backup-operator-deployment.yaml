@@ -1,6 +1,6 @@
 {{- if .Values.deployments.backupOperator }}
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "etcd-backup-operator.fullname" . }}
@@ -10,6 +10,10 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "etcd-backup-operator.fullname" . }}
+      release: {{ .Release.Name }}
   replicas: {{ .Values.backupOperator.replicaCount }}
   template:
     metadata:
@@ -18,13 +22,13 @@ spec:
         app: {{ template "etcd-backup-operator.fullname" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "etcd-backup-operator.fullname" . }}{{ else }}{{ .Values.rbac.backupOperatorServiceAccountName }}{{ end }}
+      serviceAccountName: {{ template "etcd-backup-operator.serviceAccountName" . }}
       containers:
       - name: {{ .Values.backupOperator.name }}
         image: "{{ .Values.backupOperator.image.repository }}:{{ .Values.backupOperator.image.tag }}"
         imagePullPolicy: {{ .Values.backupOperator.image.pullPolicy }}
         command:
-         - etcd-backup-operator
+        - etcd-backup-operator
 {{- range $key, $value := .Values.backupOperator.commandArgs }}
         - "--{{ $key }}={{ $value }}"
 {{- end }}
@@ -48,4 +52,8 @@ spec:
       nodeSelector:
 {{ toYaml .Values.backupOperator.nodeSelector | indent 8 }}
     {{- end }}
-{{- end}}
+    {{- if .Values.backupOperator.tolerations }}
+      tolerations:
+{{ toYaml .Values.backupOperator.tolerations | indent 8 }}
+    {{- end }}
+{{- end }}

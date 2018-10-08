@@ -1,5 +1,6 @@
 name: postgresql
-version: 0.8.12
+version: 0.18.2
+appVersion: 9.6.2
 description: Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
 keywords:
 - postgresql
@@ -11,7 +12,5 @@ icon: https://www.postgresql.org/media/img/about/press/elephant.png
 sources:
 - https://github.com/kubernetes/charts
 - https://github.com/docker-library/postgres
-maintainers:
-- name: swordbeta
-- name: databus23
+maintainers: []
 engine: gotpl

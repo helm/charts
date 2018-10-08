@@ -28,6 +28,7 @@ spec:
     - port: {{ .Values.service.servicePort }}
       protocol: TCP
       targetPort: 8085
+      name: {{ .Values.service.portName }}
   selector:
     app: {{ template "cluster-autoscaler.name" . }}
     release: {{ .Release.Name }}

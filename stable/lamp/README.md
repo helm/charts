@@ -19,7 +19,7 @@ By default the chart is exposed to the public via LoadBalancer IP but exposing t
 
 Setting up your website is easy, you can either use [git](#git-container) or [svn](#svn-container) to copy your repo into the pod or use [sftp](#sftp-container) or [webdav](#webdav-container) and simply transfer your files into the container. If you have a different method of setting up your website, you can [manually prepare](#manually-preparing-the-webroot-and-database) it inside of an init container before the services start.
 
-Once you've set up your website, you'd like to have seperate development environments for testing? Don't worry, with one additional setting you can [clone an existing release](#cloning-charts) without downtime using the [xtrabackup](https://www.percona.com/software/mysql-database/percona-xtrabackup) [init container](https://hub.docker.com/r/lead4good/xtrabackup/).
+Once you've set up your website, you'd like to have separate development environments for testing? Don't worry, with one additional setting you can [clone an existing release](#cloning-charts) without downtime using the [xtrabackup](https://www.percona.com/software/mysql-database/percona-xtrabackup) [init container](https://hub.docker.com/r/lead4good/xtrabackup/).
 
 Official containers are used wherever possible ( namingly [php](https://hub.docker.com/_/php/), [apache](https://hub.docker.com/_/httpd/), [mysql](https://hub.docker.com/_/mysql/), [mariadb](https://hub.docker.com/_/mariadb/) and [percona](https://hub.docker.com/_/percona/) ) while the use of well established containers was anticipated otherwise ( [phpmyadmin/phpmyadmin](https://hub.docker.com/r/phpmyadmin/phpmyadmin/), [atmoz/sftp](https://hub.docker.com/r/atmoz/sftp/),
 [openweb/git-sync](https://hub.docker.com/r/openweb/git-sync/) ) . To provide some of its unique features such as chart cloning and wordpress support some containers had to be newly created. All of those are hosted as automated builds on docker hub - with their respective sources on GitHub ([lead4good/init-wp](https://hub.docker.com/r/lead4good/init-wp/), [lead4good/svn-sync](https://hub.docker.com/r/lead4good/svn-sync/), [lead4good/webdav](https://hub.docker.com/r/lead4good/webdav/), [lead4good/xtrabackup](https://hub.docker.com/r/lead4good/xtrabackup/)).
@@ -115,7 +115,7 @@ After setting up your DB backup you can stop the database by executing
 $ mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD shutdown
 ```
 
-Now copy all necessary files into the web directory, but do not forget to recursivly chown the webroot to the `www-data` user ( id 33 ) by executing
+Now copy all necessary files into the web directory, but do not forget to recursively chown the webroot to the `www-data` user ( id 33 ) by executing
 
 ```console
 $ chown -R 33:33 /var/www/html
@@ -155,13 +155,13 @@ FPM is enabled by default, this creates an additional HTTPD container which rout
 
 | Parameter | Description | Default |
 | - | - | - |
-| `php.version` | default php repository version, you can specify a differnt version like 5 or 7.0 | 7 |
+| `php.version` | default php repository version, you can specify a different version like 5 or 7.0 | 7 |
 | `php.repository` | If not empty, repository is chosen over default php repo | _empty_ |
 | `php.tag` | Repository tag | _empty_ |
 | `php.pullPolicy` | Image pull policy | Always |
 | `php.fpmEnabled` | Enables docker FPM repository, be sure to disable if working with a custom repository based on the apache tag | true |
 | `php.sockets` | If FPM is enabled, enables communication between HTTPD and PHP via sockets instead of TCP | true |
-| `php.oldHTTPRoot` | Additionaly mounts the webroot at `php.oldHTTPRoot` to compansate for absolute path file links  | _empty_ |
+| `php.oldHTTPRoot` | Additionally mounts the webroot at `php.oldHTTPRoot` to compensate for absolute path file links  | _empty_ |
 | `php.ini` | additional PHP config values, see examples on how to use | _empty_ |
 | `php.copyRoot` | if true, copies the containers web root `/var/www/html` into persistent storage. This must be enabled, if the container already comes with files installed to `/var/www/html`  | false |
 | `php.persistentSubpaths` | instead of enabling persistence for the whole webroot, only subpaths of webroot can be enabled for persistence. Have a look at the [nextcloud example](examples/nextcloud.yaml) to see how it works | _empty_ |
@@ -170,7 +170,7 @@ FPM is enabled by default, this creates an additional HTTPD container which rout
 
 ### MySQL Container
 
-The MySQL container is disabled by default, any container with the base image of the offical [mysql](https://hub.docker.com/_/mysql/), [mariadb](https://hub.docker.com/_/mariadb/) or [percona](https://hub.docker.com/_/percona/) should work.
+The MySQL container is disabled by default, any container with the base image of the official [mysql](https://hub.docker.com/_/mysql/), [mariadb](https://hub.docker.com/_/mariadb/) or [percona](https://hub.docker.com/_/percona/) should work.
 
 | Parameter | Description | Default |
 | - | - | - |
@@ -278,8 +278,8 @@ If `persistence` is enabled, PVC's will be used to store the web root and the db
 ### Network
 
 To be able to connect to the services provided by the LAMP chart, a Kubernetes cluster with working LoadBalancer or Ingress Controller support is necessary.
-By default the chart will create a LoadBalancer Service, all services will be available via LoadBalancer IP through differnt ports. You can set `service.type` to ClusterIP if you do not want your chart to be exposed at all.
-If `ingress.enabled` is set to true, the LAMP charts services are made accessible via ingress rules. Those services which are not provided by HTTP protocol via `nodePorts`. In ingress mode the LAMP chart also supports ssl wiht certificates signed by lets encrypt. This requires a working [lego](https://github.com/jetstack/kube-lego) container running on the cluster.
+By default the chart will create a LoadBalancer Service, all services will be available via LoadBalancer IP through different ports. You can set `service.type` to ClusterIP if you do not want your chart to be exposed at all.
+If `ingress.enabled` is set to true, the LAMP charts services are made accessible via ingress rules. Those services which are not provided by HTTP protocol via `nodePorts`. In ingress mode the LAMP chart also supports ssl with certificates signed by lets encrypt. This requires a working [lego](https://github.com/jetstack/kube-lego) container running on the cluster.
 
 > **Note**: In ingress mode it is mandatory to set `ingress.domain`, otherwise the ingress rules won't know how to route the traffic to the services.
 

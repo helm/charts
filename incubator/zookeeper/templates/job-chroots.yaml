@@ -1,0 +1,65 @@
+{{- if .Values.jobs.chroots.enabled }}
+{{- $root := . }}
+{{- $job := .Values.jobs.chroots }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "zookeeper.fullname" . }}-chroots
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+  labels:
+    app: {{ template "zookeeper.name" . }}
+    chart: {{ template "zookeeper.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: jobs
+    job: chroots
+spec:
+  activeDeadlineSeconds: {{ $job.activeDeadlineSeconds }}
+  backoffLimit: {{ $job.backoffLimit }}
+  completions: {{ $job.completions }}
+  parallelism: {{ $job.parallelism }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "zookeeper.name" . }}
+        release: {{ .Release.Name }}
+        component: jobs
+        job: chroots
+    spec:
+      restartPolicy: {{ $job.restartPolicy }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+      containers:
+        - name: main
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/bash
+            - -o
+            - pipefail
+            - -euc
+  {{- $port := .Values.service.ports.client.port }}
+            - >
+              sleep 15;
+              export SERVER={{ template "zookeeper.fullname" $root }}:{{ $port }};
+  {{- range $job.config.create }}
+              echo '==> {{ . }}';
+              echo '====> Create chroot if does not exist.';
+              zkCli.sh -server {{ template "zookeeper.fullname" $root }}:{{ $port }} get {{ . }} 2>&1 >/dev/null | grep 'cZxid'
+              || zkCli.sh -server {{ template "zookeeper.fullname" $root }}:{{ $port }} create {{ . }} "";
+              echo '====> Confirm chroot exists.';
+              zkCli.sh -server {{ template "zookeeper.fullname" $root }}:{{ $port }} get {{ . }} 2>&1 >/dev/null | grep 'cZxid';
+              echo '====> Chroot exists.';
+  {{- end }}
+          env:
+          {{- range $key, $value := $job.env }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+          {{- end }}
+          resources:
+{{ toYaml $job.resources | indent 12 }}
+{{- end -}}

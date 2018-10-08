@@ -1,0 +1,5 @@
+**This chart is DEPRECATED and moved to https://github.com/appscode/charts**
+
+To verify that KubeDB has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get deployments -l "release={{ .Release.Name }}, app={{ template "kubedb.name" . }}"

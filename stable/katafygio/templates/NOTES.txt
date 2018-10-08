@@ -1,0 +1,11 @@
+Katafygio is dumping and versioning the cluster's content as
+YAML files in {{ .Values.localDir }}.
+
+You can access this repository by entering the pod:
+kubectl exec -i -t --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "katafygio.name" . }} -o jsonpath='{.items[0].metadata.name}') ls {{ .Values.localDir }}
+
+{{ if .Values.gitUrl }}
+This local repository is pushed in real time to {{ .Values.gitUrl }}.
+{{ else -}}
+You can configure gitUrl to get the dumps pushed to a remote repository.
+{{- end }}

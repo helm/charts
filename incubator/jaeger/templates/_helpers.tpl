@@ -41,7 +41,7 @@ Create a fully qualified query name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "jaeger.query.name" -}}
-{{- $nameGlobalOverride := printf "%s" (include "jaeger.fullname" .) -}}
+{{- $nameGlobalOverride := printf "%s-query" (include "jaeger.fullname" .) -}}
 {{- if .Values.query.fullnameOverride -}}
 {{- printf "%s" .Values.query.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -54,7 +54,7 @@ Create a fully qualified agent name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "jaeger.agent.name" -}}
-{{- $nameGlobalOverride := printf "%s" (include "jaeger.fullname" .) -}}
+{{- $nameGlobalOverride := printf "%s-agent" (include "jaeger.fullname" .) -}}
 {{- if .Values.agent.fullnameOverride -}}
 {{- printf "%s" .Values.agent.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -67,7 +67,7 @@ Create a fully qualified collector name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "jaeger.collector.name" -}}
-{{- $nameGlobalOverride := printf "%s" (include "jaeger.fullname" .) -}}
+{{- $nameGlobalOverride := printf "%s-collector" (include "jaeger.fullname" .) -}}
 {{- if .Values.collector.fullnameOverride -}}
 {{- printf "%s" .Values.collector.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -132,4 +132,16 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "jaeger.hotrod.tracing.host" -}}
 {{- $host := printf "%s-agent" (include "jaeger.agent.name" .) -}}
 {{- default $host .Values.hotrod.tracing.host -}}
+{{- end -}}
+
+{{/*
+Configure list of IP CIDRs allowed access to load balancer (if supported)
+*/}}
+{{- define "loadBalancerSourceRanges" -}}
+{{- if .service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
 {{- end -}}

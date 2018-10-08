@@ -1,3 +1,7 @@
+##########################################################
+# This chart has been deprecated in favor of stable/dask #
+##########################################################
+
 1. Get the Dask Scheduler connection string by running this commands in the same shell:
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available, until that the commands below will not work.  

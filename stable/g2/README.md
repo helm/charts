@@ -1,3 +1,5 @@
+**This chart is DEPRECATED and moved to https://github.com/appscode/charts**
+
 # G2
 [G2 by AppsCode](https://github.com/appscode/g2) is a modern implementation of Gearman server in GO.
 ## TL;DR;
@@ -36,7 +38,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Stash chart and their default values.
+The following table lists the configurable parameters of the Stash chart and their default values.
 
 
 | Parameter                | Description                                                       | Default             |
@@ -72,7 +74,7 @@ You need to have the following parameter on the api server. See the following do
 --authorization-mode=RBAC
 ```
 
-To determine if your cluster supports RBAC, run the the following command:
+To determine if your cluster supports RBAC, run the following command:
 
 ```console
 $ kubectl api-versions | grep rbac

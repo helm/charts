@@ -1,9 +1,16 @@
 MySQL can be accessed via port 3306 on the following DNS name from within your cluster:
 {{ template "mysql.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
+{{- if .Values.existingSecret }}
+If you have not already created the mysql password secret:
+
+   kubectl create secret generic {{ .Values.existingSecret }} --namespace {{ .Release.Namespace }} --from-file=./mysql-root-password --from-file=./mysql-password
+{{ else }}
+
 To get your root password run:
 
     MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mysql.fullname" . }} -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo)
+{{- end }}
 
 To connect to your database:
 
@@ -25,12 +32,12 @@ To connect to your database directly from outside the K8s cluster:
 
     {{- else if contains "ClusterIP" .Values.service.type }}
     MYSQL_HOST=127.0.0.1
-    MYSQL_PORT={{ default "3306" .Values.service.port }}
+    MYSQL_PORT={{ .Values.service.port }}
 
-    # Execute the following commands to route the connection:
-    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "mysql.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-    kubectl port-forward $POD_NAME {{ default "3306" .Values.service.port }}:{{ default "3306" .Values.service.port }}
+    # Execute the following command to route the connection:
+    kubectl port-forward svc/{{ template "mysql.fullname" . }} {{ .Values.service.port }}
 
     {{- end }}
 
     mysql -h ${MYSQL_HOST} -P${MYSQL_PORT} -u root -p${MYSQL_ROOT_PASSWORD}
+    

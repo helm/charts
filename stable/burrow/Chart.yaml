@@ -1,0 +1,21 @@
+name: burrow
+version: 0.4.5
+appVersion: 0.17.1
+description: Burrow is a permissionable smart contract machine
+home: https://github.com/hyperledger/burrow
+icon: https://wiki.hyperledger.org/_media/projects/hyperledger_burrow_logo_color.png
+keywords:
+- blockchain
+- smart_contracts
+- smartContracts
+- smart contracts
+- ethereum
+- hyperledger
+- evm
+maintainers:
+- name: compleatang
+  email: casey@monax.io
+sources:
+- https://github.com/hyperledger/burrow
+- https://quay.io/monax/db
+engine: gotpl

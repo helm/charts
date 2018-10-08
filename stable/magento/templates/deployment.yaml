@@ -9,15 +9,27 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "magento.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
         app: {{ template "magento.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "magento.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: MARIADB_HOST
         {{- if .Values.mariadb.enabled }}
@@ -33,13 +45,13 @@ spec:
         {{- end }}
         - name: MAGENTO_DATABASE_NAME
         {{- if .Values.mariadb.enabled }}
-          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+          value: {{ .Values.mariadb.db.name | quote }}
         {{- else }}
           value: {{ .Values.externalDatabase.database | quote }}
         {{- end }}
         - name: MAGENTO_DATABASE_USER
         {{- if .Values.mariadb.enabled }}
-          value: {{ .Values.mariadb.mariadbUser | quote }}
+          value: {{ .Values.mariadb.db.user | quote }}
         {{- else }}
           value: {{ .Values.externalDatabase.user | quote }}
         {{- end }}
@@ -84,7 +96,7 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "magento.host" . | quote }}
-          initialDelaySeconds: 420
+          initialDelaySeconds: 1000
           timeoutSeconds: 5
           failureThreshold: 6
         readinessProbe:

@@ -1,8 +1,7 @@
-## Used to run 'kubectl' in an init container in order to wait for Postgresql to start up.
-hyperkube:
+init:
   image:
-    repository: quay.io/coreos/hyperkube
-    tag: v1.8.1_coreos.0
+    repository: alpine
+    tag: 3.6
     pullPolicy: IfNotPresent
 
 keycloak:
@@ -10,8 +9,22 @@ keycloak:
 
   image:
     repository: jboss/keycloak
-    tag: 3.4.0.Final
+    tag: 3.4.3.Final
     pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistrKeySecretName
+
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+    runAsNonRoot: true
+
+  ## Custom script that is run before Keycloak is started.
+  preStartScript:
 
   ## Username for the initial Keycloak admin user
   username: keycloak
@@ -21,7 +34,7 @@ keycloak:
   password: ""
 
   ## Allows the specification of additional environment variables for Keycloak
-  additionalEnv: {}
+  extraEnv: {}
     # KEYCLOAK_LOGLEVEL: DEBUG
     # WILDFLY_LOGLEVEL: DEBUG
     # CACHE_OWNERS: 2
@@ -29,6 +42,13 @@ keycloak:
   podAntiAffinity: soft
   nodeSelector: {}
   tolerations: []
+
+  livenessProbe:
+    initialDelaySeconds: 120
+    timeoutSeconds: 5
+  readinessProbe:
+    initialDelaySeconds: 30
+    timeoutSeconds: 1
 
   resources: {}
     # limits:
@@ -96,8 +116,17 @@ keycloak:
       /interface=private:write-attribute(name=nic, value=eth0)
       /interface=private:undefine-attribute(name=inet-address)
 
+    # Custom CLI script
     custom: ""
 
+
+  ## Add additional volumes and mounts, e. g. for custom themes
+  extraVolumes: []
+  extraVolumeMounts: []
+
+  podDisruptionBudget: {}
+    # maxUnavailable: 1
+    # minAvailable: 1
 
   service:
     annotations: {}
@@ -131,11 +160,10 @@ keycloak:
       - keycloak.example.com
 
     ## TLS configuration
-    tls:
-      enabled: false
-      existingSecret: ""
-      secretContents: {}
-      secretAnnotations: {}
+    tls: []
+    # - hosts:
+    #     - keycloak.example.com
+    #   secretName: tls-keycloak
 
   ## Persistence configuration
   persistence:
@@ -181,7 +209,7 @@ postgresql:
   persistence:
     ## Enable PostgreSQL persistence using Persistent Volume Claims.
     ##
-    enabled: true
+    enabled: false
 
 test:
   image:

@@ -12,6 +12,11 @@ SerfwanPort: 8302
 SerfwanUdpPort: 8302
 ServerPort: 8300
 ConsulDnsPort: 8600
+
+## Specify the domain with which consul should run with
+## This will be passed as a -domain parameter
+Domain: consul
+
 ## Used as selector
 Component: "consul"
 Replicas: 3
@@ -26,6 +31,9 @@ Resources: {}
  #   cpu: "500m"
  #   memory: "512Mi"
 ## Persistent volume size
+
+priorityClassName: ""
+
 Storage: "1Gi"
 
 ## Needed for 0.8.0 and later IF all consul containers are spun up
@@ -37,8 +45,14 @@ DisableHostNodeId: false
 ## default 'dc1'
 # DatacenterName: dc1
 
-## Encrypt Gossip traffic
-EncryptGossip: true
+## Encrypt Gossip Traffic
+Gossip:
+  Encrypt: true
+  Create: true
+
+## predefined value for gossip key.
+## Will use a generated random alpha numeric if not provided
+# GossipKey: key
 
 ## consul data Persistent Volume Storage Class
 ## If defined, StorageClassName: <storageClass>
@@ -67,12 +81,19 @@ maxUnavailable: 1
 #         values:
 #         - true
 
-## Anti-Affinity setting. The default "hard" will use pod anti-affinity that is
-## requiredDuringSchedulingIgnoredDuringExecution to ensure 2 services don't
-## end up on the same node. Setting this to "soft" will use
-## preferredDuringSchedulingIgnoredDuringExecution. If set to anything else,
-## no anti-affinity rules will be configured.
-antiAffinity: "hard"
+## Affinity settings
+affinity: |
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 1
+      podAffinityTerm:
+        topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchExpressions:
+          - key: component
+            operator: In
+            values:
+            - "{{ .Release.Name }}-{{ .Values.Component }}"
 
 ## Enable Consul Web UI
 ##
@@ -83,6 +104,12 @@ ui:
 uiService:
   enabled: true
   type: "NodePort"
+
+ConsulConfig: []
+#  - type: secret
+#    name: consul-defaults
+#  - type: configMap
+#    name: consul-defaults
 
 ## Create an Ingress for the Web UI
 uiIngress:
@@ -95,3 +122,6 @@ uiIngress:
 test:
   image: lachlanevenson/k8s-kubectl
   imageTag: v1.4.8-bash
+
+nodeSelector: {}
+tolerations: []

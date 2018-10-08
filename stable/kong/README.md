@@ -45,29 +45,37 @@ chart and deletes the release.
 
 ### General Configuration Parameters
 
-The following tables lists the configurable parameters of the Kong chart
+The following table lists the configurable parameters of the Kong chart
 and their default values.
 
 | Parameter                         | Description                                                            | Default               |
 | ------------------------------    | --------------------------------------------------------------------   | -------------------   |
 | image.repository                  | Kong image                                                             | `kong`                |
-| image.tag                         | Kong image version                                                     | `0.11.2`              |
+| image.tag                         | Kong image version                                                     | `0.14.0`              |
 | image.pullPolicy                  | Image pull policy                                                      | `IfNotPresent`        |
 | replicaCount                      | Kong instance count                                                    | `1`                   |
-| admin.http.servicePort            | TCP port on which the Kong admin service is exposed                    | `8001`                |
-| admin.https.servicePort           | Secure TCP port on which the Kong admin service is exposed             | `8444`                |
-| admin.http.containerPort          | TCP port on which Kong app listens for admin traffic                   | `8001`                |
-| admin.https.containerPort         | Secure TCP port on which Kong app listens for admin traffic            | `8444`                |
-| admin.nodePort                    | Node port when service type is `NodePort`                              | `32444`               |
+| admin.useTLS                      | Secure Admin traffic                                                   | `true`                |
+| admin.servicePort                 | TCP port on which the Kong admin service is exposed                    | `8444`                |
+| admin.containerPort               | TCP port on which Kong app listens for admin traffic                   | `8444`                |
+| admin.nodePort                    | Node port when service type is `NodePort`                              |                       |
 | admin.type                        | k8s service type, Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | admin.loadBalancerIP              | Will reuse an existing ingress static IP for the admin service         | `null`                |
-| proxy.http.servicePort            | TCP port on which the Kong proxy service is exposed                    | `8000`                |
-| proxy.https.servicePort           | Secure TCP port on which the Kong Proxy Service is exposed             | `8443`                |
-| proxy.http.containerPort          | TCP port on which the Kong app listens for Proxy traffic               | `8000`                |
-| proxy.https.containerPort         | Secure TCP port on which the Kong app listens for Proxy traffic        | `8443`                |
-| proxy.nodePort                    | Node port when service type is `NodePort`                              | `32443`               |
+| admin.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               | 
+| admin.ingress.tls                 | Name of secret resource, containing TLS secret                         |                       |
+| admin.ingress.hosts               | List of ingress hosts.                                                 | `[]`                  |
+| admin.ingress.path                | Ingress path.                                                          | `/`                   |
+| admin.ingress.annotations         | Ingress annotations. See documentation for your ingress controller for details | `{}`          |
+| proxy.useTLS                      | Secure Proxy traffic                                                   | `true`                |
+| proxy.servicePort                 | TCP port on which the Kong Proxy Service is exposed                    | `8443`                |
+| proxy.containerPort               | TCP port on which the Kong app listens for Proxy traffic               | `8443`                |
+| proxy.nodePort                    | Node port when service type is `NodePort`                              |                       |
 | proxy.type                        | k8s service type. Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | proxy.loadBalancerIP              | To reuse an existing ingress static IP for the admin service           |                       |
+| proxy.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               | 
+| proxy.ingress.tls                 | Name of secret resource, containing TLS secret                         |                       |
+| proxy.ingress.hosts               | List of ingress hosts.                                                 | `[]`                  |
+| proxy.ingress.path                | Ingress path.                                                          | `/`                   |
+| proxy.ingress.annotations         | Ingress annotations. See documentation for your ingress controller for details | `{}`          |
 | env                               | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)               |
 | runMigrations                     | Run Kong migrations job                                                | `true`                |
 | readinessProbe                    | Kong readiness probe                                                   |                       |
@@ -93,7 +101,7 @@ Postgres is enabled by default.
 | Parameter                         | Description                                                            | Default               |
 | ------------------------------    | --------------------------------------------------------------------   | -------------------   |
 | cassandra.enabled                 | Spin up a new cassandra cluster for Kong                               | `false`               |
-| postgres.enabled                  | Spin up a new postgres instance for Kong                               | `true `               |
+| postgresql.enabled                  | Spin up a new postgres instance for Kong                               | `true `               |
 | env.database                      | Choose either `postgres` or `cassandra`                                | `postgres`            |
 | env.pg_user                       | Postgres username                                                      | `kong`                |
 | env.pg_database                   | Postgres database name                                                 | `kong`                |
@@ -111,7 +119,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install stable/kong --name my-release \
-  --set=image.tag=0.11.2,database.type=caasandra,cassandra.enabled=true
+  --set=image.tag=0.11.2,env.database=cassandra,cassandra.enabled=true
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,

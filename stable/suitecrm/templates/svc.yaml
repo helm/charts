@@ -7,13 +7,15 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
-    service.beta.kubernetes.io/external-traffic: OnlyLocal
 spec:
   type: {{ .Values.serviceType }}
-  {{- if eq .Values.serviceType "LoadBalancer" }}
+  {{- if (and (eq .Values.serviceType "LoadBalancer") (not (empty .Values.suitecrmLoadBalancerIP))) }}
   loadBalancerIP: {{ .Values.suitecrmLoadBalancerIP }}
   {{- end }}
+  {{- if (or (eq .Values.serviceType "LoadBalancer") (eq .Values.serviceType "NodePort")) }}
+  externalTrafficPolicy: {{ .Values.externalTrafficPolicy | quote }}
+  {{- end }}
+  sessionAffinity: {{ .Values.sessionAffinity | quote }}
   ports:
   - name: http
     port: 80
@@ -24,3 +26,4 @@ spec:
   selector:
     app: {{ template "name" . }}
     release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

@@ -38,14 +38,14 @@ chart and deletes the release.
 
 ## Configuration
 
-The following tables lists some of the configurable parameters of the Gogs
+The following table lists some of the configurable parameters of the Gogs
 chart and their default values.
 
 | Parameter                        | Description                                                  | Default                                                    |
 | -----------------------          | ----------------------------------                           | ---------------------------------------------------------- |
-| `imageRepository`                | Gogs image                                                   | `gogs/gogs`                                                |
-| `imageTag`                       | Gogs image version                                           | `0.11.29`                                                  |
-| `imagePullPolicy`                | Gogs image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `image.repository`                | Gogs image                                                   | `gogs/gogs`                                                |
+| `image.tag`                       | Gogs image tag                                           | `0.11.66`                                                  |
+| `image.pullPolicy`                | Gogs image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
 | `postgresql.install`             | Weather or not to install PostgreSQL dependency              | `true`                                                     |
 | `postgresql.postgresHost`        | PostgreSQL host (if `postgresql.install == false`)           | `nil`                                                      |
 | `postgresql.postgresUser`        | PostgreSQL User to create                                    | `gogs`                                                     |

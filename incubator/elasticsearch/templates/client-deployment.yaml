@@ -21,7 +21,11 @@ spec:
 {{ toYaml .Values.client.podAnnotations | indent 8 }}
         {{- end }}
     spec:
-      serviceAccountName: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.client.priorityClassName }}
+      priorityClassName: "{{ .Values.client.priorityClassName }}"
+{{- end }}
+      securityContext:
+        fsGroup: 1000
       {{- if eq .Values.client.antiAffinity "hard" }}
       affinity:
         podAntiAffinity:
@@ -45,6 +49,14 @@ spec:
                   release: "{{ .Release.Name }}"
                   component: "{{ .Values.client.name }}"
       {{- end }}
+{{- if .Values.client.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.client.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.client.tolerations }}
+      tolerations:
+{{ toYaml .Values.client.tolerations | indent 8 }}
+{{- end }}
       initContainers:
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
@@ -54,17 +66,12 @@ spec:
         command: ["sysctl", "-w", "vm.max_map_count=262144"]
         securityContext:
           privileged: true
+{{- if .Values.extraInitContainers }}
+{{ tpl .Values.extraInitContainers . | indent 6 }}
+{{- end }}
       containers:
       - name: elasticsearch
         env:
-        - name: SERVICE
-          value: {{ template "elasticsearch.master.fullname" . }}
-        - name: KUBERNETES_MASTER
-          value: kubernetes.default.svc.cluster.local
-        - name: KUBERNETES_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
         - name: NODE_DATA
           value: "false"
 {{- if hasPrefix "5." .Values.appVersion }}
@@ -73,6 +80,8 @@ spec:
 {{- end }}
         - name: NODE_MASTER
           value: "false"
+        - name: DISCOVERY_SERVICE
+          value: {{ template "elasticsearch.fullname" . }}-discovery
         - name: PROCESSORS
           valueFrom:
             resourceFieldRef:
@@ -87,12 +96,12 @@ spec:
 {{ toYaml .Values.client.resources | indent 12 }}
         readinessProbe:
           httpGet:
-            path: /_cluster/health?wait_for_status=yellow
+            path: /_cluster/health
             port: 9200
           initialDelaySeconds: 5
         livenessProbe:
           httpGet:
-            path: /_cluster/health?wait_for_status=yellow
+            path: /_cluster/health
             port: 9200
           initialDelaySeconds: 90
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -116,7 +125,24 @@ spec:
           name: config
           subPath: log4j2.properties
 {{- end }}
+{{- if .Values.cluster.keystoreSecret }}
+        - name: keystore
+          mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
+          subPath: elasticsearch.keystore
+          readOnly: true
+{{- end }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecret := .Values.image.pullSecrets }}
+        - name: {{ $pullSecret }}
+      {{- end }}
+{{- end }}
       volumes:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.cluster.keystoreSecret }}
+      - name: keystore
+        secret:
+          secretName: {{ .Values.cluster.keystoreSecret }}
+{{- end }}

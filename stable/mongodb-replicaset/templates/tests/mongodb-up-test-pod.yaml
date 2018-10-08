@@ -25,7 +25,7 @@ spec:
           mountPath: /tools
   containers:
     - name: mongo
-      image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
       command:
         - /tools/bats/bats
         - -t

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "xray-analysis.fullname" . }}
+  labels:
+    app: {{ template "xray.name" . }}
+    chart: {{ template "xray.chart" . }}
+    component: {{ .Values.analysis.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.analysis.service.type }}
+  ports:
+  - port: {{ .Values.analysis.internalPort }}
+    protocol: TCP
+    name: http
+    targetPort: {{ .Values.analysis.externalPort }}
+  selector:
+    app: {{ template "xray.name" . }}
+    component: {{ .Values.analysis.name }}
+    release: {{ .Release.Name }}

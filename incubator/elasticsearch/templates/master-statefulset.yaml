@@ -22,7 +22,11 @@ spec:
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
         {{- end }}
     spec:
-      serviceAccountName: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.master.priorityClassName }}
+      priorityClassName: "{{ .Values.master.priorityClassName }}"
+{{- end }}
+      securityContext:
+        fsGroup: 1000
       {{- if eq .Values.master.antiAffinity "hard" }}
       affinity:
         podAntiAffinity:
@@ -46,6 +50,14 @@ spec:
                   release: "{{ .Release.Name }}"
                   component: "{{ .Values.master.name }}"
       {{- end }}
+{{- if .Values.master.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.master.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.master.tolerations }}
+      tolerations:
+{{ toYaml .Values.master.tolerations | indent 8 }}
+{{- end }}
       initContainers:
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
@@ -68,23 +80,20 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
+{{- if .Values.extraInitContainers }}
+{{ tpl .Values.extraInitContainers . | indent 6 }}
+{{- end }}
       containers:
       - name: elasticsearch
         env:
-        - name: SERVICE
-          value: {{ template "elasticsearch.master.fullname" . }}
-        - name: KUBERNETES_MASTER
-          value: kubernetes.default.svc.cluster.local
-        - name: KUBERNETES_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
         - name: NODE_DATA
           value: "false"
 {{- if hasPrefix "5." .Values.appVersion }}
         - name: NODE_INGEST
           value: "false"
 {{- end }}
+        - name: DISCOVERY_SERVICE
+          value: {{ template "elasticsearch.fullname" . }}-discovery
         - name: PROCESSORS
           valueFrom:
             resourceFieldRef:
@@ -127,14 +136,34 @@ spec:
           name: config
           subPath: log4j2.properties
 {{- end }}
+{{- if .Values.cluster.keystoreSecret }}
+        - name: keystore
+          mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
+          subPath: elasticsearch.keystore
+          readOnly: true
+{{- end }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecret := .Values.image.pullSecrets }}
+        - name: {{ $pullSecret }}
+      {{- end }}
+{{- end }}
       volumes:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.cluster.keystoreSecret }}
+      - name: keystore
+        secret:
+          secretName: {{ .Values.cluster.keystoreSecret }}
+{{- end }}
   {{- if not .Values.master.persistence.enabled }}
       - name: data
         emptyDir: {}
-  {{- else }}
+  {{- end }}
+  updateStrategy:
+    type: {{ .Values.master.updateStrategy.type }}
+  {{- if .Values.master.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: {{ .Values.master.persistence.name }}

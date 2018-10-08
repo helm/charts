@@ -1,0 +1,16 @@
+To verify that kiam has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "kiam.name" . }},release={{ .Release.Name }}"
+
+Step1 : Add an annotation to your namespace as below:
+~~~
+kind: Namespace
+metadata:
+  name: iam-example
+  annotations:
+    iam.amazonaws.com/permitted: “<Role ARN or a Regex matching role ARN(s)>”
+~~~
+Step 2 :  Add an `iam.amazonaws.com/role` annotation to your pods with the role you want them to assume.
+Use `curl` to verify the pod's role from within:
+
+  curl http://169.254.169.254/latest/meta-data/iam/security-credentials/

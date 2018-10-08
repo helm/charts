@@ -22,7 +22,7 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
-# GCE project ID for GCE API usage - mandatory paramter
+# GCE project ID for GCE API usage - mandatory parameter
 projectID: "MUST PROVIDE PROJECT ID"
 # Pub/Sub subscription name to listen on
 # subscriptionName: your-pubsub-subscription-name

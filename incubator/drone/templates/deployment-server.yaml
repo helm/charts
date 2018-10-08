@@ -15,15 +15,22 @@ spec:
     metadata:
       annotations:
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+{{- if .Values.server.annotations }}
+{{ toYaml .Values.server.annotations | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "drone.name" . }}
         release: "{{ .Release.Name }}"
         component: server
     spec:
+{{- if .Values.server.schedulerName }}
+      schedulerName: "{{ .Values.server.schedulerName }}"
+{{- end }}
 {{- if .Values.server.affinity }}
       affinity:
 {{ toYaml .Values.server.affinity | indent 8 }}
 {{- end }}
+      serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
       - name: {{ template "drone.fullname" . }}-server
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
@@ -34,16 +41,25 @@ spec:
               secretKeyRef:
                 name: {{ template "drone.fullname" . }}
                 key: secret
+          {{- range $secret, $keys := .Values.server.envSecrets }}
+          {{- range $keys }}
+          - name: {{ . }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $secret }}
+                key: {{ . | quote }}
+          {{- end }}
+          {{- end }}
           - name: DRONE_HOST
           {{- if hasKey .Values.server "host" }}
             value: "{{ .Values.server.host }}"
           {{- else }}
             value: "http://{{ template "drone.fullname" . }}"
           {{- end }}
-          {{ range $key, $value := .Values.server.env }}
+          {{- range $key, $value := .Values.server.env }}
           - name: {{ $key }}
             value: {{ $value | quote }}
-          {{ end }}
+          {{- end }}
         ports:
         - name: http
           containerPort: 8000

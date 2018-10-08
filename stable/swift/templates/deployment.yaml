@@ -15,12 +15,13 @@ spec:
         app: "{{ template "swift.name" . }}"
         release: "{{ .Release.Name }}"
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "swift.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "swift.serviceAccountName" . }}
       containers:
       - args:
         - run
         - --v={{ .Values.logLevel }}
         - --connector=incluster
+        - --tiller-insecure-skip-verify=true
         image: {{ .Values.swift.image }}:{{ .Values.swift.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if .Values.imagePullSecrets }}

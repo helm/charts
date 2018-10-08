@@ -99,6 +99,8 @@ The following table lists has the main configurable parameters (polling, trigger
 | `slack.enabled`                   | Enable/disable Slack Notification      | `false`                                                   |
 | `slack.token`                     | Slack token                            |                                                           |
 | `slack.channel`                   | Slack channel                          |                                                           |
+| `slack.approvalChannel`           | Slack approval channel                 |                                                           |
+| `slack.botName`                   | Slack Bot name                         |                                                           |
 | `service.enable`                  | Enable/disable Keel service            | `false`                                                   |
 | `service.type`                    | Keel service type                      | `LoadBalancer`                                            |
 | `service.externalPort`            | Keel service port                      | `9300`                                                    |

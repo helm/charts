@@ -3,7 +3,7 @@
 replicaCount: 1
 image:
   repository: k8s.gcr.io/heapster
-  tag: v1.3.0
+  tag: v1.5.2
   pullPolicy: IfNotPresent
 ## Here labels can be added to the heapster deployment
 # labels:
@@ -15,6 +15,11 @@ labels: {}
 # annotations:
 #   scheduler.alpha.kubernetes.io/critical-pod: ''
 annotations: {}
+
+## Here annotations can be added for the heapster Pod
+# podAnnotations:
+#   prometheus.io/scrape: "true"
+podAnnotations: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -35,6 +40,12 @@ service:
   #   kubernetes.io/name: "Heapster"
   labels:
 
+  ## Here annotations can be added to the heapster service
+  # annotations:
+  #   prometheus.io/path: /metrics
+  #   prometheus.io/port: "8082"
+  #   prometheus.io/scrape: "true"
+  annotations: {}
 resources:
   limits:
     cpu: 100m
@@ -88,7 +99,7 @@ resizer:
 
 ## For RBAC support:
 rbac:
-  create: false
+  create: true
 
   ## Ignored if rbac.create is true
   ##

@@ -2,7 +2,7 @@
 
 ##  An Open-Source Time Series ETL and Alerting Engine
 
-[Kapacitor](https://github.com/influxdata/kapacitor) is an open-source framework built by the folks over at [InfluxData](https://influxdata.com) and written in Go for processing, monitoring, and alerting on time series data 
+[Kapacitor](https://github.com/influxdata/kapacitor) is an open-source framework built by the folks over at [InfluxData](https://influxdata.com) and written in Go for processing, monitoring, and alerting on time series data
 
 ## QuickStart
 
@@ -48,13 +48,14 @@ The following table lists the configurable parameters of the Kapacitor chart and
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image.repository` | Kapacitor image | `kapacitor` |
-| `image.tag` | Kapacitor image version | `1.2` |
+| `image.tag` | Kapacitor image version | `1.5.1-alpine` |
 | `image.pullPolicy` | Kapacitor image pull policy |  `IfNotPresent` |
 | `service.type` | Kapacitor web service type  | `ClusterIP` |
 | `persistence.enabled` | Enable Kapacitor persistence using Persistent Volume Claims | `false` |
 | `persistence.storageClass` | Kapacitor Persistent Volume Storage Class | `default` |
 | `persistence.accessMode` | Kapacitor Persistent Volume Access Mode | `ReadWriteOnce` |
 | `persistence.size` | Kapacitor Persistent Volume Storage Size | `8Gi` |
+| `persistence.existingClaim` | Kapacitor existing PVC name | `nil` |
 | `resources.request.memory` | Kapacitor memory request | `256Mi` |
 | `resources.request.cpu` | Kapacitor cpu request | `0.1` |
 | `resources.limits.memory` | Kapacitor memory limit | `2Gi` |
@@ -88,4 +89,4 @@ $ helm install --name my-release -f values.yaml stable/kapacitor
 
 The [Kapacitor](https://hub.docker.com/_/kapacitor/) image stores data in the `/var/lib/kapacitor` directory in the container.
 
-The chart optionally mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning.
+The chart optionally mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning.

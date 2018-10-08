@@ -32,3 +32,6 @@ resources:
 # Node selector - default to Linux as cannot deploy OMS agent container to Windows nodes
 nodeSelector:
   beta.kubernetes.io/os: linux
+
+# optional tolerations to handle custom taints
+tolerations: []

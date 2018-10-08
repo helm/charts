@@ -22,6 +22,13 @@ imageTag: "9.6.2"
 ## Default: random 10 character string
 # postgresPassword:
 
+## Inject postgresPassword via a volume mount instead of environment variable
+usePasswordFile: false
+
+## Use Existing secret instead of creating one
+## It must have a postgres-password key containing the desired password
+# existingSecret: 'secret'
+
 ## Create a database
 ## Default: the postgres user
 # postgresDatabase:
@@ -31,9 +38,27 @@ imageTag: "9.6.2"
 ## ref: https://www.postgresql.org/docs/current/static/app-initdb.html
 # postgresInitdbArgs:
 
-## Persist data to a persitent volume
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
+## Specify runtime config parameters as a dict, using camelCase, e.g.
+## {"sharedBuffers": "500MB"}
+## ref: https://www.postgresql.org/docs/current/static/runtime-config.html
+# postgresConfig:
+
+## Specify content for pg_hba.conf
+## Default: do not create pg_hba.conf
+# pgHbaConf: |-
+#   local all all trust
+#   host all all localhost trust
+#   host mydatabase mysuser 192.168.0.0/24 md5
+
+## Persist data to a persistent volume
 persistence:
   enabled: true
+  resourcePolicy:  # set resource-policy Helm annotation on PVC. Can be nil or "keep"
 
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
@@ -58,7 +83,7 @@ persistence:
 metrics:
   enabled: false
   image: wrouesnel/postgres_exporter
-  imageTag: v0.1.1
+  imageTag: v0.4.6
   imagePullPolicy: IfNotPresent
   resources:
     requests:
@@ -111,3 +136,21 @@ networkPolicy:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+# Override default liveness & readiness probes
+probes:
+  liveness:
+    initialDelay: 60
+    timeoutSeconds: 5
+    failureThreshold: 6
+  readiness:
+    initialDelay: 5
+    timeoutSeconds: 3
+    periodSeconds: 5
+## Annotations for the deployment and nodes.
+deploymentAnnotations: {}
+podAnnotations: {}
+
+## Deployment pods replace strategy
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+# strategy: {}

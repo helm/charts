@@ -5,11 +5,11 @@ from big data to mobile, with an intuitive HTTP/JSON API and designed for
 reliability.
 
 This chart deploys a CouchDB cluster as a StatefulSet. It creates a ClusterIP
-Service in front of the deployment for load balancing by default, but can also
-be configured to deploy other Service types or an Ingress controller. The
+Service in front of the Deployment for load balancing by default, but can also
+be configured to deploy other Service types or an Ingress Controller. The
 default persistence mechanism is simply the ephemeral local filesystem, but
 production deployments should set `persistentVolume.enabled` to `true` to attach
-storage volumes to each Pod in the deployment.
+storage volumes to each Pod in the Deployment.
 
 ## TL;DR
 
@@ -38,7 +38,7 @@ $ kubectl get secret my-release-couchdb -o go-template='{{ .data.adminPassword }
 ```
 
 If you prefer to configure the admin credentials directly you can create a
-secret containing `adminUsername`, `adminPassword` and `cookieAuthSecret` keys:
+Secret containing `adminUsername`, `adminPassword` and `cookieAuthSecret` keys:
 
 ```bash
 $  kubectl create secret generic my-release-couchdb --from-literal=adminUsername=foo --from-literal=adminPassword=bar --from-literal=cookieAuthSecret=baz
@@ -51,14 +51,14 @@ $ helm install --name my-release --set createAdminSecret=false incubator/couchdb
 ```
 
 This Helm chart deploys CouchDB on the Kubernetes cluster in a default
-configuration. The [configuration](#configuration) section lists 
+configuration. The [configuration](#configuration) section lists
 the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
 ## Uninstalling the Chart
 
-To uninstall/delete the `my-release` deployment:
+To uninstall/delete the `my-release` Deployment:
 
 ```bash
 $ helm delete my-release
@@ -69,13 +69,13 @@ deletes the release.
 
 ## Configuration
 
-The following tables lists the most commonly configured parameters of the
+The following table lists the most commonly configured parameters of the
 CouchDB chart and their default values:
 
 |           Parameter             |             Description                               |                Default                 |
 |---------------------------------|-------------------------------------------------------|----------------------------------------|
 | `clusterSize`                   | The initial number of nodes in the CouchDB cluster    | 3                                      |
-| `couchdbConfig`                 | Map allowing override elements of server .ini config  | {}                                     |
+| `couchdbConfig`                 | Map allowing override elements of server .ini config  | chttpd.bind_address=any                |
 | `allowAdminParty`               | If enabled, start cluster without admin account       | false (requires creating a Secret)     |
 | `createAdminSecret`             | If enabled, create an admin account and cookie secret | true                                   |
 | `erlangFlags`                   | Map of flags supplied to the underlying Erlang VM     | name: couchdb, setcookie: monster
@@ -89,12 +89,12 @@ A variety of other parameters are also configurable. See the comments in the
 |---------------------------------|----------------------------------------|
 | `adminUsername`                 | admin                                  |
 | `adminPassword`                 | auto-generated                         |
-| `cookieAuthSecret               | auto-generated                         |
+| `cookieAuthSecret`              | auto-generated                         |
 | `helperImage.repository`        | kocolosk/couchdb-statefulset-assembler |
 | `helperImage.tag`               | 0.1.0                                  |
 | `helperImage.pullPolicy`        | IfNotPresent                           |
 | `image.repository`              | couchdb                                |
-| `image.tag`                     | 2.1.1                                  |
+| `image.tag`                     | 2.2.0                                  |
 | `image.pullPolicy`              | IfNotPresent                           |
 | `ingress.enabled`               | false                                  |
 | `ingress.hosts`                 | chart-example.local                    |
@@ -103,6 +103,7 @@ A variety of other parameters are also configurable. See the comments in the
 | `persistentVolume.accessModes`  | ReadWriteOnce                          |
 | `persistentVolume.storageClass` | Default for the Kube cluster           |
 | `podManagementPolicy`           | Parallel                               |
+| `affinity`                      |                                        |
 | `resources`                     |                                        |
 | `service.enabled`               | true                                   |
 | `service.type`                  | ClusterIP                              |

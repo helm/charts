@@ -1,26 +1,35 @@
 ## Bitnami Ghost image version
 ## ref: https://hub.docker.com/r/bitnami/ghost/tags/
 ##
-image: bitnami/ghost:1.20.3-r0
+image:
+  registry: docker.io
+  repository: bitnami/ghost
+  tag: 2.1.4-debian-9
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 ## Busybox image used to configure volume permissions
 ##
 volumePermissions:
   image:
     name: busybox
-    tag: 1.27.1
+    tag: 1.28.3
 #    pullPolicy:
 
-## Specify a imagePullPolicy
-## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-##
-# imagePullPolicy:
-
-## Ghost host to create application URLs
+## Ghost host and path to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
 ##
 # ghostHost:
+ghostPath: /
 
 ## Ghost port to create application URLs along with host.
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
@@ -30,7 +39,7 @@ ghostPort: 80
 ## loadBalancerIP for the Ghost Service (optional, cloud specific)
 ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
 ##
-# ghostLoadBalancerIP:
+ghostLoadBalancerIP: ""
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
@@ -55,7 +64,7 @@ ghostBlogTitle: User's Blog
 
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
-allowEmptyPassword: yes
+allowEmptyPassword: "yes"
 
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-redmine/#smtp-configuration
@@ -73,6 +82,9 @@ externalDatabase:
   ## Database host
   # host:
 
+  ## Database port
+  # port:
+
   ## Database user
   # user: bn_ghost
 
@@ -86,44 +98,45 @@ externalDatabase:
 ## MariaDB chart configuration
 ##
 mariadb:
-  ## Whether to use the database specified as a requirement or not. For example, to configure the chart with an existing database server.
+  ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
   enabled: true
+  ## Disable MariaDB replication
+  replication:
+    enabled: false
+
+  ## Create a database and a database user
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  db:
+    name: bitnami_ghost
+    user: bn_ghost
+    ## If the password is not specified, mariadb will generates a random password
+    ##
+    # password:
 
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##
-  # mariadbRootPassword:
-  ## Create a database
-
-  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
-  ##
-  mariadbDatabase: bitnami_ghost
-
-  ## Create a database user
-  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
-  ##
-  mariadbUser: bn_ghost
-
-  ## Password for mariadbUser
-  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
-  ##
-  # mariadbPassword:
+  # rootUser:
+  #   password:
 
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
-  persistence:
-    enabled: true
-    ## mariadb data Persistent Volume Storage Class
-    ## If defined, storageClassName: <storageClass>
-    ## If set to "-", storageClassName: "", which disables dynamic provisioning
-    ## If undefined (the default) or set to null, no storageClassName spec is
-    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-    ##   GKE, AWS & OpenStack)
-    ##
-    # storageClass: "-"
-    accessMode: ReadWriteOnce
-    size: 8Gi
+  master:
+    persistence:
+      enabled: true
+      ## mariadb data Persistent Volume Storage Class
+      ## If defined, storageClassName: <storageClass>
+      ## If set to "-", storageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      # storageClass: "-"
+      accessMode: ReadWriteOnce
+      size: 8Gi
+
 
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
@@ -153,3 +166,19 @@ resources:
   requests:
     memory: 512Mi
     cpu: 300m
+
+## Configure ingress resource
+## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - ghost.local
+  tls: []
+  #  - secretName: ghost-tls
+  #    hosts:
+  #      - ghost.local

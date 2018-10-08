@@ -15,11 +15,14 @@ spec:
   selector:
     matchLabels:
       app: {{ template "sematext.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "sematext.name" . }}
-      name: {{ template "sematext.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       {{- if .Values.sematext.useHostNetwork }}
       hostNetwork: {{ .Values.sematext.useHostNetwork }}
@@ -43,21 +46,14 @@ spec:
             secretKeyRef:
               name: {{ template "sematext.fullname" . }}
               key: logsene-token
-{{- if eq .Values.sematext.region "EU" }}
-        - name: SPM_RECEIVER_URL
-          value: "https://spm-receiver.eu.sematext.com/receiver/v1"
-        - name: LOGSENE_RECEIVER_URL
-          value: "https://logsene-receiver.eu.sematext.com"
-        - name: EVENTS_RECEIVER_URL
-          value: "https://event-receiver.eu.sematext.com"
-{{- end }}
+        envFrom:
+          - configMapRef:
+              name: {{ template "sematext.fullname" . }}
         volumeMounts:
           - mountPath: /var/run/docker.sock
             name: docker-sock
           - mountPath: /etc/localtime
             name: localtime
-          - mountPath: /rootfs
-            name: rootfs
             readOnly: true
         securityContext:
           privileged: true
@@ -68,7 +64,8 @@ spec:
         - name: localtime
           hostPath:
             path: /etc/localtime
-        - name: rootfs
-          hostPath:
-            path: /
+      nodeSelector:
+{{ toYaml .Values.sematext.nodeSelector | indent 8 }}
+      tolerations:
+{{ toYaml .Values.sematext.tolerations | indent 8 }}
 {{- end }}

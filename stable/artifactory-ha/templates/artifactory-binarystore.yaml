@@ -1,0 +1,149 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ template "artifactory-ha.fullname" . }}-bs
+  labels:
+    app: {{ template "artifactory-ha.name" . }}
+    chart: {{ template "artifactory-ha.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  binarystore.xml: |-
+{{- if eq .Values.artifactory.persistence.type "file-system" }}
+    <!-- File system replication -->
+    <config version="2">
+        <chain>
+            <provider id="cache-fs" type="cache-fs">
+                <provider id="sharding-cluster" type="sharding-cluster">
+                    <readBehavior>crossNetworkStrategy</readBehavior>
+                    <writeBehavior>crossNetworkStrategy</writeBehavior>
+                    <redundancy>{{ .Values.artifactory.persistence.redundancy }}</redundancy>
+                    <lenientLimit>2</lenientLimit>
+                    <minSpareUploaderExecutor>2</minSpareUploaderExecutor>
+                    <sub-provider id="state-aware" type="state-aware"/>
+                    <dynamic-provider id="remote" type="remote"/>
+                    <property name="zones" value="local,remote"/>
+                </provider>
+            </provider>
+        </chain>
+
+        <!-- Shards add local file-system provider configuration -->
+        <provider id="state-aware" type="state-aware">
+            <fileStoreDir>shard-fs-1</fileStoreDir>
+            <zone>local</zone>
+        </provider>
+
+        <!-- Shards dynamic remote provider configuration -->
+        <provider id="remote" type="remote">
+            <checkPeriod>30</checkPeriod>
+            <serviceId>tester-remote1</serviceId>
+            <timeout>10000</timeout>
+            <zone>remote</zone>
+            <property name="header.remote.block" value="true"/>
+        </provider>
+    </config>
+{{- end }}
+
+{{- if eq .Values.artifactory.persistence.type "google-storage" }}
+    <!-- Google storage -->
+    <config version="2">
+        <chain>
+            <provider id="sharding-cluster" type="sharding-cluster">
+                <readBehavior>crossNetworkStrategy</readBehavior>
+                <writeBehavior>crossNetworkStrategy</writeBehavior>
+                <redundancy>{{ .Values.artifactory.persistence.redundancy }}</redundancy>
+                <minSpareUploaderExecutor>2</minSpareUploaderExecutor>
+                <sub-provider id="eventual-cluster" type="eventual-cluster">
+                    <provider id="retry" type="retry">
+                        <provider id="google-storage" type="google-storage"/>
+                    </provider>
+                </sub-provider>
+                <dynamic-provider id="remote" type="remote"/>
+                <property name="zones" value="local,remote"/>
+            </provider>
+        </chain>
+
+        <!-- Set max cache-fs size -->
+        <provider id="cache-fs" type="cache-fs">
+            <maxCacheSize>50000000000</maxCacheSize>
+        </provider>
+
+        <provider id="eventual-cluster" type="eventual-cluster">
+            <zone>local</zone>
+        </provider>
+
+        <provider id="remote" type="remote">
+            <checkPeriod>30</checkPeriod>
+            <timeout>10000</timeout>
+            <zone>remote</zone>
+        </provider>
+
+        <provider id="file-system" type="file-system">
+            <fileStoreDir>{{ .Values.artifactory.persistence.mountPath }}/data/filestore</fileStoreDir>
+            <tempDir>/tmp</tempDir>
+        </provider>
+
+        <provider id="google-storage" type="google-storage">
+            <providerId>google-cloud-storage</providerId>
+            <endpoint>commondatastorage.googleapis.com</endpoint>
+            <httpsOnly>false</httpsOnly>
+            <bucketName>{{ .Values.artifactory.persistence.googleStorage.bucketName }}</bucketName>
+            <identity>{{ .Values.artifactory.persistence.googleStorage.identity }}</identity>
+            <credential>{{ .Values.artifactory.persistence.googleStorage.credential }}</credential>
+            <path>{{ .Values.artifactory.persistence.googleStorage.path }}</path>
+        </provider>
+    </config>
+{{- end }}
+
+{{- if eq .Values.artifactory.persistence.type "aws-s3" }}
+    <!-- AWS S3 -->
+    <config version="2">
+        <chain>
+            <provider id="sharding-cluster" type="sharding-cluster">
+                <readBehavior>crossNetworkStrategy</readBehavior>
+                <writeBehavior>crossNetworkStrategy</writeBehavior>
+                <redundancy>{{ .Values.artifactory.persistence.redundancy }}</redundancy>
+                <minSpareUploaderExecutor>2</minSpareUploaderExecutor>
+                <sub-provider id="eventual-cluster" type="eventual-cluster">
+                    <provider id="retry" type="retry">
+                        <provider id="s3" type="s3"/>
+                    </provider>
+                </sub-provider>
+                <dynamic-provider id="remote" type="remote"/>
+                <property name="zones" value="local,remote"/>
+            </provider>
+        </chain>
+
+        <!-- Set max cache-fs size -->
+        <provider id="cache-fs" type="cache-fs">
+            <maxCacheSize>50000000000</maxCacheSize>
+        </provider>
+
+        <provider id="eventual-cluster" type="eventual-cluster">
+            <zone>local</zone>
+        </provider>
+
+        <provider id="remote" type="remote">
+            <checkPeriod>30</checkPeriod>
+            <timeout>10000</timeout>
+            <zone>remote</zone>
+        </provider>
+
+        <provider id="file-system" type="file-system">
+            <fileStoreDir>{{ .Values.artifactory.persistence.mountPath }}/data/filestore</fileStoreDir>
+            <tempDir>/tmp</tempDir>
+        </provider>
+
+        <provider id="s3" type="s3">
+            <endpoint>http://s3.amazonaws.com</endpoint>
+            <refreshCredentials>true</refreshCredentials>
+            <testConnection>false</testConnection>
+            <httpsOnly>false</httpsOnly>
+            <region>{{ .Values.artifactory.persistence.awsS3.region }}</region>
+            <bucketName>{{ .Values.artifactory.persistence.awsS3.bucketName }}</bucketName>
+            <identity>{{ .Values.artifactory.persistence.awsS3.identity }}</identity>
+            <credential>{{ .Values.artifactory.persistence.awsS3.credential }}</credential>
+            <path>{{ .Values.artifactory.persistence.awsS3.path }}</path>
+        </provider>
+    </config>
+{{- end }}

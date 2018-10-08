@@ -1,13 +1,21 @@
-## Bitnami Moodle` image version
+## Bitnami Moodle image version
 ## ref: https://hub.docker.com/r/bitnami/moodle/tags/
 ##
-image: bitnami/moodle:3.4.1-r0
-
-## Specify a imagePullPolicy
-## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-##
-imagePullPolicy: IfNotPresent
+image:
+  registry: docker.io
+  repository: bitnami/moodle
+  tag: 3.5.2-debian-9
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-moodle#configuration
@@ -24,6 +32,29 @@ moodleUsername: user
 ## ref: https://github.com/bitnami/bitnami-docker-moodle#configuration
 moodleEmail: user@example.com
 
+## Set to `yes` to allow the container to be started with blank passwords
+## ref: https://github.com/bitnami/bitnami-docker-moodle#environment-variables
+allowEmptyPassword: "yes"
+
+##
+## External database configuration
+##
+externalDatabase:
+  ## Database host
+  host:
+
+  ## Database host
+  port: 3306
+
+  ## Database user
+  user: bn_moodle
+
+  ## Database password
+  password:
+
+  ## Database name
+  database: bitnami_moodle
+
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-moodle/#smtp-configuration
 # smtpHost:
@@ -36,27 +67,45 @@ moodleEmail: user@example.com
 ## MariaDB chart configuration
 ##
 mariadb:
+  ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
+  enabled: true
+  ## Disable MariaDB replication
+  replication:
+    enabled: false
+
+  ## Create a database and a database user
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  db:
+    name: bitnami_moodle
+    user: bn_moodle
+    ## If the password is not specified, mariadb will generates a random password
+    ##
+    # password:
+
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##
-  # mariadbRootPassword:
+  # rootUser:
+  #   password:
 
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
-  persistence:
-    enabled: true
-    ## mariadb data Persistent Volume Storage Class
-    ## If defined, storageClassName: <storageClass>
-    ## If set to "-", storageClassName: "", which disables dynamic provisioning
-    ## If undefined (the default) or set to null, no storageClassName spec is
-    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-    ##   GKE, AWS & OpenStack)
-    ##
-    # storageClass: "-"
-    accessMode: ReadWriteOnce
-    size: 8Gi
-#    existingClaim: ""
+  master:
+    persistence:
+      enabled: true
+      ## mariadb data Persistent Volume Storage Class
+      ## If defined, storageClassName: <storageClass>
+      ## If set to "-", storageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      # storageClass: "-"
+      accessMode: ReadWriteOnce
+      size: 8Gi
+
 
   ## Define affinity for the pod
   ## Sometimes required when persistent volumes are defined externally
@@ -162,3 +211,18 @@ resources:
   requests:
     memory: 512Mi
     cpu: 300m
+
+## Configure extra options for liveness and readiness probes
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+livenessProbe:
+  initialDelaySeconds: 600
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 6
+  successThreshold: 1

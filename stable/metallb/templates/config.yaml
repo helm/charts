@@ -1,0 +1,14 @@
+{{- if .Values.configInline }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "metallb.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "metallb.chart" . }}
+    app: {{ template "metallb.name" . }}
+data:
+  config: |
+{{ toYaml .Values.configInline | indent 4 }}
+{{- end }}

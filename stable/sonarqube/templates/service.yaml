@@ -7,6 +7,10 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+    {{- range $key, $value := .Values.service.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -19,3 +23,9 @@ spec:
   selector:
     app: {{ template "sonarqube.name" . }}
     release: {{ .Release.Name }}
+  {{- if eq .Values.service.type "LoadBalancer"}}
+  loadBalancerSourceRanges: {{.Values.service.loadBalancerSourceRanges}}
+  {{- if .Values.service.loadBalancerIP}}
+  loadBalancerIP: {{.Values.service.loadBalancerIP}}
+  {{- end }}
+  {{- end }}

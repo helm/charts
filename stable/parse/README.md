@@ -12,6 +12,8 @@ $ helm install stable/parse
 
 This chart bootstraps a [Parse](https://github.com/bitnami/bitnami-docker-parse) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -41,34 +43,42 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Parse chart and their default values.
+The following table lists the configurable parameters of the Parse chart and their default values.
 
-|             Parameter              |              Description               |                   Default                   |
-|------------------------------------|----------------------------------------|---------------------------------------------|
-| `serviceType`                      | Kubernetes Service type                | `LoadBalancer`                              |
-| `loadBalancerIP`                   | `loadBalancerIP` for the Parse Service | `nil`                                       |
-| `server.image`                     | Parse server image                     | `bitnami/parse:{VERSION}`                   |
-| `server.imagePullPolicy`           | Parse server image pull policy         | `IfNotPresent`                              |
-| `server.port`                      | Parse server server port               | `1337`                                      |
-| `server.mountPath`                 | Parse server API mount path            | `/parse`                                    |
-| `server.appId`                     | Parse server App Id                    | `myappID`                                   |
-| `server.masterKey`                 | Parse server Master Key                | `random 10 character alphanumeric string`   |
-| `server.resources`                 | CPU/Memory resource requests/limits    | Memory: `512Mi`, CPU: `300m`                |
-| `dashboard.enabled`                | Enable parse dashboard                 | `true`                                      |
-| `dashboard.image`                  | Dashboard image                        | `bitnami/parse-dashboard:{VERSION}`         |
-| `dashboard.imagePullPolicy`        | Dashboard image pull policy            | `IfNotPresent`                              |
-| `dashboard.username`               | Dashboard username                     | `user`                                      |
-| `dashboard.password`               | Dashboard user password                | `random 10 character alphanumeric string`   |
-| `dashboard.appName`                | Dashboard application name             | `MyDashboard`                               |
-| `dashboard.resources`              | CPU/Memory resource requests/limits    | Memory: `512Mi`, CPU: `300m`                |
-| `persistence.enabled`              | Enable Parse persistence using PVC     | `true`                                      |
-| `persistence.storageClass`         | PVC Storage Class for Parse volume     | `nil` (uses alpha storage class annotation) |
-| `persistence.accessMode`           | PVC Access Mode for Parse volume       | `ReadWriteOnce`                             |
-| `persistence.size`                 | PVC Storage Request for Parse volume   | `8Gi`                                       |
-| `mongodb.persistence.enabled`      | Enable MongoDB persistence using PVC   | `true`                                      |
-| `mongodb.persistence.storageClass` | PVC Storage Class for MongoDB volume   | `nil` (uses alpha storage class annotation) |
-| `mongodb.persistence.accessMode`   | PVC Access Mode for MongoDB volume     | `ReadWriteOnce`                             |
-| `mongodb.persistence.size`         | PVC Storage Request for MongoDB volume | `8Gi`                                       |
+|             Parameter              |              Description               |                   Default                               |
+|------------------------------------|----------------------------------------|-------------------------------------------------------- |
+| `serviceType`                      | Kubernetes Service type                | `LoadBalancer`                                          |
+| `loadBalancerIP`                   | `loadBalancerIP` for the Parse Service | `nil`                                                   |
+| `server.image.registry`            | Parse image registry                   | `docker.io`                                             |
+| `server.image.repository`          | Parse image name                       | `bitnami/parse`                                         |
+| `server.image.tag`                 | Parse image tag                        | `{VERSION}`                                             |
+| `server.image.pullPolicy`          | Image pull policy                      | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `server.image.pullSecrets`         | Specify image pull secrets             | `nil`                                                   |
+| `server.port`                      | Parse server server port               | `1337`                                                  |
+| `server.mountPath`                 | Parse server API mount path            | `/parse`                                                |
+| `server.appId`                     | Parse server App Id                    | `myappID`                                               |
+| `server.masterKey`                 | Parse server Master Key                | `random 10 character alphanumeric string`               |
+| `server.resources`                 | CPU/Memory resource requests/limits    | Memory: `512Mi`, CPU: `300m`                            |
+| `dashboard.enabled`                | Enable parse dashboard                 | `true`                                                  |
+| `dashboard.image.registry`         | Dashboard image registry               | `docker.io`                                             |
+| `dashboard.image.repository`       | Dashboard image name                   | `bitnami/parse-dashboard`                               |
+| `dashboard.image.tag`              | Dashboard image tag                    | `{VERSION}`                                             |
+| `dashboard.image.pullPolicy`       | Image pull policy                      | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `dashboard.image.pullSecrets`      | Specify image pull secrets             | `nil`                                                   |
+| `dashboard.username`               | Dashboard username                     | `user`                                                  |
+| `dashboard.password`               | Dashboard user password                | `random 10 character alphanumeric string`               |
+| `dashboard.appName`                | Dashboard application name             | `MyDashboard`                                           |
+| `dashboard.resources`              | CPU/Memory resource requests/limits    | Memory: `512Mi`, CPU: `300m`                            |
+| `persistence.enabled`              | Enable Parse persistence using PVC     | `true`                                                  |
+| `persistence.storageClass`         | PVC Storage Class for Parse volume     | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`           | PVC Access Mode for Parse volume       | `ReadWriteOnce`                                         |
+| `persistence.size`                 | PVC Storage Request for Parse volume   | `8Gi`                                                   |
+| `mongodb.usePassword`              | Enable MongoDB password authentication | `true`                                                  |
+| `mongodb.password`                 | MongoDB admin password                 | `nil`                                                     |
+| `mongodb.persistence.enabled`      | Enable MongoDB persistence using PVC   | `true`                                                  |
+| `mongodb.persistence.storageClass` | PVC Storage Class for MongoDB volume   | `nil` (uses alpha storage class annotation)             |
+| `mongodb.persistence.accessMode`   | PVC Access Mode for MongoDB volume     | `ReadWriteOnce`                                         |
+| `mongodb.persistence.size`         | PVC Storage Request for MongoDB volume | `8Gi`                                                   |
 
 The above parameters map to the env variables defined in [bitnami/parse](http://github.com/bitnami/bitnami-docker-parse). For more information please refer to the [bitnami/parse](http://github.com/bitnami/bitnami-docker-parse) image documentation.
 
@@ -110,3 +120,16 @@ The [Bitnami Parse](https://github.com/bitnami/bitnami-docker-parse) image store
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is parse:
+
+```console
+$ kubectl patch deployment parse-parse-dashboard --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl patch deployment parse-parse-server --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl patch deployment parse-mongodb --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+```
