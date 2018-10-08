@@ -36,7 +36,7 @@ spec:
           volumeMounts:
   {{- range $volumes }}
             - name: gerrit-{{ .name }}
-              mountPath: {{ .path }}
+              mountPath: /var/gerrit/{{ .name }}
   {{end}}
       containers:
         - name: {{ .Chart.Name }}
