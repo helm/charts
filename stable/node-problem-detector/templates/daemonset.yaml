@@ -16,12 +16,11 @@ spec:
 {{ toYaml .Values.annotations | indent 8 }}
 {{- end }}
     spec:
-      serviceAccountName: {{ template "node-problem-detector.fullname" . }}
+      serviceAccountName: {{ template "node-problem-detector.serviceAccountName" . }}
       containers:
       - name: npd
         image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
-
         command:
         - "/bin/sh"
         - "-c"

@@ -28,3 +28,12 @@ release: {{.Release.Name }}
 {{ toYaml .Values.podLabels }}
 {{- end }}
 {{- end }}
+
+{{/* Create the name of the service account to use */}}
+{{- define "node-problem-detector.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "node-problem-detector.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
