@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "papertrail.fullname" . }}-config
+  labels:
+    app: {{ template "papertrail.name" . }}
+    chart: {{ template "papertrail.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  fluent.conf: |-
+    @include kubernetes.conf
+    @include systemd.conf
+
+    # Capture all unmatched tags
+    <match **>
+      @type papertrail
+      papertrail_host "#{ENV['FLUENT_PAPERTRAIL_HOST']}"
+      papertrail_port "#{ENV['FLUENT_PAPERTRAIL_PORT']}"
+      num_threads 4
+      buffer_type file
+      buffer_path /var/log/fluentd-buffer-papertrail
+    </match>

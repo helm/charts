@@ -1,0 +1,12 @@
+name: papertrail
+home: https://papertrailapp.com
+icon: https://papertrail.global.ssl.fastly.net/images/pt-logo2.svg?1538775359
+version: 0.0.1
+appVersion: 0.2.6
+description: Papertrail is a hosted log aggregation platform. This chart is the agent to collect and send the logs.
+keywords:
+- papertrail
+- solarwinds
+- logs
+sources:
+- https://github.com/solarwinds/fluent-plugin-papertrail

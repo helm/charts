@@ -1,0 +1,57 @@
+{{- if eq .Values.daemonset.type "logspout" }}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name:  {{ template "papertrail.fullname" . }}
+  labels:
+    app: {{ template "papertrail.name" . }}
+    chart: {{ template "papertrail.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "papertrail.name" . }}
+        release: {{ .Release.Name }}
+      {{- if .Values.daemonset.podAnnotations }}
+      annotations:
+{{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.daemonset.tolerations }}
+      tolerations:
+{{ toYaml .Values.daemonset.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.daemonset.affinity }}
+      affinity:
+{{ toYaml .Values.daemonset.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.daemonset.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
+      {{- end }}
+      containers:
+        - name: logspout
+          image: "{{ .Values.logspoutImage.repository }}:{{ .Values.logspoutImage.tag }}"
+          imagePullPolicy: {{ .Values.logspoutImage.pullPolicy }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          env:
+            - name: SYSLOG_TAG
+              value: "{{ printf "e3sgaW5kZXggLkNvbnRhaW5lci5Db25maWcuTGFiZWxzICJpby5rdWJlcm5ldGVzLnBvZC5uYW1lc3BhY2UiIH19W3t7IGluZGV4IC5Db250YWluZXIuQ29uZmlnLkxhYmVscyAiaW8ua3ViZXJuZXRlcy5wb2QubmFtZSIgfX1d" | b64dec }}"
+            - name: SYSLOG_HOSTNAME
+              value: "{{ printf "e3sgaW5kZXggLkNvbnRhaW5lci5Db25maWcuTGFiZWxzICJpby5rdWJlcm5ldGVzLmNvbnRhaW5lci5uYW1lIiB9fQ==" | b64dec }}"
+            - name: ROUTE_URIS
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "papertrail.logspout.secretName" . }}"
+                  key: papertrail-destination
+          volumeMounts:
+            - name: log
+              mountPath: {{ .Values.papertrail.logspout.dockerSock }}
+      volumes:
+        - name: log
+          hostPath:
+              path: {{ .Values.papertrail.logspout.dockerSock }}
+{{- end }}

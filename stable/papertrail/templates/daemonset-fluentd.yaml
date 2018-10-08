@@ -1,0 +1,76 @@
+{{- if eq .Values.daemonset.type "fluentd" }}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name:  {{ template "papertrail.fullname" . }}
+  labels:
+    app: {{ template "papertrail.name" . }}
+    chart: {{ template "papertrail.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "papertrail.name" . }}
+        release: {{ .Release.Name }}
+      {{- if .Values.daemonset.podAnnotations }}
+      annotations:
+{{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.daemonset.tolerations }}
+      tolerations:
+{{ toYaml .Values.daemonset.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.daemonset.affinity }}
+      affinity:
+{{ toYaml .Values.daemonset.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.daemonset.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
+      {{- end }}
+      volumes:
+        - name: varlog
+          hostPath:
+            path: {{ .Values.papertrail.fluentd.varLogDir }}
+        - name: varlibdockercontainers
+          hostPath:
+            path: {{ .Values.papertrail.fluentd.varLibDockerContainersDir }}
+        - name: config
+          configMap:
+            name: fluentd-papertrail-config
+            items:
+            - key: fluent.conf
+              path: fluent.conf
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: fluentd
+          image: "{{ .Values.fluentdImage.repository }}:{{ .Values.fluentdImage.tag }}"
+          imagePullPolicy: {{ .Values.fluentdImage.pullPolicy }}
+          volumeMounts:
+          - name: varlog
+            mountPath: {{ .Values.papertrail.fluentd.varLogDir }}
+          - name: varlibdockercontainers
+            mountPath: {{ .Values.papertrail.fluentd.varLibDockerContainersDir }}
+            readOnly: true
+          - name: config
+            mountPath: /fluentd/etc/fluent.conf
+            subPath: fluent.conf
+          env:
+            - name: FLUENT_PAPERTRAIL_HOST
+              value: "{{ template "papertrail.host" }}"
+            - name: FLUENT_PAPERTRAIL_PORT
+              value: "{{ template "papertrail.port" }}"
+            - name: FLUENT_HOSTNAME
+              value: "{{ .Values.papertrail.hostname }}"
+            - name: K8S_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+  updateStrategy:
+    type: {{ default "RollingUpdate" .Values.daemonset.updateStrategy | quote }}
+{{- end }}

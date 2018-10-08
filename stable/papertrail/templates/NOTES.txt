@@ -1,0 +1,17 @@
+{{- if and (.Values.papertrail.host) (.Values.papertrail.port) }}
+The Papertrail DaemonSet is spinner up. You should start to see logs in your Papertrail
+dashboard soon. Head over to the dashboard to check for new events:
+     https://papertrailapp.com/
+ {{- else }}
+##############################################################################
+####          ERROR: You did not set a Papertrail host or port            ####
+#####                These are required to send logs to papertrail        ####
+##############################################################################
+ This deployment will not be complete until you get your host and port from
+ https://papertrailapp.com/account/destinations
+ Then run:
+     helm upgrade {{ .Release.Name }} \
+        --set papertrail.host=YOUR-HOST \
+        --set papertrail.port=YOUR-PORT \
+        stable/papertrail
+{{- end }}
