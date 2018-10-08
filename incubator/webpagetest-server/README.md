@@ -48,8 +48,9 @@ The following table lists the configurable parameters of the WebPageTest chart a
 
 | Parameter                            | Description                                | Default                                                    |
 | -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
-| `image`                              | WebPageTest server image                   | `webpagetest/server:{VERSION}`                              |
-| `imagePullPolicy`                    | Image pull policy                          | `IfNotPresent`                                             |
+| `image.repository`                              | WebPageTest server image                   | `timothyclarke/wptserver`                              |
+| `image.tag`                              | WebPageTest server tag                   | `2018-03-08`                              |
+| `image.pullPolicy`                    | Image pull policy                          | `IfNotPresent`                                             |
 | `ec2Locations.enabled`               | Enables use of EC2 AMI's                   | `false`                                                     |
 | `ec2Locations.customUserDataSecret`  | Controls if this chart should use an externally created secret | `false` |
 | `ec2Locations.userData`              | Data Structure which is used to generate settings | sample data only                                    |

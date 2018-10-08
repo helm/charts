@@ -20,6 +20,12 @@ spec:
     type: RollingUpdate
   template:
     metadata:
+      {{- if .Values.master.annotations }}
+      annotations:
+        {{- range .Values.master.annotations }}
+        {{ .key }}: '{{ .value }}'
+        {{- end }}
+      {{- end }}
       labels:
         app: "{{ template "mariadb.name" . }}"
         component: "master"
@@ -191,7 +197,6 @@ spec:
         name: data
         labels:
           app: "{{ template "mariadb.name" . }}"
-          chart: {{ template "mariadb.chart" . }}
           component: "master"
           release: {{ .Release.Name | quote }}
           heritage: {{ .Release.Service | quote }}

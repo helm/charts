@@ -15,8 +15,15 @@ data:
     {{- else }}
     logLevel = "INFO"
     {{- end }}
+    {{- if .Values.traefikLogFormat }}
+    [traefikLog]
+      format = "{{ .Values.traefikLogFormat }}"
+    {{- end }}
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true
+    {{- end }}
+    {{- if .Values.rootCAs }}
+    {{ template "traefik.rootCAs" . }}
     {{- end }}
     {{- if .Values.ssl.insecureSkipVerify }}
     InsecureSkipVerify = true
@@ -37,6 +44,10 @@ data:
         [entryPoints.http.proxyProtocol]
         {{ template "traefik.trustedips" . }}
       {{- end }}
+      {{- if .Values.forwardedHeaders.enabled }}
+        [entryPoints.http.forwardedHeaders]
+        {{ template "traefik.forwardedHeadersTrustedIPs" . }}
+      {{- end }}
         {{- if .Values.ssl.enforced }}
         [entryPoints.http.redirect]
           regex = "^http://(.*)"
@@ -53,15 +64,29 @@ data:
         [entryPoints.https.proxyProtocol]
         {{ template "traefik.trustedips" . }}
       {{- end }}
+      {{- if .Values.forwardedHeaders.enabled }}
+        [entryPoints.https.forwardedHeaders]
+        {{ template "traefik.forwardedHeadersTrustedIPs" . }}
+      {{- end }}
       {{- if not .Values.ssl.upstream }}
         [entryPoints.https.tls]
           {{- if .Values.ssl.tlsMinVersion }}
           minVersion = "{{ .Values.ssl.tlsMinVersion }}"
           {{- end }}
+          {{- if .Values.ssl.cipherSuites }}
+          {{ template "traefik.ssl.cipherSuites" . }}
+          {{- end }}
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
       {{- end }}
+        {{- if .Values.ssl.auth }}
+        {{- if .Values.ssl.auth.basic }}
+        [entryPoints.https.auth]
+          [entryPoints.https.auth.basic]
+            users = [{{ range $key, $value := .Values.ssl.auth.basic }}"{{ $key }}:{{ $value }}",{{ end }}]
+        {{- end }}
+        {{- end }}
       {{- else }}
       [entryPoints.httpn]
       {{- if .Values.whiteListSourceRange }}
@@ -99,6 +124,18 @@ data:
       {{- end}}
       {{- if .Values.kubernetes.ingressClass }}
     ingressClass = {{ .Values.kubernetes.ingressClass | quote }}
+      {{- end}}
+      {{- if .Values.kubernetes.ingressEndpoint }}
+      [kubernetes.ingressEndpoint]
+        {{- if .Values.kubernetes.ingressEndpoint.hostname }}
+      hostname = {{ .Values.kubernetes.ingressEndpoint.hostname | quote }}
+        {{- end}}
+        {{- if .Values.kubernetes.ingressEndpoint.ip }}
+      ip = {{ .Values.kubernetes.ingressEndpoint.ip | quote }}
+        {{- end}}
+        {{- if .Values.kubernetes.ingressEndpoint.publishedService }}
+      publishedService = {{ .Values.kubernetes.ingressEndpoint.publishedService | quote }}
+        {{- end}}
       {{- end}}
     {{- end}}
     {{- if .Values.accessLogs.enabled }}
@@ -205,6 +242,8 @@ data:
     {{- else if eq .Values.acme.challengeType "http-01" }}
       [acme.httpChallenge]
       entryPoint = "http"
+    {{- else if eq .Values.acme.challengeType "tls-alpn-01" }}
+      [acme.tlsChallenge]
     {{- end }}
     {{- if .Values.acme.domains.enabled }}
     {{- if .Values.acme.domains.domainsList }}{{ template "traefik.acme.domains" . }}{{- end }}

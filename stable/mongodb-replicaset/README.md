@@ -73,6 +73,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     | ``                                                  |
 | `serviceAnnotations`                | Annotations to be added to the service                                    | `{}`                                                |
 | `configmap`                         | Content of the MongoDB config file                                        | ``                                                  |
+| `initMongodStandalone`              | If set, initContainer executes script in standalone mode                  | ``                                                  |
 | `nodeSelector`                      | Node labels for pod assignment                                            | `{}`                                                |
 | `affinity`                          | Node/pod affinities                                                       | `{}`                                                |
 | `tolerations`                       | List of node taints to tolerate                                           | `[]`                                                |
@@ -355,3 +356,22 @@ connecting to: mongodb://127.0.0.1:27017
 ### Scaling
 
 Scaling should be managed by `helm upgrade`, which is the recommended way.
+
+### Indexes and Maintenance
+
+You can run Mongo in standalone mode and execute Javascript code on each replica at initContainer time using `initMongodStandalone`.
+This allows you to create indexes on replicasets following [best practices](https://docs.mongodb.com/manual/tutorial/build-indexes-on-replica-sets/).
+
+#### Example: Creating Indexes
+
+```js
+initMongodStandalone: |+
+  db = db.getSiblingDB("mydb")
+  db.my_users.createIndex({email: 1})
+```
+
+Tail the logs to debug running indexes or to follow their progress
+
+```sh
+kubectl exec -it $RELEASE-mongodb-replicaset-0 -c bootstrap -- tail -f /work-dir/log.txt
+```
