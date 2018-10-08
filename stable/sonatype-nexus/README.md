@@ -119,8 +119,6 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `config.enabled`                            | Enable configmap                    | `false`                                 |
 | `config.mountPath`                          | Path to mount the config            | `/sonatype-nexus-conf`                  |
 | `config.data`                               | Configmap data                      | `nil`                                   |
-| `deployment.additionalVolumes`              | Add additional volumes              | `nil`                                   |
-| `deployment.additionalVolumesMounts`        | Mount additional volumes to nexus container    | `nil`                        |
 
 If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables need to be configured
 
