@@ -19,7 +19,7 @@ apiService:
 
 image:
   repository: gcr.io/google_containers/metrics-server-amd64
-  tag: v0.3.0
+  tag: v0.3.1
   pullPolicy: IfNotPresent
 
 args:
