@@ -3,7 +3,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ include "elasticsearch-exporter.fullname" . }}
+  {{- if .Values.serviceMonitor.namespace }}
   namespace: {{ .Values.serviceMonitor.namespace }}
+  {{- end }}
   labels:
     {{- range $key, $value := .Values.serviceMonitor.selector }}
       {{ $key }}: {{ $value | quote }}
