@@ -1,5 +1,5 @@
 name: kiam
-version: 1.2.1
+version: 1.2.2
 appVersion: 2.8
 description: Integrate AWS IAM with Kubernetes
 keywords:
