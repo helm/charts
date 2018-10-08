@@ -27,12 +27,12 @@ To create a new topic:
 
 To listen for messages on a topic:
 
-  kubectl -n {{ .Release.Namespace }} exec -ti testclient -- /usr/bin/kafka-console-consumer --bootstrap-server {{ .Release.Name }}-kafka:9092 --topic test1 --from-beginning
+  kubectl -n {{ .Release.Namespace }} exec -ti testclient -- /usr/bin/kafka-console-consumer --bootstrap-server {{ include "kafka.fullname" . }}:9092 --topic test1 --from-beginning
 
 To stop the listener session above press: Ctrl+C
 
 To start an interactive message producer session:
-  kubectl -n {{ .Release.Namespace }} exec -ti testclient -- /usr/bin/kafka-console-producer --broker-list {{ .Release.Name }}-kafka-headless:9092 --topic test1
+  kubectl -n {{ .Release.Namespace }} exec -ti testclient -- /usr/bin/kafka-console-producer --broker-list {{ include "kafka.fullname" . }}-headless:9092 --topic test1
 
 To create a message in the above session, simply type the message and press "enter"
 To end the producer session try: Ctrl+C
