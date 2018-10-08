@@ -1,4 +1,3 @@
-
 {{ if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
 apiVersion: v1
 kind: ConfigMap
