@@ -44,7 +44,7 @@ chart and their default values.
 | Parameter                        | Description                                                  | Default                                                    |
 | -----------------------          | ----------------------------------                           | ---------------------------------------------------------- |
 | `image.repository`                | Gogs image                                                   | `gogs/gogs`                                                |
-| `image.tag`                       | Gogs image tag                                           | `0.11.29`                                                  |
+| `image.tag`                       | Gogs image tag                                           | `0.11.66`                                                  |
 | `image.pullPolicy`                | Gogs image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
 | `postgresql.install`             | Weather or not to install PostgreSQL dependency              | `true`                                                     |
 | `postgresql.postgresHost`        | PostgreSQL host (if `postgresql.install == false`)           | `nil`                                                      |
