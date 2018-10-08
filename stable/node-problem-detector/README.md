@@ -37,6 +37,7 @@ The following table lists the configurable parameters for this chart and their d
 | Parameter                          | Description                     | Default                                                     |
 | ---------------------------------- | --------------------------------|-------------------------------------------------------------|
 | `annotations`                      | Optional daemonset annotations  | `NULL`                                                      |
+| `affinity`                         | Map of node/pod affinities      | `{}`                                                        |
 | `settings.log_monitors`            | System log monitor config files | `/config/kernel-monitor.json`,`/config/docker-monitor.json` |
 | `image.repository`                 | Image                           | `k8s.gcr.io/node-problem-detector`                          |
 | `image.tag`                        | Image tag                       | `v0.5.0`                                                    |
