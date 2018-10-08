@@ -9,7 +9,11 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   application.conf: |-
+    {{- if .Values.config.secret }}
+    secret = {{ .Values.config.secret | quote }}
+    {{- else }}
     secret = {{ randAlphaNum 64 | quote }}
+    {{- end }}
 
     basePath = {{ .Values.config.basePath | quote }}
 
