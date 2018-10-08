@@ -14,13 +14,13 @@ spec:
     port: 4369
     targetPort: epmd
   - name: amqp
-    port: {{ .Values.rabbitmq.nodePort }}
+    port: {{ .Values.rabbitmq.amqpPort }}
     targetPort: amqp
     {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.rabbitmq.nodePort))) }}
     nodePort: {{ .Values.rabbitmq.nodePort }}
     {{- end }}
   - name: dist
-    port: {{ .Values.rabbitmq.nodePort | add 20000 }}
+    port: {{ .Values.rabbitmq.distPort }}
     targetPort: dist
   - name: stats
     port: {{ .Values.rabbitmq.managerPort }}
