@@ -22,6 +22,9 @@ data:
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true
     {{- end }}
+    {{- if .Values.rootCAs }}
+    {{ template "traefik.rootCAs" . }}
+    {{- end }}
     {{- if .Values.ssl.insecureSkipVerify }}
     InsecureSkipVerify = true
     {{- end }}
@@ -41,6 +44,10 @@ data:
         [entryPoints.http.proxyProtocol]
         {{ template "traefik.trustedips" . }}
       {{- end }}
+      {{- if .Values.forwardedHeaders.enabled }}
+        [entryPoints.http.forwardedHeaders]
+        {{ template "traefik.forwardedHeadersTrustedIPs" . }}
+      {{- end }}
         {{- if .Values.ssl.enforced }}
         [entryPoints.http.redirect]
           regex = "^http://(.*)"
@@ -57,10 +64,17 @@ data:
         [entryPoints.https.proxyProtocol]
         {{ template "traefik.trustedips" . }}
       {{- end }}
+      {{- if .Values.forwardedHeaders.enabled }}
+        [entryPoints.https.forwardedHeaders]
+        {{ template "traefik.forwardedHeadersTrustedIPs" . }}
+      {{- end }}
       {{- if not .Values.ssl.upstream }}
         [entryPoints.https.tls]
           {{- if .Values.ssl.tlsMinVersion }}
           minVersion = "{{ .Values.ssl.tlsMinVersion }}"
+          {{- end }}
+          {{- if .Values.ssl.cipherSuites }}
+          {{ template "traefik.ssl.cipherSuites" . }}
           {{- end }}
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
