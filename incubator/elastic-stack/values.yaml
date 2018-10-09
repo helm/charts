@@ -9,7 +9,7 @@ kibana:
 logstash:
   enabled: true
 
-fluentd:
+fluentd-elasticsearch:
   enabled: false
 
 fluent-bit:

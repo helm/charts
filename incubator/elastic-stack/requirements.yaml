@@ -9,10 +9,10 @@ dependencies:
   version: ^0.6.0
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   condition: logstash.enabled
-- name: fluentd
-  version: ^0.1.0
-  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-  condition: fluentd.enabled
+- name: fluentd-elasticsearch
+  version: ^1.0.2
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: fluentd-elasticsearch.enabled
 - name: fluent-bit
   version: ^0.6.0
   repository: https://kubernetes-charts.storage.googleapis.com/
