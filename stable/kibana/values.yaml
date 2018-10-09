@@ -1,6 +1,6 @@
 image:
   repository: "docker.elastic.co/kibana/kibana-oss"
-  tag: "6.3.2"
+  tag: "6.4.2"
   pullPolicy: "IfNotPresent"
 
 commandline:
@@ -33,6 +33,7 @@ service:
   type: ClusterIP
   externalPort: 443
   internalPort: 5601
+  # authProxyPort: 5602 To be used with authProxyEnabled and a proxy extraContainer
   ## External IP addresses of service
   ## Default: nil
   ##
@@ -43,13 +44,14 @@ service:
   ## Default: nil
   ##
   # loadBalancerIP: 10.2.2.2
-  # nodePort: 30000
   annotations:
     # Annotation example: setup ssl with aws cert when service.type is LoadBalancer
     # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:EXAMPLE_CERT
   labels:
     ## Label example: show service URL in `kubectl cluster-info`
     # kubernetes.io/cluster-service: "true"
+  ## Limit load balancer source ips to list of CIDRs (where available)
+  # loadBalancerSourceRanges: []
 
 ingress:
   enabled: false
@@ -76,6 +78,22 @@ readinessProbe:
   initialDelaySeconds: 30
   timeoutSeconds: 10
 
+# Enable an authproxy. Specify container in extraContainers
+authProxyEnabled: false
+
+extraContainers: |
+# - name: proxy
+#   image: quay.io/gambol99/keycloak-proxy:latest
+#   args:
+#     - --resource=uri=/*
+#     - --discovery-url=https://discovery-url
+#     - --client-id=client
+#     - --client-secret=secret
+#     - --listen=0.0.0.0:5602
+#     - --upstream-url=http://127.0.0.1:5601
+#   ports:
+#     - name: web
+#       containerPort: 9090
 resources: {}
   # limits:
   #   cpu: 100m
@@ -111,3 +129,8 @@ dashboardImport:
     username: myuser
     password: mypass
   dashboards: {}
+
+# List of pluginns to install using initContainer
+plugins:
+  # - https://github.com/sivasamyk/logtrail/releases/download/v0.1.29/logtrail-6.4.0-0.1.29.zip
+  # - other_plugin

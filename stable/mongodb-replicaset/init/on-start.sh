@@ -45,6 +45,20 @@ shutdown_mongo() {
     mongo admin "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.shutdownServer({$args})"
 }
 
+init_mongod_standalone() {
+    log "Starting a MongoDB instance as standalone..."
+    mongod --config /data/configdb/mongod.conf --dbpath=/data/db "${auth_args[@]}" --bind_ip=0.0.0.0 >> /work-dir/log.txt 2>&1 &
+    log "Waiting for MongoDB to be ready..."
+    until mongo "${ssl_args[@]}" --eval "db.adminCommand('ping')"; do
+        log "Retrying..."
+        sleep 2
+    done
+    log "Initialized."
+    log "Running init js script on standalone mongod..."
+    mongo admin "${admin_creds[@]}" "${ssl_args[@]}" /init/initMongodStandalone.js
+    shutdown_mongo
+}
+
 my_hostname=$(hostname)
 log "Bootstrapping MongoDB replica set member: $my_hostname"
 
@@ -97,10 +111,16 @@ EOL
     rm mongo.key mongo.crt
 fi
 
+if [ -f /init/initMongodStandalone.js ]
+then
+    init_mongod_standalone
+else
+    log "Skipping init mongod standalone script"
+fi
 
 log "Peers: ${peers[*]}"
 
-log "Starting a MongoDB instance..."
+log "Starting a MongoDB instance as replica..."
 mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port=27017 "${auth_args[@]}" --bind_ip=0.0.0.0 >> /work-dir/log.txt 2>&1 &
 
 log "Waiting for MongoDB to be ready..."
@@ -116,7 +136,11 @@ for peer in "${peers[@]}"; do
     if mongo admin --host "$peer" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.isMaster()" | grep '"ismaster" : true'; then
         log "Found master: $peer"
         log "Adding myself ($service_name) to replica set..."
-        mongo admin --host "$peer" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.add('$service_name')"
+        if mongo admin --host "$peer" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.add('$service_name')" | grep 'Quorum check failed'; then
+            log 'Quorum check failed, unable to join replicaset. Exiting prematurely.'
+            shutdown_mongo
+            exit 1
+        fi
 
         sleep 3
 
@@ -171,4 +195,3 @@ if mongo "${ssl_args[@]}" --eval "rs.status()" | grep "no replset config has bee
 fi
 
 shutdown_mongo
-log "Good bye."

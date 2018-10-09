@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.1.35-debian-9
+  tag: 10.1.36-debian-9
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -20,6 +20,7 @@ image:
 service:
   ## Kubernetes service type, ClusterIP and NodePort are supported at present
   type: ClusterIP
+  # clusterIp: None
   port: 3306
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
@@ -75,7 +76,27 @@ replication:
   forcePassword: false
 
 master:
+  ## Mariadb Master additional pod annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  # annotations:
+  #   - key: key1
+  #     value: value1
+
+  ## Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## Kept for backwards compatibility. You can now disable it by removing it.
+  ## if you wish to set it through master.affinity.podAntiAffinity instead.
+  ##
   antiAffinity: soft
+
+  ## Tolerations for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
@@ -83,6 +104,9 @@ master:
     ## If true, use a Persistent Volume Claim, If false, use emptyDir
     ##
     enabled: true
+    # Enable persistence using an existing PVC
+    # existingClaim:
+    # mountPath:
     ## Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -148,7 +172,7 @@ master:
     failureThreshold: 3
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 15
+    initialDelaySeconds: 30
     ##
     ## Default Kubernetes values
     periodSeconds: 10
@@ -158,7 +182,28 @@ master:
 
 slave:
   replicas: 1
+
+  ## Mariadb Slave additional pod annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  # annotations:
+  #   - key: key1
+  #     value: value1
+
+  ## Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## Kept for backwards compatibility. You can now disable it by removing it.
+  ## if you wish to set it through slave.affinity.podAntiAffinity instead.
+  ##
   antiAffinity: soft
+
+  ## Tolerations for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
   persistence:
     ## If true, use a Persistent Volume Claim, If false, use emptyDir
     ##
@@ -218,7 +263,7 @@ slave:
     failureThreshold: 3
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 15
+    initialDelaySeconds: 45
     ##
     ## Default Kubernetes values
     periodSeconds: 10

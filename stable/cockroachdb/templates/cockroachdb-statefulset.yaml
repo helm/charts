@@ -91,6 +91,8 @@ metadata:
   # This service is meant to be used by clients of the database. It exposes a ClusterIP that will
   # automatically load balance connections to the different database pods.
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-public"
+  annotations:
+{{ toYaml .Values.Service.annotations | indent 4 }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -101,13 +103,18 @@ spec:
   ports:
   # The main port, served by gRPC, serves Postgres-flavor SQL, internode
   # traffic and the cli.
-  - port: {{ .Values.GrpcPort }}
-    targetPort: {{ .Values.GrpcPort }}
-    name: grpc
+  - port: {{ .Values.ExternalGrpcPort }}
+    targetPort: {{ .Values.InternalGrpcPort }}
+    name: {{ .Values.ExternalGrpcName }}
   # The secondary port serves the UI as well as health and debug endpoints.
-  - port: {{ .Values.HttpPort }}
-    targetPort: {{ .Values.HttpPort }}
-    name: http
+  - port: {{ .Values.ExternalHttpPort }}
+    targetPort: {{ .Values.InternalHttpPort }}
+    name: {{ .Values.HttpName }}
+    {{- if ne .Values.InternalGrpcPort .Values.ExternalGrpcPort }}
+  - port: {{ .Values.InternalGrpcPort }}
+    targetPort: {{ .Values.InternalGrpcPort }}
+    name: {{ .Values.InternalGrpcName }}
+    {{- end }}
   selector:
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
 ---
@@ -133,15 +140,21 @@ metadata:
     # Enable automatic monitoring of all instances when Prometheus is running in the cluster.
     prometheus.io/scrape: "true"
     prometheus.io/path: "_status/vars"
-    prometheus.io/port: "8080"
+    prometheus.io/port: "{{ .Values.ExternalHttpPort }}"
 spec:
   ports:
-  - port: {{ .Values.GrpcPort }}
-    targetPort: {{ .Values.GrpcPort }}
-    name: grpc
-  - port: {{ .Values.HttpPort }}
-    targetPort: {{ .Values.HttpPort }}
-    name: http
+  - port: {{ .Values.ExternalGrpcPort }}
+    targetPort: {{ .Values.InternalGrpcPort }}
+    name: {{ .Values.ExternalGrpcName }}
+  # The secondary port serves the UI as well as health and debug endpoints.
+  - port: {{ .Values.ExternalHttpPort }}
+    targetPort: {{ .Values.InternalHttpPort }}
+    name: {{ .Values.HttpName }}
+    {{- if ne .Values.InternalGrpcPort .Values.ExternalGrpcPort }}
+  - port: {{ .Values.InternalGrpcPort }}
+    targetPort: {{ .Values.InternalGrpcPort }}
+    name: {{ .Values.InternalGrpcName }}
+    {{- end }}
   # We want all pods in the StatefulSet to have their addresses published for
   # the sake of the other CockroachDB pods even before they're ready, since they
   # have to be able to talk to each other in order to become ready.
@@ -172,6 +185,11 @@ metadata:
 spec:
   serviceName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
   replicas: {{ default 3 .Values.Replicas }}
+  selector:
+    matchLabels:
+      heritage: {{ .Release.Service | quote }}
+      release: {{ .Release.Name | quote }}
+      component: "{{ .Release.Name }}-{{ .Values.Component }}"
   template:
     metadata:
       labels:
@@ -224,14 +242,18 @@ spec:
       nodeSelector:
 {{ toYaml .Values.NodeSelector | indent 8 }}
       {{- end }}
+{{- if .Values.Tolerations }}
+      tolerations:
+{{ toYaml .Values.Tolerations | indent 8 }}
+{{- end }}
       containers:
       - name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
         imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         ports:
-        - containerPort: {{ .Values.GrpcPort }}
+        - containerPort: {{ .Values.InternalGrpcPort }}
           name: grpc
-        - containerPort: {{ .Values.HttpPort }}
+        - containerPort: {{ .Values.InternalHttpPort }}
           name: http
         livenessProbe:
           httpGet:
@@ -257,6 +279,8 @@ spec:
         env:
         - name: STATEFULSET_NAME
           value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+        - name: STATEFULSET_FQDN
+          value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}.{{ .Release.Namespace }}.svc.{{ .Values.ClusterDomain }}"
         - name: COCKROACH_CHANNEL
           value: kubernetes-helm
         volumeMounts:
@@ -271,7 +295,7 @@ spec:
           - "-ecx"
             # The use of qualified `hostname -f` is crucial:
             # Other nodes aren't able to look up the unqualified hostname.
-          - "exec /cockroach/cockroach start --logtostderr {{ if .Values.Secure.Enabled }}--certs-dir /cockroach/cockroach-certs{{ else }}--insecure{{ end }} --advertise-host $(hostname -f) --http-host 0.0.0.0 --cache {{ .Values.CacheSize }} --max-sql-memory {{ .Values.MaxSQLMemory }} --join ${STATEFULSET_NAME}-0.${STATEFULSET_NAME},${STATEFULSET_NAME}-1.${STATEFULSET_NAME},${STATEFULSET_NAME}-2.${STATEFULSET_NAME}"
+          - "exec /cockroach/cockroach start --logtostderr {{ if .Values.Secure.Enabled }}--certs-dir /cockroach/cockroach-certs{{ else }}--insecure{{ end }} --advertise-host $(hostname).${STATEFULSET_FQDN} --http-host 0.0.0.0 --http-port {{ .Values.InternalHttpPort }} --port {{ .Values.InternalGrpcPort }} --cache {{ .Values.CacheSize }} --max-sql-memory {{ .Values.MaxSQLMemory }} {{ if .Values.Locality }}--locality={{.Values.Locality }}{{ end }} --join {{ if .Values.JoinExisting }}{{ join "," .Values.JoinExisting }}{{ else }}${STATEFULSET_NAME}-0.${STATEFULSET_FQDN}:{{ .Values.InternalGrpcPort }},${STATEFULSET_NAME}-1.${STATEFULSET_FQDN}:{{ .Values.InternalGrpcPort }},${STATEFULSET_NAME}-2.${STATEFULSET_FQDN}:{{ .Values.InternalGrpcPort }}{{ end }}"
       # No pre-stop hook is required, a SIGTERM plus some time is all that's
       # needed for graceful shutdown of a node.
       terminationGracePeriodSeconds: 60

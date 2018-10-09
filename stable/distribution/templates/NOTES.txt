@@ -1,5 +1,7 @@
 Congratulations. You have just deployed JFrog Distribution!
 
+#### THIS CHART IS DEPRECATED! ####
+
 1. Get the Distribution URL by running these commands:
 
    {{- if contains "NodePort" .Values.distribution.service.type }}

@@ -14,6 +14,8 @@ This chart bootstraps a [Redmine](https://github.com/bitnami/bitnami-docker-redm
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) and the [PostgreSQL chart](https://github.com/kubernetes/charts/tree/master/stable/postgresql) which are required for bootstrapping a MariaDB/PostgreSQL deployment for the database requirements of the Redmine application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -87,6 +89,11 @@ The following table lists the configurable parameters of the Redmine chart and t
 | `persistence.storageClass`        | PVC Storage Class                        | `nil` (uses alpha storage class annotation)             |
 | `persistence.accessMode`          | PVC Access Mode                          | `ReadWriteOnce`                                         |
 | `persistence.size`                | PVC Storage Request                      | `8Gi`                                                   |
+| `podDisruptionBudget.enabled`     | Pod Disruption Budget toggle             | `false`                                                 |
+| `podDisruptionBudget.minAvailable`| Minimum available pods                   | `nil`                                                     |
+| `podDisruptionBudget.maxUnavailable`| Maximum unavailable pods               | `nil`                                                     |
+| `replicas`                        | The number of pod replicas (See [Replicas](#replicas)) | `1`                                                     |
+| `resources`                       | Resources allocation (Requests and Limits) | `{}` |
 
 The above parameters map to the env variables defined in [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine). For more information please refer to the [bitnami/redmine](http://github.com/bitnami/bitnami-docker-redmine) image documentation.
 
@@ -108,6 +115,13 @@ $ helm install --name my-release -f values.yaml stable/redmine
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Replicas
+
+Redmine writes uploaded files to a persistent volume. By default that volume
+cannot be shared between pods (RWO). In such a configuration the `replicas` option
+must be set to `1`. If the persistent volume supports more than one writer
+(RWX), ie NFS, `replicas` can be greater than `1`.
+
 ## Persistence
 
 The [Bitnami Redmine](https://github.com/bitnami/bitnami-docker-redmine) image stores the Redmine data and configurations at the `/bitnami/redmine` path of the container.
@@ -127,4 +141,19 @@ The following example includes two PVCs, one for Redmine and another for MariaDB
 
 ```bash
 $ helm install --name test --set persistence.existingClaim=PVC_REDMINE,mariadb.persistence.existingClaim=PVC_MARIADB  redmine
+```
+
+## Upgrading
+
+### To 5.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 5.0.0. The following example assumes that the release name is redmine:
+
+```console
+$ kubectl patch deployment redmine-redmine --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+# If using postgresql as database
+$ kubectl patch deployment redmine-postgresql --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+# If using mariadb as database
+$ kubectl delete statefulset redmine-mariadb --cascade=false
 ```

@@ -14,6 +14,8 @@ This chart bootstraps a [PrestaShop](https://github.com/bitnami/bitnami-docker-p
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the PrestaShop application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.5+ with Beta APIs enabled
@@ -59,6 +61,7 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `prestashopEmail`                     | Admin email                                                                                  | `user@example.com`                                      |
 | `prestashopFirstName`                 | First Name                                                                                   | `Bitnami`                                               |
 | `prestashopLastName`                  | Last Name                                                                                    | `Name`                                                  |
+| `prestashopCookieCheckIP`             | Whether to check the cookie's IP address or not                                              | `no`                                                    |
 | `smtpHost`                            | SMTP host                                                                                    | `nil`                                                   |
 | `smtpPort`                            | SMTP port                                                                                    | `nil`                                                   |
 | `smtpUser`                            | SMTP user                                                                                    | `nil`                                                   |
@@ -76,8 +79,8 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `mariadb.db.password`                 | Password for the database                                                                    | `nil`                                                   |
 | `mariadb.rootUser.password`           | MariaDB admin password                                                                       | `nil`                                                   |
 | `serviceType`                         | Kubernetes Service type                                                                      | `LoadBalancer`                                          |
-| `externalTrafficPolicy`               | Set to `Local` to preserve the client source IP                                              | `Local`                                               |
-| `sessionAffinity`                     | Configures the session affinity                                                              | `None`                                              |
+| `externalTrafficPolicy`               | Set to `Local` to preserve the client source IP                                              | `Local`                                                 |
+| `sessionAffinity`                     | Configures the session affinity                                                              | `None`                                                  |
 | `persistence.enabled`                 | Enable persistence using PVC                                                                 | `true`                                                  |
 | `persistence.apache.storageClass`     | PVC Storage Class for Apache volume                                                          | `nil` (uses alpha storage class annotation)             |
 | `persistence.apache.accessMode`       | PVC Access Mode for Apache volume                                                            | `ReadWriteOnce`                                         |
@@ -137,3 +140,15 @@ The [Bitnami PrestaShop](https://github.com/bitnami/bitnami-docker-prestashop) i
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is prestashop:
+
+```console
+$ kubectl patch deployment prestashop-prestashop --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl delete statefulset prestashop-mariadb --cascade=false
+```

@@ -73,6 +73,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `persistence.accessMode`                     | ReadWriteOnce or ReadOnly                                                                    | ReadWriteOnce                                        |
 | `persistence.existingClaim`                  | Name of existing persistent volume                                                           | `nil`                                                |
 | `persistence.subPath`                        | Subdirectory of the volume to mount                                                          | `nil`                                                |
+| `persistence.annotations`                    | Persistent Volume annotations                             				      | {}						     |
 | `nodeSelector`                               | Node labels for pod assignment                                                               | {}                                                   |
 | `metrics.enabled`                            | Start a side-car prometheus exporter                                                         | `false`                                              |
 | `metrics.image`                              | Exporter image                                                                               | `prom/mysqld-exporter`                               |

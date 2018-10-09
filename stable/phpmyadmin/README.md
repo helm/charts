@@ -12,6 +12,8 @@ $ helm install stable/phpmyadmin
 
 This chart bootstraps a [phpMyAdmin](https://github.com/bitnami/bitnami-docker-phpmyadmin) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.8+ with Beta APIs enabled
@@ -60,6 +62,9 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 | `ingress.host`            | ingress host               | `nil`          |
 | `ingress.tls`            | tls for ingress               | `[]`          |
 | `resources`                          | CPU/Memory resource requests/limits      | `{}`      |
+| `nodeSelector`                   | Node labels for pod assignment             | `{}`                                                    |
+| `tolerations`                    | List of node taints to tolerate            | `[]`                                                    |
+| `affinity`                       | Map of node/pod affinities                 | `{}`                                                    |
 
 For more information please refer to the [bitnami/phpmyadmin](http://github.com/bitnami/bitnami-docker-Phpmyadmin) image documentation.
 
@@ -79,3 +84,14 @@ $ helm install --name my-release -f values.yaml stable/phpmyadmin
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Upgrading
+
+### To 1.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to `1.0.0`. The following example assumes that the release name is `phpmyadmin`:
+
+```console
+$ kubectl patch deployment phpmyadmin-phpmyadmin --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+```

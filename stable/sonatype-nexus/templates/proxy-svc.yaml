@@ -4,6 +4,13 @@ metadata:
   name: {{ template "nexus.fullname" . }}
   labels:
 {{ include "nexus.labels" . | indent 4 }}
+{{- if .Values.nexus.labels }}
+{{ toYaml .Values.nexus.labels | indent 4 }}
+{{- end }}
+{{- if .Values.nexus.annotations }}
+  annotations:
+{{ toYaml .Values.nexus.annotations | indent 4 }}
+{{- end }}
 spec:
   ports:
     - name: {{ .Values.nexusProxy.name }}
