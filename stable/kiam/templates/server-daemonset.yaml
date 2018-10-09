@@ -51,7 +51,8 @@ spec:
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           command:
-            - /server
+            - /kiam
+            - server
           args:
             {{- if .Values.server.log.jsonOutput }}
             - --json-log
@@ -100,7 +101,8 @@ spec:
           livenessProbe:
             exec:
               command:
-                - /health
+                - /kiam
+                - health
                 - --cert=/etc/kiam/tls/cert
                 - --key=/etc/kiam/tls/key
                 - --ca=/etc/kiam/tls/ca
@@ -114,7 +116,8 @@ spec:
           readinessProbe:
             exec:
               command:
-                - /health
+                - /kiam
+                - health
                 - --cert=/etc/kiam/tls/cert
                 - --key=/etc/kiam/tls/key
                 - --ca=/etc/kiam/tls/ca

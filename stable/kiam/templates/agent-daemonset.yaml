@@ -62,7 +62,8 @@ spec:
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           command:
-            - /agent
+            - /kiam
+            - agent
           args:
             {{- if .Values.agent.host.iptables }}
             - --iptables
