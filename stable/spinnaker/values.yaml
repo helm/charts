@@ -5,10 +5,19 @@ halyard:
     tag: 1.9.1
   # Provide a config map with Hal commands that will be run the core config (storage)
   # The config map should contain a script in the config.sh key
-  additionalConfig:
+  additionalScripts:
     enabled: false
     configMapName: my-halyard-config
     configMapKey: config.sh
+    # If you'd rather do an inline script, set create to true and put the content in the data dict like you would a configmap
+    create: false
+    data: {}
+  additionalSecrets:
+    create: false
+    data: {}
+  additionalConfigMaps:
+    create: false
+    data: {}
 
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
@@ -53,6 +62,18 @@ kubeConfig:
 ingress:
   enabled: false
   # host: spinnaker.example.org
+  # annotations:
+    # ingress.kubernetes.io/ssl-redirect: 'true'
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # tls:
+  #  - secretName: -tls
+  #    hosts:
+  #      - domain.com
+
+ingressGate:
+  enabled: false
+  # host: gate.spinnaker.example.org
   # annotations:
     # ingress.kubernetes.io/ssl-redirect: 'true'
     # kubernetes.io/ingress.class: nginx
