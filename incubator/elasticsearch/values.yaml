@@ -11,11 +11,10 @@ image:
   # pullSecrets:
   #   - registry-secret
 
-busybox:
-  image:
-    repository: "busybox"
-    tag: "latest"
-    pullPolicy: "Always"
+initImage:
+  repository: "busybox"
+  tag: "latest"
+  pullPolicy: "Always"
 
 cluster:
   name: "elasticsearch"

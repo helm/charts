@@ -66,9 +66,9 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
 | `image.tag`                          | Container image tag                                                 | `6.4.2`                                             |
 | `image.pullPolicy`                   | Container pull policy                                               | `IfNotPresent`                                      |
-| `busybox.image.repository`           | Busybox image name                                                  | `busybox`                                           |
-| `busybox.image.tag`                  | Busybox image tag                                                   | `latest`                                            |
-| `busybox.image.pullPolicy`           | Busybox pull policy                                                 | `Always`                                            |
+| `initImage.repository`               | Init container image name                                           | `busybox`                                           |
+| `initImage.tag`                      | Init container image tag                                            | `latest`                                            |
+| `initImage.pullPolicy`               | Init container pull policy                                          | `Always`                                            |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                                     |
 | `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                                             |
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                                |
