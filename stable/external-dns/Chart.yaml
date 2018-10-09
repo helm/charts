@@ -3,8 +3,8 @@ description:
   Configure external DNS servers (AWS Route53, Google CloudDNS and others)
   for Kubernetes Ingresses and Services
 name: external-dns
-version: 0.7.7
-appVersion: 0.5.6
+version: 0.7.8
+appVersion: 0.5.7
 home: https://github.com/kubernetes-incubator/external-dns
 sources:
   - https://github.com/kubernetes-incubator/external-dns
