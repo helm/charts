@@ -91,7 +91,8 @@ The following table lists the configurable parameters of the Stellar Core chart 
 | `nodeSelector`                      | Node labels for pod assignment                                     | {}                                               |
 | `tolerations`                       | Toleration labels for pod assignment                               | []                                               |
 | `affinity`                          | Affinity settings for pod assignment                               | {}                                               |
-
+| `serviceAccount.create`             | Specifies whether a ServiceAccount should be created               | `true`                                           |
+| `serviceAccount.name`               | The name of the ServiceAccount to create                           | Generated using the fullname template            |
 
 ## Persistence
 

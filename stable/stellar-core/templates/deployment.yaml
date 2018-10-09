@@ -21,6 +21,7 @@ spec:
         app: {{ template "stellar-core.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: "{{ template "stellar-core.serviceAccountName" . }}"
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}{{ with .Values.image.flavor }}-{{.}}{{ end }}"
