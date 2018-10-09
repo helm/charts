@@ -36,7 +36,7 @@ The following table lists the configurable parameters for this chart and their d
 
 | Parameter                          | Description                     | Default                                                     |
 | ---------------------------------- | --------------------------------|-------------------------------------------------------------|
-| `annotations`                      | Optional daemonset annotations  | `NULL`                                                      |
+| `annotations`                      | Optional daemonset annotations  | `{}`                                                        |
 | `affinity`                         | Map of node/pod affinities      | `{}`                                                        |
 | `settings.log_monitors`            | System log monitor config files | `/config/kernel-monitor.json`,`/config/docker-monitor.json` |
 | `image.repository`                 | Image                           | `k8s.gcr.io/node-problem-detector`                          |
@@ -47,7 +47,7 @@ The following table lists the configurable parameters for this chart and their d
 | `resources.limits.memory`          | Memory limit                    | `100Mi`                                                     |
 | `resources.requests.cpu`           | CPU request                     | `20m`                                                       |
 | `resources.requests.memory`        | Memory request                  | `20Mi`                                                      |
-| `tolerations`                      | Optional daemonset tolerations  | `NULL`                                                      |
+| `tolerations`                      | Optional daemonset tolerations  | `{}`                                                        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters:
 
