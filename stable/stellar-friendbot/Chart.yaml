@@ -1,0 +1,19 @@
+apiVersion: v1
+appVersion: "0.13.0"
+description: Friendbot that sends money in the Stellar cryptocurrency (testnet) network.
+name: stellar-testnet
+version: 1.0.0
+icon: https://www.stellar.org/developers/images/favicon/rocket-180x180.png
+home: https://www.stellar.org
+maintainers:
+  - name: andrenarchy
+    email: andre.extern@satoshipay.io
+    url: https://github.com/andrenarchy
+sources:
+  - https://github.com/satoshipay/docker-stellar-friendbot/
+keywords:
+  - stellar
+  - stellar-friendbot
+  - cryptocurrency
+  - blockchain
+engine: gotpl

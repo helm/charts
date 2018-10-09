@@ -1,0 +1,76 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "stellar-friendbot.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "stellar-friendbot.name" . }}
+    helm.sh/chart: {{ include "stellar-friendbot.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "stellar-friendbot.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "stellar-friendbot.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: "{{ template "stellar-friendbot.serviceAccountName" . }}"
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- with .Values.existingAccountSecretSecret }}
+            - name: FRIENDBOT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "name of existingAccountSecretSecret is required" .name | quote }}
+                  key: {{ required "key of existingAccountSecretSecret is required" .key | quote }}
+            {{- else }}
+            - name: FRIENDBOT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "stellar-friendbot.fullname" . }}
+                  key: accountSecret
+            {{- end }}
+            - name: NETWORK_PASSPHRASE
+              value: {{ .Values.networkPassphrase | quote }}
+            - name: HORIZON_URL
+              value: {{ .Values.horizonUrl | quote }}
+            - name: STARTING_BALANCE
+              value: {{ .Values.startingBalance | quote }}
+            {{- range $key, $val := .Values.environment }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
