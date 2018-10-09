@@ -114,7 +114,7 @@ env:
 
 ## Change InfluxDB configuration parameters below:
 ## Defaults are indicated
-## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
+## ref: https://docs.influxdata.com/influxdb/v1.6/administration/config/
 config:
   reporting_disabled: false
   bind_address: 8088
@@ -172,7 +172,7 @@ config:
     https_enabled: false
     https_certificate: /etc/ssl/influxdb.pem
     https_private_key: ""
-    max_row_limit: 10000
+    max_row_limit: 0
     max_connection_limit: 0
     shared_secret: "beetlejuicebeetlejuicebeetlejuice"
     realm: InfluxDB
