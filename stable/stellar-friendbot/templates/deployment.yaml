@@ -52,13 +52,12 @@ spec:
             - name: http
               containerPort: 8000
               protocol: TCP
+          # Note: we can't use httpGet here because friendbot throws 4xx without a valid dest addr
           livenessProbe:
-            httpGet:
-              path: /
+            tcpSocket:
               port: http
           readinessProbe:
-            httpGet:
-              path: /
+            tcpSocket:
               port: http
           resources:
 {{ toYaml .Values.resources | indent 12 }}
