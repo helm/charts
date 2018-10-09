@@ -183,6 +183,8 @@ postgresql:
   # options from https://github.com/helm/charts/tree/master/stable/postgresql
   # postgresPassword:
 
+postgresqlConnectTimeout: 5
+
 ## NOTE:
 ## existingDatabase is only used if postgresql.enabled is false
 existingDatabase:
