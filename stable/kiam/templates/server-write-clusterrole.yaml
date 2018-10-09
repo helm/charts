@@ -9,16 +9,13 @@ metadata:
     component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "kiam.fullname" . }}-server
+  name: {{ template "kiam.fullname" . }}-write
 rules:
   - apiGroups:
       - ""
     resources:
-      - namespaces
-      - pods
+      - events
     verbs:
-      - watch
-      - get
-      - list
+      - create
 {{- end -}}
 {{- end -}}
