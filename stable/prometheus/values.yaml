@@ -366,6 +366,12 @@ nodeExporter:
     tag: v0.16.0
     pullPolicy: IfNotPresent
 
+  ## Specify if a Pod Security Policy for node-exporter must be created
+  ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  ##
+  podSecurityPolicy:
+    enabled: False
+
   ## node-exporter priorityClassName
   ##
   priorityClassName: ""
