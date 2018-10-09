@@ -15,10 +15,6 @@ data:
     {{- else }}
     logLevel = "INFO"
     {{- end }}
-    {{- if .Values.traefikLogFormat }}
-    [traefikLog]
-      format = "{{ .Values.traefikLogFormat }}"
-    {{- end }}
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true
     {{- end }}
@@ -138,6 +134,10 @@ data:
         {{- end}}
       {{- end}}
     {{- end}}
+    {{- if .Values.traefikLogFormat }}
+    [traefikLog]
+      format = "{{ .Values.traefikLogFormat }}"
+    {{- end }}
     {{- if .Values.accessLogs.enabled }}
     [accessLog]
     {{- if .Values.accessLogs.filePath }}
