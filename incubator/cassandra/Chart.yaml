@@ -1,9 +1,5 @@
 name: cassandra
-<<<<<<< HEAD
 version: 0.6.3
-=======
-version: 0.6.2
->>>>>>> 4e947b2e869ba5d15b5d4dd11928ffd57cf16e9b
 appVersion: 3.11.3
 description: Apache Cassandra is a free and open-source distributed database management
   system designed to handle large amounts of data across many commodity servers, providing
