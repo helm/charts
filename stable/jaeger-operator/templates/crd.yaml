@@ -1,0 +1,18 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: jaegers.io.jaegertracing
+  labels:
+    app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
+    helm.sh/chart: {{ include "jaeger-operator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  group: io.jaegertracing
+  names:
+    kind: Jaeger
+    listKind: JaegerList
+    plural: jaegers
+    singular: jaeger
+  scope: Namespaced
+  version: v1alpha1
