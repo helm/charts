@@ -13,7 +13,7 @@ rbac:
 ## Service account names and whether to create them
 serviceAccount:
   create: true
-  name:
+  name: vault-operator-sa
 
 resources: {}
   # limits:
