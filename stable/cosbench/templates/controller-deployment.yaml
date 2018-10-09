@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "cosbench-controller.fullname" . }}
@@ -7,8 +7,14 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    role: controller
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "cosbench.name" . }}
+      release: {{ .Release.Name }}
+      role: controller
   template:
     metadata:
       labels:

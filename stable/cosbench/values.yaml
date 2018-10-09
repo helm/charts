@@ -53,6 +53,7 @@ driver:
   ## Pod anitAffinity ["soft", "hard"]
   ##
   antiAffinity: soft
+  antiAffinityWeight: 5
 
   ## hostAliases allow the modification of the hosts file inside a container
   ##

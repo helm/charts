@@ -1,5 +1,5 @@
 name: cosbench
-version: 0.1.0
+version: 1.0.0
 appVersion: 0.0.6
 kubeVersion: "^1.8.0-0"
 description: A benchmark tool for cloud object storage services

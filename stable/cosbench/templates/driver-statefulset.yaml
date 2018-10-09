@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "cosbench-driver.fullname" . }}
@@ -7,16 +7,20 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    role: driver
 spec:
   serviceName: {{ template "cosbench-driver.fullname" . }}
   replicas: {{ .Values.driver.replicaCount }}
+  selector:
+    matchLabels:
+        app: {{ template "cosbench.name" . }}
+        release: "{{ .Release.Name }}"
+        role: driver
   template:
     metadata:
       labels:
         app: {{ template "cosbench.name" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
         role: driver
     spec:
       containers:
@@ -42,15 +46,17 @@ spec:
               matchLabels:
                 app:  {{ template "cosbench.name" . }}
                 release: {{ .Release.Name | quote }}
+                role: driver
         {{- else if eq .Values.driver.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 5
+          - weight: {{ default 5 .Values.driver.antiAffinityWeight }}
             podAffinityTerm:
               topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
                   app:  {{ template "cosbench.name" . }}
                   release: {{ .Release.Name | quote }}
+                  role: driver
         {{- end }}
       {{- if .Values.driver.hostAliases }}
       hostAliases:
