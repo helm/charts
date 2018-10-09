@@ -53,3 +53,11 @@ tolerations:
 ##
 extraArgs: {}
 #   - --collector.diskstats.ignored-devices=^(ram|loop|fd|(h|s|v)d[a-z]|nvme\\d+n\\d+p)\\d+$
+
+## Additional mounts from the host
+##
+extraHostVolumeMounts: {}
+#  - name: <mountName>
+#    hostPath: <hostPath>
+#    mountPath: <mountPath>
+#    readOnly: true|false

@@ -52,6 +52,7 @@ The following table lists the configurable parameters of the consul chart and th
 | `ConsulDnsPort`         | Container dns listening port          | `8600`                                                     |
 | `affinity`              | Consul affinity settings              | `see values.yaml`                                          |
 | `nodeSelector`          | Node labels for pod assignment        | `{}`                                                       |
+| `tolerations`           | Tolerations for pod assignment        | `[]`                                                       |
 | `maxUnavailable`        | Pod disruption Budget maxUnavailable  | `1`                                                        |
 | `ui.enabled`            | Enable Consul Web UI                  | `true`                                                     |
 | `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                     |
