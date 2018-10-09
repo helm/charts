@@ -15,6 +15,7 @@ nodeIsValidator: true
 
 networkPassphrase: Public Global Stellar Network ; September 2015
 
+catchupComplete: false
 catchupRecent: 0
 
 maxPeerConnections: 50
@@ -171,6 +172,8 @@ history:
   sdf3:
     get: "curl -sf http://history.stellar.org/prd/core-live/core_live_003/{0} -o {1}"
 
+initializeHistoryArchives: false
+
 environment: {}
 
 postgresql:
@@ -192,7 +195,9 @@ existingDatabase:
 
 image:
   repository: satoshipay/stellar-core
-  tag: '9.2.0-3'
+  tag: '10.0.0-2'
+  # flavor: aws
+  # flavor: gcloud
   pullPolicy: IfNotPresent
 
 peerService:

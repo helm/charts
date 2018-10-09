@@ -57,6 +57,8 @@ The following table lists the configurable parameters of the Stellar Core chart 
 | `history`                           | Definition for fetching and storing the history of the network     | Default history, see `values.yaml`               |
 | `history.$name.get`                 | Command for fetching from the history archive                      | See above                                        |
 | `history.$name.put`                 | Command for storing the history in an archive                      | See above                                        |
+| `initializeHistoryArchives`         | Set to `true` if you want history archives to be initialized       | `false`                                          |
+| `gcloudServiceAccountKey`           | Gcloud service account key for `gcloud` flavor                     | Not set                                          |
 | `environment`                       | Additional environment variables for Stellar Core                  | `{}`                                             |
 | `postgresql.enabled`                | Enable PostgreSQL database                                         | `true`                                           |
 | `postgresql.postgresDatabase`       | PostgreSQL database name                                           | `stellar-core`                                   |
@@ -69,6 +71,7 @@ The following table lists the configurable parameters of the Stellar Core chart 
 | `existingDatabase.url`              | Existing database URL (use `$(DATABASE_PASSWORD` as the password)  | Not set                                          |
 | `image.repository`                  | `stellar-core` image repository                                    | `satoshipay/stellar-core`                        |
 | `image.tag`                         | `stellar-core` image tag                                           | `9.2.0-3`                                        |
+| `image.flavor`                      | `stellar-core` flavor (e.g., `aws` or `gcloud`)                    | Not set                                          |
 | `image.pullPolicy`                  | Image pull policy                                                  | `IfNotPresent`                                   |
 | `peerService.type`                  | p2p service type                                                   | `LoadBalancer`                                   |
 | `peerService.port`                  | p2p service TCP port                                               | `11625`                                          |

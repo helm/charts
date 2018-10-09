@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}{{ with .Values.image.flavor }}-{{.}}{{ end }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: peer
@@ -83,12 +83,27 @@ spec:
             - name: HISTORY
               value: {{ . | toJson | quote }}
 {{- end }}
+{{- with .Values.initializeHistoryArchives }}
+            - name: INITIALIZE_HISTORY_ARCHIVES
+              value: {{ . | quote }}
+{{- end }}
+{{- if .Values.gcloudServiceAccountKey }}
+            - name: GCLOUD_SERVICE_ACCOUNT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "stellar-core.fullname" . }}
+                  key: gcloudServiceAccountKey
+{{- end }}
 {{- with .Values.nodeIsValidator }}
             - name: NODE_IS_VALIDATOR
               value: {{ . | quote }}
 {{- end }}
 {{- with .Values.networkPassphrase }}
             - name: NETWORK_PASSPHRASE
+              value: {{ . | quote }}
+{{- end }}
+{{- with .Values.catchupComplete }}
+            - name: CATCHUP_COMPLETE
               value: {{ . | quote }}
 {{- end }}
 {{- with .Values.catchupRecent }}
