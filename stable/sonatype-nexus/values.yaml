@@ -130,3 +130,9 @@ ingress:
     secretName: nexus-tls
 
 tolerations: []
+
+# # Enable configmap and add data in configmap
+config:
+  enabled: false
+  mountPath: /sonatype-nexus-conf
+  data:
