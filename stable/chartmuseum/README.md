@@ -25,7 +25,7 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
 - [Uninstall](#uninstall)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
- 
+
 
 ## Prerequisites
 
@@ -46,7 +46,7 @@ kubectl create -f /path/to/storage_class.yaml
 ```
 
 The following table lists common configurable parameters of the chart and
-their default values. See values.yaml for all available options. 
+their default values. See values.yaml for all available options.
 
 |       Parameter                        |           Description                       |                         Default                     |
 |----------------------------------------|---------------------------------------------|-----------------------------------------------------|
@@ -108,6 +108,8 @@ their default values. See values.yaml for all available options.
 | `gcp.secret.enabled`                   | Flag for the GCP service account            | `false`                                             |
 | `gcp.secret.name`                      | Secret name for the GCP json file           | ``                                                  |
 | `gcp.secret.key`                       | Secret key for te GCP json file             | `credentials.json`                                  |
+| `service.type`                         | Kubernetes Service type                     | `ClusterIP`                                          |
+| `service.clusterIP`                    | Static clusterIP or None for headless services| `nil`                                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
@@ -165,7 +167,7 @@ env:
     STORAGE_AMAZON_REGION: us-east-1
   secret:
     AWS_ACCESS_KEY_ID: "********" ## aws access key id value
-    AWS_SECRET_ACCESS_KEY: "********" ## aws access key secret value 
+    AWS_SECRET_ACCESS_KEY: "********" ## aws access key secret value
 ```
 
 Run command to install
@@ -318,7 +320,7 @@ env:
     STORAGE_MICROSOFT_PREFIX:    
   secret:
     AZURE_STORAGE_ACCOUNT: "********" ## azure storage account
-    AZURE_STORAGE_ACCESS_KEY: "********" ## azure storage account access key 
+    AZURE_STORAGE_ACCESS_KEY: "********" ## azure storage account access key
 ```
 
 Run command to install
@@ -346,7 +348,7 @@ env:
     STORAGE_ALIBABA_ENDPOINT: oss-cn-beijing.aliyuncs.com
   secret:
     ALIBABA_CLOUD_ACCESS_KEY_ID: "********" ## alibaba OSS access key id
-    ALIBABA_CLOUD_ACCESS_KEY_SECRET: "********" ## alibaba OSS access key secret 
+    ALIBABA_CLOUD_ACCESS_KEY_SECRET: "********" ## alibaba OSS access key secret
 ```
 
 Run command to install
@@ -389,8 +391,8 @@ helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ### Using with local filesystem storage
-By default chartmuseum uses local filesystem storage. 
-But on pod recreation it will lose all charts, to prevent that enable persistent storage. 
+By default chartmuseum uses local filesystem storage.
+But on pod recreation it will lose all charts, to prevent that enable persistent storage.
 
 ```yaml
 env:
@@ -438,12 +440,12 @@ parameters:
   adminSecretNamespace: default
   pool: chartstore
   userId: user
-  userSecretName: thesecret 
+  userSecretName: thesecret
 ```
 
-## Uninstall 
+## Uninstall
 
-By default, a deliberate uninstall will result in the persistent volume 
+By default, a deliberate uninstall will result in the persistent volume
 claim being deleted.   
 
 ```shell
