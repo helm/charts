@@ -8,6 +8,13 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      release: "{{ .Release.Name }}"
+      app: {{ template "cassandra.name" . }}
+{{- if .Values.selector }}
+{{ toYaml .Values.selector | indent 6 }}
+{{- end }}
   serviceName: {{ template "cassandra.fullname" . }}
   replicas: {{ .Values.config.cluster_size }}
   podManagementPolicy: {{ .Values.podManagementPolicy }}
@@ -22,9 +29,6 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
     spec:
-{{- if .Values.selector }}
-{{ toYaml .Values.selector | indent 6 }}
-{{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
