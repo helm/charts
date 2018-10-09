@@ -1,0 +1,102 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "stellar-horizon.fullname" . }}
+  labels:
+    app: {{ template "stellar-horizon.name" . }}
+    chart: {{ template "stellar-horizon.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ template "stellar-horizon.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "stellar-horizon.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: "{{ template "stellar-horizon.serviceAccountName" . }}"
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          env:
+            {{- if .Values.postgresql.enabled }}
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "stellar-horizon.postgresql.fullname" . }}
+                  key: postgres-password
+            - name: DATABASE_URL
+              value: postgres://{{ .Values.postgresql.postgresUser }}:$(DATABASE_PASSWORD)@{{ template "stellar-horizon.postgresql.fullname" . }}/{{ .Values.postgresql.postgresDatabase }}?sslmode=disable
+            {{- else }}
+            {{- with .Values.existingDatabase.passwordSecret }}
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .name | quote }}
+                  key: {{ .key | quote }}
+            {{- end }}
+            - name: DATABASE_URL
+              value: {{ .Values.existingDatabase.url }}
+            {{- end }}
+
+            {{- if index .Values "stellar-core" "enabled" }}
+            - name: STELLAR_CORE_URL
+              value: http://{{ template "stellar-horizon.stellar-core.fullname" . }}-http:11626
+            - name: STELLAR_CORE_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "stellar-horizon.stellar-core.postgresql.fullname" . }}
+                  key: postgres-password
+            - name: STELLAR_CORE_DATABASE_URL
+              value: postgres://postgres:$(STELLAR_CORE_DATABASE_PASSWORD)@{{ template "stellar-horizon.stellar-core.postgresql.fullname" . }}/stellar-core?sslmode=disable
+            {{- else }}
+            - name: STELLAR_CORE_URL
+              value: {{ .Values.existingStellarCore.url }}
+            {{- with .Values.existingStellarCore.databasePasswordSecret }}
+            - name: STELLAR_CORE_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .name | quote }}
+                  key: {{ .key | quote }}
+            {{- end }}
+            - name: STELLAR_CORE_DATABASE_URL
+              value: {{ .Values.existingStellarCore.databaseUrl }}
+            {{- end }}
+
+{{- range $key, $val := .Values.environment }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+{{- end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            exec:
+              command: [ /ready.sh ]
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

@@ -1,0 +1,19 @@
+apiVersion: v1
+appVersion: "0.14.2"
+description: Client-facing API server for the Stellar cryptocurrency network.
+name: stellar-horizon
+version: 1.0.0
+icon: https://www.stellar.org/developers/images/favicon/rocket-180x180.png
+home: https://www.stellar.org
+maintainers:
+  - name: andrenarchy
+    email: andre.extern@satoshipay.io
+    url: https://github.com/andrenarchy
+sources:
+  - https://github.com/satoshipay/docker-stellar-horizon/
+keywords:
+  - stellar
+  - stellar-horizon
+  - cryptocurrency
+  - blockchain
+engine: gotpl

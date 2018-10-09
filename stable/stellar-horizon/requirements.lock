@@ -1,0 +1,9 @@
+dependencies:
+- name: postgresql
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 0.19.0
+- name: stellar-core
+  repository: file://../stellar-core
+  version: 1.0.0
+digest: sha256:6b6f8201c0b6644fe02597968184fdfcc0a5d7b448ebfdb0cb48b9461b94cd68
+generated: 2018-10-09T17:56:00.687835552+02:00
