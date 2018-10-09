@@ -357,3 +357,8 @@ tracing:
   #   localAgentHostPort: "127.0.0.1:8126"
   #   debug: false
   #   globalTag: ""
+
+# forwardAuth:
+#   entryPoints: ["http", "https"]
+#   address: https://authserver.com/auth
+#   trustForwardHeader: true

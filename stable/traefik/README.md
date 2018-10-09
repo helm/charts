@@ -209,6 +209,10 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `tracing.datadog.localAgentHostPort`   | Location of the Datadog agent where spans will be sent                                                                       | `127.0.0.1:8126`                                  |
 | `tracing.datadog.debug`                | Enables Datadog debugging                                                                                                    | `false`                                           |
 | `tracing.datadog.globalTag`            | Apply shared tag in a form of Key:Value to all the traces                                                                    | `""`                                           |
+| `forwardauth.entryPoints`              | Enable forward authentication for these entryPoints: "http", "https", "httpn"                                                |                                                   |
+| `forwardauth.address`                  | URL for forward authentication                                                                                               |                                                   |
+| `forwardauth.trustForwardHeader`       | Trust existing X-Forwarded-* headers.                                                                                        | `true`                                            |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
