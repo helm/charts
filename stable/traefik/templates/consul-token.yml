@@ -1,0 +1,14 @@
+{{- if .Values.kvprovider.consul.token }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "traefik.fullname" . }}-consul-token
+  labels:
+    app: {{ template "traefik.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+type: Opaque
+data:
+  token: {{ .Values.kvprovider.consul.token | b64enc | quote }}
+{{- end }}

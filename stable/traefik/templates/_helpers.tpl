@@ -104,3 +104,14 @@ Create the block for RootCAs.
 	   {{- end -}}
          ]
 {{- end -}}
+
+{{/*
+Create the block for CONSUL_HTTP_TOKEN env var
+*/}}
+{{- define "traefik.consul.token" -}}
+          - name: CONSUL_HTTP_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "traefik.fullname" $ }}-consul-token
+                key: token
+{{- end -}}

@@ -29,6 +29,10 @@ spec:
             name: config
           - mountPath: /acme
             name: acme
+          {{- if .Values.kvprovider.consul.token }}
+          env:
+            {{ template "traefik.consul.token" . }}
+          {{- end }}
       volumes:
       - name: config
         configMap:
