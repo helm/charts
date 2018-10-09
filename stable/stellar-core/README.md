@@ -70,7 +70,7 @@ The following table lists the configurable parameters of the Stellar Core chart 
 | `existingDatabase.passwordSecret`   | Existing secret with the database password                         | `{name: 'postgresql-core', value: 'password'}`   |
 | `existingDatabase.url`              | Existing database URL (use `$(DATABASE_PASSWORD` as the password)  | Not set                                          |
 | `image.repository`                  | `stellar-core` image repository                                    | `satoshipay/stellar-core`                        |
-| `image.tag`                         | `stellar-core` image tag                                           | `9.2.0-3`                                        |
+| `image.tag`                         | `stellar-core` image tag                                           | `10.0.0-2`                                        |
 | `image.flavor`                      | `stellar-core` flavor (e.g., `aws` or `gcloud`)                    | Not set                                          |
 | `image.pullPolicy`                  | Image pull policy                                                  | `IfNotPresent`                                   |
 | `peerService.type`                  | p2p service type                                                   | `LoadBalancer`                                   |
