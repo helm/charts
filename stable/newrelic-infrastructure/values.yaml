@@ -16,7 +16,7 @@ verboseLog: false
 
 image:
   repository: newrelic/infrastructure-k8s
-  tag: 1.0.0
+  tag: 1.2.0
   pullPolicy: IfNotPresent
 
 resources:

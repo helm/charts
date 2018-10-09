@@ -15,7 +15,7 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 | `kubeStateMetricsTimeout` | Timeout for accessing kube-state-metrics in milliseconds. If not set the newrelic default is 5000 | |
 | `image.name`              | The container to pull.                                       | `newrelic/infrastructure`  |
 | `image.pullPolicy`        | The pull policy.                                             | `IfNotPresent`             |
-| `image.tag`               | The version of the container to pull.                        | `1.0.0`            |
+| `image.tag`               | The version of the container to pull.                        | `1.2.0`            |
 | `resources`               | Any resources you wish to assign to the pod.                 | See Resources below        |
 | `verboseLog`              | Should the agent log verbosely. (Boolean)                    | `false`                    |
 | `nodeSelector`            | Node label to use for scheduling                             | `nil`                      |
