@@ -98,6 +98,7 @@ replica:
   #   iam.amazonaws.com/role: role-arn
 service:
   type: ClusterIP
+  # clusterIP: None
   externalPort: 8080
   nodePort:
   annotations: {}
