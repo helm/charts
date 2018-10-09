@@ -37,6 +37,7 @@ client:
 #    example: client-svc-foo
   heapSize: "512m"
   antiAffinity: "soft"
+  nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
   resources:
@@ -67,6 +68,7 @@ master:
     size: "4Gi"
     # storageClass: "ssd"
   antiAffinity: "soft"
+  nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
   resources:
@@ -100,6 +102,7 @@ data:
     # storageClass: "ssd"
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
+  nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
   resources:

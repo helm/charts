@@ -26,8 +26,10 @@ spec:
 {{- end }}
       securityContext:
         fsGroup: 1000
-      {{- if eq .Values.client.antiAffinity "hard" }}
+      {{- if or .Values.client.antiAffinity .Values.client.nodeAffinity }}
       affinity:
+      {{- end }}
+      {{- if eq .Values.client.antiAffinity "hard" }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - topologyKey: "kubernetes.io/hostname"
@@ -37,7 +39,6 @@ spec:
                   release: "{{ .Release.Name }}"
                   component: "{{ .Values.client.name }}"
       {{- else if eq .Values.client.antiAffinity "soft" }}
-      affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
@@ -48,6 +49,10 @@ spec:
                   app: "{{ template "elasticsearch.name" . }}"
                   release: "{{ .Release.Name }}"
                   component: "{{ .Values.client.name }}"
+      {{- end }}
+      {{- with .Values.client.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml . | indent 10 }}
       {{- end }}
 {{- if .Values.client.nodeSelector }}
       nodeSelector:
