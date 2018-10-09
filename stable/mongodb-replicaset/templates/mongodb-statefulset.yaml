@@ -133,6 +133,7 @@ spec:
                 secretKeyRef:
                   name: "{{ template "mongodb-replicaset.adminSecret" . }}"
                   key: password
+
           {{- if .Values.metrics.enabled }}
             - name: METRICS
               value: "true"
