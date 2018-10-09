@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This chart bootstraps a [Stellar Horizon](https://github.com/stellar/stellar-core/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager. By default the deployment includes a PostgreSQL database and a Stellar Core node (which in turn includes another PostgreSQL database). The chart is based on the Kubernetes-ready [Stellar Horizon images provided by SatoshiPay](https://github.com/satoshipay/docker-stellar-horizon/).
+This chart bootstraps a [Stellar Horizon](https://github.com/stellar/go/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager. By default the deployment includes a PostgreSQL database and a Stellar Core node (which in turn includes another PostgreSQL database). The chart is based on the Kubernetes-ready [Stellar Horizon images provided by SatoshiPay](https://github.com/satoshipay/docker-stellar-horizon/).
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ This chart bootstraps a [Stellar Horizon](https://github.com/stellar/stellar-cor
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release incubator/stellar-horizon
+$ helm install --name my-release stable/stellar-horizon
 ```
 
 ## Configuration
