@@ -3,7 +3,7 @@ image:
   # This chart is compatible with different images, please choose one
   repository: datadog/agent               # Agent6
   # repository: datadog/dogstatsd         # Standalone DogStatsD6
-  tag: 6.4.2  # Use 6.4.2-jmx to enable jmx fetch collection
+  tag: 6.5.2  # Use 6.5.2-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
   ## It is possible to specify docker registry credentials
   ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -68,7 +68,6 @@ deployment:
   # Tolerations for pod assignment
   # Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
-
   # If you're using a NodePort-type service and need a fixed port, set this parameter.
   # dogstatsdNodePort: 8125
   # traceNodePort: 8126
@@ -91,7 +90,7 @@ kubeStateMetrics:
 clusterAgent:
   image:
     repository: datadog/cluster-agent
-    tag: 0.9.1
+    tag: 0.10.0
     pullPolicy: IfNotPresent
   enabled: false
   ## This needs to be at least 32 characters a-zA-z
