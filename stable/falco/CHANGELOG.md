@@ -3,6 +3,10 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.5.1
+
+* Allow falco to resolve cluster hostnames when running with ebpf.hostNetwork: true
+
 ## v0.5.0
 
 ### Major Changes

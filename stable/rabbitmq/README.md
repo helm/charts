@@ -12,6 +12,8 @@ $ helm install stable/rabbitmq
 
 This chart bootstraps a [RabbitMQ](https://github.com/bitnami/bitnami-docker-rabbitmq) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.8+
@@ -60,8 +62,11 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.nodePort`         | Node port override, if serviceType NodePort             | _random avaliable between 30000-32767_                   |
 | `rabbitmq.managerPort`      | RabbitMQ Manager port                                   | `15672`                                                  |
 | `rabbitmq.diskFreeLimit`    | Disk free limit                                         | `"6GiB"`                                                 |
+| `rabbitmq.plugins`         | configuration file for plugins to enable                 | `[rabbitmq_management,rabbitmq_peer_discovery_k8s].`  |
+| `rabbitmq.clustering.address_type` | Switch clustering mode                           | `ip` or `hostname`
+| `rabbitmq.clustering.k8s_domain`   | Customize internal k8s cluster domain            | `cluster.local`
+
 | `rabbitmq.ulimitNofiles`    | Max File Descriptor limit                               | `65536`                                                  |
-| `rabbitmq.plugins`          | configuration file for plugins to enable                | `[rabbitmq_management,rabbitmq_peer_discovery_k8s].`     |
 | `rabbitmq.configuration`    | rabbitmq.conf content                                   | see values.yaml                                          |
 | `serviceType`               | Kubernetes Service type                                 | `ClusterIP`                                              |
 | `persistence.enabled`       | Use a PVC to persist data                               | `false`                                                  |
