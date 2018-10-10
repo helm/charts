@@ -51,6 +51,24 @@ PodManagementPolicy: Parallel
 UpdateStrategy:
   type: RollingUpdate
 NodeSelector: {}
+## The cockroachdb chart already provides it's own PodAntiAffinity
+## to make sure no cdb pods run on the same node.  However,
+## you may want to add your own NodeAffinity to make
+## sure your cdb pods run on a particular instance group
+##
+## https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+##
+## Example:
+##
+## NodeAffinity:
+##  requiredDuringSchedulingIgnoredDuringExecution:
+##    nodeSelectorTerms:
+##      - matchExpressions:
+##      - key: service
+##        operator: In
+##        values:
+##        - cockroachdb
+NodeAffinity: {}
 Tolerations: {}
 Secure:
   Enabled: false

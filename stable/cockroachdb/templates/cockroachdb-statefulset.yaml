@@ -178,7 +178,7 @@ spec:
       component: "{{ .Release.Name }}-{{ .Values.Component }}"
   maxUnavailable: {{ .Values.MaxUnavailable }}
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
@@ -227,6 +227,10 @@ spec:
           mountPath: /cockroach-certs
 {{- end }}
       affinity:
+{{- if .Values.NodeAffinity }}
+        nodeAffinity:
+{{ toYaml .Values.NodeAffinity | indent 9 }}
+{{- end}}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
@@ -241,7 +245,7 @@ spec:
       {{- if .Values.NodeSelector }}
       nodeSelector:
 {{ toYaml .Values.NodeSelector | indent 8 }}
-      {{- end }}
+{{- end }}
 {{- if .Values.Tolerations }}
       tolerations:
 {{ toYaml .Values.Tolerations | indent 8 }}

@@ -94,8 +94,10 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `Secure.RequestCertsImage`     | Image to use for requesting TLS certificates     | `cockroachdb/cockroach-k8s-request-cert`  |
 | `Secure.RequestCertsImageTag`  | Image tag to use for requesting TLS certificates | `0.3`                                     |
 | `Secure.ServiceAccount.Create` | Whether to create a new RBAC service account     | `true`                                    |
-| `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | ``                                        |
-| `Tolerations` | [Kubernetes tolerations](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) to label the pods in the StatefulSet with | `` |
+| `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | ``
+| `NodeSelector` | The Kubernetes nodeSelector to use for the StatefulSet           | `{}`
+| `NodeAffinity`                 | The [Kubernetes nodeAffinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/) to use for the pods in the StatefulSet.  This chart already provides it's own PodAntiAffinity | `{}`
+| `Tolerations` | [Kubernetes tolerations](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) to label the pods in the StatefulSet with | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
