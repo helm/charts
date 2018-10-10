@@ -156,3 +156,9 @@ secret:
   mountPath: /etc/secret-volume
   readOnly: true
   data:
+    
+# # Enable configmap and add data in configmap
+config:
+  enabled: false
+  mountPath: /sonatype-nexus-conf
+  data:
