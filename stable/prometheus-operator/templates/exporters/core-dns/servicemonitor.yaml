@@ -1,15 +1,17 @@
-{{- if .Values.coreDns.serviceMonitor.selfMonitor }}
+{{- if .Values.coreDns.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-coredns
   labels:
-    k8s-app: coredns
-{{ toYaml .Values.coreDns.labels | indent 4}}
-  name: coredns
+    app: {{ template "prometheus-operator.name" . }}-coredns
+{{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
-  jobLabel: k8s-app
+  jobLabel: jobLabel
   selector:
-{{ toYaml .Values.coreDns.serviceMonitor.selector | indent 6 }}
+    matchLabels:
+      app: {{ template "prometheus-operator.name" . }}-coredns
+      release: {{ .Release.Name | quote }}
   namespaceSelector:
     matchNames:
       - "kube-system"
@@ -17,5 +19,4 @@ spec:
   - port: http-metrics
     interval: 15s
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
- 
 {{- end }}

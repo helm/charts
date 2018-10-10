@@ -1,14 +1,17 @@
-{{- if .Values.kubeDns.serviceMonitor.selfMonitor }}
+{{- if .Values.kubeDns.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: kube-dns
-  labels:    
-{{ toYaml .Values.kubeDns.labels | indent 4}}
+  name: {{ template "prometheus-operator.fullname" . }}-kube-dns
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-kube-dns
+{{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
-  jobLabel: k8s-app
+  jobLabel: jobLabel
   selector:
-{{ toYaml .Values.kubeDns.serviceMonitor.selector | indent 4 }}
+    matchLabels:
+      app: {{ template "prometheus-operator.name" . }}-kube-dns
+      release: {{ .Release.Name | quote }}
   namespaceSelector:
     matchNames:
       - "kube-system"

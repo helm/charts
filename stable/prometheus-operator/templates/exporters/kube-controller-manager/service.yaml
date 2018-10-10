@@ -1,10 +1,12 @@
-{{- if .Values.kubeControllerManager.serviceMonitor.selfMonitor }}
+{{- if .Values.kubeControllerManager.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "kube-controller-manager.fullname" . }}
+  name: {{ template "prometheus-operator.fullname" . }}-kube-controller-manager
   labels:
-{{ toYaml .Values.kubeControllerManager.labels | indent 4 }}
+    app: {{ template "prometheus-operator.name" . }}-kube-controller-manager
+    jobLabel: kube-controller-manager
+{{ include "prometheus-operator.labels" . | indent 4 }}
   namespace: kube-system
 spec:
   clusterIP: None
@@ -13,6 +15,6 @@ spec:
       port: {{ .Values.kubeControllerManager.service.port }}
       protocol: TCP
   selector:
-{{ toYaml .Values.kubeControllerManager.service.selector | indent 4 }}
+{{ include "prometheus-operator.rangeskipempty" .Values.kubeControllerManager.service.selector | indent 4 }}
   type: ClusterIP
 {{- end }}

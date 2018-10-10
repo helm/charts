@@ -1,137 +1,91 @@
 {{/* vim: set filetype=mustache: */}}
-{{/*
-Expand the name of the chart.
-*/}}
+{{/* Expand the name of the chart. This is suffixed with -alertmanager, which means subtract 13 from longest 63 available */}}
 {{- define "prometheus-operator.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 50 | trimSuffix "-" -}}
 {{- end }}
 
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
+The components in this chart create additional resources that expand the longest created name strings.
+The longest name that gets created adds and extra 37 charachters, so truncation should be 63-35=26.
 */}}
 {{- define "prometheus-operator.fullname" -}}
 {{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- .Values.fullnameOverride | trunc 26 | trimSuffix "-" -}}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- .Release.Name | trunc 26 | trimSuffix "-" -}}
 {{- else -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end }}
-{{- end }}
+{{- printf "%s-%s" .Release.Name $name | trunc 26 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Fullname suffixed with operator */}}
+{{- define "prometheus-operator.operator.fullname" -}}
+{{- printf "%s-operator" (include "prometheus-operator.fullname" .) -}}
 {{- end }}
 
-{{/*
-Create chart name and version as used by the chart label.
-*/}}
-{{- define "prometheus-operator.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{/* Fullname suffixed with prometheus */}}
+{{- define "prometheus-operator.prometheus.fullname" -}}
+{{- printf "%s-prometheus" (include "prometheus-operator.fullname" .) -}}
 {{- end }}
 
-{{- /*
-prometheus-operator.labels prints the standard prometheus-operator Helm labels.
-*/ -}}
-{{- define "prometheus-operator.labels.standard" -}}
-app: {{ template "prometheus-operator.name" . }}
-chart: {{ template "prometheus-operator.chart" . }}
-heritage: {{ .Release.Service | quote }}
+{{/* Fullname suffixed with alertmanager */}}
+{{- define "prometheus-operator.alertmanager.fullname" -}}
+{{- printf "%s-alertmanager" (include "prometheus-operator.fullname" .) -}}
+{{- end }}
+
+{{/* Create chart name and version as used by the chart label. */}}
+{{- define "prometheus-operator.chartref" -}}
+{{- replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name -}}
+{{- end }}
+
+{{/* Generate basic labels */}}
+{{- define "prometheus-operator.labels" }}
+chart: {{ template "prometheus-operator.chartref" . }}
 release: {{ .Release.Name | quote }}
-operator: prometheus
-{{- end }}
-
-{{- define "prometheus-operator.labels.global" -}}
-chart: {{ template "prometheus-operator.chart" . }}
 heritage: {{ .Release.Service | quote }}
-release: {{ .Release.Name | quote }}
+{{- if .Values.commonLabels}}
+{{ toYaml .Values.commonLabels }}
+{{- end }}
 {{- end }}
 
-
-{{- define "alertmanager.serviceAccountName" -}}
-{{- if .Values.alertmanager.serviceAccount.create -}}
-    {{ default "alertmanager" .Values.alertmanager.serviceAccount.name }}
+{{/* Create the name of prometheus-operator service account to use */}}
+{{- define "prometheus-operator.operator.serviceAccountName" -}}
+{{- if .Values.prometheusOperator.serviceAccount.create -}}
+    {{ default (include "prometheus-operator.operator.fullname" .) .Values.prometheusOperator.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.alertmanager.serviceAccount.name }}
-{{- end }}
-{{- end }}
+    {{ default "default" .Values.prometheusOperator.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
 
-{{- define "alertmanager.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default "alertmanager" .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end }}
-{{- end }}
-
-{{- define "prometheus-operator.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create -}}
-    {{ default (include "prometheus-operator.fullname" .) .Values.serviceAccount.name }}
-{{- else -}}
-    {{ default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
-{{- define "prometheus.serviceAccountName" -}}
+{{/* Create the name of prometheus service account to use */}}
+{{- define "prometheus-operator.prometheus.serviceAccountName" -}}
 {{- if .Values.prometheus.serviceAccount.create -}}
-    {{ default "prometheus" .Values.prometheus.serviceAccount.name }}
+    {{ default (include "prometheus-operator.prometheus.fullname" .) .Values.prometheus.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.prometheus.serviceAccount.name }}
-{{- end }}
-{{- end }}
+{{- end -}}
+{{- end -}}
 
-{{- define "prometheus.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{/* Create the name of alertmanager service account to use */}}
+{{- define "prometheus-operator.alertmanager.serviceAccountName" -}}
+{{- if .Values.alertmanager.serviceAccount.create -}}
+    {{ default (include "prometheus-operator.alertmanager.fullname" .) .Values.alertmanager.serviceAccount.name }}
 {{- else -}}
-{{- $name := default "prometheus" .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end }}
-{{- end }}
+    {{ default "default" .Values.alertmanager.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
 
-{{- define "kube-apiserver.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default "kube-apiserver" .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{/* Workaround for https://github.com/helm/helm/issues/3117 */}}
+{{- define "prometheus-operator.rangeskipempty" -}}
+{{- range $key, $value := . }}
+{{- if $value }}
+{{ $key }}: {{ $value }}
 {{- end }}
-{{- end }}
-
-{{- define "kube-controller-manager.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default "kube-controller-manager-prometheus-discovery" .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end }}
-{{- end }}
-
-{{- define "kubeScheduler.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default "kube-scheduler-prometheus-discovery" .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end }}
-{{- end }}
-
-{{- define "kube-dns.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default "kube-dns-prometheus-discovery" .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end }}
-{{- end }}
-
-{{- define "node-exporter.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default "node-exporter" .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end }}
 {{- end }}

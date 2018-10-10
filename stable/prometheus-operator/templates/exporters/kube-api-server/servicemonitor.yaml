@@ -1,11 +1,11 @@
-{{- if .Values.kubeApiServer.serviceMonitor.selfMonitor }}
+{{- if .Values.kubeApiServer.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "kube-apiserver.fullname" . }}
+  name: {{ template "prometheus-operator.fullname" . }}-apiserver
   labels:
-    k8s-app: apiserver
-{{ toYaml .Values.kubeApiServer.labels | indent 4}}
+    app: {{ template "prometheus-operator.name" . }}-apiserver
+{{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
   endpoints:
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
@@ -14,8 +14,9 @@ spec:
     scheme: https
     tlsConfig:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-      serverName: kubernetes
-  jobLabel: component
+      serverName: {{ .Values.kubeApiServer.tlsConfig.serverName }}
+      insecureSkipVerify: {{ .Values.kubeApiServer.tlsConfig.insecureSkipVerify }}
+  jobLabel: {{ .Values.kubeApiServer.serviceMonitor.jobLabel }}
   namespaceSelector:
     matchNames:
     - default

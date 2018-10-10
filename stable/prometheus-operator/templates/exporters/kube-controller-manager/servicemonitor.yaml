@@ -1,15 +1,17 @@
-{{- if .Values.kubeControllerManager.serviceMonitor.selfMonitor }}
+{{- if .Values.kubeControllerManager.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "kube-controller-manager.fullname" . }}
+  name: {{ template "prometheus-operator.fullname" . }}-kube-controller-manager
   labels:
-    k8s-app: kube-controller-manager  
-{{ toYaml .Values.kubeControllerManager.labels | indent 4 }}
+    app: {{ template "prometheus-operator.name" . }}-kube-controller-manager
+{{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
-  jobLabel: k8s-app
+  jobLabel: jobLabel
   selector:
- {{ toYaml .Values.kubeControllerManager.serviceMonitor.selector | indent 4 }}
+    matchLabels:
+      app: {{ template "prometheus-operator.name" . }}-kube-controller-manager
+      release: {{ .Release.Name | quote }}
   namespaceSelector:
     matchNames:
       - "kube-system"

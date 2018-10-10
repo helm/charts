@@ -1,10 +1,12 @@
-{{- if .Values.kubeScheduler.serviceMonitor.selfMonitor }}
+{{- if .Values.kubeScheduler.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kube-scheduler
   labels:
-{{ toYaml .Values.kubeScheduler.labels | indent 4 }}
-  name: {{ template "kubeScheduler.fullname" . }}
+    app: {{ template "prometheus-operator.name" . }}-kube-scheduler
+    jobLabel: kube-scheduler
+{{ include "prometheus-operator.labels" . | indent 4 }}
   namespace: kube-system
 spec:
   clusterIP: None
@@ -13,7 +15,7 @@ spec:
       port: {{ .Values.kubeScheduler.service.port}}
       protocol: TCP
       targetPort: {{ .Values.kubeScheduler.service.targetPort}}
-  type: ClusterIP
   selector:
-    {{ toYaml .Values.kubeScheduler.service.selector | indent 4 }}
+  {{ include "prometheus-operator.rangeskipempty" .Values.kubeScheduler.service.selector | indent 4 }}
+  type: ClusterIP
 {{- end -}}

@@ -1,0 +1,39 @@
+{{- if .Values.kubeEtcd.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kube-etcd
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-kube-etcd
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-operator.name" . }}-kube-etcd
+      release: {{ .Release.Name | quote }}
+  namespaceSelector:
+    matchNames:
+      - "kube-system"
+  endpoints:
+  - port: http-metrics
+    interval: 15s
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    {{- if eq .Values.kubeEtcd.serviceMonitor.scheme "https" }}
+    scheme: https
+    tlsConfig:
+      {{- if .Values.kubeEtcd.serviceMonitor.serverName }}
+      serverName: {{ .Values.kubeEtcd.serviceMonitor.serverName }}
+      {{- end }}
+      {{- if .Values.kubeEtcd.serviceMonitor.caFile }}
+      caFile: {{ .Values.kubeEtcd.serviceMonitor.caFile }}
+      {{- end }}
+      {{- if  .Values.kubeEtcd.serviceMonitor.certFile }}
+      certFile: {{ .Values.kubeEtcd.serviceMonitor.certFile }}
+      {{- end }}
+      {{- if .Values.kubeEtcd.serviceMonitor.keyFile }}
+      keyFile: {{ .Values.kubeEtcd.serviceMonitor.keyFile }}
+      {{- end}}
+      insecureSkipVerify: {{ .Values.kubeEtcd.serviceMonitor.insecureSkipVerify }}
+    {{- end }}
+{{- end }}

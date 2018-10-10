@@ -1,10 +1,12 @@
-{{- if .Values.kubeDns.serviceMonitor.selfMonitor }}
+{{- if .Values.kubeDns.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kube-dns
   labels:
-{{ toYaml .Values.kubeDns.labels | indent 4 }}
-  name: {{ template "kube-dns.fullname" . }}
+    app: {{ template "prometheus-operator.name" . }}-kube-dns
+    jobLabel: kube-dns
+{{ include "prometheus-operator.labels" . | indent 4 }}
   namespace: kube-system
 spec:
   clusterIP: None
@@ -18,5 +20,5 @@ spec:
       protocol: TCP
       targetPort: 10055
   selector:
-{{ toYaml .Values.kubeDns.service.selector | indent 4 }}
+{{ include "prometheus-operator.rangeskipempty" .Values.kubeDns.service.selector | indent 4 }}
 {{- end }}

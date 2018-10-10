@@ -1,10 +1,11 @@
-{{- if .Values.kubelet.serviceMonitor.selfMonitor }}
+{{- if .Values.kubelet.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kubelet
   labels:
-    k8s-app: kubelet
-  name: kubelet
+    app: {{ template "prometheus-operator.name" . }}-kubelet
+{{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
   endpoints:
   {{- if .Values.kubelet.serviceMonitor.https }}
@@ -23,7 +24,7 @@ spec:
     honorLabels: true
     tlsConfig:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-      insecureSkipVerify: true  
+      insecureSkipVerify: true
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
   {{- else }}
   - port: http-metrics
@@ -36,7 +37,8 @@ spec:
   jobLabel: k8s-app
   namespaceSelector:
     matchNames:
-    - kube-system
+    - {{ .Values.kubelet.namespace }}
   selector:
-{{ toYaml .Values.kubelet.serviceMonitor.selector | indent 4 }}
+    matchLabels:
+      k8s-app: kubelet
 {{- end}}
