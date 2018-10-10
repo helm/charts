@@ -168,25 +168,19 @@ controller:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
 
-    ## List of ports on which controller services are available.
-    ## target http/https can be exposed on different ports at controller service level.
-    ports:
-      - name: http
-        port: 80
-        targetPort: http
+    ## List of http ports on which controller services are available.
+    httpPorts:
+      - port: 80
         nodePort: ""
-     # - name: 8080-http
-     #   port: 8080
-     #   targetPort: http
-     #   nodePort: ""
-      - name: https
-        port: 443
-        targetPort: https
+    #  - port: 8080
+    #    nodePort: ""
+
+    ## List of https ports on which controller services are available.
+    httpsPorts:
+      - port: 443
         nodePort: ""
-     # - name: 8443-https
-     #   port: 8443
-     #   targetPort: https
-     #   nodePort: ""
+    #  - port: 8443
+    #    nodePort: ""
 
     ## Set external traffic policy to: "Local" to preserve source IP on
     ## providers supporting it

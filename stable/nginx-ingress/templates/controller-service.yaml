@@ -35,11 +35,20 @@ spec:
   healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
 {{- end }}
   ports:
-  {{- range .Values.controller.service.ports }}
-    - name: {{ .name }}
+  {{- range .Values.controller.service.httpPorts }}
+    - name: "{{ .port }}-http"
       port: {{ .port }}
       protocol: TCP
-      targetPort: {{ .targetPort }}
+      targetPort: http
+      {{- if (not (empty .nodePort)) }}
+      nodePort: {{ .nodePort }}
+      {{- end }}
+  {{- end }}
+  {{- range .Values.controller.service.httpsPorts }}
+    - name: "{{ .port }}-https"
+      port: {{ .port }}
+      protocol: TCP
+      targetPort: https
       {{- if (not (empty .nodePort)) }}
       nodePort: {{ .nodePort }}
       {{- end }}

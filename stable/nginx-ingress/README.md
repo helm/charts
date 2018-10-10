@@ -87,9 +87,8 @@ Parameter | Description | Default
 `controller.service.healthCheckNodePort` | If `controller.service.type` is `NodePort` or `LoadBalancer` and `controller.service.externalTrafficPolicy` is set to `Local`, set this to [the managed health-check port the kube-proxy will expose](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport). If blank, a random port in the `NodePort` range will be assigned | `""`
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
-`controller.service.ports` | List of ports (that map Ingress's ports 80/443) to be open for service | `[]`
-`controller.service.ports.targetPort` | Sets the targetPort that maps to the Ingress' port 80/443 | `80/443`
-`controller.service.ports.nodePorts` | If `controller.service.type` is `NodePort`, it sets the nodePort that maps to the Ingress' port 80/443 | `""`
+`controller.service.httpPorts` | List of http ports (that map Ingress's ports 80) to be open for service | `[]`
+`controller.service.httpsPorts` | List of https ports (that map Ingress's ports 443) to be open for service | `[]`
 `controller.service.type` | type of controller service to create | `LoadBalancer`
 `controller.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 10
 `controller.livenessProbe.periodSeconds` | How often to perform the probe | 10
