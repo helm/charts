@@ -62,16 +62,15 @@ The following table lists the configurable parameters of the elasticsearch chart
 
 |              Parameter               |                             Description                             |               Default                |
 | ------------------------------------ | ------------------------------------------------------------------- | ------------------------------------ |
-| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.4.0`                              |
+| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.4.1`                              |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
-| `image.tag`                          | Container image tag                                                 | `6.4.0`                              |
+| `image.tag`                          | Container image tag                                                 | `6.4.1`                              |
 | `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                      |
-| `cluster.kubernetesDomain`           | Kubernetes cluster domain name                                      | `cluster.local`                      |
 | `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                              |
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                 |
 | `cluster.keystoreSecret`             | Name of secret holding secure config options in an es keystore      | `nil`                                |
-| `cluster.env`                        | Cluster environment variables                                       | `{}`                                 |
+| `cluster.env`                        | Cluster environment variables                                       | `{MINIMUM_MASTER_NODES: "2"}`        |
 | `client.name`                        | Client component name                                               | `client`                             |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                  |
 | `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`  |
@@ -79,7 +78,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.heapSize`                    | Client node heap size                                               | `512m`                               |
 | `client.podAnnotations`              | Client Deployment annotations                                       | `{}`                                 |
 | `client.nodeSelector`                | Node labels for client pod assignment                               | `{}`                                 |
-| `client.tolerations`                 | Client tolerations                                                  | `{}`                                 |
+| `client.tolerations`                 | Client tolerations                                                  | `[]`                                 |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                 |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                          |
 | `client.loadBalancerIP`              | Client loadBalancerIP                                               | `{}`                                 |
@@ -91,7 +90,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.priorityClassName`           | Master priorityClass                                                | `nil`                                |
 | `master.podAnnotations`              | Master Deployment annotations                                       | `{}`                                 |
 | `master.nodeSelector`                | Node labels for master pod assignment                               | `{}`                                 |
-| `master.tolerations`                 | Master tolerations                                                  | `{}`                                 |
+| `master.tolerations`                 | Master tolerations                                                  | `[]`                                 |
 | `master.heapSize`                    | Master node heap size                                               | `512m`                               |
 | `master.name`                        | Master component name                                               | `master`                             |
 | `master.persistence.enabled`         | Master persistent enabled/disabled                                  | `true`                               |
@@ -111,9 +110,10 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.persistence.accessMode`        | Data persistent Access Mode                                         | `ReadWriteOnce`                      |
 | `data.podAnnotations`                | Data StatefulSet annotations                                        | `{}`                                 |
 | `data.nodeSelector`                  | Node labels for data pod assignment                                 | `{}`                                 |
-| `data.tolerations`                   | Data tolerations                                                    | `{}`                                 |
+| `data.tolerations`                   | Data tolerations                                                    | `[]`                                 |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                               |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                               |
+| `extraInitContainers`                | Additional init container passed through the tpl 	                 | ``                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -127,7 +127,7 @@ The YAML value of cluster.config is appended to elasticsearch.yml file for addit
 
 ## Application Version
 
-This chart aims to support Elasticsearch v2 and v5 deployments by specifying the `values.yaml` parameter `appVersion`.
+This chart aims to support Elasticsearch v2 to v6 deployments by specifying the `values.yaml` parameter `appVersion`.
 
 ### Version Specific Features
 
@@ -189,3 +189,11 @@ Create cluster with Storage class `ssd` on Kubernetes 1.5+
 ```
 $ helm install incubator/elasticsearch --name my-release --set data.storageClass=ssd,data.storage=100Gi
 ```
+
+### Usage of the `tpl` Function
+
+The `tpl` function allows us to pass string values from `values.yaml` through the templating engine. It is used for the following values:
+
+* `extraInitContainers`
+
+It is important that these values be configured as strings. Otherwise, installation will fail.

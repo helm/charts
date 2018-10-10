@@ -44,6 +44,13 @@ spec:
         {{- if .Values.config.configFile }}
           - --config=/etc/oauth2_proxy/oauth2_proxy.cfg
         {{- end }}
+        {{- if .Values.authenticatedEmailsFile.enabled }}
+        {{- if .Values.authenticatedEmailsFile.template }}
+          - --authenticated-emails-file=/etc/oauth2-proxy/{{ .Values.authenticatedEmailsFile.template }}
+        {{- else }}
+          - --authenticated-emails-file=/etc/oauth2-proxy/authenticated-emails-list
+        {{- end }}
+        {{- end }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:
@@ -74,15 +81,38 @@ spec:
             port: http
         resources:
 {{ toYaml .Values.resources | indent 10 }}
-{{- if .Values.config.configFile }}
         volumeMounts:
+{{- if .Values.config.configFile }}
         - mountPath: /etc/oauth2_proxy
           name: {{ template "oauth2-proxy.fullname" . }}-configmap
+{{- end }}
+{{- if .Values.authenticatedEmailsFile.enabled }}
+        - mountPath: /etc/oauth2-proxy
+          name: {{ template "oauth2-proxy.fullname" . }}-configaccesslist
+          readOnly: true
+{{- end }}
       volumes:
+{{- if .Values.config.configFile }}
       - configMap:
           defaultMode: 420
           name: {{ template "oauth2-proxy.fullname" . }}
         name: {{ template "oauth2-proxy.fullname" . }}-configmap
+{{- end }}
+{{- if .Values.authenticatedEmailsFile.enabled }}
+      - configMap:
+{{- if .Values.authenticatedEmailsFile.template }}
+          name: {{ .Values.authenticatedEmailsFile.template }}
+{{- else }}
+          name: {{ template "oauth2-proxy.fullname" . }}-accesslist
+{{- end }}
+          items:
+          - key: restricted_user_access
+{{- if .Values.authenticatedEmailsFile.template }}
+            path: {{ .Values.authenticatedEmailsFile.template }}
+{{- else }}
+            path: authenticated-emails-list
+{{- end }}
+        name: {{ template "oauth2-proxy.fullname" . }}-configaccesslist
 {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:

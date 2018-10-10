@@ -147,7 +147,7 @@ Parameter | Description | Default
 `kubeStateMetrics.enabled` | If true, create kube-state-metrics | `true`
 `kubeStateMetrics.name` | kube-state-metrics container name | `kube-state-metrics`
 `kubeStateMetrics.image.repository` | kube-state-metrics container image repository| `quay.io/coreos/kube-state-metrics`
-`kubeStateMetrics.image.tag` | kube-state-metrics container image tag | `v1.3.1`
+`kubeStateMetrics.image.tag` | kube-state-metrics container image tag | `v1.4.0`
 `kubeStateMetrics.image.pullPolicy` | kube-state-metrics container image pull policy | `IfNotPresent`
 `kubeStateMetrics.args` | kube-state-metrics container arguments | `{}`
 `kubeStateMetrics.nodeSelector` | node labels for kube-state-metrics pod assignment | `{}`
@@ -213,7 +213,7 @@ Parameter | Description | Default
 `rbac.create` | If true, create & use RBAC resources | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.3.2`
+`server.image.tag` | Prometheus server container image tag | `v2.4.2`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.enableAdminApi` |  If true, Prometheus administrative HTTP API will be enabled. Please note, that you should take care of administrative API access protection (ingress or some frontend Nginx with auth) before enabling it. | `false`
 `server.global.scrape_interval` | How frequently to scrape targets by default | `1m`

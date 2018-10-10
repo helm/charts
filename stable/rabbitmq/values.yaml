@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.7.7-debian-9
+  tag: 3.7.8-debian-9
 
   ## set to true if you would like to see extra information on logs
   ## it turns BASH and NAMI debugging in minideb
@@ -164,10 +164,14 @@ livenessProbe:
   enabled: true
   initialDelaySeconds: 120
   timeoutSeconds: 5
+  periodSeconds: 5
   failureThreshold: 6
+  successThreshold: 1
 
 readinessProbe:
   enabled: true
   initialDelaySeconds: 10
   timeoutSeconds: 3
   periodSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1

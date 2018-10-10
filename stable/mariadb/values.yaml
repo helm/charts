@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.1.35-debian-9
+  tag: 10.1.36-debian-9
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -97,6 +97,9 @@ master:
     ## If true, use a Persistent Volume Claim, If false, use emptyDir
     ##
     enabled: true
+    # Enable persistence using an existing PVC
+    # existingClaim:
+    # mountPath:
     ## Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
