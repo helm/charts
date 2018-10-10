@@ -6,7 +6,7 @@ kind: RoleBinding
 metadata:
   name: {{ .name }}
   {{- if hasKey $values "namespace" }}
-  namespace: {{ $values.namespace }}
+  namespace: {{ $values.namespace.name }}
   {{- end }}
   labels:
     chart: {{ template "magic-namespace.chart" $ }}

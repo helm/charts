@@ -4,7 +4,7 @@ kind: RoleBinding
 metadata:
   name: tiller-{{ .Values.tiller.role.name }}
   {{- if hasKey .Values "namespace" }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.namespace.name }}
   {{- end }}
   labels:
     app: helm
@@ -20,9 +20,9 @@ subjects:
 - kind: ServiceAccount
   name: tiller
   {{- if hasKey .Values "namespace" }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.namespace.name }}
   {{- else }}
   namespace: {{ .Release.Namespace }}
   {{- end }}
-  
+
 {{- end }}

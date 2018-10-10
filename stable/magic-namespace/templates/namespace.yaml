@@ -2,5 +2,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ .Values.namespace }}
+  name: {{ .Values.namespace.name }}
+  {{- if .Values.namespace.labels }}
+  labels:
+  {{ toYaml .Values.namespace.labels | indent 2 }}
+  {{- end }}
+  {{- if .Values.namespace.annotations -}}
+  annotations:
+  {{ toYaml .Values.namespace.annotations | indent 2 }}
+  {{- end }}
 {{- end }}

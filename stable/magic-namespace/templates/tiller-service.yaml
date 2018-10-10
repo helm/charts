@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: tiller-deploy
   {{- if hasKey .Values "namespace" }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.namespace.name }}
   {{- end }}
   labels:
     app: helm
