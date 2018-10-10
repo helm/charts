@@ -156,6 +156,6 @@ probes:
 deploymentAnnotations: {}
 podAnnotations: {}
 
-## Deployment pods replace strategy
-## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
-# strategy: {}
+## Priority Class
+## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption
+# priorityClass:
