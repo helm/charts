@@ -93,7 +93,7 @@ If openvpn.OVPN_K8S_SVC_NETWORK and openvpn.OVPN_K8S_SVC_SUBNET are defined, an 
 
 ### Certificates
 
-New certificates are generated with each depeoyment, if *keystoreSecret* is not defined.
+New certificates are generated with each deployment, if *keystoreSecret* is not defined.
 If persistence is enabled certificate data will be persisted across pod restarts.
 Otherwise new client certs will be needed after each deployment or pod restart.
 
