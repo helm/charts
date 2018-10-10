@@ -80,10 +80,6 @@ Parameter | Description | Default
 `openvpn.OVPN_K8S_POD_SUBNET`  | Kubernetes pod network subnet (optional)                             | `255.0.0.0`
 `openvpn.OVPN_K8S_SVC_NETWORK` | Kubernetes service network (optional)                                | `nil`
 `openvpn.OVPN_K8S_SVC_SUBNET`  | Kubernetes service network subnet (optional)                         | `nil`
-`openvpn.CERTS_KEY`            | base64 value of /etc/openvpn/certs/pki/private/server.key            | `nil`
-`openvpn.CERTS_CA`             | base64 value of /etc/openvpn/certs/pki/ca.crt                        | `nil`
-`openvpn.CERTS_CRT`            | base64 value of /etc/openvpn/certs/pki/issued/server.crt             | `nil`
-`openvpn.CERTS_DH`             | base64 value of /etc/openvpn/certs/pki/dh.pem                        | `nil`
 `openvpn.dhcpOptionDomain`     | Push a `dhcp-option DOMAIN` config                                   | `true`
 `openvpn.conf`                 | Arbitrary lines appended to the end of the server configuration file | `nil`
 `openvpn.redirectGateway`      | Redirect all client traffic through VPN                              | `true`
