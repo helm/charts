@@ -181,20 +181,20 @@ ingress:
     ## A side effect of this will be that the backend wordpress service will be connected at port 443
     tls: false
 
+    ## Set this to true in order to add the corresponding annontations for cert-manager
+    certManager: false
+
     ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
     tlsSecret: wordpress.local-tls
 
     ## Ingress annotations done as key:value pairs
-    ## If you're using kube-lego, you will want to add:
-    ## kubernetes.io/tls-acme: true
-    ##
     ## For a full list of possible ingress annotations, please see
     ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
     ##
     ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
+    ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
     annotations:
     #  kubernetes.io/ingress.class: nginx
-    #  kubernetes.io/tls-acme: true
 
   secrets:
   ## If you're providing your own certificates, please use this to add the certificates as secrets
@@ -202,7 +202,7 @@ ingress:
   ## -----BEGIN RSA PRIVATE KEY-----
   ##
   ## name should line up with a tlsSecret set further up
-  ## If you're using kube-lego, this is unneeded, as it will create the secret for you if it is not set
+  ## If you're using cert-manager, this is unneeded, as it will create the secret for you if it is not set
   ##
   ## It is also possible to create and manage the certificates outside of this helm chart
   ## Please see README.md for more information
