@@ -1,15 +1,20 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-appVersion: "6.4.1"
+appVersion: "6.4.2"
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.4.1"
+  tag: "6.4.2"
   pullPolicy: "IfNotPresent"
   # If specified, use these secrets to access the image
   # pullSecrets:
   #   - registry-secret
+
+initImage:
+  repository: "busybox"
+  tag: "latest"
+  pullPolicy: "Always"
 
 cluster:
   name: "elasticsearch"
@@ -37,6 +42,7 @@ client:
 #    example: client-svc-foo
   heapSize: "512m"
   antiAffinity: "soft"
+  nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
   resources:
@@ -67,6 +73,7 @@ master:
     size: "4Gi"
     # storageClass: "ssd"
   antiAffinity: "soft"
+  nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
   resources:
@@ -100,6 +107,7 @@ data:
     # storageClass: "ssd"
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
+  nodeAffinity: {}
   nodeSelector: {}
   tolerations: []
   resources:

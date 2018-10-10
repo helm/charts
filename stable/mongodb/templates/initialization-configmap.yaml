@@ -1,0 +1,13 @@
+{{ if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "mongodb.fullname" . }}-init-scripts
+  labels:
+    app: {{ template "mongodb.name" . }}
+    chart: {{ template "mongodb.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+data:
+{{ (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]").AsConfig | indent 2 }}
+{{ end }}
