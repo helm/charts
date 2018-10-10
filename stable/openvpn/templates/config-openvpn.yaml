@@ -16,21 +16,12 @@ data:
     then
       echo "found existing certs - reusing"
     else
-{{ if and .Values.openvpn.CERTS_KEY .Values.openvpn.CERTS_CA .Values.openvpn.CERTS_CRT .Values.openvpn.CERTS_DH }}
-      mkdir -p /etc/openvpn/certs/pki/private /etc/openvpn/certs/pki/issued
-      echo {{ .Values.openvpn.CERTS_KEY  }} | base64 -d > /etc/openvpn/certs/pki/private/server.key
-      echo {{ .Values.openvpn.CERTS_CA }} | base64 -d > /etc/openvpn/certs/pki/ca.crt
-      echo {{ .Values.openvpn.CERTS_CRT }} | base64 -d > /etc/openvpn/certs/pki/issued/server.crt
-      echo {{ .Values.openvpn.CERTS_DH }} | base64 -d > /etc/openvpn/certs/pki/dh.pem
-      chmod 600 /etc/openvpn/certs/pki/private/server.key /etc/openvpn/certs/pki/ca.crt /etc/openvpn/certs/pki/issued/server.crt /etc/openvpn/certs/pki/dh.pem
-{{ else }}
       cp -R /usr/share/easy-rsa/* $EASY_RSA_LOC
       cd $EASY_RSA_LOC
       ./easyrsa init-pki
       echo "ca\n" | ./easyrsa build-ca nopass
       ./easyrsa build-server-full server nopass
       ./easyrsa gen-dh
-{{ end }}
     fi
 
 

@@ -69,15 +69,10 @@ openvpn:
   # Kubernetes service network subnet (optional).
   # OVPN_K8S_SVC_SUBNET:
   # Server certificate data
-  # Define openvpn.CERTS_KEY, openvpn.CERTS_CA, openvpn.CERTS_CRT, openvpn.CERTS_DH, if you need to keep certificates in chart values rather than in PVC
-  # CERTS_KEY:
-  # base64 of /etc/openvpn/certs/pki/private/server.key, without newlines
-  # CERTS_CA:
-  # base64 of /etc/openvpn/certs/pki/ca.crt, without newlines
-  # CERTS_CRT:
-  # base64 of /etc/openvpn/certs/pki/issued/server.crt, without newlines
-  # CERTS_DH:
-  # base64 of /etc/openvpn/certs/pki/dh.pem, without newlines
+  # keystoreSecret:
+  # secret with openvpn certificates. If specified, certificates are taken from the secret
+  # create secret with such command:
+  #    kubectl create secret generic openvpn-keystore-secret --from-file=./server.key --from-file=./ca.crt --from-file=./server.crt --from-file=./dh.pem
   # Push a `dhcp-option DOMAIN` config
   dhcpOptionDomain: true
   # Redirect all client traffic through VPN

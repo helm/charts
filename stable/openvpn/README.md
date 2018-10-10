@@ -97,9 +97,22 @@ If openvpn.OVPN_K8S_SVC_NETWORK and openvpn.OVPN_K8S_SVC_SUBNET are defined, an 
 
 ### Certificates
 
-New certificates are generated with each deployment, if certificate options (`openvpn.CERTS_KEY`, `openvpn.CERTS_CA`, `openvpn.CERTS_CRT`, `openvpn.CERTS_DH`) are not defined.
+New certificates are generated with each depeoyment, if *keystoreSecret* is not defined.
 If persistence is enabled certificate data will be persisted across pod restarts.
 Otherwise new client certs will be needed after each deployment or pod restart.
 
-Certificates can be passed via `openvpn.CERTS_KEY`, `openvpn.CERTS_CA`, `openvpn.CERTS_CRT`, `openvpn.CERTS_DH` value, which are the content of corresponding certificate files,
-packed in base64, without new lines (base64 -w0). If these values are defined, they will be applied on each deployment or pod restart, so persistence is not needed. 
+Certificates can be passed in secret, which name is specified in *openvpn.keystoreSecret* value.
+Create secret as follows:
+
+```bash
+kubectl create secret generic openvpn-keystore-secret --from-file=./server.key --from-file=./ca.crt --from-file=./server.crt --from-file=./dh.pem
+```
+
+You can deploy temporary openvpn chart, create secret from generated certificates, and then re-deploy openvpn, providing the secret.
+Certificates can be found in openvpn pod in the following files:
+
+ `/etc/openvpn/certs/pki/private/server.key`
+ `/etc/openvpn/certs/pki/ca.crt`
+ `/etc/openvpn/certs/pki/issued/server.crt`
+ `/etc/openvpn/certs/pki/dh.pem`
+
