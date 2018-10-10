@@ -77,7 +77,7 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
-        {{- if or (and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name) .Values.kvprovider.consul.token }}
+        {{- if and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name }}
         env:
         {{- range $k, $_ := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}
           - name: {{ $k }}
@@ -86,7 +86,12 @@ spec:
                 name: {{ template "traefik.fullname" $ }}-dnsprovider-config
                 key: {{ $k }}
         {{- end }}
+        {{- end }}
+        {{- if .Values.kvprovider.consul }}
         {{- if .Values.kvprovider.consul.token }}
+        {{- if not (and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name) }}
+        env:
+        {{- end }}
           {{ template "traefik.consul.token" . }}
         {{- end }}
         {{- end }}

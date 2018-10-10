@@ -1,3 +1,4 @@
+{{- if .Values.kvprovider.consul }}
 {{- if .Values.kvprovider.consul.token }}
 apiVersion: v1
 kind: Secret
@@ -11,4 +12,5 @@ metadata:
 type: Opaque
 data:
   token: {{ .Values.kvprovider.consul.token | b64enc | quote }}
+{{- end }}
 {{- end }}
