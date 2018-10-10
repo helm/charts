@@ -158,6 +158,7 @@ controller:
     configMapKey: ""
 
   service:
+    create: true
     annotations: {}
     labels: {}
     clusterIP: ""
