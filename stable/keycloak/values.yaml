@@ -39,6 +39,10 @@ keycloak:
   ## Additional arguments to start command e.g. -Dkeycloak.import= to load a realm
   extraArgs: ""
 
+  ## Path to the docker-entrypoint script
+  ## Setting this to '/opt/jboss/tools' is needed from version 4.4.0.Final onwards
+  scriptPath: /opt/jboss
+
   ## Username for the initial Keycloak admin user
   username: keycloak
 

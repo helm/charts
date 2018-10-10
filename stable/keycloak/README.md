@@ -93,6 +93,7 @@ Parameter | Description | Default
 `keycloak.persistence.dbPort` | The database host port (if `deployPostgres=false`) | `5432`
 `keycloak.persistence.dbUser` |The database user (if `deployPostgres=false`) | `keycloak`
 `keycloak.persistence.dbPassword` |The database password (if `deployPostgres=false`) | `""`
+`keycloak.scriptPath` | Path to the docker-entrypoint script | `/opt/jboss`
 `postgresql.postgresUser` | The PostgreSQL user (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
 `postgresql.postgresPassword` | The PostgreSQL password (if `keycloak.persistence.deployPostgres=true`) | `""`
 `postgresql.postgresDatabase` | The PostgreSQL database (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
