@@ -119,6 +119,9 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `ssl.cipherSuites`                     | Specify a non-empty list of TLS ciphers to override the default one | None |
 | `ssl.defaultCert`                      | Base64 encoded default certificate                                                                                           | A self-signed certificate                         |
 | `ssl.defaultKey`                       | Base64 encoded private key for the certificate above                                                                         | The private key for the certificate above         |
+| `ssl.clientAuth.enabled`               | Wheter to use client certificate authentication                                                                              | `false`                                           |
+| `ssl.clientAuth.optional`              | Wheter to mark client certificate authentication as optional                                                                 | `false`                                           |
+| `ssl.clientAuth.cert`                  | Base64 encoded CA for client certificate authentication                                                                      | None                                              |
 | `ssl.auth.basic`                       | Basic auth for all SSL endpoints, see Authentication section                                          | unset by default; this means basic auth is disabled |
 | `acme.enabled`                         | Whether to use Let's Encrypt to obtain certificates                                                                          | `false`                                           |
 | `acme.challengeType`                   | Type of ACME challenge to perform domain validation. `tls-sni-01` (deprecated), `tls-alpn-01` (recommended), `http-01` or `dns-01` | `tls-sni-01`                                |

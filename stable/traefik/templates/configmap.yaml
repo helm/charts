@@ -75,6 +75,11 @@ data:
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
+          {{- if .Values.ssl.clientAuth.enabled }}
+          [entryPoints.https.tls.ClientCA]
+            files = ["/ssl/clientca.crt"]
+            optional = {{ .Values.ssl.clientAuth.optional }}
+          {{- end }}
       {{- end }}
         {{- if .Values.ssl.auth }}
         {{- if .Values.ssl.auth.basic }}
