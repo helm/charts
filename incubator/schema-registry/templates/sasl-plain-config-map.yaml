@@ -1,0 +1,20 @@
+{{ if .Values.sasl.plain.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "schema-registry.fullname" . }}
+  labels:
+    app: {{ include "schema-registry.name" . | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+
+data:
+  kafka_client_jaas.conf: |-
+    // Info for third-party clients to connect to Kafka
+    KafkaClient {
+        org.apache.kafka.common.security.plain.PlainLoginModule required
+        username="$SASL_USERNAME"
+        password="$SASL_PASSWORD";
+    };
+{{- end }}

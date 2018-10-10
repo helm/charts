@@ -60,6 +60,16 @@ readinessProbe:
 # Options for connecting to SASL kafka brokers
 sasl:
   configPath: "/etc/kafka-config"
+
+  plain:
+    enabled: false
+    init:
+      image: "confluentinc/cp-schema-registry"
+      imageTag: "4.0.0"
+      imagePullPolicy: "IfNotPresent"
+    username: ""
+    password: ""
+
   scram:
     enabled: false
     init:

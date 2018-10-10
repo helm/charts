@@ -57,6 +57,36 @@ spec:
         - name: jaasconfig
           mountPath: {{ .Values.sasl.configPath | quote }}
     {{- end }}
+    {{- if .Values.sasl.plain.enabled }}
+      initContainers:
+      ## ref: https://github.com/Yolean/kubernetes-kafka/blob/master/kafka/50kafka.yml
+      - name: init-sasl
+        image: "{{ .Values.sasl.plain.init.image }}:{{ .Values.sasl.plain.init.imageTag }}"
+        imagePullPolicy: "{{ .Values.sasl.plain.init.imagePullPolicy }}"
+        command:
+          - sh
+          - -euc
+          - |
+            sed "s \$SASL_USERNAME ${SASL_USERNAME} g; s \$SASL_PASSWORD ${SASL_PASSWORD} g;" /tmp/kafka-template/kafka_client_jaas.conf > /etc/kafka-config/kafka_client_jaas.conf
+        env:
+          - name: SASL_USERNAME
+            value: {{ .Values.sasl.plain.username }}
+          - name: SASL_PASSWORD
+            {{- if (hasKey .Values.sasl.plain "useExistingSecret") }}
+            valueFrom: 
+{{ toYaml .Values.sasl.plain.useExistingSecret.password | indent 14 -}}
+            {{- else }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "schema-registry.fullname" . }}-sasl-plain-secret
+                key: sasl-password
+            {{- end }}
+        volumeMounts:
+        - name: jaastemplate
+          mountPath: "/tmp/kafka-template"
+        - name: jaasconfig
+          mountPath: {{ .Values.sasl.configPath | quote }}
+    {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -107,6 +137,12 @@ spec:
           - name: SCHEMA_REGISTRY_{{ $configName | replace "." "_" | upper }}
             value: {{ $configValue | quote }}
           {{ end }}
+          {{- if or .Values.sasl.plain.enabled }}
+          - name: SCHEMA_REGISTRY_KAFKASTORE_SASL_MECHANISM
+            value: "PLAIN"
+          - name: SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL
+            value: "SASL_SSL"
+          {{- end }}
           {{- if .Values.schemaRegistryOpts }}
           # The pre-flight checks use KAFKA_OPTS instead of SCHEMA_REGISTRY_OPTS.
           - name: KAFKA_OPTS
@@ -117,12 +153,12 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
-          {{- if .Values.sasl.scram.enabled }}
+          {{- if or .Values.sasl.scram.enabled .Values.sasl.plain.enabled }}
           - name: jaasconfig
             mountPath: {{ .Values.sasl.configPath | quote }}
           {{- end }}
       volumes:
-      {{- if .Values.sasl.scram.enabled }}
+      {{- if or .Values.sasl.scram.enabled .Values.sasl.plain.enabled }}
       - name: jaasconfig
         emptyDir: { medium: "Memory" }
       - name: jaastemplate
