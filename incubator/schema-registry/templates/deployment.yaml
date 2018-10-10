@@ -21,11 +21,12 @@ spec:
       - name: init-sasl
         image: "{{ .Values.sasl.scram.init.image }}:{{ .Values.sasl.scram.init.imageTag }}"
         imagePullPolicy: "{{ .Values.sasl.scram.init.imagePullPolicy }}"
+        # NOTE Neither SCRAM_CLIENT_PASSWORD nor ZOOKEEPER_CLIENT_PASSWORD can contain ' ' characters since it's the delimiter
         command:
           - sh
           - -euc
           - |
-            sed "s/\$SCRAM_CLIENT_USER/${SCRAM_CLIENT_USER}/g; s/\$SCRAM_CLIENT_PASSWORD/${SCRAM_CLIENT_PASSWORD}/g; s/\$ZOOKEEPER_CLIENT_USER/${ZOOKEEPER_CLIENT_USER}/g; s/\$ZOOKEEPER_CLIENT_PASSWORD/${ZOOKEEPER_CLIENT_PASSWORD}/g;" /tmp/kafka-template/kafka_client_jaas.conf > /etc/kafka-config/kafka_client_jaas.conf
+            sed "s/\$SCRAM_CLIENT_USER/${SCRAM_CLIENT_USER}/g; s \$SCRAM_CLIENT_PASSWORD ${SCRAM_CLIENT_PASSWORD} g; s/\$ZOOKEEPER_CLIENT_USER/${ZOOKEEPER_CLIENT_USER}/g; s \$ZOOKEEPER_CLIENT_PASSWORD ${ZOOKEEPER_CLIENT_PASSWORD} g;" /tmp/kafka-template/kafka_client_jaas.conf > /etc/kafka-config/kafka_client_jaas.conf
         env:
           - name: ZOOKEEPER_CLIENT_USER
             value: {{ .Values.sasl.scram.zookeeperClientUser }}
