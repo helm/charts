@@ -281,7 +281,7 @@ slave:
     failureThreshold: 3
 
 metrics:
-  enabled: false
+  enabled: true
   image:
     registry: docker.io
     repository: prom/mysqld-exporter
