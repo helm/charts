@@ -14,6 +14,8 @@ This chart bootstraps a [Joomla!](https://github.com/bitnami/bitnami-docker-joom
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which bootstraps a MariaDB deployment required by the Joomla! application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -107,6 +109,9 @@ The following table lists the configurable parameters of the Joomla! chart and t
 | `readinessProbe.timeoutSeconds`      | When the probe times out                                    | 5                                              |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed        | 6                                              |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes to be considered successful   | 1                                              |
+| `nodeSelector`                       | Node labels for pod assignment                              | `{}`                                           |
+| `tolerations`                        | List of node taints to tolerate                             | `[]`                                           |
+| `affinity`                           | Map of node/pod affinities                                  | `{}`                                           |
 
 The above parameters map to the env variables defined in [bitnami/joomla](http://github.com/bitnami/bitnami-docker-joomla). For more information please refer to the [bitnami/joomla](http://github.com/bitnami/bitnami-docker-joomla) image documentation.
 
