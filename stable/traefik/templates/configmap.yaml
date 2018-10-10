@@ -18,6 +18,9 @@ data:
     {{- if .Values.sendAnonymousUsage }}
     sendAnonymousUsage = true
     {{- end }}
+    {{- if .Values.rootCAs }}
+    {{ template "traefik.rootCAs" . }}
+    {{- end }}
     {{- if .Values.ssl.insecureSkipVerify }}
     InsecureSkipVerify = true
     {{- end }}
@@ -37,6 +40,10 @@ data:
         [entryPoints.http.proxyProtocol]
         {{ template "traefik.trustedips" . }}
       {{- end }}
+      {{- if .Values.forwardedHeaders.enabled }}
+        [entryPoints.http.forwardedHeaders]
+        {{ template "traefik.forwardedHeadersTrustedIPs" . }}
+      {{- end }}
         {{- if .Values.ssl.enforced }}
         [entryPoints.http.redirect]
           regex = "^http://(.*)"
@@ -53,15 +60,29 @@ data:
         [entryPoints.https.proxyProtocol]
         {{ template "traefik.trustedips" . }}
       {{- end }}
+      {{- if .Values.forwardedHeaders.enabled }}
+        [entryPoints.https.forwardedHeaders]
+        {{ template "traefik.forwardedHeadersTrustedIPs" . }}
+      {{- end }}
       {{- if not .Values.ssl.upstream }}
         [entryPoints.https.tls]
           {{- if .Values.ssl.tlsMinVersion }}
           minVersion = "{{ .Values.ssl.tlsMinVersion }}"
           {{- end }}
+          {{- if .Values.ssl.cipherSuites }}
+          {{ template "traefik.ssl.cipherSuites" . }}
+          {{- end }}
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
       {{- end }}
+        {{- if .Values.ssl.auth }}
+        {{- if .Values.ssl.auth.basic }}
+        [entryPoints.https.auth]
+          [entryPoints.https.auth.basic]
+            users = [{{ range $key, $value := .Values.ssl.auth.basic }}"{{ $key }}:{{ $value }}",{{ end }}]
+        {{- end }}
+        {{- end }}
       {{- else }}
       [entryPoints.httpn]
       {{- if .Values.whiteListSourceRange }}
@@ -100,7 +121,23 @@ data:
       {{- if .Values.kubernetes.ingressClass }}
     ingressClass = {{ .Values.kubernetes.ingressClass | quote }}
       {{- end}}
+      {{- if .Values.kubernetes.ingressEndpoint }}
+      [kubernetes.ingressEndpoint]
+        {{- if .Values.kubernetes.ingressEndpoint.hostname }}
+      hostname = {{ .Values.kubernetes.ingressEndpoint.hostname | quote }}
+        {{- end}}
+        {{- if .Values.kubernetes.ingressEndpoint.ip }}
+      ip = {{ .Values.kubernetes.ingressEndpoint.ip | quote }}
+        {{- end}}
+        {{- if .Values.kubernetes.ingressEndpoint.publishedService }}
+      publishedService = {{ .Values.kubernetes.ingressEndpoint.publishedService | quote }}
+        {{- end}}
+      {{- end}}
     {{- end}}
+    {{- if .Values.traefikLogFormat }}
+    [traefikLog]
+      format = "{{ .Values.traefikLogFormat }}"
+    {{- end }}
     {{- if .Values.accessLogs.enabled }}
     [accessLog]
     {{- if .Values.accessLogs.filePath }}
@@ -137,16 +174,16 @@ data:
     {{- end }}
     {{- if .Values.kvprovider.consul }}
     [consul]
-    endpoint = "{{ .Values.kvprovider.consul.endpoint }}"
+    endpoint = {{ .Values.kvprovider.consul.endpoint | quote }}
     watch = {{ .Values.kvprovider.consul.watch }}
-    prefix = {{ .Values.kvprovider.consul.prefix }}
-    {{- if .Values.kvprovider.consul.username }}username = {{ .Values.kvprovider.consul.username }}{{- end }}
-    {{- if .Values.kvprovider.consul.password }}password = {{ .Values.kvprovider.consul.password }}{{- end }}
+    prefix = {{ .Values.kvprovider.consul.prefix | quote }}
+    {{- if .Values.kvprovider.consul.username }}username = {{ .Values.kvprovider.consul.username | quote }}{{- end }}
+    {{- if .Values.kvprovider.consul.password }}password = {{ .Values.kvprovider.consul.password | quote  }}{{- end }}
       {{- if .Values.kvprovider.consul.tls }}
       [consul.tls]
       {{- end }}
       {{ range $key, $value := .Values.kvprovider.consul.tls }}
-      {{ $key }} = {{ $value }}
+      {{ $key }} = {{ $value | quote }}
       {{ end }}
     {{- end }}
     {{- if .Values.kvprovider.boltdb }}
@@ -205,6 +242,8 @@ data:
     {{- else if eq .Values.acme.challengeType "http-01" }}
       [acme.httpChallenge]
       entryPoint = "http"
+    {{- else if eq .Values.acme.challengeType "tls-alpn-01" }}
+      [acme.tlsChallenge]
     {{- end }}
     {{- if .Values.acme.domains.enabled }}
     {{- if .Values.acme.domains.domainsList }}{{ template "traefik.acme.domains" . }}{{- end }}

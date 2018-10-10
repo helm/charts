@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spark
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  namespace: default
+  name: spark-role
+rules:
+- apiGroups:
+  - "" # "" indicates the core API group
+  resources:
+  - "pods"
+  verbs:
+  - "*"
+- apiGroups:
+  - "" # "" indicates the core API group
+  resources:
+  - "services"
+  verbs:
+  - "*"
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: spark-role-binding
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: spark
+  namespace: default
+roleRef:
+  kind: Role
+  name: spark-role
+  apiGroup: rbac.authorization.k8s.io

@@ -5,7 +5,7 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v2.0.5"
+ImageTag: "v2.0.6"
 ImagePullPolicy: "Always"
 Replicas: 3
 MaxUnavailable: 1
@@ -80,3 +80,9 @@ Secure:
     # The name of the service account to use.
     # If not set and create is true, a name is generated.
     Name:
+
+# If you are deploying a second cockroach instance that should join a first, use the below list to join to the existing instance.
+# Each item in the array should be a FQDN (and port if needed) resolvable by the new pods.
+JoinExisting: []
+# Set a locality (e.g. "region=us-central1,datacenter=us-centra1-a") if you're doing multi-cluster so data is distributed properly
+Locality: ""

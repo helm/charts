@@ -15,9 +15,15 @@ data:
 
     bash -xe /opt/halyard/scripts/config.sh
 
-    {{ if .Values.halyard.additionalConfig.enabled }}
-    bash /opt/halyard/additional/{{ .Values.halyard.additionalConfig.configMapKey }}
-    {{ end }}
+    {{- if .Values.halyard.additionalScripts.enabled }}
+    bash /opt/halyard/additional/{{ .Values.halyard.additionalScripts.configMapKey }}
+    {{- end }}
+
+    {{- if  and .Values.halyard.additionalScripts.create .Values.halyard.additionalScripts.data }}
+    {{- range $index, $script := .Values.halyard.additionalScripts.data }}
+    bash -xe /opt/halyard/additionalScripts/{{ $index }}
+    {{- end }}
+    {{- end }}
 
     $HAL_COMMAND deploy apply
   clean.sh: |
@@ -77,7 +83,7 @@ data:
     {{- end }}
 
     $HAL_COMMAND config provider docker-registry account $PROVIDER_COMMAND {{ $registry.name }} --address {{ $registry.address }} \
-        ${CREDS} --repositories {{ range $index, $repository := $registry.repositories }}{{if $index}},{{end}}{{- $repository }}{{- end }}
+        ${CREDS} {{ if $registry.repositories }} --repositories {{ range $index, $repository := $registry.repositories }}{{if $index}},{{end}}{{- $repository }}{{- end }}{{- end }}
 
     {{- end }}
 

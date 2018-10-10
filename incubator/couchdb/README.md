@@ -75,7 +75,7 @@ CouchDB chart and their default values:
 |           Parameter             |             Description                               |                Default                 |
 |---------------------------------|-------------------------------------------------------|----------------------------------------|
 | `clusterSize`                   | The initial number of nodes in the CouchDB cluster    | 3                                      |
-| `couchdbConfig`                 | Map allowing override elements of server .ini config  | {}                                     |
+| `couchdbConfig`                 | Map allowing override elements of server .ini config  | chttpd.bind_address=any                |
 | `allowAdminParty`               | If enabled, start cluster without admin account       | false (requires creating a Secret)     |
 | `createAdminSecret`             | If enabled, create an admin account and cookie secret | true                                   |
 | `erlangFlags`                   | Map of flags supplied to the underlying Erlang VM     | name: couchdb, setcookie: monster
@@ -94,7 +94,7 @@ A variety of other parameters are also configurable. See the comments in the
 | `helperImage.tag`               | 0.1.0                                  |
 | `helperImage.pullPolicy`        | IfNotPresent                           |
 | `image.repository`              | couchdb                                |
-| `image.tag`                     | 2.1.1                                  |
+| `image.tag`                     | 2.2.0                                  |
 | `image.pullPolicy`              | IfNotPresent                           |
 | `ingress.enabled`               | false                                  |
 | `ingress.hosts`                 | chart-example.local                    |
@@ -103,6 +103,7 @@ A variety of other parameters are also configurable. See the comments in the
 | `persistentVolume.accessModes`  | ReadWriteOnce                          |
 | `persistentVolume.storageClass` | Default for the Kube cluster           |
 | `podManagementPolicy`           | Parallel                               |
+| `affinity`                      |                                        |
 | `resources`                     |                                        |
 | `service.enabled`               | true                                   |
 | `service.type`                  | ClusterIP                              |

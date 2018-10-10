@@ -36,6 +36,9 @@ spec:
           {{- range .Values.domainFilters }}
             - --domain-filter={{ . }}
           {{- end }}
+          {{- range .Values.zoneIdFilters }}
+            - --zone-id-filter={{ . }}
+          {{- end }}
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
             - --registry={{ .Values.registry }}
@@ -71,7 +74,11 @@ spec:
           {{- end}}
           {{- if eq .Values.provider "azure" }}
           - name: azure-config-file
+            {{- if not .Values.azure.secretName }}
             mountPath: /etc/kubernetes/azure.json
+            {{- else }}
+            mountPath: /etc/kubernetes/
+            {{- end }}
             readOnly: true
           {{- end }}
           {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
@@ -125,9 +132,14 @@ spec:
       {{- end}}
       {{- if eq .Values.provider "azure" }}
       - name: azure-config-file
+        {{- if (not .Values.azure.secretName)}}
         hostPath:
           path: /etc/kubernetes/azure.json
           type: File
+        {{- else}}
+        secret:
+          secretName: {{.Values.azure.secretName}}
+        {{- end}}
       {{- end }}
       {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
       - name: aws-credentials

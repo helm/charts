@@ -47,7 +47,7 @@ Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.18.0`
+`controller.image.tag` | controller container image tag | `0.19.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
@@ -149,6 +149,7 @@ Parameter | Description | Default
 `defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
 `imagePullSecrets` | name of Secret resource containing private registry credentials | `nil`
 `rbac.create` | if `true`, create & use RBAC resources | `true`
+`podSecurityPolicy.enabled` | if `true`, create & use Pod Security Policy resources | `false`
 `serviceAccount.create` | if `true`, create a service account | ``
 `serviceAccount.name` | The name of the service account to use. If not set and `create` is `true`, a name is generated using the fullname template. | ``
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
@@ -172,6 +173,10 @@ as described [here](https://github.com/kubernetes/ingress-nginx/blob/master/docs
 ```console
 $ helm install stable/nginx-ingress --set controller.extraArgs.v=2
 ```
+
+## PodDisruptionBudget
+Note that the PodDisruptionBudget resource will only be defined if the replicaCount is greater than one,
+else it would make it impossible to evacuate a node. See [gh issue #7127](https://github.com/helm/charts/issues/7127) for more info.
 
 ## Prometheus Metrics
 

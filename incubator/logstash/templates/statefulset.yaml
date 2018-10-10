@@ -130,6 +130,9 @@ spec:
         - name: pipeline
           configMap:
             name: {{ template "logstash.fullname" . }}-pipeline
+    {{- with .Values.volumes }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
 {{- if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
