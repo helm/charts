@@ -77,7 +77,7 @@ spec:
         volumeMounts:
         {{- if .Values.pvc.enablePVC }}
         - name: data
-          mountPath: /mnt
+          mountPath: /mnt/{{ .Values.pvc.eventsDir }}
         {{- else if .Values.gcs.enableGCS }}
         - name: secrets-volume
           mountPath: /etc/secrets
