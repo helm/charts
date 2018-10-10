@@ -63,6 +63,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | Parameter                                   | Description                         | Default                                 |
 | ------------------------------------------  | ----------------------------------  | ----------------------------------------|
 | `replicaCount`                              | Number of Nexus service replicas    | `1`                                     |
+| `deploymentStrategy`                        | Deployment Strategy     |  `rollingUpdate` |
 | `nexus.imageName`                           | Nexus image                         | `quay.io/travelaudience/docker-nexus`   |
 | `nexus.imageTag`                            | Version of Nexus                    | `3.9.0`                                 |
 | `nexus.imagePullPolicy`                     | Nexus image pull policy             | `IfNotPresent`                          |
@@ -115,6 +116,9 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `ingress.tls.secretName`                    | Name of the secret storing TLS cert, `false` to use the Ingress' default certificate | `nexus-tls`                             |
 | `ingress.path`                              | Path for ingress rules. GCP users should set to `/*` | `/`                    |
 | `tolerations`                               | tolerations list                    | `[]`                                    |
+| `config.enabled`                            | Enable configmap                    | `false`                                 |
+| `config.mountPath`                          | Path to mount the config            | `/sonatype-nexus-conf`                  |
+| `config.data`                               | Configmap data                      | `nil`                                   |
 
 If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables need to be configured
 

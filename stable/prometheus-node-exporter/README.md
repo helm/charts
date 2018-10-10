@@ -39,9 +39,10 @@ The following table lists the configurable parameters of the Node Exporter chart
 |             Parameter             |                                                          Description                                                          |                 Default                 |     |
 | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | --- |
 | `image.repository`                | Image repository                                                                                                              | `quay.io/prometheus/node-exporter`      |     |
-| `image.tag`                       | Image tag                                                                                                                     | `v0.15.2`                               |     |
+| `image.tag`                       | Image tag                                                                                                                     | `v0.16.0`                               |     |
 | `image.pullPolicy`                | Image pull policy                                                                                                             | `IfNotPresent`                          |     |
 | `extraArgs`                       | Additional container arguments                                                                                                | `[]`                                    |     |
+| `extraHostVolumeMounts`           | Additional host volume mounts                                                                                                 | {}                                      |     |
 | `podLabels`                       | Additional labels to be added to pods                                                                                         | {}                                      |     |
 | `rbac.create`                     | If true, create & use RBAC resources                                                                                          | `true`                                  |     |
 | `rbac.pspEnabled`                 | Specifies whether a PodSecurityPolicy should be created.                                                                      | `true`                                  |     |
@@ -49,6 +50,7 @@ The following table lists the configurable parameters of the Node Exporter chart
 | `service.type`                    | Service type                                                                                                                  | `ClusterIP`                             |     |
 | `service.port`                    | The service port                                                                                                              | `9100`                                  |     |
 | `service.targetPort`              | The target port of the container                                                                                              | `9100`                                  |     |
+| `service.annotations`             | Kubernetes service annotations | `{prometheus.io/scrape: "true"}` |
 | `serviceAccount.create`           | Specifies whether a service account should be created.                                                                        | `true`                                  |     |
 | `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                                         |     |
 | `serviceAccount.imagePullSecrets` | Specify image pull secrets                                                                                                    | `[]`                                    |     |

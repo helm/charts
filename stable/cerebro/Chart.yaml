@@ -6,7 +6,7 @@ sources:
  - https://github.com/lmenezes/cerebro-docker
  - https://github.com/lmenezes/cerebro
 name: cerebro
-version: 0.3.1
+version: 0.4.0
 maintainers:
 - name: davidkarlsen
   email: david@davidkarlsen.com
