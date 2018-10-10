@@ -1,6 +1,6 @@
 name: keycloak
-version: 3.4.2
-appVersion: 4.2.1.Final
+version: 4.0.0
+appVersion: 4.5.0.Final
 description: Open Source Identity and Access Management For Modern Applications and Services
 keywords:
   - sso
