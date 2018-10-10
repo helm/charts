@@ -60,7 +60,7 @@ daemonset:
 #
 # HINT: If you want to use datadog.collectEvents, keep deployment.replicas set to 1.
 deployment:
-  enabled: false
+  enabled: true
   replicas: 1
   # Affinity for pod assignment
   # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -76,9 +76,9 @@ deployment:
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
 ##
 
-# service:
-# type: LoadBalancer
-# annotations: {}
+  service:
+    type: ClusterIP
+    annotations: {}
 
 kubeStateMetrics:
   enabled: true
