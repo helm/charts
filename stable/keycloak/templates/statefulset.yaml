@@ -1,15 +1,20 @@
-apiVersion: apps/v1beta1
+{{- $highAvailability := gt (int .Values.keycloak.replicas) 1 -}}
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "keycloak.fullname" . }}
   annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    checksum/config: {{ include (print .Template.BasePath "/configmap.yaml") . | sha256sum }}
   labels:
     app: {{ template "keycloak.name" . }}
     chart: {{ template "keycloak.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "keycloak.name" . }}
+      release: "{{ .Release.Name }}"
   replicas: {{ .Values.keycloak.replicas }}
   serviceName: {{ template "keycloak.fullname" . }}-headless
   podManagementPolicy: Parallel
@@ -66,6 +71,12 @@ spec:
                 secretKeyRef:
                   name: {{ template "keycloak.fullname" . }}-http
                   key: password
+          {{- end }}
+          {{- if $highAvailability }}
+            - name: JGROUPS_DISCOVERY_PROTOCOL
+              value: "dns.DNS_PING"
+            - name: JGROUPS_DISCOVERY_PROPERTIES
+              value: "dns_query={{ template "keycloak.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
           {{- end }}
 {{ include "keycloak.dbEnvVars" . | indent 12 }}
 {{- with .Values.keycloak.extraEnv }}
