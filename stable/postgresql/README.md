@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install bitnami/postgresql
+$ helm install stable/postgresql
 ```
 
 ## Introduction
@@ -24,7 +24,7 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release bitnami/postgresql
+$ helm install --name my-release stable/postgresql
 ```
 
 The command deploys PostgreSQL on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -48,7 +48,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 |         Parameter          |                Description                |                            Default                        |
 |----------------------------|-------------------------------------------|---------------------------------------------------------- |
 | `image.registry`           | PostgreSQL image registry                 | `docker.io`                                               |
-| `image.repository`         | PostgreSQL Image name                     | `bitnami/postgresql`                                      |
+| `image.repository`         | PostgreSQL Image name                     | `stable/postgresql`                                      |
 | `image.tag`                | PostgreSQL Image tag                      | `{VERSION}`                                               |
 | `image.pullPolicy`         | PostgreSQL image pull policy              | `Always`                                                  |
 | `image.pullSecrets`        | Specify image pull secrets                | `nil` (does not add image pull secrets to deployed pods)  |
@@ -103,7 +103,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```console
 $ helm install --name my-release \
   --set postgresqlPassword=secretpassword,postgresqlDatabase=my-database \
-    bitnami/postgresql
+    stable/postgresql
 ```
 
 The above command sets the PostgreSQL `postgres` account password to `secretpassword`. Additionally it creates a database named `my-database`.
@@ -111,7 +111,7 @@ The above command sets the PostgreSQL `postgres` account password to `secretpass
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml bitnami/postgresql
+$ helm install --name my-release -f values.yaml stable/postgresql
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -135,7 +135,7 @@ The following repo contains the recommended production settings for PostgreSQL s
 To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then:
 
 ```console
-$ helm install --name my-release -f ./values-production.yaml bitnami/postgresql
+$ helm install --name my-release -f ./values-production.yaml stable/postgresql
 $ kubectl scale statefulset my-postgresql-slave --replicas=3
 ```
 
@@ -166,3 +166,55 @@ With NetworkPolicy enabled, traffic will be limited to just port 5432.
 
 For more precise policy, set `networkPolicy.allowExternal=false`. This will only allow pods with the generated client label to connect to PostgreSQL.
 This label will be displayed in the output of a successful install.
+
+## Upgrade
+
+In order to upgrade from the `0.X.X` branch to `1.X.X`, you should follow the below steps:
+
+ - Obtain the service name (`SERVICE_NAME`) and password (`OLD_PASSWORD`) of the existing postgresql chart. You can find the instructions to obtain the password in the NOTES.txt, the service name can be obtained by running
+
+ ```console
+$ kubectl get svc
+ ```
+
+- Install (not upgrade) the new version
+
+```console
+$ helm repo update
+$ helm install --name my-release stable/postgresql
+```
+
+- Connect to the new pod (you can obtain the name by running `kubectl get pods`):
+
+```console
+$ kubectl exec -it NAME bash
+```
+
+- Once logged in, create a dump file from the previous database using `pg_dump`, for that we should connect to the previous postgresql chart:
+
+```console
+$ pg_dump -h SERVICE_NAME -U postgres DATABASE_NAME > /tmp/backup.sql
+```
+
+After run above command you should be prompted for a password, this password is the previous chart password (`OLD_PASSWORD`).
+This operation could take some time depending on the database size.
+
+- Once you have the backup file, you can restore it with a command like the one below:
+
+```console
+$ psql -U postgres DATABASE_NAME < /tmp/backup.sql
+```
+
+In this case, you are accessing to the local postgresql, so the password should be the new one (you can find it in NOTES.txt).
+
+If you want to restore the database and the database schema does not exist, it is necessary to first follow the steps described below.
+
+```console
+$ psql -U postgres
+postgres=# drop database DATABASE_NAME;
+postgres=# create database DATABASE_NAME;
+postgres=# create user USER_NAME;
+postgres=# alter role USER_NAME with password 'BITNAMI_USER_PASSWORD';
+postgres=# grant all privileges on database DATABASE_NAME to USER_NAME;
+postgres=# alter database DATABASE_NAME owner to USER_NAME;
+```
