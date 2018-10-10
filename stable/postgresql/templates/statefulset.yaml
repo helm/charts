@@ -46,6 +46,9 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
       containers:
       - name: "{{ template "postgresql.fullname" . }}"
         image: "{{ template "postgresql.image" . }}"
