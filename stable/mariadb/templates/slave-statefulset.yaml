@@ -33,9 +33,11 @@ spec:
         release: "{{ .Release.Name }}"
         chart: {{ template "mariadb.chart" . }}
     spec:
+      {{- if .Values.securityContext.enabled }}
       securityContext:
-        runAsUser: 1001
-        fsGroup: 1001
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
       {{- if eq .Values.slave.antiAffinity "hard" }}
       affinity:
       {{- with .Values.slave.affinity  }}
