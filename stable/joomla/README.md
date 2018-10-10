@@ -109,6 +109,9 @@ The following table lists the configurable parameters of the Joomla! chart and t
 | `readinessProbe.timeoutSeconds`      | When the probe times out                                    | 5                                              |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed        | 6                                              |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes to be considered successful   | 1                                              |
+| `nodeSelector`                       | Node labels for pod assignment                              | `{}`                                           |
+| `tolerations`                        | List of node taints to tolerate                             | `[]`                                           |
+| `affinity`                           | Map of node/pod affinities                                  | `{}`                                           |
 
 The above parameters map to the env variables defined in [bitnami/joomla](http://github.com/bitnami/bitnami-docker-joomla). For more information please refer to the [bitnami/joomla](http://github.com/bitnami/bitnami-docker-joomla) image documentation.
 
