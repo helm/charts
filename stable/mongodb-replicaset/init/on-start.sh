@@ -14,8 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set -e pipefail
+
 replica_set="$REPLICA_SET"
 script_name=${0##*/}
+SECONDS=0
+timeout=300
 
 if [[ "$AUTH" == "true" ]]; then
     admin_user="$ADMIN_USER"
@@ -32,31 +36,64 @@ log() {
     local msg="$1"
     local timestamp
     timestamp=$(date --iso-8601=ns)
-    echo "[$timestamp] [$script_name] $msg" >> /work-dir/log.txt
+    echo "[$timestamp] [$script_name] $msg" 2>&1 | tee -a /work-dir/log.txt 1>&2
+}
+
+retry_until() {
+    local host="${1}"
+    local command="${2}"
+    local expected="${3}"
+    local creds="${admin_creds[@]}"
+
+    # Don't need credentials for admin user creation and pings that run on localhost
+    if [[ "${host}" =~ ^localhost ]]; then
+        creds=
+    fi
+
+    until [[ $(mongo admin --host "${host}" ${creds} "${ssl_args[@]}" --quiet --eval "${command}") == "${expected}" ]]; do
+        log "Retrying ${command}"
+        sleep 1
+
+        if (! ps "${pid}" &>/dev/null); then
+            log "mongod shutdown unexpectedly"
+            exit 1
+        fi
+        if [[ "${SECONDS}" -ge "${timeout}" ]]; then
+            log "Timed out after ${timeout}s attempting to bootstrap mongod"
+            exit 1
+        fi
+    done
 }
 
 shutdown_mongo() {
-    if [[ $# -eq 1 ]]; then
-        args="timeoutSecs: $1"
-    else
-        args='force: true'
-    fi
+    local host="${1:-localhost}"
+    local args='force: true'
     log "Shutting down MongoDB ($args)..."
-    mongo admin "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.shutdownServer({$args})"
+    if (! mongo admin --host "${host}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.shutdownServer({$args})"); then
+      log "db.shutdownServer() failed, sending the terminate signal"
+      kill -TERM "${pid}"
+    fi
 }
 
 init_mongod_standalone() {
+    if [[ ! -f /init/initMongodStandalone.js ]]; then
+        log "Skipping init mongod standalone script"
+        return 0
+    elif [[ -z "$(ls -1A /data/db)" ]]; then
+        log "mongod standalone script currently not supported on initial install"
+        return 0
+    fi
+
+    local port="27018"
     log "Starting a MongoDB instance as standalone..."
-    mongod --config /data/configdb/mongod.conf --dbpath=/data/db "${auth_args[@]}" --bind_ip=0.0.0.0 >> /work-dir/log.txt 2>&1 &
+    mongod --config /data/configdb/mongod.conf --dbpath=/data/db "${auth_args[@]}" --port "${port}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
+    export pid=$!
+    trap shutdown_mongo EXIT
     log "Waiting for MongoDB to be ready..."
-    until mongo "${ssl_args[@]}" --eval "db.adminCommand('ping')"; do
-        log "Retrying..."
-        sleep 2
-    done
-    log "Initialized."
-    log "Running init js script on standalone mongod..."
-    mongo admin "${admin_creds[@]}" "${ssl_args[@]}" /init/initMongodStandalone.js
-    shutdown_mongo
+    retry_until "localhost:${port}" "db.adminCommand('ping').ok" "1"
+    log "Running init js script on standalone mongod"
+    mongo admin --port "${port}" "${admin_creds[@]}" "${ssl_args[@]}" /init/initMongodStandalone.js
+    shutdown_mongo "localhost:${port}"
 }
 
 my_hostname=$(hostname)
@@ -66,7 +103,6 @@ log "Reading standard input..."
 while read -ra line; do
     if [[ "${line}" == *"${my_hostname}"* ]]; then
         service_name="$line"
-        continue
     fi
     peers=("${peers[@]}" "$line")
 done
@@ -111,87 +147,69 @@ EOL
     rm mongo.key mongo.crt
 fi
 
-if [ -f /init/initMongodStandalone.js ]
-then
-    init_mongod_standalone
-else
-    log "Skipping init mongod standalone script"
-fi
+init_mongod_standalone
 
 log "Peers: ${peers[*]}"
-
-log "Starting a MongoDB instance as replica..."
-mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port=27017 "${auth_args[@]}" --bind_ip=0.0.0.0 >> /work-dir/log.txt 2>&1 &
+log "Starting a MongoDB replica"
+mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port=27017 "${auth_args[@]}" --bind_ip=0.0.0.0 2>&1 | tee -a /work-dir/log.txt 1>&2 &
+pid=$!
+trap shutdown_mongo EXIT
 
 log "Waiting for MongoDB to be ready..."
-until mongo "${ssl_args[@]}" --eval "db.adminCommand('ping')"; do
-    log "Retrying..."
-    sleep 2
-done
-
+retry_until "localhost" "db.adminCommand('ping').ok" "1"
 log "Initialized."
 
-# try to find a master and add yourself to its replica set.
+# try to find a master
 for peer in "${peers[@]}"; do
-    if mongo admin --host "$peer" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.isMaster()" | grep '"ismaster" : true'; then
-        log "Found master: $peer"
-        log "Adding myself ($service_name) to replica set..."
-        if mongo admin --host "$peer" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.add('$service_name')" | grep 'Quorum check failed'; then
-            log 'Quorum check failed, unable to join replicaset. Exiting prematurely.'
-            shutdown_mongo
-            exit 1
-        fi
-
-        sleep 3
-
-        log 'Waiting for replica to reach SECONDARY state...'
-        until printf '.' && [[ $(mongo admin "${admin_creds[@]}" "${ssl_args[@]}" --quiet --eval "rs.status().myState") == '2' ]]; do
-            sleep 1
-        done
-
-        log '✓ Replica reached SECONDARY state.'
-
-        # create the metric user if it does not exist
-        if [[ "$AUTH" == "true" ]]; then
-            if [[ "$METRICS" == "true" ]]; then
-                metric_user_count=$(mongo admin --host "$peer" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.system.users.find({user: '$metrics_user'}).count()" --quiet)
-                if [ "$metric_user_count" == "0" ]; then
-                    log "Creating clusterMonitor user..."
-                    mongo admin --host "$peer" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.createUser({user: '$metrics_user', pwd: '$metrics_password', roles: [{role: 'clusterMonitor', db: 'admin'}, {role: 'read', db: 'local'}]})"
-                fi
-            fi
-        fi
-
-        shutdown_mongo "60"
-        log "Good bye."
-        exit 0
+    log "Checking if ${peer} is primary"
+    # Check rs.status() first since it could be in primary catch up mode which db.isMaster() doesn't show
+    if [[ $(mongo admin --host "${peer}" "${admin_creds[@]}" "${ssl_args[@]}" --quiet --eval "rs.status().myState") == "1" ]]; then
+        retry_until "${peer}" "db.isMaster().ismaster" "true"
+        log "Found primary: ${peer}"
+        primary="${peer}"
+        break
     fi
 done
 
-# else initiate a replica set with yourself.
-if mongo "${ssl_args[@]}" --eval "rs.status()" | grep "no replset config has been received"; then
+if [[ "${primary}" = "${service_name}" ]]; then
+    log "This replica is already PRIMARY"
+elif [[ -n "${primary}" ]]; then
+    log "Adding myself (${service_name}) to replica set..."
+    if (mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "rs.add('${service_name}')" | grep 'Quorum check failed'); then
+        log 'Quorum check failed, unable to join replicaset. Exiting prematurely.'
+        exit 1
+    fi
+
+    sleep 3
+    log 'Waiting for replica to reach SECONDARY state...'
+    retry_until "${service_name}" "rs.status().myState" "2"
+    log '✓ Replica reached SECONDARY state.'
+
+elif (mongo "${ssl_args[@]}" --eval "rs.status()" | grep "no replset config has been received"); then
     log "Initiating a new replica set with myself ($service_name)..."
     mongo "${ssl_args[@]}" --eval "rs.initiate({'_id': '$replica_set', 'members': [{'_id': 0, 'host': '$service_name'}]})"
 
     sleep 3
-
     log 'Waiting for replica to reach PRIMARY state...'
-    until printf '.' && [[ $(mongo "${ssl_args[@]}" --quiet --eval "rs.status().myState") == '1' ]]; do
-        sleep 1
-    done
-
+    retry_until "localhost" "db.isMaster().ismaster" "true"
+    primary="${service_name}"
     log '✓ Replica reached PRIMARY state.'
 
-    if [[ "$AUTH" == "true" ]]; then
+    if [[ "${AUTH}" == "true" ]]; then
         log "Creating admin user..."
-        mongo admin "${ssl_args[@]}" --eval "db.createUser({user: '$admin_user', pwd: '$admin_password', roles: [{role: 'root', db: 'admin'}]})"
-        if [[ "$METRICS" == "true" ]]; then
-            log "Creating clusterMonitor user..."
-            mongo admin "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.createUser({user: '$metrics_user', pwd: '$metrics_password', roles: [{role: 'clusterMonitor', db: 'admin'}, {role: 'read', db: 'local'}]})"
-        fi
+        mongo admin "${ssl_args[@]}" --eval "db.createUser({user: '${admin_user}', pwd: '${admin_password}', roles: [{role: 'root', db: 'admin'}]})"
     fi
-
-    log "Done."
 fi
 
-shutdown_mongo
+# User creation
+if [[ -n "${primary}" && "$AUTH" == "true" && "$METRICS" == "true" ]]; then
+    metric_user_count=$(mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.system.users.find({user: '${metrics_user}'}).count()" --quiet)
+    if [[ "${metric_user_count}" == "0" ]]; then
+        log "Creating clusterMonitor user..."
+        mongo admin --host "${primary}" "${admin_creds[@]}" "${ssl_args[@]}" --eval "db.createUser({user: '${metrics_user}', pwd: '${metrics_password}', roles: [{role: 'clusterMonitor', db: 'admin'}, {role: 'read', db: 'local'}]})"
+    fi
+fi
+
+log "MongoDB bootstrap complete"
+exit 0
+

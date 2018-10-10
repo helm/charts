@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `metrics.image.pullPolicy`           | Image pull policy for metrics exporter                                    | `IfNotPresent`                                      |
 | `metrics.port`                       | Port for metrics exporter                                                 | `9216`                                              |
 | `metrics.path`                       | URL Path to expose metics                                                 | `/metrics`                                          |
+| `metrics.resources`                  | Metrics pod resource requests and limits                                  | `{}`                                                |
 | `metrics.socketTimeout`              | Time to wait for a non-responding socket                                  | `3s`                                                |
 | `metrics.syncTimeout`                | Time an operation with this session will wait before returning an error   | `1m`                                                |
 | `metrics.prometheusServiceDiscovery` | Adds annotations for Prometheus ServiceDiscovery                          | `true`                                              |
@@ -77,8 +78,16 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `nodeSelector`                      | Node labels for pod assignment                                            | `{}`                                                |
 | `affinity`                          | Node/pod affinities                                                       | `{}`                                                |
 | `tolerations`                       | List of node taints to tolerate                                           | `[]`                                                |
-| `livenessProbe`                     | Liveness probe configuration                                              | See below                                           |
-| `readinessProbe`                    | Readiness probe configuration                                             | See below                                           |
+| `livenessProbe.failureThreshold`    | Liveness probe failure threshold                                          | `3`                                                 |
+| `livenessProbe.initialDelaySeconds` | Liveness probe initial delay seconds                                      | `30`                                                |
+| `livenessProbe.periodSeconds`       | Liveness probe period seconds                                             | `10`                                                |
+| `livenessProbe.successThreshold`    | Liveness probe success threshold                                          | `1`                                                 |
+| `livenessProbe.timeoutSeconds`      | Liveness probe timeout seconds                                            | `5`                                                 |
+| `readinessProbe.failureThreshold`   | Readiness probe failure threshold                                         | `3`                                                 |
+| `readinessProbe.initialDelaySeconds`| Readiness probe initial delay seconds                                     | `5`                                                 |
+| `readinessProbe.periodSeconds`      | Readiness probe period seconds                                            | `10`                                                |
+| `readinessProbe.successThreshold`   | Readiness probe success threshold                                         | `1`                                                 |
+| `readinessProbe.timeoutSeconds`     | Readiness probe timeout seconds                                           | `1`                                                 |
 | `extraVars`                         | Set environment variables for the main container                          | `{}`                                                |
 | `extraLabels`                       | Additional labels to add to resources                                     | `{}`                                                |
 
@@ -194,32 +203,6 @@ metrics:
 ```
 
 More information on [MongoDB Exporter](https://github.com/percona/mongodb_exporter) metrics available.
-
-## Readiness probe
-
-The default values for the readiness probe are:
-
-```yaml
-readinessProbe:
-  initialDelaySeconds: 5
-  timeoutSeconds: 1
-  failureThreshold: 3
-  periodSeconds: 10
-  successThreshold: 1
-```
-
-## Liveness probe
-
-The default values for the liveness probe are:
-
-```yaml
-livenessProbe:
-  initialDelaySeconds: 30
-  timeoutSeconds: 5
-  failureThreshold: 3
-  periodSeconds: 10
-  successThreshold: 1
-```
 
 ## Deep dive
 
