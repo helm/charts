@@ -53,8 +53,8 @@ persistentVolume:
   reclaimPolicy: Delete
 
   # Mount options. Optional.
-  #mountOptions:
-  #  - nfsvers=3
+  # mountOptions:
+  #   - nfsvers=3
 
 ## For RBAC support:
 rbac:
