@@ -44,6 +44,10 @@ keycloak:
   ## Username for the initial Keycloak admin user
   username: keycloak
 
+  ## Path to the docker-entrypoint script
+  ## setting this to "/opt/jboss" is needed for keycloak versions lower than 4.4.0.Final
+  scriptPath: /opt/jboss/tools
+
   ## Password for the initial Keycloak admin user
   ## If not set, a random 10 characters password will be used
   password: ""
