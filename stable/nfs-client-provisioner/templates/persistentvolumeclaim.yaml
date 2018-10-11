@@ -1,4 +1,4 @@
-{{ if .Values.persistentVolume.create -}}
+{{ if .Values.nfs.mountOptions -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -13,5 +13,5 @@ spec:
       nfs-client-provisioner: {{ template "nfs-client-provisioner.fullname" . }}
   resources:
     requests:
-      storage: {{ .Values.persistentVolume.capacity }}
+      storage: 10Mi
 {{ end -}}

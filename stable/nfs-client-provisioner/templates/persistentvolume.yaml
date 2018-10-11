@@ -1,4 +1,4 @@
-{{ if .Values.persistentVolume.create -}}
+{{ if .Values.nfs.mountOptions -}}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -7,15 +7,15 @@ metadata:
     nfs-client-provisioner: {{ template "nfs-client-provisioner.fullname" . }}
 spec:
   capacity:
-    storage: {{ .Values.persistentVolume.capacity }}
+    storage: 10Mi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: {{ .Values.persistentVolume.reclaimPolicy }}
+  persistentVolumeReclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
   storageClassName: ""
-  {{- if .Values.persistentVolume.mountOptions }}
+  {{- if .Values.nfs.mountOptions }}
   mountOptions:
-    {{- range .Values.persistentVolume.mountOptions }}
+    {{- range .Values.nfs.mountOptions }}
     - {{ . }}
     {{- end }}
   {{- end }}

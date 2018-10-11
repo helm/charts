@@ -40,7 +40,7 @@ spec:
         - name: nfs-client-root
 {{- if .Values.buildMode }}
           emptyDir: {}
-{{- else if .Values.persistentVolume.create }}
+{{- else if .Values.nfs.mountOptions }}
           persistentVolumeClaim:
             claimName: pvc-{{ template "nfs-client-provisioner.fullname" . }}
 {{- else }}

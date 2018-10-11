@@ -17,9 +17,9 @@ allowVolumeExpansion: {{ .Values.storageClass.allowVolumeExpansion }}
 reclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
 parameters:
   archiveOnDelete: "{{ .Values.storageClass.archiveOnDelete }}"
-{{- if .Values.persistentVolume.mountOptions }}
+{{- if .Values.nfs.mountOptions }}
 mountOptions:
-  {{- range .Values.persistentVolume.mountOptions }}
+  {{- range .Values.nfs.mountOptions }}
   - {{ . }}
   {{- end }}
 {{- end }}

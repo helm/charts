@@ -13,6 +13,7 @@ image:
 nfs:
   server:
   path: /ifs/kubernetes
+  mountOptions:
 
 # For creating the StorageClass automatically:
 storageClass:
@@ -37,24 +38,6 @@ storageClass:
 
   # When set to false your PVs will not be archived by the provisioner upon deletion of the PVC.
   archiveOnDelete: true
-
-# For creating the PersistentVolume automatically:
-persistentVolume:
-  create: false
-
-  # Capacity
-  capacity: 10Gi
-
-  # Set a StorageClass name
-  # Ignored if persistentVolume.create is false
-  name: nfs-client
-
-  # Method used to reclaim an obsoleted volume
-  reclaimPolicy: Delete
-
-  # Mount options. Optional.
-  # mountOptions:
-  #   - nfsvers=3
 
 ## For RBAC support:
 rbac:
