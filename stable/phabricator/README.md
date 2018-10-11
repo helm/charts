@@ -77,12 +77,16 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `persistence.phabricator.accessMode`   | PVC Access Mode for Phabricator volume       | `ReadWriteOnce`                                          |
 | `persistence.phabricator.size`         | PVC Storage Request for Phabricator volume   | `8Gi`                                                    |
 | `resources`                            | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                             |
-| `ingress.enabled`                      | enable ingress                               | `false`                                                  |
-| `ingress.path`                         | path to expose on ingress                    | `nil`                                                    |
-| `ingress.hosts`                        | listss of accepted hostnames                 | `nil`                                                    |
-| `ingress.annotations`                  | annotations to use on the ingress            | `nil`                                                    |
-| `ingress.tls.secretName`               | tls secret name                              | `nil`                                                    |
-| `ingress.tls.hosts`                    | hostnames the secret applies to              | `nil`                                                    |
+| `ingress.enabled`                      | Enable ingress controller resource           | `false`                                                  |
+| `ingress.hosts[0].name`                | Hostname to your Phabricator installation    | `phabricator.local`                                      |
+| `ingress.hosts[0].path`                | Path within the url structure                | `/`                                                      |
+| `ingress.hosts[0].tls`                 | Utilize TLS backend in ingress               | `false`                                                  |
+| `ingress.hosts[0].certManager`         | Add annotations for cert-manager             | `false`                                                  |
+| `ingress.hosts[0].tlsSecret`           | TLS Secret (certificates)                    | `phabricator.local-tls-secret`                           |
+| `ingress.hosts[0].annotations`         | Annotations for this host's ingress record   | `[]`                                                     |
+| `ingress.secrets[0].name`              | TLS Secret Name                              | `nil`                                                    |
+| `ingress.secrets[0].certificate`       | TLS Secret Certificate                       | `nil`                                                    |
+| `ingress.secrets[0].key`               | TLS Secret Key                               | `nil`                                                    |
 
 The above parameters map to the env variables defined in [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator). For more information please refer to the [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator) image documentation.
 
