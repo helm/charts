@@ -1,4 +1,4 @@
-# Percona 
+# Percona
 
 [Percona Server](https://MySQL.org) for MySQL® is a free, fully compatible, enhanced, open source drop-in replacement for MySQL that provides superior performance, scalability and instrumentation. With over 3,000,000 downloads, Percona Server for MySQL's self-tuning algorithms and support for extremely high-performance hardware delivers excellent performance and reliability. 
 
@@ -59,6 +59,8 @@ The following table lists the configurable parameters of the Percona chart and t
 | `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                              |
+| `nodeSelector`             | Node labels for pod assignment     | `{}`							|
+| `tolerations`              | Node labels for pod assignment     | `[]`							|
 
 Some of the parameters above map to the env variables defined in the [Percona Server DockerHub image](https://hub.docker.com/_/percona/).
 
