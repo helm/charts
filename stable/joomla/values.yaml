@@ -42,7 +42,7 @@ allowEmptyPassword: "yes"
 ##
 externalDatabase:
   ## Database host
-  host:
+  host: localhost
 
   ## Database host
   port: 3306
@@ -51,7 +51,7 @@ externalDatabase:
   user: bn_joomla
 
   ## Database password
-  password:
+  password: ""
 
   ## Database name
   database: bitnami_joomla
@@ -89,7 +89,7 @@ mariadb:
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##
-  # root:
+  # rootUser:
   #   password:
 
   ## Enable persistence using Persistent Volume Claims
@@ -108,6 +108,23 @@ mariadb:
       # storageClass: "-"
       accessMode: ReadWriteOnce
       size: 8Gi
+
+## Configure extra options for liveness and readiness probes
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+livenessProbe:
+  enbaled: true
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
 
 ## Kubernetes svc configuration
 ##
@@ -215,19 +232,17 @@ resources:
     memory: 512Mi
     cpu: 300m
 
-## Configure extra options for liveness and readiness probes
-## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
-livenessProbe:
-  enbaled: true
-  initialDelaySeconds: 120
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 6
-  successThreshold: 1
-readinessProbe:
-  enabled: true
-  initialDelaySeconds: 30
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 6
-  successThreshold: 1
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
