@@ -1,0 +1,46 @@
+{{- if .Values.acl.enabled}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "configure-basic-acls"
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "consul.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+spec:
+  template:
+    metadata:
+      name: "configure-basic-acls"
+      labels:
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: {{ template "consul.chart" . }}
+        component: "{{ .Release.Name }}-{{ .Values.Component }}"
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: "add-agent-acl"
+        image: appropriate/curl:latest
+        args:
+        - -X 
+        - PUT
+        - --header
+        - 'X-Consul-Token: {{ .Values.acl.masterToken }}'
+        - --data
+        - '{ "Name": "Agent Token", "Type": "client", "Rules": "node \"\" { policy = \"write\" } service \"\" { policy = \"read\" } key \"_rexec\" { policy = \"write\" }", "ID": "{{ .Values.acl.agentToken }}"}'
+        - 'http://{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.HttpPort }}/v1/acl/create'
+      - name: "modify-anonymous-acl"
+        image: appropriate/curl:latest
+        args:
+        - -X 
+        - PUT
+        - --header
+        - 'X-Consul-Token: {{ .Values.acl.masterToken }}'
+        - --data
+        - '{ "Name": "Anonymous Token", "Type": "client", "Rules": "node \"\" { policy = \"read\" }", "ID": "anonymous"}'
+        - 'http://{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.HttpPort }}/v1/acl/create'
+{{- end }}
