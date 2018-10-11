@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "awx.fullname" . }}-{{ .Values.cacheName }}
+  labels:
+    app: {{ template "awx.name" . }}
+    chart: {{ template "awx.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.cacheService.type }}
+  ports:
+  - name: {{ .Values.cacheName }}
+    port: {{ .Values.cacheService.port }}
+    targetPort: {{ .Values.cacheService.port }}
+      {{- if and (eq "NodePort" .Values.cacheService.type) .Values.cacheService.nodePort }}
+      nodePort: {{ .Values.cacheService.nodePort }}
+      {{- end }}
+  selector:
+    app: {{ template "awx.name" . }}
+    release: {{ .Release.Name }}
+    component: {{ .Values.cacheComponent }}

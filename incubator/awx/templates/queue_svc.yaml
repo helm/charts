@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "awx.fullname" . }}-{{ .Values.queueName }}
+  labels:
+    app: {{ template "awx.name" . }}
+    chart: {{ template "awx.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.queueService.type }}
+  ports:
+  - name: {{ .Values.queueName }}
+    port: {{ .Values.queueService.port }}
+    targetPort: {{ .Values.queueService.port }}
+      {{- if and (eq "NodePort" .Values.queueService.type) .Values.queueService.nodePort }}
+      nodePort: {{ .Values.queueService.nodePort }}
+      {{- end }}
+  selector:
+    app: {{ template "awx.name" . }}
+    release: {{ .Release.Name }}
+    component: {{ .Values.queueComponent }}

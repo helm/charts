@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "awx.fullname" . }}-{{ .Values.dbName }}
+  labels:
+    app: {{ template "awx.name" . }}
+    chart: {{ template "awx.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.dbService.type }}
+  ports:
+  - name: {{ .Values.dbName }}
+    port: {{ .Values.dbService.port }}
+    targetPort: {{ .Values.dbService.port }}
+    {{- if and (eq "NodePort" .Values.dbService.type) .Values.dbService.nodePort }}
+    nodePort: {{ .Values.dbService.nodePort }}
+    {{- end }}
+  selector:
+    app: {{ template "awx.name" . }}
+    release: {{ .Release.Name }}
+    component: {{ .Values.dbComponent }}

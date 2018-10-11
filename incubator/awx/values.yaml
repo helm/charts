@@ -1,0 +1,299 @@
+########### Start of DB value ###########
+
+## DB name
+dbName: db
+
+## DB component label
+dbComponent: "database"
+
+## DB replica Count
+dbReplicaCount: 1
+
+## DB image repository and version
+dbImage:
+  repository: postgres
+  tag: 9.6.2
+  pullPolicy: IfNotPresent
+
+## DB username
+dbUser: "awx"
+
+## DB user password
+dbPassword: "awxpass"
+
+## Postgres DB name
+dbDatabaseName: "awx"
+
+## DB service port
+dbService:
+  type: ClusterIP
+
+  ## Optional static port assignment for service type NodePort.
+  # nodePort: 30000
+
+  port: 5432
+
+
+## Persist data to a persistent volume
+persistence:
+  enabled: false
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: ""
+
+  ## DB PV access mode. If you select file storage(NAS), you must set "ReadWriteMany". If you select block storage(ISCSI), you must set "ReadWriteOnce". It is based on IBM Cloud.
+  accessMode: ReadWriteOnce
+
+  ## DB PV size. You can set at least 20GB. It is based on IBM Cloud.
+  size: 20Gi
+
+  ## DB claim name
+  claimName: "awx-db"
+
+  ## DB PV Storage-Class selection. Storage class is defined as follows: "ibmc-(block or file)-(bronze or silver or gold)".
+  annotations: {volume.beta.kubernetes.io/storage-class: "ibmc-block-bronze"}
+
+  ## DB PV mount path and sub-path (with DB file).
+  mountPath: "/var/lib/postgresql/data"
+  subPath: "/pgdata"
+
+  ## DB persistence volume name
+  name: "data"
+
+  ## DB PV hourly payment method. It is charged in the IBM Cloud.
+  billingType: "hourly"
+
+dbResources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+dbNodeSelector: {}
+
+dbTolerations: []
+
+dbAffinity: {}
+
+########### End of DB value ###########
+
+
+########### Start of queue value ###########
+
+## Queue name
+queueName: queue
+
+## Queue component label
+queueComponent: "queue"
+
+## Queue replica Count
+queueReplicaCount: 1
+
+## Queue image repository and version
+queueImage:
+  repository: rabbitmq
+  tag: 3
+  pullPolicy: IfNotPresent
+
+## Queue username
+queueUser: "guest"
+
+## Queue user password
+queuePassword: "guest"
+
+## Queue application vhost
+queueVhost: awx
+
+## Queue service port
+queueService:
+  type: ClusterIP
+
+  ## Optional static port assignment for service type NodePort.
+  # nodePort: 30000
+
+  port: 5672
+
+queueResources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+queueNodeSelector: {}
+
+queueTolerations: []
+
+queueAffinity: {}
+
+########### End of queue value ###########
+
+
+########### Start of cache value ###########
+
+## Cache name
+cacheName: cache
+
+## Cache component
+cacheComponent: "cache"
+
+## Cache replica Count
+cacheReplicaCount: 1
+
+## Cache image repository and version
+cacheImage:
+  repository: memcached
+  tag: alpine
+  pullPolicy: IfNotPresent
+
+## Cache service port
+cacheService:
+  type: ClusterIP
+
+  ## Optional static port assignment for service type NodePort.
+  # nodePort: 30000
+
+  port: 11211
+
+cacheResources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+cacheNodeSelector: {}
+
+cacheTolerations: []
+
+cacheAffinity: {}
+
+########### End of cache value ###########
+
+
+########### Start of awx-task value ###########
+
+## Awx-task name
+taskName: task
+
+## Awx-task component label
+taskComponent: "task"
+
+## Awx-task replica Count
+taskReplicaCount: 1
+
+## Awx-task image and tag
+taskImage:
+  repository: ansible/awx_task
+  tag: latest
+  pullPolicy: IfNotPresent
+
+## AWX secret key
+secretKey: "aabbcc"
+
+taskResources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+taskNodeSelector: {}
+
+taskTolerations: []
+
+taskAffinity: {}
+
+########### End of awx-task value ###########
+
+
+########### Start of web value ###########
+
+## Web name
+webName: web
+
+## Web component label
+webComponent: "web"
+
+## Web replicas Count
+webReplicaCount: 1
+
+## Web image and tag
+webImage:
+  repository: ansible/awx_web
+  tag: latest
+  pullPolicy: IfNotPresent
+
+## Web service info
+webService:
+  name: "http"
+
+  ## Set it to "NodePort". To change to "LoadBalancer" and "Ingress", you can set it after "Portable IP" is preassigned. It is based on IBM Cloud.
+  type: "NodePort"
+
+  ## Optional static port assignment for service type NodePort.
+  # nodePort: 30000
+
+  ## Set internal port
+  internalPort: 80
+
+  ## Set external port
+  externalPort: 8052
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts: []
+  #  - chart.example.com
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+webResources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+webNodeSelector: {}
+
+webTolerations: []
+
+webAffinity: {}
+
+########### End of web value ###########

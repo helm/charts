@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "awx.fullname" . }}-{{ .Values.webName }}
+  labels:
+    app: {{ template "awx.name" . }}
+    chart: {{ template "awx.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.webService.type }}
+  ports:
+    - name: {{ .Values.webService.name }}
+      port: {{ .Values.webService.internalPort }}
+      targetPort: {{ .Values.webService.externalPort }}
+      {{- if and (eq "NodePort" .Values.webService.type) .Values.webService.nodePort }}
+      nodePort: {{ .Values.webService.nodePort }}
+      {{- end }}
+  selector:
+    app: {{ template "awx.name" . }}
+    release: {{ .Release.Name }}
+    component: {{ .Values.webComponent }}

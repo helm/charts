@@ -1,0 +1,64 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "awx.fullname" . }}-{{ .Values.taskName }}
+  labels:
+    app: {{ template "awx.name" . }}
+    chart: {{ template "awx.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.taskComponent }}
+spec:
+  replicas: {{ .Values.taskReplicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "awx.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.taskComponent }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "awx.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ .Values.taskComponent }}
+    spec:
+      hostname: {{ template "awx.fullname" . }}
+      containers:
+        - name: {{ .Values.taskName }}
+          image: {{ .Values.taskImage.repository }}:{{ .Values.taskImage.tag }}
+          imagePullPolicy: {{ .Values.taskImage.pullPolicy }}
+          env:
+            - name: DATABASE_HOST
+              value: {{ template "awx.fullname" . }}-{{ .Values.dbName }}
+            - name: DATABASE_USER
+              value: {{ .Values.dbUser }}
+            - name: DATABASE_PASSWORD
+              value: {{ .Values.dbPassword }}
+            - name: DATABASE_NAME
+              value: {{ .Values.dbDatabaseName }}
+            - name: RABBITMQ_HOST
+              value: {{ template "awx.fullname" . }}-{{ .Values.queueName }}
+            - name: RABBITMQ_USER
+              value: {{ .Values.queueUser }}
+            - name: RABBITMQ_PASSWORD
+              value: {{ .Values.queuePassword }}
+            - name: RABBITMQ_VHOST
+              value: {{ .Values.queueVhost }}
+            - name: MEMCACHED_HOST
+              value: {{ template "awx.fullname" . }}-{{ .Values.cacheName }}
+            - name: SECRET_KEY
+              value: {{ .Values.secretKey }}
+          resources:
+{{ toYaml .Values.taskResources | indent 12 }}
+      {{- with .Values.taskNodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.taskAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.taskTolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}

@@ -1,0 +1,47 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "awx.fullname" . }}-{{ .Values.queueName }}
+  labels:
+    app: {{ template "awx.name" . }}
+    chart: {{ template "awx.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.queueComponent }}
+spec:
+  replicas: {{ .Values.queueReplicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "awx.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.queueComponent }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "awx.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ .Values.queueComponent }}
+    spec:
+      containers:
+      - name: {{ .Values.queueName }}
+        image: {{ .Values.queueImage.repository }}:{{ .Values.queueImage.tag }}
+        imagePullPolicy: {{ .Values.queueImage.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.queueService.port }}
+        env:
+        - name: RABBITMQ_DEFAULT_VHOST
+          value: {{ .Values.queueVhost | quote }}
+        resources:
+{{ toYaml .Values.queueResources | indent 10 }}
+      {{- with .Values.queueNodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.queueAffinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.queueTolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
