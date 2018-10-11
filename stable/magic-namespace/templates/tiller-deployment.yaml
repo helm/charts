@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: tiller-deploy
   {{- if hasKey .Values "namespace" }}
-  namespace: {{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace }}
   {{- end }}
   labels:
     app: helm
@@ -36,7 +36,7 @@ spec:
           env:
           - name: TILLER_NAMESPACE
             {{- if hasKey .Values "namespace" }}
-            value: {{ .Values.namespace.name }}
+            value: {{ .Values.namespace }}
             {{- else }}
             value: {{ .Release.Namespace }}
             {{- end }}

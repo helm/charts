@@ -146,6 +146,6 @@ reference the default `values.yaml` to understand further options.
 | `roleBindings[n].role.name` | Identify the name of the role to be used in the role binding | |
 | `roleBindings[n].subject.kind` | Identify the kind of subject (`User`, `Group`, or `ServiceAccount` ) to be used in the role binding | |
 | `roleBindings[n].subject.name` | Identify the name of the subject to be used in the role binding | |
-| `namespace.name` | Specify a namespace to be created and used, overriding the one on the command line | |
-| `namespace.annotations` | Specify annotations to be attached to the namespace | |
-| `namespace.lables` | Specify labels to be attached to the namespace | |
+| `namespace` | Specify a namespace to be created and used, overriding the one on the command line | |
+| `namespaceAttributes.annotations` | Specify annotations to be attached to the namespace | |
+| `namespaceAttributes.lables` | Specify labels to be attached to the namespace | |
