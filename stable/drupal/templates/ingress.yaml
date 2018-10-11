@@ -6,7 +6,7 @@ metadata:
   name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | trimSuffix "-" -}}"
   labels:
     app: {{ template "drupal.fullname" $ }}
-    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    chart: {{ template "drupal.chart" $ }}
     release: "{{ $.Release.Name }}"
     heritage: "{{ $.Release.Service }}"
   annotations:
