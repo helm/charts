@@ -29,11 +29,11 @@ service:
 
 resources:
   limits:
-    cpu: 1000m
-    memory: 1Gi
+    cpu: 250m
+    memory: 256Mi
   requests:
-    cpu: 500m
-    memory: 512Mi
+    cpu: 100m
+    memory: 128Mi
 
 affinity: {}
 
