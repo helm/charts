@@ -25,6 +25,7 @@ spec:
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
+<<<<<<< HEAD
       {{- else }}
       initContainers:
       - name: volume-permissions
@@ -34,6 +35,8 @@ spec:
         volumeMounts:
         - mountPath: {{ .Values.persistence.path }}
           name: ghost-data
+=======
+>>>>>>> f6ac0389d5e54c621e7c2a6170b538e44fed23f7
       {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
