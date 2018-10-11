@@ -181,7 +181,7 @@ ingress:
     ## A side effect of this will be that the backend wordpress service will be connected at port 443
     tls: false
 
-    ## Set this to true in order to add the corresponding annontations for cert-manager
+    ## Set this to true in order to add the corresponding annotations for cert-manager
     certManager: false
 
     ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
