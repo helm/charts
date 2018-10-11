@@ -64,12 +64,13 @@ The following table lists the configurable parameters of the Odoo chart and thei
 | `smtpProtocol`                        | SMTP protocol [`ssl`, `tls`]                                | `nil`                                          |
 | `service.type`                        | Kubernetes Service type                                     | `LoadBalancer`                                 |
 | `service.loadBalancer`                | Kubernetes LoadBalancerIP to request                        | `nil`                                          |
-| `service.externalTrafficPolicy`       | Enable client source IP preservation                        | `Cluster`                                        |
+| `service.externalTrafficPolicy`       | Enable client source IP preservation                        | `Cluster`                                      |
 | `service.nodePort`                    | Kubernetes http node port                                   | `""`                                           |
 | `ingress.enabled`                     | Enable ingress controller resource                          | `false`                                        |
 | `ingress.hosts[0].name`               | Hostname to your Odoo installation                          | `odoo.local`                                   |
 | `ingress.hosts[0].path`               | Path within the url structure                               | `/`                                            |
 | `ingress.hosts[0].tls`                | Utilize TLS backend in ingress                              | `false`                                        |
+| `ingress.hosts[0].certManager`        | Add annotations for cert-manager                            | `false`                                        |
 | `ingress.hosts[0].tlsSecret`          | TLS Secret (certificates)                                   | `odoo.local-tls-secret`                        |
 | `ingress.hosts[0].annotations`        | Annotations for this host's ingress record                  | `[]`                                           |
 | `ingress.secrets[0].name`             | TLS Secret Name                                             | `nil`                                          |
