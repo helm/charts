@@ -69,11 +69,14 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `externalDatabase.password`   | Password for the above username                               | `nil`                                                    |
 | `externalDatabase.database`   | Name of the existing database                                 | `bitnami_ghost`                                          |
 | `mariadb.enabled`             | Whether or not to install MariaDB (disable if using external) | `true`                                                   |
-| `mariadb.rootUser.password` | MariaDB admin password                                        | `nil`                                                    |
-| `mariadb.db.name`     | MariaDB Database name to create                               | `bitnami_ghost`                                          |
-| `mariadb.db.user`         | MariaDB Database user to create                               | `bn_ghost`                                               |
-| `mariadb.db.password`     | MariaDB Password for user                                     | _random 10 character long alphanumeric string_           |
+| `mariadb.rootUser.password`   | MariaDB admin password                                        | `nil`                                                    |
+| `mariadb.db.name`             | MariaDB Database name to create                               | `bitnami_ghost`                                          |
+| `mariadb.db.user`             | MariaDB Database user to create                               | `bn_ghost`                                               |
+| `mariadb.db.password`         | MariaDB Password for user                                     | _random 10 character long alphanumeric string_           |
 | `serviceType`                 | Kubernetes Service type                                       | `LoadBalancer`                                           |
+| `securityContext.enabled`     | Enable security context                                       | `true`                                                   |
+| `securityContext.fsGroup`     | Group ID for the container                                    | `1001`                                                   |
+| `securityContext.runAsUser`   | User ID for the container                                     | `1001`                                                   |
 | `persistence.enabled`         | Enable persistence using PVC                                  | `true`                                                   |
 | `persistence.storageClass`    | PVC Storage Class for Ghost volume                            | `nil` (uses alpha storage annotation)                    |
 | `persistence.accessMode`      | PVC Access Mode for Ghost volume                              | `ReadWriteOnce`                                          |
