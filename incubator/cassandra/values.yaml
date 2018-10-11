@@ -66,10 +66,6 @@ config:
     # If a JVM Agent is in place
     # agent: 61621
 
-## Custom env variables.
-## ref: https://hub.docker.com/_/cassandra/
-env: {}
-
 ## Cassandra config files overrides
 configOverrides: {}
 
