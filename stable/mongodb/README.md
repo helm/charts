@@ -86,7 +86,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `persistence.accessMode`                | Use volume as ReadOnly or ReadWrite                                                          | `ReadWriteOnce`                                          |
 | `persistence.size`                      | Size of data volume                                                                          | `8Gi`                                                    |
 | `persistence.annotations`               | Persistent Volume annotations                                                                | `{}`                                                     |
-| `persistence.existingClaim`             | Name of an existing PVC to use (avoids creating one if this is given)                        | `nil`                                                    | 
+| `persistence.existingClaim`             | Name of an existing PVC to use (avoids creating one if this is given)                        | `nil`                                                    |
 | `livenessProbe.initialDelaySeconds`     | Delay before liveness probe is initiated                                                     | `30`                                                     |
 | `livenessProbe.periodSeconds`           | How often to perform the probe                                                               | `10`                                                     |
 | `livenessProbe.timeoutSeconds`          | When the probe times out                                                                     | `5`                                                      |
@@ -143,6 +143,12 @@ Some characteristics of this chart are:
 * Each of the participants in the replication has a fixed stateful set so you always know where to find the primary, secondary or arbiter nodes.
 * The number of secondary and arbiter nodes can be scaled out independently.
 * Easy to move an application from using a standalone MongoDB server to use a replica set.
+
+## Initialize a fresh instance
+
+The [Bitnami MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) image allows you to use your custom scripts to initialize a fresh instance. In order to execute the scripts, they must be located inside the chart folder `files/docker-entrypoint-initdb.d` so they can be consumed as a ConfigMap.
+
+The allowed extensions are `.sh`, and `.js`.
 
 ## Persistence
 

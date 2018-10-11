@@ -110,6 +110,10 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /bitnami/mongodb
+        {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
+        - name: custom-init-scripts
+          mountPath: /docker-entrypoint-initdb.d
+        {{- end }}
         {{- if .Values.configmap }}
         - name: config
           mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
@@ -118,6 +122,11 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:
+      {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
+      - name: custom-init-scripts
+        configMap:
+          name: {{ template "mongodb.fullname" . }}-init-scripts
+      {{- end }}
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
