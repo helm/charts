@@ -33,7 +33,7 @@ Create the name of the service account to use
 {{- else -}}
 {{- if .Values.serviceAccountName -}}
 {{- .Values.serviceAccountName }}
-{{- else }}
+{{- else -}}
 {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
