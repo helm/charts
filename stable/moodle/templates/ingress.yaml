@@ -6,7 +6,7 @@ metadata:
   name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | trimSuffix "-" -}}"
   labels:
     app: {{ template "moodle.fullname" $ }}
-    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    chart: {{ template "moodle.chart" $ }}
     release: "{{ $.Release.Name }}"
     heritage: "{{ $.Release.Service }}"
   annotations:
