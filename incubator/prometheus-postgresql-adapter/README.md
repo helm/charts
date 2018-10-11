@@ -55,6 +55,7 @@ Parameter | Description | Default
 `logLevel` | The log level to use [`error`, `warn`, `info`, `debug`] | `info`
 `nodeSelector` | Node labels for pod assignment | `{}`
 `pgDatabase` | The PostgreSQL database | `postgres`
+`pgHost` | The PostgreSQL hostname | `postgres`
 `pgPassword` | The PostgreSQL password | None
 `pgPort` | The PostgreSQL port | `5432`
 `pgSchema` | The PostgreSQL schema | `postgres`
