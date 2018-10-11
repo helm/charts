@@ -1,5 +1,5 @@
 name: prometheus-adapter
-version: v0.1.2
+version: v0.2.0
 appVersion: v0.2.1
 description: A Helm chart for k8s prometheus adapter
 home: https://github.com/DirectXMan12/k8s-prometheus-adapter
