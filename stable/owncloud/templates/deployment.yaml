@@ -5,7 +5,7 @@ metadata:
   name: {{ template "owncloud.fullname" . }}
   labels:
     app: {{ template "owncloud.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "owncloud.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -18,7 +18,7 @@ spec:
     metadata:
       labels:
         app: {{ template "owncloud.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: {{ template "owncloud.chart" . }}
         release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.image.pullSecrets }}
