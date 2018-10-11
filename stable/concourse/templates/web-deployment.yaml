@@ -187,12 +187,14 @@ spec:
               value: {{ .Values.concourse.web.postgres.sslmode }}
             {{- end }}
             {{- if not (eq (default "disable" .Values.concourse.web.postgres.sslmode) "disable") }}
-            - name: CONCOURSE_VAULT_CA_CERT
+            - name: CONCOURSE_POSTGRES_CA_CERT
               value: "/concourse-postgresql/ca.cert"
+            {{- if eq .Values.concourse.web.postgres.sslmode "required" }}
             - name: CONCOURSE_POSTGRES_CLIENT_CERT
               value: "/concourse-postgresql/client.cert"
             - name: CONCOURSE_POSTGRES_CLIENT_KEY
               value: "/concourse-postgresql/client.key"
+            {{- end }}
             {{- end }}
             {{- if .Values.concourse.web.postgres.connectTimeout }}
             - name: CONCOURSE_POSTGRES_CONNECT_TIMEOUT
@@ -642,7 +644,7 @@ spec:
             {{- end }}
 
             {{- if .Values.concourse.web.auth.ldap.enabled }}
-            {{- if .Values.web.BindDn }}
+            {{- if .Values.concourse.web.auth.ldap.bindDn }}
             - name: CONCOURSE_LDAP_BIND_DN
               value: {{ .Values.concourse.web.auth.ldap.bindDn }}
             {{- end }}
