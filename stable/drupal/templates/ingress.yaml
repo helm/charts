@@ -1,28 +1,38 @@
 {{- if .Values.ingress.enabled -}}
+{{- range .Values.ingress.hosts }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "drupal.fullname" . }}
+  name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | trimSuffix "-" -}}"
   labels:
-    app: {{ template "drupal.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "drupal.fullname" $ }}
+    chart: {{ template "drupal.chart" $ }}
+    release: "{{ $.Release.Name }}"
+    heritage: "{{ $.Release.Service }}"
   annotations:
-    {{- range $key, $value := .Values.ingress.annotations }}
-      {{ $key }}: {{ $value | quote }}
+    {{- if .certManager }}
+    kubernetes.io/tls-acme: "true"
+    {{- end }}
+    {{- range $key, $value := .annotations }}
+    {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
   rules:
-    - host: {{ .Values.ingress.hostname }}
+    - host: {{ .name }}
       http:
         paths:
-          - path: /
+          - path: {{ default "/" .path }}
             backend:
-              serviceName: {{ template "drupal.fullname" . }}
+              serviceName: {{ template "drupal.fullname" $ }}
               servicePort: 80
-{{- if .Values.ingress.tls }}
+{{- if .tls }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
-{{- end -}}
-{{- end -}}
+  - hosts:
+    - {{ .name }}
+    secretName: {{ .tlsSecret }}
+{{- end }}
+---
+{{- end }}
+{{- end }}
+
+
