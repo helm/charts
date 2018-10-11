@@ -642,7 +642,7 @@ spec:
             {{- end }}
 
             {{- if .Values.concourse.web.auth.ldap.enabled }}
-            {{- if .Values.web.BindDn }}
+            {{- if .Values.concourse.web.auth.ldap.bindDn }}
             - name: CONCOURSE_LDAP_BIND_DN
               value: {{ .Values.concourse.web.auth.ldap.bindDn }}
             {{- end }}
