@@ -48,7 +48,7 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: 10
       containers:
-      - name: {{ template "rabbitmq.fullname" . }}
+      - name: rabbitmq
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
@@ -68,6 +68,9 @@ spec:
             ulimit -n "${RABBITMQ_ULIMIT_NOFILES}"
             #replace the default password that is generated
             sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
+            # Move logs to stdout
+            ln -sF /dev/stdout /opt/bitnami/rabbitmq/var/log/rabbitmq/rabbit@${MY_POD_IP}.log
+            ln -sF /dev/stdout /opt/bitnami/rabbitmq/var/log/rabbitmq/rabbit@${MY_POD_IP}_upgrade.log
             exec rabbitmq-server
         {{- if .Values.resources }}
         resources:
@@ -153,6 +156,39 @@ spec:
               secretKeyRef:
                 name: {{ template "rabbitmq.fullname" . }}
                 key: rabbitmq-password
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: {{ template "metrics.image" . }}
+        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        env:
+        - name: RABBIT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "rabbitmq.fullname" . }}
+              key: rabbitmq-password
+        - name: RABBIT_URL
+          value: "http://localhost:{{ .Values.rabbitmq.managerPort }}"
+        - name: RABBIT_USER
+          value: {{ .Values.rabbitmq.username }}
+        ports:
+        - name: metrics
+          containerPort: 9090
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
+
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
