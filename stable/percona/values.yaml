@@ -48,3 +48,14 @@ resources:
   requests:
     memory: 256Mi
     cpu: 100m
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Tolerations labels for pod assignment
+## Allow the scheduling on tainted nodes (requires Kubernetes >= 1.6)
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
