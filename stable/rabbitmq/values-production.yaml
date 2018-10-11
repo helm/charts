@@ -186,3 +186,15 @@ readinessProbe:
   periodSeconds: 5
   failureThreshold: 3
   successThreshold: 1
+
+metrics:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: kbudde/rabbitmq-exporter
+    tag: v0.29.0
+    pullPolicy: IfNotPresent
+  resources: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"

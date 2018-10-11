@@ -96,6 +96,12 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `readinessProbe.periodSeconds   `     | number of seconds                                       |  5                                             |
 | `readinessProbe.failureThreshold`     | number of failures                                      |  3                                             |
 | `readinessProbe.successThreshold`     | number of successes                                     |  1                                             |
+| `metrics.enabled`                         | Start a side-car prometheus exporter                | `false`                                                           |
+| `metrics.image.registry`                  | Exporter image registry                             | `docker.io`                                                       |
+| `metrics.image.repository`                | Exporter image name                                 | `kbudde/rabbitmq-exporter`                                            |
+| `metrics.image.tag`                       | Exporter image tag                                  | `v0.29.0`                                                         |
+| `metrics.image.pullPolicy`                | Exporter image pull policy                          | `IfNotPresent`                                                    |
+| `metrics.resources`                       | Exporter resource requests/limit                    | `nil`                                                             |
 
 The above parameters map to the env variables defined in [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq). For more information please refer to the [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq) image documentation.
 
