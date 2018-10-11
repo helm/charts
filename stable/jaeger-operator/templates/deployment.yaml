@@ -20,6 +20,9 @@ spec:
         app.kubernetes.io/name: {{ include "jaeger-operator.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ include "jaeger-operator.serviceAccountName" . }}
+      {{- end }}
       containers:
         - name: {{ include "jaeger-operator.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
