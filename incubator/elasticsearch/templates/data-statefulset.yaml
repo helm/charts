@@ -1,4 +1,4 @@
-{{- if .Values.data }}
+{{- if .Values.data.enabled }}
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:

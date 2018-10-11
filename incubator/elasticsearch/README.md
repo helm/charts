@@ -298,5 +298,6 @@ a specific node type (marked in nodeSelector), which will be tainted in order to
 other pods being allocated in such nodes.
 
 For backward compatibility purposes, if we want to use only `dataTypes` node types,
-we need to set `data.replicas` to 0: this way a stateful set will be created
-for `data` (with 0 replicas) and another for `dataTypes` (with specified amount of replicas).
+we need to disable legacy `data` nodes, setting `data.enabled` to false.
+This option also enable us to have both `data` and `dataTypes` so we can migrate data
+from the previous topology to the new one within the same release.

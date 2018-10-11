@@ -97,6 +97,7 @@ master:
     type: OnDelete
 
 data:
+  enabled: true
   name: data
   exposeHttp: false
   replicas: 2
