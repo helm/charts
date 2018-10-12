@@ -813,6 +813,37 @@ serverFiles:
           - targets:
             - localhost:9090
 
+      - job_name: node-exporters
+        scrape_interval: 30s
+        scrape_timeout: 30s
+        metrics_path: /metrics
+        scheme: http
+        kubernetes_sd_configs:
+        - api_server: null
+          role: node
+          namespaces:
+            names: []
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: true
+        relabel_configs:
+        - separator: ;
+          regex: __meta_kubernetes_node_label_(.+)
+          replacement: $1
+          action: labelmap
+        - source_labels: [__meta_kubernetes_role]
+          separator: ;
+          regex: (.*)
+          target_label: kubernetes_role
+          replacement: $1
+          action: replace
+        - source_labels: [__address__]
+          separator: ;
+          regex: (.*):10250
+          target_label: __address__
+          replacement: ${1}:9100
+          action: replace
+
       # A scrape configuration for running Prometheus on a Kubernetes cluster.
       # This uses separate scrape configs for cluster components (i.e. API server, node)
       # and services to allow each to use different authentication configs.
