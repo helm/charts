@@ -64,6 +64,9 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `ghostBlogTitle`                 | Ghost Blog name                                               | `User's Blog`                                            |
 | `allowEmptyPassword`             | Allow DB blank passwords                                      | `yes`                                                    |
 | `serviceType`                    | Kubernetes Service type                                       | `LoadBalancer`                                           |
+| `securityContext.enabled`        | Enable security context                                       | `true`                                                   |
+| `securityContext.fsGroup`        | Group ID for the container                                    | `1001`                                                   |
+| `securityContext.runAsUser`      | User ID for the container                                     | `1001`                                                   |
 | `ingress.enabled`                | Enable ingress controller resource                            | `false`                                                  |
 | `ingress.hosts[0].name`          | Hostname to your Ghost installation                           | `ghost.local`                                            |
 | `ingress.hosts[0].path`          | Path within the url structure                                 | `/`                                                      |
@@ -88,6 +91,7 @@ The following table lists the configurable parameters of the Ghost chart and the
 | `persistence.storageClass`       | PVC Storage Class for Ghost volume                            | `nil` (uses alpha storage annotation)                    |
 | `persistence.accessMode`         | PVC Access Mode for Ghost volume                              | `ReadWriteOnce`                                          |
 | `persistence.size`               | PVC Storage Request for Ghost volume                          | `8Gi`                                                    |
+| `persistence.path`               | Path to mount the volume at, to use other images              | `/bitnami`                                               |
 | `resources`                      | CPU/Memory resource requests/limits                           | Memory: `512Mi`, CPU: `300m`                             |
 
 The above parameters map to the env variables defined in [bitnami/ghost](http://github.com/bitnami/bitnami-docker-ghost). For more information please refer to the [bitnami/ghost](http://github.com/bitnami/bitnami-docker-ghost) image documentation.
