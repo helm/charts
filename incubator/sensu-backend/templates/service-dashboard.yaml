@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "sensu-backend.fullname" . }}-dashboard
+  labels:
+    app: {{ include "sensu-backend.name" . }}
+    chart: {{ include "sensu-backend.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.dashboard.type }}
+  ports:
+    - port: 3000
+      targetPort: {{ .Values.service.dashboard.port }}
+      protocol: TCP
+      name: dashboard
+  selector:
+    app: {{ include "sensu-backend.name" . }}
+    release: {{ .Release.Name }}

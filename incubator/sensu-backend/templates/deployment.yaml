@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sensu-backend.fullname" . }}
+  labels:
+    app: {{ include "sensu-backend.name" . }}
+    chart: {{ include "sensu-backend.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "sensu-backend.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "sensu-backend.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: agent
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["start", "--config-file=/etc/sensu/agent.yaml"]
+          command: ["sensu-agent"]
+          volumeMounts:
+          - name: config
+            mountPath: /etc/sensu
+        - name: backend
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["start", "--config-file=/etc/sensu/backend.yaml"]
+          command: ["sensu-backend"]
+          ports:
+            - name: dashboard
+              containerPort: 3000
+              protocol: TCP
+            - name: api
+              containerPort: 8080
+              protocol: TCP
+            - name: ws
+              containerPort: 8081
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: dashboard
+          readinessProbe:
+            httpGet:
+              path: /
+              port: dashboard
+          volumeMounts:
+          - name: config
+            mountPath: /etc/sensu
+          - name: data
+            mountPath: /var/lib/sensu
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "sensu-backend.fullname" . }}-config
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "sensu-backend.fullname" . }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}
