@@ -21,7 +21,7 @@ if [[ -z "${cluster_join}" ]]; then
     echo "I am the Primary Node"
     init_mysql
     write_password_file
-    exec mysqld --user=mysql --wsrep_cluster_name=$CLUSTER_NAME --wsrep_node_name=$hostname \
+    exec mysqld --user=mysql --wsrep_cluster_name=$SHORT_CLUSTER_NAME --wsrep_node_name=$hostname \
     --wsrep_cluster_address=gcomm:// --wsrep_sst_method=xtrabackup-v2 \
     --wsrep_sst_auth="xtrabackup:$XTRABACKUP_PASSWORD" \
     --wsrep_node_address="$ipaddr" $CMDARG
@@ -31,7 +31,7 @@ else
     touch /var/log/mysqld.log
     chown mysql:mysql /var/log/mysqld.log
     write_password_file
-    exec mysqld --user=mysql --wsrep_cluster_name=$CLUSTER_NAME --wsrep_node_name=$hostname \
+    exec mysqld --user=mysql --wsrep_cluster_name=$SHORT_CLUSTER_NAME --wsrep_node_name=$hostname \
     --wsrep_cluster_address="gcomm://$cluster_join" --wsrep_sst_method=xtrabackup-v2 \
     --wsrep_sst_auth="xtrabackup:$XTRABACKUP_PASSWORD" \
     --wsrep_node_address="$ipaddr" $CMDARG
