@@ -119,6 +119,17 @@ spec:
           mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
           subPath: mongodb.conf
         {{- end }}
+        {{- if and ( and .Values.persistence.enabled (not .Values.persistence.existingClaim) ) .Values.securityContext.enabled }}
+        initContainers:
+        - name: volume-permissions
+          image: "busybox"
+          command: ["/bin/chown", "-R", "{{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }}", "/bitnami/mongo"]
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+          - name: data
+            mountPath: /bitnami/mongodb
+        {{- end}}}}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:
