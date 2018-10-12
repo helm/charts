@@ -92,7 +92,7 @@ spec:
             resourceFieldRef:
               resource: limits.cpu
         - name: ES_JAVA_OPTS
-          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.client.heapSize }} -Xmx{{ .Values.client.heapSize }}"
+          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.client.heapSize }} -Xmx{{ .Values.client.heapSize }} {{ .Values.cluster.additionalJavaOpts }}"
         {{- range $key, $value :=  .Values.cluster.env }}
         - name: {{ $key }}
           value: {{ $value | quote }}
