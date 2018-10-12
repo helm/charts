@@ -14,7 +14,7 @@ metadata:
 spec:
   ports:
     - name: {{ .Values.nexusProxy.name }}
-      port: {{ .Values.nexusProxy.port }}
+      port: {{ .Values.nexusProxy.exposedPort }}
       protocol: TCP
       targetPort: {{ .Values.nexusProxy.port }}
   selector:

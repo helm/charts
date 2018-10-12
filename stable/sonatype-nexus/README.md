@@ -85,7 +85,8 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.readinessProbe.timeoutSeconds`       | Time in seconds after readiness probe times out    | `nil`                    |
 | `nexus.readinessProbe.path`                 | Path for ReadinessProbe             | /                                       |
 | `nexus.hostAliases`                         | Aliases for IPs in /etc/hosts       | []                                      |
-| `nexusProxy.port`                           | Port for exposing Nexus             | `8080`                                  |
+| `nexusProxy.port`                           | Container Port for Nexus proxy      | `8080`                                  |
+| `nexusProxy.exposedPort`                    | Port for exposing Nexus             | `8080`                                  |
 | `nexusProxy.imageName`                      | Proxy image                         | `quay.io/travelaudience/docker-nexus-proxy` |
 | `nexusProxy.imageTag`                       | Proxy image version                 | `2.1.0`                                 |
 | `nexusProxy.imagePullPolicy`                | Proxy image pull policy             | `IfNotPresent`                          |
@@ -124,6 +125,8 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `deployment.annotations`                    | Annotations to enhance deployment configuration  | `{}`                       |
 | `deployment.initContainers`                 | Init containers to run before main containers  | `nil`                        |
 | `deployment.postStart.command`              | Command to run after starting the nexus container  | `nil`                    |
+| `deployment.additionalContainers`           | Add additional Container         | `nil`                                      |
+| `deployment.additionalVolumes`              | Add additional Container         | `nil`                                      |
 | `secret.enabled`                            | Enable secret                    | `false`                                    |
 | `secret.mountPath`                          | Path to mount the secret         | `/etc/secret-volume`                       |
 | `secret.readOnly`                           | Secret readonly state            | `true`                                     |

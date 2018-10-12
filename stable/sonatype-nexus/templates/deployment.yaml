@@ -178,6 +178,9 @@ spec:
             - mountPath: /nexus-data/backup
               name: nexus-backup
         {{- end }}
+        {{- if .Values.deployment.additionalContainers }}
+{{ toYaml .Values.deployment.additionalContainers | indent 8 }}      
+        {{- end }}
       {{- if .Values.nexus.securityContext }}
       securityContext:
 {{ toYaml .Values.nexus.securityContext | indent 8 }}
@@ -211,6 +214,9 @@ spec:
         - name: {{ template "nexus.name" . }}-secret
           secret:
             secretName: {{ template "nexus.name" . }}-secret
+        {{- end }}
+        {{- if .Values.deployment.additionalVolumes }}
+{{ toYaml .Values.deployment.additionalVolumes | indent 8 }}      
         {{- end }}
     {{- with .Values.tolerations }}
       tolerations:
