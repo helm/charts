@@ -150,7 +150,6 @@ securityContext:
   fsGroup: 1001
   runAsUser: 1001
 
-
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
