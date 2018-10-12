@@ -72,13 +72,12 @@ deployment:
   # dogstatsdNodePort: 8125
   # traceNodePort: 8126
 
+  service:
+    type: ClusterIP
+    annotations: {}
+
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
-##
-
-# service:
-# type: LoadBalancer
-# annotations: {}
 
 kubeStateMetrics:
   enabled: true
