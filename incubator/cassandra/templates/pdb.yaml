@@ -13,5 +13,5 @@ spec:
     matchLabels:
       app: {{ template "cassandra.name" . }}
       release: {{ .Release.Name }}
-{{ .Values.podDisruptionBudget | indent 2 }}
+{{ toYaml .Values.podDisruptionBudget | indent 2 }}
 {{- end -}}
