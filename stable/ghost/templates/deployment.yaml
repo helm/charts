@@ -21,20 +21,26 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
     spec:
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- else }}
+      initContainers:
+      - name: volume-permissions
+        image: "{{ .Values.volumePermissions.image.name }}:{{ .Values.volumePermissions.image.tag }}"
+        imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ['sh', '-c', 'chmod -R g+rwX {{ .Values.persistence.path }}']
+        volumeMounts:
+        - mountPath: {{ .Values.persistence.path }}
+          name: ghost-data
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
         - name: {{ . }}
       {{- end}}
       {{- end }}
-      initContainers:
-      - name: volume-permissions
-        image: "{{ .Values.volumePermissions.image.name }}:{{ .Values.volumePermissions.image.tag }}"
-        imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
-        command: ['sh', '-c', 'chmod -R g+rwX /bitnami']
-        volumeMounts:
-        - mountPath: /bitnami
-          name: ghost-data
       containers:
       - name: {{ template "ghost.fullname" . }}
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
