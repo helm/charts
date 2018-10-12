@@ -151,7 +151,7 @@ spec:
 {{- end }}
     {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
-{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      - name: {{ toYaml .Values.image.pullSecrets }}
     {{- end }}
     {{- if .Values.affinity }}
       affinity:
