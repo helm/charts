@@ -13,5 +13,10 @@ spec:
     matchLabels:
       app: {{ template "zookeeper.name" . }}
       release: {{ .Release.Name }}
-      component: server
+    {{- if .Values.statefulsetLabels }}
+      ## Custom statefulset labels
+      {{- range $key, $value := .Values.statefulsetLabels }}
+      {{ $key }}: {{ $value | quote }}
+      {{- end }}
+    {{- end }}
 {{ toYaml .Values.podDisruptionBudget | indent 2 }}

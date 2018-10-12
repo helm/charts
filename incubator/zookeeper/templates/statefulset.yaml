@@ -7,7 +7,12 @@ metadata:
     chart: {{ template "zookeeper.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: server
+  {{- if .Values.statefulsetLabels }}
+    ## Custom statefulset labels
+    {{- range $key, $value := .Values.statefulsetLabels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
 spec:
   serviceName: {{ template "zookeeper.fullname" . }}-headless
   replicas: {{ .Values.replicaCount }}
@@ -15,7 +20,12 @@ spec:
     matchLabels:
       app: {{ template "zookeeper.name" . }}
       release: {{ .Release.Name }}
-      component: server
+    {{- if .Values.statefulsetLabels }}
+      ## Custom statefulset labels
+      {{- range $key, $value := .Values.statefulsetLabels }}
+      {{ $key }}: {{ $value | quote }}
+      {{- end }}
+    {{- end }}
   updateStrategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
   template:
@@ -84,7 +94,7 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
-            - name: data
+            - name: {{ .Values.claimName }}
               mountPath: /var/lib/zookeeper
             {{- range $secret := .Values.secrets }}
               {{- if $secret.mountPath }}
@@ -186,7 +196,7 @@ spec:
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
-        name: data
+        name: {{ .Values.claimName }}
       spec:
         accessModes:
           - {{ .Values.persistence.accessMode | quote }}

@@ -8,6 +8,30 @@ This helm chart provides an implementation of the ZooKeeper [StatefulSet](http:/
 * A dynamic provisioner for the PersistentVolumes
 * A familiarity with [Apache ZooKeeper 3.4.x](https://zookeeper.apache.org/doc/current/)
 
+## Changes from chart version 0.* to 1.*
+
+Due to breaking changes, you can override those changes by passing the following values.
+
+```sh
+helm upgrade -i kafka . --set 'claimName=datadir,statefulsetLabels='
+# if you used a release name that is different than `zookeeper`, you will need to override that as well
+helm upgrade -i kafka . --set 'claimName=datadir,statefulsetLabels=,fullnameOverride=RELEASE-zookeeper'
+```
+
+Then delete one pod at a time while making sure that data has been synced over.
+You can test that with
+
+```sh
+kubectl delete pod kafka-zookeeper-0
+# periodically check that leader instance's zk_synced_followers are all back
+kubectl exec -it kafka-zookeeper-1 -- zkMetrics.sh
+kubectl exec -it kafka-zookeeper-2 -- zkMetrics.sh
+# check that the data is correct
+kubectl exec -it kafka-zookeeper-0 -- zkCli.sh -server localhost:2181 ls /
+```
+
+Once all instances are deleted, the migration is complete.
+
 ## Chart Components
 This chart will do the following:
 

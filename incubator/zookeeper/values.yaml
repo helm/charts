@@ -89,6 +89,9 @@ podLabels: {}  # Key/value pairs that are attached to zookeeper pods.
   # team: "developers"
   # service: "zookeeper"
 
+statefulsetLabels:  # Key/value pairs that are attached to statefulset and pdb selector
+  component: "server"
+
 livenessProbe:
   exec:
     command:
@@ -142,6 +145,11 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 5Gi
+
+## For backwards compatibility with pre 1.x versions, you need to override the
+## volumeclaim prefix name. You can pass a custom volume name that would map to new ## pvc names.
+## For backwards compatibility, change this to `claimName: datadir`
+claimName: data
 
 ## Exporters query apps for metrics and make those metrics available for
 ## Prometheus to scrape.
