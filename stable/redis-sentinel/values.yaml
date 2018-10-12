@@ -1,0 +1,106 @@
+## Redis password
+## Defaults to a random 10-character alphanumeric string if not set and auth is true
+## ref: https://github.com/kubernetes/charts/blob/master/stable/redis-sentinel/templates/redis-auth-secret.yaml
+##
+## redisPassword:
+
+## Redis image version
+##
+image: redis:4.0.10-alpine
+
+## Global imagePullPolicy
+## Default: 'Always' if image tag is 'latest', else 'IfNotPresent'
+## Ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+imagePullPolicy: IfNotPresent
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  ##
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  ##
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  ##
+  name:
+
+## Configures redis with AUTH (requirepass & masterauth conf params)
+##
+auth: false
+
+## Redis password
+## Defaults to a random 10-character alphanumeric string if not set and auth is true
+##
+## redisPassword:
+
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+servers:
+  name: server
+  replicas: 3
+  resources:
+    requests:
+      memory: 200Mi
+      cpu: 100m
+    # limits:
+    #   memory: 700Mi
+
+  ## Node labels, tolerations, and affinities for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  nodeSelector: {}
+  tolerations: []
+  antiAffinity: "soft"
+  serviceType: ClusterIP  # [ClusterIP|LoadBalancer]
+  # podAnnotations:
+  #   prometheus/port: "9200"
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: "50Gi"
+    # storageClass: "ssd"
+  masterAnnotations: {}
+  slaveAnnotations: {}
+  podAnnotations: {}
+  ## RollingUpdate update strategy
+  ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
+  updateStrategy: OnDelete
+  terminationGracePeriodSeconds: 30
+
+sentinel:
+  name: sentinel
+  replicas: 3
+  resources:
+    requests:
+      memory: 200Mi
+      cpu: 100m
+    # limits:
+    #   memory: 200Mi
+
+  ## Node labels, tolerations, and affinities for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  nodeSelector: {}
+  tolerations: []
+  antiAffinity: "soft"
+  serviceType: ClusterIP  # [ClusterIP|LoadBalancer]
+  # podAnnotations:
+  #   prometheus/port: "9200"
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: "10Gi"
+    # storageClass: "ssd"
+  podAnnotations: {}
+  ## RollingUpdate update strategy
+  ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
+  updateStrategy: OnDelete
+  terminationGracePeriodSeconds: 30

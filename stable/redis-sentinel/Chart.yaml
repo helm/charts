@@ -1,0 +1,20 @@
+name: redis-sentinel
+home: http://redis.io/
+engine: gotpl
+keywords:
+  - redis
+  - sentinel
+version: 0.1.0
+description:
+  This package provides the Redis Sentinel. In practical terms this means that using Sentinel you can create a Redis deployment
+  that resists without human intervention to certain kind of failures. Redis Sentinel is availble since Redis 2.8.0.
+icon: https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1200px-Redis_Logo.svg.png
+maintainers:
+  - name: KongZ
+    email: goonohc@gmail.com
+details:
+  Label `redis-role` is using for easily monitor redis server roles. It does not relate to any Sentinel logics which is provided
+  by the Redis Sentinel
+sources:
+  - https://redis.io/topics/sentinel
+appVersion: 4.0.0

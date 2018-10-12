@@ -1,0 +1,56 @@
+Redis cluster can be accessed via port 6379 on the following DNS name from within your cluster:
+
+  Master: {{ template "redis-sentinel.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local
+  Slave: {{ template "redis-sentinel.fullname" . }}-slave.{{ .Release.Namespace }}.svc.cluster.local
+
+Sentinel clients
+Ruby (redis-rb)
+
+  $redis = Redis.new(
+    url: "redis://{{ template "redis-sentinel.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local", 
+    sentinels: [
+      { host: "{{ template "redis-sentinel.fullname" . }}-sentinel.{{ .Release.Namespace }}.svc.cluster.local", port: 26379 }
+    ], 
+    role: :master
+  )
+
+Java (Redisson)
+
+  Config config = new Config();
+  config.useSentinelServers()
+      .setMasterName("{{ template "redis-sentinel.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local")
+      .addSentinelAddress("redis://{{ template "redis-sentinel.fullname" . }}-sentinel.{{ .Release.Namespace }}.svc.cluster.local:26379");
+  RedissonClient redisson = Redisson.create(config);
+
+Go (go-redis)
+
+  var client *redis.Client
+  client = redis.NewFailoverClient(&redis.FailoverOptions{
+    MasterName:    "{{ template "redis-sentinel.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local",
+    SentinelAddrs: []string{"redis://{{ template "redis-sentinel.fullname" . }}-sentinel.{{ .Release.Namespace }}.svc.cluster.local:26379"},
+  })
+
+To test your release:
+
+  helm test {{ .Release.Name }} --cleanup
+
+To connect to your Redis server:
+
+{{- if .Values.auth }}
+1. Get the randomly generated redis password:
+   
+  echo $(kubectl get secret {{ template "redis-sentinel.fullname" . }} -o "jsonpath={.data['auth']}" | base64 -D)
+
+2. Connect using the Redis CLI (inside container):
+
+  redis-cli -h {{ template "redis-sentinel.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local -a <REDIS-PASS-FROM-SECRET>
+{{- else }}
+1. Connect using the Redis CLI (inside container):
+
+  redis-cli -h {{ template "redis-sentinel.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local
+{{- end }}
+
+To list current Redis server and role:
+
+  kubectl get po -L redis-role -o=wide
+

@@ -1,0 +1,153 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  # Pay attention to the redis-role label at runtime. The self-determination logic in the image sets this value accordingly.
+  name: {{ template "redis-sentinel.fullname" . }}-{{ .Values.servers.name }}
+  labels:
+    app: {{ template "redis-sentinel.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+    redis-node: "true"
+    component: "server"
+spec:
+  serviceName: {{ template "redis-sentinel.fullname" . }}-{{ .Values.servers.name }}
+  replicas: {{ .Values.servers.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "redis-sentinel.name" . }}
+      release: {{ .Release.Name }}
+      component: server
+      redis-node: "true"
+  template:
+    metadata:
+      labels:
+        app: {{ template "redis-sentinel.name" . }}
+        release: {{ .Release.Name }}
+        component: server
+        redis-node: "true"
+    {{- if .Values.servers.podAnnotations }}
+      annotations:
+      {{- range $key, $value := .Values.servers.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+    {{- end }}
+    spec:
+      serviceAccountName: {{ template "redis-sentinel.serviceAccountName" . }}
+      updateStrategy: {{ .Values.servers.updateStrategy }}
+{{- if .Values.servers.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.servers.nodeSelector | indent 8 }}
+{{- end }}
+      affinity:
+      {{- if eq .Values.servers.antiAffinity "hard" }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "redis-sentinel.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "server"
+      {{- else }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "redis-sentinel.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "server"
+      {{- end }}
+{{- if .Values.servers.tolerations }}
+      tolerations:
+{{ toYaml .Values.servers.tolerations | indent 8 }}
+{{- end }}
+      initContainers:
+      - name: "setup"
+        image: "busybox"
+        imagePullPolicy: "IfNotPresent"
+        command:
+          - /bin/sh
+          - -c
+          - wget https://storage.googleapis.com/kubernetes-release/release/v1.11.1/bin/linux/amd64/kubectl -O /k8s/kubectl &&
+            chmod +x /k8s/kubectl
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /k8s
+          name: kubectl
+      containers:
+      - name: {{ .Values.servers.name }}
+        image: "{{ .Values.image }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        command:
+          - /launcher.sh
+        env:
+{{- if .Values.auth }}
+          - name: REDIS_PASS
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "redis-sentinel.fullname" . }}
+                key: auth
+{{- end }}
+        ports:
+          - containerPort: 6379
+            name: redis
+        resources:
+{{ toYaml .Values.servers.resources | indent 10 }}
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - redis-cli -p 6379 ping
+          initialDelaySeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - redis-cli -p 6379 ping
+        volumeMounts:
+          - name: data
+            mountPath: /data
+          - name: config
+            mountPath: /etc/redis/redis.conf
+            subPath: redis.conf
+          - name: config
+            mountPath: /launcher.sh
+            subPath: launcher.sh
+          - mountPath: /k8s
+            name: kubectl
+      terminationGracePeriodSeconds: {{ default 30 .Values.servers.terminationGracePeriodSeconds }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ template "redis-sentinel.fullname" . }}-server
+            defaultMode: 365 # 0555
+        - name: kubectl
+          emptyDir: {}
+  {{- if not .Values.servers.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+  {{- else }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - {{ .Values.servers.persistence.accessMode | quote }}
+      {{- if .Values.servers.persistence.storageClass }}
+      {{- if (eq "-" .Values.servers.persistence.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.servers.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+        resources:
+          requests:
+            storage: "{{ .Values.servers.persistence.size }}"
+  {{- end }}

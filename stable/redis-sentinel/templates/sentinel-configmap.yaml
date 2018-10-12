@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "redis-sentinel.fullname" . }}-sentinel
+  labels:
+    app: {{ template "redis-sentinel.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+data:
+  labeler.sh: |-
+    #!/bin/sh
+    # The following arguments are passed to the script:
+    # <master-name> <role> <state> <from-ip> <from-port> <to-ip> <to-port>
+    # e.g. 'redis-sentinel-master.redis-sentinel.svc.cluster.local leader start 10.132.9.66 6379 10.132.5.32 6379'
+    NEW_MASTER_IP=$6
+    # Demote current master
+    OLD_MASTER_POD=`/k8s/kubectl get pod -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' -l redis-role=master --field-selector=status.phase=Running --sort-by=.metadata.name|awk '{print $1}'`
+    /k8s/kubectl label --overwrite pod $OLD_MASTER_POD redis-role="slave"
+    # Promote new master
+    NEW_MASTER_POD=`/k8s/kubectl get pod -o jsonpath='{range .items[*]}{.metadata.name} {.status.podIP}{"\n"}{end}' --field-selector=status.phase=Running --sort-by=.metadata.name|grep $NEW_MASTER_IP|awk '{print $1}'`
+    /k8s/kubectl label --overwrite pod $NEW_MASTER_POD redis-role="master"
+  launcher.sh: |-
+    #!/bin/sh
+    set -e
+    MASTER_NAME="{{ template "redis-sentinel.fullname" . }}-master.{{ .Release.Namespace }}.svc.cluster.local"
+    QUORUM={{printf "%d" (div .Values.sentinel.replicas 2 | add 1)}}
+    PARALLEL_SYNCS={{printf "%d" (div .Values.servers.replicas 2)}}
+    SENTINEL_CONF=/etc/redis/sentinel.conf
+    echo "Using config file $SENTINEL_CONF"
+    /k8s/kubectl label --overwrite pod $HOSTNAME redis-role="sentinel"
+    # Looking for Master IP
+    i=0
+    while true; do
+      # The sentinels must wait for a load-balanced master to appear then ask it for its actual IP.
+      MASTER_IP=`/k8s/kubectl get pod -o jsonpath='{range .items[*]}{.metadata.name} {.status.podIP}{"\n"}{end}' -l redis-role=master --field-selector=status.phase=Running|awk '{print $2}'`
+      echo "Current master is $MASTER_IP"
+      if [[ -z ${MASTER_IP} ]]; then
+        sleep 10
+        continue
+      fi
+      timeout -t 3 redis-cli -h ${MASTER_IP} -p 6379 INFO
+      if [[ "$?" == "0" ]]; then
+        break
+      fi
+      i=$((i+1))
+      s=$((1 + ($i/5)))
+      echo "Connecting to master at $MASTER_IP failed. Waiting... $s seconds"
+      sleep $s
+    done
+    # Configure Sentinel
+    mkdir -p /etc/redis
+    echo "sentinel monitor ${MASTER_NAME} ${MASTER_IP} 6379 ${QUORUM}" > ${SENTINEL_CONF}
+    # Master timeout 15 seconds
+    echo "sentinel down-after-milliseconds ${MASTER_NAME} 15000" >> ${SENTINEL_CONF}
+    # Failover timeout 30 seconds
+    echo "sentinel failover-timeout ${MASTER_NAME} 30000" >> ${SENTINEL_CONF}
+    # Number of slaves to be electing as master. Use a low number if you use the slaves to serve query
+    echo "sentinel parallel-syncs ${MASTER_NAME} ${PARALLEL_SYNCS}" >> ${SENTINEL_CONF}
+    echo "bind 0.0.0.0" >> ${SENTINEL_CONF}
+    echo "port 26379" >> ${SENTINEL_CONF}
+    echo "sentinel client-reconfig-script ${MASTER_NAME} /labeler.sh" >> ${SENTINEL_CONF}
+    # Start Sentinel
+    redis-sentinel ${SENTINEL_CONF} --protected-mode no
+    echo "Launched $HOSTNAME as sentinel"
