@@ -226,7 +226,7 @@ data:
     storage = "/acme/acme.json"
     {{- end }}
     entryPoint = "https"
-    onHostRule = true
+    onHostRule = {{ .Values.acme.onHostRule }}
     {{- if .Values.acme.staging }}
     caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
     {{- end }}

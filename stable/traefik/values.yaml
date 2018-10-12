@@ -131,6 +131,7 @@ kvprovider:
 acme:
   enabled: false
   email: admin@example.com
+  onHostRule: true
   staging: true
   logging: false
   # Configure a Let's Encrypt certificate to be managed by default.
