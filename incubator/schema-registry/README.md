@@ -68,6 +68,13 @@ The following table lists the configurable parameters of the SchemaRegistry char
 | `configurationOverrides` | `SchemaRegistry` [configuration setting](https://github.com/confluentinc/schema-registry/blob/master/docs/config.rst#configuration-options) overrides in the dictionary format `setting.name: value` | `{}` |
 | `kafkaOpts` | Additional Java arguments to pass to Kafka. | ` ` |
 | `sasl.configPath` | where to store config for sasl configurations | `/etc/kafka-config` |
+| `sasl.plain.enabled` | wether sasl plain is enabled | `false` |
+| `sasl.plain.username` | the sasl plain username to use to authenticate to kafka`| `''` |
+| `sasl.plain.password` | the sasl plain password to use to asuthenticate to kafka | `''` |
+| `sasl.plain.useExistingSecret.password` | override to use the name of this password secret as the secret | `undefined` |
+| `sasl.plain.init.image` | which image to use for initializing sasl plain | `confluentinc/cp-schema-registry` |
+| `sasl.plain.init.imageTag` | which version/tag to use for sasl plain init | `4.0.0` |
+| `sasl.plain.init.imagePullPolicy` | the sasl plain init pull policy | `IfNotPresent` |
 | `sasl.scram.enabled` | whether sasl-scam is enabled | `false` |
 | `sasl.scram.init.image` | which image to use for initializing sasl scram | `confluentinc/cp-schema-registry` |
 | `sasl.scram.init.imageTag` | which version/tag to use for sasl scram init | `4.0.0` |
