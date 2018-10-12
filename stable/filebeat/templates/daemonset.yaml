@@ -117,8 +117,12 @@ spec:
         hostPath:
           path: /var/lib/docker/containers
       - name: filebeat-config
-        secret:
-          secretName: {{ template "filebeat.fullname" . }}
+        configMap:
+{{- if .Values.existingConfigmap }}
+          name: {{ .Values.existingConfigmap }}
+{{- else }}
+          name: {{ template "filebeat.fullname" . }}
+{{- end }}
       - name: data
         hostPath:
           path: /var/lib/filebeat

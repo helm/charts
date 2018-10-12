@@ -3,22 +3,21 @@ image:
   tag: 6.5.4
   pullPolicy: IfNotPresent
 
+# Specifies the configmap name with filebeat.yml
+# existingConfigmap: ""
+
 config:
   filebeat.config:
-    prospectors:
-      # Mounted `filebeat-prospectors` configmap:
+    # Filebeat configs for inputs and modules
+    inputs:
       path: ${path.config}/prospectors.d/*.yml
-      # Reload prospectors configs as they change:
       reload.enabled: false
     modules:
       path: ${path.config}/modules.d/*.yml
-      # Reload module configs as they change:
       reload.enabled: false
 
-  processors:
-    - add_cloud_metadata:
-
-  filebeat.prospectors:
+  # Inputs list (the bellow are enabled by default)
+  filebeat.inputs:
     - type: log
       enabled: true
       paths:
@@ -36,6 +35,11 @@ config:
               equals:
                 kubernetes.container.name: "filebeat"
 
+  processors:
+    - add_cloud_metadata:
+
+  # Default filebeat output. Only one must be enabled!
+  # So when enabling another output set output.file.enabled = false
   output.file:
     path: "/usr/share/filebeat/data"
     filename: filebeat

@@ -1,14 +1,11 @@
 # Filebeat
 
-[filebeat](https://www.elastic.co/guide/en/beats/filebeat/current/index.html) is used to ship Kubernetes and host logs to multiple outputs.
+[Filebeat](https://www.elastic.co/guide/en/beats/filebeat/current/index.html) is a lightweight shipper for forwarding and centralizing log data which supports various outputs.
 
 ## Prerequisites
 
 - Kubernetes 1.9+
 
-## Note
-
-By default this chart only ships a single output to a file on the local system.  Users should set config.output.file.enabled=false and configure their own outputs as [documented](https://www.elastic.co/guide/en/beats/filebeat/current/configuring-output.html)
 
 ## Installing the Chart
 
@@ -28,12 +25,13 @@ The following table lists the configurable parameters of the filebeat chart and 
 | `image.tag`                                              | Docker image tag                                                                                         | `6.5.4`                                            |
 | `image.pullPolicy`                                       | Docker image pull policy                                                                                 | `IfNotPresent`                                     |
 | `image.pullSecrets`                                      | Specify image pull secrets                                                                               | `nil`                                              |
-| `config.filebeat.config.prospectors.path`                | Mounted `filebeat-prospectors` configmap                                                                 | `${path.config}/prospectors.d/*.yml`               |
-| `config.filebeat.config.prospectors.reload.enabled`      | Reload prospectors configs as they change                                                                | `false`                                            |
-| `config.filebeat.config.modules.path`                    |                                                                                                          | `${path.config}/modules.d/*.yml`                   |
+| `existingConfigmap`                                      | Provide an existing configmap to load configuration (`filebeat.yaml`) from                               | `nil`                                              |
+| `config.filebeat.config.inputs.path`                     | Filebeat input configuration files path                                                                  | `${path.config}/prospectors.d/*.yml`               |
+| `config.filebeat.config.inputs.reload.enabled`           | Reload input configs as they change                                                                      | `false`                                            |
+| `config.filebeat.config.modules.path`                    | Filebeat module configuration files path                                                                 | `${path.config}/modules.d/*.yml`                   |
 | `config.filebeat.config.modules.reload.enabled`          | Reload module configs as they change                                                                     | `false`                                            |
 | `config.processors`                                      |                                                                                                          | `- add_cloud_metadata`                             |
-| `config.filebeat.prospectors`                            |                                                                                                          | see values.yaml                                    |
+| `config.filebeat.inputs`                                 | Host logs, docker containers logs are picked up by default (for details see [values.yaml](values.yml))   |                                                    |
 | `config.output.file.path`                                |                                                                                                          | `"/usr/share/filebeat/data"`                       |
 | `config.output.file.filename`                            |                                                                                                          | `filebeat`                                         |
 | `config.output.file.rotate_every_kb`                     |                                                                                                          | `10000`                                            |
@@ -67,3 +65,51 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 ```bash
 $ helm install --name my-release -f values.yaml stable/filebeat
 ```
+
+## Production configuration
+
+
+By default this chart collects host logs, docker logs, adds Kubernetes and Cloud metadata then ships out to a file on the local system.
+
+```bash
+$ helm install --name my-release -f values.yaml stable/filebeat
+```
+
+## Configure filebeat output
+
+Users **must disable the default** file output first and [configure/enable another output](https://www.elastic.co/guide/en/beats/filebeat/current/configuring-output.html) to ship logs into a different destination.
+
+### Elasticsearch
+
+The configuration bellow as can be noted from the example specifically defines index settings.
+
+```yaml
+config:
+  output.file.enabled: false
+  output.elasticsearch:
+    hosts: ["YOUR-elasticsearch:9200"]
+
+  # Example usage of setup.template
+  setup.template:
+    enabled: true
+    overwrite: false
+    settings:
+      index.number_of_shards: 1
+      index.number_of_replicas: 1
+```
+
+### Logstash (with manual index template)
+
+The configuration bellow enables logstash output as well as manually sets up the index template in ES using `filebeat setup --template`.
+
+```
+config:
+  output.file.enabled: false
+  output.logstash:
+    hosts: ["YOUR-logstash:5044"]
+
+indexTemplateLoad:
+  - YOUR-elasticsearch:9200
+```
+
+Note: though the index template is created **setup.template.settings** seem to be ignored!

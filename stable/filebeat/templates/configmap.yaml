@@ -1,12 +1,14 @@
+{{- if not .Values.existingConfigmap -}}
 apiVersion: v1
-kind: Secret
+kind: ConfigMap
 metadata:
   name: {{ template "filebeat.fullname" . }}
   labels:
     app: {{ template "filebeat.name" . }}
     chart: {{ template "filebeat.chart" . }}
-    release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-type: Opaque
+    release: {{ .Release.Name }}
 data:
-  filebeat.yml: {{ toYaml .Values.config | indent 4 | b64enc }}
+  filebeat.yml: |-
+{{ toYaml .Values.config | indent 4 }}
+{{- end -}}
