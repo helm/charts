@@ -13,13 +13,23 @@ spec:
     metadata:
       name: {{ template "kong.name" . }}-migrations
       labels:
-        app: "{{ template "kong.name" . }}"
+        app: {{ template "kong.name" . }}
         release: "{{ .Release.Name }}"
     spec:
+      {{- if .Values.postgresql.enabled }}
       initContainers:
-      - name: init-kong-database
+      - name: wait-for-postgres
         image: busybox
-        command: ['sh', '-c', 'until nslookup {{ template "kong.postgresql.fullname" . }}; do echo waiting for {{ template "kong.postgresql.fullname" . }}; sleep 2; done;']
+        env:
+        - name: KONG_PG_HOST
+          value: {{ template "kong.postgresql.fullname" . }}
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "kong.postgresql.fullname" . }}
+              key: postgres-password
+        command: [ "/bin/sh", "-c", "until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
+      {{- end }}
       containers:
       - name: {{ template "kong.name" . }}-migrations
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
