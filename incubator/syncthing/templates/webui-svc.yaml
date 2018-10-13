@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "syncthing.fullname" . }}-webui
+  labels:
+    app: {{ template "syncthing.name" . }}
+    chart: {{ template "syncthing.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.webuiService.labels }}
+{{ toYaml .Values.webuiService.labels | indent 4 }}
+{{- end }}
+{{- with .Values.webuiService.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- if (or (eq .Values.webuiService.type "ClusterIP") (empty .Values.webuiService.type)) }}
+  type: ClusterIP
+  {{- if .Values.webuiService.clusterIP }}
+  clusterIP: {{ .Values.webuiService.clusterIP }}
+  {{end}}
+{{- else if eq .Values.webuiService.type "LoadBalancer" }}
+  type: {{ .Values.webuiService.type }}
+  {{- if .Values.webuiService.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.webuiService.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.webuiService.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.webuiService.loadBalancerSourceRanges | indent 4 }}
+  {{- end -}}
+{{- else }}
+  type: {{ .Values.webuiService.type }}
+{{- end }}
+{{- if .Values.webuiService.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.webuiService.externalIPs | indent 4 }}
+{{- end }}
+  {{- if .Values.webuiService.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.webuiService.externalTrafficPolicy }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.webuiService.port }}
+      targetPort: webui
+      protocol: TCP
+      name: webui
+{{ if (and (eq .Values.webuiService.type "NodePort") (not (empty .Values.webuiService.nodePort))) }}
+      nodePort: {{.Values.webuiService.nodePort}}
+{{ end }}
+  selector:
+    app: {{ template "syncthing.name" . }}
+    release: {{ .Release.Name }}

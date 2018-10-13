@@ -1,0 +1,16 @@
+apiVersion: v1
+appVersion: "137"
+description: Open Source Continuous File Synchronization
+name: syncthing
+home: https://syncthing.net/
+version: 0.1.0
+sources:
+- https://github.com/syncthing/syncthing
+maintainers:
+- name: Marshall Ford
+  email: inbox@marshallford.me
+icon: https://syncthing.net/images/logo-horizontal.svg
+keywords:
+- Syncthing
+- file
+- synchronization

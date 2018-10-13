@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "syncthing.fullname" . }}
+  labels:
+    app: {{ template "syncthing.name" . }}
+    chart: {{ template "syncthing.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "syncthing.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "syncthing.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: webui
+              containerPort: 8384
+              protocol: TCP
+            - name: listener
+              containerPort: 22000
+              protocol: TCP
+            - name: discovery
+              containerPort: 21027
+              protocol: UDP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: webui
+              initialDelaySeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /
+              port: webui
+              initialDelaySeconds: 60
+          volumeMounts:
+            - mountPath: /config
+              name: syncthing-data
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: syncthing-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "syncthing.fullname" . }}{{- end }}
+        {{- else }}
+          emptyDir: {}
+        {{ end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

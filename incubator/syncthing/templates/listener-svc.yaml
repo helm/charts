@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "syncthing.fullname" . }}-listener
+  labels:
+    app: {{ template "syncthing.name" . }}
+    chart: {{ template "syncthing.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.listenerService.labels }}
+{{ toYaml .Values.listenerService.labels | indent 4 }}
+{{- end }}
+{{- with .Values.listenerService.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- if (or (eq .Values.listenerService.type "ClusterIP") (empty .Values.listenerService.type)) }}
+  type: ClusterIP
+  {{- if .Values.listenerService.clusterIP }}
+  clusterIP: {{ .Values.listenerService.clusterIP }}
+  {{end}}
+{{- else if eq .Values.listenerService.type "LoadBalancer" }}
+  type: {{ .Values.listenerService.type }}
+  {{- if .Values.listenerService.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.listenerService.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.listenerService.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.listenerService.loadBalancerSourceRanges | indent 4 }}
+  {{- end -}}
+{{- else }}
+  type: {{ .Values.listenerService.type }}
+{{- end }}
+{{- if .Values.listenerService.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.listenerService.externalIPs | indent 4 }}
+{{- end }}
+  {{- if .Values.listenerService.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.listenerService.externalTrafficPolicy }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.listenerService.port }}
+      targetPort: listener
+      protocol: TCP
+      name: listener
+{{ if (and (eq .Values.listenerService.type "NodePort") (not (empty .Values.listenerService.nodePort))) }}
+      nodePort: {{.Values.listenerService.nodePort}}
+{{ end }}
+  selector:
+    app: {{ template "syncthing.name" . }}
+    release: {{ .Release.Name }}
