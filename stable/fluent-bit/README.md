@@ -77,6 +77,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
 | `image.fluent_bit.tag`             | Image tag                                  | `0.14.4`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
+| `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
