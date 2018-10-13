@@ -14,6 +14,8 @@ This chart bootstraps a [WordPress](https://github.com/bitnami/bitnami-docker-wo
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the WordPress application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -86,6 +88,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `ingress.hosts[0].name`          | Hostname to your WordPress installation    | `wordpress.local`                                       |
 | `ingress.hosts[0].path`          | Path within the url structure              | `/`                                                     |
 | `ingress.hosts[0].tls`           | Utilize TLS backend in ingress             | `false`                                                 |
+| `ingress.hosts[0].certManager`   | Add annotations for cert-manager           | `false`                                                 |
 | `ingress.hosts[0].tlsSecret`     | TLS Secret (certificates)                  | `wordpress.local-tls-secret`                            |
 | `ingress.hosts[0].annotations`   | Annotations for this host's ingress record | `[]`                                                    |
 | `ingress.secrets[0].name`        | TLS Secret Name                            | `nil`                                                   |
@@ -221,7 +224,7 @@ If you are going to use Helm to manage the certificates, please copy
 these values into the `certificate` and `key` values for a given
 `ingress.secrets` entry.
 
-If you are going are going to manage TLS secrets outside of Helm, please
+If you are going to manage TLS secrets outside of Helm, please
 know that you can create a TLS secret by doing the following:
 
 ```
