@@ -33,7 +33,7 @@
     kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:{{ .Values.concourse.atcPort }}
     {{- end }}
   {{- end }}
-* If this is your first time using Concourse, follow the tutorial at https://concourse-ci.org/hello-world.html
+* If this is your first time using Concourse, follow the tutorials at https://concourse-ci.org/tutorials.html
 {{- if contains "naive" .Values.concourse.worker.baggageclaim.driver }}
 
 *******************
