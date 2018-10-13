@@ -61,6 +61,7 @@ forwardedHeaders:
 ssl:
   enabled: false
   enforced: false
+  permanentRedirect: false
   upstream: false
   insecureSkipVerify: false
   # cipherSuites: []
