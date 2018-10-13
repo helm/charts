@@ -5,7 +5,7 @@ This is a helm chart for [Syncthing](https://syncthing.net/)
 ## TL;DR;
 
 ```console
-helm install incubator/syncthing
+helm install stable/syncthing
 ```
 
 ## Introduction
@@ -17,7 +17,7 @@ This code is adopted from [this original repo](https://github.com/linuxserver/do
 To install the chart with the release name `my-release`:
 
 ```console
-helm install --name my-release incubator/syncthing
+helm install --name my-release stable/syncthing
 ```
 
 ## Uninstalling the Chart
@@ -81,13 +81,13 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```console
 helm install --name my-release \
   --set persistence.size="25Gi" \
-    incubator/syncthing
+    stable/syncthing
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-helm install --name my-release -f values.yaml incubator/syncthing
+helm install --name my-release -f values.yaml stable/syncthing
 ```
 
 Read through the [values.yaml](values.yaml) file. It has several commented out suggested values.
