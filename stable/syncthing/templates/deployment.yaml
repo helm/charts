@@ -19,6 +19,7 @@ spec:
         app: {{ template "syncthing.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "syncthing.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

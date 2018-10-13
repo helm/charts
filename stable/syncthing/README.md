@@ -60,6 +60,8 @@ The following tables lists the configurable parameters of the Syncthing chart an
 | `discoveryService.loadBalancerIP`   | Loadbalance IP for AP discovery | `{}` |
 | `discoveryService.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported)      | None
 | `discoveryService.externalTrafficPolicy` | Set the externalTrafficPolicy in the Service to either Cluster or Local | `Cluster`
+| `serviceAccount.create`        | Specifies whether a ServiceAccount should be created | `true` |
+| `serviceAccount.name`          | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `(fullname template)` |
 | `ingress.enabled`              | Enables Ingress | `false` |
 | `ingress.annotations`          | Ingress annotations | `{}` |
 | `ingress.labels`               | Custom labels                       | `{}`

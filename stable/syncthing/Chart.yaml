@@ -3,7 +3,7 @@ appVersion: "137"
 description: Open Source Continuous File Synchronization
 name: syncthing
 home: https://syncthing.net/
-version: 1.0.0
+version: 1.0.1
 sources:
 - https://github.com/syncthing/syncthing
 maintainers:
