@@ -7,7 +7,7 @@ version: 0.1.0
 sources:
 - https://github.com/syncthing/syncthing
 maintainers:
-- name: Marshall Ford
+- name: marshallford
   email: inbox@marshallford.me
 icon: https://syncthing.net/images/logo-horizontal.svg
 keywords:
