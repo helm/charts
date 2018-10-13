@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: linuxserver/syncthing
-  tag: "137"
+  tag: "138"
   pullPolicy: IfNotPresent
 
 webuiService:

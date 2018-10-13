@@ -37,7 +37,7 @@ The following tables lists the configurable parameters of the Syncthing chart an
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image.repository`         | Image repository | `linuxserver/syncthing` |
-| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/linuxserver/syncthing/tags/).| `137`|
+| `image.tag`                | Image tag. Possible values listed [here](https://hub.docker.com/r/linuxserver/syncthing/tags/).| `138`|
 | `image.pullPolicy`         | Image pull policy | `IfNotPresent` |
 | `webuiService.type`             | Kubernetes service type for the Syncthing WebUI | `ClusterIP` |
 | `webuiService.port`             | Kubernetes port where the Syncthing WebUI is exposed| `80` |
