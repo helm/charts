@@ -1,0 +1,20 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "nifi.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "nifi.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.serviceType }}
+  ports:
+    - port: {{ .Values.nifi.properties.httpPort }}
+      name: http
+    - port: {{ .Values.nifi.properties.cluster.port }}
+      name: cluster
+  selector:
+    app: {{ template "nifi.name" . }}
+    release: {{ .Release.Name }}
