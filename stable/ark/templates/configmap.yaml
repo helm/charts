@@ -37,7 +37,7 @@ data:
         region: {{ . }}
       {{- end }}
       {{- with .s3ForcePathStyle }}
-        s3ForcePathStyle: {{ . }}
+        s3ForcePathStyle: {{ . | quote }}
       {{- end }}
       {{- with .s3Url }}
         s3Url: {{ . }}

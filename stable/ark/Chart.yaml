@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 0.9.1
 description: A Helm chart for ark
 name: ark
-version: 1.2.1
+version: 1.2.2
 home: https://heptio.com/products/#heptio-ark
 sources:
 - https://github.com/heptio/ark
