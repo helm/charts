@@ -54,7 +54,9 @@ The following table lists the configurable parameters of the kibana chart and th
 | `podAnnotations`                              | annotations to add to each pod             | `{}`                                   |
 | `replicaCount`                                | desired number of pods                     | `1`                                    |
 | `revisionHistoryLimit`                        | revisionHistoryLimit                       | `3`                                    |
-| `serviceAccountName`                          | serviceAccount that will run the pod       | `nil`                                  |
+| `serviceAccountName`                          | DEPRECATED: use serviceAccount.name        | `nil`                                  |
+| `serviceAccount.create`                       | create a serviceAccount to run the pod     | `false`                                |
+| `serviceAccount.name`                         | name of the serviceAccount to create       | `kibana.fullname`                      |
 | `authProxyEnabled`                            | enables authproxy. Create container in extracontainers   | `false`                  |
 | `extraContainers`                             | Sidecar containers to add to the kibana pod| `{}`                                   |
 | `resources`                                   | pod resource requests & limits             | `{}`                                   |
