@@ -40,7 +40,7 @@ The following table lists the configurable parameters of the mysql exporter char
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
 | `replicaCount`                           | Amount of pods for the deployment                                                                                    | `1`                                     |
 | `image.repository`                       | Image repository                                                                                                     | `prom/mysqld-exporter`                  |
-| `image.tag`                              | Image tag                                                                                                            | `v0.10.0`                               |
+| `image.tag`                              | Image tag                                                                                                            | `v0.11.0`                               |
 | `image.pullPolicy`                       | Image pull policy                                                                                                    | `IfNotPresent`                          |
 | `service.name`                           | Service name                                                                                                         | `mysql-exporter`                        |
 | `service.type`                           | Service type                                                                                                         | `ClusterIP`                             |
@@ -48,7 +48,13 @@ The following table lists the configurable parameters of the mysql exporter char
 | `service.internalPort`                   | The target port of the container                                                                                     | `9104`                                  |
 | `resources`                              | CPU/Memory resource requests/limits                                                                                  | `{}`                                    |
 | `annotations`                            | pod annotations for easier discovery                                                                                 | `{}`                                    |
-| `datasource`                             | Exporter datasource pointing to the mysql server to be monitored                                                     | `username:password@(localhost:3306)/`   |
+| `mysql.db`                               | MySQL connection db (optional)                                                                                       | `""`                                    |
+| `mysql.host`                             | MySQL connection host                                                                                                | `localhost`                             |
+| `mysql.param`                            | MySQL connection parameters (optional)                                                                               | `"tcp"`                                 |
+| `mysql.pass`                             | MySQL connection password                                                                                            | `password`                              |
+| `mysql.port`                             | MySQL connection port                                                                                                | `3306`                                  |
+| `mysql.protocol`                         | MySQL connection protocol (optional)                                                                                 | `""`                                    |  
+| `mysql.user`                             | MySQL connection username                                                                                            | `exporter`                              |
 | `cloudsqlproxy.enabled`                  | Flag to enable the connection using Cloud SQL Proxy                                                                  | `false`                                 |
 | `cloudsqlproxy.image.repo`               | Cloud SQL Proxy image repository                                                                                     | `gcr.io/cloudsql-docker/gce-proxy`      |
 | `cloudsqlproxy.image.tag`                | Cloud SQL Proxy image tag                                                                                            | `1.11`                                  |
@@ -57,12 +63,11 @@ The following table lists the configurable parameters of the mysql exporter char
 | `cloudsqlproxy.port`                     | Cloud SQL Proxy listening port                                                                                       | `3306`                                  |
 | `cloudsqlproxy.credentials`              | Cloud SQL Proxy service account credentials                                                                          | `bogus credential file`                 |
 
-
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
 $ helm install --name my-release \
-  --set datasource="username:password@(db:3306)/"  \
+  --set mysql.user="username",mysql.password="password",mysql.host="localhost",mysql.port="3306"  \
     stable/prometheus-mysql-exporter
 ```
 
@@ -71,3 +76,6 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 ```console
 $ helm install --name my-release -f values.yaml stable/prometheus-mysql-exporter
 ```
+
+Documentation for the MySQL Exporter can be found here: (https://github.com/prometheus/mysqld_exporter)
+A mysql params overview can be found here: (https://github.com/go-sql-driver/mysql#dsn-data-source-name)
