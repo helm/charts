@@ -9,19 +9,18 @@ replicas: 1
 
 deploymentStrategy: RollingUpdate
 
-livenessProbe:
+readinessProbe:
   httpGet:
     path: /api/health
     port: 3000
 
-readinessProbe:
+livenessProbe:
   httpGet:
     path: /api/health
     port: 3000
   initialDelaySeconds: 60
   timeoutSeconds: 30
   failureThreshold: 10
-  periodSeconds: 10
 
 image:
   repository: grafana/grafana
