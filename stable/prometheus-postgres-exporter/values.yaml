@@ -46,6 +46,7 @@ config:
     port: "5432"
     database: ''
     sslmode: disable
+  disableDefaultMetrics: false
   # this are the defaults queries that the exporter will run, extracted from: https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml
   queries: |-
     pg_replication:

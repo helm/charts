@@ -29,6 +29,9 @@ spec:
         - name: {{ .Chart.Name }}
           args:
           - "--extend.query-path=/etc/config.yaml"
+          {{- if .Values.config.disableDefaultMetrics }}
+          - "--disable-default-metrics"
+          {{- end }}
           env:
             - name: DATA_SOURCE_NAME
               valueFrom:
