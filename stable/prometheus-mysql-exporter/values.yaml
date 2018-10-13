@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: "prom/mysqld-exporter"
-  tag: "v0.10.0"
+  tag: "v0.11.0"
   pullPolicy: "IfNotPresent"
 
 service:
@@ -33,13 +33,20 @@ tolerations: []
 
 affinity: {}
 
-annotations: {}
-#  prometheus.io/scrape: "true"
-#  prometheus.io/path: "/metrics"
-#  prometheus.io/port: "{{ .Values.service.internalPort }}"
+annotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/path: "/metrics"
+  prometheus.io/port: 9104
 
-# Scraper datasource
-datasource: "username:password@(localhost:3306)/"
+# mysql connection params which build the DATA_SOURCE_NAME env var of the docker container
+mysql:
+  db: ""
+  host: "localhost"
+  param: ""
+  pass: "password"
+  port: 3306
+  protocol: ""
+  user: "exporter"
 
 # cloudsqlproxy https://cloud.google.com/sql/docs/mysql/sql-proxy
 cloudsqlproxy:
