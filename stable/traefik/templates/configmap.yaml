@@ -48,6 +48,9 @@ data:
         [entryPoints.http.redirect]
           regex = "^http://(.*)"
           replacement = "https://$1"
+          {{- if .Values.ssl.permanentRedirect }}
+          permanent = true
+          {{- end }}
         {{- end }}
       {{- if .Values.ssl.enabled }}
       [entryPoints.https]
