@@ -1,0 +1,125 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "cachet.fullname" . }}
+  labels:
+    app: {{ template "cachet.name" . }}
+    chart: {{ template "cachet.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "cachet.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "cachet.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          env:
+          {{ if .Values.postgresql.enabled }}
+          - name: DB_DRIVER
+            value: "pgsql"
+          - name: DB_HOST
+            value: "{{ template "cachet.postgresql.fullname" . }}"
+          - name: DB_PORT
+            value: "{{ .Values.postgresql.service.port }}"
+          {{ else }}
+          - name: DB_DRIVER
+            value: "{{ .Values.db.driver }}"
+          - name: DB_HOST
+            value: "{{ .Values.db.host }}"
+          - name: DB_PORT
+            value: "{{ .Values.db.host }}"
+          {{ end }}
+          - name: DB_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "cachet.fullname" . }}
+                key: dbDatabase
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "cachet.fullname" . }}
+                key: dbUsername
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "cachet.fullname" . }}
+                key: dbPassword
+          - name: DB_PREFIX
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "cachet.fullname" . }}
+                key: dbPrefix
+          - name: APP_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "cachet.fullname" . }}
+                key: appKey
+          {{ if .Values.redis.enabled }}
+          - name: CACHE_DRIVER
+            value: "redis"
+          - name: SESSION_DRIVER
+            value: "redis"
+          - name: REDIS_HOST
+            value: "{{ template "cachet.redis.fullname" . }}"
+          - name: REDIS_PORT
+            value: "6379"
+          - name: REDIS_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "cachet.fullname" . }}
+                key: redisDatabase
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "cachet.fullname" . }}
+                key: redisPassword
+          {{ end }}
+          - name: SESSION_DOMAIN
+            value: "{{ .Values.session.domain }}"
+          - name: SESSION_SECURE_COOKIE
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "cachet.fullname" . }}
+                key: secureCookie
+          - name: APP_URL
+            value: "{{ .Values.url }}"
+          - name: APP_LOG
+            value: "{{ .Values.log }}"
+          - name: DEBUG
+            value: "{{ .Values.debug }}"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
