@@ -5,6 +5,8 @@ revisionHistoryLimit: 5
 updateStrategy:
   type: RollingUpdate
 
+podManagementPolicy: "Parallel"
+
 zkClientTimeout: 15000
 
 terminationGracePeriodSeconds: 1800
