@@ -1,5 +1,5 @@
 name: sumologic-fluentd
-version: 0.6.0
+version: 0.6.1
 appVersion: 1.16
 description: Sumologic Log Collector
 keywords:

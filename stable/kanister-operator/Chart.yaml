@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Kanister-operator Helm chart for Kubernetes
 name: kanister-operator
-version: 0.3.0
+version: 0.3.1
 home: https://kanister.io/
 maintainers:
   - email: ilya@kasten.io

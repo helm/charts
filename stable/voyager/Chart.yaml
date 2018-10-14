@@ -6,7 +6,7 @@ description: DEPRECATED Voyager by AppsCode - Secure Ingress Controller for Kube
 home: https://appscode.com/products/voyager/
 icon: https://cdn.appscode.com/images/icon/voyager.png
 name: voyager
-version: 3.2.4
+version: 3.2.5
 appVersion: 6.0.0
 sources:
   - https://github.com/appscode/voyager
