@@ -1,7 +1,11 @@
 serviceAccount:
+  # serviceAccount.create: Whether to create a service account or not
   create: true
+  # serviceAccount.name: The name of the service account to create or use
   name: "sealed-secrets-controller"
 
+# rbacEnabled: `true` if rbac is enabled on your cluster. Roles and bindings will be created if this is `true`, they will not if it is `false`
 rbacEnabled: true
 
+# secretName: The name of the TLS secret containing the key used to encrypt secrets
 secretName: "sealed-secrets-key"
