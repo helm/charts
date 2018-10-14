@@ -1,5 +1,6 @@
 name: nginx-lego
-version: 0.3.1
+version: 0.3.2
+appVersion: 0.1.3
 deprecated: true
 description: Chart for nginx-ingress-controller and kube-lego
 keywords:
@@ -10,7 +11,5 @@ keywords:
 sources:
 - https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx
 - https://github.com/jetstack/kube-lego/tree/master/examples/nginx
-maintainers:
-- name: Jack Zampolin
-  email: jack.zampolin@gmail.com
 engine: gotpl
+home: https://github.com/jetstack/kube-lego
