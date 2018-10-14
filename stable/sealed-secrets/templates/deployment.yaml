@@ -9,6 +9,9 @@ spec:
       labels:
         name: sealed-secrets-controller
     spec:
+      {{ if .Values.rbacEnabled }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{ end }}
       containers:
         - name: sealed-secrets-controller
           command:

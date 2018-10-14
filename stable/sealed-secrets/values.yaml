@@ -1,1 +1,7 @@
+serviceAccount:
+  create: true
+  name: "sealed-secrets-controller"
+
+rbacEnabled: true
+
 secretName: "sealed-secrets-key"
