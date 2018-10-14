@@ -13,6 +13,7 @@ spec:
         - name: sealed-secrets-controller
           command:
             - controller
+          args: ["--key-name", "{{ .Values.secretName }}"]
           image: quay.io/bitnami/sealed-secrets-controller:v0.7.0
           ports:
             - containerPort: 8080
