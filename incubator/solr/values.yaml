@@ -5,6 +5,8 @@ revisionHistoryLimit: 5
 updateStrategy:
   type: RollingUpdate
 
+zkClientTimeout: 15000
+
 terminationGracePeriodSeconds: 1800
 
 ports:
