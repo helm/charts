@@ -228,8 +228,8 @@ resources: {}
   # requests:
   #   cpu: 100mm
   #   memory: 1Gi
-initContainer: {}
-  # resources:
+initContainer:
+  resources: {}
   #   limits:
   #     cpu: 100mm
   #     memory: 128Mi
@@ -322,7 +322,7 @@ livenessProbe:
 
 readinessProbe:
   failureThreshold: 6
-  initialDelaySeconds: 10
+  initialDelaySeconds: 20
   timeoutSeconds: 3
   periodSeconds: 5
 
