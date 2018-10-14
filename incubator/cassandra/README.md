@@ -104,6 +104,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `resources`                          | CPU/Memory resource requests/limits             | Memory: `4Gi`, CPU: `2`                                    |
 | `service.type`                       | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
 | `podManagementPolicy`                | podManagementPolicy of the StatefulSet          | `OrderedReady`                                             |
+| `podAnnotations`                     | pod annotations for the StatefulSet             | `{}`                                                       |
 | `updateStrategy.type`                | UpdateStrategy of the StatefulSet               | `OnDelete`                                                 |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated        | `90`                                                       |
 | `livenessProbe.periodSeconds`        | How often to perform the probe                  | `30`                                                       |
@@ -126,6 +127,11 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `backup.env`                         | Backup environment variables                    | AWS_REGION: `us-east-1`                                    |
 | `backup.resources`                   | Backup CPU/Memory resource requests/limits      | Memory: `1Gi`, CPU: `1`                                    |
 | `backup.destination`                 | Destination to store backup artifacts           | `s3://bucket/cassandra`                                    |
+| `exporter.enabled`                   | Enable Cassandra exporter                       | `false`                                                    |
+| `exporter.image.repo`                | Exporter image repository                       | `criteord/cassandra_exporter`                              |
+| `exporter.image.tag`                 | Exporter image tag                              | `2.0.2`                                                    |
+| `exporter.port`                      | Exporter port                                   | `5556`                                                     |
+| `exporter.jvmOpts`                   | Exporter additional JVM options                 |                                                            |
 
 ## Scale cassandra
 When you want to change the cluster size of your cassandra, you can use the helm upgrade command.
