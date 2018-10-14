@@ -3,11 +3,16 @@ kind: Deployment
 metadata:
   name: sealed-secrets-controller
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: sealed-secrets-controller
+    chart: {{ template "sealed-secrets.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   template:
     metadata:
       labels:
-        name: sealed-secrets-controller
+        app: sealed-secrets-controller
     spec:
       {{ if .Values.rbacEnabled }}
       serviceAccountName: {{ .Values.serviceAccount.name }}

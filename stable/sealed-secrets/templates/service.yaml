@@ -3,6 +3,11 @@ kind: Service
 metadata:
   name: sealed-secrets-controller
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: sealed-secrets-controller
+    chart: {{ template "sealed-secrets.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   ports:
     - port: 8080

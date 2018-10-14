@@ -4,6 +4,11 @@ kind: Role
 metadata:
   name: sealed-secrets-key-admin
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: sealed-secrets-controller
+    chart: {{ template "sealed-secrets.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 rules:
   - apiGroups:
       - ""

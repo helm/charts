@@ -4,6 +4,11 @@ kind: RoleBinding
 metadata:
   name: sealed-secrets-controller
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: sealed-secrets-controller
+    chart: {{ template "sealed-secrets.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
