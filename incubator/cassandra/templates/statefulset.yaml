@@ -25,6 +25,10 @@ spec:
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
+{{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
     spec:
 {{- if .Values.selector }}
 {{ toYaml .Values.selector | indent 6 }}
@@ -39,6 +43,30 @@ spec:
 {{ toYaml .Values.affinity | indent 8 }}
 {{- end }}
       containers:
+{{- if .Values.exporter.enabled }}
+      - name: cassandra-exporter
+        image: "{{ .Values.exporter.image.repo }}:{{ .Values.exporter.image.tag }}"
+        env:
+          - name: CASSANDRA_EXPORTER_CONFIG_listenPort
+            value: {{ .Values.exporter.port | quote }}
+          - name: JVM_OPTS
+            value: {{ .Values.exporter.jvmOpts | quote }}
+        ports:
+          - name: metrics
+            containerPort: {{ .Values.exporter.port }}
+            protocol: TCP
+          - name: jmx
+            containerPort: 5555
+        livenessProbe:
+          tcpSocket:
+            port: {{ .Values.exporter.port }}
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: {{ .Values.exporter.port }}
+          initialDelaySeconds: 20
+          timeoutSeconds: 45
+{{- end }}
       - name: {{ template "cassandra.fullname" . }}
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
