@@ -101,6 +101,7 @@ The configuration parameters in this section control the resources requested and
 | replicaCount                  | Number of SOLR Cloud Replicas to install or scale too                                          | `3`               |
 | revisionHistoryLimit          | Number of Revision History to keep.  [See Docs](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#revision-history-limit)| `2`                        |
 | updateStrategy.type           | updateStrategy for the StatefulSet                                                             | `RollingUpdate`   |
+| podManagementPolicy           | Pod's Management Policy [See Docs](https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy)
 | terminationGracePeriodSeconds | Terminate the pod after x seconds if hook fails                                                | `1800`            |
 | ports.client.containerPort    | Container port for SOLR Cloud                                                                  | `8983`            |
 | heap                          | Apache SOLR Heap Settings                                                                      | `2g`              |
