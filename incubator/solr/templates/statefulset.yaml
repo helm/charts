@@ -75,7 +75,7 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command: ["solr","stop", "-p", "{{ .Values.zookeeper.ports.client.containerPort }}"]
+                command: ["solr","stop", "-p", "{{ .Values.ports.client.containerPort }}"]
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
