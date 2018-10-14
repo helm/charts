@@ -112,6 +112,6 @@ Read through the [values.yaml](values.yaml) file. It has several commented out s
 
 ## Regarding configuring home assistnat
 
-Much of the home assistant configuration occurs inside the various files persisted to the `/config` directory.  This will require external access to the persistant storage location where the home assistant configuration data is stored.
+Much of the home assistant configuration occurs inside the various files persisted to the `/config` directory.  This will require external access to the persistent storage location where the home assistant configuration data is stored.
 
 Because this may be a limitation, the [Home Assistant Configurator UI](https://github.com/danielperna84/hass-configurator) is added to the chart as an option to provide a webUI for editing the various configuration files
