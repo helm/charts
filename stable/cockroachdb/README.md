@@ -75,27 +75,27 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `InternalHttpPort`             | CockroachDB HTTP port                            | `8080`                                    |
 | `ExternalHttpPort`             | CockroachDB HTTP port on service                 | `8080`                                    |
 | `HttpName`                     | Name given to the http service port              | `http`                                    |
-| `Cpu`                          | Container requested cpu                          | `100m`                                    |
-| `Memory`                       | Container requested memory                       | `512Mi`                                   |
+| `Resources`                    | Resource requests and limits                     | `{}`                                      |
 | `Storage`                      | Persistent volume size                           | `1Gi`                                     |
 | `StorageClass`                 | Persistent volume class                          | `null`                                    |
 | `CacheSize`                    | Size of CockroachDB's in-memory cache            | `25%`                                     |
 | `MaxSQLMemory`                 | Max memory to use processing SQL queries         | `25%`                                     |
 | `ClusterDomain`                | Cluster's default DNS domain                     | `cluster.local`                           |
-| `JoinExisting`                 | List of already-existing cockroach instances     | `[]`                                      |
-| `Locality`                     | Locality attribute for this deployment           | `""`                                      |
 | `NetworkPolicy.Enabled`        | Enable NetworkPolicy                             | `false`                                   |
 | `NetworkPolicy.AllowExternal`  | Don't require client label for connections       | `true`                                    |
 | `Service.Type`                 | Public service type                              | `ClusterIP`                               |
 | `Service.Annotations`          | Annotations to apply to the service              | `{}`                                      |
 | `PodManagementPolicy`          | `OrderedReady` or `Parallel` pod creation/deletion order | `Parallel`                        |
 | `UpdateStrategy.type`          | allows setting of RollingUpdate strategy         | `RollingUpdate`                           |
+| `NodeSelector`                 | Node labels for pod assignment                   | `{}`                                      |
+| `Tolerations`                  | List of node taints to tolerate                  | `{}`                                      |
 | `Secure.Enabled`               | Whether to run securely using TLS certificates   | `false`                                   |
 | `Secure.RequestCertsImage`     | Image to use for requesting TLS certificates     | `cockroachdb/cockroach-k8s-request-cert`  |
 | `Secure.RequestCertsImageTag`  | Image tag to use for requesting TLS certificates | `0.3`                                     |
 | `Secure.ServiceAccount.Create` | Whether to create a new RBAC service account     | `true`                                    |
-| `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | ``                                        |
-| `Tolerations` | [Kubernetes tolerations](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) to label the pods in the StatefulSet with | `` |
+| `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | `""`                                      |
+| `JoinExisting`                 | List of already-existing cockroach instances     | `[]`                                      |
+| `Locality`                     | Locality attribute for this deployment           | `""`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
