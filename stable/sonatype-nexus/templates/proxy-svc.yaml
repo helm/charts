@@ -7,6 +7,9 @@ metadata:
 {{- if .Values.nexus.labels }}
 {{ toYaml .Values.nexus.labels | indent 4 }}
 {{- end }}
+{{- if .Values.nexusProxy.labels }}
+{{ toYaml .Values.nexusProxy.labels | indent 4 }}
+{{- end }}
 {{- if .Values.nexus.annotations }}
   annotations:
 {{ toYaml .Values.nexus.annotations | indent 4 }}
@@ -16,7 +19,7 @@ spec:
     - name: {{ .Values.nexusProxy.name }}
       port: {{ .Values.nexusProxy.port }}
       protocol: TCP
-      targetPort: {{ .Values.nexusProxy.port }}
+      targetPort: {{ .Values.nexusProxy.targetPort }}
   selector:
     app: {{ template "nexus.name" . }}
     release: {{ .Release.Name }}

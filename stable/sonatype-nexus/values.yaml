@@ -39,11 +39,13 @@ nexus:
     initialDelaySeconds: 30
     periodSeconds: 30
     failureThreshold: 6
+    # timeoutSeconds: 10
     path: /
   readinessProbe:
     initialDelaySeconds: 30
     periodSeconds: 30
     failureThreshold: 6
+    # timeoutSeconds: 10
     path: /
   # hostAliases allows the modification of the hosts file inside a container
   hostAliases: []
@@ -53,10 +55,13 @@ nexus:
   #   - "www.example.com"
 
 nexusProxy:
+  enabled: true
   imageName: quay.io/travelaudience/docker-nexus-proxy
   imageTag: 2.3.0
   imagePullPolicy: IfNotPresent
   port: 8080
+  targetPort: 8080
+  # labels: {}
   env:
     nexusDockerHost:
     nexusHttpHost:
@@ -136,3 +141,38 @@ config:
   enabled: false
   mountPath: /sonatype-nexus-conf
   data:
+
+deployment:
+  # # Add annotations in deployment to enhance deployment configurations
+  annotations: {}
+  # # Add init containers. e.g. to be used to give specific permissions for nexus-data.
+  # # Add your own init container or uncomment and modify the given example.
+  initContainers:
+  # - name: fmp-volume-permission
+    # image: busybox
+    # imagePullPolicy: IfNotPresent
+    # command: ['chown','-R', '200', '/nexus-data']
+    # volumeMounts:
+      # - name: nexus-data
+        # mountPath: /nexus-data
+  # # Uncomment and modify this to run a command after starting the nexus container.
+  postStart:
+    command:    # '["/bin/sh", "-c", "ls"]'
+  additionalContainers:
+  additionalVolumes:
+
+# # To use an additional secret, set enable to true and add data
+secret:
+  enabled: false
+  mountPath: /etc/secret-volume
+  readOnly: true
+  data:
+
+# # To use an additional service, set enable to true
+service:
+  enabled: false
+  name: nexus-service
+  labels: {}
+  annotations: {}
+  targetPort: 80
+  port: 80
