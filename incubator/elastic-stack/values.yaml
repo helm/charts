@@ -15,7 +15,7 @@ fluentd:
 fluent-bit:
   enabled: false
 
-elasticsearch-curator:
+fluentd-elasticsearch:
   enabled: false
 
 nginx-ldapauth-proxy:
