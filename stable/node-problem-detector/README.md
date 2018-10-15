@@ -34,20 +34,21 @@ Custom System log monitor config files can be created, see [here](https://github
 
 The following table lists the configurable parameters for this chart and their default values.
 
-| Parameter                          | Description                     | Default                                                     |
-| ---------------------------------- | --------------------------------|-------------------------------------------------------------|
-| `annotations`                      | Optional daemonset annotations  | `{}`                                                        |
-| `affinity`                         | Map of node/pod affinities      | `{}`                                                        |
-| `settings.log_monitors`            | System log monitor config files | `/config/kernel-monitor.json`,`/config/docker-monitor.json` |
-| `image.repository`                 | Image                           | `k8s.gcr.io/node-problem-detector`                          |
-| `image.tag`                        | Image tag                       | `v0.5.0`                                                    |
-| `image.pullPolicy`                 | Image pull policy               | `IfNotPresent`                                              |
-| `rbac.create`                      | RBAC                            | `true`                                                      |
-| `resources.limits.cpu`             | CPU limit                       | `200m`                                                      |
-| `resources.limits.memory`          | Memory limit                    | `100Mi`                                                     |
-| `resources.requests.cpu`           | CPU request                     | `20m`                                                       |
-| `resources.requests.memory`        | Memory request                  | `20Mi`                                                      |
-| `tolerations`                      | Optional daemonset tolerations  | `{}`                                                        |
+| Parameter               | Description                                | Default                                                      |
+| ------------------------|--------------------------------------------|--------------------------------------------------------------|
+| `affinity`              | Map of node/pod affinities                 | `{}`                                                         |
+| `annotations`           | Optional daemonset annotations             | `{}`                                                         |
+| `fullnameOverride`      | Override the fullname of the chart         | `nil`                                                        |
+| `image.pullPolicy`      | Image pull policy                          | `IfNotPresent`                                               |
+| `image.repository`      | Image                                      | `k8s.gcr.io/node-problem-detector`                           |
+| `image.tag`             | Image tag                                  | `v0.5.0`                                                     |
+| `nameOverride`          | Override the name of the chart             | `nil`                                                        |
+| `rbac.create`           | RBAC                                       | `true`                                                       |
+| `resources`             | Pod resource requests and limits           | `{}`                                                         |
+| `settings.log_monitors` | System log monitor config files            | `/config/kernel-monitor.json`, `/config/docker-monitor.json` |
+| `serviceAccount.create` | Whether a ServiceAccount should be created | `true`                                                       |
+| `serviceAccount.name`   | Name of the ServiceAccount to create       | Generated value from template                                |
+| `tolerations`           | Optional daemonset tolerations             | `[]`                                                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` or provide a YAML file containing the values for the above parameters:
 
