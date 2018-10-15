@@ -169,7 +169,7 @@ secret:
 
 # # To use an additional service, set enable to true
 service:
-  enabled: true
+  enabled: false
   name: nexus-service
   labels: {}
   annotations: {}
