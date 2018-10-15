@@ -4,10 +4,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ template "node-problem-detector.fullname" . }}
   labels:
-    app: {{ template "node-problem-detector.name" . }}
-    chart: {{ template "node-problem-detector.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
     app.kubernetes.io/name: {{ include "node-problem-detector.name" . }}
     helm.sh/chart: {{ include "node-problem-detector.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
