@@ -78,7 +78,6 @@ The following table lists the configurable parameters of the kibana chart and th
 | `plugins`                                     | List of URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
 
 
-
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 * The Kibana configuration files config properties can be set through the `env` parameter too.
@@ -97,3 +96,7 @@ $ helm install stable/kibana --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Dasboard import
+
+* The Dasboard can be a JSON or a download url to a JSON file.
