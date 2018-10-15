@@ -49,7 +49,7 @@ The following table lists the configurable parameters of the Stellar Horizon cha
 | `service.type`                               | HTTP endpoint service type                                             | `ClusterIP`                                      |
 | `service.port`                               | HTTP endpoint TCP port                                                 | `80`                                             |
 | `ingress.enabled`                            | Enable ingress controller resource                                     | `false`                                          |
-| `ingress.hosts[0].name`                      | Hostname to your WordPress installation                                | `stellar-horizon.local`                          |
+| `ingress.hosts[0].name`                      | Hostname to your Horizon installation                                  | `stellar-horizon.local`                          |
 | `ingress.hosts[0].path`                      | Path within the url structure                                          | `/`                                              |
 | `ingress.hosts[0].tlsSecret`                 | TLS Secret (certificates)                                              | `stellar-horizon.local-tls-secret`               |
 | `ingress.hosts[0].annotations`               | Annotations for this host's ingress record                             | `[]`                                             |
