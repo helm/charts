@@ -1,0 +1,90 @@
+apiVersion: "apps/v1beta1"
+kind: StatefulSet
+metadata:
+  name: crate
+spec:
+  serviceName: "crate-db"
+  replicas: {{ .Values.crate.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app }}
+      annotations:
+        pod.alpha.kubernetes.io/initialized: "true"
+    spec:
+      initContainers:
+      - name: init-sysctl
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
+      containers:
+      - name: crate
+        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - /docker-entrypoint.sh
+          - -Clicense.enterprise=false
+          - -Ccluster.name=${CLUSTER_NAME}
+          - -Cnetwork.host="0.0.0.0"
+          - -Cdiscovery.zen.hosts_provider=srv
+          - -Cdiscovery.zen.minimum_master_nodes=${MINIMUM_MASTER_NODES}
+          - -Cdiscovery.srv.query=_{{ .Values.service.clusterName }}._tcp.{{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local
+          - -Cgateway.recover_after_nodes=${RECOVER_AFTER_NODES}
+          - -Cgateway.recover_after_time={{ .Values.crate.recoverAfterTime }}
+          - -Cgateway.expected_nodes=${EXPECTED_NODES}
+          - -Chttp.cors.enabled={{ .Values.http.cors.enabled }}
+          - -Chttp.cors.allow-origin={{ .Values.http.cors.allowOrigin }}
+        volumeMounts:
+            - mountPath: /data
+              name: data
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - containerPort: {{ .Values.service.adminPort }}
+          name: {{ .Values.service.adminName }}
+        - containerPort: {{ .Values.service.clusterPort }}
+          name: {{ .Values.service.clusterName }}
+        - containerPort: {{ .Values.service.postgresPort }}
+          name: {{ .Values.service.postgresName }}
+        env:
+        - name: CRATE_HEAP_SIZE
+          value: {{ .Values.crate.crateHeapSize | quote }}
+        - name: EXPECTED_NODES
+          value: {{ .Values.crate.replicas | quote }}
+        - name: CLUSTER_NAME
+          value: {{ .Values.crate.clusterName | quote }}
+        - name: RECOVER_AFTER_NODES
+          value: {{ .Values.crate.recoverAfterNodes | quote }}
+        - name: MINIMUM_MASTER_NODES
+          value: {{ .Values.crate.minimumMasterNodes | quote }}
+        livenessProbe:
+          exec:
+            command: ["sh", "-c", "curl http://localhost:4200 2&>/dev/null | grep '\"ok\" : true'"]
+          initialDelaySeconds: 240
+          periodSeconds: 60
+{{- if .Values.persistentVolume.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        annotations:
+        {{- range $key, $value := .Values.persistentVolume.annotations }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      spec:
+        accessModes:
+        {{- range .Values.persistentVolume.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistentVolume.size | quote }}
+      {{- if .Values.persistentVolume.storageClass }}
+        storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+      {{- end }}
+{{- else }}
+        - name: data
+          emptyDir:
+            medium: "Memory"
+{{- end }}
