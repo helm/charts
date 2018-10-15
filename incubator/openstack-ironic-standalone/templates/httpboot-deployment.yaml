@@ -46,7 +46,9 @@ spec:
           image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
           command:
             - cp
+            - "-u"
             - "/usr/share/syslinux/pxelinux.0"
+            - "/usr/share/syslinux/custom-ipxe.efi"
             - "/usr/share/ipxe/ipxe.efi"
             - "/tftpboot/"
           securityContext:

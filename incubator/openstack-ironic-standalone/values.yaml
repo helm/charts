@@ -4,7 +4,7 @@ ironicServerName: DEFINE-SERVER-NAME.IO
 ##
 image:
   name: jakubdlu/centos-openstack-ironic
-  version: rocky-0.0.7
+  version: rocky-0.0.9
   pullPolicy: IfNotPresent
 
 # Existing persistent volume claim
