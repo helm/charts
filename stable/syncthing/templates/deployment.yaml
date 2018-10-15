@@ -3,21 +3,21 @@ kind: Deployment
 metadata:
   name: {{ template "syncthing.fullname" . }}
   labels:
-    app: {{ template "syncthing.name" . }}
-    chart: {{ template "syncthing.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "syncthing.name" . }}
+    helm.sh/chart: {{ template "syncthing.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "syncthing.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ template "syncthing.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "syncthing.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ template "syncthing.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "syncthing.serviceAccountName" . }}
       containers:

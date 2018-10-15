@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ template "syncthing.fullname" . }}-listener
   labels:
-    app: {{ template "syncthing.name" . }}
-    chart: {{ template "syncthing.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "syncthing.name" . }}
+    helm.sh/chart: {{ template "syncthing.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.listenerService.labels }}
 {{ toYaml .Values.listenerService.labels | indent 4 }}
 {{- end }}
