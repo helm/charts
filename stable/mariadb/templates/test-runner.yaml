@@ -20,7 +20,7 @@ spec:
         name: tools
   containers:
     - name: mariadb-test
-      image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+      image: {{ template "mariadb.image" . }}
       imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
       command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
       env:
