@@ -72,12 +72,12 @@ The following table lists the configurable parameters of the kibana chart and th
 | `service.annotations`                         | Kubernetes service annotations             | None:                                  |
 | `service.labels`                              | Kubernetes service labels                  | None:                                  |
 | `tolerations`                                 | List of node taints to tolerate            | `[]`                                   |
+| `dashboardImport.timeout`                     | Time in seconds waiting for Kibana to be in green overall state | `60`                                   |
 | `dashboardImport.xpackauth.enabled`           | Enable Xpack auth                          | `false`                                |
 | `dashboardImport.xpackauth.username`          | Optional Xpack username                    | `myuser`                               |
 | `dashboardImport.xpackauth.password`          | Optional Xpack password                    | `mypass`                               |
 | `dashboardImport.dashboards`                  | Dashboards                                 | `{}`                                   |
-| `plugins`                             | List of URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
-
+| `plugins`                                     | List of URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -98,3 +98,7 @@ $ helm install stable/kibana --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Dasboard import
+
+* A dashboard for dashboardImport.dashboards can be a JSON or a download url to a JSON file.
