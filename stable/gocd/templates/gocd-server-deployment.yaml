@@ -33,9 +33,11 @@ spec:
         - name: goserver-vol
           persistentVolumeClaim:
             claimName: {{ .Values.server.persistence.existingClaim | default (printf "%s-%s" (include "gocd.fullname" .) "server") }}
+        {{- if .Values.server.shouldPreconfigure }}
         - name: config-vol
           configMap:
             name: {{ template "gocd.fullname" . }}
+        {{- end }}
         {{- if ne (len .Values.server.persistence.extraVolumes) 0 }}
 {{ toYaml .Values.server.persistence.extraVolumes | indent 8 }}
         {{- end }}
@@ -91,9 +93,11 @@ spec:
             - name: {{ .Values.server.persistence.name.dockerEntryPoint }}
               mountPath: /docker-entrypoint.d
               subPath: {{ .Values.server.persistence.subpath.dockerEntryPoint }}
+            {{- if .Values.server.shouldPreconfigure }}
             - name: config-vol
               mountPath: /preconfigure_server.sh
               subPath: preconfigure_server.sh
+            {{- end }}
             {{- if ne (len .Values.server.persistence.extraVolumeMounts) 0 }}
 {{ toYaml .Values.server.persistence.extraVolumeMounts | indent 12 }}
             {{- end }}
