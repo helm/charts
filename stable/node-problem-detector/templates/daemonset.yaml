@@ -25,40 +25,42 @@ spec:
     spec:
       serviceAccountName: {{ template "node-problem-detector.serviceAccountName" . }}
       containers:
-      - name: {{ .Chart.Name }}
-        image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
-        command:
-        - "/bin/sh"
-        - "-c"
-        - "exec /node-problem-detector --logtostderr --system-log-monitors={{- range $index, $monitor := .Values.settings.log_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }}"
-        securityContext:
-          privileged: true
-        env:
-        - name: NODE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: spec.nodeName
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
-        volumeMounts:
-        - name: log
-          mountPath: /var/log
-        - name: localtime
-          mountPath: /etc/localtime
-          readOnly: true
-      terminationGracePeriodSeconds: 30
-      volumes:
-      - name: log
-        hostPath:
-          path: /var/log/
-      - name: localtime
-        hostPath:
-          path: /etc/localtime
-          type: "FileOrCreate"
-{{- if .Values.tolerations }}
-      tolerations:
-{{ toYaml .Values.tolerations | indent 6 }}
-{{- end }}
+        - name: {{ .Chart.Name }}
+          image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "exec /node-problem-detector --logtostderr --system-log-monitors={{- range $index, $monitor := .Values.settings.log_monitors }}{{if ne $index 0}},{{end}}{{ $monitor }}{{- end }}"
+          securityContext:
+            privileged: true
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: log
+              mountPath: /var/log
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+          terminationGracePeriodSeconds: 30
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: log
+          hostPath:
+            path: /var/log/
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: "FileOrCreate"
