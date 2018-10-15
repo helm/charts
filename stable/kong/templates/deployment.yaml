@@ -7,12 +7,14 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    component: app
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "kong.name" . }}
       release: {{ .Release.Name }}
+      component: app
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -22,6 +24,7 @@ spec:
       labels:
         app: {{ template "kong.name" . }}
         release: {{ .Release.Name }}
+        component: app
     spec:
       initContainers:
       - name: wait-for-db

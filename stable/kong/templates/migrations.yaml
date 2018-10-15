@@ -8,6 +8,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    component: migrations
 spec:
   template:
     metadata:
@@ -15,6 +16,7 @@ spec:
       labels:
         app: {{ template "kong.name" . }}
         release: "{{ .Release.Name }}"
+        component: migrations
     spec:
       {{- if .Values.postgresql.enabled }}
       initContainers:
