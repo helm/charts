@@ -125,15 +125,17 @@ podAnnotations: {}
 replicaCount: 1
 revisionHistoryLimit: 3
 
-# to export a dashboard from a running kibana 6.3.x use:
+# To export a dashboard from a running Kibana 6.3.x use:
 # curl --user <username>:<password> -XGET https://kibana.yourdomain.com:5601/api/kibana/dashboards/export?dashboard=<some-dashboard-uuid> > my-dashboard.json
-# you can find an example dashboard for kubernests with fluentd-elasticsearch chart here: https://github.com/monotek/kibana-dashboards/blob/master/k8s-fluentd-elasticsearch.json
+# A dashboard is defined by a name and a string with the json payload or the download url
 dashboardImport:
+  timeout: 60
   xpackauth:
     enabled: false
     username: myuser
     password: mypass
   dashboards: {}
+    # k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json
 
 # List of pluginns to install using initContainer
 plugins:
