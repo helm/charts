@@ -81,10 +81,10 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |
-| `resources.limits.cpu`             | CPU limit                                  | `100m`                                            |
-| `resources.limits.memory`          | Memory limit                               | `500Mi`                                           |
+| `resources.limits.cpu`             | CPU limit                                  | `NULL`                                            |
+| `resources.limits.memory`          | Memory limit                               | `100Mi`                                           |
 | `resources.requests.cpu`           | CPU request                                | `100m`                                            |
-| `resources.requests.memory`        | Memory request                             | `200Mi`                                           |
+| `resources.requests.memory`        | Memory request                             | `100Mi`                                           |
 | `tolerations`                      | Optional daemonset tolerations             | `NULL`                                            |
 | `nodeSelector`                     | Node labels for fluent-bit pod assignment  | `NULL`                                            |
 | `metrics.enabled`                  | Specifies whether a service for metrics should be exposed | `false`                            |
