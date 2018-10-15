@@ -138,7 +138,9 @@ external:
   type: NodePort
   # annotations:
   #  service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
-
+  dns:
+    useInternal: false
+    useExternal: true
   # create an A record for each statefulset pod
   distinct: false
   enabled: false
@@ -149,6 +151,9 @@ external:
     image: "lwolf/kubectl_deployer"
     imageTag: "0.4"
     imagePullPolicy: "IfNotPresent"
+
+# Annotation to be added to Kafka pods
+podAnnotations: {}
 
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
 ## here in map format, as defined in the official docs.
@@ -171,6 +176,11 @@ configurationOverrides:
   #   EXTERNAL://kafka.cluster.local:$((31090 + ${KAFKA_BROKER_ID}))
   # "listener.security.protocol.map": |-
   #   PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+
+## set extra ENVs
+#   key: "value"
+envOverrides: {}
+
 
 ## A collection of additional ports to expose on brokers (formatted as normal containerPort yaml)
 # Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar
@@ -255,6 +265,9 @@ prometheus:
     ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
     interval: 10s
 
+    ## Timeout at which Prometheus timeouts scrape run, note: only used by Prometheus Operator
+    scrapeTimeout: 10s
+
     ## Port jmx-exporter exposes Prometheus format metrics to scrape
     port: 5556
 
@@ -278,6 +291,9 @@ prometheus:
 
     ## Interval at which Prometheus scrapes metrics, note: only used by Prometheus Operator
     interval: 10s
+
+    ## Timeout at which Prometheus timeouts scrape run, note: only used by Prometheus Operator
+    scrapeTimeout: 10s
 
     ## Port kafka-exporter exposes for Prometheus to scrape metrics
     port: 9308
@@ -308,6 +324,8 @@ prometheus:
 ## Topic creation and configuration.
 ## The job will be run on a deployment only when the config has been changed.
 ## - If 'partitions' and 'replicationFactor' are specified we create the topic (with --if-not-exists.)
+## - If 'partitions', 'replicationFactor' and 'reassignPartitions' are specified we reassign the partitions to
+## increase the replication factor of an existing topic.
 ## - If 'partitions' is specified we 'alter' the number of partitions. This will
 ## silently and safely fail if the new setting isn’t strictly larger than the old (i.e. a NOOP.) Do be aware of the
 ## implications for keyed topics (ref: https://docs.confluent.io/current/kafka/post-deployment.html#admin-operations)
@@ -315,9 +333,15 @@ prometheus:
 ## it will silently and safely fail.
 ## - If 'config' is specified it's added to the topic configuration.
 ##
+## Note: To increase the 'replicationFactor' of a topic, 'reassignPartitions' must be set to true (see above).
+##
 topics: []
   # - name: myExistingTopicConfig
   #   config: "cleanup.policy=compact,delete.retention.ms=604800000"
+  # - name: myExistingTopicReassignPartitions
+  #   partitions: 8
+  #   replicationFactor: 5
+  #   reassignPartitions: true
   # - name: myExistingTopicPartitions
   #   partitions: 8
   # - name: myNewTopicWithConfig
@@ -325,6 +349,17 @@ topics: []
   #   replicationFactor: 3
   #   defaultConfig: "segment.bytes,segment.ms"
   #   config: "cleanup.policy=compact,delete.retention.ms=604800000"
+  # - name: myAclTopicPartitions
+  #   partitions: 8
+  #   acls:
+  #     - user: read
+  #       operations: [ Read ]
+  #     - user: read_and_write
+  #       operations:
+  #         - Read
+  #         - Write
+  #     - user: all
+  #       operations: [ All ]
 
 # ------------------------------------------------------------------------------
 # Zookeeper:

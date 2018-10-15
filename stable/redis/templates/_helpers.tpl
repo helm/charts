@@ -63,6 +63,16 @@ Return the proper image name (for the metrics image)
 {{- end -}}
 
 {{/*
+Return the proper image name (for the init container volume-permissions image)
+*/}}
+{{- define "volumePermissions.image" -}}
+{{- $registryName :=  .Values.volumePermissions.image.registry -}}
+{{- $repositoryName := .Values.volumePermissions.image.repository -}}
+{{- $tag := .Values.volumePermissions.image.tag | toString -}}
+{{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+{{- end -}}
+
+{{/*
 Return slave readiness probe
 */}}
 {{- define "redis.slave.readinessProbe" -}}
@@ -77,8 +87,9 @@ readinessProbe:
   failureThreshold: {{ $readinessProbe.failureThreshold | default .Values.master.readinessProbe.failureThreshold }}
   exec:
     command:
-    - redis-cli
-    - ping
+    - sh
+    - -c
+    - /health/ping_local_and_master.sh
 {{- end }}
 {{- end -}}
 {{- end -}}
@@ -98,8 +109,9 @@ livenessProbe:
   failureThreshold: {{ $livenessProbe.failureThreshold | default .Values.master.livenessProbe.failureThreshold}}
   exec:
     command:
-    - redis-cli
-    - ping
+    - sh
+    - -c
+    - /health/ping_local_and_master.sh
 {{- end }}
 {{- end -}}
 {{- end -}}

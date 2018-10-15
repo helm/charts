@@ -11,3 +11,6 @@ data:
   {{- if .Values.metrics.customMetrics }}
   custom-metrics.yaml: {{ toYaml .Values.metrics.customMetrics | quote }}
   {{- end }}
+  {{- if .Values.pgHbaConf }}
+  pg_hba.conf: {{ .Values.pgHbaConf | quote }}
+  {{- end }}

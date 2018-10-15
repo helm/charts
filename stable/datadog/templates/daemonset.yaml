@@ -16,18 +16,23 @@ spec:
         app: {{ template "datadog.fullname" . }}
       name: {{ template "datadog.fullname" . }}
       annotations:
-        checksum/autoconf-config: {{ toYaml .Values.datadog.autoconf | sha256sum }}
-        checksum/confd-config: {{ toYaml .Values.datadog.confd | sha256sum }}
-        checksum/checksd-config: {{ toYaml .Values.datadog.checksd | sha256sum }}
+        checksum/autoconf-config: {{ tpl (toYaml .Values.datadog.autoconf) . | sha256sum }}
+        checksum/confd-config: {{ tpl (toYaml .Values.datadog.confd) . | sha256sum }}
+        checksum/checksd-config: {{ tpl (toYaml .Values.datadog.checksd) . | sha256sum }}
       {{- if .Values.daemonset.podAnnotations }}
 {{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
       {{- end }}
     spec:
       {{- if .Values.daemonset.useHostNetwork }}
       hostNetwork: {{ .Values.daemonset.useHostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
       {{- if .Values.daemonset.useHostPID }}
       hostPID: {{ .Values.daemonset.useHostPID }}
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}
@@ -72,6 +77,11 @@ spec:
           - name: DD_APM_ENABLED
             value: {{ .Values.datadog.apmEnabled | quote }}
           {{- end }}
+          {{- if .Values.datadog.processAgentEnabled }}
+          - name: DD_PROCESS_AGENT_ENABLED
+            value: {{ .Values.datadog.processAgentEnabled | quote }}
+          {{- end }}
+          {{- if not .Values.clusterAgent.enabled }}
           {{- if .Values.datadog.leaderElection }}
           - name: DD_LEADER_ELECTION
             value: {{ .Values.datadog.leaderElection | quote}}
@@ -83,6 +93,15 @@ spec:
           {{- if .Values.datadog.collectEvents }}
           - name: DD_COLLECT_KUBERNETES_EVENTS
             value: {{.Values.datadog.collectEvents | quote}}
+          {{- end }}
+          {{- else }}
+          - name: DD_CLUSTER_AGENT_ENABLED
+            value: {{ .Values.clusterAgent.enabled | quote }}
+          - name: DD_CLUSTER_AGENT_AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "datadog.clusterAgent.fullname" . }}
+                key: token
           {{- end }}
           - name: KUBERNETES
             value: "yes"
@@ -127,6 +146,11 @@ spec:
           - name: pointerdir
             mountPath: /var/lib/datadog-agent/logs
           {{- end }}
+          {{- if .Values.datadog.processAgentEnabled }}
+          - name: passwd
+            mountPath: /etc/passwd
+            readOnly: true
+          {{- end }}
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
 {{- end }}
@@ -160,6 +184,11 @@ spec:
         - hostPath:
             path: /var/lib/datadog-agent/logs
           name: pointerdir
+        {{- end }}
+        {{- if .Values.datadog.processAgentEnabled }}
+        - hostPath:
+            path: /etc/passwd
+          name: passwd
         {{- end }}
 {{- if .Values.datadog.volumes }}
 {{ toYaml .Values.datadog.volumes | indent 8 }}

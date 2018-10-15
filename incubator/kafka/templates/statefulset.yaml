@@ -16,10 +16,13 @@ spec:
   replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
-{{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.operator.enabled) }}
       annotations:
+{{- if and .Values.prometheus.jmx.enabled  (not .Values.prometheus.operator.enabled) }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.prometheus.jmx.port | quote }}
+{{- end }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
       labels:
         app: {{ include "kafka.name" . }}
@@ -174,13 +177,19 @@ spec:
           value: "{{ .Values.jmx.port }}"
         {{- end }}
         {{- range $secret := .Values.secrets }}
-          {{- range $key := $secret.keys }}
+          {{- if not $secret.mountPath }}
+            {{- range $key := $secret.keys }}
         - name: {{ (print $secret.name "_" $key) | upper }}
           valueFrom:
             secretKeyRef:
               name: {{ $secret.name }}
               key: {{ $key }}
+            {{- end }}
           {{- end }}
+        {{- end }}
+        {{- range $key, $value := .Values.envOverrides }}
+        - name: {{ printf "%s" $key | replace "." "_" | upper | quote }}
+          value: {{ $value | quote }}
         {{- end }}
         # This is required because the Downward API does not yet support identification of
         # pod numbering in statefulsets. Thus, we are required to specify a command which
@@ -199,10 +208,16 @@ spec:
           mountPath: {{ .Values.persistence.mountPath | quote }}
         {{- range $secret := .Values.secrets }}
           {{- if $secret.mountPath }}
-            {{- range $key := $secret.keys }}
+            {{- if $secret.keys }}
+              {{- range $key := $secret.keys }}
+        - name: {{ include "kafka.fullname" $ }}-{{ $secret.name }}
+          mountPath: {{ $secret.mountPath }}/{{ $key }}
+          subPath: {{ $key }}
+          readOnly: true
+              {{- end }}
+            {{- else }}
         - name: {{ include "kafka.fullname" $ }}-{{ $secret.name }}
           mountPath: {{ $secret.mountPath }}
-          subPath: {{ $key }}
           readOnly: true
             {{- end }}
           {{- end }}

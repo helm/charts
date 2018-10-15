@@ -53,6 +53,13 @@ storageClass:
   ## Ignored if storageClass.create is false
   name: nfs
 
+  ## StorageClass parameters
+  parameters:
+    mountOptions: vers=4.1
+
+  ## ReclaimPolicy field of the class, which can be either Delete or Retain
+  reclaimPolicy: Delete
+
 ## For RBAC support:
 rbac:
   create: true

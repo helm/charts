@@ -1,6 +1,6 @@
 name: anchore-engine
-version: 0.2.0
-appVersion: 0.2.3
+version: 0.2.3
+appVersion: 0.2.4
 description: Anchore container analysis and policy evaluation engine service
 keywords:
  - analysis

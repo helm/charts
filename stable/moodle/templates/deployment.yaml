@@ -4,15 +4,19 @@ metadata:
   name: {{ template "moodle.fullname" . }}
   labels:
     app: {{ template "moodle.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "moodle.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "moodle.fullname" . }}
+      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
         app: {{ template "moodle.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: {{ template "moodle.chart" . }}
         release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.affinity }}
