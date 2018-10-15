@@ -16,14 +16,14 @@ spec:
         paths:
           - backend:
               serviceName: {{ template "nexus.fullname" . }}
-              servicePort: {{ .Values.nexusProxy.exposedPort }}
+              servicePort: {{ .Values.nexusProxy.port }}
             path: {{ .Values.ingress.path }}
     - host: {{ .Values.nexusProxy.env.nexusHttpHost }}
       http:
         paths:
           - backend:
               serviceName: {{ template "nexus.fullname" . }}
-              servicePort: {{ .Values.nexusProxy.exposedPort }}
+              servicePort: {{ .Values.nexusProxy.port }}
             path: {{ .Values.ingress.path }}
 {{- if .Values.ingress.tls.enabled }}
   tls:

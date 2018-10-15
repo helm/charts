@@ -85,8 +85,8 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.readinessProbe.timeoutSeconds`       | Time in seconds after readiness probe times out    | `nil`                    |
 | `nexus.readinessProbe.path`                 | Path for ReadinessProbe             | /                                       |
 | `nexus.hostAliases`                         | Aliases for IPs in /etc/hosts       | []                                      |
-| `nexusProxy.port`                           | Container Port for Nexus proxy      | `8080`                                  |
-| `nexusProxy.exposedPort`                    | Port for exposing Nexus             | `8080`                                  |
+| `nexusProxy.targetPort`                     | Container Port for Nexus proxy      | `8080`                                  |
+| `nexusProxy.port`                           | Port for exposing Nexus             | `8080`                                  |
 | `nexusProxy.imageName`                      | Proxy image                         | `quay.io/travelaudience/docker-nexus-proxy` |
 | `nexusProxy.imageTag`                       | Proxy image version                 | `2.1.0`                                 |
 | `nexusProxy.imagePullPolicy`                | Proxy image pull policy             | `IfNotPresent`                          |
@@ -131,6 +131,12 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `secret.mountPath`                          | Path to mount the secret         | `/etc/secret-volume`                       |
 | `secret.readOnly`                           | Secret readonly state            | `true`                                     |
 | `secret.data`                               | Secret data                      | `nil`                                      |
+| `service.enabled`                           | Enable additional service        | `nil`                                      |
+| `service.name`                              | Service name                     | `nil`                                      |
+| `service.labels`                            | Service labels                   | `nil`                                      |
+| `service.annotations`                       | Service annotations              | `nil`                                      |
+| `service.targetPort`                        | Service port                     | `nil`                                      |
+| `service.port`                              | Port for exposing service        | `nil`                                      |
 
 If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables need to be configured
 

@@ -59,7 +59,8 @@ nexusProxy:
   imageTag: 2.3.0
   imagePullPolicy: IfNotPresent
   port: 8080
-  exposedPort: 8080
+  targetPort: 8080
+  # labels: {}
   env:
     nexusDockerHost:
     nexusHttpHost:
@@ -165,3 +166,12 @@ secret:
   mountPath: /etc/secret-volume
   readOnly: true
   data:
+
+# # To use an additional service, set enable to true
+service:
+  enabled: true
+  name: nexus-service
+  labels: {}
+  annotations: {}
+  targetPort: 80
+  port: 80

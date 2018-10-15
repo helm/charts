@@ -103,7 +103,7 @@ spec:
             - name: CLOUD_IAM_AUTH_ENABLED
               value: {{ .Values.nexusProxy.env.cloudIamAuthEnabled | quote }}
             - name: BIND_PORT
-              value: {{ .Values.nexusProxy.port | quote }}
+              value: {{ .Values.nexusProxy.targetPort | quote }}
             - name: ENFORCE_HTTPS
               value: {{ .Values.nexusProxy.env.enforceHttps | quote }}
             - name: NEXUS_DOCKER_HOST
@@ -140,7 +140,7 @@ spec:
               value: "86400000"
             {{- end }}
           ports:
-            - containerPort: {{ .Values.nexusProxy.port }}
+            - containerPort: {{ .Values.nexusProxy.targetPort }}
               name: nexus-proxy
           {{- if .Values.nexusProxy.env.cloudIamAuthEnabled }}
           volumeMounts:
