@@ -47,6 +47,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 
 |         Parameter                       |             Description                                                                      |                         Default                          |
 |-----------------------------------------|----------------------------------------------------------------------------------------------|----------------------------------------------------------|
+| `global.imageRegistry`                  | Global Docker image registry                                                                 | `nil`                                                    |
 | `image.registry`                        | MongoDB image registry                                                                       | `docker.io`                                              |
 | `image.repository`                      | MongoDB Image name                                                                           | `bitnami/mongodb`                                        |
 | `image.tag`                             | MongoDB Image tag                                                                            | `{VERSION}`                                              |
