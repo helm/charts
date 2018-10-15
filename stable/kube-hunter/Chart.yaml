@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "34"
 description: A Helm chart for Kube-hunter
 name: kube-hunter
-version: 1.0.0
+version: 1.0.1
 home: https://github.com/aquasecurity/kube-hunter
 icon: https://raw.githubusercontent.com/aquasecurity/kube-hunter/master/kube-hunter.png
 keywords:
@@ -14,3 +14,5 @@ sources:
 maintainers:
   - name: desaintmartin
     email: cedric@desaintmartin.fr
+  - name: lizrice
+    email: liz@lizrice.com

@@ -77,13 +77,14 @@ The following table lists the configurable parameters of the Joomla! chart and t
 | `mariadb.root.password`              | MariaDB admin password                                      | `nil`                                          |
 | `service.type`                       | Kubernetes Service type                                     | `LoadBalancer`                                 |
 | `service.loadBalancer`               | Kubernetes LoadBalancerIP to request                        | `nil`                                          |
-| `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Cluster`                                        |
+| `service.externalTrafficPolicy`      | Enable client source IP preservation                        | `Cluster`                                      |
 | `service.nodePorts.http`             | Kubernetes http node port                                   | `""`                                           |
 | `service.nodePorts.https`            | Kubernetes https node port                                  | `""`                                           |
 | `ingress.enabled`                    | Enable ingress controller resource                          | `false`                                        |
 | `ingress.hosts[0].name`              | Hostname to your Joomla! installation                       | `joomla.local`                                 |
 | `ingress.hosts[0].path`              | Path within the url structure                               | `/`                                            |
 | `ingress.hosts[0].tls`               | Utilize TLS backend in ingress                              | `false`                                        |
+| `ingress.hosts[0].certManager `      | Add annotations for cert-manager                            | `false`                                        |
 | `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                                   | `joomla.local-tls-secret`                      |
 | `ingress.hosts[0].annotations`       | Annotations for this host's ingress record                  | `[]`                                           |
 | `ingress.secrets[0].name`            | TLS Secret Name                                             | `nil`                                          |
@@ -109,6 +110,9 @@ The following table lists the configurable parameters of the Joomla! chart and t
 | `readinessProbe.timeoutSeconds`      | When the probe times out                                    | 5                                              |
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures to be considered failed        | 6                                              |
 | `readinessProbe.successThreshold`    | Minimum consecutive successes to be considered successful   | 1                                              |
+| `nodeSelector`                       | Node labels for pod assignment                              | `{}`                                           |
+| `tolerations`                        | List of node taints to tolerate                             | `[]`                                           |
+| `affinity`                           | Map of node/pod affinities                                  | `{}`                                           |
 
 The above parameters map to the env variables defined in [bitnami/joomla](http://github.com/bitnami/bitnami-docker-joomla). For more information please refer to the [bitnami/joomla](http://github.com/bitnami/bitnami-docker-joomla) image documentation.
 
