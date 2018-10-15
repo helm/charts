@@ -1,0 +1,54 @@
+# The Chart for a crateDB deployment with working defaults consists of:
+#   1) A Service (exposing the ports that crate uses)
+#   2) A StatefulSet (initialising the cluster)
+#   3) Resources definition
+app: crate
+
+image:
+  name: crate
+  tag: 3.1.1
+  pullPolicy: IfNotPresent
+
+# 1) The Service connecting 3 ports.
+service:
+  name: crate
+  type: ClusterIP
+
+  adminName: crate-web
+  adminPort: 4200
+  clusterName: cluster
+  clusterPort: 4300
+  # https://crate.io/docs/crate/reference/en/latest/interfaces/postgres.html
+  postgresName: postgres
+  postgresPort: 5432
+
+# 2) The StatefulSet forming the cluster. Read more:
+# https://crate.io/docs/crate/guide/en/latest/scaling/multi-node-setup.html#id10
+# https://crate.io/docs/crate/reference/en/latest/config/environment.html#use-max-50-of-available-ram
+crate:
+  clusterName: my-cluster
+  crateHeapSize: 1g
+  recoverAfterNodes: 1
+  replicas: 1
+  recoverAfterTime: 5m
+  minimumMasterNodes: 1
+
+http:
+  cors:
+    enabled: false
+    allowOrigin: "*"
+
+# 3) Resources and Volumes.
+resources:
+  requests:
+    memory: 1Gi
+  limits:
+    memory: 2Gi
+
+persistentVolume:
+  enabled: true
+  storageClass: retain
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi  # Per instance
+  annotations: {}
