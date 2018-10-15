@@ -1,30 +1,31 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ template "cosbench-driver.fullname" . }}
+  name: {{ template "cosbench.driver.fullname" . }}
   labels:
     app: {{ template "cosbench.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-    role: driver
+    chart: {{ template "cosbench.chart" . }}
+    component: driver
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
-  serviceName: {{ template "cosbench-driver.fullname" . }}
+  serviceName: {{ template "cosbench.driver.fullname" . }}
   replicas: {{ .Values.driver.replicaCount }}
   selector:
     matchLabels:
         app: {{ template "cosbench.name" . }}
+        component: driver
         release: "{{ .Release.Name }}"
-        role: driver
   template:
     metadata:
       labels:
         app: {{ template "cosbench.name" . }}
+        component: driver
         release: "{{ .Release.Name }}"
-        role: driver
     spec:
+      serviceAccountName: {{ template "cosbench.serviceAccountName.driver" . }}
       containers:
-        - name: {{ template "cosbench-driver.fullname" . }}
+        - name: {{ template "cosbench.driver.fullname" . }}
           image: "{{ .Values.driver.image.repository }}:{{ .Values.driver.image.tag }}"
           imagePullPolicy: {{ .Values.driver.image.pullPolicy }}
           ports:
@@ -45,8 +46,8 @@ spec:
             labelSelector:
               matchLabels:
                 app:  {{ template "cosbench.name" . }}
+                component: driver
                 release: {{ .Release.Name | quote }}
-                role: driver
         {{- else if eq .Values.driver.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: {{ .Values.driver.antiAffinityWeight }}
@@ -55,8 +56,8 @@ spec:
               labelSelector:
                 matchLabels:
                   app:  {{ template "cosbench.name" . }}
+                  component: driver
                   release: {{ .Release.Name | quote }}
-                  role: driver
         {{- end }}
       {{- if .Values.driver.hostAliases }}
       hostAliases:

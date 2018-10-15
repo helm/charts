@@ -40,6 +40,10 @@ The following table lists the configurable parameters of the COSBench chart and 
 
 Parameter | Description | Default
 --------- | ----------- | -------
+`serviceAccounts.controller.create` | If true, create the controller service account | `true`
+`serviceAccounts.controller.name` | name of the controller service account to use or create | `{{ cosbench.controller.fullname }}`
+`serviceAccounts.driver.create` | If true, create the driver service account | `true`
+`serviceAccounts.driver.name` | name of the driver service account to use or create | `{{ cosbench.driver.fullname }}`
 `controller.image.repository` | controller image repository | `zenko/zenko-cosbench`
 `controller.image.tag` | controller image tag | `0.0.6`
 `controller.image.pullPolicy` | controller image pullPolicy | `IfNotPresent`
@@ -72,7 +76,7 @@ $ helm install stable/cosbench --name my-release \
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install stable/cosbench--name my-release -f values.yaml
+$ helm install stable/cosbench --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

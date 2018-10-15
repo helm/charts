@@ -1,27 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "cosbench-controller.fullname" . }}
+  name: {{ template "cosbench.controller.fullname" . }}
   labels:
     app: {{ template "cosbench.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
+    chart: {{ template "cosbench.chart" . }}
+    component: controller
     heritage: {{ .Release.Service }}
-    role: controller
+    release: {{ .Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: {{ template "cosbench.name" . }}
       release: {{ .Release.Name }}
-      role: controller
+      component: controller
   template:
     metadata:
       labels:
         app: {{ template "cosbench.name" . }}
         release: {{ .Release.Name }}
-        role: controller
+        component: controller
     spec:
+      serviceAccountName: {{ template "cosbench.serviceAccountName.controller" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"

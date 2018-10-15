@@ -1,9 +1,20 @@
+## Define serviceAccount names for components. Defaults to component's fully
+## qualified name.
+##
+serviceAccounts:
+  controller:
+    create: true
+    name:
+  driver:
+    create: true
+    name:
+
 # ------------------------------------------------------------------------------
 # Controller:
 # ------------------------------------------------------------------------------
 
 controller:
-  ## Cosbench-driver container image
+  ## controller container image
   ##
   image:
     repository: zenko/zenko-cosbench
@@ -35,7 +46,7 @@ controller:
 driver:
   replicaCount: 1
 
-  ## Cosbench-driver container image
+  ## driver container image
   ##
   image:
     repository: zenko/zenko-cosbench
@@ -46,7 +57,7 @@ driver:
     type: ClusterIP
     port: 18088
 
-  ## Cosbench-driver log level
+  ## driver log level
   ##
   logLevel: DEBUG
 
@@ -62,7 +73,7 @@ driver:
   #   hostnames:
   #   - "cosbench.local"
 
-  ## Cosbench-driver resource requests and limits
+  ## driver resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources:

@@ -1,5 +1,5 @@
 {{- if .Values.controller.ingress.enabled -}}
-{{- $fullName := include "cosbench-controller.fullname" . -}}
+{{- $fullName := include "cosbench.controller.fullname" . -}}
 {{- $servicePort := .Values.controller.service.port -}}
 {{- $ingressPath := .Values.controller.ingress.path -}}
 apiVersion: extensions/v1beta1
@@ -9,8 +9,9 @@ metadata:
   labels:
     app: {{ template "cosbench.name" . }}
     chart: {{ template "cosbench.chart" . }}
-    release: {{ .Release.Name }}
+    component: controller
     heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 {{- with .Values.controller.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
