@@ -4,6 +4,13 @@ metadata:
   name: {{ template "nexus.fullname" . }}
   labels:
 {{ include "nexus.labels" . | indent 4 }}
+{{- if .Values.nexus.labels }}
+{{ toYaml .Values.nexus.labels | indent 4 }}
+{{- end }}
+{{- if .Values.deployment.annotations }}
+  annotations:
+{{ toYaml .Values.deployment.annotations | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   {{- if .Values.deploymentStrategy }}
@@ -20,6 +27,10 @@ spec:
         app: {{ template "nexus.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.deployment.initContainers }}
+      initContainers:
+{{ toYaml .Values.deployment.initContainers | indent 6 }}      
+      {{- end }}
       {{- if .Values.nexus.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nexus.nodeSelector | indent 8 }}
@@ -32,6 +43,12 @@ spec:
         - name: nexus
           image: {{ .Values.nexus.imageName }}:{{ .Values.nexus.imageTag }}
           imagePullPolicy: {{ .Values.nexus.imagePullPolicy }}
+          {{- if .Values.deployment.postStart.command }}
+          lifecycle:
+            postStart:
+              exec:
+                command: {{ .Values.deployment.postStart.command }}
+          {{- end }}
           env:
 {{ toYaml .Values.nexus.env | indent 12 }}
           resources:
@@ -48,6 +65,9 @@ spec:
             initialDelaySeconds: {{ .Values.nexus.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.nexus.livenessProbe.periodSeconds }}
             failureThreshold: {{ .Values.nexus.livenessProbe.failureThreshold }}
+            {{- if .Values.nexus.livenessProbe.timeoutSeconds }}
+            timeoutSeconds: {{ .Values.nexus.livenessProbe.timeoutSeconds }}
+            {{- end }}
           readinessProbe:
             httpGet:
               path: {{ .Values.nexus.readinessProbe.path }}
@@ -55,6 +75,9 @@ spec:
             initialDelaySeconds: {{ .Values.nexus.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.nexus.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.nexus.readinessProbe.failureThreshold }}
+            {{- if .Values.nexus.readinessProbe.timeoutSeconds }}
+            timeoutSeconds: {{ .Values.nexus.readinessProbe.timeoutSeconds }}
+            {{- end }}
           volumeMounts:
             - mountPath: /nexus-data
               name: nexus-data
@@ -64,6 +87,12 @@ spec:
             - mountPath: {{ .Values.config.mountPath }}
               name: {{ template "nexus.name" . }}-conf
             {{- end }}
+            {{- if .Values.secret.enabled }}
+            - mountPath: {{ .Values.secret.mountPath }}
+              name: {{ template "nexus.name" . }}-secret
+              readOnly: {{ .Values.secret.readOnly }}
+            {{- end }}
+          {{- if .Values.nexusProxy.enabled }}
         - name: nexus-proxy
           image: {{ .Values.nexusProxy.imageName }}:{{ .Values.nexusProxy.imageTag }}
           resources:
@@ -75,7 +104,7 @@ spec:
             - name: CLOUD_IAM_AUTH_ENABLED
               value: {{ .Values.nexusProxy.env.cloudIamAuthEnabled | quote }}
             - name: BIND_PORT
-              value: {{ .Values.nexusProxy.port | quote }}
+              value: {{ .Values.nexusProxy.targetPort | quote }}
             - name: ENFORCE_HTTPS
               value: {{ .Values.nexusProxy.env.enforceHttps | quote }}
             - name: NEXUS_DOCKER_HOST
@@ -112,13 +141,14 @@ spec:
               value: "86400000"
             {{- end }}
           ports:
-            - containerPort: {{ .Values.nexusProxy.port }}
+            - containerPort: {{ .Values.nexusProxy.targetPort }}
               name: nexus-proxy
           {{- if .Values.nexusProxy.env.cloudIamAuthEnabled }}
           volumeMounts:
             - mountPath: /nexus-proxy-ks
               name: {{ template "nexus.proxy-ks.name" . }}
               readOnly: true
+          {{- end }}
           {{- end }}
         {{- if .Values.nexusBackup.enabled }}
         - name: nexus-backup
@@ -150,6 +180,9 @@ spec:
             - mountPath: /nexus-data/backup
               name: nexus-backup
         {{- end }}
+        {{- if .Values.deployment.additionalContainers }}
+{{ toYaml .Values.deployment.additionalContainers | indent 8 }}      
+        {{- end }}
       {{- if .Values.nexus.securityContext }}
       securityContext:
 {{ toYaml .Values.nexus.securityContext | indent 8 }}
@@ -178,6 +211,14 @@ spec:
         - name: {{ template "nexus.name" . }}-conf
           configMap:
             name: {{ template "nexus.name" . }}-conf
+        {{- end }}
+        {{- if .Values.secret.enabled }}
+        - name: {{ template "nexus.name" . }}-secret
+          secret:
+            secretName: {{ template "nexus.name" . }}-secret
+        {{- end }}
+        {{- if .Values.deployment.additionalVolumes }}
+{{ toYaml .Values.deployment.additionalVolumes | indent 8 }}      
         {{- end }}
     {{- with .Values.tolerations }}
       tolerations:
