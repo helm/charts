@@ -66,6 +66,10 @@ config:
     # If a JVM Agent is in place
     # agent: 61621
 
+## Custom env variables.
+## ref: https://hub.docker.com/_/cassandra/
+env: {}
+
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 livenessProbe:

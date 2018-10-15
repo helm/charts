@@ -95,6 +95,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        {{- range $key, $value := .Values.env }}
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
+        {{- end }}
         livenessProbe:
           exec:
             command: [ "/bin/sh", "-c", "nodetool status" ]
