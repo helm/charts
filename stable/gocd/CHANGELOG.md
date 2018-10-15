@@ -1,3 +1,8 @@
+### 1.4.1
+
+* [1f8118b](https://github.com/kubernetes/charts/commit/1f8118b):
+  - Bump up GoCD app version to 18.10.0
+
 ### 1.4.3
 
 * [52120886](https://github.com/kubernetes/charts/commit/52120886): Add extra volumes and volumeMounts options on the server and agents
