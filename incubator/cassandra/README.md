@@ -97,6 +97,7 @@ The following table lists the configurable parameters of the Cassandra chart and
 | `config.ports.thrift`                | Initdb Arguments                                | `9160`                                                     |
 | `config.ports.agent`                 | The port of the JVM Agent (if any)              | `nil`                                                      |
 | `config.start_rpc`                   | Initdb Arguments                                | `false`                                                    |
+| `env`                                | Custom env variables                            | `{}`                                                       |
 | `persistence.enabled`                | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.storageClass`           | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |
