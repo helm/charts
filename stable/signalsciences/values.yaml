@@ -1,0 +1,60 @@
+# Default values for signalsciences.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: marc/sigsci-agent
+  tag: 3.12.1
+  pullPolicy: IfNotPresent
+
+daemonset: {}
+  ## Annotations to add to the DaemonSet's Pods
+  # podAnnotations:
+  #   scheduler.alpha.kubernetes.io/tolerations: '[{"key": "example", "value": "foo"}]'
+
+  ## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes >= 1.6)
+  # tolerations: []
+
+  ## Allow the DaemonSet to schedule on selected nodes
+  # Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  # nodeSelector: {}
+
+  ## Allow the DaemonSet to schedule ussing affinity rules
+  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  # affinity: {}
+
+  ## Allow the DaemonSet to perform a rolling update on helm update
+  ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+  # updateStrategy: RollingUpdate
+
+signalsciences:
+  ## You'll need to set this to your agent accessKeyId before the agent will run
+  ## ref: https://docs.signalsciences.net/install-guides/#step-1-agent-installation
+  ##
+  # accessKeyId:
+
+  ## Use existing Secret which stores accessKeyId instead of creating a new one
+  # accessKeyIdExistingSecret:
+
+  ## You'll need to set this to your agent secretAccessKey before the agent will run
+  ## ref: https://docs.signalsciences.net/install-guides/#step-1-agent-installation
+  # secretAccessKey:
+
+  ## Use existing Secret which stores the secretAccessKey instead of creating a new one
+  # secretAccessKeyExistingSecret:
+
+  ## Directory to mount and create the shared unix socket file for mdule installation
+  socketDir: /var/run/sigsci
+
+  ## Filename of the shared socket file
+  socketFile: sigsci.sock
+
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
