@@ -14,20 +14,11 @@ fullnameOverride: ""
 rbac:
   create: true
 
-resources:
-  limits:
-    cpu: "200m"
-    memory: "100Mi"
-  requests:
-    cpu: "20m"
-    memory: "20Mi"
+resources: {}
 
 annotations: {}
 
-tolerations: {}
-  # - key: node-role.kubernetes.io/master
-  #   operator: Exists
-  #   effect: NoSchedule
+tolerations: []
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
