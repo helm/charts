@@ -36,6 +36,8 @@ ingress:
   #    hosts:
   #      - home-assistant.local
 
+hostNetwork: false
+
 persistence:
   enabled: true
   ## home-assistant data Persistent Volume Storage Class
