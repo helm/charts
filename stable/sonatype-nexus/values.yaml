@@ -55,6 +55,7 @@ nexus:
   #   - "www.example.com"
 
 nexusProxy:
+  enabled: true
   imageName: quay.io/travelaudience/docker-nexus-proxy
   imageTag: 2.3.0
   imagePullPolicy: IfNotPresent
