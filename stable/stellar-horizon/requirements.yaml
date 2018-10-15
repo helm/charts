@@ -5,5 +5,5 @@ dependencies:
   condition: postgresql.enabled
 - name: stellar-core
   version: ^1.0.0
-  repository: "file://../stellar-core"
+  repository: "https://kubernetes-charts.storage.googleapis.com/"
   condition: stellar-core.enabled
