@@ -14,6 +14,8 @@ This chart bootstraps a [WordPress](https://github.com/bitnami/bitnami-docker-wo
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the WordPress application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -86,6 +88,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `ingress.hosts[0].name`          | Hostname to your WordPress installation    | `wordpress.local`                                       |
 | `ingress.hosts[0].path`          | Path within the url structure              | `/`                                                     |
 | `ingress.hosts[0].tls`           | Utilize TLS backend in ingress             | `false`                                                 |
+| `ingress.hosts[0].certManager`   | Add annotations for cert-manager           | `false`                                                 |
 | `ingress.hosts[0].tlsSecret`     | TLS Secret (certificates)                  | `wordpress.local-tls-secret`                            |
 | `ingress.hosts[0].annotations`   | Annotations for this host's ingress record | `[]`                                                    |
 | `ingress.secrets[0].name`        | TLS Secret Name                            | `nil`                                                   |
@@ -221,7 +224,7 @@ If you are going to use Helm to manage the certificates, please copy
 these values into the `certificate` and `key` values for a given
 `ingress.secrets` entry.
 
-If you are going are going to manage TLS secrets outside of Helm, please
+If you are going to manage TLS secrets outside of Helm, please
 know that you can create a TLS secret by doing the following:
 
 ```
@@ -230,3 +233,15 @@ kubectl create secret tls wordpress.local-tls --key /path/to/key.key --cert /pat
 
 Please see [this example](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tls)
 for more information.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to `3.0.0`. The following example assumes that the release name is `wordpress`:
+
+```console
+$ kubectl patch deployment wordpress-wordpress --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl delete statefulset wordpress-mariadb --cascade=false
+```

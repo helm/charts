@@ -1,12 +1,23 @@
+### 1.4.1
+
+* [1f8118b](https://github.com/kubernetes/charts/commit/1f8118b):
+  - Bump up GoCD app version to 18.10.0
+
+### 1.4.3
+
+* [52120886](https://github.com/kubernetes/charts/commit/52120886): Add extra volumes and volumeMounts options on the server and agents
+
 ### 1.4.2
 
 * [499fddf9](https://github.com/kubernetes/charts/commit/499fddf9): Add agent.env.extraEnvVars
 
 ### 1.4.1
+
 * [15c77caf](https://github.com/kubernetes/charts/commit/15c77caf):
   - Bump up GoCD app version to 18.9.0
 
 ### 1.4.0
+
 * [f5249551](https://github.com/kubernetes/charts/commit/f5249551):  
   - Bump up GoCD app version to 18.8.0
   - Updated kubernetes elastic agent plugin version to 1.0.2

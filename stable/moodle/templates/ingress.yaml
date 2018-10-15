@@ -1,35 +1,40 @@
-{{- if .Values.ingress.enabled -}}
-{{- $releaseName := .Release.Name -}}
-{{- $serviceName := include "moodle.fullname" . }}
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-{{- if .Values.ingress.annotations }}
-  annotations:
-{{ toYaml .Values.ingress.annotations | indent 4}}
-{{- end }}
+  name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | trimSuffix "-" -}}"
   labels:
-    app: {{ template "moodle.fullname" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.name }}"
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-  name: {{ template "moodle.fullname" . }}
+    app: {{ template "moodle.fullname" $ }}
+    chart: {{ template "moodle.chart" $ }}
+    release: "{{ $.Release.Name }}"
+    heritage: "{{ $.Release.Service }}"
+  annotations:
+    {{- if .certManager }}
+    kubernetes.io/tls-acme: "true"
+    {{- end }}
+    {{- range $key, $value := .annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
 spec:
   rules:
-  {{- range .Values.ingress.hosts }}
-    - host: {{ . }}
-      http:
-        paths:
-          - backend:
-              serviceName: {{ $serviceName }}
-              servicePort: 80
-  {{- end -}}
-{{- if .Values.ingress.tls }}
+  - host: {{ .name }}
+    http:
+      paths:
+        - path: {{ default "/" .path }}
+          backend:
+            serviceName: {{ template "moodle.fullname" $ }}
+            servicePort: 80
+{{- if .tls }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
-{{- end -}}
-{{- end -}}
+  - hosts:
+    - {{ .name }}
+    secretName: {{ .tlsSecret }}
+{{- end }}
+---
+{{- end }}
+{{- end }}
+
 
 
 

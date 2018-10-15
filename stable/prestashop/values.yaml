@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/prestashop
-  tag: 1.7.4-2-debian-9
+  tag: 1.7.4-3-debian-9
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -52,6 +52,11 @@ prestashopFirstName: Bitnami
 ## ref: https://github.com/bitnami/bitnami-docker-prestashop#configuration
 ##
 prestashopLastName: User
+
+## Cookie Check IP
+## ref: https://github.com/bitnami/bitnami-docker-prestashop#configuration
+##
+prestashopCookieCheckIP: "no"
 
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-prestashop#environment-variables
