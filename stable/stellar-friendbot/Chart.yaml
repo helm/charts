@@ -1,7 +1,7 @@
 apiVersion: v1
 appVersion: "0.13.0"
 description: Friendbot that sends money in the Stellar cryptocurrency (testnet) network.
-name: stellar-testnet
+name: stellar-friendbot
 version: 1.0.0
 icon: https://www.stellar.org/developers/images/favicon/rocket-180x180.png
 home: https://www.stellar.org
@@ -14,6 +14,7 @@ sources:
 keywords:
   - stellar
   - stellar-friendbot
+  - testnet
   - cryptocurrency
   - blockchain
 engine: gotpl
