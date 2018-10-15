@@ -1,0 +1,67 @@
+{{- if .Values.daemonset.enabled }}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name:  {{ template "signalsciences.fullname" . }}
+  labels:
+    app: {{ template "signalsciences.name" . }}
+    chart: {{ template "signalsciences.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "signalsciences.name" . }}
+        release: {{ .Release.Name }}
+      {{- if .Values.daemonset.podAnnotations }}
+      annotations:
+{{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.daemonset.tolerations }}
+      tolerations:
+{{ toYaml .Values.daemonset.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.daemonset.affinity }}
+      affinity:
+{{ toYaml .Values.daemonset.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.daemonset.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.daemonset.nodeSelector | indent 8 }}
+      {{- end }}
+      volumes:
+        - name: var-run
+          hostPath:
+            path: {{ .Values.signalsciences.socketDir }}
+      containers:
+        - name: sigsci-agent
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+              - mountPath: {{ .Values.signalsciences.socketDir }}
+                name: var-run
+                readOnly: false
+          env:
+            - name: SIGSCI_RPC_ADDRESS
+              value: unix:{{ .Values.signalsciences.socketDir }}/{{ .Values.signalsciences.socketFile }}
+            - name: SIGSCI_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: SIGSCI_SECRETACCESSKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "signalsciences.secretAccessKeySecretName" . }}
+                  key: secretAccessKey
+            - name: SIGSCI_ACCESSKEYID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "signalsciences.accessKeyIdSecretName" . }}
+                  key: accessKeyId
+          resources:
+{{ toYaml .Values.signalsciences.resources | indent 12 }}
+  updateStrategy:
+    type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
+{{- end }}
