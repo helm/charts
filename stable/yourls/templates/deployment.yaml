@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+      release: "{{ .Release.Name }}"
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
+      containers:
+        - name: {{ template "fullname" . }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          env:
+            - name: ALLOW_EMPTY_PASSWORD
+            {{- if .Values.allowEmptyPassword }}
+              value: "yes"
+            {{- else }}
+              value: "no"
+            {{- end }}
+            - name: YOURLS_DB_HOST
+            {{- if .Values.mariadb.enabled }}
+              value: {{ template "mariadb.fullname" . }}:3306
+            {{- else }}
+              value: {{ .Values.externalDatabase.host | quote }}
+            {{- end }}
+            - name: YOURLS_DB_NAME
+            {{- if .Values.mariadb.enabled }}
+              value: {{ .Values.mariadb.db.name | quote }}
+            {{- else }}
+              value: {{ .Values.externalDatabase.database | quote }}
+            {{- end }}
+            - name: YOURLS_DB_USER
+            {{- if .Values.mariadb.enabled }}
+              value: {{ .Values.mariadb.db.user | quote }}
+            {{- else }}
+              value: {{ .Values.externalDatabase.user | quote }}
+            {{- end }}
+            - name: YOURLS_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                {{- if .Values.mariadb.enabled }}
+                  name: {{ template "mariadb.fullname" . }}
+                  key: mariadb-password
+                {{- else }}
+                  name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+                  key: db-password
+                {{- end }}
+            - name: YOURLS_USERNAME
+              value: {{ .Values.yourlsUsername | quote }}
+            - name: YOURLS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: yourls-password
+            - name: YOURLS_TABLE_PREFIX
+              value: {{ .Values.yourlsTablePrefix | quote }}
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+          livenessProbe:
+            httpGet:
+              path: /admin/
+            {{- if not .Values.healthcheckHttps }}
+              port: http
+            {{- else }}
+              port: https
+              scheme: HTTPS
+            {{- end }}
+{{ toYaml .Values.livenessProbe | indent 10 }}
+          readinessProbe:
+            httpGet:
+              path: /admin/
+            {{- if not .Values.healthcheckHttps }}
+              port: http
+            {{- else }}
+              port: https
+              scheme: HTTPS
+            {{- end }}
+{{ toYaml .Values.readinessProbe | indent 10 }}
+          volumeMounts:
+            - mountPath: /apache
+              name: yourls-data
+              subPath: apache
+            - mountPath: /yourls
+              name: yourls-data
+              subPath: yourls
+            - mountPath: /php
+              name: yourls-data
+              subPath: php
+          resources:
+{{ toYaml .Values.resources | indent 10 }}
+      volumes:
+        - name: yourls-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{ end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end -}}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

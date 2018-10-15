@@ -1,0 +1,29 @@
+{{- if .Values.mariadb.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-credentials-test"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: {{ .Release.Name }}-credentials-test
+    image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+    imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+    env:
+      - name: MARIADB_HOST
+        value: {{ template "mariadb.fullname" . }}
+      - name: MARIADB_PORT
+        value: "3306"
+      - name: YOURLS_DB_NAME
+        value: {{ default "" .Values.mariadb.db.name | quote }}
+      - name: YOURLS_DB_USER
+        value: {{ default "" .Values.mariadb.db.user | quote }}
+      - name: YOURLS_DB_PASS
+        valueFrom:
+          secretKeyRef:
+            name: {{ template "mariadb.fullname" . }}
+            key: mariadb-password
+    command: ["sh", "-c", "mysql --host=$YOURLS_DB_HOST --user=$YOURLS_DB_USER --password=$YOURLS_DB_PASS"]
+  restartPolicy: Never
+{{- end }}
