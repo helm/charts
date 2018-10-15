@@ -45,6 +45,7 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `service.externalIPs`   | External IPs for the home-assistant GUI | `[]` |
 | `service.loadBalancerIP`   | Loadbalance IP for the home-assistant GUI | `` |
 | `service.loadBalancerSourceRanges`   | Loadbalance client IP restriction range for the home-assistant GUI | `[]` |
+| `hostNetwork`              | Enable hostNetwork - might be needed for discovery to work | `false` |
 | `service.nodePort`   | nodePort to listen on for the home-assistant GUI | `` |
 | `ingress.enabled`              | Enables Ingress | `false` |
 | `ingress.annotations`          | Ingress annotations | `{}` |
