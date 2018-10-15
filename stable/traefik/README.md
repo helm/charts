@@ -272,6 +272,8 @@ Given you have:
 Then you are good to migrate your old certs into the kvprovider and run traefik in HA/Cluster-Mode.
 
 
+### Dashboard Basic Auth
+
 [Basic auth](https://docs.traefik.io/toml/#api-backend) can be specified via `dashboard.auth.basic` as a map of usernames to passwords as below.
 See the linked Traefik documentation for accepted passwords encodings.
 It is advised to single quote passwords to avoid issues with special characters:
