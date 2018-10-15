@@ -37,6 +37,14 @@ The following table lists the configurable parameters of the Stellar Friendbot c
 | `image.pullPolicy`                  | Image pull policy                                                        | `IfNotPresent`                                   |
 | `service.type`                      | HTTP endpoint service type                                               | `ClusterIP`                                      |
 | `service.port`                      | HTTP endpoint TCP port                                                   | `80`                                             |
+| `ingress.enabled`                   | Enable ingress controller resource                                       | `false`                                          |
+| `ingress.hosts[0].name`             | Hostname to your Friendbot installation                                  | `stellar-friendbot.local`                        |
+| `ingress.hosts[0].path`             | Path within the url structure                                            | `/`                                              |
+| `ingress.hosts[0].tlsSecret`        | TLS Secret (certificates)                                                | `stellar-friendbot.local-tls-secret`             |
+| `ingress.hosts[0].annotations`      | Annotations for this host's ingress record                               | `[]`                                             |
+| `ingress.secrets[0].name`           | TLS Secret Name                                                          | `nil`                                            |
+| `ingress.secrets[0].certificate`    | TLS Secret Certificate                                                   | `nil`                                            |
+| `ingress.secrets[0].key`            | TLS Secret Key                                                           | `nil`                                            |
 | `resources`                         | CPU/Memory resource requests/limits                                      | Requests: `128Mi` memory, `10m` CPU             |
 | `nodeSelector`                      | Node labels for pod assignment                                           | {}                                               |
 | `tolerations`                       | Toleration labels for pod assignment                                     | []                                               |
