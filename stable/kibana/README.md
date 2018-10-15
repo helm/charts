@@ -99,4 +99,4 @@ $ helm install stable/kibana --name my-release -f values.yaml
 
 ## Dasboard import
 
-* The Dasboard can be a JSON or a download url to a JSON file.
+* A dashboard for dashboardImport.dashboards can be a JSON or a download url to a JSON file.
