@@ -2,7 +2,7 @@
 ## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
 ##
 # global:
-#   imageRegistry:
+#   imageRegistry: 
 
 image:
   ## Bitnami MongoDB registry
