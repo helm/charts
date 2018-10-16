@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the Joomla! chart and t
 
 | Parameter                            | Description                                                 | Default                                        |
 | ------------------------------------ | ----------------------------------------------------------- | ---------------------------------------------- |
+| `global.imageRegistry`               | Global Docker image registry                                | `nil`                                          |
 | `image.registry`                     | Joomla! image registry                                      | `docker.io`                                    |
 | `image.repository`                   | Joomla! Image name                                          | `bitnami/joomla`                               |
 | `image.tag`                          | Joomla! Image tag                                           | `{VERSION}`                                    |
