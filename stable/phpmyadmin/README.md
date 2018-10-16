@@ -48,20 +48,20 @@ The following table lists the configurable parameters of the phpMyAdmin chart an
 |----------------------------|------------------------------------------|---------------------------------------------------------|
 | `global.imageRegistry`     | Global Docker image registry             | `nil`                                                   |
 | `image.registry`           | phpMyAdmin image registry                | `docker.io`                                             |
-| `image.repository`         | phpMyAdmin Image name                    | `bitnami/phpmyadmin`                                    |
-| `image.tag`                | phpMyAdmin Image tag                     | `{VERSION}`                                             |
+| `image.repository`         | phpMyAdmin image name                    | `bitnami/phpmyadmin`                                    |
+| `image.tag`                | phpMyAdmin image tag                     | `{VERSION}`                                             |
 | `image.pullPolicy`         | Image pull policy                        | `IfNotPresent`                                          |
 | `image.pullSecrets`        | Specify image pull secrets               | `nil`                                                   |
-| `service.type`             | type of service for phpMyAdmin frontend  | `ClusterIP`                                             |
-| `service.port`             | port to expose service                   | `80`                                                    |
-| `db.port`                  | database port to use to connect          | `3306`                                                  |
+| `service.type`             | Type of service for phpMyAdmin frontend  | `ClusterIP`                                             |
+| `service.port`             | Port to expose service                   | `80`                                                    |
+| `db.port`                  | Database port to use to connect          | `3306`                                                  |
 | `db.chartName`             | Database suffix if included in the same release | `nil`                                            |
-| `db.host`                  | database host to connect to              | `nil`                                                   |
-| `ingress.enabled`          | ingress resource to be added             | `false`                                                 |
-| `ingress.annotations`      | ingress annotations                      | `{ingress.kubernetes.io/rewrite-target: /,    nginx.ingress.kubernetes.io/rewrite-target: /}`          |
-| `ingress.path`             | path to access frontend                  | `/`                                                     |
-| `ingress.host`             | ingress host                             | `nil`                                                   |
-| `ingress.tls`              | tls for ingress                          | `[]`                                                    |
+| `db.host`                  | Database host to connect to              | `nil`                                                   |
+| `ingress.enabled`          | Ingress resource to be added             | `false`                                                 |
+| `ingress.annotations`      | Ingress annotations                      | `{ingress.kubernetes.io/rewrite-target: /,    nginx.ingress.kubernetes.io/rewrite-target: /}`          |
+| `ingress.path`             | Path to access frontend                  | `/`                                                     |
+| `ingress.host`             | Ingress host                             | `nil`                                                   |
+| `ingress.tls`              | TLS for ingress                          | `[]`                                                    |
 | `resources`                | CPU/Memory resource requests/limits      | `{}`                                                    |
 | `nodeSelector`             | Node labels for pod assignment           | `{}`                                                    |
 | `tolerations`              | List of node taints to tolerate          | `[]`                                                    |
