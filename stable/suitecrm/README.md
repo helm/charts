@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 
 |              Parameter              |                   Description                   |                         Default                         |
 |-------------------------------------|-------------------------------------------------|---------------------------------------------------------|
+| `global.imageRegistry`              | Global Docker image registry                    | `nil`                                                   |
 | `image.registry`                    | SuiteCRM image registry                         | `docker.io`                                             |
 | `image.repository`                  | SuiteCRM image name                             | `bitnami/suitecrm`                                      |
 | `image.tag`                         | SuiteCRM image tag                              | `{VERSION}`                                             |
