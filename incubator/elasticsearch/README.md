@@ -67,7 +67,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `appVersion`                         | Application Version (Elasticsearch)                                 | `6.4.2`                                             |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
 | `image.tag`                          | Container image tag                                                 | `6.4.2`                                             |
-| `image.pullPolicy`                   | Container pull policy                                               | `Always`                                            |
+| `image.pullPolicy`                   | Container pull policy                                               | `IfNotPresent`                                      |
 | `initImage.repository`               | Init container image name                                           | `busybox`                                           |
 | `initImage.tag`                      | Init container image tag                                            | `latest`                                            |
 | `initImage.pullPolicy`               | Init container pull policy                                          | `Always`                                            |
@@ -109,8 +109,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
 | `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
-| `data.enabled`                       | Enable data deployment. See `dataTypes` attribute.                  | `true`                                              |
 | `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                                 |
+| `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`                 |
 | `data.priorityClassName`             | Data priorityClass                                                  | `nil`                                               |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                                             |
 | `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                                              |
@@ -125,8 +125,6 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                                              |
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
 | `extraInitContainers`                | Additional init container passed through the tpl 	                 | ``                                                  |
-| `dataTypes`                          | Array with different data node types (see `data.` properties)       | `[]`                                                |
-
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -223,84 +221,3 @@ The `tpl` function allows us to pass string values from `values.yaml` through th
 * `extraInitContainers`
 
 It is important that these values be configured as strings. Otherwise, installation will fail.
-
-## Using heterogeneus data node types
-
-
-In order to use different types of data node, we can declare a list named `dataTypes` in our `values.yaml` file.
-Each item can have the same attributes as the `data` attribute, plus its own config.
-
-For example, if we want to implement hot/warm architecture we could declare the list as follows:
-```
- dataTypes:
- - name: data-hot
-   exposeHttp: false
-   replicas: 2
-   heapSize: "32000m"
-   persistence:
-     enabled: false
-     name: data-hot
-   terminationGracePeriodSeconds: 3600
-   antiAffinity: "soft"
-   nodeSelector:
-     my-elasticsearch-label: my-hot-node
-   tolerations:
-   - key: type
-     operator: Equal
-     value: elasticsearch
-     effect: NoSchedule
-   resources:
-     limits:
-       cpu: "4"
-     requests:
-       cpu: "4"
-       memory: "52000Mi"
-   config:
-     node.attr.temperature: "hot"
-   priorityClassName: ""
-   podDisruptionBudget:
-     enabled: false
-   updateStrategy:
-     type: OnDelete
- - name: data-warm
-   exposeHttp: false
-   replicas: 6
-   heapSize: "16000m"
-   persistence:
-     enabled: true
-     accessMode: ReadWriteOnce
-     name: data-warm
-     size: "30Gi"
-     storageClass: "cheap-but-slow"
-   terminationGracePeriodSeconds: 3600
-   antiAffinity: "soft"
-   nodeSelector:
-     my-elasticsearch-label: my-warm-node
-   tolerations:
-   - key: type
-     operator: Equal
-     value: elasticsearch
-     effect: NoSchedule
-   resources:
-     limits:
-       cpu: "2"
-     requests:
-       cpu: "2"
-       memory: "26000Mi"
-   config:
-     node.attr.temperature: "warm"
-   priorityClassName: ""
-   podDisruptionBudget:
-     enabled: false
-   updateStrategy:
-     type: OnDelete
-```
-
-In this example, we specify two data node types: _hot_ and _warm_. Each type will seek
-a specific node type (marked in nodeSelector), which will be tainted in order to avoid
-other pods being allocated in such nodes.
-
-For backward compatibility purposes, if we want to use only `dataTypes` node types,
-we need to disable legacy `data` nodes, setting `data.enabled` to false.
-This option also enable us to have both `data` and `dataTypes` so we can migrate data
-from the previous topology to the new one within the same release.
