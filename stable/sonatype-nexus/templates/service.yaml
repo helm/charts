@@ -2,7 +2,11 @@
 apiVersion: v1
 kind: Service
 metadata:
+{{- if .Values.service.name }}
+  name: {{ .Values.service.name }}
+{{- else }}
   name: {{ template "nexus.name" . }}-service
+{{- end }}
   labels:
 {{ include "nexus.labels" . | indent 4 }}
 {{- if .Values.service.labels }}
@@ -14,7 +18,7 @@ metadata:
 {{- end }}
 spec:
   ports:
-    - name: {{ .Values.service.name }}
+    - name: {{ .Values.service.portName }}
       port: {{ .Values.service.port }}
       protocol: TCP
       targetPort: {{ .Values.service.targetPort }}
