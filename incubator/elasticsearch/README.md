@@ -108,6 +108,9 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                                     |
 | `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
 | `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
+| `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
+| `data.enabled`                       | Enable data deployment. See `dataTypes` attribute.                  | `true`                                              |
+| `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                                 |
 | `data.priorityClassName`             | Data priorityClass                                                  | `nil`                                               |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                                             |
 | `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                                              |
