@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the Odoo chart and thei
 
 |               Parameter               |                Description                                  |                   Default                      |
 |---------------------------------------|-------------------------------------------------------------|------------------------------------------------|
+| `global.imageRegistry`                | Global Docker image registry                                | `nil`                                          |
 | `image.registry`                      | Odoo image registry                                         | `docker.io`                                    |
 | `image.repository`                    | Odoo Image name                                             | `bitnami/odoo`                                 |
 | `image.tag`                           | Odoo Image tag                                              | `{VERSION}`                                    |
