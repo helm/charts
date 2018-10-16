@@ -25,6 +25,9 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "presto.coordinator" . }}
+        - name: catalog-volume
+          {{ .Values.server.connectors.volumeMount.type }}:
+            {{ template "presto.connectors.volumeMount.nameKeyVal" . }}
       containers:
         - name: {{ .Chart.Name }}-coordinator
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -35,6 +38,8 @@ spec:
           volumeMounts:
             - mountPath: {{ .Values.server.config.path }}
               name: config-volume
+            - mountPath: {{ .Values.server.connectors.catalogDir }}
+              name: catalog-volume
           ports:
             - name: http-coord
               containerPort: {{ .Values.server.config.http.port }}

@@ -3,6 +3,11 @@ server:
   node:
     environment: production
     dataDir: /presto/etc/data
+  connectors:
+    catalogDir: /presto/etc/catalog
+    volumeMount:
+      type: configMap           # supports `configMap` and `secret`
+      name: ""                  # name of the secret or configMap
   log:
     presto:
       level: INFO
