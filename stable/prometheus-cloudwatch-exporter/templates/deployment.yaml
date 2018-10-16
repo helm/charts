@@ -48,13 +48,13 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
+            - name: {{ .Values.service.portName }}
               containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /healthy/
-              port: http
+              port: {{ .Values.service.portName }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds}}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -63,7 +63,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /ready/
-              port: http
+              port: {{ .Values.service.portName }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds}}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
