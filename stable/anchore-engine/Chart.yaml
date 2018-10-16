@@ -1,5 +1,5 @@
 name: anchore-engine
-version: 0.2.4
+version: 0.2.5
 appVersion: 0.2.4
 description: Anchore container analysis and policy evaluation engine service
 keywords:
@@ -15,5 +15,7 @@ sources:
 maintainers:
  - name: zhill
    email: zach@anchore.com
+ - name: btodhunter
+   email: bradyt@anchore.com
 engine: gotpl
 icon: https://anchore.com/wp-content/uploads/2016/08/anchore.png
