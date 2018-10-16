@@ -15,6 +15,10 @@ spec:
       labels:
         app: "{{ template "fullname" . }}"
         component: core
+{{- if .Values.coreConfig.annotations }}
+      annotations:
+{{ toYaml .Values.coreConfig.annotations | indent 8 }}
+{{- end }}
     spec:
       volumes:
         - name: config-volume
