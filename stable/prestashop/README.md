@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the PrestaShop chart an
 
 |               Parameter               |                                         Description                                          |                         Default                         |
 |---------------------------------------|----------------------------------------------------------------------------------------------|---------------------------------------------------------|
+| `global.imageRegistry`                | Global Docker image registry                                                                 | `nil`                                                   |
 | `image.registry`                      | PrestaShop image registry                                                                    | `docker.io`                                             |
 | `image.repository`                    | PrestaShop image name                                                                        | `bitnami/prestashop`                                    |
 | `image.tag`                           | PrestaShop image tag                                                                         | `{VERSION}`                                             |
