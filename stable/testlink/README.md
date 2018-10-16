@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the TestLink chart and 
 
 |              Parameter              |               Description               |                         Default                         |
 |-------------------------------------|-----------------------------------------|---------------------------------------------------------|
+| `global.imageRegistry`              | Global Docker image registry            | `nil`                                                   |
 | `image.registry`                    | TestLink image registry                 | `docker.io`                                             |
 | `image.repository`                  | TestLink image name                     | `bitnami/testlink`                                      |
 | `image.tag`                         | TestLink image tag                      | `{VERSION}`                                             |
