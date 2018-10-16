@@ -37,6 +37,7 @@ spec:
             {{- if .Values.debug }}
             - --debug
             {{- end }}
+            - --minimum-age={{ .Values.minimumAge }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
 {{- if .Values.priorityClassName }}

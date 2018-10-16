@@ -13,4 +13,9 @@ metadata:
     storageclass.kubernetes.io/is-default-class: "true"
 {{- end }}
 provisioner: {{ template "nfs-provisioner.provisionerName" . }}
+reclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
 {{ end -}}
+{{- with .Values.storageClass.parameters }}
+parameters:
+{{ toYaml . | indent 2 }}
+{{- end }}

@@ -12,6 +12,11 @@ spec:
 {{- if .Values.cluster.slaveCount }}
   replicas: {{ .Values.cluster.slaveCount }}
 {{- end }}
+  selector:
+    matchLabels:
+        release: "{{ .Release.Name }}"
+        role: slave
+        app: {{ template "redis.name" . }}
   template:
     metadata:
       labels:
@@ -22,8 +27,11 @@ spec:
       {{- if (.Values.slave.podLabels | default .Values.master.podLabels) }}
 {{ toYaml (.Values.slave.podLabels | default .Values.master.podLabels) | indent 8 }}
       {{- end }}
-      {{- if (.Values.slave.podAnnotations | default .Values.master.podAnnotations) }}
       annotations:
+        checksum/health: {{ include (print $.Template.BasePath "/health-configmap.yaml") . | sha256sum }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- if (.Values.slave.podAnnotations | default .Values.master.podAnnotations) }}
 {{ toYaml (.Values.slave.podAnnotations | default .Values.master.podAnnotations) | indent 8 }}
       {{- end }}
     spec:
@@ -67,7 +75,7 @@ spec:
         - name: REDIS_PORT
           value: {{ .Values.slave.port | default .Values.master.port | quote }}
         - name: REDIS_MASTER_PORT_NUMBER
-          value: {{ .Values.master.port | quote }}
+          value: {{ .Values.master.service.port | quote }}
         {{- if .Values.usePassword }}
         - name: REDIS_PASSWORD
           valueFrom:
@@ -106,4 +114,22 @@ spec:
         {{ include "redis.slave.readinessProbe" . | indent 8 }}
         resources:
 {{ toYaml (.Values.slave.resources | default .Values.master.resources) | indent 10 }}
+        volumeMounts:
+        - name: health
+          mountPath: /health
+        {{- if .Values.configmap }}
+        - name: config
+          mountPath: /opt/bitnami/redis/etc/redis.conf
+          subPath: redis.conf
+        {{- end }}
+      volumes:
+      - name: health
+        configMap:
+          name: {{ template "redis.fullname" . }}-health
+          defaultMode: 0755
+      {{- if .Values.configmap }}
+      - name: config
+        configMap:
+          name: {{ template "redis.fullname" . }}
+      {{- end }}
 {{- end }}

@@ -31,6 +31,9 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.prometheus.exporter.port | quote }}
 {{- end }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -44,6 +47,8 @@ spec:
         - name: copy-rabbitmq-config
           image: busybox
           command: ['sh', '-c', 'cp /configmap/* /etc/rabbitmq; rm -f /var/lib/rabbitmq/.erlang.cookie']
+          resources:
+{{ toYaml .Values.initContainer.resources | indent 12 }}
           volumeMounts:
             - name: configmap
               mountPath: /configmap
@@ -96,26 +101,24 @@ spec:
               protocol: TCP
               containerPort: 5671
             {{- end }}
+          {{- $managementCredentials := printf "%s:%s" .Values.managementUsername .Values.managementPassword | b64enc }}
+          {{- $managementHeader := printf "Authorization: Basic %s" $managementCredentials }}
           livenessProbe:
-            httpGet:
-              path: /api/healthchecks/node
-              port: 15672
-              scheme: HTTP
-              httpHeaders:
-              - name: Authorization
-                value: Basic {{ printf "%s:%s" .Values.managementUsername .Values.managementPassword | b64enc }}
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - 'wget -O - -q --header "{{ $managementHeader }}" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
-            httpGet:
-              path: /api/healthchecks/node
-              port: 15672
-              scheme: HTTP
-              httpHeaders:
-              - name: Authorization
-                value: Basic {{ printf "%s:%s" .Values.managementUsername .Values.managementPassword | b64enc }}
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - 'wget -O - -q --header "{{ $managementHeader }}" http://localhost:15672/api/healthchecks/node | grep -qF "{\"status\":\"ok\"}"'
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -241,6 +244,9 @@ spec:
             defaultMode: 420
             secretName: {{ template "rabbitmq-ha.certSecretName" . }}
         {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:

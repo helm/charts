@@ -29,6 +29,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `aws.region`                       | `AWS_DEFAULT_REGION` to set in the environment (optional).                                                                 | `us-east-1`                                        |
 | `aws.roleArn`                      | If assume role credentials are used then is the role_arn (arn:aws:iam::....). Leave empty if not used.                     | `""`                                               |
 | `aws.zoneType`                     | Filter for zones of this type (optional, options: public, private).                                                        | `""`                                               |
+| `azure.secretName`                 | Set the secret created for the SP for azure, should contain an azure.json file                                             | `""`                                               |
 | `cloudflare.apiKey`                | `CF_API_KEY` to set in the environment (optional).                                                                         | `""`                                               |
 | `cloudflare.email`                 | `CF_API_EMAIL` to set in the environment (optional).                                                                       | `""`                                               |
 | `domainFilters`                    | Limit possible target zones by domain suffixes (optional).                                                                 | `[]`                                               |
@@ -38,7 +39,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `google.serviceAccountSecret`      | When using the Google provider, optionally specify the secret which contains credentials.json if necessary.                | `""`                                               |
 | `image.name`                       | Container image name (Including repository name if not `hub.docker.com`).                                                  | `registry.opensource.zalan.do/teapot/external-dns` |
 | `image.pullPolicy`                 | Container pull policy.                                                                                                     | `IfNotPresent`                                     |
-| `image.tag`                        | Container image tag.                                                                                                       | `v0.4.5`                                           |
+| `image.tag`                        | Container image tag.                                                                                                       | `v0.5.7`                                           |
 | `image.pullSecrets`                | Array of pull secret names                                                                                                 | `[]`                                               |
 | `logLevel`                         | Verbosity of the logs (options: panic, debug, info, warn, error, fatal)                                                    | `info`                                             |
 | `nodeSelector`                     | Node labels for pod assignment                                                                                             | `{}`                                               |
@@ -63,6 +64,7 @@ The following table lists the configurable parameters of the external-dns chart 
 | `affinity`                         | List of affinities (requires Kubernetes >=1.6)                                                                             | `{}`                                               |
 | `txtOwnerId`                       | When using the TXT registry, a name that identifies this instance of ExternalDNS (optional)                                | `"default"`                                        |
 | `txtPrefix`                        | When using the TXT registry, a prefix for ownership records that avoids collision with CNAME entries (optional)            | `""`                                               |
+| `zoneIdFilters`                    | Limit possible target zones by zone id (optional)                                                                          | `[]`                                               |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "prometheus-couchdb-exporter.fullname" . }}
+  labels:
+    app: {{ template "prometheus-couchdb-exporter.name" . }}
+    chart: {{ template "prometheus-couchdb-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "prometheus-couchdb-exporter.name" . }}
+    release: {{ .Release.Name }}

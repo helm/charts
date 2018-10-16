@@ -59,6 +59,7 @@ hub:
   ## The LoadBalancer IP Address
   ## ref: https://kubernetes.io/docs/user-guide/services/
   ## serviceLoadBalancerIP: "40.121.183.52"
+  loadBalancerSourceRanges: []
 
   ## Control where client requests go, to the same pod or round-robin
   ##   Values: ClientIP or None
@@ -89,6 +90,18 @@ hub:
   ## NodeSelector to be used for the hub
   nodeSelector:
   #  label: value
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - selenium-hub.local
+    tls: []
+    #  - secretName: selenium-hub-tls
+    #    hosts:
+    #      - selenium-hub.local
 
 
 chrome:
