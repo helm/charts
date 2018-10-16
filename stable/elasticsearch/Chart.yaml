@@ -1,10 +1,8 @@
-# elasticsearch has been promoted to stable
-deprecated: true
 name: elasticsearch
 home: https://www.elastic.co/products/elasticsearch
-version: 1.10.2
+version: 1.11.0
 appVersion: 6.4.2
-description: DEPRECATED Flexible and powerful open source, distributed real-time search and analytics
+description: Flexible and powerful open source, distributed real-time search and analytics
   engine.
 icon: https://static-www.elastic.co/assets/blteb1c97719574938d/logo-elastic-elasticsearch-lt.svg
 sources:
@@ -14,3 +12,10 @@ sources:
 - https://github.com/GoogleCloudPlatform/elasticsearch-docker
 - https://github.com/clockworksoul/helm-elasticsearch
 - https://github.com/pires/kubernetes-elasticsearch-cluster
+maintainers:
+- name: simonswine
+  email: christian@jetstack.io
+- name: icereval
+  email: michael.haselton@gmail.com
+- name: rendhalver
+  email: pete.brown@powerhrg.com
