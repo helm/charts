@@ -1,3 +1,9 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 ## Bitnami WordPress image version
 ## ref: https://hub.docker.com/r/bitnami/phpmyadmin/tags/
 ##
