@@ -37,7 +37,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `readinessProbe`            | Rediness Probe settings                           | `{ "httpGet": { "path": "/api/health", "port": 3000 } }`|
 | `securityContext`               | Deployment securityContext                    | `{"runAsUser": 472, "fsGroup": 472}`                    |
 | `image.repository`              | Image repository                              | `grafana/grafana`                                       |
-| `image.tag`                     | Image tag. (`Must be >= 5.0.0`)               | `5.3.0`                                                 |
+| `image.tag`                     | Image tag. (`Must be >= 5.0.0`)               | `5.3.1`                                                 |
 | `image.pullPolicy`              | Image pull policy                             | `IfNotPresent`                                          |
 | `service.type`                  | Kubernetes service type                       | `ClusterIP`                                             |
 | `service.port`                  | Kubernetes port where service is exposed      | `80`                                                    |
