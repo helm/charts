@@ -47,6 +47,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 
 |          Parameter          |                       Description                       |                         Default                          |
 |-----------------------------|---------------------------------------------------------|----------------------------------------------------------|
+| `global.imageRegistry`      | Global Docker image registry                            | `nil`                                                    |
 | `image.registry`            | Rabbitmq Image registry                                 | `docker.io`                                              |
 | `image.repository`          | Rabbitmq Image name                                     | `bitnami/rabbitmq`                                       |
 | `image.tag`                 | Rabbitmq Image tag                                      | `{VERSION}`                                              |
@@ -65,7 +66,6 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.plugins`         | configuration file for plugins to enable                 | `[rabbitmq_management,rabbitmq_peer_discovery_k8s].`  |
 | `rabbitmq.clustering.address_type` | Switch clustering mode                           | `ip` or `hostname`
 | `rabbitmq.clustering.k8s_domain`   | Customize internal k8s cluster domain            | `cluster.local`
-
 | `rabbitmq.ulimitNofiles`    | Max File Descriptor limit                               | `65536`                                                  |
 | `rabbitmq.configuration`    | rabbitmq.conf content                                   | see values.yaml                                          |
 | `serviceType`               | Kubernetes Service type                                 | `ClusterIP`                                              |
