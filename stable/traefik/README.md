@@ -87,7 +87,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | `fullnameOverride`                     | Override the full resource names                                                                                             | `{release-name}-traefik` (or traefik if release-name is traefik) |
 | `image`                                | Traefik image name                                                                                                           | `traefik`                                         |
-| `imageTag`                             | The version of the official Traefik image to use                                                                             | `1.7.1`                                           |
+| `imageTag`                             | The version of the official Traefik image to use                                                                             | `1.7.2`                                           |
 | `serviceType`                          | A valid Kubernetes service type                                                                                              | `LoadBalancer`                                    |
 | `loadBalancerIP`                       | An available static IP you have reserved on your cloud platform                                                              | None                                              |
 | `loadBalancerSourceRanges`             | List of IP CIDRs allowed access to load balancer (if supported)                                                              | None                                              |
@@ -108,9 +108,12 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `tolerations`                          | List of node taints to tolerate                                                                                              | `[]`                                              |
 | `proxyProtocol.enabled`                | Enable PROXY protocol support.                                                                                               | `false`                                           |
 | `proxyProtocol.trustedIPs`             | List of PROXY IPs (CIDR ranges) trusted to accurately convey the end-user IP.                                                | `[]`                                              |
+| `forwardedHeaders.enabled`             | Enable support specify trusted clients for forwarded headers.                                                                | `false`                                           |
+| `forwardedHeaders.trustedIPs`          | List of IPs (CIDR ranges) to be authorized to trust the client forwarded headers (X-Forwarded-*).                            | `[]`                                              |
 | `debug.enabled`                        | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
 | `ssl.enabled`                          | Whether to enable HTTPS                                                                                                      | `false`                                           |
 | `ssl.enforced`                         | Whether to redirect HTTP requests to HTTPS                                                                                   | `false`                                           |
+| `ssl.permanentRedirect`                | When ssl.enforced is set, use a permanent (301) redirect instead of a temporary redirect (302)                               | `false`                                           |
 | `ssl.upstream`                         | Whether to skip configuring certs (ie: SSL is terminated by L4 ELB)                                                          | `false`                                           |
 | `ssl.insecureSkipVerify`               | Whether to verify certs on SSL connections                                                                                   | `false`                                           |
 | `ssl.tlsMinVersion`                    | Minimum TLS version for https entrypoint                                                                                     | None                                              |
@@ -124,6 +127,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.dnsProvider.name`                | Which DNS provider to use. See [here](https://github.com/xenolf/lego/tree/master/providers/dns) for the list of possible values. | `nil`                                         |
 | `acme.dnsProvider.$name`               | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. See [here](#example-aws-route-53). | `{}`                         |
 | `acme.email`                           | Email address to be used in certificates obtained from Let's Encrypt                                                         | `admin@example.com`                               |
+| `acme.onHostRule`                      | Whether to generate a certificate for each frontend with Host rule                                                           | `true`                                            |
 | `acme.staging`                         | Whether to get certs from Let's Encrypt's staging environment                                                                | `true`                                            |
 | `acme.logging`                         | Display debug log messages from the ACME client library                                                                      | `false`                                           |
 | `acme.domains.enabled`                 | Enable certificate creation by default for specific domain                                                                   | `false`                                           |
@@ -267,6 +271,8 @@ Given you have:
 
 Then you are good to migrate your old certs into the kvprovider and run traefik in HA/Cluster-Mode.
 
+
+### Dashboard Basic Auth
 
 [Basic auth](https://docs.traefik.io/toml/#api-backend) can be specified via `dashboard.auth.basic` as a map of usernames to passwords as below.
 See the linked Traefik documentation for accepted passwords encodings.

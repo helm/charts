@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.1
+imageTag: 1.7.2
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
@@ -53,9 +53,15 @@ proxyProtocol:
   # trustedIPs is required when enabled
   trustedIPs: []
   # - 10.0.0.0/8
+forwardedHeaders:
+  enabled: false
+  # trustedIPs is required when enabled
+  trustedIPs: []
+  # - 10.0.0.0/8
 ssl:
   enabled: false
   enforced: false
+  permanentRedirect: false
   upstream: false
   insecureSkipVerify: false
   # cipherSuites: []
@@ -126,6 +132,7 @@ kvprovider:
 acme:
   enabled: false
   email: admin@example.com
+  onHostRule: true
   staging: true
   logging: false
   # Configure a Let's Encrypt certificate to be managed by default.
@@ -280,6 +287,7 @@ service:
   #   https: 30443
 gzip:
   enabled: true
+traefikLogFormat: json
 accessLogs:
   enabled: false
   ## Path to the access logs file. If not provided, Traefik defaults it to stdout.

@@ -1,3 +1,9 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 ## Bitnami MariaDB image
 ## ref: https://hub.docker.com/r/bitnami/mariadb/tags/
 ##
@@ -28,6 +34,14 @@ service:
   # nodePort:
   #   master: 30001
   #   slave: 30002
+
+## Pod Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
 
 rootUser:
   ## MariaDB admin password
@@ -273,7 +287,7 @@ slave:
     failureThreshold: 3
 
 metrics:
-  enabled: false
+  enabled: true
   image:
     registry: docker.io
     repository: prom/mysqld-exporter
