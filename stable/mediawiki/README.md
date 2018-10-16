@@ -90,12 +90,10 @@ The following table lists the configurable parameters of the MediaWiki chart and
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                                      | `nil`                                                   |
 | `ingress.secrets[0].key`             | TLS Secret Key                                              | `nil`                                                   |
 | `persistence.enabled`                | Enable persistence using PVC                                | `true`                                                  |
-| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume                         | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.accessMode`      | PVC Access Mode for Apache volume                           | `ReadWriteOnce`                                         |
-| `persistence.apache.size`            | PVC Storage Request for Apache volume                       | `1Gi`                                                   |
-| `persistence.mediawiki.storageClass` | PVC Storage Class for MediaWiki volume                      | `nil` (uses alpha storage class annotation)             |
-| `persistence.mediawiki.accessMode`   | PVC Access Mode for MediaWiki volume                        | `ReadWriteOnce`                                         |
-| `persistence.mediawiki.size`         | PVC Storage Request for MediaWiki volume                    | `8Gi`                                                   |
+| `persistence.storageClass`           | PVC Storage Class for MediaWiki volume                      | `nil` (uses alpha storage class annotation)             |
+| `persistence.existingClaim`          | An Existing PVC name for MediaWiki volume                   | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`             | PVC Access Mode for MediaWiki volume                        | `ReadWriteOnce`                                         |
+| `persistence.size`                   | PVC Storage Request for MediaWiki volume                    | `8Gi`                                                   |
 | `resources`                          | CPU/Memory resource requests/limits                         | Memory: `512Mi`, CPU: `300m`                            |
 | `livenessProbe.enabled`              | Enable/disable the liveness probe (ingest nodes pod)        | `true`                                                  |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated (ingest nodes pod) | 120                                                     |
