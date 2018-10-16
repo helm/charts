@@ -1,0 +1,134 @@
+# Default values for elasticsearch.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+appVersion: "6.4.2"
+
+image:
+  repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
+  tag: "6.4.2"
+  pullPolicy: "IfNotPresent"
+  # If specified, use these secrets to access the image
+  # pullSecrets:
+  #   - registry-secret
+
+initImage:
+  repository: "busybox"
+  tag: "latest"
+  pullPolicy: "Always"
+
+cluster:
+  name: "elasticsearch"
+  # If you want X-Pack installed, switch to an image that includes it, enable this option and toggle the features you want
+  # enabled in the environment variables outlined in the README
+  xpackEnable: false
+  # Some settings must be placed in a keystore, so they need to be mounted in from a secret.
+  # Use this setting to specify the name of the secret
+  # keystoreSecret: eskeystore
+  config: {}
+  # Custom parameters, as string, to be added to ES_JAVA_OPTS environment variable
+  additionalJavaOpts: ""
+  env:
+    # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
+    # To prevent data loss, it is vital to configure the discovery.zen.minimum_master_nodes setting so that each master-eligible
+    # node knows the minimum number of master-eligible nodes that must be visible in order to form a cluster.
+    MINIMUM_MASTER_NODES: "2"
+
+client:
+  name: client
+  replicas: 2
+  serviceType: ClusterIP
+  loadBalancerIP: {}
+  loadBalancerSourceRanges: {}
+## (dict) If specified, apply these annotations to the client service
+#  serviceAnnotations:
+#    example: client-svc-foo
+  heapSize: "512m"
+  antiAffinity: "soft"
+  nodeAffinity: {}
+  nodeSelector: {}
+  tolerations: []
+  resources:
+    limits:
+      cpu: "1"
+      # memory: "1024Mi"
+    requests:
+      cpu: "25m"
+      memory: "512Mi"
+  priorityClassName: ""
+  ## (dict) If specified, apply these annotations to each client Pod
+  # podAnnotations:
+  #   example: client-foo
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
+
+master:
+  name: master
+  exposeHttp: false
+  replicas: 3
+  heapSize: "512m"
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    name: data
+    size: "4Gi"
+    # storageClass: "ssd"
+  antiAffinity: "soft"
+  nodeAffinity: {}
+  nodeSelector: {}
+  tolerations: []
+  resources:
+    limits:
+      cpu: "1"
+      # memory: "1024Mi"
+    requests:
+      cpu: "25m"
+      memory: "512Mi"
+  priorityClassName: ""
+  ## (dict) If specified, apply these annotations to each master Pod
+  # podAnnotations:
+  #   example: master-foo
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 2  # Same as `cluster.env.MINIMUM_MASTER_NODES`
+    # maxUnavailable: 1
+  updateStrategy:
+    type: OnDelete
+
+data:
+  name: data
+  exposeHttp: false
+  replicas: 2
+  heapSize: "1536m"
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    name: data
+    size: "30Gi"
+    # storageClass: "ssd"
+  terminationGracePeriodSeconds: 3600
+  antiAffinity: "soft"
+  nodeAffinity: {}
+  nodeSelector: {}
+  tolerations: []
+  resources:
+    limits:
+      cpu: "1"
+      # memory: "2048Mi"
+    requests:
+      cpu: "25m"
+      memory: "1536Mi"
+  priorityClassName: ""
+  ## (dict) If specified, apply these annotations to each data Pod
+  # podAnnotations:
+  #   example: data-foo
+  podDisruptionBudget:
+    enabled: false
+    # minAvailable: 1
+    maxUnavailable: 1
+  updateStrategy:
+    type: OnDelete
+
+## Additional init containers
+extraInitContainers: |
