@@ -161,4 +161,4 @@ datadog:
 
 To enable event collection, you will need to set the `datadog.leaderElection`, `datadog.collectEvents` and `rbac.create` options to `true`.
 
-Please read [the official documentation](https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#event-collection) for more context.
+Please read [the official documentation](https://docs.datadoghq.com/agent/kubernetes/event_collection/) for more context.
