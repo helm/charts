@@ -92,6 +92,7 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 | `probes.readiness.failureThreshold` | Readiness probe failure threshold      | `5`                                                        |
 | `podAnnotations`           | Annotations for the postgresql pod              | {}                                                         |
 | `deploymentAnnotations`    | Annotations for the postgresql deployment       | {}                                                         |
+| `extraEnv`                 | Any extra environment variables you would like to pass on to the pod | {}                                    |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
 
