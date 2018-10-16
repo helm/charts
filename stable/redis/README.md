@@ -76,8 +76,9 @@ kubectl patch deployments my-release-redis-metrics --type=json -p='[{"op": "remo
 
 The following table lists the configurable parameters of the Redis chart and their default values.
 
-| Parameter                                  | Description                                                                                                    | Default                              |
-|--------------------------------------------|----------------------------------------------------------------------------------------------------------------|--------------------------------------|
+| Parameter                                  | Description                                                                                                    | Default                                              |
+|--------------------------------------------|----------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
+| `global.imageRegistry`                     | Global Docker image registry                                                                                   | `nil`                                                |
 | `image.registry`                           | Redis Image registry                                                                                           | `docker.io`                                          |
 | `image.repository`                         | Redis Image name                                                                                               | `bitnami/redis`                                      |
 | `image.tag`                                | Redis Image tag                                                                                                | `{VERSION}`                                          |
