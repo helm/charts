@@ -64,6 +64,11 @@ storage: filesystem
 secrets:
   haSharedSecret: ""
   htpasswd: ""
+# Secrets for Azure
+#   azure:
+#     accountName: ""
+#     accountKey: ""
+#     container: ""
 # Secrets for S3 access and secret keys
 #   s3:
 #     accessKey: ""

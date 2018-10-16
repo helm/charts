@@ -18,9 +18,9 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/controller-configmap.yaml") . | sha256sum }}
-    {{- if .Values.controller.podAnnotations }}
-{{ toYaml .Values.controller.podAnnotations | indent 8}}
-    {{- end }}
+      {{- range $key, $value := .Values.controller.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
       labels:
         app: {{ template "nginx-ingress.name" . }}
         component: "{{ .Values.controller.name }}"
