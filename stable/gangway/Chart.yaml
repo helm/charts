@@ -1,7 +1,7 @@
 name: gangway
 home: https://github.com/heptiolabs/gangway
 version: 0.1.0
-appVersion:
+appVersion: v2.1.1
 description: An application that can be used to easily enable authentication flows via OIDC for a kubernetes cluster.
 icon: https://heptio.com/wp-content/uploads/2017/08/logo-knockout.png
 sources:
