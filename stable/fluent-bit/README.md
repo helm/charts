@@ -75,8 +75,9 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `filter.kubeTokenFile`             | Optional custom configmaps       | `/var/run/secrets/kubernetes.io/serviceaccount/token`     |
 | `filter.kubeTag`                   | Optional top-level tag for matching in filter         | `kube`                                 |
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
-| `image.fluent_bit.tag`             | Image tag                                  | `0.13.0`                                          |
+| `image.fluent_bit.tag`             | Image tag                                  | `0.14.4`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
+| `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |

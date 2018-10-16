@@ -47,6 +47,9 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
       containers:
       - name: {{ template "postgresql.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -128,11 +131,14 @@ spec:
         env:
         - name: DATA_SOURCE_NAME
           value: postgresql://{{ default "postgres" .Values.postgresUser }}@127.0.0.1:5432?sslmode=disable
+        {{- if .Values.metrics.customMetrics }}
+        - name: PG_EXPORTER_EXTEND_QUERY_PATH
+          value: /conf/custom-metrics.yaml
+        {{- end }}
         ports:
         - name: metrics
           containerPort: 9187
         {{- if .Values.metrics.customMetrics }}
-        args: ["-extend.query-path", "/conf/custom-metrics.yaml"]
         volumeMounts:
           - name: custom-metrics
             mountPath: /conf
@@ -159,10 +165,11 @@ spec:
       {{- end }}
       {{- if and .Values.metrics.enabled .Values.metrics.customMetrics }}
       - name: custom-metrics
-        valueFrom:
-          configMapKeyRef:
-            name: {{ template "postgresql.fullname" . }}
-            key: custom-metrics.yaml
+        configMap:
+          name: {{ template "postgresql.fullname" . }}
+          items:
+            - key: custom-metrics.yaml
+              path: custom-metrics.yaml
       {{- end }}
       {{- if .Values.usePasswordFile }}
       - name: password-file

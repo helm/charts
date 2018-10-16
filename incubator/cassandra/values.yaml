@@ -1,8 +1,8 @@
 ## Cassandra image version
 ## ref: https://hub.docker.com/r/library/cassandra/
 image:
-  repo: "cassandra"
-  tag: "3.11.2"
+  repo: cassandra
+  tag: 3.11.3
   pullPolicy: IfNotPresent
   ## Specify ImagePullSecrets for Pods
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -66,6 +66,10 @@ config:
     # If a JVM Agent is in place
     # agent: 61621
 
+## Custom env variables.
+## ref: https://hub.docker.com/_/cassandra/
+env: {}
+
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 livenessProbe:
@@ -87,6 +91,10 @@ readinessProbe:
   # nodeSelector:
     # cloud.google.com/gke-nodepool: pool-db
 
+## Additional pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+
 ## Additional pod labels
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
@@ -95,6 +103,11 @@ podLabels: {}
 podSettings:
   # Change this to give pods more time to properly leave the cluster when not using persistent storage.
   terminationGracePeriodSeconds: 30
+
+## Pod distruption budget
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
 
 podManagementPolicy: OrderedReady
 updateStrategy:
@@ -109,3 +122,66 @@ securityContext:
 ## Affinity for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # name:
+
+## Backup cronjob configuration
+## Ref: https://github.com/maorfr/cain
+backup:
+  enabled: false
+
+  # Schedule to run jobs. Must be in cron time format
+  # Ref: https://crontab.guru/
+  schedule:
+  - keyspace: keyspace1
+    cron: "0 7 * * *"
+  - keyspace: keyspace2
+    cron: "30 7 * * *"
+
+  annotations:
+    # Example for authorization using kube2iam
+    # Can also be done using environment variables
+    iam.amazonaws.com/role: cain
+
+  image:
+    repos: maorfr/cain
+    tag: 0.1.0
+
+  # Add additional environment variables
+  env:
+  # Example environment variable required for AWS credentials chain
+  - name: AWS_REGION
+    value: us-east-1
+
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 1
+    limits:
+      memory: 1Gi
+      cpu: 1
+
+  # Destination to store the backup artifacts
+  # Currently only s3 is supported
+  # Additional support can added.
+  # Ref: https://github.com/maorfr/skbn
+  destination: s3://bucket/cassandra
+
+## Cassandra exported configuration
+## ref: https://github.com/criteo/cassandra_exporter
+exporter:
+  enabled: false
+  image:
+    repo: criteord/cassandra_exporter
+    tag: 2.0.2
+  port: 5556
+  jvmOpts: ""
