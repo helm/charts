@@ -14,6 +14,8 @@ This chart bootstraps a [Magento](https://github.com/bitnami/bitnami-docker-mage
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment as a database for the Magento application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -47,6 +49,7 @@ The following table lists the configurable parameters of the Magento chart and t
 
 |             Parameter              |               Description                |                         Default                          |
 |------------------------------------|------------------------------------------|----------------------------------------------------------|
+| `global.imageRegistry`             | Global Docker image registry             | `nil`                                                    |
 | `image.registry`                   | Magento image registry                   | `docker.io`                                              |
 | `image.repository`                 | Magento Image name                       | `bitnami/magento`                                        |
 | `image.tag`                        | Magento Image tag                        | `{VERSION}`                                              |

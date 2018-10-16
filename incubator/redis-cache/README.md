@@ -1,12 +1,12 @@
 ## Redis-cache
 
-This chart will allow us to use redis as a pure in-memory cache, this uses a special utility to perform master-slave promotion which overcomes this [problem](https://redis.io/topics/replication#safety-of-replication-when-master-has-persistence-turned-off), K8s could restart the master way before it is detected and agreed among the redis-sentinels.  
+This chart will allow us to use redis as a pure in-memory cache, this uses a special utility to perform master-slave promotion which overcomes this [problem](https://redis.io/topics/replication#safety-of-replication-when-master-has-persistence-turned-off), K8s could restart the master way before it is detected and agreed among the redis-sentinels.
 
 ###Prerequisites
 * Kubernetes 1.6+
 
-Install Redis-cache chart as an in-memory cache. 
-* Uses 7MB [redis:3-alpine](https://hub.docker.com/r/library/redis/tags/3-alpine/) image which is extremely light weight
+Install Redis-cache chart as an in-memory cache.
+* Uses 7MB [redis:4.0.11-alpine](https://hub.docker.com/r/library/redis/tags/4.0.11-alpine/) image which is extremely light weight
 * Uses [redis-sentinel-k8s](https://github.com/dhilipkumars/redis-sentinel-micro/tree/k8s) for automatic slave promotion if master fails, feel free to fork.
 * Super fast caching as no persistence involved
 * Has Pod Disruption Budget
@@ -32,7 +32,7 @@ Here is a sample demo of master slave promotion.
 
 Install this chart
 ```
-$helm install -n dev incubator/redis-cache/ 
+$helm install -n dev incubator/redis-cache/
 NAME:   dev
 LAST DEPLOYED: Wed Apr 12 23:25:56 2017
 NAMESPACE: default
@@ -116,4 +116,4 @@ $kubectl exec -i -t rd-dev-0 -c redis -- redis-cli -h rd-dev-0.rd-dev.default -p
 "bar"
 ```
 
-#### Note: Care should be taken when you scale down the number of replicas of this statefulset.  Please make sure that current redis-master is not among _to be scaled down_ replicas. 
+#### Note: Care should be taken when you scale down the number of replicas of this statefulset.  Please make sure that current redis-master is not among _to be scaled down_ replicas.
