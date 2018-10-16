@@ -28,7 +28,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ template "phpmyadmin.image" . }}"
+          image: {{ template "phpmyadmin.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: DATABASE_PORT_NUMBER
