@@ -206,6 +206,8 @@ coreConfig:
   ## Node labels for pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
+  annotations: {}
+
   nodeSelector: {}
 
   tolerations: []
@@ -253,6 +255,8 @@ workerConfig:
   ## Node labels for pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
+  annotations: {}
+
   nodeSelector: {}
 
   tolerations: []
