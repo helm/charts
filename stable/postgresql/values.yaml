@@ -159,3 +159,6 @@ podAnnotations: {}
 ## Deployment pods replace strategy
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
 # strategy: {}
+
+# Define custom environment variables to pass to the image here
+extraEnv: {}

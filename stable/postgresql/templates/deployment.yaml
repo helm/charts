@@ -87,6 +87,9 @@ spec:
         {{- end }}
         - name: POD_IP
           valueFrom: { fieldRef: { fieldPath: status.podIP } }
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 8 }}
+{{- end }}
         ports:
         - name: postgresql
           containerPort: 5432
