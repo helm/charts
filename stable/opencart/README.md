@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the OpenCart chart and 
 
 |              Parameter              |                Description                |                         Default                          |
 |-------------------------------------|-------------------------------------------|----------------------------------------------------------|
+| `global.imageRegistry`              | Global Docker image registry              | `nil`                                                    |
 | `image.registry`                    | OpenCart image registry                   | `docker.io`                                              |
 | `image.repository`                  | OpenCart Image name                       | `bitnami/opencart`                                       |
 | `image.tag`                         | OpenCart Image tag                        | `{VERSION}`                                              |
@@ -72,7 +73,7 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `externalDatabase.database`         | Name of the existing database             | `bitnami_opencart`                                       |
 | `mariadb.enabled`                   | Whether to use MariaDB chart              | `true`                                                   |
 | `mariadb.db.name`           | Database name to create                   | `bitnami_opencart`                                       |
-| `mariadb.db.user`               | Database user to create                   | `bn_opencart`                                            | 
+| `mariadb.db.user`               | Database user to create                   | `bn_opencart`                                            |
 | `mariadb.db.password`           | Password for the database                 | `nil`                                                    |
 | `mariadb.rootUser.password`       | MariaDB admin password                    | `nil`                                                    |
 | `serviceType`                       | Kubernetes Service type                   | `LoadBalancer`                                           |
