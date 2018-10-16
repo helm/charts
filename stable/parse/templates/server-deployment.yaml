@@ -31,7 +31,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "parse.fullname" . }}
-        image: "{{ .Values.server.image.registry }}/{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+        image: {{ template "parse.server.image" . }}
         imagePullPolicy: {{ .Values.server.image.pullPolicy | quote }}
         env:
         - name: PARSE_HOST
