@@ -1,7 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
+{{- if .Values.nexusProxy.svcName }}
+  name: {{ .Values.nexusProxy.svcName }}
+{{- else }}
   name: {{ template "nexus.fullname" . }}
+{{- end }}
   labels:
 {{ include "nexus.labels" . | indent 4 }}
 {{- if .Values.nexus.labels }}
