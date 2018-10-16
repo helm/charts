@@ -64,7 +64,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `appVersion`                         | Application Version (Elasticsearch)                                 | `6.4.2`                                             |
 | `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
 | `image.tag`                          | Container image tag                                                 | `6.4.2`                                             |
-| `image.pullPolicy`                   | Container pull policy                                               | `Always`                                            |
+| `image.pullPolicy`                   | Container pull policy                                               | `IfNotPresent`                                      |
 | `initImage.repository`               | Init container image name                                           | `busybox`                                           |
 | `initImage.tag`                      | Init container image tag                                            | `latest`                                            |
 | `initImage.pullPolicy`               | Init container pull policy                                          | `Always`                                            |
