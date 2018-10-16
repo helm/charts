@@ -39,7 +39,7 @@ data:
       fi
 
       if [ "$?" != "0" ]; then
-        echo -e "\nImport of ${DASHBOARD_FILE} dashboard failed... Exiting...
+        echo -e "\nImport of ${DASHBOARD_FILE} dashboard failed... Exiting..."
         exit 1
       else
         echo -e "\nImport of ${DASHBOARD_FILE} dashboard finished :-)"
