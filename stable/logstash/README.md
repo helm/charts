@@ -1,13 +1,11 @@
 # Logstash
 
-**Note - this chart has been deprecated and [moved to stable](../../stable/logstash)**.
-
 [Logstash](https://www.elastic.co/products/logstash) is an open source, server-side data processing pipeline that ingests data from a multitude of sources simultaneously, transforms it, and then sends it to your favorite “stash.”
 
 ## TL;DR;
 
 ```console
-$ helm install incubator/logstash
+$ helm install stable/logstash
 ```
 
 ## Installing the Chart
@@ -15,7 +13,7 @@ $ helm install incubator/logstash
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/logstash
+$ helm install --name my-release stable/logstash
 ```
 
 ## Uninstalling the Chart
