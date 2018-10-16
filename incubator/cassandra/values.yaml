@@ -66,6 +66,10 @@ config:
     # If a JVM Agent is in place
     # agent: 61621
 
+## Custom env variables.
+## ref: https://hub.docker.com/_/cassandra/
+env: {}
+
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 livenessProbe:
@@ -86,6 +90,10 @@ readinessProbe:
 # selector:
   # nodeSelector:
     # cloud.google.com/gke-nodepool: pool-db
+
+## Additional pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
 
 ## Additional pod labels
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
@@ -167,3 +175,13 @@ backup:
   # Additional support can added.
   # Ref: https://github.com/maorfr/skbn
   destination: s3://bucket/cassandra
+
+## Cassandra exported configuration
+## ref: https://github.com/criteo/cassandra_exporter
+exporter:
+  enabled: false
+  image:
+    repo: criteord/cassandra_exporter
+    tag: 2.0.2
+  port: 5556
+  jvmOpts: ""

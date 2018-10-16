@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/ghost
-  tag: 2.1.4-debian-9
+  tag: 2.2.1-debian-9
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -137,11 +137,18 @@ mariadb:
       accessMode: ReadWriteOnce
       size: 8Gi
 
-
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
 ##
 serviceType: LoadBalancer
+
+## Pod Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -158,6 +165,7 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
+  path: /bitnami
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
