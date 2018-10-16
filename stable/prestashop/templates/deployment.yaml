@@ -128,22 +128,17 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - name: prestashop-data
-          mountPath: /bitnami/prestashop
-        - name: apache-data
-          mountPath: /bitnami/apache
+        - mountPath: /bitnami/apache
+          name: prestashop-data
+          subPath: apache
+        - mountPath: /bitnami/prestashop
+          name: prestashop-data
+          subPath: prestashop
       volumes:
       - name: prestashop-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "prestashop.fullname" . }}-prestashop
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "prestashop.fullname" . }}-apache
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "prestashop.fullname" . }}-prestashop{{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}
