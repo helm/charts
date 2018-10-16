@@ -47,6 +47,7 @@ The following table lists the configurable parameters of the Parse chart and the
 
 |             Parameter              |              Description               |                   Default                               |
 |------------------------------------|----------------------------------------|-------------------------------------------------------- |
+| `global.imageRegistry`             | Global Docker image registry           | `nil`                                                   |
 | `serviceType`                      | Kubernetes Service type                | `LoadBalancer`                                          |
 | `loadBalancerIP`                   | `loadBalancerIP` for the Parse Service | `nil`                                                   |
 | `server.image.registry`            | Parse image registry                   | `docker.io`                                             |
