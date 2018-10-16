@@ -55,8 +55,9 @@ helm install --name my-release stable/redmine --set databaseType.mariadb=false,d
 
 The following table lists the configurable parameters of the Redmine chart and their default values.
 
-|            Parameter              |              Description                 |                          Default                        | 
+|            Parameter              |              Description                 |                          Default                        |
 | --------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
+| `global.imageRegistry`            | Global Docker image registry             | `nil`                                                   |
 | `image.registry`                  | Redmine image registry                   | `docker.io`                                             |
 | `image.repository`                | Redmine image name                       | `bitnami/redmine`                                       |
 | `image.tag`                       | Redmine image tag                        | `{VERSION}`                                             |
