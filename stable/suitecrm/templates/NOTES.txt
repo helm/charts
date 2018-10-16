@@ -12,27 +12,29 @@ host. To configure SuiteCRM with the URL of your service:
 
   {{- if contains "NodePort" .Values.serviceType }}
 
-  export APP_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.spec.ports[0].nodePort}")
+  export APP_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "suitecrm.fullname" . }} -o jsonpath="{.spec.ports[0].nodePort}")
   export APP_HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
 
   {{- else if contains "LoadBalancer" .Values.serviceType }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "suitecrm.fullname" . }}'
 
-  export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.suitecrm-password}" | base64 --decode)
+  export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "suitecrm.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "suitecrm.fullname" . }} -o jsonpath="{.data.suitecrm-password}" | base64 --decode)
   {{- if .Values.mariadb.mariadbRootPassword }}
-  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+  export DATABASE_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "suitecrm.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
   {{- end }}
   {{- end }}
+  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "suitecrm.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-password}" | base64 --decode)
+
 
 2. Complete your SuiteCRM deployment by running:
 
 {{- if .Values.mariadb.enabled }}
 
   helm upgrade {{ .Release.Name }} stable/suitecrm \
-    --set suitecrmHost=$APP_HOST,suitecrmPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD{{ end }}
+    --set suitecrmHost=$APP_HOST,suitecrmPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$DATABASE_ROOT_PASSWORD{{ end }},mariadb.db.password=$APP_DATABASE_PASSWORD
 {{- else }}
 
   ## PLEASE UPDATE THE EXTERNAL DATABASE CONNECTION PARAMETERS IN THE FOLLOWING COMMAND AS NEEDED ##
@@ -47,7 +49,7 @@ host. To configure SuiteCRM with the URL of your service:
 {{- if eq .Values.serviceType "ClusterIP" }}
 
   echo "SuiteCRM URL: http://127.0.0.1:8080/"
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "fullname" . }} $POD_NAME 8080:80
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "suitecrm.fullname" . }} $POD_NAME 8080:80
 
 {{- else }}
 
@@ -58,7 +60,7 @@ host. To configure SuiteCRM with the URL of your service:
 2. Get your SuiteCRM login credentials by running:
 
   echo Username : {{ .Values.suitecrmUsername }}
-  echo Password : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.suitecrm-password}" | base64 --decode)
+  echo Password : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "suitecrm.fullname" . }} -o jsonpath="{.data.suitecrm-password}" | base64 --decode)
 {{- end }}
 
 {{- else -}}
