@@ -43,6 +43,7 @@ The following table lists the configurable parameters of the Selenium chart and 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `global.nodeselector` | Node label to be useed globally for scheduling of all images | `nil` |
+| `global.hostAliases` | A list of hostAliases, that contains ip and hostnames, to be used globally | `[]` |
 | `hub.image` | The selenium hub image | `selenium/hub` |
 | `hub.tag` | The selenium hub image tag | `3.14.0` |
 | `hub.pullPolicy` | The pull policy for the hub image | `IfNotPresent` |
