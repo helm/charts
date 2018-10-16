@@ -78,6 +78,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `dashboardImport.xpackauth.password`          | Optional Xpack password                    | `mypass`                               |
 | `dashboardImport.dashboards`                  | Dashboards                                 | `{}`                                   |
 | `plugins`                                     | List of URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
+| `configMap.override` | Boolean to override default configmap | false | 
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

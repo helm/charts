@@ -1,7 +1,8 @@
+{{- if ne .Values.configMap.override true -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "kibana.fullname" . }}
+  name: {{ template "kibana.name" . }}
   labels:
     app: {{ template "kibana.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -11,4 +12,5 @@ data:
 {{- range $key, $value := .Values.files }}
   {{ $key }}: |
 {{ toYaml $value | default "{}" | indent 4 }}
+{{- end -}}
 {{- end -}}
