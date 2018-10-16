@@ -20,9 +20,7 @@ spec:
         app: {{ template "kibana.name" . }}
         release: "{{ .Release.Name }}"
     spec:
-      {{- if .Values.serviceAccountName }}
-      serviceAccountName: {{ .Values.serviceAccountName }}
-      {{- end }}
+      serviceAccountName: {{ template "kibana.serviceAccountName" . }}
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
@@ -88,6 +86,8 @@ spec:
           name: {{ template "kibana.name" . }}
           protocol: TCP
         volumeMounts:
+        - name: plugins
+          mountPath: /usr/share/kibana/plugins
         {{- range $configFile := (keys .Values.files) }}
         - name: {{ template "kibana.name" $ }}
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
@@ -132,9 +132,6 @@ spec:
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
 {{- end }}
-{{- with .Values.extraContainers }}
-{{ tpl . $ | indent 6 }}
-{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -143,6 +140,13 @@ spec:
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
         {{- end }}
+{{- if .Values.plugins}}
+        - name: plugins
+          mountPath: /usr/share/kibana/plugins
+{{- end }}        
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 6 }}
+{{- end }}
     {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
@@ -161,6 +165,10 @@ spec:
         - name: {{ template "kibana.name" . }}
           configMap:
             name: {{ template "kibana.fullname" . }}
+{{- if .Values.plugins}}
+        - name: plugins
+          emptyDir: {}
+{{- end }}
 {{- if .Values.dashboardImport.dashboards }}
         - name: {{ template "kibana.fullname" . }}-dashboards
           configMap:

@@ -14,6 +14,8 @@ This chart bootstraps a [Redmine](https://github.com/bitnami/bitnami-docker-redm
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) and the [PostgreSQL chart](https://github.com/kubernetes/charts/tree/master/stable/postgresql) which are required for bootstrapping a MariaDB/PostgreSQL deployment for the database requirements of the Redmine application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -53,8 +55,9 @@ helm install --name my-release stable/redmine --set databaseType.mariadb=false,d
 
 The following table lists the configurable parameters of the Redmine chart and their default values.
 
-|            Parameter              |              Description                 |                          Default                        | 
+|            Parameter              |              Description                 |                          Default                        |
 | --------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
+| `global.imageRegistry`            | Global Docker image registry             | `nil`                                                   |
 | `image.registry`                  | Redmine image registry                   | `docker.io`                                             |
 | `image.repository`                | Redmine image name                       | `bitnami/redmine`                                       |
 | `image.tag`                       | Redmine image tag                        | `{VERSION}`                                             |
