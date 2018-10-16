@@ -47,6 +47,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 
 |          Parameter          |                       Description                       |                         Default                          |
 |-----------------------------|---------------------------------------------------------|----------------------------------------------------------|
+| `global.imageRegistry`      | Global Docker image registry                            | `nil`                                                    |
 | `image.registry`            | Rabbitmq Image registry                                 | `docker.io`                                              |
 | `image.repository`          | Rabbitmq Image name                                     | `bitnami/rabbitmq`                                       |
 | `image.tag`                 | Rabbitmq Image tag                                      | `{VERSION}`                                              |
