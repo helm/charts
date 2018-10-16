@@ -1,3 +1,9 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 ## Kubernetes serviceType for Parse Deployment
 ## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
 ##
@@ -122,6 +128,8 @@ persistence:
 
 ##
 ## MongoDB chart configuration
+##
+## https://github.com/helm/charts/blob/master/stable/mongodb/values.yaml
 ##
 mongodb:
   ## MongoDB Password authentication
