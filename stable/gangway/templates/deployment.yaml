@@ -1,0 +1,112 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "gangway.fullname" . }}
+  labels:
+    app: {{ template "gangway.name" . }}
+    chart: {{ template "gangway.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "gangway.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+{{ toYaml .Values.strategy | indent 4 }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "gangway.name" . }}
+        release: {{ .Release.Name }}
+        component: server
+      {{- if .Values.podLabels }}
+        ## Custom pod labels
+        {{- range $key, $value := .Values.podLabels }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+      annotations:
+      {{- if .Values.podAnnotations }}
+        ## Custom pod annotations
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+      containers:
+
+        - name: gangway
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - gangway
+            - -config
+            - /gangway/gangway.yaml
+          ports:
+{{- range $key, $port := .Values.ports }}
+            - name: {{ $key }}
+{{ toYaml $port | indent 14 }}
+{{- end }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          env:
+          {{- range $key, $value := .Values.env }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value | quote }}
+          {{- end }}
+          {{- range $secret := .Values.secrets }}
+            {{- range $key := $secret.keys }}
+            - name: {{ print $key | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secret.name }}
+                  key: {{ $key }}
+            {{- end }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - name: config-files
+              mountPath: /gangway/
+            {{- range $secret := .Values.secrets }}
+              {{- if $secret.mountPath }}
+                {{- range $key := $secret.keys }}
+            - name: {{ $.Release.Name }}-{{ $secret.name }}
+              mountPath: {{ $secret.mountPath }}/{{ $key }}
+              subPath: {{ $key }}
+              readOnly: true
+                {{- end }}
+              {{- end }}
+            {{- end }}
+
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: config-files
+          configMap:
+            name: {{ template "gangway.fullname" . }}-config-files
+        {{- range .Values.secrets }}
+        - name: {{ $.Release.Name }}-{{ .name }}
+          secret:
+            secretName: {{ .name }}
+        {{- end }}

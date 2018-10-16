@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "gangway.fullname" . }}
+  labels:
+    app: {{ template "gangway.name" . }}
+    chart: {{ template "gangway.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+{{- with .Values.service.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  {{- range $key, $value := .Values.service.ports }}
+    - name: {{ $key }}
+{{ toYaml $value | indent 6 }}
+  {{- end }}
+  selector:
+    app: {{ template "gangway.name" . }}
+    release: {{ .Release.Name }}

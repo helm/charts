@@ -1,0 +1,15 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "gangway.fullname" . }}
+  labels:
+    app: {{ template "gangway.name" . }}
+    chart: {{ template "gangway.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "gangway.name" . }}
+      release: {{ .Release.Name }}
+{{ toYaml .Values.podDisruptionBudget | indent 2 }}

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "gangway.fullname" . }}-config-files
+  labels:
+    app: {{ template "gangway.name" . }}
+    chart: {{ template "gangway.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{- range $key, $value := .Values.configFiles }}
+  {{ $key }}: |-
+{{ $value | default "" | indent 4 }}
+{{- end }}

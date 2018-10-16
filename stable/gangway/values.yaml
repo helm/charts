@@ -1,0 +1,171 @@
+replicaCount: 1
+
+podDisruptionBudget:
+  maxUnavailable: 1  # Limit how many pods may be unavailable due to voluntary disruptions.
+
+terminationGracePeriodSeconds: 1  # Duration in seconds a pod needs to terminate gracefully.
+
+strategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+  type: RollingUpdate
+
+image:
+  repository: gcr.io/heptio-images/gangway  # Container image repository
+  tag: v2.1.1  # Container image tag
+  pullPolicy: IfNotPresent  # Image pull criteria
+
+service:
+  type: ClusterIP  # Exposes application on a cluster-internal IP.
+  annotations: {}  # Arbitrary non-identifying metadata for application service.
+  ports:
+    http:
+      port: 8080  # Service port number for http port.
+      targetPort: http  # Service target port for http port.
+      protocol: TCP  # Service port protocol for http port.
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - gangway.local
+  tls: []
+  #  - secretName: gangway-tls
+  #    hosts:
+  #      - gangway.local
+
+ports:
+  http:
+    containerPort: 8080  # Port number for gangway container http port.
+    protocol: TCP  # Protocol for gangway container http port.
+
+resources: {}  # Optionally specify how much CPU and memory (RAM) each gangway container needs.
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+priorityClassName: ""
+
+nodeSelector: {}  # Node label-values required to run gangway pods.
+
+tolerations: []  # Node taint overrides for gangway pods.
+
+affinity: {}  # Criteria by which pod label-values influence scheduling for gangway pods.
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     - topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           release: gangway
+
+podAnnotations: {}  # Arbitrary non-identifying metadata for gangway pods.
+
+podLabels: {}  # Key/value pairs that are attached to gangway pods.
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: 8080
+  initialDelaySeconds: 20
+  # periodSeconds: 30
+  # timeoutSeconds: 30
+  # failureThreshold: 6
+  # successThreshold: 1
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: 8080
+  # periodSeconds: 30
+  # timeoutSeconds: 30
+  # failureThreshold: 6
+  # successThreshold: 1
+
+securityContext: {}
+
+## Pass secret key values to pods. The secret must be created out-of-band of this helm chart. Each secret key-value
+## is passed as an environment variable. The secret can also be mounted to a specific path (in addition to environment
+## variable) if required. Environment variable names the secret key names.
+##
+## To create a secret, you can run a command like:
+##
+## $ kubectl create secret generic gangway \
+##     --from-literal=GANGWAY_CLIENT_SECRET=REPLACE_ME \
+##     --from-literal=GANGWAY_SESSION_SECURITY_KEY=REPLACE_ME
+##
+secrets:
+  - name: gangway
+    keys:
+
+      ## API client secret as indicated by the identity provider.
+      - GANGWAY_CLIENT_SECRET
+
+      ## ref: https://github.com/heptiolabs/gangway/pull/33
+      - GANGWAY_SESSION_SECURITY_KEY
+
+env:
+
+  ## The port to listen on. Defaults to 8080. (supplied as an `env` to avoid collision with Kubernetes var `GANGWAY_PORT`)
+  GANGWAY_PORT: 8080
+
+configFiles:
+
+  gangway.yaml: |-
+
+    ## The address to listen on. Defaults to 0.0.0.0 to listen on all interfaces.
+    host: 0.0.0.0
+  
+    ## Should Gangway serve TLS vs. plain HTTP? Default: false
+    serveTLS: false
+  
+    ## The public cert file (including root and intermediates) to use when serving TLS.
+    certFile: "/etc/gangway/tls/tls.crt"
+  
+    ## The private key file when serving TLS.
+    keyFile: "/etc/gangway/tls/tls.key"
+  
+    ## The cluster name. Used in UI and kubectl config instructions.
+    clusterName: "${GANGWAY_CLUSTER_NAME}"
+  
+    ## OAuth2 URL to start authorization flow.
+    authorizeURL: "https://${DNS_NAME}/authorize"
+  
+    ## OAuth2 URL to obtain access tokens.
+    tokenURL: "https://${DNS_NAME}/oauth/token"
+  
+    ## Endpoint that provides user profile information [optional]. Not all providers will require this.
+    audience: "https://${DNS_NAME}/userinfo"
+  
+    ## Where to redirect back to. This should be a URL where gangway is reachable. Typically this also needs to be
+    ## registered as part of the oauth application with the oAuth provider.
+    redirectURL: "https://${GANGWAY_REDIRECT_URL}/callback"
+  
+    ## API client ID as indicated by the identity provider.
+    clientID: "${GANGWAY_CLIENT_ID}"
+  
+    ## The JWT claim to use as the username. This is used in UI.
+    usernameClaim: "nickname"
+  
+    ## The JWT claim to use as the email claim. This is used to name the "user" part of the config.
+    emailClaim: "email"
+  
+    ## The API server endpoint used to configure kubectl.
+    apiServerURL: "https://${GANGWAY_APISERVER_URL}"
+  
+    ## The path to find the CA bundle for the API server. Used to configure kubectl. This is typically mounted into the
+    ## default location for workloads running on a Kubernetes cluster and doesn't need to be set.
+    clusterCAPath: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"  
+  
+    ## Used to specify the scope of the requested OAuth authorization.
+    scopes: ["openid", "profile", "email", "offline_access"]
