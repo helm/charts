@@ -104,6 +104,11 @@ podSettings:
   # Change this to give pods more time to properly leave the cluster when not using persistent storage.
   terminationGracePeriodSeconds: 30
 
+## Pod distruption budget
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
+
 podManagementPolicy: OrderedReady
 updateStrategy:
   type: OnDelete
