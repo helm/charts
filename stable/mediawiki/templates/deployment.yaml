@@ -132,22 +132,17 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - name: mediawiki-data
-          mountPath: /bitnami/mediawiki
-        - name: apache-data
-          mountPath: /bitnami/apache
+        - mountPath: /bitnami/apache
+          name: mediawiki-data
+          subPath: apache
+        - mountPath: /bitnami/mediawiki
+          name: mediawiki-data
+          subPath: mediawiki
       volumes:
       - name: mediawiki-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "mediawiki.fullname" . }}-mediawiki
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "mediawiki.fullname" . }}-apache
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "mediawiki.fullname" . }}-mediawiki{{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}
