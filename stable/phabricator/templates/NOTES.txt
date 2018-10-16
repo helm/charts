@@ -20,15 +20,13 @@ host. To configure Phabricator with the URL of your service:
 
   export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "phabricator.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
   export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "phabricator.fullname" . }} -o jsonpath="{.data.phabricator-password}" | base64 --decode)
-  {{- if .Values.mariadb.mariadbRootPassword }}
-  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "phabricator.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
-  {{- end }}
+  export DATABASE_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "phabricator.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
   {{- end }}
 
 2. Complete your Phabricator deployment by running:
 
-  helm upgrade {{ .Release.Name }} \
-    --set phabricatorHost=$APP_HOST,phabricatorPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD{{ end }} stable/phabricator
+  helm upgrade {{ .Release.Name }} stable/phabricator \
+    --set phabricatorHost=$APP_HOST,phabricatorPassword=$APP_PASSWORD,mariadb.rootUser.password=$DATABASE_ROOT_PASSWORD
 
 {{- else -}}
 1. Get the Phabricator URL by running:
