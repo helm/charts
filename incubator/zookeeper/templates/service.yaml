@@ -13,6 +13,12 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
+  loadBalancerSourceRanges:
+  {{- if eq .Values.service.type "LoadBalancer"}}
+    {{- range .Values.loadBalancerSourceRanges }}
+    - {{ . }}
+    {{- end }}
+  {{- end }}
   ports:
   {{- range $key, $value := .Values.service.ports }}
     - name: {{ $key }}

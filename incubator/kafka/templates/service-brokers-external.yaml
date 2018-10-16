@@ -40,6 +40,12 @@ metadata:
     pod: {{ $responsiblePod | quote }}
 spec:
   type: {{ $root.Values.external.type }}
+  loadBalancerSourceRanges:
+  {{- if eq $root.Values.external.type "LoadBalancer"}}
+    {{- range $v := $root.Values.loadBalancerSourceRanges }}
+    - {{ $v }}
+    {{- end }}
+  {{- end }}
   ports:
     - name: external-broker
       {{- if and (eq $root.Values.external.type "LoadBalancer") (not $root.Values.external.distinct) }}
