@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the phpBB chart and the
 
 |             Parameter             |              Description              |                         Default                         |
 |-----------------------------------|---------------------------------------|---------------------------------------------------------|
+| `global.imageRegistry`            | Global Docker image registry          | `nil`                                                   |
 | `image.registry`                  | phpBB image registry                  | `docker.io`                                             |
 | `image.repository`                | phpBB image name                      | `bitnami/phpbb`                                         |
 | `image.tag`                       | phpBB image tag                       | `{VERSION}`                                             |
