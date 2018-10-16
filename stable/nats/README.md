@@ -47,6 +47,7 @@ The following table lists the configurable parameters of the NATS chart and thei
 
 | Parameter                            | Description                                                                                  | Default                           |
 |--------------------------------------|----------------------------------------------------------------------------------------------|-----------------------------------|
+| `global.imageRegistry`               | Global Docker image registry                                                                 | `nil`                             |
 | `image.registry`                     | NATS image registry                                                                          | `docker.io`                       |
 | `image.repository`                   | NATS Image name                                                                              | `bitnami/nats`                    |
 | `image.tag`                          | NATS Image tag                                                                               | `{VERSION}`                       |
