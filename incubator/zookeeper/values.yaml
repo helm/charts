@@ -28,7 +28,7 @@ image:
 service:
   type: ClusterIP  # Exposes zookeeper on a cluster-internal IP.
   annotations: {}  # Arbitrary non-identifying metadata for zookeeper service.
-    ## AWS example for use with LoadBalancer service type.
+    ## AWS example for use with LoadBalancer service type. See loadBalancerSourceRanges below for sg support.
     # external-dns.alpha.kubernetes.io/hostname: zookeeper.cluster.local
     # service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
     # service.beta.kubernetes.io/aws-load-balancer-internal: "true"
@@ -37,6 +37,11 @@ service:
       port: 2181  # Service port number for client port.
       targetPort: client  # Service target port for client port.
       protocol: TCP  # Service port protocol for client port.
+
+loadBalancerSourceRanges:
+  ## Used in conjunction with the LoadBalancer service type.  Specify a list of CIDR ranges here.
+  # - "192.168.1.0/24"
+  # - "172.16.0.0/16"
 
 ## Headless service.
 ##

@@ -152,6 +152,11 @@ external:
     imageTag: "0.4"
     imagePullPolicy: "IfNotPresent"
 
+loadBalancerSourceRanges:
+  ## Used in conjunction with the LoadBalancer service type.  Specify a list of CIDR ranges here.
+  # - "192.168.1.0/24"
+  # - "172.16.0.0/16"
+
 # Annotation to be added to Kafka pods
 podAnnotations: {}
 
