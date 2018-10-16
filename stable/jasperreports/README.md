@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the JasperReports chart
 
 |           Parameter           |                 Description                  |                         Default                          |
 |-------------------------------|----------------------------------------------|----------------------------------------------------------|
+| `global.imageRegistry`        | Global Docker image registry                 | `nil`                                                    |
 | `image.registry`              | JasperReports image registry                 | `docker.io`                                              |
 | `image.repository`            | JasperReports Image name                     | `bitnami/jasperreports`                                  |
 | `image.tag`                   | JasperReports Image tag                      | `{VERSION}`                                              |
