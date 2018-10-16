@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: marc/sigsci-agent
-  tag: 3.12.1
+  tag: 3.13.0
   pullPolicy: IfNotPresent
 
 daemonset: {}
