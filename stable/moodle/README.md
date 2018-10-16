@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the Moodle chart and th
 
 |              Parameter                |                                       Description                                            |                   Default                               |
 |---------------------------------------|----------------------------------------------------------------------------------------------|-------------------------------------------------------- |
+| `global.imageRegistry`                | Global Docker image registry                                                                 | `nil`                                                   |
 | `image.registry`                      | Moodle image registry                                                                        | `docker.io`                                             |
 | `image.repository`                    | Moodle Image name                                                                            | `bitnami/moodle`                                        |
 | `image.tag`                           | Moodle Image tag                                                                             | `{VERSION}`                                             |
