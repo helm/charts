@@ -1,0 +1,188 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.master.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "elasticsearch.master.fullname" . }}
+spec:
+  serviceName: {{ template "elasticsearch.master.fullname" . }}
+  replicas: {{ .Values.master.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "elasticsearch.name" . }}
+        component: "{{ .Values.master.name }}"
+        release: {{ .Release.Name }}
+        {{- if .Values.master.podAnnotations }}
+      annotations:
+{{ toYaml .Values.master.podAnnotations | indent 8 }}
+        {{- end }}
+    spec:
+{{- if .Values.master.priorityClassName }}
+      priorityClassName: "{{ .Values.master.priorityClassName }}"
+{{- end }}
+      securityContext:
+        fsGroup: 1000
+      {{- if or .Values.master.antiAffinity .Values.master.nodeAffinity }}
+      affinity:
+      {{- end }}
+      {{- if eq .Values.master.antiAffinity "hard" }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "elasticsearch.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.master.name }}"
+      {{- else if eq .Values.master.antiAffinity "soft" }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "elasticsearch.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.master.name }}"
+      {{- end }}
+      {{- with .Values.master.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml . | indent 10 }}
+      {{- end }}
+{{- if .Values.master.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.master.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.master.tolerations }}
+      tolerations:
+{{ toYaml .Values.master.tolerations | indent 8 }}
+{{- end }}
+      initContainers:
+      # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
+      # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
+      - name: "sysctl"
+        image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
+        imagePullPolicy: {{ .Values.initImage.pullPolicy | quote }}
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
+      - name: "chown"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        command:
+        - /bin/bash
+        - -c
+        - chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data &&
+          chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: data
+{{- if .Values.extraInitContainers }}
+{{ tpl .Values.extraInitContainers . | indent 6 }}
+{{- end }}
+      containers:
+      - name: elasticsearch
+        env:
+        - name: NODE_DATA
+          value: "false"
+{{- if hasPrefix "5." .Values.appVersion }}
+        - name: NODE_INGEST
+          value: "false"
+{{- end }}
+        - name: DISCOVERY_SERVICE
+          value: {{ template "elasticsearch.fullname" . }}-discovery
+        - name: PROCESSORS
+          valueFrom:
+            resourceFieldRef:
+              resource: limits.cpu
+        - name: ES_JAVA_OPTS
+          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.master.heapSize }} -Xmx{{ .Values.master.heapSize }} {{ .Values.cluster.additionalJavaOpts }}"
+        {{- range $key, $value :=  .Values.cluster.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.master.resources | indent 12 }}
+        readinessProbe:
+          httpGet:
+            path: /_cluster/health?local=true
+            port: 9200
+          initialDelaySeconds: 5
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        ports:
+        - containerPort: 9300
+          name: transport
+{{ if .Values.master.exposeHttp }}
+        - containerPort: 9200
+          name: http
+{{ end }}
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: data
+        - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          name: config
+          subPath: elasticsearch.yml
+{{- if hasPrefix "2." .Values.image.tag }}
+        - mountPath: /usr/share/elasticsearch/config/logging.yml
+          name: config
+          subPath: logging.yml
+{{- end }}
+{{- if hasPrefix "5." .Values.image.tag }}
+        - mountPath: /usr/share/elasticsearch/config/log4j2.properties
+          name: config
+          subPath: log4j2.properties
+{{- end }}
+{{- if .Values.cluster.keystoreSecret }}
+        - name: keystore
+          mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
+          subPath: elasticsearch.keystore
+          readOnly: true
+{{- end }}
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecret := .Values.image.pullSecrets }}
+        - name: {{ $pullSecret }}
+      {{- end }}
+{{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "elasticsearch.fullname" . }}
+{{- if .Values.cluster.keystoreSecret }}
+      - name: keystore
+        secret:
+          secretName: {{ .Values.cluster.keystoreSecret }}
+{{- end }}
+  {{- if not .Values.master.persistence.enabled }}
+      - name: data
+        emptyDir: {}
+  {{- end }}
+  updateStrategy:
+    type: {{ .Values.master.updateStrategy.type }}
+  {{- if .Values.master.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ .Values.master.persistence.name }}
+    spec:
+      accessModes:
+        - {{ .Values.master.persistence.accessMode | quote }}
+    {{- if .Values.master.persistence.storageClass }}
+    {{- if (eq "-" .Values.master.persistence.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.master.persistence.storageClass }}"
+    {{- end }}
+    {{- end }}
+      resources:
+        requests:
+          storage: "{{ .Values.master.persistence.size }}"
+  {{ end }}
