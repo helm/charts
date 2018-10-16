@@ -1,0 +1,97 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fluentd.fullname" . }}
+  labels:
+    app: {{ template "fluentd.name" . }}
+    chart: {{ template "fluentd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "fluentd.name" . }}
+      release: {{ .Release.Name }}
+  {{- if .Values.persistence.enabled }}
+  strategy:
+    type: Recreate
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fluentd.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecret := .Values.image.pullSecrets }}
+        - name: {{ $pullSecret }}
+      {{- end }}
+{{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: OUTPUT_HOST
+            value: {{ .Values.output.host | quote }}
+          - name: OUTPUT_PORT
+            value: {{ .Values.output.port | quote }}
+          - name: OUTPUT_BUFFER_CHUNK_LIMIT
+            value: {{ .Values.output.buffer_chunk_limit | quote }}
+          - name: OUTPUT_BUFFER_QUEUE_LIMIT
+            value: {{ .Values.output.buffer_queue_limit | quote }}
+          {{- range $key, $value := .Values.env }}
+          - name: {{ $key | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        ports:
+{{- range $port := .Values.service.ports }}
+          - name: {{ $port.name }}
+            containerPort: {{ $port.containerPort }}
+            protocol: {{ $port.protocol }}
+{{- end }}
+          - name: http-input
+            containerPort: 9880
+            protocol: TCP
+        livenessProbe:
+          httpGet:
+            # Use percent encoding for query param.
+            # The value is {"log": "health check"}.
+            # the endpoint itself results in a new fluentd
+            # tag 'fluentd.pod-healthcheck'
+            path: /fluentd.pod.healthcheck?json=%7B%22log%22%3A+%22health+check%22%7D
+            port: 9880
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        volumeMounts:
+        - name: config-volume-{{ template "fluentd.fullname" . }}
+          mountPath: /etc/fluent/config.d
+        - name: buffer
+          mountPath: "/var/log/fluentd-buffers"
+      volumes:
+        - name: config-volume-{{ template "fluentd.fullname" . }}
+          configMap:
+            name: {{ template "fluentd.fullname" . }}
+        - name: buffer
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "fluentd.fullname" . }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
