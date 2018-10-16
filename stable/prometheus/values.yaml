@@ -230,6 +230,7 @@ configmapReload:
   extraConfigmapMounts: []
     # - name: prometheus-alerts
     #   mountPath: /etc/alerts.d
+    #   subPath: ""
     #   configMap: prometheus-alerts
     #   readOnly: true
 
@@ -507,12 +508,14 @@ server:
   extraHostPathMounts: []
     # - name: certs-dir
     #   mountPath: /etc/kubernetes/certs
+    #   subPath: ""
     #   hostPath: /etc/kubernetes/certs
     #   readOnly: true
 
   extraConfigmapMounts: []
     # - name: certs-configmap
     #   mountPath: /prometheus
+    #   subPath: ""
     #   configMap: certs-configmap
     #   readOnly: true
 
@@ -521,6 +524,7 @@ server:
   extraSecretMounts: []
     # - name: secret-files
     #   mountPath: /etc/secrets
+    #   subPath: ""
     #   secretName: prom-secret-files
     #   readOnly: true
 
