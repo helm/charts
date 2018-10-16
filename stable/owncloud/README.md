@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the ownCloud chart and 
 
 |              Parameter              |                Description                 |                   Default                               |
 |-------------------------------------|--------------------------------------------|-------------------------------------------------------- |
+| `global.imageRegistry`              | Global Docker image registry               | `nil`                                                   |
 | `image.registry`                    | ownCloud image registry                    | `docker.io`                                             |
 | `image.repository`                  | ownCloud Image name                        | `bitnami/owncloud`                                      |
 | `image.tag`                         | ownCloud Image tag                         | `{VERSION}`                                             |
