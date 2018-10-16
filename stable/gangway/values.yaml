@@ -125,47 +125,47 @@ configFiles:
 
     ## The address to listen on. Defaults to 0.0.0.0 to listen on all interfaces.
     host: 0.0.0.0
-  
+
     ## Should Gangway serve TLS vs. plain HTTP? Default: false
     serveTLS: false
-  
+
     ## The public cert file (including root and intermediates) to use when serving TLS.
     certFile: "/etc/gangway/tls/tls.crt"
-  
+
     ## The private key file when serving TLS.
     keyFile: "/etc/gangway/tls/tls.key"
-  
+
     ## The cluster name. Used in UI and kubectl config instructions.
     clusterName: "${GANGWAY_CLUSTER_NAME}"
-  
+
     ## OAuth2 URL to start authorization flow.
     authorizeURL: "https://${DNS_NAME}/authorize"
-  
+
     ## OAuth2 URL to obtain access tokens.
     tokenURL: "https://${DNS_NAME}/oauth/token"
-  
+
     ## Endpoint that provides user profile information [optional]. Not all providers will require this.
     audience: "https://${DNS_NAME}/userinfo"
-  
+
     ## Where to redirect back to. This should be a URL where gangway is reachable. Typically this also needs to be
     ## registered as part of the oauth application with the oAuth provider.
     redirectURL: "https://${GANGWAY_REDIRECT_URL}/callback"
-  
+
     ## API client ID as indicated by the identity provider.
     clientID: "${GANGWAY_CLIENT_ID}"
-  
+
     ## The JWT claim to use as the username. This is used in UI.
     usernameClaim: "nickname"
-  
+
     ## The JWT claim to use as the email claim. This is used to name the "user" part of the config.
     emailClaim: "email"
-  
+
     ## The API server endpoint used to configure kubectl.
     apiServerURL: "https://${GANGWAY_APISERVER_URL}"
-  
+
     ## The path to find the CA bundle for the API server. Used to configure kubectl. This is typically mounted into the
     ## default location for workloads running on a Kubernetes cluster and doesn't need to be set.
-    clusterCAPath: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"  
-  
+    clusterCAPath: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+
     ## Used to specify the scope of the requested OAuth authorization.
     scopes: ["openid", "profile", "email", "offline_access"]
