@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the MediaWiki chart and
 
 |              Parameter               |               Description                                   |                         Default                         |
 |--------------------------------------|-------------------------------------------------------------|---------------------------------------------------------|
+| `global.imageRegistry`               | Global Docker image registry                                | `nil`                                                   |
 | `image.registry`                     | MediaWiki image registry                                    | `docker.io`                                             |
 | `image.repository`                   | MediaWiki Image name                                        | `bitnami/mediawiki`                                     |
 | `image.tag`                          | MediaWiki Image tag                                         | `{VERSION}`                                             |
