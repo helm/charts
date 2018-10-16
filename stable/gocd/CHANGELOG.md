@@ -1,4 +1,9 @@
-### 1.4.1
+### 1.5.1
+
+* [b22b9d6](https://github.com/kubernetes/charts/commit/b22b9d6):
+  - Use latest Kubernetes elastic agent plugin v2.0.0
+
+### 1.5.0
 
 * [1f8118b](https://github.com/kubernetes/charts/commit/1f8118b):
   - Bump up GoCD app version to 18.10.0
