@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the Magento chart and t
 
 |             Parameter              |               Description                |                         Default                          |
 |------------------------------------|------------------------------------------|----------------------------------------------------------|
+| `global.imageRegistry`             | Global Docker image registry             | `nil`                                                    |
 | `image.registry`                   | Magento image registry                   | `docker.io`                                              |
 | `image.repository`                 | Magento Image name                       | `bitnami/magento`                                        |
 | `image.tag`                        | Magento Image tag                        | `{VERSION}`                                              |
