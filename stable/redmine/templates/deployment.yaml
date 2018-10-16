@@ -28,7 +28,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "redmine.fullname" . }}
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: {{ template "redmine.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
