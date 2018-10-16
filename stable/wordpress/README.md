@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the WordPress chart and
 
 |            Parameter             |                Description                 |                         Default                         |
 |----------------------------------|--------------------------------------------|---------------------------------------------------------|
+| `global.imageRegistry`           | Global Docker image registry               | `nil`                                                   |
 | `image.registry`                 | WordPress image registry                   | `docker.io`                                             |
 | `image.repository`               | WordPress image name                       | `bitnami/wordpress`                                     |
 | `image.tag`                      | WordPress image tag                        | `{VERSION}`                                             |
