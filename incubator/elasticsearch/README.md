@@ -1,5 +1,7 @@
 # Elasticsearch Helm Chart
 
+**Note - this chart has been deprecated and [moved to stable](../../stable/elasticsearch)**.
+
 This chart uses a standard Docker image of Elasticsearch (docker.elastic.co/elasticsearch/elasticsearch-oss) and uses a service pointing to the master's transport port for service discovery.
 Elasticsearch does not communicate with the Kubernetes API, hence no need for RBAC permissions.
 

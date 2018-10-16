@@ -49,7 +49,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: rabbitmq
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: {{ template "rabbitmq.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
          - bash

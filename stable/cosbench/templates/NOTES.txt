@@ -1,0 +1,19 @@
+1. Get the application URL by running these commands:
+{{- if .Values.controller.ingress.enabled }}
+{{- range .Values.controller.ingress.hosts }}
+  http{{ if $.Values.controller.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.controller.ingress.path }}
+{{- end }}
+{{- else if contains "NodePort" .Values.controller.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "cosbench.controller.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.controller.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ template "cosbench.controller.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "cosbench.controller.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.controller.service.port }}
+{{- else if contains "ClusterIP" .Values.controller.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "cosbench.name" . }},component=controller,release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:8080/controller/index.html to use your application"
+  kubectl port-forward $POD_NAME 8080:19088
+{{- end }}
