@@ -4,7 +4,9 @@ kind: Service
 metadata:
 {{- if .Values.controller.metrics.service.annotations }}
   annotations:
-{{ toYaml .Values.controller.metrics.service.annotations | indent 4 }}
+  {{- range $key, $value := .Values.controller.metrics.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 {{- end }}
   labels:
     app: {{ template "nginx-ingress.name" . }}
