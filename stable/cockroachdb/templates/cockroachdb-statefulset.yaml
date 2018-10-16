@@ -185,6 +185,11 @@ metadata:
 spec:
   serviceName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
   replicas: {{ default 3 .Values.Replicas }}
+  selector:
+    matchLabels:
+      heritage: {{ .Release.Service | quote }}
+      release: {{ .Release.Name | quote }}
+      component: "{{ .Release.Name }}-{{ .Values.Component }}"
   template:
     metadata:
       labels:
@@ -274,6 +279,8 @@ spec:
         env:
         - name: STATEFULSET_NAME
           value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+        - name: STATEFULSET_FQDN
+          value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}.{{ .Release.Namespace }}.svc.{{ .Values.ClusterDomain }}"
         - name: COCKROACH_CHANNEL
           value: kubernetes-helm
         volumeMounts:
@@ -288,7 +295,7 @@ spec:
           - "-ecx"
             # The use of qualified `hostname -f` is crucial:
             # Other nodes aren't able to look up the unqualified hostname.
-          - "exec /cockroach/cockroach start --logtostderr {{ if .Values.Secure.Enabled }}--certs-dir /cockroach/cockroach-certs{{ else }}--insecure{{ end }} --advertise-host $(hostname -f) --http-host 0.0.0.0 --http-port {{ .Values.InternalHttpPort }} --port {{ .Values.InternalGrpcPort }} --cache {{ .Values.CacheSize }} --max-sql-memory {{ .Values.MaxSQLMemory }} --join ${STATEFULSET_NAME}-0.${STATEFULSET_NAME}:{{ .Values.InternalGrpcPort }},${STATEFULSET_NAME}-1.${STATEFULSET_NAME}:{{ .Values.InternalGrpcPort }},${STATEFULSET_NAME}-2.${STATEFULSET_NAME}:{{ .Values.InternalGrpcPort }}"
+          - "exec /cockroach/cockroach start --logtostderr {{ if .Values.Secure.Enabled }}--certs-dir /cockroach/cockroach-certs{{ else }}--insecure{{ end }} --advertise-host $(hostname).${STATEFULSET_FQDN} --http-host 0.0.0.0 --http-port {{ .Values.InternalHttpPort }} --port {{ .Values.InternalGrpcPort }} --cache {{ .Values.CacheSize }} --max-sql-memory {{ .Values.MaxSQLMemory }} {{ if .Values.Locality }}--locality={{.Values.Locality }}{{ end }} --join {{ if .Values.JoinExisting }}{{ join "," .Values.JoinExisting }}{{ else }}${STATEFULSET_NAME}-0.${STATEFULSET_FQDN}:{{ .Values.InternalGrpcPort }},${STATEFULSET_NAME}-1.${STATEFULSET_FQDN}:{{ .Values.InternalGrpcPort }},${STATEFULSET_NAME}-2.${STATEFULSET_FQDN}:{{ .Values.InternalGrpcPort }}{{ end }}"
       # No pre-stop hook is required, a SIGTERM plus some time is all that's
       # needed for graceful shutdown of a node.
       terminationGracePeriodSeconds: 60

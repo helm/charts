@@ -3,4 +3,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: {{ .Release.Namespace | quote }}
+  labels:
+    name: {{ .Release.Namespace | quote }}
+    certmanager.k8s.io/disable-validation: "true"
 {{- end }}

@@ -9,9 +9,22 @@ replicas: 1
 
 deploymentStrategy: RollingUpdate
 
+readinessProbe:
+  httpGet:
+    path: /api/health
+    port: 3000
+
+livenessProbe:
+  httpGet:
+    path: /api/health
+    port: 3000
+  initialDelaySeconds: 60
+  timeoutSeconds: 30
+  failureThreshold: 10
+
 image:
   repository: grafana/grafana
-  tag: 5.2.3
+  tag: 5.3.1
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -119,9 +132,11 @@ extraSecretMounts: []
   #   secretName: grafana-secret-files
   #   readOnly: true
 
-# Pass the plugins you want installed as a comma separated list.
-# plugins: "digrich-bubblechart-panel,grafana-clock-panel"
-plugins: ""
+## Pass the plugins you want installed as a list.
+##
+plugins: []
+  # - digrich-bubblechart-panel
+  # - grafana-clock-panel
 
 ## Configure grafana datasources
 ## ref: http://docs.grafana.org/administration/provisioning/#datasources

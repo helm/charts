@@ -1,0 +1,13 @@
+name: prisma
+version: 0.1.0
+appVersion: 1.15
+kubeVersion: "^1.8.0-0"
+description: Prisma turns your database into a realtime GraphQL API
+home: https://www.prisma.io/
+icon: https://i.imgur.com/wD4rVt4.png
+sources:
+  - https://github.com/prismagraphql/prisma
+maintainers:
+  - name: giacomoguiulfo
+    email: giacomoguiulfo@gmail.com
+engine: gotpl

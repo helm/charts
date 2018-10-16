@@ -1,3 +1,9 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 image:
   ## Bitnami MongoDB registry
   ##
@@ -8,7 +14,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 4.0.2-debian-9
+  tag: 4.0.3-debian-9
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -60,6 +66,9 @@ securityContext:
   fsGroup: 1001
   runAsUser: 1001
 
+## Kubernetes Cluster Domain
+clusterDomain: cluster.local
+
 ## Kubernetes service type
 service:
   annotations: {}
@@ -87,7 +96,7 @@ replicaSet:
   ## Key used for replica set authentication
   ##
   # key: key
-  
+
   ## Number of replicas per each node type
   ##
   replicas:

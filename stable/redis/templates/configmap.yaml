@@ -10,5 +10,5 @@ metadata:
   name: {{ template "redis.fullname" . }}
 data:
   redis.conf: |-
-{{ toYaml .Values.configmap | indent 4 }}
+{{ .Values.configmap | indent 4 }}
 {{- end }}

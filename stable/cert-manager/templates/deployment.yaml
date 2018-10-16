@@ -60,6 +60,14 @@ spec:
           - --default-acme-issuer-dns01-provider-name={{ .defaultACMEDNS01ChallengeProvider }}
           {{- end }}
           {{- end }}
+          {{- if .Values.affinity }}
+          affinity:
+{{ toYaml .Values.affinity | indent 10 }}
+          {{- end }}
+          {{- if .Values.tolerations }}
+          tolerations:
+{{ toYaml .Values.tolerations | indent 10 }}
+          {{- end }}
           env:
           - name: POD_NAMESPACE
             valueFrom:
