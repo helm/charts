@@ -17,8 +17,7 @@ replicaCount: 1
 
 ## Schema Registry Settings Overrides
 ## Configuration Options can be found here: https://docs.confluent.io/current/schema-registry/docs/config.html
-configurationOverrides:
-  kafkastore.topic.replication.factor: 1
+configurationOverrides: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
