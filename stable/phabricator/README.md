@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the Phabricator chart a
 
 |               Parameter                |                 Description                  |                         Default                          |
 |----------------------------------------|----------------------------------------------|----------------------------------------------------------|
+| `global.imageRegistry`                 | Global Docker image registry                 | `nil`                                                    |
 | `image.registry`                       | Phabricator image registry                   | `docker.io`                                              |
 | `image.repository`                     | Phabricator image name                       | `bitnami/phabricator`                                    |
 | `image.tag`                            | Phabricator image tag                        | `{VERSION}`                                              |
