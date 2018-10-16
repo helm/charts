@@ -3,14 +3,14 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
   labels:
-    app: {{ template "rabbitmq-ha.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    app.kubernetes.io/name: {{ include "rabbitmq-ha.name" . }}
+    helm.sh/chart: {{ include "rabbitmq-ha.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.extraLabels }}
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
-  name: {{ template "rabbitmq-ha.fullname" . }}
+  name: {{ include "rabbitmq-ha.fullname" . }}
 rules:
   - apiGroups: [""]
     resources: ["endpoints"]

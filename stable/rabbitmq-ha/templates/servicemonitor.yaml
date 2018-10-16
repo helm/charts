@@ -1,8 +1,8 @@
-{{ if and .Values.prometheus.exporter.enabled .Values.prometheus.operator.enabled }}
+{{- if and .Values.prometheus.exporter.enabled .Values.prometheus.operator.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "rabbitmq-ha.fullname" . }}
+  name: {{ include "rabbitmq-ha.fullname" . }}
   namespace: {{ .Values.prometheus.operator.serviceMonitor.namespace }}
   labels:
 {{- if .Values.prometheus.operator.serviceMonitor.selector }}
@@ -11,11 +11,11 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ template "rabbitmq-ha.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "rabbitmq-ha.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   endpoints:
   - port: exporter
     interval: {{ .Values.prometheus.operator.serviceMonitor.interval }}
   namespaceSelector:
     any: true
-{{ end }}
+{{- end }}
