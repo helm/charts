@@ -73,6 +73,7 @@ spec:
           {{- range .Values.configmapReload.extraConfigmapMounts }}
             - name: {{ $.Values.configmapReload.name }}-{{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
 
@@ -122,16 +123,19 @@ spec:
           {{- range .Values.server.extraHostPathMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
           {{- range .Values.server.extraConfigmapMounts }}
             - name: {{ $.Values.server.name }}-{{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
           {{- range .Values.server.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
     {{- if .Values.server.nodeSelector }}
