@@ -43,7 +43,7 @@ The following table lists the configurable parameters of the kibana chart and th
 | `files`                                       | Kibana configuration files                 | None                                   |
 | `image.pullPolicy`                            | Image pull policy                          | `IfNotPresent`                         |
 | `image.repository`                            | Image repository                           | `docker.elastic.co/kibana/kibana-oss`  |
-| `image.tag`                                   | Image tag                                  | `6.4.1`                                |
+| `image.tag`                                   | Image tag                                  | `6.4.2`                                |
 | `image.pullSecrets`                           | Specify image pull secrets                 | `nil`                                  |
 | `commandline.args`                            | add additional commandline args            | `nil`                                  |
 | `ingress.enabled`                             | Enables Ingress                            | `false`                                |
@@ -54,7 +54,9 @@ The following table lists the configurable parameters of the kibana chart and th
 | `podAnnotations`                              | annotations to add to each pod             | `{}`                                   |
 | `replicaCount`                                | desired number of pods                     | `1`                                    |
 | `revisionHistoryLimit`                        | revisionHistoryLimit                       | `3`                                    |
-| `serviceAccountName`                          | serviceAccount that will run the pod       | `nil`                                  |
+| `serviceAccountName`                          | DEPRECATED: use serviceAccount.name        | `nil`                                  |
+| `serviceAccount.create`                       | create a serviceAccount to run the pod     | `false`                                |
+| `serviceAccount.name`                         | name of the serviceAccount to create       | `kibana.fullname`                      |
 | `authProxyEnabled`                            | enables authproxy. Create container in extracontainers   | `false`                  |
 | `extraContainers`                             | Sidecar containers to add to the kibana pod| `{}`                                   |
 | `resources`                                   | pod resource requests & limits             | `{}`                                   |
@@ -70,12 +72,12 @@ The following table lists the configurable parameters of the kibana chart and th
 | `service.annotations`                         | Kubernetes service annotations             | None:                                  |
 | `service.labels`                              | Kubernetes service labels                  | None:                                  |
 | `tolerations`                                 | List of node taints to tolerate            | `[]`                                   |
+| `dashboardImport.timeout`                     | Time in seconds waiting for Kibana to be in green overall state | `60`                                   |
 | `dashboardImport.xpackauth.enabled`           | Enable Xpack auth                          | `false`                                |
 | `dashboardImport.xpackauth.username`          | Optional Xpack username                    | `myuser`                               |
 | `dashboardImport.xpackauth.password`          | Optional Xpack password                    | `mypass`                               |
 | `dashboardImport.dashboards`                  | Dashboards                                 | `{}`                                   |
-| `plugins`                             | List of URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
-
+| `plugins`                                     | List of URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -96,3 +98,7 @@ $ helm install stable/kibana --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Dasboard import
+
+* A dashboard for dashboardImport.dashboards can be a JSON or a download url to a JSON file.
