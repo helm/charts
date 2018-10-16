@@ -138,7 +138,7 @@ spec:
       - name: prestashop-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ if .Values.persistence.prestashop.existingClaim }}{{ .Values.persistence.prestashop.existingClaim }}{{- else }}{{ template "prestashop.fullname" . }}-prestashop{{- end }}
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "prestashop.fullname" . }}-prestashop{{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}
