@@ -32,14 +32,17 @@ data:
 
       if [ ! "$(python -c 'import sys, json; print json.load(sys.stdin)' < ${DASHBOARD_FILE} &> /dev/null)" ]; then
         echo "${DASHBOARD_FILE} is no valid json. Trying to import from url..."
-        curl -v {{ if .Values.dashboardImport.xpackauth.enabled }}--user {{ .Values.dashboardImport.xpackauth.username }}:{{ .Values.dashboardImport.xpackauth.password }}{{ end }} -s --connect-timeout 60 --max-time 60 -XPOST localhost:5601/api/kibana/dashboards/import?force=true -H 'kbn-xsrf:true' -H 'Content-type:application/json' $(cat ${DASHBOARD_FILE})
+        TMP_FILE="$(mktemp)"
+        curl -s $(cat ${DASHBOARD_FILE}) > ${TMP_FILE}
+        curl -v {{ if .Values.dashboardImport.xpackauth.enabled }}--user {{ .Values.dashboardImport.xpackauth.username }}:{{ .Values.dashboardImport.xpackauth.password }}{{ end }} -s --connect-timeout 60 --max-time 60 -XPOST localhost:5601/api/kibana/dashboards/import?force=true -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @${TMP_FILE}
+        rm ${TMP_FILE}
       else
         echo "Importing from json file..."
         curl -v {{ if .Values.dashboardImport.xpackauth.enabled }}--user {{ .Values.dashboardImport.xpackauth.username }}:{{ .Values.dashboardImport.xpackauth.password }}{{ end }} -s --connect-timeout 60 --max-time 60 -XPOST localhost:5601/api/kibana/dashboards/import?force=true -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @./${DASHBOARD_FILE}
       fi
 
       if [ "$?" != "0" ]; then
-        echo -e "\nImport of ${DASHBOARD_FILE} dashboard failed... Exiting...
+        echo -e "\nImport of ${DASHBOARD_FILE} dashboard failed... Exiting..."
         exit 1
       else
         echo -e "\nImport of ${DASHBOARD_FILE} dashboard finished :-)"
