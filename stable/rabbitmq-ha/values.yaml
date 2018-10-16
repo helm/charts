@@ -13,20 +13,81 @@ managementPassword: E9R3fjZm4ejFkVFE
 extraConfig: |
 #  queue_master_locator = min-masters
 
+definitions:
+  users: |-
+#   {
+#     "name": "myUsername",
+#     "password": "myPassword",
+#     "tags": "administrator"
+#   }
+  vhosts: |-
+#   {
+#     "name": "/rabbit"
+#   }
+  parameters: |-
+#   {
+#     "value": {
+#       "src-uri": "amqp://localhost",
+#       "src-queue": "source",
+#       "dest-uri": "amqp://localhost",
+#       "dest-queue": "destination",
+#       "add-forward-headers": false,
+#       "ack-mode": "on-confirm",
+#       "delete-after": "never"
+#     },
+#     "vhost": "/",
+#     "component": "shovel",
+#     "name": "test"
+#   }
+  permissions: |-
+#   {
+#     "user": "myUsername",
+#     "vhost": "/rabbit",
+#     "configure": ".*",
+#     "write": ".*",
+#     "read": ".*"
+#   }
+  queues: |-
+#    {
+#       "name":"myName",
+#       "vhost":"/rabbit",
+#       "durable":true,
+#       "auto_delete":false,
+#       "arguments":{}
+#    }
+  exchanges: |-
+#    {
+#       "name":"myName",
+#       "vhost":"/rabbit",
+#       "type":"direct",
+#       "durable":true,
+#       "auto_delete":false,
+#       "internal":false,
+#       "arguments":{}
+#    }
+  bindings: |-
+#    {
+#       "source":"myName",
+#       "vhost":"/rabbit",
+#       "destination":"myName",
+#       "destination_type":"queue",
+#       "routing_key":"myKey",
+#       "arguments":{}
+#    }
 ## Sets the policies in definitions.json. This can be used to control the high
 ## availability of queues by mirroring them to multiple nodes.
 ## Ref: https://www.rabbitmq.com/ha.html
-policies: |-
-#  {
-#    "name": "ha-all",
-#    "pattern": ".*",
-#    "vhost": "/",
-#    "definition": {
-#      "ha-mode": "all",
-#      "ha-sync-mode": "automatic",
-#      "ha-sync-batch-size": 1
+  policies: |-
+#    {
+#      "name": "ha-all",
+#      "pattern": ".*",
+#      "vhost": "/",
+#      "definition": {
+#        "ha-mode": "all",
+#        "ha-sync-mode": "automatic",
+#        "ha-sync-batch-size": 1
+#      }
 #    }
-#  }
 
 
 ## RabbitMQ default VirtualHost
