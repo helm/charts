@@ -52,11 +52,16 @@ spec:
         - name: {{ template "kibana.fullname" . }}-importscript
           mountPath: "/tmp/dashboardImport.sh"
           subPath: dashboardImport.sh
+        {{- if .Values.configMap.override }}
+        - name: {{ template "kibana.fullname" . }}
+          mountPath: "/usr/share/kibana/config"
+        {{- else }}
         {{- range $configFile := (keys .Values.files) }}
         - name: {{ template "kibana.name" $ }}
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
         {{- end }}
+        {{- end -}}
 {{- end }}
 {{- if .Values.plugins}}
       - name: {{ .Chart.Name }}-plugins-install
@@ -88,11 +93,16 @@ spec:
         volumeMounts:
         - name: plugins
           mountPath: /usr/share/kibana/plugins
+        {{- if .Values.configMap.override }}
+        - name: {{ template "kibana.fullname" . }}
+          mountPath: "/usr/share/kibana/config"
+        {{- else }}
         {{- range $configFile := (keys .Values.files) }}
         - name: {{ template "kibana.name" $ }}
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
         {{- end }}
+        {{- end -}}
 {{- end }}
 {{- end }}
       containers:
@@ -135,15 +145,20 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
+        {{- if .Values.configMap.override }}
+        - name: {{ template "kibana.fullname" . }}
+          mountPath: "/usr/share/kibana/config"
+        {{- else }}
         {{- range $configFile := (keys .Values.files) }}
         - name: {{ template "kibana.name" $ }}
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
         {{- end }}
+        {{- end }}
 {{- if .Values.plugins}}
         - name: plugins
           mountPath: /usr/share/kibana/plugins
-{{- end }}        
+{{- end }}
 {{- with .Values.extraContainers }}
 {{ tpl . $ | indent 6 }}
 {{- end }}
@@ -162,9 +177,15 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       volumes:
-        - name: {{ template "kibana.name" . }}
+        {{- if .Values.configMap.override }}
+        - name: {{ template "kibana.fullname" . }}
           configMap:
             name: {{ template "kibana.fullname" . }}
+        {{- else }}
+        - name: {{ template "kibana.name" . }}
+          configMap:
+            name: {{ template "kibana.name" . }}
+        {{- end -}}
 {{- if .Values.plugins}}
         - name: plugins
           emptyDir: {}

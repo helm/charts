@@ -1,3 +1,4 @@
+{{- if ne .Values.configMap.override true -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -11,4 +12,5 @@ data:
 {{- range $key, $value := .Values.files }}
   {{ $key }}: |
 {{ toYaml $value | default "{}" | indent 4 }}
+{{- end -}}
 {{- end -}}
