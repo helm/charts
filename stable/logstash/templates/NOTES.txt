@@ -1,10 +1,4 @@
 {{- if .Values.service.ports.http }}
-
-***
-Please note that this chart has been deprecated and moved to stable.
-Going forward please use the stable version of this chart.
-***
-
 Get the Logstash HTTP Input URL by running these commands:
   {{- if .Values.ingress.enabled }}
     {{- range .Values.ingress.hosts }}

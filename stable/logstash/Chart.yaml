@@ -1,12 +1,17 @@
-# moved to stable
-deprecated: true
 apiVersion: v1
-description: DEPRECATED Logstash is an open source, server-side data processing pipeline
+description: Logstash is an open source, server-side data processing pipeline
 icon: https://www.elastic.co/assets/blt86e4472872eed314/logo-elastic-logstash-lt.svg
 home: https://www.elastic.co/products/logstash
 name: logstash
-version: 0.9.6
+version: 1.0.0
 appVersion: 6.4.2
 sources:
 - https://www.docker.elastic.co
 - https://www.elastic.co/guide/en/logstash/current/index.html
+maintainers:
+- name: rendhalver
+  email: pete.brown@powerhrg.com
+- name: jar361
+  email: jrodgers@powerhrg.com
+- name: christian-roggia
+  email: christian.roggia@gmail.com
