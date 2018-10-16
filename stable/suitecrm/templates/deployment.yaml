@@ -2,21 +2,21 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "suitecrm.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "suitecrm.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
   selector:
     matchLabels:
-      app: {{ template "name" . }}
+      app: {{ template "suitecrm.name" . }}
       release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "suitecrm.name" . }}
         release: "{{ .Release.Name }}"
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
@@ -27,7 +27,7 @@ spec:
       {{- end}}
       {{- end }}
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "suitecrm.fullname" . }}
         image: {{ template "suitecrm.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
@@ -71,7 +71,7 @@ spec:
         - name: SUITECRM_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "suitecrm.fullname" . }}
               key: suitecrm-password
         - name: SUITECRM_EMAIL
           value: {{ .Values.suitecrmEmail | quote }}
@@ -86,7 +86,7 @@ spec:
         - name: SUITECRM_SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "suitecrm.fullname" . }}
               key: suitecrm-smtp-password
         - name: SUITECRM_SMTP_PROTOCOL
           value: {{ .Values.suitecrmSmtpProtocol | quote }}
@@ -116,20 +116,15 @@ spec:
         volumeMounts:
         - name: suitecrm-data
           mountPath: /bitnami/suitecrm
-        - name: apache-data
+          subPath: suitecrm
+        - name: suitecrm-data
           mountPath: /bitnami/apache
+          subPath: apache
       volumes:
       - name: suitecrm-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-suitecrm
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "suitecrm.fullname" . }}-suitecrm{{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}
