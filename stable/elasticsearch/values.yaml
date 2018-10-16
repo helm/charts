@@ -97,6 +97,7 @@ master:
     type: OnDelete
 
 data:
+  enabled: true
   name: data
   exposeHttp: false
   replicas: 2
@@ -132,3 +133,71 @@ data:
 
 ## Additional init containers
 extraInitContainers: |
+
+# If specified, different node types can be configured (i.e. to achieve hot-warm architecture)
+
+# dataTypes:
+# - name: data-hot
+#   exposeHttp: false
+#   replicas: 2
+#   heapSize: "1536m"
+#   persistence:
+#     enabled: true
+#     accessMode: ReadWriteOnce
+#     name: data-hot
+#     size: "30Gi"
+#     # storageClass: "ssd"
+#   terminationGracePeriodSeconds: 3600
+#   antiAffinity: "soft"
+#   nodeSelector: {}
+#   tolerations: []
+#   resources:
+#     limits:
+#       cpu: "1"
+#       # memory: "2048Mi"
+#     requests:
+#       cpu: "25m"
+#       memory: "1536Mi"
+#   config:
+#     node.attr.temperature: "hot"
+#   priorityClassName: ""
+#   ## (dict) If specified, apply these annotations to each data Pod
+#   # podAnnotations:
+#   #   example: data-foo
+#   podDisruptionBudget:
+#     enabled: false
+#     # minAvailable: 1
+#     maxUnavailable: 1
+# - name: data-warm
+#   exposeHttp: false
+#   replicas: 2
+#   heapSize: "1536m"
+#   persistence:
+#     enabled: true
+#     accessMode: ReadWriteOnce
+#     name: data-warm
+#     size: "30Gi"
+#     # storageClass: "ssd"
+#   terminationGracePeriodSeconds: 3600
+#   antiAffinity: "soft"
+#   nodeSelector: {}
+#   tolerations: []
+#   resources:
+#     limits:
+#       cpu: "1"
+#       # memory: "2048Mi"
+#     requests:
+#       cpu: "25m"
+#       memory: "1536Mi"
+#   config:
+#     node.attr.temperature: "warm"
+#   priorityClassName: ""
+#   ## (dict) If specified, apply these annotations to each data Pod
+#   # podAnnotations:
+#   #   example: data-foo
+#   podDisruptionBudget:
+#     enabled: false
+#     # minAvailable: 1
+#     maxUnavailable: 1
+#  updateStrategy:
+#    type: OnDelete
