@@ -9,7 +9,8 @@ image:
   tag: 3.13.0
   pullPolicy: IfNotPresent
 
-daemonset: {}
+daemonset:
+  enabled: true
   ## Annotations to add to the DaemonSet's Pods
   # podAnnotations:
   #   scheduler.alpha.kubernetes.io/tolerations: '[{"key": "example", "value": "foo"}]'
