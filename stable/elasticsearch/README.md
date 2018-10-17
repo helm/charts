@@ -208,7 +208,7 @@ EOF
 Create cluster with Storage class `ssd` on Kubernetes 1.5+
 
 ```
-$ helm install stable/elasticsearch --name my-release --set data.storageClass=ssd,data.storage=100Gi
+$ helm install stable/elasticsearch --name my-release --set data.persistence.storageClass=ssd,data.storage=100Gi
 ```
 
 ### Usage of the `tpl` Function
