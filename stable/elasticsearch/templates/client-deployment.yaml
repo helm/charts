@@ -1,3 +1,4 @@
+{{- if .Values.cluster.enabled }}
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -168,4 +169,5 @@ spec:
       - name: keystore
         secret:
           secretName: {{ .Values.cluster.keystoreSecret }}
+{{- end }}
 {{- end }}

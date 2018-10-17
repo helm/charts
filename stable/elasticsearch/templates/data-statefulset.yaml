@@ -10,7 +10,11 @@ metadata:
   name: {{ template "elasticsearch.data.fullname" . }}
 spec:
   serviceName: {{ template "elasticsearch.data.fullname" . }}
+  {{- if .Values.cluster.enabled }}
   replicas: {{ .Values.data.replicas }}
+  {{- else }}
+  replicas: 1
+  {{- end }}
   template:
     metadata:
       labels:
@@ -114,7 +118,17 @@ spec:
         - name: DISCOVERY_SERVICE
           value: {{ template "elasticsearch.fullname" . }}-discovery
         - name: NODE_MASTER
+{{- if not .Values.cluster.enabled }}
+          value: "true"
+        - name: RECOVER_AFTER_MASTER_NODES
+          value: '1'
+        - name: EXPECTED_MASTER_NODES
+          value: '1'
+        - name: MINIMUM_MASTER_NODES
+          value: '1'
+{{- else }}
           value: "false"
+{{- end }}
         - name: PROCESSORS
           valueFrom:
             resourceFieldRef:
@@ -130,7 +144,7 @@ spec:
         ports:
         - containerPort: 9300
           name: transport
-{{ if .Values.data.exposeHttp }}
+{{ if or .Values.data.exposeHttp (not .Values.cluster.enabled) }}
         - containerPort: 9200
           name: http
 {{ end }}

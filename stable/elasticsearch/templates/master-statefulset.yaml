@@ -1,3 +1,4 @@
+{{- if .Values.cluster.enabled }}
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -212,3 +213,4 @@ spec:
         requests:
           storage: "{{ .Values.master.persistence.size }}"
   {{ end }}
+{{- end }}

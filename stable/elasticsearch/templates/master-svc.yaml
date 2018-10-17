@@ -15,5 +15,9 @@ spec:
       targetPort: transport
   selector:
     app: {{ template "elasticsearch.name" . }}
+    {{- if .Values.cluster.enabled }}
     component: "{{ .Values.master.name }}"
+    {{- else }}
+    component: "{{ .Values.data.name }}"
+    {{- end }}
     release: {{ .Release.Name }}

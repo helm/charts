@@ -28,7 +28,11 @@ spec:
 {{- end }}
   selector:
     app: {{ template "elasticsearch.name" . }}
+    {{- if .Values.cluster.enabled }}
     component: "{{ .Values.client.name }}"
+    {{- else }}
+    component: "{{ .Values.data.name }}"
+    {{- end }}
     release: {{ .Release.Name }}
   type: {{ .Values.client.serviceType }}
 {{- if .Values.client.loadBalancerIP }}

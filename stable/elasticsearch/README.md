@@ -68,11 +68,12 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `initImage.repository`               | Init container image name                                           | `busybox`                                           |
 | `initImage.tag`                      | Init container image tag                                            | `latest`                                            |
 | `initImage.pullPolicy`               | Init container pull policy                                          | `Always`                                            |
+| `cluster.enabled`                    | Setup a cluster composed of several nodes (client, master, data). Otherwise deploys a single-node cluster. | `true`       |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                                     |
 | `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                                             |
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                                |
 | `cluster.keystoreSecret`             | Name of secret holding secure config options in an es keystore      | `nil`                                               |
-| `cluster.env`                        | Cluster environment variables                                       | `{MINIMUM_MASTER_NODES: "2"}`                       |
+| `cluster.env`                        | Cluster environment variables                                       | ``                                                  |
 | `cluster.bootstrapShellCommand`      | Post-init command to run in separate Job                            | `""`                                                |
 | `cluster.additionalJavaOpts`         | Cluster parameters to be added to `ES_JAVA_OPTS` environment variable | `""`                                              |
 | `cluster.plugins`                    | List of Elasticsearch plugins to install                            | `[]`                                                |
@@ -202,6 +203,13 @@ would degrade performance heavily. The issue is tracked in
 >This setting should always be configured to a quorum (majority) of your master-eligible nodes. A quorum is (number of master-eligible nodes / 2) + 1
 
 More info: https://www.elastic.co/guide/en/elasticsearch/guide/1.x/_important_configuration_changes.html#_minimum_master_nodes
+
+## Single node cluster
+If you want to deploy a single-node Elasticsearch cluster composed of only an "all-in-one" (Master, Data, Client) `Pod`, you will need to set `cluster.enabled` parameter to `false`.
+
+This mode is incompatible with the `cluster.env.MINIMUM_MASTER_NODES` parameter.
+
+Note that it will override `data.replicas` to be 1.
 
 # Client and Coordinating Nodes
 
