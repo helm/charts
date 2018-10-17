@@ -34,6 +34,10 @@ spec:
         spec:
           nodeSelector:
 {{ toYaml .Values.spark.nodeSelector | indent 12 }}
+{{- if .Values.spark.tolerations }}
+      tolerations:
+{{ toYaml .Values.spark.tolerations | indent 8 }}
+{{- end }}
           containers:
           - name: {{ template "jaeger.fullname" . }}-spark
             image: {{ .Values.spark.image }}:{{ .Values.spark.tag }}

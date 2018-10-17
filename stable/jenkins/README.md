@@ -38,10 +38,12 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
 | `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
-| `Master.Cpu`                      | Master requested cpu                 | `200m`                                                                       |
-| `Master.Memory`                   | Master requested memory              | `256Mi`                                                                      |
+| `Master.AdminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value                                  |
+| `Master.JenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set                                               |
+| `Master.resources`                | Resources allocation (Requests and Limits) | `{requests: {cpu: 50m, memory: 256Mi}, limits: {cpu: 2000m, memory: 2048Mi}}`|
 | `Master.InitContainerEnv`         | Environment variables for Init Container                                 | Not set                                  |
 | `Master.ContainerEnv`             | Environment variables for Jenkins Container                              | Not set                                  |
+| `Master.UsePodSecurityContext`    | Enable pod security context (must be `true` if `RunAsUser` or `FsGroup` are set) | `true`                           |
 | `Master.RunAsUser`                | uid that jenkins runs with           | `0`                                                                          |
 | `Master.FsGroup`                  | uid that will be used for persistent volume | `0`                                                                   |
 | `Master.ServiceAnnotations`       | Service annotations                  | `{}`                                                                         |
@@ -52,7 +54,6 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.HealthProbesLivenessTimeout`      | Set the timeout for the liveness probe | `120`                                                       |
 | `Master.HealthProbesReadinessTimeout` | Set the timeout for the readiness probe | `60`                                                       |
 | `Master.HealthProbeLivenessFailureThreshold` | Set the failure threshold for the liveness probe | `12`                                                       |
-| `Master.ContainerPort`            | Master listening port                | `8080`                                                                       |
 | `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |
 | `Master.DisabledAgentProtocols`   | Disabled agent protocols             | `JNLP-connect JNLP2-connect`                                                                      |
 | `Master.CSRF.DefaultCrumbIssuer.Enabled` | Enable the default CSRF Crumb issuer | `true`                                                                      |
@@ -62,36 +63,38 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.LoadBalancerIP`           | Optional fixed external IP           | Not set                                                                      |
 | `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
 | `Master.CustomConfigMap`          | Use a custom ConfigMap               | `false`                                                                      |
+| `Master.OverwriteConfig`          | Replace config w/ ConfigMap on boot  | `false`                                                                      |
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
 | `Master.InitScripts`              | List of Jenkins init scripts         | Not set                                                                      |
 | `Master.CredentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set                                                  |
 | `Master.SecretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                                                           |
 | `Master.Jobs`                     | Jenkins XML job configs              | Not set                                                                      |
-| `Master.InstallPlugins`           | List of Jenkins plugins to install   | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
+| `Master.InstallPlugins`           | List of Jenkins plugins to install   | `kubernetes:1.12.0 workflow-aggregator:2.5 credentials-binding:1.16 git:3.9.1 workflow-job:2.23` |
 | `Master.ScriptApproval`           | List of groovy functions to approve  | Not set                                                                      |
 | `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
 | `Master.Affinity`                 | Affinity settings                    | `{}`                                                                         |
 | `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
+| `Master.PodAnnotations`           | Annotations for master pod           | `{}`                                                                         |
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
 | `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `extensions/v1beta1`                                                         |
 | `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
-| `rbac.apiVersion`                 | RBAC API version                     | `v1beta1`                                                                    |
 | `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
+| `rbac.roleBindingKind`            | Role kind (`RoleBinding` or `ClusterRoleBinding`)| `ClusterRoleBinding`                                             |
 
 ### Jenkins Agent
 
-| Parameter               | Description                                     | Default                |
-| ----------------------- | ----------------------------------------------- | ---------------------- |
-| `Agent.AlwaysPullImage` | Always pull agent container image before build  | `false`                |
-| `Agent.Enabled`         | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
-| `Agent.Image`           | Agent image name                                | `jenkinsci/jnlp-slave` |
-| `Agent.ImagePullSecret` | Agent image pull secret                         | Not set                |
-| `Agent.ImageTag`        | Agent image tag                                 | `2.62`                 |
-| `Agent.Privileged`      | Agent privileged container                      | `false`                |
-| `Agent.Cpu`             | Agent requested cpu                             | `200m`                 |
-| `Agent.Memory`          | Agent requested memory                          | `256Mi`                |
-| `Agent.volumes`         | Additional volumes                              | `nil`                  |
+| Parameter                  | Description                                     | Default                |
+| -------------------------- | ----------------------------------------------- | ---------------------- |
+| `Agent.AlwaysPullImage`    | Always pull agent container image before build  | `false`                |
+| `Agent.CustomJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
+| `Agent.Enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
+| `Agent.Image`              | Agent image name                                | `jenkinsci/jnlp-slave` |
+| `Agent.ImagePullSecret`    | Agent image pull secret                         | Not set                |
+| `Agent.ImageTag`           | Agent image tag                                 | `2.62`                 |
+| `Agent.Privileged`         | Agent privileged container                      | `false`                |
+| `Agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
+| `Agent.volumes`            | Additional volumes                              | `nil`                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -202,6 +205,60 @@ jenkins:
   Master:
     RunAsUser: 1000
     FsGroup: 1000
+```
+
+## Providing jobs xml
+
+Jobs can be created (and overwritten) by providing jenkins config xml within the `values.yaml` file.
+The keys of the map will become a directory within the jobs directory.
+The values of the map will become the `config.xml` file in the respective directory.
+
+Below is an example of a `values.yaml` file and the directory structure created:
+
+#### values.yaml
+```yaml
+Master:
+  Jobs:
+    test-job: |-
+      <?xml version='1.0' encoding='UTF-8'?>
+      <project>
+        <keepDependencies>false</keepDependencies>
+        <properties/>
+        <scm class="hudson.scm.NullSCM"/>
+        <canRoam>false</canRoam>
+        <disabled>false</disabled>
+        <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+        <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+        <triggers/>
+        <concurrentBuild>false</concurrentBuild>
+        <builders/>
+        <publishers/>
+        <buildWrappers/>
+      </project>
+    test-job-2: |-
+      <?xml version='1.0' encoding='UTF-8'?>
+      <project>
+        <keepDependencies>false</keepDependencies>
+        <properties/>
+        <scm class="hudson.scm.NullSCM"/>
+        <canRoam>false</canRoam>
+        <disabled>false</disabled>
+        <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+        <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+        <triggers/>
+        <concurrentBuild>false</concurrentBuild>
+        <builders/>
+        <publishers/>
+        <buildWrappers/>
+```
+
+#### Directory structure of jobs directory
+```
+.
+├── _test-job-1
+|   └── config.xml
+├── _test-job-2
+|   └── config.xml
 ```
 
 Docs taken from https://github.com/jenkinsci/docker/blob/master/Dockerfile:

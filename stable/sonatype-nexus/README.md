@@ -63,6 +63,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | Parameter                                   | Description                         | Default                                 |
 | ------------------------------------------  | ----------------------------------  | ----------------------------------------|
 | `replicaCount`                              | Number of Nexus service replicas    | `1`                                     |
+| `deploymentStrategy`                        | Deployment Strategy     |  `rollingUpdate` |
 | `nexus.imageName`                           | Nexus image                         | `quay.io/travelaudience/docker-nexus`   |
 | `nexus.imageTag`                            | Version of Nexus                    | `3.9.0`                                 |
 | `nexus.imagePullPolicy`                     | Nexus image pull policy             | `IfNotPresent`                          |
@@ -72,16 +73,26 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.nexusPort`                           | Internal port for Nexus service     | `8081`                                  |
 | `nexus.serviceType`                         | Service for Nexus                   | `NodePort`                              |
 | `nexus.securityContext`                     | Security Context (for enabling official image use `fsGroup: 2000`) | `{}`     |
+| `nexus.labels`                              | Service labels                      | `{}`                                    |
 | `nexus.livenessProbe.initialDelaySeconds`   | LivenessProbe initial delay         | 30                                      |
 | `nexus.livenessProbe.periodSeconds`         | Seconds between polls               | 30                                      |
 | `nexus.livenessProbe.failureThreshold`      | Number of attempts before failure   | 6                                       |
+| `nexus.livenessProbe.timeoutSeconds`        | Time in seconds after liveness probe times out    | `nil`                     |
+| `nexus.livenessProbe.path`                  | Path for LivenessProbe              | /                                       |
 | `nexus.readinessProbe.initialDelaySeconds`  | ReadinessProbe initial delay        | 30                                      |
 | `nexus.readinessProbe.periodSeconds`        | Seconds between polls               | 30                                      |
 | `nexus.readinessProbe.failureThreshold`     | Number of attempts before failure   | 6                                       |
+| `nexus.readinessProbe.timeoutSeconds`       | Time in seconds after readiness probe times out    | `nil`                    |
+| `nexus.readinessProbe.path`                 | Path for ReadinessProbe             | /                                       |
+| `nexus.hostAliases`                         | Aliases for IPs in /etc/hosts       | []                                      |
+| `nexusProxy.enabled`                        | Enable nexus proxy                  | `true`                                  |
+| `nexusProxy.svcName`                        | Nexus proxy service name            | `nil`                                  |
+| `nexusProxy.targetPort`                     | Container Port for Nexus proxy      | `8080`                                  |
 | `nexusProxy.port`                           | Port for exposing Nexus             | `8080`                                  |
 | `nexusProxy.imageName`                      | Proxy image                         | `quay.io/travelaudience/docker-nexus-proxy` |
 | `nexusProxy.imageTag`                       | Proxy image version                 | `2.1.0`                                 |
 | `nexusProxy.imagePullPolicy`                | Proxy image pull policy             | `IfNotPresent`                          |
+| `nexusProxy.resources`                      | Proxy resource requests and limits  | `{}`                                    |
 | `nexusProxy.env.nexusHttpHost`              | Nexus url to access Nexus           | `nil`                                   |
 | `nexusProxy.env.nexusDockerHost`            | Containers url to be used with docker | `nil`                                 |
 | `nexusProxy.env.enforceHttps`               | Allow only https access or not      | `false`                                 |
@@ -109,6 +120,26 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `ingress.tls.enabled`                       | Enable TLS                          | `false`                                 |
 | `ingress.tls.secretName`                    | Name of the secret storing TLS cert, `false` to use the Ingress' default certificate | `nexus-tls`                             |
 | `ingress.path`                              | Path for ingress rules. GCP users should set to `/*` | `/`                    |
+| `tolerations`                               | tolerations list                    | `[]`                                    |
+| `config.enabled`                            | Enable configmap                    | `false`                                 |
+| `config.mountPath`                          | Path to mount the config            | `/sonatype-nexus-conf`                  |
+| `config.data`                               | Configmap data                      | `nil`                                   |
+| `deployment.annotations`                    | Annotations to enhance deployment configuration  | `{}`                       |
+| `deployment.initContainers`                 | Init containers to run before main containers  | `nil`                        |
+| `deployment.postStart.command`              | Command to run after starting the nexus container  | `nil`                    |
+| `deployment.additionalContainers`           | Add additional Container         | `nil`                                      |
+| `deployment.additionalVolumes`              | Add additional Container         | `nil`                                      |
+| `secret.enabled`                            | Enable secret                    | `false`                                    |
+| `secret.mountPath`                          | Path to mount the secret         | `/etc/secret-volume`                       |
+| `secret.readOnly`                           | Secret readonly state            | `true`                                     |
+| `secret.data`                               | Secret data                      | `nil`                                      |
+| `service.enabled`                           | Enable additional service        | `nil`                                      |
+| `service.name`                              | Service name                     | `nil`                                      |
+| `service.portName`                          | Service port name                | `nil`                                      |
+| `service.labels`                            | Service labels                   | `nil`                                      |
+| `service.annotations`                       | Service annotations              | `nil`                                      |
+| `service.targetPort`                        | Service port                     | `nil`                                      |
+| `service.port`                              | Port for exposing service        | `nil`                                      |
 
 If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables need to be configured
 
@@ -120,6 +151,7 @@ If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables
 | `nexusProxy.env.redirectUrl`     | OAuth callback url. example `https://nexus.example.com/oauth/callback` | `nil`            |
 | `nexusProxy.secrets.keystore`    | base-64 encoded value of the keystore file needed for the proxy to sign user tokens. Example: cat keystore.jceks &#124; base64 | `nil`  |
 | `nexusProxy.secrets.password`    | Password to the Java Keystore file | `nil`                                                |
+
 
 ```bash
 $ helm install --name my-release --set persistence.enabled=false stable/sonatype-nexus

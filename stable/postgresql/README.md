@@ -57,6 +57,7 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 | `schedulerName`            | Name of an alternate scheduler                  | `nil`                                                      |
 | `existingSecret`           | Use Existing secret for Admin password          | `nil`                                                      |
 | `postgresConfig`           | Runtime Config Parameters                       | `nil`                                                      |
+| `pgHbaConf`                | Content of pg\_hba.conf                         | `nil (do not create pg_hba.conf)`                          |
 | `persistence.enabled`      | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `nil`                                                      |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
@@ -65,6 +66,7 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 | `persistence.size`         | Size of data volume                             | `8Gi`                                                      |
 | `persistence.subPath`      | Subdirectory of the volume to mount at          | `postgresql-db`                                            |
 | `persistence.mountPath`    | Mount path of data volume                       | `/var/lib/postgresql/data/pgdata`                          |
+| `persistence.resourcePolicy` | set resource-policy Helm annotation on PVC. Can be nil or "keep" | `nil`                                   |
 | `resources`                | CPU/Memory resource requests/limits             | Memory: `256Mi`, CPU: `100m`                               |
 | `metrics.enabled`          | Start a side-car prometheus exporter            | `false`                                                    |
 | `metrics.image`            | Exporter image                                  | `wrouesnel/postgres_exporter`                              |
@@ -81,6 +83,7 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 | `nodeSelector`             | Node labels for pod assignment                  | {}                                                         |
 | `affinity`                 | Affinity settings for pod assignment            | {}                                                         |
 | `tolerations`              | Toleration labels for pod assignment            | []                                                         |
+| `terminationGracePeriodSeconds`     | Optional duration in seconds the pod needs to terminate gracefully | `nil`                          |
 | `probes.liveness.initialDelay`      | Liveness probe initial delay           | `60`                                                       |
 | `probes.liveness.timeoutSeconds`    | Liveness probe timeout seconds         | `5`                                                        |
 | `probes.liveness.failureThreshold`  | Liveness probe failure threshold       | `6`                                                        |
@@ -89,6 +92,7 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 | `probes.readiness.failureThreshold` | Readiness probe failure threshold      | `5`                                                        |
 | `podAnnotations`           | Annotations for the postgresql pod              | {}                                                         |
 | `deploymentAnnotations`    | Annotations for the postgresql deployment       | {}                                                         |
+| `extraEnv`                 | Any extra environment variables you would like to pass on to the pod | {}                                    |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
 

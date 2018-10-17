@@ -1,6 +1,6 @@
 image:
   repository: fluent/fluentd-kubernetes-daemonset
-  tag: v0.12.33-cloudwatch
+  tag: v0.12.43-cloudwatch
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
@@ -29,6 +29,8 @@ annotations: {}
 
 awsRegion: us-east-1
 awsRole:
+awsAccessKeyId:
+awsSecretAccessKey:
 logGroupName: kubernetes
 
 rbac:
@@ -37,6 +39,9 @@ rbac:
 
   ## Ignored if rbac.create is true
   serviceAccountName: default
+# Add extra environment variables if specified (must be specified as a single line object and be quoted)
+extraVars: []
+# - "{ name: NODE_NAME, valueFrom: { fieldRef: { fieldPath: spec.nodeName } } }"
 
 fluentdConfig: |
   <match fluent.**>

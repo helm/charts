@@ -38,6 +38,10 @@ data:
       rabbitmq_auth_mechanism_ssl,
       {{- end }}
 
+      {{- if .Values.rabbitmqAuthHTTP.enabled }}
+      rabbitmq_auth_backend_http,
+      {{- end }}
+
       rabbitmq_consistent_hash_exchange,
       rabbitmq_federation,
       rabbitmq_federation_management,
@@ -70,8 +74,15 @@ data:
     ## via a loopback interface (e.g. localhost)
     loopback_users.guest = false
 
+    management.load_definitions = /etc/definitions/definitions.json
+
     ## Memory-based Flow Control threshold
-    vm_memory_high_watermark.absolute = {{ .Values.rabbitmqMemoryHighWatermark }}
+    vm_memory_high_watermark.{{ .Values.rabbitmqMemoryHighWatermarkType }} = {{ .Values.rabbitmqMemoryHighWatermark }}
+
+    ## Auth HTTP Backend Plugin
+    {{- if .Values.rabbitmqAuthHTTP.enabled }}
+{{ .Values.rabbitmqAuthHTTP.config | indent 4 }}
+    {{- end }}
 
     ## LDAP Plugin
     {{- if .Values.rabbitmqLDAPPlugin.enabled }}
@@ -102,5 +113,7 @@ data:
     {{- if .Values.rabbitmqAmqpsSupport.enabled }}
 {{ .Values.rabbitmqAmqpsSupport.config | indent 4 }}
     {{- end }}
+
+{{ .Values.extraConfig | indent 4 }}
 
 {{- end }}

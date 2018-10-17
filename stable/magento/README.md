@@ -14,6 +14,8 @@ This chart bootstraps a [Magento](https://github.com/bitnami/bitnami-docker-mage
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment as a database for the Magento application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -47,6 +49,7 @@ The following table lists the configurable parameters of the Magento chart and t
 
 |             Parameter              |               Description                |                         Default                          |
 |------------------------------------|------------------------------------------|----------------------------------------------------------|
+| `global.imageRegistry`             | Global Docker image registry             | `nil`                                                    |
 | `image.registry`                   | Magento image registry                   | `docker.io`                                              |
 | `image.repository`                 | Magento Image name                       | `bitnami/magento`                                        |
 | `image.tag`                        | Magento Image tag                        | `{VERSION}`                                              |
@@ -122,3 +125,14 @@ The [Bitnami Magento](https://github.com/bitnami/bitnami-docker-magento) image s
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is magento:
+
+```console
+$ kubectl patch deployment magento-magento --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl delete statefulset magento-mariadb --cascade=false

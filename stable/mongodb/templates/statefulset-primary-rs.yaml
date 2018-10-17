@@ -14,15 +14,30 @@ spec:
   selector:
     matchLabels:
       app: {{ template "mongodb.name" . }}
+      chart: {{ template "mongodb.chart" . }}
       release: {{ .Release.Name }}
       component: primary
   template:
     metadata:
       labels:
         app: {{ template "mongodb.name" . }}
+        chart: {{ template "mongodb.chart" . }}
         release: {{ .Release.Name }}
         component: primary
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range .Values.image.pullSecrets }}
@@ -37,10 +52,18 @@ spec:
           - containerPort: {{ .Values.service.port }}
             name: mongodb
           env:
+          - name: MONGODB_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
           - name: MONGODB_REPLICA_SET_MODE
             value: "primary"
           - name: MONGODB_REPLICA_SET_NAME
             value: {{ .Values.replicaSet.name | quote }}
+            {{- if .Values.replicaSet.useHostnames }}
+          - name: MONGODB_ADVERTISED_HOSTNAME
+            value: "$(MONGODB_POD_NAME).{{ template "mongodb.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
+            {{- end }}
           - name: MONGODB_USERNAME
             value: {{ .Values.mongodbUsername | quote }}
           - name: MONGODB_DATABASE
@@ -64,6 +87,12 @@ spec:
                 name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
                 key: mongodb-replica-set-key
             {{- end }}
+          - name: MONGODB_ENABLE_IPV6
+          {{- if .Values.mongodbEnableIPv6 }}
+            value: "yes"
+          {{- else }}
+            value: "no"
+          {{- end }}
           - name: MONGODB_EXTRA_FLAGS
             value: {{ default "" .Values.mongodbExtraFlags | join " " }}
           {{- if .Values.livenessProbe.enabled }}
@@ -95,17 +124,28 @@ spec:
           volumeMounts:
             - name: datadir
               mountPath: /bitnami/mongodb
-          {{- if .Values.configmap }}
+            {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
+            - name: custom-init-scripts
+              mountPath: /docker-entrypoint-initdb.d
+            {{- end }}
+            {{- if .Values.configmap }}
             - name: config
               mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
               subPath: mongodb.conf
-          {{- end }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
       volumes:
-      {{- if .Values.configmap }}
+        {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
+        - name: custom-init-scripts
+          configMap:
+            name: {{ template "mongodb.fullname" . }}-init-scripts
+        {{- end }}
+        {{- if .Values.configmap }}
         - name: config
           configMap:
             name: {{ template "mongodb.fullname" . }}
-      {{- end }}
+        {{- end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:

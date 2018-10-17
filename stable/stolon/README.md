@@ -1,7 +1,7 @@
 # Stolon Helm Chart
 
 * Installs [Stolon](https://github.com/sorintlab/stolon) (HA PostgreSQL cluster)
-* Inspired by [this](https://github.com/lwolf/stolon-chart) and [stolon examples](https://github.com/sorintlab/stolon/tree/master/examples/kubernetes/statefulset)
+* Based on [lwolf/stolon-chart](https://github.com/lwolf/stolon-chart) and [stolon examples](https://github.com/sorintlab/stolon/tree/master/examples/kubernetes/statefulset)
 
 ## TL;DR;
 
@@ -34,32 +34,36 @@ Kubernetes is the default store backend. `consul`, `etcdv2` or `etcdv3` can also
 | `debug`                                 | Debug mode                                     | `false`                                                      |
 | `persistence.enabled`                   | Use a PVC to persist data                      | `true`                                                       |
 | `persistence.storageClassName`          | Storage class name of backing PVC              | `""`                                                         |
-| `persistence.accessModes`               | Perisistent volumes access modes               | `["ReadWriteOnce"]`                                          |
+| `persistence.accessModes`               | Persistent volumes access modes               | `["ReadWriteOnce"]`                                          |
 | `persistence.size`                      | Size of data volume                            | `10Gi`                                                       |
 | `rbac.create`                           | Specifies if RBAC resources should be created  | `true`                                                       |
 | `serviceAccount.create`                 | Specifies if ServiceAccount should be created  | `true`                                                       |
-| `serviceAccount.name`                   | Name of the generated serviceAccount           | Defaults to fullname template                                |
+| `serviceAccount.name`                   | Name of the generated ServiceAccount           | Defaults to fullname template                                |
 | `superuserUsername`                     | Postgres superuser username                    | `stolon`                                                     |
-| `superuserPassword`                     | Postgres superuser password                    | random 40 characters                                         |
+| `superuserPassword`                     | Postgres superuser password                    | (Required)                                         |
 | `replicationUsername`                   | Replication username                           | `repluser`                                                   |
-| `replicationPassword`                   | Replication password                           | random 40 characters                                         |
+| `replicationPassword`                   | Replication password                           | (Required)                                         |
 | `store.backend`                         | Store backend (kubernetes/consul/etcd)         | `kubernetes`                                                 |
 | `store.endpoints`                       | Store backend endpoints                        | `nil`                                                        |
 | `store.kubeResourceKind`                | Kubernetes resource kind (only for kubernetes) | `configmap`                                                  |
 | `pgParameters`                          | [`postgresql.conf`][pgconf] options used during cluster creation | `{}`                                       |
 | `ports`                                 | Ports to expose on pods                        | `{"stolon":{"containerPort": 5432},"metrics":{"containerPort": 8080}}`|
+| `job.autoCreateCluster                  | Set to `false` to force-disable auto-cluster-creation which may clear pre-existing postgres db data | `true`  |
 | `keeper.replicaCount`                   | Number of keeper nodes                         | `2`                                                          |
 | `keeper.resources`                      | Keeper resource requests/limit                 | `{}`                                                         |
+| `keeper.priorityClassName`              | Keeper priorityClassName                       | `nil`                                                        |
 | `keeper.nodeSelector`                   | Node labels for keeper pod assignment          | `{}`                                                         |
 | `keeper.affinity`                       | Affinity settings for keeper pod assignment    | `{}`                                                         |
 | `keeper.tolerations`                    | Toleration labels for keeper pod assignment    | `[]`                                                         |
 | `proxy.replicaCount`                    | Number of proxy nodes                          | `2`                                                          |
 | `proxy.resources`                       | Proxy resource requests/limit                  | `{}`                                                         |
+| `proxy.priorityClassName`               | Proxy priorityClassName                        | `nil`                                                        |
 | `proxy.nodeSelector`                    | Node labels for proxy pod assignment           | `{}`                                                         |
 | `proxy.affinity`                        | Affinity settings for proxy pod assignment     | `{}`                                                         |
 | `proxy.tolerations`                     | Toleration labels for proxy pod assignment     | `[]`                                                         |
 | `sentinel.replicaCount`                 | Number of sentinel nodes                       | `2`                                                          |
 | `sentinel.resources`                    | Sentinel resource requests/limit               | `{}`                                                         |
+| `sentinel.priorityClassName`            | Sentinel priorityClassName                     | `nil`                                                        |
 | `sentinel.nodeSelector`                 | Node labels for sentinel pod assignment        | `{}`                                                         |
 | `sentinel.affinity`                     | Affinity settings for sentinel pod assignment  | `{}`                                                         |
 | `sentinel.tolerations`                  | Toleration labels for sentinel pod assignment  | `[]`                                                         |

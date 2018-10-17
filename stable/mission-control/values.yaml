@@ -1,0 +1,267 @@
+# Default values for Mission Control.
+# This is a YAML-formatted file.
+# Beware when changing values here. You should know what you are doing!
+# Access the values with {{ .Values.key.subkey }}
+
+# Common
+initContainerImage: "alpine:3.6"
+imagePullPolicy: IfNotPresent
+
+imagePullSecrets:
+
+## Role Based Access Control
+## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
+rbac:
+  create: true
+  role:
+    ## Rules to create. It follows the role specification
+    rules:
+    - apiGroups:
+      - ''
+      resources:
+      - services
+      - endpoints
+      - pods
+      verbs:
+      - get
+      - watch
+      - list
+
+## Service Account
+## Ref: https://kubernetes.io/docs/admin/service-accounts-admin/
+##
+serviceAccount:
+  create: true
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  name:
+
+## Post Install hook to create user in Mongodb
+postInstallHook:
+  image:
+    repository: mvertes/alpine-mongo
+    tag: 3.6.3-0
+    pullPolicy: IfNotPresent
+
+# Sub charts
+## Configuration values for the mongodb dependency
+## ref: https://github.com/kubernetes/charts/blob/master/stable/mongodb/README.md
+##
+mongodb:
+  enabled: true
+  image:
+    tag: 3.6.3
+    pullPolicy: IfNotPresent
+  persistence:
+    size: 50Gi
+  resources: {}
+  #  requests:
+  #    memory: "2Gi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "2Gi"
+  #    cpu: "250m"
+  ## Make sure the --wiredTigerCacheSizeGB is no more than half the memory limit!
+  ## This is critical to protect against OOMKill by Kubernetes!
+  mongodbExtraFlags:
+  - "--wiredTigerCacheSizeGB=1"
+  usePassword: false
+  db:
+    adminUser: admin
+    adminPassword:
+    mcUser: mission_platform
+    mcPassword:
+    insightUser: jfrog_insight
+    insightPassword:
+    insightSchedulerDb: insight_scheduler
+  livenessProbe:
+    initialDelaySeconds: 40
+  readinessProbe:
+    initialDelaySeconds: 30
+
+elasticsearch:
+  enabled: true
+  persistence:
+    size: 50Gi
+  resources: {}
+  #  requests:
+  #    memory: "2Gi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "3Gi"
+  #    cpu: "250m"
+  env:
+    clusterName: "es-cluster"
+    esUsername: "elastic"
+    esPassword:
+
+podRestartTime:
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+## Common
+## Create secret with keys and certs as per documentation provided in README.md
+existingCertsSecret:
+
+## Create secret for certs from provided values. Follow script given in README.md to generate keys and certs. Example is given in
+## Example values given in https://github.com/kubernetes/charts//blob/master/incubator/mission-control/ci/test-values.yaml
+insightKey:
+insightCrt:
+jfmcCrt:
+jfmcKeystore:
+jfmcTruststore:
+
+missionControl:
+  replicaCount: 1
+  name: mission-control
+  image: docker.bintray.io/jfrog/mission-control
+  ## Note that by default we use appVersion to get image tag
+  # version: 3.1.2
+  missionControlUrl:
+  podRestartTime:
+  persistence:
+    enabled: true
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
+    mountPath: "/var/opt/jfrog/mission-control"
+    accessMode: ReadWriteOnce
+    size: 100Gi
+    ## Mission Control data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+
+  ## Control Java options (JAVA_OPTIONS)
+  ## IMPORTANT: keep javaOpts.xmx no higher than resources.limits.memory
+  javaOpts:
+    other: "-server -XX:+UseG1GC -Dfile.encoding=UTF8"
+    xms:
+    xmx:
+  resources: {}
+  #  requests:
+  #    memory: "2Gi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "3Gi"
+  #    cpu: "1"
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  service:
+    type: LoadBalancer
+  internalPort: 8080
+  externalPort: 80
+
+
+insightServer:
+  replicaCount: 1
+  name: insight-server
+  image: docker.bintray.io/jfrog/insight-server
+  ## Note that by default we use appVersion to get image tag
+  # version: 3.1.2
+  service:
+    name: insight-server
+    type: ClusterIP
+  externalHttpPort: 8082
+  internalHttpPort: 8082
+  externalHttpsPort: 8091
+  internalHttpsPort: 8091
+  resources: {}
+  #  requests:
+  #    memory: "500Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "1Gi"
+  #    cpu: "1"
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+insightScheduler:
+  replicaCount: 1
+  name: insight-scheduler
+  image: docker.bintray.io/jfrog/insight-scheduler
+  ## Note that by default we use appVersion to get image tag
+  # version: 3.1.2
+  service:
+    type: ClusterIP
+  externalPort: 8080
+  internalPort: 8080
+  resources: {}
+  #  requests:
+  #    memory: "500Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "3Gi"
+  #    cpu: "1"
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+insightExecutor:
+  replicaCount: 1
+  name: insight-executor
+  image: docker.bintray.io/jfrog/insight-executor
+  ## Note that by default we use appVersion to get image tag
+  # version: 3.1.2
+  persistence:
+    enabled: true
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
+    mountPath: "/var/cloudbox"
+    accessMode: ReadWriteOnce
+    size: 100Gi
+    ## Mission Control data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+
+  service:
+    type: ClusterIP
+  externalPort: 8080
+  internalPort: 8080
+
+  resources: {}
+  #  requests:
+  #    memory: "500Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "3Gi"
+  #    cpu: "1"
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}

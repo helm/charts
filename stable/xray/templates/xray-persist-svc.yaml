@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "xray-persist.fullname" . }}
+  labels:
+    app: {{ template "xray.name" . }}
+    chart: {{ template "xray.chart" . }}
+    component: {{ .Values.persist.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.indexer.service.type }}
+  ports:
+  - port: {{ .Values.persist.internalPort }}
+    protocol: TCP
+    name: http
+    targetPort: {{ .Values.persist.externalPort }}
+  selector:
+    app: {{ template "xray.name" . }}
+    component: {{ .Values.persist.name }}
+    release: {{ .Release.Name }}

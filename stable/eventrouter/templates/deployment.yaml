@@ -3,17 +3,22 @@ kind: Deployment
 metadata:
   labels: {{ include "eventrouter.labels" . | indent 4 }}
   name: {{ template "eventrouter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "eventrouter.name" . }}
-      release: {{ .Release.Name }}    
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "eventrouter.name" . }}
-        release: {{ .Release.Name }}    
+        release: {{ .Release.Name }}
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -22,6 +27,10 @@ spec:
         volumeMounts:
           - name: config-volume
             mountPath: /etc/eventrouter
+    {{- if .Values.containerPorts }}
+        ports:
+{{ toYaml .Values.containerPorts | indent 10 }}
+    {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
     {{- if .Values.nodeSelector }}

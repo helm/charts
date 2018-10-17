@@ -23,16 +23,17 @@ host. To configure OpenCart with the URL of your service:
   export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "opencart.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
   export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "opencart.fullname" . }} -o jsonpath="{.data.opencart-password}" | base64 --decode)
   {{- if .Values.mariadb.mariadbRootPassword }}
-  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "opencart.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+  export DATABASE_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "opencart.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
   {{- end }}
   {{- end }}
+  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "opencart.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-password}" | base64 --decode)
 
 2. Complete your OpenCart deployment by running:
 
 {{- if .Values.mariadb.enabled }}
 
   helm upgrade {{ .Release.Name }} stable/opencart \
-    --set opencartHost=$APP_HOST,opencartPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbPassword }},mariadb.mariadbPassword=$APP_DATABASE_PASSWORD{{ end }}
+    --set opencartHost=$APP_HOST,opencartPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$DATABASE_ROOT_PASSWORD{{ end }},mariadb.db.password=$APP_DATABASE_PASSWORD
 {{- else }}
 
   ## PLEASE UPDATE THE EXTERNAL DATABASE CONNECTION PARAMETERS IN THE FOLLOWING COMMAND AS NEEDED ##
@@ -46,12 +47,15 @@ host. To configure OpenCart with the URL of your service:
 
 {{- if eq .Values.serviceType "ClusterIP" }}
 
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "opencart.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-  echo http://127.0.0.1:8080/
-  kubectl port-forward $POD_NAME 8080:80
+  echo "URL: http://127.0.0.1:8080/"
+  echo "Administration URL: http://127.0.0.1:8080/admin"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "opencart.fullname" . }} 8080:80
+
 {{- else }}
-  echo URL               : http://{{ include "opencart.host" . }}/
-  echo Administration URL : http://{{ include "opencart.host" . }}/admin
+
+  echo "URL: http://{{ include "opencart.host" . }}/"
+  echo "Administration URL: http://{{ include "opencart.host" . }}/admin"
+
 {{- end }}
 
 2. Get your OpenCart login credentials by running:

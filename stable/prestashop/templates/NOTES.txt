@@ -23,16 +23,17 @@ host. To configure PrestaShop with the URL of your service:
   export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "prestashop.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
   export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "prestashop.fullname" . }} -o jsonpath="{.data.prestashop-password}" | base64 --decode)
   {{- if .Values.mariadb.mariadbRootPassword }}
-  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "prestashop.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+  export DATABASE_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "prestashop.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
   {{- end }}
   {{- end }}
+  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "prestashop.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-password}" | base64 --decode)
 
 2. Complete your PrestaShop deployment by running:
 
 {{- if .Values.mariadb.enabled }}
 
   helm upgrade {{ .Release.Name }} stable/prestashop \
-    --set prestashopHost=$APP_HOST,prestashopPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD{{ end }}
+    --set prestashopHost=$APP_HOST,prestashopPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$DATABASE_ROOT_PASSWORD{{ end }},mariadb.db.password=$APP_DATABASE_PASSWORD
 {{- else }}
 
   ## PLEASE UPDATE THE EXTERNAL DATABASE CONNECTION PARAMETERS IN THE FOLLOWING COMMAND AS NEEDED ##
@@ -46,13 +47,15 @@ host. To configure PrestaShop with the URL of your service:
 
 {{- if eq .Values.serviceType "ClusterIP" }}
 
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "prestashop.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-  echo http://127.0.0.1:8080/
-  kubectl port-forward $POD_NAME 8080:80
+  echo "Store URL: http://127.0.0.1:8080/"
+  echo "Amin URL: http://127.0.0.1:8080/administration"
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "prestashop.fullname" . }} 8080:80
+
 {{- else }}
 
-  echo Store URL : http://{{ include "prestashop.host" . }}/
-  echo Admin URL : http://{{ include "prestashop.host" . }}/administration
+  echo "Store URL: http://{{ include "prestashop.host" . }}/"
+  echo "Admin URL: http://{{ include "prestashop.host" . }}/administration"
+
 {{- end }}
 
 2. Get your PrestaShop login credentials by running:

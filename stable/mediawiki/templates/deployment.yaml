@@ -4,16 +4,22 @@ kind: Deployment
 metadata:
   name: {{ template "mediawiki.fullname" . }}
   labels:
-    app: {{ template "mediawiki.fullname" . }}
+    app: {{ template "mediawiki.name" . }}
     chart: {{ template "mediawiki.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "mediawiki.name" . }}
+      release: "{{ .Release.Name }}"
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "mediawiki.fullname" . }}
+        app: {{ template "mediawiki.name" . }}
+        chart: {{ template "mediawiki.chart" . }}
+        release: {{ .Release.Name | quote }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -37,9 +43,9 @@ spec:
         - name: MARIADB_PORT_NUMBER
         {{- if .Values.mariadb.enabled }}
           value: "3306"
-        {{ else }}
+        {{- else }}
           value: {{ .Values.externalDatabase.port | quote }}
-        {{ end }}
+        {{- end }}
         - name: MEDIAWIKI_DATABASE_NAME
         {{- if .Values.mariadb.enabled }}
           value: {{ .Values.mariadb.db.name | quote }}
@@ -122,26 +128,21 @@ spec:
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
-        {{- end }}
         volumeMounts:
-        - name: mediawiki-data
-          mountPath: /bitnami/mediawiki
-        - name: apache-data
-          mountPath: /bitnami/apache
+        - mountPath: /bitnami/apache
+          name: mediawiki-data
+          subPath: apache
+        - mountPath: /bitnami/mediawiki
+          name: mediawiki-data
+          subPath: mediawiki
       volumes:
       - name: mediawiki-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "mediawiki.fullname" . }}-mediawiki
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "mediawiki.fullname" . }}-apache
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "mediawiki.fullname" . }}-mediawiki{{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}

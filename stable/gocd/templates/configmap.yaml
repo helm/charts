@@ -25,6 +25,16 @@ data:
 
     set -e
 
+    echo "checking if server has already been configured" >> /godata/logs/preconfigure.log
+
+    if [ -f /godata/logs/preconfigure_complete.log ]
+    then
+      echo "Existing server configuration found in cruise-config.xml. Skipping preconfigure_server scripts." >> /godata/logs/preconfigure.log
+      exit 0
+    fi
+
+    echo "No configuration found in cruise-config.xml. Using default preconfigure_server scripts to configure server" >> /godata/logs/preconfigure.log
+
     echo "Trying to create an elastic profile now." >> /godata/logs/preconfigure.log
 
     (curl --fail -i 'http://localhost:8153/go/api/elastic/profiles' \
@@ -36,7 +46,7 @@ data:
         "properties": [
           {
             "key": "Image",
-            "value": "gocd/gocd-agent-docker-dind:v18.2.0"
+            "value": "gocd/gocd-agent-docker-dind:v{{ .Chart.AppVersion }}"
           },
           {
             "key": "PodConfiguration",
@@ -123,11 +133,4 @@ data:
                     }
                   }' >> /godata/logs/preconfigure.log )
 
-    echo "Unpausing the pipeline." >> /godata/logs/preconfigure.log
-
-    (curl --fail -i 'http://localhost:8153/go/api/pipelines/hello_world/unpause' \
-           -H 'Accept: application/vnd.go.cd.v1+json' \
-           -H 'X-GoCD-Confirm: true' \
-           -X POST >> /godata/logs/preconfigure.log)
-
-    echo "Done preconfiguring the GoCD server" >> /godata/logs/preconfigure.log
+    echo "Done preconfiguring the GoCD server" > /godata/logs/preconfigure_complete.log

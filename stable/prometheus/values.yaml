@@ -33,8 +33,12 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.14.0
+    tag: v0.15.2
     pullPolicy: IfNotPresent
+
+  ## alertmanager priorityClassName
+  ##
+  priorityClassName: ""
 
   ## Additional alertmanager container arguments
   ##
@@ -107,6 +111,10 @@ alertmanager:
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
+
+  ## Pod affinity
+  ##
+  affinity: {}
 
   ## Use an alternate scheduler, e.g. "stork".
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -210,7 +218,7 @@ configmapReload:
   ##
   image:
     repository: jimmidyson/configmap-reload
-    tag: v0.1
+    tag: v0.2.2
     pullPolicy: IfNotPresent
 
   ## Additional configmap-reload container arguments
@@ -222,6 +230,7 @@ configmapReload:
   extraConfigmapMounts: []
     # - name: prometheus-alerts
     #   mountPath: /etc/alerts.d
+    #   subPath: ""
     #   configMap: prometheus-alerts
     #   readOnly: true
 
@@ -266,8 +275,12 @@ kubeStateMetrics:
   ##
   image:
     repository: quay.io/coreos/kube-state-metrics
-    tag: v1.3.1
+    tag: v1.4.0
     pullPolicy: IfNotPresent
+
+  ## kube-state-metrics priorityClassName
+  ##
+  priorityClassName: ""
 
   ## kube-state-metrics container arguments
   ##
@@ -335,6 +348,14 @@ nodeExporter:
   ##
   enabled: true
 
+  ## If true, node-exporter pods share the host network namespace
+  ##
+  hostNetwork: true
+
+  ## If true, node-exporter pods share the host PID namespace
+  ##
+  hostPID: true
+
   ## node-exporter container name
   ##
   name: node-exporter
@@ -343,8 +364,18 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.15.2
+    tag: v0.16.0
     pullPolicy: IfNotPresent
+
+  ## Specify if a Pod Security Policy for node-exporter must be created
+  ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  ##
+  podSecurityPolicy:
+    enabled: False
+
+  ## node-exporter priorityClassName
+  ##
+  priorityClassName: ""
 
   ## Custom Update Strategy
   ##
@@ -437,8 +468,12 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.2.1
+    tag: v2.4.3
     pullPolicy: IfNotPresent
+
+  ## prometheus server priorityClassName
+  ##
+  priorityClassName: ""
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
@@ -473,12 +508,14 @@ server:
   extraHostPathMounts: []
     # - name: certs-dir
     #   mountPath: /etc/kubernetes/certs
+    #   subPath: ""
     #   hostPath: /etc/kubernetes/certs
     #   readOnly: true
 
   extraConfigmapMounts: []
     # - name: certs-configmap
     #   mountPath: /prometheus
+    #   subPath: ""
     #   configMap: certs-configmap
     #   readOnly: true
 
@@ -487,6 +524,7 @@ server:
   extraSecretMounts: []
     # - name: secret-files
     #   mountPath: /etc/secrets
+    #   subPath: ""
     #   secretName: prom-secret-files
     #   readOnly: true
 
@@ -543,6 +581,10 @@ server:
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
+
+  ## Pod affinity
+  ##
+  affinity: {}
 
   ## Use an alternate scheduler, e.g. "stork".
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -651,8 +693,12 @@ pushgateway:
   ##
   image:
     repository: prom/pushgateway
-    tag: v0.5.1
+    tag: v0.5.2
     pullPolicy: IfNotPresent
+
+  ## pushgateway priorityClassName
+  ##
+  priorityClassName: ""
 
   ## Additional pushgateway container arguments
   ##
@@ -1016,6 +1062,25 @@ serverFiles:
           - source_labels: [__meta_kubernetes_pod_name]
             action: replace
             target_label: kubernetes_pod_name
+
+# adds additional scrape configs to prometheus.yml
+# must be a string so you have to add a | after extraScrapeConfigs:
+# example adds prometheus-blackbox-exporter scrape config
+extraScrapeConfigs:
+  # - job_name: 'prometheus-blackbox-exporter'
+  #   metrics_path: /probe
+  #   params:
+  #     module: [http_2xx]
+  #   static_configs:
+  #     - targets:
+  #       - https://example.com
+  #   relabel_configs:
+  #     - source_labels: [__address__]
+  #       target_label: __param_target
+  #     - source_labels: [__param_target]
+  #       target_label: instance
+  #     - target_label: __address__
+  #       replacement: prometheus-blackbox-exporter:9115
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.

@@ -42,6 +42,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `image.repository`                          | image repository                          | `sonarqube`                                |
 | `image.tag`                                 | `sonarqube` image tag.                    | 6.5                                        |
 | `image.pullPolicy`                          | Image pull policy                         | `IfNotPresent`                             |
+| `image.pullSecret`                          | imagePullSecret to use for private repository      |                                   |
 | `ingress.enabled`                           | Flag for enabling ingress                 | false                                      |
 | `service.type`                              | Kubernetes service type                   | `LoadBalancer`                             |
 | `service.annotations`                       | Kubernetes service annotations            | None                                       |
@@ -50,7 +51,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `persistence.enabled`                       | Flag for enabling persistent storage      | false                                      |
 | `persistence.storageClass`                  | Storage class to be used                  | "-"                                        |
 | `persistence.accessMode`                    | Volumes access mode to be set             | `ReadWriteOnce`                            |
-| `persistence.size`                          | Size of the volume                        | `10Gi`                                     |
+| `persistence.size`                          | Size of the volume                        | None                                     |
 | `sonarProperties`                           | Custom `sonar.properties` file            | None                                       |
 | `database.type`                             |Set to "mysql" to use mysql database       | `postgresql`|
 | `postgresql.enabled`                        | Set to `false` to use external server / mysql database     | `true`                                     |
@@ -64,10 +65,12 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `mysql.mysqlUser`                           | Mysql database user                       | `sonarUser`                                |
 | `mysql.mysqlPassword`                       | Mysql database password                   | `sonarPass`                                |
 | `mysql.mysqlDatabase`                       | Mysql database name                       | `sonarDB`                                  |
+| `mysql.mysqlParams`                         | Mysql parameters for JDBC connection string     | `{}`                                 |
 | `mysql.service.port`                        | Mysql port                                | `3306`                                     |
 | `resources`                                 | Sonarqube Pod resource requests & limits  | `{}`                                       |
 | `affinity`                                  | Node / Pod affinities                     | `{}`                                       |
 | `nodeSelector`                              | Node labels for pod assignment            | `{}`                                       |
+| `hostAliases`                               | Aliases for IPs in /etc/hosts             | `[]`                                       |
 | `tolerations`                               | List of node taints to tolerate           | `[]`                                       |
 | `plugins.install`                           | List of plugins to install                | `[]`                                       |
 | `plugins.resources`                         | Plugin Pod resource requests & limits     | `{}`                                       |

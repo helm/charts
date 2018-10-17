@@ -6,9 +6,9 @@ metadata:
   name: {{ template "artifactory.nginx.fullname" . }}
   labels:
     app: {{ template "artifactory.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    chart: {{ template "artifactory.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   accessModes:
     - {{ .Values.nginx.persistence.accessMode | quote }}

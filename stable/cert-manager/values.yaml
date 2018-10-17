@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/jetstack/cert-manager-controller
-  tag: v0.3.0
+  tag: v0.5.0
   pullPolicy: IfNotPresent
 
 createCustomResource: true
@@ -38,6 +38,10 @@ extraArgs: []
   # supporting resources required for each ClusterIssuer (default is kube-system)
   # - --cluster-resource-namespace=kube-system
 
+extraEnv: []
+# - name: SOME_VAR
+#   value: 'some value'
+
 resources: {}
   # requests:
   #   cpu: 10m
@@ -65,7 +69,37 @@ ingressShim: {}
   # defaultACMEChallengeType: ""
   # defaultACMEDNS01ChallengeProvider: ""
 
+webhook:
+  enabled: false
+
 # This is used by the static manifest generator in order to create a static
 # namespace manifest for the namespace that cert-manager is being installed
 # within. It should **not** be used if you are using Helm for deployment.
 createNamespaceResource: false
+
+# Use these variables to configure the HTTP_PROXY environment variables
+# http_proxy: "http://proxy:8080"
+# http_proxy: "http://proxy:8080"
+# no_proxy: 127.0.0.1,localhost
+
+# expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
+# for example:
+#   affinity:
+#     nodeAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        nodeSelectorTerms:
+#        - matchExpressions:
+#          - key: foo.bar.com/role
+#            operator: In
+#            values:
+#            - master
+affinity: {}
+
+# expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#toleration-v1-core
+# for example:
+#   tolerations:
+#   - key: foo.bar.com/role
+#     operator: Equal
+#     value: master
+#     effect: NoSchedule
+tolerations: []

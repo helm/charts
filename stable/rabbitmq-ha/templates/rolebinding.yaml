@@ -13,7 +13,7 @@ metadata:
   name: {{ template "rabbitmq-ha.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "rabbitmq-ha.fullname" . }}
+    name: {{ template "rabbitmq-ha.serviceAccountName" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

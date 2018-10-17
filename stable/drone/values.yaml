@@ -1,4 +1,4 @@
-appVersion: "0.8.5"
+appVersion: "0.8.6"
 
 images:
   ## The official drone (server) image, change tag to use a different version.
@@ -6,7 +6,7 @@ images:
   ##
   server:
     repository: "docker.io/drone/drone"
-    tag: 0.8.5
+    tag: 0.8.6
     pullPolicy: IfNotPresent
 
   ## The official drone (agent) image, change tag to use a different version.
@@ -14,7 +14,7 @@ images:
   ##
   agent:
     repository: "docker.io/drone/agent"
-    tag: 0.8.5
+    tag: 0.8.6
     pullPolicy: IfNotPresent
 
   ## The official docker (dind) image, change tag to use a different version.
@@ -22,7 +22,7 @@ images:
   ##
   dind:
     repository: "docker.io/library/docker"
-    tag: 17.12.0-ce-dind
+    tag: 18.06.1-ce-dind
     pullPolicy: IfNotPresent
 
 service:
@@ -122,6 +122,20 @@ server:
   ##
   affinity: {}
 
+  ## Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection
+  ##
+  nodeSelector: {}
+
+  ## additional siecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy.
+  ## ex: https://github.com/kubernetes/charts/tree/master/stable/keycloak
+  ##
+  extraContainers: |
+
+  ## additional volumes, e. g. for secrets used in an extraContainers.
+  ##
+  extraVolumes: |
+
 agent:
   ## Drone agent configuration.
   ## Values in here get injected as environment variables.
@@ -148,6 +162,23 @@ agent:
   #    memory: 2Gi
   #    cpu: 1
 
+  ## Liveness and readiness probe values
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+  livenessProbe:
+    enabled: true
+    failureThreshold: 3
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  readinessProbe:
+    enabled: true
+    failureThreshold: 3
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+
   ## Use an alternate scheduler, e.g. "stork".
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
   ##
@@ -157,6 +188,11 @@ agent:
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   ##
   affinity: {}
+
+  ## Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection
+  ##
+  nodeSelector: {}
 
 dind:
   ## Enable or disable DinD
@@ -192,6 +228,11 @@ dind:
   #  limits:
   #    memory: 2Gi
   #    cpu: 1
+
+## Enable scraping of the /metrics endpoint for Prometheus
+metrics:
+  prometheus:
+    enabled: false
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

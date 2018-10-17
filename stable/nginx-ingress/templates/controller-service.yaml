@@ -3,7 +3,9 @@ kind: Service
 metadata:
 {{- if .Values.controller.service.annotations }}
   annotations:
-{{ toYaml .Values.controller.service.annotations | indent 4 }}
+  {{- range $key, $value := .Values.controller.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 {{- end }}
   labels:
 {{- if .Values.controller.service.labels }}
@@ -35,6 +37,7 @@ spec:
   healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
 {{- end }}
   ports:
+    {{- if .Values.controller.service.enableHttp }}
     - name: http
       port: 80
       protocol: TCP
@@ -42,6 +45,8 @@ spec:
       {{- if (and (eq .Values.controller.service.type "NodePort") (not (empty .Values.controller.service.nodePorts.http))) }}
       nodePort: {{ .Values.controller.service.nodePorts.http }}
       {{- end }}
+    {{- end }}
+    {{- if .Values.controller.service.enableHttps }}
     - name: https
       port: 443
       protocol: TCP
@@ -49,6 +54,7 @@ spec:
       {{- if (and (eq .Values.controller.service.type "NodePort") (not (empty .Values.controller.service.nodePorts.https))) }}
       nodePort: {{ .Values.controller.service.nodePorts.https }}
       {{- end }}
+    {{- end }}
   {{- range $key, $value := .Values.tcp }}
     - name: "{{ $key }}-tcp"
       port: {{ $key }}

@@ -15,7 +15,7 @@ spec:
       component: "{{.Release.Name}}-{{.Values.Component}}"
   ingress:
   - ports:
-    - port: {{ .Values.GrpcPort}}
+    - port: {{ .Values.ExternalGrpcPort}}
     {{- if not .Values.NetworkPolicy.AllowExternal }}
     from:
     # Allow clients to connect.
@@ -27,10 +27,19 @@ spec:
         matchLabels:
           component: "{{.Release.Name}}-{{.Values.Component}}"
     {{- end }}
+  {{- if ne .Values.InternalGrpcPort .Values.ExternalGrpcPort }}
+  - ports:
+    - port: {{ .Values.InternalGrpcPort}}
+    from:
+    # Allow other cockroachdb's to connect to form cluster.
+    - podSelector:
+        matchLabels:
+          component: "{{.Release.Name}}-{{.Values.Component}}"
+  {{- end }}
   # Allow connections to admin UI.
   - ports:
-    - port: {{.Values.HttpPort}}
+    - port: {{.Values.ExternalHttpPort}}
   # Allow connections from Prometheus.
   - ports:
-    - port: 8080
+    - port: {{.Values.ExternalHttpPort}}
 {{- end }}

@@ -29,6 +29,14 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
       {{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+{{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -78,7 +86,24 @@ spec:
 {{- if eq .Values.storage "filesystem" }}
             - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
               value: "/var/lib/registry"
+{{- else if eq .Values.storage "azure" }}
+            - name: REGISTRY_STORAGE_AZURE_ACCOUNTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: azureAccountName
+            - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: azureAccountKey
+            - name: REGISTRY_STORAGE_AZURE_CONTAINER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: azureContainer
 {{- else if eq .Values.storage "s3" }}
+            {{- if and .Values.secrets.s3.secretKey .Values.secrets.s3.accessKey }}
             - name: REGISTRY_STORAGE_S3_ACCESSKEY
               valueFrom:
                 secretKeyRef:
@@ -89,6 +114,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "docker-registry.fullname" . }}-secret
                   key: s3SecretKey
+            {{- end }}
             - name: REGISTRY_STORAGE_S3_REGION
               value: {{ required ".Values.s3.region is required" .Values.s3.region }}
             - name: REGISTRY_STORAGE_S3_BUCKET
@@ -137,6 +163,10 @@ spec:
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
 {{- end }}
       volumes:
 {{- if .Values.secrets.htpasswd }}

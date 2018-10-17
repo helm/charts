@@ -42,6 +42,7 @@ The following table lists the configurable parameters of the consul chart and th
 | `StorageClass`          | Persistent volume storage class       | `nil`                                                      |
 | `HttpPort`              | Consul http listening port            | `8500`                                                     |
 | `Resources`             | Container resource requests and limits| `{}`                                                       |
+| `priorityClassName`     | priorityClassName                     | `nil`                                                      |
 | `RpcPort`               | Consul rpc listening port             | `8400`                                                     |
 | `SerflanPort`           | Container serf lan listening port     | `8301`                                                     |
 | `SerflanUdpPort`        | Container serf lan UDP listening port | `8301`                                                     |
@@ -49,14 +50,15 @@ The following table lists the configurable parameters of the consul chart and th
 | `SerfwanUdpPort`        | Container serf wan UDP listening port | `8302`                                                     |
 | `ServerPort`            | Container server listening port       | `8300`                                                     |
 | `ConsulDnsPort`         | Container dns listening port          | `8600`                                                     |
-| `affinity`              | Consul affinity settings              | `see values.yaml`                                                     |
+| `affinity`              | Consul affinity settings              | `see values.yaml`                                          |
 | `nodeSelector`          | Node labels for pod assignment        | `{}`                                                       |
+| `tolerations`           | Tolerations for pod assignment        | `[]`                                                       |
 | `maxUnavailable`        | Pod disruption Budget maxUnavailable  | `1`                                                        |
-| `ui.enabled`            | Enable Consul Web UI                  | `true`                                                    |
-| `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                    |
+| `ui.enabled`            | Enable Consul Web UI                  | `true`                                                     |
+| `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                     |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
-| `test.image`            | Test container image requires kubectl + bash (used for helm test)      | `lachlanevenson/k8s-kubectl`                                                 |
-| `test.imageTag`         | Test container image tag  (used for helm test)     | `v1.4.8-bash`                                                 |
+| `test.image`            | Test container image requires kubectl + bash (used for helm test)      | `lachlanevenson/k8s-kubectl` |
+| `test.imageTag`         | Test container image tag  (used for helm test)     | `v1.4.8-bash`                                 |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

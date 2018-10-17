@@ -29,6 +29,20 @@ imageTag: "5.7.14"
 ##
 imagePullPolicy: IfNotPresent
 
+extraVolumes: |
+  # - name: extras
+  #   emptyDir: {}
+
+extraVolumeMounts: |
+  # - name: extras
+  #   mountPath: /usr/share/extras
+  #   readOnly: true
+
+extraInitContainers: |
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
+
 # Optionally specify an array of imagePullSecrets.
 # Secrets must be manually created in the namespace.
 # ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -66,6 +80,7 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
+  annotations: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -76,7 +91,7 @@ resources:
     cpu: 100m
 
 # Custom mysql configuration files used to override default mysql settings
-configurationFiles:
+configurationFiles: {}
 #  mysql.cnf: |-
 #    [mysqld]
 #    skip-name-resolve
@@ -85,7 +100,7 @@ configurationFiles:
 #    ssl-key=/ssl/server-key.pem
 
 # Custom mysql init SQL files used to initialize the database
-initializationFiles:
+initializationFiles: {}
 #  first-db.sql: |-
 #    CREATE DATABASE IF NOT EXISTS first DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
 #  second-db.sql: |-
@@ -100,6 +115,12 @@ metrics:
   annotations: {}
     # prometheus.io/scrape: "true"
     # prometheus.io/port: "9104"
+  livenessProbe:
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+  readinessProbe:
+    initialDelaySeconds: 5
+    timeoutSeconds: 1
 
 ## Configure the service
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -127,3 +148,13 @@ ssl:
 #      -----BEGIN RSA PRIVATE KEY-----
 #      ...
 #      -----END RSA PRIVATE KEY-----
+
+## Populates the 'TZ' system timezone environment variable
+## ref: https://dev.mysql.com/doc/refman/5.7/en/time-zone-support.html
+##
+## Default: nil (mysql will use image's default timezone, normally UTC)
+## Example: 'Australia/Sydney'
+# timezone:
+
+# To be added to the database server pod(s)
+podAnnotations: {}

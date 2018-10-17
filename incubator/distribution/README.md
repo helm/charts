@@ -1,5 +1,7 @@
 # JFrog Distribution Helm Chart
 
+**Note: This Chart is Deprecated. We have moved it to stable.**
+
 ## Prerequisites Details
 
 * Kubernetes 1.8+

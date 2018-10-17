@@ -9,9 +9,22 @@ replicas: 1
 
 deploymentStrategy: RollingUpdate
 
+readinessProbe:
+  httpGet:
+    path: /api/health
+    port: 3000
+
+livenessProbe:
+  httpGet:
+    path: /api/health
+    port: 3000
+  initialDelaySeconds: 60
+  timeoutSeconds: 30
+  failureThreshold: 10
+
 image:
   repository: grafana/grafana
-  tag: 5.1.3
+  tag: 5.3.1
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -20,6 +33,10 @@ image:
   ##
   # pullSecrets:
   #   - myRegistrKeySecretName
+
+securityContext:
+  runAsUser: 472
+  fsGroup: 472
 
 downloadDashboardsImage:
   repository: appropriate/curl
@@ -115,9 +132,11 @@ extraSecretMounts: []
   #   secretName: grafana-secret-files
   #   readOnly: true
 
-# Pass the plugins you want installed as a comma separated list.
-# plugins: "digrich-bubblechart-panel,grafana-clock-panel"
-plugins: ""
+## Pass the plugins you want installed as a list.
+##
+plugins: []
+  # - digrich-bubblechart-panel
+  # - grafana-clock-panel
 
 ## Configure grafana datasources
 ## ref: http://docs.grafana.org/administration/provisioning/#datasources
@@ -135,6 +154,8 @@ datasources: {}
 ## Configure grafana dashboard providers
 ## ref: http://docs.grafana.org/administration/provisioning/#dashboards
 ##
+## `path` must be /var/lib/grafana/dashboards/<provider_name>
+##
 dashboardProviders: {}
 #  dashboardproviders.yaml:
 #    apiVersion: 1
@@ -146,22 +167,36 @@ dashboardProviders: {}
 #      disableDeletion: false
 #      editable: true
 #      options:
-#        path: /var/lib/grafana/dashboards
+#        path: /var/lib/grafana/dashboards/default
 
 ## Configure grafana dashboard to import
 ## NOTE: To use dashboards you must also enable/configure dashboardProviders
 ## ref: https://grafana.com/dashboards
 ##
+## dashboards per provider, use provider name as key.
+##
 dashboards: {}
-#  some-dashboard:
-#    json: |
-#      $RAW_JSON
-#  prometheus-stats:
-#    gnetId: 2
-#    revision: 2
-#    datasource: Prometheus
-#  local-dashboard:
-#    url: https://example.com/repository/test.json
+#  default:
+#    some-dashboard:
+#      json: |
+#        $RAW_JSON
+#    prometheus-stats:
+#      gnetId: 2
+#      revision: 2
+#      datasource: Prometheus
+#    local-dashboard:
+#      url: https://example.com/repository/test.json
+
+## Reference to external ConfigMap per provider. Use provider name as key and ConfiMap name as value.
+## A provider dashboards must be defined either by external ConfigMaps or in values.yaml, not in both.
+## ConfigMap data example:
+##
+## data:
+##   example-dashboard.json: |
+##     RAW_JSON
+##
+dashboardsConfigMaps: {}
+#  default: ""
 
 ## Grafana's primary configuration
 ## NOTE: values in map will be converted to ini format

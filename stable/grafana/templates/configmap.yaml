@@ -8,8 +8,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-{{- with .Values.plugins }}
-  plugins: {{ . | quote }}
+{{- if .Values.plugins }}
+  plugins: {{ join "," .Values.plugins }}
 {{- end }}
   grafana.ini: |
 {{- range $key, $value := index .Values "grafana.ini" }}
@@ -37,16 +37,25 @@ data:
   download_dashboards.sh: |
     #!/usr/bin/env sh
     set -euf
-    mkdir -p /var/lib/grafana/dashboards
-  {{- range $key, $value := .Values.dashboards }}
-    {{- if (or (hasKey $value "gnetId") (hasKey $value "url")) }}
+    {{- if .Values.dashboardProviders }}
+      {{- range $key, $value := .Values.dashboardProviders }}
+        {{- range $value.providers }}
+    mkdir -p {{ .options.path }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+
+  {{- range $provider, $dashboards := .Values.dashboards }}
+    {{- range $key, $value := $dashboards }}
+      {{- if (or (hasKey $value "gnetId") (hasKey $value "url")) }}
     curl -sk \
     --connect-timeout 60 \
     --max-time 60 \
     -H "Accept: application/json" \
     -H "Content-Type: application/json;charset=UTF-8" \
     {{- if $value.url -}}{{ $value.url }}{{- else -}} https://grafana.com/api/dashboards/{{ $value.gnetId }}/revisions/{{- if $value.revision -}}{{ $value.revision }}{{- else -}}1{{- end -}}/download{{- end -}}{{ if $value.datasource }}| sed 's|\"datasource\":[^,]*|\"datasource\": \"{{ $value.datasource }}\"|g'{{ end }} \
-    > /var/lib/grafana/dashboards/{{ $key }}.json
+    > /var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json
+      {{- end }}
     {{- end }}
   {{- end }}
 {{- end }}

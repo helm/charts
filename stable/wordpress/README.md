@@ -14,6 +14,8 @@ This chart bootstraps a [WordPress](https://github.com/bitnami/bitnami-docker-wo
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the WordPress application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -45,56 +47,62 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the WordPress chart and their default values.
 
-| Parameter                            | Description                                | Default                                                    |
-| ------------------------------------ | ------------------------------------------ | ---------------------------------------------------------- |
-| `image.registry`                     | WordPress image registry                   | `docker.io`                                                |
-| `image.repository`                   | WordPress image name                       | `bitnami/wordpress`                                        |
-| `image.tag`                          | WordPress image tag                        | `{VERSION}`                                                |
-| `image.pullPolicy`                   | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
-| `image.pullSecrets`                  | Specify image pull secrets                 | `nil`                                                      |
-| `wordpressUsername`                  | User of the application                    | `user`                                                     |
-| `wordpressPassword`                  | Application password                       | _random 10 character long alphanumeric string_             |
-| `wordpressEmail`                     | Admin email                                | `user@example.com`                                         |
-| `wordpressFirstName`                 | First name                                 | `FirstName`                                                |
-| `wordpressLastName`                  | Last name                                  | `LastName`                                                 |
-| `wordpressBlogName`                  | Blog name                                  | `User's Blog!`                                             |
-| `wordpressTablePrefix`               | Table prefix                               | `wp_`                                                      |
-| `allowEmptyPassword`                 | Allow DB blank passwords                   | `yes`                                                      |
-| `smtpHost`                           | SMTP host                                  | `nil`                                                      |
-| `smtpPort`                           | SMTP port                                  | `nil`                                                      |
-| `smtpUser`                           | SMTP user                                  | `nil`                                                      |
-| `smtpPassword`                       | SMTP password                              | `nil`                                                      |
-| `smtpUsername`                       | User name for SMTP emails                  | `nil`                                                      |
-| `smtpProtocol`                       | SMTP protocol [`tls`, `ssl`]               | `nil`                                                      |
-| `mariadb.enabled`                    | Deploy MariaDB container(s)                | `true`                                                     |
-| `mariadb.rootUser.password`        | MariaDB admin password                     | `nil`                                                      |
-| `mariadb.db.name`            | Database name to create                    | `bitnami_wordpress`                                        |
-| `mariadb.db.user`                | Database user to create                    | `bn_wordpress`                                             |
-| `mariadb.db.password`            | Password for the database                  | _random 10 character long alphanumeric string_             |
-| `externalDatabase.host`              | Host of the external database              | `localhost`                                                |
-| `externalDatabase.user`              | Existing username in the external db       | `bn_wordpress`                                             |
-| `externalDatabase.password`          | Password for the above username            | `nil`                                                      |
-| `externalDatabase.database`          | Name of the existing database              | `bitnami_wordpress`                                        |
-| `externalDatabase.port`              | Database port number                       | `3306`                                                     |
-| `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
-| `nodePorts.http`                     | Kubernetes http node port                  | `""`                                                       |
-| `nodePorts.https`                    | Kubernetes https node port                 | `""`                                                       |
-| `healthcheckHttps`                   | Use https for liveliness and readiness     | `false`                                                    |
-| `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
-| `ingress.hosts[0].name`              | Hostname to your WordPress installation    | `wordpress.local`                                          |
-| `ingress.hosts[0].path`              | Path within the url structure              | `/`                                                        |
-| `ingress.hosts[0].tls`               | Utilize TLS backend in ingress             | `false`                                                    |
-| `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                  | `wordpress.local-tls-secret`                               |
-| `ingress.hosts[0].annotations`       | Annotations for this host's ingress record | `[]`                                                       |
-| `ingress.secrets[0].name`            | TLS Secret Name                            | `nil`                                                      |
-| `ingress.secrets[0].certificate`     | TLS Secret Certificate                     | `nil`                                                      |
-| `ingress.secrets[0].key`             | TLS Secret Key                             | `nil`                                                      |
-| `persistence.enabled`                | Enable persistence using PVC               | `true`                                                     |
-| `persistence.existingClaim`          | Enable persistence using an existing PVC   | `nil`                                                      |
-| `persistence.storageClass`           | PVC Storage Class                          | `nil` (uses alpha storage class annotation)                |
-| `persistence.accessMode`             | PVC Access Mode                            | `ReadWriteOnce`                                            |
-| `persistence.size`                   | PVC Storage Request                        | `10Gi`                                                     |
-| `nodeSelector`                       | Node labels for pod assignment             | `{}`                                                       |
+|            Parameter             |                Description                 |                         Default                         |
+|----------------------------------|--------------------------------------------|---------------------------------------------------------|
+| `global.imageRegistry`           | Global Docker image registry               | `nil`                                                   |
+| `image.registry`                 | WordPress image registry                   | `docker.io`                                             |
+| `image.repository`               | WordPress image name                       | `bitnami/wordpress`                                     |
+| `image.tag`                      | WordPress image tag                        | `{VERSION}`                                             |
+| `image.pullPolicy`               | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`              | Specify image pull secrets                 | `nil`                                                   |
+| `wordpressUsername`              | User of the application                    | `user`                                                  |
+| `wordpressPassword`              | Application password                       | _random 10 character long alphanumeric string_          |
+| `wordpressEmail`                 | Admin email                                | `user@example.com`                                      |
+| `wordpressFirstName`             | First name                                 | `FirstName`                                             |
+| `wordpressLastName`              | Last name                                  | `LastName`                                              |
+| `wordpressBlogName`              | Blog name                                  | `User's Blog!`                                          |
+| `wordpressTablePrefix`           | Table prefix                               | `wp_`                                                   |
+| `allowEmptyPassword`             | Allow DB blank passwords                   | `true`                                                  |
+| `smtpHost`                       | SMTP host                                  | `nil`                                                   |
+| `smtpPort`                       | SMTP port                                  | `nil`                                                   |
+| `smtpUser`                       | SMTP user                                  | `nil`                                                   |
+| `smtpPassword`                   | SMTP password                              | `nil`                                                   |
+| `smtpUsername`                   | User name for SMTP emails                  | `nil`                                                   |
+| `smtpProtocol`                   | SMTP protocol [`tls`, `ssl`]               | `nil`                                                   |
+| `replicaCount`                   | Number of WordPress Pods to run            | `1`                                                     |
+| `mariadb.enabled`                | Deploy MariaDB container(s)                | `true`                                                  |
+| `mariadb.rootUser.password`      | MariaDB admin password                     | `nil`                                                   |
+| `mariadb.db.name`                | Database name to create                    | `bitnami_wordpress`                                     |
+| `mariadb.db.user`                | Database user to create                    | `bn_wordpress`                                          |
+| `mariadb.db.password`            | Password for the database                  | _random 10 character long alphanumeric string_          |
+| `externalDatabase.host`          | Host of the external database              | `localhost`                                             |
+| `externalDatabase.user`          | Existing username in the external db       | `bn_wordpress`                                          |
+| `externalDatabase.password`      | Password for the above username            | `nil`                                                   |
+| `externalDatabase.database`      | Name of the existing database              | `bitnami_wordpress`                                     |
+| `externalDatabase.port`          | Database port number                       | `3306`                                                  |
+| `serviceType`                    | Kubernetes Service type                    | `LoadBalancer`                                          |
+| `serviceExternalTrafficPolicy`   | Enable client source IP preservation       | `Cluster`                                               |
+| `nodePorts.http`                 | Kubernetes http node port                  | `""`                                                    |
+| `nodePorts.https`                | Kubernetes https node port                 | `""`                                                    |
+| `healthcheckHttps`               | Use https for liveliness and readiness     | `false`                                                 |
+| `ingress.enabled`                | Enable ingress controller resource         | `false`                                                 |
+| `ingress.hosts[0].name`          | Hostname to your WordPress installation    | `wordpress.local`                                       |
+| `ingress.hosts[0].path`          | Path within the url structure              | `/`                                                     |
+| `ingress.hosts[0].tls`           | Utilize TLS backend in ingress             | `false`                                                 |
+| `ingress.hosts[0].certManager`   | Add annotations for cert-manager           | `false`                                                 |
+| `ingress.hosts[0].tlsSecret`     | TLS Secret (certificates)                  | `wordpress.local-tls-secret`                            |
+| `ingress.hosts[0].annotations`   | Annotations for this host's ingress record | `[]`                                                    |
+| `ingress.secrets[0].name`        | TLS Secret Name                            | `nil`                                                   |
+| `ingress.secrets[0].certificate` | TLS Secret Certificate                     | `nil`                                                   |
+| `ingress.secrets[0].key`         | TLS Secret Key                             | `nil`                                                   |
+| `persistence.enabled`            | Enable persistence using PVC               | `true`                                                  |
+| `persistence.existingClaim`      | Enable persistence using an existing PVC   | `nil`                                                   |
+| `persistence.storageClass`       | PVC Storage Class                          | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`         | PVC Access Mode                            | `ReadWriteOnce`                                         |
+| `persistence.size`               | PVC Storage Request                        | `10Gi`                                                  |
+| `nodeSelector`                   | Node labels for pod assignment             | `{}`                                                    |
+| `tolerations`                    | List of node taints to tolerate            | `[]`                                                    |
+| `affinity`                       | Map of node/pod affinities                 | `{}`                                                    |
 
 The above parameters map to the env variables defined in [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress). For more information please refer to the [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress) image documentation.
 
@@ -123,15 +131,14 @@ The following repo contains the recommended production settings for wordpress ca
 To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then:
 
 ```console
-$ 
 $ helm install --name my-release -f ./values-production.yaml stable/wordpress
-$ kubectl scale deployment my-wp-deployment --replicas=3 
 ```
-To use the /admin portal and to ensure you can scale wordpress you need to provide a ReadWriteMany PVC, if you dont have a provisioner for this type of storage, we recommend that you install the nfs provisioner and map it to a RWO volume.
+
+Note that [values-production.yaml](values-production.yaml) includes a replicaCount of 3, so there will be 3 WordPress pods. As a result, to use the /admin portal and to ensure you can scale wordpress you need to provide a ReadWriteMany PVC, if you don't have a provisioner for this type of storage, we recommend that you install the nfs provisioner and map it to a RWO volume.
 
 ```console
 $ helm install stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=10Gi
-$ helm install --name my-release -f values-production.yaml --set persitence.storageClass=nfs stable/wordpress
+$ helm install --name my-release -f values-production.yaml --set persistence.storageClass=nfs stable/wordpress
 ```
 
 ## Persistence
@@ -218,7 +225,7 @@ If you are going to use Helm to manage the certificates, please copy
 these values into the `certificate` and `key` values for a given
 `ingress.secrets` entry.
 
-If you are going are going to manage TLS secrets outside of Helm, please
+If you are going to manage TLS secrets outside of Helm, please
 know that you can create a TLS secret by doing the following:
 
 ```
@@ -227,3 +234,15 @@ kubectl create secret tls wordpress.local-tls --key /path/to/key.key --cert /pat
 
 Please see [this example](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tls)
 for more information.
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to `3.0.0`. The following example assumes that the release name is `wordpress`:
+
+```console
+$ kubectl patch deployment wordpress-wordpress --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
+$ kubectl delete statefulset wordpress-mariadb --cascade=false
+```

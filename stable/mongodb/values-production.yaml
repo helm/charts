@@ -1,3 +1,9 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 image:
   ## Bitnami MongoDB registry
   ##
@@ -8,7 +14,7 @@ image:
   ## Bitnami MongoDB image tag
   ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
   ##
-  tag: 3.6.5
+  tag: 4.0.3-debian-9
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -39,6 +45,11 @@ usePassword: true
 # mongodbPassword: password
 # mongodbDatabase: database
 
+## Whether enable/disable IPv6 on MongoDB
+## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#enabling/disabling-ipv6
+##
+mongodbEnableIPv6: true
+
 ## MongoDB additional command line flags
 ##
 ## Can be used to specify command line flags, for example:
@@ -47,8 +58,20 @@ usePassword: true
 ##  - "--wiredTigerCacheSizeGB=2"
 mongodbExtraFlags: []
 
+## Pod Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
+
+## Kubernetes Cluster Domain
+clusterDomain: cluster.local
+
 ## Kubernetes service type
 service:
+  annotations: {}
   type: ClusterIP
   port: 27017
 
@@ -58,9 +81,14 @@ service:
   # nodePort:
 
 
+## Setting up replication
+## ref: https://github.com/bitnami/bitnami-docker-mongodb#setting-up-a-replication
+#
 replicaSet:
   ## Whether to create a MongoDB replica set for high availability or not
   enabled: true
+  useHostnames: true
+
   ## Name of the replica set
   ##
   name: rs0
@@ -68,7 +96,7 @@ replicaSet:
   ## Key used for replica set authentication
   ##
   # key: key
-  
+
   ## Number of replicas per each node type
   ##
   replicas:

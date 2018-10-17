@@ -23,6 +23,29 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
+      {{- if eq .Values.podAntiAffinity.sentinel "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: {{ template "redis-ha.name" . }}
+                release: {{ .Release.Name }}
+                component: sentinel
+            topologyKey: kubernetes.io/hostname
+      {{- else if eq .Values.podAntiAffinity.sentinel "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: {{ template "redis-ha.name" . }}
+                  release: {{ .Release.Name }}
+                  component: sentinel
+              topologyKey: kubernetes.io/hostname
+      {{- end }}
       containers:
       - name: sentinel
         image: {{ .Values.redis_image }}

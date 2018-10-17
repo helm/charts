@@ -2,6 +2,10 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
+{{- if .Values.nodeExporter.deploymentAnnotations }}
+  annotations:
+{{ toYaml .Values.nodeExporter.deploymentAnnotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -29,6 +33,9 @@ spec:
 {{- end }}
     spec:
       serviceAccountName: {{ template "prometheus.serviceAccountName.nodeExporter" . }}
+{{- if .Values.nodeExporter.priorityClassName }}
+      priorityClassName: "{{ .Values.nodeExporter.priorityClassName }}"
+{{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.nodeExporter.name }}
           image: "{{ .Values.nodeExporter.image.repository }}:{{ .Values.nodeExporter.image.tag }}"
@@ -66,8 +73,12 @@ spec:
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+    {{- if .Values.nodeExporter.hostNetwork }}
       hostNetwork: true
+    {{- end }}
+    {{- if .Values.nodeExporter.hostPID }}
       hostPID: true
+    {{- end }}
     {{- if .Values.nodeExporter.tolerations }}
       tolerations:
 {{ toYaml .Values.nodeExporter.tolerations | indent 8 }}

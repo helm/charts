@@ -17,6 +17,7 @@ spec:
     metadata:
       labels:
         app: {{ template "phpmyadmin.name" . }}
+        chart: {{ template "phpmyadmin.chart" . }}
         release: {{ .Release.Name }}
     spec:
       {{- if .Values.image.pullSecrets }}
@@ -27,7 +28,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ template "phpmyadmin.image" . }}"
+          image: {{ template "phpmyadmin.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: DATABASE_PORT_NUMBER
@@ -67,3 +68,15 @@ spec:
           {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

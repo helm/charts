@@ -37,38 +37,65 @@ certificate for each node (e.g.  `default.node.eerie-horse-cockroachdb-0` and
 one client certificate for the job that initializes the cluster (e.g.
 `default.node.root`).
 
+## Upgrading
+### To 2.0.0
+Due to having no explicit selector set for the StatefulSet before version 2.0.0 of
+this chart, upgrading from any version that uses a version of kubernetes that locks
+the selector labels to any other version is impossible without deleting the StatefulSet.
+Luckily there is a way to do it without actually deleting all the resources managed
+by the StatefulSet. Use the workaround below to upgrade from versions previous to 2.0.0.
+The following example assumes that the release name is crdb:
+
+```console
+$ kubectl delete statefulset crdb-cockroachdb --cascade=false
+```
+
+Verify that no pod is deleted and then upgrade as normal. A new StatefulSet will
+be created taking over the management of the existing pods upgrading them if needed.
+
+For more information about the upgrading bug see https://github.com/helm/charts/issues/7680.
+
 ## Configuration
 
 The following table lists the configurable parameters of the CockroachDB chart and their default values.
 
-| Parameter                     | Description                                | Default                                      |
-| ----------------------------- | ------------------------------------------ | -------------------------------------------- |
-| `Name`                        | Chart name                                 | `cockroachdb`                                |
-| `Image`                       | Container image name                       | `cockroachdb/cockroach`                      |
-| `ImageTag`                    | Container image tag                        | `v2.0.0`                                     |
-| `ImagePullPolicy`             | Container pull policy                      | `Always`                                     |
-| `Replicas`                    | k8s statefulset replicas                   | `3`                                          |
-| `MaxUnavailable`              | k8s PodDisruptionBudget parameter          | `1`                                          |
-| `Component`                   | k8s selector key                           | `cockroachdb`                                |
-| `GrpcPort`                    | CockroachDB primary serving port           | `26257`                                      |
-| `HttpPort`                    | CockroachDB HTTP port                      | `8080`                                       |
-| `Cpu`                         | Container requested cpu                    | `100m`                                       |
-| `Memory`                      | Container requested memory                 | `512Mi`                                      |
-| `Storage`                     | Persistent volume size                     | `1Gi`                                        |
-| `StorageClass`                | Persistent volume class                    | `null`                                       |
-| `CacheSize`                   | Size of CockroachDB's in-memory cache      | `25%`                                        |
-| `MaxSQLMemory`                | Max memory to use processing SQL queries   | `25%`                                        |
-| `ClusterDomain`               | Cluster's default DNS domain               | `cluster.local`                              |
-| `NetworkPolicy.Enabled`       | Enable NetworkPolicy                       | `false`                                      |
-| `NetworkPolicy.AllowExternal` | Don't require client label for connections | `true`                                       |
-| `Service.Type`                | Public service type                        | `ClusterIP`                                  |
-| `PodManagementPolicy` | `OrderedReady` or `Parallel` pod creation/deletion order | `Parallel` |
-| `UpdateStrategy.type` | allows setting of RollingUpdate strategy | `RollingUpdate` |
-| `Secure.Enabled` | Whether to run securely using TLS certificates | `false` |
-| `Secure.RequestCertsImage` | Image to use for requesting TLS certificates | `cockroachdb/cockroach-k8s-request-cert` |
-| `Secure.RequestCertsImageTag` | Image tag to use for requesting TLS certificates | `0.3` |
-| `Secure.ServiceAccount.Create` | Whether to create a new RBAC service account | `true` |
-| `Secure.ServiceAccount.Name` | Name of RBAC service account to use | `` |
+| Parameter                      | Description                                      | Default                                   |
+| ------------------------------ | ------------------------------------------------ | ----------------------------------------- |
+| `Name`                         | Chart name                                       | `cockroachdb`                             |
+| `Image`                        | Container image name                             | `cockroachdb/cockroach`                   |
+| `ImageTag`                     | Container image tag                              | `v2.0.6`                                  |
+| `ImagePullPolicy`              | Container pull policy                            | `Always`                                  |
+| `Replicas`                     | k8s statefulset replicas                         | `3`                                       |
+| `MaxUnavailable`               | k8s PodDisruptionBudget parameter                | `1`                                       |
+| `Component`                    | k8s selector key                                 | `cockroachdb`                             |
+| `ExternalGrpcPort`             | CockroachDB primary serving port                 | `26257`                                   |
+| `ExternalGrpcName`             | CockroachDB primary serving port name            | `grpc`                                    |
+| `InternalGrpcPort`             | CockroachDB inter-cockroachdb port               | `26257`                                   |
+| `InternalGrpcName`             | CockroachDB inter-cockroachdb port name          | `grpc`                                    |
+| `InternalHttpPort`             | CockroachDB HTTP port                            | `8080`                                    |
+| `ExternalHttpPort`             | CockroachDB HTTP port on service                 | `8080`                                    |
+| `HttpName`                     | Name given to the http service port              | `http`                                    |
+| `Resources`                    | Resource requests and limits                     | `{}`                                      |
+| `Storage`                      | Persistent volume size                           | `1Gi`                                     |
+| `StorageClass`                 | Persistent volume class                          | `null`                                    |
+| `CacheSize`                    | Size of CockroachDB's in-memory cache            | `25%`                                     |
+| `MaxSQLMemory`                 | Max memory to use processing SQL queries         | `25%`                                     |
+| `ClusterDomain`                | Cluster's default DNS domain                     | `cluster.local`                           |
+| `NetworkPolicy.Enabled`        | Enable NetworkPolicy                             | `false`                                   |
+| `NetworkPolicy.AllowExternal`  | Don't require client label for connections       | `true`                                    |
+| `Service.Type`                 | Public service type                              | `ClusterIP`                               |
+| `Service.Annotations`          | Annotations to apply to the service              | `{}`                                      |
+| `PodManagementPolicy`          | `OrderedReady` or `Parallel` pod creation/deletion order | `Parallel`                        |
+| `UpdateStrategy.type`          | allows setting of RollingUpdate strategy         | `RollingUpdate`                           |
+| `NodeSelector`                 | Node labels for pod assignment                   | `{}`                                      |
+| `Tolerations`                  | List of node taints to tolerate                  | `{}`                                      |
+| `Secure.Enabled`               | Whether to run securely using TLS certificates   | `false`                                   |
+| `Secure.RequestCertsImage`     | Image to use for requesting TLS certificates     | `cockroachdb/cockroach-k8s-request-cert`  |
+| `Secure.RequestCertsImageTag`  | Image tag to use for requesting TLS certificates | `0.3`                                     |
+| `Secure.ServiceAccount.Create` | Whether to create a new RBAC service account     | `true`                                    |
+| `Secure.ServiceAccount.Name`   | Name of RBAC service account to use              | `""`                                      |
+| `JoinExisting`                 | List of already-existing cockroach instances     | `[]`                                      |
+| `Locality`                     | Locality attribute for this deployment           | `""`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -151,10 +178,11 @@ is the admin UI.
 
 If you want to see information about how the cluster is doing, you can try
 pulling up the CockroachDB admin UI by port-forwarding from your local machine
-to one of the pods (replacing "release-cockroachdb-0" with one of your pods' names):
+to one of the pods (replacing "my-release-cockroachdb-0" with one of your pods'
+names):
 
 ```shell
-kubectl port-forward release-cockroachdb-0 8080
+kubectl port-forward my-release-cockroachdb-0 8080
 ```
 
 Once you’ve done that, you should be able to access the admin UI by visiting

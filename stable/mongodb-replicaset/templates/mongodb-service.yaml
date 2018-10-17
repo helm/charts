@@ -4,9 +4,6 @@ kind: Service
 metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-  {{- if .Values.metrics.enabled }}
-{{ toYaml .Values.metrics.annotations | indent 4 }}
-  {{- end }}
   {{- if .Values.serviceAnnotations }}
 {{ toYaml .Values.serviceAnnotations | indent 4 }}
   {{- end }}
@@ -23,13 +20,13 @@ spec:
   type: ClusterIP
   clusterIP: None
   ports:
-    - name: peer
+    - name: mongodb
       port: {{ .Values.port }}
-    {{- if .Values.metrics.enabled }}
+{{- if .Values.metrics.enabled }}
     - name: metrics
-      port: {{ index .Values "metrics" "annotations" "prometheus.io/port" }}
+      port: {{ .Values.metrics.port }}
       targetPort: metrics
-    {{- end }}
+{{- end }}
   selector:
     app: {{ template "mongodb-replicaset.name" . }}
     release: {{ .Release.Name }}

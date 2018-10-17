@@ -39,7 +39,9 @@ The following table lists the configurable parameters of the kubewatch chart and
 
 |               Parameter                  |        Description                   |              Default              |
 | ---------------------------------------- | ------------------------------------ | --------------------------------- |
+| `global.imageRegistry`                   | Global Docker image registry         | `nil`                             |
 | `affinity`                               | node/pod affinities                  | None                              |
+| `image.registry`                         | Image registry                       | `docker.io`                       |
 | `image.repository`                       | Image repository                     | `bitnami/kubewatch`               |
 | `image.tag`                              | Image tag                            | `{VERSION}`                       |
 | `image.pullPolicy`                       | Image pull policy                    | `Always`                          |
@@ -49,7 +51,7 @@ The following table lists the configurable parameters of the kubewatch chart and
 | `replicaCount`                           | desired number of pods               | `1`                               |
 | `rbac.create`                            | If true, create & use RBAC resources | `true`                            |
 | `serviceAccount.create`                  | If true, create a serviceAccount     | `true`                            |
-| `serviceAccount.name`                    | existing ServiceAccount to use (ignored if rbac.create=true) | ``        | 
+| `serviceAccount.name`                    | existing ServiceAccount to use (ignored if rbac.create=true) | ``        |
 | `resources`                              | pod resource requests & limits       | `{}`                              |
 | `slack.channel`                          | Slack channel to notify              | `""`                              |
 | `slack.token`                            | Slack API token                      | `""`                              |

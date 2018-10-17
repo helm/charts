@@ -40,7 +40,7 @@ To get the password for "{{ .Values.mongodbUsername }}" run:
 
 To connect to your database run the following command:
 
-    kubectl run {{ template "mongodb.fullname" . }}-client --rm --tty -i --image bitnami/mongodb --command -- mongo admin --host {{ template "mongodb.fullname" . }} {{- if .Values.usePassword }} -u root -p $MONGODB_ROOT_PASSWORD{{- end }}
+    kubectl run --namespace {{ .Release.Namespace }} {{ template "mongodb.fullname" . }}-client --rm --tty -i --image bitnami/mongodb --command -- mongo admin --host {{ template "mongodb.fullname" . }} {{- if .Values.usePassword }} -u root -p $MONGODB_ROOT_PASSWORD{{- end }}
 
 To connect to your database from outside the cluster execute the following commands:
 
@@ -55,13 +55,12 @@ To connect to your database from outside the cluster execute the following comma
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "mongodb.fullname" . }}'
 
-    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "mongodb.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "mongodb.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
     mongo --host $SERVICE_IP --port {{ .Values.service.nodePort }} {{- if .Values.usePassword }} -p $MONGODB_ROOT_PASSWORD{{- end }}
 
 {{- else if contains "ClusterIP" .Values.service.type }}
 
-    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "mongodb.name" . }}" -o jsonpath="{.items[0].metadata.name}")
-    kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 27017:27017 &
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "mongodb.fullname" . }} 27017:27017 &
     mongo --host 127.0.0.1 {{- if .Values.usePassword }} -p $MONGODB_ROOT_PASSWORD{{- end }}
 
 {{- end }}

@@ -46,13 +46,18 @@ spec:
     spec:
       containers:
         - name: {{ template "tensorflow-inception.fullname" . }}
-          image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-          imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command:
           - "/bin/sh"
           - "-c"
           args:
-          - "/serving/bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server --port={{ .Values.containerPort }} --model_name=inception --model_base_path=/serving/inception-export"
+          - "tensorflow_model_server --port={{ .Values.containerPort }} --model_name=inception --model_base_path=/serving/inception-export"
+{{- if .Values.env.ldLibraryPath  }}
+          env:
+          - name: LD_LIBRARY_PATH
+            value: {{ .Values.env.ldLibraryPath }}
+{{ end }}
           ports:
             - containerPort: {{ .Values.containerPort }}
           readinessProbe:

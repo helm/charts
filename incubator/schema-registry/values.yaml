@@ -7,7 +7,7 @@
 ## schema-registry repository
 image: "confluentinc/cp-schema-registry"
 ## The container tag to use
-imageTag: 4.0.1
+imageTag: 4.1.1
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 imagePullPolicy: "IfNotPresent"
@@ -17,8 +17,7 @@ replicaCount: 1
 
 ## Schema Registry Settings Overrides
 ## Configuration Options can be found here: https://docs.confluent.io/current/schema-registry/docs/config.html
-configurationOverrides:
-  kafkastore.topic.replication.factor: 1
+configurationOverrides: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -47,6 +46,16 @@ kafkaStore:
   overrideGroupId: ""
   ## Additional Java arguments to pass to Kafka.
   # schemaRegistryOpts: -Dfoo=bar
+
+## Readiness probe config.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+##
+readinessProbe:
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
 
 # Options for connecting to SASL kafka brokers
 sasl:
@@ -80,18 +89,28 @@ sasl:
 kafka:
   ## This is enabled only to allow installations of this chart without arguments
   enabled: true
-  imageTag: 4.0.1
+  ## Override kafka settings for default installations
   configurationOverrides:
     # Needed to run with 1 Kafka Broker
     offsets.topic.replication.factor: 1
+  ## Run only a single kafka broker by default
   replicas: 1
 
-  ## Install only a single Zookeeper pod in the StatefulSet
+  ## Kafka Zookeeper chart settings
   zookeeper:
-    servers: 1
+    # Install only a single Zookeeper pod in the StatefulSet
+    replicaCount: 1
 
+## Provides schema registry ingress settings
 ingress:
+  ## If true provide ingress to the schema registry
   enabled: false
+  ## Annotations for the ingress, if any
   annotations: {}
+  ## Hostname of the ingress
   hostname: ""
+  ## Any additional labels to add to the ingress
   labels: {}
+  tls:
+    enabled: false
+    secretName: schema-registry-tls

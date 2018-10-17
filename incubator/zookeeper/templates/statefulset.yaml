@@ -11,7 +11,6 @@ metadata:
 spec:
   serviceName: {{ template "zookeeper.fullname" . }}-headless
   replicas: {{ .Values.replicaCount }}
-  terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
   selector:
     matchLabels:
       app: {{ template "zookeeper.name" . }}
@@ -39,11 +38,15 @@ spec:
         {{- end }}
       {{- end }}
     spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
       containers:
 
         - name: zookeeper
@@ -69,11 +72,31 @@ spec:
             - name: {{ $key | upper | replace "." "_" }}
               value: {{ $value | quote }}
           {{- end }}
+          {{- range $secret := .Values.secrets }}
+            {{- range $key := $secret.keys }}
+          - name: {{ (print $secret.name "_" $key) | upper }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $secret.name }}
+                key: {{ $key }}
+            {{- end }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
             - name: data
               mountPath: /var/lib/zookeeper
+            {{- range $secret := .Values.secrets }}
+              {{- if $secret.mountPath }}
+                {{- range $key := $secret.keys }}
+            - name: {{ $.Release.Name }}-{{ $secret.name }}
+              mountPath: {{ $secret.mountPath }}/{{ $key }}
+              subPath: {{ $key }}
+              readOnly: true
+                {{- end }}
+              {{- end }}
+            {{- end }}
+
 
 {{- if .Values.exporters.jmx.enabled }}
         - name: jmx-exporter
@@ -145,26 +168,22 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-{{- if .Values.exporters.jmx.enabled }}
       volumes:
+        {{- range .Values.secrets }}
+        - name: {{ $.Release.Name }}-{{ .name }}
+          secret:
+            secretName: {{ .name }}
+        {{- end }}
+        {{- if .Values.exporters.jmx.enabled }}
         - name: config-jmx-exporter
           configMap:
             name: {{ .Release.Name }}-jmx-exporter
-{{- end }}
-
-    {{- with .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-
+        {{- end }}
+        {{- if not .Values.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+        {{- end }}
+  {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -181,3 +200,4 @@ spec:
         storageClassName: "{{ .Values.persistence.storageClass }}"
         {{- end }}
       {{- end }}
+  {{- end }}

@@ -1,0 +1,107 @@
+## Default values for hlf-ca.
+## This is a YAML-formatted file.
+## Declare variables to be passed into your templates.
+
+image:
+  repository: hyperledger/fabric-ca
+  tag: 1.2.0
+  pullPolicy: IfNotPresent
+
+service:
+  ## Cluster IP or LoadBalancer
+  type: ClusterIP
+  port: 7054
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # certmanager.k8s.io/cluster-issuer: "letsencrypt-staging"
+  path: /
+  hosts:
+    - hlf-ca.local
+  tls: []
+  #  - secretName: hlf-ca-tls
+  #    hosts:
+  #      - hlf-ca.local
+
+persistence:
+  enabled: true
+  annotations: {}
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  # existingClaim: ""
+
+##################################
+## Further configuration options #
+##################################
+## CA Admin Username
+adminUsername: admin
+## CA Admin password (set to 24 random characters by default)
+# adminPassword:
+## Name of CA, stored in FABRIC_CA_SERVER_CA_NAME (and the configMap "--config", if deploying a Root CA)
+caName: org1-ca
+
+## Settings used in configMap "--db"
+db:
+  # chart: postgres-ca-postgresql
+  database: fabric_ca
+
+## Settings used in configMap "--config"
+config:
+  hlfToolsVersion: 1.2.0
+  ## Mount the TLS certificate & key to disk?
+  mountTLS: false
+  ## Enable debug logging in ca Server configuration file
+  debug: true
+  ## CSR pathlength in ca Server configuration file
+  csr:
+    ca:
+      pathlength: 1
+    names:
+      c: US
+      st: "North Carolina"
+      l:
+      o: Hyperledger
+      ou: Fabric
+  ## "intermediate" is only specified for Intermediate CA's
+  # intermediate:
+  #   parent:
+  #     chart: parent-ca
+  #     url: parent-ca.example.com
+  #     port: 7054
+  ## Affiliations used in ca Server configuration file
+  affiliations:
+    org1: []
+
+resources: {}
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+  ## Suggested antiAffinity, as each CA should be on a separate Node for resilience
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     - topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           app: hlf-ca

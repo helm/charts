@@ -1,15 +1,20 @@
-apiVersion: apps/v1beta1
+{{- $highAvailability := gt (int .Values.keycloak.replicas) 1 -}}
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "keycloak.fullname" . }}
   annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    checksum/config: {{ include (print .Template.BasePath "/configmap.yaml") . | sha256sum }}
   labels:
     app: {{ template "keycloak.name" . }}
     chart: {{ template "keycloak.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "keycloak.name" . }}
+      release: "{{ .Release.Name }}"
   replicas: {{ .Values.keycloak.replicas }}
   serviceName: {{ template "keycloak.fullname" . }}-headless
   podManagementPolicy: Parallel
@@ -20,6 +25,10 @@ spec:
       labels:
         app: {{ template "keycloak.name" . }}
         release: "{{ .Release.Name }}"
+{{- if .Values.keycloak.podAnnotations }}
+      annotations:
+{{ toYaml .Values.keycloak.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       securityContext:
 {{ toYaml .Values.keycloak.securityContext | indent 8 }}
@@ -63,21 +72,13 @@ spec:
                   name: {{ template "keycloak.fullname" . }}-http
                   key: password
           {{- end }}
-          {{- if .Values.keycloak.persistence.deployPostgres }}
-            - name: POSTGRES_PORT_5432_TCP_ADDR
-              value: {{ template "keycloak.postgresql.fullname" . }}
-            - name: POSTGRES_USER
-              value: {{ .Values.postgresql.postgresUser | quote }}
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "keycloak.postgresql.fullname" . }}
-                  key: postgres-password
-            - name: POSTGRES_DATABASE
-              value: {{ .Values.postgresql.postgresDatabase | quote }}
-          {{- else }}
-{{ include "keycloak.externalDbConfig" . | indent 12 }}
+          {{- if $highAvailability }}
+            - name: JGROUPS_DISCOVERY_PROTOCOL
+              value: "dns.DNS_PING"
+            - name: JGROUPS_DISCOVERY_PROPERTIES
+              value: "dns_query={{ template "keycloak.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}"
           {{- end }}
+{{ include "keycloak.dbEnvVars" . | indent 12 }}
 {{- with .Values.keycloak.extraEnv }}
 {{ tpl . $ | indent 12 }}
 {{- end }}
@@ -93,13 +94,13 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /auth/
+              path: /{{ .Values.keycloak.basepath }}/
               port: http
             initialDelaySeconds: {{ .Values.keycloak.livenessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.keycloak.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
-              path: /auth/
+              path: /{{ .Values.keycloak.basepath }}/
               port: http
             initialDelaySeconds: {{ .Values.keycloak.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.keycloak.readinessProbe.timeoutSeconds }}

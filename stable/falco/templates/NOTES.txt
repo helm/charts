@@ -1,0 +1,5 @@
+Falco agents are spinning up on each node in your cluster. After a few
+seconds, they are going to start monitoring your containers looking for
+security issues.
+
+No further action should be required.

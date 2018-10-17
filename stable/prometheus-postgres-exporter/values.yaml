@@ -44,7 +44,9 @@ config:
     user:
     password:
     port: "5432"
+    database: ''
     sslmode: disable
+  disableDefaultMetrics: false
   # this are the defaults queries that the exporter will run, extracted from: https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml
   queries: |-
     pg_replication:
@@ -145,3 +147,9 @@ tolerations: []
 affinity: {}
 
 annotations: {}
+
+# Additional sidecar containers, e. g. for a database proxy, such as Google's cloudsql-proxy
+extraContainers: |
+
+# Additional volumes, e. g. for secrets used in an extraContainer
+extraVolumes: |

@@ -2,19 +2,33 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicas: 1
+replicaCount: 1
 image:
   # From repository https://github.com/osixia/docker-openldap
   repository: osixia/openldap
-  tag: 1.2.0
+  tag: 1.2.1
   pullPolicy: IfNotPresent
 
-containerName: slapd
+# Spcifies an existing secret to be used for admin and config user passwords
+existingSecret: ""
+
+## Add additional labels to all resources
+extraLabels: {}
 
 service:
-  type: ClusterIP
+  annotations: {}
+  clusterIP: ""
+
   ldapPort: 389
   sslLdapPort: 636
+  ## List of IP addresses at which the service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  type: ClusterIP
 
 # Default configuration for openldap as environment variables. These get injected directly in the container.
 # Use the env variables from https://github.com/osixia/docker-openldap#beginner-guide
@@ -33,11 +47,11 @@ env:
 # configPassword: config
 
 # Custom openldap configuration files used to override default settings
-customLdifFiles:
+# customLdifFiles:
   # 01-default-users.ldif: |-
     # Predefine users here
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 persistence:
   enabled: false
   ## database data Persistent Volume Storage Class
@@ -67,6 +81,7 @@ affinity: {}
 
 ## test container details
 test:
+  enabled: false
   image:
     repository: dduportal/bats
     tag: 0.4.0

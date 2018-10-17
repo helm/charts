@@ -56,10 +56,14 @@ ports:
   metrics:
     containerPort: 8080
 
+job:
+  autoCreateCluster: true
+
 keeper:
   replicaCount: 2
   annotations: {}
   resources: {}
+  priorityClassName: ""
   service:
     type: ClusterIP
     annotations: {}
@@ -76,6 +80,7 @@ proxy:
   replicaCount: 2
   annotations: {}
   resources: {}
+  priorityClassName: ""
   service:
     type: ClusterIP
 #    loadBalancerIP: ""
@@ -93,6 +98,7 @@ sentinel:
   replicaCount: 2
   annotations: {}
   resources: {}
+  priorityClassName: ""
   nodeSelector: {}
   affinity: {}
   tolerations: []

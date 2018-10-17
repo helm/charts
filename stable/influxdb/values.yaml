@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
   repo: "influxdb"
-  tag: "1.4-alpine"
+  tag: "1.6-alpine"
   pullPolicy: IfNotPresent
 
 ## Specify a service type
@@ -94,6 +94,11 @@ ingress:
   annotations:
     # kubernetes.io/ingress.class: "nginx"
     # kubernetes.io/tls-acme: "true"
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/

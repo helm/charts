@@ -1,0 +1,87 @@
+# Default values for  hlf-peer.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: hyperledger/fabric-peer
+  tag: 1.2.0
+  pullPolicy: IfNotPresent
+
+service:
+  # Cluster IP or LoadBalancer
+  type: ClusterIP
+  portRequest: 7051
+  portEvent: 7053
+
+persistence:
+  enabled: true
+  annotations: {}
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  # existingClaim: ""
+
+##################################
+## Further configuration options #
+##################################
+## Address of Certificate Authority where O
+caAddress: hlf-ca.local
+## Username for registering/enrolling with CA
+caUsername: peer1
+## Password for registering/enrolling with CA  (defaults to random 24 alphanumeric)
+# caPassword:
+
+peer:
+  # Tools version
+  hlfToolsVersion: 1.2.0
+  # Type of database ("goleveldb" or "CouchDB"):
+  databaseType: goleveldb
+  # If CouchDB is used, which chart holds it
+  couchdbInstance: cdb-peer1
+  ## MSP ID of the Peer
+  mspID: Org1MSP
+
+# Secrets references, empty by default, fill in with your secrets (particularly adminCert) or add Peer Admin certificate manually after launching chart.
+secrets: {}
+  ## This should contain "channel" transaction derived from a configtx.yaml
+  ## configtxgen -profile ComposerChannel -channelID composerchannel -outputCreateChannelTx composerchannel.tx
+  # channel: hlf--channel
+  ## This should contain the Certificate of the Peer Organisation admin
+  ## This is necessary to successfully run the peer
+  # adminCert: hlf--peer-admincert
+  ## This should contain the Private Key of the Peer Organisation admin
+  ## This is necessary to successfully join a channel
+  # adminKey: hlf--peer-adminkey
+  ## This should contain the CA server's TLS details under the key tls.crt (e.g. a Let's Encrypt Certificate PEM)
+  # caServerTls: ca--tls
+
+resources: {}
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+  ## Suggested antiAffinity, as each Peer should be on a separate Node for resilience
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     - topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           app: hlf-peer

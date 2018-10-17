@@ -1,4 +1,10 @@
-# JFrog Artifactory Helm Chart
+# JFrog Artifactory Helm Chart - DEPRECATED
+**This chart is deprecated! You can find the new chart in:**
+- **Sources:** https://github.com/jfrog/charts
+- **Charts repository:** https://charts.jfrog.io
+```bash
+helm repo add jfrog https://charts.jfrog.io
+```
 
 ## Prerequisites Details
 
@@ -82,7 +88,7 @@ $ helm delete --purge artifactory
 This will completely delete your Artifactory Pro deployment.  
 **IMPORTANT:** This will also delete your data volumes. You will lose all data!
 
-## Create Distribution Cert for Artifactory Edge
+### Create Distribution Cert for Artifactory Edge
 ```bash
 # Create private.key and root.crt
 $ openssl req -newkey rsa:2048 -nodes -keyout private.key -x509 -days 365 -out root.crt
@@ -98,7 +104,7 @@ Pass it to `helm`
 $ helm install --name artifactory --set artifactory.distributionCerts=distribution-certs stable/artifactory
 ```
 
-##### Kubernetes Secret
+### Kubernetes Secret for Artifactory License
 You can deploy the Artifactory license as a [Kubernetes secret](https://kubernetes.io/docs/concepts/configuration/secret/).
 Prepare a text file with the license written in it.
 ```bash
@@ -110,13 +116,13 @@ $ helm install --name artifactory --set artifactory.license.secret=artifactory-l
 ```
 **NOTE:** You have to keep passing the license secret parameters as `--set artifactory.license.secret=artifactory-license,artifactory.license.dataKey=art.lic` on all future calls to `helm install` and `helm upgrade`!
 
-## Bootstrapping Artifactory
+### Bootstrapping Artifactory
 **IMPORTANT:** Bootstrapping Artifactory needs license. Pass license as shown in above section.
 
 * User guide to [bootstrap Artifactory Global Configuration](https://www.jfrog.com/confluence/display/RTF/Configuration+Files#ConfigurationFiles-BootstrappingtheGlobalConfiguration)
 * User guide to [bootstrap Artifactory Security Configuration](https://www.jfrog.com/confluence/display/RTF/Configuration+Files#ConfigurationFiles-BootstrappingtheSecurityConfiguration)
 
-Create `bootstrap-config.yaml` with artifactory.config.import.xml and security.import.xml as shown below:
+1. Create `bootstrap-config.yaml` with artifactory.config.import.xml and security.import.xml as shown below:
 ```
 apiVersion: v1
 kind: ConfigMap
@@ -129,13 +135,25 @@ data:
     <config contents>
 ```
 
-Create configMap in Kubernetes:
+2. Create configMap in Kubernetes:
 ```bash
 $ kubectl apply -f bootstrap-config.yaml
 ```
-# Pass the configMap to helm
+3. Pass the configMap to helm
 ```bash
 $ helm install --name artifactory --set artifactory.license.secret=artifactory-license,artifactory.license.dataKey=art.lic,artifactory.configMapName=my-release-bootstrap-config stable/artifactory
+```
+
+### Use custom nginx.conf with Nginx
+
+Steps to create configMap with nginx.conf
+* Create `nginx.conf` file.
+```bash
+kubectl create configmap nginx-config --from-file=nginx.conf
+```
+* Pass configMap to helm install
+```bash
+helm install --name artifactory-ha --set nginx.customConfigMap=nginx-config stable/artifactory-ha
 ```
 
 ### Use an external Database
@@ -149,6 +167,7 @@ This can be done with the following parameters
 # Make sure your Artifactory Docker image has the MySQL database driver in it
 ...
 --set postgresql.enabled=false \
+--set artifactory.postStartCommand="curl -L -o /opt/jfrog/artifactory/tomcat/lib/mysql-connector-java-5.1.41.jar https://jcenter.bintray.com/mysql/mysql-connector-java/5.1.41/mysql-connector-java-5.1.41.jar && chown 1030:1030 /opt/jfrog/artifactory/tomcat/lib/mysql-connector-java-5.1.41.jar" \
 --set database.type=mysql \
 --set database.host=${DB_HOST} \
 --set database.port=${DB_PORT} \
@@ -184,18 +203,22 @@ The following table lists the configurable parameters of the artifactory chart a
 |         Parameter         |           Description             |                         Default                          |
 |---------------------------|-----------------------------------|----------------------------------------------------------|
 | `imagePullSecrets`        | Docker registry pull secret       |                                                          |
+| `serviceAccount.create`   | Specifies whether a ServiceAccount should be created | `true`                               |
+| `serviceAccount.name`     | The name of the ServiceAccount to create             | Generated using the fullname template |
+| `rbac.create`             | Specifies whether RBAC resources should be created   | `true`                               |
+| `rbac.role.rules`         | Rules to create                   | `[]`                                                     |
 | `artifactory.name`        | Artifactory name                  | `artifactory`                                            |
 | `artifactory.replicaCount`            | Replica count for Artifactory deployment| `1`                                    |
 | `artifactory.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                              |
 | `artifactory.image.repository`    | Container image                   | `docker.bintray.io/jfrog/artifactory-pro`        |
-| `artifactory.image.version`       | Container tag                     |  `5.10.1`                                        |
+| `artifactory.image.version`       | Container tag                     |  `6.1.0`                                        |
 | `artifactory.service.name`| Artifactory service name to be set in Nginx configuration | `artifactory`                    |
 | `artifactory.service.type`| Artifactory service type | `ClusterIP`                                                       |
 | `artifactory.externalPort` | Artifactory service external port | `8081`                                                  |
 | `artifactory.internalPort` | Artifactory service internal port | `8081`                                                  |
 | `artifactory.internalPortReplicator` | Replicator service internal port | `6061`                                         |
 | `artifactory.externalPortReplicator` | Replicator service external port | `6061`                                         |
-| `artifactory.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`    |
+| `artifactory.livenessProbe.enabled`              | Enable liveness probe                     | `true`                    |
 | `artifactory.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 180                       |
 | `artifactory.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                        |
 | `artifactory.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                        |
@@ -229,7 +252,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.enabled` | Deploy nginx server | `true`                                                                           |
 | `nginx.replicaCount` | Nginx replica count | `1`                                                                         |
 | `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`        |
-| `nginx.image.version`       | Container tag                     | `5.10.1`                                               |
+| `nginx.image.version`       | Container tag                     | `6.1.0`                                               |
 | `nginx.image.pullPolicy`    | Container pull policy                   | `IfNotPresent`                                   |
 | `nginx.service.type`| Nginx service type | `LoadBalancer`                                                                |
 | `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |  |
@@ -240,7 +263,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.internalPortHttps` | Nginx service internal port | `443`                                                          |
 | `nginx.internalPortReplicator` | Replicator service internal port | `6061`                                               |
 | `nginx.externalPortReplicator` | Replicator service external port | `6061`                                               |
-| `nginx.livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`          |
+| `nginx.livenessProbe.enabled`              | Enable liveness probe                     | `true`                          |
 | `nginx.livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 60                              |
 | `nginx.livenessProbe.periodSeconds`        | How often to perform the probe            | 10                              |
 | `nginx.livenessProbe.timeoutSeconds`       | When the probe times out                  | 10                              |
@@ -255,6 +278,8 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |                                                 |
 | `nginx.env.artUrl` | Nginx Environment variable Artifactory URL | `"http://artifactory:8081/artifactory"`                |
 | `nginx.env.ssl` | Nginx Environment enable ssl | `true`                                                                  |
+| `nginx.env.skipAutoConfigUpdate`  | Nginx Environment to disable auto configuration update | `false`                     |
+| `nginx.customConfigMap`           | Nginx CustomeConfigMap name for `nginx.conf` | ` `                               |
 | `nginx.persistence.mountPath` | Nginx persistence volume mount path | `"/var/opt/jfrog/nginx"`                           |
 | `nginx.persistence.enabled` | Nginx persistence volume enabled | `true`                                                  |
 | `nginx.persistence.accessMode` | Nginx persistence volume access mode | `ReadWriteOnce`                                  |
@@ -277,7 +302,7 @@ helm install --name artifactory \
   stable/artifactory
 ```
 
-If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
+If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [cert-manager](https://github.com/jetstack/cert-manager)), please refer to the documentation for that mechanism.
 
 To manually configure TLS, first create/retrieve a key & certificate pair for the address(es) you wish to protect. Then create a TLS secret in the namespace:
 

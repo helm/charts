@@ -73,6 +73,8 @@ their default values.
 | `storageClass.provisionerName` | The provisioner name for the storageclass                                                                       | `cluster.local/{release-name}-{chart-name}`              |
 | `storageClass.defaultClass`    | Whether to set the created StorageClass as the clusters default StorageClass                                    | `false`                                                  |
 | `storageClass.name`            | The name to assign the created StorageClass                                                                     | `nfs`                                                    |
+| `storageClass.parameters`      | Parameters for StorageClass                                                                                     | `mountOptions: vers=4.1`                                 |
+| `storageClass.reclaimPolicy`   | ReclaimPolicy field of the class, which can be either Delete or Retain                                          | `Delete`                                                    |
 | `resources`                    | Resource limits for nfs-server-provisioner pod                                                                          | `{}`                                                     |
 | `nodeSelector`                 | Map of node labels for pod assignment                                                                           | `{}`                                                     |
 | `tolerations`                  | List of node taints to tolerate                                                                                 | `[]`                                                     |
@@ -126,7 +128,7 @@ Amazon EBS volume) to provide persistence.
 
 ---
 
-The following is a recommended configration example when another storage class
+The following is a recommended configuration example when another storage class
 does not exist to provide persistence:
 
     persistence:

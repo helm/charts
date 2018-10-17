@@ -5,7 +5,7 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 0.13.0
+    tag: 0.14.4
   pullPolicy: Always
 
 # When enabled, exposes json and prometheus metrics on {{ .Release.Name }}-metrics service
@@ -30,6 +30,7 @@ backend:
     index: kubernetes_cluster
     type: flb_type
     logstash_prefix: kubernetes_cluster
+    time_key: "@timestamp"
     # Optional username credential for Elastic X-Pack access
     http_user:
     # Password for user defined in HTTP_User
@@ -41,13 +42,14 @@ backend:
     tls_ca: ""
     # TLS debugging levels = 1-5
     tls_debug: 1
-
-parsers:
-  ## List the respective parsers in key: value format per entry
-  ## Regex required fields are name and regex. JSON required field
-  ## is name.
-  regex: []
-  json: []
+  splunk:
+    host: 127.0.0.1
+    port: 8088
+    token: ""
+    send_raw: "on"
+    tls: "on"
+    tls_verify: "off"
+    message_key: "kubernetes"
 
   ##
   ## Ref: http://fluentbit.io/documentation/current/output/http.html
@@ -59,6 +61,14 @@ parsers:
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
+
+parsers:
+  enabled: false
+  ## List the respective parsers in key: value format per entry
+  ## Regex required fields are name and regex. JSON required field
+  ## is name.
+  regex: []
+  json: []
 
 env: []
 

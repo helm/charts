@@ -13,6 +13,13 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.hub.serviceType | quote }}
+  {{- if .Values.hub.serviceLoadBalancerIP }}
+  loadBalancerIP: {{ .Values.hub.serviceLoadBalancerIP | quote }}
+  {{- end }}
+{{- if .Values.hub.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.hub.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
   sessionAffinity: {{ .Values.hub.serviceSessionAffinity | quote }}
   ports:
   - name: hub

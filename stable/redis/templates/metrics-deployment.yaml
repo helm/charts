@@ -9,17 +9,24 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+        release: "{{ .Release.Name }}"
+        role: metrics
+        app: {{ template "redis.name" . }}
   template:
     metadata:
       labels:
         release: "{{ .Release.Name }}"
+        chart: {{ template "redis.chart" . }}
         role: metrics
         app: {{ template "redis.name" . }}
       {{- if .Values.metrics.podLabels }}
 {{ toYaml .Values.metrics.podLabels | indent 8 }}
       {{- end }}
-      {{- if .Values.metrics.podAnnotations }}
       annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- if .Values.metrics.podAnnotations }}
 {{ toYaml .Values.metrics.podAnnotations | indent 8 }}
       {{- end }}
     spec:
@@ -33,6 +40,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.metrics.nodeSelector | indent 8 }}
       {{- end }}
+      serviceAccountName: "{{ template "redis.serviceAccountName" . }}"
       {{- if .Values.metrics.tolerations }}
       tolerations:
 {{ toYaml .Values.metrics.tolerations | indent 8 }}
@@ -41,6 +49,10 @@ spec:
       - name: metrics
         image: {{ template "metrics.image" . }}
         imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+        args:
+        {{- range $key, $value := .Values.metrics.extraArgs }}
+          - --{{ $key }}={{ $value }}
+        {{- end }}
         env:
         - name: REDIS_ADDR
         {{- if .Values.cluster.enabled }}

@@ -12,7 +12,7 @@ hub:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.12.0"
+  tag: "3.14.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -24,7 +24,10 @@ hub:
   ## Timeout for probe Hub readiness via HTTP request on Hub console
   readinessTimeout: 1
 
-  ## Set the JAVA_OPTS environment variable
+  ## Timeout for probe Hub liveness via HTTP request on Hub console
+  livenessTimeout: 1
+
+  ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx400m"
 
@@ -52,6 +55,11 @@ hub:
   ##   Values: ClusterIP, NodePort, LoadBalancer, or ExternalName
   ## ref: https://kubernetes.io/docs/user-guide/services/
   serviceType: "LoadBalancer"
+
+  ## The LoadBalancer IP Address
+  ## ref: https://kubernetes.io/docs/user-guide/services/
+  ## serviceLoadBalancerIP: "40.121.183.52"
+  loadBalancerSourceRanges: []
 
   ## Control where client requests go, to the same pod or round-robin
   ##   Values: ClientIP or None
@@ -82,6 +90,18 @@ hub:
   ## NodeSelector to be used for the hub
   nodeSelector:
   #  label: value
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - selenium-hub.local
+    tls: []
+    #  - secretName: selenium-hub-tls
+    #    hosts:
+    #      - selenium-hub.local
 
 
 chrome:
@@ -94,7 +114,7 @@ chrome:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-chrome/tags/
-  tag: "3.12.0"
+  tag: "3.14.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -103,7 +123,7 @@ chrome:
   ## The number of pods in the deployment
   replicas: 1
 
-  ## Set the JAVA_OPTS environment variable
+  ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium node is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
 
@@ -170,7 +190,7 @@ chromeDebug:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-chrome-debug/tags/
-  tag: "3.12.0"
+  tag: "3.14.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -179,7 +199,7 @@ chromeDebug:
   ## The number of pods in the deployment
   replicas: 1
 
-  ## Set the JAVA_OPTS environment variable
+  ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
 
@@ -245,7 +265,7 @@ firefox:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-firefox/tags/
-  tag: "3.12.0"
+  tag: "3.14.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -254,7 +274,7 @@ firefox:
   ## The number of pods in the deployment
   replicas: 1
 
-  ## Set the JAVA_OPTS environment variable
+  ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
 
@@ -307,7 +327,7 @@ firefoxDebug:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/node-firefox-debug/tags/
-  tag: "3.12.0"
+  tag: "3.14.0"
 
   ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -316,7 +336,7 @@ firefoxDebug:
   ## The number of pods in the deployment
   replicas: 1
 
-  ## Set the JAVA_OPTS environment variable
+  ## Set the JAVA_TOOL_OPTIONS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx900m"
 

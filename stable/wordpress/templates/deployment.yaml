@@ -8,11 +8,17 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+      release: "{{ .Release.Name }}"
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
         app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -22,7 +28,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "fullname" . }}
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: {{ template "wordpress.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD
@@ -146,3 +152,12 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end -}}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+

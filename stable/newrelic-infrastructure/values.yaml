@@ -5,6 +5,10 @@
 # https://docs.newrelic.com/docs/kubernetes-monitoring-integration
 # cluster: ""
 
+# kubeStateMetricsUrl - if provided, the discovery process for kube-state-metrics endpoint won't be triggered
+# Only HTTP is accepted. This is an example value: http://172.17.0.3:8080
+# kubeStateMetricsUrl:
+
 verboseLog: false
 
 # This can be set, the default is shown below
@@ -12,7 +16,7 @@ verboseLog: false
 
 image:
   repository: newrelic/infrastructure-k8s
-  tag: 1.0.0-beta1.0
+  tag: 1.2.0
   pullPolicy: IfNotPresent
 
 resources:

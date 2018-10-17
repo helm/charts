@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 1.4.1
 description: A Jaeger Helm chart for Kubernetes
 name: jaeger
-version: 0.6.1
+version: 0.7.0
 keywords:
   - jaeger
   - opentracing

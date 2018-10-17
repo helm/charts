@@ -1,18 +1,25 @@
+{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "joomla.fullname" . }}
   labels:
     app: {{ template "joomla.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    chart: {{ template "joomla.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "joomla.fullname" . }}
+      release: "{{ .Release.Name }}"
   replicas: 1
   template:
     metadata:
       labels:
         app: {{ template "joomla.fullname" . }}
+        chart: {{ template "joomla.chart" . }}
+        release: {{ .Release.Name | quote }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -22,7 +29,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "joomla.fullname" . }}
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: {{ template "joomla.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD
@@ -57,46 +64,64 @@ spec:
               key: db-password
         {{- end }}
         - name: JOOMLA_USERNAME
-          value: {{ default "" .Values.joomlaUsername | quote }}
+          value: {{ .Values.joomlaUsername | quote }}
         - name: JOOMLA_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "joomla.fullname" . }}
               key: joomla-password
         - name: JOOMLA_EMAIL
-          value: {{ default "" .Values.joomlaEmail | quote }}
+          value: {{ .Values.joomlaEmail | quote }}
+        {{- if .Values.smtpHost }}
         - name: SMTP_HOST
-          value: {{ default "" .Values.smtpHost | quote }}
+          value: {{ .Values.smtpHost | quote }}
+        {{- end }}
+        {{- if .Values.smtpPort }}
         - name: SMTP_PORT
-          value: {{ default "" .Values.smtpPort | quote }}
+          value: {{ .Values.smtpPort | quote }}
+        {{- end }}
+        {{- if .Values.smtpUser }}
         - name: SMTP_USER
-          value: {{ default "" .Values.smtpUser | quote }}
+          value: {{ .Values.smtpUser | quote }}
+        {{- end }}
+        {{- if .Values.smtpPassword }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "joomla.fullname" . }}
               key: smtp-password
+        {{- end }}
+        {{- if .Values.smtpProtocol }}
         - name: SMTP_PROTOCOL
-          value: {{ default "" .Values.smtpProtocol | quote }}
+          value: {{ .Values.smtpProtocol | quote }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
         - name: https
           containerPort: 443
+        {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           httpGet:
             path: /index.php
             port: http
-          initialDelaySeconds: 120
-          timeoutSeconds: 5
-          failureThreshold: 6
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           httpGet:
             path: /index.php
             port: http
-          initialDelaySeconds: 30
-          timeoutSeconds: 3
-          periodSeconds: 5
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -119,3 +144,16 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end -}}
+      {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+{{- end }}

@@ -1,3 +1,9 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 slack:
   # Slack channel to notify
   channel: "XXXX"
@@ -31,6 +37,7 @@ resourcesToWatch:
   persistentvolume: false
 
 image:
+  registry: "docker.io"
   repository: "bitnami/kubewatch"
   tag: "0.0.4"
   pullPolicy: "Always"

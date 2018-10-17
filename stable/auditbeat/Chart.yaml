@@ -1,0 +1,12 @@
+apiVersion: v1
+description: A lightweight shipper to audit the activities of users and processes on your systems
+icon: https://www.elastic.co/assets/blt27d1fd26b0862613/icon-auditbeat-bb.svg
+name: auditbeat
+version: 0.3.0
+appVersion: 6.4.2
+home: https://www.elastic.co/products/beats/auditbeat
+sources:
+- https://www.elastic.co/guide/en/beats/auditbeat/current/index.html
+maintainers:
+- name: mumoshu
+  email: ykuoka@gmail.com

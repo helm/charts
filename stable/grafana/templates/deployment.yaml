@@ -19,6 +19,9 @@ spec:
       release: {{ .Release.Name }}
   strategy:
     type: {{ .Values.deploymentStrategy }}
+  {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
+    rollingUpdate: null
+  {{- end }}    
   template:
     metadata:
       labels:
@@ -33,9 +36,10 @@ spec:
 {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
 {{- end }}
+{{- if .Values.securityContext }}
       securityContext:
-        runAsUser: 472
-        fsGroup: 472
+{{ toYaml .Values.securityContext | indent 8 }}
+{{- end }}
 {{- if .Values.dashboards }}
       initContainers:
         - name: download-dashboards
@@ -103,14 +107,22 @@ spec:
               mountPath: "/etc/grafana/ldap.toml"
               subPath: ldap.toml
 {{- if .Values.dashboards }}
-  {{- range $key, $value := .Values.dashboards }}
-    {{ if hasKey $value "json" }}
-            - name: dashboards-json
-              mountPath: "/var/lib/grafana/dashboards/{{ $key }}.json"
-              subPath: {{ $key }}.json
+  {{- range $provider, $dashboards := .Values.dashboards }}
+    {{- range $key, $value := $dashboards }}
+      {{- if hasKey $value "json" }}
+            - name: dashboards-{{ $provider }}
+              mountPath: "/var/lib/grafana/dashboards/{{ $provider }}/{{ $key }}.json"
+              subPath: "{{ $key }}.json"
+      {{- end }}
     {{- end }}
   {{- end }}
 {{- end -}}
+{{- if .Values.dashboardsConfigMaps }}
+  {{- range keys .Values.dashboardsConfigMaps }}
+            - name: dashboards-{{ . }}
+              mountPath: "/var/lib/grafana/dashboards/{{ . }}"
+  {{- end }}
+{{- end }}
 {{- if .Values.datasources }}
             - name: config
               mountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
@@ -125,7 +137,8 @@ spec:
             - name: sc-dashboard-volume
               mountPath: {{ .Values.sidecar.dashboards.folder | quote }}
             - name: sc-dashboard-provider
-              mountPath: "/etc/grafana/provisioning/dashboards"
+              mountPath: "/etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml"
+              subPath: provider.yaml
 {{- end}}
 {{- if .Values.sidecar.datasources.enabled }}
             - name: sc-datasources-volume
@@ -186,17 +199,9 @@ spec:
                 name: {{ .Values.envFromSecret }}
           {{- end }}
           livenessProbe:
-            httpGet:
-              path: /api/health
-              port: 3000
+{{ toYaml .Values.livenessProbe | indent 12 }}
           readinessProbe:
-            httpGet:
-              path: /api/health
-              port: 3000
-            initialDelaySeconds: 60
-            timeoutSeconds: 30
-            failureThreshold: 10
-            periodSeconds: 10
+{{ toYaml .Values.readinessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
@@ -215,9 +220,20 @@ spec:
         - name: config
           configMap:
             name: {{ template "grafana.fullname" . }}
-        - name: dashboards-json
+        {{- if .Values.dashboards }}
+          {{- range keys .Values.dashboards }}
+        - name: dashboards-{{ . }}
           configMap:
-            name: {{ template "grafana.fullname" . }}-dashboards-json
+            name: {{ template "grafana.fullname" $ }}-dashboards-{{ . }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.dashboardsConfigMaps }}
+          {{- range $provider, $name := .Values.dashboardsConfigMaps }}
+        - name: dashboards-{{ $provider }}
+          configMap:
+            name: {{ $name }}
+          {{- end }}
+        {{- end }}
         - name: ldap
           secret:
             {{- if .Values.ldap.existingSecret }}
@@ -250,5 +266,5 @@ spec:
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+            defaultMode: {{ .defaultMode }}
       {{- end }}
-
