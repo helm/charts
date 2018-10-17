@@ -1,23 +1,37 @@
 {{- if .Values.ingress.enabled }}
-apiVersion: {{ required "A valid .Values.networkPolicyApiVersion entry required!" .Values.networkPolicyApiVersion }}
+{{- range .Values.ingress.hosts }}
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-{{- if .Values.ingress.annotations }}
+  name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | trimSuffix "-" -}}"
+  labels:
+    app: {{ template "redmine.fullname" $ }}
+    chart: {{ template "redmine.chart" $ }}
+    release: "{{ $.Release.Name }}"
+    heritage: "{{ $.Release.Service }}"
   annotations:
-{{ toYaml .Values.ingress.annotations | indent 4 }}
-{{- end }}
-  name: {{ template "redmine.fullname" . }}
+    {{- if .certManager }}
+    kubernetes.io/tls-acme: "true"
+    {{- end }}
+    {{- range $key, $value := .annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
 spec:
   rules:
-  - host: {{ .Values.ingress.hostname | quote }}
+  - host: {{ .name }}
     http:
       paths:
-      - path: /
+      - path: {{ default "/" .path }}
         backend:
-          serviceName: {{ template "redmine.fullname" . }}
+          serviceName: {{ template "redmine.fullname" $ }}
           servicePort: 80
-{{- if .Values.ingress.tls }}
+{{- if .tls }}
   tls:
+  - hosts:
+    - {{ .name }}
+      secretName: {{ .tlsSecret }}
 {{ toYaml .Values.ingress.tls | indent 4 }}
-{{- end -}}
+{{- end }}
+---
+{{- end }}
 {{- end }}
