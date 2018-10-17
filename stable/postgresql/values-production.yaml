@@ -120,14 +120,14 @@ readinessProbe:
 ## Configure metrics exporter
 ##
 metrics:
-  enabled: false
+  enabled: true
   # resources: {}
   # podAnnotations: {}
   service:
     type: ClusterIP
-    annotations: {}
-  #   prometheus.io/scrape: "true"
-  #   prometheus.io/port: "9187"
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9187"
     loadBalancerIP:
   image:
     registry: docker.io
