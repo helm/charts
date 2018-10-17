@@ -3,7 +3,7 @@ deployment:
 contour:
   image:
     repository: gcr.io/heptio-images/contour
-    tag: master
+    tag: v0.5.0
     pullPolicy: Always
   command: contour
   args:
