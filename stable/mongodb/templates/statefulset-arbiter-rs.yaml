@@ -112,6 +112,8 @@ spec:
               mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
               subPath: mongodb.conf
           {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
       volumes:
       {{- if .Values.configmap }}
         - name: config
