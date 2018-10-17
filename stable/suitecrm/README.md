@@ -80,14 +80,11 @@ The following table lists the configurable parameters of the SuiteCRM chart and 
 | `mariadb.rootUser.password`         | MariaDB admin password                          | `nil`                                                   |
 | `serviceType`                       | Kubernetes Service type                         | `LoadBalancer`                                          |
 | `externalTrafficPolicy`             | Set to `Local` to preserve the client source IP | `Cluster`                                               |
-| `sessionAffinity`                   | Configures the session affinity                 | `ClientIP`                                              |
 | `persistence.enabled`               | Enable persistence using PVC                    | `true`                                                  |
-| `persistence.apache.storageClass`   | PVC Storage Class for apache volume             | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.accessMode`     | PVC Access Mode for apache volume               | `ReadWriteOnce`                                         |
-| `persistence.apache.size`           | PVC Storage Request for apache volume           | `1Gi`                                                   |
-| `persistence.suitecrm.storageClass` | PVC Storage Class for SuiteCRM volume           | `nil` (uses alpha storage class annotation)             |
-| `persistence.suitecrm.accessMode`   | PVC Access Mode for SuiteCRM volume             | `ReadWriteOnce`                                         |
-| `persistence.suitecrm.size`         | PVC Storage Request for SuiteCRM volume         | `8Gi`                                                   |
+| `persistence.storageClass`          | PVC Storage Class for SuiteCRM volume           | `nil` (uses alpha storage class annotation)             |
+| `persistence.existingClaim`         | An Existing PVC name for SuiteCRM volume        | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`            | PVC Access Mode for SuiteCRM volume             | `ReadWriteOnce`                                         |
+| `persistence.size`                  | PVC Storage Request for SuiteCRM volume         | `8Gi`                                                   |
 | `resources`                         | CPU/Memory resource requests/limits             | Memory: `512Mi`, CPU: `300m`                            |
 
 The above parameters map to the env variables defined in [bitnami/suitecrm](http://github.com/bitnami/bitnami-docker-suitecrm). For more information please refer to the [bitnami/suitecrm](http://github.com/bitnami/bitnami-docker-suitecrm) image documentation.
