@@ -126,6 +126,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.agent.affinity }}
+      affinity:
+{{ toYaml .Values.agent.affinity | indent 8 }}
+    {{- end }}
     {{- if .Values.agent.hostAliases }}
       hostAliases:
 {{ toYaml .Values.agent.hostAliases | indent 8 }}
