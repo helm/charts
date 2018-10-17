@@ -34,7 +34,7 @@ The following table lists the configurable parameters of the Stellar Horizon cha
 | `existingDatabase`                           | Provide existing database (used if `postgresql.enabled` is `false`)    |                                                  |
 | `existingDatabase.passwordSecret`            | Existing secret with the database password                             | `{name: 'postgresql-horizon', value: 'password'}`|
 | `existingDatabase.url`                       | Existing database URL (use `$(DATABASE_PASSWORD` as the password)      | Not set                                          |
-| `stellar-core.enabled`                       | Enable Stellar Core                                                    | `false`                                          |
+| `stellar-core.enabled`                       | Enable Stellar Core                                                    | `true`                                           |
 | `stellar-core.nodeSeed`                      | Node seed for Stellar Core                                             | Not set                                          |
 | `stellar-core.*`                             | Any Stellar Core option, see `stellar-core` chart                      |                                                  |
 | `stellar-core.postgresql.*`                  | Any PostgreSQL option (for Stellar Core)                               |                                                  |
