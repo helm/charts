@@ -5,7 +5,7 @@ metadata:
   name: {{ template "redmine.fullname" . }}
   labels:
     app: {{ template "redmine.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "redmine.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
