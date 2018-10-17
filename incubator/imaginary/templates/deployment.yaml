@@ -1,0 +1,153 @@
+apiVersion: {{ .Values.apiVersion }}
+kind: Deployment
+metadata:
+  name: {{ template "imaginary.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "imaginary.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "imaginary.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "imaginary.fullname" . }}
+        release: {{ .Release.Name | quote }}
+    spec:
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      containers:
+      - name: "imaginary"
+        image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: PORT
+          value: "{{ .Values.httpPort }}"
+        args:
+        {{- with .Values.config }}
+        {{- if .pathPrefix }}
+        - "-path-prefix={{ .pathPrefix }}"
+        {{- end }}
+        {{- if .cors }}
+        - "-cors"
+        {{- end }}
+        {{- if .gzip }}
+        - "-gzip"
+        {{- end }}
+        {{- if .disableEndpoints }}
+        - "-disable-endpoints={{ .disableEndpoints }}"
+        {{- end }}
+        {{- if .key }}
+        - "-key={{ .key }}"
+        {{- end }}
+        {{- if .mount }}
+        - "-mount={{ .mount }}"
+        {{- end }}
+        {{- if .httpCacheTTL }}
+        - "-http-cache-ttl={{ int .httpCacheTTL }}"
+        {{- end }}
+        {{- if .httpReadTimeout }}
+        - "-http-read-timeout={{ int .httpReadTimeout }}"
+        {{- end }}
+        {{- if .httpWriteTimeout }}
+        - "-http-write-timeout={{ int .httpWriteTimeout }}"
+        {{- end }}
+        {{- if .enableURLSource }}
+        - "-enable-url-source"
+        {{- end }}
+        {{- if .enablePlaceholder }}
+        - "-enable-placeholder"
+        {{- end }}
+        {{- if .enableAuthForwarding }}
+        - "-enable-auth-forwarding"
+        {{- end }}
+        {{- if .enableURLSignature}}
+        - "-enable-url-signature"
+        {{- end }}
+        {{- if .urlSignatureKey}}
+        - "-url-signature-key={{ .urlSignatureKey }}"
+        {{- end }}
+        {{- if .allowedOrigins }}
+        - "-allowed-origins={{ .allowedOrigins }}"
+        {{- end }}
+        {{- if .maxAllowedSize }}
+        - "-max-allowed-size={{ int .maxAllowedSize }}"
+        {{- end }}
+        {{- if .authorization }}
+        - "-authorization={{ .authorization }}"
+        {{- end }}
+        {{- if .placeholder }}
+        - "-placeholder={{ .placeholder }}"
+        {{- end }}
+        {{- if .concurrency }}
+        - "-concurrency={{ int .concurrency }}"
+        {{- end }}
+        {{- if .burst }}
+        - "-burst={{ int .burst }}"
+        {{- end }}
+        {{- if .mrelease }}
+        - "-mrelease={{ int .mrelease }}"
+        {{- end }}
+        {{- if .cpus }}
+        - "-cpus={{ int .cpus }}"
+        {{- end }}
+        {{- end }}
+        {{- if and (not .Values.ingress.tls) (and .Values.tls.certificate .Values.config.privateKey) }}
+        - "-certfile=/etc/tls.crt"
+        - "-keyfile=/etc/tls.key"
+        volumeMounts:
+        - mountPath: /etc/tls.key
+          name: certificates
+          subPath: tls.key
+        - mountPath: /etc/tls.crt
+          name: certificates
+          subPath: tls.crt
+        {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - containerPort: {{ .Values.httpPort }}
+          name: http
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            {{- if .Values.config.pathPrefix }}
+            path: {{ .Values.config.pathPrefix }}/health
+            {{- else }}
+            path: /health
+            {{- end }}
+            port: {{ .Values.httpPort }}
+            scheme: HTTP
+          {{- with .Values.readinessProbe }}
+          initialDelaySeconds: {{ .initialDelaySeconds | default 10 }}
+          timeoutSeconds: {{ .timeoutSeconds | default 5}}
+          successThreshold: {{ .successThreshold | default 1 }}
+          failureThreshold: {{ .failureThreshold | default 5 }}
+          {{- end }}
+        livenessProbe:
+          httpGet:
+            {{- if .Values.config.pathPrefix }}
+            path: {{ .Values.config.pathPrefix }}/health
+            {{- else }}
+            path: /health
+            {{- end }}
+            port: {{ .Values.httpPort }}
+            scheme: HTTP
+          {{- with .Values.livenessProbe }}
+          initialDelaySeconds: {{ .initialDelaySeconds | default 50 }}
+          timeoutSeconds: {{ .timeoutSeconds | default 5}}
+          successThreshold: {{ .successThreshold | default 1 }}
+          failureThreshold: {{ .failureThreshold | default 5 }}
+          {{- end }}
+      {{- if and (not .Values.ingress.tls) (and .Values.tls.certificate .Values.config.privateKey) }}
+      volumes:
+      - name: certificates
+        secret:
+          secretName: {{ template "imaginary.fullname" . }}-tls
+      {{- end }}
