@@ -4,7 +4,7 @@ metadata:
   name: {{ template "couchdb.fullname" . }}
   labels:
     app: {{ template "couchdb.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ .Chart.Name }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -133,7 +133,7 @@ spec:
         name: database-storage
         labels:
           app: {{ template "couchdb.name" . }}
-          chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+          chart: {{ .Chart.Name }}
           release: {{ .Release.Name }}
           heritage: {{ .Release.Service }}
       spec:
