@@ -78,14 +78,6 @@ data:
         io.kubernetes.pod.name: kubernetes_pod_name
         io.kubernetes.pod.uid: kubernetes_pod_uid
         io.kubernetes.pod.namespace: kubernetes_namespace
-      metricsToExclude:
-       - metricNames:
-         - 'cpu.usage*'
-         - 'cpu.percent'
-         - 'memory.usage*'
-         - 'memory.percent'
-         - 'blkio.io_service_bytes_recursive.*'
-         negated: true
     {{- end }}
 
     {{ range .Values.monitors -}}
@@ -107,6 +99,7 @@ data:
       logLevel: {{ .Values.logLevel | default "notice" }}
 
     metricsToExclude:
+      - {"#from": "/lib/whitelist.json", flatten: true}
       {{- if .Values.metricNamesToExclude }}
       - metricNames:
        {{- range .Values.metricNamesToExclude }}
