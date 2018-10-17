@@ -1,0 +1,24 @@
+{{- if .Values.enterpriseConfig.ui.enabled -}}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "anchore-engine.enterprise-ui.fullname" . | quote }}
+  labels:
+    app: "{{ template "fullname" . }}"
+    component: "enterprise-ui"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.enterpriseConfig.ui.service.type }}
+  ports:
+    - name: enterprise-ui
+      port: {{ .Values.enterpriseConfig.ui.service.httpPort }}
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    app: "{{ template "fullname" . }}"
+    component: "enterprise-ui"
+
+{{- end -}}

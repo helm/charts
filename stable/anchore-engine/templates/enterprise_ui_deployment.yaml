@@ -1,0 +1,82 @@
+{{- if .Values.enterpriseConfig.ui.enabled -}}
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ include "anchore-engine.enterprise-ui.fullname" . | quote }}
+  labels:
+    app: {{ include "fullname" . | quote }}
+    component: "enterprise-ui"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.enterpriseConfig.ui.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "fullname" . | quote }}
+        component: "enterprise-ui"
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      imagePullSecrets:
+      - name: {{ .Values.enterpriseConfig.imagePullSecretName }}
+      containers:
+      - name: {{ .Chart.Name }}-enterprise-ui
+        image: {{ .Values.enterpriseConfig.ui.image.repository }}:{{ .Values.enterpriseConfig.ui.image.tag }}
+        imagePullPolicy: {{ .Values.enterpriseConfig.ui.image.pullPolicy }}
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+          name: enterprise-ui
+        volumeMounts:
+        - name: ui-config
+          mountPath: "/config/config-ui.yaml"
+          subPath: config-ui.yaml
+        - name: anchore-license
+          mountPath: "/config/license.yaml"
+          subPath: license.yaml
+        readinessProbe:
+          httpGet:
+            path: /service/health
+            port: enterprise-ui
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 10
+        livenessProbe:
+          httpGet:
+            path: /service/health
+            port: enterprise-ui
+          timeoutSeconds: 10
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          failureThreshold: 10
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis.fullname" . }}
+              key: redis-password
+        - name: ANCHORE_ENGINE_URI
+          value: "{{ template "fullname" . }}:8228"
+        - name: ANCHORE_ENABLE_PROXY
+          value: "{{ .Values.enterpriseConfig.ui.config.enableProxy }}"
+        - name: ANCHORE_ENABLE_SSL
+          value: "{{ .Values.enterpriseConfig.ui.config.enableSsl }}"
+        - name: ANCHORE_LICENSE_PATH
+          value: "/config"
+        - name: ANCHORE_REDIS_URL
+          value: {{ printf "%s@%s-%s:%s" "redis://:$(REDIS_PASSWORD)" ( include "redis.fullname" . ) "master" "6379" | quote }}
+
+      volumes:
+      - name: ui-config
+        configMap:
+          name: "{{ template "anchore-engine.enterprise-ui.fullname" . }}-configmap"
+      - name: anchore-license
+        secret:
+          secretName: {{ .Values.enterpriseConfig.licenseSecretName }}
+
+{{- end -}}

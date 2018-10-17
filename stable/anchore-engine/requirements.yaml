@@ -3,3 +3,8 @@ dependencies:
     version: "*"
     repository: "alias:stable"
     condition: postgresql.enabled
+
+  - name: redis
+    version: "*"
+    repository: "alias:stable"
+    condition: enterpriseConfig.ui.enabled

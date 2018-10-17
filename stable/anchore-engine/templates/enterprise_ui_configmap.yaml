@@ -1,0 +1,28 @@
+{{- if .Values.enterpriseConfig.ui.enabled -}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "anchore-engine.enterprise-ui.fullname" . }}-configmap
+  labels:
+    app: "{{ template "fullname" . }}"
+    component: enterprise-ui
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+
+data:
+  config-ui.yaml: |-
+    # URL of Anchore Engine
+    engine_uri: '{{ template "fullname" . }}:8228'
+
+    # URL of redis
+    redis_url: {{ printf "%s@%s-%s:%s" "redis://:$(REDIS_PASSWORD)" ( include "redis.fullname" . ) "master" "6379" }}
+
+    # Specifies if SSL is enabled in the web app container
+    enable_ssl: {{ .Values.enterpriseConfig.ui.config.enableSsl }}
+
+    # Specifies whether to trust a reverse proxy
+    enable_proxy: {{ .Values.enterpriseConfig.ui.config.enableProxy }}
+
+{{- end -}}
