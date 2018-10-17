@@ -1,3 +1,6 @@
+### 1.5.2
+* [17fa5c8e](https://github.com/kubernetes/charts/commit/17fa5c8e): Fix agent kube resources typo.
+
 ### 1.5.1
 
 * [b22b9d6](https://github.com/kubernetes/charts/commit/b22b9d6):
