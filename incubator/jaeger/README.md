@@ -181,6 +181,7 @@ The following table lists the configurable parameters of the Jaeger chart and th
 | `provisionDataStore.elasticsearch`       | Provision Elasticsearch Data Store  |  false                                 |
 | `query.service.annotations`              | Annotations for Query SVC           |  nil                                   |
 | `query.cmdlineParams`                    | Additional command line parameters  |  nil                                   |
+| `query.basePath`                         | Base path of Query UI               |  /                                     |
 | `query.image`                            | Image for Jaeger Query UI           |  jaegertracing/jaeger-query            |
 | `query.ingress.enabled`                  | Allow external traffic access       |  false                                 |
 | `query.podAnnotations`                   | Annotations for Query pod           |  nil                                   |
