@@ -1,3 +1,8 @@
+### 1.5.6
+
+* [70237e50](https://github.com/kubernetes/charts/commit/70237e50)
+  - Deployment strategy value
+
 ### 1.5.5
 
 * [22f3354](https://github.com/helm/charts/commit/22f3354):
