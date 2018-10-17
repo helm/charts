@@ -7,7 +7,7 @@ global:
   log_level: INFO
   log_dir: /tmp
 
-  # set to true if you want to automatically install the Tez sharelib to 
+  # set to true if you want to automatically install the Tez sharelib to
   # the cluster's distributed filesystem
   tez_init: true
 
@@ -124,7 +124,7 @@ ignite:
 
   # how many metadata replicas igfs should maintain for durability
   meta:
-    replicas: 3  
+    replicas: 3
 
   # currently only supports s3a. support for adls, google cloud storage and ceph
   # will follow
