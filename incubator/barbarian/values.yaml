@@ -7,12 +7,12 @@ global:
   log_level: INFO
   log_dir: /tmp
 
-  # set to true if you want to automatically install the Tez sharelib to
+  # set to true if you want to automatically install the Tez sharelib to 
   # the cluster's distributed filesystem
   tez_init: true
 
 hive_hms:
-  image: hive:0.1.0
+  image: hive:latest
 
   # set to true to enable N+N HA for the Hive Metastore
   ha_enabled: true
@@ -51,10 +51,10 @@ hive_hms:
   db_password: "YOUR_DB_PASSWORD"
 
   service:
-    name: hms-serv
+    name: hmsserv
 
 hive_hs2:
-  image: hive:0.1.0
+  image: hive:latest
   count: 1
   llapd_enabled: true
   llapd_count: 4
@@ -67,10 +67,10 @@ hive_hs2:
   ingress_enabled: false
 
   service:
-    name: hs2-serv
+    name: hs2serv
 
 yarn_rm:
-  image: yarn-rm:0.1.0
+  image: barbarian-base:latest
 
   # set to true to enable YARN RM HA
   ha_enabled: true
@@ -78,10 +78,10 @@ yarn_rm:
   mem: 2Gi
 
   service:
-    name: yarn-rm-serv
+    name: yarnrmserv
 
 yarn_nm:
-  image: yarn-nm:0.1.0
+  image: barbarian-base:latest
   count: 5
   cpu: 2
   mem: 4Gi
@@ -89,19 +89,19 @@ yarn_nm:
   container_vcpu: 2
 
   service:
-    name: yarn-nm-serv
+    name: yarnnmserv
 
 zookeeper:
-  image: zookeeper:0.1.0
+  image: zookeeper:latest
   count: 5
   cpu: 0.5
   mem: 2Gi
 
   service:
-    name: zk-serv
+    name: zkserv
 
 ignite:
-  image: ignite:0.1.0
+  image: ignite:latest
   count: 5
   cpu: 2
   mem: 4Gi
@@ -124,7 +124,7 @@ ignite:
 
   # how many metadata replicas igfs should maintain for durability
   meta:
-    replicas: 3
+    replicas: 3  
 
   # currently only supports s3a. support for adls, google cloud storage and ceph
   # will follow
@@ -144,7 +144,7 @@ ignite:
         write: 3
 
   service:
-    name: ignite-serv
+    name: igniteserv
 
 # A bitnami mariadb can optionally be deployed by Helm for testing purposes.
 # For production deployments a dedicated external database is recommended.

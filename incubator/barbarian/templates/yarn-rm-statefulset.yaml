@@ -51,7 +51,7 @@ spec:
         command:
         - sh
         - -c
-        - "/opt/barbarian/control/start-yarn-rm"
+        - "/opt/barbarian/control/init.sh && bash /opt/barbarian/control/start-yarn-rm"
       volumes:
       - name: yarn-cfg-volume
         configMap:

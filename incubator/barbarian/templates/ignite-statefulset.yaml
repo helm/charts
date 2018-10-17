@@ -53,23 +53,7 @@ spec:
         command:
         - sh
         - -c
-        - "/opt/barbarian/control/start-ignite"
-        readinessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - "/opt/barbarian/control/ignite-ready 10500"
-          initialDelaySeconds: 10
-          timeoutSeconds: 5
-        livenessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - "/opt/barbarian/control/ignite-ready 10500"
-          initialDelaySeconds: 10
-          timeoutSeconds: 5
+        - "/opt/barbarian/control/init.sh && /opt/barbarian/control/start-ignite"
       volumes:
       - name: igfs-cfg-volume
         configMap:

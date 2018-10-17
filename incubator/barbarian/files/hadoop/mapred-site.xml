@@ -7,7 +7,7 @@
 
   <property>
      <name>mapreduce.framework.name</name>
-     <value>yarn</value>
+     <value>yarn-tez</value>
   </property>
 
   <property>

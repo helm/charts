@@ -10,7 +10,7 @@ This release brings:
 
 Barbarian is designed to run as a horizontally scalable parallel, distributed, *in memory* data warehouse - a bit like SAP Hana™ but with a low TCO.
 
-Barbarian can ingest data from Amazon S3 or a remote HDFS cluster for high performance, low latency analysis, or alternatively Barbarian can be configured to run as a Big Data solution accessing Amazon S3 - using its own storage as an in-memory write-through cache. There is also a hybrid mode whereby Barbarian mounts common paths in memory and acts as a write-through cache for everything else.
+Barbarian can ingest data from Amazon S3 or a remote HDFS cluster for high performance, low latency analysis, or alternatively Barbarian can be configured to run as a Big Data solution accessing Amazon S3 - using its own storage as an in-memory write-through cache. Lastly, Barbarian supports hybrid mode, whereby Barbarian mounts common paths in-memory and acts as a write-through cache of all other paths.
 
 We will be adding support for more storage backends including Azure ADLS, GCP Cloud Storage, and Ceph in coming releases.
 
@@ -36,7 +36,7 @@ INSERT INTO mytable SELECT id, value1, value2 FROM mys3table;
 ```
 
 Read more at:
-https://barbarians.io/
+https://barbarians.io/, or read the docs at http://docs.barbarians.io/. 
 
 ## Helm Charts
 
@@ -47,7 +47,8 @@ This repo contains the Helm charts for installing the Barbarian Data System on K
 
 Install the Barbarian Data System with the following commands.
 
-- ```helm install --name my-barbarian incubator/barbarian```
+- ```helm repo add barbarians http://charts.barbarians.org/barbarian```
+- ```helm install --name my-barbarian barbarians/barbarian```
 
 ## Uninstalling
 
@@ -105,6 +106,7 @@ Barbarian exposes many configuration parameters. Some important ones are listed 
 | ignite.hybrid | false | Enable hybrid storage configuration? |
 | ignite.data.replicas | 3 | IGFS data replication factor |
 | ignite.meta.replicas | 3 | IGFS metadata replication factor |
+| ignite.hybrid | false | Enable hybrid storage configuration? |
 | ignite.secondary_fs_uri | n/a | Filesystem URI in the form s3a://YOUR_BUCKET/. Currently only supports S3a. Other filesystem will be supported in the future |
 | ignite.s3a.access_key_id | n/a | AWS S3 access key ID |
 | ignite.s3a.secret_access_key | n/a | AWS S3 secret access key |
@@ -138,3 +140,4 @@ mountOptions:
 kubectl create -f /tmp/storage-class.yaml
 kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 ```
+

@@ -12,6 +12,21 @@
     </property>
 
     <property>
+        <name>hadoop.registry.zk.quorum</name>
+        <value>{{ .Values.zookeeper.service.name }}cs:2181</value>
+    </property>
+
+    <property>
+        <name>hadoop.registry.rm.enabled</name>
+        <value>true</value>
+    </property>
+
+    <property>
+        <name>hadoop.registry.zk.root</name>
+        <value>/registry</value>
+    </property>
+
+    <property>
         <name>fs.igfs.impl</name>
         <value>org.apache.ignite.hadoop.fs.v1.IgniteHadoopFileSystem</value>
     </property>
@@ -23,16 +38,16 @@
 
     <property>
         <name>fs.defaultFS</name>
-        <value>igfs://igfs@{{ .Values.ignite.service.name }}/</value>
+        <value>igfs://igfs@{{ .Values.ignite.service.name }}:10500/</value>
     </property>
 
     <property>
         <name>fs.default.name</name>
-        <value>igfs://igfs@{{ .Values.ignite.service.name }}/</value>
+        <value>igfs://igfs@{{ .Values.ignite.service.name }}:10500/</value>
     </property>
 
     <property>
         <name>fs.igfs.name</name>
-        <value>igfs://igfs@{{ .Values.ignite.service.name }}/</value>
+        <value>igfs://igfs@{{ .Values.ignite.service.name }}:10500/</value>
     </property>
 </configuration>

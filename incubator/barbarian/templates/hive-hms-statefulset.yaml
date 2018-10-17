@@ -48,7 +48,7 @@ spec:
         command:
         - sh
         - -c
-        - "/opt/barbarian/control/start-metastore"
+        - "/opt/barbarian/control/init.sh && /opt/barbarian/control/hive-init.sh && bash /opt/barbarian/control/start-metastore"
       volumes:
       - name: yarn-cfg-volume
         configMap:

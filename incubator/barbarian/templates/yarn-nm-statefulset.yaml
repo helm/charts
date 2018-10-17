@@ -53,7 +53,7 @@ spec:
         command:
         - sh
         - -c
-        - "/opt/barbarian/control/start-yarn-nm"
+        - "/opt/barbarian/control/init.sh && bash /opt/barbarian/control/start-yarn-nm"
       volumes:
       - name: yarn-cfg-volume
         configMap:

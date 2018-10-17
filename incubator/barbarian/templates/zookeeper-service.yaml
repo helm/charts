@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.zookeeper.service.name }}
+  name: {{ .Values.zookeeper.service.name }}cs
   labels:
     app: {{ template "fullname" . }}-zookeeper
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -17,7 +17,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.zookeeper.service.name }}-headless
+  name: {{ .Values.zookeeper.service.name }}
   labels:
     app: {{ template "fullname" . }}-zookeeper
 spec:

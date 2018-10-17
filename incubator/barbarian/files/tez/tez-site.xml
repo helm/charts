@@ -27,18 +27,28 @@
 </property>
 
 <property>
+<name>tez.tez-ui.history-url.base</name>
+<value>http://localhost:9999/tez-ui/</value>
+</property>
+
+<property>
+<name>tez.history.logging.service.class</name>
+<value>org.apache.tez.dag.history.logging.impl.SimpleHistoryLoggingService</value>
+</property>
+
+<property>
 <name>tez.lib.uris.ignore</name>
 <value>false</value>
 </property>
 
 <property>
 <name>tez.lib.uris.classpath</name>
-<value>/opt/barbarian/hadoop/share/hadoop/yarn/*:/opt/barbarian/hadoop/share/hadoop/yarn/lib/*:./tezlib/*:./tezlib/lib/*</value>
+<value>/opt/barbarian/hadoop/share/hadoop/common/lib/*:/opt/barbarian/hadoop/share/common/*:/opt/barbarian/hadoop/share/hadoop/yarn/*:/opt/barbarian/hadoop/share/hadoop/yarn/lib/*:./tezlib/*:./tezlib/lib/*</value>
 </property>
 
 <property>
   <name>tez.use.cluster.hadoop-libs</name>
-  <value>false</value>
+  <value>true</value>
 </property>
 
 <property>

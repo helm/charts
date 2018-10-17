@@ -25,3 +25,5 @@ data:
 {{ tpl (.Files.Get "files/hadoop/s3-site.xml") . | indent 4 }}
   yarn.exclude: |-
     dead.ignoreme.local
+  tez-site.xml: |-
+{{ tpl (.Files.Get "files/tez/tez-site.xml") . | indent 4 }}

@@ -8,7 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  serviceName: {{ .Values.zookeeper.service.name }}-headless
+  serviceName: {{ .Values.zookeeper.service.name }}
   replicas: {{ .Values.zookeeper.count }}
   selector:
     matchLabels:
@@ -58,7 +58,7 @@ spec:
         command:
         - sh
         - -c
-        - "/opt/barbarian/control/start-zookeeper \
+        - "/opt/barbarian/control/init.sh && bash /opt/barbarian/control/start-zookeeper \
           --servers={{ .Values.zookeeper.count }} \
           --data_dir=/opt/barbarian/zookeeper/data \
           --data_log_dir=/opt/barbarian/zookeeper/data/log \
@@ -66,9 +66,9 @@ spec:
           --client_port=2181 \
           --election_port=3888 \
           --server_port=2888 \
-          --tick_time=2000 \
-          --init_limit=10 \
-          --sync_limit=5 \
+          --tick_time=4000 \
+          --init_limit=20 \
+          --sync_limit=10 \
           --heap={{ .Values.zookeeper.mem | trimSuffix "i" | lower }} \
           --max_client_cnxns=60 \
           --snap_retain_count=3 \
@@ -82,16 +82,18 @@ spec:
             - sh
             - -c
             - "/opt/barbarian/control/zookeeper-ready 2181"
-          initialDelaySeconds: 10
+          initialDelaySeconds: 40
           timeoutSeconds: 5
+          periodSeconds: 30
         livenessProbe:
           exec:
             command:
             - sh
             - -c
             - "/opt/barbarian/control/zookeeper-ready 2181"
-          initialDelaySeconds: 10
+          initialDelaySeconds: 40
           timeoutSeconds: 5
+          periodSeconds: 30
       volumes:
       - name: datadir
         emptyDir: {}

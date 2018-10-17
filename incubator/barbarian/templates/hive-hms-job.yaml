@@ -24,7 +24,7 @@ spec:
         command:
         - sh
         - -c
-        - "/opt/barbarian/hive/bin/schematool -initSchema \
+        - "/opt/barbarian/control/init.sh && bash /opt/barbarian/hive/bin/schematool -initSchema \
           -dbType {{ .Values.hive_hms.db_type }} \
           {{- if .Values.hive_hms.db_auto }}
           -userName {{ .Values.mariadb.db.user }} \

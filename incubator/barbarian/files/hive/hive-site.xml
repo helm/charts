@@ -2483,12 +2483,12 @@
   </property>
   <property>
     <name>hive.tez.container.size</name>
-    <value>-1</value>
+    <value>4096</value>
     <description>By default Tez will spawn containers of the size of a mapper. This can be used to overwrite.</description>
   </property>
   <property>
     <name>hive.tez.cpu.vcores</name>
-    <value>-1</value>
+    <value>1</value>
     <description>
       By default Tez will ask for however many cpus map-reduce is configured to use per container.
       This can be used to overwrite.
@@ -3169,7 +3169,7 @@
   </property>
   <property>
     <name>hive.zookeeper.quorum</name>
-    <value>{{ .Values.zookeeper.service.name }}</value>
+    <value>{{ .Values.zookeeper.service.name }}cs</value>
     <description>
       List of ZooKeeper servers to talk to. This is needed for: 
       1. Read/write locks - when hive.lock.manager is set to 
@@ -5123,16 +5123,6 @@
     <name>hive.decode.partition.name</name>
     <value>false</value>
     <description>Whether to show the unquoted partition names in query results.</description>
-  </property>
-  <property>
-    <name>hive.execution.engine</name>
-    <value>mr</value>
-    <description>
-      Expects one of [mr, tez, spark].
-      Chooses execution engine. Options are: mr (Map reduce, default), tez, spark. While MR
-      remains the default engine for historical reasons, it is itself a historical engine
-      and is deprecated in Hive 2 line. It may be removed without further warning.
-    </description>
   </property>
   <property>
     <name>hive.execution.mode</name>

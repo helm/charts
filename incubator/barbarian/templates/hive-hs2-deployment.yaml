@@ -46,7 +46,7 @@ spec:
         command:
         - sh
         - -c
-        - "/opt/barbarian/control/start-hiveserver2"
+        - "/opt/barbarian/control/init.sh && /opt/barbarian/control/start-hiveserver2"
       volumes:
       - name: yarn-cfg-volume
         configMap:

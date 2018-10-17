@@ -97,7 +97,7 @@
 
        <property name="discoverySpi">
          <bean class="org.apache.ignite.spi.discovery.zk.ZookeeperDiscoverySpi">
-         <property name="zkConnectionString" value="{{ .Values.zookeeper.service.name }}:2181"/>
+         <property name="zkConnectionString" value="{{ .Values.zookeeper.service.name }}cs:2181"/>
          <property name="sessionTimeout" value="30000"/>
          <property name="zkRootPath" value="/apacheIgnite"/>
          <property name="joinTimeout" value="10000"/>

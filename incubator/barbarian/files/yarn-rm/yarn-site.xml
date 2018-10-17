@@ -1,5 +1,16 @@
 <?xml version="1.0"?>
 <configuration>
+
+    <property>
+      <name>yarn.webapp.api-service.enable</name>
+      <value>true</value>
+    </property>
+
+    <property>
+      <name>yarn.resourcemanager.placement-constraints.handler</name>
+      <value>scheduler</value>
+    </property>
+
     <property>
       <name>yarn.acl.enable</name>
       <value>true</value>
@@ -11,13 +22,18 @@
     </property> 
 
     <property>
+      <name>yarn.service.framework.path</name>
+      <value>.yarn/package/service/service-dep.tar.gz</value>
+    </property>
+
+    <property>
       <name>yarn.admin.acl</name>
       <value/>
     </property> 
 
     <property>
       <name>yarn.application.classpath</name>
-      <value>{{ .Values.global.hadoop_conf_dir }}</value>
+      <value>{{ .Values.global.hadoop_conf_dir }}:/opt/barbarian/hadoop/share/hadoop/common/*:/opt/barbarian/hadoop/share/hadoop/common/lib/*:/opt/barbarian/hadoop/share/hadoop/yarn/*:/opt/barbarian/hadoop/share/hadoop/yarn/lib/*</value>
     </property>
 
     <property>
@@ -261,7 +277,7 @@
     
     <property>
       <name>yarn.resourcemanager.fs.state-store.uri</name>
-      <value>{{ .Values.zookeeper.service.name }}:2181</value>
+      <value>{{ .Values.zookeeper.service.name }}cs:2181</value>
     </property>
     
     <property>
@@ -341,7 +357,7 @@
     
     <property>
       <name>yarn.resourcemanager.zk-address</name>
-      <value>{{ .Values.zookeeper.service.name }}:2181</value>
+      <value>{{ .Values.zookeeper.service.name }}cs:2181</value>
     </property>
     
     <property>
@@ -416,6 +432,16 @@
    <property> 
     <name>yarn.resourcemanager.ha.rm-ids</name> 
     <value>rm0,rm1</value> 
+   </property>
+   
+   <property>
+    <name>yarn.resourcemanager.webapp.address.rm0</name> 
+    <value>{{ template "fullname" . }}-yarn-rm-0.{{ .Values.yarn_rm.service.name }}:8088</value> 
+   </property>
+
+   <property>
+    <name>yarn.resourcemanager.webapp.address.rm1</name> 
+    <value>{{ template "fullname" . }}-yarn-rm-1.{{ .Values.yarn_rm.service.name }}:8088</value> 
    </property>
    
    <property> 
@@ -509,5 +535,11 @@
     </property>
 
      Secure cluster configurations section end -->
+
+    <property>
+      <name>yarn.timeline-service.enabled</name>
+      <value>false</value>
+    </property>
+
     
 </configuration>
