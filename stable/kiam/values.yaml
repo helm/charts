@@ -158,6 +158,10 @@ server:
   ##
   gatewayTimeoutCreation: 50ms
 
+  ## Server probe configuration
+  probes:
+    serverAddress: localhost
+
   ## Base64-encoded PEM values for server's CA certificate(s), certificate and private key
   ##
   tlsFiles:

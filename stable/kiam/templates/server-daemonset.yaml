@@ -106,7 +106,7 @@ spec:
                 - --cert=/etc/kiam/tls/cert
                 - --key=/etc/kiam/tls/key
                 - --ca=/etc/kiam/tls/ca
-                - --server-address=localhost:{{ .Values.server.service.targetPort }}
+                - --server-address={{ .Values.server.probes.serverAddress }}:{{ .Values.server.service.targetPort }}
                 - --server-address-refresh=2s
                 - --timeout=5s
                 - --gateway-timeout-creation={{ .Values.server.gatewayTimeoutCreation }}
@@ -121,7 +121,7 @@ spec:
                 - --cert=/etc/kiam/tls/cert
                 - --key=/etc/kiam/tls/key
                 - --ca=/etc/kiam/tls/ca
-                - --server-address=localhost:{{ .Values.server.service.targetPort }}
+                - --server-address={{ .Values.server.probes.serverAddress }}:{{ .Values.server.service.targetPort }}
                 - --server-address-refresh=2s
                 - --timeout=5s
                 - --gateway-timeout-creation={{ .Values.server.gatewayTimeoutCreation }}
