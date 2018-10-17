@@ -4,7 +4,7 @@ metadata:
   name: {{ template "redmine.fullname" . }}
   labels:
     app: {{ template "redmine.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "redmine.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         app: {{ template "redmine.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: {{ template "redmine.chart" . }}
         release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.image.pullSecrets }}
