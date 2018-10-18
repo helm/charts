@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: mattermost/mattermost-team-edition
-  tag: 5.3.1
+  tag: 5.4.0
   imagePullPolicy: IfNotPresent
 
 ## How many old ReplicaSets for Mattermost Deployment you want to retain
