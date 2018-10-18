@@ -16,7 +16,7 @@ spec:
     component: "{{ .Values.server.name }}"
     release: {{ .Release.Name }}
   ports:
-    - name: grpc
+    - name: grpclb
       port: {{ .Values.server.service.port }}
       targetPort: {{ .Values.server.service.targetPort }}
       protocol: TCP

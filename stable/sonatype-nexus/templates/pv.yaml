@@ -11,6 +11,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   claimRef:
+    namespace: {{ .Release.Namespace }}
     name: {{ template "nexus.fullname" . }}-data
   gcePersistentDisk:
     pdName: {{ .Values.persistence.pdName }}

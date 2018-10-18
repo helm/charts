@@ -1,0 +1,85 @@
+## Define serviceAccount names for components. Defaults to component's fully
+## qualified name.
+##
+serviceAccounts:
+  controller:
+    create: true
+    name:
+  driver:
+    create: true
+    name:
+
+# ------------------------------------------------------------------------------
+# Controller:
+# ------------------------------------------------------------------------------
+
+controller:
+  ## controller container image
+  ##
+  image:
+    repository: zenko/zenko-cosbench
+    tag: 0.0.6
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 19088
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts: []
+      # - cosbench.local
+    tls: []
+    #  - secretName: cosbench-tls
+    #    hosts:
+    #      - cosbench.local
+
+  logLevel: DEBUG
+
+# ------------------------------------------------------------------------------
+# Driver:
+# ------------------------------------------------------------------------------
+
+driver:
+  replicaCount: 1
+
+  ## driver container image
+  ##
+  image:
+    repository: zenko/zenko-cosbench
+    tag: 0.0.6
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 18088
+
+  ## driver log level
+  ##
+  logLevel: DEBUG
+
+  ## Pod anitAffinity ["soft", "hard"]
+  ##
+  antiAffinity: soft
+  antiAffinityWeight: 5
+
+  ## hostAliases allow the modification of the hosts file inside a container
+  ##
+  hostAliases: []
+  # - ip: "127.0.0.1"
+  #   hostnames:
+  #   - "cosbench.local"
+
+  ## driver resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: 1
+      memory: 4Gi

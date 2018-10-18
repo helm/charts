@@ -47,6 +47,9 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
       containers:
       - name: {{ template "postgresql.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -84,6 +87,9 @@ spec:
         {{- end }}
         - name: POD_IP
           valueFrom: { fieldRef: { fieldPath: status.podIP } }
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 8 }}
+{{- end }}
         ports:
         - name: postgresql
           containerPort: 5432
@@ -128,11 +134,14 @@ spec:
         env:
         - name: DATA_SOURCE_NAME
           value: postgresql://{{ default "postgres" .Values.postgresUser }}@127.0.0.1:5432?sslmode=disable
+        {{- if .Values.metrics.customMetrics }}
+        - name: PG_EXPORTER_EXTEND_QUERY_PATH
+          value: /conf/custom-metrics.yaml
+        {{- end }}
         ports:
         - name: metrics
           containerPort: 9187
         {{- if .Values.metrics.customMetrics }}
-        args: ["-extend.query-path", "/conf/custom-metrics.yaml"]
         volumeMounts:
           - name: custom-metrics
             mountPath: /conf

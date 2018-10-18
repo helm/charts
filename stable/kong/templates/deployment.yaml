@@ -7,12 +7,14 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    component: app
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "kong.name" . }}
       release: {{ .Release.Name }}
+      component: app
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -22,7 +24,36 @@ spec:
       labels:
         app: {{ template "kong.name" . }}
         release: {{ .Release.Name }}
+        component: app
     spec:
+      initContainers:
+      - name: wait-for-db
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        env:
+        - name: KONG_PROXY_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_ADMIN_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_PROXY_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_ADMIN_ERROR_LOG
+          value: "/dev/stderr"
+        {{- if .Values.postgresql.enabled }}
+        - name: KONG_PG_HOST
+          value: {{ template "kong.postgresql.fullname" . }}
+        - name: KONG_PG_PORT
+          value: "{{ .Values.postgresql.service.port }}"
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "kong.postgresql.fullname" . }}
+              key: postgres-password
+        {{- end }}
+        {{- if .Values.cassandra.enabled }}
+        - name: KONG_CASSANDRA_CONTACT_POINTS
+          value: {{ template "kong.cassandra.fullname" . }}
+        {{- end }}
+        command: [ "/bin/sh", "-c", "until kong start; do echo 'waiting for db'; sleep 1; done; kong stop" ]
       containers:
       - name: {{ template "kong.name" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -59,6 +90,8 @@ spec:
         {{- if .Values.postgresql.enabled }}
         - name: KONG_PG_HOST
           value: {{ template "kong.postgresql.fullname" . }}
+        - name: KONG_PG_PORT
+          value: "{{ .Values.postgresql.service.port }}"
         - name: KONG_PG_PASSWORD
           valueFrom:
             secretKeyRef:
