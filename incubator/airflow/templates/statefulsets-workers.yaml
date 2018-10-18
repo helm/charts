@@ -78,6 +78,10 @@ spec:
                   name: {{ template "airflow.fullname" . }}
                   key: redisPassword
           volumeMounts:
+          {{- range .Values.airflow.secrets }}
+            - name: {{ . }}-volume
+              mountPath: /var/airflow/secrets/{{ . }}
+          {{- end }}
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
@@ -116,6 +120,11 @@ spec:
           resources:
 {{ toYaml .Values.workers.resources | indent 12 }}
       volumes:
+        {{- range .Values.airflow.secrets }}
+        - name: {{ . }}-volume
+          secret:
+            secretName: {{ . }}
+        {{- end }}
         - name: dags-data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:

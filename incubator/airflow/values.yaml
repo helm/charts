@@ -70,6 +70,9 @@ airflow:
   ##     HTTP_PROXY: "http://proxy.mycompany.com:123"
   config: {}
   ##
+  ## Secrets which will be mounted at /var/airflow/secrets/<secret name>
+  secrets: []
+  ##
   ## Configure pod disruption budget for the scheduler
   pod_disruption_budget:
     maxUnavailable: 1
@@ -271,7 +274,10 @@ postgresql:
   ## e.g. postgres://airflow:changeme@my-postgres.com:5432/airflow?sslmode=disable
   # uri:
   ##
-  ### PostgreSQL User to create.
+  ##
+  ## PostgreSQL port
+  postgresPort: 5432
+  ## PostgreSQL User to create.
   postgresUser: postgres
   ##
   ## PostgreSQL Password for the new user.
