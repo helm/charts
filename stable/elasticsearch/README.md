@@ -122,11 +122,12 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                                              |
 | `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
 | `extraInitContainers`                | Additional init container passed through the tpl 	                 | ``                                                  |
+| `podSecurityPolicy.enabled`          | Specify if a Pod Security Policy must be created                    | `false`                                             |
 | `serviceAccounts.client.create`      | If true, create the client service account                          | `true`                                              |
 | `serviceAccounts.client.name`        | Name of the client service account to use or create                 | `{{ elasticsearch.client.fullname }}`               |
 | `serviceAccounts.master.create`      | If true, create the master service account                          | `true`                                              |
 | `serviceAccounts.master.name`        | Name of the master service account to use or create                 | `{{ elasticsearch.master.fullname }}`               |
-| `serviceAccounts.data.create`        | If true, create the data service account                            | `true                                               |`
+| `serviceAccounts.data.create`        | If true, create the data service account                            | `true`                                              |
 | `serviceAccounts.data.name`          | Name of the data service account to use or create                   | `{{ elasticsearch.data.fullname }}`                 |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

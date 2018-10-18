@@ -16,6 +16,12 @@ serviceAccounts:
     create: true
     name:
 
+## Specify if a Pod Security Policy for node-exporter must be created
+## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+##
+podSecurityPolicy:
+  enabled: false
+
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
   tag: "6.4.2"
