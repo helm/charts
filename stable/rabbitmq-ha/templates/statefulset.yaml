@@ -134,9 +134,9 @@ spec:
             - name: RABBITMQ_USE_LONGNAME
               value: "true"
             - name: RABBITMQ_NODENAME
-              value: rabbit@$(MY_POD_NAME).{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.cluster.local
+              value: rabbit@$(MY_POD_NAME).{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
             - name: K8S_HOSTNAME_SUFFIX
-              value: .{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.cluster.local
+              value: .{{ template "rabbitmq-ha.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
             - name: K8S_SERVICE_NAME
               value: {{ template "rabbitmq-ha.fullname" . }}-discovery
             - name: RABBITMQ_ERLANG_COOKIE
