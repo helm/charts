@@ -1,0 +1,59 @@
+image: docker.elastic.co/beats/metricbeat:6.3.1
+env:
+  ELASTICSEARCH_HOST: elasticsearch-client
+  ELASTICSEARCH_PORT: "9200"
+  ELASTICSEARCH_USERNAME: elastic
+  ELASTICSEARCH_PASSWORD: changeme
+  ELASTIC_CLOUD_ID: ""
+  ELASTIC_CLOUD_AUTH: ""
+resources:
+  limits:
+    memory: 200Mi
+  requests:
+    cpu: 100m
+    memory: 100Mi
+hostpath: '/var/lib/metricbeat'
+config:
+  reload:
+    enabled: false
+daemonset:
+  data:
+    system:
+      period: 10s
+      metricsets:
+        cpu:
+        load:
+        memory:
+        network:
+        process:
+        process_summary:
+        # core:
+        # diskio:
+        # socket:
+    filesystem:
+      period: 1m
+      metricsets:
+        filesystem:
+        fsstat:
+    kubernetes:
+      period: 10s
+      metricsets:
+        node:
+        system:
+        pod:
+        container:
+        volume:
+      hosts: '["localhost:10255"]'
+deployment:
+  data:
+    kubernetes:
+      metricsets:
+        state_node:
+        state_deployment:
+        state_replicaset:
+        state_pod:
+        state_container:
+        # Uncomment this to get k8s events:
+        # event:
+      period: 10s
+      hosts: '["kube-state-metrics.kube-system:8080"]'

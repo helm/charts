@@ -1,0 +1,12 @@
+apiVersion: v1
+description: Helm chart for installing metricbeat to monitor kubernetes cluster
+name: metricbeat
+version: 0.1.0
+appVersion: 6.3.1
+home: https://www.elastic.co/products/beats/metricbeat
+maintainers:
+- name: aba182
+  email: ajwilhel@gmail.com
+sources:
+- https://www.elastic.co/guide/en/beats/metricbeat/current/running-on-kubernetes.html
+- https://github.com/elastic/beats-docker/tree/6.3

@@ -1,0 +1,29 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: metricbeat
+subjects:
+- kind: ServiceAccount
+  name: metricbeat
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: metricbeat
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: metricbeat
+  labels:
+    app: metricbeat
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources:
+  - namespaces
+  - events
+  - pods
+  verbs:
+  - get
+  - watch
+  - list

@@ -1,0 +1,91 @@
+# Deploy a Metricbeat instance per node for node metrics retrieval
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    app: {{ template "metricbeat.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "metricbeat.fullname" . }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "metricbeat.fullname" . }}
+    spec:
+      serviceAccountName: metricbeat
+      terminationGracePeriodSeconds: 30
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - name: metricbeat
+        image: {{ .Values.image }}
+        args: [
+          "-c", "/etc/metricbeat.yml",
+          "-e",
+          "-system.hostfs=/hostfs",
+        ]
+        env:
+        - name: ELASTICSEARCH_HOST
+          value: {{ .Values.env.ELASTICSEARCH_HOST }}
+        - name: ELASTICSEARCH_PORT
+          value: "{{ .Values.env.ELASTICSEARCH_PORT }}"
+        - name: ELASTICSEARCH_USERNAME
+          value: {{ .Values.env.ELASTICSEARCH_USERNAME }}
+        - name: ELASTICSEARCH_PASSWORD
+          value: {{ .Values.env.ELASTICSEARCH_PASSWORD }}
+        - name: ELASTIC_CLOUD_ID
+          value: {{ .Values.env.ELASTIC_CLOUD_ID }}
+        - name: ELASTIC_CLOUD_AUTH
+          value: {{ .Values.env.ELASTIC_CLOUD_AUTH }}
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        securityContext:
+          runAsUser: 0
+        resources:
+          limits:
+            memory: {{ .Values.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+        volumeMounts:
+        - name: config
+          mountPath: /etc/metricbeat.yml
+          readOnly: true
+          subPath: metricbeat.yml
+        - name: modules
+          mountPath: /usr/share/metricbeat/modules.d
+          readOnly: true
+        - name: dockersock
+          mountPath: /var/run/docker.sock
+        - name: proc
+          mountPath: /hostfs/proc
+          readOnly: true
+        - name: cgroup
+          mountPath: /hostfs/sys/fs/cgroup
+          readOnly: true
+      volumes:
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: cgroup
+        hostPath:
+          path: /sys/fs/cgroup
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock
+      - name: config
+        configMap:
+          defaultMode: 0600
+          name: "{{ template "metricbeat.fullname" .}}-config"
+      - name: modules
+        configMap:
+          defaultMode: 0600
+          name: "{{ template "metricbeat.fullname" .}}-daemonset"
+      - name: data
+        hostPath: 
+          path: {{ .Values.hostpath }}
+          type: DirectoryOrCreate

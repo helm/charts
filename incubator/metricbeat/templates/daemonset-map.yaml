@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "metricbeat.fullname" . }}-daemonset"
+  labels:
+    app: {{ template "metricbeat.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  system.yml: |-
+    - module: system
+      period: {{ .Values.daemonset.data.system.period }}
+      metricsets:
+      {{- range $key, $value := .Values.daemonset.data.system.metricsets }}
+        - {{ $key }}
+      {{- end }}
+      processes: ['.*']
+      process.include_top_n:
+        by_cpu: 5      # include top 5 processes by CPU
+        by_memory: 5   # include top 5 processes by memory
+
+    - module: system
+      period: {{ .Values.daemonset.data.filesystem.period }}
+      metricsets:
+      {{- range $key, $value := .Values.daemonset.data.filesystem.metricsets }}
+        - {{ $key }}
+      {{- end }}
+      processors:
+      - drop_event.when.regexp:
+          system.filesystem.mount_point: '^/(sys|cgroup|proc|dev|etc|host|lib)($|/)'
+  kubernetes.yml: |-
+    - module: kubernetes
+      metricsets:
+      {{- range $key, $value := .Values.daemonset.data.kubernetes.metricsets }}
+        - {{ $key }}
+      {{- end }}
+      period: {{ .Values.daemonset.data.kubernetes.period }}
+      hosts: {{ .Values.daemonset.data.kubernetes.hosts }}

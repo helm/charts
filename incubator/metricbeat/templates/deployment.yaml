@@ -1,0 +1,66 @@
+# Deploy singleton instance in the whole cluster for some unique data sources, like kube-state-metrics
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "metricbeat.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "metricbeat.fullname" . }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "metricbeat.fullname" . }}
+    spec:
+      serviceAccountName: metricbeat
+      containers:
+      - name: metricbeat
+        image: {{ .Values.image }}
+        args: [
+          "-c", "/etc/metricbeat.yml",
+          "-e",
+        ]
+        env:
+        - name: ELASTICSEARCH_HOST
+          value: {{ .Values.env.ELASTICSEARCH_HOST }}
+        - name: ELASTICSEARCH_PORT
+          value: "{{ .Values.env.ELASTICSEARCH_PORT }}"
+        - name: ELASTICSEARCH_USERNAME
+          value: {{ .Values.env.ELASTICSEARCH_USERNAME }}
+        - name: ELASTICSEARCH_PASSWORD
+          value: {{ .Values.env.ELASTICSEARCH_PASSWORD }}
+        - name: ELASTIC_CLOUD_ID
+          value: {{ .Values.env.ELASTIC_CLOUD_ID }}
+        - name: ELASTIC_CLOUD_AUTH
+          value: {{ .Values.env.ELASTIC_CLOUD_AUTH }}
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        securityContext:
+          runAsUser: 0
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - name: config
+          mountPath: /etc/metricbeat.yml
+          readOnly: true
+          subPath: metricbeat.yml
+        - name: modules
+          mountPath: /usr/share/metricbeat/modules.d
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          defaultMode: 0600
+          name: "{{ template "metricbeat.fullname" . }}-config"
+      - name: modules
+        configMap:
+          defaultMode: 0600
+          name: "{{ template "metricbeat.fullname" . }}-deployment"

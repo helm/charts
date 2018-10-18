@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "metricbeat.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "metricbeat.fullname" . }}-deployment
+data:
+  # This module requires `kube-state-metrics` up and running under `kube-system` namespace
+  kubernetes.yml: |-
+    - module: kubernetes
+      metricsets:
+      {{- range $key, $value := .Values.deployment.data.kubernetes.metricsets }}
+        - {{ $key }}
+      {{- end }}
+      period: {{ .Values.deployment.data.kubernetes.period }}
+      hosts: {{ .Values.deployment.data.kubernetes.hosts }}

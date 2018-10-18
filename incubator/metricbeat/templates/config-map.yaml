@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "metricbeat.fullname" . }}-config"
+  labels:
+    app: {{ template "metricbeat.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  metricbeat.yml: |-
+    metricbeat.config.modules:
+      # Mounted `metricbeat-daemonset-modules` configmap:
+      path: ${path.config}/modules.d/*.yml
+      # Reload module configs as they change:
+      reload.enabled: {{ .Values.config.reload.enabled }}
+
+    processors:
+      - add_cloud_metadata:
+
+    cloud.id: ${ELASTIC_CLOUD_ID}
+    cloud.auth: ${ELASTIC_CLOUD_AUTH}
+
+    output.elasticsearch:
+      hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
+      username: ${ELASTICSEARCH_USERNAME}
+      password: ${ELASTICSEARCH_PASSWORD}
