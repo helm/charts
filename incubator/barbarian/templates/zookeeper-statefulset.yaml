@@ -36,6 +36,23 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
       - image: {{ .Values.global.repo }}/{{ .Values.zookeeper.image }}
+        env:
+        - name: GLIBC_REPO
+          value: {{ .Values.global.glibc_repo }}
+        - name: GLIBC_VERSION
+          value: {{ .Values.global.glibc_version }}
+        - name: JAVA8_DOWNLOAD
+          value: {{ .Values.global.java8_download }}
+        - name: JAVA_INSTALL_VERSION
+          value: {{ .Values.global.java8_install_version }}
+        - name: BASH_REPO
+          value: {{ .Values.global.bash_repo }}
+        - name: BASH_APK
+          value: {{ .Values.global.bash_apk }}
+        - name: BASH_READLINE_APK
+          value: {{ .Values.global.bash_readline_apk }}
+        - name: BASH_NCURSES_APK
+          value: {{ .Values.global.bash_ncurses_apk }}
         name: {{ template "fullname" . }}-zookeeper
         securityContext:
           allowPrivilegeEscalation: false
@@ -45,9 +62,11 @@ spec:
         - name: datadir
           mountPath: /opt/barbarian/zookeeper/data
         resources:
+          limits:
+            memory: {{ .Values.zookeeper.mem }}
           requests:
-            memory: "{{ .Values.zookeeper.mem }}"
-            cpu: "{{ .Values.zookeeper.cpu }}"
+            memory: {{ .Values.zookeeper.mem }}
+            cpu: {{ .Values.zookeeper.cpu }}
         ports:
         - containerPort: 2181
           name: client

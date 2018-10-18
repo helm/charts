@@ -11,6 +11,19 @@ global:
   # the cluster's distributed filesystem
   tez_init: true
 
+  # GPL dependencies installed during bootstrap
+  # override with your preferred mirror and package versions
+  glibc_repo: https://github.com/sgerrand/alpine-pkg-glibc
+  glibc_version: 2.28-r0
+  java8_download: https://github.com/ojdkbuild/contrib_jdk8u-ci/releases/download/jdk8u181-b13/jdk-8u181-ojdkbuild-linux-x64.zip
+  java8_install_version: jdk-8u181-ojdkbuild-linux-x64
+  bash_repo: http://dl-cdn.alpinelinux.org/alpine/v3.3/main/x86_64
+  bash_apk: bash-4.3.42-r6.apk
+  bash_readline_apk: readline-6.3.008-r4.apk
+  bash_ncurses_apk: ncurses-libs-6.0_p20170701-r0.apk
+  mariadb_download: https://downloads.mariadb.com/Connectors/java/connector-java-2.3.0/mariadb-java-client-2.3.0.jar
+  mariadb_install_version: mariadb-java-client-2.3.0
+
 hive_hms:
   image: hive:latest
 
@@ -57,10 +70,10 @@ hive_hs2:
   image: hive:latest
   count: 1
   llapd_enabled: true
-  llapd_count: 4
+  llapd_count: 3
   mem: 2Gi
   cpu: 1
-  llapd_mem: 2g
+  llapd_mem: 4g
   log_level: INFO
 
   # if you want to expose HiveServer2 to the outside world
@@ -85,7 +98,7 @@ yarn_nm:
   count: 5
   cpu: 2
   mem: 4Gi
-  container_mem: 4g
+  container_mem_mb: 4096
   container_vcpu: 2
 
   service:
@@ -105,6 +118,9 @@ ignite:
   count: 5
   cpu: 2
   mem: 4Gi
+
+  # how much of the total container memory to allocate to IGFS
+  fs_mem_gb: 4
 
   # set to true to enable an ingress flow to expose IGFS to the outside
   ingress_enabled: false

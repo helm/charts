@@ -217,12 +217,12 @@
     
     <property>
       <name>yarn.nodemanager.resource.cpu-vcores</name>
-      <value>8</value>
+      <value>{{ .Values.yarn_nm.container_vcpu }}</value>
     </property>
     
     <property>
       <name>yarn.nodemanager.resource.memory-mb</name>
-      <value>8096</value>
+      <value>{{ .Values.yarn_nm.container_mem_mb }}</value>
     </property> 
 
     <property>

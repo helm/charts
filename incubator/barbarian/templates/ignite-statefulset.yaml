@@ -33,6 +33,23 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
       - image: {{ .Values.global.repo }}/{{ .Values.ignite.image }}
+        env:
+        - name: GLIBC_REPO
+          value: {{ .Values.global.glibc_repo }}
+        - name: GLIBC_VERSION
+          value: {{ .Values.global.glibc_version }}
+        - name: JAVA8_DOWNLOAD
+          value: {{ .Values.global.java8_download }}
+        - name: JAVA_INSTALL_VERSION
+          value: {{ .Values.global.java8_install_version }}
+        - name: BASH_REPO
+          value: {{ .Values.global.bash_repo }}
+        - name: BASH_APK
+          value: {{ .Values.global.bash_apk }}
+        - name: BASH_READLINE_APK
+          value: {{ .Values.global.bash_readline_apk }}
+        - name: BASH_NCURSES_APK
+          value: {{ .Values.global.bash_ncurses_apk }}
         name: {{ template "fullname" . }}-ignite
         securityContext:
           allowPrivilegeEscalation: false
@@ -44,9 +61,11 @@ spec:
         - mountPath: /opt/barbarian/hadoop/etc/hadoop
           name: hadoop-cfg-volume
         resources:
+          limits:
+            memory: {{ .Values.ignite.mem }}
           requests:
-            memory: "{{ .Values.ignite.mem }}"
-            cpu: "{{ .Values.ignite.cpu }}"
+            memory: {{ .Values.ignite.mem }}
+            cpu: {{ .Values.ignite.cpu }}
         ports:
         - containerPort: 10500
           name: server

@@ -28,6 +28,23 @@ spec:
         - "/usr/bin/true"
       initContainers:
       - name: mkdir-tmp
+        env:
+        - name: GLIBC_REPO
+          value: {{ .Values.global.glibc_repo }}
+        - name: GLIBC_VERSION
+          value: {{ .Values.global.glibc_version }}
+        - name: JAVA8_DOWNLOAD
+          value: {{ .Values.global.java8_download }}
+        - name: JAVA_INSTALL_VERSION
+          value: {{ .Values.global.java8_install_version }}
+        - name: BASH_REPO
+          value: {{ .Values.global.bash_repo }}
+        - name: BASH_APK
+          value: {{ .Values.global.bash_apk }}
+        - name: BASH_READLINE_APK
+          value: {{ .Values.global.bash_readline_apk }}
+        - name: BASH_NCURSES_APK
+          value: {{ .Values.global.bash_ncurses_apk }}
         image: {{ .Values.global.repo }}/{{ .Values.hive_hs2.image }}
         command:
         - sh
@@ -54,6 +71,23 @@ spec:
           mountPath: "/opt/barbarian/hadoop/etc/hadoop"
       {{- if .Values.global.tez_init }}
       - name: put-tez-tgz
+        env:
+        - name: GLIBC_REPO
+          value: {{ .Values.global.glibc_repo }}
+        - name: GLIBC_VERSION
+          value: {{ .Values.global.glibc_version }}
+        - name: JAVA8_DOWNLOAD
+          value: {{ .Values.global.java8_download }}
+        - name: JAVA_INSTALL_VERSION
+          value: {{ .Values.global.java8_install_version }}
+        - name: BASH_REPO
+          value: {{ .Values.global.bash_repo }}
+        - name: BASH_APK
+          value: {{ .Values.global.bash_apk }}
+        - name: BASH_READLINE_APK
+          value: {{ .Values.global.bash_readline_apk }}
+        - name: BASH_NCURSES_APK
+          value: {{ .Values.global.bash_ncurses_apk }}
         image: {{ .Values.global.repo }}/{{ .Values.hive_hs2.image }}
         command:
         - sh
@@ -66,14 +100,31 @@ spec:
       {{- end }}
       {{- if .Values.hive_hs2.llapd_enabled }}
       - name: start-hive-llap
+        env:
+        - name: GLIBC_REPO
+          value: {{ .Values.global.glibc_repo }}
+        - name: GLIBC_VERSION
+          value: {{ .Values.global.glibc_version }}
+        - name: JAVA8_DOWNLOAD
+          value: {{ .Values.global.java8_download }}
+        - name: JAVA_INSTALL_VERSION
+          value: {{ .Values.global.java8_install_version }}
+        - name: BASH_REPO
+          value: {{ .Values.global.bash_repo }}
+        - name: BASH_APK
+          value: {{ .Values.global.bash_apk }}
+        - name: BASH_READLINE_APK
+          value: {{ .Values.global.bash_readline_apk }}
+        - name: BASH_NCURSES_APK
+          value: {{ .Values.global.bash_ncurses_apk }}
         image: {{ .Values.global.repo }}/{{ .Values.hive_hs2.image }}
         command:
         - sh
         - -c 
         - "/opt/barbarian/control/init.sh && \
-          bash -c 'cd /tmp; /opt/barbarian/hive/bin/hive --service llap --size {{ .Values.hive_hs2.llapd_mem }} -i {{ .Values.hive_hs2.llapd_count }} -n llaps -z -d /tmp \
-          -j /opt/barbarian/hadoop/share/hadoop/yarn/hadoop-yarn-api-3.1.2-badh1.jar,/opt/barbarian/hadoop/share/hadoop/yarn/hadoop-yarn-common-3.1.2-badh1.jar,/opt/barbarian/hadoop/share/hadoop/yarn/hadoop-yarn-client-3.1.2-badh1.jar,/opt/barbarian/hadoop/share/hadoop/common/hadoop-common-3.1.2-badh1.jar; \
-          /opt/barbarian/hadoop/bin/yarn app -flex llaps -component llap +{{ .Values.hive_hs2.llapd_count }}'"
+          bash -c 'cd /tmp; /opt/barbarian/hive/bin/hive --service llap --size {{ .Values.hive_hs2.llapd_mem }} --instances {{ .Values.hive_hs2.llapd_count }} -n llaps -z -d /tmp \
+          -j /opt/barbarian/hadoop/share/hadoop/yarn/hadoop-yarn-api-3.1.2-badh1.jar,/opt/barbarian/hadoop/share/hadoop/yarn/hadoop-yarn-common-3.1.2-badh1.jar,/opt/barbarian/hadoop/share/hadoop/yarn/hadoop-yarn-client-3.1.2-badh1.jar,/opt/barbarian/hadoop/share/hadoop/common/hadoop-common-3.1.2-badh1.jar \
+          -a -XX:+UnlockExperimentalVMOptions'"
         volumeMounts:
         - name: hive-cfg-volume
           mountPath: "/opt/barbarian/hive/conf"

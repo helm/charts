@@ -116,15 +116,10 @@
             <!-- Defining several memory policies for different memory regions -->
             <property name="memoryPolicies">
                 <list>
-                    <!--
-                        Default memory region that grows endlessly. A cache is bound to this memory region
-                        unless it sets another one in its CacheConfiguration.
-                    -->
                     <bean class="org.apache.ignite.configuration.MemoryPolicyConfiguration">
                         <property name="name" value="Default_Region"/>
-                        <!-- 100 MB memory region with disabled eviction -->
-                        <property name="initialSize" value="#{20 * 1024 * 1024}"/>
-                        <property name="maxSize" value="#{4L * 1024 * 1024 * 1024}"/>
+                        <property name="initialSize" value="#{ {{ .Values.ignite.fs_mem_gb }}L * 1024 * 1024 * 1024}"/>
+                        <property name="maxSize" value="#{ {{ .Values.ignite.fs_mem_gb }}L * 1024 * 1024 * 1024}"/>
                     </bean>
 
                 </list>
