@@ -125,7 +125,7 @@ datadog:
 
   ## dd-agent container name
   ##
-  name: dd-agent
+  name: datadog
 
   ## Set logging verbosity.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
