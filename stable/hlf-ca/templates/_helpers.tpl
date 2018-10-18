@@ -43,3 +43,17 @@ heritage: {{ .Release.Service | quote }}
 release: {{ .Release.Name | quote }}
 chart: {{ include "hlf-ca.chart" . }}
 {{- end -}}
+
+{{/*
+Generate postgres chart secret name
+*/}}
+{{- define "postgresql.secretName" -}}
+{{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Generate mysql chart secret name
+*/}}
+{{- define "mysql.secretName" -}}
+{{- printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}

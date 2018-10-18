@@ -40,19 +40,21 @@ spec:
             - sh
             - -c
             - |
-              while [ -z ${DB_PASSWORD+x} ];
-              do
-                echo "\033[0;31m DB_PASSWORD environmental variable must contain a value (check that you specified 'db.chart' in values.yaml) \033[0m"
-                sleep 60
-              done
+              if [ -n "$DB_TYPE" ]; then
+                while [ -z ${DB_PASSWORD+x} ];
+                do
+                  echo "\033[0;31m DB_PASSWORD environmental variable must contain a value \033[0m"
+                  sleep 60
+                done
+                export DB_DATASOURCE="host=${DB_HOST} port=${DB_PORT} user=${DB_USERNAME} password=${DB_PASSWORD} dbname=${DB_DATABASE} sslmode=${DB_SSL}"
+              fi
 
-              export DB_DATASOURCE="host=${DB_HOST} port=${DB_PORT} user=${DB_USERNAME} password=${DB_PASSWORD} dbname=${DB_DATABASE} sslmode=${DB_SSL}"
               mkdir -p $FABRIC_CA_HOME
               cp /var/hyperledger/ca_config/ca.yaml $FABRIC_CA_HOME/fabric-ca-server-config.yaml
               sed -i "s/<<<ADMIN>>>/${CA_ADMIN}/g" ${FABRIC_CA_HOME}/fabric-ca-server-config.yaml
               sed -i "s/<<<ADMINPW>>>/${CA_PASSWORD}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
-              sed -i "s/<<<DB_TYPE>>>/${DB_TYPE}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
-              sed -i "s/<<<DB_DATASOURCE>>>/${DB_DATASOURCE}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
+              sed -i "s/<<<DB_TYPE>>>/${DB_TYPE:-"sqlite3"}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
+              sed -i "s/<<<DB_DATASOURCE>>>/${DB_DATASOURCE:-"fabric-ca-server.db"}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
 
               {{- if .Values.config.intermediate }}
               echo ">\033[0;33m Adding Parent CA (typically a Root CA) values to $FABRIC_CA_HOME/fabric-ca-server-config.yaml \033[0m"
@@ -64,21 +66,38 @@ spec:
               fabric-ca-server start
           envFrom:
             - secretRef:
-                name: {{ include "hlf-ca.fullname" . }}
+                name: {{ include "hlf-ca.fullname" . }}--ca
             - configMapRef:
                 name: {{ include "hlf-ca.fullname" . }}--db
             - configMapRef:
                 name: {{ include "hlf-ca.fullname" . }}--ca
           env:
-            # Database environmental variable
-            {{- if .Values.db.chart }}
+            {{- if .Values.postgresql.enabled}}
+            # PostgreSQL Database
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.db.chart | quote }}
+                  name: {{ template "postgresql.secretName" . }}
                   key: postgres-password
             {{- end }}
+            {{- if .Values.mysql.enabled }}
+            # MySQL Database
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "mysql.secretName" . }}
+                  key: mysql-password
+            {{- end }}
+            {{- if .Values.externalDatabase.type }}
+            # External Database
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "hlf-ca.fullname" . }}--db
+                  key: db-password
+            {{- end }}            
             {{- if .Values.config.intermediate }}
+            # Intermediate CA
             - name: PARENT_CA_ADMIN
               valueFrom:
                 secretKeyRef:

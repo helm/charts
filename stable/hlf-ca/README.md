@@ -81,7 +81,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `ingress.path`                     | Ingress path                                     | `/`                                                        |
 | `ingress.hosts`                    | Ingress hostnames                                | `[]`                                                       |
 | `ingress.tls`                      | Ingress TLS configuration                        | `[]`                                                       |
-| `persistence.existingClaim`        | Name of an existing PVC to use for Fabric CA     | `nil`                                            |
+| `persistence.existingClaim`        | Name of an existing PVC to use for Fabric CA     | `nil`                                                      |
 | `persistence.accessMode`           | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                            |
 | `persistence.annotations`          | Persistent Volume annotations                    | `{}`                                                       |
 | `persistence.size`                 | Size of data volume                              | `1Gi`                                                      |
@@ -89,8 +89,15 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `adminUsername`                    | Admin Username for CA                            | `admin`                                                    |
 | `adminPassword`                    | Admin Password                                   | Random 24 alphanumeric characters                          |
 | `caName`                           | Name of CA                                       | `org1-ca`                                                  |
-| `db.chart`                         | Name of a Database Chart holding CA data         | `` supports postgresql                                     |
-| `db.database`                      | Name of the actual Database holding the CA data  | `fabric_ca`                                                |
+| `db.ssl`                           | SSL Authentication                               | `disable`                                                  |
+| `postgresql.enabled`               | Deploy a PostgreSQL container holding the CA data | `false`                                                   |
+| `mysql.enabled`                    | Deploy a MySQL container holding the CA data     | `false`                                                    |
+| `externalDatabase.type`            | Database type (either `postgres` or `mysql` )    | `nil`                                                      |
+| `externalDatabase.host`            | Host of the external database                    | `localhost`                                                |
+| `externalDatabase.username`        | Existing username in the external db             | ``                                                         |
+| `externalDatabase.password`        | Password for the above username                  | ``                                                         |
+| `externalDatabase.database`        | Name of the existing database                    | ``                                                         |
+| `externalDatabase.port`            | Database port number                             | ``                                                         |
 | `config.hlfToolsVersion`           | Version of Hyperledger Fabric tools used         | `1.1.0`                                                    |
 | `config.mountTLS`                  | If TLS secrets are generated, do we mount them?  | `false`                                                    |
 | `config.debug`                     | Enable debug logging                             | `true`                                                     |
@@ -109,6 +116,10 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `nodeSelector`                     | Node labels for pod assignment                   | `{}`                                                       |
 | `tolerations`                      | Toleration labels for pod assignment             | `[]`                                                       |
 | `affinity`                         | Affinity settings for pod assignment             | `{}`                                                       |
+
+## Database
+
+TBD
 
 ## Persistence
 
