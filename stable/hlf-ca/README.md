@@ -81,6 +81,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `ingress.path`                     | Ingress path                                     | `/`                                                        |
 | `ingress.hosts`                    | Ingress hostnames                                | `[]`                                                       |
 | `ingress.tls`                      | Ingress TLS configuration                        | `[]`                                                       |
+| `persistence.existingClaim`        | Name of an existing PVC to use for Fabric CA     | `nil`                                            |
 | `persistence.accessMode`           | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`                                            |
 | `persistence.annotations`          | Persistent Volume annotations                    | `{}`                                                       |
 | `persistence.size`                 | Size of data volume                              | `1Gi`                                                      |
