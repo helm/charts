@@ -12,6 +12,7 @@ spec:
     - ReadWriteOnce
   claimRef:
     name: {{ template "nexus.fullname" . }}-backup
+    namespace: {{ .Release.Namespace }}
   gcePersistentDisk:
     pdName: {{ .Values.nexusBackup.persistence.pdName }}
     fsType: {{ .Values.nexusBackup.persistence.fsType }}
