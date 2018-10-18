@@ -6,6 +6,10 @@
 {{- $chartVersion := .Chart.Version -}}
 {{- $releaseName := .Release.Name -}}
 {{- $releaseService := .Release.Service -}}
+{{- $initImageRepository := .Values.initImage.repository }}
+{{- $initImageTag := .Values.initImage.tag }}
+{{- $initImagePullPolicy := .Values.initImage.pullPolicy | quote }}
+{{- $additionalJavaOpts := .Values.cluster.additionalJavaOpts }}
 {{- range $data := .Values.dataTypes -}}
 apiVersion: apps/v1beta1
 kind: StatefulSet
@@ -71,8 +75,8 @@ spec:
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
       - name: "sysctl"
-        image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
-        imagePullPolicy: {{ .Values.initImage.pullPolicy | quote }}
+        image: "{{ $initImageRepository }}:{{ $initImageTag }}"
+        imagePullPolicy: {{ $initImagePullPolicy }}
         command: ["sysctl", "-w", "vm.max_map_count=262144"]
         securityContext:
           privileged: true
@@ -101,7 +105,7 @@ spec:
             resourceFieldRef:
               resource: limits.cpu
         - name: ES_JAVA_OPTS
-          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.data.heapSize }} -Xmx{{ .Values.data.heapSize }} {{ .Values.cluster.additionalJavaOpts }}"
+          value: "-Djava.net.preferIPv4Stack=true -Xms{{ $data.heapSize }} -Xmx{{ $data.heapSize }} {{ $additionalJavaOpts }}"
         {{- range $key, $value :=  $cluster.env }}
         - name: {{ $key }}
           value: {{ $value | quote }}
