@@ -30,7 +30,9 @@ nexus:
   # The ports should only be changed if the nexus image uses a different port
   dockerPort: 5003
   nexusPort: 8081
-  serviceType: NodePort
+  service:
+    type: NodePort
+    # clusterIP: None
   # annotations: {}
   # labels: {}
   # securityContext:
