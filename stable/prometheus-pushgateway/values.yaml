@@ -14,6 +14,12 @@ service:
 # Optional pod annotations
 podAnnotations: {}
 
+# Optional pod labels
+podLabels: {}
+
+# Optional service labels
+serviceLabels: {}
+
 # Optional additional arguments
 extraArgs: []
 
