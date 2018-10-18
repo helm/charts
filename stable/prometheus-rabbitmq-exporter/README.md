@@ -47,7 +47,7 @@ The following table lists the configurable parameters and their default values.
 | `image.tag`              | prometheus-rabbitmq-exporter image tag                                 | `v0.28.0`                 |
 | `image.pullPolicy`       | image pull policy                                                      | `IfNotPresent`            |
 | `service.type`           | desired service type                                                   | `ClusterIP`               |
-| `service.internalport`   | service listening port                                                 | `9121`                    |
+| `service.internalport`   | service listening port                                                 | `9419`                    |
 | `service.externalPort`   | public service port                                                    | `9419`                    |
 | `resources`              | cpu/memory resource requests/limits                                    | {}                        |
 | `loglevel`               | exporter log level                                                     | {}                        |
@@ -56,7 +56,7 @@ The following table lists the configurable parameters and their default values.
 | `rabbitmq.password`      | rabbitm password login                                                 | `guest`                   |
 | `rabbitmq.capabilities`  | comma-separated list of capabilities supported by the RabbitMQ server  | `bert,no_sort`            |
 | `rabbitmq.include_queues`| regex queue filter. just matching names are exported                   | `.*`                      |
-| `rabbitmq.skip_queues`   | regex, matching queue names are not exported                           | `.*`                      |
+| `rabbitmq.skip_queues`   | regex, matching queue names are not exported                           | `^$`                      |
 | `annotations`             | pod annotations for easier discovery                                   | {}                        |
 
 For more information please refer to the [rabbitmq_exporter](https://github.com/kbudde/rabbitmq_exporter) documentation.
