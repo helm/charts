@@ -123,12 +123,14 @@ minio:
 #  persistence:
 #    enabled: false
 
+# Google Cloud Storage
 gcs:
   enabled: false
   project: my-project-name
   bucket: "<GCS-BUCKET-NAME>"
   jsonKey: '<INSERT CLOUD STORAGE JSON HERE>'
 
+# AWS Simple Storage Service
 s3:
   enabled: false
   bucket: "<S3-BUCKET-NAME>"
@@ -137,6 +139,13 @@ s3:
   # endpoint: ""
   # accessKey: ""
   # secretKey: ""
+
+# Azure Storage Account
+azs:
+  enabled: false
+#   storageAccountName: ""
+#   accessKey: ""
+#   containerName: "spinnaker"
 
 rbac:
   # Specifies whether RBAC resources should be created

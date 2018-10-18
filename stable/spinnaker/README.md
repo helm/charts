@@ -86,6 +86,16 @@ You can provide passwords as a Helm value, or you can use a pre-created secret c
     dockerRegistryAccountSecret: myregistry-secrets
     ```
 
+## Specifying persistent storage
+
+Spinnaker supports [many](https://www.spinnaker.io/setup/install/storage/) persistent storage types. Currently, this chart supports the following:
+
+* Azure Storage
+* Google Cloud Storage
+* Minio (local S3-compatible object store)
+* Redis
+* AWS S3
+
 ## Customizing your installation
 
 ### Manual
