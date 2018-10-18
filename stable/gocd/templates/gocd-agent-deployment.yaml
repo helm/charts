@@ -47,7 +47,7 @@ spec:
           {{- end }}
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           resources:
-{{ toYaml .Values.server.resources | indent 12 }}
+{{ toYaml .Values.agent.resources | indent 12 }}
           env:
             - name: GO_SERVER_URL
             {{- if .Values.agent.env.goServerUrl }}

@@ -56,6 +56,7 @@ nexus:
 
 nexusProxy:
   enabled: true
+  # svcName: proxy-svc
   imageName: quay.io/travelaudience/docker-nexus-proxy
   imageTag: 2.3.0
   imagePullPolicy: IfNotPresent
@@ -170,8 +171,9 @@ secret:
 
 # # To use an additional service, set enable to true
 service:
+  # name: additional-svc
   enabled: false
-  name: nexus-service
+  portName: nexus-service
   labels: {}
   annotations: {}
   targetPort: 80
