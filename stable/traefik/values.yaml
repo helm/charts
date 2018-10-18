@@ -61,6 +61,7 @@ forwardedHeaders:
 ssl:
   enabled: false
   enforced: false
+  permanentRedirect: false
   upstream: false
   insecureSkipVerify: false
   # cipherSuites: []
@@ -131,6 +132,7 @@ kvprovider:
 acme:
   enabled: false
   email: admin@example.com
+  onHostRule: true
   staging: true
   logging: false
   # Configure a Let's Encrypt certificate to be managed by default.
@@ -285,6 +287,7 @@ service:
   #   https: 30443
 gzip:
   enabled: true
+traefikLogFormat: json
 accessLogs:
   enabled: false
   ## Path to the access logs file. If not provided, Traefik defaults it to stdout.

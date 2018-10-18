@@ -1,3 +1,16 @@
+### 1.5.2
+* [17fa5c8e](https://github.com/kubernetes/charts/commit/17fa5c8e): Fix agent kube resources typo.
+
+### 1.5.1
+
+* [b22b9d6](https://github.com/kubernetes/charts/commit/b22b9d6):
+  - Use latest Kubernetes elastic agent plugin v2.0.0
+
+### 1.5.0
+
+* [1f8118b](https://github.com/kubernetes/charts/commit/1f8118b):
+  - Bump up GoCD app version to 18.10.0
+
 ### 1.4.3
 
 * [52120886](https://github.com/kubernetes/charts/commit/52120886): Add extra volumes and volumeMounts options on the server and agents
