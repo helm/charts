@@ -143,9 +143,9 @@ data:
     {{- end }}
     {{- if .Values.accessLogs.enabled }}
     [accessLog]
-    {{- if .Values.accessLogs.filePath }}
-    filePath = "{{ .Values.accessLogs.filePath }}"
-    {{- end}}
+      {{- if .Values.accessLogs.filePath }}
+      filePath = "{{ .Values.accessLogs.filePath }}"
+      {{- end}}
       format = "{{ .Values.accessLogs.format }}"
     [accessLog.fields]
       defaultMode = {{ .Values.accessLogs.fields.defaultMode | quote }}

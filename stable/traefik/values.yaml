@@ -28,6 +28,11 @@ deploymentStrategy: {}
   #   maxUnavailable: 0
   # type: RollingUpdate
 
+lifecycle: {}
+  # postStart:
+  #   exec:
+  #     command: ["/bin/bash", "-c", "echo post start"]
+
 nodeSelector: {}
   # key: value
 affinity: {}
@@ -48,6 +53,17 @@ tolerations: []
   #   hostname: "localhost"
   #   ip: "127.0.0.1"
   #   publishedService: "namespace/servicename"
+
+## Add additional volumes and mounts, for example to write traefik access log file on the host
+#  Note: set accessLogs.filePath to write logs to a destination other than stdout!
+extraVolumes: []
+  # - hostPath:
+  #     path: /var/log/traefik
+  #   name: traefik-logs
+extraVolumeMounts: []
+  # - name: traefik-logs
+  #   mountPath: /logs
+
 proxyProtocol:
   enabled: false
   # trustedIPs is required when enabled
@@ -287,6 +303,8 @@ service:
   #   https: 30443
 gzip:
   enabled: true
+
+
 traefikLogFormat: json
 accessLogs:
   enabled: false
@@ -305,6 +323,7 @@ accessLogs:
       defaultMode: keep
       names: {}
         # Authorization: redact
+
 rbac:
   enabled: false
 ## Enable the /metrics endpoint, for now only supports prometheus

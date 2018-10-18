@@ -77,6 +77,10 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
+        {{- if .Values.lifecycle }}
+        lifecycle:
+{{ toYaml .Values.lifecycle | indent 10 }}
+        {{- end }}
         {{- if and .Values.acme.enabled (eq .Values.acme.challengeType "dns-01") .Values.acme.dnsProvider.name }}
         env:
         {{- range $k, $_ := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}
@@ -97,6 +101,9 @@ spec:
         {{- if .Values.acme.enabled }}
         - mountPath: /acme
           name: acme
+        {{- end }}
+        {{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
         {{- end }}
         ports:
         - name: http
@@ -141,6 +148,9 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- end }}
+      {{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
       {{- end }}
       {{- if and (.Values.tolerations) (semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion) }}
       tolerations:
