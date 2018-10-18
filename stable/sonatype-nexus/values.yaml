@@ -1,3 +1,5 @@
+statefulset:
+  enabled: false
 replicaCount: 1
 # By default deploymentStrategy is set to rollingUpdate with maxSurge of 25% and maxUnavailable of 25% . you can change type to `Recreate` or can uncomment `rollingUpdate` specification and adjust them to your usage.
 deploymentStrategy: {}

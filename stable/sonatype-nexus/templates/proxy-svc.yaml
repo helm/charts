@@ -28,8 +28,6 @@ spec:
     app: {{ template "nexus.name" . }}
     release: {{ .Release.Name }}
   type: {{ .Values.nexus.service.type }}
-  {{- if eq .Values.nexus.service.type "ClusterIP" }}
-  {{- if .Values.nexus.service.clusterIP }}
+  {{- if and (eq .Values.nexus.service.type "ClusterIP") .Values.nexus.service.clusterIP }}
   clusterIP: {{ .Values.nexus.service.clusterIP }}
-  {{- end }}
   {{- end }}
