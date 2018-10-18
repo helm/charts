@@ -4,7 +4,7 @@ kind: Role
 metadata:
   name: {{ template "elasticsearch.fullname" . }}
   labels:
-    app: {{ template "elasticsearch.fullname" . }}
+    app: {{ template "elasticsearch.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

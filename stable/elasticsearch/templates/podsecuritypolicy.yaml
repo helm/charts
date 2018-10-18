@@ -15,8 +15,6 @@ metadata:
 spec:
   privileged: true
   allowPrivilegeEscalation: true
-  #requiredDropCapabilities:
-  #  - ALL
   volumes:
     - 'configMap'
     - 'secret'
