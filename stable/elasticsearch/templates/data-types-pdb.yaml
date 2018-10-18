@@ -2,6 +2,8 @@
 {{ $elasticsearchFullName :=  include "elasticsearch.fullname" . }}
 {{ $releaseName := .Release.Name }}
 {{ $releaseService := .Release.Service }}
+{{ $chartName := .Chart.Name }}
+{{ $chartVersion := .Chart.Version }}
 {{- range $data := .Values.dataTypes }}
 {{- if $data.podDisruptionBudget.enabled }}
 apiVersion: policy/v1beta1
@@ -9,7 +11,7 @@ kind: PodDisruptionBudget
 metadata:
   labels:
     app: {{ $elasticsearchName }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ $chartName }}-{{ $chartVersion }}
     component: "{{ $data.name }}"
     heritage: {{ $releaseService }}
     release: {{ $releaseName }}
