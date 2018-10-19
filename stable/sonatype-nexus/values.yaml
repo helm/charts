@@ -35,6 +35,7 @@ nexus:
   # labels: {}
   # securityContext:
   #   fsGroup: 2000
+  podAnnotations: {}
   livenessProbe:
     initialDelaySeconds: 30
     periodSeconds: 30
