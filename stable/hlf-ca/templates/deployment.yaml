@@ -30,7 +30,7 @@ spec:
         {{- end }}
         - name: ca-config
           configMap:
-            name: {{ include "hlf-ca.fullname" . }}--config
+            name: {{ include "hlf-ca.fullname" . }}--config    
       containers:
         - name: ca
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -43,23 +43,31 @@ spec:
               if [ -n "$DB_TYPE" ]; then
                 while [ -z ${DB_PASSWORD+x} ];
                 do
-                  echo "\033[0;31m DB_PASSWORD environmental variable must contain a value \033[0m"
+                  echo "\033[0;31mDB_PASSWORD environmental variable must contain a value \033[0m"
                   sleep 60
                 done
-                export DB_DATASOURCE="host=${DB_HOST} port=${DB_PORT} user=${DB_USERNAME} password=${DB_PASSWORD} dbname=${DB_DATABASE} sslmode=${DB_SSL}"
+
+                case "$DB_TYPE" in
+                  postgres)
+                    export DB_DATASOURCE="host=${DB_HOST} port=${DB_PORT} user=${DB_USERNAME} password=${DB_PASSWORD} dbname=${DB_DATABASE} sslmode=${DB_SSL}";;
+                  mysql)
+                    export DB_DATASOURCE="${DB_USERNAME}:${DB_PASSWORD}@tcp(${DB_HOST}:${DB_PORT})/${DB_DATABASE}?parseTime=true" ;;
+                  *)
+                    echo "\033[0;31m Database type '$DB_TYPE' not supported\033[0m"; exit 1;;
+                esac
               fi
 
               mkdir -p $FABRIC_CA_HOME
               cp /var/hyperledger/ca_config/ca.yaml $FABRIC_CA_HOME/fabric-ca-server-config.yaml
-              sed -i "s/<<<ADMIN>>>/${CA_ADMIN}/g" ${FABRIC_CA_HOME}/fabric-ca-server-config.yaml
-              sed -i "s/<<<ADMINPW>>>/${CA_PASSWORD}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
-              sed -i "s/<<<DB_TYPE>>>/${DB_TYPE:-"sqlite3"}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
-              sed -i "s/<<<DB_DATASOURCE>>>/${DB_DATASOURCE:-"fabric-ca-server.db"}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
+              sed -i "s|<<<ADMIN>>>|${CA_ADMIN}|g" ${FABRIC_CA_HOME}/fabric-ca-server-config.yaml
+              sed -i "s|<<<ADMINPW>>>|${CA_PASSWORD}|g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
+              sed -i "s|<<<DB_TYPE>>>|${DB_TYPE:-"sqlite3"}|g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
+              sed -i "s|<<<DB_DATASOURCE>>>|${DB_DATASOURCE:-"fabric-ca-server.db"}|g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
 
               {{- if .Values.config.intermediate }}
-              echo ">\033[0;33m Adding Parent CA (typically a Root CA) values to $FABRIC_CA_HOME/fabric-ca-server-config.yaml \033[0m"
-              sed -i "s/<<<PARENT_ADMIN>>>/${PARENT_CA_ADMIN}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
-              sed -i "s/<<<PARENT_ADMINPW>>>/${PARENT_CA_PASSWORD}/g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
+              echo ">\033[0;33m Adding Parent CA (typically a Root CA) values to $FABRIC_CA_HOME/fabric-ca-server-config.yaml\033[0m"
+              sed -i "s|<<<PARENT_ADMIN>>>|${PARENT_CA_ADMIN}|g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
+              sed -i "s|<<<PARENT_ADMINPW>>>|${PARENT_CA_PASSWORD}|g" $FABRIC_CA_HOME/fabric-ca-server-config.yaml
               {{- end}}
 
               echo ">\033[0;35m fabric-ca-server start \033[0m"
@@ -77,7 +85,7 @@ spec:
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "postgresql.secretName" . }}
+                  name: {{ template "postgresql.fullname" . }}
                   key: postgres-password
             {{- end }}
             {{- if .Values.mysql.enabled }}
@@ -85,7 +93,7 @@ spec:
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "mysql.secretName" . }}
+                  name: {{ template "mysql.fullname" . }}
                   key: mysql-password
             {{- end }}
             {{- if .Values.externalDatabase.type }}
