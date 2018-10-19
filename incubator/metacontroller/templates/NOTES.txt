@@ -1,0 +1,5 @@
+Congratulations on your new installation of Metacontroller!
+
+Verify metacontroller is talking properly to the Kubernetes API servers by running the following:
+
+kubectl logs -f {{ template "metacontroller.fullname" . }}-0
