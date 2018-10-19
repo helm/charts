@@ -3,7 +3,7 @@ kind: DaemonSet
 metadata:
   name: {{ include "fluentd-elasticsearch.fullname" . }}
   labels:
-    app: {{ include "fluentd-elasticsearch.fullname" . }}
+    app: {{ include "fluentd-elasticsearch.name" . }}
     version: {{ .Values.image.tag }}
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
@@ -13,12 +13,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ include "fluentd-elasticsearch.fullname" . }}
+      app: {{ include "fluentd-elasticsearch.name" . }}
       release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: {{ include "fluentd-elasticsearch.fullname" . }}
+        app: {{ include "fluentd-elasticsearch.name" . }}
         version: {{ .Values.image.tag }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         heritage: "{{ .Release.Service }}"
