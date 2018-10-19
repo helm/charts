@@ -1,0 +1,220 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "nifi.fullname" . }}
+  labels:
+    app: {{ template "nifi.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  serviceName: {{ template "nifi.fullname" . }}-headless
+  replicas: {{ .Values.nifi.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "nifi.name" . | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
+    spec:
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+      - name: {{ template "nifi.name" . }}-server
+        imagePullPolicy: {{ .Values.nifi.image.pullPolicy | quote }}
+        image: "{{ .Values.nifi.image.repository }}:{{ .Values.nifi.image.tag }}"
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - containerPort: {{ .Values.nifi.properties.httpPort }}
+          name: http
+          protocol: TCP
+        - containerPort: {{ .Values.nifi.properties.cluster.port }}
+          name: cluster
+          protocol: TCP
+        env:
+        - name: NIFI_ZOOKEEPER_CONNECT_STRING
+          value: {{ template "zookeeper.url" . }}
+        - name: TRUSTSTORE_PASS
+          value: {{ .Values.truststorePass }}
+        - name: KEYSTORE_PASS
+          value: {{ .Values.keystorePass }}
+        - name: OU
+          value: "NiFi"
+        - name: HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: HEADLESS
+          value: {{ template "nifi.fullname" . }}-headless
+        volumeMounts:
+          - name: "data"
+            mountPath: /opt/nifi/data
+          - name: "flowfile-repository"
+            mountPath: /opt/nifi/flowfile_repository
+          - name: "content-repository"
+            mountPath: /opt/nifi/content_repository
+          - name: "provenance-repository"
+            mountPath: /opt/nifi/provenance_repository
+          - name: "logs"
+            mountPath: /opt/nifi/logs
+          - name: "bootstrap-conf"
+            mountPath: /opt/nifi/nifi-{{ .Values.nifi.image.tag }}/conf/bootstrap.conf
+            subPath: "bootstrap.conf"
+          - name: "nifi-properties"
+            mountPath: /opt/nifi/nifi-{{ .Values.nifi.image.tag }}/conf/nifi.temp
+            subPath: "nifi.temp"
+          - name: "authorizers-xml"
+            mountPath: /opt/nifi/nifi-{{ .Values.nifi.image.tag }}/conf/authorizers.xml
+            subPath: "authorizers.xml"
+          - name: "bootstrap-notification-services-xml"
+            mountPath: /opt/nifi/nifi-{{ .Values.nifi.image.tag }}/conf/bootstrap-notification-services.xml
+            subPath: "bootstrap-notification-services.xml"
+          - name: "logback-xml"
+            mountPath: /opt/nifi/nifi-{{ .Values.nifi.image.tag }}/conf/logback.xml
+            subPath: "logback.xml"
+          - name: "login-identity-providers-xml"
+            mountPath: /opt/nifi/nifi-{{ .Values.nifi.image.tag }}/conf/login-identity-providers.xml
+            subPath: "login-identity-providers.xml"
+          - name: "state-management-xml"
+            mountPath: /opt/nifi/nifi-{{ .Values.nifi.image.tag }}/conf/state-management.xml
+            subPath: "state-management.xml"
+          - name: "zookeeper-properties"
+            mountPath: /opt/nifi/nifi-{{ .Values.nifi.image.tag }}/conf/zookeeper.properties
+            subPath: "zookeeper.properties"
+      - name: nifi-app-log-sidecar
+        image: {{ .Values.sidecar.image }}
+        args: [/bin/sh, -c, 'tail -n+1 -F /var/log/nifi-app.log']
+        volumeMounts:
+        - name: logs
+          mountPath: /var/log
+      - name: nifi-bootstrap-log-sidecar
+        image: {{ .Values.sidecar.image }}
+        args: [/bin/sh, -c, 'tail -n+1 -F /var/log/nifi-bootstrap.log']
+        volumeMounts:
+        - name: logs
+          mountPath: /var/log
+      - name: nifi-user-log-sidecar
+        image: {{ .Values.sidecar.image }}
+        args: [/bin/sh, -c, 'tail -n+1 -F /var/log/nifi-user.log']
+        volumeMounts:
+        - name: logs
+          mountPath: /var/log
+      initContainers:
+        - name: copy-nifi-templates
+          image: busybox:1.27.1
+          command: ['sh', '-c']
+          args:
+            - cp /templates/hello-world.xml /opt/nifi/data/templates/
+          volumeMounts:
+            - name: "data"
+              mountPath: /opt/nifi/data
+            - name: "templates"
+              mountPath: /templates
+      volumes:
+      - name: "templates"
+        configMap:
+          name: {{ template "nifi.fullname" . }}
+          items:
+            - key: "hello-world.xml"
+              path: "hello-world.xml"
+      - name: "bootstrap-conf"
+        configMap:
+          name: {{ template "nifi.fullname" . }}
+          items:
+            - key: "bootstrap.conf"
+              path: "bootstrap.conf"
+      - name: "nifi-properties"
+        configMap:
+          name: {{ template "nifi.fullname" . }}
+          items:
+            - key: "nifi.properties"
+              path: "nifi.temp"
+      - name: "authorizers-xml"
+        configMap:
+          name: {{ template "nifi.fullname" . }}
+          items:
+            - key: "authorizers.xml"
+              path: "authorizers.xml"
+      - name: "bootstrap-notification-services-xml"
+        configMap:
+          name: {{ template "nifi.fullname" . }}
+          items:
+            - key: "bootstrap-notification-services.xml"
+              path: "bootstrap-notification-services.xml"
+      - name: "logback-xml"
+        configMap:
+          name: {{ template "nifi.fullname" . }}
+          items:
+            - key: "logback.xml"
+              path: "logback.xml"
+      - name: "login-identity-providers-xml"
+        configMap:
+          name: {{ template "nifi.fullname" . }}
+          items:
+            - key: "login-identity-providers.xml"
+              path: "login-identity-providers.xml"
+      - name: "state-management-xml"
+        configMap:
+          name: {{ template "nifi.fullname" . }}
+          items:
+            - key: "state-management.xml"
+              path: "state-management.xml"
+      - name: "zookeeper-properties"
+        configMap:
+          name: {{ template "nifi.fullname" . }}
+          items:
+            - key: "zookeeper.properties"
+              path: "zookeeper.properties"
+  volumeClaimTemplates:
+    - metadata:
+        name: "data"
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: {{ .Values.nifi.persistence.storageClass | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.nifi.persistence.dataStorage }}
+    - metadata:
+        name: "flowfile-repository"
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: {{ .Values.storageClass | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.nifi.persistence.flowfileRepoStorage }}
+    - metadata:
+        name: "content-repository"
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: {{ .Values.storageClass | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.nifi.persistence.contentRepoStorage }}
+    - metadata:
+        name: "provenance-repository"
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: {{ .Values.storageClass | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.nifi.persistence.provenanceRepoStorage }}
+    - metadata:
+        name: "logs"
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: {{ .Values.storageClass | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.nifi.persistence.logStorage }}
