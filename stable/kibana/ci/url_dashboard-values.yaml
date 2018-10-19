@@ -1,0 +1,6 @@
+---
+# enable the dashboard init container with dashboard retrieved from an URL
+
+dashboardImport:
+  dashboards:
+    k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json
