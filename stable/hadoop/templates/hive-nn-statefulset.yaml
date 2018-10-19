@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "hadoop.fullname" . }}-yarn-rm
+  name: {{ template "hadoop.fullname" . }}-hive-nn
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
   labels:
@@ -9,17 +9,22 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: yarn-rm
+    component: hive-nn
 spec:
-  serviceName: {{ template "hadoop.fullname" . }}-yarn-rm
-  replicas: 1
+  serviceName: {{ template "hadoop.fullname" . }}-hive-nn
+  replicas: {{ .Values.hive.dataNode.replicas }}
   template:
     metadata:
       labels:
         app: {{ template "hadoop.name" . }}
         release: {{ .Release.Name }}
-        component: yarn-rm
+        component: hive-nn
     spec:
+      # Use hostNetwork so datanodes connect to namenode without going through an overlay network
+      # like weave. Otherwise, namenode fails to see physical IP address of datanodes.
+      # hostNetwork: true
+      # hostPID: true
+      # dnsPolicy: ClusterFirstWithHostNet
       affinity:
         podAntiAffinity:
         {{- if eq .Values.antiAffinity "hard" }}
@@ -29,7 +34,7 @@ spec:
               matchLabels:
                 app:  {{ template "hadoop.name" . }}
                 release: {{ .Release.Name | quote }}
-                component: yarn-rm
+                component: hive-nn
         {{- else if eq .Values.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
@@ -39,42 +44,40 @@ spec:
                 matchLabels:
                   app:  {{ template "hadoop.name" . }}
                   release: {{ .Release.Name | quote }}
-                  component: yarn-rm
+                  component: hive-nn
         {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
-      - name: yarn-rm
+      - name: hive-nn
         image: {{ .Values.image }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
-        ports:
-        - containerPort: 8088
-          name: web
         command:
            - "/bin/bash"
            - "/tmp/hadoop-config/bootstrap.sh"
            - "-d"
-        resources:
-{{ toYaml .Values.yarn.resourceManager.resources | indent 10 }}
-        readinessProbe:
-          httpGet:
-            path: /ws/v1/cluster/info
-            port: 8088
-          initialDelaySeconds: 5
-          timeoutSeconds: 2
-        livenessProbe:
-          httpGet:
-            path: /ws/v1/cluster/info
-            port: 8088
-          initialDelaySeconds: 10
-          timeoutSeconds: 2
         env:
-        {{- if .Values.wasb.enabled }}
-        - name: HADOOP_CLASSPATH
-          value: $HADOOP_CLASSPATH:/usr/local/hadoop/share/hadoop/tools/lib/hadoop-azure-2.7.3.jar:/usr/local/hadoop/share/hadoop/tools/lib/azure-storage-2.0.0.jar
-        {{- end }}
+          {{- range $key, $value := .Values.customHadoopConfig }}
+          - name: {{ $key | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+        ports:
+          - containerPort: 10000
+        resources:
+{{ toYaml .Values.hive.dataNode.resources | indent 10 }}
+        readinessProbe:
+          tcpSocket:
+            port: 10000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 10000
+          initialDelaySeconds: 15
+          periodSeconds: 20
         volumeMounts:
         - name: hadoop-config
           mountPath: /tmp/hadoop-config
+      restartPolicy: Always
       volumes:
       - name: hadoop-config
         configMap:

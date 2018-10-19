@@ -13,6 +13,8 @@ data:
 
     : ${HADOOP_PREFIX:=/usr/local/hadoop}
 
+    : ${HIVE_PREFIX:=/usr/local/hive}
+
     . $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 
     # Directory to find config artifacts
@@ -29,6 +31,12 @@ data:
       fi
     done
 
+    # Copy hive config files from volume mount
+
+    for f in slaves hive-site.xml; do
+      cp ${CONFIG_DIR}/$f $HIVE_PREFIX/conf/$f
+    done
+
     # installing libraries if any - (resource urls added comma separated to the ACP system variable)
     cd $HADOOP_PREFIX/share/hadoop/common ; for cp in ${ACP//,/ }; do  echo == $cp; curl -LO $cp ; done; cd -
 
@@ -41,11 +49,31 @@ data:
     if [[ "${HOSTNAME}" =~ "hdfs-dn" ]]; then
       mkdir -p /root/hdfs/datanode
 
-      #  wait up to 30 seconds for namenode 
+      #  wait up to 30 seconds for namenode
       (while [[ $count -lt 15 && -z `curl -sf http://{{ template "hadoop.fullname" . }}-hdfs-nn:50070` ]]; do ((count=count+1)) ; echo "Waiting for {{ template "hadoop.fullname" . }}-hdfs-nn" ; sleep 2; done && [[ $count -lt 15 ]])
       [[ $? -ne 0 ]] && echo "Timeout waiting for hdfs-nn, exiting." && exit 1
 
       $HADOOP_PREFIX/sbin/hadoop-daemon.sh start datanode
+
+      $HADOOP_PREFIX/bin/hdfs dfs -mkdir -p /tmp
+      $HADOOP_PREFIX/bin/hdfs dfs -mkdir -p /user/hive/warehouse
+      $HADOOP_PREFIX/bin/hdfs dfs -chmod g+w /tmp
+      $HADOOP_PREFIX/bin/hdfs dfs -chmod g+w /user/hive/warehouse
+
+    fi
+
+    if [[ "${HOSTNAME}" =~ "hive-nn" ]]; then
+
+      #  wait up to 30 seconds for namenode
+      (while [[ $count -lt 15 && -z `curl -sf http://{{ template "hadoop.fullname" . }}-hdfs-nn:50070` ]]; do ((count=count+1)) ; echo "Waiting for {{ template "hadoop.fullname" . }}-hdfs-nn" ; sleep 2; done && [[ $count -lt 15 ]])
+      [[ $? -ne 0 ]] && echo "Timeout waiting for hdfs-nn, exiting." && exit 1
+
+      # Run hive service in background
+      mkdir -p /var/log/hive
+      schematool -initSchema -dbType postgres
+      hive --service metastore > /var/log/hive/hive.out 2> /var/log/hive/hive.log &
+      hive --service hiveserver2 > /var/log/hive/hiveserver2.out 2> /var/log/hive/hiveserver2.log &
+
     fi
 
     if [[ "${HOSTNAME}" =~ "yarn-rm" ]]; then
@@ -95,10 +123,49 @@ data:
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
     <configuration>
       <property>
-            <name>fs.defaultFS</name>
-            <value>hdfs://{{ template "hadoop.fullname" . }}-hdfs-nn:9000/</value>
-            <description>NameNode URI</description>
-        </property>
+          <name>fs.defaultFS</name>
+          <value>hdfs://{{ template "hadoop.fullname" . }}-hdfs-nn:9000/</value>
+          <description>NameNode URI</description>
+      </property>
+
+      {{- if .Values.wasb.enabled }}
+      <property>
+        <name>fs.azure.account.key.{{ .Values.wasb.account }}.blob.core.windows.net</name>
+        <value>{{ .Values.wasb.accessKey }}</value>
+      </property>
+
+      <property>
+        <name>fs.AbstractFileSystem.wasb.Impl</name>
+        <value>org.apache.hadoop.fs.azure.Wasb</value>
+      </property>
+      {{- end }}
+
+      {{- if .Values.kerberosEnabled }}
+      <property>
+        <name>hadoop.rpc.protection</name>
+        <value>privacy</value>
+      </property>
+
+      <property>
+        <name>hadoop.security.authentication</name>
+        <value>kerberos</value>
+      </property>
+
+      <property>
+        <name>hadoop.security.authorization</name>
+        <value>true</value>
+      </property>
+      {{- end }}
+
+      <property>
+        <name>hadoop.proxyuser.root.groups</name>
+        <value>*</value>
+      </property>
+      <property>
+        <name>hadoop.proxyuser.root.hosts</name>
+        <value>*</value>
+      </property>
+
     </configuration>
 
   hdfs-site.xml: |
@@ -137,6 +204,11 @@ data:
         <value>false</value>
       </property>
 
+      <property>
+      <name>dfs.permissions.enabled</name>
+      <value>false</value>
+      </property>
+
       <!-- Bind to all interfaces -->
       <property>
         <name>dfs.namenode.rpc-bind-host</name>
@@ -147,7 +219,99 @@ data:
         <value>0.0.0.0</value>
       </property>
       <!-- /Bind to all interfaces -->
-      
+
+      {{- if .Values.kerberosEnabled }}
+      <property>
+        <name>dfs.block.access.token.enable</name>
+        <value>true</value>
+      </property>
+
+      <property>
+        <name>dfs.encrypt.data.transfer</name>
+        <value>true</value>
+      </property>
+
+      <property>
+        <name>dfs.datanode.kerberos.principal</name>
+        <value>hdfs/_HOST@{{ required "A valid kerberosRealm entry required!" .Values.kerberosRealm }}</value>
+      </property>
+
+      <property>
+        <name>dfs.datanode.kerberos.https.principal</name>
+        <value>http/_HOST@{{ required "A valid kerberosRealm entry required!" .Values.kerberosRealm }}</value>
+      </property>
+
+      <property>
+        <name>dfs.datanode.keytab.file</name>
+        <value>/etc/security/hdfs.keytab</value>
+      </property>
+
+      <property>
+        <name>dfs.web.authentication.kerberos.principal</name>
+        <value>http/_HOST@{{ required "A valid kerberosRealm entry required!" .Values.kerberosRealm }}</value>
+      </property>
+
+      {{- if .Values.jsvcEnabled }}
+      <property>
+        <name>dfs.datanode.address</name>
+        <value>0.0.0.0:1004</value>
+      </property>
+
+      <property>
+        <name>dfs.datanode.http.address</name>
+        <value>0.0.0.0:1006</value>
+      </property>
+
+      {{- end }}
+      {{- end }}
+
+    </configuration>
+
+  hive-site.xml: |
+    <?xml version="1.0"?>
+    <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+    <configuration>
+      <property>
+          <name>javax.jdo.option.ConnectionURL</name>
+          <value>jdbc:postgresql://hadoop-postgresql:5432/metastore?createDatabaseIfNotExist=true</value>
+          <description>metadata is stored in a PostgreSQL server</description>
+      </property>
+      <property>
+          <name>javax.jdo.option.ConnectionDriverName</name>
+          <value>org.postgresql.Driver</value>
+          <description>PostgreSQL JDBC driver class</description>
+      </property>
+      <property>
+          <name>javax.jdo.option.ConnectionUserName</name>
+          <value>hiveuser</value>
+          <description>user name for connecting to pgsql server</description>
+      </property>
+      <property>
+          <name>javax.jdo.option.ConnectionPassword</name>
+          <value>hivepasswd</value>
+          <description>password for connecting to pgsql server</description>
+      </property>
+      <property>
+        <name>hive.metastore.schema.verification</name>
+        <value>true</value>
+        <description>
+          Enforce metastore schema version consistency.
+          True: Verify that version information stored in is compatible with one from Hive jars.  Also disable automatic
+                schema migration attempt. Users are required to manually migrate schema after Hive upgrade which ensures
+                proper metastore schema migration. (Default)
+          False: Warn if the version information stored in metastore doesn't match with one from in Hive jars.
+        </description>
+      </property>
+      <property>
+          <name>hive.metastore.schema.verification.record.version</name>
+          <value>false</value>
+          <description>Creates necessary schema on a startup if one doesn't exist</description>
+      </property>
+      <property>
+          <name>datanucleus.autoCreateSchema</name>
+          <value>false</value>
+          <description>Creates necessary schema on a startup if one doesn't exist</description>
+      </property>
     </configuration>
 
   mapred-site.xml: |

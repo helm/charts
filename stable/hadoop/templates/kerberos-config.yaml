@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kerberos-config
+  labels:
+    app: {{ template "hadoop.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  krb5.conf: |
+    includedir /etc/krb5.conf.d/
+    includedir /var/lib/sss/pubconf/krb5.include.d/
+
+    [logging]
+    default = FILE:/var/log/krb5libs.log
+    kdc = FILE:/var/log/krb5kdc.log
+    admin_server = FILE:/var/log/kadmind.log
+
+    [libdefaults]
+    default_realm = CLOUD.EXAMPLE.CA
+    dns_lookup_realm = false
+    ticket_lifetime = 24h
+    renew_lifetime = 7d
+    forwardable = true
+    rdns = false
+    default_ccache_name = KEYRING:persistent:%{uid}
+
+    [realms]
+    CLOUD.EXAMPLE.CA = {
+    }
+
+    [domain_realm]
+    cloud.example.ca = CLOUD.EXAMPLE.CA
+    .cloud.example.ca = CLOUD.EXAMPLE.CA

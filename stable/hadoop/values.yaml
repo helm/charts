@@ -16,7 +16,7 @@ hdfs:
     resources:
       requests:
         memory: "256Mi"
-        cpu: "10m"
+        cpu: "250m"
       limits:
         memory: "2048Mi"
         cpu: "1000m"
@@ -29,7 +29,7 @@ hdfs:
     resources:
       requests:
         memory: "256Mi"
-        cpu: "10m"
+        cpu: "100m"
       limits:
         memory: "2048Mi"
         cpu: "1000m"
@@ -41,16 +41,16 @@ yarn:
     resources:
       requests:
         memory: "256Mi"
-        cpu: "10m"
+        cpu: "100m"
       limits:
-        memory: "2048Mi"
-        cpu: "2000m"
+        memory: "1028Mi"
+        cpu: "500m"
 
   nodeManager:
     pdbMinAvailable: 1
 
     # The number of YARN NodeManager instances.
-    replicas: 2
+    replicas: 1
 
     # Create statefulsets in parallel (K8S 1.7+)
     parallelCreate: false
@@ -62,18 +62,92 @@ yarn:
         memory: "2048Mi"
         cpu: "1000m"
       limits:
-        memory: "2048Mi"
-        cpu: "1000m"
+        memory: "3056Mi"
+        cpu: "2500m"
 
 persistence:
   nameNode:
     enabled: false
     storageClass: "-"
     accessMode: ReadWriteOnce
-    size: 50Gi
+    size: 5Gi
 
   dataNode:
     enabled: false
     storageClass: "-"
     accessMode: ReadWriteOnce
-    size: 200Gi
+    size: 5Gi
+
+# Custom hadoop config keys passed through env variables to hadoop uhopper images.
+# See https://hub.docker.com/r/uhopper/hadoop/ to get more details
+# Please note that these are not hadoop env variables, but docker env variables that
+# will be transformed into hadoop config keys
+# CLUSTER_NAME is already set by the chart so any value coming from below config
+# will be ignored
+customHadoopConfig: {}
+  # Set variables through a hash where env variable is the key, e.g.
+  # HDFS_CONF_dfs_datanode_use_datanode_hostname: "false"
+
+# Whether or not Kerberos support is enabled.
+kerberosEnabled: false
+
+# Required to be non-empty if Kerberos is enabled. Specify your Kerberos realm name.
+# This should match the realm name in your Kerberos config file.
+kerberosRealm: "CLOUD.EXAMPLE.CA"
+
+# Effective only if Kerberos is enabled. Name of the k8s config map containing
+# the kerberos config file.
+kerberosConfigMap: kerberos-config
+
+# Effective only if Kerberos is enabled. Name of the kerberos config file inside
+# the config map.
+kerberosConfigFileName: krb5.conf
+
+# Effective only if Kerberos is enabled. Name of the k8s secret containing
+# the kerberos keytab files of per-host HDFS principals. The secret should
+# have multiple data items. Each data item name should be formatted as:
+#    `HOST-NAME.keytab`
+# where HOST-NAME should match the cluster node
+# host name that each per-host hdfs principal is associated with.
+kerberosKeytabsSecret: hdfs-kerberos-keytabs
+
+# Effective only if Kerberos is enabled. Enable protection of datanodes using
+# the jsvc utility.
+jsvcEnabled: true
+
+# Whether or not WASB support is enabled.
+wasb:
+  enabled: true
+  account: data
+  accessKey: accesskey
+  container: data
+
+## Configuration values for the postgresql dependency.
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
+##
+postgresql:
+
+  ### Install PostgreSQL dependency
+  ##
+  install: true
+
+  ### PostgreSQL User to create.
+  ##
+  postgresUser: hiveuser
+
+  ## PostgreSQL Password for the new user.
+  ## If not set, a random 10 characters password will be used.
+  ##
+  postgresPassword: hivepasswd
+
+  ## PostgreSQL Database to create.
+  ##
+  postgresDatabase: metastore
+
+  ## Persistent Volume Storage configuration.
+  ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
+  ##
+  persistence:
+    ## Enable PostgreSQL persistence using Persistent Volume Claims.
+    ##
+    enabled: true

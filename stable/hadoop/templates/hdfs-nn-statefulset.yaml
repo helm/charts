@@ -20,6 +20,11 @@ spec:
         release: {{ .Release.Name }}
         component: hdfs-nn
     spec:
+      # Use hostNetwork so datanodes connect to namenode without going through an overlay network
+      # like weave. Otherwise, namenode fails to see physical IP address of datanodes.
+      # hostNetwork: true
+      # hostPID: true
+      # dnsPolicy: ClusterFirstWithHostNet
       affinity:
         podAntiAffinity:
         {{- if eq .Values.antiAffinity "hard" }}
@@ -64,11 +69,50 @@ spec:
             port: 50070
           initialDelaySeconds: 10
           timeoutSeconds: 2
+        env:
+          {{- if .Values.wasb.enabled }}
+          - name: HADOOP_CLASSPATH
+            value: $HADOOP_CLASSPATH:/usr/local/hadoop/share/hadoop/tools/lib/hadoop-azure-2.7.3.jar:/usr/local/hadoop/share/hadoop/tools/lib/azure-storage-2.0.0.jar
+          {{- end }}
+          {{- range $key, $value := .Values.customHadoopConfig }}
+          - name: {{ $key | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+          - name: CLUSTER_NAME
+            value: hdfs-k8s
         volumeMounts:
         - name: hadoop-config
           mountPath: /tmp/hadoop-config
         - name: dfs
           mountPath: /root/hdfs/namenode
+        {{- if .Values.kerberosEnabled }}
+        - name: kerberos-config
+          mountPath: /etc/krb5.conf
+          subPath: {{ .Values.kerberosConfigFileName }}
+          readOnly: true
+        - name: kerberos-keytab-copy
+          mountPath: /etc/security/
+          readOnly: true
+        {{- end }}
+      {{- if .Values.kerberosEnabled }}
+      initContainers:
+        - name: copy-kerberos-keytab
+          image: busybox:1.27.1
+          command: ['sh', '-c']
+          args:
+            - cp /kerberos-keytabs/$MY_NODE_NAME.keytab /kerberos-keytab-copy/hdfs.keytab
+          env:
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: kerberos-keytabs
+              mountPath: /kerberos-keytabs
+            - name: kerberos-keytab-copy
+              mountPath: /kerberos-keytab-copy
+      {{- end }}
+      restartPolicy: Always
       volumes:
       - name: hadoop-config
         configMap:
@@ -77,6 +121,16 @@ spec:
       {{- if .Values.persistence.nameNode.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "hadoop.fullname" . }}-hdfs-nn
-      {{- else }}        
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      {{- if .Values.kerberosEnabled }}
+      - name: kerberos-config
+        configMap:
+          name: {{ .Values.kerberosConfigMap }}
+      - name: kerberos-keytabs
+        secret:
+          secretName: {{ .Values.kerberosKeytabsSecret }}
+      - name: kerberos-keytab-copy
         emptyDir: {}
       {{- end }}

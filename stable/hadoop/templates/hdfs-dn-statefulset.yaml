@@ -20,6 +20,11 @@ spec:
         release: {{ .Release.Name }}
         component: hdfs-dn
     spec:
+      # Use hostNetwork so datanodes connect to namenode without going through an overlay network
+      # like weave. Otherwise, namenode fails to see physical IP address of datanodes.
+      # hostNetwork: true
+      # hostPID: true
+      # dnsPolicy: ClusterFirstWithHostNet
       affinity:
         podAntiAffinity:
         {{- if eq .Values.antiAffinity "hard" }}
@@ -50,25 +55,87 @@ spec:
            - "/bin/bash"
            - "/tmp/hadoop-config/bootstrap.sh"
            - "-d"
-        resources:       
+        env:
+          {{- if .Values.kerberosEnabled }}
+          {{- if .Values.jsvcEnabled }}
+          - name: HADOOP_SECURE_DN_USER
+            value: root
+          - name: JSVC_HOME
+            value: /jsvc-home
+          - name: JSVC_OUTFILE
+            value: /dev/stdout
+          - name: JSVC_ERRFILE
+            value: /dev/stderr
+          {{- end }}
+          {{- end }}
+          {{- if .Values.wasb.enabled }}
+          - name: HADOOP_CLASSPATH
+            value: $HADOOP_CLASSPATH:/usr/local/hadoop/share/hadoop/tools/lib/hadoop-azure-2.7.3.jar:/usr/local/hadoop/share/hadoop/tools/lib/azure-storage-2.0.0.jar
+          {{- end }}
+          {{- range $key, $value := .Values.customHadoopConfig }}
+          - name: {{ $key | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+        resources:
 {{ toYaml .Values.hdfs.dataNode.resources | indent 10 }}
         readinessProbe:
           httpGet:
             path: /
             port: 50075
           initialDelaySeconds: 5
-          timeoutSeconds: 2
+          timeoutSeconds: 5
         livenessProbe:
           httpGet:
             path: /
             port: 50075
           initialDelaySeconds: 10
-          timeoutSeconds: 2
+          timeoutSeconds: 10
         volumeMounts:
         - name: hadoop-config
           mountPath: /tmp/hadoop-config
         - name: dfs
           mountPath: /root/hdfs/datanode
+        {{- if .Values.kerberosEnabled }}
+        - name: kerberos-config
+          mountPath: /etc/krb5.conf
+          subPath: {{ .Values.kerberosConfigFileName }}
+          readOnly: true
+        - name: kerberos-keytab-copy
+          mountPath: /etc/security/
+          readOnly: true
+        {{- if .Values.jsvcEnabled }}
+        - name: jsvc-home
+          mountPath: /jsvc-home
+        {{- end }}
+        {{- end }}
+      {{- if and .Values.kerberosEnabled .Values.jsvcEnabled }}
+      initContainers:
+        - name: copy-kerberos-keytab
+          image: busybox:1.27.1
+          command: ['sh', '-c']
+          args:
+            - cp /kerberos-keytabs/$MY_NODE_NAME.keytab /kerberos-keytab-copy/hdfs.keytab
+          env:
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: kerberos-keytabs
+              mountPath: /kerberos-keytabs
+            - name: kerberos-keytab-copy
+              mountPath: /kerberos-keytab-copy
+        - name: copy-jsvc
+          # Pull by digest because the image doesn't have tags to pin.
+          image: mschlimb/jsvc@sha256:bf20eb9a319e9a2f87473d8da7418d21503a97528b932800b6b8417cd31e30ef
+          command: ['sh', '-c']
+          args:
+            - cp /usr/bin/jsvc /jsvc-home/jsvc
+          volumeMounts:
+            - name: jsvc-home
+              mountPath: /jsvc-home
+      {{- end }}
+      restartPolicy: Always
       volumes:
       - name: hadoop-config
         configMap:
@@ -77,6 +144,20 @@ spec:
       {{- if .Values.persistence.dataNode.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "hadoop.fullname" . }}-hdfs-dn
-      {{- else }}        
+      {{- else }}
         emptyDir: {}
+      {{- end }}
+      {{- if .Values.kerberosEnabled }}
+      - name: kerberos-config
+        configMap:
+          name: {{ .Values.kerberosConfigMap }}
+      - name: kerberos-keytabs
+        secret:
+          secretName: {{ .Values.kerberosKeytabsSecret }}
+      - name: kerberos-keytab-copy
+        emptyDir: {}
+      {{- if .Values.jsvcEnabled }}
+      - name: jsvc-home
+        emptyDir: {}
+      {{- end }}
       {{- end }}

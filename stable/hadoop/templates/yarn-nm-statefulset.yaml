@@ -71,6 +71,10 @@ spec:
           initialDelaySeconds: 10
           timeoutSeconds: 2
         env:
+        {{- if .Values.wasb.enabled }}
+        - name: HADOOP_CLASSPATH
+          value: $HADOOP_CLASSPATH:/usr/local/hadoop/share/hadoop/tools/lib/hadoop-azure-2.7.3.jar:/usr/local/hadoop/share/hadoop/tools/lib/azure-storage-2.0.0.jar
+        {{- end }}
         - name: MY_CPU_LIMIT
           valueFrom:
             resourceFieldRef:
