@@ -84,7 +84,7 @@ existingConfigMap: ""
 ## Add extra input sources
 extraInputs: |-
 ## Add extra filters
-extraFilters: |- 
+extraFilters: |-
 ## Add extra outputs
 extraOutputs: |-
 
