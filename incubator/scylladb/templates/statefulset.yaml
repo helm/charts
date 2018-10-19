@@ -28,9 +28,9 @@ spec:
         ports:
           - name: cql
             containerPort: {{ .Values.service.cqlPort }}
-          - name: rpc
+          - name: internode
             containerPort: {{ .Values.service.internodePort }}
-          - name: ssl
+          - name: sslinternode
             containerPort: {{ .Values.service.sslinternodePort }}
           - name: jmx
             containerPort: {{ .Values.service.jmxPort }}
@@ -38,7 +38,7 @@ spec:
             containerPort: {{ .Values.service.restPort }}
           - name: prometheus
             containerPort: {{ .Values.service.prometheusPort }}
-          - name: node_exporter
+          - name: nodeexporter
             containerPort: {{ .Values.service.nodeExporterPort }}
           - name: thrift
             containerPort: {{ .Values.service.thriftPort }}
