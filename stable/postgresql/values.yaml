@@ -60,6 +60,12 @@ usePasswordFile: false
 #   host all all localhost trust
 #   host mydatabase mysuser 192.168.0.0/24 md5
 
+## Specify content for extra env variables to be passed to the deployment
+## Default: no additional variables
+## env: 
+##   - name: EXTRA_VAR_1
+##     value: SomeNewValue
+
 ## Persist data to a persistent volume
 persistence:
   enabled: true
