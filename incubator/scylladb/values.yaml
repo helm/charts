@@ -1,0 +1,55 @@
+# Default values for scylladb.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 3
+
+image:
+  repository: scylladb/scylla
+  tag: 2.1.3
+  pullPolicy: IfNotPresent
+
+config:
+  overprovisioned: true
+
+service:
+  type: ClusterIP
+  cqlPort: 9042
+  internodePort: 7000
+  sslinternodePort: 7001
+  jmxPort: 7199
+  restPort: 10000
+  prometheusPort: 9180
+  nodeExporterPort: 9100
+  thriftPort: 9160
+  # Check http://docs.scylladb.com/admin/
+
+statefulset:
+  hostNetwork: false
+
+## Pod distruption budget
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+persistence:
+  accessMode: ReadWriteOnce
+  size: 15Gi
