@@ -9,7 +9,7 @@ keywords:
   - nosql
   - database
   - cassandra
-sources: 
+sources:
   - http://www.scylladb.com
   - https://hub.docker.com/r/scylladb/scylla/
   - https://en.wikipedia.org/wiki/Scylla_(database)
