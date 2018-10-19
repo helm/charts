@@ -31,6 +31,20 @@ spec:
         - name: ca-config
           configMap:
             name: {{ include "hlf-ca.fullname" . }}--config    
+      initContainers:
+        - name: wait-for-db
+          image: jwilder/dockerize
+          imagePullPolicy: IfNotPresent 
+          envFrom:
+            - configMapRef:
+                name: {{ include "hlf-ca.fullname" . }}--db
+          command: 
+            - sh
+            - -c
+            - |
+              if [ -n "$DB_TYPE" ]; then
+                dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 30s && echo "Database $DB_TYPE on $DB_HOST:$DB_PORT is ready"
+              fi
       containers:
         - name: ca
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
