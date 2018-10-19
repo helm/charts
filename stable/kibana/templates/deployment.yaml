@@ -12,10 +12,11 @@ spec:
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:
-    {{- if .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
-    {{- end }}
+{{- end }}
       labels:
         app: {{ template "kibana.name" . }}
         release: "{{ .Release.Name }}"
@@ -143,7 +144,7 @@ spec:
 {{- if .Values.plugins}}
         - name: plugins
           mountPath: /usr/share/kibana/plugins
-{{- end }}        
+{{- end }}
 {{- with .Values.extraContainers }}
 {{ tpl . $ | indent 6 }}
 {{- end }}
