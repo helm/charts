@@ -30,7 +30,7 @@ spec:
             - configMap:
                 name: {{ template "minio.fullname" . }}
             - secret:
-                name: {{ template "minio.fullname" . }}
+                name: {{ template "minio.secretName" . }}
       containers:
       - name: minio-mc
         image: "{{ .Values.mcImage.repository }}:{{ .Values.mcImage.tag }}"

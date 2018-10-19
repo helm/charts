@@ -41,3 +41,10 @@ Return the appropriate apiVersion for networkpolicy.
 {{- print "networking.k8s.io/v1" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Generate chart secret name
+*/}}
+{{- define "minio.secretName" -}}
+{{ default (include "minio.fullname" .) .Values.existingSecret }}
+{{- end -}}
