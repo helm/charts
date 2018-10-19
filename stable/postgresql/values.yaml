@@ -62,7 +62,7 @@ usePasswordFile: false
 
 ## Specify content for extra env variables to be passed to the deployment
 ## Default: no additional variables
-## env: 
+## env:
 ##   - name: EXTRA_VAR_1
 ##     value: SomeNewValue
 
