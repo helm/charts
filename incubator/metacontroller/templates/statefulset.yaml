@@ -15,6 +15,9 @@ spec:
     metadata:
       labels:
         app: {{ template "metacontroller.fullname" . }}
+        chart: {{ template "metacontroller.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
     spec:
       {{ if .Values.rbac.create }}
       serviceAccountName: {{ template "metacontroller.fullname" . }}

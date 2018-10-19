@@ -1,5 +1,14 @@
+name: metacontroller
 apiVersion: v1
 appVersion: "0.2"
 description: A Helm chart for Metacontroller
-name: metacontroller
 version: 0.1.0
+home: https://metacontroller.app/
+keywords:
+- CRDs
+- metacontroller
+sources:
+- https://github.com/GoogleCloudPlatform/metacontroller
+maintainers:
+- name: willnewby
+  email: willnewby@gmail.com
