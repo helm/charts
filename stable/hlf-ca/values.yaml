@@ -51,7 +51,8 @@ caName: org1-ca
 
 ##
 ## Fabric CA Database
-## To setup a database, set the param
+## By default an sqlite3 in-memory database is used
+## To install a 'postgresql' or 'mysql' database, enable and configure the configuration below
 ##################################
 ## 
 db:
@@ -61,14 +62,16 @@ db:
   ssl: disable 
 
 ##
-## PostgreSQL  chart configuration
+## PostgreSQL chart configuration
 ##
 ## https://github.com/helm/charts/tree/master/stable/postgresql
 ##
 postgresql:
   ## Whether to deploy a postgres server to satisfy the Fabric CA database requirements. 
-  # To use an external database set this to false and configure the externalDatabase parameters 
+  # To use an external database set this to false and configure the externalDatabase parameters, specifying the type to 'postgres'
   enabled: false
+  image: "postgres"
+  imageTag: "9.6.2"  
   port: 5432
   postgresDatabase: fabric_ca
   postgresUser: fabric_ca
@@ -80,10 +83,18 @@ postgresql:
 ##
 mysql:
   ## Whether to deploy a mysql server to satisfy the Fabric CA database requirements. 
-  # To use an external database set this to false and configure the externalDatabase parameters  
+  # To use an external database set this to false and configure the externalDatabase parameters, specifying the type to 'mysql' 
   enabled: false
+  image: "mysql"
+  imageTag: "5.7.14"
   mysqlDatabase: fabric_ca
   mysqlUser: fabric_ca
+  # Custom mysql configuration files used to override default mysql settings
+  # because we 
+  configurationFiles:
+    mysql.cnf: |-
+      [mysqld]
+      sql-mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION  
 
 ##
 ## External Database configuration (MySQL or PostgresSQL install outside Kubernetes)
