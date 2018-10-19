@@ -52,7 +52,7 @@ config:
   dc_name: DC1
   rack_name: RAC1
   endpoint_snitch: GossipingPropertyFileSnitch
-  max_heap_size: 4096M
+  max_heap_size: 2048M
   heap_new_size: 512M
   start_rpc: false
   ports:
