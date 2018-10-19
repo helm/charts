@@ -87,6 +87,7 @@ kubeStateMetrics:
 # the external metrics API so you can autoscale HPAs based on datadog
 # metrics
 clusterAgent:
+  containerName: cluster-agent
   image:
     repository: datadog/cluster-agent
     tag: 0.10.0
@@ -123,9 +124,10 @@ datadog:
   ## Use existing Secret which stores APP key instead of creating a new one
   # appKeyExistingSecret:
 
-  ## dd-agent container name
+  ## Daemonset/Deployment container name
+  ## See clusterAgent.containerName if clusterAgent.enabled = true
   ##
-  name: dd-agent
+  name: datadog
 
   ## Set logging verbosity.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
