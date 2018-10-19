@@ -10,7 +10,7 @@ keywords:
 sources:
 - https://github.com/apache/nifi
 maintainers:
-- name: William Hearn
+- name: sylus
   email: william.hearn@canada.ca
 engine: gotpl
 icon: https://svn.apache.org/repos/asf/nifi/site/trunk/images/niFi-logo-horizontal-scaled.png

@@ -12,8 +12,8 @@ serviceType: LoadBalancer
 ## Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ingress:
-  enabled: true
-  domain: nifi.govcloud.ca
+  enabled: false
+  domain: example.com
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -95,8 +95,8 @@ nifi:
     enabled: true
 
   image:
-    repository: govcloud/docker-nifi
-    pullPolicy: Always
+    repository: apache/nifi
+    pullPolicy: IfNotPresent
     tag: "1.6.0"
 
   # NiFi web settings
@@ -191,11 +191,11 @@ zookeeper:
 
   ## Configure Zookeeper resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  resources:
-    limits:
-      memory: "256Mi"
-    requests:
-      memory: "128Mi"
+  resources: {}
+    # limits:
+    #   memory: "256Mi"
+    # requests:
+    #   memory: "128Mi"
 
   antiAffinity: "soft"
 
@@ -207,7 +207,7 @@ zookeeper:
 
   ## Specify a Zookeeper imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-  imagePullPolicy: "Always"
+  imagePullPolicy: "IfNotPresent"
 
   ## If Zookeeper Chart is disabled a URL and port are required to connect
   url: ""

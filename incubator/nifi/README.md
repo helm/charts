@@ -35,12 +35,12 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Traefik chart and their default values.
+The following tables lists the configurable parameters of the NiFi chart and their default values.
 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
 | `nifi.image.repository`         | NiFi image name                                                      | `apache/nifi`                             |
-| `nifi.image.tag`                | The version of the official Traefik image to use                     | `1.6.0`                                   |
+| `nifi.image.tag`                | The version of the official NiFi    image to use                     | `1.6.0`                                   |
 | `nifi.image.pullPolicy`         | The image pull policy                                                | `Always`                                  |
 | `nifi.replicas`                 | The number of replicas to be assigned                                | `1`                                       |
 | `ingress.domain`                | The domain name                                                      | `nifi.example.com`                        |
