@@ -10,9 +10,10 @@ keywords:
   - database
   - cassandra
 sources:
-  - http://www.scylladb.com
+  - https://www.scylladb.com
   - https://hub.docker.com/r/scylladb/scylla/
   - https://en.wikipedia.org/wiki/Scylla_(database)
+home: https://www.scylladb.com
 maintainers:
   - name: samhain1138
     email: yuval.yaari@gmail.com
