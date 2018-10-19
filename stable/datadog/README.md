@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `image.pullSecrets`         | Image pull secrets                 |  `nil`                                    |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
+| `datadog.name`              | Container name if Deamonset or Deployment | `datadog`                          |
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
 | `datadog.logsEnabled`       | Enable log collection              | `nil`                                     |
 | `datadog.logsConfigContainerCollectAll` | Collect logs from all containers | `nil`                           |
@@ -80,6 +81,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
 | `clusterAgent.enabled`                   | Use the cluster-agent for cluster metrics (Kubernetes 1.10+ only) | `false`                           |
 | `clusterAgent.token`                     | A cluster-internal secret for agent-to-agent communication. Must be 32+ characters a-zA-Z | `Nil` You must provide your own token|
+| `clusterAgent.containerName`             | The container name for the Cluster Agent  | `cluster-agent`                           |
 | `clusterAgent.image.repository`          | The image repository for the cluster-agent | `datadog/cluster-agent`                           |
 | `clusterAgent.image.tag`                 | The image tag to pull              | `0.10.0`                                   |
 | `clusterAgent.image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |

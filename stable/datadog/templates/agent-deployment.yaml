@@ -24,7 +24,7 @@ spec:
 {{ toYaml .Values.clusterAgent.image.pullSecrets | indent 8 }}
       {{- end }}
       containers:
-      - name: {{ .Chart.Name }}
+      - name: {{ .Values.clusterAgent.containerName }}
         image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
         imagePullPolicy: {{ .Values.clusterAgent.image.pullPolicy }}
         resources:
