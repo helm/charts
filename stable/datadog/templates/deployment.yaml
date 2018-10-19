@@ -27,7 +27,7 @@ spec:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
       containers:
-      - name: {{ .Chart.Name }}
+      - name: {{ default .Chart.Name .Values.datadog.name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
