@@ -1,0 +1,7 @@
+# Default values for helmcontroller.
+image:
+  repository: metacontroller/metacontroller
+  tag: 0.2
+
+rbac:
+  create: true

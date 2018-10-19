@@ -1,0 +1,44 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: compositecontrollers.metacontroller.k8s.io
+spec:
+  group: metacontroller.k8s.io
+  version: v1alpha1
+  scope: Cluster
+  names:
+    plural: compositecontrollers
+    singular: compositecontroller
+    kind: CompositeController
+    shortNames:
+    - cc
+    - cctl
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: decoratorcontrollers.metacontroller.k8s.io
+spec:
+  group: metacontroller.k8s.io
+  version: v1alpha1
+  scope: Cluster
+  names:
+    plural: decoratorcontrollers
+    singular: decoratorcontroller
+    kind: DecoratorController
+    shortNames:
+    - dec
+    - decorators
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: controllerrevisions.metacontroller.k8s.io
+spec:
+  group: metacontroller.k8s.io
+  version: v1alpha1
+  scope: Namespaced
+  names:
+    plural: controllerrevisions
+    singular: controllerrevision
+    kind: ControllerRevision
