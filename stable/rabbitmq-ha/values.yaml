@@ -251,6 +251,9 @@ image:
 ## Duration in seconds the pod needs to terminate gracefully
 terminationGracePeriodSeconds: 10
 
+## Kubernetes Cluster Domain
+clusterDomain: cluster.local
+
 service:
   annotations: {}
   clusterIP: None
