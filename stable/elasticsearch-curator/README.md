@@ -1,7 +1,5 @@
 # Elasticsearch Curator Helm Chart
 
-**Note - this chart has been deprecated and [moved to stable](../../stable/elasticsearch-curator)**.
-
 This directory contains a Kubernetes chart to deploy the [Elasticsearch Curator](https://github.com/elastic/curator).
 
 ## Prerequisites Details
@@ -22,7 +20,7 @@ This chart will do the following:
 To install the chart, use the following:
 
 ```console
-$ helm install incubator/elasticsearch-curator
+$ helm install stable/elasticsearch-curator
 ```
 
 ## Configuration

@@ -1,0 +1,73 @@
+apiVersion: {{ template "cronjob.apiVersion" . }}
+kind: CronJob
+metadata:
+  name: {{ template "elasticsearch-curator.fullname" . }}
+  labels:
+    app: {{ template "elasticsearch-curator.name" . }}
+    chart: {{ template "elasticsearch-curator.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+{{ toYaml .Values.cronjob.annotations | indent 4 }}
+spec:
+  schedule: "{{ .Values.cronjob.schedule }}"
+  {{- with .Values.cronjob.concurrencyPolicy }}
+  concurrencyPolicy: {{ . }}
+  {{- end }}
+  {{- with .Values.cronjob.failedJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ . }}
+  {{- end }}
+  {{- with .Values.cronjob.successfulJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ . }}
+  {{- end }}
+  jobTemplate:
+    metadata:
+      labels:
+        app: {{ template "elasticsearch-curator.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ template "elasticsearch-curator.name" . }}
+            release: {{ .Release.Name }}
+          annotations:
+{{ toYaml .Values.pod.annotations | indent 12 }}
+        spec:
+          volumes:
+            - name: config-volume
+              configMap:
+                name: {{ template "elasticsearch-curator.fullname" . }}-config
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 12 }}
+{{- end }}
+          restartPolicy: Never
+{{- if .Values.priorityClassName }}
+          priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+          containers:
+            - name: {{ .Chart.Name }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              volumeMounts:
+                - name: config-volume
+                  mountPath: /etc/es-curator
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 16 }}
+{{- end }}
+              command: [ "curator" ]
+              args: [ "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
+              resources:
+{{ toYaml .Values.resources | indent 16 }}
+    {{- with .Values.nodeSelector }}
+          nodeSelector:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+          affinity:
+{{ toYaml . | indent 12 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+          tolerations:
+{{ toYaml . | indent 12 }}
+    {{- end }}
