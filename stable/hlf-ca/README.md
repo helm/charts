@@ -119,7 +119,40 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 
 ## Database
 
-TBD
+The Fabric CA server needs a database to store the users registered. 
+
+By default the chart is configured to use an in-memory `sqlite3` database, but you can also configure the helm chart to install a `PostgreSQL` or a `MySQL` database along the Fabric CA server. 
+
+### PostgreSQL
+
+To install a `postgresql` running in Kubernetes you have to enable and configure the `postgresql` section in `values.yaml` or pass the following parameter:
+
+```
+ helm install stable/hlf-ca --name org1-ca --set postgresql.enabled=true
+```
+
+### MySQL
+
+To install a `mysql` running in Kubernetes you have to enable and configure the `mysql` section in `values.yaml` or pass the following parameter:
+
+```
+ helm install stable/hlf-ca --name org1-ca --set mysql.enabled=true
+```
+
+### External Database
+
+In case you already setup a database (`postgres` or `mysql`), you can enable and configure the `externalDatabase` section in `values.yaml` or pass the following parameters:`
+
+```
+ helm install stable/hlf-ca --name org1-ca \
+   --set externalDatabase.type=mysql \
+   --set externalDatabase.host=myhost \
+   --set externalDatabase.username=myuser \
+   --set externalDatabase.password=mypassword \
+   --set externalDatabase.password=mydatabase
+```
+
+Please consult the [documentation](https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html?highlight=database#configuring-the-database) for mode details. 
 
 ## Persistence
 
