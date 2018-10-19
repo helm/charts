@@ -1,6 +1,6 @@
 # The base hadoop image to use for all components.
 # See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
-image: danisla/hadoop:2.7.3
+image: govcloud/hadoop:hive-2.3.2
 imagePullPolicy: IfNotPresent
 
 # The version of the hadoop libraries being used in the image.
@@ -8,6 +8,18 @@ hadoopVersion: 2.7.3
 
 # Select antiAffinity as either hard or soft, default is soft
 antiAffinity: "soft"
+
+hive:
+  dataNode:
+    pdbMinAvailable: 1
+
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1500m"
 
 hdfs:
   nameNode:
