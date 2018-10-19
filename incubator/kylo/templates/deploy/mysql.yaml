@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kylo.fullname" . }}-mysql
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kylo.fullname" . }}-mysql
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ template "kylo.fullname" . }}-mysql
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.mysql.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+        - name: {{ template "kylo.name" . }}-mysql
+          imagePullPolicy: {{ .Values.mysql.image.pullPolicy | quote }}
+          image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
+          env:
+            - name: MYSQL_DATABASE
+              value: kylo
+            - name: MYSQL_ROOT_PASSWORD
+              value: hadoop
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3306
+          resources: {}
+          volumeMounts:
+            - name: mysqlvol
+              mountPath: /var/lib/mysql
+              subPath: govcloud/kylo/mysql/data
+              readOnly: false
+      restartPolicy: Always
+      volumes:
+        - name: mysqlvol
+          persistentVolumeClaim:
+            claimName: {{ template "kylo.fullname" . }}-mysql

@@ -1,0 +1,28 @@
+{{- if and .Values.activemq.persistence.enabled (not .Values.activemq.persistence.existingClaim) -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+{{- if .Values.activemq.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.activemq.persistence.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "kylo.fullname" . }}-activemq
+  labels:
+    app: {{ template "kylo.name" . }}-activemq
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.activemq.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.activemq.persistence.size | quote }}
+{{- if .Values.activemq.persistence.storageClass }}
+{{- if (eq "-" .Values.activemq.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.activemq.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

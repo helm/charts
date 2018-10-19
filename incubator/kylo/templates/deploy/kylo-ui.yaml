@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kylo.fullname" . }}-kylo-ui
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kylo.fullname" . }}-kylo
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ template "kylo.fullname" . }}-kylo-ui
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.kylo.ui.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+        - name: {{ template "kylo.name" . }}-kylo-ui
+          imagePullPolicy: {{ .Values.kylo.ui.image.pullPolicy | quote }}
+          image: "{{ .Values.kylo.ui.image.repository }}:{{ .Values.kylo.ui.image.tag }}"
+          ports:
+            - containerPort: 8400
+          resources: {}
+          volumeMounts:
+            - mountPath: /opt/kylo/kylo-ui/conf
+              name: kylo-ui-config
+            - mountPath: /var/log/kylo-ui
+              subPath: govcloud/kylo/kylo-ui/log
+              name: kylovol
+      restartPolicy: Always
+      volumes:
+        - name: kylovol
+          persistentVolumeClaim:
+            claimName: {{ template "kylo.fullname" . }}-kylo
+        - name: kylo-ui-config
+          configMap:
+            name: {{ template "kylo.fullname" . }}-kylo-ui

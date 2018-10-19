@@ -1,0 +1,28 @@
+{{- if and .Values.kylo.persistence.enabled (not .Values.kylo.persistence.existingClaim) -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+{{- if .Values.kylo.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.kylo.persistence.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "kylo.fullname" . }}-kylo
+  labels:
+    app: {{ template "kylo.fullname" . }}-kylo
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.kylo.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.kylo.persistence.size | quote }}
+{{- if .Values.kylo.persistence.storageClass }}
+{{- if (eq "-" .Values.kylo.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.kylo.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

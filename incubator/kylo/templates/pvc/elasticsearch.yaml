@@ -1,0 +1,28 @@
+{{- if and .Values.elasticsearch.persistence.enabled (not .Values.elasticsearch.persistence.existingClaim) -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+{{- if .Values.elasticsearch.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.elasticsearch.persistence.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "kylo.fullname" . }}-elasticsearch
+  labels:
+    app: {{ template "kylo.fullname" . }}-elasticsearch
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.elasticsearch.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.elasticsearch.persistence.size | quote }}
+{{- if .Values.elasticsearch.persistence.storageClass }}
+{{- if (eq "-" .Values.elasticsearch.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.elasticsearch.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,110 @@
+{
+	"name" : "metadata-repository",
+	"node-types" : ["metadata-schema.cnd", "users-schema.cnd"],
+	"workspaces" : {
+		"predefined" : ["metadata"],
+		"default" : "default",
+		"allowCreation" : true
+	},
+	"security" : {
+		"anonymous" : {
+			"username" : "<anonymous>",
+			"roles" : ["readonly"],
+			"useOnFailedLogin" : false
+		},
+		"providers" : [
+			{
+				"name" : "Spring Security-Based Provider",
+				"classname" : "com.thinkbiganalytics.metadata.modeshape.security.SpringAuthenticationProvider"
+			},
+			{
+				"name" : "Override Provider",
+				"classname" : "com.thinkbiganalytics.metadata.modeshape.security.OverrideAuthenticationProvider"
+			},
+			{
+				"name" : "DB Admin Provider",
+				"classname" : "com.thinkbiganalytics.metadata.modeshape.security.AdminAuthenticationProvider"
+			}
+		]
+	},
+	"indexProviders": {
+		"local": {
+			"classname": "org.modeshape.jcr.index.local.LocalIndexProvider",
+			"directory": "${modeshape.index.dir}"
+		}
+	},
+	"indexes": {
+		"feedModificationDate": {
+			"kind": "value",
+			"provider": "local",
+			"nodeType": "tba:feed",
+			"columns": "jcr:lastModified(DATE)"
+		},
+		"feedState": {
+			"kind": "value",
+			"provider": "local",
+			"nodeType": "tba:feedData",
+			"columns": "tba:state(NAME)"
+		},
+		"categoryName": {
+			"kind": "value",
+			"provider": "local",
+			"nodeType": "tba:category",
+			"columns": "tba:systemName(STRING)"
+		},
+		"titleIndex": {
+			"kind": "value",
+			"provider": "local",
+			"nodeType": "mix:title",
+			"columns": "jcr:title(STRING)"
+		},
+		"nodesByName": {
+			"kind": "value",
+			"provider": "local",
+			"synchronous": "true",
+			"nodeType": "nt:base",
+			"columns": "jcr:name(NAME)"
+		},
+		"nodesByDepth": {
+			"kind": "value",
+			"provider": "local",
+			"synchronous": "true",
+			"nodeType": "nt:base",
+			"columns": "mode:depth(LONG)"
+		},
+		"nodesByPath": {
+			"kind": "value",
+			"provider": "local",
+			"synchronous": "true",
+			"nodeType": "nt:base",
+			"columns": "jcr:path(PATH)"
+		},
+		"nodeTypes": {
+			"kind": "nodeType",
+			"provider": "local",
+			"nodeType": "nt:base",
+			"columns": "jcr:primaryType(STRING)"
+		}
+	},
+	"storage": {
+		"persistence" : {
+			"type" : "db",
+			"connectionUrl": "${modeshape.datasource.url}",
+			"driver": "${modeshape.datasource.driverClassName}",
+			"username": "${modeshape.datasource.username}",
+			"password": "${modeshape.datasource.password}",
+			"poolSize" : 5,
+			"maximumPoolSize" : 20,
+			"createOnStart" : true,
+			"dropOnExit" : false
+		},
+		"binaryStorage" : {
+			"type" : "file",
+			"directory": "/var/thinkbig/modeshape",
+			"minimumBinarySizeInBytes" : 5000000
+		}
+	},
+	"garbageCollection" : {
+		"initialTime": "17:00"
+	}
+}

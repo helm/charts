@@ -1,0 +1,86 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kylo.fullname" . }}-kylo-services
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kylo.fullname" . }}-kylo
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ template "kylo.fullname" . }}-kylo-services
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.kylo.services.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+        - name: {{ template "kylo.name" . }}-kylo-services
+          imagePullPolicy: {{ .Values.kylo.services.image.pullPolicy | quote }}
+          image: "{{ .Values.kylo.services.image.repository }}:{{ .Values.kylo.services.image.tag }}"
+          ports:
+            - containerPort: 8420
+          resources:
+{{ toYaml .Values.kylo.resources | indent 12 }}
+          volumeMounts:
+            - mountPath: /opt/kylo/kylo-services/conf
+              name: kylo-services-config
+            - mountPath: /var/log/kylo-services
+              subPath: govcloud/kylo/kylo-services/log
+              name: kylovol
+            - name: sparkhome
+              mountPath: /opt/cloudera/parcels/
+              readOnly: true
+            - name: sparkconf
+              mountPath: /etc/spark2/
+              readOnly: true
+            - name: "hive-site"
+              mountPath: /opt/spark/conf/hive-site.xml
+              subPath: "hive-site.xml"
+      restartPolicy: Always
+      volumes:
+        - name: kylovol
+          persistentVolumeClaim:
+            claimName: {{ template "kylo.fullname" . }}-kylo
+        - name: kylo-services-config
+          configMap:
+            name: {{ template "kylo.fullname" . }}-kylo-services
+        - name: hosts
+          hostPath:
+            path: /etc/hosts
+        - name: hadoop
+          hostPath:
+            path: /etc/hadoop
+        - name: sparkhome
+          hostPath:
+            path: /opt/cloudera/parcels/
+        - name: alternatives
+          hostPath:
+            path: /etc/alternatives/
+        - name: sparkconf
+          hostPath:
+            path: /etc/spark2/
+        - name: "hive-site"
+          configMap:
+            name: {{ template "kylo.fullname" . }}-kylo-services
+            items:
+              - key: "hive-site.xml"
+                path: "hive-site.xml"

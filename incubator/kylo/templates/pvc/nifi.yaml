@@ -1,0 +1,28 @@
+{{- if and .Values.nifi.persistence.enabled (not .Values.nifi.persistence.existingClaim) -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+{{- if .Values.nifi.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.nifi.persistence.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "kylo.fullname" . }}-nifi
+  labels:
+    app: {{ template "kylo.fullname" . }}-nifi
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.nifi.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.nifi.persistence.size | quote }}
+{{- if .Values.nifi.persistence.storageClass }}
+{{- if (eq "-" .Values.nifi.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.nifi.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kylo.fullname" . }}-activemq
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kylo.fullname" . }}-activemq
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: {{ template "kylo.fullname" . }}-activemq
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.activemq.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+        - name: {{ template "kylo.name" . }}-activemq
+          imagePullPolicy: {{ .Values.activemq.image.pullPolicy | quote }}
+          image: "{{ .Values.activemq.image.repository }}:{{ .Values.activemq.image.tag }}"
+          ports:
+            - containerPort: 5601
+            - containerPort: 61616
+            - containerPort: 8161
+            - containerPort: 5672
+            - containerPort: 61613
+            - containerPort: 1883
+            - containerPort: 61614
+          resources: {}
+          volumeMounts:
+            - name: kylovol
+              mountPath: /opt/activemq/data
+              subPath: govcloud/kylo/activemq/data
+      restartPolicy: Always
+      volumes:
+        - name: kylovol
+          persistentVolumeClaim:
+            claimName: {{ template "kylo.fullname" . }}-activemq

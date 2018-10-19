@@ -1,0 +1,21 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "kylo.fullname" . }}-kylo-ui
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kylo.fullname" . }}-kylo
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.serviceType }}
+  ports:
+    - port: 8400
+      name: http
+    - name: "8099"
+      port: 8099
+      targetPort: 8099
+  selector:
+    app: {{ template "kylo.fullname" . }}-kylo-ui
+    release: {{ .Release.Name }}

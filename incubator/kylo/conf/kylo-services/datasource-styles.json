@@ -1,0 +1,50 @@
+{
+	"feed": {
+		"shape": "icon",
+		"icon": {
+			"code": "\uf1e1",
+			"color": "#3483BA"
+		},
+		"size": 40
+	},
+	"currentFeed": {
+		"shape": "icon",
+		"icon": {
+			"code": "\uf1e1",
+			"color": "#F08C38",
+			"size": 50
+		},
+		"font": {
+			"size": 18
+		}
+	},
+	"S3Datasource": {
+		"shape": "icon",
+		"icon": {
+			"code": "\uf270",
+			"color": "#607D8B"
+		}
+	},
+	"DirectoryDatasource": {
+		"shape": "icon",
+		"icon": {
+			"code": "\uf15b",
+			"color": "#607D8B"
+		}
+	},
+	"HiveDatasource": {
+		"shape": "icon",
+		"icon": {
+			"code": "\uf0ce",
+			"color": "#97C2FC"
+		}
+	},
+	"DatabaseDatasource": {
+		"shape": "icon",
+		"color": "#E4682C",
+		"icon": {
+			"code": "\uf0ce",
+			"color": "#E4682C"
+		}
+	}
+}
