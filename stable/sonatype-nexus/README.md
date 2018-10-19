@@ -74,6 +74,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.serviceType`                         | Service for Nexus                   | `NodePort`                              |
 | `nexus.securityContext`                     | Security Context (for enabling official image use `fsGroup: 2000`) | `{}`     |
 | `nexus.labels`                              | Service labels                      | `{}`                                    |
+| `nexus.podAnnotations`                      | Pod Annotations                     | `{}`
 | `nexus.livenessProbe.initialDelaySeconds`   | LivenessProbe initial delay         | 30                                      |
 | `nexus.livenessProbe.periodSeconds`         | Seconds between polls               | 30                                      |
 | `nexus.livenessProbe.failureThreshold`      | Number of attempts before failure   | 6                                       |
