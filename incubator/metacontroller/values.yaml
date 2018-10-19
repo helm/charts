@@ -5,3 +5,7 @@ image:
 
 rbac:
   create: true
+
+serviceAccount:
+  create: true
+  name: metacontroller

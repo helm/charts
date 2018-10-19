@@ -1,11 +1,4 @@
 {{ if .Values.rbac.create }}
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: {{ template "metacontroller.fullname" . }}
-  namespace: {{ .Release.Namespace }}
----
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
@@ -17,6 +10,13 @@ rules:
   - "*"
   verbs:
   - "*"
+{{ if .Values.serviceAccount.create }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "metacontroller.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
@@ -24,10 +24,11 @@ metadata:
   name: {{ template "metacontroller.fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ template "metacontroller.fullname" . }}
+  name: {{ template "metacontroller.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: {{ template "metacontroller.fullname" . }}
   apiGroup: rbac.authorization.k8s.io
+{{ end }}
 {{ end }}
