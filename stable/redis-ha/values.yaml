@@ -27,32 +27,43 @@ redis:
     rdbcompression: "yes"
     rdbchecksum: "yes"
 
-  resources:
-    requests:
+  ## Custom redis.conf files used to override default settings. If this file is
+  ## specified then the redis.config above will be ignored.
+  # customConfig: |-
+      # Define configuration here
 
-      memory: 200Mi
-      cpu: 100m
-    limits:
-      memory: 700Mi
+  resources: {}
+  #  requests:
+  #    memory: 200Mi
+  #    cpu: 100m
+  #  limits:
+  #    memory: 700Mi
 
 ## Sentinel specific configuration options
 sentinel:
   port: 26379
   quorum: 2
   config:
-    ## Additional sentinel conf options can be added below
-    ## For all available options see http://download.redis.io/redis-stable/sentinel.conf
+    ## Additional sentinel conf options can be added below. Only options that
+    ## are expressed in the format simialar to 'sentinel xxx mymaster xxx' will
+    ## be properly templated.
+    ## For available options see http://download.redis.io/redis-stable/sentinel.conf
     down-after-milliseconds: 10000
     ## Failover timeout value in milliseconds
     failover-timeout: 180000
     parallel-syncs: 5
 
-  resources:
-    requests:
-      memory: 200Mi
-      cpu: 100m
-    limits:
-      memory: 200Mi
+  ## Custom sentinel.conf files used to override default settings. If this file is
+  ## specified then the sentinel.config above will be ignored.
+  # customConfig: |-
+      # Define configuration here
+
+  resources: {}
+  #  requests:
+  #    memory: 200Mi
+  #    cpu: 100m
+  #  limits:
+  #    memory: 200Mi
 
 securityContext:
   runAsUser: 1000
@@ -63,10 +74,26 @@ securityContext:
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-podAntiAffinity: soft
+affinity: |
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app: {{ template "redis-ha.name" . }}
+            release: {{ .Release.Name }}
+        topologyKey: kubernetes.io/hostname
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app:  {{ template "redis-ha.name" . }}
+              release: {{ .Release.Name }}
+          topologyKey: failure-domain.beta.kubernetes.io/zone
 
-podDisruptionBudget:
-  maxUnavailable: 1
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 1
 
 # redisPassword:
 auth: false

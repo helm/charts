@@ -9,6 +9,9 @@ metadata:
     app: {{ template "redis-ha.fullname" . }}
 data:
   redis.conf: |
+{{- if .Values.redis.customConfig }}
+{{ .Values.redis.customConfig | indent 4 }}
+{{- else }}
     dir "/data"
     {{- range $key, $value := .Values.redis.config }}
     {{ $key }} {{ $value }}
@@ -17,8 +20,12 @@ data:
     requirepass replace-default-auth
     masterauth replace-default-auth
 {{- end }}
+{{- end }}
 
   sentinel.conf: |
+{{- if .Values.sentinel.customConfig }}
+{{ .Values.sentinel.customConfig | indent 4 }}
+{{- else }}
     dir "/data"
     {{- $root := . -}}
     {{- range $key, $value := .Values.sentinel.config }}
@@ -26,6 +33,7 @@ data:
     {{- end }}
 {{- if .Values.auth }}
     sentinel auth-pass {{ .Values.redis.masterGroupName }} replace-default-auth
+{{- end }}
 {{- end }}
 
   init.bash: |
@@ -38,10 +46,12 @@ data:
         echo "Updating sentinel config"
         sed -i "1s/^/sentinel monitor {{ .Values.redis.masterGroupName }} $1 {{ .Values.redis.port }} {{ .Values.sentinel.quorum }} \n/" $SENTINEL_CONF
     }
+
     function redis_update(){
         echo "Updating redis config"
         echo "slaveof $1 {{ .Values.redis.port }}" >> $REDIS_CONF
     }
+
     function setup_defaults(){
         echo "Setting up defaults"
         if [[ "$HOSTNAME" == "{{ template "redis-ha.fullname" . }}-server-0" ]]; then
@@ -55,6 +65,7 @@ data:
             redis_update "{{ template "redis-ha.fullname" . }}-server-0.{{ template "redis-ha.fullname" . }}"
         fi
     }
+
     function find_master(){
         echo "Attempting to find master"
         if [[ ! `redis-cli -h $MASTER{{ if .Values.auth }} -a $AUTH{{ end }} ping` ]]; then
@@ -78,6 +89,7 @@ data:
             redis_update $MASTER
         fi
     }
+
     mkdir -p /data/conf/
     echo "Initializing config.."
 

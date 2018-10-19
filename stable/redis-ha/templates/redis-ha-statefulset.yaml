@@ -33,29 +33,10 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
-      {{- if eq .Values.podAntiAffinity "hard" }}
+    {{- with .Values.affinity }}
       affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels:
-                app: {{ template "redis-ha.name" . }}
-                release: {{ .Release.Name }}
-                component: server
-            topologyKey: kubernetes.io/hostname
-      {{- else if eq .Values.podAntiAffinity "soft" }}
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            podAffinityTerm:
-              labelSelector:
-                matchLabels:
-                  app: {{ template "redis-ha.name" . }}
-                  release: {{ .Release.Name }}
-                  component: server
-              topologyKey: kubernetes.io/hostname
-      {{- end }}
+{{ tpl . $ | indent 8 }}
+    {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
       initContainers:
@@ -63,35 +44,35 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-          - bash
+        - bash
         args:
-          - /readonly-config/init.bash
+        - /readonly-config/init.bash
         env:
 {{- if .Values.auth }}
-          - name: AUTH
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "redis-ha.fullname" . }}
-                key: auth
+        - name: AUTH
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis-ha.fullname" . }}
+              key: auth
 {{- end }}
-          - name: POD_IP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         volumeMounts:
-          - name: config
-            mountPath: /readonly-config
-            readOnly: true
-          - name: data
-            mountPath: /data
+        - name: config
+          mountPath: /readonly-config
+          readOnly: true
+        - name: data
+          mountPath: /data
       containers:
       - name: redis
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-          - redis-server
+        - redis-server
         args:
-          - /data/conf/redis.conf
+        - /data/conf/redis.conf
         livenessProbe:
           exec:
             command: ["redis-cli", "ping"]
@@ -105,11 +86,11 @@ spec:
         resources:
 {{ toYaml .Values.redis.resources | indent 10 }}
         ports:
-          - name: redis
-            containerPort: {{ .Values.redis.port }}
+        - name: redis
+          containerPort: {{ .Values.redis.port }}
         volumeMounts:
-          - mountPath: /data
-            name: data
+        - mountPath: /data
+          name: data
       - name: sentinel
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -133,36 +114,36 @@ spec:
           - name: sentinel
             containerPort: {{ .Values.sentinel.port }}
         volumeMounts:
-          - mountPath: /data
-            name: data
+        - mountPath: /data
+          name: data
       volumes:
-        - name: config
-          configMap:
-            name: {{ template "redis-ha.fullname" . }}-configmap
+      - name: config
+        configMap:
+          name: {{ template "redis-ha.fullname" . }}-configmap
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
-    - metadata:
-        name: data
-        annotations:
-        {{- range $key, $value := .Values.persistentVolume.annotations }}
-          {{ $key }}: {{ $value }}
-        {{- end }}
-      spec:
-        accessModes:
-        {{- range .Values.persistentVolume.accessModes }}
-          - {{ . | quote }}
-        {{- end }}
-        resources:
-          requests:
-            storage: {{ .Values.persistentVolume.size | quote }}
-      {{- if .Values.persistentVolume.storageClass }}
-      {{- if (eq "-" .Values.persistentVolume.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+  - metadata:
+      name: data
+      annotations:
+      {{- range $key, $value := .Values.persistentVolume.annotations }}
+        {{ $key }}: {{ $value }}
       {{- end }}
+    spec:
+      accessModes:
+      {{- range .Values.persistentVolume.accessModes }}
+        - {{ . | quote }}
       {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.persistentVolume.size | quote }}
+    {{- if .Values.persistentVolume.storageClass }}
+    {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+    {{- end }}
+    {{- end }}
 {{- else }}
-        - name: data
-          emptyDir: {}
+      - name: data
+        emptyDir: {}
 {{- end }}

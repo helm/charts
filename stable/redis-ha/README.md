@@ -18,7 +18,7 @@ This chart bootstraps a [Redis](https://redis.io) highly available master/slave 
 
 ## Prerequisites
 
-- Kubernetes 1.5+ with Beta APIs enabled
+- Kubernetes 1.8+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Upgrading the Chart
@@ -55,14 +55,20 @@ The following table lists the configurable parameters of the Redis chart and the
 | -------------------------------- | -----------------------------------------------------                                                                        | --------------------------------------------------------- |
 | `image`                          | Redis image                                                                                                                  | `redis`                                                   |
 | `tag`                            | Redis tag                                                                                                                    | `4.0.11-stretch`                                          |
-| `redis.resources`                | CPU/Memory for master/slave nodes resource requests/limits                                                                   | Memory: `200Mi`, CPU: `100m`                              |
-| `sentinel.resources`             | CPU/Memory for sentinel node resource requests/limits                                                                        | Memory: `200Mi`, CPU: `100m`                              |
-| `replicas`                       | Number of redis master/slave pods                                                                                            | 3                                                         |
-| `nodeSelector`                   | Node labels for pod assignment                                                                                               | {}                                                        |
-| `tolerations`                    | Toleration labels for pod assignment                                                                                         | []                                                        |
-| `podAntiAffinity.server`         | Antiaffinity for pod assignment of servers, `hard` or `soft`                                                                 | `soft`                                                    |
+| `replicas`                       | Number of redis master/slave pods                                                                                            | `3`                                                       |
+| `redis.port`                     | Port to access the redis service                                                                                             | `6379`                                                    |
+| `redis.masterGroupName`          | Redis convention for naming the cluster group                                                                                | `mymaster`                                                |
 | `redis.config`                   | Any valid redis config options in this section will be applied to each server (see below)                                    | see values.yaml                                           |
-| `sentinel.config`                | Any valid sentinel config options in this section will be applied to each sentinel (see below)                               | see values.yaml                                           |
+| `redis.customConfig`             | Allows for custom redis.conf files to be applied. If this is used then `redis.config` is ignored                             | ``                                                        |
+| `redis.resources`                | CPU/Memory for master/slave nodes resource requests/limits                                                                   | `{}`                                                      |
+| `sentinel.port`                  | Port to access the sentinel service                                                                                          | `26379`                                                   |
+| `sentinel.quorum`                | Minimum number of servers necessary to maintain quorum                                                                       | `2`                                                       |
+| `sentinel.config`                | Valid sentinel config options in this section will be applied as config options to each sentinel (see below)                 | see values.yaml                                           |
+| `sentinel.customConfig`          | Allows for custom sentinel.conf files to be applied. If this is used then `sentinel.config` is ignored                       | ``                                                        |
+| `sentinel.resources`             | CPU/Memory for sentinel node resource requests/limits                                                                        | `{}`                                                      |
+| `nodeSelector`                   | Node labels for pod assignment                                                                                               | `{}`                                                      |
+| `tolerations`                    | Toleration labels for pod assignment                                                                                         | `[]`                                                      |
+| `podAntiAffinity.server`         | Antiaffinity for pod assignment of servers, `hard` or `soft`                                                                 | `Hard node and soft zone anti-affinity`                   |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -86,7 +92,7 @@ $ helm install -f values.yaml stable/redis-ha
 
 ## Custom Redis and Sentinel config options
 
-This chart allow for any valid redis or sentinel config option to be passed as a key value pair through the `values.yaml` file.
+This chart allows for most redis or sentinel config options to be passed as a key value pair through the `values.yaml` under `redis.config` and `sentinel.config`. See links below for all available options.
 
 [Example redis.conf](http://download.redis.io/redis-stable/redis.conf)
 [Example sentinel.conf](http://download.redis.io/redis-stable/sentinel.conf)
@@ -96,3 +102,12 @@ For example `repl-timeout 60` would be added to the `redis.config` section of th
 ```yml
     repl-timeout: "60"
 ```
+
+Sentinel options supported must be in the the `sentinel <option> <master-group-name> <value>` format. For example, `sentinel down-after-milliseconds 30000` would be added to the `sentinel.config` section of the `values.yaml` as:
+
+```yml
+    down-after-milliseconds: 30000
+```
+
+If more control is needed from either the redis or sentinel config then an entire config can be defined under `redis.customConfig` or `sentinel.customConfig`. Please note that these values will override any configuration options under their respective section. For example, if you define `sentinel.customConfig` then the `sentinel.config` is ignored.
+
