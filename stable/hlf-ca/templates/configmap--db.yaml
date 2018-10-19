@@ -26,7 +26,12 @@ data:
   # External Database
   DB_TYPE: {{ .Values.externalDatabase.type | quote }}
   DB_HOST: {{ .Values.externalDatabase.host | quote }}
-  DB_PORT: {{ .Values.externalDatabase.port | quote }}
+  {{- if eq .Values.externalDatabase.type "mysql" }}
+  DB_PORT: {{ .Values.externalDatabase.port | default "3306" | quote }}
+  {{- end }}
+  {{- if eq .Values.externalDatabase.type "postgres" }}
+  DB_PORT: {{ .Values.externalDatabase.port | default "5432" | quote }}
+  {{- end }}
   DB_USERNAME: {{ .Values.externalDatabase.username | quote }}
   DB_DATABASE: {{ .Values.externalDatabase.database  | quote }}
   {{- end }}
