@@ -19,6 +19,9 @@ spec:
         release: {{ .Release.Name }}
     spec:
       hostNetwork: {{ .Values.statefulset.hostNetwork }}
+      {{- if .Values.statefulset.hostNetwork }}
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
       terminationGracePeriodSeconds: 120
       containers:
       - name: {{ template "scylladb.fullname" . }}
