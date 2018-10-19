@@ -14,6 +14,6 @@ sources:
   - https://hub.docker.com/r/scylladb/scylla/
   - https://en.wikipedia.org/wiki/Scylla_(database)
 maintainers:
-  - name: gnumoreno
-    email: moreno@scylladb.com
-    url: https://github.com/gnumoreno
+  - name: samhain1138
+    email: yuval.yaari@gmail.com
+    url: https://github.com/samhain1138
