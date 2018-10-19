@@ -10,7 +10,7 @@ keywords:
 sources:
   - https://github.com/Teradata/kylo
 maintainers:
-- name: William Hearn
+- name: sylus
   email: william.hearn@canada.ca
 engine: gotpl
 icon: https://kylo.readthedocs.io/en/v0.9.0/_images/kylo-logo-orange.png

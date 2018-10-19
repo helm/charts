@@ -56,7 +56,7 @@ ldap:
 activemq:
   image:
     repository: govcloud/docker-kylo
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     tag: "v0.9.1-activemq"
 
   nodeSelector: {}
@@ -126,7 +126,7 @@ elasticsearch:
 
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  resources: {}
+  # resources: {}
 
 ## Kylo configuration
 kylo:
@@ -195,13 +195,13 @@ kylo:
 
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  resources:
-    requests:
-      memory: "2048Mi"
-      cpu: "1500m"
-    limits:
-      memory: "4096Mi"
-      cpu: "2500m"
+  # resources:
+  #   requests:
+  #     memory: "2048Mi"
+  #     cpu: "1500m"
+  #   limits:
+  #     memory: "4096Mi"
+  #     cpu: "2500m"
 
 ## MySQL configuration
 mysql:
@@ -345,39 +345,13 @@ nifi:
 
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  resources:
-    requests:
-      memory: "2048Mi"
-      cpu: "2000m"
-    limits:
-      memory: "4096Mi"
-      cpu: "3000m"
-
-## Configure resource requests and limits
-## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
-
-## Node labels for pod assignment
-## Ref: https://kubernetes.io/docs/user-guide/node-selection/
-nodeSelector: {}
-
-## Tolerations for pod assignment
-## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-tolerations: []
-
-# Affinity for pod assignment
-# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-affinity: {}
+  # resources:
+  #   requests:
+  #     memory: "2048Mi"
+  #     cpu: "2000m"
+  #   limits:
+  #     memory: "4096Mi"
+  #    cpu: "3000m"
 
 ################################################################################
 ## Zookeeper
@@ -393,11 +367,11 @@ zookeeper:
 
   ## Configure Zookeeper resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  resources:
-    requests:
-      memory: "128Mi"
-    limits:
-      memory: "256Mi"
+  # resources:
+  #   requests:
+  #     memory: "128Mi"
+  #   limits:
+  #     memory: "256Mi"
 
   nodeSelector: {}
 
@@ -411,7 +385,7 @@ zookeeper:
 
   ## Specify a Zookeeper imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-  imagePullPolicy: "Always"
+  imagePullPolicy: "IfNotPresent"
 
   ## If Zookeeper Chart is disabled a URL and port are required to connect
   url: ""
