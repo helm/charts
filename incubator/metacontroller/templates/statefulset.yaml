@@ -16,7 +16,9 @@ spec:
       labels:
         app: {{ template "metacontroller.fullname" . }}
     spec:
+      {{ if .Values.rbac.create }}
       serviceAccountName: {{ template "metacontroller.fullname" . }}
+      {{ end }}
       containers:
       - name: {{ template "metacontroller.fullname" . }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag}}
