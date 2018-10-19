@@ -2,6 +2,12 @@ image:
   repository: sorintlab/stolon
   tag: v0.12.0-pg10
   pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 # used by create-cluster-job when store.backend is etcd
 etcdImage:

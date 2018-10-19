@@ -26,6 +26,12 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+  {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+  {{- end }}
+{{- end }}
 {{- if .Values.proxy.priorityClassName }}
       priorityClassName: "{{ .Values.proxy.priorityClassName }}"
 {{- end }}
