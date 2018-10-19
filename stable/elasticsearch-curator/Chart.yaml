@@ -9,7 +9,7 @@ keywords:
 - elasticsearch
 - elasticsearch-curator
 sources:
-- https://github.com/kubernetes/charts/incubator/elasticsearch-curator
+- https://github.com/kubernetes/charts/elasticsearch-curator
 - https://github.com/pires/docker-elasticsearch-curator
 maintainers:
   - name: tmestdagh

@@ -6,7 +6,7 @@ This directory contains a Kubernetes chart to deploy the [Elasticsearch Curator]
 
 * Elasticsearch
 
-* The `elasticsearch-curator` cron job requires [K8s CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) support: 
+* The `elasticsearch-curator` cron job requires [K8s CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) support:
     > You need a working Kubernetes cluster at version >= 1.8 (for CronJob). For previous versions of cluster (< 1.8) you need to explicitly enable `batch/v2alpha1` API by passing `--runtime-config=batch/v2alpha1=true` to the API server ([see Turn on or off an API version for your cluster for more](https://kubernetes.io/docs/admin/cluster-management/#turn-on-or-off-an-api-version-for-your-cluster)).
 
 ## Chart Details
@@ -20,7 +20,7 @@ This chart will do the following:
 To install the chart, use the following:
 
 ```console
-$ helm install incubator/elasticsearch-curator
+$ helm install stable/elasticsearch-curator
 ```
 
 ## Configuration
