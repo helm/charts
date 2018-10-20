@@ -15,17 +15,17 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: "{{ .Values.pod.repository }}:{{ .Values.pod.tag }}"
+        imagePullPolicy: {{ .Values.pod.pullPolicy }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
-        {{- if .Values.command }}
-        command: .Values.command
+        {{- if .Values.pod.command }}
+        command: .Values.pod.command
         {{- end }}
-        {{- if .Values.args }}
-        args: {{ toYaml .Values.args }} 
+        {{- if .Values.pod.args }}
+        args: {{ toYaml .Values.pod.args }} 
         {{- end }}
-        {{- if .Values.appEnv }}
+        {{- if .Values.pod.env }}
         env:
-{{ toYaml .Values.appEnv | indent 8 }}
+{{ toYaml .Values.pod.env | indent 8 }}
         {{- end }}

@@ -5,8 +5,8 @@ any-app is meant to provide base yaml templates for the installation of any cont
 ```console
 $ helm install incubator/any-app \
   --set ingress.host=foo.app.com \
-  --set image.repository=slick/fooapp \
-  --set image.tag=v1 \
+  --set pod.repository=slick/fooapp \
+  --set pod.tag=v1 \
   --name slick-app-v1
 ```
 
@@ -21,11 +21,11 @@ The following table lists the configurable parameters of the any-app chart and t
 
 Parameter | Description | Default
 --- | --- | ---
-`image.repository` | the repository where your apps container is located | None
-`image.tag` | the tag of the image you wish to use | None
-`command` | command to run as container starts 'ENTRYPOINT' | None
-`args` | args for the startup command | None
-`appEnv` | environment variables to inject into container | None 
+`pod.repository` | the repository where your apps container is located | None
+`pod.tag` | the tag of the image you wish to use | None
+`pod.command` | command to run as container starts 'ENTRYPOINT' | None
+`pod.args` | args for the startup command | None
+`pod.env` | environment variables to inject into container | None 
+`pod.replicaCount` | number of pods to deploy | 1 
 `ingress.host` | the hostname to use on the ingress | None
 `ingress.enabled` | add an ingress for your app to be externally accessible | true
-`replicaCount` | number of pods to deploy | 1 

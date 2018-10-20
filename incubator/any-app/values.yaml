@@ -1,6 +1,11 @@
-replicaCount: 1
-image:
+pod:
+  replicaCount: 1
   pullPolicy: IfNotPresent
+# env:
+# - name: DEMO_GREETING
+#   value: "Hello from the environment"
+# - name: DEMO_FAREWELL
+#   value: "Such a sweet sorrow"
 service:
   type: ClusterIP
   externalPort: 80
@@ -15,8 +20,3 @@ resources:
 ingress:
   enabled: true 
 
-# appEnv:
-# - name: DEMO_GREETING
-#   value: "Hello from the environment"
-# - name: DEMO_FAREWELL
-#   value: "Such a sweet sorrow"
