@@ -95,29 +95,26 @@ securityContext:
 
 ## Additional pod labels
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
-#podLabels: {}
+# podLabels: {}
 
 ## Configure node selector. Edit code below for adding selector to pods
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
 # selector:
   # nodeSelector:
     # cloud.google.com/gke-nodepool: pool-db
-#selector:
-#  nodeSelector:
-#    node-role.kubernetes.io/node: "true"
+# selector:
+#   nodeSelector:
+#     node-role.kubernetes.io/node: "true"
 
 ## Affinity for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-#affinity:
-#  podAntiAffinity:
-#    requiredDuringSchedulingIgnoredDuringExecution:
-#    - labelSelector:
-#        matchExpressions:
-#        - key: app
-#          operator: In
-#          values:
+# affinity:
+#   podAntiAffinity:
+#     requiredDuringSchedulingIgnoredDuringExecution:
+#     - labelSelector:
+#         matchExpressions:
+#         - key: app
+#           operator: In
+#           values:
 #          - elassandra
-#      topologyKey: "kubernetes.io/hostname"
-
-
-
+#       topologyKey: "kubernetes.io/hostname"
