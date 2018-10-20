@@ -2,3 +2,9 @@ apiVersion: v1
 description: A Helm chart for Any Containerized App
 name: any-app
 version: v0.0.1
+appVersion: v0.0.1
+home: github.com/xchapter7x
+maintainers: # (optional)
+  - name: John Calabrese 
+    email: xchapter7x@gmail.com 
+    url: github.com/xchapter7x 
