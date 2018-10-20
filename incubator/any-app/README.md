@@ -13,7 +13,7 @@ This chart allows one to setup an application on kubernetes, complete with ingre
 
 ## Configuration
 
-The following table lists the configurable parameters of the kibana chart and their default values.
+The following table lists the configurable parameters of the any-app chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
