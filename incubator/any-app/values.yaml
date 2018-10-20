@@ -1,0 +1,22 @@
+replicaCount: 1
+image:
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  externalPort: 80
+  internalPort: 8080
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+ingress:
+  enabled: true 
+
+# appEnv:
+# - name: DEMO_GREETING
+#   value: "Hello from the environment"
+# - name: DEMO_FAREWELL
+#   value: "Such a sweet sorrow"
