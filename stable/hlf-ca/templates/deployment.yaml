@@ -49,7 +49,6 @@ spec:
         - name: ca
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          # TODO: Add liveness and readiness probes (for health checks)
           command:
             - sh
             - -c
@@ -135,6 +134,14 @@ spec:
             - name: ca-port
               containerPort: 7054
               protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /cainfo
+              port: 7054
+          readinessProbe:
+            httpGet:
+              path: /cainfo
+              port: 7054             
           volumeMounts:
             - name: data
               mountPath: /var/hyperledger
