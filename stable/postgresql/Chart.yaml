@@ -13,6 +13,6 @@ sources:
 - https://github.com/kubernetes/charts
 - https://github.com/docker-library/postgres
 maintainers:
-  - name: Karthikeyan Govindaraj
+  - name: gkarthiks
     email: github.gkarthiks@gmail.com
 engine: gotpl
