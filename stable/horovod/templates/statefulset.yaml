@@ -12,7 +12,6 @@ spec:
   selector:
     matchLabels:
       app: {{ template "horovod.name" . }}
-      chart: {{ template "horovod.chart" . }}
       release: {{ .Release.Name }}
       heritage: {{ .Release.Service }}
       role: worker
@@ -28,6 +27,11 @@ spec:
         heritage: {{ .Release.Service }}
         role: worker
     spec:
+      selector:
+        matchLabels:
+          app: {{ template "horovod.name" . }}
+          release: {{ .Release.Name }}
+          role: worker
       {{- if .Values.useHostNetwork }}
       hostNetwork: {{ .Values.useHostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
@@ -74,7 +78,7 @@ spec:
         - name: USESECRETS
           value: "{{ .Values.ssh.useSecrets }}"
        {{- end }}
-       {{- if .Values.master.env }}            
+       {{- if .Values.master.env }}
        {{- range $key, $value := .Values.master.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
@@ -97,7 +101,7 @@ spec:
 {{- if .Values.volumeMounts }}
 {{ toYaml .Values.volumeMounts | indent 8 }}
 {{- end }}
-        command: 
+        command:
         - /horovod/generated/run.sh
 {{- if .Values.ssh.useSecrets }}
         readinessProbe:
