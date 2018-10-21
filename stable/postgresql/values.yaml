@@ -1,3 +1,15 @@
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+  # Specifies whether a PodSecurityPolicy should be created
+  pspEnabled: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
 ## postgres image repository
 image: "postgres"
 ## postgres image version
@@ -86,7 +98,7 @@ persistence:
   # annotations: {}
 
 metrics:
-  enabled: false
+  enabled: true
   image: wrouesnel/postgres_exporter
   imageTag: v0.4.6
   imagePullPolicy: IfNotPresent

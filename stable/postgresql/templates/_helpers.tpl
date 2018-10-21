@@ -48,3 +48,14 @@ Generate chart secret name
 {{- define "postgresql.secretName" -}}
 {{ default (include "postgresql.fullname" .) .Values.existingSecret }}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "postgresql.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "postgresql.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}

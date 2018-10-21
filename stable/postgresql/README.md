@@ -45,6 +45,10 @@ The following table lists the configurable parameters of the PostgreSQL chart an
 
 | Parameter                  | Description                                     | Default                                                    |
 | -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
+| `rbac.create`              | Specifies whether RBAC resources should be created | `true`                                                  |
+| `rbac.pspEnabled`          | Specifies whether a PodSecurityPolicy should be created | `true`                                             |
+| `serviceAccount.create`    | Specifies whether a ServiceAccount should be created | `true`                                                |
+| `serviceAccount.name`      | The name to use, if not set and create is true, a name is generated using the fullname template | `nil`      |
 | `image`                    | `postgres` image repository                     | `postgres`                                                 |
 | `imageTag`                 | `postgres` image tag                            | `9.6.2`                                                    |
 | `imagePullPolicy`          | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
