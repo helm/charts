@@ -126,7 +126,6 @@ proxy:
   secret:
     clientId: 'randomSecret3'
     clientSecret: 'randomSecret4'
-    codeSecret: 'randomSecret5'
     cookieSecret: 'randomSecret6'
 
 google:

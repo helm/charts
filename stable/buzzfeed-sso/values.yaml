@@ -41,7 +41,6 @@ proxy:
   secret: {}
     # clientId: ''
     # clientSecret: ''
-    # codeSecret: ''
     # cookieSecret: ''
 
 provider: {}
