@@ -22,7 +22,7 @@ To install the chart with the release name `my-release`, please follow direction
 
 ```bash
 $ helm install --name my-release \
-    --set logdna.key=LOGDNA_INGESTION_KEY stable/logdna-agent
+    --set logdna.key=LOGDNA_INGESTION_KEY,logdna.autoupdate=1 stable/logdna-agent
 ```
 
 You should see logs in https://app.logdna.com in a few seconds.
@@ -30,7 +30,7 @@ You should see logs in https://app.logdna.com in a few seconds.
 ### Tags support:
 ```bash
 $ helm install --name my-release \
-    --set logdna.key=LOGDNA_INGESTION_KEY,logdna.tags=production,workers stable/logdna-agent
+    --set logdna.key=LOGDNA_INGESTION_KEY,logdna.tags=production,logdna.autoupdate=1 stable/logdna-agent
 ```
 
 ## Uninstalling the Chart
@@ -51,7 +51,8 @@ Parameter | Description | Default
 --- | --- | ---
 `logdna.key` | LogDNA Ingestion Key (Required) | None
 `logdna.tags` | Optional tags such as `production` | None
-`image.pullPolicy` | Image pull policy | `Always`
+`logdna.autoupdate` | Optionally turn on autoupdate by setting to 1 (auto sets image.pullPolicy to always) | `0`
+`image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.tag` | Image tag | `latest`
 `resources.limits.memory` | Memory resource limits | 500Mi                                      |
 `tolerations` | List of node taints to tolerate | `[]`
@@ -60,7 +61,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-    --set logdna.key=LOGDNA_INGESTION_KEY,logdna.tags=production,workers stable/logdna-agent
+    --set logdna.key=LOGDNA_INGESTION_KEY,logdna.tags=production,logdna.autoupdate=1 stable/logdna-agent
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,

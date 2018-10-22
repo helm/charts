@@ -18,7 +18,11 @@ spec:
       containers:
       - name: {{ template "logdna.name" . }}
         image: "{{.Values.image.name}}:{{.Values.image.tag}}"
+{{- if eq .Values.logdna.autoupdate "1" }}
+        imagePullPolicy: "always"
+{{- else }}
         imagePullPolicy: "{{.Values.image.pullPolicy}}"
+{{- end }}
         env:
           - name: LOGDNA_AGENT_KEY
             valueFrom:
@@ -30,6 +34,10 @@ spec:
 {{- if .Values.logdna.tags }}
           - name: LOGDNA_TAGS
             value: {{ .Values.logdna.tags }}
+{{- end }}
+{{- if .Values.logdna.autoupdate }}
+          - name: LOGDNA_AUTOUPDATE
+            value: {{ .Values.logdna.autoupdate }}
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}

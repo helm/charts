@@ -1,7 +1,7 @@
 image:
   name: logdna/logdna-agent
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 logdna:
   ## Please follow directions from https://app.logdna.com/pages/add-source
@@ -10,11 +10,14 @@ logdna:
   # key:
 
   ## Optional settings
+  autoupdate: 0
   # tags:
 
   name: logdna-agent
 
 resources:
+  requests:
+    cpu: 20m
   limits:
     memory: 500Mi
 
