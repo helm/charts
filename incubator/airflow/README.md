@@ -89,6 +89,14 @@ airflow:
     HTTPS_PROXY: http://proxy.mycompany.com:1234
 ```
 
+If you are using a private image for your dags (see [Embedded Dags](#embedded-dags)) 
+or for use with the KubernetesPodOperator (available in version 1.10.0), then add
+an image pull secret to the airflow config:
+```yaml
+airflow:
+  image:
+    pullSecret: my-docker-repo-secret
+```
 
 ### Worker Statefulset
 
@@ -97,6 +105,42 @@ It is used to freeze their DNS using a Kubernetes Headless Service, and allow th
 requests the logs from each workers individually.
 This requires to expose a port (8793) and ensure the pod DNS is accessible to the web server pod,
 which is why StatefulSet is for.
+
+#### Worker secrets
+
+You can add kubernetes secrets which will be mounted as volumes on the worker nodes
+at `secretsDir/<secret name>`.
+```yaml
+airflow:
+  secretsDir: /var/airflow/secrets
+  secrets:
+    - redshift-user
+    - redshift-password
+    - elasticsearch-user
+    - elasticsearch-password
+```
+
+With the above configuration, you could read the `redshift-user` password
+from within a dag or other function using:
+```python
+import os
+from pathlib import Path
+
+def get_secret(secret_name):
+    secrets_dir = Path('/var/airflow/secrets')
+    secret_path = secrets_dir / secret_name
+    assert secret_path.exists(), f'could not find {secret_name} at {secret_path}'
+    secret_data = secret_path.read_text().strip()
+    return secret_data
+
+redshift_user = get_secret('redshift-user')
+```
+
+To create a secret, you can use:
+```bash
+$ kubectl create secret generic redshift-user --from-file=redshift-user=~/secrets/redshift-user.txt
+```
+Where `redshift-user.txt` contains the user secret as a single text string.
 
 ### Local binaries
 
@@ -156,57 +200,60 @@ Example of procedure:
 
 The following table lists the configurable parameters of the Airflow chart and their default values.
 
-| Parameter                                  | Description                                             | Default                                                    |
-| ------------------------------------------ | ------------------------------------------------------- | ---------------------------------------------------------- |
-| `airflow.fernet_key`                       | Ferney key (see `values.yaml` for example)              | (auto generated)                                           |
-| `airflow.service.type`                     | services type                                           | `ClusterIP`                                                |
-| `airflow.init_retry_loop`                  | max number of retries during container init             |                                                            |
-| `airflow.image.repository`                 | Airflow docker image                                    | `puckel/docker-airflow`                                    |
-| `airflow.image.tag`                        | Airflow docker tag                                      | `1.9.0-5`                                                  |
-| `airflow.image.pull_policy`                | Image pull policy                                       | `IfNotPresent`                                             |
-| `airflow.scheduler_num_runs`               | -1 to loop indefinitively, 1 to restart after each exec |                                                            |
-| `airflow.web_replicas`                     | how many replicas for web server                        | `1`                                                        |
-| `airflow.config`                           | custom airflow configuration env variables              | `{}`                                                       |
-| `airflow.pod_disruption_budget`            | control pod disruption budget                           | `{'maxUnavailable': 1}`                                    |
-| `workers.serviceAccountName`               | worker service account                                  | `default`                                                  |
-| `workers.replicas`                         | number of workers pods to launch                        | `1`                                                        |
-| `workers.resources`                        | custom resource configuration for worker pod            | `{}`                                                       |
-| `workers.celery.instances`                 | number of parallel celery tasks per worker              | `1`                                                        |
-| `workers.pod.annotations`                  | annotations for the worker pods                         | `{}`                                                       |
-| `ingres.enabled`                           | enable ingress                                          | `false`                                                    |
-| `ingres.web.host`                          | hostname for the webserver ui                           | ""                                                         |
-| `ingres.web.path`                          | path of the werbserver ui (read `values.yaml`)          | ``                                                         |
-| `ingres.web.annotations`                   | annotations for the web ui ingress                      | `{}`                                                       |
-| `ingres.web.tls.enabled`                   | enables TLS termination at the ingress                  | `false`                                                    |
-| `ingres.web.tls.secretName`                | name of the secret containing the TLS certificate & key | ``                                                         |
-| `ingres.flower.host`                       | hostname for the flower ui                              | ""                                                         |
-| `ingres.flower.path`                       | path of the flower ui (read `values.yaml`)              | ``                                                         |
-| `ingres.flower.liveness_path`              | path to the liveness probe (read `values.yaml`)         | `/`                                                        |
-| `ingres.flower.annotations`                | annotations for the web ui ingress                      | `{}`                                                       |
-| `ingres.flower.tls.enabled`                | enables TLS termination at the ingress                  | `false`                                                    |
-| `ingres.flower.tls.secretName`             | name of the secret containing the TLS certificate & key | ``                                                         |
-| `persistance.enabled`                      | enable persistance storage for DAGs                     | `false`                                                    |
-| `persistance.existingClaim`                | if using an existing claim, specify the name here       | `nil`                                                      |
-| `persistance.storageClass`                 | Persistent Volume Storage Class                         | (undefined)                                                |
-| `persistance.accessMode`                   | PVC access mode                                         | `ReadWriteOnce`                                            |
-| `persistance.size`                         | Persistant storage size request                         | `1Gi`                                                      |
-| `dags.donot_pickle`                        | should the scheduler disable DAG pickling               | `false`                                                    |
-| `dags.path`                                | mount path for persistent volume                        | `/usr/local/airflow/dags`                                  |
-| `dags.init_container.enabled`              | Fetch the source code when the pods starts              | `false`                                                    |
-| `dags.init_container.install_requirements` | auto install requirements.txt deps                      | `true`                                                     |
-| `dags.git.url`                             | url to clone the git repository                         | nil                                                        |
-| `dags.git.ref`                             | branch name, tag or sha1 to reset to                    | `master`                                                   |
-| `postgres.enabled`                         | create a postgres server                                | `true`                                                     |
-| `postgres.uri`                             | full URL to custom postgres setup                       | (undefined)                                                |
-| `postgres.postgresUser`                    | PostgreSQL User                                         | `postgres`                                                 |
-| `postgres.postgresPassword`                | PostgreSQL Password                                     | `airflow`                                                  |
-| `postgres.postgresDatabase`                | PostgreSQL Database name                                | `airflow`                                                  |
-| `postgres.persistence.enabled`             | Enable Postgres PVC                                     | `true`                                                     |
-| `postgres.persistance.storageClass`        | Persistant class                                        | (undefined)                                                |
-| `postgres.persistance.accessMode`          | Access mode                                             | `ReadWriteOnce`                                            |
-| `redis.enabled`                            | Create a Redis cluster                                  | `true`                                                     |
-| `redis.password`                           | Redis password                                          | `airflow`                                                  |
-| `redis.master.persistence.enabled`         | Enable Redis PVC                                        | `false`                                                    |
-| `redis.cluster.enabled`                    | enable master-slave cluster                             | `false`                                                    |
+| Parameter                                | Description                                             | Default                   |
+|------------------------------------------|---------------------------------------------------------|---------------------------|
+| `airflow.fernetKey`                      | Ferney key (see `values.yaml` for example)              | (auto generated)          |
+| `airflow.service.type`                   | services type                                           | `ClusterIP`               |
+| `airflow.initRetryLoop`                  | max number of retries during container init             |                           |
+| `airflow.image.repository`               | Airflow docker image                                    | `puckel/docker-airflow`   |
+| `airflow.image.tag`                      | Airflow docker tag                                      | `1.9.0-5`                 |
+| `airflow.image.pullPolicy`               | Image pull policy                                       | `IfNotPresent`            |
+| `airflow.image.pullSecret`               | Image pull secret                                       |                           |
+| `airflow.schedulerNumRuns`               | -1 to loop indefinitively, 1 to restart after each exec |                           |
+| `airflow.webReplicas`                    | how many replicas for web server                        | `1`                       |
+| `airflow.config`                         | custom airflow configuration env variables              | `{}`                      |
+| `airflow.podDisruptionBudget`            | control pod disruption budget                           | `{'maxUnavailable': 1}`   |
+| `workers.serviceAccountName`             | worker service account                                  | `default`                 |
+| `workers.replicas`                       | number of workers pods to launch                        | `1`                       |
+| `workers.resources`                      | custom resource configuration for worker pod            | `{}`                      |
+| `workers.celery.instances`               | number of parallel celery tasks per worker              | `1`                       |
+| `workers.pod.annotations`                | annotations for the worker pods                         | `{}`                      |
+| `workers.secretsDir`                     | directory in which to mount secrets on worker nodes     | /var/airflow/secrets      |
+| `workers.secrets`                        | secrets to mount as volumes on worker nodes             | []                        |
+| `ingress.enabled`                        | enable ingress                                          | `false`                   |
+| `ingress.web.host`                       | hostname for the webserver ui                           | ""                        |
+| `ingress.web.path`                       | path of the werbserver ui (read `values.yaml`)          | ``                        |
+| `ingress.web.annotations`                | annotations for the web ui ingress                      | `{}`                      |
+| `ingress.web.tls.enabled`                | enables TLS termination at the ingress                  | `false`                   |
+| `ingress.web.tls.secretName`             | name of the secret containing the TLS certificate & key | ``                        |
+| `ingress.flower.host`                    | hostname for the flower ui                              | ""                        |
+| `ingress.flower.path`                    | path of the flower ui (read `values.yaml`)              | ``                        |
+| `ingress.flower.livenessPath`            | path to the liveness probe (read `values.yaml`)         | `/`                       |
+| `ingress.flower.annotations`             | annotations for the web ui ingress                      | `{}`                      |
+| `ingress.flower.tls.enabled`             | enables TLS termination at the ingress                  | `false`                   |
+| `ingress.flower.tls.secretName`          | name of the secret containing the TLS certificate & key | ``                        |
+| `persistance.enabled`                    | enable persistance storage for DAGs                     | `false`                   |
+| `persistance.existingClaim`              | if using an existing claim, specify the name here       | `nil`                     |
+| `persistance.storageClass`               | Persistent Volume Storage Class                         | (undefined)               |
+| `persistance.accessMode`                 | PVC access mode                                         | `ReadWriteOnce`           |
+| `persistance.size`                       | Persistant storage size request                         | `1Gi`                     |
+| `dags.doNotPickle`                       | should the scheduler disable DAG pickling               | `false`                   |
+| `dags.path`                              | mount path for persistent volume                        | `/usr/local/airflow/dags` |
+| `dags.initContainer.enabled`             | Fetch the source code when the pods starts              | `false`                   |
+| `dags.initContainer.installRequirements` | auto install requirements.txt deps                      | `true`                    |
+| `dags.git.url`                           | url to clone the git repository                         | nil                       |
+| `dags.git.ref`                           | branch name, tag or sha1 to reset to                    | `master`                  |
+| `postgres.enabled`                       | create a postgres server                                | `true`                    |
+| `postgres.uri`                           | full URL to custom postgres setup                       | (undefined)               |
+| `postgres.postgresUser`                  | PostgreSQL User                                         | `postgres`                |
+| `postgres.postgresPassword`              | PostgreSQL Password                                     | `airflow`                 |
+| `postgres.postgresDatabase`              | PostgreSQL Database name                                | `airflow`                 |
+| `postgres.persistence.enabled`           | Enable Postgres PVC                                     | `true`                    |
+| `postgres.persistance.storageClass`      | Persistant class                                        | (undefined)               |
+| `postgres.persistance.accessMode`        | Access mode                                             | `ReadWriteOnce`           |
+| `redis.enabled`                          | Create a Redis cluster                                  | `true`                    |
+| `redis.password`                         | Redis password                                          | `airflow`                 |
+| `redis.master.persistence.enabled`       | Enable Redis PVC                                        | `false`                   |
+| `redis.cluster.enabled`                  | enable master-slave cluster                             | `false`                   |
 
 Full and up-to-date documentation can be found in the comments of the `values.yaml` file.

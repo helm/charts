@@ -26,7 +26,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-airflow.yaml") . | sha256sum }}
         configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
         {{ range $key, $value := .Values.workers.pod.annotations }}
         {{ $key }}: {{ $value | quote }}
@@ -35,10 +35,14 @@ spec:
         app: {{ template "airflow.name" . }}-worker
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.airflow.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.airflow.image.pullSecret }}
+      {{- end }}
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       serviceAccountName: {{ .Values.workers.serviceAccountName }}
-      {{- if .Values.dags.init_container.enabled }}
+      {{- if .Values.dags.initContainer.enabled }}
       initContainers:
         - name: git-clone
           image: alpine/git # Any image with git will do
@@ -56,11 +60,11 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}-worker
-          imagePullPolicy: {{ .Values.airflow.image.pull_policy }}
+          imagePullPolicy: {{ .Values.airflow.image.pullPolicy }}
           image: "{{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}"
           envFrom:
-          - configMapRef:
-              name: "{{ template "airflow.fullname" . }}-env"
+            - configMapRef:
+                name: "{{ template "airflow.fullname" . }}-env"
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -78,14 +82,17 @@ spec:
                   name: {{ template "airflow.fullname" . }}
                   key: redisPassword
           volumeMounts:
-          {{- range .Values.airflow.secrets }}
+          {{- $secretsDir := .Values.workers.secretsDir -}}
+          {{- range .Values.workers.secrets }}
             - name: {{ . }}-volume
-              mountPath: /var/airflow/secrets/{{ . }}
+              readOnly: true
+              mountPath: {{ $secretsDir }}/{{ . }}
+              subPath: {{ . }}
           {{- end }}
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
-          {{- else if .Values.dags.init_container.enabled }}
+          {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
             - name: scripts
@@ -94,7 +101,7 @@ spec:
           args:
             - "bash"
             - "-c"
-          {{- if and ( .Values.dags.init_container.enabled ) ( .Values.dags.init_container.install_requirements ) }}
+          {{- if and ( .Values.dags.initContainer.enabled ) ( .Values.dags.init_container.installRequirements ) }}
             - >
               echo 'waiting 60s...' &&
               sleep 60 &&
@@ -120,7 +127,7 @@ spec:
           resources:
 {{ toYaml .Values.workers.resources | indent 12 }}
       volumes:
-        {{- range .Values.airflow.secrets }}
+        {{- range .Values.workers.secrets }}
         - name: {{ . }}-volume
           secret:
             secretName: {{ . }}
@@ -132,7 +139,7 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
-        {{- if .Values.dags.init_container.enabled }}
+        {{- if .Values.dags.initContainer.enabled }}
         - name: scripts
           configMap:
             name: {{ template "airflow.fullname" . }}-scripts

@@ -6,15 +6,15 @@
 airflow:
   ##
   ## You will need to define your frenet key:
-  ## Generate fernet_key with:
+  ## Generate fernetKey with:
   ##    python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
-  ## fernet_key: ABCDABCDABCDABCDABCDABCDABCDABCDABCDABCD
-  fernet_key: ""
+  ## fernetKey: ABCDABCDABCDABCDABCDABCDABCDABCDABCDABCD
+  fernetKey: ""
   service:
     type: ClusterIP
   ##
   ## set the max number of retries during container initialization
-  init_retry_loop:
+  initRetryLoop:
   ##
   ## base image for webserver/scheduler/workers
   ## Note: If you want to use airflow HEAD (2.0dev), use the following image:
@@ -33,9 +33,12 @@ airflow:
     ##
     ## Image pull policy
     ## values: Always or IfNotPresent
-    pull_policy: IfNotPresent
+    pullPolicy: IfNotPresent
+    ##
+    ## image pull secret for private images
+    pullSecret:
   ##
-  ## Set scheduler_num_runs to control how the schduler behaves:
+  ## Set schedulerNumRuns to control how the schduler behaves:
   ##   -1 will let him looping indefinitively but it will never update the DAG
   ##   1 will have the scheduler quit after each refresh, but kubernetes will restart it.
   ##
@@ -46,19 +49,19 @@ airflow:
   ##
   ## If set to a value != -1, you will see your scheduler regularly restart. This is its normal
   ## behavior under these conditions.
-  scheduler_num_runs: "-1"
+  schedulerNumRuns: "-1"
   ##
-  ## Set scheduler_do_pickle to toggle whether to have the scheduler
+  ## Set schedulerDoPickle to toggle whether to have the scheduler
   ## attempt to pickle the DAG object to send over to the workers,
   ## instead of letting workers run their version of the code.
   ## See the Airflow documentation for the --do_pickle argument: https://airflow.apache.org/cli.html#scheduler
-  scheduler_do_pickle: true
+  schedulerDoPickle: true
   ##
   ## how many replicas for web server
   ## For the moment, we recommend to leave this value to 1, since the webserver instance performs
   ## the 'initdb' operation, starting more replicas will cause all the web containers to execute
   ## it, which may cause unwanted issues on the database.
-  web_replicas: 1
+  webReplicas: 1
   ##
   ## Custom airflow configuration environment variables
   ## Use this to override any airflow setting settings defining environment variables in the
@@ -70,11 +73,8 @@ airflow:
   ##     HTTP_PROXY: "http://proxy.mycompany.com:123"
   config: {}
   ##
-  ## Secrets which will be mounted at /var/airflow/secrets/<secret name>
-  secrets: []
-  ##
   ## Configure pod disruption budget for the scheduler
-  pod_disruption_budget:
+  podDisruptionBudget:
     maxUnavailable: 1
 
 ##
@@ -107,6 +107,13 @@ workers:
     ##
     ## number of parallel celery tasks per worker
     instances: 1
+  ##
+  ## Directory in which to mount secrets on worker nodes.
+  secretsDir: /var/airflow/secrets
+  ##
+  ## Secrets which will be mounted as a file at `secretsDir/<secret name>`.
+  ## Each secret should single text value. You can create secrets using
+  secrets: []
 
 
 ##

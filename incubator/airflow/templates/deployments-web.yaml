@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.airflow.web_replicas }}
+  replicas: {{ .Values.airflow.webReplicas }}
   minReadySeconds: 120
   strategy:
     # Smooth rolling update of the Web UI
@@ -23,14 +23,18 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-airflow.yaml") . | sha256sum }}
         configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
       labels:
         app: {{ template "airflow.name" . }}-web
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.airflow.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.airflow.image.pullSecret }}
+      {{- end }}
       restartPolicy: Always
-      {{- if .Values.dags.init_container.enabled }}
+      {{- if .Values.dags.initContainer.enabled }}
       initContainers:
         - name: git-clone
           image: alpine/git # Any image with git will do
@@ -49,7 +53,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-web
           image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
-          imagePullPolicy: {{ .Values.airflow.image.pull_policy}}
+          imagePullPolicy: {{ .Values.airflow.image.pullPolicy}}
           ports:
             - name: web
               containerPort: 8080
@@ -77,7 +81,7 @@ spec:
           {{- if .Values.persistence.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
-          {{- else if .Values.dags.init_container.enabled }}
+          {{- else if .Values.dags.initContainer.enabled }}
             - name: dags-data
               mountPath: {{ .Values.dags.path }}
             - name: scripts
@@ -86,7 +90,7 @@ spec:
           args:
             - "bash"
             - "-c"
-          {{- if and ( .Values.dags.init_container.enabled ) ( .Values.dags.init_container.install_requirements ) }}
+          {{- if and ( .Values.dags.initContainer.enabled ) ( .Values.dags.initContainer.installRequirements ) }}
             - >
               echo 'waiting 60s...' &&
               sleep 60 &&
@@ -123,7 +127,7 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
-        {{- if .Values.dags.init_container.enabled }}
+        {{- if .Values.dags.initContainer.enabled }}
         - name: scripts
           configMap:
             name: {{ template "airflow.fullname" . }}-scripts

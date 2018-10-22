@@ -17,10 +17,10 @@ data:
   # Configure puckel's docker-airflow entrypoint
   # 1.9.0-2
   EXECUTOR: "Celery"
-  FERNET_KEY: "{{ .Values.airflow.fernet_key }}"
+  FERNET_KEY: "{{ .Values.airflow.fernetKey }}"
   DO_WAIT_INITDB: "false"
   ## Custom Airflow settings
-  AIRFLOW__CORE__DONOT_PICKLE: "{{ .Values.dags.donot_pickle }}"
+  AIRFLOW__CORE__DONOT_PICKLE: "{{ .Values.dags.doNotPickle }}"
   AIRFLOW__CELERY__FLOWER_URL_PREFIX: "{{ .Values.ingress.flower.path }}"
   AIRFLOW__CELERY__WORKER_CONCURRENCY: "{{ .Values.workers.celery.instances }}"
   AIRFLOW__CORE__DAGS_FOLDER: "{{ .Values.dags.path }}"
@@ -34,40 +34,3 @@ data:
   {{- range $setting, $option := .Values.airflow.config }}
   {{ $setting }}: "{{ $option }}"
   {{- end }}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "airflow.fullname" . }}-git-clone
-data:
-  git-clone.sh: |
-    #!/bin/sh -e
-    REPO=$1
-    REF=$2
-    DIR=$3
-    # Init Containers will re-run on Pod restart. Remove the directory's contents
-    # and reprovision when this happens.
-    if [ -d "$DIR" ]; then
-        rm -rf $( find $DIR -mindepth 1 )
-    fi
-    git clone $REPO $DIR
-    cd $DIR
-    git reset --hard $REF
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "airflow.fullname" . }}-scripts
-data:
-  install-requirements.sh: |
-    #!/bin/sh -e
-    if [ ! -d {{ .Values.dags.path }} ]; then
-      echo "No folder {{ .Values.dags.path }}"
-      exit 0
-    fi
-    cd {{ .Values.dags.path }}
-    if [ -f requirements.txt ]; then
-      pip install --user -r requirements.txt
-    else
-      exit 0
-    fi
