@@ -11,7 +11,7 @@ home: https://github.com/jacobalberty/unifi-docker
 icon: https://blog.ubnt.com/wp-content/uploads/2016/10/unifi-app-logo.png
 sources:
   - https://github.com/jacobalberty/unifi-docker
-  - https://github.com/kubernetes/charts/stable/unifi
+  - https://github.com/helm/charts/tree/master/stable/unifi
 maintainers:
   - name: billimek
     email: jeff@billimek.com
