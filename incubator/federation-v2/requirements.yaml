@@ -1,0 +1,7 @@
+dependencies:
+- name: clusterregistry
+  version: 0.0.2
+  condition: clusterregistry.enabled
+- name: controllermanager
+  version: 0.0.2
+  condition: controllermanager.enabled

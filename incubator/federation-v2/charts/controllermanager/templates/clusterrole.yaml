@@ -1,0 +1,41 @@
+{{- if not .Values.limitedScope }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.0
+  name: federation-role
+rules:
+- apiGroups:
+  - scheduling.federation.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - multiclusterdns.federation.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - core.federation.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - clusterregistry.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - '*'
+  verbs:
+  - '*'
+{{- end }}

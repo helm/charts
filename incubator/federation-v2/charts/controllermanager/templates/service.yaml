@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    api: federation
+    control-plane: controller-manager
+    kubebuilder.k8s.io: 1.0.3
+  name: federation-controller-manager-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  clusterIP: None
+  selector:
+    api: federation
+    control-plane: controller-manager
+    kubebuilder.k8s.io: 1.0.3

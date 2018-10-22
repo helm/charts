@@ -1,0 +1,12 @@
+apiVersion: v1
+appVersion: 0.0.2
+description: Kubernetes Federation V2 helm chart
+name: federation-v2
+version: 0.0.2
+keywords:
+- federation-v2
+sources:
+- https://github.com/kubernetes-sigs/federation-v2
+maintainers:
+- name: Guang Ya Liu
+  email: gyliu513@gmail.com

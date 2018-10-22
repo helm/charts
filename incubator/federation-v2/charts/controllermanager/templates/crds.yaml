@@ -1,0 +1,1361 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedclusters.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedCluster
+    plural: federatedclusters
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            clusterRef:
+              type: object
+            secretRef:
+              type: object
+          type: object
+        status:
+          properties:
+            conditions:
+              items:
+                properties:
+                  lastProbeTime:
+                    format: date-time
+                    type: string
+                  lastTransitionTime:
+                    format: date-time
+                    type: string
+                  message:
+                    type: string
+                  reason:
+                    type: string
+                  status:
+                    type: string
+                  type:
+                    type: string
+                required:
+                - type
+                - status
+                type: object
+              type: array
+            region:
+              type: string
+            zone:
+              type: string
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedconfigmaps.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedConfigMap
+    plural: federatedconfigmaps
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            template:
+              type: object
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedconfigmapoverrides.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedConfigMapOverride
+    plural: federatedconfigmapoverrides
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            overrides:
+              items:
+                properties:
+                  clusterName:
+                    type: string
+                  data:
+                    type: object
+                type: object
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedconfigmapplacements.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedConfigMapPlacement
+    plural: federatedconfigmapplacements
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            clusterNames:
+              items:
+                type: string
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federateddeployments.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedDeployment
+    plural: federateddeployments
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            template:
+              type: object
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federateddeploymentoverrides.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedDeploymentOverride
+    plural: federateddeploymentoverrides
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            overrides:
+              items:
+                properties:
+                  clusterName:
+                    type: string
+                  replicas:
+                    format: int32
+                    type: integer
+                type: object
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federateddeploymentplacements.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedDeploymentPlacement
+    plural: federateddeploymentplacements
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            clusterNames:
+              items:
+                type: string
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedingresses.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedIngress
+    plural: federatedingresses
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            template:
+              type: object
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedingressplacements.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedIngressPlacement
+    plural: federatedingressplacements
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            clusterNames:
+              items:
+                type: string
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedjobs.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedJob
+    plural: federatedjobs
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            template:
+              type: object
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedjoboverrides.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedJobOverride
+    plural: federatedjoboverrides
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            overrides:
+              items:
+                properties:
+                  clusterName:
+                    type: string
+                  parallelism:
+                    format: int32
+                    type: integer
+                type: object
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedjobplacements.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedJobPlacement
+    plural: federatedjobplacements
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            clusterNames:
+              items:
+                type: string
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatednamespaceplacements.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedNamespacePlacement
+    plural: federatednamespaceplacements
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            clusterNames:
+              items:
+                type: string
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedreplicasets.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedReplicaSet
+    plural: federatedreplicasets
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            template:
+              type: object
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedreplicasetoverrides.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedReplicaSetOverride
+    plural: federatedreplicasetoverrides
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            overrides:
+              items:
+                properties:
+                  clusterName:
+                    type: string
+                  replicas:
+                    format: int32
+                    type: integer
+                type: object
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedreplicasetplacements.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedReplicaSetPlacement
+    plural: federatedreplicasetplacements
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            clusterNames:
+              items:
+                type: string
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedsecrets.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedSecret
+    plural: federatedsecrets
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            template:
+              type: object
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedsecretoverrides.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedSecretOverride
+    plural: federatedsecretoverrides
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            overrides:
+              items:
+                properties:
+                  clusterName:
+                    type: string
+                  data:
+                    type: object
+                type: object
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedsecretplacements.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedSecretPlacement
+    plural: federatedsecretplacements
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            clusterNames:
+              items:
+                type: string
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedservices.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedService
+    plural: federatedservices
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            template:
+              type: object
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedserviceaccounts.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedServiceAccount
+    plural: federatedserviceaccounts
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            template:
+              type: object
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedserviceaccountplacements.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedServiceAccountPlacement
+    plural: federatedserviceaccountplacements
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            clusterNames:
+              items:
+                type: string
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedserviceplacements.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedServicePlacement
+    plural: federatedserviceplacements
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            clusterNames:
+              items:
+                type: string
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: federatedtypeconfigs.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: FederatedTypeConfig
+    plural: federatedtypeconfigs
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            comparisonField:
+              type: string
+            namespaced:
+              type: boolean
+            override:
+              properties:
+                group:
+                  type: string
+                kind:
+                  type: string
+                pluralName:
+                  type: string
+                version:
+                  type: string
+              required:
+              - kind
+              type: object
+            overridePath:
+              items:
+                type: string
+              type: array
+            placement:
+              properties:
+                group:
+                  type: string
+                kind:
+                  type: string
+                pluralName:
+                  type: string
+                version:
+                  type: string
+              required:
+              - kind
+              type: object
+            propagationEnabled:
+              type: boolean
+            target:
+              properties:
+                group:
+                  type: string
+                kind:
+                  type: string
+                pluralName:
+                  type: string
+                version:
+                  type: string
+              required:
+              - kind
+              type: object
+            template:
+              properties:
+                group:
+                  type: string
+                kind:
+                  type: string
+                pluralName:
+                  type: string
+                version:
+                  type: string
+              required:
+              - kind
+              type: object
+          required:
+          - target
+          - namespaced
+          - comparisonField
+          - propagationEnabled
+          - template
+          - placement
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: propagatedversions.core.federation.k8s.io
+spec:
+  group: core.federation.k8s.io
+  names:
+    kind: PropagatedVersion
+    plural: propagatedversions
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          type: object
+        status:
+          properties:
+            clusterVersions:
+              items:
+                properties:
+                  clusterName:
+                    type: string
+                  version:
+                    type: string
+                type: object
+              type: array
+            overridesVersion:
+              type: string
+            templateVersion:
+              type: string
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: dnsendpoints.multiclusterdns.federation.k8s.io
+spec:
+  group: multiclusterdns.federation.k8s.io
+  names:
+    kind: DNSEndpoint
+    plural: dnsendpoints
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            endpoints:
+              items:
+                properties:
+                  dnsName:
+                    type: string
+                  labels:
+                    type: object
+                  recordTTL:
+                    format: int64
+                    type: integer
+                  recordType:
+                    type: string
+                  targets:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              type: array
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: multiclusteringressdnsrecords.multiclusterdns.federation.k8s.io
+spec:
+  group: multiclusterdns.federation.k8s.io
+  names:
+    kind: MultiClusterIngressDNSRecord
+    plural: multiclusteringressdnsrecords
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            hosts:
+              items:
+                type: string
+              type: array
+            recordTTL:
+              format: int64
+              type: integer
+          type: object
+        status:
+          properties:
+            dns:
+              items:
+                properties:
+                  cluster:
+                    type: string
+                  loadBalancer:
+                    type: object
+                type: object
+              type: array
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: multiclusterservicednsrecords.multiclusterdns.federation.k8s.io
+spec:
+  group: multiclusterdns.federation.k8s.io
+  names:
+    kind: MultiClusterServiceDNSRecord
+    plural: multiclusterservicednsrecords
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            dnsSuffix:
+              type: string
+            federationName:
+              type: string
+            recordTTL:
+              format: int64
+              type: integer
+          type: object
+        status:
+          properties:
+            dns:
+              items:
+                properties:
+                  cluster:
+                    type: string
+                  loadBalancer:
+                    type: object
+                  region:
+                    type: string
+                  zone:
+                    type: string
+                type: object
+              type: array
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/hook": crd-install
+  creationTimestamp: null
+  labels:
+    api: federation
+    kubebuilder.k8s.io: 1.0.3
+  name: replicaschedulingpreferences.scheduling.federation.k8s.io
+spec:
+  group: scheduling.federation.k8s.io
+  names:
+    kind: ReplicaSchedulingPreference
+    plural: replicaschedulingpreferences
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            clusters:
+              type: object
+            rebalance:
+              type: boolean
+            targetKind:
+              type: string
+            totalReplicas:
+              format: int32
+              type: integer
+          required:
+          - targetKind
+          - totalReplicas
+          type: object
+        status:
+          type: object
+  version: v1alpha1
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null

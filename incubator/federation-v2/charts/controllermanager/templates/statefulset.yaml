@@ -1,0 +1,65 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  creationTimestamp: null
+  labels:
+    api: federation
+    control-plane: controller-manager
+    kubebuilder.k8s.io: 1.0.3
+  name: federation-controller-manager
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      api: federation
+      control-plane: controller-manager
+      kubebuilder.k8s.io: 1.0.3
+  serviceName: federation-controller-manager-service
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        api: federation
+        control-plane: controller-manager
+        kubebuilder.k8s.io: 1.0.3
+    spec:
+      containers:
+      - args:
+        - --install-crds=false
+{{- if .Values.featureGates }}
+        - --feature-gates={{ .Values.featureGates }}
+{{- end }}
+{{- if .Values.limitedScope }}
+        - --limited-scope={{ .Values.limitedScope }}
+        - --federation-namespace=$(FEDERATION_NAMESPACE)
+        - --registry-namespace=$(CLUSTER_REGISTRY_NAMESPACE)
+{{- else }}
+{{- if .Values.federationNamespace }}
+        - --federation-namespace={{ .Values.federationNamespace }}
+{{- end }}
+{{- if .Values.registryNamespace }}
+        - --registry-namespace={{ .Values.registryNamespace }}
+{{- end }}
+{{- end }}
+        command:
+        - /root/controller-manager
+        image: "{{ .Values.repository }}/{{ .Values.image }}:{{ .Values.tag }}"
+        name: controller-manager
+        resources:
+{{- if .Values.resources }}
+{{ toYaml .Values.resources | indent 12 }}
+{{- end }}
+{{- if .Values.limitedScope }}
+        env:
+        - name: FEDERATION_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CLUSTER_REGISTRY_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+{{- end }}
+      terminationGracePeriodSeconds: 10

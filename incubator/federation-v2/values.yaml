@@ -1,0 +1,40 @@
+# Default values for federation-v2.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## Configuration values for federation v2 controllermanager statefulset.
+## TODO(gyliu513): Add more parameters here like `feature-gates` etc.
+##
+controllermanager:
+  enabled: true
+  replicaCount: 1
+  repository: quay.io/kubernetes-multicluster
+  image: federation-v2
+  tag: v0.0.2
+  pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+  ## Feature gates are a set of key=value pairs that describe alpha or
+  ## experimental features. An administrator can use the --feature-gates
+  ## command line flag on each component to turn a feature on or off.
+  ## Federation V2 now have the following default feature gates:
+  ## PushReconciler=true,SchedulerPreferences=true,CrossClusterServiceDiscovery=true,FederatedIngress=true
+  featureGates:
+  ## The namespace the federation control plane is deployed in. If unset,
+  ## will default to federation-system.
+  federationNamespace:
+  ## The cluster registry namespace. If unset, will default to kube-multicluster-public.
+  registryNamespace:
+  ## Whether the federation namespace will be the only target for federation.
+  ## If unset, will default to false.
+  limitedScope:
+
+## Configuration values for federation v2 clusterregistry.
+##
+clusterregistry:
+  enabled: true

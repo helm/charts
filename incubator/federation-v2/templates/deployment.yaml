@@ -1,0 +1,22 @@
+apiVersion: core.federation.k8s.io/v1alpha1
+kind: FederatedTypeConfig
+metadata:
+  name: deployments.apps
+spec:
+  target:
+    version: v1
+    kind: Deployment
+  namespaced: true
+  comparisonField: Generation
+  propagationEnabled: true
+  template:
+    group: core.federation.k8s.io
+    version: v1alpha1
+    kind: FederatedDeployment
+  placement:
+    kind: FederatedDeploymentPlacement
+  override:
+    kind: FederatedDeploymentOverride
+  overridePath:
+    - spec
+    - replicas

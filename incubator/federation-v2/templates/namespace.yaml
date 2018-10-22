@@ -1,0 +1,18 @@
+apiVersion: core.federation.k8s.io/v1alpha1
+kind: FederatedTypeConfig
+metadata:
+  name: namespaces
+spec:
+  target:
+    version: v1
+    kind: Namespace
+  namespaced: false
+  comparisonField: ResourceVersion
+  propagationEnabled: true
+  template:
+    version: v1
+    kind: Namespace
+  placement:
+    group: core.federation.k8s.io
+    version: v1alpha1
+    kind: FederatedNamespacePlacement

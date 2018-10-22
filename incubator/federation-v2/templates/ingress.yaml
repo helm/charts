@@ -1,0 +1,17 @@
+apiVersion: core.federation.k8s.io/v1alpha1
+kind: FederatedTypeConfig
+metadata:
+  name: ingresses.extensions
+spec:
+  target:
+    version: v1beta1
+    kind: Ingress
+  namespaced: true
+  comparisonField: Generation
+  propagationEnabled: true
+  template:
+    group: core.federation.k8s.io
+    version: v1alpha1
+    kind: FederatedIngress
+  placement:
+    kind: FederatedIngressPlacement
