@@ -47,11 +47,6 @@ spec:
                 secretKeyRef:
                   name: {{ $fullName }}
                   key: proxy-client-secret
-            - name: AUTH_CODE_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $fullName }}
-                  key: proxy-auth-code-secret
             - name: COOKIE_SECRET
               valueFrom:
                 secretKeyRef:
