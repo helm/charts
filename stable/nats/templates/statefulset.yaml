@@ -31,7 +31,7 @@ spec:
         {{- end }}
 {{- if or .Values.podAnnotations .Values.metrics.enabled }}
       annotations:
-{{- if or .Values.podAnnotations }}
+{{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
 {{- if .Values.metrics.podAnnotations }}
