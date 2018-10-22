@@ -77,6 +77,7 @@ Parameter | Description | Default
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `ingress.annotations` | ingress load balancer annotations | `{}`
 `ingress.hosts` | proxied hosts | `[]`
+`ingress.tls` | tls certificates for the proxied hosts | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -18,12 +18,12 @@ spec:
     - hosts:
         - {{ $authDomain }}
       secretName: sso-auth-tls-secret
-  {{- with .Values.ingress }}
+  {{- range .Values.ingress.tls }}
     - hosts:
       {{- range .hosts }}
-        - {{ .domain }}
+        - {{ . }}
       {{- end }}
-      secretName: star-sso-tls-secret
+      secretName: {{ .secretName }}
   {{- end }}
   rules:
     # Upstreams that need SSO authentication

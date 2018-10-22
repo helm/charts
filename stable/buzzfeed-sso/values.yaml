@@ -66,3 +66,7 @@ ingress:
   #    serviceUrl: http://mybackend.mynamespace.svc.cluster.local:9091
   #    domain: mybackend.mydomain.foo
   #    path: /
+  tls: []
+  #  - secretName: mybackend-mydomain-tls
+  #    hosts:
+  #      - mybackend.mydomain.foo
