@@ -8,8 +8,8 @@ metadata:
     chart: {{ template "redis.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
 {{- if .Values.slave.service.annotations }}
+  annotations:
 {{ toYaml .Values.slave.service.annotations | indent 4 }}
 {{- end }}
 spec:
