@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: kuberhealthy
+rules:
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    - namespaces
+    - componentstatuses
+    verbs:
+    - get
+    - list
+    - watch
+  
