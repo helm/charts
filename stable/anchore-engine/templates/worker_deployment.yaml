@@ -27,9 +27,9 @@ spec:
         - name: ANCHORE_ENGINE_SERVICES
           value: anchore-worker
         - name: ANCHORE_DB
-          value: {{ .Values.postgresql.postgresDatabase }}
+          value: {{ index .Values "anchore-db" "postgresDatabase" }}
         - name: ANCHORE_DB_HOST
-          value: {{ template "postgres.fullname" . }}
+          value: {{ template "postgres.anchore-db.fullname" . }}
         - name: ANCHORE_DB_USER
           valueFrom:
             secretKeyRef:

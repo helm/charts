@@ -33,12 +33,11 @@ ingress:
   #      - chart-example.local
 
 # Dependency on Postgresql, configure here
-postgresql:
+anchore-db:
   enabled: true
   postgresUser: anchoreengine
   postgresPassword: anchore-postgres,123
   postgresDatabase: anchore
-
 
   # Use this config if you set enabled=False and want to specify an external (already existing) postres deployment for use.
   # Set this to the host and port. eg. mypostgres.myserver.io:5432
@@ -206,11 +205,8 @@ coreConfig:
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   annotations: {}
-
   nodeSelector: {}
-
   tolerations: []
-
   affinity: {}
 
 # Configuration for the worker pods that perform image analysis
@@ -255,11 +251,8 @@ workerConfig:
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   annotations: {}
-
   nodeSelector: {}
-
   tolerations: []
-
   affinity: {}
 
 enterpriseConfig:
@@ -269,9 +262,8 @@ enterpriseConfig:
   ui:
     enabled: true
     replicaCount: 1
-    config:
-      enableProxy: "false"
-      enableSsl: "false"
+    enableProxy: "false"
+    enableSsl: "false"
 
     image:
       repository: docker.io/anchore/enterprise-ui
@@ -282,13 +274,57 @@ enterpriseConfig:
       type: ClusterIP
       httpPort: 80
 
-    ingress:
-      enabled: false
-      annotations: {}
-        # kubernetes.io/ingress.class: nginx
-        # kubernetes.io/tls-acme: "true"
-      path: /
-      tls: []
-      #  - secretName: chart-example-tls
-      #    hosts:
-      #      - chart-example.local
+    annotations: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+
+  feeds:
+    enabled: true
+    replicaCount: 1
+    # Time delay in seconds between consecutive driver runs for processing data
+    cycle_timer_seconds: 7200
+    # Staging space for holding normalized output from drivers. Persisted using a bind mounted volume defined in docker-compose
+    local_workspace: /workspace
+    # Drivers process data from external sources and store normalized data in local_workspace. Processing large data sets
+    # is a time consuming process for some drivers. To speed it up the container is shipped with pre-loaded data which is used
+    # by default if local_workspace is empty.
+    workspace_preload_disabled: False
+      # Set True to not use pre-loaded data if local_workspace is empty. Drivers will generate normalized data from scratch
+      # To load the workspace from a different location, uncomment and configure workspace_preload_file property to point to the tar.gz file
+    workspace_preload_file: /workspace_preload/data.tar.gz
+    # Configuration section for drivers collecting and processing feed data.
+    # All drivers are enabled by default unless explicitly disabled. npm and gem drivers are explicitly disabled out of the box
+    api_only: False
+    npm_disabled: True
+    gem_disabled: True
+    gem_db_connect: ""
+    centos_disabled: False
+    debian_disabled: False
+    ubuntu_disabled: False
+    ol_disabled: False
+    alpine_disabled: False
+
+    image:
+      repository: docker.io/anchore/enterprise-feed-service
+      tag: v0.2.0
+      pullPolicy: IfNotPresent
+
+    service:
+      type: ClusterIP
+      apiPort: 8448
+
+    annotations: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+
+feeds-db:
+  enabled: true
+  postgresUser: anchoreengine
+  postgresPassword: anchore-postgres,123
+  postgresDatabase: anchore-feeds
+
+  # Use this config if you set enabled=False and want to specify an external (already existing) postres deployment for use.
+  # Set this to the host and port. eg. mypostgres.myserver.io:5432
+  externalEndpoint: Null

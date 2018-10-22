@@ -1,0 +1,87 @@
+{{- if .Values.enterpriseConfig.feeds.enabled -}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "anchore-engine.enterprise-feeds.fullname" . }}"
+  labels:
+    app: "{{ template "fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: "enterprise-feeds"
+data:
+  config.yaml: |
+    # Anchore Feeds Service Configuration File
+
+     # General system-wide configuration options
+     service_dir: "/config"
+     tmp_dir: "/tmp"
+
+     log_level: 'DEBUG'
+     host_id: ${ANCHORE_POD_NAME}
+     internal_ssl_verify: False
+
+     credentials:
+       users:
+         admin:
+           password: ${ANCHORE_ADMIN_PASSWORD}
+           email: {{ .Values.globalConfig.users.admin.email }}
+
+       database:
+         {{- if ( index .Values "feeds-db" "enabled" ) }}
+         db_connect: 'postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@{{ template "postgres.feeds-db.fullname" . }}:5432/{{ index .Values "feeds-db" "postgresDatabase" }}'
+         {{- else }}
+         db_connect: 'postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@{{ .Values.postgresql.externalEndpoint}}/{{ index .Values "feeds-db" "postgresDatabase" }}'
+         {{- end }}
+         db_connect_args:
+           timeout: {{ .Values.globalConfig.dbConfig.timeout }}
+           ssl: {{ .Values.globalConfig.dbConfig.ssl }}
+         db_pool_size: {{ .Values.globalConfig.dbConfig.connectionPoolSize }}
+         db_pool_max_overflow: {{ .Values.globalConfig.dbConfig.connectionPoolSize }}
+
+     services:
+       feeds:
+         enabled: True
+         require_auth: True
+         endpoint_hostname: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
+         listen: '0.0.0.0'
+         port: {{ .Values.enterpriseConfig.feeds.service.apiPort }}
+         # Time delay in seconds between consecutive driver runs for processing data
+         cycle_timer_seconds: {{ .Values.enterpriseConfig.feeds.cycle_timer_seconds }}
+         # Staging space for holding normalized output from drivers.
+         local_workspace: "{{ .Values.enterpriseConfig.feeds.local_workspace }}"
+         # Drivers process data from external sources and store normalized data in local_workspace. Processing large data sets
+         # is a time consuming process for some drivers. To speed it up the container is shipped with pre-loaded data which is used
+         # by default if local_workspace is empty.
+         workspace_preload:
+           # Do not use pre-loaded data if local_workspace is empty. Drivers will generate normalized data from scratch
+           disabled: {{ .Values.enterpriseConfig.feeds.workspace_preload_disabled }}
+           # To load the workspace from a different location, uncomment and configure workspace_preload_file property to point to the tar.gz file
+           workspace_preload_file: "{{ .Values.enterpriseConfig.feeds.workspace_preload_file }}"
+         # If api_only is set to True, the service will not update feed data in the system.
+         # API end points will be functional and serve feed data if any is available.
+         api_only: {{ .Values.enterpriseConfig.feeds.api_only }}
+         drivers:
+           # Configuration section for drivers collecting and processing feed data.
+           # All drivers are enabled by default unless explicitly disabled. npm and gem drivers are explicitly disabled out of the box
+           npm:
+             disabled: {{ .Values.enterpriseConfig.feeds.npm_disabled }}
+           gem:
+             # rubygem data comes packaged as a PostgreSQL dump file. gem driver loads the pg dump and normalizes the data.
+             # To enable gem driver comment the disabled property and uncomment the db_connect property. In addition,
+             # uncomment the anchore-gem-db section in docker-compose.yaml
+             disabled: {{ .Values.enterpriseConfig.feeds.gem_disabled }}
+             db_connect: {{ .Values.enterpriseConfig.feeds.gem_db_connect }}
+           centos:
+             disabled: {{ .Values.enterpriseConfig.feeds.centos_disabled }}
+           debian:
+             disabled: {{ .Values.enterpriseConfig.feeds.debian_disabled }}
+           ubuntu:
+             disabled: {{ .Values.enterpriseConfig.feeds.ubuntu_disabled }}
+           ol:
+             disabled: {{ .Values.enterpriseConfig.feeds.ol_disabled }}
+           alpine:
+             disabled: {{ .Values.enterpriseConfig.feeds.alpine_disabled }}
+
+{{- end -}}

@@ -1,0 +1,24 @@
+{{- if .Values.enterpriseConfig.feeds.enabled -}}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "anchore-engine.enterprise-feeds.fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "enterprise-feeds"
+spec:
+  type: {{ .Values.enterpriseConfig.feeds.service.type }}
+  ports:
+    - name: feeds-api
+      port: {{ .Values.enterpriseConfig.feeds.service.apiPort }}
+      targetPort: {{ .Values.enterpriseConfig.feeds.service.apiPort }}
+      protocol: TCP
+  selector:
+    app: {{ template "fullname" . }}
+    component: "enterprise-feeds"
+
+{{- end -}}

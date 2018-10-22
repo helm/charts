@@ -17,12 +17,12 @@ data:
     engine_uri: '{{ template "fullname" . }}:8228'
 
     # URL of redis
-    redis_url: {{ printf "%s@%s-%s:%s" "redis://:$(REDIS_PASSWORD)" ( include "redis.fullname" . ) "master" "6379" }}
+    redis_url: 'redis://:$(REDIS_PASSWORD)@{{ template "redis.fullname" . }}-master:6379'
 
     # Specifies if SSL is enabled in the web app container
-    enable_ssl: {{ .Values.enterpriseConfig.ui.config.enableSsl }}
+    enable_ssl: {{ .Values.enterpriseConfig.ui.enableSsl }}
 
     # Specifies whether to trust a reverse proxy
-    enable_proxy: {{ .Values.enterpriseConfig.ui.config.enableProxy }}
+    enable_proxy: {{ .Values.enterpriseConfig.ui.enableProxy }}
 
 {{- end -}}

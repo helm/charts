@@ -1,0 +1,111 @@
+{{- if .Values.enterpriseConfig.feeds.enabled -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "anchore-engine.enterprise-feeds.fullname" . }}"
+  labels:
+    app: "{{ template "fullname" . }}"
+    component: "enterprise-feeds"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "fullname" .}}"
+      component: "enterprise-feeds"
+  replicas: {{ .Values.enterpriseConfig.feeds.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: "{{ template "fullname" . }}"
+        component: "enterprise-feeds"
+{{- if .Values.enterpriseConfig.feeds.annotations }}
+      annotations:
+{{ toYaml .Values.enterpriseConfig.feeds.annotations | indent 8 }}
+{{- end }}
+    spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "anchore-engine.enterprise-feeds.fullname" .}}
+        - name: anchore-license
+          secret:
+            secretName: {{ .Values.enterpriseConfig.licenseSecretName }}
+      imagePullSecrets:
+      - name: {{ .Values.enterpriseConfig.imagePullSecretName }}
+      containers:
+      - name: {{ .Chart.Name }}-enterprise-feeds
+        image: "{{ .Values.enterpriseConfig.feeds.image.repository }}:{{ .Values.enterpriseConfig.feeds.image.tag }}"
+        imagePullPolicy: {{ .Values.enterpriseConfig.feeds.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.enterpriseConfig.feeds.service.apiPort }}
+          name: feeds-api
+        env:
+        - name: ANCHORE_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: feedsDbUser
+        - name: ANCHORE_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: feedsDbPassword
+        - name: ANCHORE_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: adminPassword
+        - name: ANCHORE_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: ANCHORE_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: ANCHORE_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config/config.yaml
+          subPath: config.yaml
+        - name: anchore-license
+          mountPath: /config/license.yaml
+          subPath: license.yaml
+        readinessProbe:
+          httpGet:
+            path: /v1/feeds
+            port: feeds-api
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 10
+        livenessProbe:
+          httpGet:
+            path: /v1/feeds
+            port: feeds-api
+          timeoutSeconds: 10
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          failureThreshold: 10
+        resources:
+{{ toYaml .Values.enterpriseConfig.feeds.resources | indent 10 }}
+    {{- if .Values.enterpriseConfig.feeds.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.enterpriseConfig.feeds.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.enterpriseConfig.feeds.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.enterpriseConfig.feeds.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
+{{- end -}}

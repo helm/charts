@@ -67,7 +67,7 @@ While the configuration options of Anchore Engine are extensive, the options pro
   * ingress.enabled=True (may require service.type=NodePort for some K8s installations e.g. GKE)
 
 * Use a LoadBalancer service type:
-  * service.type=LoadBalancer 
+  * service.type=LoadBalancer
 
 
 ### Database
@@ -90,7 +90,7 @@ so you can leverage external and scalable storage systems and keep the postgresq
 The supported archive drivers are:
 
 * S3 - Any AWS s3-api compatible system (e.g. minio, scality, etc)
-* OpenStack Swift 
+* OpenStack Swift
 * Local FS - A local filesystem on the core pod. Does not handle sharding or replication, so generally only for testing.
 * DB - the default postgresql backend
 
@@ -129,7 +129,7 @@ Using Swift:
 The swift configuration is basically a pass-thru to the underlying pythonswiftclient so it can take quite a few different
 options depending on your swift deployment and config. The best way to configure the swift driver is by using a custom values.yaml
 
-The Swift driver supports three authentication methods: 
+The Swift driver supports three authentication methods:
 
 * Keystone V3
 * Keystone V2
@@ -150,7 +150,7 @@ coreConfig:
         os_auth_url: 'foo.example.com:8000/auth/etc'
         container: 'anchorearchive'
         # Optionally
-        create_container: True 
+        create_container: True
     compression:
     ... # Compression config here
 ```
@@ -269,3 +269,10 @@ If customized values, use the local directory for the chart values:
 To launch with more than one worker you can either modify values.yaml or run with:
 
 `helm install --set workerConfig.replicaCount=2 stable/anchore-engine`
+
+ ## Adding Enterprise Components
+
+ The following features are available to Anchore Enterprise customers.
+   * On premises feed service
+   * Graphical User Interface
+   * Role Based Access Control

@@ -1,6 +1,6 @@
 {{- if .Values.enterpriseConfig.ui.enabled -}}
 
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "anchore-engine.enterprise-ui.fullname" . | quote }}
@@ -11,22 +11,53 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: "{{ template "fullname" .}}"
+      component: "enterprise-ui"
   replicas: {{ .Values.enterpriseConfig.ui.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ include "fullname" . | quote }}
+        app: "{{ template "fullname" . }}"
         component: "enterprise-ui"
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
+{{- if .Values.enterpriseConfig.ui.annotations }}
+      annotations:
+{{ toYaml .Values.enterpriseConfig.ui.annotations | indent 8 }}
+{{- end }}
     spec:
+      volumes:
+      - name: ui-config
+        configMap:
+          name: "{{ template "anchore-engine.enterprise-ui.fullname" . }}-configmap"
+      - name: anchore-license
+        secret:
+          secretName: {{ .Values.enterpriseConfig.licenseSecretName }}
       imagePullSecrets:
       - name: {{ .Values.enterpriseConfig.imagePullSecretName }}
       containers:
       - name: {{ .Chart.Name }}-enterprise-ui
         image: {{ .Values.enterpriseConfig.ui.image.repository }}:{{ .Values.enterpriseConfig.ui.image.tag }}
         imagePullPolicy: {{ .Values.enterpriseConfig.ui.image.pullPolicy }}
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis.fullname" . }}
+              key: redis-password
+        - name: ANCHORE_ENGINE_URI
+          value: "{{ template "fullname" . }}:8228"
+        - name: ANCHORE_ENABLE_PROXY
+          value: "{{ .Values.enterpriseConfig.ui.enableProxy }}"
+        - name: ANCHORE_ENABLE_SSL
+          value: "{{ .Values.enterpriseConfig.ui.enableSsl }}"
+        - name: ANCHORE_LICENSE_PATH
+          value: "/config"
+        - name: ANCHORE_REDIS_URL
+          value: "redis://:$(REDIS_PASSWORD)@{{ template "redis.fullname" . }}-master:6379"
         ports:
         - containerPort: 3000
           protocol: TCP
@@ -54,29 +85,19 @@ spec:
           initialDelaySeconds: 60
           periodSeconds: 30
           failureThreshold: 10
-        env:
-        - name: REDIS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "redis.fullname" . }}
-              key: redis-password
-        - name: ANCHORE_ENGINE_URI
-          value: "{{ template "fullname" . }}:8228"
-        - name: ANCHORE_ENABLE_PROXY
-          value: "{{ .Values.enterpriseConfig.ui.config.enableProxy }}"
-        - name: ANCHORE_ENABLE_SSL
-          value: "{{ .Values.enterpriseConfig.ui.config.enableSsl }}"
-        - name: ANCHORE_LICENSE_PATH
-          value: "/config"
-        - name: ANCHORE_REDIS_URL
-          value: {{ printf "%s@%s-%s:%s" "redis://:$(REDIS_PASSWORD)" ( include "redis.fullname" . ) "master" "6379" | quote }}
-
-      volumes:
-      - name: ui-config
-        configMap:
-          name: "{{ template "anchore-engine.enterprise-ui.fullname" . }}-configmap"
-      - name: anchore-license
-        secret:
-          secretName: {{ .Values.enterpriseConfig.licenseSecretName }}
+        resources:
+{{ toYaml .Values.enterpriseConfig.ui.resources | indent 10 }}
+    {{- if .Values.enterpriseConfig.ui.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.enterpriseConfig.ui.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.enterpriseConfig.ui.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.enterpriseConfig.ui.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
 
 {{- end -}}
