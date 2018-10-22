@@ -67,6 +67,21 @@ If you choose to alert from the JSON status page, you can access the status on `
 }
 ```
 
+
+### Helm Variables
+
+It is possible to configure Kuberhealthy's Prometheus integration with Helm variables.  Variable breakdown is below:
+
+```
+prometheus:
+  enabled: true # do we deploy a ServiceMonitor spec?
+  name: "prometheus" # the name of the Prometheus deployment in your environment.
+  enableScraping: true # add the Prometheus scrape annotation to Kuberhealthy pods
+  serviceMonitor: true # use a ServiceMonitor configuration
+  enableAlerting: true # enable default Kuberhealthy alerts configuration
+```
+
+
 For more details, see the [Kuberhealthy web site](https://comcast.github.io/kuberhealthy/).
 
 To report a bug, see the [Kuberhealthy project issues](https://github.com/Comcast/kuberhealthy/issues).
