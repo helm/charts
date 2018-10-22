@@ -26,6 +26,7 @@ spec:
 {{ toYaml .Values.extraLabels | indent 8 }}
 {{- end }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/mongodb-mongodb-configmap.yaml") . | sha256sum }}
       {{- if .Values.metrics.prometheusServiceDiscovery }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.metrics.port | quote }}

@@ -138,6 +138,8 @@ spec:
               mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
               subPath: mongodb.conf
             {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
 {{- if .Values.metrics.enabled }}
         - name: metrics
           image: {{ template "metrics.image" . }}

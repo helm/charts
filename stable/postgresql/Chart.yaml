@@ -1,5 +1,5 @@
 name: postgresql
-version: 0.19.0
+version: 1.0.0
 appVersion: 9.6.2
 description: Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
 keywords:

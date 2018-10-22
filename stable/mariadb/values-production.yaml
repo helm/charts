@@ -1,10 +1,16 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 ## Bitnami MariaDB image
 ## ref: https://hub.docker.com/r/bitnami/mariadb/tags/
 ##
 image:
   registry: docker.io
   repository: bitnami/mariadb
-  tag: 10.1.36-debian-9
+  tag: 10.1.36
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -281,7 +287,7 @@ slave:
     failureThreshold: 3
 
 metrics:
-  enabled: false
+  enabled: true
   image:
     registry: docker.io
     repository: prom/mysqld-exporter
