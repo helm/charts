@@ -111,6 +111,9 @@ rabbitmq:
 ## Kubernetes service type
 serviceType: ClusterIP
 
+# Additional pod labels to apply
+podLabels: {}
+
 ## Pod Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 ##
