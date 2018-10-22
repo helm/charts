@@ -1,38 +1,29 @@
-{{- $elasticsearchFullName :=  include "elasticsearch.fullname" . -}}
-{{- $clientFullname := include "elasticsearch.client.fullname" . -}}
-{{- $image := .Values.image -}}
-{{- $appVersion := .Values.appVersion -}}
-{{- $chartName := .Chart.Name -}}
-{{- $chartVersion := .Chart.Version -}}
-{{- $releaseName := .Release.Name -}}
-{{- $releaseService := .Release.Service -}}
-{{- $cluster := .Values.cluster -}}
 {{- range $data := .Values.dataTypes -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $elasticsearchFullName }}-{{ $data.name }}
+  name: {{ include "elasticsearch.fullname" $ }}-{{ $data.name }}
   labels:
-    app: {{ $elasticsearchFullName }}
-    chart: "{{ $chartName }}-{{ $chartVersion }}"
-    release: "{{ $releaseName }}"
-    heritage: "{{ $releaseService }}"
+    app: {{ include "elasticsearch.fullname" $ }}
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: "{{ $.Release.Name }}"
+    heritage: "{{ $.Release.Service }}"
 data:
   elasticsearch.yml: |-
-    cluster.name: {{ $cluster.name }}
+    cluster.name: {{ $.Values.cluster.name }}
 
     node.data: ${NODE_DATA:true}
     node.master: ${NODE_MASTER:true}
-{{- if hasPrefix "5." $appVersion }}
+{{- if hasPrefix "5." $.Values.appVersion }}
     node.ingest: ${NODE_INGEST:true}
-{{- else if hasPrefix "6." $appVersion }}
+{{- else if hasPrefix "6." $.Values.appVersion }}
     node.ingest: ${NODE_INGEST:true}
 {{- end }}
     node.name: ${HOSTNAME}
 
     network.host: 0.0.0.0
 
-{{- if hasPrefix "2." $appVersion }}
+{{- if hasPrefix "2." $.Values.appVersion }}
     # see https://github.com/kubernetes/kubernetes/issues/3595
     bootstrap.mlockall: ${BOOTSTRAP_MLOCKALL:false}
 
@@ -40,7 +31,7 @@ data:
       zen:
         ping.unicast.hosts: ${DISCOVERY_SERVICE:}
         minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
-{{- else if hasPrefix "5." $appVersion }}
+{{- else if hasPrefix "5." $.Values.appVersion }}
     # see https://github.com/kubernetes/kubernetes/issues/3595
     bootstrap.memory_lock: ${BOOTSTRAP_MEMORY_LOCK:false}
 
@@ -49,14 +40,14 @@ data:
         ping.unicast.hosts: ${DISCOVERY_SERVICE:}
         minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
 
-{{- if $cluster.xpackEnable }}
+{{- if $.Values.cluster.xpackEnable }}
     # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
     xpack.ml.enabled: ${XPACK_ML_ENABLED:false}
     xpack.monitoring.enabled: ${XPACK_MONITORING_ENABLED:false}
     xpack.security.enabled: ${XPACK_SECURITY_ENABLED:false}
     xpack.watcher.enabled: ${XPACK_WATCHER_ENABLED:false}
 {{- end }}
-{{- else if hasPrefix "6." $appVersion }}
+{{- else if hasPrefix "6." $.Values.appVersion }}
     # see https://github.com/kubernetes/kubernetes/issues/3595
     bootstrap.memory_lock: ${BOOTSTRAP_MEMORY_LOCK:false}
 
@@ -65,11 +56,11 @@ data:
         ping.unicast.hosts: ${DISCOVERY_SERVICE:}
         minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
 
-{{- if ($cluster.xpackEnable) and $appVersion gt 6.3  }}
+{{- if ($.Values.cluster.xpackEnable) and $.Values.appVersion gt 6.3  }}
     # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
     # After 6.3 xpack systems changed and are enabled by default and different configs manage them this enables monitoring
     xpack.monitoring.collection.enabled: ${XPACK_MONITORING_ENABLED:false}
-{{- else if $cluster.xpackEnable }}
+{{- else if $.Values.cluster.xpackEnable }}
     # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
     xpack.ml.enabled: ${XPACK_ML_ENABLED:false}
     xpack.monitoring.enabled: ${XPACK_MONITORING_ENABLED:false}
@@ -87,13 +78,13 @@ data:
     gateway.recover_after_time: ${RECOVER_AFTER_TIME:5m}
     gateway.recover_after_master_nodes: ${RECOVER_AFTER_MASTER_NODES:2}
     gateway.recover_after_data_nodes: ${RECOVER_AFTER_DATA_NODES:1}
-{{- with $cluster.config }}
+{{- with $.Values.cluster.config }}
 {{ toYaml . | indent 4 }}
 {{- end }}
 {{- with $data.config }}
 {{ toYaml . | indent 4 }}
 {{- end }}
-{{- if hasPrefix "2." $image.tag }}
+{{- if hasPrefix "2." $.Values.image.tag }}
   logging.yml: |-
     # you can override this using by setting a system property, for example -Des.logger.level=DEBUG
     es.logger.level: INFO
@@ -109,7 +100,7 @@ data:
         layout:
           type: consolePattern
           conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
-{{- else if hasPrefix "5." $image.tag }}
+{{- else if hasPrefix "5." $.Values.image.tag }}
   log4j2.properties: |-
     status = error
     appender.console.type = Console
@@ -120,7 +111,7 @@ data:
     rootLogger.appenderRef.console.ref = console
     logger.searchguard.name = com.floragunn
     logger.searchguard.level = info
-{{- else if hasPrefix "6." $image.tag }}
+{{- else if hasPrefix "6." $.Values.image.tag }}
   log4j2.properties: |-
     status = error
     appender.console.type = Console
@@ -146,7 +137,7 @@ data:
 
     while true ; do
       echo -e "Wait for node ${NODE_NAME} to become empty"
-      SHARDS_ALLOCATION=$(curl -s -XGET '{{ $clientFullname }}:9200/_cat/shards')
+      SHARDS_ALLOCATION=$(curl -s -XGET '{{ include "elasticsearch.client.fullname" $ }}:9200/_cat/shards')
       if ! echo "${SHARDS_ALLOCATION}" | grep -E "${NODE_NAME}"; then
         break
       fi
@@ -156,10 +147,10 @@ data:
   post-start-hook.sh: |-
     #!/bin/bash
     NODE_NAME=${HOSTNAME}
-    CLUSTER_SETTINGS=$(curl -s -XGET "{{ $clientFullname }}:9200/_cluster/settings")
+    CLUSTER_SETTINGS=$(curl -s -XGET "{{ include "elasticsearch.client.fullname" $ }}:9200/_cluster/settings")
     if echo "${CLUSTER_SETTINGS}" | grep -E "${NODE_NAME}"; then
       echo "Activate node ${NODE_NAME}"
-      curl -s -XPUT -H 'Content-Type: application/json' "{{ $clientFullname }}:9200/_cluster/settings" -d "{
+      curl -s -XPUT -H 'Content-Type: application/json' "{{ include "elasticsearch.client.fullname" $ }}:9200/_cluster/settings" -d "{
         \"transient\" :{
             \"cluster.routing.allocation.exclude._name\" : null
         }

@@ -1,35 +1,23 @@
-{{- $image := .Values.image -}}
-{{- $cluster := .Values.cluster -}}
-{{- $elasticsearchName :=  include "elasticsearch.name" . -}}
-{{- $elasticsearchFullName :=  include "elasticsearch.fullname" . -}}
-{{- $chartName := .Chart.Name -}}
-{{- $chartVersion := .Chart.Version -}}
-{{- $releaseName := .Release.Name -}}
-{{- $releaseService := .Release.Service -}}
-{{- $initImageRepository := .Values.initImage.repository }}
-{{- $initImageTag := .Values.initImage.tag }}
-{{- $initImagePullPolicy := .Values.initImage.pullPolicy | quote }}
-{{- $additionalJavaOpts := .Values.cluster.additionalJavaOpts }}
 {{- range $data := .Values.dataTypes -}}
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   labels:
-    app: {{ $elasticsearchName }}
-    chart: {{ $chartName }}-{{ $chartVersion }}
+    app: {{ include "elasticsearch.name" $ }}
+    chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
     component: "{{ $data.name }}"
-    heritage: {{ $releaseService }}
-    release: {{ $releaseName }}
-  name: {{ $elasticsearchFullName }}-{{ $data.name }}
+    heritage: {{ $.Release.Service }}
+    release: {{ $.Release.Name }}
+  name: {{ include "elasticsearch.fullname" $ }}-{{ $data.name }}
 spec:
-  serviceName: {{ $elasticsearchFullName }}-{{ $data.name }}
+  serviceName: {{ include "elasticsearch.fullname" $ }}-{{ $data.name }}
   replicas: {{ $data.replicas }}
   template:
     metadata:
       labels:
-        app: {{ $elasticsearchName }}
+        app: {{ include "elasticsearch.name" $ }}
         component: "{{ $data.name }}"
-        release: {{ $releaseName }}
+        release: {{ $.Release.Name }}
         {{- if $data.podAnnotations }}
       annotations:
 {{ toYaml $data.podAnnotations | indent 8 }}
@@ -47,8 +35,8 @@ spec:
             - topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app: "{{ $elasticsearchName }}"
-                  release: "{{ $releaseName }}"
+                  app: {{ include "elasticsearch.name" $ }}
+                  release: "{{ $.Release.Name }}"
                   component: "{{ $data.name }}"
       {{- else if eq $data.antiAffinity "soft" }}
       affinity:
@@ -59,8 +47,8 @@ spec:
               topologyKey: kubernetes.io/hostname
               labelSelector:
                 matchLabels:
-                  app: "{{ $elasticsearchName }}"
-                  release: "{{ $releaseName }}"
+                  app: {{ include "elasticsearch.name" $ }}
+                  release: "{{ $.Release.Name }}"
                   component: "{{ $data.name }}"
       {{- end }}
 {{- if $data.nodeSelector }}
@@ -75,14 +63,14 @@ spec:
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
       - name: "sysctl"
-        image: "{{ $initImageRepository }}:{{ $initImageTag }}"
-        imagePullPolicy: {{ $initImagePullPolicy }}
+        image: "{{ $.Values.initImage.repository }}:{{ $.Values.initImage.tag }}"
+        imagePullPolicy: {{ $.Values.initImage.pullPolicy | quote }}
         command: ["sysctl", "-w", "vm.max_map_count=262144"]
         securityContext:
           privileged: true
       - name: "chown"
-        image: "{{ $image.repository }}:{{ $image.tag }}"
-        imagePullPolicy: {{ $image.pullPolicy | quote }}
+        image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+        imagePullPolicy: {{ $.Values.image.pullPolicy | quote }}
         command:
         - /bin/bash
         - -c
@@ -97,7 +85,7 @@ spec:
       - name: elasticsearch
         env:
         - name: DISCOVERY_SERVICE
-          value: {{ $elasticsearchFullName }}-discovery
+          value: {{ include "elasticsearch.fullname" $ }}-discovery
         - name: NODE_MASTER
           value: "false"
         - name: PROCESSORS
@@ -105,13 +93,13 @@ spec:
             resourceFieldRef:
               resource: limits.cpu
         - name: ES_JAVA_OPTS
-          value: "-Djava.net.preferIPv4Stack=true -Xms{{ $data.heapSize }} -Xmx{{ $data.heapSize }} {{ $additionalJavaOpts }}"
-        {{- range $key, $value :=  $cluster.env }}
+          value: "-Djava.net.preferIPv4Stack=true -Xms{{ $data.heapSize }} -Xmx{{ $data.heapSize }} {{ $.Values.cluster.additionalJavaOpts }}"
+        {{- range $key, $value :=  $.Values.cluster.env }}
         - name: {{ $key }}
           value: {{ $value | quote }}
         {{- end }}
-        image: "{{ $image.repository }}:{{ $image.tag }}"
-        imagePullPolicy: {{ $image.pullPolicy | quote }}
+        image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+        imagePullPolicy: {{ $.Values.image.pullPolicy | quote }}
         ports:
         - containerPort: 9300
           name: transport
@@ -132,12 +120,12 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config-{{ $data.name }}
           subPath: elasticsearch.yml
-{{- if hasPrefix "2." $image.tag }}
+{{- if hasPrefix "2." $.Values.image.tag }}
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config-{{ $data.name }}
           subPath: logging.yml
 {{- end }}
-{{- if hasPrefix "5." $image.tag }}
+{{- if hasPrefix "5." $.Values.image.tag }}
         - mountPath: /usr/share/elasticsearch/config/log4j2.properties
           name: config-{{ $data.name }}
           subPath: log4j2.properties
@@ -148,7 +136,7 @@ spec:
         - name: config-{{ $data.name }}
           mountPath: /post-start-hook.sh
           subPath: post-start-hook.sh
-{{- if $cluster.keystoreSecret }}
+{{- if $.Values.cluster.keystoreSecret }}
         - name: keystore
           mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
           subPath: elasticsearch.keystore
@@ -162,20 +150,20 @@ spec:
             exec:
               command: ["/bin/bash","/post-start-hook.sh"]
       terminationGracePeriodSeconds: {{ $data.terminationGracePeriodSeconds }}
-{{- if $image.pullSecrets }}
+{{- if $.Values.image.pullSecrets }}
       imagePullSecrets:
-      {{- range $pullSecret := $image.pullSecrets }}
+      {{- range $pullSecret := $.Values.image.pullSecrets }}
         - name: {{ $pullSecret }}
       {{- end }}
 {{- end }}
       volumes:
       - name: config-{{ $data.name }}
         configMap:
-          name: {{ $elasticsearchFullName }}-{{ $data.name }}
-{{- if $cluster.keystoreSecret }}
+          name: {{ include "elasticsearch.fullname" $ }}-{{ $data.name }}
+{{- if $.Values.cluster.keystoreSecret }}
       - name: keystore
         secret:
-          secretName: {{ $cluster.keystoreSecret }}
+          secretName: {{ $.Values.cluster.keystoreSecret }}
 {{- end }}
   {{- if not $data.persistence.enabled }}
       - name: {{ $data.persistence.name }}

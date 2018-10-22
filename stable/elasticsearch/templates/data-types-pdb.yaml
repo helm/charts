@@ -1,21 +1,15 @@
-{{ $elasticsearchName :=  include "elasticsearch.name" . }}
-{{ $elasticsearchFullName :=  include "elasticsearch.fullname" . }}
-{{ $releaseName := .Release.Name }}
-{{ $releaseService := .Release.Service }}
-{{ $chartName := .Chart.Name }}
-{{ $chartVersion := .Chart.Version }}
 {{- range $data := .Values.dataTypes }}
 {{- if $data.podDisruptionBudget.enabled }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   labels:
-    app: {{ $elasticsearchName }}
-    chart: {{ $chartName }}-{{ $chartVersion }}
+    app: {{ include "elasticsearch.name" $ }}
+    chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
     component: "{{ $data.name }}"
-    heritage: {{ $releaseService }}
-    release: {{ $releaseName }}
-  name: {{ $elasticsearchFullName }}-{{ $data.name }}
+    heritage: {{ $.Release.Service }}
+    release: {{ $.Release.Name }}
+  name: {{ include "elasticsearch.fullname" $ }}-{{ $data.name }}
 spec:
 {{- if $data.podDisruptionBudget.minAvailable }}
   minAvailable: {{ $data.podDisruptionBudget.minAvailable }}
@@ -25,8 +19,8 @@ spec:
 {{- end }}
   selector:
     matchLabels:
-      app: {{ $elasticsearchName }}
+      app: {{ include "elasticsearch.name" $ }}
       component: "{{ $data.name }}"
-      release: {{ $releaseName }}
+      release: {{ $.Release.Name }}
 {{- end }}
 {{- end }}
