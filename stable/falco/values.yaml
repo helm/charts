@@ -1,7 +1,7 @@
 # Default values for falco.
 
 image:
-  repository: sysdig/falco
+  repository: falcosecurity/falco
   tag: latest
   pullPolicy: Always
 

@@ -1,6 +1,6 @@
 # Sysdig Falco
 
-[Sysdig Falco](https://www.sysdig.com/opensource/falco/) is a behavioral activity monitor designed to detect anomalous activity in your applications. You can use Falco to monitor run-time security of your Kubernetes applications and internal components.
+[Sysdig Falco](https://falco.org) is a behavioral activity monitor designed to detect anomalous activity in your applications. You can use Falco to monitor run-time security of your Kubernetes applications and internal components.
 
 To know more about Sysdig Falco have a look at:
 
@@ -45,7 +45,7 @@ The following table lists the configurable parameters of the Falco chart and the
 
 | Parameter                                       | Description                                                          | Default                                                                                |
 | ---                                             | ---                                                                  | ---                                                                                    |
-| `image.repository`                              | The image repository to pull from                                    | `sysdig/falco`                                                                         |
+| `image.repository`                              | The image repository to pull from                                    | `falcosecurity/falco`                                                                  |
 | `image.tag`                                     | The image tag to pull                                                | `latest`                                                                               |
 | `image.pullPolicy`                              | The image pull policy                                                | `Always`                                                                               |
 | `resources`                                     | Specify container resources                                          | `{}`                                                                                   |
@@ -54,9 +54,9 @@ The following table lists the configurable parameters of the Falco chart and the
 | `serviceAccount.name`                           | Use this value as serviceAccountName                                 | ` `                                                                                    |
 | `fakeEventGenerator.enabled`                    | Run falco-event-generator for sample events                          | `false`                                                                                |
 | `fakeEventGenerator.replicas`                   | How many replicas of falco-event-generator to run                    | `1`                                                                                    |
-| `proxy.httpProxy`                                  | Set the Proxy server if is behind a firewall | ``                                                                                |
-| `proxy.httpsProxy`                                  | Set the Proxy server if is behind a firewall | ``                                                                                |
-| `proxy.noProxy`                                  | Set the Proxy server if is behind a firewall | ``
+| `proxy.httpProxy`                               | Set the Proxy server if is behind a firewall                         | ``                                                                                     |
+| `proxy.httpsProxy`                              | Set the Proxy server if is behind a firewall                         | ``                                                                                     |
+| `proxy.noProxy`                                 | Set the Proxy server if is behind a firewall                         | ``                                                                                     |
 | `ebpf.enabled`                                  | Enable eBPF support for Falco instead of `falco-probe` kernel module | `false`                                                                                |
 | `ebpf.settings.hostNetwork`                     | Needed to enable eBPF JIT at runtime for performance reasons         | `true`                                                                                 |
 | `ebpf.settings.mountEtcVolume`                  | Needed to detect which kernel version are running in Google COS      | `true`                                                                                 |
