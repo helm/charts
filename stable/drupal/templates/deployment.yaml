@@ -4,7 +4,7 @@ metadata:
   name: {{ template "drupal.fullname" . }}
   labels:
     app: {{ template "drupal.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "drupal.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         app: {{ template "drupal.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: {{ template "drupal.chart" . }}
         release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.image.pullSecrets }}
@@ -28,7 +28,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "drupal.fullname" . }}
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: {{ template "drupal.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD

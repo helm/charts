@@ -1,3 +1,5 @@
+# moved to stable
+deprecated: true
 apiVersion: v1
 appVersion: "5.5.4"
 description: A Helm chart for Elasticsearch Curator
@@ -11,8 +13,3 @@ keywords:
 sources:
 - https://github.com/kubernetes/charts/incubator/elasticsearch-curator
 - https://github.com/pires/docker-elasticsearch-curator
-maintainers:
-  - name: tmestdagh
-    email: mestdagh.tom@gmail.com
-  - name: gianrubio
-    email: gianrubio@gmail.com

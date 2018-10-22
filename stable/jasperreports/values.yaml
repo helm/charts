@@ -1,10 +1,16 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 ## Bitnami JasperReports image version
 ## ref: https://hub.docker.com/r/bitnami/dokuwiki/tags/
 ##
 image:
   registry: docker.io
   repository: bitnami/jasperreports
-  tag: 7.1.0-debian-9
+  tag: 7.1.0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -69,6 +75,8 @@ externalDatabase:
 
 ##
 ## MariaDB chart configuration
+##
+## https://github.com/helm/charts/blob/master/stable/mariadb/values.yaml
 ##
 mariadb:
   ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
