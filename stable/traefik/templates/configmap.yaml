@@ -207,7 +207,7 @@ data:
     [zookeeper]
     endpoint = "{{ .Values.kvprovider.zookeeper.endpoint }}"
     watch = {{ .Values.kvprovider.zookeeper.watch }}
-    prefix = {{ .Values.kvprovider.zookeeper.prefix }}
+    prefix = "{{ .Values.kvprovider.zookeeper.prefix }}"
     {{- if .Values.kvprovider.zookeeper.username }}username = {{ .Values.kvprovider.zookeeper.username }}{{- end }}
     {{- if .Values.kvprovider.zookeeper.password }}password = {{ .Values.kvprovider.zookeeper.password }}{{- end }}
       {{- if .Values.kvprovider.zookeeper.tls }}
