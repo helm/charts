@@ -174,7 +174,7 @@ ingress:
     ## Configure the liveness path. Keep to "/" for Flower >= jan 2018.
     ## For previous version, enter the same path than in the 'path' key
     ## NOTE: keep the trailing slash.
-    liveness_path: /
+    livenessPath: /
     ##
     ## hostname for flower
     host: ""
@@ -252,7 +252,7 @@ dags:
   path: /usr/local/airflow/dags
   ##
   ## Set to True to prevent pickling DAGs from scheduler to workers
-  donot_pickle: false
+  doNotPickle: false
   ##
   ## Configure Git repository to fetch DAGs
   git:
@@ -262,11 +262,11 @@ dags:
     ##
     ## branch name, tag or sha1 to reset to
     ref: master
-  init_container:
+  initContainer:
     ## Fetch the source code when the pods starts
     enabled: false
     ## install requirements.txt dependencies automatically
-    install_requirements: true
+    installRequirements: true
 
 ##
 ## Configuration values for the postgresql dependency.
