@@ -1,5 +1,5 @@
 name: redis
-version: 4.2.1
+version: 4.2.2
 appVersion: 4.0.11
 description: Open source, advanced key-value store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets.
 keywords:
