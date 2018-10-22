@@ -7,8 +7,10 @@ metadata:
     chart: {{ template "elasticsearch-curator.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.cronjob.annotations }}
   annotations:
 {{ toYaml .Values.cronjob.annotations | indent 4 }}
+{{- end }}
 spec:
   schedule: "{{ .Values.cronjob.schedule }}"
   {{- with .Values.cronjob.concurrencyPolicy }}
@@ -31,8 +33,10 @@ spec:
           labels:
             app: {{ template "elasticsearch-curator.name" . }}
             release: {{ .Release.Name }}
+{{- if .Values.pod.annotations }}
           annotations:
 {{ toYaml .Values.pod.annotations | indent 12 }}
+{{- end }}
         spec:
           volumes:
             - name: config-volume
