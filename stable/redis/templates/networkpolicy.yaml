@@ -12,6 +12,7 @@ spec:
   podSelector:
     matchLabels:
       app: {{ template "redis.name" . }}
+      release: "{{ .Release.Name }}"
   ingress:
     # Allow inbound connections
     - ports:

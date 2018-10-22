@@ -15,6 +15,10 @@ spec:
       labels:
         app: "{{ template "worker.fullname" . }}"
         component: worker
+{{- if .Values.workerConfig.annotations }}
+      annotations:
+{{ toYaml .Values.workerConfig.annotations | indent 8 }}
+{{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}-worker
