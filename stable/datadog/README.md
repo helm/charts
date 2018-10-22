@@ -61,6 +61,8 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.tags`              | Set host tags                      | `nil`                                     |
 | `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
 | `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
+| `datadog.podAnnotationsAsTags` | Kubernetes Annotations to Datadog Tags mapping | `nil`                      |
+| `datadog.podLabelsAsTags`   | Kubernetes Labels to Datadog Tags mapping      | `nil`                         |
 | `datadog.resources.requests.cpu` | CPU resource requests         | `200m`                                    |
 | `datadog.resources.limits.cpu` | CPU resource limits             | `200m`                                    |
 | `datadog.resources.requests.memory` | Memory resource requests   | `256Mi`                                   |
@@ -169,3 +171,16 @@ For more details, please refer to [the documentation](https://docs.datadoghq.com
 To enable event collection, you will need to set the `datadog.leaderElection`, `datadog.collectEvents` and `rbac.create` options to `true`.
 
 Please read [the official documentation](https://docs.datadoghq.com/agent/kubernetes/event_collection/) for more context.
+
+### Kubernetes Labels and Annotations
+
+To map Kubernetes pod labels and annotations to Datadog tags, provide a string-based
+dictionary of mapped keys such as:
+
+```yaml
+podAnnotationsAsTags: '{"cni.projectcalico.org/podIP":"kube_podip"}'
+```
+
+```yaml
+podLabelsAsTags: '{"app":"kube_app","release":"helm_release"}'
+```
