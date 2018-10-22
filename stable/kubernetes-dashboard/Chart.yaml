@@ -1,5 +1,5 @@
 name: kubernetes-dashboard
-version: 0.7.3
+version: 0.7.4
 appVersion: 1.10.0
 description: General-purpose web UI for Kubernetes clusters
 keywords:
