@@ -248,7 +248,7 @@ Because `keycloak.extraContainers` is a string that is passed through the `tpl` 
 ```yaml
 
 # Custom values for Google Cloud SQL
-gcloudsql:
+cloudsql:
   project: my-project
   region: europe-west1
   instance: my-instance
@@ -260,7 +260,7 @@ keycloak:
       command:
         - /cloud_sql_proxy
       args:
-        - -instances={{ .Values.gcloudsql.project }}:{{ .Values.gcloudsql.region }}:{{ .Values.gcloudsql.instance }}=tcp:5432
+        - -instances={{ .Values.cloudsql.project }}:{{ .Values.cloudsql.region }}:{{ .Values.cloudsql.instance }}=tcp:5432
         - -credential_file=/secrets/cloudsql/credentials.json
       volumeMounts:
         - name: cloudsql-creds
