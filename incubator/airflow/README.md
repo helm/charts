@@ -111,7 +111,7 @@ which is why StatefulSet is for.
 You can add kubernetes secrets which will be mounted as volumes on the worker nodes
 at `secretsDir/<secret name>`.
 ```yaml
-airflow:
+workers:
   secretsDir: /var/airflow/secrets
   secrets:
     - redshift-user
