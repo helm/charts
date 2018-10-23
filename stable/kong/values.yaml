@@ -140,7 +140,5 @@ postgresql:
   enabled: true
   postgresUser: kong
   postgresDatabase: kong
-  persistence:
-    enabled: false
   service:
     port: 5432
