@@ -1,3 +1,8 @@
+### 1.5.4
+
+* [4018a215](https://github.com/kubernetes/charts/commit/4018a215):
+  - Update README with link to "Intro to GoCD" guide
+
 ### 1.5.3
 * [65fa6218](https://github.com/kubernetes/charts/commit/65fa6218):
   - Affinity setting in agent and server deployments
