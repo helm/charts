@@ -1,7 +1,7 @@
 # Helm Charts
 
 Use this repository to submit official Charts for Helm. Charts are curated application definitions for Helm. For more information about installing and using Helm, see its
-[README.md](https://github.com/helm/helm/tree/master/README.md). To get a quick introduction to Charts see this [chart document](https://github.com/helm/helm/blob/master/docs/charts.md).
+[README.md](https://github.com/helm/helm/tree/master/README.md). To get a quick introduction to Charts to see this [chart document](https://github.com/helm/helm/blob/master/docs/charts.md).
 
 ## Where to find us
 
@@ -72,7 +72,7 @@ Once these two steps are done a chart approver can merge pull requests following
 
 The `pull-charts-e2e` test run, that installs a chart to test it, is required before a pull request can be merged. These tests run automatically for members of the Helm Org and for chart OWNERS, listed in OWNERS files. For regular contributors who are trusted, in a manner similar to Kubernetes community members, we have trusted collaborators. These individuals can have their tests run automatically as well as mark other pull requests as ok to test by adding a comment of `/ok-to-test` on pull requests.
 
-There are two paths to becoming a trusted collaborator. One only needs follow one of them.
+There are two paths to becoming a trusted collaborator. One only needs to follow one of them.
 
 1. If you are a Kubernetes GitHub org member and have your Kubernetes org membership public you can become a trusted collaborator for Helm Charts
 2. Get sponsorship from one of the Charts Maintainers listed in the OWNERS file at the root of this repository
@@ -80,7 +80,7 @@ There are two paths to becoming a trusted collaborator. One only needs follow on
 The process to get added is:
 
 * File an issue asking to be a trusted collaborator
-* A Helm Chart Maintainer can then add the user as a read only collaborator to the repository
+* A Helm Chart Maintainer can then add the user as a read-only collaborator to the repository
 
 ## Review Process
 
