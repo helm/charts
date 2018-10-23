@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "nsq.nsqlookupd.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nsq.name" . }}
+    helm.sh/chart: {{ include "nsq.chart" . }}
+    app.kubernetes.io/component: {{ .Values.nsqlookupd.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.nsqlookupd.replicaCount }}
+  podManagementPolicy: {{ .Values.nsqlookupd.podManagementPolicy }}
+  serviceName: {{ include "nsq.nsqlookupd.fullname" . }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: {{ .Values.nsqlookupd.name }}
+      app.kubernetes.io/name: {{ include "nsq.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+{{ if .Values.nsqlookupd.updateStrategy -}}
+  updateStrategy:
+{{ toYaml .Values.nsqlookupd.updateStrategy | trim | indent 4 -}}
+{{ end }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: {{ .Values.nsqlookupd.name }}
+        app.kubernetes.io/name: {{ include "nsq.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.nsqlookupd.podAnnotations }}
+{{- with .Values.nsqlookupd.podAnnotations }}
+      annotations:
+{{ toYaml . | trim | indent 8 }}
+{{- end }}
+{{- end }}
+{{- if .Values.nsqlookupd.priorityClassName }}
+      priorityClassName: "{{ .Values.nsqlookupd.priorityClassName }}"
+{{- end }}
+    spec:
+      nodeSelector:
+{{ toYaml .Values.nsqlookupd.nodeSelector | trim | indent 8 }}
+      {{- if .Values.nsqlookupd.antiAffinity }}
+      affinity:
+        {{- if eq .Values.nsqlookupd.antiAffinity "hard" }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "nsq.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.nsqlookupd.name }}"
+        {{- else if eq .Values.nsqlookupd.antiAffinity "soft" }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "nsq.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.nsqlookupd.name }}"
+        {{- end }}
+      {{- end }}
+      containers:
+      - name: nsqlookupd
+        image: "{{ .Values.nsqlookupd.image.repository }}:{{ .Values.nsqlookupd.image.tag }}"
+        imagePullPolicy: {{ .Values.nsqlookupd.image.pullPolicy }}
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        command:
+        - /nsqlookupd
+        args:
+        - --broadcast-address=$(POD_IP)
+{{- if .Values.nsqlookupd.extraArgs }}
+{{ toYaml .Values.nsqlookupd.extraArgs | trim | indent 8 }}
+{{- end }}
+        ports:
+        - containerPort: 4160
+          name: tcp
+        - containerPort: 4161
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        resources:
+{{ toYaml .Values.nsqlookupd.resources | trim | indent 10 }}

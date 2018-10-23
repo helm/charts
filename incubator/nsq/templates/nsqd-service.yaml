@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nsq.nsqd.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nsq.name" . }}
+    helm.sh/chart: {{ include "nsq.chart" . }}
+    app.kubernetes.io/component: {{ .Values.nsqd.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.nsqd.service.annotations }}
+  annotations:
+{{ toYaml . | trim | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.nsqd.service.type }}
+  clusterIP: None
+  ports:
+  - name: nsqd-tcp
+    port: 4150
+    protocol: TCP
+    targetPort: 4150
+  - name: nsqd-http
+    port: 4151
+    protocol: TCP
+    targetPort: 4151
+  selector:
+    app.kubernetes.io/component: {{ .Values.nsqd.name }}
+    app.kubernetes.io/name: {{ include "nsq.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

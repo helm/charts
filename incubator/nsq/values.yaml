@@ -1,0 +1,115 @@
+nsqd:
+  name: "nsqd"
+
+  podDisruptionBudget:
+    minAvailable: 1
+
+  service:
+    type: ClusterIP
+    annotations: {}
+
+  replicaCount: 3
+  podManagementPolicy: "Parallel"
+  podAnnotations: {}
+  # updateStrategy: {}
+  # priorityClassName: ""
+  antiAffinity: "soft"
+  nodeSelector: {}
+
+  image:
+    # Source: https://github.com/nsqio/nsq/blob/master/Dockerfile
+    repository: "nsqio/nsq"
+    tag: "v1.1.0"
+    pullPolicy: "Always"
+  extraArgs:
+  - --max-msg-timeout=4h
+  - --max-req-timeout=3h
+
+  prometheus:
+    enabled: false
+    image:
+      # Because of this issue, we use a fork for 1.1.0: https://github.com/lovoo/nsq_exporter/pull/19
+      # Source: https://github.com/emaincourt/nsq_exporter/blob/master/Dockerfile
+      repository: emaincourt/nsq_exporter
+      tag: latest
+
+  persistence:
+    storageClass: "gp2"
+    resources:
+      requests:
+        storage: 10Gi
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+nsqlookupd:
+  name: "nsqlookupd"
+
+  podDisruptionBudget:
+    minAvailable: 2
+
+  service:
+    annotations: {}
+
+  replicaCount: 3
+  podManagementPolicy: "Parallel"
+  podAnnotations: {}
+  # updateStrategy: {}
+  # priorityClassName: ""
+  antiAffinity: "soft"
+  nodeSelector: {}
+
+  image:
+    # Source: https://github.com/nsqio/nsq/blob/master/Dockerfile
+    repository: "nsqio/nsq"
+    tag: "v1.1.0"
+    pullPolicy: "Always"
+  extraArgs: []
+
+  resources:
+    limits:
+      cpu: 50m
+      memory: 32Mi
+
+nsqadmin:
+  enabled: true
+  name: "admin"
+
+  autoscaling:
+    enabled: true
+    annotations: {}
+    minReplicas: 1
+    maxReplicas: 2
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 60
+
+  ingress:
+    enabled: false
+    # annotations: {}
+    # path: "/"
+    # tls: []
+
+  podDisruptionBudget:
+    minAvailable: 1
+
+  service:
+    annotations: {}
+
+  replicaCount: 1
+  podAnnotations: {}
+  # priorityClassName: ""
+  # antiAffinity: ""
+  nodeSelector: {}
+
+  image:
+    # Source: https://github.com/nsqio/nsq/blob/master/Dockerfile
+    repository: "nsqio/nsq"
+    tag: "v1.1.0"
+    pullPolicy: "Always"
+
+  resources:
+    limits:
+      cpu: 50m
+      memory: 32Mi

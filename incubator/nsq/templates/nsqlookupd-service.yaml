@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nsq.nsqlookupd.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nsq.name" . }}
+    helm.sh/chart: {{ include "nsq.chart" . }}
+    app.kubernetes.io/component: {{ .Values.nsqlookupd.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.nsqlookupd.service.annotations }}
+  annotations:
+{{ toYaml . | trim | indent 4 }}
+{{- end }}
+spec:
+  clusterIP: None
+  ports:
+  - port: 4160
+    name: tcp
+    targetPort: 4160
+  - port: 4161
+    name: http
+    targetPort: 4161
+  selector:
+    app.kubernetes.io/component: {{ .Values.nsqlookupd.name }}
+    app.kubernetes.io/name: {{ include "nsq.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

@@ -1,0 +1,19 @@
+{{- if and (.Values.nsqadmin.enabled) (.Values.nsqadmin.podDisruptionBudget) }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "nsq.nsqadmin.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nsq.name" . }}
+    helm.sh/chart: {{ include "nsq.chart" . }}
+    app.kubernetes.io/component: nsqadmin
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: {{ .Values.nsqadmin.name }}
+      app.kubernetes.io/name: {{ include "nsq.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+{{ toYaml .Values.nsqadmin.podDisruptionBudget | trim | indent 2 }}
+{{- end -}}

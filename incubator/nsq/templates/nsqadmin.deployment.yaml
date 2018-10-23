@@ -1,0 +1,86 @@
+{{ $global := .Values.global }}
+{{ if .Values.nsqadmin.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nsq.nsqadmin.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nsq.name" . }}
+    helm.sh/chart: {{ include "nsq.chart" . }}
+    app.kubernetes.io/component: {{ .Values.nsqadmin.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.nsqadmin.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: {{ .Values.nsqadmin.name }}
+      app.kubernetes.io/name: {{ include "nsq.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: {{ .Values.nsqadmin.name }}
+        app.kubernetes.io/name: {{ include "nsq.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.nsqadmin.podAnnotations }}
+      annotations:
+{{ toYaml .Values.nsqadmin.podAnnotations | trim | indent 8 }}
+{{- end }}
+    spec:
+{{- if .Values.nsqadmin.priorityClassName }}
+      priorityClassName: "{{ .Values.nsqadmin.priorityClassName }}"
+{{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.nsqadmin.image.repository }}:{{ .Values.nsqadmin.image.tag }}"
+        imagePullPolicy: {{ .Values.nsqadmin.image.pullPolicy }}
+        command:
+        - /nsqadmin
+        args:
+        {{ $lookupdFullName := include "nsq.nsqlookupd.fullname" . -}}
+        {{ range $i, $e := until (atoi (printf "%d" (int64 .Values.nsqlookupd.replicaCount))) -}}
+        - --lookupd-http-address={{ $lookupdFullName }}-{{ $i }}.{{ $lookupdFullName }}:4161
+        {{ end -}}
+        ports:
+        - containerPort: 4171
+          name: http
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        resources:
+{{ toYaml .Values.nsqadmin.resources | trim | indent 12 }}
+{{- if .Values.nsqadmin.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nsqadmin.nodeSelector | trim | indent 8 }}
+{{- end }}
+{{- if or .Values.nsqadmin.antiAffinity }}
+      affinity:
+  {{- if eq .Values.nsqadmin.antiAffinity "hard" }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "nsq.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.nsqadmin.name }}"
+  {{- else if eq .Values.nsqadmin.antiAffinity "soft" }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "nsq.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.nsqadmin.name }}"
+  {{- end }}
+{{- end }}
+{{- end }}

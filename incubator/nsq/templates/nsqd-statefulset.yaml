@@ -1,0 +1,123 @@
+{{ $global := .Values.global}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "nsq.nsqd.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nsq.name" . }}
+    helm.sh/chart: {{ include "nsq.chart" . }}
+    app.kubernetes.io/component: {{ .Values.nsqd.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.nsqd.replicaCount }}
+  podManagementPolicy: {{ .Values.nsqd.podManagementPolicy }}
+  serviceName: {{ include "nsq.nsqd.fullname" . }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: {{ .Values.nsqd.name }}
+      app.kubernetes.io/name: {{ include "nsq.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+{{ if .Values.nsqd.updateStrategy -}}
+  updateStrategy:
+{{ toYaml .Values.nsqd.updateStrategy | trim | indent 4 -}}
+{{ end }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: {{ .Values.nsqd.name }}
+        app.kubernetes.io/name: {{ include "nsq.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.nsqd.podAnnotations }}
+      annotations:
+{{ toYaml .Values.nsqd.podAnnotations | trim | indent 8 }}
+{{- end }}
+{{- if .Values.nsqd.priorityClassName }}
+      priorityClassName: "{{ .Values.nsqd.priorityClassName }}"
+{{- end }}
+    spec:
+      nodeSelector:
+{{ toYaml .Values.nsqd.nodeSelector | trim | indent 8 -}}
+      {{- if or .Values.nsqd.antiAffinity }}
+      affinity:
+        {{- if eq .Values.nsqd.antiAffinity "hard" }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "nsq.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.nsqd.name }}"
+        {{- else if eq .Values.nsqd.antiAffinity "soft" }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "nsq.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.nsqd.name }}"
+        {{- end }}
+      {{- end }}
+      containers:
+      - name: nsqd
+        image: "{{ .Values.nsqd.image.repository }}:{{ .Values.nsqd.image.tag }}"
+        imagePullPolicy: {{ .Values.nsqd.image.pullPolicy }}
+        command:
+        - /nsqd
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        args:
+        - --broadcast-address=$(POD_IP)
+        - --data-path=/data
+        {{ $lookupdFullName := include "nsq.nsqlookupd.fullname" . -}}
+        {{ range $i, $e := until (atoi (printf "%d" (int64 .Values.nsqlookupd.replicaCount))) -}}
+        - --lookupd-tcp-address={{ $lookupdFullName }}-{{ $i }}.{{ $lookupdFullName }}:4160
+        {{ end }}
+        {{- range .Values.nsqd.extraArgs -}}
+        - {{ . }}
+        {{ end -}}
+        ports:
+        - containerPort: 4150
+          name: tcp
+        - containerPort: 4151
+          name: http
+        volumeMounts:
+        - mountPath: /data
+          name: data
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        resources:
+{{ toYaml .Values.nsqd.resources | trim | indent 10 }}
+{{- if .Values.nsqd.prometheus.enabled }}
+      - name: prom-exporter
+        image: "{{ .Values.nsqd.prometheus.image.repository }}:{{ .Values.nsqd.prometheus.image.tag }}"
+        ports:
+        - containerPort: 9117
+{{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: {{ .Values.nsqd.persistence.storageClass }}
+        resources:
+{{ toYaml .Values.nsqd.persistence.resources | trim | indent 10 }}

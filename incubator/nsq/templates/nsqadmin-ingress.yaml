@@ -1,0 +1,39 @@
+{{ $fullname := include "nsq.nsqadmin.fullname" . }}
+{{- if and .Values.nsqadmin.enabled .Values.nsqadmin.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "nsq.nsqadmin.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nsq.name" . }}
+    helm.sh/chart: {{ include "nsq.chart" . }}
+    app.kubernetes.io/component: {{ .Values.nsqadmin.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.nsqadmin.ingress.annotations }}
+  annotations:
+{{ toYaml . | trim | indent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.nsqadmin.ingress.tls }}
+  tls:
+  {{- range .Values.nsqadmin.ingress.tls }}
+  - hosts:
+    {{- range .hosts }}
+    - {{ . | quote }}
+    {{- end }}
+    secretName: {{ .secretName }}
+  {{- end }}
+  {{- end }}
+  rules:
+  {{- $ingress := .Values.nsqadmin.ingress }}
+  {{- range .Values.nsqadmin.ingress.hosts }}
+  - host: {{ . | quote }}
+    http:
+      paths:
+      - path: {{ $ingress.path }}
+        backend:
+          serviceName: {{ $fullname }}
+          servicePort: http
+  {{- end }}
+{{- end }}

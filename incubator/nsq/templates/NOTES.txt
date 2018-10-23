@@ -1,0 +1,24 @@
+The NSQ cluster is ready to use. This cluster is made of :
+
+* a NSQD replicaset
+* a NSQLookupd replicaset
+* a NSQAdmin replicaset
+
+Your NSQD and NSQLookupd replicaset are exposed through [headless services](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services) by default. In this case, each instance of your replicasets will be exposed inside of the cluster through its own url :
+
+* nsqd :
+  {{ $nsqdFulName := include "nsq.nsqd.fullname" . }}
+  {{ range $i, $e := until (atoi (printf "%d" (int64 .Values.nsqd.replicaCount))) -}}
+  * {{ $nsqdFulName }}-{{ $i }}.{{ $nsqdFulName }}
+  {{ end }}
+
+* nsqlookupd :
+  {{ $lookupdFullName := include "nsq.nsqlookupd.fullname" . }}
+  {{ range $i, $e := until (atoi (printf "%d" (int64 .Values.nsqlookupd.replicaCount))) -}}
+  * {{ $lookupdFullName }}-{{ $i }}.{{ $lookupdFullName }}
+  {{ end }}
+
+Finally, the NSQAdmin interface that allows you to monitor the topics/channels can be reached at {{ include "nsq.nsqadmin.fullname" . }}.
+If you want to access it locally without exposing it, you can run `kubectl port-forward {{ include "nsq.nsqadmin.fullname" . }} 4171:4171` and reach `localhost:4171` from your browser.
+
+Please refer to the [official documentation](https://nsq.io/overview/design.html) for further informations about the NSQ features and internals.

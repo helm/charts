@@ -1,0 +1,24 @@
+{{ if .Values.nsqadmin.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nsq.nsqadmin.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nsq.name" . }}
+    helm.sh/chart: {{ include "nsq.chart" . }}
+    app.kubernetes.io/component: {{ .Values.nsqadmin.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.nsqadmin.service.annotations }}
+  annotations:
+{{ toYaml . | trim | indent 4 }}
+{{- end }}
+spec:
+  ports:
+  - port: 4171
+    targetPort: http
+  selector:
+    app.kubernetes.io/component: {{ .Values.nsqadmin.name }}
+    app.kubernetes.io/name: {{ include "nsq.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
