@@ -55,6 +55,9 @@ daemonset:
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   # updateStrategy: RollingUpdate
 
+  ## Sets PriorityClassName if defined
+  # priorityClassName:
+
 # Apart from DaemonSet, deploy Datadog agent pods and related service for
 # applications that want to send custom metrics. Provides DogStasD service.
 #
@@ -75,6 +78,9 @@ deployment:
   service:
     type: ClusterIP
     annotations: {}
+
+  ## Sets PriorityClassName if defined
+  # priorityClassName:
 
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
