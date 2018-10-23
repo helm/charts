@@ -64,6 +64,9 @@ spec:
           {{- range $key, $value := .Values.configmapReload.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
+          {{- range .Values.configmapReload.extraVolumeDirs }}
+            - --volume-dir={{ . }}
+          {{- end }}
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:
