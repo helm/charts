@@ -34,6 +34,9 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
+      {{- if .Values.daemonset.priorityClassName }}
+      priorityClassName: {{ .Values.daemonset.priorityClassName }}
+      {{- end }}
       containers:
       - name: {{ default .Chart.Name .Values.datadog.name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
