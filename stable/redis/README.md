@@ -18,6 +18,8 @@ $ helm install stable/redis --values values-production.yaml
 
 This chart bootstraps a [Redis](https://github.com/bitnami/bitnami-docker-redis) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.8+
@@ -74,8 +76,9 @@ kubectl patch deployments my-release-redis-metrics --type=json -p='[{"op": "remo
 
 The following table lists the configurable parameters of the Redis chart and their default values.
 
-| Parameter                                  | Description                                                                                                    | Default                              |
-|--------------------------------------------|----------------------------------------------------------------------------------------------------------------|--------------------------------------|
+| Parameter                                  | Description                                                                                                    | Default                                              |
+|--------------------------------------------|----------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
+| `global.imageRegistry`                     | Global Docker image registry                                                                                   | `nil`                                                |
 | `image.registry`                           | Redis Image registry                                                                                           | `docker.io`                                          |
 | `image.repository`                         | Redis Image name                                                                                               | `bitnami/redis`                                      |
 | `image.tag`                                | Redis Image tag                                                                                                | `{VERSION}`                                          |

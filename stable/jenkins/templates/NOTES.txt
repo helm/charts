@@ -18,7 +18,7 @@
   echo http://$SERVICE_IP:{{ .Values.Master.ServicePort }}/login
 
 {{- else if contains "ClusterIP"  .Values.Master.ServiceType }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ template "jenkins.fullname" . }}-master" -o jsonpath="{.items[0].metadata.name}")
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ .Release.Name }}-{{ .Values.Master.Component }}" -o jsonpath="{.items[0].metadata.name}")
   echo http://127.0.0.1:{{ .Values.Master.ServicePort }}
   kubectl port-forward $POD_NAME {{ .Values.Master.ServicePort }}:{{ .Values.Master.ServicePort }}
 
