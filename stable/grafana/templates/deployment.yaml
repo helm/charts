@@ -195,8 +195,10 @@ spec:
 {{- end }}
           {{- if .Values.envFromSecret }}
           envFrom:
+          {{- range .Values.envFromSecret }}
             - secretRef:
-                name: {{ .Values.envFromSecret }}
+                name: {{ . }}
+          {{- end }}
           {{- end }}
           livenessProbe:
 {{ toYaml .Values.livenessProbe | indent 12 }}
