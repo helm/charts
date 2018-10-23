@@ -16,11 +16,11 @@ resource:
   master:
     requests:
       cpu: 2
-      memory: 7.5Gi
+      memory: 2Gi
   tserver:
     requests:
       cpu: 2
-      memory: 7.5Gi
+      memory: 4Gi
 
 replicas:
   master: 3
