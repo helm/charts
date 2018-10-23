@@ -58,7 +58,7 @@ controller and import it into two replication controllers.
 
 ### NFS server part
 
-Define [the NFS Service and Replication Controller](templates/nfs-server-rc.yaml) and
+Define [the NFS Service and Replication Controller](templates/nfs-server-deployment.yaml) and
 [NFS service](templates/nfs-server-service.yaml):
 
 The NFS server exports an auto-provisioned persistent volume backed by GCE PD or Azure Disk. If you are on GCE, create a GCE PD-based PVC:

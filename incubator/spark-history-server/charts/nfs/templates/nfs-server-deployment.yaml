@@ -1,13 +1,14 @@
 {{- if .Values.enableExampleNFS }}
-apiVersion: v1
-kind: ReplicationController
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: {{ .Values.nfsServerServiceName }}
   namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   selector:
-    role: {{ .Values.nfsServerServiceName }}
+    matchLabels:
+      role: {{ .Values.nfsServerServiceName }}
   template:
     metadata:
       labels:

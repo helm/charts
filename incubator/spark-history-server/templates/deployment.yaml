@@ -11,7 +11,7 @@ metadata:
   name: spark-history-server
   namespace: {{ .Values.namespace }}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: spark-history-server
@@ -124,8 +124,8 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: main
-        image: "lightbend/curl:latest"
-        imagePullPolicy: Always
+        image: "lightbend/curl:7.47.0"
+        imagePullPolicy: IfNotPresent
         command:
           - "/bin/sh"
           - "-c"

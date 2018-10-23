@@ -6,9 +6,9 @@ clusterRoleName: spark-hs
 clusterRoleBindingName: spark-hs
 
 image:
-  repository: lightbend/spark
-  tag: k8s-daily
-  pullPolicy: Always
+  repository: gcr.io/spark-operator/spark
+  tag: v2.3.1
+  pullPolicy: IfNotPresent
 
 service:
   type: LoadBalancer
