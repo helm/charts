@@ -96,7 +96,7 @@ clusterAgent:
   containerName: cluster-agent
   image:
     repository: datadog/cluster-agent
-    tag: 0.10.0
+    tag: 1.0.0
     pullPolicy: IfNotPresent
   enabled: false
   ## This needs to be at least 32 characters a-zA-z
