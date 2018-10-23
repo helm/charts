@@ -112,7 +112,6 @@ workers:
   secretsDir: /var/airflow/secrets
   ##
   ## Secrets which will be mounted as a file at `secretsDir/<secret name>`.
-  ## Each secret should single text value. You can create secrets using
   secrets: []
 
 
