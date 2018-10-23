@@ -24,7 +24,7 @@ podAntiAffinity:
   server: soft
 
 ## Redis image version
-redis_image: quay.io/smile/redis:4.0.8r0
+redis_image: quay.io/smile/redis:4.0.11-r1
 ## replicas number for each component
 replicas:
   servers: 3
