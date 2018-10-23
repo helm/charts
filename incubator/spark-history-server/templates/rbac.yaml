@@ -14,7 +14,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: spark-history-server
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: {{ .Values.clusterRoleName }}

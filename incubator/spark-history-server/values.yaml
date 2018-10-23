@@ -1,7 +1,5 @@
 replicaCount: 1
 
-namespace: spark-history-server
-createNamespace: true
 clusterRoleName: spark-hs
 clusterRoleBindingName: spark-hs
 
@@ -34,12 +32,10 @@ pvc:
 # Settings for the sub-chart
 # When pvc.enablePVC is true, make sure:
 # pvc.existingClaimName == nfs.pvcName
-# namespace == nfs.namespace
 nfs:
   enableExampleNFS: true
   pvName: nfs-pv
   pvcName: nfs-pvc
-  namespace: spark-history-server
 
 gcs:
   enableGCS: false

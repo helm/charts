@@ -64,7 +64,7 @@ To install the chart with the sample PVC setup:
 
 ```bash
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install incubator/spark-history-server
+$ helm install incubator/spark-history-server --namespace spark-history-server
 ```
 
 For details about installing the chart to use HDFS or GCS, see configurations options below.
@@ -75,8 +75,6 @@ The following tables lists the configurable parameters of the Spark History Seve
 
 | Parameter                            | Description                                                       |Default                           |
 | ------------------------------------ |----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| namespace | To namespace to install the chart |spark-history-server |
-| createNamespace | Whether to create namespace during chart install |true |
 | hdfs.logDirectory                |The HDFS log directory that starts with "hdfs://"|hdfs://hdfs/history/|
 | hdfs.hdfsSiteConfigMap |The name of the configMap for hdfs-site.xml|hdfs-site|
 | hdfs.coreSiteConfigMap |The name of the configMap for core-site.xml|core-site|
