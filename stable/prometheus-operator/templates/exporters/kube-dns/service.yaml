@@ -1,0 +1,24 @@
+{{- if .Values.kubeDns.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-kube-dns
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-kube-dns
+    jobLabel: kube-dns
+{{ include "prometheus-operator.labels" . | indent 4 }}
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics-dnsmasq
+      port: 10054
+      protocol: TCP
+      targetPort: 10054
+    - name: http-metrics-skydns
+      port: 10055
+      protocol: TCP
+      targetPort: 10055
+  selector:
+{{ include "prometheus-operator.rangeskipempty" .Values.kubeDns.service.selector | indent 4 }}
+{{- end }}

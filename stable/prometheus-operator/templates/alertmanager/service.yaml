@@ -1,0 +1,22 @@
+{{- if .Values.alertmanager.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-alertmanager
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-alertmanager
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  ports:
+    - name: web
+    {{- if eq .Values.alertmanager.service.type "NodePort" }}
+      nodePort: {{ .Values.alertmanager.service.nodePort }}
+    {{- end }}
+      port: 9093
+      targetPort: 9093
+      protocol: TCP
+  selector:
+    app: alertmanager
+    alertmanager: {{ template "prometheus-operator.fullname" . }}-alertmanager
+  type: "{{ .Values.alertmanager.service.type }}"
+{{- end }}
