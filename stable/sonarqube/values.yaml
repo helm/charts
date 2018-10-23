@@ -139,6 +139,8 @@ mysql:
   mysqlUser: "sonarUser"
   mysqlPassword: "sonarPass"
   mysqlDatabase: "sonarDB"
+  # mysqlParams:
+  #   useSSL: "true"
   # Specify the TCP port that mySQL should use
   service:
     port: 3306

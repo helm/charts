@@ -3,6 +3,27 @@
 This file documents all notable changes to Sysdig Falco Helm Chart. The release
 numbering uses [semantic versioning](http://semver.org).
 
+## v0.5.2
+
+* Falco was accepted as a CNCF project. Fix references and download image from
+  falcosecurity organization.
+
+## v0.5.1
+
+* Allow falco to resolve cluster hostnames when running with ebpf.hostNetwork: true
+
+## v0.5.0
+
+### Major Changes
+
+* Add Amazon SNS Output integration
+
+## v0.4.0
+
+### Major Changes
+
+* Allow Falco to be run with a HTTP proxy server
+
 ## v0.3.1
 
 ### Minor Changes

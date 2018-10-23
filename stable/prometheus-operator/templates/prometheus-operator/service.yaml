@@ -1,0 +1,19 @@
+{{- if .Values.prometheusOperator.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "prometheus-operator.fullname" . }}-operator
+  labels:
+    app: {{ template "prometheus-operator.name" . }}-operator
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+  clusterIP: None
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+  selector:
+    app: {{ template "prometheus-operator.name" . }}-operator
+    release: {{ .Release.Name | quote }}
+
+{{- end }}
