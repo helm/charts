@@ -20,7 +20,7 @@ This chart bootstraps a [prometheus-operator](https://github.com/coreos/promethe
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/prometheus-operator
+$ helm install --name my-release stable/prometheus-operator
 ```
 
 The command deploys prometheus-operator on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -99,11 +99,11 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheus.podDisruptionBudget.enabled` | If true, create a pod disruption budget for prometheus pods. The created resource cannot be modified once created - it must be deleted to perform a change | `true` |
 | `prometheus.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
 | `prometheus.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""` |
-| `prometheus.ingress.enabled` | If true, alertmanager Ingress will be created | `false` |
-| `prometheus.ingress.annotations` | Alertmanager Ingress annotations | `{}` |
-| `prometheus.ingress.labels` | Alertmanager Ingress additional labels | `{}` |
-| `prometheus.ingress.hosts` | Alertmanager Ingress hostnames | `[]` |
-| `prometheus.ingress.tls` | Alertmanager Ingress TLS configuration (YAML) | `[]` |
+| `prometheus.ingress.enabled` | If true, Prometheus Ingress will be created | `false` |
+| `prometheus.ingress.annotations` | Prometheus Ingress annotations | `{}` |
+| `prometheus.ingress.labels` | Prometheus Ingress additional labels | `{}` |
+| `prometheus.ingress.hosts` | Prometheus Ingress hostnames | `[]` |
+| `prometheus.ingress.tls` | Prometheus Ingress TLS configuration (YAML) | `[]` |
 | `prometheus.additionalServiceMonitors` | List of `serviceMonitor` objects to create. See https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec | `[]` |
 | `prometheus.prometheusSpec.podMetadata` | Standard object’s metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#metadata Metadata Labels and Annotations gets propagated to the prometheus pods. | `{}` |
 | `prometheus.prometheusSpec.serviceMonitorSelector` | ServiceMonitors to be selected for target discovery. | `{}` |
@@ -148,7 +148,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `alertmanager.podDisruptionBudget.enabled` | If true, create a pod disruption budget for Alertmanager pods. The created resource cannot be modified once created - it must be deleted to perform a change | `true` |
 | `alertmanager.podDisruptionBudget.minAvailable` | Minimum number / percentage of pods that should remain scheduled | `1` |
 | `alertmanager.podDisruptionBudget.maxUnavailable` | Maximum number / percentage of pods that may be made unavailable | `""` |
-| `alertmanager.ingress.enabled` | If true, alertmanager Ingress will be created | `false` |
+| `alertmanager.ingress.enabled` | If true, Alertmanager Ingress will be created | `false` |
 | `alertmanager.ingress.annotations` | Alertmanager Ingress annotations | `{}` |
 | `alertmanager.ingress.labels` | Alertmanager Ingress additional labels | `{}` |
 | `alertmanager.ingress.hosts` | Alertmanager Ingress hostnames | `[]` |
@@ -234,13 +234,13 @@ The following tables lists the configurable parameters of the prometheus-operato
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release incubator/prometheus-operator --set sendAnalytics=true
+$ helm install --name my-release stable/prometheus-operator --set sendAnalytics=true
 ```
 
 Alternatively, one or more YAML files that specify the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release incubator/prometheus-operator -f values1.yaml,values2.yaml
+$ helm install --name my-release stable/prometheus-operator -f values1.yaml,values2.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
