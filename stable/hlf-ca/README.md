@@ -149,7 +149,7 @@ In case you already setup a database (`postgres` or `mysql`), you can enable and
    --set externalDatabase.host=myhost \
    --set externalDatabase.username=myuser \
    --set externalDatabase.password=mypassword \
-   --set externalDatabase.password=mydatabase
+   --set externalDatabase.database=mydatabase
 ```
 
 Please consult the [documentation](https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html?highlight=database#configuring-the-database) for mode details. 
