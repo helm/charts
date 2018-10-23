@@ -137,7 +137,7 @@ configmap:
     port: 27017
     ssl:
       mode: requireSSL
-      CAFile: /ca/tls.crt
+      CAFile: /data/configdb/tls.crt
       PEMKeyFile: /work-dir/mongo.pem
   replication:
     replSetName: rs0
