@@ -39,6 +39,7 @@ backend:
     index: kubernetes_cluster
     type: flb_type
     logstash_prefix: kubernetes_cluster
+    replace_dots: "on"
     time_key: "@timestamp"
     # Optional username credential for Elastic X-Pack access
     http_user:
