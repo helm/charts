@@ -249,7 +249,7 @@ Because `keycloak.extraContainers` is a string that is passed through the `tpl` 
 ```yaml
 
 # Custom values for Google Cloud SQL
-gcloudsql:
+cloudsql:
   project: my-project
   region: europe-west1
   instance: my-instance
