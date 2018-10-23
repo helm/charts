@@ -2,6 +2,8 @@ replicaCount: 1
 
 namespace: spark-history-server
 createNamespace: true
+clusterRoleName: spark-hs
+clusterRoleBindingName: spark-hs
 
 image:
   repository: lightbend/spark
@@ -35,6 +37,7 @@ pvc:
 # namespace == nfs.namespace
 nfs:
   enableExampleNFS: true
+  pvName: nfs-pv
   pvcName: nfs-pvc
   namespace: spark-history-server
 

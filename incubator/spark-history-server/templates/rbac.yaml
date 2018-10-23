@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: spark-history-server
+  name: {{ .Values.clusterRoleName }}
 rules:
 - apiGroups: [""]
   resources: ["deployments", "pods"]
@@ -10,12 +10,12 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: spark-history-server
+  name: {{ .Values.clusterRoleBindingName }}
 subjects:
 - kind: ServiceAccount
   name: spark-history-server
   namespace: {{ .Values.namespace }}
 roleRef:
   kind: ClusterRole
-  name: spark-history-server
+  name: {{ .Values.clusterRoleName }}
   apiGroup: rbac.authorization.k8s.io
