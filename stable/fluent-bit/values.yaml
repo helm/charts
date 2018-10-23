@@ -81,6 +81,13 @@ podAnnotations: {}
 ##
 existingConfigMap: ""
 
+## Add extra input sources
+extraInputs: |-
+## Add extra filters
+extraFilters: |-
+## Add extra outputs
+extraOutputs: |-
+
 ## Extra volumes containing additional files required for fluent-bit to work
 ## (eg. CA certificates)
 ## Ref: https://kubernetes.io/docs/concepts/storage/volumes/
