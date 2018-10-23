@@ -4,10 +4,8 @@ This example describes how to create Web frontend server, an auto-provisioned pe
 
 Demonstrated Kubernetes Concepts:
 
-* [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) to
-  define persistent disks (disk lifecycle not tied to the Pods).
-* [Services](https://kubernetes.io/docs/concepts/services-networking/service/) to enable Pods to
-  locate one another.
+* [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) to define persistent disks (disk lifecycle not tied to the Pods).
+* [Services](https://kubernetes.io/docs/concepts/services-networking/service/) to enable Pods to locate one another.
 
 ![alt text][nfs pv example]
 
@@ -44,83 +42,61 @@ $ kubectl get pod -l name=nfs-busybox
 $ kubectl exec nfs-busybox-jdhf3 -- cat /mnt/index.html
 ```
 
-## Example of NFS based persistent volume
+## Example of NFS-based persistent volume
 
-See [NFS Service and Replication Controller](templates/nfs-web-rc.yaml) for a quick example of how to use an NFS
-volume claim in a replication controller. It relies on the
-[NFS persistent volume](templates/nfs-pv.yaml) and
-[NFS persistent volume claim](templates/nfs-pvc.yaml) in this example as well.
+See [NFS Service and Replication Controller](templates/nfs-web-rc.yaml) for a quick example of how to use an NFS volume claim in a replication controller. It relies on the [NFS persistent volume](templates/nfs-pv.yaml) and [NFS persistent volume claim](templates/nfs-pvc.yaml) in this example as well.
 
 ## Complete setup
 
-The example below shows how to export a NFS share from a single pod replication
-controller and import it into two replication controllers.
+The example below shows how to export a NFS share from a single pod replication controller and import it into two replication controllers.
 
 ### NFS server part
 
-Define [the NFS Service and Replication Controller](templates/nfs-server-deployment.yaml) and
-[NFS service](templates/nfs-server-service.yaml):
+Define [the NFS Service and Replication Controller](templates/nfs-server-deployment.yaml) and [NFS service](templates/nfs-server-service.yaml):
 
 The NFS server exports an auto-provisioned persistent volume backed by GCE PD or Azure Disk. If you are on GCE, create a GCE PD-based PVC:
 
-```console
+```bash
 $ kubectl create -f examples/staging/volumes/nfs/provisioner/nfs-server-gce-pv.yaml
 ```
 
 If you are on Azure, create an Azure Premium Disk-based PVC:
 
-```console
+```bash
 $ kubectl create -f examples/staging/volumes/nfs/provisioner/nfs-server-azure-pv.yaml
 ```
 
 Then using the created PVC, create an NFS server and service:
 
-```console
+```bash
 $ kubectl create -f examples/staging/volumes/nfs/nfs-server-rc.yaml
 $ kubectl create -f examples/staging/volumes/nfs/nfs-server-service.yaml
 ```
 
-The directory contains dummy `index.html`. Wait until the pod is running
-by checking `kubectl get pods -l role=nfs-server`.
+The directory contains dummy `index.html`. Wait until the pod is running by checking `kubectl get pods -l role=nfs-server`.
 
 ### Create the NFS based persistent volume claim
 
-The [NFS busybox controller](templates/nfs-busybox-rc.yaml) uses a simple script to
-generate data written to the NFS server we just started. First, you'll need to
-find the cluster IP of the server:
+The [NFS busybox controller](templates/nfs-busybox-rc.yaml) uses a simple script to generate data written to the NFS server we just started. 
 
-```console
-$ kubectl describe services nfs-server
-```
+Create the [persistent volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and the persistent volume claim for your NFS server. The persistent volume and claim gives us an indirection that allow multiple pods to refer to the NFS server using a symbolic name rather than the hardcoded server address.
 
-Replace the invalid IP in the [nfs PV](templates/nfs-pv.yaml). (In the future,
-we'll be able to tie these together using the service names, but for
-now, you have to hardcode the IP.)
-
-Create the [persistent volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
-
-and the persistent volume claim for your NFS server. The persistent volume and
-claim gives us an indirection that allow multiple pods to refer to the NFS
-server using a symbolic name rather than the hardcoded server address.
-
-```console
+```bash
 $ kubectl create -f examples/staging/volumes/nfs/nfs-pv.yaml
 $ kubectl create -f examples/staging/volumes/nfs/nfs-pvc.yaml
 ```
 
-## Setup the fake backend
+## Set up the fake backend
 
-The [NFS busybox controller](templates/nfs-busybox-rc.yaml) updates `index.html` on the
-NFS server every 10 seconds. Let's start that now:
+The [NFS busybox controller](templates/nfs-busybox-rc.yaml) updates `index.html` on the NFS server every 10 seconds. Let's start that now:
 
-```console
+```bash
 $ kubectl create -f examples/staging/volumes/nfs/nfs-busybox-rc.yaml
 ```
 
-Conveniently, it's also a `busybox` pod, so we can get an early check
-that our mounts are working now. Find a busybox pod and exec:
+Conveniently, it's also a `busybox` pod, so we can get an early check that our mounts are working now. Find a busybox pod and exec:
 
-```console
+```bash
 $ kubectl get pod -l name=nfs-busybox
 NAME                READY     STATUS    RESTARTS   AGE
 nfs-busybox-jdhf3   1/1       Running   0          25m
@@ -130,34 +106,27 @@ Thu Oct 22 19:20:18 UTC 2015
 nfs-busybox-w3s4t
 ```
 
-You should see output similar to the above if everything is working well. If
-it's not, make sure you changed the invalid IP in the [NFS PV](templates/nfs-pv.yaml) file
-and make sure the `describe services` command above had endpoints listed
-(indicating the service was associated with a running pod).
+You should see output similar to the above if everything is working well. If it's not, make sure the `describe services` command above had endpoints listed (indicating the service was associated with a running pod).
 
-### Setup the web server
+### Set up the web server
 
-The [web server controller](templates/nfs-web-rc.yaml) is an another simple replication
-controller demonstrates reading from the NFS share exported above as a NFS
-volume and runs a simple web server on it.
+The [web server controller](templates/nfs-web-rc.yaml) is an another simple replication controller demonstrates reading from the NFS share exported above as a NFS volume and runs a simple web server on it.
 
 Define the pod:
 
-```console
+```bash
 $ kubectl create -f examples/staging/volumes/nfs/nfs-web-rc.yaml
 ```
 
-This creates two pods, each of which serve the `index.html` from above. We can
-then use a simple service to front it:
+This creates two pods, each of which serve the `index.html` from above. We can then use a simple service to front it:
 
-```console
+```bash
 $ kubectl create -f examples/staging/volumes/nfs/nfs-web-service.yaml
 ```
 
-We can then use the busybox container we launched before to check that `nginx`
-is serving the data appropriately:
+We can then use the busybox container we launched before to check that `nginx` is serving the data appropriately:
 
-```console
+```bash
 $ kubectl get pod -l name=nfs-busybox
 NAME                READY     STATUS    RESTARTS   AGE
 nfs-busybox-jdhf3   1/1       Running   0          1h

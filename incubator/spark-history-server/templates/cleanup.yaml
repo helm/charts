@@ -1,0 +1,28 @@
+# Delete the parent chart before the sub-chart
+{{- if .Values.nfs.enableExampleNFS }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cleanup-history-server
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+ template:
+   spec:
+     serviceAccountName: spark-history-server
+     restartPolicy: OnFailure
+     containers:
+     - name: main
+       image: "lightbend/curl:7.47.0"
+       imagePullPolicy: IfNotPresent
+       command:
+         - "/bin/sh"
+         - "-c"
+         - "curl -ik \
+          -X DELETE \
+          -H 'Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)' \
+          -H 'Accept: application/json' \
+          -H 'Content-Type: application/json' \
+          https://kubernetes.default.svc/api/v1/deployments/spark-history-server"
+{{- end }}

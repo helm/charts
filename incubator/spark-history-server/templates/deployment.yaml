@@ -1,14 +1,7 @@
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: spark-history-server
-  namespace: {{ .Release.Namespace }}
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: spark-history-server
-  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -99,33 +92,3 @@ spec:
         configMap:
           name: {{ .Values.hdfs.coreSiteConfigMap }}
       {{- end }}
----
-# Delete the parent chart before the sub-chart
-{{- if .Values.nfs.enableExampleNFS }}
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: cleanup-history-server
-  namespace: {{ .Release.Namespace }}
-  annotations:
-    "helm.sh/hook": pre-delete
-    "helm.sh/hook-delete-policy": hook-succeeded
-spec:
-  template:
-    spec:
-      serviceAccountName: spark-history-server
-      restartPolicy: OnFailure
-      containers:
-      - name: main
-        image: "lightbend/curl:7.47.0"
-        imagePullPolicy: IfNotPresent
-        command:
-          - "/bin/sh"
-          - "-c"
-          - "curl -ik \
-              -X DELETE \
-              -H 'Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)' \
-              -H 'Accept: application/json' \
-              -H 'Content-Type: application/json' \
-            https://kubernetes.default.svc/api/v1/deployments/spark-history-server"
-{{- end }}

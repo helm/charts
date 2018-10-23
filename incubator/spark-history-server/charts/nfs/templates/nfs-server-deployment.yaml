@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.nfsServerServiceName }}
-  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
