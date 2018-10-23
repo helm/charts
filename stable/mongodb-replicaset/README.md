@@ -117,6 +117,18 @@ keys `user` and `password`, that for the key file must contain `key.txt`.  The u
 full `root` permissions but is restricted to the `admin` database for security purposes. It can be
 used to create additional users with more specific permissions.
 
+To connect to the mongo shell with authentication enabled, use a command similar to the following (substituting values as appropriate):
+
+```shell
+kubectl exec -it mongodb-replicaset-0 -- mongo mydb -u admin -p password --authenticationDatabase admin
+```
+
+To connect to the mongodb replica set via an application, use a mongo URI similar to:
+
+```
+mongodb://admin:password@mongodb-replicaset:27017/mydb?authSource=admin&replicaSet=rs0
+```
+
 ## TLS support
 
 To enable full TLS encryption set `tls.enabled` to `true`. It is recommended to create your own CA by executing:
