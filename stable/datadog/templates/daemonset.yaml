@@ -110,11 +110,11 @@ spec:
             value: "yes"
           {{- if .Values.datadog.podLabelsAsTags }}
           - name: DD_KUBERNETES_POD_LABELS_AS_TAGS
-            value: {{ .Values.datadog.podLabelsAsTags }}
+            value: '{{ toJson .Values.datadog.podLabelsAsTags }}'
           {{- end }}
           {{- if .Values.datadog.podAnnotationsAsTags }}
           - name: DD_KUBERNETES_POD_ANNOTATIONS_AS_TAGS
-            value: {{ .Values.datadog.podAnnotationsAsTags }}
+            value: '{{ toJson .Values.datadog.podAnnotationsAsTags }}'
           {{- end }}
           {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
           - name: DD_KUBERNETES_KUBELET_HOST

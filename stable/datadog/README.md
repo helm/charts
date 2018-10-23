@@ -174,13 +174,16 @@ Please read [the official documentation](https://docs.datadoghq.com/agent/kubern
 
 ### Kubernetes Labels and Annotations
 
-To map Kubernetes pod labels and annotations to Datadog tags, provide a string-based
-dictionary of mapped keys such as:
+To map Kubernetes pod labels and annotations to Datadog tags, provide a dictionary with kubernetes labels/annotations as keys and datadog tags as values:
 
 ```yaml
-podAnnotationsAsTags: '{"cni.projectcalico.org/podIP":"kube_podip"}'
+podAnnotationsAsTags:
+  cni.projectcalico.org/podIP: kube_podip
+  iam.amazonaws.com/role: kube_iamrole
 ```
 
 ```yaml
-podLabelsAsTags: '{"app":"kube_app","release":"helm_release"}'
+podLabelsAsTags:
+  app: kube_app
+  release: helm_release
 ```
