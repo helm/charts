@@ -75,7 +75,7 @@ and their default values.
 
 ### Express Gateway configuration parameters
 
-Express Gateway is configured through the [Admin API interface][admin-api]. Its complete configuraton is stored in a config map.
+Express Gateway is configured through the [Admin API interface][admin-api]. Its complete configuration is stored in a config map.
 However there are some parameters that need to beset up before the container can start.
 
 ```yml
