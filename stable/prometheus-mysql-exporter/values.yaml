@@ -36,7 +36,7 @@ affinity: {}
 annotations:
   prometheus.io/scrape: "true"
   prometheus.io/path: "/metrics"
-  prometheus.io/port: 9104
+  prometheus.io/port: "9104"
 
 # mysql connection params which build the DATA_SOURCE_NAME env var of the docker container
 mysql:
