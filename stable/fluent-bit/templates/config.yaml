@@ -36,6 +36,7 @@ data:
         DB               /tail-db/tail-containers-state.db
         DB.Sync          Normal
 {{- end }}
+{{ .Values.extraInputs | indent 4 }}
 
     [FILTER]
         Name                kubernetes
@@ -52,6 +53,8 @@ data:
 {{- if .Values.filter.enableExclude }}
         K8S-Logging.Exclude On
 {{- end }}
+{{ .Values.extraFilters | indent 4 }}
+
 {{ if eq .Values.backend.type "test" }}
     [OUTPUT]
         Name  file
@@ -118,6 +121,8 @@ data:
 {{- end }}
         Format {{ .Values.backend.http.format }}
 {{- end }}
+{{ .Values.extraOutputs | indent 4 }}
+
   parsers.conf: |-
 {{- if .Values.parsers.regex }}
 {{- range .Values.parsers.regex }}
