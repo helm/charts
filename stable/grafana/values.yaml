@@ -120,7 +120,7 @@ adminUser: admin
 ## Extra environment variables that will be pass onto deployment pods
 env: {}
 
-## The names of a secrets in the same kubernetes namespace which contain values to be added to the environment
+## The names of secrets in the same kubernetes namespace which contain values to be added to the environment
 ## This can be useful for auth tokens, etc
 envFromSecret: []
 
