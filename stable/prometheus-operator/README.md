@@ -10,7 +10,7 @@ $ helm install stable/prometheus-operator
 
 ## Introduction
 
-This chart bootstraps a [prometheus-operator](https://github.com/coreos/prometheus-operator) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.  The chart can be installed multiple times to create separate Prometheus instances managed by Proemtheus Operator.
+This chart bootstraps a [prometheus-operator](https://github.com/coreos/prometheus-operator) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.  The chart can be installed multiple times to create separate Prometheus instances managed by Prometheus Operator.
 
 ## Prerequisites
   - Kubernetes 1.10+ with Beta APIs
@@ -55,7 +55,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | Parameter | Description | Default |
 | ----- | ----------- | ------ |
 | `nameOverride` | Provide a name in place of `prometheus-operator` |`""`|
-| `fullNameOverride` | Provide a name to substitue for the full names of resources |`""`|
+| `fullNameOverride` | Provide a name to substitute for the full names of resources |`""`|
 | `commonLabels` | Labels to apply to all resources | `[]` |
 | `defaultRules.create` | Create default rules for monitoring the cluster | `true` |
 | `global.rbac.create` | Create RBAC resources | `true` |
@@ -68,12 +68,12 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `prometheusOperator.enabled` | Deploy Prometheus Operator. Only one of these should be deployed into the cluster | `true` |
 | `prometheusOperator.serviceAccount` | Create a serviceaccount for the operator | `true` |
 | `prometheusOperator.name` | Operator serviceAccount name | `""` |
-| `prometheusOperator.createCustomResource` | Create CRDs. Required if deploying anyting besides the operator itself as part of the release. The operator will create / update these on startup. If your Helm version < 2.10 you will have to either create the CRDs first or deploy the operator first, then the rest of the resources | `true` |
-| `prometheusOperator.cleanupCustomResource` | Attempt to delete CRDs when the release is removed. This option may be useful while testing but is not recommended, as deleting the CRD definition will delete resources and prevent the oeprator from being able to clean up resources that it manages | `false` |
+| `prometheusOperator.createCustomResource` | Create CRDs. Required if deploying anything besides the operator itself as part of the release. The operator will create / update these on startup. If your Helm version < 2.10 you will have to either create the CRDs first or deploy the operator first, then the rest of the resources | `true` |
+| `prometheusOperator.cleanupCustomResource` | Attempt to delete CRDs when the release is removed. This option may be useful while testing but is not recommended, as deleting the CRD definition will delete resources and prevent the operator from being able to clean up resources that it manages | `false` |
 | `prometheusOperator.podLabels` | Labels to add to the operator pod | `{}` |
 | `prometheusOperator.kubeletService.enabled` | If true, the operator will create and maintain a service for scraping kubelets | `true` |
 | `prometheusOperator.kubeletService.namespace` | Namespace to deploy kubelet service | `true` |
-| `prometheusOperator.serviceMonitor.selfMonitor` | Enabel monitoring of prometheus operator | `true` |
+| `prometheusOperator.serviceMonitor.selfMonitor` | Enable monitoring of prometheus operator | `true` |
 | `prometheusOperator.resources` | Resource limits for prometheus operator | `{}` |
 | `prometheusOperator.nodeSelector` | Prometheus operator node selector https://kubernetes.io/docs/user-guide/node-selection/ | `[]` |
 | `prometheusOperator.tolerations` | Tolerations for use with node taints https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ | `{}` |
@@ -165,7 +165,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `alertmanager.alertmanagerSpec.storage` | Storage is the definition of how storage will be used by the Alertmanager instances. | `{}` |
 | `alertmanager.alertmanagerSpec.externalUrl` | The external URL the Alertmanager instances will be available under. This is necessary to generate correct URLs. This is necessary if Alertmanager is not served from root of a DNS name. | `""` |
 | `alertmanager.alertmanagerSpec.routePrefix` | The route prefix Alertmanager registers HTTP handlers for. This is useful, if using ExternalURL and a proxy is rewriting HTTP routes of a request, and the actual ExternalURL is still true, but the server serves requests under a different route prefix. For example for use with `kubectl proxy`. | `/` |
-| `alertmanager.alertmanagerSpec.paused` | If set to true all actions on the underlaying managed objects are not goint to be performed, except for delete actions. | `false` |
+| `alertmanager.alertmanagerSpec.paused` | If set to true all actions on the underlying managed objects are not going to be performed, except for delete actions. | `false` |
 | `alertmanager.alertmanagerSpec.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |
 | `alertmanager.alertmanagerSpec.resources` | Define resources requests and limits for single Pods. | `{}` |
 | `alertmanager.alertmanagerSpec.podAntiAffinity` | Pod anti-affinity can prevent the scheduler from placing Prometheus replicas on the same node. The default value "soft" means that the scheduler should *prefer* to not schedule two replica pods onto the same node but no guarantee is provided. The value "hard" means that the scheduler is *required* to not schedule two replica pods onto the same node. The value "" will disable pod anti-affinity so that no anti-affinity rules will be configured. | `""` |
@@ -190,7 +190,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `grafana.sidecar.dashboards.enabled` | Enable the Grafana sidecar to automatically load dashboards with a label `{{ grafana.sidecar.dashboards.label }}=1` | `true` |
 | `grafana.sidecar.dashboards.label` | If the sidecar is enabled, configmaps with this label will be loaded into Grafana as dashboards | `grafana_dashboard` |
 | `grafana.sidecar.datasources.enabled` | Enable the Grafana sidecar to automatically load dashboards with a label `{{ grafana.sidecar.datasources.label }}=1` | `true` |
-| `grafana.sidecar.datasourcess.label` | If the sidecar is enabled, configmaps with this label will be loaded into Grafana as datasources configurations | `grafana_datasource` |
+| `grafana.sidecar.datasources.label` | If the sidecar is enabled, configmaps with this label will be loaded into Grafana as datasources configurations | `grafana_datasource` |
 
 ### Exporters
 | Parameter | Description | Default |
@@ -211,7 +211,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 | `coreDns.service.port` | CoreDns port | `9153` |
 | `coreDns.service.targetPort` | CoreDns targetPort | `9153` |
 | `coreDns.service.selector` | CoreDns service selector | `{"k8s-app" : "coredns" }`
-| `kubeDns.enabled` | Deploy kubeDns scraping compoents. Use either this or coreDns| `false` |
+| `kubeDns.enabled` | Deploy kubeDns scraping components. Use either this or coreDns| `false` |
 | `kubeDns.service.selector` | CoreDns service selector | `{"k8s-app" : "kube-dns" }` |
 | `kubeEtcd.enabled` | Deploy components to scrape etcd | `true` |
 | `kubeEtcd.endpoints` | Endpoints where etcd runs. Provide this if running etcd outside the cluster | `[]` |
