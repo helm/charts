@@ -50,6 +50,8 @@ odooEmail: user@example.com
 ##
 ## PostgreSQL chart configuration
 ##
+## https://github.com/helm/charts/blob/master/stable/mariadb/values.yaml
+##
 postgresql:
   ## PostgreSQL password
   ## ref: https://hub.docker.com/_/postgres/
