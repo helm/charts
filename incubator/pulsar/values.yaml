@@ -66,6 +66,20 @@ tls:
         crt: ""
         key: ""
 
+permissions:
+  create: false
+  tenants:
+  - name: public
+    namespaces:
+    - name: default
+      produceConsume:
+      - exampleUser1
+      produce:
+      - exampleUser2
+      consume:
+      - exampleUser2
+
+
 zookeeper:
   extraConfig: {}
   replicas: 3

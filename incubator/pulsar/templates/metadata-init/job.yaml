@@ -39,7 +39,7 @@ spec:
           - {{ include "pulsar.name" . }}-zk-{{ .Values.zookeeper.replicas | add -1 }}
       containers:
         - name: metadata-init
-          image: apachepulsar/pulsar:2.1.1-incubating
+          image: {{ .Values.pulsar.image }}:{{ .Values.pulsar.tag }}
           command: ["sh", "-c"]
           args:
             - >

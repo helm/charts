@@ -1,0 +1,57 @@
+
+# Unforutnatley we need to do a custom conf files for some of the containers because the default conf file is incorrect
+
+{{ if .Values.permissions.create }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ include "pulsar.name" . }}-permissions-scripts
+    labels:
+      component: permissions
+      app.kubernetes.io/name: {{ include "pulsar.name" . }}
+      helm.sh/chart: {{ include "pulsar.chart" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  set-permissions.sh: |-
+    #!/bin/sh
+    set -x
+
+    # We need to turn the data we have into a list of users with produce and consume permsisions
+    {{ $users := dict -}}
+    {{- $cluster_name := .Values.pulsar.clusterName -}} 
+    {{- range $t_index, $tenant := .Values.permissions.tenants -}}
+      {{- $t_name := $tenant.name }}
+    bin/pulsar-admin tenants create {{ $t_name }};
+      {{ range $ns_index, $ns := $tenant.namespaces -}}
+        {{- $ns_name := $ns.name -}}
+        {{- range $u_index, $user := $ns.produceConsume -}}
+          {{- if not ( hasKey $users $user ) -}}
+            {{- $_ := set $users $user (list) -}}
+          {{- end -}}
+          {{- $noop := printf "produce" | append ( index $users $user ) | set $users $user -}}
+          {{- $noop := printf "consume" | append ( index $users $user ) | set $users $user -}}
+        {{- end -}}
+        {{- range $u_index, $user := $ns.produce -}}
+          {{- if not ( hasKey $users $user ) -}}
+            {{- $_ := set $users $user (list) -}}
+          {{- end -}}
+          {{- $noop := printf "produce" | append ( index $users $user ) | set $users $user -}}
+        {{- end -}}
+        {{- range $u_index, $user := $ns.consume -}}
+          {{- if not ( hasKey $users $user ) -}}
+            {{- $_ := set $users $user (list) -}}
+          {{- end -}}
+          {{- $noop := printf "consume" | append ( index $users $user ) | set $users $user -}}
+        {{- end }}
+    
+    bin/pulsar-admin namespaces create {{ printf "%s/%s" $t_name $ns_name }};
+    bin/pulsar-admin namespaces set-clusters -c {{ $cluster_name }} {{ printf "%s/%s" $t_name $ns_name }};
+        {{ range $user, $perms := $users }}
+    bin/pulsar-admin namespaces grant-permission {{ printf "%s/%s" $t_name $ns_name }} --actions {{ join "," $perms }} --role {{ $user }};
+        {{ $_ := unset $users  $user }}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+{{- end -}}
+

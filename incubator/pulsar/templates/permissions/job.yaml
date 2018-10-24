@@ -1,0 +1,81 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+{{ if .Values.permissions.create }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "pulsar.name" . }}-permissions
+  labels:
+    component: permissions
+    app.kubernetes.io/name: {{ include "pulsar.name" . }}
+    helm.sh/chart: {{ include "pulsar.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccount: {{ include "pulsar.name" . }}-wait-for
+      initContainers:
+        - name: wait-for-turn
+          image: groundnuty/k8s-wait-for:0.1
+          args:
+          - pod
+          - {{ include "pulsar.name" . }}-bookkeeper-{{ .Values.bookkeeper.replicas | add -1 }}
+      volumes:
+      - name: {{ include "pulsar.name" . }}-fixed-conf-file
+        configMap:
+          name: {{ include "pulsar.name" . }}-fixed-conf-file
+      - name: {{ include "pulsar.name" . }}-permissions-scripts
+        configMap:
+          name: {{ include "pulsar.name" . }}-permissions-scripts
+      {{- if .Values.tls.enabled }}
+      - name: tls
+        secret:
+          secretName: {{ include "pulsar.name" . }}-admin-tls
+      {{- end }}
+      containers:
+      - name: pulsar-admin
+        image: {{ .Values.pulsar.image }}:{{ .Values.pulsar.tag }}
+        command: ["sh", "-c"]
+        args:
+          - >
+            echo Going to copy file... &&
+            cat /fixed-config-file/client.conf >> conf/client.conf &&
+            bin/apply-config-from-env.py conf/client.conf &&
+            sh /scripts/set-permissions.sh
+        volumeMounts:
+        {{- if .Values.tls.enabled }}
+        - name: tls
+          mountPath: /tls
+          readOnly: true
+        {{- end }}
+        - name: {{ include "pulsar.name" . }}-fixed-conf-file
+          mountPath: /fixed-config-file
+          readOnly: true
+        - name: {{ include "pulsar.name" . }}-permissions-scripts
+          mountPath: /scripts
+          readOnly: true
+        envFrom:
+          - configMapRef:
+              name: {{ include "pulsar.name" . }}-admin-config
+{{- end }}
