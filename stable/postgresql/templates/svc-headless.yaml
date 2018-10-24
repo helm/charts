@@ -1,14 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "postgresql.fullname" . }}
+  name: {{ template "postgresql.fullname" . }}-headless
   labels:
     app: {{ template "postgresql.name" . }}
     chart: {{ template "postgresql.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
-  type: {{ .Values.service.type }}
+  type: ClusterIP
+  clusterIP: None
   ports:
   - name: postgresql
     port: 5432
@@ -16,4 +17,3 @@ spec:
   selector:
     app: {{ template "postgresql.name" . }}
     release: {{ .Release.Name | quote }}
-    role: master
