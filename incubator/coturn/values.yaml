@@ -1,0 +1,69 @@
+ # Default values for coturn.
+ # This is a YAML-formatted file.
+ # Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: wolmi/coturn
+  tag: stable
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+config:
+  listening-device: eth0
+  listening-port: 3478
+  tls-listening-port: 5349
+  alt-listening-port: false
+  alt-tls-listening-port: false
+  listening-ip: 0.0.0.0
+  aux-server: false
+  udp-self-balance: false
+  relay-device: false
+  relay-ip: false
+  external-ip: 60.70.80.91
+  relay-threads: false
+  min-port: false
+  max-port: false
+  verbose: false
+  Verbose: false
+  fingerprint: true
+  lt-cred-mech: true
+  no-auth: false
+  use-auth-secret: false
+  static-auth-secret: false
+  server-name: blackdow.carleon.gov

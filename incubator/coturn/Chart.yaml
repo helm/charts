@@ -1,0 +1,15 @@
+apiVersion: v1
+appVersion: "1.0"
+description: A Helm chart for Kubernetes
+name: coturn
+version: 0.1.0
+keywords:
+  - webrtc
+  - turn
+  - coturn
+home: https://github.com/coturn/coturn
+sources:
+  - https://github.com/coturn/coturn
+maintainer:
+  - name: Miquel Ortega
+    email: lenyos@gmail.com
