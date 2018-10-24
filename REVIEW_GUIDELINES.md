@@ -33,7 +33,8 @@ Stable charts should not depend on charts in incubator.
 
 ## Names and Labels
 
-Resources and labels should follow some conventions. The standard resource metadata should be this:
+### Metadata
+Resources and labels should follow some conventions. The standard resource metadata (`metadata.labels` and `spec.template.metadata.labels`) should be this:
 
 ```yaml
 name: {{ template "myapp.fullname" . }}
@@ -44,7 +45,40 @@ labels:
   heritage: {{ .Release.Service }}
 ```
 
+If a chart has multiple components, a `component` label should be added (e. g. `component: server`). The resource name should get the component as suffix (e. g. `name: {{ template "myapp.fullname" . }}-server`).
+
 Note that templates have to be namespaced. With Helm 2.7+, `helm create` does this out-of-the-box. The `app` label should use the `name` template, not `fullname` as is still the case with older charts.
+
+### Deployments, StatefulSets, DaemonSets Selectors
+
+`spec.selector.matchLabels` must be specified should follow some conventions. The standard selector should be this:
+
+```yaml
+selector:
+  matchLabels:
+    app: {{ template "myapp.name" . }}
+    release: {{ .Release.Name }}
+```
+
+If a chart has multiple components, a `component` label should be added to the selector (see above).
+
+`spec.selector.matchLabels` defined in `Deployments`/`StatefulSets`/`DaemonSets` `>=v1/beta2` **must not** contain `chart` label or any label containing a version of the chart, because the selector is immutable.
+The chart label string contains the version, so if it is specified, whenever the the Chart.yaml version changes, Helm's attempt to change this immutable field would cause the upgrade to fail.
+
+#### Fixing Selectors
+
+##### For Deployments, StatefulSets, DaemonSets apps/v1beta1 or extensions/v1beta1
+
+- If it does not specify `spec.selector.matchLabels`, set it
+- Remove `chart` label in `spec.selector.matchLabels` if it exists
+- Bump patch version of the Chart
+
+##### For Deployments, StatefulSets, DaemonSets >=apps/v1beta2
+
+- Remove `chart` label in `spec.selector.matchLabels` if it exists
+- Bump major version of the Chart as it is a breaking change
+
+### Service Selectors
 
 Label selectors for services must have both `app` and `release` labels.
 
@@ -54,7 +88,26 @@ selector:
   release: {{ .Release.Name }}
 ```
 
-If a chart has multiple components, a `component` label should be added (e. g. `component: server`). The resource name should get the component as suffix (e. g. `name: {{ template "myapp.fullname" . }}-server`). The `component` label must be added to label selectors as well.
+If a chart has multiple components, a `component` label should be added to the selector (see above).
+
+### Persistence Labels
+
+### StatefulSet
+
+In case of a `Statefulset`, `spec.volumeClaimTemplates.metadata.labels` must have both `app` and `release` labels, and **must not** contain `chart` label or any label containing a version of the chart, because `spec.volumeClaimTemplates` is immutable.
+
+```yaml
+labels:
+  app: {{ template "myapp.name" . }}
+  release: {{ .Release.Name }}
+```
+
+If a chart has multiple components, a `component` label should be added to the selector (see above).
+
+### PersistentVolumeClaim
+
+In case of a `PersistentVolumeClaim`, unless special needs, `matchLabels` should not be specified
+because it would prevent automatic `PersistentVolume` provisioning.
 
 ## Formatting
 
@@ -269,7 +322,7 @@ spec:
 
 We officially support compatibility with the current and the previous minor version of Kubernetes. Generated resources should use the latest possible API versions compatible with these versions. For extended backwards compatibility conditional logic based on capabilities may be used (see [built-in objects](https://github.com/helm/helm/blob/master/docs/chart_template_guide/builtin_objects.md)).
 
-## Kubernetes Native Workloads.
+## Kubernetes Native Workloads
 
 While reviewing Charts that contain workloads such as [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/), [DaemonSets](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) and [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/) the below points should be considered.  These are to be seen as best practices rather than strict enforcement.
 
