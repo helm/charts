@@ -49,7 +49,7 @@ If a chart has multiple components, a `component` label should be added (e. g. `
 
 Note that templates have to be namespaced. With Helm 2.7+, `helm create` does this out-of-the-box. The `app` label should use the `name` template, not `fullname` as is still the case with older charts.
 
-### Deployments, StatefulSet, DaemonSets selectors
+### Deployments, StatefulSets, DaemonSets Selectors
 
 `spec.selector.matchLabels` must be specified should follow some conventions. The standard selector should be this:
 
@@ -63,9 +63,9 @@ selector:
 If a chart has multiple components, a `component` label should be added to the selector (see above).
 
 `spec.selector.matchLabels` defined in `Deployments`/`StatefulSets`/`DaemonSets` `>=v1/beta2` **must not** contain `chart` label or any label containing a version of the chart, because the selector is immutable.
-The chart label string contains the version, so if is is specified, whenever the the Chart.yaml version changes, Helm's attempt to change this immutable field would cause the upgrade to fail.
+The chart label string contains the version, so if is specified, whenever the the Chart.yaml version changes, Helm's attempt to change this immutable field would cause the upgrade to fail.
 
-#### Fixing selectors
+#### Fixing Selectors
 
 ##### For Deployments, StatefulSets, DaemonSets apps/v1beta1 or extensions/v1beta1
 
@@ -78,7 +78,7 @@ The chart label string contains the version, so if is is specified, whenever the
 - Remove `chart` label in `spec.selector.matchLabels` if it exists
 - Bump major version of the Chart as it is a breaking change
 
-### Service selectors
+### Service Selectors
 
 Label selectors for services must have both `app` and `release` labels.
 
@@ -90,7 +90,7 @@ selector:
 
 If a chart has multiple components, a `component` label should be added to the selector (see above).
 
-### Persistence labels
+### Persistence Labels
 
 ### StatefulSet
 
@@ -107,7 +107,7 @@ If a chart has multiple components, a `component` label should be added to the s
 ### PersistentVolumeClaim
 
 In case of a `PersistentVolumeClaim`, unless special needs, `matchLabels` should not be specified
-because it would prevent automatic `PersistentVolume` provisionning.
+because it would prevent automatic `PersistentVolume` provisioning.
 
 ## Formatting
 
@@ -322,7 +322,7 @@ spec:
 
 We officially support compatibility with the current and the previous minor version of Kubernetes. Generated resources should use the latest possible API versions compatible with these versions. For extended backwards compatibility conditional logic based on capabilities may be used (see [built-in objects](https://github.com/helm/helm/blob/master/docs/chart_template_guide/builtin_objects.md)).
 
-## Kubernetes Native Workloads.
+## Kubernetes Native Workloads
 
 While reviewing Charts that contain workloads such as [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/), [DaemonSets](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) and [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/) the below points should be considered.  These are to be seen as best practices rather than strict enforcement.
 
