@@ -135,16 +135,19 @@ $ helm install stable/kong --name my-release -f values.yaml
 
 Kong Ingress Controller's primary purpose is to satisfy Ingress resources
 created in k8s.  It uses CRDs for more fine grained control over routing and
-for Kong specific configuration. To deploy the ingress controller together with kong:
+for Kong specific configuration. To deploy the ingress controller together with
+kong run the following command:
 
 ```bash
 helm install . \
     --set ingressController.enabled=true \
-    --set image.tag=0.13.1 \
     --set admin.useTLS=false \
     --set readinessProbe.httpGet.scheme=HTTP \
     --set livenessProbe.httpGet.scheme=HTTP
 ```
+
+**Note**: Actual ingress controller works only with 0.14.1 version of kong and
+it doesn't support SSL Admin port.
 
 Kong ingress controller relies on several Custom Resource Definition objects to
 declare the the Kong configurations and synchronize the configuration with the
@@ -174,6 +177,6 @@ https://github.com/Kong/kubernetes-ingress-controller/blob/master/docs/custom-ty
 | enabled          | Deploy the ingress controller, rbac and crd | false                                                                        |
 | replicaCount     | Number of desired ingress controllers       | 1                                                                            |
 | image.repository | Docker image with the ingress controller    | kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller |
-| image.tag        | Version of the ingress controller           | 0.1.0                                                                        |
+| image.tag        | Version of the ingress controller           | 0.2.0                                                                        |
 | readinessProbe   | Kong ingress controllers readiness probe    |                                                                              |
 | livenessProbe    | Kong ingress controllers liveness probe     |                                                                              |
