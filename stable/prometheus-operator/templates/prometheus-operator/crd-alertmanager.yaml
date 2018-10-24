@@ -1398,7 +1398,7 @@ spec:
               description: Define which Nodes the Pods are scheduled on.
               type: object
             paused:
-              description: If set to true all actions on the underlaying managed objects
+              description: If set to true all actions on the underlying managed objects
                 are not goint to be performed, except for delete actions.
               type: boolean
             podMetadata:
@@ -2414,7 +2414,7 @@ spec:
               format: int32
               type: integer
             paused:
-              description: Represents whether any actions on the underlaying managed
+              description: Represents whether any actions on the underlying managed
                 objects are being performed. Only delete actions will be performed.
               type: boolean
             replicas:
