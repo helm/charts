@@ -178,7 +178,6 @@ To map Kubernetes pod labels and annotations to Datadog tags, provide a dictiona
 
 ```yaml
 podAnnotationsAsTags:
-  cni.projectcalico.org/podIP: kube_podip
   iam.amazonaws.com/role: kube_iamrole
 ```
 
