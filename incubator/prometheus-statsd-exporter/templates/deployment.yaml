@@ -1,32 +1,38 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: prometheus-statsd-exporter
+  name: {{ template "prometheus-redis-exporter.fullname" . }}
   labels:
-    app: prometheus-statsd-exporter
-    chart: prometheus-statsd-exportery
+    app: {{ template "prometheus-redis-exporter.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.statsd-exporter.replicaCount }}
   selector:
     matchLabels:
-      app: prometheus-statsd-exporter
+      app: {{ template "prometheus-redis-exporter.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+{{ toYaml .Values.statsd-exporter.annotations | indent 8 }}
       labels:
-        app: prometheus-statsd-exporter
+        app: {{ template "prometheus-redis-exporter.name" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: prometheus-statsd-exporter
+      serviceAccountName: {{ template "prometheus-redis-exporter.serviceAccountName" . }}
       containers:
-        - name: statsd-exporter
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+          {{- range $key, $value := .Values.statsd-exporter.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
           volumeMounts:
           - mountPath: /data
-            name: storage-volume
+            name: {{ .Values.persitentVolume.name }}
           env:
           - name: HOME
             value: /data
@@ -47,8 +53,12 @@ spec:
             initialDelaySeconds: 10
             timeoutSeconds: 10
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.statsd-exporter.resources | indent 12 }}
+{{- if .Values.statsd-exporter.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.statsd-exporter.nodeSelector | indent 8 }}
+    {{- end }}
       volumes:
-      - name: storage-volume
+      - name: {{ .Values.persitentVolume.name }}
         persistentVolumeClaim:
-          claimName: prometheus-statsd-exporter
+          claimName: {{ .Values.persitentVolume.claimName }}prometheus-statsd-exporter
