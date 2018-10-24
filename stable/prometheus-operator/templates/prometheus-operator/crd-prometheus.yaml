@@ -3112,7 +3112,7 @@ spec:
               format: int32
               type: integer
             paused:
-              description: Represents whether any actions on the underlaying managed
+              description: Represents whether any actions on the underlying managed
                 objects are being performed. Only delete actions will be performed.
               type: boolean
             replicas:
