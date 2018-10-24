@@ -5,10 +5,14 @@ image:
 
 service:
   annotations: {}
-  clusterIP: {}
-  externalIPs: {}
-  loadBalancerIP: {}
-  loadBalancerSourceRanges: {}
+  labels: {}
+  clusterIP: ""
+  ## List of IP addresses at which the alertmanager service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
   servicePort: 80
   type: ClusterIP
 
@@ -69,18 +73,39 @@ statsd-exporter:
   nodeSelector: {}
 
 serviceaccount:
+  ## If false, serviceaccount will not be installed
+  ##
   enable: false
   componentName: prometheus-statsd-exporter
 
 persistentVolume:
   name: storage-volume
   claimName: prometheus-statsd-exporter
-  enabled: true
+
+  ## If true, statsd-export will create/use a Persistent Volume Claim
+  ## If false, use emptyDir
+  ##
+  enabled: true 
+
+  ## statsd-exporter data Persistent Volume access modes
+  ## Must match those of existing PV or dynamic provisioner
+  ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
   accessModes:
     - ReadWriteOnce
+  
+  ## statsd-exporter data Persistent Volume Claim annotations
+  ##
   annotations: {}
-  existingClaim: {}
+
+  ## statsd-exporter data Persistent Volume existing claim name
+  ## Requires statsd-exporter.persistentVolume.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  existingClaim: ""
+
+  ## statsd-exporter  data Persistent Volume mount root path
+  ##
   mountPath: /data
   size: 20Gi
-  subPath: {}
+  subPath: ""
   storageClass: {}
