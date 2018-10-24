@@ -32,7 +32,7 @@ securityContext:
   runAsUser: 1001
 
 replication:
-  enabled: false
+  enabled: true
   user: repl_user
   password: repl_password
   slaveReplicas: 1
@@ -50,11 +50,6 @@ postgresqlUsername: postgres
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#creating-a-database-on-first-run
 ##
 # postgresqlDatabase:
-
-## Optional duration in seconds the pod needs to terminate gracefully.
-## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
-##
-# terminationGracePeriodSeconds: 30
 
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
@@ -125,7 +120,7 @@ readinessProbe:
 ## Configure metrics exporter
 ##
 metrics:
-  enabled: false
+  enabled: true
   # resources: {}
   # podAnnotations: {}
   service:
