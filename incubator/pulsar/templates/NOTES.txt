@@ -1,0 +1,5 @@
+Your pulsar instance is now deployed. It will take a little bit for everything to get up and running.
+
+You can use the below command to set up a bash alias to allow you to run pulsar-admin commands:
+
+`alias pulsar-admin='kubectl -n pulsar exec $( kubectl -n pulsar get pods -l=app=pulsar-admin -o jsonpath="{.items[0].metadata.name}" ) -it -- bin/pulsar-admin'`

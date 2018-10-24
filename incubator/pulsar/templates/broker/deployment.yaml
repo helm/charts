@@ -1,0 +1,95 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+
+##
+## Broker deployment definition
+##
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+    name: {{ include "pulsar.name" . }}-broker
+    labels:
+      component: broker
+      app.kubernetes.io/name: {{ include "pulsar.name" . }}
+      helm.sh/chart: {{ include "pulsar.chart" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+    replicas: 1
+    template:
+        metadata:
+            labels:
+              component: broker
+              app.kubernetes.io/name: {{ include "pulsar.name" . }}
+              helm.sh/chart: {{ include "pulsar.chart" . }}
+              app.kubernetes.io/instance: {{ .Release.Name }}
+              app.kubernetes.io/managed-by: {{ .Release.Service }}
+            annotations:
+                prometheus.io/scrape: "true"
+                prometheus.io/port: "8080"
+        spec:
+            {{- if .Values.tls.enabled }}
+            volumes:
+            - name: tls
+              secret:
+                secretName: {{ include "pulsar.name" . }}-broker-tls
+            {{- end }}
+            serviceAccount: {{ include "pulsar.name" . }}-wait-for
+            initContainers:
+              - name: wait-for-turn
+                image: groundnuty/k8s-wait-for:0.1
+                args:
+                - job
+                - {{ include "pulsar.name" . }}-metadata-init
+            containers:
+              - name: broker
+                image: {{ .Values.pulsar.image }}:{{ .Values.pulsar.tag }}
+                command: ["sh", "-c"]
+                args:
+                  - >
+                    bin/apply-config-from-env.py conf/broker.conf &&
+                    bin/apply-config-from-env.py conf/pulsar_env.sh &&
+                    bin/pulsar broker
+                ports:
+                  {{- if .Values.tls.enabled }}
+                  - containerPort: 8443
+                  - containerPort: 6651
+                  {{- else }}
+                  - containerPort: 8080
+                  - containerPort: 6650
+                  {{- end }}
+                envFrom:
+                  - configMapRef:
+                        name: {{ include "pulsar.name" . }}-broker-config
+                {{- if .Values.tls.enabled }}
+                volumeMounts:
+                - name: tls
+                  mountPath: /tls
+                  readOnly: true
+                {{- end }}
+                resources:
+                  requests:
+                    memory: "3000Mi"
+                    cpu: "600m"
+                env:
+                 - name: advertisedAddress
+                   valueFrom:
+                        fieldRef:
+                           fieldPath: status.podIP

@@ -1,0 +1,134 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ include "pulsar.name" . }}-bookkeeper
+  labels:
+    component: bookkeeper
+    app.kubernetes.io/name: {{ include "pulsar.name" . }}
+    helm.sh/chart: {{ include "pulsar.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  serviceName: {{ include "pulsar.name" . }}-bookkeeper
+  replicas: {{ .Values.bookkeeper.replicas }}
+  template:
+    metadata:
+      labels:
+        component: bookkeeper
+        app.kubernetes.io/name: {{ include "pulsar.name" . }}
+        helm.sh/chart: {{ include "pulsar.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+    spec:
+      terminationGracePeriodSeconds: 0
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchExpressions:
+                    - key: "app"
+                      operator: In
+                      values:
+                        - bookkeeper
+      serviceAccount: {{ include "pulsar.name" . }}-wait-for
+      initContainers:
+        - name: wait-for-turn
+          image: groundnuty/k8s-wait-for:0.1
+          args:
+          - job
+          - {{ include "pulsar.name" . }}-metadata-init
+        # The first time, initialize BK metadata in zookeeper
+        # Otherwise ignore error if it's already there
+      initContainers:
+        - name: bookie-metaformat
+          image: {{ .Values.pulsar.image }}:{{ .Values.pulsar.tag }}
+          command: ["sh", "-c"]
+          args:
+            - >
+              { bin/apply-config-from-env.py conf/bookkeeper.conf && echo configured from env; } &&
+              { echo metaformat && bin/bookkeeper shell metaformat --nonInteractive || true; };
+          envFrom:
+            - configMapRef:
+                name: {{ include "pulsar.name" . }}-bookie-config
+      containers:
+        - name: bookie
+          image: {{ .Values.pulsar.image }}:{{ .Values.pulsar.tag }}
+          command: ["sh", "-x", "-c"]
+          args:
+            - >
+              echo config to bookeeper... &&
+              bin/apply-config-from-env.py conf/bookkeeper.conf &&
+              echo config to pulsar_env... &&
+              bin/apply-config-from-env.py conf/pulsar_env.sh &&
+              echo starting bookie... &&
+              bin/pulsar bookie || { echo failed to start bookie...; bin/bookkeeper shell bookieformat -deleteCookie -f -nonInteractive && bin/pulsar bookie; }
+          ports:
+            - containerPort: 3181
+              name: client
+          envFrom:
+            - configMapRef:
+                name: {{ include "pulsar.name" . }}-bookie-config
+          volumeMounts:
+            - name: {{ include "pulsar.name" . }}-journal-disk
+              mountPath: /pulsar/data/bookkeeper/journal
+            - name: {{ include "pulsar.name" . }}-ledger-disk
+              mountPath: /pulsar/data/bookkeeper/ledgers
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ include "pulsar.name" . }}-journal-disk
+        annotations:
+          volume.alpha.kubernetes.io/storage-class: default
+        labels:
+          component: bookkeeper
+          app.kubernetes.io/name: {{ include "pulsar.name" . }}
+          helm.sh/chart: {{ include "pulsar.chart" . }}
+          app.kubernetes.io/instance: {{ .Release.Name }}
+          app.kubernetes.io/managed-by: {{ .Release.Service }}
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: {{ include "pulsar.name" . }}-bookie-ssd
+    - metadata:
+        name: {{ include "pulsar.name" . }}-ledger-disk
+        annotations:
+          volume.alpha.kubernetes.io/storage-class: default
+        labels:
+          component: bookkeeper
+          app.kubernetes.io/name: {{ include "pulsar.name" . }}
+          helm.sh/chart: {{ include "pulsar.chart" . }}
+          app.kubernetes.io/instance: {{ .Release.Name }}
+          app.kubernetes.io/managed-by: {{ .Release.Service }}
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: {{ include "pulsar.name" . }}-bookie-hdd

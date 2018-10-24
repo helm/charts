@@ -1,0 +1,27 @@
+
+# Unforutnatley we need to do a custom conf files for some of the containers because the default conf file is incorrect
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ include "pulsar.name" . }}-fixed-conf-file
+    labels:
+      component: pulsar-admin
+      app.kubernetes.io/name: {{ include "pulsar.name" . }}
+      helm.sh/chart: {{ include "pulsar.chart" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  client.conf: |-
+    clusterName=pulsar-gke
+    tlsEnabled=false
+    tlsCertificateFilePath=/tls/crt.pem
+    tlsKeyFilePath=/tls/key.pem
+    tlsTrustCertsFilePath=/tls/ca.pem
+    webServiceUrl=https://broker.pulsar.svc.cluster.local:8443/
+    brokerServiceUrl=pulsar+ssl://broker.pulsar.svc.cluster.local:6651/
+    tlsAllowInsecureConnection=true
+    authPlugin=org.apache.pulsar.client.impl.auth.AuthenticationTls
+    authParams=tlsCertFile:/tls/crt.pem,tlsKeyFile:/tls/key.pem
+  proxy.conf: |-
+    tlsTrustCertsFilePath=/tls/ca.pem

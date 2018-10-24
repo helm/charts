@@ -1,0 +1,53 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+{{ if .Values.admin.enabled -}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ include "pulsar.name" . }}-admin-config
+    labels:
+      component: pulsar-admin
+      app.kubernetes.io/name: {{ include "pulsar.name" . }}
+      helm.sh/chart: {{ include "pulsar.chart" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+    PULSAR_MEM: {{ .Values.admin.java_mem | quote }}
+    PULSAR_GC: {{ .Values.admin.java_gc | quote }}
+    clusterName: {{ .Values.pulsar.clusterName | quote }}
+    webServiceUrl: "{{ if .Values.tls.enabled }}https{{ else }}http{{ end }}://{{ include "pulsar.name" . }}-proxy.{{ .Release.Namespace }}.svc.cluster.local:{{ if .Values.tls.enabled }}8443{{ else }}8080{{ end }}/"
+    brokerServiceUrl: "pulsar{{ if .Values.tls.enabled }}+ssl{{ end }}://{{ include "pulsar.name" . }}-proxy.{{ .Release.Namespace }}.svc.cluster.local:{{ if .Values.tls.enabled }}6651{{ else }}6650{{ end }}/"
+{{- if .Values.tls.enabled }}
+    tlsEnabled: "true"
+    tlsCertificateFilePath: "/tls/crt.pem"
+    tlsKeyFilePath: "/tls/key.pem"
+    tlsTrustCertsFilePath: "/tls/ca.pem"
+{{- if .Values.tls.authentication.enabled }}
+    authPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationTls"
+    authParams:  "tlsCertFile:/tls/crt.pem,tlsKeyFile:/tls/key.pem"
+{{- end }}
+{{- end }}
+{{- if .Values.admin.extraConfig }}
+{{ toYaml .Values.admin.extraConfig | indent 4 }}
+{{- end }}
+
+---
+{{- end }}

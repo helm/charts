@@ -1,0 +1,57 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ include "pulsar.name" . }}-broker-config
+    labels:
+      component: broker
+      app.kubernetes.io/name: {{ include "pulsar.name" . }}
+      helm.sh/chart: {{ include "pulsar.chart" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+    PULSAR_MEM: {{ .Values.broker.java_mem | quote }}
+    PULSAR_GC: {{ .Values.broker.java_mem | quote }}
+    zookeeperServers: {{ include "pulsar.zkServersService" . }}
+    configurationStoreServers: {{ include "pulsar.zkServersService" . }}
+    clusterName: {{ .Values.pulsar.clusterName }}
+    managedLedgerDefaultEnsembleSize: "2"
+    managedLedgerDefaultWriteQuorum: "2"
+    managedLedgerDefaultAckQuorum: "2"
+    webServiceUrl: "{{ if .Values.tls.enabled }}https{{ else }}http{{ end }}://{{ include "pulsar.name" . }}-proxy.{{ .Release.Namespace }}.svc.cluster.local:{{ if .Values.tls.enabled }}8443{{ else }}8080{{ end }}/"
+    brokerServiceUrl: "pulsar{{ if .Values.tls.enabled }}+ssl{{ end }}://{{ include "pulsar.name" . }}-proxy.{{ .Release.Namespace }}.svc.cluster.local:{{ if .Values.tls.enabled }}6651{{ else }}6650{{ end }}/"
+{{- if .Values.tls.enabled }}
+    tlsEnabled: "true"
+    tlsCertificateFilePath: "/tls/crt.pem"
+    tlsKeyFilePath: "/tls/key.pem"
+    tlsTrustCertsFilePath: "/tls/ca.pem"
+{{- if .Values.tls.authentication.enabled }}
+    authenticationEnabled: "true"
+    authorizationEnabled: "true"
+    authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+    proxyRoles: {{ .Values.tls.authentication.proxyRoles }}
+    superUserRoles: {{ .Values.tls.authentication.superUserRoles }}
+{{- end }}
+{{- end }}
+{{- if .Values.broker.extraConfig }}
+{{ toYaml .Values.broker.extraConfig | indent 4 }}
+{{- end }}

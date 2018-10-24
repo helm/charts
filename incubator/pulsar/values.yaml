@@ -1,0 +1,74 @@
+pulsar:
+  clusterName: pulsar-gke
+  image: apachepulsar/pulsar
+  tag: 2.1.1-incubating
+
+admin:
+  extraConfig: {}
+  enabled: true
+  java_mem: "-Xms8g -Xmx8g -XX:MaxDirectMemorySize=4g"
+  java_gc: "-XX:+UseG1GC"
+
+bookkeeper:
+  extraConfig: {}
+  replicas: 3
+  java_mem: "\" -Xms4g -Xmx4g -XX:MaxDirectMemorySize=4g\""
+  java_gc: "\" -XX:+UseG1GC\""
+  autoRecovery:
+    replicas: 2
+    java_mem: "\" -Xmx256m \""
+    java_gc: "\" \""
+
+broker:
+  extraConfig: {}
+  replicas: 1
+  java_mem: "-Xms8g -Xmx8g -XX:MaxDirectMemorySize=4g"
+  java_gc: "-XX:+UseG1GC"
+
+monitoring:
+  grafana:
+    enabled: true
+    image: apachepulsar/pulsar-grafana
+    tag: latest
+  prometheus:
+    enabled: true
+  pulsarDashboard:
+    enabled: true
+    image: apachepulsar/pulsar-dashboard
+    tag: latest
+
+proxy:
+  extraConfig: {}
+  replicas: 1
+  java_mem: "-Xms4g -Xmx4g -XX:MaxDirectMemorySize=4g"
+  java_gc: "-XX:+UseG1GC"
+  service:
+    loadBalancerIP: ""
+    clusterIP: ""
+    type: LoadBalancer
+    annotations: {}
+
+tls:
+  enabled: false
+  caCert: ""
+  brokerCrt: ""
+  brokerKey: ""
+
+  authentication:
+    enabled: false
+    superUserRoles: admin,proxy
+    proxyRoles: proxy
+    users:
+      admin:
+        crt: ""
+        key: ""
+      proxy:
+        crt: ""
+        key: ""
+
+zookeeper:
+  extraConfig: {}
+  replicas: 3
+  java_mem: "\" -Xms2g -Xmx2g \""
+  java_gc: "\" -XX:+UseG1GC -XX:MaxGCPauseMillis=10\""
+

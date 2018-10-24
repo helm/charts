@@ -1,0 +1,113 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+
+## Define a StatefulSet for ZK servers
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+    name: {{ include "pulsar.name" . }}-zk
+    labels:
+      component: zookeeper
+      app.kubernetes.io/name: {{ include "pulsar.name" . }}
+      helm.sh/chart: {{ include "pulsar.chart" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+    serviceName: {{ include "pulsar.name" . }}-zookeeper
+    replicas: 3
+    template:
+        metadata:
+            labels:
+              component: zookeeper
+              app.kubernetes.io/name: {{ include "pulsar.name" . }}
+              helm.sh/chart: {{ include "pulsar.chart" . }}
+              app.kubernetes.io/instance: {{ .Release.Name }}
+              app.kubernetes.io/managed-by: {{ .Release.Service }}
+            annotations:
+                pod.alpha.kubernetes.io/initialized: "true"
+                prometheus.io/scrape: "true"
+                prometheus.io/port: "8080"
+
+        spec:
+            # Make sure multiple pods of ZK don't get scheduled on the
+            # same node, unless there are no other available nodes
+            affinity:
+                podAntiAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 1
+                        podAffinityTerm:
+                            labelSelector:
+                                matchExpressions:
+                                  - key: "component"
+                                    operator: In
+                                    values:
+                                      - zookeeper
+                            topologyKey: "kubernetes.io/hostname"
+            containers:
+              - name: zookeeper
+                image: {{ .Values.pulsar.image }}:{{ .Values.pulsar.tag }}
+                command: ["sh", "-c"]
+                args:
+                  - >
+                    bin/apply-config-from-env.py conf/zookeeper.conf &&
+                    bin/apply-config-from-env.py conf/pulsar_env.sh &&
+                    bin/generate-zookeeper-config.sh conf/zookeeper.conf &&
+                    cat conf/zookeeper.conf &&
+                    bin/pulsar zookeeper
+                ports:
+                  - containerPort: 2181
+                    name: client
+                  - containerPort: 2888
+                    name: server
+                  - containerPort: 3888
+                    name: leader-election
+                env:
+                  - name: ZOOKEEPER_SERVERS
+                    value: {{ include "pulsar.zkServersNoService" . }}
+                envFrom:
+                  - configMapRef:
+                        name: {{ include "pulsar.name" . }}-zookeeper-config
+
+                readinessProbe:
+                    exec:
+                        command:
+                          - "bin/pulsar-zookeeper-ruok.sh"
+                    initialDelaySeconds: 5
+                    timeoutSeconds: 5
+                livenessProbe:
+                    exec:
+                        command:
+                          - "bin/pulsar-zookeeper-ruok.sh"
+                    initialDelaySeconds: 30
+                    timeoutSeconds: 5
+
+                volumeMounts:
+                  - name: datadir
+                    mountPath: /pulsar/data
+
+    volumeClaimTemplates:
+      - metadata:
+          name: datadir
+        spec:
+            accessModes: [ "ReadWriteOnce" ]
+            resources:
+                requests:
+                    storage: 10Gi
+            storageClassName: {{ include "pulsar.name" . }}-zookeeper-ssd
