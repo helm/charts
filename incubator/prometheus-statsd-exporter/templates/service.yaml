@@ -6,15 +6,15 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: prometheus-statsd-exporter
+    app: {{ template "prometheus-statsd-exporter.fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.name }}"
+    component: "{{ .Chart.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
-  name: prometheus-statsd-exporter
+  name: {{ template "prometheus-statsd-exporter.fullname" . }}
 spec:
 {{- if .Values.service.clusterIP }}
   clusterIP: {{ .Values.service.clusterIP }}
@@ -41,7 +41,7 @@ spec:
       nodePort: {{ .Values.service.nodePort }}
     {{- end }}
   selector:
-    app: prometheus-statsd-exporter
-    component: "{{ .Values.name }}"
+    app: {{ template "prometheus-statsd-exporter.fullname" . }}
+    component: "{{ .Chart.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.service.type }}"
