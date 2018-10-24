@@ -43,7 +43,7 @@ $ helm install stable/hl-composer --name hlc --set persistence.enabled=true,pres
 
 The above command specifies that we wish to use a persistent volume and use the `azurefile` Storage Class to enable the volume to be shared.
 
-Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the defualt values.yaml. For example,
+Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the default values.yaml. For example,
 
 ```bash
 $ helm install stable/hl-composer --name hlc -f my-values.yaml
