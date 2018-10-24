@@ -14,6 +14,7 @@ This chart bootstraps a [prometheus-operator](https://github.com/coreos/promethe
 
 ## Prerequisites
   - Kubernetes 1.10+ with Beta APIs
+  - Helm 2.10+ (For a workaround using an earlier version see [below](#helm-210-workaround))
 
 ## Installing the Chart
 
@@ -234,7 +235,7 @@ The following tables lists the configurable parameters of the prometheus-operato
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release stable/prometheus-operator --set sendAnalytics=true
+$ helm install --name my-release stable/prometheus-operator --set prometheusOperator.enabled=true
 ```
 
 Alternatively, one or more YAML files that specify the values for the above parameters can be provided while installing the chart. For example,
@@ -251,3 +252,8 @@ For more in-depth documentation of configuration options meanings, please see
 - [Prometheus Operator](https://github.com/coreos/prometheus-operator)
 - [Prometheus](https://prometheus.io/docs/introduction/overview/)
 - [Grafana](https://github.com/helm/charts/tree/master/stable/grafana#grafana-helm-chart)
+
+## Helm <2.10 workaround
+The `crd-install` hook is required to deploy the prometheus operator CRDs before they are used. If you are forced to use an earlier version of Helm you can work around this requirement as follows:
+1. Install prometheus-operator by itself, disabling everything but the prometheus-operator component, and also setting `prometheusOperator.serviceMonitor.selfMonitor=false`
+2. Install all the other components, and configure `prometheus.additionalServiceMonitors` to scrape the prometheus-operator service.
