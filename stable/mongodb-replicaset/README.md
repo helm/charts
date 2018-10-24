@@ -123,12 +123,6 @@ To connect to the mongo shell with authentication enabled, use a command similar
 kubectl exec -it mongodb-replicaset-0 -- mongo mydb -u admin -p password --authenticationDatabase admin
 ```
 
-To connect to the mongodb replica set via an application, use a mongo URI similar to:
-
-```
-mongodb://admin:password@mongodb-replicaset:27017/mydb?authSource=admin&replicaSet=rs0
-```
-
 ## TLS support
 
 To enable full TLS encryption set `tls.enabled` to `true`. It is recommended to create your own CA by executing:
