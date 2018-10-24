@@ -72,7 +72,7 @@ spec:
           imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
           env:
             - name: LABEL
-              value: "{{ .Values.sidecar.dashboards.label }}"
+              value: {{ include "grafana.sidecar.dashboards.label" . }}
             - name: FOLDER
               value: "{{ .Values.sidecar.dashboards.folder }}"
           resources:
@@ -87,7 +87,7 @@ spec:
           imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
           env:
             - name: LABEL
-              value: "{{ .Values.sidecar.datasources.label }}"
+              value: {{ include "grafana.sidecar.datasources.label" . }}
             - name: FOLDER
               value: "/etc/grafana/provisioning/datasources"
           resources:

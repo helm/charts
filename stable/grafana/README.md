@@ -73,9 +73,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | `annotations`                   | Deployment annotations                        | `{}`                                                    |
 | `podAnnotations`                | Pod annotations                               | `{}`                                                    |
 | `sidecar.dashboards.enabled`    | Enabled the cluster wide search for dashboards and adds/updates/deletes them in grafana | `false`       |
-| `sidecar.dashboards.label`      | Label that config maps with dashboards should have to be added | `false`                                |
+| `sidecar.dashboards.label`      | Label that config maps with dashboards should have to be added | `{{ .Release.Name }}-grafana-dashboard` |
 | `sidecar.datasources.enabled`   | Enabled the cluster wide search for datasources and adds/updates/deletes them in grafana |`false`       |
-| `sidecar.datasources.label`     | Label that config maps with datasources should have to be added | `false`                               |
+| `sidecar.datasources.label`     | Label that config maps with datasources should have to be added | `{{ .Release.Name }}-grafana-datasource` |
 | `smtp.existingSecret`           | The name of an existing secret containing the SMTP credentials, this must have the keys `user` and `password`. | `""` |
 
 ## Sidecar for dashboards
@@ -88,7 +88,7 @@ kind: ConfigMap
 metadata:
   name: sample-grafana-dashboard
   labels:
-     grafana_dashboard: 1
+    {{ .Release.Name }}-grafana-dashboard: 1
 data:
   k8s-dashboard.json: |-
   [...]
@@ -105,7 +105,7 @@ kind: ConfigMap
 metadata:
   name: sample-grafana-datasource
   labels:
-     grafana_datasource: 1
+    {{ .Release.Name }}-grafana-datasource: 1
 data:
   datasource.yaml: |-
     # config file version

@@ -265,11 +265,16 @@ sidecar:
 #     memory: 50Mi
   dashboards:
     enabled: false
-    # label that the configmaps with dashboards are marked with
-    label: grafana_dashboard
-    # folder in the pod that should hold the collected dashboards
+    ## Label that the configmaps with dashboards are marked with. It will templated using "tpl".
+    ## Defaults to {{ .Release.Name }}-grafana-dashboard
+    ##
+    label: ""
+    ## Folder in the pod that should hold the collected dashboards
+    ##
     folder: /tmp/dashboards
   datasources:
     enabled: false
-    # label that the configmaps with datasources are marked with
-    label: grafana_datasource
+    ## Label that the configmaps with datasources are marked with. It will templated using "tpl".
+    ## Defaults to {{ .Release.Name }}-grafana-dashboard
+    ##
+    label: ""

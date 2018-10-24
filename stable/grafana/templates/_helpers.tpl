@@ -41,3 +41,17 @@ Create the name of the service account
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create a default dashboard label.
+*/}}
+{{- define "grafana.sidecar.dashboards.label" -}}
+{{- default (printf "%s-grafana-dashboard" .Release.Name) (tpl .Values.sidecar.dashboards.label .) -}}
+{{- end -}}
+
+{{/*
+Create a default datasource label.
+*/}}
+{{- define "grafana.sidecar.datasources.label" -}}
+{{- default (printf "%s-grafana-datasource" .Release.Name) (tpl .Values.sidecar.datasources.label .) -}}
+{{- end -}}
