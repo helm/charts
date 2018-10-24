@@ -114,7 +114,7 @@ mariadb:
 ##
 ## PostgreSQL chart configuration
 ##
-## https://github.com/helm/charts/blob/master/stable/mariadb/values.yaml
+## https://github.com/helm/charts/blob/master/stable/postgresql/values.yaml
 ##
 postgresql:
   ## PostgreSQL admin password
