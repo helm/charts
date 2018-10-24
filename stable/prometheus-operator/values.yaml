@@ -193,7 +193,7 @@ alertmanager:
     ##
     routePrefix: /
 
-    ## If set to true all actions on the underlaying managed objects are not goint to be performed, except for delete actions.
+    ## If set to true all actions on the underlying managed objects are not going to be performed, except for delete actions.
     ##
     paused: false
 
@@ -424,7 +424,7 @@ nodeExporter:
 ##
 prometheus-node-exporter:
   podLabels:
-    ## Add the 'node-exporter' label to be used by serviceMonitor to match standard common usage in rules and grafana dasboards
+    ## Add the 'node-exporter' label to be used by serviceMonitor to match standard common usage in rules and grafana dashboards
     ##
     jobLabel: node-exporter
   extraArgs:
@@ -621,7 +621,7 @@ prometheus:
     ## Alertmanagers to which alerts will be sent
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#alertmanagerendpoints
     ##
-    ## Default configuration will connect to the alertmanager deployed as part of this relase
+    ## Default configuration will connect to the alertmanager deployed as part of this release
     ##
     alertingEndpoints: []
     # - name: ""
@@ -729,7 +729,7 @@ prometheus:
     remoteRead: {}
     # - url: http://remote1/read
 
-    ## The remote_write spec configuriation for Prometheus.
+    ## The remote_write spec configuration for Prometheus.
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#remotewritespec
     remoteWrite: {}
       # remoteWrite:
