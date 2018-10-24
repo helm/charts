@@ -1,0 +1,79 @@
+image:
+  repository: prom/statsd-exporter
+  tag: v0.8.0
+  pullPolicy: IfNotPresent
+
+service:
+  annotations: {}
+  labels: {}
+  clusterIP: {}
+  externalIPs: {}
+  loadBalancerIP: "35.195.161.215"
+  loadBalancerSourceRanges: {}
+  servicePort: 80
+  # nodePort: 30000
+  type: ClusterIP
+
+
+podAnnotations: {}
+
+extraArgs: {}
+#  - --persistence.file=data-perst
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+ingress:
+  ## Enable Ingress.
+  ##
+  enabled: false
+
+    ## Annotations.
+    ##
+    # annotations:
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: 'true'
+
+    ## Hostnames.
+    ## Must be provided if Ingress is enabled.
+    ##
+    # hosts:
+    #   - prometheusstatsdexoirter.domain.com
+
+    ## TLS configuration.
+    ## Secrets must be manually created in the namespace.
+    ##
+    # tls:
+    #   - secretName: prometheusstatsdexoirter-tls
+    #     hosts:
+    #       - prometheusstatsdexoirter.domain.com
+
+tolerations: {}
+  # - effect: NoSchedule
+  #   operator: Exists
+
+
+replicaCount: 1
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+persistentVolume:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  annotations: {}
+  existingClaim: {}
+  mountPath: /data
+  size: 20Gi
+  subPath: {}

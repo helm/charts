@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: prometheus-statsd-exporter
+  labels:
+    app: prometheus-statsd-exporter
+    chart: prometheus-statsd-exportery
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-statsd-exporter
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: prometheus-statsd-exporter
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: prometheus-statsd-exporter
+      containers:
+        - name: statsd-exporter
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - mountPath: /data
+            name: storage-volume
+          env:
+          - name: HOME
+            value: /data
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /#/status
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /#/status
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+      - name: storage-volume
+        persistentVolumeClaim:
+          claimName: prometheus-statsd-exporter
