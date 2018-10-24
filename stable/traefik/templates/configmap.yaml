@@ -147,6 +147,18 @@ data:
     filePath = "{{ .Values.accessLogs.filePath }}"
     {{- end}}
       format = "{{ .Values.accessLogs.format }}"
+    {{- if .Values.accessLogs.filters }}
+    [accessLog.filters]
+      {{- if .Values.accessLogs.filters.statusCodes }}
+      statusCodes = [{{ range $_, $value := .Values.accessLogs.filters.statusCodes }}{{ $value | quote }},{{ end }}]
+      {{- end }}
+      {{- if .Values.accessLogs.filters.retryAttempts }}
+      retryAttempts = {{ .Values.accessLogs.filters.retryAttempts }}
+      {{- end }}
+      {{- if .Values.accessLogs.filters.minDuration }}
+      minDuration = {{ .Values.accessLogs.filters.minDuration }}
+      {{- end }}
+    {{- end }}
     [accessLog.fields]
       defaultMode = {{ .Values.accessLogs.fields.defaultMode | quote }}
     [accessLog.fields.names]
