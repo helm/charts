@@ -63,7 +63,7 @@ selector:
 If a chart has multiple components, a `component` label should be added to the selector (see above).
 
 `spec.selector.matchLabels` defined in `Deployments`/`StatefulSets`/`DaemonSets` `>=v1/beta2` **must not** contain `chart` label or any label containing a version of the chart, because the selector is immutable.
-The chart label string contains the version, so if is specified, whenever the the Chart.yaml version changes, Helm's attempt to change this immutable field would cause the upgrade to fail.
+The chart label string contains the version, so if it is specified, whenever the the Chart.yaml version changes, Helm's attempt to change this immutable field would cause the upgrade to fail.
 
 #### Fixing Selectors
 
