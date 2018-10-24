@@ -63,8 +63,8 @@ A secret is also namespaced, but it's only used to enable the history server to 
 To install the chart with the sample PVC setup:
 
 ```bash
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install incubator/spark-history-server --namespace spark-history-server
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com
+$ helm install stable/spark-history-server --namespace spark-history-server
 ```
 
 For details about installing the chart to use HDFS or GCS, see configurations options below.
