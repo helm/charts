@@ -7,12 +7,22 @@ metadata:
     chart: {{ template "postgresql.chart" . }}
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+{{- with .Values.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
+  {{- if and .Values.master.service.loadBalancerIP (eq .Values.master.service.type "LoadBalancer") }}
+  loadBalancerIP: {{ .Values.master.service.loadBalancerIP }}
+  {{- end }}
   ports:
   - name: postgresql
-    port: 5432
+    port:  {{ .Values.service.port }}
     targetPort: postgresql
+    {{- if .Values.service.nodePort }}
+    nodePort: {{ .Values.service.nodePort }}
+    {{- end }}
   selector:
     app: {{ template "postgresql.name" . }}
     release: {{ .Release.Name | quote }}
