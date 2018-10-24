@@ -231,6 +231,15 @@ datadog:
   ## This is supported starting from agent 6.6.0
   # criSocketPath: /var/run/containerd/containerd.sock
 
+  ## Provide a mapping of Kubernetes Labels to Datadog Tags
+  # podLabelsAsTags:
+  #     app: kube_app
+  #     release: helm_release
+
+  ## Provide a mapping of Kubernetes Annotations to Datadog Tags
+  # podAnnotationsAsTags:
+  #     iam.amazonaws.com/role: kube_iamrole
+
   ## datadog-agent resource requests and limits
   ## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
