@@ -14,6 +14,8 @@ This chart bootstraps a [Phabricator](https://github.com/bitnami/bitnami-docker-
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the Phabricator application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -47,6 +49,7 @@ The following table lists the configurable parameters of the Phabricator chart a
 
 |               Parameter                |                 Description                  |                         Default                          |
 |----------------------------------------|----------------------------------------------|----------------------------------------------------------|
+| `global.imageRegistry`                 | Global Docker image registry                 | `nil`                                                    |
 | `image.registry`                       | Phabricator image registry                   | `docker.io`                                              |
 | `image.repository`                     | Phabricator image name                       | `bitnami/phabricator`                                    |
 | `image.tag`                            | Phabricator image tag                        | `{VERSION}`                                              |
@@ -75,12 +78,16 @@ The following table lists the configurable parameters of the Phabricator chart a
 | `persistence.phabricator.accessMode`   | PVC Access Mode for Phabricator volume       | `ReadWriteOnce`                                          |
 | `persistence.phabricator.size`         | PVC Storage Request for Phabricator volume   | `8Gi`                                                    |
 | `resources`                            | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                             |
-| `ingress.enabled`                      | enable ingress                               | `false`                                                  |
-| `ingress.path`                         | path to expose on ingress                    | `nil`                                                    |
-| `ingress.hosts`                        | listss of accepted hostnames                 | `nil`                                                    |
-| `ingress.annotations`                  | annotations to use on the ingress            | `nil`                                                    |
-| `ingress.tls.secretName`               | tls secret name                              | `nil`                                                    |
-| `ingress.tls.hosts`                    | hostnames the secret applies to              | `nil`                                                    |
+| `ingress.enabled`                      | Enable ingress controller resource           | `false`                                                  |
+| `ingress.hosts[0].name`                | Hostname to your Phabricator installation    | `phabricator.local`                                      |
+| `ingress.hosts[0].path`                | Path within the url structure                | `/`                                                      |
+| `ingress.hosts[0].tls`                 | Utilize TLS backend in ingress               | `false`                                                  |
+| `ingress.hosts[0].certManager`         | Add annotations for cert-manager             | `false`                                                  |
+| `ingress.hosts[0].tlsSecret`           | TLS Secret (certificates)                    | `phabricator.local-tls-secret`                           |
+| `ingress.hosts[0].annotations`         | Annotations for this host's ingress record   | `[]`                                                     |
+| `ingress.secrets[0].name`              | TLS Secret Name                              | `nil`                                                    |
+| `ingress.secrets[0].certificate`       | TLS Secret Certificate                       | `nil`                                                    |
+| `ingress.secrets[0].key`               | TLS Secret Key                               | `nil`                                                    |
 
 The above parameters map to the env variables defined in [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator). For more information please refer to the [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator) image documentation.
 
@@ -134,4 +141,16 @@ Everything looks great but requests over https will cause asset requests to fail
 ```
 export POD_NAME=$(kubectl get pods -l "app=my-release-phabricator" -o jsonpath="{.items[0].metadata.name}")
 kubectl exec $POD_NAME /opt/bitnami/phabricator/bin/config set phabricator.base-uri https://example.com
+```
+
+## Upgrading
+
+### To 3.0.0
+
+Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
+Use the workaround below to upgrade from versions previous to 3.0.0. The following example assumes that the release name is opencart:
+
+```console
+$ kubectl patch deployment opencart-opencart --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/app"}]'
+$ kubectl delete statefulset opencart-mariadb --cascade=false
 ```

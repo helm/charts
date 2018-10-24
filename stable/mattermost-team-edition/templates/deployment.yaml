@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "mattermost-team-edition.fullname" . }}
+  labels:
+    chart: {{ template "mattermost-team-edition.chart" . }}
+    app: {{ template "mattermost-team-edition.fullname" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+    rollingUpdate: null
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      app: {{ template "mattermost-team-edition.fullname" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-config.yaml") . | sha256sum }}
+      labels:
+        app: {{ template "mattermost-team-edition.fullname" . }}
+        release: {{ .Release.Name }}
+        chart: {{ template "mattermost-team-edition.chart" . }}
+        heritage: {{ .Release.Service }}
+    spec:
+      {{ if not .Values.externalDB.enabled }}
+      initContainers:
+      - name: "init-mysql"
+        image: "appropriate/curl:latest"
+        imagePullPolicy: "IfNotPresent"
+        command: ["sh", "-c", "until curl --max-time 5 http://{{ .Release.Name }}-mysql:3306; do echo waiting for {{ .Release.Name }}-mysql; sleep 5; done;"]
+      {{ end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        livenessProbe:
+          initialDelaySeconds: 90
+          timeoutSeconds: 5
+          periodSeconds: 15
+          httpGet:
+            path: /api/v4/system/ping
+            port: {{ .Values.service.internalPort }}
+        readinessProbe:
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+          periodSeconds: 15
+          httpGet:
+            path: /api/v4/system/ping
+            port: {{ .Values.service.internalPort }}
+        volumeMounts:
+        - mountPath: /mattermost/config/config.json
+          name: config-json
+          subPath: config.json
+        - mountPath: /mattermost/data
+          name: mattermost-data
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+      - name: config-json
+        configMap:
+          name: {{ template "mattermost-team-edition.fullname" . }}-config-json
+          items:
+          - key: config.json
+            path: config.json
+      - name: mattermost-data
+      {{ if .Values.persistence.data.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "mattermost-team-edition.fullname" .) }}
+      {{ else }}
+        emptyDir: {}
+      {{ end }}

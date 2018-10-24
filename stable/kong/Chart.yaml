@@ -11,4 +11,4 @@ name: kong
 sources:
 - https://github.com/Kong/kong
 version: 0.5.0
-appVersion: 0.14.0
+appVersion: 0.14.1

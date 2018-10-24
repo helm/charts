@@ -1,4 +1,4 @@
-{{- if and .Values.configurator.enabled .Values.configurator.ingress.enabled -}}
+{{- if (.Values.configurator.enabled) and (.Values.configurator.ingress.enabled) }}
 {{- $fullName := include "home-assistant.fullname" . -}}
 {{- $servicePort := .Values.configurator.service.port -}}
 {{- $ingressPath := .Values.configurator.ingress.path -}}
@@ -9,7 +9,6 @@ metadata:
   labels:
     app: {{ template "home-assistant.name" . }}
     chart: {{ template "home-assistant.chart" . }}
-    component: configurator
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- with .Values.configurator.ingress.annotations }}
@@ -34,7 +33,7 @@ spec:
         paths:
           - path: {{ $ingressPath }}
             backend:
-              serviceName: {{ $fullName }}-configurator
+              serviceName: {{ $fullName }}
               servicePort: {{ $servicePort }}
   {{- end }}
 {{- end }}

@@ -3,7 +3,7 @@
 
 image:
   repository: kong
-  tag: 0.14.0
+  tag: 0.14.1
   pullPolicy: IfNotPresent
 
 # Specify Kong admin and proxy services configurations
@@ -140,6 +140,8 @@ postgresql:
   enabled: true
   postgresUser: kong
   postgresDatabase: kong
+  service:
+    port: 5432
   persistence:
     enabled: false
 

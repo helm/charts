@@ -1,10 +1,16 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 ## Bitnami RabbitMQ image version
 ## ref: https://hub.docker.com/r/bitnami/rabbitmq/tags/
 ##
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.7.7-debian-9
+  tag: 3.7.8
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -30,12 +36,12 @@ rbacEnabled: true
 ## section of specific values for rabbitmq
 rabbitmq:
   ## RabbitMQ application username
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#creating-a-database-user-on-first-run
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   username: user
 
   ## RabbitMQ application password
-  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#creating-a-database-user-on-first-run
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
   ##
   # password:
 
@@ -65,16 +71,26 @@ rabbitmq:
   ##
   diskFreeLimit: '"6GiB"'
 
+  ## RabbitMQ Max File Descriptors
+  ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+  ## ref: https://www.rabbitmq.com/install-debian.html#kernel-resource-limits
+  ##
+  ulimitNofiles: '65536'
+
   ## Plugins to enable
   plugins: |-
       [rabbitmq_management,rabbitmq_peer_discovery_k8s].
+
+  ## Clustering settings
+  clustering:
+    address_type: ip
+    k8s_domain: cluster.local
 
   ## Configution file content
   configuration: |-
       ## Clustering
       cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
       cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
-      cluster_formation.k8s.address_type = ip
       cluster_formation.node_cleanup.interval = 10
       cluster_formation.node_cleanup.only_log_warning = false
       cluster_partition_handling = autoheal
@@ -165,10 +181,26 @@ livenessProbe:
   enabled: true
   initialDelaySeconds: 120
   timeoutSeconds: 5
+  periodSeconds: 5
   failureThreshold: 6
+  successThreshold: 1
 
 readinessProbe:
   enabled: true
   initialDelaySeconds: 10
   timeoutSeconds: 3
   periodSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+
+metrics:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: kbudde/rabbitmq-exporter
+    tag: v0.29.0
+    pullPolicy: IfNotPresent
+  resources: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"

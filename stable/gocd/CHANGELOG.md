@@ -1,3 +1,65 @@
+### 1.5.4
+
+* [4018a215](https://github.com/kubernetes/charts/commit/4018a215):
+  - Update README with link to "Intro to GoCD" guide
+
+### 1.5.3
+* [65fa6218](https://github.com/kubernetes/charts/commit/65fa6218):
+  - Affinity setting in agent and server deployments
+* [587d7a37](https://github.com/kubernetes/charts/commit/587d7a37):
+  - Invalid nodeSelector reference for agent deployment
+
+### 1.5.2
+* [17fa5c8e](https://github.com/kubernetes/charts/commit/17fa5c8e): Fix agent kube resources typo.
+
+### 1.5.1
+
+* [b22b9d6](https://github.com/kubernetes/charts/commit/b22b9d6):
+  - Use latest Kubernetes elastic agent plugin v2.0.0
+
+### 1.5.0
+
+* [1f8118b](https://github.com/kubernetes/charts/commit/1f8118b):
+  - Bump up GoCD app version to 18.10.0
+
+### 1.4.3
+
+* [52120886](https://github.com/kubernetes/charts/commit/52120886): Add extra volumes and volumeMounts options on the server and agents
+
+### 1.4.2
+
+* [499fddf9](https://github.com/kubernetes/charts/commit/499fddf9): Add agent.env.extraEnvVars
+
+### 1.4.1
+
+* [15c77caf](https://github.com/kubernetes/charts/commit/15c77caf):
+  - Bump up GoCD app version to 18.9.0
+
+### 1.4.0
+
+* [f5249551](https://github.com/kubernetes/charts/commit/f5249551):  
+  - Bump up GoCD app version to 18.8.0
+  - Updated kubernetes elastic agent plugin version to 1.0.2
+  - Updated post install script
+       * From GoCD version 18.8.0 pipeline created using api is already in
+         unpaused state
+  
+### 1.3.6
+
+* [b7d596e](https://github.com/helm/charts/pull/7476/commits/b7d596e): Fixed role configuration instructions in README file.
+
+### 1.3.5
+
+* [eab7388](https://github.com/kubernetes/charts/commit/eab7388): Fix typo and whitespace in the README file.
+
+### 1.3.4
+
+* [57b201d](https://github.com/kubernetes/charts/commit/57b201d): Agent-only deployment should not create server-related k8s resources.
+
+### 1.3.3
+
+* [0c5eadd](https://github.com/kubernetes/charts/commit/0c5eadd): Enable use of hostAliases for agents
+
 ### 1.3.2
 
 * [55d9cef](https://github.com/kubernetes/charts/commit/55d9cef): Add support for privileged mode, which is needed for DinD (Docker-in-Docker).
@@ -5,7 +67,7 @@
 
 ### 1.3.1
 
-* [7b9d6c0](https://github.com/kubernetes/charts/commit/7b9d6c0): Enable use of host aliases
+* [7b9d6c0](https://github.com/kubernetes/charts/commit/7b9d6c0): Enable use of hostAliases for server
 * [273f042](https://github.com/kubernetes/charts/commit/273f042): Add documentation to hostAliases property
 * [d21a32d](https://github.com/kubernetes/charts/commit/d21a32d): Add hostAliases property to README
 

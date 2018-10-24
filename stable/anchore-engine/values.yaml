@@ -12,20 +12,25 @@ service:
 
 image:
   # Can use 'latest' but not recommended
-  tag: "docker.io/anchore/anchore-engine:v0.2.3"
+  tag: "docker.io/anchore/anchore-engine:v0.2.4"
   # pullPolicy: IfNotPresent
 
 # Used to create Ingress record (should used with service.type: ClusterIP or NodePort depending on platform)
 ingress:
   enabled: false
-  annotations:
+  annotations: {}
     # kubernetes.io/ingress.allow-http: False
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: true
-
+  path: /
+  # You can bound on specific hostnames
+  # hosts:
+  #   - chart-example.local
+  tls: []
   # Secrets must be manually created in the namespace.
-  tls:
-  # - secretName: tlstestsecret
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 # Dependency on Postgresql, configure here
 postgresql:
@@ -98,7 +103,6 @@ globalConfig:
 # Configuration for the core engine service that serves the API
 # The core service handles the user facing APIs and coordination of workers as well as storage interfaces for data
 coreConfig:
-  # For the moment, the replica count should stay at 1. That restriction should change soon.
   replicaCount: 1
   logLevel: INFO
 
@@ -202,6 +206,8 @@ coreConfig:
   ## Node labels for pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
+  annotations: {}
+
   nodeSelector: {}
 
   tolerations: []
@@ -249,6 +255,8 @@ workerConfig:
   ## Node labels for pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
+  annotations: {}
+
   nodeSelector: {}
 
   tolerations: []

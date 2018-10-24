@@ -1,0 +1,45 @@
+{{ if .Values.createSparkJobNamespace }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.sparkJobNamespace }}
+{{ end }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spark
+  namespace: {{ .Values.sparkJobNamespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  namespace: {{ .Values.sparkJobNamespace }}
+  name: spark-role
+rules:
+- apiGroups:
+  - "" # "" indicates the core API group
+  resources:
+  - "pods"
+  verbs:
+  - "*"
+- apiGroups:
+  - "" # "" indicates the core API group
+  resources:
+  - "services"
+  verbs:
+  - "*"
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: spark-role-binding
+  namespace: {{ .Values.sparkJobNamespace }}
+subjects:
+- kind: ServiceAccount
+  name: spark
+  namespace: {{ .Values.sparkJobNamespace }}
+roleRef:
+  kind: Role
+  name: spark-role
+  apiGroup: rbac.authorization.k8s.io

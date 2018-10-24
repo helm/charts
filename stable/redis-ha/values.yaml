@@ -19,29 +19,12 @@ resources:
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-nodeSelector: {}
-tolerations: []
-sentinelAffinity: |
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-    - labelSelector:
-        matchLabels:
-          app: {{ template "redis-ha.name" . }}
-          release: {{ .Release.Name | quote }}
-          component: sentinel
-      topologyKey: kubernetes.io/hostname
-serverAffinity: |
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-    - labelSelector:
-        matchLabels:
-          app: {{ template "redis-ha.name" . }}
-          release: {{ .Release.Name | quote }}
-          component: server
-      topologyKey: kubernetes.io/hostname
+podAntiAffinity:
+  sentinel: soft
+  server: soft
 
 ## Redis image version
-redis_image: quay.io/smile/redis:4.0.8r0
+redis_image: quay.io/smile/redis:4.0.11-r1
 ## replicas number for each component
 replicas:
   servers: 3

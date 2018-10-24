@@ -62,7 +62,9 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                                                                  |
 | `Master.LoadBalancerIP`           | Optional fixed external IP           | Not set                                                                      |
 | `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
+| `Master.ExtraPorts`               | Open extra ports, for other uses     | Not set                                                                      |
 | `Master.CustomConfigMap`          | Use a custom ConfigMap               | `false`                                                                      |
+| `Master.OverwriteConfig`          | Replace config w/ ConfigMap on boot  | `false`                                                                      |
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
 | `Master.InitScripts`              | List of Jenkins init scripts         | Not set                                                                      |
@@ -78,22 +80,22 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
 | `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `extensions/v1beta1`                                                         |
 | `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
-| `rbac.apiVersion`                 | RBAC API version                     | `v1beta1`                                                                    |
 | `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
 | `rbac.roleBindingKind`            | Role kind (`RoleBinding` or `ClusterRoleBinding`)| `ClusterRoleBinding`                                             |
 
 ### Jenkins Agent
 
-| Parameter               | Description                                     | Default                |
-| ----------------------- | ----------------------------------------------- | ---------------------- |
-| `Agent.AlwaysPullImage` | Always pull agent container image before build  | `false`                |
-| `Agent.Enabled`         | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
-| `Agent.Image`           | Agent image name                                | `jenkinsci/jnlp-slave` |
-| `Agent.ImagePullSecret` | Agent image pull secret                         | Not set                |
-| `Agent.ImageTag`        | Agent image tag                                 | `2.62`                 |
-| `Agent.Privileged`      | Agent privileged container                      | `false`                |
-| `Agent.resources`       | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
-| `Agent.volumes`         | Additional volumes                              | `nil`                  |
+| Parameter                  | Description                                     | Default                |
+| -------------------------- | ----------------------------------------------- | ---------------------- |
+| `Agent.AlwaysPullImage`    | Always pull agent container image before build  | `false`                |
+| `Agent.CustomJenkinsLabels`| Append Jenkins labels to the agent              | `{}`                   |
+| `Agent.Enabled`            | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
+| `Agent.Image`              | Agent image name                                | `jenkinsci/jnlp-slave` |
+| `Agent.ImagePullSecret`    | Agent image pull secret                         | Not set                |
+| `Agent.ImageTag`           | Agent image tag                                 | `2.62`                 |
+| `Agent.Privileged`         | Agent privileged container                      | `false`                |
+| `Agent.resources`          | Resources allocation (Requests and Limits)      | `{requests: {cpu: 200m, memory: 256Mi}, limits: {cpu: 200m, memory: 256Mi}}`|
+| `Agent.volumes`            | Additional volumes                              | `nil`                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
