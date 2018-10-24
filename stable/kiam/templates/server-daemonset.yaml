@@ -51,7 +51,8 @@ spec:
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           command:
-            - /server
+            - /kiam
+            - server
           args:
             {{- if .Values.server.log.jsonOutput }}
             - --json-log
@@ -71,8 +72,10 @@ spec:
             {{- end }}
             - --session-duration={{ .Values.server.sessionDuration }}
             - --sync={{ .Values.server.cache.syncInterval }}
+            {{- if .Values.server.prometheus.scrape }}
             - --prometheus-listen-addr=0.0.0.0:{{ .Values.server.prometheus.port }}
             - --prometheus-sync-interval={{ .Values.server.prometheus.syncInterval }}
+            {{- end }}
           {{- range $key, $value := .Values.server.extraArgs }}
             {{- if $value }}
             - --{{ $key }}={{ $value }}
@@ -98,11 +101,12 @@ spec:
           livenessProbe:
             exec:
               command:
-                - /health
+                - /kiam
+                - health
                 - --cert=/etc/kiam/tls/cert
                 - --key=/etc/kiam/tls/key
                 - --ca=/etc/kiam/tls/ca
-                - --server-address=localhost:{{ .Values.server.service.targetPort }}
+                - --server-address={{ .Values.server.probes.serverAddress }}:{{ .Values.server.service.targetPort }}
                 - --server-address-refresh=2s
                 - --timeout=5s
                 - --gateway-timeout-creation={{ .Values.server.gatewayTimeoutCreation }}
@@ -112,11 +116,12 @@ spec:
           readinessProbe:
             exec:
               command:
-                - /health
+                - /kiam
+                - health
                 - --cert=/etc/kiam/tls/cert
                 - --key=/etc/kiam/tls/key
                 - --ca=/etc/kiam/tls/ca
-                - --server-address=localhost:{{ .Values.server.service.targetPort }}
+                - --server-address={{ .Values.server.probes.serverAddress }}:{{ .Values.server.service.targetPort }}
                 - --server-address-refresh=2s
                 - --timeout=5s
                 - --gateway-timeout-creation={{ .Values.server.gatewayTimeoutCreation }}

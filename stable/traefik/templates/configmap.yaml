@@ -48,6 +48,9 @@ data:
         [entryPoints.http.redirect]
           regex = "^http://(.*)"
           replacement = "https://$1"
+          {{- if .Values.ssl.permanentRedirect }}
+          permanent = true
+          {{- end }}
         {{- end }}
       {{- if .Values.ssl.enabled }}
       [entryPoints.https]
@@ -134,6 +137,10 @@ data:
         {{- end}}
       {{- end}}
     {{- end}}
+    {{- if .Values.traefikLogFormat }}
+    [traefikLog]
+      format = "{{ .Values.traefikLogFormat }}"
+    {{- end }}
     {{- if .Values.accessLogs.enabled }}
     [accessLog]
     {{- if .Values.accessLogs.filePath }}
@@ -222,7 +229,7 @@ data:
     storage = "/acme/acme.json"
     {{- end }}
     entryPoint = "https"
-    onHostRule = true
+    onHostRule = {{ .Values.acme.onHostRule }}
     {{- if .Values.acme.staging }}
     caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
     {{- end }}

@@ -47,7 +47,7 @@ rules:
   resourceNames:
   - datadog-leader-election  # Leader election token
 {{- if .Values.clusterAgent.metricsProvider.enabled }}
-  - datadog-hpa
+  - datadog-custom-metrics
 {{- end }}
   verbs:
   - get
