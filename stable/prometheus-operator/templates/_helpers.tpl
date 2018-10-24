@@ -9,7 +9,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 The components in this chart create additional resources that expand the longest created name strings.
-The longest name that gets created adds and extra 37 charachters, so truncation should be 63-35=26.
+The longest name that gets created adds and extra 37 characters, so truncation should be 63-35=26.
 */}}
 {{- define "prometheus-operator.fullname" -}}
 {{- if .Values.fullnameOverride -}}
