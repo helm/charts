@@ -47,8 +47,9 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 
 |         Parameter          |                Description                |                            Default                        |
 |----------------------------|-------------------------------------------|---------------------------------------------------------- |
+| `global.imageRegistry`     | Global Docker image registry              | `nil`                                                     |
 | `image.registry`           | PostgreSQL image registry                 | `docker.io`                                               |
-| `image.repository`         | PostgreSQL Image name                     | `stable/postgresql`                                      |
+| `image.repository`         | PostgreSQL Image name                     | `stable/postgresql`                                       |
 | `image.tag`                | PostgreSQL Image tag                      | `{VERSION}`                                               |
 | `image.pullPolicy`         | PostgreSQL image pull policy              | `Always`                                                  |
 | `image.pullSecrets`        | Specify image pull secrets                | `nil` (does not add image pull secrets to deployed pods)  |
