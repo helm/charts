@@ -60,5 +60,9 @@ spec:
     {{- end }}
       volumes:
       - name: {{ .Values.persitentVolume.name }}
+        {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persitentVolume.claimName }}prometheus-statsd-exporter
+        claimName: {{ .Values.persitentVolume.claimName | default (include "fullname" .) }}
+        {{- else }}
+        emptyDir: {}
+        {{- end -}}
