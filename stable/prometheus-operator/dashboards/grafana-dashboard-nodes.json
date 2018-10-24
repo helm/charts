@@ -283,7 +283,7 @@
                   ],
                   "timeFrom": null,
                   "timeShift": null,
-                  "title": "CPU Utilizaion",
+                  "title": "CPU Utilisation",
                   "tooltip": {
                       "shared": true,
                       "sort": 0,
