@@ -83,3 +83,4 @@ persistentVolume:
   mountPath: /data
   size: 20Gi
   subPath: {}
+  storageClass: {}

@@ -2,12 +2,12 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   labels:
-    app: prometheus-statsd-exporter
+    app: {{ template "prometheus-statsd-exporter.fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.name }}"
+    component: "{{ .Chart.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: prometheus-statsd-exporter
+  name: {{ template "prometheus-statsd-exporter.fullname" . }}
 spec:
   accessModes:
 {{ toYaml .Values.persistentVolume.accessModes | indent 4 }}
