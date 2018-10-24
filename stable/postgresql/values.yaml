@@ -1,111 +1,94 @@
-## postgres image repository
-image: "postgres"
-## postgres image version
-## ref: https://hub.docker.com/r/library/postgres/tags/
+## Global Docker image registry
+### Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+###
+## global:
+##   imageRegistry:
+
+## Bitnami PostgreSQL image version
+## ref: https://hub.docker.com/r/bitnami/postgresql/tags/
 ##
-imageTag: "9.6.2"
+image:
+  registry: docker.io
+  repository: bitnami/postgresql
+  tag: 10.5.0
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: Always
 
-## Specify a imagePullPolicy
-## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
+
+  ## Set to true if you would like to see extra information on logs
+  ## It turns BASH and NAMI debugging in minideb
+  ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging
+  debug: false
+
+## Pod Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 ##
-# imagePullPolicy:
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
 
-## Specify imagePullSecrets
-## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+replication:
+  enabled: false
+  user: repl_user
+  password: repl_password
+  slaveReplicas: 1
+
+## PostgreSQL admin user
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
+postgresqlUsername: postgres
+
+## PostgreSQL password
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
 ##
-# imagePullSecrets: myregistrykey
-
-## Create a database user
-## Default: postgres
-# postgresUser:
-## Default: random 10 character string
-# postgresPassword:
-
-## Inject postgresPassword via a volume mount instead of environment variable
-usePasswordFile: false
-
-## Use Existing secret instead of creating one
-## It must have a postgres-password key containing the desired password
-# existingSecret: 'secret'
+# postgresqlPassword:
 
 ## Create a database
-## Default: the postgres user
-# postgresDatabase:
-
-## Specify initdb arguments, e.g. --data-checksums
-## ref: https://github.com/docker-library/docs/blob/master/postgres/content.md#postgres_initdb_args
-## ref: https://www.postgresql.org/docs/current/static/app-initdb.html
-# postgresInitdbArgs:
-
-## Use an alternate scheduler, e.g. "stork".
-## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#creating-a-database-on-first-run
 ##
-# schedulerName:
+# postgresqlDatabase:
 
 ## Optional duration in seconds the pod needs to terminate gracefully.
 ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
 ##
 # terminationGracePeriodSeconds: 30
 
-## Specify runtime config parameters as a dict, using camelCase, e.g.
-## {"sharedBuffers": "500MB"}
-## ref: https://www.postgresql.org/docs/current/static/runtime-config.html
-# postgresConfig:
+## Kubernetes configuration
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+##
+service:
+  type: ClusterIP
+  port: 5432
 
-## Specify content for pg_hba.conf
-## Default: do not create pg_hba.conf
-# pgHbaConf: |-
-#   local all all trust
-#   host all all localhost trust
-#   host mydatabase mysuser 192.168.0.0/24 md5
-
-## Persist data to a persistent volume
+## PostgreSQL data Persistent Volume Storage Class
+## If defined, storageClassName: <storageClass>
+## If set to "-", storageClassName: "", which disables dynamic provisioning
+## If undefined (the default) or set to null, no storageClassName spec is
+##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+##   GKE, AWS & OpenStack)
+##
 persistence:
   enabled: true
-  resourcePolicy:  # set resource-policy Helm annotation on PVC. Can be nil or "keep"
-
-  ## A manually managed Persistent Volume and Claim
-  ## Requires persistence.enabled: true
-  ## If defined, PVC must be created manually before volume will be bound
-  # existingClaim:
-
-  ## database data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
   # storageClass: "-"
-  accessMode: ReadWriteOnce
+  accessModes:
+    - ReadWriteOnce
   size: 8Gi
-  subPath: "postgresql-db"
-  mountPath: /var/lib/postgresql/data/pgdata
+  annotations: {}
 
-  # annotations: {}
-
-metrics:
-  enabled: false
-  image: wrouesnel/postgres_exporter
-  imageTag: v0.4.6
-  imagePullPolicy: IfNotPresent
-  resources:
-    requests:
-      memory: 256Mi
-      cpu: 100m
-    ## Define additional custom metrics
-    ## ref: https://github.com/wrouesnel/postgres_exporter#adding-new-metrics-via-a-config-file
-    # customMetrics:
-    #   pg_database:
-    #     query: "SELECT d.datname AS name, CASE WHEN pg_catalog.has_database_privilege(d.datname, 'CONNECT') THEN pg_catalog.pg_database_size(d.datname) ELSE 0 END AS size FROM pg_catalog.pg_database d where datname not in ('template0', 'template1', 'postgres')"
-    #     metrics:
-    #       - name:
-    #           usage: "LABEL"
-    #           description: "Name of the database"
-    #       - size_bytes:
-    #           usage: "GAUGE"
-    #           description: "Size of the database in bytes"
+## Node labels and tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+nodeSelector: {}
+tolerations: []
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -113,15 +96,7 @@ metrics:
 resources:
   requests:
     memory: 256Mi
-    cpu: 100m
-
-service:
-  type: ClusterIP
-  port: 5432
-  externalIPs: []
-  ## Manually set NodePort value
-  ## Requires service.type: NodePort
-  # nodePort:
+    cpu: 250m
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
@@ -135,30 +110,72 @@ networkPolicy:
   ##
   allowExternal: true
 
-## Node labels and tolerations for pod assignment
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-nodeSelector: {}
-tolerations: []
-affinity: {}
+## Configure extra options for liveness and readiness probes
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
 
-# Override default liveness & readiness probes
-probes:
-  liveness:
-    initialDelay: 60
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+## Configure metrics exporter
+##
+metrics:
+  enabled: false
+  # resources: {}
+  # podAnnotations: {}
+  service:
+    type: ClusterIP
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9187"
+    loadBalancerIP:
+  image:
+    registry: docker.io
+    repository: wrouesnel/postgres_exporter
+    tag: v0.4.6
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistrKeySecretName
+
+  ## Metrics exporter labels and tolerations for pod assignment
+  # nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
+  # tolerations: []
+
+  ## Metrics exporter pod Annotation and Labels
+  # podLabels: {}
+
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  ## Configure extra options for liveness and readiness probes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 10
     timeoutSeconds: 5
     failureThreshold: 6
-  readiness:
-    initialDelay: 5
-    timeoutSeconds: 3
-    periodSeconds: 5
-## Annotations for the deployment and nodes.
-deploymentAnnotations: {}
-podAnnotations: {}
+    successThreshold: 1
 
-## Deployment pods replace strategy
-## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
-# strategy: {}
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
 
 # Define custom environment variables to pass to the image here
 extraEnv: {}

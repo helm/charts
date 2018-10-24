@@ -55,6 +55,9 @@ daemonset:
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   # updateStrategy: RollingUpdate
 
+  ## Sets PriorityClassName if defined
+  # priorityClassName:
+
 # Apart from DaemonSet, deploy Datadog agent pods and related service for
 # applications that want to send custom metrics. Provides DogStasD service.
 #
@@ -76,6 +79,9 @@ deployment:
     type: ClusterIP
     annotations: {}
 
+  ## Sets PriorityClassName if defined
+  # priorityClassName:
+
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
 
@@ -87,9 +93,10 @@ kubeStateMetrics:
 # the external metrics API so you can autoscale HPAs based on datadog
 # metrics
 clusterAgent:
+  containerName: cluster-agent
   image:
     repository: datadog/cluster-agent
-    tag: 0.10.0
+    tag: 1.0.0
     pullPolicy: IfNotPresent
   enabled: false
   ## This needs to be at least 32 characters a-zA-z
@@ -123,9 +130,10 @@ datadog:
   ## Use existing Secret which stores APP key instead of creating a new one
   # appKeyExistingSecret:
 
-  ## dd-agent container name
+  ## Daemonset/Deployment container name
+  ## See clusterAgent.containerName if clusterAgent.enabled = true
   ##
-  name: dd-agent
+  name: datadog
 
   ## Set logging verbosity.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables

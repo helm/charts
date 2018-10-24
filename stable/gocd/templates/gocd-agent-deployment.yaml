@@ -122,9 +122,13 @@ spec:
           {{- end }}
           securityContext:
             privileged: {{ .Values.agent.privileged }}
-    {{- if .Values.nodeSelector }}
+    {{- if .Values.agent.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.agent.affinity }}
+      affinity:
+{{ toYaml .Values.agent.affinity | indent 8 }}
     {{- end }}
     {{- if .Values.agent.hostAliases }}
       hostAliases:
