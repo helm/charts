@@ -227,6 +227,10 @@ datadog:
   # checksd:
   #   service.py: |-
 
+  ## Path to the container runtime socket (if different from Docker)
+  ## This is supported starting from agent 6.6.0
+  # criSocketPath: /var/run/containerd/containerd.sock
+
   ## datadog-agent resource requests and limits
   ## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
