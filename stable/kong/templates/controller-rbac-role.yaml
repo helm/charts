@@ -4,6 +4,11 @@ kind: Role
 metadata:
   name: kong-ingress-role
   namespace: {{ .Release.namespace }}
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 rules:
   - apiGroups:
       - ""

@@ -4,6 +4,11 @@ kind: RoleBinding
 metadata:
   name: kong-ingress-role-nisa-binding
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "kong.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
