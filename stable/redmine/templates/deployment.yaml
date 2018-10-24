@@ -43,7 +43,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ template "redmine.postgresql.fullname" . }}
-              key: postgres-password
+              key: postgresql-password
         {{- else }}
         - name: REDMINE_DB_MYSQL
           value: {{ template "redmine.mariadb.fullname" . }}
