@@ -1,7 +1,13 @@
 replicaCount: 1
 
-clusterRoleName: spark-hs
-clusterRoleBindingName: spark-hs
+rbac:
+  create: true
+  clusterRole: spark-hs
+  clusterRoleBinding: spark-hs
+
+serviceAccount:
+  create: true
+  name: spark-history-server
 
 image:
   repository: gcr.io/spark-operator/spark

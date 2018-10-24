@@ -3,15 +3,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.nfsServerServiceName }}
+  labels:
+    app.kubernetes.io/name: {{ include "nfs.name" . }}
+    helm.sh/chart: {{ include "nfs.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      role: {{ .Values.nfsServerServiceName }}
+      app.kubernetes.io/name: {{ include "nfs.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        role: {{ .Values.nfsServerServiceName }}
+        app.kubernetes.io/name: {{ include "nfs.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
       - name: {{ .Values.nfsServerServiceName }}

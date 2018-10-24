@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: spark-history-server
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "spark-history-server.name" . }}
+    helm.sh/chart: {{ include "spark-history-server.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -15,5 +15,5 @@ spec:
     protocol: TCP
     name: historyport
   selector:
-    app: {{ template "fullname" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "spark-history-server.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

@@ -3,6 +3,11 @@ kind: Service
 apiVersion: v1
 metadata:
   name: {{ .Values.nfsServerServiceName }}
+  labels:
+    app.kubernetes.io/name: {{ include "nfs.name" . }}
+    helm.sh/chart: {{ include "nfs.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   ports:
     - name: nfs
@@ -12,5 +17,6 @@ spec:
     - name: rpcbind
       port: 111
   selector:
-    role: {{ .Values.nfsServerServiceName }}
+    app.kubernetes.io/name: {{ include "nfs.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
