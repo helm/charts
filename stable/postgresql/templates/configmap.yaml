@@ -1,16 +1,18 @@
+{{ if or (.Files.Glob "files/postgresql.conf") (.Files.Glob "files/pg_hba.conf") }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "postgresql.fullname" . }}
+  name: {{ template "postgresql.fullname" . }}-configuration
   labels:
     app: {{ template "postgresql.name" . }}
     chart: {{ template "postgresql.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 data:
-  {{- if .Values.metrics.customMetrics }}
-  custom-metrics.yaml: {{ toYaml .Values.metrics.customMetrics | quote }}
-  {{- end }}
-  {{- if .Values.pgHbaConf }}
-  pg_hba.conf: {{ .Values.pgHbaConf | quote }}
-  {{- end }}
+{{- if (.Files.Glob "files/postgresql.conf") }}
+{{ (.Files.Glob "files/postgresql.conf").AsConfig | indent 2 }}
+{{- end }}
+{{- if (.Files.Glob "files/pg_hba.conf") }}
+{{ (.Files.Glob "files/pg_hba.conf").AsConfig | indent 2 }}
+{{- end }}
+{{ end }}

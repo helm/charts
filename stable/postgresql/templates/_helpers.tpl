@@ -9,18 +9,22 @@ Expand the name of the chart.
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
 */}}
 {{- define "postgresql.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "postgresql.master.fullname" -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if .Values.replication.enabled -}}
+{{- printf "%s-%s-%s" .Release.Name $name "master" | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 
@@ -43,8 +47,19 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Generate chart secret name
+Return the proper PostgreSQL image name
 */}}
-{{- define "postgresql.secretName" -}}
-{{ default (include "postgresql.fullname" .) .Values.existingSecret }}
+{{- define "postgresql.image" -}}
+{{- $registryName :=  default "docker.io" .Values.image.registry -}}
+{{- $tag := default "latest" .Values.image.tag | toString -}}
+{{- printf "%s/%s:%s" $registryName .Values.image.repository $tag -}}
+{{- end -}}
+
+{{/*
+Return the proper PostgreSQL metrics image name
+*/}}
+{{- define "metrics.image" -}}
+{{- $registryName :=  default "docker.io" .Values.metrics.image.registry -}}
+{{- $tag := default "latest" .Values.metrics.image.tag | toString -}}
+{{- printf "%s/%s:%s" $registryName .Values.metrics.image.repository $tag -}}
 {{- end -}}
