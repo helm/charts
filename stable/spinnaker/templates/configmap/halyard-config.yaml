@@ -15,9 +15,15 @@ data:
 
     bash -xe /opt/halyard/scripts/config.sh
 
-    {{ if .Values.halyard.additionalConfig.enabled }}
-    bash /opt/halyard/additional/{{ .Values.halyard.additionalConfig.configMapKey }}
-    {{ end }}
+    {{- if .Values.halyard.additionalScripts.enabled }}
+    bash /opt/halyard/additional/{{ .Values.halyard.additionalScripts.configMapKey }}
+    {{- end }}
+
+    {{- if  and .Values.halyard.additionalScripts.create .Values.halyard.additionalScripts.data }}
+    {{- range $index, $script := .Values.halyard.additionalScripts.data }}
+    bash -xe /opt/halyard/additionalScripts/{{ $index }}
+    {{- end }}
+    {{- end }}
 
     $HAL_COMMAND deploy apply
   clean.sh: |
@@ -56,6 +62,14 @@ data:
     {{ if .Values.gcs.enabled }}
     $HAL_COMMAND config storage gcs edit --project {{ .Values.gcs.project }} --json-path /opt/gcs/key.json --bucket {{ .Values.gcs.bucket }}
     $HAL_COMMAND config storage edit --type gcs
+    {{ end }}
+    {{ if .Values.azs.enabled }}
+    $HAL_COMMAND config storage azs edit --storage-account-name {{ .Values.azs.storageAccountName }} \
+      {{- if .Values.azs.containerName }}
+      --storage-container-name {{ .Values.azs.containerName }} \
+      {{- end }}
+      --storage-account-key "{{ .Values.azs.accessKey }}"
+    $HAL_COMMAND config storage edit --type azs
     {{ end }}
 
     # Docker Registry
