@@ -24,6 +24,7 @@ resources:
   #   memory: 50Mi
 
 service:
+  annotations: {}
   type: ClusterIP
   port: 9115
 
