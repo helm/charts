@@ -13,8 +13,8 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
-  {{- if and .Values.master.service.loadBalancerIP (eq .Values.master.service.type "LoadBalancer") }}
-  loadBalancerIP: {{ .Values.master.service.loadBalancerIP }}
+  {{- if and .Values.service.loadBalancerIP (eq .Values.service.type "LoadBalancer") }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   {{- end }}
   ports:
   - name: postgresql
