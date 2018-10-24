@@ -1,6 +1,12 @@
 apiVersion: v1
-appVersion: "v0.8.0"
-description: A Helm chart for prometheus statsd-exporter
+appVersion: 0.8-0
+description: A Helm chart for prometheus statsd-exporter Scrape metrics stored statsd 
+source: https://github.com/prometheus/statsd_exporter
+keywords:
+- prometheus
+- statsd
+maintainers:
+- name: enflo
+  email: toniflorithomar@gmail.com
 name: prometheus-statsd-exporter
 version: 0.1.1
-home: https://prometheus.io/
