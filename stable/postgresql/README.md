@@ -47,12 +47,12 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 
 |         Parameter                    |                Description                         |                            Default                        |
 |--------------------------------------|----------------------------------------------------|---------------------------------------------------------- |
-| `global.imageRegistry`               | Global Docker image registry                       | `nil`                                                     |
+| `global.imageRegistry`               | Global Docker Image registry                       | `nil`                                                     |
 | `image.registry`                     | PostgreSQL Image registry                          | `docker.io`                                               |
 | `image.repository`                   | PostgreSQL Image name                              | `bitnami/postgresql`                                      |
 | `image.tag`                          | PostgreSQL Image tag                               | `{VERSION}`                                               |
 | `image.pullPolicy`                   | PostgreSQL Image pull policy                       | `Always`                                                  |
-| `image.pullSecrets`                  | Specify image pull secrets                         | `nil` (does not add image pull secrets to deployed pods)  |
+| `image.pullSecrets`                  | Specify Image pull secrets                         | `nil` (does not add image pull secrets to deployed pods)  |
 | `image.debug`                        | Specify if debug values should be set              | `false`                                                   |
 | `replication.enabled`                | Would you like to enable replication               | `false`                                                   |
 | `replication.user`                   | Replication user                                   | `repl_user`                                               |
@@ -100,7 +100,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `metrics.image.repository`           | PostgreSQL Image name                              | `wrouesnel/postgres_exporter`                             |
 | `metrics.image.tag`                  | PostgreSQL Image tag                               | `{VERSION}`                                               |
 | `metrics.image.pullPolicy`           | PostgreSQL Image pull policy                       | `IfNotPresent`                                            |
-| `metrics.image.pullSecrets`          | Specify image pull secrets                         | `nil` (does not add image pull secrets to deployed pods)  |
+| `metrics.image.pullSecrets`          | Specify Image pull secrets                         | `nil` (does not add image pull secrets to deployed pods)  |
 | `extraEnv`                           | Any extra environment variables you would like to pass on to the pod | `{}`                                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
