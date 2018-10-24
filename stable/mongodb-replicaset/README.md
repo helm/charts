@@ -43,6 +43,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `image.repository`                  | MongoDB image name                                                        | `mongo`                                             |
 | `image.tag`                         | MongoDB image tag                                                         | `3.6`                                               |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | `IfNotPresent`                                      |
+| `image.pullSecrets`                 | Image pull secrets                                                        | ``                                                  |
 | `podAnnotations`                    | Annotations to be added to MongoDB pods                                   | `{}`                                                |
 | `securityContext`                   | Security context for the pod                                              | `{runAsUser: 999, fsGroup: 999, runAsNonRoot: true}`|
 | `resources`                         | Pod resource requests and limits                                          | `{}`                                                |
