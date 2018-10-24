@@ -63,7 +63,7 @@ spec:
             {{- else }}
               name: {{ template "postgresql.fullname" . }}
             {{- end }}
-              key: postgres-password
+              key: postgresql-password
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "postgresql.fullname" . }}
         - name: SENTRY_POSTGRES_PORT
