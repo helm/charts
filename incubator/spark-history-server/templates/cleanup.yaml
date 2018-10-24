@@ -10,7 +10,7 @@ metadata:
 spec:
  template:
    spec:
-     serviceAccountName: spark-history-server
+     serviceAccountName: {{ .Values.serviceAccount.name }}
      restartPolicy: OnFailure
      containers:
      - name: main
