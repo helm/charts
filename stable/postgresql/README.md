@@ -48,10 +48,10 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 |         Parameter                    |                Description                         |                            Default                        |
 |--------------------------------------|----------------------------------------------------|---------------------------------------------------------- |
 | `global.imageRegistry`               | Global Docker image registry                       | `nil`                                                     |
-| `image.registry`                     | PostgreSQL image registry                          | `docker.io`                                               |
+| `image.registry`                     | PostgreSQL Image registry                          | `docker.io`                                               |
 | `image.repository`                   | PostgreSQL Image name                              | `bitnami/postgresql`                                      |
 | `image.tag`                          | PostgreSQL Image tag                               | `{VERSION}`                                               |
-| `image.pullPolicy`                   | PostgreSQL image pull policy                       | `Always`                                                  |
+| `image.pullPolicy`                   | PostgreSQL Image pull policy                       | `Always`                                                  |
 | `image.pullSecrets`                  | Specify image pull secrets                         | `nil` (does not add image pull secrets to deployed pods)  |
 | `image.debug`                        | Specify if debug values should be set              | `false`                                                   |
 | `replication.enabled`                | Would you like to enable replication               | `false`                                                   |
@@ -78,7 +78,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `securityContext.enabled`            | Enable security context                            | `true`                                                    |
 | `securityContext.fsGroup`            | Group ID for the container                         | `1001`                                                    |
 | `securityContext.runAsUser`          | User ID for the container                          | `1001`                                                    |
-| `livenessProbe.enabled`              | would you like a livessProbed to be enabled        |  `true`                                                   |
+| `livenessProbe.enabled`              | Would you like a livessProbed to be enabled        |  `true`                                                   |
 | `networkPolicy.enabled`              | Enable NetworkPolicy                               | `false`                                                   |
 | `networkPolicy.allowExternal`        | Don't require client label for connections         | `true`                                                    |
 | `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated           |  30                                                       |
@@ -96,10 +96,10 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `metrics.service.type`               | Kubernetes Service type                            |  `ClusterIP`                                              |
 | `metrics.service.annotatios`         | Additional annotations for metrics exporter pod    |  `{}`                                                     |
 | `metrics.service.loadBalancerIP`     | loadBalancerIP if redis metrics service type is `LoadBalancer` | `nil`                                         |
-| `metrics.image.registry`             | PostgreSQL image registry                          | `docker.io`                                               |
+| `metrics.image.registry`             | PostgreSQL Image registry                          | `docker.io`                                               |
 | `metrics.image.repository`           | PostgreSQL Image name                              | `wrouesnel/postgres_exporter`                             |
 | `metrics.image.tag`                  | PostgreSQL Image tag                               | `{VERSION}`                                               |
-| `metrics.image.pullPolicy`           | PostgreSQL image pull policy                       | `IfNotPresent`                                            |
+| `metrics.image.pullPolicy`           | PostgreSQL Image pull policy                       | `IfNotPresent`                                            |
 | `metrics.image.pullSecrets`          | Specify image pull secrets                         | `nil` (does not add image pull secrets to deployed pods)  |
 | `extraEnv`                           | Any extra environment variables you would like to pass on to the pod | `{}`                                    |
 
