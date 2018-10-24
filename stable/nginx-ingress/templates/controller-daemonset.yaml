@@ -162,7 +162,7 @@ spec:
               readOnly: true
 {{- end }}
 {{- if .Values.controller.extraVolumeMounts }}
-{{ toYaml .Values.controller.extraVolumeMounts | indent 10}}
+{{ toYaml .Values.controller.extraVolumeMounts | indent 12}}
 {{- end }}
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
@@ -200,6 +200,6 @@ spec:
               path: nginx.tmpl
 {{- end }}
 {{- if .Values.controller.extraVolumes }}
-{{ toYaml .Values.controller.extraVolumes | indent 6}}
+{{ toYaml .Values.controller.extraVolumes | indent 8}}
 {{- end }}
 {{- end }}
