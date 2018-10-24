@@ -59,10 +59,6 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
-        {{- if .Values.ingressController.enabled }}
-        - name: KONG_ADMIN_LISTEN
-          value: 'off'
-        {{- end }}
         {{- if .Values.admin.useTLS }}
         - name: KONG_ADMIN_LISTEN
           value: "0.0.0.0:{{ .Values.admin.containerPort }} ssl"
