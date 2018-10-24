@@ -49,6 +49,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `image.pullSecrets`         | Image pull secrets                 |  `nil`                                    |
 | `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
 | `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
+| `datadog.name`              | Container name if Deamonset or Deployment | `datadog`                          |
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
 | `datadog.logsEnabled`       | Enable log collection              | `nil`                                     |
 | `datadog.logsConfigContainerCollectAll` | Collect logs from all containers | `nil`                           |
@@ -56,13 +57,14 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.processAgentEnabled` | Enable live process monitoring   | `nil`                                     |
 | `datadog.checksd`           | Additional custom checks as python code  | `nil`                               |
 | `datadog.confd`             | Additional check configurations (static and Autodiscovery) | `nil`             |
+| `datadog.criSocketPath`     | Path to the container runtime socket (if different from Docker) | `nil`        |
 | `datadog.tags`              | Set host tags                      | `nil`                                     |
 | `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
 | `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
-| `datadog.resources.requests.cpu` | CPU resource requests              | `200m`                                    |
-| `datadog.resources.limits.cpu` | CPU resource limits                | `200m`                                    |
-| `datadog.resources.requests.memory` | Memory resource requests           | `256Mi`                                   |
-| `datadog.resources.limits.memory` | Memory resource limits             | `256Mi`                                   |
+| `datadog.resources.requests.cpu` | CPU resource requests         | `200m`                                    |
+| `datadog.resources.limits.cpu` | CPU resource limits             | `200m`                                    |
+| `datadog.resources.requests.memory` | Memory resource requests   | `256Mi`                                   |
+| `datadog.resources.limits.memory` | Memory resource limits       | `256Mi`                                   |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
 | `daemonset.nodeSelector`    | Node selectors                     | `nil`                                     |
@@ -70,16 +72,19 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `daemonset.useHostNetwork`  | If true, use the host's network    | `nil`                                     |
 | `daemonset.useHostPID`.     | If true, use the host's PID namespace    | `nil`                               |
 | `daemonset.useHostPort`     | If true, use the same ports for both host and container  | `nil`               |
+| `daemonset.priorityClassName` | Which Priority Class to associate with the daemonset| `nil`                  |
 | `datadog.leaderElection`    | Enable the leader Election feature | `false`                                   |
 | `datadog.leaderLeaseDuration`| The duration for which a leader stays elected.| `nil`                         |
 | `datadog.collectEvents`     | Enable Kubernetes event collection. Requires leader election. | `false`        |
 | `deployment.affinity`       | Node / Pod affinities              | `{}`                                      |
 | `deployment.tolerations`    | List of node taints to tolerate    | `[]`                                      |
+| `deployment.priorityClassName` | Which Priority Class to associate with the deployment | `nil`               |
 | `kubeStateMetrics.enabled`  | If true, create kube-state-metrics | `true`                                    |
 | `kube-state-metrics.rbac.create`| If true, create & use RBAC resources for kube-state-metrics | `true`       |
 | `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
 | `clusterAgent.enabled`                   | Use the cluster-agent for cluster metrics (Kubernetes 1.10+ only) | `false`                           |
 | `clusterAgent.token`                     | A cluster-internal secret for agent-to-agent communication. Must be 32+ characters a-zA-Z | `Nil` You must provide your own token|
+| `clusterAgent.containerName`             | The container name for the Cluster Agent  | `cluster-agent`                           |
 | `clusterAgent.image.repository`          | The image repository for the cluster-agent | `datadog/cluster-agent`                           |
 | `clusterAgent.image.tag`                 | The image tag to pull              | `0.10.0`                                   |
 | `clusterAgent.image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
@@ -157,8 +162,10 @@ datadog:
           port: 6379
 ```
 
+For more details, please refer to [the documentation](https://docs.datadoghq.com/agent/kubernetes/integrations/).
+
 ### Kubernetes event collection
 
 To enable event collection, you will need to set the `datadog.leaderElection`, `datadog.collectEvents` and `rbac.create` options to `true`.
 
-Please read [the official documentation](https://docs.datadoghq.com/agent/basic_agent_usage/kubernetes/#event-collection) for more context.
+Please read [the official documentation](https://docs.datadoghq.com/agent/kubernetes/event_collection/) for more context.
