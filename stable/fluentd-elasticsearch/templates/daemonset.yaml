@@ -71,12 +71,12 @@ spec:
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 8 }}
 {{- end }}
-        ports:          
+        ports:
 {{- range $port := .Values.service.ports }}
           - name: {{ $port.name }}
             containerPort: {{ $port.port }}
-{{- end }}          
-{{- if .Values.livenessProbe.enabled }}       
+{{- end }}
+{{- if .Values.livenessProbe.enabled }}
         # Liveness probe is aimed to help in situarions where fluentd
         # silently hangs for no apparent reasons until manual restart.
         # The idea of this probe is that if fluentd is not queueing or
@@ -109,7 +109,7 @@ spec:
               then
                 exit 1;
               fi;
-{{- end }}              
+{{- end }}
       terminationGracePeriodSeconds: 30
       volumes:
       - name: varlog
@@ -127,6 +127,10 @@ spec:
           name: {{ template "fluentd-elasticsearch.fullname" . }}
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
 {{- if .Values.tolerations }}
       tolerations:

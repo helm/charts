@@ -68,6 +68,9 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `annotations`                      | Optional deamonset set annotations        | `NULL`                |
 | `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
+| `extraInputs`                      | Add extra Input sections to config         | ``                    |
+| `extraFilters`                     | Add extra Filter sections to config        | ``                    |
+| `extraOutputs`                     | Add extra Output sections to config        | ``                    |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
 | `filter.kubeURL`                   | Optional custom configmaps                 | `https://kubernetes.default.svc:443`            |
