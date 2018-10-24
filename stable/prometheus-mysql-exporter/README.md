@@ -47,7 +47,7 @@ The following table lists the configurable parameters of the mysql exporter char
 | `service.externalport`                   | The service port                                                                                                     | `9104`                                  |
 | `service.internalPort`                   | The target port of the container                                                                                     | `9104`                                  |
 | `resources`                              | CPU/Memory resource requests/limits                                                                                  | `{}`                                    |
-| `annotations`                            | pod annotations for easier discovery                                                                                 | `{}`                                    |
+| `annotations`                            | pod annotations for easier discovery                                                                                 | `see values.yaml`                       |
 | `mysql.db`                               | MySQL connection db (optional)                                                                                       | `""`                                    |
 | `mysql.host`                             | MySQL connection host                                                                                                | `localhost`                             |
 | `mysql.param`                            | MySQL connection parameters (optional)                                                                               | `"tcp"`                                 |
