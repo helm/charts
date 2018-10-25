@@ -1,3 +1,4 @@
+{{ if .Values.rbac.create }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -45,3 +46,4 @@ rules:
   - get
   - list
   - watch
+{{- end }}

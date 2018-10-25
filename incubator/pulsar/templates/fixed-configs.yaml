@@ -14,14 +14,20 @@ metadata:
 data:
   client.conf: |-
     clusterName=pulsar-gke
+    webServiceUrl=https://broker.pulsar.svc.cluster.local:8443/
+    brokerServiceUrl=pulsar+ssl://broker.pulsar.svc.cluster.local:6651/
+    {{- if .Values.tls.enabled }}
     tlsEnabled=false
     tlsCertificateFilePath=/tls/crt.pem
     tlsKeyFilePath=/tls/key.pem
     tlsTrustCertsFilePath=/tls/ca.pem
-    webServiceUrl=https://broker.pulsar.svc.cluster.local:8443/
-    brokerServiceUrl=pulsar+ssl://broker.pulsar.svc.cluster.local:6651/
     tlsAllowInsecureConnection=true
+    {{- if .Values.tls.authentication.enabled }}
     authPlugin=org.apache.pulsar.client.impl.auth.AuthenticationTls
     authParams=tlsCertFile:/tls/crt.pem,tlsKeyFile:/tls/key.pem
+    {{- end }}
+    {{- end }}
   proxy.conf: |-
+    {{- if .Values.tls.enabled }}
     tlsTrustCertsFilePath=/tls/ca.pem
+    {{- end }}

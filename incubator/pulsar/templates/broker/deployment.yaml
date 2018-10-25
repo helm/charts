@@ -51,7 +51,11 @@ spec:
               secret:
                 secretName: {{ include "pulsar.name" . }}-broker-tls
             {{- end }}
+            {{- if .Values.rbac.create }}
             serviceAccount: {{ include "pulsar.name" . }}-wait-for
+            {{- end }}
+            nodeSelector:
+{{ toYaml .Values.broker.nodeSelector | indent 14 }}
             initContainers:
               - name: wait-for-turn
                 image: groundnuty/k8s-wait-for:0.1
@@ -85,9 +89,7 @@ spec:
                   readOnly: true
                 {{- end }}
                 resources:
-                  requests:
-                    memory: "3000Mi"
-                    cpu: "600m"
+{{ toYaml .Values.broker.resources | indent 18 }}
                 env:
                  - name: advertisedAddress
                    valueFrom:

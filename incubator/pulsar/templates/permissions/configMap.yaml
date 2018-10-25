@@ -48,7 +48,7 @@ data:
     bin/pulsar-admin namespaces create {{ printf "%s/%s" $t_name $ns_name }};
     bin/pulsar-admin namespaces set-clusters -c {{ $cluster_name }} {{ printf "%s/%s" $t_name $ns_name }};
         {{ range $user, $perms := $users }}
-    bin/pulsar-admin namespaces grant-permission {{ printf "%s/%s" $t_name $ns_name }} --actions {{ join "," $perms }} --role {{ $user }};
+    bin/pulsar-admin namespaces grant-permission {{ printf "%s/%s" $t_name $ns_name }} --actions {{ join "," ( uniq $perms ) }} --role {{ $user }};
         {{ $_ := unset $users  $user }}
         {{- end -}}
       {{- end -}}

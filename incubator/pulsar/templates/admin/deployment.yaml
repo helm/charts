@@ -47,7 +47,9 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
+        {{- if .Values.rbac.create }}
         serviceAccount: {{ include "pulsar.name" . }}-wait-for
+        {{- end }}
         volumes:
         {{- if .Values.tls.enabled }}
         - name: tls
@@ -57,6 +59,8 @@ spec:
         - name: {{ include "pulsar.name" . }}-fixed-conf-file
           configMap:
             name: {{ include "pulsar.name" . }}-fixed-conf-file
+        nodeSelector:
+{{ toYaml .Values.admin.nodeSelector | indent 10 }}
         initContainers:
           - name: wait-for-turn
             image: groundnuty/k8s-wait-for:0.1
@@ -85,4 +89,6 @@ spec:
             envFrom:
               - configMapRef:
                   name: {{ include "pulsar.name" . }}-admin-config
+            resources:
+{{ toYaml .Values.admin.resources | indent 14 }}
 {{- end }}

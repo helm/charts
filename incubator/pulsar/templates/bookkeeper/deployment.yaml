@@ -43,7 +43,11 @@ spec:
         app.kubernetes.io/managed-by: {{ .Release.Service }}
         component: bookkeeper-replication
     spec:
+      {{- if .Values.rbac.create }}
       serviceAccount: {{ include "pulsar.name" . }}-wait-for
+      {{- end }}
+      nodeSelector:
+{{ toYaml .Values.bookkeeper.autoRecovery.nodeSelector | indent 8 }}
       initContainers:
         - name: wait-for-turn
           image: groundnuty/k8s-wait-for:0.1
@@ -67,3 +71,5 @@ spec:
               value: {{ .Values.bookkeeper.autoRecovery.java_mem }}
             - name: PULSAR_GC
               value: {{ .Values.bookkeeper.autoRecovery.java_gc }}
+          resources:
+{{ toYaml .Values.bookkeeper.autoRecovery.resources | indent 12 }}

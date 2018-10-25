@@ -34,7 +34,9 @@ spec:
   template:
     spec:
       restartPolicy: Never
+      {{- if .Values.rbac.create }}
       serviceAccount: {{ include "pulsar.name" . }}-wait-for
+      {{- end }}
       initContainers:
         - name: wait-for-turn
           image: groundnuty/k8s-wait-for:0.1

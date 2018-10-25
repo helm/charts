@@ -33,7 +33,6 @@ metadata:
 provisioner: kubernetes.io/gce-pd
 parameters:
   type: pd-ssd
-  zones: us-central1-a
 ---
 # HDDs for bookie ledger storage
 apiVersion: storage.k8s.io/v1
@@ -48,4 +47,3 @@ metadata:
 provisioner: kubernetes.io/gce-pd
 parameters:
   type: pd-standard
-  zones: us-central1-a

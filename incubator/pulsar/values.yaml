@@ -1,88 +1,149 @@
+# General cluster configuration
 pulsar:
   clusterName: pulsar-gke
   image: apachepulsar/pulsar
+  # Available tags here: https://hub.docker.com/r/apachepulsar/pulsar/tags/
   tag: 2.1.1-incubating
 
+# Configure the pulsar-admin component 
 admin:
+  # Use extraConfig to add more options to the settings
   extraConfig: {}
   enabled: true
-  java_mem: "-Xms8g -Xmx8g -XX:MaxDirectMemorySize=4g"
+  # Use these to set memory and GC parameters
+  java_mem: "-Xms2g -Xmx2g -XX:MaxDirectMemorySize=2g"
   java_gc: "-XX:+UseG1GC"
+  nodeSelector: {}
+  resources:
+    requests:
+      #  memory: "2000Mi"
 
+# Configure the bookkeeper/bookie statefulset
 bookkeeper:
   extraConfig: {}
+  # Replicas should be 3 or more. 
   replicas: 3
   java_mem: "\" -Xms4g -Xmx4g -XX:MaxDirectMemorySize=4g\""
   java_gc: "\" -XX:+UseG1GC\""
+  nodeSelector: {}
+  resources:
+    requests:
+      # memory: "1000Mi"
+  # Bookkeeper autorecovery helps with unavailability of the nodes
   autoRecovery:
     replicas: 2
     java_mem: "\" -Xmx256m \""
     java_gc: "\" \""
+    nodeSelector: {}
 
+# Configure the broker deployment
 broker:
   extraConfig: {}
   replicas: 1
   java_mem: "-Xms8g -Xmx8g -XX:MaxDirectMemorySize=4g"
   java_gc: "-XX:+UseG1GC"
+  nodeSelector: {}
+  resources:
+    requests:
+      memory: "4000Mi"
+      cpu: "600m"
 
+# Monitoring config. You can disable if you won't be using them.
 monitoring:
   grafana:
     enabled: true
     image: apachepulsar/pulsar-grafana
     tag: latest
+    nodeSelector: {}
   prometheus:
     enabled: true
+    nodeSelector: {}
   pulsarDashboard:
     enabled: true
     image: apachepulsar/pulsar-dashboard
     tag: latest
+    nodeSelector: {}
 
+# The chart will automatically create tenants and namespaces for you
+permissions:
+  # Need to enable this
+  create: false
+  # Tenants is an array of dicts. Each dict is one tenant
+  tenants:
+    # The name of the tenant
+    - name: public
+      # Namespaces is an array of dicts. Each dict is one namespace
+      namespaces:
+        # Creates the namespace public/default
+        - name: default
+          # Add these roles with both produce and consume permissions
+          produceConsume:
+          - examplerole1
+          # Add these roles with just produce permissions
+          produce:
+          - examplerole2
+          # Add these roles with just consume permissions
+          consume:
+          - examplerole2
+          # If you put a user in both produce and consume then it will get both permissions.
+
+# Configure the broker proxy component
 proxy:
   extraConfig: {}
   replicas: 1
   java_mem: "-Xms4g -Xmx4g -XX:MaxDirectMemorySize=4g"
   java_gc: "-XX:+UseG1GC"
+  nodeSelector: {}
+  resources:
+    requests:
+      memory: "2000Mi"
+  # This is essentially the ingress service.
   service:
+    type: LoadBalancer
+    # I reccommend deploying the chart. Then, when you are assigned an Load Balancer IP, save it here and set it as "static" in the Google Cloud console.
     loadBalancerIP: ""
     clusterIP: ""
-    type: LoadBalancer
+    # On GKE you can use annotations to make it an ILB: https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balancing
     annotations: {}
 
+# We are using wait-for to wait for pods and jobs to be ready before starting other pods. This requires a role to be created if you have RBAC enabled. See templates/wait-for.yaml to see the role.
+rbac:
+  create: true
+
+# You'll need to set up certificates to use TLS
 tls:
   enabled: false
-  caCert: ""
-  brokerCrt: ""
-  brokerKey: ""
+  # This is the public cert you created as a CA
+  caCert: "" # in Base64-encoded pem format
+  # This is the cert you created for brokers
+  brokerCrt: "" # in Base64-encoded pem format
+  # This is the key you created for brokers. 
+  brokerKey: "" # In base64-encoded pk8 pem format
 
   authentication:
+    # Authentication will not work unless TLS is also enabled
     enabled: false
+    # Roles that are super users.  ( https://pulsar.apache.org/docs/en/security-authorization/ )
     superUserRoles: admin,proxy
+    # Roles that are proxy users. ( https://pulsar.apache.org/docs/en/security-authorization/#proxy-roles )
     proxyRoles: proxy
+    # If you're going to enable authentication then you need to set up these certs. The admin cert is used by the pulsar-admin componenet and the proxy cert is used by the proxy componenet.
     users:
       admin:
-        crt: ""
-        key: ""
+        crt: "" # in Base64-encoded pem format
+        key: "" # In base64-encoded pk8 pem format
       proxy:
-        crt: ""
-        key: ""
+        crt: "" # in Base64-encoded pem format
+        key: "" # In base64-encoded pk8 pem format
 
-permissions:
-  create: false
-  tenants:
-  - name: public
-    namespaces:
-    - name: default
-      produceConsume:
-      - exampleUser1
-      produce:
-      - exampleUser2
-      consume:
-      - exampleUser2
-
-
+# Zookeeper configuration
 zookeeper:
   extraConfig: {}
+  # This should be >= 3
   replicas: 3
   java_mem: "\" -Xms2g -Xmx2g \""
   java_gc: "\" -XX:+UseG1GC -XX:MaxGCPauseMillis=10\""
-
+  nodeSelector: {}
+  resources:
+    requests:
+      # memory: "2000Mi"

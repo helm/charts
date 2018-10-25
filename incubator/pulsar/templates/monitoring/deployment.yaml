@@ -40,6 +40,8 @@ spec:
                 app.kubernetes.io/instance: {{ .Release.Name }}
                 app.kubernetes.io/managed-by: {{ .Release.Service }}
         spec:
+            nodeSelector:
+{{ toYaml .Values.admin.nodeSelector | indent 14 }}
             containers:
               - name: prometheus
                 image: prom/prometheus:v1.6.3
@@ -78,6 +80,8 @@ spec:
                 app.kubernetes.io/instance: {{ .Release.Name }}
                 app.kubernetes.io/managed-by: {{ .Release.Service }}
         spec:
+            nodeSelector:
+{{ toYaml .Values.admin.nodeSelector | indent 14 }}
             containers:
               - name: grafana
                 image: {{ .Values.monitoring.grafana.image }}:{{ .Values.monitoring.grafana.tag }}
@@ -112,7 +116,11 @@ spec:
                 app.kubernetes.io/instance: {{ .Release.Name }}
                 app.kubernetes.io/managed-by: {{ .Release.Service }}
         spec:
+            {{- if .Values.rbac.create }}
             serviceAccount: {{ include "pulsar.name" . }}-wait-for
+            {{- end }}
+            nodeSelector:
+{{ toYaml .Values.admin.nodeSelector | indent 14 }}
             initContainers:
               - name: wait-for-turn
                 image: groundnuty/k8s-wait-for:0.1

@@ -42,7 +42,11 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "8080"
     spec:
+      {{- if .Values.rbac.create }}
       serviceAccount: {{ include "pulsar.name" . }}-wait-for
+      {{- end }}
+      nodeSelector:
+{{ toYaml .Values.admin.nodeSelector | indent 8 }}
       volumes:
       - name: {{ include "pulsar.name" . }}-fixed-conf-file
         configMap:
@@ -94,3 +98,5 @@ spec:
           envFrom:
           - configMapRef:
               name: {{ include "pulsar.name" . }}-proxy-config
+          resources:
+{{ toYaml .Values.proxy.resources | indent 12 }}

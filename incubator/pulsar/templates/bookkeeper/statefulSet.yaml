@@ -56,7 +56,11 @@ spec:
                       operator: In
                       values:
                         - bookkeeper
+      {{- if .Values.rbac.create }}
       serviceAccount: {{ include "pulsar.name" . }}-wait-for
+      {{- end }}
+      nodeSelector:
+{{ toYaml .Values.bookkeeper.nodeSelector | indent 8 }}
       initContainers:
         - name: wait-for-turn
           image: groundnuty/k8s-wait-for:0.1
@@ -65,7 +69,6 @@ spec:
           - {{ include "pulsar.name" . }}-metadata-init
         # The first time, initialize BK metadata in zookeeper
         # Otherwise ignore error if it's already there
-      initContainers:
         - name: bookie-metaformat
           image: {{ .Values.pulsar.image }}:{{ .Values.pulsar.tag }}
           command: ["sh", "-c"]
@@ -99,6 +102,8 @@ spec:
               mountPath: /pulsar/data/bookkeeper/journal
             - name: {{ include "pulsar.name" . }}-ledger-disk
               mountPath: /pulsar/data/bookkeeper/ledgers
+          resources:
+{{ toYaml .Values.bookkeeper.resources | indent 12 }}
   volumeClaimTemplates:
     - metadata:
         name: {{ include "pulsar.name" . }}-journal-disk

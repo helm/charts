@@ -48,6 +48,8 @@ spec:
         spec:
             # Make sure multiple pods of ZK don't get scheduled on the
             # same node, unless there are no other available nodes
+            nodeSelector:
+{{ toYaml .Values.admin.nodeSelector | indent 14 }}
             affinity:
                 podAntiAffinity:
                     preferredDuringSchedulingIgnoredDuringExecution:
@@ -101,6 +103,8 @@ spec:
                 volumeMounts:
                   - name: datadir
                     mountPath: /pulsar/data
+                resources:
+{{ toYaml .Values.zookeeper.resources | indent 18 }}
 
     volumeClaimTemplates:
       - metadata:
