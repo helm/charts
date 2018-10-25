@@ -18,9 +18,7 @@ data:
         "secretKey": {{ .Values.secretKey | quote }}
       },
       "region": {{ .Values.minioConfig.region | quote }},
-      "browser": {{ .Values.minioConfig.browser | quote }},
       "worm": {{ .Values.minioConfig.worm | quote }},
-      "domain": {{ .Values.minioConfig.domain | quote }},
       "storageclass": {
         "standard": {{ .Values.minioConfig.storageClass.standardStorageClass | quote }},
         "rrs": {{ .Values.minioConfig.storageClass.reducedRedundancyStorageClass | quote }}
