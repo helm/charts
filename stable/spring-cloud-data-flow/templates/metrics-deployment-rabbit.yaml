@@ -1,0 +1,61 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "scdf.fullname" . }}-metrics
+  labels:
+    app: {{ template "scdf.name" . }}
+    component: metrics
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "scdf.name" . }}
+        component: metrics
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: {{ template "scdf.fullname" . }}-metrics
+        image: {{ .Values.metrics.image }}:{{ .Values.metrics.version }}
+        imagePullPolicy: {{ .Values.metrics.imagePullPolicy }}
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: http
+          initialDelaySeconds: 90
+          periodSeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: http
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 5
+        env:
+        - name: SERVER_PORT
+          value: '8080'
+        - name: SPRING_CLOUD_CONFIG_ENABLED
+          value: 'false'
+        - name: SPRING_AUTOCONFIGURE_EXCLUDE
+          value: 'org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration'
+        - name: SPRING_RABBITMQ_HOST
+          value: '${{ printf "{" }}{{ template "scdf.envrelease" . }}_RABBITMQ_SERVICE_HOST}'
+        - name: SPRING_RABBITMQ_PORT
+          value: '${{ printf "{" }}{{ template "scdf.envrelease" . }}_RABBITMQ_SERVICE_PORT_AMQP}'
+        - name: SPRING_RABBITMQ_USERNAME
+          value: '{{ .Values.rabbitmq.rabbitmqUsername }}'
+        - name: SPRING_RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
+              key: rabbitmq-password
+      serviceAccountName: {{ template "scdf.serviceAccountName" . }}
