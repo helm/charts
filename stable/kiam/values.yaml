@@ -206,4 +206,4 @@ tests:
     repository: mesosphere/aws-cli
     tag: 1.14.5
     pullPolicy: IfNotPresent
-  expectedAssumedRole: "AssumedRole"   
+  expectedAssumedRole: null   

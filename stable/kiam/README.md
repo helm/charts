@@ -131,6 +131,11 @@ Parameter | Description | Default
 `serviceAccounts.agent.name` | Name of the agent service account to use or create | `{{ kiam.agent.fullname }}`
 `serviceAccounts.server.create` | If true, create the server service account | `true`
 `serviceAccounts.server.name` | Name of the server service account to use or create | `{{ kiam.server.fullname }}`
+`tests.enabled` | If true, `helm test` will run the smoke test | `true`
+`tests.expectedAssumedRole` | Name of the role that is expected to be assumed by this Pod | `null`
+`tests.image.repository` | Test image | `mesosphere/aws-cli`
+`tests.image.tag` | Test image tag | `1.14.5`
+`tests.image.pullPolicy` | Test image pull policy | `IfNotPresent`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
