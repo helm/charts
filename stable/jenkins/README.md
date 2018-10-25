@@ -37,6 +37,8 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.ImagePullSecret`          | Master image pull secret             | Not set                                                                      |
 | `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
 | `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
+| `Master.SecurityRealm`            | Custom Security Realm                | Not set                                                                      |
+| `Master.ServiceLabels`            | Custom Service labels                | Not set                                                                      |
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 | `Master.AdminPassword`            | Admin password (and user) created as a secret if useSecurity is true | Random value                                  |
 | `Master.JenkinsAdminEmail`        | Email address for the administrator of the Jenkins instance | Not set                                               |
@@ -64,6 +66,7 @@ The following tables list the configurable parameters of the Jenkins chart and t
 | `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
 | `Master.ExtraPorts`               | Open extra ports, for other uses     | Not set                                                                      |
 | `Master.CustomConfigMap`          | Use a custom ConfigMap               | `false`                                                                      |
+| `Master.AdditionalConfig`          | Add additional config files         | `{}`                                                                      |
 | `Master.OverwriteConfig`          | Replace config w/ ConfigMap on boot  | `false`                                                                      |
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
@@ -158,8 +161,8 @@ It is possible to mount several volumes using `Persistence.volumes` and `Persist
 #### Existing PersistentVolumeClaim
 
 1. Create the PersistentVolume
-1. Create the PersistentVolumeClaim
-1. Install the chart
+2. Create the PersistentVolumeClaim
+3. Install the chart
 
 ```bash
 $ helm install --name my-release --set Persistence.ExistingClaim=PVC_NAME stable/jenkins
