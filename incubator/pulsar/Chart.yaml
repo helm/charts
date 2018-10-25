@@ -5,6 +5,6 @@ name: pulsar
 version: 0.1.0
 home: https://pulsar.apache.org
 maintainers:
-  - name: Oliver Isaac
+  - name: oliverisaac
     email: oisaac@gmail.com
     url: https://github.com/oliverisaac
