@@ -112,6 +112,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.resources`                     | Data node resources requests & limits                                      | `{} - cpu limit must be an integer`                 |
 | `data.priorityClassName`             | Data priorityClass                                                         | `nil`                                               |
 | `data.heapSize`                      | Data node heap size                                                        | `1536m`                                             |
+| `data.hooks.drain.enabled            | Data nodes: Enable drain pre-stop and post-start hook                      | `true`                                              |
 | `data.persistence.enabled`           | Data persistent enabled/disabled                                           | `true`                                              |
 | `data.persistence.name`              | Data statefulset PVC template name                                         | `data`                                              |
 | `data.persistence.size`              | Data persistent volume size                                                | `30Gi`                                              |
@@ -132,8 +133,6 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `serviceAccounts.master.name`        | Name of the master service account to use or create                        | `{{ elasticsearch.master.fullname }}`               |
 | `serviceAccounts.data.create`        | If true, create the data service account                                   | `true`                                              |
 | `serviceAccounts.data.name`          | Name of the data service account to use or create                          | `{{ elasticsearch.data.fullname }}`                 |
-
-
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

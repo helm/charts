@@ -39,6 +39,12 @@ spec:
   replicas: {{ .Values.prometheus.prometheusSpec.replicas }}
   logLevel:  {{ .Values.prometheus.prometheusSpec.logLevel }}
   listenLocal: {{ .Values.prometheus.prometheusSpec.listenLocal }}
+{{- if .Values.prometheus.prometheusSpec.scrapeInterval }}
+  scrapeInterval: {{ .Values.prometheus.prometheusSpec.scrapeInterval }}
+{{- end }}
+{{- if .Values.prometheus.prometheusSpec.evaluationInterval }}
+  evaluationInterval: {{ .Values.prometheus.prometheusSpec.evaluationInterval }}
+{{- end }}
 {{- if .Values.prometheus.prometheusSpec.resources }}
   resources:
 {{ toYaml .Values.prometheus.prometheusSpec.resources | indent 4 }}
