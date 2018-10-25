@@ -119,6 +119,7 @@ data:
     logger.searchguard.name = com.floragunn
     logger.searchguard.level = info
 {{- end }}
+{{- if .Values.data.hooks.drain.enabled }}
   pre-stop-hook.sh: |-
     #!/bin/bash
     exec &> >(tee -a "/var/log/elasticsearch-hooks.log")
@@ -155,3 +156,4 @@ data:
       }"
     fi
     echo "Node ${NODE_NAME} is ready to be used"
+{{- end }}
