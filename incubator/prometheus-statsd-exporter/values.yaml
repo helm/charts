@@ -27,7 +27,7 @@ statsd-exporter:
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-   
+
     #limits:
     #  cpu: 500m
     #  memory: 1Gi
@@ -85,7 +85,7 @@ persistentVolume:
   ## If true, statsd-export will create/use a Persistent Volume Claim
   ## If false, use emptyDir
   ##
-  enabled: true 
+  enabled: true
 
   ## statsd-exporter data Persistent Volume access modes
   ## Must match those of existing PV or dynamic provisioner
@@ -93,7 +93,7 @@ persistentVolume:
   ##
   accessModes:
     - ReadWriteOnce
-  
+
   ## statsd-exporter data Persistent Volume Claim annotations
   ##
   annotations: {}
