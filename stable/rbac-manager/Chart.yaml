@@ -1,0 +1,18 @@
+name: rbac-manager
+version: 0.1.0
+appVersion: 0.4.3
+description: A Kubernetes operator that simplifies the management of Role Bindings and Service Accounts.
+keywords:
+- rbac
+- authorization
+home: https://reactiveops.github.io/rbac-manager/
+sources:
+- https://github.com/reactiveops/rbac-manager
+maintainers:
+- name: Andrew Suderman
+  email: ej@reactiveops.com
+- name: EJ Etherington
+  email: ej@reactiveops.com
+- name: Rob Scott
+  email: rob@reactiveops.com
+engine: gotpl

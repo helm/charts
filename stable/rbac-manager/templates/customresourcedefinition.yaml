@@ -1,0 +1,67 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: rbacdefinitions.rbacmanager.reactiveops.io
+  annotations:
+    "helm.sh/hook": "crd-install"
+  labels:
+    app: {{ template "rbac-manager.name" . }}
+    chart: {{ template "rbac-manager.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  group: rbacmanager.reactiveops.io
+  names:
+    kind: RBACDefinition
+    plural: rbacdefinitions
+  scope: Cluster
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+        rbacBindings:
+          items:
+            properties:
+              clusterRoleBindings:
+                items:
+                  properties:
+                    clusterRole:
+                      type: string
+                  required:
+                  - clusterRole
+                  type: object
+                type: array
+              name:
+                type: string
+              roleBindings:
+                items:
+                  properties:
+                    clusterRole:
+                      type: string
+                    namespace:
+                      type: string
+                    role:
+                      type: string
+                  type: object
+                type: array
+              subjects:
+                items:
+                  type: object
+                type: array
+            required:
+            - name
+            - subjects
+            type: object
+          type: array
+        status:
+          type: object
+      required:
+      - metadata
+      - rbacBindings
+      type: object
+  version: v1beta1

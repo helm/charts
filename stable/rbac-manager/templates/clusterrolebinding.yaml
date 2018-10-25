@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "rbac-manager.fullname" . }}
+  labels:
+    app: {{ template "rbac-manager.name" . }}
+    chart: {{ template "rbac-manager.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "rbac-manager.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "rbac-manager.fullname" . }}
+    namespace: {{ .Release.Namespace | quote }}
