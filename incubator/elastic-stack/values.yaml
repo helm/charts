@@ -17,7 +17,7 @@ filebeat:
   #   output.file.enabled: false
   #   output.logstash:
   #     hosts: ["elastic-stack-logstash:5044"]
-  # indexTemplateLoad: 
+  # indexTemplateLoad:
   #   - elastic-stack-elasticsearch-client:9200
 
 fluentd:
