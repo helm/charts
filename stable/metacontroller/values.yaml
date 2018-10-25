@@ -1,0 +1,14 @@
+# Default values for helmcontroller.
+image:
+  repository: metacontroller/metacontroller
+  tag: 0.2
+
+rbac:
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
