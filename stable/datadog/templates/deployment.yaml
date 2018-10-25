@@ -26,8 +26,11 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.image.pullSecrets | indent 8 }}
       {{- end }}
+      {{- if .Values.deployment.priorityClassName }}
+      priorityClassName: {{ .Values.deployment.priorityClassName }}
+      {{- end }}
       containers:
-      - name: {{ .Chart.Name }}
+      - name: {{ default .Chart.Name .Values.datadog.name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
@@ -69,12 +72,16 @@ spec:
           - name: KUBERNETES_COLLECT_EVENTS
             value: "yes"
           {{- end }}
+          {{- if .Values.datadog.criSocketPath }}
+          - name: DD_CRI_SOCKET_PATH
+            value: {{ .Values.datadog.criSocketPath | quote }}
+          {{- end }}
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
 {{- end }}
         volumeMounts:
-          - name: dockersocket
-            mountPath: /var/run/docker.sock
+          - name: runtimesocket
+            mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
             readOnly: true
           - name: procdir
             mountPath: /host/proc
@@ -103,8 +110,8 @@ spec:
           periodSeconds: 5
       volumes:
         - hostPath:
-            path: /var/run/docker.sock
-          name: dockersocket
+            path: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
+          name: runtimesocket
         - hostPath:
             path: /proc
           name: procdir

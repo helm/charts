@@ -5,7 +5,7 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 0.13.0
+    tag: 0.14.4
   pullPolicy: Always
 
 # When enabled, exposes json and prometheus metrics on {{ .Release.Name }}-metrics service
@@ -80,6 +80,13 @@ podAnnotations: {}
 ## to NOT generate a ConfigMap resource
 ##
 existingConfigMap: ""
+
+## Add extra input sources
+extraInputs: |-
+## Add extra filters
+extraFilters: |-
+## Add extra outputs
+extraOutputs: |-
 
 ## Extra volumes containing additional files required for fluent-bit to work
 ## (eg. CA certificates)

@@ -111,10 +111,10 @@ data:
           <namespace>{{ default .Release.Namespace .Values.Master.SlaveKubernetesNamespace }}</namespace>
 {{- if .Values.Master.SlaveKubernetesNamespace }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}.{{.Release.Namespace}}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{.Release.Namespace}}:50000</jenkinsTunnel>
+          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent.{{.Release.Namespace}}:{{ .Values.Master.SlaveListenerPort }}</jenkinsTunnel>
 {{- else }}
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:50000</jenkinsTunnel>
+          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:{{ .Values.Master.SlaveListenerPort }}</jenkinsTunnel>
 {{- end }}
           <containerCap>10</containerCap>
           <retentionTimeout>5</retentionTimeout>
@@ -135,7 +135,7 @@ data:
         </hudson.model.AllView>
       </views>
       <primaryView>All</primaryView>
-      <slaveAgentPort>50000</slaveAgentPort>
+      <slaveAgentPort>{{ .Values.Master.SlaveListenerPort }}</slaveAgentPort>
       <disabledAgentProtocols>
 {{- range .Values.Master.DisabledAgentProtocols }}
         <string>{{ . }}</string>

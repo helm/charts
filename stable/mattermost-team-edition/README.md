@@ -46,7 +46,8 @@ The following table lists the configurable parameters of the Mattermost Team Edi
 Parameter                 | Description                       | Default
 ---                       | ---                               | ---
 `image.repository`        | container image repository        | `mattermost/mattermost-team-edition`
-`image.tag`               | container image tag               | `5.3.1`
+`image.tag`               | container image tag               | `5.4.0`
+`revisionHistoryLimit`    | How many old ReplicaSets for Mattermost Deployment you want to retain   | `1`
 `config.SiteUrl`          | The URL that users will use to access Mattermost. ie `https://mattermost.mycompany.com`       |  ``
 `config.SiteName`         | Name of service shown in login screens and UI         | `Mattermost`
 `config.FilesAccessKey`   | The AWS Access Key, if you want store the files on S3         | ``

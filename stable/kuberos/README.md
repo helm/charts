@@ -17,7 +17,7 @@ These include content that would normally be in secrets.
 This chart deploys the [kuberos](https://github.com/negz/kuberos) code
 snippet generator for clusters using both
 * OIDC - OpenID Connect, an authentication layer on top of OAuth 2.0
-* RBAC - Role Based Access Controlls (in your k8s cluster)
+* RBAC - Role Based Access Controls (in your k8s cluster)
 
 It provides a quick and easy way for an authenticated user to generate
 and download config for kubectl.
