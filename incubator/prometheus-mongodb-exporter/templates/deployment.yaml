@@ -1,0 +1,34 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "prometheus-mongodb-exporter.fullname" . }}
+  labels:
+    app: {{ template "prometheus-mongodb-exporter.name" . }}
+    chart: {{ template "prometheus-mongodb-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prometheus-mongodb-exporter.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "prometheus-mongodb-exporter.name" . }}
+        release: {{ .Release.Name }}
+{{- if .Values.annotations }}
+{{ toYaml .Values.annotations | indent 8 }}
+{{- end}}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          env:
+            - name: MONGODB_URL
+              value: "{{ .Values.config.datasource.host }}:{{ .Values.config.datasource.port }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
