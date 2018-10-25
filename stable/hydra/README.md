@@ -189,3 +189,16 @@ hydra:
     dbUser: myuser
     dbPassword: mypassword
 ```
+
+### Prometheus metrics
+Prometheus metric scraping may be enabled via annotations to the service object like:
+
+
+```yaml
+hyrda:
+  service:
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "4445"
+      prometheus.io/path: "/metrics/prometheus"
+```
