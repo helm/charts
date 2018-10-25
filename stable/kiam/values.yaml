@@ -198,3 +198,12 @@ serviceAccounts:
   server:
     create: true
     name:
+
+#Optional post-install helm tests
+tests:
+  enabled: true
+  image:
+    repository: mesosphere/aws-cli
+    tag: 1.14.5
+    pullPolicy: IfNotPresent
+  expectedAssumedRole: "AssumedRole"   
