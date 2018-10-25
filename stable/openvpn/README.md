@@ -21,7 +21,7 @@ POD_NAME=$(kubectl get pods -l "app=openvpn,release=$HELM_RELEASE" -o jsonpath='
 && kubectl log "$POD_NAME" --follow
 ```
 
-When all components of the openvpn chart have started use the following script to generate a client key:
+When all components of the openvpn chart have started use the following script to generate, list,revoke or unrevoke client keys:
 
 
 ```bash
@@ -29,18 +29,39 @@ When all components of the openvpn chart have started use the following script t
 
 if [ $# -ne 3 ]
 then
-  echo "Usage: $0 <CLIENT_KEY_NAME> <NAMESPACE> <HELM_RELEASE>"
+  echo "Usage: $0 <NAMESPACE> <HELM_RELEASE> <ACTION>"
+  echo "Valid <ACTION> commands are: generate, list, revoke and unrevoke"
   exit
 fi
 
-KEY_NAME=$1
-NAMESPACE=$2
-HELM_RELEASE=$3
+NAMESPACE=$1
+HELM_RELEASE=$2
+ACTION=$3
 POD_NAME=$(kubectl get pods -n "$NAMESPACE" -l "app=openvpn,release=$HELM_RELEASE" -o jsonpath='{.items[0].metadata.name}')
 SERVICE_NAME=$(kubectl get svc -n "$NAMESPACE" -l "app=openvpn,release=$HELM_RELEASE" -o jsonpath='{.items[0].metadata.name}')
 SERVICE_IP=$(kubectl get svc -n "$NAMESPACE" "$SERVICE_NAME" -o go-template='{{range $k, $v := (index .status.loadBalancer.ingress 0)}}{{$v}}{{end}}')
-kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/newClientCert.sh "$KEY_NAME" "$SERVICE_IP"
-kubectl -n "$NAMESPACE" exec -it "$POD_NAME" cat "/etc/openvpn/certs/pki/$KEY_NAME.ovpn" > "$KEY_NAME.ovpn"
+
+if [ $ACTION == "list" ]; then
+    kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/showClientCerts.sh
+    exit 0
+fi
+
+read -p "Please enter your key name? (name.surname) " KEY_NAME
+
+if [ $ACTION == "generate" ]; then
+    kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/newClientCert.sh "$KEY_NAME" "$SERVICE_IP"
+    kubectl -n "$NAMESPACE" exec -it "$POD_NAME" cat "/etc/openvpn/certs/pki/$KEY_NAME.ovpn" > "$KEY_NAME.ovpn"
+    echo "Your openvpn config for $KEY_NAME is saved to $(pwd)/$KEY_NAME.ovpn"
+    exit 0
+fi
+if [ $ACTION == "revoke" ]; then
+    echo "Revoking $KEY_NAME:"
+    kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/revokeClientCert.sh "$KEY_NAME"
+fi
+if [ $ACTION == "unrevoke" ]; then
+    echo "UN-Revoking $KEY_NAME:"
+    kubectl -n "$NAMESPACE" exec -it "$POD_NAME" /etc/openvpn/setup/unrevokeClientCert.sh "$KEY_NAME"
+fi
 ```
 
 The entire list of helper scripts can be found on [templates/config-openvpn.yaml](templates/config-openvpn.yaml)
