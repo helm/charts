@@ -22,6 +22,9 @@ data:
       echo "ca\n" | ./easyrsa build-ca nopass
       ./easyrsa build-server-full server nopass
       ./easyrsa gen-dh
+      ./easyrsa gen-crl
+      chmod 644 pki/crl.pem
+      mv pki/crl.pem $EASY_RSA_LOC/
     fi
 
 
@@ -50,6 +53,33 @@ data:
       </ca>
       EOF
       cat pki/$1.ovpn
+
+  showClientCerts.sh: |-
+      #!/bin/bash
+      EASY_RSA_LOC="/etc/openvpn/certs"
+      cd $EASY_RSA_LOC
+      tail -n+2 pki/index.txt | awk '{print $1" "$NF}'
+
+  revokeClientCert.sh: |-
+      #!/bin/bash
+      EASY_RSA_LOC="/etc/openvpn/certs"
+      cd $EASY_RSA_LOC
+      ./easyrsa --batch revoke $1
+      ./easyrsa gen-crl
+      chmod 644 pki/crl.pem
+      mv pki/crl.pem $EASY_RSA_LOC/
+
+  unrevokeClientCert.sh: |-
+      #!/bin/bash
+      EASY_RSA_LOC="/etc/openvpn/certs"
+      cd $EASY_RSA_LOC
+      grep -r -E "^R.*CN=$1$" pki/index.txt
+      REVOKED=$(cat pki/index.txt | grep -E  "^R.*CN=$1$")
+      UNREVOKED=$(echo $REVOKED| awk '{print "V\t"$2"\t\t"$4"\t"$5"\t"$6 }')
+      sed -i "s:${REVOKED}:${UNREVOKED}:g" pki/index.txt
+      ./easyrsa gen-crl
+      chmod 644 pki/crl.pem
+      mv pki/crl.pem $EASY_RSA_LOC/
 
   configure.sh: |-
       #!/bin/sh
@@ -87,6 +117,7 @@ data:
       ca /etc/openvpn/certs/pki/ca.crt
       cert /etc/openvpn/certs/pki/issued/server.crt
       dh /etc/openvpn/certs/pki/dh.pem
+      crl-verify /etc/openvpn/certs/crl.pem
 
       key-direction 0
       keepalive 10 60
