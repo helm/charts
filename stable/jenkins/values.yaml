@@ -16,6 +16,7 @@ Master:
 # ImagePullSecret: jenkins
   Component: "jenkins-master"
   UseSecurity: true
+  HostNetworking: false
   AdminUser: admin
   # AdminPassword: <defaults to random>
   resources:
@@ -82,6 +83,10 @@ Master:
   #   -Dcom.sun.management.jmxremote.authenticate=false
   #   -Dcom.sun.management.jmxremote.ssl=false
   # JMXPort: 4000
+  # Optionally configure other ports to expose in the Master container
+  ExtraPorts:
+  # - name: BuildInfoProxy
+  #   port: 9000
   # List of plugins to be install during Jenkins master start
   InstallPlugins:
     - kubernetes:1.12.4
@@ -108,6 +113,10 @@ Master:
   #   test: |-
   #     <<xml here>>
   CustomConfigMap: false
+  # By default, the configMap is only used to set the initial config the first time
+  # that the chart is installed.  Setting `OverwriteConfig` to `true` will overwrite
+  # the jenkins config with the contents of the configMap every time the pod starts.
+  OverwriteConfig: false
   # Node labels and tolerations for pod assignment
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
@@ -196,8 +205,6 @@ NetworkPolicy:
 rbac:
   install: false
   serviceAccountName: default
-  # RBAC api version (currently either v1, v1beta1, or v1alpha1)
-  apiVersion: v1
   # Role reference
   roleRef: cluster-admin
   # Role kind (RoleBinding or ClusterRoleBinding)

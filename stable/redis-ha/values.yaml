@@ -95,8 +95,9 @@ podDisruptionBudget: {}
   # maxUnavailable: 1
   # minAvailable: 1
 
-# redisPassword:
+## Configures redis with AUTH (requirepass & masterauth conf params)
 auth: false
+# redisPassword:
 
 persistentVolume:
   enabled: true

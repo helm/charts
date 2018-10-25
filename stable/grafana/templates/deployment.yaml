@@ -19,6 +19,9 @@ spec:
       release: {{ .Release.Name }}
   strategy:
     type: {{ .Values.deploymentStrategy }}
+  {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
+    rollingUpdate: null
+  {{- end }}    
   template:
     metadata:
       labels:
@@ -196,17 +199,9 @@ spec:
                 name: {{ .Values.envFromSecret }}
           {{- end }}
           livenessProbe:
-            httpGet:
-              path: /api/health
-              port: 3000
+{{ toYaml .Values.livenessProbe | indent 12 }}
           readinessProbe:
-            httpGet:
-              path: /api/health
-              port: 3000
-            initialDelaySeconds: 60
-            timeoutSeconds: 30
-            failureThreshold: 10
-            periodSeconds: 10
+{{ toYaml .Values.readinessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
@@ -271,4 +266,5 @@ spec:
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+            defaultMode: {{ .defaultMode }}
       {{- end }}

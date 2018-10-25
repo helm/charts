@@ -18,12 +18,17 @@ host. To configure Ghost with the URL of your service:
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "ghost.fullname" . }}'
 
   export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "ghost.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
+  export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "ghost.fullname" . }} -o jsonpath="{.data.ghost-password}" | base64 --decode)
+  {{- if .Values.mariadb.mariadbRootPassword }}
+  export DATABASE_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "ghost.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
   {{- end }}
+  {{- end }}
+  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "ghost.mariadb.fullname" . }} -o jsonpath="{.data.mariadb-password}" | base64 --decode)
 
 2. Complete your Ghost deployment by running:
 
-  helm upgrade {{ .Release.Name }} \
-    --set serviceType={{ .Values.serviceType }},ghostHost=$APP_HOST stable/ghost
+  helm upgrade {{ .Release.Name }} stable/ghost\
+    --set serviceType={{ .Values.serviceType }},ghostHost=$APP_HOST,ghostPassword=$APP_PASSWORD,{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$DATABASE_ROOT_PASSWORD{{ end }}mariadb.db.password=$APP_DATABASE_PASSWORD
 {{- else -}}
 1. Get the Ghost URL by running:
 

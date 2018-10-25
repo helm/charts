@@ -21,10 +21,13 @@ hub:
   ## The port which the hub listens on
   port: 4444
 
-  ## Timeout for probe Hub readiness via HTTP request on Hub console
+  ## Timeout for probe Hub readiness via HTTP request on Hub status
   readinessTimeout: 1
 
-  ## Timeout for probe Hub liveness via HTTP request on Hub console
+  ## Initial delay before performing the first readinessProbe
+  readinessDelay: 15
+
+  ## Timeout for probe Hub liveness via HTTP request on Hub status
   livenessTimeout: 1
 
   ## Set the JAVA_TOOL_OPTIONS environment variable
@@ -90,6 +93,18 @@ hub:
   ## NodeSelector to be used for the hub
   nodeSelector:
   #  label: value
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - selenium-hub.local
+    tls: []
+    #  - secretName: selenium-hub-tls
+    #    hosts:
+    #      - selenium-hub.local
 
 
 chrome:

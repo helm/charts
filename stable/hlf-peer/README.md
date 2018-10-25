@@ -44,7 +44,7 @@ $ helm install stable/hlf-peer --name peer1 --set caUsername=peer1,caPassword=se
 
 The above command specifies (but does not register/enroll) a Peer username of `peer1` with password `secretpassword`.
 
-Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the defualt values.yaml. For example,
+Alternatively, a YAML file can be provided while installing the chart. This file specifies values to override those provided in the default values.yaml. For example,
 
 ```bash
 $ helm install stable/hlf-peer --name peer1 -f my-values.yaml
@@ -95,6 +95,7 @@ The following table lists the configurable parameters of the Hyperledger Fabric 
 | `secrets.channel`                  | Secret containing Channel tx for peer to create/join | ``                                                         |
 | `secrets.adminCert`                | Secret containing Peer Org admin certificate         | ``                                                         |
 | `secrets.adminCert`                | Secret containing Peer Org admin private key         | ``                                                         |
+| `secrets.caServerTls`              | Secret containing CA Server TLS certificate      | `ca--tls`                                                  |
 | `resources`                        | CPU/Memory resource requests/limits                  | `{}`                                                       |
 | `nodeSelector`                     | Node labels for pod assignment                       | `{}`                                                       |
 | `tolerations`                      | Toleration labels for pod assignment                 | `[]`                                                       |

@@ -78,12 +78,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "minio.fullname" . }}
+                  name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "minio.fullname" . }}
+                  name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
                   key: secretkey
             {{- if .Values.gcsgateway.enabled }}
             - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -92,10 +92,31 @@ spec:
                   name: {{ template "minio.fullname" . }}
                   key: gcs_key.json
             {{- end }}
+            {{- if .Values.minioConfig.browser }}
+            - name: MINIO_BROWSER
+              value: {{ .Values.minioConfig.browser | quote }}
+            {{- end }}
+            {{- if .Values.minioConfig.domain }}
+            - name: MINIO_DOMAIN
+              value: {{ .Values.minioConfig.domain | quote }}
+            {{- end }}
           livenessProbe:
-            tcpSocket:
-              port: 9000
-            timeoutSeconds: 1
+            httpGet:
+              path: /minio/health/live
+              port: service
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: /minio/health/ready
+              port: service
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
 {{- with .Values.nodeSelector }}
@@ -123,7 +144,7 @@ spec:
             name: {{ template "minio.fullname" . }}
         - name: minio-user
           secret:
-            secretName: {{ template "minio.fullname" . }}
+            secretName: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
         - name: minio-config-dir
           emptyDir: {}
 {{- end }}
