@@ -184,7 +184,7 @@ spec:
             path: /metrics
             port: metrics
           initialDelaySeconds: 5
-          timeoutSeconds: 1
+          timeoutSeconds: 5
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
