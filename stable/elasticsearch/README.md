@@ -59,81 +59,79 @@ $ kubectl delete pvc -l release=my-release,component=data
 
 The following table lists the configurable parameters of the elasticsearch chart and their default values.
 
-|              Parameter               |                             Description                             |                       Default                       |
-| ------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- |
-| `appVersion`                         | Application Version (Elasticsearch)                                 | `6.4.2`                                             |
-| `image.repository`                   | Container image name                                                | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
-| `image.tag`                          | Container image tag                                                 | `6.4.2`                                             |
-| `image.pullPolicy`                   | Container pull policy                                               | `IfNotPresent`                                      |
-| `initImage.repository`               | Init container image name                                           | `busybox`                                           |
-| `initImage.tag`                      | Init container image tag                                            | `latest`                                            |
-| `initImage.pullPolicy`               | Init container pull policy                                          | `Always`                                            |
-| `cluster.name`                       | Cluster name                                                        | `elasticsearch`                                     |
-| `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                                             |
-| `cluster.config`                     | Additional cluster config appended                                  | `{}`                                                |
-| `cluster.keystoreSecret`             | Name of secret holding secure config options in an es keystore      | `nil`                                               |
-| `cluster.env`                        | Cluster environment variables                                       | `{MINIMUM_MASTER_NODES: "2"}`                       |
-| `cluster.additionalJavaOpts`         | Cluster parameters to be added to `ES_JAVA_OPTS` environment variable | `""`                                              |
-| `client.name`                        | Client component name                                               | `client`                                            |
-| `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                                 |
-| `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`                 |
-| `client.priorityClassName`           | Client priorityClass                                                | `nil`                                               |
-| `client.heapSize`                    | Client node heap size                                               | `512m`                                              |
-| `client.podAnnotations`              | Client Deployment annotations                                       | `{}`                                                |
-| `client.nodeSelector`                | Node labels for client pod assignment                               | `{}`                                                |
-| `client.tolerations`                 | Client tolerations                                                  | `[]`                                                |
-| `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                                |
-| `client.serviceType`                 | Client service type                                                 | `ClusterIP`                                         |
-| `client.loadBalancerIP`              | Client loadBalancerIP                                               | `{}`                                                |
-| `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                                |
-| `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
-| `client.nodeAffinity`                | Client node affinity policy                                         | `{}`                                                |
-| `master.exposeHttp`                  | Expose http port 9200 on master Pods for monitoring, etc            | `false`                                             |
-| `master.name`                        | Master component name                                               | `master`                                            |
-| `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                                 |
-| `master.resources`                   | Master node resources requests & limits                             | `{} - cpu limit must be an integer`                 |
-| `master.priorityClassName`           | Master priorityClass                                                | `nil`                                               |
-| `master.podAnnotations`              | Master Deployment annotations                                       | `{}`                                                |
-| `master.nodeSelector`                | Node labels for master pod assignment                               | `{}`                                                |
-| `master.tolerations`                 | Master tolerations                                                  | `[]`                                                |
-| `master.heapSize`                    | Master node heap size                                               | `512m`                                              |
-| `master.name`                        | Master component name                                               | `master`                                            |
-| `master.persistence.enabled`         | Master persistent enabled/disabled                                  | `true`                                              |
-| `master.persistence.name`            | Master statefulset PVC template name                                | `data`                                              |
-| `master.persistence.size`            | Master persistent volume size                                       | `4Gi`                                               |
-| `master.persistence.storageClass`    | Master persistent volume Class                                      | `nil`                                               |
-| `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                                     |
-| `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                                              |
-| `master.nodeAffinity`                | Master node affinity policy                                         | `{}`                                                |
-| `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
-| `data.enabled`                       | Enable data deployment. See `dataTypes` attribute.                  | `true`                                              |
-| `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                                 |
-| `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
-| `data.enabled`                       | Enable data deployment. See `dataTypes` attribute.                  | `true`                                              |
-| `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                                 |
-| `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`                 |
-| `data.priorityClassName`             | Data priorityClass                                                  | `nil`                                               |
-| `data.heapSize`                      | Data node heap size                                                 | `1536m`                                             |
-| `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                                              |
-| `data.persistence.name`              | Data statefulset PVC template name                                  | `data`                                              |
-| `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                                              |
-| `data.persistence.storageClass`      | Data persistent volume Class                                        | `nil`                                               |
-| `data.persistence.accessMode`        | Data persistent Access Mode                                         | `ReadWriteOnce`                                     |
-| `data.podAnnotations`                | Data StatefulSet annotations                                        | `{}`                                                |
-| `data.nodeSelector`                  | Node labels for data pod assignment                                 | `{}`                                                |
-| `data.tolerations`                   | Data tolerations                                                    | `[]`                                                |
-| `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                                              |
-| `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                                              |
-| `data.nodeAffinity`                  | Data node affinity policy                                           | `{}`                                                |
-| `dataTypes`                          | Array with different data node types (see `data.` properties)       | `[]`                                                |
-| `extraInitContainers`                | Additional init container passed through the tpl 	                 | ``                                                  |
-| `podSecurityPolicy.enabled`          | Specify if a Pod Security Policy must be created                    | `false`                                             |
-| `serviceAccounts.client.create`      | If true, create the client service account                          | `true`                                              |
-| `serviceAccounts.client.name`        | Name of the client service account to use or create                 | `{{ elasticsearch.client.fullname }}`               |
-| `serviceAccounts.master.create`      | If true, create the master service account                          | `true`                                              |
-| `serviceAccounts.master.name`        | Name of the master service account to use or create                 | `{{ elasticsearch.master.fullname }}`               |
-| `serviceAccounts.data.create`        | If true, create the data service account                            | `true`                                              |
-| `serviceAccounts.data.name`          | Name of the data service account to use or create                   | `{{ elasticsearch.data.fullname }}`                 |
+|              Parameter               |                             Description                                    |                       Default                       |
+| ------------------------------------ | -------------------------------------------------------------------------- | --------------------------------------------------- |
+| `appVersion`                         | Application Version (Elasticsearch)                                        | `6.4.2`                                             |
+| `image.repository`                   | Container image name                                                       | `docker.elastic.co/elasticsearch/elasticsearch-oss` |
+| `image.tag`                          | Container image tag                                                        | `6.4.2`                                             |
+| `image.pullPolicy`                   | Container pull policy                                                      | `IfNotPresent`                                      |
+| `initImage.repository`               | Init container image name                                                  | `busybox`                                           |
+| `initImage.tag`                      | Init container image tag                                                   | `latest`                                            |
+| `initImage.pullPolicy`               | Init container pull policy                                                 | `Always`                                            |
+| `cluster.name`                       | Cluster name                                                               | `elasticsearch`                                     |
+| `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file          | `false`                                             |
+| `cluster.config`                     | Additional cluster config appended                                         | `{}`                                                |
+| `cluster.keystoreSecret`             | Name of secret holding secure config options in an es keystore             | `nil`                                               |
+| `cluster.env`                        | Cluster environment variables                                              | `{MINIMUM_MASTER_NODES: "2"}`                       |
+| `cluster.additionalJavaOpts`         | Cluster parameters to be added to `ES_JAVA_OPTS` environment variable      | `""`                                                |
+| `client.name`                        | Client component name                                                      | `client`                                            |
+| `client.replicas`                    | Client node replicas (deployment)                                          | `2`                                                 |
+| `client.resources`                   | Client node resources requests & limits                                    | `{} - cpu limit must be an integer`                 |
+| `client.priorityClassName`           | Client priorityClass                                                       | `nil`                                               |
+| `client.heapSize`                    | Client node heap size                                                      | `512m`                                              |
+| `client.podAnnotations`              | Client Deployment annotations                                              | `{}`                                                |
+| `client.nodeSelector`                | Node labels for client pod assignment                                      | `{}`                                                |
+| `client.tolerations`                 | Client tolerations                                                         | `[]`                                                |
+| `client.serviceAnnotations`          | Client Service annotations                                                 | `{}`                                                |
+| `client.serviceType`                 | Client service type                                                        | `ClusterIP`                                         |
+| `client.loadBalancerIP`              | Client loadBalancerIP                                                      | `{}`                                                |
+| `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                            | `{}`                                                |
+| `client.antiAffinity`                | Client anti-affinity policy                                                | `soft`                                              |
+| `client.nodeAffinity`                | Client node affinity policy                                                | `{}`                                                |
+| `master.exposeHttp`                  | Expose http port 9200 on master Pods for monitoring, etc                   | `false`                                             |
+| `master.name`                        | Master component name                                                      | `master`                                            |
+| `master.replicas`                    | Master node replicas (deployment)                                          | `2`                                                 |
+| `master.resources`                   | Master node resources requests & limits                                    | `{} - cpu limit must be an integer`                 |
+| `master.priorityClassName`           | Master priorityClass                                                       | `nil`                                               |
+| `master.podAnnotations`              | Master Deployment annotations                                              | `{}`                                                |
+| `master.nodeSelector`                | Node labels for master pod assignment                                      | `{}`                                                |
+| `master.tolerations`                 | Master tolerations                                                         | `[]`                                                |
+| `master.heapSize`                    | Master node heap size                                                      | `512m`                                              |
+| `master.name`                        | Master component name                                                      | `master`                                            |
+| `master.persistence.enabled`         | Master persistent enabled/disabled                                         | `true`                                              |
+| `master.persistence.name`            | Master statefulset PVC template name                                       | `data`                                              |
+| `master.persistence.size`            | Master persistent volume size                                              | `4Gi`                                               |
+| `master.persistence.storageClass`    | Master persistent volume Class                                             | `nil`                                               |
+| `master.persistence.accessMode`      | Master persistent Access Mode                                              | `ReadWriteOnce`                                     |
+| `master.antiAffinity`                | Master anti-affinity policy                                                | `soft`                                              |
+| `master.nodeAffinity`                | Master node affinity policy                                                | `{}`                                                |
+| `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc                     | `false`                                             |
+| `data.enabled`                       | Enable data deployment. See `dataTypes` attribute.                         | `true`                                              |
+| `data.replicas`                      | Data node replicas (statefulset)                                           | `2`                                                 |
+| `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc                     | `false`                                             |
+| `data.resources`                     | Data node resources requests & limits                                      | `{} - cpu limit must be an integer`                 |
+| `data.priorityClassName`             | Data priorityClass                                                         | `nil`                                               |
+| `data.heapSize`                      | Data node heap size                                                        | `1536m`                                             |
+| `data.persistence.enabled`           | Data persistent enabled/disabled                                           | `true`                                              |
+| `data.persistence.name`              | Data statefulset PVC template name                                         | `data`                                              |
+| `data.persistence.size`              | Data persistent volume size                                                | `30Gi`                                              |
+| `data.persistence.storageClass`      | Data persistent volume Class                                               | `nil`                                               |
+| `data.persistence.accessMode`        | Data persistent Access Mode                                                | `ReadWriteOnce`                                     |
+| `data.podAnnotations`                | Data StatefulSet annotations                                               | `{}`                                                |
+| `data.nodeSelector`                  | Node labels for data pod assignment                                        | `{}`                                                |
+| `data.tolerations`                   | Data tolerations                                                           | `[]`                                                |
+| `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                                    | `3600`                                              |
+| `data.antiAffinity`                  | Data anti-affinity policy                                                  | `soft`                                              |
+| `data.nodeAffinity`                  | Data node affinity policy                                                  | `{}`                                                |
+| `dataTypes`                          | Optional array defining heterogeneous data nodes. See documentation below. | `[]`                                                |
+| `extraInitContainers`                | Additional init container passed through the tpl                           | ``                                                  |
+| `podSecurityPolicy.enabled`          | Specify if a Pod Security Policy must be created                           | `false`                                             |
+| `serviceAccounts.client.create`      | If true, create the client service account                                 | `true`                                              |
+| `serviceAccounts.client.name`        | Name of the client service account to use or create                        | `{{ elasticsearch.client.fullname }}`               |
+| `serviceAccounts.master.create`      | If true, create the master service account                                 | `true`                                              |
+| `serviceAccounts.master.name`        | Name of the master service account to use or create                        | `{{ elasticsearch.master.fullname }}`               |
+| `serviceAccounts.data.create`        | If true, create the data service account                                   | `true`                                              |
+| `serviceAccounts.data.name`          | Name of the data service account to use or create                          | `{{ elasticsearch.data.fullname }}`                 |
 
 
 
