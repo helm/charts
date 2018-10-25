@@ -43,7 +43,7 @@ hydra:
     ## If not set, a random 16 character secret will be used.
     cookie: ""
 
-  ## Additional init containers, e. g. for providing custom themes
+  ## Additional init containers
   initContainers: |
 
   ## Additional sidecar containers
