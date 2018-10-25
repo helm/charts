@@ -74,6 +74,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.serviceType`                         | Service for Nexus                   | `NodePort`                              |
 | `nexus.securityContext`                     | Security Context (for enabling official image use `fsGroup: 2000`) | `{}`     |
 | `nexus.labels`                              | Service labels                      | `{}`                                    |
+| `nexus.podAnnotations`                      | Pod Annotations                     | `{}`
 | `nexus.livenessProbe.initialDelaySeconds`   | LivenessProbe initial delay         | 30                                      |
 | `nexus.livenessProbe.periodSeconds`         | Seconds between polls               | 30                                      |
 | `nexus.livenessProbe.failureThreshold`      | Number of attempts before failure   | 6                                       |
@@ -86,6 +87,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.readinessProbe.path`                 | Path for ReadinessProbe             | /                                       |
 | `nexus.hostAliases`                         | Aliases for IPs in /etc/hosts       | []                                      |
 | `nexusProxy.enabled`                        | Enable nexus proxy                  | `true`                                  |
+| `nexusProxy.svcName`                        | Nexus proxy service name            | `nil`                                  |
 | `nexusProxy.targetPort`                     | Container Port for Nexus proxy      | `8080`                                  |
 | `nexusProxy.port`                           | Port for exposing Nexus             | `8080`                                  |
 | `nexusProxy.imageName`                      | Proxy image                         | `quay.io/travelaudience/docker-nexus-proxy` |
@@ -134,6 +136,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `secret.data`                               | Secret data                      | `nil`                                      |
 | `service.enabled`                           | Enable additional service        | `nil`                                      |
 | `service.name`                              | Service name                     | `nil`                                      |
+| `service.portName`                          | Service port name                | `nil`                                      |
 | `service.labels`                            | Service labels                   | `nil`                                      |
 | `service.annotations`                       | Service annotations              | `nil`                                      |
 | `service.targetPort`                        | Service port                     | `nil`                                      |

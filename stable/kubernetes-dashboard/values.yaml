@@ -105,3 +105,9 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+livenessProbe:
+  # Number of seconds to wait before sending first probe
+  initialDelaySeconds: 30
+  # Number of seconds to wait for probe response
+  timeoutSeconds: 30

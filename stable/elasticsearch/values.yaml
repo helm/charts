@@ -3,6 +3,25 @@
 # Declare variables to be passed into your templates.
 appVersion: "6.4.2"
 
+## Define serviceAccount names for components. Defaults to component's fully qualified name.
+##
+serviceAccounts:
+  client:
+    create: true
+    name:
+  master:
+    create: true
+    name:
+  data:
+    create: true
+    name:
+
+## Specify if a Pod Security Policy for node-exporter must be created
+## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+##
+podSecurityPolicy:
+  enabled: false
+
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
   tag: "6.4.2"
@@ -129,6 +148,9 @@ data:
     maxUnavailable: 1
   updateStrategy:
     type: OnDelete
+  hooks:  # post-start and pre-stop hooks
+    drain:  # drain the node before stopping it and re-integrate it into the cluster after start
+      enabled: true
 
 ## Additional init containers
 extraInitContainers: |
