@@ -17,15 +17,16 @@ spec:
       labels:
         app: {{ template "prometheus-mongodb-exporter.name" . }}
         release: {{ .Release.Name }}
-{{- if .Values.annotations }}
+      annotations:
+        {{- if .Values.annotations }}
 {{ toYaml .Values.annotations | indent 8 }}
-{{- end}}
+        {{- end}}
     spec:
       containers:
         - name: {{ .Chart.Name }}
           env:
             - name: MONGODB_URL
-              value: "{{ .Values.config.datasource.host }}:{{ .Values.config.datasource.port }}"
+              value: {{ .Values.config.datasource }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:

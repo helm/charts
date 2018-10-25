@@ -11,7 +11,7 @@ image:
 
 service:
   type: ClusterIP
-  port: 80
+  port: 9216
   targetPort: 9216
 
 resources: {}
@@ -27,8 +27,8 @@ resources: {}
   #   memory: 128Mi
 
 config:
-  datasource:
-    host: localhost
-    port: "27017"
+  datasource: mongodb://minikube-mongodb:27017
 
-annotations: {}
+annotations: 
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9126"
