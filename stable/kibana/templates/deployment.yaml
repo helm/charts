@@ -12,18 +12,18 @@ spec:
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:
-    {{- if .Values.podAnnotations }}
+{{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
-    {{- end }}
+{{- end }}
       labels:
         app: {{ template "kibana.name" . }}
         release: "{{ .Release.Name }}"
     spec:
       serviceAccountName: {{ template "kibana.serviceAccountName" . }}
-      {{- if .Values.priorityClassName }}
+{{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
-      {{- end }}
+{{- end }}
 {{- if or (.Values.dashboardImport.dashboards) (.Values.plugins) }}
       initContainers:
 {{- if .Values.dashboardImport.dashboards }}
@@ -38,10 +38,10 @@ spec:
 {{ toYaml .Values.commandline.args | indent 10 }}
 {{- end }}
         env:
-        {{- range $key, $value := .Values.env }}
+{{- range $key, $value := .Values.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
-        {{- end }}
+{{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
           name: {{ template "kibana.name" . }}
@@ -52,16 +52,16 @@ spec:
         - name: {{ template "kibana.fullname" . }}-importscript
           mountPath: "/tmp/dashboardImport.sh"
           subPath: dashboardImport.sh
-        {{- if .Values.configMap.override }}
+{{- if .Values.configMap.override }}
         - name: {{ template "kibana.fullname" . }}
           mountPath: "/usr/share/kibana/config"
-        {{- else }}
-        {{- range $configFile := (keys .Values.files) }}
+{{- else }}
+{{- range $configFile := (keys .Values.files) }}
         - name: {{ template "kibana.name" $ }}
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
-        {{- end }}
-        {{- end -}}
+{{- end }}
+{{- end -}}
 {{- end }}
 {{- if .Values.plugins}}
       - name: {{ .Chart.Name }}-plugins-install
@@ -73,19 +73,19 @@ spec:
           - |
             set -e
             plugins=(
-            {{- range .Values.plugins }}
+{{- range .Values.plugins }}
             {{ . }}
-            {{- end }}
+{{- end }}
             )
             for i in "${plugins[@]}"
             do
                ./bin/kibana-plugin install $i
             done
         env:
-        {{- range $key, $value := .Values.env }}
+{{- range $key, $value := .Values.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
-        {{- end }}
+{{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
           name: {{ template "kibana.name" . }}
@@ -93,33 +93,33 @@ spec:
         volumeMounts:
         - name: plugins
           mountPath: /usr/share/kibana/plugins
-        {{- if .Values.configMap.override }}
+{{- if .Values.configMap.override }}
         - name: {{ template "kibana.fullname" . }}
           mountPath: "/usr/share/kibana/config"
-        {{- else }}
-        {{- range $configFile := (keys .Values.files) }}
+{{- else }}
+{{- range $configFile := (keys .Values.files) }}
         - name: {{ template "kibana.name" $ }}
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
-        {{- end }}
-        {{- end -}}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- if .Values.commandline.args }}
+{{- if .Values.commandline.args }}
         args:
           - "/bin/bash"
           - "/usr/local/bin/kibana-docker"
 {{ toYaml .Values.commandline.args | indent 10 }}
-        {{- end }}
+{{- end }}
         env:
-        {{- range $key, $value := .Values.env }}
+{{- range $key, $value := .Values.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
-        {{- end }}
+{{- end }}
 {{- if (not .Values.authProxyEnabled) }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
@@ -145,16 +145,16 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        {{- if .Values.configMap.override }}
+{{- if .Values.configMap.override }}
         - name: {{ template "kibana.fullname" . }}
           mountPath: "/usr/share/kibana/config"
-        {{- else }}
-        {{- range $configFile := (keys .Values.files) }}
+{{- else }}
+{{- range $configFile := (keys .Values.files) }}
         - name: {{ template "kibana.name" $ }}
           mountPath: "/usr/share/kibana/config/{{ $configFile }}"
           subPath: {{ $configFile }}
-        {{- end }}
-        {{- end }}
+{{- end }}
+{{- end }}
 {{- if .Values.plugins}}
         - name: plugins
           mountPath: /usr/share/kibana/plugins
@@ -177,15 +177,15 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       volumes:
-        {{- if .Values.configMap.override }}
+{{- if .Values.configMap.override }}
         - name: {{ template "kibana.fullname" . }}
           configMap:
             name: {{ template "kibana.fullname" . }}
-        {{- else }}
+{{- else }}
         - name: {{ template "kibana.name" . }}
           configMap:
             name: {{ template "kibana.name" . }}
-        {{- end -}}
+{{- end -}}
 {{- if .Values.plugins}}
         - name: plugins
           emptyDir: {}

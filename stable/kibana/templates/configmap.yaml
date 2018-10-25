@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "kibana.name" . }}
+  name: {{ template "kibana.fullname" . }}
   labels:
     app: {{ template "kibana.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
