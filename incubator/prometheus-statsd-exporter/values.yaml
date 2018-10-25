@@ -16,7 +16,7 @@ service:
   servicePort: 80
   type: ClusterIP
 
-statsd-exporter:
+statsdexporter:
   podAnnotations: {}
 
   extraArgs: {}
@@ -72,7 +72,7 @@ statsd-exporter:
   affinity: {}
   nodeSelector: {}
 
-serviceaccount:
+serviceAccount:
   ## If false, serviceaccount will not be installed
   ##
   enable: false

@@ -1,38 +1,38 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "prometheus-redis-exporter.fullname" . }}
+  name: {{ template "prometheus-statsd-exporter.fullname" . }}
   labels:
-    app: {{ template "prometheus-redis-exporter.name" . }}
+    app: {{ template "prometheus-statsd-exporter.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.statsd-exporter.replicaCount }}
+  replicas: {{ .Values.statsdexporter.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "prometheus-redis-exporter.name" . }}
+      app: {{ template "prometheus-statsd-exporter.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       annotations:
-{{ toYaml .Values.statsd-exporter.annotations | indent 8 }}
+{{ toYaml .Values.statsdexporter.annotations | indent 8 }}
       labels:
-        app: {{ template "prometheus-redis-exporter.name" . }}
+        app: {{ template "prometheus-statsd-exporter.name" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ template "prometheus-redis-exporter.serviceAccountName" . }}
+      serviceAccountName: {{ template "prometheus-statsd-exporter.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
-          {{- range $key, $value := .Values.statsd-exporter.extraArgs }}
+          {{- range $key, $value := .Values.statsdexporter.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
           volumeMounts:
           - mountPath: /data
-            name: {{ .Values.persitentVolume.name }}
+            name: {{ .Values.persistentVolume.name }}
           env:
           - name: HOME
             value: /data
@@ -53,16 +53,16 @@ spec:
             initialDelaySeconds: 10
             timeoutSeconds: 10
           resources:
-{{ toYaml .Values.statsd-exporter.resources | indent 12 }}
-{{- if .Values.statsd-exporter.nodeSelector }}
+{{ toYaml .Values.statsdexporter.resources | indent 12 }}
+{{- if .Values.statsdexporter.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.statsd-exporter.nodeSelector | indent 8 }}
+{{ toYaml .Values.statsdexporter.nodeSelector | indent 8 }}
     {{- end }}
       volumes:
-      - name: {{ .Values.persitentVolume.name }}
-        {{- if .Values.persistence.enabled }}
+      - name: {{ .Values.persistentVolume.name }}
+        {{- if .Values.persistentVolume.enabled }}
         persistentVolumeClaim:
-        claimName: {{ .Values.persitentVolume.claimName | default (include "fullname" .) }}
+        claimName: {{ if .Values.persistentVolume.claimName }}{{- else }}{{ template "prometheus-statsd-exporter.fullname" . }}{{- end }}
         {{- else }}
         emptyDir: {}
         {{- end -}}
