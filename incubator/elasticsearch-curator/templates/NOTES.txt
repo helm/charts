@@ -1,5 +1,10 @@
 A CronJob will run with schedule {{ .Values.cronjob.schedule }}.
 
+***
+Please note that this chart has been deprecated and moved to stable.
+Going forward please use the stable version of this chart.
+***
+
 The Jobs will not be removed automagically when deleting this Helm chart.
 To remove these jobs, run the following :
 

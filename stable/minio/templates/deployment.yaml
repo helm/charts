@@ -78,12 +78,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "minio.fullname" . }}
+                  name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "minio.fullname" . }}
+                  name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
                   key: secretkey
             {{- if .Values.gcsgateway.enabled }}
             - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -91,6 +91,14 @@ spec:
                 secretKeyRef:
                   name: {{ template "minio.fullname" . }}
                   key: gcs_key.json
+            {{- end }}
+            {{- if .Values.minioConfig.browser }}
+            - name: MINIO_BROWSER
+              value: {{ .Values.minioConfig.browser | quote }}
+            {{- end }}
+            {{- if .Values.minioConfig.domain }}
+            - name: MINIO_DOMAIN
+              value: {{ .Values.minioConfig.domain | quote }}
             {{- end }}
           livenessProbe:
             httpGet:
@@ -136,7 +144,7 @@ spec:
             name: {{ template "minio.fullname" . }}
         - name: minio-user
           secret:
-            secretName: {{ template "minio.fullname" . }}
+            secretName: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
         - name: minio-config-dir
           emptyDir: {}
 {{- end }}
