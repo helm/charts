@@ -5,7 +5,7 @@ pulsar:
   # Available tags here: https://hub.docker.com/r/apachepulsar/pulsar/tags/
   tag: 2.1.1-incubating
 
-# Configure the pulsar-admin component 
+# Configure the pulsar-admin component
 admin:
   # Use extraConfig to add more options to the settings
   extraConfig: {}
@@ -21,7 +21,7 @@ admin:
 # Configure the bookkeeper/bookie statefulset
 bookkeeper:
   extraConfig: {}
-  # Replicas should be 3 or more. 
+  # Replicas should be 3 or more.
   replicas: 3
   java_mem: "\" -Xms4g -Xmx4g -XX:MaxDirectMemorySize=4g\""
   java_gc: "\" -XX:+UseG1GC\""
@@ -111,14 +111,16 @@ rbac:
   create: true
 
 # You'll need to set up certificates to use TLS
+# All certs should be in base64-encoded PEM format.
+# All keys should bein base64-encdoed pk8 PEM format.
 tls:
   enabled: false
   # This is the public cert you created as a CA
-  caCert: "" # in Base64-encoded pem format
+  caCert: ""
   # This is the cert you created for brokers
-  brokerCrt: "" # in Base64-encoded pem format
-  # This is the key you created for brokers. 
-  brokerKey: "" # In base64-encoded pk8 pem format
+  brokerCrt: ""
+  # This is the key you created for brokers.
+  brokerKey: ""
 
   authentication:
     # Authentication will not work unless TLS is also enabled
@@ -130,11 +132,11 @@ tls:
     # If you're going to enable authentication then you need to set up these certs. The admin cert is used by the pulsar-admin componenet and the proxy cert is used by the proxy componenet.
     users:
       admin:
-        crt: "" # in Base64-encoded pem format
-        key: "" # In base64-encoded pk8 pem format
+        crt: ""
+        key: ""
       proxy:
-        crt: "" # in Base64-encoded pem format
-        key: "" # In base64-encoded pk8 pem format
+        crt: ""
+        key: ""
 
 # Zookeeper configuration
 zookeeper:

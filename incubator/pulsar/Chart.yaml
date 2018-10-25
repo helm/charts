@@ -3,3 +3,8 @@ appVersion: "2.1.1-incubating"
 description: A Helm chart to install Pulsar on Google Kubernetes Engine
 name: pulsar
 version: 0.1.0
+home: https://pulsar.apache.org
+maintainers:
+  - name: Oliver Isaac
+    email: oisaac@gmail.com
+    url: https://github.com/oliverisaac
