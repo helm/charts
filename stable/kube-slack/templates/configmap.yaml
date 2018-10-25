@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kube-slack.fullname" . }}
+  labels:
+    app: {{ template "kube-slack.name" . }}
+    chart: {{ template "kube-slack.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  SLACK_URL: {{ .Values.slackUrl }}
+  NOT_READY_MIN_TIME: {{ .Values.notReadyMinTime | quote }}
+  {{- if .Values.tickRate }}
+  TICK_RATE: {{ .Values.tickRate | quote }}
+  {{- end }}
+  {{- if .Values.kubeUseKubeconfig }}
+  KUBE_USE_KUBECONFIG: {{ .Values.kubeUseKubeconfig }}
+  {{- end }}
+  {{- if .Values.kubeUseCluster }}
+  KUBE_USE_CLUSTER: {{ .Values.kubeUseCluster }}
+  {{- end }}
+  {{- if .Values.kubeNamespacesOnly }}
+  KUBE_NAMESPACES_ONLY: {{ .Values.kubeUseNamespacesOnly }}
+  {{- end }}
+  {{- if .Values.slackChannel }}
+  SLACK_CHANNEL: {{ .Values.slackChannel }}
+  {{- end }}
+  {{- if .Values.slackProxy }}
+  SLACK_PROXY: {{ .Values.slackProxy }}
+  {{- end }}
