@@ -22,3 +22,12 @@ Once the external IP is available and all the server certificates are generated 
   kubectl --namespace "{{ .Release.Namespace }}" exec -it "$POD_NAME" cat "/etc/openvpn/certs/pki/$KEY_NAME.ovpn" > "$KEY_NAME.ovpn"
 
 Copy the resulting $KEY_NAME.ovpn file to your open vpn client (ex: in tunnelblick, just double click on the file).  Do this for each user that needs to connect to the VPN.  Change KEY_NAME for each additional user.
+
+If you would like to revoke the cert: 
+    kubectl --namespace "{{ .Release.Namespace }}" exec -it "$POD_NAME" /etc/openvpn/setup/revokeClientCert.sh "$KEY_NAME"
+
+If you would like to un-revoke the cert: 
+    kubectl --namespace "{{ .Release.Namespace }}" exec -it "$POD_NAME" /etc/openvpn/setup/unrevokeClientCert.sh "$KEY_NAME"
+
+To see all of the certs: (R - Revoked, V - Valid)
+    kubectl --namespace "{{ .Release.Namespace }}" exec -it "$POD_NAME" /etc/openvpn/setup/showClientCerts.sh
