@@ -4,7 +4,7 @@ Kibana can be accessed:
 
   * Within your cluster, at the following DNS name at port 9200:
 
-    {{ template "kibana.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+    {{ template "kibana.fullname" . }}.{{ .Release.Namespace }}.svc
 
   * From outside the cluster, run these commands in the same shell:
     {{- if contains "NodePort" .Values.kibana.service.type }}
