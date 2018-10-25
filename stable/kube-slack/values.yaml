@@ -8,7 +8,7 @@ notReadyMinTime: 60000  # in ms
 # tickRate:
 # floodExpire:
 # kubeUseKubeconfig:
-# kubeUseCluster: 
+# kubeUseCluster:
 # kubeNamespacesOnly:
 # slackChannel:
 # slackProxy:
