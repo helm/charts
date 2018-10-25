@@ -28,12 +28,12 @@ statsd-exporter:
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
 
-    #limits:
-    #  cpu: 500m
-    #  memory: 1Gi
-    #requests:
-    #  cpu: 500m
-    #  memory: 512Mi
+  # limits:
+  #   cpu: 500m
+  #   memory: 1Gi
+  # requests:
+  #   cpu: 500m
+  #   memory: 512Mi
 
   ingress:
     ## Enable Ingress.
