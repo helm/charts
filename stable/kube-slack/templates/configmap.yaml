@@ -23,7 +23,7 @@ data:
   KUBE_NAMESPACES_ONLY: {{ .Values.kubeUseNamespacesOnly }}
   {{- end }}
   {{- if .Values.slackChannel }}
-  SLACK_CHANNEL: {{ .Values.slackChannel }}
+  SLACK_CHANNEL: {{ .Values.slackChannel | quote }}
   {{- end }}
   {{- if .Values.slackProxy }}
   SLACK_PROXY: {{ .Values.slackProxy }}
