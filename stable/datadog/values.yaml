@@ -147,6 +147,9 @@ datadog:
   ##
   # nonLocalTraffic: true
 
+  ## Enable container runtime socket volume mounting
+  useCriSocketVolume: true
+
   ## Set host tags.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   ##
