@@ -1,9 +1,9 @@
 name: hackmd
 apiVersion: v1
-version: "0.1.1"
-appVersion: "1.0.1"
+version: "0.2.1"
+appVersion: "1.2.1"
 description: Realtime collaborative markdown notes on all platforms.
-icon: https://hackmd.io/favicon.png
+icon: https://demo.codimd.org/favicon.png
 keywords:
 - hackmd
 - cms
@@ -11,10 +11,10 @@ keywords:
 - http
 - web
 - application
-home: https://hackmd.io
+home: https://github.com/hackmdio/codimd
 sources:
-- https://github.com/hackmdio/hackmd
-- https://github.com/hackmdio/docker-hackmd
+- https://github.com/hackmdio/codimd
+- https://github.com/hackmdio/codimd-container
 maintainers:
 - name: yuanying
   email: yuanying@fraction.jp

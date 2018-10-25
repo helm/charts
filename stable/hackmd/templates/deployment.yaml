@@ -38,7 +38,7 @@ spec:
               port: 3000
             initialDelaySeconds: 30
           env:
-            - name: HMD_DB_PASSWORD
+            - name: CMD_DB_PASSWORD
               {{- if .Values.postgresql.install }}
               valueFrom:
                 secretKeyRef:
@@ -47,8 +47,11 @@ spec:
               {{- else }}
               value: {{ .Values.postgresql.postgresPassword }}
               {{- end }}
+            - name: CMD_DB_URL
+              value: postgres://{{ .Values.postgresql.postgresUser }}:$(CMD_DB_PASSWORD)@{{ template "hackmd.database.host" . }}:5432/{{ .Values.postgresql.postgresDatabase }}
+              # XXX: HMD_DB_URL is still required for hackmdio/hackmd:1.2.1
             - name: HMD_DB_URL
-              value: postgres://{{ .Values.postgresql.postgresUser }}:$(HMD_DB_PASSWORD)@{{ template "hackmd.database.host" . }}:5432/{{ .Values.postgresql.postgresDatabase }}
+              value: postgres://{{ .Values.postgresql.postgresUser }}:$(CMD_DB_PASSWORD)@{{ template "hackmd.database.host" . }}:5432/{{ .Values.postgresql.postgresDatabase }}
             {{- if .Values.extraVars }}
 {{ toYaml .Values.extraVars | indent 12 }}
             {{- end }}
