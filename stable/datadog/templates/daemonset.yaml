@@ -138,9 +138,11 @@ spec:
 {{ toYaml .Values.datadog.env | indent 10 }}
 {{- end }}
         volumeMounts:
+          {{- if .Values.datadog.useCriSocketVolume }}
           - name: runtimesocket
             mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
             readOnly: true
+          {{- end }}
           - name: procdir
             mountPath: /host/proc
             readOnly: true
@@ -176,9 +178,11 @@ spec:
           initialDelaySeconds: 15
           periodSeconds: 5
       volumes:
+        {{- if .Values.datadog.useCriSocketVolume }}
         - hostPath:
             path: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
           name: runtimesocket
+        {{- end }}
         - hostPath:
             path: /proc
           name: procdir
