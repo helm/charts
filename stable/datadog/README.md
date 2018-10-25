@@ -12,16 +12,34 @@ Kubernetes 1.4+ or OpenShift 3.4+ (1.3 support is currently partial, full suppor
 
 ## Installing the Chart
 
-To install the chart with the release name `my-release`, retrieve your DataDog API key from your [Agent Installation Instructions](https://app.datadoghq.com/account/settings#agent/kubernetes) and run:
+To install the chart with the release name `my-release`, retrieve your Datadog API key from your [Agent Installation Instructions](https://app.datadoghq.com/account/settings#agent/kubernetes) and run:
 
 ```bash
 $ helm install --name my-release \
     --set datadog.apiKey=YOUR-KEY-HERE stable/datadog
 ```
 
-After a few minutes, you should see hosts and metrics being reported in DataDog.
+After a few minutes, you should see hosts and metrics being reported in Datadog.
 
 **Tip**: List all releases using `helm list`
+
+### Enabling the Datadog Cluster Agent
+
+Read about the Datadog Cluster Agent in the [official documentation](https://docs.datadoghq.com/agent/kubernetes/cluster/).
+
+Run the following if you want to deploy the chart with the Datadog Cluster Agent.
+You can also specify `clusterAgent.metricsProvider.enabled=true` if you want to enable the External Metrics Server.
+If you want to learn to use this feature, you can check out this [walkthrough](https://github.com/DataDog/datadog-agent/blob/master/docs/cluster-agent/CUSTOM_METRICS_SERVER.md).
+```bash
+helm install --name datadog-monitoring \
+    --set clusterAgent.token=YOUR-32-CHARACTERS-TOKEN \
+    --set datadog.apiKey=YOUR-API-KEY-HERE \
+    --set datadog.appKey=YOUR-APP-KEY-HERE \
+    --set datadog.leaderElection=true \
+    --set clusterAgent.enabled=true \
+    --set clusterAgent.metricsProvider.enabled=true \
+    stable/datadog
+```
 
 ## Uninstalling the Chart
 
@@ -171,6 +189,7 @@ For more details, please refer to [the documentation](https://docs.datadoghq.com
 
 To enable event collection, you will need to set the `datadog.leaderElection`, `datadog.collectEvents` and `rbac.create` options to `true`.
 
+It is now recommended to use the Datadog Cluster Agent to collect the events - Refer to the [Enabling the Datadog Cluster Agent][] section.
 Please read [the official documentation](https://docs.datadoghq.com/agent/kubernetes/event_collection/) for more context.
 
 ### Kubernetes Labels and Annotations
