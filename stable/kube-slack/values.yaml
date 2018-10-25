@@ -2,6 +2,16 @@
 slackUrl: ""
 ## Time to wait after pod becomes not ready before notifying
 notReadyMinTime: 60000  # in ms
+## Advanced options
+## If you want to enable these options, uncomment lines
+## These functionalities are described in https://github.com/wongnai/kube-slack
+# tickRate:
+# floodExpire:
+# kubeUseKubeconfig:
+# kubeUseCluster: 
+# kubeNamespacesOnly:
+# slackChannel:
+# slackProxy:
 
 ## Configuration for the deployment:
 image:
