@@ -42,6 +42,8 @@ The following table lists the configurable parameters of the Prisma chart and th
 
 Parameter                        | Description                                  | Default
 -------------------------------- | -------------------------------------------- | ---------------------------------------------------------
+`serviceAccount.create`          | If true, create a service account for Prisma | `true`
+`serviceAccount.name`            | Name of the service account to create or use | `{{ prisma.fullname }}`
 `image.repository`               | Prisma image repository                      | `prismagraphql/prisma`
 `image.tag`                      | Prisma image tag                             | `1.15-heroku`
 `image.pullPolicy`               | Image pull policy                            | `IfNotPresent`

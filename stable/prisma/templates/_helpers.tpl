@@ -41,6 +41,17 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Create the name of the service account to use.
+*/}}
+{{- define "prisma.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "prisma.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified name for the secret that contains the database password.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
