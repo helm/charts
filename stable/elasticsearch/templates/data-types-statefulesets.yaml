@@ -23,13 +23,16 @@ spec:
 {{ toYaml $data.podAnnotations | indent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: {{ template "elasticsearch.serviceAccountName.data" $ }}
 {{- if $data.priorityClassName }}
       priorityClassName: "{{ $data.priorityClassName }}"
 {{- end }}
       securityContext:
         fsGroup: 1000
       {{- if eq $data.antiAffinity "hard" }}
+      {{- if or $.Values.data.antiAffinity $.Values.data.nodeAffinity }}
       affinity:
+      {{- end }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - topologyKey: "kubernetes.io/hostname"
@@ -50,6 +53,10 @@ spec:
                   app: {{ include "elasticsearch.name" $ }}
                   release: "{{ $.Release.Name }}"
                   component: "{{ $data.name }}"
+      {{- end }}
+      {{- with $data.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml . | indent 10 }}
       {{- end }}
 {{- if $data.nodeSelector }}
       nodeSelector:
@@ -81,6 +88,9 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: {{ $data.persistence.name }}
+{{- if $.Values.extraInitContainers }}
+{{ tpl $.Values.extraInitContainers . | indent 6 }}
+{{- end }}
       containers:
       - name: elasticsearch
         env:
@@ -130,18 +140,19 @@ spec:
           name: config-{{ $data.name }}
           subPath: log4j2.properties
 {{- end }}
-        - name: config-{{ $data.name }}
-          mountPath: /pre-stop-hook.sh
-          subPath: pre-stop-hook.sh
-        - name: config-{{ $data.name }}
-          mountPath: /post-start-hook.sh
-          subPath: post-start-hook.sh
 {{- if $.Values.cluster.keystoreSecret }}
         - name: keystore
           mountPath: "/usr/share/elasticsearch/config/elasticsearch.keystore"
           subPath: elasticsearch.keystore
           readOnly: true
 {{- end }}
+{{- if $data.hooks.drain.enabled }}
+        - name: config-{{ $data.name }}
+          mountPath: /pre-stop-hook.sh
+          subPath: pre-stop-hook.sh
+        - name: config-{{ $data.name }}
+          mountPath: /post-start-hook.sh
+          subPath: post-start-hook.sh
         lifecycle:
           preStop:
             exec:
@@ -149,6 +160,7 @@ spec:
           postStart:
             exec:
               command: ["/bin/bash","/post-start-hook.sh"]
+{{- end }}
       terminationGracePeriodSeconds: {{ $data.terminationGracePeriodSeconds }}
 {{- if $.Values.image.pullSecrets }}
       imagePullSecrets:
