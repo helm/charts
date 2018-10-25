@@ -2,11 +2,18 @@ kind: Service
 apiVersion: v1
 metadata:
   name: {{ template "prometheus-blackbox-exporter.fullname" . }}
+  {{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
   labels:
     chart: {{ template "prometheus-blackbox-exporter.chart" . }}
     app: {{ template "prometheus-blackbox-exporter.name" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
