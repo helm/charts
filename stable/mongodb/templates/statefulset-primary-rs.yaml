@@ -133,6 +133,8 @@ spec:
               mountPath: /opt/bitnami/mongodb/conf/mongodb.conf
               subPath: mongodb.conf
             {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
       volumes:
         {{- if  (.Files.Glob "files/docker-entrypoint-initdb.d/*[sh|js]") }}
         - name: custom-init-scripts

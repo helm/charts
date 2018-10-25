@@ -13,7 +13,7 @@ image:
   ## Bitnami Redis image tag
   ## ref: https://github.com/bitnami/bitnami-docker-redis#supported-tags-and-respective-dockerfile-links
   ##
-  tag: 4.0.11-debian-9
+  tag: 4.0.11
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -327,11 +327,10 @@ metrics:
 ## Init containers parameters:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
 ##
-
 volumePermissions:
   image:
     registry: docker.io
-    repository: busybox
+    repository: bitnami/minideb
     tag: latest
     pullPolicy: IfNotPresent
 
