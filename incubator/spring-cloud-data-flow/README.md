@@ -64,7 +64,7 @@ The following tables list the configurable parameters and their default values.
 
 | Parameter                         | Description                                        | Default          |
 | --------------------------------- | -------------------------------------------------- | ---------------- |
-| server.version                    | The version/tag of the Data Flow server            | 1.6.2.RELEASE
+| server.version                    | The version/tag of the Data Flow server            | 1.7.0.RELEASE
 | server.imagePullPolicy            | The imagePullPolicy of the Data Flow server        | IfNotPresent
 | server.service.type               | The service type for the Data Flow server          | LoadBalancer
 | server.service.externalPort       | The external port for the Data Flow server         | 80
