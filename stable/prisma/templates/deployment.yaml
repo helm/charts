@@ -21,6 +21,7 @@ spec:
         app: {{ template "prisma.name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ template "prisma.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

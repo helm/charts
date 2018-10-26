@@ -48,6 +48,7 @@ rules:
   - datadog-leader-election  # Leader election token
 {{- if .Values.clusterAgent.metricsProvider.enabled }}
   - datadog-custom-metrics
+  - extension-apiserver-authentication
 {{- end }}
   verbs:
   - get
