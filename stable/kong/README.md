@@ -53,6 +53,7 @@ and their default values.
 | image.repository                  | Kong image                                                             | `kong`                |
 | image.tag                         | Kong image version                                                     | `0.14.1`              |
 | image.pullPolicy                  | Image pull policy                                                      | `IfNotPresent`        |
+| image.pullSecrets                 | Image pull secrets                                                     | `null`                |
 | replicaCount                      | Kong instance count                                                    | `1`                   |
 | admin.useTLS                      | Secure Admin traffic                                                   | `true`                |
 | admin.servicePort                 | TCP port on which the Kong admin service is exposed                    | `8444`                |
