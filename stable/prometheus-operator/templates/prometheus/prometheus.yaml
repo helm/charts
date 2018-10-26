@@ -70,7 +70,7 @@ spec:
 {{- end }}
 {{- if .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector }}
   serviceMonitorNamespaceSelector:
-  {{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector | indent 4 }}
+{{ toYaml .Values.prometheus.prometheusSpec.serviceMonitorNamespaceSelector | indent 4 }}
 {{ else }}
   serviceMonitorNamespaceSelector: {}
 {{- end }}
