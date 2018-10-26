@@ -21,16 +21,16 @@ By default, the chart creates a namespace called "spark-operator" and installs t
 
 The following table lists the configurable parameters of the Spark operator chart and their default values.
 
-| Parameter                 | Description                                           | Default                   |
-| ------------------------- | ----------------------------------------------------- | ------------------------- |
-| `operatorImageName`       | The name of the operator image                        | `lightbend/sparkoperator` |
-| `operatorVersion`         | The version of the operator to install                | `2.3.1`                   |
-| `operatorNamespace`       | K8s namespace where operator is installed             | `spark-operator`          |
-| `sparkJobNamespace`       | K8s namespace where Spark jobs are to be deployed     | `default`                 |
-| `createOperatorNamespace` | Whether to create the operator namespace              | true                      |
-| `createSparkJobNamespace` | Whether to create the Spark job namespace             | false                     |
-| `enableWebhook`           | Whether to enable mutating admission webhook          | true                      |
-| `enableMetrics`           | Whether to expose metrics to be scraped by Premetheus | true                      |
+| Parameter                 | Description                                           | Default                                |
+| ------------------------- | ----------------------------------------------------- | -------------------------------------- |
+| `operatorImageName`       | The name of the operator image                        | `gcr.io/spark-operator/spark-operator` |
+| `operatorVersion`         | The version of the operator to install                | `v2.3.1-v1alpha1-latest`               |
+| `operatorNamespace`       | K8s namespace where operator is installed             | `spark-operator`                       |
+| `sparkJobNamespace`       | K8s namespace where Spark jobs are to be deployed     | `default`                              |
+| `createOperatorNamespace` | Whether to create the operator namespace              | true                                   |
+| `createSparkJobNamespace` | Whether to create the Spark job namespace             | false                                  |
+| `enableWebhook`           | Whether to enable mutating admission webhook          | true                                   |
+| `enableMetrics`           | Whether to expose metrics to be scraped by Premetheus | true                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. 
 
