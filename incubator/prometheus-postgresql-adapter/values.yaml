@@ -19,6 +19,7 @@ image:
 
 # Default application values
 logLevel: info
+pgHost: postgres
 webListenAddress: 9201
 
 # Liveness probe settings
