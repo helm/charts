@@ -1,3 +1,4 @@
+{{- if .Values.server.shouldPreconfigure }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -134,3 +135,5 @@ data:
                   }' >> /godata/logs/preconfigure.log )
 
     echo "Done preconfiguring the GoCD server" > /godata/logs/preconfigure_complete.log
+
+{{- end }}
