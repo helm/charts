@@ -25,6 +25,7 @@ auth:
 
 proxy:
   # virtualHost: "*.mydomain.foo"
+  cluster: dev
   replicaCount: 1
   resources:
     limits:

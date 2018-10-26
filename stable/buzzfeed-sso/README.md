@@ -63,6 +63,7 @@ Parameter | Description | Default
 `auth.service.port` | port for the http auth service | `80`
 `auth.secret` | secrets to be generated randomly with `openssl rand -base64 32 | head -c 32` | REQUIRED
 `proxy.virtualHost` | wildcard domain for redirecting SSO to the backends | REQUIRED
+`proxy.cluster` | the cluster name for SSO | `dev`
 `proxy.replicaCount` | desired number of proxy pods | `1`
 `proxy.resources` | resource limits and requests for proxy pods | `{ limits: { memory: "256Mi", cpu: "200m" }}`
 `proxy.nodeSelector` | node selector logic for proxy pods | `{}`
@@ -110,6 +111,7 @@ auth:
 
 proxy:
   virtualHost: '*.coolcompany.foo'
+  cluster: dev
 
 google:
   adminEmail: iamtheadmin@email.coolcompany.foo
