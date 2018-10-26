@@ -4,6 +4,11 @@
 image: "mysql"
 imageTag: "5.7.14"
 
+## initContainers image version
+initContainers:
+  image: "busybox"
+  imageTag: "1.25.0"
+
 ## Specify the port on node if necessary
 ## Ref: https://kubernetes.io/docs/concepts/configuration/overview/
 # hostPort: 3306
