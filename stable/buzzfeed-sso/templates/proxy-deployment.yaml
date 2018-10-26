@@ -68,7 +68,7 @@ spec:
             - name: CLUSTER
               value: dev
             - name: VIRTUAL_HOST
-              value: "{{ .Values.proxy.virtualHost }}"
+              value: {{ .Values.proxy.virtualHost | quote}}
           readinessProbe:
             httpGet:
               path: /ping
