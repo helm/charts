@@ -23,6 +23,10 @@ backend:
   forward:
     host: fluentd
     port: 24284
+    tls: "off"
+    tls_verify: "on"
+    tls_debug: 1
+    shared_key:
   es:
     host: elasticsearch
     port: 9200
@@ -40,7 +44,7 @@ backend:
     tls_verify: "on"
     # TLS certificate for the Elastic (in PEM format). Use if tls=on and tls_verify=on.
     tls_ca: ""
-    # TLS debugging levels = 1-5
+    # TLS debugging levels = 1-4
     tls_debug: 1
   splunk:
     host: 127.0.0.1
@@ -49,6 +53,7 @@ backend:
     send_raw: "on"
     tls: "on"
     tls_verify: "off"
+    tls_debug: 1
     message_key: "kubernetes"
 
   ##
@@ -58,6 +63,11 @@ backend:
     host: 127.0.0.1
     port: 80
     uri: "/"
+    http_user:
+    http_passwd:
+    tls: "off"
+    tls_verify: "on"
+    tls_debug: 1
     ## Specify the data format to be used in the HTTP request body
     ## Can be either 'msgpack' or 'json'
     format: msgpack
