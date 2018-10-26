@@ -43,15 +43,14 @@ retry_until() {
     local host="${1}"
     local command="${2}"
     local expected="${3}"
-    local creds="${admin_creds[@]}"
+    local creds=("${admin_creds[@]}")
 
     # Don't need credentials for admin user creation and pings that run on localhost
     if [[ "${host}" =~ ^localhost ]]; then
-        creds=
+        creds=()
     fi
 
-    until [[ $(mongo admin --host "${host}" ${creds} "${ssl_args[@]}" --quiet --eval "${command}") == "${expected}" ]]; do
-        log "Retrying ${command}"
+    until [[ $(mongo admin --host "${host}" "${creds[@]}" "${ssl_args[@]}" --quiet --eval "${command}") == "${expected}" ]]; do
         sleep 1
 
         if (! ps "${pid}" &>/dev/null); then
@@ -62,6 +61,8 @@ retry_until() {
             log "Timed out after ${timeout}s attempting to bootstrap mongod"
             exit 1
         fi
+
+        log "Retrying ${command} on ${host}"
     done
 }
 
@@ -137,7 +138,7 @@ EOL
 
     # Generate the certs
     openssl genrsa -out mongo.key 2048
-    openssl req -new -key mongo.key -out mongo.csr -subj "/CN=$my_hostname" -config openssl.cnf
+    openssl req -new -key mongo.key -out mongo.csr -subj "/OU=MongoDB/CN=$my_hostname" -config openssl.cnf
     openssl x509 -req -in mongo.csr \
         -CA "$ca_crt" -CAkey "$ca_key" -CAcreateserial \
         -out mongo.crt -days 3650 -extensions v3_req -extfile openssl.cnf

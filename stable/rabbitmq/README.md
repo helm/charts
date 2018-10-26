@@ -47,6 +47,7 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 
 |          Parameter          |                       Description                       |                         Default                          |
 |-----------------------------|---------------------------------------------------------|----------------------------------------------------------|
+| `global.imageRegistry`      | Global Docker image registry                            | `nil`                                                    |
 | `image.registry`            | Rabbitmq Image registry                                 | `docker.io`                                              |
 | `image.repository`          | Rabbitmq Image name                                     | `bitnami/rabbitmq`                                       |
 | `image.tag`                 | Rabbitmq Image tag                                      | `{VERSION}`                                              |
@@ -59,13 +60,12 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.erlangCookie`     | Erlang cookie                                           | _random 32 character long alphanumeric string_           |
 | `rabbitmq.amqpPort`         | Amqp port                                               | `5672`                                                   |
 | `rabbitmq.distPort`         | Erlang distribution server port                         | `25672`                                                  |
-| `rabbitmq.nodePort`         | Node port override, if serviceType NodePort             | _random avaliable between 30000-32767_                   |
+| `rabbitmq.nodePort`         | Node port override, if serviceType NodePort             | _random available between 30000-32767_                   |
 | `rabbitmq.managerPort`      | RabbitMQ Manager port                                   | `15672`                                                  |
 | `rabbitmq.diskFreeLimit`    | Disk free limit                                         | `"6GiB"`                                                 |
 | `rabbitmq.plugins`         | configuration file for plugins to enable                 | `[rabbitmq_management,rabbitmq_peer_discovery_k8s].`  |
 | `rabbitmq.clustering.address_type` | Switch clustering mode                           | `ip` or `hostname`
 | `rabbitmq.clustering.k8s_domain`   | Customize internal k8s cluster domain            | `cluster.local`
-
 | `rabbitmq.ulimitNofiles`    | Max File Descriptor limit                               | `65536`                                                  |
 | `rabbitmq.configuration`    | rabbitmq.conf content                                   | see values.yaml                                          |
 | `serviceType`               | Kubernetes Service type                                 | `ClusterIP`                                              |

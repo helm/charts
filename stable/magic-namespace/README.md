@@ -50,7 +50,7 @@ accounts and role bindings for use within the namespace. _Typically, it would
 be a good idea to define at least one role binding that grants a user or group
 administrative privileges in the namespace._ Absent this, the namespace's own
 Tiller will function, but no user (other than the cluster operator) will be
-capable of interacting with it via Helm. 
+capable of interacting with it via Helm.
 
 ## Prerequisites
 
@@ -104,13 +104,13 @@ $ helm install stable/magic-namespace \
 
 ## Uninstalling the Chart
 
-Deleting a release of a Magic Namespace will _not_ delete the namespace, 
+Deleting a release of a Magic Namespace will _not_ delete the namespace,
 unless you have used the optional ```namespace``` setting. It will
 only delete the Tiller, service accounts, role bindings, etc. from that
 namespace. This is actually desirable behavior, as anything the team has
 deployed within that namespace is likely to be unaffected, though further
 deployments to and management of that namespace will not be possible by anyone
-other than the cluster operator. 
+other than the cluster operator.
 
 If you have used the ```namespace``` setting, deleting the release will cleanup
 all releases deployed with the tiller in the Magic Namespace, along with the
@@ -147,3 +147,5 @@ reference the default `values.yaml` to understand further options.
 | `roleBindings[n].subject.kind` | Identify the kind of subject (`User`, `Group`, or `ServiceAccount` ) to be used in the role binding | |
 | `roleBindings[n].subject.name` | Identify the name of the subject to be used in the role binding | |
 | `namespace` | Specify a namespace to be created and used, overriding the one on the command line | |
+| `namespaceAttributes.annotations` | Specify annotations to be attached to the namespace | |
+| `namespaceAttributes.lables` | Specify labels to be attached to the namespace | |

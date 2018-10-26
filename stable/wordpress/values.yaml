@@ -1,10 +1,16 @@
+## Global Docker image registry
+## Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+##
+# global:
+#   imageRegistry:
+
 ## Bitnami WordPress image version
 ## ref: https://hub.docker.com/r/bitnami/wordpress/tags/
 ##
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 4.9.8-debian-9
+  tag: 4.9.8
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -88,6 +94,8 @@ externalDatabase:
 
 ##
 ## MariaDB chart configuration
+##
+## https://github.com/helm/charts/blob/master/stable/mariadb/values.yaml
 ##
 mariadb:
   ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
@@ -181,7 +189,7 @@ ingress:
     ## A side effect of this will be that the backend wordpress service will be connected at port 443
     tls: false
 
-    ## Set this to true in order to add the corresponding annontations for cert-manager
+    ## Set this to true in order to add the corresponding annotations for cert-manager
     certManager: false
 
     ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS

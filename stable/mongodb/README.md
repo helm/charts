@@ -47,6 +47,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 
 |         Parameter                       |             Description                                                                      |                         Default                          |
 |-----------------------------------------|----------------------------------------------------------------------------------------------|----------------------------------------------------------|
+| `global.imageRegistry`                  | Global Docker image registry                                                                 | `nil`                                                    |
 | `image.registry`                        | MongoDB image registry                                                                       | `docker.io`                                              |
 | `image.repository`                      | MongoDB Image name                                                                           | `bitnami/mongodb`                                        |
 | `image.tag`                             | MongoDB Image tag                                                                            | `{VERSION}`                                              |
@@ -62,6 +63,7 @@ The following table lists the configurable parameters of the MongoDB chart and t
 | `mongodbExtraFlags`                     | MongoDB additional command line flags                                                        | []                                                       |
 | `service.annotations`                   | Kubernetes service annotations                                                               | `{}`                                                     |
 | `service.type`                          | Kubernetes Service type                                                                      | `ClusterIP`                                              |
+| `service.clusterIP`                     | Static clusterIP or None for headless services                                               | `nil`                                                    |
 | `service.nodePort`                      | Port to bind to for NodePort service type                                                    | `nil`                                                    |
 | `port`                                  | MongoDB service port                                                                         | `27017`                                                  |
 | `replicaSet.enabled`                    | Switch to enable/disable replica set configuration                                           | `false`                                                  |

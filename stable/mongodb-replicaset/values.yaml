@@ -96,6 +96,8 @@ persistentVolume:
 # Annotations to be added to the service
 serviceAnnotations: {}
 
+terminationGracePeriodSeconds: 30
+
 tls:
   # Enable or disable MongoDB TLS support
   enabled: false

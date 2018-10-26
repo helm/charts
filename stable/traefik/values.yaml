@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.7.2
+imageTag: 1.7.3
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 # loadBalancerIP: ""
@@ -61,6 +61,7 @@ forwardedHeaders:
 ssl:
   enabled: false
   enforced: false
+  permanentRedirect: false
   upstream: false
   insecureSkipVerify: false
   # cipherSuites: []
@@ -131,6 +132,7 @@ kvprovider:
 acme:
   enabled: false
   email: admin@example.com
+  onHostRule: true
   staging: true
   logging: false
   # Configure a Let's Encrypt certificate to be managed by default.

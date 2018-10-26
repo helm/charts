@@ -1,6 +1,6 @@
 ## Kong
 
-[Kong](https://getkong.org/) is an open-source API Gateway and Microservices
+[Kong](https://KongHQ.com/) is an open-source API Gateway and Microservices
 Management Layer, delivering high performance and reliability.
 
 ## TL;DR;
@@ -51,8 +51,9 @@ and their default values.
 | Parameter                         | Description                                                            | Default               |
 | ------------------------------    | --------------------------------------------------------------------   | -------------------   |
 | image.repository                  | Kong image                                                             | `kong`                |
-| image.tag                         | Kong image version                                                     | `0.14.0`              |
+| image.tag                         | Kong image version                                                     | `0.14.1`              |
 | image.pullPolicy                  | Image pull policy                                                      | `IfNotPresent`        |
+| image.pullSecrets                 | Image pull secrets                                                     | `null`                |
 | replicaCount                      | Kong instance count                                                    | `1`                   |
 | admin.useTLS                      | Secure Admin traffic                                                   | `true`                |
 | admin.servicePort                 | TCP port on which the Kong admin service is exposed                    | `8444`                |
@@ -60,7 +61,7 @@ and their default values.
 | admin.nodePort                    | Node port when service type is `NodePort`                              |                       |
 | admin.type                        | k8s service type, Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | admin.loadBalancerIP              | Will reuse an existing ingress static IP for the admin service         | `null`                |
-| admin.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               | 
+| admin.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               |
 | admin.ingress.tls                 | Name of secret resource, containing TLS secret                         |                       |
 | admin.ingress.hosts               | List of ingress hosts.                                                 | `[]`                  |
 | admin.ingress.path                | Ingress path.                                                          | `/`                   |
@@ -71,7 +72,7 @@ and their default values.
 | proxy.nodePort                    | Node port when service type is `NodePort`                              |                       |
 | proxy.type                        | k8s service type. Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | proxy.loadBalancerIP              | To reuse an existing ingress static IP for the admin service           |                       |
-| proxy.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               | 
+| proxy.ingress.enabled             | Enable ingress resource creation (works with proxy.type=ClusterIP)     | `false`               |
 | proxy.ingress.tls                 | Name of secret resource, containing TLS secret                         |                       |
 | proxy.ingress.hosts               | List of ingress hosts.                                                 | `[]`                  |
 | proxy.ingress.path                | Ingress path.                                                          | `/`                   |
