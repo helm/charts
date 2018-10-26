@@ -1,6 +1,6 @@
 ## Kong
 
-[Kong](https://getkong.org/) is an open-source API Gateway and Microservices
+[Kong](https://KongHQ.com/) is an open-source API Gateway and Microservices
 Management Layer, delivering high performance and reliability.
 
 ## TL;DR;
