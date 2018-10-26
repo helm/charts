@@ -18,7 +18,6 @@ This CA can then be used to register and enroll identities for clients, admins a
 
 - Kubernetes 1.9+
 - PV provisioner support in the underlying infrastructure.
-- A running [PostgreSQL Chart](https://github.com/kubernetes/charts/tree/master/stable/postgresql) to host the Hyperledger Fabric CA data, in a database defined under the settings `db.database`.
 
 ## Installing the Chart
 
