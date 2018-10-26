@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.nfsServerServiceName }}
+  name: {{ template "nfs.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "nfs.name" . }}
     helm.sh/chart: {{ include "nfs.chart" . }}
@@ -21,7 +21,7 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
-      - name: {{ .Values.nfsServerServiceName }}
+      - name: {{ template "nfs.fullname" . }}
         image: k8s.gcr.io/volume-nfs:0.8
         ports:
           - name: nfs

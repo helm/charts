@@ -2,7 +2,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ .Values.nfsServerServiceName }}
+  name: {{ template "nfs.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "nfs.name" . }}
     helm.sh/chart: {{ include "nfs.chart" . }}

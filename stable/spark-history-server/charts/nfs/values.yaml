@@ -4,6 +4,5 @@ pvStorage: 1Mi
 
 pvName: nfs-pv
 pvcName: nfs-pvc
-nfsServerServiceName: nfs-server
 
 enableExampleNFS: true
