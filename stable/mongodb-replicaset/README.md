@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `persistentVolume.accessMode`       | Persistent volume access modes                                            | `[ReadWriteOnce]`                                   |
 | `persistentVolume.size`             | Persistent volume size                                                    | `10Gi`                                              |
 | `persistentVolume.annotations`      | Persistent volume annotations                                             | `{}`                                                |
+| `terminationGracePeriodSeconds`     | Duration in seconds the pod needs to terminate gracefully                 | `30`                                                |
 | `tls.enabled`                       | Enable MongoDB TLS support including authentication                       | `false`                                             |
 | `tls.cacert`                        | The CA certificate used for the members                                   | Our self signed CA certificate                      |
 | `tls.cakey`                         | The CA key used for the members                                           | Our key for the self signed CA certificate          |
@@ -116,6 +117,12 @@ Alternatively, existing secrets may be provided. The secret for the admin user m
 keys `user` and `password`, that for the key file must contain `key.txt`.  The user is created with
 full `root` permissions but is restricted to the `admin` database for security purposes. It can be
 used to create additional users with more specific permissions.
+
+To connect to the mongo shell with authentication enabled, use a command similar to the following (substituting values as appropriate):
+
+```shell
+kubectl exec -it mongodb-replicaset-0 -- mongo mydb -u admin -p password --authenticationDatabase admin
+```
 
 ## TLS support
 
