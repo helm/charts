@@ -1,3 +1,4 @@
+{{- if not .Values.statefulset.enabled }}
 {{- if .Values.nexusBackup.persistence.pdName -}}
 apiVersion: v1
 kind: PersistentVolume
@@ -16,4 +17,5 @@ spec:
   gcePersistentDisk:
     pdName: {{ .Values.nexusBackup.persistence.pdName }}
     fsType: {{ .Values.nexusBackup.persistence.fsType }}
+{{- end }}
 {{- end }}

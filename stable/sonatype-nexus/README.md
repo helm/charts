@@ -62,6 +62,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 
 | Parameter                                   | Description                         | Default                                 |
 | ------------------------------------------  | ----------------------------------  | ----------------------------------------|
+| `statefulset.enabled`                       | Use statefulset instead of deployment | `false` |
 | `replicaCount`                              | Number of Nexus service replicas    | `1`                                     |
 | `deploymentStrategy`                        | Deployment Strategy     |  `rollingUpdate` |
 | `nexus.imageName`                           | Nexus image                         | `quay.io/travelaudience/docker-nexus`   |
@@ -71,7 +72,8 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.resources`                           | Nexus resource requests and limits  | `{}`                                    |
 | `nexus.dockerPort`                          | Port to access docker               | `5003`                                  |
 | `nexus.nexusPort`                           | Internal port for Nexus service     | `8081`                                  |
-| `nexus.serviceType`                         | Service for Nexus                   | `NodePort`                              |
+| `nexus.service.type`                        | Service for Nexus                   |`NodePort`                                |
+| `nexus.service.clusterIp`                   | Specific cluster IP when service type is cluster IP. Use None for headless service |`nil`   |
 | `nexus.securityContext`                     | Security Context (for enabling official image use `fsGroup: 2000`) | `{}`     |
 | `nexus.labels`                              | Service labels                      | `{}`                                    |
 | `nexus.podAnnotations`                      | Pod Annotations                     | `{}`
@@ -171,6 +173,10 @@ By default a PersistentVolumeClaim is created and mounted into the `/nexus-data`
 you can change the `values.yaml` to disable persistence which will use an `emptyDir` instead.
 
 > *"An emptyDir volume is first created when a Pod is assigned to a Node, and exists as long as that Pod is running on that node. When a Pod is removed from a node for any reason, the data in the emptyDir is deleted forever."*
+
+
+You must enable StatefulSet (`statefulset.enabled=true`) for true data persistence. If using Deployment approach, you can not recover data after restart or delete of helm chart. Statefulset will make sure that it picks up the same old volume which was used by the previous life of the nexus pod, helping you recover your data. When enabling statefulset, its required to enable the persistence.
+
 
 ### Recommended settings
 
