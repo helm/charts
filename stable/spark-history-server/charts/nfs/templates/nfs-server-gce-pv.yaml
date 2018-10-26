@@ -2,9 +2,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nfs-pv-provisioning-demo
+  name: {{ template "nfs.fullname" . }}
   labels:
-    demo: nfs-pv-provisioning
+    app.kubernetes.io/name: {{ include "nfs.name" . }}
+    helm.sh/chart: {{ include "nfs.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   accessModes: [ "ReadWriteOnce" ]
   resources:

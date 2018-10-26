@@ -7,7 +7,7 @@ rbac:
 
 serviceAccount:
   create: true
-  name: spark-history-server
+  name:
 
 image:
   repository: gcr.io/spark-operator/spark

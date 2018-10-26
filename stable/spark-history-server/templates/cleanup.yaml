@@ -3,14 +3,19 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: cleanup-history-server
+  name: {{ template "spark-history-server.fullname" . }}
   annotations:
     "helm.sh/hook": pre-delete
     "helm.sh/hook-delete-policy": hook-succeeded
+  labels:
+    app.kubernetes.io/name: {{ include "spark-history-server.name" . }}
+    helm.sh/chart: {{ include "spark-history-server.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
  template:
    spec:
-     serviceAccountName: {{ .Values.serviceAccount.name }}
+     serviceAccountName: {{ include "spark-history-server.serviceAccountName" . }}
      restartPolicy: OnFailure
      containers:
      - name: main

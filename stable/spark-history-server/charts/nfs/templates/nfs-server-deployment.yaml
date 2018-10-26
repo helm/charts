@@ -38,5 +38,5 @@ spec:
       volumes:
         - name: mypvc
           persistentVolumeClaim:
-            claimName: nfs-pv-provisioning-demo
+            claimName: {{ template "nfs.fullname" . }}
 {{- end }}
