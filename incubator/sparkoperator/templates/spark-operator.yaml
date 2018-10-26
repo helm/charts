@@ -41,11 +41,11 @@ spec:
       containers:
       - name: main
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         command: ["/usr/bin/gencerts.sh", "-n", "{{ .Values.operatorNamespace }}", "-p"]
 {{ end }}
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sparkoperator
@@ -85,7 +85,7 @@ spec:
       containers:
       - name: sparkoperator
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         {{- if .Values.enableWebhook }}
         volumeMounts:
           - name: webhook-certs
