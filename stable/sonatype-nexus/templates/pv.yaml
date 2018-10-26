@@ -1,3 +1,4 @@
+{{- if not .Values.statefulset.enabled }}
 {{- if .Values.persistence.pdName -}}
 apiVersion: v1
 kind: PersistentVolume
@@ -16,4 +17,5 @@ spec:
   gcePersistentDisk:
     pdName: {{ .Values.persistence.pdName }}
     fsType: {{ .Values.persistence.fsType }}
+{{- end }}
 {{- end }}
