@@ -23,7 +23,7 @@ After a few minutes, you should see hosts and metrics being reported in Datadog.
 
 **Tip**: List all releases using `helm list`
 
-### Enabling the Datadog Cluster Agent
+### Enabling the Datadog Cluster Agent ###
 
 Read about the Datadog Cluster Agent in the [official documentation](https://docs.datadoghq.com/agent/kubernetes/cluster/).
 
@@ -107,7 +107,7 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `clusterAgent.token`                     | A cluster-internal secret for agent-to-agent communication. Must be 32+ characters a-zA-Z | `Nil` You must provide your own token|
 | `clusterAgent.containerName`             | The container name for the Cluster Agent  | `cluster-agent`                           |
 | `clusterAgent.image.repository`          | The image repository for the cluster-agent | `datadog/cluster-agent`                           |
-| `clusterAgent.image.tag`                 | The image tag to pull              | `0.10.0`                                   |
+| `clusterAgent.image.tag`                 | The image tag to pull              | `1.0.0`                                   |
 | `clusterAgent.image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
 | `clusterAgent.image.pullSecrets`         | Image pull secrets                 |  `nil`                                    |
 | `clusterAgent.metricsProvider.enabled`   | Enable Datadog metrics as a source for HPA scaling |  `false`                  |
@@ -189,7 +189,7 @@ For more details, please refer to [the documentation](https://docs.datadoghq.com
 
 To enable event collection, you will need to set the `datadog.leaderElection`, `datadog.collectEvents` and `rbac.create` options to `true`.
 
-It is now recommended to use the Datadog Cluster Agent to collect the events - Refer to the [Enabling the Datadog Cluster Agent][] section.
+It is now recommended to use the Datadog Cluster Agent to collect the events - Refer to the [Enabling the Datadog Cluster Agent](#enabling-the-datadog-cluster-agent) section.
 Please read [the official documentation](https://docs.datadoghq.com/agent/kubernetes/event_collection/) for more context.
 
 ### Kubernetes Labels and Annotations
