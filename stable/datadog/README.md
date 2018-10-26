@@ -59,8 +59,11 @@ The following table lists the configurable parameters of the Datadog chart and t
 | `datadog.confd`             | Additional check configurations (static and Autodiscovery) | `nil`             |
 | `datadog.criSocketPath`     | Path to the container runtime socket (if different from Docker) | `nil`        |
 | `datadog.tags`              | Set host tags                      | `nil`                                     |
+| `datadog.useCriSocketPathVolume` | Enable mounting the container runtime socket in Agent containers | `True` |
 | `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
 | `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
+| `datadog.podAnnotationsAsTags` | Kubernetes Annotations to Datadog Tags mapping | `nil`                      |
+| `datadog.podLabelsAsTags`   | Kubernetes Labels to Datadog Tags mapping      | `nil`                         |
 | `datadog.resources.requests.cpu` | CPU resource requests         | `200m`                                    |
 | `datadog.resources.limits.cpu` | CPU resource limits             | `200m`                                    |
 | `datadog.resources.requests.memory` | Memory resource requests   | `256Mi`                                   |
@@ -169,3 +172,18 @@ For more details, please refer to [the documentation](https://docs.datadoghq.com
 To enable event collection, you will need to set the `datadog.leaderElection`, `datadog.collectEvents` and `rbac.create` options to `true`.
 
 Please read [the official documentation](https://docs.datadoghq.com/agent/kubernetes/event_collection/) for more context.
+
+### Kubernetes Labels and Annotations
+
+To map Kubernetes pod labels and annotations to Datadog tags, provide a dictionary with kubernetes labels/annotations as keys and datadog tags as values:
+
+```yaml
+podAnnotationsAsTags:
+  iam.amazonaws.com/role: kube_iamrole
+```
+
+```yaml
+podLabelsAsTags:
+  app: kube_app
+  release: helm_release
+```
