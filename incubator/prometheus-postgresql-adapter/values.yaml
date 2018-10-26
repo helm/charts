@@ -2,31 +2,56 @@
 ## ref: https://hub.docker.com/r/timescale/prometheus-postgresql-adapter/tags/
 ##
 
+# Extra key / value pairs for starting the application
 extraArgs: {}
 
+# Extra environment variables that should be present in the pod
 extraEnv: {}
 
+# Number of pods
 replicaCount: 1
 
+# Docker image information
 image:
   repository: timescale/prometheus-postgresql-adapter
   tag: 0.4.1
   pullPolicy: IfNotPresent
 
+# Default application values
 logLevel: info
-pgHost: postgres
 webListenAddress: 9201
 
+# Liveness probe settings
+livenessProbe:
+  enabled: true
+  failureThreshold: 3
+  initialDelaySeconds: 15
+  periodSeconds: 20
+  successThreshold: 1
+  timeoutSeconds: 2
+
+# Readiness probe settings
+readinessProbe:
+  enabled: true
+  failureThreshold: 3
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 2
+
+# Service settings
 service:
   annotations: {}
   clusterIP: ""
   externalIPs: []
+  externalTrafficPolicy: Cluster
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
   nodePort: ""
   port: 9201
   type: ClusterIP
 
+# Default resource allocations
 resources:
   limits:
     cpu: 250m
@@ -35,8 +60,11 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+# Pod affinity definitions
 affinity: {}
 
+# Node selector definitons
 nodeSelector: {}
 
+# Node tolerations
 tolerations: []

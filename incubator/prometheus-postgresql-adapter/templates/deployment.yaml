@@ -27,9 +27,10 @@ spec:
         {{- end }}
       {{- end }}
       containers:
-        - name: "{{ include "prometheus-postgresql-adapter.name" . }}"
+        - name: "{{ .Chart.Name }}"
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          command: ["/prometheus-postgresql-adapter"]
           args:
           - -log.level={{ .Values.logLevel }}
           - -pg.host={{ required "A valid PostgreSQL endpoint .Values.pgHost is required!" .Values.pgHost }}
@@ -70,16 +71,26 @@ spec:
             - name: http
               containerPort: {{ .Values.webListenAddress }}
               protocol: TCP
+          {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             tcpSocket:
               port: {{ .Values.webListenAddress }}
-            initialDelaySeconds: 15
-            periodSeconds: 20
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             tcpSocket:
               port: {{ .Values.webListenAddress }}
-            initialDelaySeconds: 5
-            periodSeconds: 10
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

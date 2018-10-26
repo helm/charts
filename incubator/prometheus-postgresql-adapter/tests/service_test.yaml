@@ -1,0 +1,81 @@
+suite: test service
+templates:
+  - service.yaml
+tests:
+  - it: should be type 'ClusterIP' if nothing else is set
+    set:
+      pgHost: postgres
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: spec.type
+          value: ClusterIP
+
+  - it: should be type 'ClusterIP' if nothing else is set
+    set:
+      pgHost: postgres
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: spec.type
+          value: ClusterIP
+
+  - it: should correctly change service.port and webListenAddress
+    set:
+      pgHost: postgres
+      service:
+        port: 12345
+      webListenAddress: 54321
+    asserts:
+      - equal:
+          path: spec.ports[0].port
+          value: 12345
+      - equal:
+          path: spec.ports[0].targetPort
+          value: 54321
+
+  - it: should correctly set NodePort settings
+    set:
+      pgHost: postgres
+      service:
+        type: NodePort
+        nodePort: 6174
+    asserts:
+      - equal:
+          path: spec.type
+          value: NodePort
+      - equal:
+          path: spec.ports[0].nodePort
+          value: 6174
+      - equal:
+          path: spec.externalTrafficPolicy
+          value: Cluster
+
+  - it: should correctly set LoadBalancer settings
+    set:
+      pgHost: postgres
+      service:
+        externalIPs:
+          - 80.11.12.10
+        loadBalancerIP: 78.11.24.19
+        loadBalancerSourceRanges:
+          - 143.231.0.0/16
+        type: LoadBalancer
+    asserts:
+      - equal:
+          path: spec.type
+          value: LoadBalancer
+      - equal:
+          path: spec.externalIPs[0]
+          value: 80.11.12.10
+      - equal:
+          path: spec.loadBalancerSourceRanges[0]
+          value: 143.231.0.0/16
+      - equal:
+          path: spec.loadBalancerIP
+          value: 78.11.24.19
+      - equal:
+          path: spec.externalTrafficPolicy
+          value: Cluster

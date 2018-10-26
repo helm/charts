@@ -1,0 +1,91 @@
+suite: test deployment
+templates:
+  - deployment.yaml
+tests:
+  - it: should render sane deployment defaults if 'pgHost' is set
+    set:
+      pgHost: postgres
+    asserts:
+      - isKind:
+          of: Deployment
+      - matchRegex:
+          path: metadata.name
+          pattern: -prometheus-postgresql-adapter$
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: timescale/prometheus-postgresql-adapter:0.4.1
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 9201
+
+  - it: should set pull secrets if they are defined
+    set:
+      pgHost: postgres
+      image:
+        pullSecrets:
+          - somepullsecret
+          - somepullsecret2
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.imagePullSecrets[0].name
+          value: somepullsecret
+      - equal:
+          path: spec.template.spec.imagePullSecrets[1].name
+          value: somepullsecret2
+
+  - it: should set extraArgs if they are defined
+    set:
+      pgHost: postgres
+      extraArgs:
+        key1: value1
+        key2: value2
+        key3: ""
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].args[3]
+          value: "-key1=value1"
+      - equal:
+          path: spec.template.spec.containers[0].args[4]
+          value: "-key2=value2"
+      - equal:
+          path: spec.template.spec.containers[0].args[5]
+          value: "-key3"
+
+  - it: should set extraEnv if they are defined
+    set:
+      pgHost: postgres
+      extraEnv:
+        KEY1: VALUE1
+        KEY2: VALUE2
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].env[0].name
+          value: KEY1
+      - equal:
+          path: spec.template.spec.containers[0].env[0].value
+          value: VALUE1
+      - equal:
+          path: spec.template.spec.containers[0].env[1].name
+          value: KEY2
+      - equal:
+          path: spec.template.spec.containers[0].env[1].value
+          value: VALUE2
+
+  - it: should disable livenessProbe and readinessProbe if disabled
+    set:
+      pgHost: postgres
+      livenessProbe:
+        enabled: false
+      readinessProbe:
+        enabled: false
+    asserts:
+      - isNull:
+          path: spec.template.spec.containers[0].livenessProbe
+      - isNull:
+          path: spec.template.spec.containers[0].readinessProbe

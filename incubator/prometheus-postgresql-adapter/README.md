@@ -13,9 +13,10 @@ $ helm install incubator/prometheus-postgresql-adapter
 This chart bootstraps a [prometheus-postgresql-adapter](https://github.com/timescale/prometheus-postgresql-adapter) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
+
   - Kubernetes 1.8+ with Beta APIs enabled
-  - Prometheus instance
-  - [pg_prometheus](https://github.com/timescale/pg_prometheus). Using [TimescaleDB](https://github.com/timescale/timescaledb) is optional.
+  - A Prometheus instance
+  - A [pg_prometheus](https://github.com/timescale/pg_prometheus) instance. Using [TimescaleDB](https://github.com/timescale/timescaledb) is optional.
 
 ## Installing the Chart
 
@@ -51,7 +52,13 @@ Parameter | Description | Default
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.pullSecrets` | Image pull secrets | None
 `image.repository` | Image repository | `timescale/prometheus-postgresql-adapter`
-`image.tag` | Image tag | `0.4`
+`image.tag` | Image tag | `0.4.1`
+`livenessProbe.enabled` | Enable liveness checks | `true`
+`livenessProbe.failureThreshold` | Liveness check failure threshold | `3`
+`livenessProbe.initialDelaySeconds` | Liveness check initial delay (sec) | `15`
+`livenessProbe.periodSeconds` | Liveness check interval (sec) | `20`
+`livenessProbe.successThreshold` | Liveness check success threshold | `1`
+`livenessProbe.timeoutSeconds` | Liveness check timeout (sec) | `1`
 `logLevel` | The log level to use [`error`, `warn`, `info`, `debug`] | `info`
 `nodeSelector` | Node labels for pod assignment | `{}`
 `pgDatabase` | The PostgreSQL database | `postgres`
@@ -61,10 +68,16 @@ Parameter | Description | Default
 `pgSchema` | The PostgreSQL schema | `postgres`
 `pgTablePrefix` | Override prefix for internal tables. It is also a view name used for querying | `metrics`
 `pgUser` | The PostgreSQL user | `postgres`
-`resources.limits.cpu` | CPU resource limits | `200m` |
-`resources.limits.memory` | Memory resource limits | `256Mi` |
-`resources.requests.cpu` | CPU resource requests | `100m` |
-`resources.requests.memory` | Memory resource requests | `128Mi` |
+`readinessProbe.enabled` | Enable readiness checks | `true`
+`readinessProbe.failureThreshold` | Liveness check failure threshold | `3`
+`readinessProbe.initialDelaySeconds` | Readiness check initial delay (sec) | `15`
+`readinessProbe.periodSeconds` | Readiness check interval (sec) | `20`
+`readinessProbe.successThreshold` | Liveness check success threshold | `1`
+`readinessProbe.timeoutSeconds` | Readiness check timeout (sec) | `1`
+`resources.limits.cpu` | CPU resource limits | `200m`
+`resources.limits.memory` | Memory resource limits | `256Mi`
+`resources.requests.cpu` | CPU resource requests | `100m`
+`resources.requests.memory` | Memory resource requests | `128Mi`
 `service.annotations` | Kubernetes service annotations | `{}`
 `service.clusterIP` | Cluster IP address to assign to service | None
 `service.externalIP` | Service external IP addresses | `[]`
