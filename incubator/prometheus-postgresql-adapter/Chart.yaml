@@ -1,3 +1,4 @@
+apiVersion: v1
 appVersion: v0.4
 description: Prometheus remote storage adapter for PostgreSQL.
 engine: gotpl

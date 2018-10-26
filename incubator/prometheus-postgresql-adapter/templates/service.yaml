@@ -7,10 +7,10 @@ metadata:
 {{- end }}
   name: {{ include "prometheus-postgresql-adapter.fullname" . }}
   labels:
-    app: "{{ include "prometheus-postgresql-adapter.name" . }}"
-    chart: "{{ include "prometheus-postgresql-adapter.chart" . }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/name: "{{ include "prometheus-postgresql-adapter.name" . }}"
+    helm.sh/chart: "{{ include "prometheus-postgresql-adapter.chart" . }}"
 spec:
   type: "{{ .Values.service.type }}"
   clusterIP: "{{ .Values.service.clusterIP }}"
@@ -34,8 +34,8 @@ spec:
       nodePort: {{ .Values.service.nodePort }}
 {{- end }}
       port: {{ .Values.service.port }}
-      targetPort: {{ .Values.webListenAddress }}
       protocol: "TCP"
+      targetPort: {{ .Values.webListenAddress }}
   selector:
-    app: "{{ include "prometheus-postgresql-adapter.name" . }}"
-    release: "{{ .Release.Name }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/name: "{{ include "prometheus-postgresql-adapter.name" . }}"

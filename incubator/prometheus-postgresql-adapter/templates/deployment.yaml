@@ -1,30 +1,30 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "prometheus-postgresql-adapter.fullname" . }}
   labels:
-    app: "{{ include "prometheus-postgresql-adapter.name" . }}"
-    chart: "{{ include "prometheus-postgresql-adapter.chart" . }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    app.kubernetes.io/name: "{{ include "prometheus-postgresql-adapter.name" . }}"
+    helm.sh/chart: "{{ include "prometheus-postgresql-adapter.chart" . }}"
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: "{{ include "prometheus-postgresql-adapter.name" . }}"
-      release: "{{ .Release.Name }}"
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+      app.kubernetes.io/name: "{{ include "prometheus-postgresql-adapter.name" . }}"
   template:
     metadata:
       labels:
-        app: "{{ include "prometheus-postgresql-adapter.name" . }}"
-        chart: "{{ include "prometheus-postgresql-adapter.chart" . }}"
-        release: "{{ .Release.Name }}"
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        app.kubernetes.io/name: "{{ include "prometheus-postgresql-adapter.name" . }}"
+        helm.sh/chart: "{{ include "prometheus-postgresql-adapter.chart" . }}"
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
-      {{- range .Values.image.pullSecrets }}
+        {{- range .Values.image.pullSecrets }}
         - name: {{ . }}
-      {{- end }}
+        {{- end }}
       {{- end }}
       containers:
         - name: "{{ include "prometheus-postgresql-adapter.name" . }}"
@@ -63,23 +63,23 @@ spec:
           env:
             {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}
-            value: "{{ $value }}"
+            value: {{ $value | quote }}
             {{- end }}
           {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.webListenAddress }}
               protocol: TCP
-          readinessProbe:
-            tcpSocket:
-              port: {{ .Values.webListenAddress }}
-            initialDelaySeconds: 5
-            periodSeconds: 10
           livenessProbe:
             tcpSocket:
               port: {{ .Values.webListenAddress }}
             initialDelaySeconds: 15
             periodSeconds: 20
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.webListenAddress }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
