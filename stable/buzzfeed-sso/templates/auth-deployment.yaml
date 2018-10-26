@@ -44,13 +44,13 @@ spec:
               protocol: TCP
           env:
             - name: SSO_EMAIL_DOMAIN
-              value: {{ .Values.emailDomain }}
+              value: {{ .Values.emailDomain | quote }}
             - name: HOST
               value: {{ $authDomain }}
             - name: REDIRECT_URL
               value: https://{{ $authDomain }}
             - name: PROXY_ROOT_DOMAIN
-              value: {{ .Values.rootDomain }}
+              value: {{ .Values.rootDomain | quote }}
             - name: PROXY_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -91,7 +91,7 @@ spec:
             # Provider variables
           {{- with .Values.provider.google }}
             - name: GOOGLE_ADMIN_EMAIL
-              value: {{ .adminEmail }}
+              value: {{ .adminEmail | quote }}
             - name: GOOGLE_SERVICE_ACCOUNT_JSON
               value: /creds/sso-serviceaccount.json
             - name: CLIENT_ID

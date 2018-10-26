@@ -53,7 +53,7 @@ spec:
                   name: {{ template "buzzfeed-sso.fullname" . }}
                   key: proxy-cookie-secret
             - name: EMAIL_DOMAIN
-              value: {{ .Values.emailDomain }}
+              value: {{ .Values.emailDomain | quote }}
             - name: UPSTREAM_CONFIGS
               value: /sso/upstream_configs.yml
             - name: PROVIDER_URL
@@ -66,9 +66,9 @@ spec:
             - name: COOKIE_SECURE
               value: "false"
             - name: CLUSTER
-              value: {{ .Values.proxy.cluster | quote}}
+              value: {{ .Values.proxy.cluster | quote }}
             - name: VIRTUAL_HOST
-              value: {{ .Values.proxy.virtualHost | quote}}
+              value: {{ .Values.proxy.virtualHost | quote }}
           readinessProbe:
             httpGet:
               path: /ping
