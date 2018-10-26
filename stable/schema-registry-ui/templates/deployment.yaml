@@ -26,6 +26,10 @@ spec:
           env:
           - name: SCHEMAREGISTRY_URL
             value: "{{ .Values.schemaRegistry.url }}:{{ .Values.schemaRegistry.port }}"
+          - name: PROXY
+            value: "{{ .Values.schemaRegistry.proxy }}"
+          - name: PROXY_SKIP_VERIFY
+            value: "{{ .Values.schemaRegistry.proxySkipVerify }}"
           ports:
             - name: http
               containerPort: 8000

@@ -67,4 +67,6 @@ The following table lists the configurable parameters of the SchemaRegistryUI ch
 | `ingress.enabled` | Ingress rules. Disabled by default | `false` |
 | `schemaRegistry.url` | URL to the schema registry endpoint | `http://localhost` |
 | `schemaRegistry.port` | Port for the schema registry | `8081` |
+| `schemaRegistry.proxy` | Whether to proxy Schema Registry endpoint via the internal webserver | `false` |
+| `schemaRegistry.proxySkipVerify` | Whether to accept self-signed certificates when proxying Schema Registry via https | `false` |
 | `resources` | CPU/Memory resource requests/limits | `{}` |

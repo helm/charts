@@ -16,6 +16,8 @@ service:
 schemaRegistry:
   url: "http://localhost"
   port: 8081
+  proxy: false
+  proxySkipVerify: false
 
 ingress:
   enabled: false
