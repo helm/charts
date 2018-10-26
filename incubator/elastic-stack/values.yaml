@@ -15,6 +15,9 @@ fluentd:
 fluent-bit:
   enabled: false
 
+fluentd-elasticsearch:
+  enabled: false
+
 nginx-ldapauth-proxy:
   enabled: false
   # Example config to get it working with ELK. Adjust as you need to.
@@ -43,4 +46,7 @@ nginx-ldapauth-proxy:
   # secrets:
   #   ldapBindPassword: PASSWORD
 elasticsearch-curator:
+  enabled: false
+
+elasticsearch-exporter:
   enabled: false
