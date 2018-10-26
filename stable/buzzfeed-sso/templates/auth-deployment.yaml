@@ -83,7 +83,7 @@ spec:
             - name: STATSD_PORT
               value: "11111"
             - name: COOKIE_SECURE
-              value: "false"
+              value: "true"
             - name: CLUSTER
               value: dev
             - name: VIRTUAL_HOST
