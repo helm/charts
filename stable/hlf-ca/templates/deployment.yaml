@@ -122,12 +122,12 @@ spec:
             - name: PARENT_CA_ADMIN
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.config.intermediate.parent.chart | quote }}
+                  name: {{ .Values.config.intermediate.parent.chart }}--ca
                   key: CA_ADMIN
             - name: PARENT_CA_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.config.intermediate.parent.chart | quote }}
+                  name: {{ .Values.config.intermediate.parent.chart }}--ca
                   key: CA_PASSWORD
             {{- end}}
           ports:
