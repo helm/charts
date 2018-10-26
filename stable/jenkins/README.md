@@ -219,7 +219,7 @@ Below is an example of a `values.yaml` file and the directory structure created:
 #### values.yaml
 ```yaml
 Master:
-  Jobs:
+  Jobs: |-
     test-job: |-
       <?xml version='1.0' encoding='UTF-8'?>
       <project>
