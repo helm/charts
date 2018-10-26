@@ -21,8 +21,7 @@ This chart will do the following:
 You can install the chart with the release name `srui` as below.
 
 ```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name srui incubator/schema-registry-ui
+$ helm install --name srui stable/schema-registry-ui
 ```
 
 If you do not specify a name, helm will select a name for you.
@@ -49,7 +48,7 @@ You can specify each parameter using the `--set key=value[,key=value]` argument 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/schema-registry-ui
+$ helm install --name my-release -f values.yaml stable/schema-registry-ui
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
