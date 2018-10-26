@@ -47,6 +47,13 @@ kubectl delete crd servicemonitors.monitoring.coreos.com
 kubectl delete crd alertmanagers.monitoring.coreos.com
 ```
 
+The operator automatically creates services in each namespace where you created a Prometheus or Alertmanager resources, and defines three custom resource definitions. You can clean these up now.
+```
+for n in $(kubectl get namespaces -o jsonpath={..metadata.name}); do
+  kubectl delete --ignore-not-found --namespace=$n service prometheus-operated alertmanager-operated prometheus-prometheus-oper-kubelet
+done
+```
+
 ## Configuration
 
 The following tables lists the configurable parameters of the prometheus-operator chart and their default values.
