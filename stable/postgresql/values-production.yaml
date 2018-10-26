@@ -1,3 +1,9 @@
+## Global Docker image registry
+### Please, note that this will override the image registry for all the images, including dependencies, configured to use the global value
+###
+## global:
+##   imageRegistry:
+
 ## Bitnami PostgreSQL image version
 ## ref: https://hub.docker.com/r/bitnami/postgresql/tags/
 ##
@@ -51,12 +57,23 @@ postgresqlUsername: postgres
 ##
 # postgresqlDatabase:
 
-## Kubernetes configuration
-## For minikube, set this to NodePort, elsewhere use LoadBalancer
-##
+## PostgreSQL service configuration
 service:
+  ## PosgresSQL service type
   type: ClusterIP
   port: 5432
+
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
+
+  ## Provide any additional annotations which may be required. This can be used to
+  annotations: {}
+  ## Set the LoadBalancer service type to internal only.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+  ##
+  # loadBalancerIP:
 
 ## PostgreSQL data Persistent Volume Storage Class
 ## If defined, storageClassName: <storageClass>
