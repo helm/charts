@@ -4,6 +4,10 @@
 image: "mysql"
 imageTag: "5.7.14"
 
+## Specify the port on node if necessary
+## Ref: https://kubernetes.io/docs/concepts/configuration/overview/
+# hostPort: 3306
+
 ## Specify password for root user
 ##
 ## Default: random 10 character string

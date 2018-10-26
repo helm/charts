@@ -72,6 +72,9 @@ spec:
         ports:
         - name: mysql
           containerPort: 3306
+          {{- if .Values.hostPort }}
+          hostPort: {{ .Values.hostPort }}
+          {{- end }}
         livenessProbe:
           exec:
             command:
