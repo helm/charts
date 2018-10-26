@@ -1,4 +1,6 @@
 {{- $fullName := include "buzzfeed-sso.fullname" . -}}
+{{- $googleSecret := .Values.provider.google.customSecret | default (printf "%s-google" ($fullName)) -}}
+{{- $authSecret := .Values.auth.customSecret | default ($fullName) -}}
 {{- $name := include "buzzfeed-sso.name" . -}}
 {{- $authDomain := .Values.auth.domain -}}
 apiVersion: apps/v1beta1
@@ -28,7 +30,7 @@ spec:
       volumes:
         - name: google-service-account
           secret:
-            secretName: {{ $fullName }}-google
+            secretName: {{ $googleSecret }}
             items:
             - key: service-account
               path: sso-serviceaccount.json
@@ -54,28 +56,28 @@ spec:
             - name: PROXY_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ $fullName }}
+                  name: {{ $authSecret }}
                   key: proxy-client-id
             - name: PROXY_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ $fullName }}
+                  name: {{ $authSecret }}
                   key: proxy-client-secret
             - name: AUTH_CODE_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ $fullName }}
+                  name: {{ $authSecret }}
                   key: auth-code-secret
             - name: COOKIE_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ $fullName }}
+                  name: {{ $authSecret }}
                   key: auth-cookie-secret
             # # OLD_COOKIE_SECRET is the same as COOKIE_SECRET, not sure why its even needed at this point
             - name: OLD_COOKIE_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ $fullName }}
+                  name: {{ $authSecret }}
                   key: auth-cookie-secret
             # STATSD_HOST and STATSD_PORT must be defined or the app wont launch, they dont need to be a real host / port
             - name: STATSD_HOST
@@ -97,12 +99,12 @@ spec:
             - name: CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ $fullName }}-google
+                  name: {{ $googleSecret }}
                   key: google-client-id
             - name: CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ $fullName }}-google
+                  name: {{ $googleSecret }}
                   key: google-client-secret
           {{- end }}
           readinessProbe:

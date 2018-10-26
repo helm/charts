@@ -1,4 +1,5 @@
 {{- $fullName := include "buzzfeed-sso.fullname" . -}}
+{{- $proxySecret := .Values.proxy.customSecret | default ($fullName) -}}
 {{- $name := include "buzzfeed-sso.name" . -}}
 apiVersion: apps/v1beta1
 kind: Deployment
@@ -40,17 +41,17 @@ spec:
             - name: CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ $fullName }}
+                  name: {{ $proxySecret }}
                   key: proxy-client-id
             - name: CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ $fullName }}
+                  name: {{ $proxySecret }}
                   key: proxy-client-secret
             - name: COOKIE_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "buzzfeed-sso.fullname" . }}
+                  name: {{ $proxySecret }}
                   key: proxy-cookie-secret
             - name: EMAIL_DOMAIN
               value: {{ .Values.emailDomain | quote }}

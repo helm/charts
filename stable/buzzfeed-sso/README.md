@@ -61,7 +61,8 @@ Parameter | Description | Default
 `auth.affinity` | node affinity for auth pods | `{}`
 `auth.service.type` | type of auth service to create | `ClusterIP`
 `auth.service.port` | port for the http auth service | `80`
-`auth.secret` | secrets to be generated randomly with `openssl rand -base64 32 | head -c 32` | REQUIRED
+`auth.secret` | secrets to be generated randomly with `openssl rand -base64 32 | head -c 32`. | REQUIRED if `auth.customSecret` is not set
+`auth.customSecret` | the secret key to reuse (avoids secret creation via helm) | REQUIRED if `auth.secret` is not set
 `proxy.virtualHost` | wildcard domain for redirecting SSO to the backends | REQUIRED
 `proxy.cluster` | the cluster name for SSO | `dev`
 `proxy.replicaCount` | desired number of proxy pods | `1`
@@ -71,8 +72,12 @@ Parameter | Description | Default
 `proxy.affinity` | node affinity for proxy pods | `{}`
 `proxy.service.type` | type of proxy service to create | `ClusterIP`
 `proxy.service.port` | port for the http proxy service | `80`
-`proxy.secret` | secrets to be generated randomly with `openssl rand -base64 32 | head -c 32 | base64` | REQUIRED
+`proxy.secret` | secrets to be generated randomly with `openssl rand -base64 32 | head -c 32 | base64`. | REQUIRED if `proxy.customSecret` is not set
+`proxy.customSecret` | the secret key to reuse (avoids secret creation via helm) | REQUIRED if `proxy.secret` is not set
 `provider.google` | the Oauth provider to use (only Google support for now) | REQUIRED
+`provider.google.adminEmail` | the Google admin email | REQUIRED
+`provider.google.secret` | the Google OAuth secrets | REQUIRED if `provider.google.customSecret` is not set
+`provider.google.customSecret` | the secret key to reuse instead of creating it via helm | REQUIRED if `provider.google.secret` is not set
 `image.repository` | container image repository | `buzzfeed/sso`
 `image.tag` | container image tag | `v1.0.0`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
@@ -131,15 +136,39 @@ proxy:
     cookieSecret: 'randomSecret6'
 
 google:
-  clientId: 'googleSecret!'
-  clientSecret: 'evenMoreSecret'
-  serviceAccount: '{ <json content super secret> }'
+  secret:
+    clientId: 'googleSecret!'
+    clientSecret: 'evenMoreSecret'
+    serviceAccount: '{ <json content super secret> }'
 ```
 
 Therefore, you could push your own `values.yaml` to a repo and keep `secrets.yaml` locally safe, and then install/update the chart:
 
 ```bash
 $ helm install --name my-release -f values.yaml -f secrets.yaml stable/buzzfeed-sso
+```
+
+Alternatively, you can specify your own secret key, if you have already created it in the cluster. The secret should follow the data format defined in `secret.yaml` (auth and proxy) and `google-secret.yaml` (google provider).
+
+```yaml
+# values.yaml
+emailDomain: 'email.coolcompany.foo'
+
+rootDomain: 'coolcompany.foo'
+
+auth:
+  domain: sso-auth.coolcompany.foo
+  customSecret: my-sso-auth-secret
+
+proxy:
+  virtualHost: '*.coolcompany.foo'
+  cluster: dev
+  customSecret: my-sso-proxy-secret
+
+provider:
+  google:
+    adminEmail: iamtheadmin@email.coolcompany.foo
+    customSecret: my-sso-google-secret
 ```
 
 ## Updating the Chart

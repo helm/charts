@@ -22,6 +22,8 @@ auth:
   secret: {}
     # codeSecret: ''
     # cookieSecret: ''
+  # # Or if you do not want to create the secret via helm
+  # customSecret: my-sso-auth-secret
 
 proxy:
   # virtualHost: "*.mydomain.foo"
@@ -43,13 +45,21 @@ proxy:
     # clientId: ''
     # clientSecret: ''
     # cookieSecret: ''
+  # # Or if you do not want to create the secret via helm
+  # customSecret: my-sso-proxy-secret
 
-provider: {}
+provider:
+  google: {}
   # google:
-  #    adminEmail: me@mydomain.foo
-  #    clientId: foo123123-fake123123.apps.googleusercontent.com
-  #    clientSecret: googleOauthClientSecret
-  #    serviceAccount: 'service account content in JSON format'
+  #   adminEmail: me@mydomain.foo
+  #   secret:
+  #     clientId: foo123123-fake123123.apps.googleusercontent.com
+  #     clientSecret: googleOauthClientSecret
+  #     serviceAccount: 'service account content in JSON format'
+  # # Or if you do not want to create the secret via helm
+  # google:
+  #   adminEmail: me@mydomain.foo
+  #   customSecret: my-sso-google-secret
 
 image:
   repository: buzzfeed/sso
