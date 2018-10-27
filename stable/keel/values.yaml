@@ -4,7 +4,7 @@
 
 image:
   repository: keelhq/keel
-  tag: 0.9.5
+  tag: 0.12.0
   pullPolicy: IfNotPresent
 
 # Polling is enabled by default,
@@ -31,12 +31,23 @@ webhook:
   endpoint: ""
 
 # Slack Notification
+# bot name (default keel) must exist!
 slack:
   enabled: false
   token: ""
   channel: ""
   botName: ""
   approvalsChannel: ""
+
+# Hipchat notification and approvals
+hipchat:
+  enabled: false
+  token: ""
+  channel: ""
+  approvalsChannel: ""
+  botName: ""
+  userName: ""
+  password: ""
 
 # Keel service
 # Enable to receive webhooks from Docker registries

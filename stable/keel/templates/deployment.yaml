@@ -54,10 +54,27 @@ spec:
               value: "{{ .Values.slack.token }}"
             - name: SLACK_CHANNELS
               value: "{{ .Values.slack.channel }}"
-            - name: SLACK_BOT_NAME
-              value: "{{ .Values.slack.botName }}"
             - name: SLACK_APPROVALS_CHANNEL
               value: "{{ .Values.slack.approvalsChannel }}"
+  {{- if .Values.slack.botName }}
+            - name: SLACK_BOT_NAME
+              value: "{{ .Values.slack.botName }}"
+  {{- end }}
+{{- end }}
+{{- if .Values.hipchat.enabled }}
+            # Enable hipchat approvials and notification
+            - name: HIPCHAT_TOKEN
+              value: "{{ .Values.hipchat.token }}"
+            - name: HIPCHAT_CHANNELS
+              value: "{{ .Values.hipchat.channel }}"
+            - name: HIPCHAT_APPROVALS_CHANNEL
+              value: "{{ .Values.hipchat.approvalsChannel }}"
+            - name: HIPCHAT_APPROVALS_BOT_NAME
+              value: "{{ .Values.hipchat.botName }}"
+            - name: HIPCHAT_APPROVALS_USER_NAME
+              value: "{{ .Values.hipchat.userName }}"
+            - name: HIPCHAT_APPROVALS_PASSWORT
+              value: "{{ .Values.hipchat.password }}"
 {{- end }}
           ports:
             - containerPort: 9300
