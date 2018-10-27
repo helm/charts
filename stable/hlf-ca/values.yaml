@@ -97,7 +97,7 @@ mysql:
       sql-mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
 
 ##
-## External Database configuration (MySQL or PostgresSQL install outside Kubernetes)
+## External Database configuration (MySQL or PostgresSQL installed on/off Kubernetes)
 ##
 externalDatabase:
   # Either postgres or mysql
