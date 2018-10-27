@@ -1,5 +1,10 @@
+{{- if .Values.statefulset.enabled }}
+apiVersion: apps/v1beta1
+kind: StatefulSet
+{{- else }}
 apiVersion: apps/v1beta2
 kind: Deployment
+{{- end }}
 metadata:
   name: {{ template "nexus.fullname" . }}
   labels:
@@ -13,6 +18,13 @@ metadata:
 {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  {{- if .Values.statefulset.enabled }}
+  {{- if .Values.nexusProxy.svcName }}
+  serviceName: {{ .Values.nexusProxy.svcName }}
+  {{- else }}
+  serviceName: {{ template "nexus.fullname" . }}
+  {{- end }}
+  {{- end }}
   {{- if .Values.deploymentStrategy }}
   strategy:
 {{ toYaml .Values.deploymentStrategy | indent 4 }}
@@ -23,13 +35,17 @@ spec:
       release: {{ .Release.Name }}
   template:
     metadata:
+    {{- if .Values.nexus.podAnnotations }}
+      annotations:
+{{ toYaml .Values.nexus.podAnnotations | indent 8}}
+    {{- end }}
       labels:
         app: {{ template "nexus.name" . }}
         release: {{ .Release.Name }}
     spec:
       {{- if .Values.deployment.initContainers }}
       initContainers:
-{{ toYaml .Values.deployment.initContainers | indent 6 }}      
+{{ toYaml .Values.deployment.initContainers | indent 6 }}
       {{- end }}
       {{- if .Values.nexus.nodeSelector }}
       nodeSelector:
@@ -80,9 +96,9 @@ spec:
             {{- end }}
           volumeMounts:
             - mountPath: /nexus-data
-              name: nexus-data
+              name: {{ template "nexus.fullname" . }}-data
             - mountPath: /nexus-data/backup
-              name: nexus-backup
+              name: {{ template "nexus.fullname" . }}-backup
             {{- if .Values.config.enabled }}
             - mountPath: {{ .Values.config.mountPath }}
               name: {{ template "nexus.name" . }}-conf
@@ -176,12 +192,12 @@ spec:
               value: .backup
           volumeMounts:
             - mountPath: /nexus-data
-              name: nexus-data
+              name: {{ template "nexus.fullname" . }}-data
             - mountPath: /nexus-data/backup
-              name: nexus-backup
+              name: {{ template "nexus.fullname" . }}-backup
         {{- end }}
         {{- if .Values.deployment.additionalContainers }}
-{{ toYaml .Values.deployment.additionalContainers | indent 8 }}      
+{{ toYaml .Values.deployment.additionalContainers | indent 8 }}
         {{- end }}
       {{- if .Values.nexus.securityContext }}
       securityContext:
@@ -193,20 +209,32 @@ spec:
           secret:
             secretName: {{ template "nexus.proxy-ks.name" . }}
         {{- end }}
-        - name: nexus-data
+
+        {{- if .Values.statefulset.enabled }}
+        {{- if not .Values.persistence.enabled }}
+        - name: {{ template "nexus.fullname" . }}-data
+          emptyDir: {}
+        {{- end }}
+        {{- if not (and .Values.nexusBackup.enabled .Values.nexusBackup.persistence.enabled) }}
+        - name: {{ template "nexus.fullname" . }}-backup
+          emptyDir: {}
+        {{- end }}
+        {{- else }}
+        - name: {{ template "nexus.fullname" . }}-data
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.existingClaim | default (printf "%s-%s" (include "nexus.fullname" .) "data") }}
           {{- else }}
           emptyDir: {}
           {{- end }}
-        - name: nexus-backup
+        - name: {{ template "nexus.fullname" . }}-backup
           {{- if and .Values.nexusBackup.enabled (.Values.nexusBackup.persistence.enabled) }}
           persistentVolumeClaim:
             claimName: {{ .Values.nexusBackup.persistence.existingClaim | default (printf "%s-%s" (include "nexus.fullname" .) "backup") }}
           {{- else }}
           emptyDir: {}
           {{- end }}
+        {{- end }}
         {{- if .Values.config.enabled }}
         - name: {{ template "nexus.name" . }}-conf
           configMap:
@@ -218,9 +246,62 @@ spec:
             secretName: {{ template "nexus.name" . }}-secret
         {{- end }}
         {{- if .Values.deployment.additionalVolumes }}
-{{ toYaml .Values.deployment.additionalVolumes | indent 8 }}      
+{{ toYaml .Values.deployment.additionalVolumes | indent 8 }}
         {{- end }}
     {{- with .Values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+
+
+## create pvc in case of statefulsets
+  {{- if .Values.statefulset.enabled }}
+  volumeClaimTemplates:
+    {{- if .Values.persistence.enabled }}
+    - metadata:
+        name: {{ template "nexus.fullname" . }}-data
+        labels:
+{{ include "nexus.labels" . | indent 10 }}
+        {{- if .Values.persistence.annotations }}
+        annotations:
+{{ toYaml .Values.persistence.annotations | indent 10 }}
+        {{- end }}
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.storageSize | quote }}
+        {{- if .Values.persistence.storageClass }}
+        {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+        {{- end }}
+        {{- end }}
+    {{- end }}
+
+    {{- if and .Values.nexusBackup.enabled (.Values.nexusBackup.persistence.enabled) }}
+    - metadata:
+        name: {{ template "nexus.fullname" . }}-backup
+        labels:
+{{ include "nexus.labels" . | indent 10 }}
+        {{- if .Values.nexusBackup.persistence.annotations }}
+        annotations:
+{{ toYaml .Values.nexusBackup.persistence.annotations | indent 10 }}
+        {{- end }}
+      spec:
+        accessModes:
+          - {{ .Values.nexusBackup.persistence.accessMode }}
+        resources:
+          requests:
+            storage: {{ .Values.nexusBackup.persistence.storageSize | quote }}
+        {{- if .Values.nexusBackup.persistence.storageClass }}
+        {{- if (eq "-" .Values.nexusBackup.persistence.storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: "{{ .Values.nexusBackup.persistence.storageClass }}"
+        {{- end }}
+        {{- end }}
+    {{- end }}
+  {{- end }}

@@ -42,6 +42,7 @@ spec:
     spec:
       securityContext:
 {{ toYaml .Values.securityContext | indent 8 }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       initContainers:
         - name: copy-config
           image: busybox

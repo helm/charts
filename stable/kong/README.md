@@ -1,6 +1,6 @@
 ## Kong
 
-[Kong](https://getkong.org/) is an open-source API Gateway and Microservices
+[Kong](https://KongHQ.com/) is an open-source API Gateway and Microservices
 Management Layer, delivering high performance and reliability.
 
 ## TL;DR;
@@ -53,6 +53,7 @@ and their default values.
 | image.repository                  | Kong image                                                             | `kong`                |
 | image.tag                         | Kong image version                                                     | `0.14.1`              |
 | image.pullPolicy                  | Image pull policy                                                      | `IfNotPresent`        |
+| image.pullSecrets                 | Image pull secrets                                                     | `null`                |
 | replicaCount                      | Kong instance count                                                    | `1`                   |
 | admin.useTLS                      | Secure Admin traffic                                                   | `true`                |
 | admin.servicePort                 | TCP port on which the Kong admin service is exposed                    | `8444`                |

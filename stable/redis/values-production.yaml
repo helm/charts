@@ -327,11 +327,10 @@ metrics:
 ## Init containers parameters:
 ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
 ##
-
 volumePermissions:
   image:
     registry: docker.io
-    repository: busybox
+    repository: bitnami/minideb
     tag: latest
     pullPolicy: IfNotPresent
 
