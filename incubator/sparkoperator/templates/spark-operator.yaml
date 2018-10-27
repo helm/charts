@@ -4,11 +4,12 @@
 # In the post-install hook, the token corresponding to the operator service account
 # is used to authenticate with the Kubernetes API server to install the secret bundle.
 
-{{ if .Values.enableWebhook }}
+{{ if .Values.createOperatorNamespace }}
 apiVersion: v1
 kind: Namespace
 metadata:
   name: {{ .Values.operatorNamespace }}
+{{ end }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -16,6 +17,7 @@ metadata:
   name: sparkoperator
   namespace: {{ .Values.operatorNamespace }}
 ---
+{{ if .Values.enableWebhook }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -39,23 +41,11 @@ spec:
       containers:
       - name: main
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         command: ["/usr/bin/gencerts.sh", "-n", "{{ .Values.operatorNamespace }}", "-p"]
-{{ else }}
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ .Values.operatorNamespace }}
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: sparkoperator
-  namespace: {{ .Values.operatorNamespace }}
 {{ end }}
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sparkoperator
@@ -95,7 +85,7 @@ spec:
       containers:
       - name: sparkoperator
         image: {{ .Values.operatorImageName }}:{{ .Values.operatorVersion }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         {{- if .Values.enableWebhook }}
         volumeMounts:
           - name: webhook-certs
@@ -111,6 +101,7 @@ spec:
         - -enable-metrics=true
         - -metrics-labels=app_type
         - -enable-webhook=true
+        - -webhook-svc-namespace={{ .Values.operatorNamespace }}
         - -logtostderr
         {{- else if (.Values.enableMetrics) }}
         args:
@@ -120,6 +111,7 @@ spec:
         {{- else if (.Values.enableWebhook) }}
         args:
         - -enable-webhook=true
+        - -webhook-svc-namespace={{ .Values.operatorNamespace }}
         - -logtostderr
         {{- else }}
         args:

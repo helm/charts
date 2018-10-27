@@ -34,6 +34,10 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | **Forward Backend**        |
 | `backend.forward.host`     | Target host where Fluent-Bit or Fluentd are listening for Forward messages | `fluentd` |
 | `backend.forward.port`     | TCP Port of the target service | `24284` |
+| `backend.forward.shared_key`       | A key string known by the remote Fluentd used for authorization. | `` |
+| `backend.forward.tls`              | Enable or disable TLS support | `off` |
+| `backend.forward.tls_verify`       | Force certificate validation  | `on` |
+| `backend.forward.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **ElasticSearch Backend**  |
 | `backend.es.host`          | IP address or hostname of the target Elasticsearch instance | `elasticsearch` |
 | `backend.es.port`          | TCP port of the target Elasticsearch instance. | `9200` |
@@ -51,7 +55,12 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.http.host`           | IP address or hostname of the target HTTP Server | `127.0.0.1` |
 | `backend.http.port`           | TCP port of the target HTTP Server | `80` |
 | `backend.http.uri`            | Specify an optional HTTP URI for the target web server, e.g: /something | `"/"`
+| `backend.http.http_user`        | Optional username credential for Basic Authentication. | `` |
+| `backend.http.http_passwd:`     | Password for user defined in HTTP_User. | `` |
 | `backend.http.format`         | Specify the data format to be used in the HTTP request body, by default it uses msgpack, optionally it can be set to json.  | `msgpack` |
+| `backend.http.tls`              | Enable or disable TLS support | `off` |
+| `backend.http.tls_verify`       | Force certificate validation  | `on` |
+| `backend.http.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **Splunk Backend**              |
 | `backend.splunk.host`           | IP address or hostname of the target Splunk Server | `127.0.0.1` |
 | `backend.splunk.port`           | TCP port of the target Splunk Server | `8088` |
@@ -59,6 +68,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.splunk.send_raw`         | If enabled, record keys and values are set in the main map. | `off` |
 | `backend.splunk.tls`           | Enable or disable TLS support | `on` |
 | `backend.splunk.tls_verify`           | Force TLS certificate validation | `off` |
+| `backend.splunk.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | `backend.splunk.message_key`           | Tag applied to all incoming logs | `kubernetes` |
 | **Parsers**                   |
 | `parsers.enabled`                  | Enable custom parsers | `false` |
@@ -68,6 +78,9 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `annotations`                      | Optional deamonset set annotations        | `NULL`                |
 | `podAnnotations`                   | Optional pod annotations                  | `NULL`                |
 | `existingConfigMap`                | ConfigMap override                         | ``                    |
+| `extraInputs`                      | Add extra Input sections to config         | ``                    |
+| `extraFilters`                     | Add extra Filter sections to config        | ``                    |
+| `extraOutputs`                     | Add extra Output sections to config        | ``                    |
 | `extraVolumeMounts`                | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |          |
 | `extraVolume`                      | Extra volume                               |                                                |
 | `filter.kubeURL`                   | Optional custom configmaps                 | `https://kubernetes.default.svc:443`            |
@@ -77,6 +90,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `image.fluent_bit.repository`      | Image                                      | `fluent/fluent-bit`                               |
 | `image.fluent_bit.tag`             | Image tag                                  | `0.14.4`                                          |
 | `image.pullPolicy`                 | Image pull policy                          | `Always`                                          |
+| `image.pullSecrets`                | Specify image pull secrets                 | `nil`                                             |
 | `rbac.create`                      | Specifies whether RBAC resources should be created.   | `true`                                 |
 | `serviceAccount.create`            | Specifies whether a ServiceAccount should be created. | `true`                                 |
 | `serviceAccount.name`              | The name of the ServiceAccount to use.     | `NULL`                                            |

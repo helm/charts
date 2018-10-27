@@ -3,8 +3,14 @@
 
 image:
   repository: kong
-  tag: 0.14.0
+  tag: 0.14.1
   pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 # Specify Kong admin and proxy services configurations
 admin:
@@ -85,7 +91,7 @@ readinessProbe:
     path: "/status"
     port: admin
     scheme: HTTPS
-  initialDelaySeconds: 120
+  initialDelaySeconds: 30
   timeoutSeconds: 1
   periodSeconds: 10
   successThreshold: 1
@@ -97,7 +103,7 @@ livenessProbe:
     path: "/status"
     port: admin
     scheme: HTTPS
-  initialDelaySeconds: 180
+  initialDelaySeconds: 30
   timeoutSeconds: 5
   periodSeconds: 30
   successThreshold: 1
@@ -140,5 +146,5 @@ postgresql:
   enabled: true
   postgresUser: kong
   postgresDatabase: kong
-  persistence:
-    enabled: false
+  service:
+    port: 5432
