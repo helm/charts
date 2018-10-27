@@ -1,7 +1,7 @@
 # Elastic-stack Helm Chart
 
 This chart installs an elasticsearch cluster with kibana and logstash by default.
-You can optionally disable logstash and install Fluentd if you prefer. It also optionally installs nginx-ldapauth-proxy and elasticsearch-curator.
+You can optionally disable logstash and install Fluentd if you prefer. It also optionally installs filebeat, nginx-ldapauth-proxy and elasticsearch-curator.
 
 ## Prerequisites Details
 
