@@ -1,3 +1,8 @@
+### 1.5.5
+
+* [22f3354](https://github.com/helm/charts/commit/22f3354):
+  - Volume mount the config map to preconfigure the server even if persistence is disabled. ([#8579](https://github.com/helm/charts/issues/8579))
+
 ### 1.5.4
 
 * [4018a215](https://github.com/kubernetes/charts/commit/4018a215):

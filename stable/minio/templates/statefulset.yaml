@@ -62,6 +62,14 @@ spec:
                 secretKeyRef:
                   name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
                   key: secretkey
+            {{- if .Values.minioConfig.browser }}
+            - name: MINIO_BROWSER
+              value: {{ .Values.minioConfig.browser | quote }}
+            {{- end }}
+            {{- if .Values.minioConfig.domain }}
+            - name: MINIO_DOMAIN
+              value: {{ .Values.minioConfig.domain | quote }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /minio/health/live
