@@ -8,6 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  type: ClusterIP
   clusterIP: None
   ports:
   - name: epmd
@@ -16,9 +17,6 @@ spec:
   - name: amqp
     port: {{ .Values.rabbitmq.amqpPort }}
     targetPort: amqp
-    {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.rabbitmq.nodePort))) }}
-    nodePort: {{ .Values.rabbitmq.nodePort }}
-    {{- end }}
   - name: dist
     port: {{ .Values.rabbitmq.distPort }}
     targetPort: dist
