@@ -27,8 +27,10 @@ spec:
           env:
             - name: MONGODB_URL
               value: {{ .Values.config.datasource }}
+              {{- if .Values.config.auth }}
             - name: HTTP_AUTH
               value: {{ .Values.config.auth }}
+              {{- end}}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:

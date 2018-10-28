@@ -1,4 +1,4 @@
-# Default values for prometheus-postgres-exporter.
+# Default values for prometheus-mongodb-exporter.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -28,8 +28,8 @@ resources: {}
 
 config:
   datasource: mongodb://localhost:27017
-  auth: test:test
+  # auth: 
 
-annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9126"
+annotations: {}
+    # prometheus.io/scrape: "true"
+    # prometheus.io/port: "9126"
