@@ -23,6 +23,9 @@ spec:
 {{- else }}
   type: {{ .Values.proxy.service.type }}
 {{- end }}
+{{- if .Values.proxy.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.proxy.service.externalIPs | indent 4 }}
   ports:
   {{- range $key, $value := .Values.proxy.service.ports }}
     - name: {{ $key }}
