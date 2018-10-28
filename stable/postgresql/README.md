@@ -72,6 +72,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `persistence.size`                   | PVC Storage Request for PostgreSQL volume          | `8Gi`                                                     |
 | `persistence.annotations`            | Annotations for the PVC                            | `{}`                                                      |
 | `nodeSelector`                       | Node labels for pod assignment                     | `{}`                                                      |
+| `affinity`                           | Node and pod affinities for pod assignment         | `{}`                                                      |
 | `tolerations`                        | Toleration labels for pod assignment               | `[]`                                                      |
 | `terminationGracePeriodSeconds`      | Seconds the pod needs to terminate gracefully      | `nil`                                                     |
 | `resources`                          | CPU/Memory resource requests/limits                | Memory: `256Mi`, CPU: `250m`                              |
