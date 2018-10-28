@@ -67,6 +67,30 @@ spec:
                 name: {{ template "redis-ha.fullname" . }}
                 key: auth
 {{- end }}
+        {{- if .Values.server.livenessProbe.enabled}}
+        livenessProbe:
+          initialDelaySeconds: {{ .Values.server.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.server.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.server.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.server.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.server.livenessProbe.failureThreshold }}
+          exec:
+            command:
+            - redis-cli
+            - ping
+        {{- end }}
+        {{- if .Values.server.readinessProbe.enabled}}
+        readinessProbe:
+          initialDelaySeconds: {{ .Values.server.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.server.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.server.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.server.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.server.readinessProbe.failureThreshold }}
+          exec:
+            command:
+            - redis-cli
+            - ping
+        {{- end }}
         ports:
           - containerPort: 6379
         volumeMounts:
