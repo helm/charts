@@ -9,7 +9,7 @@ kubectl exec -it -n {{ .Release.Namespace }} $(kubectl get pods -n {{ .Release.N
 kubectl exec -it -n {{ .Release.Namespace }} $(kubectl get pods -n {{ .Release.Namespace }} -l app={{ template "elassandra.name" . }},release={{ .Release.Name }} -o jsonpath='{.items[0].metadata.name}') -- curl http://localhost:9200/_cat/indices?v
 
 To index a JSON document in Elassandra, run:
-kubectl exec -it -n elassandra $(kubectl get pods -n elassandra -l app=elassandra,release=elassandra -o jsonpath='{.items[0].metadata.name}') -- curl -XPUT -H "Content-Type: application/json" http://localhost:9200/test/mytype/1 -d '{ "foo":"bar" }'
+kubectl exec -it -n {{ .Release.Namespace }} $(kubectl get pods -n {{ .Release.Namespace }} -l app={{ template "elassandra.name" . }},release={{ .Release.Name }} -o jsonpath='{.items[0].metadata.name}') -- curl -XPUT -H "Content-Type: application/json" http://localhost:9200/test/mytype/1 -d '{ "foo":"bar" }'
 
 If you want to connect to the Cassandra CQL run the following:
 kubectl exec -it -n {{ .Release.Namespace }} $(kubectl get pods -n {{ .Release.Namespace }} -l "app={{ template "elassandra.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}") -- cqlsh
