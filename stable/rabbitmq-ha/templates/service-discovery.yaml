@@ -65,6 +65,7 @@ spec:
       port: {{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }}
       targetPort: amqps
     {{- end }}
+  publishNotReadyAddresses: true
   selector:
     app: {{ template "rabbitmq-ha.name" . }}
     release: {{ .Release.Name }}
