@@ -77,3 +77,7 @@ persistence:
     storageClass: "-"
     accessMode: ReadWriteOnce
     size: 200Gi
+
+knox:
+  enabled: false
+  servicetype: LoadBalancer

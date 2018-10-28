@@ -62,6 +62,9 @@ The following table lists the configurable parameters of the Hadoop chart and th
 | `persistence.dataNode.storageClass`               | Name of the StorageClass to use per your volume provider                           | `-`                                                              |
 | `persistence.dataNode.accessMode`                 | Access mode for the volume                                                         | `ReadWriteOnce`                                                  |
 | `persistence.dataNode.size`                       | Size of the volume                                                                 | `200Gi`                                                          |
+| `knox.enabled`                                    | Enable/disable [Apache Knox](https://knox.apache.org/) support                     | `false`                                                          |
+| `knox.servicetype`                                | Type of service exposure for Apache Knox                                           | `LoadBalancer`                                                   |
+ 
 
 ## Related charts
 
