@@ -5,8 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: forekshub/percona-mongodb-exporter
-  tag: latest
+  repository: ananthunair/mongodb_exporter
+  tag: v1.0.0
   pullPolicy: IfNotPresent
 
 service:
