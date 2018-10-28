@@ -27,8 +27,9 @@ resources: {}
   #   memory: 128Mi
 
 config:
-  datasource: mongodb://minikube-mongodb:27017
+  datasource: mongodb://localhost:27017
+  auth: test:test
 
-annotations: 
+annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9126"
