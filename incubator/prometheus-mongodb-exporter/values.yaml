@@ -28,7 +28,7 @@ resources: {}
 
 config:
   datasource: mongodb://localhost:27017
-  # auth: 
+  # auth:
 
 annotations: {}
     # prometheus.io/scrape: "true"
