@@ -2,8 +2,8 @@ replicaCount: 1
 
 rbac:
   create: true
-  clusterRole: spark-hs
-  clusterRoleBinding: spark-hs
+  clusterRole:
+  clusterRoleBinding:
 
 serviceAccount:
   create: true

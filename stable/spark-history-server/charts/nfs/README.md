@@ -140,8 +140,3 @@ nfs-busybox-w3s4t
 ```
 
 
-
-
-<!-- BEGIN MUNGE: GENERATED_ANALYTICS -->
-[![Analytics](https://kubernetes-site.appspot.com/UA-36037335-10/GitHub/examples/staging/volumes/nfs/README.md?pixel)]()
-<!-- END MUNGE: GENERATED_ANALYTICS -->

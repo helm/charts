@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "spark-history-server.fullname" . }}
+  name: {{ include "spark-history-server.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "spark-history-server.name" . }}
     helm.sh/chart: {{ include "spark-history-server.chart" . }}
@@ -51,7 +51,7 @@ spec:
           /opt/spark/bin/spark-class org.apache.spark.deploy.history.HistoryServer;
         envFrom:
         - configMapRef:
-            name: {{ template "spark-history-server.fullname" . }}
+            name: {{ include "spark-history-server.fullname" . }}
         livenessProbe:
           httpGet:
             path: /

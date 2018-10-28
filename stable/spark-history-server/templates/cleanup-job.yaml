@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "spark-history-server.fullname" . }}
+  name: {{ include "spark-history-server.fullname" . }}
   annotations:
     "helm.sh/hook": pre-delete
     "helm.sh/hook-delete-policy": hook-succeeded
@@ -29,5 +29,5 @@ spec:
           -H 'Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)' \
           -H 'Accept: application/json' \
           -H 'Content-Type: application/json' \
-          https://kubernetes.default.svc/api/v1/deployments/spark-history-server"
+          https://kubernetes.default.svc/api/v1/deployments/{{ include "spark-history-server.fullname" . }}"
 {{- end }}

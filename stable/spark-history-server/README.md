@@ -6,13 +6,11 @@
 
 * ConfigMaps (Only if using HDFS)
 
-  This chart supports specifying an HDFS-compatible URI as the log directory. In order for the Spark history server to communicate with HDFS, two HDFS files,  `hdfs-site.xml` and `core-site.xml`, need to be mounted as configMaps in the Kubernetes cluster. Locate them and then run the following command to create configMaps:
+  This chart supports specifying an HDFS-compatible URI as the log directory. In order for the Spark history server to communicate with HDFS, two HDFS files,  `hdfs-site.xml` and `core-site.xml`, need to be mounted as ConfigMaps in the same namespace where the chart is going to be installed. Locate them on your local computer and then run the following command to create ConfigMaps:
 
   ```bash
-  $ kubectl -n history-server-namespace create configmap hdfs-site --from-file=hdfs-site.xml && kubectl -n history-server-namespace create configmap core-site --from-file=core-site.xml
+  $ kubectl -n <history-server-namespace> create configmap hdfs-site --from-file=hdfs-site.xml && kubectl -n history-server-namespace create configmap core-site --from-file=core-site.xml
   ```
-
-  Note that because ConfigMaps are specific to a namespace, you need to create those secrets in the namespace where you plan to install the chart. Remember to pass `--set createNamespace=false` option when installing the chart.
 
 * Secret (Only if using GCS)
 
@@ -33,30 +31,33 @@
   Then create a secret using the JSON key file:
 
   ```bash
-  $ kubectl -n history-server-namespace create secret generic history-secrets --from-file=sparkonk8s.json
+  $ kubectl -n <history-server-namespace> create secret generic history-secrets --from-file=sparkonk8s.json
   ```
 
-  Then install the chart with  `--set createNamespace=false` option to enable the history server pod to read from the GCS bucket.
+  Then install the chart to enable the history server pod to read from the GCS bucket.
 
 * PVC (Only if using PVC)
 
   If you are using a PVC as the backing storage for Spark history events, then you'll need to create the PVC before installing the chart. On the Google Kubernetes Engine (GKE), the recommended underlying PersistentVolume is NFS. You can also use Portworx or Gluster. All three options provide sharing capabilities that would allow both the history server pod and the Spark job pods to mount the same PVC. 
 
-  The chart by default creates a PVC backed by an NFS volume. The NFS volume and server are installed as a child chart adapted from the [documentation](https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs) in the kubernetes/examples repo. The NFS PVC provided makes the history server work out of the box. The user is free to replace the PVC with other storage technologies (e.g. Gluster) as long as the history server references the PVC using `pvc.existingClaimName` setting that has been properly set up.
+  The chart by default creates a PVC backed by an NFS volume. The NFS volume and server are installed as a child chart adapted from the [documentation](https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs) in the kubernetes/examples repo. The NFS PVC provided makes the history server work out of the box. The user is free to replace NFS with other storage technologies (e.g. Gluster) as long as the history server references the PVC using `pvc.existingClaimName` setting that has been properly set up.
 
-NOTE: If installing the chart on an OpenShift cluster, run
+NOTE: If installing the chart on an OpenShift cluster, first run
 
 ```bash
-oc adm policy add-scc-to-user privileged -nspark-history-server -z default
+$ oc adm policy add-scc-to-user privileged -n<history-server-namespace> -z default
+$ oc adm policy add-scc-to-group anyuid system:authenticated
 ```
 
-beforehand to allow creation of privileged containers in the `spark-history-server` project (or any project the chart is to be installed in).
+to allow creation of privileged containers in the project/namepace where the history server chart is going to be installed.
 
 #### Discussions of Storage Options
 
-Becuase a PVC is a namespaced Kubernetes resource, the fact that it is created in the same namespace where the chart is installed means that Spark jobs that would like to log events to it also need to be deployed in the same namespace. If this is an issue for you (e.g. you have a dedicated namespace for your Spark jobs), then use one of the other two options.
+Becuase a PVC is a namespaced Kubernetes resource, the fact that it is created in the same namespace where the chart is installed means that Spark jobs that would like to log events to the PVC also need to be deployed in the same namespace. If this is an issue for you (e.g. you have another dedicated namespace for your Spark jobs), then use HDFS or GCS instead.
 
-A secret is also namespaced, but it's only used to enable the history server to read the remote GCS bucket. So Spark jobs logging to GCS can run in any namespace. Unless when jobs are running in the same namespace as the chart, you'll need to create the secret separately in the job namespace before runninng the job.
+In the case of GCS, a secret is also namespaced, but it's only used to enable the history server to read the remote GCS bucket. So Spark jobs logging to GCS can run in any namespace. Unless jobs are running in the same namespace as the history server, you'll need to create the secret separately in the job namespace before runninng the job.
+
+Similarly for HDFS, you can run Spark jobs in any namespace, as long as pods in the job namespace can communicate with HDFS to write events.
 
 #### Installing the Chart
 
@@ -76,8 +77,8 @@ The following tables lists the configurable parameters of the Spark History Seve
 | Parameter                            | Description                                                       |Default                           |
 | ------------------------------------ |----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | hdfs.logDirectory                |The HDFS log directory that starts with "hdfs://"|hdfs://hdfs/history/|
-| hdfs.hdfsSiteConfigMap |The name of the configMap for hdfs-site.xml|hdfs-site|
-| hdfs.coreSiteConfigMap |The name of the configMap for core-site.xml|core-site|
+| hdfs.hdfsSiteConfigMap |The name of the ConfigMap for hdfs-site.xml|hdfs-site|
+| hdfs.coreSiteConfigMap |The name of the ConfigMap for core-site.xml|core-site|
 | hdfs.HADOOP_CONF_DIR |The directory containing core-site.xml and hdfs-site.xml in the image|/etc/hadoop|
 | image.repository |The Docker image used to start the history server daemon|lightbend/spark|
 | image.tag |The tag of the image|2.4.0|
@@ -105,7 +106,7 @@ Similary, only when `gcs.enableGCS` is `true`, the following settings take effec
 * gcs.key
 * gcs.logDirectory
 
-And only when `pvc.enablePVC` and `gcs.enableGCS` are both `false`, meaning when HDFS is used, the settings below are in effect:
+And only when `pvc.enablePVC` and `gcs.enableGCS` are both `false`, is HDFS used, in which case the settings below are in effect:
 
 * hdfs.logDirectory
 * hdfs.hdfsSiteConfigMap
@@ -114,7 +115,7 @@ And only when `pvc.enablePVC` and `gcs.enableGCS` are both `false`, meaning when
 
 #### Viewing the UI
 
-After the chart is successfully installed, a message would be printed out to the console with details about how to access the UI. Depending on what `service.type` is specified, different instructions would be presented. Valid `service.type` values are `LoadBalancer`, `NodePort` and `ClusterIP`. 
+After the chart is successfully installed, a message would be printed out to the console with details about how to access the UI. Depending on what `service.type` is specified, different instructions would be presented on the console. Valid `service.type` values are `LoadBalancer`, `NodePort` and `ClusterIP`. 
 
 #### Enabling spark-submit to log events
 
@@ -122,7 +123,7 @@ The history server UI would only show Spark jobs if they are configured to log e
 
 ##### PVC
 
-When a PVC is used as storage, `spark-submit` needs to deploy the job in the same namespace as the PVC (as discussed earlier) and mount the the PVC in driver and executor pods as follows:
+When a PVC is used as storage, `spark-submit` needs to deploy the job in the same namespace as the PVC (as discussed earlier) and mount the the PVC in driver and executor pods. Note that when installing the chart, a ServiceAccount bearing the `spark-history-server` suffix would also be created, unless a different name is specified in `rbac.serviceAccount.name`. It can be used to submit the job.
 
 ```bash
 bin/spark-submit \
@@ -130,7 +131,8 @@ bin/spark-submit \
     --deploy-mode cluster \
     --name spark-pi \
     --class org.apache.spark.examples.SparkPi \
-    --conf spark.kubernetes.namespace=spark-history-server \
+    --conf spark.kubernetes.namespace=<history-server-namespace> \
+    --conf spark.kubernetes.authenticate.driver.serviceAccountName=<helm-release-name>-spark-history-server \
     --conf spark.eventLog.enabled=true \
     --conf spark.eventLog.dir=file:/mnt \
     --conf spark.executor.instances=2 \
@@ -147,7 +149,7 @@ bin/spark-submit \
 
 Points worth noting are
 
-* The PVC `spark-hs-pvc` needs to be present.
+* The PVC `spark-hs-pvc` needs to be present and bound to a PV.
 * The mount path `/mnt` is just an example, it should be where your volume is mounted. 
 * The underlying volume needs to have sharing capability. Otherwise, when the above `spark-submit` command is executed, you would see an error saying that the PVC `spark-hs-pvc` is already mounted by another pod (i.e. the Spark history server pod).
 

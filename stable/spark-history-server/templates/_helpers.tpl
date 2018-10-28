@@ -41,3 +41,19 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{- define "spark-history-server.clusterRole" -}}
+{{- if .Values.rbac.create -}}
+    {{ default (include "spark-history-server.fullname" .) .Values.rbac.clusterRole }}
+{{- else -}}
+    {{ default "default" .Values.rbac.clusterRole }}
+{{- end -}}
+{{- end -}}
+
+{{- define "spark-history-server.clusterRoleBinding" -}}
+{{- if .Values.rbac.create -}}
+    {{ default (include "spark-history-server.fullname" .) .Values.rbac.clusterRoleBinding }}
+{{- else -}}
+    {{ default "default" .Values.rbac.clusterRoleBinding }}
+{{- end -}}
+{{- end -}}
