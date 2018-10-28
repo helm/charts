@@ -31,26 +31,26 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.azuregateway.enabled }}
-          command: [ "/bin/sh", 
-          "-ce", 
-          "cp /tmp/config.json {{ .Values.configPath }} && 
+          command: [ "/bin/sh",
+          "-ce",
+          "cp /tmp/config.json {{ .Values.configPath }} &&
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway azure"]
           {{- else }}
           {{- if .Values.gcsgateway.enabled }}
-          command: [ "/bin/sh", 
-          "-ce", 
-          "cp /tmp/config.json {{ .Values.configPath }} && 
+          command: [ "/bin/sh",
+          "-ce",
+          "cp /tmp/config.json {{ .Values.configPath }} &&
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway gcs {{ .Values.gcsgateway.projectId }}"]
           {{- else }}
           {{- if .Values.nasgateway.enabled }}
-          command: [ "/bin/sh", 
-          "-ce", 
-          "cp /tmp/config.json {{ .Values.configPath }} && 
+          command: [ "/bin/sh",
+          "-ce",
+          "cp /tmp/config.json {{ .Values.configPath }} &&
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} gateway nas {{ .Values.mountPath }}"]
           {{- else }}
-          command: [ "/bin/sh", 
-          "-ce", 
-          "cp /tmp/config.json {{ .Values.configPath }} && 
+          command: [ "/bin/sh",
+          "-ce",
+          "cp /tmp/config.json {{ .Values.configPath }} &&
           /usr/bin/docker-entrypoint.sh minio -C {{ .Values.configPath }} server {{ .Values.mountPath }}" ]
           {{- end }}
           {{- end }}
