@@ -86,7 +86,7 @@ Create the block for acme.domains.
 Create custom cipherSuites block
 */}}
 {{- define "traefik.ssl.cipherSuites" -}}
-          chipherSuites = [
+          cipherSuites = [
           {{- range $idx, $cipher := .Values.ssl.cipherSuites }}
             {{- if $idx }},{{ end }}
             {{ $cipher | quote }}
