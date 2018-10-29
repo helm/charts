@@ -1,4 +1,5 @@
 {{- if not .Values.existingConfigmap -}}
+{{- $config := index .Values.config "filebeat.config" -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,5 +11,14 @@ metadata:
     release: {{ .Release.Name }}
 data:
   filebeat.yml: |-
-{{ toYaml .Values.config | indent 4 }}
-{{- end -}}
+    filebeat.config:
+{{ toYaml (omit $config "modules") | indent 6 }}
+      modules:
+        {{- if or .Values.modulesConfig .Values.modulesExistingConfigmap }}
+        path: /modules.d/*.yml
+        {{- else }}
+        path: {{ $config.modules.path }}
+        {{- end }}
+{{ toYaml (omit $config.modules "path") | indent 8 }}
+{{ toYaml (omit .Values.config "filebeat.config") | indent 4 }}
+{{- end }}

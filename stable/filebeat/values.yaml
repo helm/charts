@@ -3,9 +3,19 @@ image:
   tag: 6.5.4
   pullPolicy: IfNotPresent
 
+# modulesExistingConfigmap: ""
+modulesConfig: []
+# - module: traefik
+#   access:
+#     enabled: true
+#     var.paths: [/hello/world]
+# - module: monogodb:
+#   log:
+#     enabled: true
+#     var.paths: ["/path/to/log/mongodb/*.log*"]
+
 # Specifies the configmap name with filebeat.yml
 # existingConfigmap: ""
-
 config:
   filebeat.config:
     # Filebeat configs for inputs and modules
@@ -13,6 +23,7 @@ config:
       path: ${path.config}/prospectors.d/*.yml
       reload.enabled: false
     modules:
+      # Note: modules path will be overriden if modulesConfig is provided!!
       path: ${path.config}/modules.d/*.yml
       reload.enabled: false
 

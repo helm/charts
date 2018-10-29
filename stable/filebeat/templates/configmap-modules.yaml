@@ -1,0 +1,17 @@
+{{- if not .Values.modulesExistingConfigmap -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "filebeat.fullname" . }}-modules-config
+  labels:
+    app: {{ template "filebeat.name" . }}
+    chart: {{ template "filebeat.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+data:
+  {{- range $conf := .Values.modulesConfig }}
+  {{ $conf.module }}.yml: |-
+    - module: {{ $conf.module }}
+{{ toYaml (omit $conf "module") | indent 6 }}
+  {{- end }}
+{{- end }}

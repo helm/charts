@@ -38,7 +38,7 @@ spec:
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
       initContainers:
-{{- if .Values.indexTemplateLoad }}
+      {{- if .Values.indexTemplateLoad }}
       - name: "load-es-template"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -49,7 +49,7 @@ spec:
           -E output.logstash.enabled=false
           -E output.file.enabled=false
           -E output.elasticsearch.hosts=[{{- range $index, $host := .Values.indexTemplateLoad }}{{ if $index }}, {{ end }}{{ $host | quote }}{{- end }}]
-{{- end }}
+      {{- end }}
 {{- if .Values.extraInitContainers }}
 {{ toYaml .Values.extraInitContainers | indent 6 }}
 {{- end }}
@@ -106,6 +106,10 @@ spec:
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
+        {{- if or .Values.modulesConfig .Values.modulesExistingConfigmap }}
+        - name: modules
+          mountPath: /modules.d
+        {{- end }}
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 8 }}
 {{- end }}
@@ -118,15 +122,24 @@ spec:
           path: /var/lib/docker/containers
       - name: filebeat-config
         configMap:
-{{- if .Values.existingConfigmap }}
+        {{- if .Values.existingConfigmap }}
           name: {{ .Values.existingConfigmap }}
-{{- else }}
+        {{- else }}
           name: {{ template "filebeat.fullname" . }}
-{{- end }}
+        {{- end }}
       - name: data
         hostPath:
           path: /var/lib/filebeat
           type: DirectoryOrCreate
+      {{- if or .Values.modulesConfig .Values.modulesExistingConfigmap }}
+      - name: modules
+        configMap:
+        {{- if .Values.modulesExistingConfigmap }}
+          name: {{ .Values.modulesExistingConfigmap }}
+        {{- else }}
+          name: {{ template "filebeat.fullname" . }}-modules-config
+        {{- end }}
+      {{- end }}
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
