@@ -34,6 +34,10 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | **Forward Backend**        |
 | `backend.forward.host`     | Target host where Fluent-Bit or Fluentd are listening for Forward messages | `fluentd` |
 | `backend.forward.port`     | TCP Port of the target service | `24284` |
+| `backend.forward.shared_key`       | A key string known by the remote Fluentd used for authorization. | `` |
+| `backend.forward.tls`              | Enable or disable TLS support | `off` |
+| `backend.forward.tls_verify`       | Force certificate validation  | `on` |
+| `backend.forward.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **ElasticSearch Backend**  |
 | `backend.es.host`          | IP address or hostname of the target Elasticsearch instance | `elasticsearch` |
 | `backend.es.port`          | TCP port of the target Elasticsearch instance. | `9200` |
@@ -51,7 +55,12 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.http.host`           | IP address or hostname of the target HTTP Server | `127.0.0.1` |
 | `backend.http.port`           | TCP port of the target HTTP Server | `80` |
 | `backend.http.uri`            | Specify an optional HTTP URI for the target web server, e.g: /something | `"/"`
+| `backend.http.http_user`        | Optional username credential for Basic Authentication. | `` |
+| `backend.http.http_passwd:`     | Password for user defined in HTTP_User. | `` |
 | `backend.http.format`         | Specify the data format to be used in the HTTP request body, by default it uses msgpack, optionally it can be set to json.  | `msgpack` |
+| `backend.http.tls`              | Enable or disable TLS support | `off` |
+| `backend.http.tls_verify`       | Force certificate validation  | `on` |
+| `backend.http.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | **Splunk Backend**              |
 | `backend.splunk.host`           | IP address or hostname of the target Splunk Server | `127.0.0.1` |
 | `backend.splunk.port`           | TCP port of the target Splunk Server | `8088` |
@@ -59,6 +68,7 @@ The following table lists the configurable parameters of the Fluent-Bit chart an
 | `backend.splunk.send_raw`         | If enabled, record keys and values are set in the main map. | `off` |
 | `backend.splunk.tls`           | Enable or disable TLS support | `on` |
 | `backend.splunk.tls_verify`           | Force TLS certificate validation | `off` |
+| `backend.splunk.tls_debug`        | Set TLS debug verbosity level. It accept the following values: 0-4 | `1` |
 | `backend.splunk.message_key`           | Tag applied to all incoming logs | `kubernetes` |
 | **Parsers**                   |
 | `parsers.enabled`                  | Enable custom parsers | `false` |

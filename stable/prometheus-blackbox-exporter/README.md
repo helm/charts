@@ -63,6 +63,8 @@ The following table lists the configurable parameters of the Blackbox-Exporter c
 | `podAnnotations`                       | annotations to add to each pod                  | `{}`                          |
 | `resources`                            | pod resource requests & limits                  | `{}`                          |
 | `restartPolicy`                        | container restart policy                        | `Always`                      |
+| `service.annotations`                  | annotations for the service                     | `{}`                          |
+| `service.labels`                       | additional labels for the service               | None                          |
 | `service.type`                         | type of service to create                       | `ClusterIP`                   |
 | `service.port`                         | port for the blackbox http service              | `9115`                        |
 | `service.externalIPs`                  | list of external ips                            | []                            |
