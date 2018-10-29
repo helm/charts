@@ -586,6 +586,9 @@ prometheus:
       #   hosts:
       #     - prometheus.example.com
 
+  service:
+    annotations: {}
+
   serviceMonitor:
     selfMonitor: true
 
