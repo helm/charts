@@ -271,7 +271,7 @@ metrics:
     ##
     # pullSecrets:
     #   - myRegistrKeySecretName
-    
+
     ## Metrics exporter pod Annotation and Labels
     podAnnotations: 
       prometheus.io/scrape: "true"
@@ -280,4 +280,3 @@ metrics:
     ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
     ##
     # resources: {}
-
