@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "openebs.fullname" . }}-apiserver
@@ -10,6 +10,10 @@ metadata:
     component: apiserver
 spec:
   replicas: {{ .Values.apiserver.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "openebs.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
