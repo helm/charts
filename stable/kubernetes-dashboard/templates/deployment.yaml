@@ -36,8 +36,8 @@ spec:
 {{ toYaml .Values.extraArgs | indent 10 }}
 {{- end }}
         ports:
-        - name: https
-          containerPort: 8443
+        - name: {{ .Values.deployment.portName }}
+          containerPort: {{ .Values.deployment.containerPort }}
           protocol: TCP
         volumeMounts:
         - name: kubernetes-dashboard-certs
@@ -47,9 +47,9 @@ spec:
           name: tmp-volume
         livenessProbe:
           httpGet:
-            scheme: HTTPS
+            scheme: {{ .Values.livenessProbe.scheme }}
             path: /
-            port: 8443
+            port: {{ .Values.deployment.containerPort }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
         resources:

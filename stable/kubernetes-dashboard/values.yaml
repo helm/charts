@@ -21,6 +21,9 @@ labels: {}
 # extraArgs:
 #   - --enable-insecure-login
 #   - --system-banner="Welcome to Kubernetes"
+deployment:
+  portName: https
+  containerPort: 8443
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -107,6 +110,7 @@ serviceAccount:
   name:
 
 livenessProbe:
+  scheme: HTTPS
   # Number of seconds to wait before sending first probe
   initialDelaySeconds: 30
   # Number of seconds to wait for probe response
