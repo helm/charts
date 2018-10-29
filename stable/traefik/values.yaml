@@ -173,8 +173,8 @@ acme:
       AZURE_TENANT_ID: ""
       AZURE_RESOURCE_GROUP: ""
     cloudflare:
-      CLOUDFLARE_EMAIL: ""
-      CLOUDFLARE_API_KEY: ""
+      CF_API_KEY: ""
+      CF_API_EMAIL: ""
     digitalocean:
       DO_AUTH_TOKEN: ""
     dnsimple:
