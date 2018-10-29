@@ -43,7 +43,7 @@ spec:
         hostnames:
         - "status.localhost"
       containers:
-      - name: {{ template "moodle.fullname" . }}
+      - name: moodle
         image: {{ template "moodle.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
