@@ -22,6 +22,7 @@ labels: {}
 #   - --enable-insecure-login
 #   - --system-banner="Welcome to Kubernetes"
 deployment:
+  autoGenerateCertificates: true
   portName: https
   containerPort: 8443
 
