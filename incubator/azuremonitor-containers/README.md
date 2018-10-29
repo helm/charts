@@ -28,7 +28,8 @@ This article describes how to set up and use [Azure Monitor - Containers](https:
 
 ```bash
 $ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-$ helm install --name azuremonitorcontainers incubator/azuremonitor-containers
+$ helm install --name myrelease-1 \
+--set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<my_prod_cluster>  incubator/azuremonitor-containers
 
 ```
 
@@ -69,7 +70,6 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 
 $ helm install --name myrelease-1 \
-
 --set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>,omsagent.env.clusterName=<my_prod_cluster>  incubator/azuremonitor-containers
 ```
 
