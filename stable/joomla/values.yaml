@@ -273,10 +273,10 @@ metrics:
     #   - myRegistrKeySecretName
 
     ## Metrics exporter pod Annotation and Labels
-    podAnnotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "9117"
-    ## Metrics exporter resource requests and limits
-    ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-    ##
-    # resources: {}
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9117"
+  ## Metrics exporter resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  # resources: {}
