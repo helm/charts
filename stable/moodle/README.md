@@ -14,6 +14,8 @@ This chart bootstraps a [Moodle](https://github.com/bitnami/bitnami-docker-moodl
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the Moodle application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
@@ -47,6 +49,7 @@ The following table lists the configurable parameters of the Moodle chart and th
 
 |              Parameter                |                                       Description                                            |                   Default                               |
 |---------------------------------------|----------------------------------------------------------------------------------------------|-------------------------------------------------------- |
+| `global.imageRegistry`                | Global Docker image registry                                                                 | `nil`                                                   |
 | `image.registry`                      | Moodle image registry                                                                        | `docker.io`                                             |
 | `image.repository`                    | Moodle Image name                                                                            | `bitnami/moodle`                                        |
 | `image.tag`                           | Moodle Image tag                                                                             | `{VERSION}`                                             |
@@ -61,10 +64,16 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `smtpUser`                            | SMTP user                                                                                    | `nil`                                                   |
 | `smtpPassword`                        | SMTP password                                                                                | `nil`                                                   |
 | `serviceType`                         | Kubernetes Service type                                                                      | `LoadBalancer`                                          |
-| `ingress.enabled`                     | If ingress should be created                                                                 | `false`                                                 |
-| `ingress.annotations`                 | Any ingress annotations                                                                      | `nil`                                                   |
-| `ingress.hosts`                       | List of Ingress hosts                                                                        | `nil`                                                   |
-| `ingress.tls`                         | List of certs. If defined, https is set                                                      | `nil`                                                   |
+| `ingress.enabled`                     | Enable ingress controller resource                                                           | `false`                                                 |
+| `ingress.hosts[0].name`               | Hostname to your Moodle installation                                                         | `moodle.local`                                          |
+| `ingress.hosts[0].path`               | Path within the url structure                                                                | `/`                                                     |
+| `ingress.hosts[0].tls`                | Utilize TLS backend in ingress                                                               | `false`                                                 |
+| `ingress.hosts[0].certManager`        | Add annotations for cert-manager                                                             | `false`                                                 |
+| `ingress.hosts[0].tlsSecret`          | TLS Secret (certificates)                                                                    | `moodle.local-tls-secret`                               |
+| `ingress.hosts[0].annotations`        | Annotations for this host's ingress record                                                   | `[]`                                                    |
+| `ingress.secrets[0].name`             | TLS Secret Name                                                                              | `nil`                                                   |
+| `ingress.secrets[0].certificate`      | TLS Secret Certificate                                                                       | `nil`                                                   |
+| `ingress.secrets[0].key`              | TLS Secret Key                                                                               | `nil`                                                   |
 | `affinity`                            | Set affinity for the moodle pods                                                             | `nil`                                                   |
 | `resources`                           | CPU/Memory resource requests/limits                                                          | Memory: `512Mi`, CPU: `300m`                            |
 | `persistence.enabled`                 | Enable persistence using PVC                                                                 | `true`                                                  |
@@ -79,10 +88,10 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `externalDatabase.password`           | Password for the above username                                                              | `nil`                                                   |
 | `externalDatabase.database`           | Name of the existing database                                                                | `bitnami_moodle`                                        |
 | `mariadb.enabled`                     | Whether to install the MariaDB chart                                                         | `true`                                                  |
-| `mariadb.db.name`             | Database name to create                                                                      | `bitnami_moodle`                                        |
-| `mariadb.db.user`                 | Database user to create                                                                      | `bn_moodle`                                             |
-| `mariadb.db.password`             | Password for the database                                                                    | `nil`                                                   |
-| `mariadb.rootUser.password`         | MariaDB admin password                                                                       | `nil`                                                   |
+| `mariadb.db.name`                     | Database name to create                                                                      | `bitnami_moodle`                                        |
+| `mariadb.db.user`                     | Database user to create                                                                      | `bn_moodle`                                             |
+| `mariadb.db.password`                 | Password for the database                                                                    | `nil`                                                   |
+| `mariadb.rootUser.password`           | MariaDB admin password                                                                       | `nil`                                                   |
 | `mariadb.persistence.enabled`         | Enable MariaDB persistence using PVC                                                         | `true`                                                  |
 | `mariadb.persistence.storageClass`    | PVC Storage Class for MariaDB volume                                                         | `generic`                                               |
 | `mariadb.persistence.accessMode`      | PVC Access Mode for MariaDB volume                                                           | `ReadWriteOnce`                                         |

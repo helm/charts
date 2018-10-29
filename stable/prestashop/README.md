@@ -14,6 +14,8 @@ This chart bootstraps a [PrestaShop](https://github.com/bitnami/bitnami-docker-p
 
 It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the PrestaShop application.
 
+Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+
 ## Prerequisites
 
 - Kubernetes 1.5+ with Beta APIs enabled
@@ -47,6 +49,7 @@ The following table lists the configurable parameters of the PrestaShop chart an
 
 |               Parameter               |                                         Description                                          |                         Default                         |
 |---------------------------------------|----------------------------------------------------------------------------------------------|---------------------------------------------------------|
+| `global.imageRegistry`                | Global Docker image registry                                                                 | `nil`                                                   |
 | `image.registry`                      | PrestaShop image registry                                                                    | `docker.io`                                             |
 | `image.repository`                    | PrestaShop image name                                                                        | `bitnami/prestashop`                                    |
 | `image.tag`                           | PrestaShop image tag                                                                         | `{VERSION}`                                             |
@@ -80,12 +83,10 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `externalTrafficPolicy`               | Set to `Local` to preserve the client source IP                                              | `Local`                                                 |
 | `sessionAffinity`                     | Configures the session affinity                                                              | `None`                                                  |
 | `persistence.enabled`                 | Enable persistence using PVC                                                                 | `true`                                                  |
-| `persistence.apache.storageClass`     | PVC Storage Class for Apache volume                                                          | `nil` (uses alpha storage class annotation)             |
-| `persistence.apache.accessMode`       | PVC Access Mode for Apache volume                                                            | `ReadWriteOnce`                                         |
-| `persistence.apache.size`             | PVC Storage Request for Apache volume                                                        | `1Gi`                                                   |
-| `persistence.prestashop.storageClass` | PVC Storage Class for PrestaShop volume                                                      | `nil` (uses alpha storage class annotation)             |
-| `persistence.prestashop.accessMode`   | PVC Access Mode for PrestaShop volume                                                        | `ReadWriteOnce`                                         |
-| `persistence.prestashop.size`         | PVC Storage Request for PrestaShop volume                                                    | `8Gi`                                                   |
+| `persistence.storageClass`            | PVC Storage Class for PrestaShop volume                                                      | `nil` (uses alpha storage class annotation)             |
+| `persistence.existingClaim`           | An Existing PVC name for Apache volume                                                       | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`              | PVC Access Mode for PrestaShop volume                                                        | `ReadWriteOnce`                                         |
+| `persistence.size`                    | PVC Storage Request for PrestaShop volume                                                    | `8Gi`                                                   |
 | `resources`                           | CPU/Memory resource requests/limits                                                          | Memory: `512Mi`, CPU: `300m`                            |
 | `livenessProbe.initialDelaySeconds`   | Delay before liveness probe is initiated                                                     | 600                                                     |
 | `livenessProbe.periodSeconds`         | How often to perform the probe                                                               | 3                                                       |
