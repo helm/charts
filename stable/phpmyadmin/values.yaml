@@ -82,6 +82,9 @@ tolerations: []
 ##
 affinity: {}
 
+## Pod annotations
+podAnnotations: {}
+
 ## Prometheus Exporter / Metrics
 ##
 metrics:

@@ -82,27 +82,27 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
 {{- if .Values.metrics.enabled }}
-      - name: metrics
-        image: {{ template "metrics.image" . }}
-        imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
-        command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
-        ports:
         - name: metrics
-          containerPort: 9117
-        livenessProbe:
-          httpGet:
-            path: /metrics
-            port: metrics
-          initialDelaySeconds: 15
-          timeoutSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /metrics
-            port: metrics
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
-        resources:
-  {{ toYaml .Values.metrics.resources | indent 10 }}
+          image: {{ template "metrics.image" . }}
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+          command: [ '/bin/apache_exporter', '-scrape_uri', 'http://status.localhost:80/server-status/?auto']
+          ports:
+          - name: metrics
+            containerPort: 9117
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          resources:
+{{ toYaml .Values.metrics.resources | indent 12 }}
 {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
