@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "openebs.fullname" . }}-snapshot-operator
@@ -10,6 +10,10 @@ metadata:
     component: snapshot-operator
 spec:
   replicas: {{ .Values.snapshotOperator.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "openebs.name" . }}
+      release: {{ .Release.Name }}
   strategy:
     type: {{ .Values.snapshotOperator.upgradeStrategy }}
   template:
