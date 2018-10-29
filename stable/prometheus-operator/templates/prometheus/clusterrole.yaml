@@ -32,4 +32,14 @@ rules:
   verbs: ["get", "list", "watch"]
 - nonResourceURLs: ["/metrics"]
   verbs: ["get"]
+{{- if and .Values.prometheus.enabled .Values.global.rbac.create .Values.global.rbac.pspEnabled }}
+- apiGroups:
+  - extensions
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+  resourceNames:
+  - {{ template "prometheus-operator.fullname" . }}-prometheus
+{{- end }}
 {{- end }}

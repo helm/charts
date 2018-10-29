@@ -68,4 +68,14 @@ rules:
   - get
   - list
   - watch
+{{- if and .Values.prometheus.enabled .Values.global.rbac.create .Values.global.rbac.pspEnabled }}
+- apiGroups:
+  - extensions
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+  resourceNames:
+  - {{ template "prometheus-operator.fullname" . }}-operator
+{{- end }}
 {{- end }}
