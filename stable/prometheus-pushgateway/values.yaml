@@ -20,6 +20,9 @@ podLabels: {}
 # Optional service labels
 serviceLabels: {}
 
+# Optional serviceAccount labels
+serviceAccountLabels: {}
+
 # Optional additional arguments
 extraArgs: []
 

@@ -1,12 +1,9 @@
-{{- $labelChart := include "prometheus-pushgateway.chart" $ -}}
-{{- $labelApp := include "prometheus-pushgateway.name" $ -}}
-{{- $labels := dict "app" $labelApp "chart" $labelChart "release" .Release.Name "heritage" .Release.Service -}}
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "prometheus-pushgateway.fullname" . }}
   labels:
-{{ merge .Values.podLabels $labels | toYaml | indent 4 }}
+{{ template "prometheus-pushgateway.defaultLabels" merge (dict "extraLabels" .Values.podLabels) .  }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
