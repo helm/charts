@@ -48,6 +48,7 @@ tolerations: []
   #   hostname: "localhost"
   #   ip: "127.0.0.1"
   #   publishedService: "namespace/servicename"
+  #   useDefaultPublishedService: false
 proxyProtocol:
   enabled: false
   # trustedIPs is required when enabled
