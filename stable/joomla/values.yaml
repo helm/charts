@@ -273,7 +273,7 @@ metrics:
     #   - myRegistrKeySecretName
 
     ## Metrics exporter pod Annotation and Labels
-    podAnnotations: 
+    podAnnotations:
       prometheus.io/scrape: "true"
       prometheus.io/port: "9117"
     ## Metrics exporter resource requests and limits
