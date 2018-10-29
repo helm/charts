@@ -30,6 +30,12 @@ partition:
   master: 3
   tserver: 3
 
+gflags:
+  master:
+    default_memory_limit_to_ram_ratio: 0.85
+  tserver:
+    use_cassandra_authentication: False
+
 PodManagementPolicy: Parallel
 
 serviceEndpoints:

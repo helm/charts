@@ -67,6 +67,11 @@ helm install yugabyte --set resource.tserver.requests.cpu=8,resource.tserver.req
 helm install yugabyte --set resource.tserver.limits.cpu=16,resource.tserver.limits.memory=30Gi --namespace yb-demo --name yb-demo --wait
 ```
 
+#### Creating YugaByte cluster with Cassandra authentication enabled.
+```
+helm install yugabyte --set gflags.tserver.use_cassandra_authentication=true --namespace yb-demo --name yb-demo --wait
+```
+
 ### Exposing YugaByte service endpoints using LoadBalancer
 By default YugaByte helm would expose the master ui endpoint alone via LoadBalancer. If you wish to expose yql, yedis services
 via LoadBalancer for your app to use, you could do that in couple of different ways.
