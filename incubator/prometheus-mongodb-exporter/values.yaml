@@ -16,5 +16,5 @@ config:
   datasource: mongodb://localhost:27017
 
 annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9216"
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "9216"
