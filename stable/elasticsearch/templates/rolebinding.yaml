@@ -8,6 +8,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
   name: {{ template "elasticsearch.fullname" . }}
