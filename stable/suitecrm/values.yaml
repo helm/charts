@@ -176,6 +176,10 @@ resources: {}
   #   memory: 512Mi
   #   cpu: 300m
 
+## Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
 ## Prometheus Exporter / Metrics
 ##
 metrics:
