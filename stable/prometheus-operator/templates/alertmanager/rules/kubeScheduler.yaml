@@ -1,0 +1,69 @@
+{{- if and .Values.defaultRules.create .Values.kubeScheduler.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kube-scheduler-rules" | trunc 63 | trimSuffix "-" }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+   groups:
+  - name: kube-scheduler.recording.rules
+    rules:
+    - expr: |
+        histogram_quantile(0.99, sum(rate(scheduler_e2e_scheduling_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
+      labels:
+        quantile: "0.99"
+      record: cluster_quantile:scheduler_e2e_scheduling_latency:histogram_quantile
+    - expr: |
+        histogram_quantile(0.99, sum(rate(scheduler_scheduling_algorithm_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
+      labels:
+        quantile: "0.99"
+      record: cluster_quantile:scheduler_scheduling_algorithm_latency:histogram_quantile
+    - expr: |
+        histogram_quantile(0.99, sum(rate(scheduler_binding_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
+      labels:
+        quantile: "0.99"
+      record: cluster_quantile:scheduler_binding_latency:histogram_quantile
+    - expr: |
+        histogram_quantile(0.9, sum(rate(scheduler_e2e_scheduling_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
+      labels:
+        quantile: "0.9"
+      record: cluster_quantile:scheduler_e2e_scheduling_latency:histogram_quantile
+    - expr: |
+        histogram_quantile(0.9, sum(rate(scheduler_scheduling_algorithm_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
+      labels:
+        quantile: "0.9"
+      record: cluster_quantile:scheduler_scheduling_algorithm_latency:histogram_quantile
+    - expr: |
+        histogram_quantile(0.9, sum(rate(scheduler_binding_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
+      labels:
+        quantile: "0.9"
+      record: cluster_quantile:scheduler_binding_latency:histogram_quantile
+    - expr: |
+        histogram_quantile(0.5, sum(rate(scheduler_e2e_scheduling_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
+      labels:
+        quantile: "0.5"
+      record: cluster_quantile:scheduler_e2e_scheduling_latency:histogram_quantile
+    - expr: |
+        histogram_quantile(0.5, sum(rate(scheduler_scheduling_algorithm_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
+      labels:
+        quantile: "0.5"
+      record: cluster_quantile:scheduler_scheduling_algorithm_latency:histogram_quantile
+    - expr: |
+        histogram_quantile(0.5, sum(rate(scheduler_binding_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
+      labels:
+        quantile: "0.5"
+      record: cluster_quantile:scheduler_binding_latency:histogram_quantile
+  - name: kube-scheduler.rules
+    rules:
+    - alert: KubeSchedulerDown
+      annotations:
+        message: KubeScheduler has disappeared from Prometheus target discovery.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeschedulerdown
+      expr: |
+        absent(up{job="kube-scheduler"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+{{- end }}

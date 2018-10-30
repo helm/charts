@@ -1,0 +1,22 @@
+{{- if and .Values.defaultRules.create .Values.kubeStateMetrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kube-state-metrics-rules" | trunc 63 | trimSuffix "-" }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+   groups:
+  - name: KubeStateMetricsDown.rules
+    rules:
+    - alert: KubeStateMetricsDown
+      annotations:
+        message: KubeStateMetrics has disappeared from Prometheus target discovery.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatemetricsdown
+      expr: |
+        absent(up{job="kube-state-metrics"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+{{- end }}

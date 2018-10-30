@@ -1,0 +1,86 @@
+{{- if and .Values.defaultRules.create .Values.prometheusOperator.kubeletService.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "kubelet-rules" | trunc 63 | trimSuffix "-" }}
+  labels:
+    app: {{ template "prometheus-operator.name" . }}
+{{ include "prometheus-operator.labels" . | indent 4 }}
+spec:
+   groups:
+  - name: kubernetes-storage.rules
+    rules:
+    - alert: KubePersistentVolumeUsageCritical
+      annotations:
+        message: The PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim
+          }}`}} in Namespace {{`{{ $labels.namespace }}`}} is only {{`{{ printf "%0.0f" $value
+          }}`}}% free.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepersistentvolumeusagecritical
+      expr: |
+        100 * kubelet_volume_stats_available_bytes{job="kubelet"}
+          /
+        kubelet_volume_stats_capacity_bytes{job="kubelet"}
+          < 3
+      for: 1m
+      labels:
+        severity: critical
+    - alert: KubePersistentVolumeFullInFourDays
+      annotations:
+        message: Based on recent sampling, the PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim
+          }}`}} in Namespace {{`{{ $labels.namespace }}`}} is expected to fill up within four
+          days. Currently {{`{{ $value }}`}} bytes are available.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepersistentvolumefullinfourdays
+      expr: |
+        kubelet_volume_stats_available_bytes{job="kubelet"} and predict_linear(kubelet_volume_stats_available_bytes{job="kubelet"}[6h], 4 * 24 * 3600) < 0
+      for: 5m
+      labels:
+        severity: critical
+  - name: kubelet.recording.rules
+    rules:
+    - expr: |
+        sum(rate(container_cpu_usage_seconds_total{job="kubelet", image!="", container_name!=""}[5m])) by (namespace)
+      record: namespace:container_cpu_usage_seconds_total:sum_rate
+    - expr: |
+        sum by (namespace, pod_name, container_name) (
+          rate(container_cpu_usage_seconds_total{job="kubelet", image!="", container_name!=""}[5m])
+        )
+      record: namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate
+    - expr: |
+        sum(container_memory_usage_bytes{job="kubelet", image!="", container_name!=""}) by (namespace)
+      record: namespace:container_memory_usage_bytes:sum
+    - expr: |
+        sum by (namespace, label_name) (
+           sum(rate(container_cpu_usage_seconds_total{job="kubelet", image!="", container_name!=""}[5m])) by (namespace, pod_name)
+         * on (namespace, pod_name) group_left(label_name)
+           label_replace(kube_pod_labels{job="kube-state-metrics"}, "pod_name", "$1", "pod", "(.*)")
+        )
+      record: namespace_name:container_cpu_usage_seconds_total:sum_rate
+    - expr: |
+        sum by (namespace, label_name) (
+          sum(container_memory_usage_bytes{job="kubelet",image!="", container_name!=""}) by (pod_name, namespace)
+        * on (namespace, pod_name) group_left(label_name)
+          label_replace(kube_pod_labels{job="kube-state-metrics"}, "pod_name", "$1", "pod", "(.*)")
+        )
+      record: namespace_name:container_memory_usage_bytes:sum
+  - name: kubelet.rules
+    rules:
+    - alert: KubeletDown
+      annotations:
+        message: Kubelet has disappeared from Prometheus target discovery.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletdown
+      expr: |
+        absent(up{job="kubelet"} == 1)
+      for: 15m
+      labels:
+        severity: critical
+    - alert: KubeletTooManyPods
+      annotations:
+        message: Kubelet {{`{{ $labels.instance }}`}} is running {{`{{ $value }}`}} Pods, close
+          to the limit of 110.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubelettoomanypods
+      expr: |
+        kubelet_running_pod_count{job="kubelet"} > 110 * 0.9
+      for: 15m
+      labels:
+        severity: warning
+{{- end }}

@@ -6,39 +6,16 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: {{ template "prometheus-operator.fullname" . }}
+  name: {{ printf "%s-%s" (include "prometheus-operator.fullname" .) "all-rules" | trunc 63 | trimSuffix "-" }}
   labels:
     app: {{ template "prometheus-operator.name" . }}
 {{ include "prometheus-operator.labels" . | indent 4 }}
 spec:
   groups:
-  - name: k8s.rules
+  - name: k8s.recoding.rules
     rules:
-    - expr: |
-        sum(rate(container_cpu_usage_seconds_total{job="kubelet", image!="", container_name!=""}[5m])) by (namespace)
-      record: namespace:container_cpu_usage_seconds_total:sum_rate
-    - expr: |
-        sum by (namespace, pod_name, container_name) (
-          rate(container_cpu_usage_seconds_total{job="kubelet", image!="", container_name!=""}[5m])
-        )
-      record: namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate
-    - expr: |
-        sum(container_memory_usage_bytes{job="kubelet", image!="", container_name!=""}) by (namespace)
-      record: namespace:container_memory_usage_bytes:sum
-    - expr: |
-        sum by (namespace, label_name) (
-           sum(rate(container_cpu_usage_seconds_total{job="kubelet", image!="", container_name!=""}[5m])) by (namespace, pod_name)
-         * on (namespace, pod_name) group_left(label_name)
-           label_replace(kube_pod_labels{job="kube-state-metrics"}, "pod_name", "$1", "pod", "(.*)")
-        )
-      record: namespace_name:container_cpu_usage_seconds_total:sum_rate
-    - expr: |
-        sum by (namespace, label_name) (
-          sum(container_memory_usage_bytes{job="kubelet",image!="", container_name!=""}) by (pod_name, namespace)
-        * on (namespace, pod_name) group_left(label_name)
-          label_replace(kube_pod_labels{job="kube-state-metrics"}, "pod_name", "$1", "pod", "(.*)")
-        )
-      record: namespace_name:container_memory_usage_bytes:sum
+    - expr: process_open_fds / process_max_fds
+      record: instance:fd_utilization
     - expr: |
         sum by (namespace, label_name) (
           sum(kube_pod_container_resource_requests_memory_bytes{job="kube-state-metrics"}) by (namespace, pod)
@@ -53,71 +30,27 @@ spec:
           label_replace(kube_pod_labels{job="kube-state-metrics"}, "pod_name", "$1", "pod", "(.*)")
         )
       record: namespace_name:kube_pod_container_resource_requests_cpu_cores:sum
-  - name: kube-scheduler.rules
+  - name: k8s.recoding.rules
     rules:
-    - expr: |
-        histogram_quantile(0.99, sum(rate(scheduler_e2e_scheduling_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
+    - alert: FdExhaustionClose
+      expr: predict_linear(instance:fd_utilization[1h], 3600 * 4) > 1
+      for: 10m
       labels:
-        quantile: "0.99"
-      record: cluster_quantile:scheduler_e2e_scheduling_latency:histogram_quantile
-    - expr: |
-        histogram_quantile(0.99, sum(rate(scheduler_scheduling_algorithm_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
+        severity: warning
+      annotations:
+        description: '{{`{{ $labels.job }}`}} instance {{`{{ $labels.instance }}`}} will exhaust
+          its file descriptors soon'
+        summary: file descriptors soon exhausted
+    - alert: FdExhaustionClose
+      expr: predict_linear(instance:fd_utilization[10m], 3600) > 1
+      for: 10m
       labels:
-        quantile: "0.99"
-      record: cluster_quantile:scheduler_scheduling_algorithm_latency:histogram_quantile
-    - expr: |
-        histogram_quantile(0.99, sum(rate(scheduler_binding_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
-      labels:
-        quantile: "0.99"
-      record: cluster_quantile:scheduler_binding_latency:histogram_quantile
-    - expr: |
-        histogram_quantile(0.9, sum(rate(scheduler_e2e_scheduling_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
-      labels:
-        quantile: "0.9"
-      record: cluster_quantile:scheduler_e2e_scheduling_latency:histogram_quantile
-    - expr: |
-        histogram_quantile(0.9, sum(rate(scheduler_scheduling_algorithm_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
-      labels:
-        quantile: "0.9"
-      record: cluster_quantile:scheduler_scheduling_algorithm_latency:histogram_quantile
-    - expr: |
-        histogram_quantile(0.9, sum(rate(scheduler_binding_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
-      labels:
-        quantile: "0.9"
-      record: cluster_quantile:scheduler_binding_latency:histogram_quantile
-    - expr: |
-        histogram_quantile(0.5, sum(rate(scheduler_e2e_scheduling_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
-      labels:
-        quantile: "0.5"
-      record: cluster_quantile:scheduler_e2e_scheduling_latency:histogram_quantile
-    - expr: |
-        histogram_quantile(0.5, sum(rate(scheduler_scheduling_algorithm_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
-      labels:
-        quantile: "0.5"
-      record: cluster_quantile:scheduler_scheduling_algorithm_latency:histogram_quantile
-    - expr: |
-        histogram_quantile(0.5, sum(rate(scheduler_binding_latency_microseconds_bucket{job="kube-scheduler"}[5m])) without(instance, pod)) / 1e+06
-      labels:
-        quantile: "0.5"
-      record: cluster_quantile:scheduler_binding_latency:histogram_quantile
-  - name: kube-apiserver.rules
-    rules:
-    - expr: |
-        histogram_quantile(0.99, sum(rate(apiserver_request_latencies_bucket{job="apiserver"}[5m])) without(instance, pod)) / 1e+06
-      labels:
-        quantile: "0.99"
-      record: cluster_quantile:apiserver_request_latencies:histogram_quantile
-    - expr: |
-        histogram_quantile(0.9, sum(rate(apiserver_request_latencies_bucket{job="apiserver"}[5m])) without(instance, pod)) / 1e+06
-      labels:
-        quantile: "0.9"
-      record: cluster_quantile:apiserver_request_latencies:histogram_quantile
-    - expr: |
-        histogram_quantile(0.5, sum(rate(apiserver_request_latencies_bucket{job="apiserver"}[5m])) without(instance, pod)) / 1e+06
-      labels:
-        quantile: "0.5"
-      record: cluster_quantile:apiserver_request_latencies:histogram_quantile
-  - name: node.rules
+        severity: critical
+      annotations:
+        description: '{{`{{ $labels.job }}`}} instance {{`{{ $labels.instance }}`}} will exhaust
+          its file descriptors soon'
+        summary: file descriptors soon exhausted
+  - name: node.recording.rules
     rules:
     - expr: sum(min(kube_pod_info) by (node))
       record: ':kube_pod_info_node_count:'
@@ -268,7 +201,7 @@ spec:
           node_namespace_pod:kube_pod_info:
         )
       record: node:node_net_saturation:sum_irate
-  - name: kube-prometheus-node-recording.rules
+  - name: kube-prometheus-node.recording.rules
     rules:
     - expr: sum(rate(node_cpu{mode!="idle",mode!="iowait"}[3m])) BY (instance)
       record: instance:node_cpu:rate:sum
@@ -286,7 +219,7 @@ spec:
       record: cluster:node_cpu:sum_rate5m
     - expr: cluster:node_cpu:rate5m / count(sum(node_cpu) BY (instance, cpu))
       record: cluster:node_cpu:ratio
-  - name: node_exporter-16-bcache
+  - name: node_exporter-16-bcache.recording.rules
     rules:
     - expr: node_bcache_cache_read_races
       record: node_bcache_cache_read_races_total
@@ -294,7 +227,7 @@ spec:
     rules:
     - expr: node_buddyinfo_blocks
       record: node_buddyinfo_count
-  - name: node_exporter-16-stat
+  - name: node_exporter-16-stat.recording.rules
     rules:
     - expr: node_boot_time_seconds
       record: node_boot_time
@@ -304,11 +237,11 @@ spec:
       record: node_forks
     - expr: node_intr_total
       record: node_intr
-  - name: node_exporter-16-cpu
+  - name: node_exporter-16-cpu.recording.rules
     rules:
     - expr: label_replace(node_cpu_seconds_total, "cpu", "$1", "cpu", "cpu(.+)")
       record: node_cpu
-  - name: node_exporter-16-diskstats
+  - name: node_exporter-16-diskstats.recording.rules
     rules:
     - expr: node_disk_read_bytes_total
       record: node_disk_bytes_read
@@ -330,7 +263,7 @@ spec:
       record: node_disk_writes_merged
     - expr: node_disk_write_time_seconds_total * 1000
       record: node_disk_write_time_ms
-  - name: node_exporter-16-filesystem
+  - name: node_exporter-16-filesystem.recording.rules
     rules:
     - expr: node_filesystem_free_bytes
       record: node_filesystem_free
@@ -338,17 +271,17 @@ spec:
       record: node_filesystem_avail
     - expr: node_filesystem_size_bytes
       record: node_filesystem_size
-  - name: node_exporter-16-infiniband
+  - name: node_exporter-16-infiniband.recording.rules
     rules:
     - expr: node_infiniband_port_data_received_bytes_total
       record: node_infiniband_port_data_received_bytes
     - expr: node_infiniband_port_data_transmitted_bytes_total
       record: node_infiniband_port_data_transmitted_bytes
-  - name: node_exporter-16-interrupts
+  - name: node_exporter-16-interrupts.recording.rules
     rules:
     - expr: node_interrupts_total
       record: node_interrupts
-  - name: node_exporter-16-memory
+  - name: node_exporter-16-memory.recording.rules
     rules:
     - expr: node_memory_Active_bytes
       record: node_memory_Active
@@ -428,7 +361,7 @@ spec:
       record: node_memory_Writeback
     - expr: node_memory_WritebackTmp_bytes
       record: node_memory_WritebackTmp
-  - name: node_exporter-16-network
+  - name: node_exporter-16-network.recording.rules
     rules:
     - expr: node_network_receive_bytes_total
       record: node_network_receive_bytes
@@ -462,7 +395,7 @@ spec:
       record: node_network_transmit_multicast
     - expr: node_network_transmit_packets_total
       record: node_network_transmit_packets
-  - name: node_exporter-16-nfs
+  - name: node_exporter-16-nfs.recording.rules
     rules:
     - expr: node_nfs_connections_total
       record: node_nfs_net_connections
@@ -477,7 +410,7 @@ spec:
       record: node_nfs_rpc_operations
     - expr: node_nfs_rpc_retransmissions_total
       record: node_nfs_rpc_retransmissions
-  - name: node_exporter-16-textfile
+  - name: node_exporter-16-textfile.recording.rules
     rules:
     - expr: node_textfile_mtime_seconds
       record: node_textfile_mtime
@@ -489,60 +422,6 @@ spec:
         runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-alertmanagerdown
       expr: |
         absent(up{job="{{ $alertmanagerJob }}"} == 1)
-      for: 15m
-      labels:
-        severity: critical
-    - alert: KubeAPIDown
-      annotations:
-        message: KubeAPI has disappeared from Prometheus target discovery.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapidown
-      expr: |
-        absent(up{job="apiserver"} == 1)
-      for: 15m
-      labels:
-        severity: critical
-    - alert: KubeControllerManagerDown
-      annotations:
-        message: KubeControllerManager has disappeared from Prometheus target discovery.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubecontrollermanagerdown
-      expr: |
-        absent(up{job="kube-controller-manager"} == 1)
-      for: 15m
-      labels:
-        severity: critical
-    - alert: KubeSchedulerDown
-      annotations:
-        message: KubeScheduler has disappeared from Prometheus target discovery.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeschedulerdown
-      expr: |
-        absent(up{job="kube-scheduler"} == 1)
-      for: 15m
-      labels:
-        severity: critical
-    - alert: KubeStateMetricsDown
-      annotations:
-        message: KubeStateMetrics has disappeared from Prometheus target discovery.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubestatemetricsdown
-      expr: |
-        absent(up{job="kube-state-metrics"} == 1)
-      for: 15m
-      labels:
-        severity: critical
-    - alert: KubeletDown
-      annotations:
-        message: Kubelet has disappeared from Prometheus target discovery.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeletdown
-      expr: |
-        absent(up{job="kubelet"} == 1)
-      for: 15m
-      labels:
-        severity: critical
-    - alert: NodeExporterDown
-      annotations:
-        message: NodeExporter has disappeared from Prometheus target discovery.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-nodeexporterdown
-      expr: |
-        absent(up{job="node-exporter"} == 1)
       for: 15m
       labels:
         severity: critical
@@ -788,33 +667,6 @@ spec:
       for: 15m
       labels:
         severity: warning
-  - name: kubernetes-storage
-    rules:
-    - alert: KubePersistentVolumeUsageCritical
-      annotations:
-        message: The PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim
-          }}`}} in Namespace {{`{{ $labels.namespace }}`}} is only {{`{{ printf "%0.0f" $value
-          }}`}}% free.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepersistentvolumeusagecritical
-      expr: |
-        100 * kubelet_volume_stats_available_bytes{job="kubelet"}
-          /
-        kubelet_volume_stats_capacity_bytes{job="kubelet"}
-          < 3
-      for: 1m
-      labels:
-        severity: critical
-    - alert: KubePersistentVolumeFullInFourDays
-      annotations:
-        message: Based on recent sampling, the PersistentVolume claimed by {{`{{ $labels.persistentvolumeclaim
-          }}`}} in Namespace {{`{{ $labels.namespace }}`}} is expected to fill up within four
-          days. Currently {{`{{ $value }}`}} bytes are available.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepersistentvolumefullinfourdays
-      expr: |
-        kubelet_volume_stats_available_bytes{job="kubelet"} and predict_linear(kubelet_volume_stats_available_bytes{job="kubelet"}[6h], 4 * 24 * 3600) < 0
-      for: 5m
-      labels:
-        severity: critical
   - name: kubernetes-system
     rules:
     - alert: KubeNodeNotReady
@@ -859,74 +711,6 @@ spec:
       for: 15m
       labels:
         severity: warning
-    - alert: KubeletTooManyPods
-      annotations:
-        message: Kubelet {{`{{ $labels.instance }}`}} is running {{`{{ $value }}`}} Pods, close
-          to the limit of 110.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubelettoomanypods
-      expr: |
-        kubelet_running_pod_count{job="kubelet"} > 110 * 0.9
-      for: 15m
-      labels:
-        severity: warning
-    - alert: KubeAPILatencyHigh
-      annotations:
-        message: The API server has a 99th percentile latency of {{`{{ $value }}`}} seconds
-          for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}}.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapilatencyhigh
-      expr: |
-        cluster_quantile:apiserver_request_latencies:histogram_quantile{job="apiserver",quantile="0.99",subresource!="log",verb!~"^(?:LIST|WATCH|WATCHLIST|PROXY|CONNECT)$"} > 1
-      for: 10m
-      labels:
-        severity: warning
-    - alert: KubeAPILatencyHigh
-      annotations:
-        message: The API server has a 99th percentile latency of {{`{{ $value }}`}} seconds
-          for {{`{{ $labels.verb }}`}} {{`{{ $labels.resource }}`}}.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapilatencyhigh
-      expr: |
-        cluster_quantile:apiserver_request_latencies:histogram_quantile{job="apiserver",quantile="0.99",subresource!="log",verb!~"^(?:LIST|WATCH|WATCHLIST|PROXY|CONNECT)$"} > 4
-      for: 10m
-      labels:
-        severity: critical
-    - alert: KubeAPIErrorsHigh
-      annotations:
-        message: API server is returning errors for {{`{{ $value }}`}}% of requests.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorshigh
-      expr: |
-        sum(rate(apiserver_request_count{job="apiserver",code=~"^(?:5..)$"}[5m])) without(instance, pod)
-          /
-        sum(rate(apiserver_request_count{job="apiserver"}[5m])) without(instance, pod) * 100 > 10
-      for: 10m
-      labels:
-        severity: critical
-    - alert: KubeAPIErrorsHigh
-      annotations:
-        message: API server is returning errors for {{`{{ $value }}`}}% of requests.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeapierrorshigh
-      expr: |
-        sum(rate(apiserver_request_count{job="apiserver",code=~"^(?:5..)$"}[5m])) without(instance, pod)
-          /
-        sum(rate(apiserver_request_count{job="apiserver"}[5m])) without(instance, pod) * 100 > 5
-      for: 10m
-      labels:
-        severity: warning
-    - alert: KubeClientCertificateExpiration
-      annotations:
-        message: Kubernetes API certificate is expiring in less than 7 days.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeclientcertificateexpiration
-      expr: |
-        histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 604800
-      labels:
-        severity: warning
-    - alert: KubeClientCertificateExpiration
-      annotations:
-        message: Kubernetes API certificate is expiring in less than 24 hours.
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubeclientcertificateexpiration
-      expr: |
-        histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 86400
-      labels:
-        severity: critical
   - name: alertmanager.rules
     rules:
     - alert: AlertmanagerConfigInconsistent
@@ -1111,116 +895,4 @@ spec:
       for: 10m
       labels:
         severity: warning
-  - name: etcd3_alert.rules
-    rules:
-    - alert: InsufficientMembers
-      expr: count(up{job="kube-etcd"} == 0) > (count(up{job="kube-etcd"}) / 2 - 1)
-      for: 3m
-      labels:
-        severity: critical
-      annotations:
-        description: If one more etcd member goes down the cluster will be unavailable
-        summary: etcd cluster insufficient members
-    - alert: NoLeader
-      expr: etcd_server_has_leader{job="kube-etcd"} == 0
-      for: 1m
-      labels:
-        severity: critical
-      annotations:
-        description: etcd member {{`{{ $labels.instance }}`}} has no leader
-        summary: etcd member has no leader
-    - alert: HighNumberOfLeaderChanges
-      expr: increase(etcd_server_leader_changes_seen_total{job="kube-etcd"}[1h]) > 3
-      labels:
-        severity: warning
-      annotations:
-        description: etcd instance {{`{{ $labels.instance }}`}} has seen {{`{{ $value }}`}} leader
-          changes within the last hour
-        summary: a high number of leader changes within the etcd cluster are happening
-    - alert: HighNumberOfFailedGRPCRequests
-      expr: 100 * (sum(rate(grpc_server_handled_total{grpc_code!="OK",job="kube-etcd"}[5m])) BY (grpc_service, grpc_method)
-        / sum(rate(grpc_server_handled_total{job="kube-etcd"}[5m])) BY (grpc_service, grpc_method)) > 1
-      for: 10m
-      labels:
-        severity: warning
-      annotations:
-        description: '{{`{{ $value }}`}}% of requests for {{`{{ $labels.grpc_method }}`}} failed
-          on etcd instance {{`{{ $labels.instance }}`}}'
-        summary: a high number of gRPC requests are failing
-    - alert: HighNumberOfFailedGRPCRequests
-      expr: 100 * (sum(rate(grpc_server_handled_total{grpc_code!="OK",job="kube-etcd"}[5m])) BY (grpc_service, grpc_method)
-        / sum(rate(grpc_server_handled_total{job="kube-etcd"}[5m])) BY (grpc_service, grpc_method)) > 5
-      for: 5m
-      labels:
-        severity: critical
-      annotations:
-        description: '{{`{{ $value }}`}}% of requests for {{`{{ $labels.grpc_method }}`}} failed
-          on etcd instance {{`{{ $labels.instance }}`}}'
-        summary: a high number of gRPC requests are failing
-    - alert: GRPCRequestsSlow
-      expr: histogram_quantile(0.99, sum(rate(grpc_server_handling_seconds_bucket{job="kube-etcd",grpc_type="unary"}[5m])) by (grpc_service, grpc_method, le))
-        > 0.15
-      for: 10m
-      labels:
-        severity: critical
-      annotations:
-        description: on etcd instance {{`{{ $labels.instance }}`}} gRPC requests to {{`{{ $labels.grpc_method
-          }}`}} are slow
-        summary: slow gRPC requests
-    - record: instance:fd_utilization
-      expr: process_open_fds / process_max_fds
-    - alert: FdExhaustionClose
-      expr: predict_linear(instance:fd_utilization[1h], 3600 * 4) > 1
-      for: 10m
-      labels:
-        severity: warning
-      annotations:
-        description: '{{`{{ $labels.job }}`}} instance {{`{{ $labels.instance }}`}} will exhaust
-          its file descriptors soon'
-        summary: file descriptors soon exhausted
-    - alert: FdExhaustionClose
-      expr: predict_linear(instance:fd_utilization[10m], 3600) > 1
-      for: 10m
-      labels:
-        severity: critical
-      annotations:
-        description: '{{`{{ $labels.job }}`}} instance {{`{{ $labels.instance }}`}} will exhaust
-          its file descriptors soon'
-        summary: file descriptors soon exhausted
-    - alert: EtcdMemberCommunicationSlow
-      expr: histogram_quantile(0.99, rate(etcd_network_peer_round_trip_time_seconds_bucket[5m]))
-        > 0.15
-      for: 10m
-      labels:
-        severity: warning
-      annotations:
-        description: etcd instance {{`{{ $labels.instance }}`}} member communication with
-          {{`{{ $labels.To }}`}} is slow
-        summary: etcd member communication is slow
-    - alert: HighNumberOfFailedProposals
-      expr: increase(etcd_server_proposals_failed_total{job="kube-etcd"}[1h]) > 5
-      labels:
-        severity: warning
-      annotations:
-        description: etcd instance {{`{{ $labels.instance }}`}} has seen {{`{{ $value }}`}} proposal
-          failures within the last hour
-        summary: a high number of proposals within the etcd cluster are failing
-    - alert: HighFsyncDurations
-      expr: histogram_quantile(0.99, rate(etcd_disk_wal_fsync_duration_seconds_bucket[5m]))
-        > 0.5
-      for: 10m
-      labels:
-        severity: warning
-      annotations:
-        description: etcd instance {{`{{ $labels.instance }}`}} fync durations are high
-        summary: high fsync durations
-    - alert: HighCommitDurations
-      expr: histogram_quantile(0.99, rate(etcd_disk_backend_commit_duration_seconds_bucket[5m]))
-        > 0.25
-      for: 10m
-      labels:
-        severity: warning
-      annotations:
-        description: etcd instance {{`{{ $labels.instance }}`}} commit durations are high
-        summary: high commit durations
 {{- end }}
