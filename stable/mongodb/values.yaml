@@ -114,6 +114,9 @@ replicaSet:
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
 
+# Additional pod labels to apply
+podLabels: {}
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
