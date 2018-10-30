@@ -6,7 +6,7 @@ image:
   repository: ananthunair/mongodb_exporter
   tag: v1.0.0
   pullPolicy: IfNotPresent
-
+replicas: 1
 service:
   type: ClusterIP
   port: 9216

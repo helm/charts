@@ -8,6 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       app: {{ template "prometheus-mongodb-exporter.name" . }}
