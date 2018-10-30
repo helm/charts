@@ -23,6 +23,10 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+## Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
 ## PrestaShop host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-prestashop#configuration
 ##
@@ -161,6 +165,10 @@ sessionAffinity: "None"
 ##
 persistence:
   enabled: true
+## Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
   ## Prestashop Data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -201,6 +209,10 @@ readinessProbe:
   failureThreshold: 6
   successThreshold: 1
 
+## Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
 ## Prometheus Exporter / Metrics
 ##
 metrics:
