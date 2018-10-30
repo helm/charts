@@ -253,6 +253,10 @@ readinessProbe:
   failureThreshold: 6
   successThreshold: 1
 
+## Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
 ## Prometheus Exporter / Metrics
 ##
 metrics:
