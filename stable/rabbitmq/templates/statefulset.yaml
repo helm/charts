@@ -20,6 +20,9 @@ spec:
         app: {{ template "rabbitmq.name" . }}
         release: "{{ .Release.Name }}"
         chart: {{ template "rabbitmq.chart" .  }}
+      {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+      {{- end }}
       {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -49,7 +52,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: rabbitmq
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: {{ template "rabbitmq.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
          - bash
@@ -93,7 +96,7 @@ spec:
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
-            command: ["sh", "-c", "test \"$(curl -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.rabbitmq.managerPort }}/api/healthchecks/node)\" = '{\"status\":\"ok\"}'"]
+            command: ["sh", "-c", "test \"$(curl -sS -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.rabbitmq.managerPort }}/api/healthchecks/node)\" = '{\"status\":\"ok\"}'"]
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -103,7 +106,7 @@ spec:
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
           exec:
-            command: ["sh", "-c", "test \"$(curl -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.rabbitmq.managerPort }}/api/healthchecks/node)\" = '{\"status\":\"ok\"}'"]
+            command: ["sh", "-c", "test \"$(curl -sS -f --user {{ .Values.rabbitmq.username }}:$RABBITMQ_PASSWORD 127.0.0.1:{{ .Values.rabbitmq.managerPort }}/api/healthchecks/node)\" = '{\"status\":\"ok\"}'"]
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -184,7 +187,7 @@ spec:
             path: /metrics
             port: metrics
           initialDelaySeconds: 5
-          timeoutSeconds: 1
+          timeoutSeconds: 5
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}

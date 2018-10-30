@@ -28,7 +28,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "phabricator.fullname" . }}
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: {{ template "phabricator.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: MARIADB_HOST

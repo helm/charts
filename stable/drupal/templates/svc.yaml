@@ -4,7 +4,7 @@ metadata:
   name: {{ template "drupal.fullname" . }}
   labels:
     app: {{ template "drupal.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "drupal.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:

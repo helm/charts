@@ -5,7 +5,7 @@ metadata:
   name: {{ template "owncloud.fullname" . }}
   labels:
     app: {{ template "owncloud.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "owncloud.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -18,7 +18,7 @@ spec:
     metadata:
       labels:
         app: {{ template "owncloud.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: {{ template "owncloud.chart" . }}
         release: "{{ .Release.Name }}"
     spec:
       {{- if .Values.image.pullSecrets }}
@@ -29,7 +29,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "owncloud.fullname" . }}
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: {{ template "owncloud.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD

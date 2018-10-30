@@ -47,6 +47,7 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 
 |              Parameter               |               Description                                  |                   Default                     |
 |--------------------------------------|------------------------------------------------------------|-----------------------------------------------|
+| `global.imageRegistry`               | Global Docker image registry                               | `nil`                                         |
 | `image.registry`                     | DokuWiki image registry                                    | `docker.io`                                   |
 | `image.repository`                   | DokuWiki image name                                        | `bitnami/dokuwiki`                            |
 | `image.tag`                          | DokuWiki image tag                                         | `{VERSION}`                                   |
@@ -65,6 +66,7 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `ingress.hosts[0].name`              | Hostname to your DokuWiki installation                     | `dokuwiki.local`                              |
 | `ingress.hosts[0].path`              | Path within the url structure                              | `/`                                           |
 | `ingress.hosts[0].tls`               | Utilize TLS backend in ingress                             | `false`                                       |
+| `ingress.hosts[0].certManager`       | Add annotations for cert-manager                           | `false`                                       |
 | `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                                  | `dokuwiki.local-tls`                          |
 | `ingress.hosts[0].annotations`       | Annotations for this host's ingress record                 | `[]`                                          |
 | `ingress.secrets[0].name`            | TLS Secret Name                                            | `nil`                                         |

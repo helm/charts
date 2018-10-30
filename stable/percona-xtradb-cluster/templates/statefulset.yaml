@@ -75,6 +75,8 @@ spec:
           value: {{ .Values.allowRootFrom | quote }}
         - name: CLUSTER_NAME
           value: {{ template "percona-xtradb-cluster.fullname" . }}
+        - name: SHORT_CLUSTER_NAME
+          value: {{ template "percona-xtradb-cluster.shortname" . }}
         - name: K8S_SERVICE_NAME
           value: {{ template "percona-xtradb-cluster.fullname" . }}-repl
         - name: DEBUG
@@ -156,6 +158,10 @@ spec:
       {{- if not .Values.persistence.enabled }}
       - name: mysql-data
         emptyDir: {}
+      {{- end -}}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
       {{- end -}}
       {{- if .Values.nodeSelector }}
       nodeSelector:
