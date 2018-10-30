@@ -79,3 +79,22 @@ $ helm install --name my-release -f values.yaml stable/prometheus-mysql-exporter
 
 Documentation for the MySQL Exporter can be found here: (https://github.com/prometheus/mysqld_exporter)
 A mysql params overview can be found here: (https://github.com/go-sql-driver/mysql#dsn-data-source-name)
+
+## Collector Flags
+Specify each collector flag to enable in the value file as `--collector.flag.here`. For example,
+```console
+collectors:
+  --collect.global_status,
+  --collect.global_variables,
+  --collect.info_schema.tables,
+  --collect.slave_status
+```
+To disable,
+```console
+collectors:
+  --no-collect.global_status,
+  --no-collect.global_variables,
+  --no-collect.info_schema.tables,
+  --no-collect.slave_status
+```
+Comma(,) is required.  Available collector flags can be found [here](https://github.com/prometheus/mysqld_exporter#collector-flags).
