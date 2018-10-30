@@ -14,13 +14,11 @@ spec:
       release: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+{{ toYaml .Values.annotations | indent 8 }}
       labels:
         app: {{ template "prometheus-mongodb-exporter.name" . }}
         release: {{ .Release.Name }}
-      annotations:
-        {{- if .Values.annotations }}
-{{ toYaml .Values.annotations | indent 8 }}
-        {{- end}}
     spec:
       containers:
         - name: {{ .Chart.Name }}
