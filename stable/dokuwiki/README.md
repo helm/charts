@@ -95,6 +95,7 @@ The following table lists the configurable parameters of the DokuWiki chart and 
 | `nodeSelector`                       | Node labels for pod assignment                             | `{}`                                          |
 | `affinity`                           | Affinity settings for pod assignment                       | `{}`                                          |
 | `tolerations`                        | Toleration labels for pod assignment                       | `[]`                                          |
+| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
 | `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
 | `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
 | `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
