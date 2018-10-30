@@ -93,6 +93,7 @@ The following table lists the configurable parameters of the Drupal chart and th
 | `resources`                       | CPU/Memory resource requests/limits        | Memory: `512Mi`, CPU: `300m`                              |
 | `volumeMounts.drupal.mountPath`   | Drupal data volume mount path              | `/bitnami/drupal`                                         |
 | `volumeMounts.apache.mountPath`   | Apache data volume mount path              | `/bitnami/apache`                                         |
+| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
 | `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
 | `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
 | `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
