@@ -41,7 +41,7 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `affinity`              | Affinity settings for pod assignment                                                                                          | `{}`               |
 | `extraArgs`             | Optional flags for pushgateway                                                                                                | `[]`               |
 | `image.repository`      | Image repository                                                                                                              | `prom/pushgateway` |
-| `image.tag`             | Image tag                                                                                                                     | `v0.4.0`           |
+| `image.tag`             | Image tag                                                                                                                     | `v0.6.0`           |
 | `image.pullPolicy`      | Image pull policy                                                                                                             | `IfNotPresent`     |
 | `ingress.enabled`       | Enables Ingress for pushgateway                                                                                               | `false`            |
 | `ingress.annotations`   | Ingress annotations                                                                                                           | `{}`               |
