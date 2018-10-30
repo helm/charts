@@ -1,5 +1,4 @@
 {{- if and .Values.defaultRules.create .Values.nodeExporter.enabled }}
-
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
