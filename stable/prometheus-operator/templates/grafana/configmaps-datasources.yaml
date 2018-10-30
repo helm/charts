@@ -13,11 +13,7 @@ data:
     datasources:
     - name: Prometheus
       type: prometheus
-      {{- if hasPrefix "/" .Values.prometheus.prometheusSpec.routePrefix }}
-      url: http://{{ template "prometheus-operator.fullname" . }}-prometheus:9090{{ .Values.prometheus.prometheusSpec.routePrefix }}
-      {{- else }}
-      url: http://{{ template "prometheus-operator.fullname" . }}-prometheus:9090/{{ .Values.prometheus.prometheusSpec.routePrefix }}
-      {{- end }}
+      url: http://{{ template "prometheus-operator.fullname" . }}-prometheus:9090/{{ trimPrefix "/" .Values.prometheus.prometheusSpec.routePrefix }}
       access: proxy
       isDefault: true
 {{- end }}
