@@ -34,6 +34,10 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
 tolerations: []
 
 # Node labels for pod assignment
