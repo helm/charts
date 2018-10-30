@@ -20,6 +20,9 @@ spec:
         app: {{ template "rabbitmq.name" . }}
         release: "{{ .Release.Name }}"
         chart: {{ template "rabbitmq.chart" .  }}
+      {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+      {{- end }}
       {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
