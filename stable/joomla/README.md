@@ -114,6 +114,7 @@ The following table lists the configurable parameters of the Joomla! chart and t
 | `nodeSelector`                       | Node labels for pod assignment                              | `{}`                                           |
 | `tolerations`                        | List of node taints to tolerate                             | `[]`                                           |
 | `affinity`                           | Map of node/pod affinities                                  | `{}`                                           |
+| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
 | `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
 | `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
 | `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
