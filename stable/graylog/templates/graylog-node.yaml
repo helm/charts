@@ -102,6 +102,9 @@ spec:
             secretKeyRef:
               name: {{ template "graylog.fullname" . }}
               key: root_password
+{{- if .Values.nodes.env }}
+{{ toYaml .Values.nodes.env | indent 8 }}
+{{- end }}
         volumeMounts:
           - mountPath: /usr/share/graylog/plugin
             name: graylog-plugins
