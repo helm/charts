@@ -77,7 +77,9 @@ The following table lists the configurable parameters of the kibana chart and th
 | `dashboardImport.xpackauth.username`          | Optional Xpack username                    | `myuser`                               |
 | `dashboardImport.xpackauth.password`          | Optional Xpack password                    | `mypass`                               |
 | `dashboardImport.dashboards`                  | Dashboards                                 | `{}`                                   |
-| `plugins`                                     | List of URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
+| `plugins.enabled`                             | Enable installation of plugins.            | `false`                                |
+| `plugins.reset`                               | Optional : Remove all installed plugins before installing all new ones | `false`                                   |
+| `plugins.values`                              | List of plugins to install. Format <pluginName,version,URL> with URLs pointing to zip files of Kibana plugins to install                                 | None:                                   |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
