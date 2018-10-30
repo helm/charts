@@ -85,6 +85,7 @@ The following table lists the configurable parameters of the OpenCart chart and 
 | `persistence.opencart.accessMode`   | PVC Access Mode for OpenCart volume       | `ReadWriteOnce`                                          |
 | `persistence.opencart.size`         | PVC Storage Request for OpenCart volume   | `8Gi`                                                    |
 | `resources`                         | CPU/Memory resource requests/limits       | Memory: `512Mi`, CPU: `300m`                             |
+| `podAnnotations`                | Pod annotations                                   | `{}`                                                       |
 | `metrics.enabled`                          | Start a side-car prometheus exporter                                                                           | `false`                                              |
 | `metrics.image.registry`                   | Apache exporter image registry                                                                                  | `docker.io`                                          |
 | `metrics.image.repository`                 | Apache exporter image name                                                                                      | `lusotycoon/apache-exporter`                           |
