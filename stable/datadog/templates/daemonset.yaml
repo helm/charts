@@ -108,6 +108,14 @@ spec:
           {{- end }}
           - name: KUBERNETES
             value: "yes"
+          {{- if .Values.datadog.podLabelsAsTags }}
+          - name: DD_KUBERNETES_POD_LABELS_AS_TAGS
+            value: '{{ toJson .Values.datadog.podLabelsAsTags }}'
+          {{- end }}
+          {{- if .Values.datadog.podAnnotationsAsTags }}
+          - name: DD_KUBERNETES_POD_ANNOTATIONS_AS_TAGS
+            value: '{{ toJson .Values.datadog.podAnnotationsAsTags }}'
+          {{- end }}
           {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
           - name: DD_KUBERNETES_KUBELET_HOST
             valueFrom:
@@ -130,9 +138,11 @@ spec:
 {{ toYaml .Values.datadog.env | indent 10 }}
 {{- end }}
         volumeMounts:
+          {{- if .Values.datadog.useCriSocketVolume }}
           - name: runtimesocket
             mountPath: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
             readOnly: true
+          {{- end }}
           - name: procdir
             mountPath: /host/proc
             readOnly: true
@@ -168,9 +178,11 @@ spec:
           initialDelaySeconds: 15
           periodSeconds: 5
       volumes:
+        {{- if .Values.datadog.useCriSocketVolume }}
         - hostPath:
             path: {{ default "/var/run/docker.sock" .Values.datadog.criSocketPath | quote }}
           name: runtimesocket
+        {{- end }}
         - hostPath:
             path: /proc
           name: procdir
