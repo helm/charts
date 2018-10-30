@@ -17,7 +17,7 @@ data:
     allow_awsecr_iam_auto: {{ .Values.globalConfig.allowECRUseIAMRole }}
     cleanup_images: {{ .Values.globalConfig.cleanupImages }}
 
-    log_level: {{ .Values.coreConfig.logLevel }}
+    log_level: {{ .Values.globalConfig.logLevel }}
     host_id: ${ANCHORE_POD_NAME}
     internal_ssl_verify: {{ .Values.globalConfig.internalServicesSslVerifyCerts }}
 

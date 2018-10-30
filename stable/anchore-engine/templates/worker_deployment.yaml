@@ -23,28 +23,10 @@ spec:
       containers:
       - name: {{ .Chart.Name }}-worker
         image: {{ .Values.image.tag }}
+        envFrom:
+        - secretRef:
+            name: {{ template "fullname" . }}
         env:
-        - name: ANCHORE_ENGINE_SERVICES
-          value: anchore-worker
-        - name: ANCHORE_DB
-          value: {{ index .Values "anchore-db" "postgresDatabase" }}
-        - name: ANCHORE_DB_HOST
-          value: {{ template "postgres.anchore-db.fullname" . }}
-        - name: ANCHORE_DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: dbUser
-        - name: ANCHORE_DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: dbPassword
-        - name: ANCHORE_ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: adminPassword
         - name: ANCHORE_POD_NAME
           valueFrom:
             fieldRef:

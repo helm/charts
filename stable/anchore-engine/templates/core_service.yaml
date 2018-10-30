@@ -31,6 +31,12 @@ spec:
       port: {{ .Values.service.ports.policy }}
       targetPort: {{ .Values.service.ports.policy }}
       protocol: TCP
+  {{- if .Values.enterpriseConfig.rbac.enabled }}
+    - name: rbac-manager
+      port: {{ .Values.enterpriseConfig.rbac.service.apiPort }}
+      targetPort: {{ .Values.enterpriseConfig.rbac.service.apiPort }}
+      protocol: TCP
+  {{- end }}
   selector:
     app: {{ template "fullname" . }}
     component: core

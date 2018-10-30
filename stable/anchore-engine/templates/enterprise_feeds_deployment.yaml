@@ -13,7 +13,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: "{{ template "fullname" .}}"
+      app: "{{ template "fullname" . }}"
       component: "enterprise-feeds"
   replicas: {{ .Values.enterpriseConfig.feeds.replicaCount }}
   template:
@@ -29,7 +29,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "anchore-engine.enterprise-feeds.fullname" .}}
+            name: {{ template "anchore-engine.enterprise.fullname" .}}
         - name: anchore-license
           secret:
             secretName: {{ .Values.enterpriseConfig.licenseSecretName }}
@@ -37,45 +37,38 @@ spec:
       - name: {{ .Values.enterpriseConfig.imagePullSecretName }}
       containers:
       - name: {{ .Chart.Name }}-enterprise-feeds
-        image: "{{ .Values.enterpriseConfig.feeds.image.repository }}:{{ .Values.enterpriseConfig.feeds.image.tag }}"
-        imagePullPolicy: {{ .Values.enterpriseConfig.feeds.image.pullPolicy }}
+        image: "{{ .Values.enterpriseConfig.image.repository }}:{{ .Values.enterpriseConfig.image.tag }}"
+        imagePullPolicy: {{ .Values.enterpriseConfig.image.pullPolicy }}
+        command: ["/usr/local/bin/anchore-enterprise-manager"]
+        args: ["service", "start", "--service", "feeds"]
         ports:
         - containerPort: {{ .Values.enterpriseConfig.feeds.service.apiPort }}
           name: feeds-api
+        envFrom:
+        - secretRef:
+            name: {{ template "fullname" . }}
         env:
+        - name: ANCHORE_DB_HOST
+          value: {{ template "postgres.feeds-db.fullname" . }}
+        - name: ANCHORE_DB_NAME
+          value: {{ index .Values "feeds-db" "postgresDatabase" | quote }}
         - name: ANCHORE_DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: feedsDbUser
+          value: {{ index .Values "feeds-db" "postgresUser" }}
         - name: ANCHORE_DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
-              key: feedsDbPassword
-        - name: ANCHORE_ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: adminPassword
+              key: .feedsDbPassword
         - name: ANCHORE_POD_NAME
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        - name: ANCHORE_POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: ANCHORE_POD_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
         volumeMounts:
         - name: config-volume
           mountPath: /config/config.yaml
           subPath: config.yaml
         - name: anchore-license
-          mountPath: /config/license.yaml
+          mountPath: /license.yaml
           subPath: license.yaml
         readinessProbe:
           httpGet:

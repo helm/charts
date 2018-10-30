@@ -12,7 +12,7 @@ service:
 
 image:
   # Can use 'latest' but not recommended
-  tag: "docker.io/anchore/anchore-engine:v0.2.4"
+  tag: "docker.io/anchore/anchore-engine:dev"
   # pullPolicy: IfNotPresent
 
 # Used to create Ingress record (should used with service.type: ClusterIP or NodePort depending on platform)
@@ -47,6 +47,7 @@ anchore-db:
 globalConfig:
   # Set where default configs are placed at startup. This must be a writable location for the pod.
   configDir: /anchore_service_config
+  logLevel: INFO
 
   dbConfig:
     timeout: 120
@@ -102,7 +103,6 @@ globalConfig:
 # The core service handles the user facing APIs and coordination of workers as well as storage interfaces for data
 coreConfig:
   replicaCount: 1
-  logLevel: INFO
 
   # Policy bundle sync enables the engine to download a policy bundle from anchore.io if you have an account there with a custom bundle. Requires providing your login credentials in the globalConfig.users.anchoreIOCredentials section
   policyBundleSyncEnabled: false
@@ -256,9 +256,21 @@ workerConfig:
   affinity: {}
 
 enterpriseConfig:
+  enabled: true
   licenseSecretName: anchore-license
   imagePullSecretName: anchore-dockerhub-creds
 
+  image:
+    repository: docker.io/anchore/enterprise-dev
+    tag: master
+    pullPolicy: Always
+
+  rbac:
+    enabled: true
+
+    service:
+      apiPort: 8229
+      authPort: 8089
   ui:
     enabled: true
     replicaCount: 1
@@ -266,9 +278,9 @@ enterpriseConfig:
     enableSsl: "false"
 
     image:
-      repository: docker.io/anchore/enterprise-ui
-      tag: v0.2.0
-      pullPolicy: IfNotPresent
+      repository: docker.io/anchore/private_testing
+      tag: anchore-ui-dev
+      pullPolicy: Always
 
     service:
       type: ClusterIP
@@ -298,17 +310,14 @@ enterpriseConfig:
     api_only: False
     npm_disabled: True
     gem_disabled: True
-    gem_db_connect: ""
+    # If gem_disabled is set to 'False' then gem_db_connect should be set to an accessible postgres endpoint. eg. mypostgres.myserver.io:5432
+    gem_db_connect: Null
     centos_disabled: False
     debian_disabled: False
     ubuntu_disabled: False
     ol_disabled: False
     alpine_disabled: False
-
-    image:
-      repository: docker.io/anchore/enterprise-feed-service
-      tag: v0.2.0
-      pullPolicy: IfNotPresent
+    snyk_disabled: False
 
     service:
       type: ClusterIP
@@ -319,6 +328,8 @@ enterpriseConfig:
     tolerations: []
     affinity: {}
 
+# This section is used to configure the second postgres database instance for the enterprise feeds service.
+# Only utilized if the enterpriseConfig.feeds.enabled is set to 'true'
 feeds-db:
   enabled: true
   postgresUser: anchoreengine

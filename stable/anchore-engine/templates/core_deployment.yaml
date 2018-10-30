@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ template "core.fullname" . }}"
@@ -9,6 +9,10 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      app: "{{ template "fullname" . }}"
+      component: "core"
   replicas: {{ .Values.coreConfig.replicaCount }}
   template:
     metadata:
@@ -24,6 +28,14 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "core.fullname" .}}
+        {{- if .Values.enterpriseConfig.rbac.enabled }}
+        - name: anchore-license
+          secret:
+            secretName: {{ .Values.enterpriseConfig.licenseSecretName }}
+        - name: rbac-config-volume
+          configMap:
+            name: {{ template "anchore-engine.enterprise.fullname" . }}
+        {{- end}}
         {{- if .Values.globalConfig.internalServicesSslEnabled }}
         - name: certs
           secret:
@@ -33,47 +45,10 @@ spec:
       - name: {{ .Chart.Name }}-core
         image: {{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        ports:
-        - containerPort: {{ .Values.service.ports.api }}
-          name: external-api
-        - containerPort: {{ .Values.service.ports.queue }}
-          name: queue-service
-        - containerPort: {{ .Values.service.ports.k8sImagePolicyWebhook }}
-          name: webhook-service
-        - containerPort: {{ .Values.service.ports.catalog }}
-          name: catalog
-        - containerPort: {{ .Values.service.ports.policy }}
-          name: policy-engine
+        envFrom:
+        - secretRef:
+            name: {{ template "fullname" . }}
         env:
-        - name: ANCHORE_DB
-          value: {{ index .Values "anchore-db" "postgresDatabase" }}
-        - name: ANCHORE_DB_HOST
-          value: {{ template "postgres.anchore-db.fullname" . }}
-        - name: ANCHORE_IO_USER
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: anchoreIOUser
-        - name: ANCHORE_IO_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: anchoreIOPassword
-        - name: ANCHORE_DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: dbUser
-        - name: ANCHORE_DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: dbPassword
-        - name: ANCHORE_ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: adminPassword
         - name: ANCHORE_POD_NAME
           valueFrom:
             fieldRef:
@@ -86,6 +61,17 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        ports:
+        - containerPort: {{ .Values.service.ports.api }}
+          name: external-api
+        - containerPort: {{ .Values.service.ports.queue }}
+          name: queue-service
+        - containerPort: {{ .Values.service.ports.k8sImagePolicyWebhook }}
+          name: webhook-service
+        - containerPort: {{ .Values.service.ports.catalog }}
+          name: catalog
+        - containerPort: {{ .Values.service.ports.policy }}
+          name: policy-engine
         volumeMounts:
         - name: config-volume
           mountPath: /config
@@ -112,15 +98,124 @@ spec:
           failureThreshold: 10
         resources:
 {{ toYaml .Values.coreConfig.resources | indent 10 }}
-    {{- if .Values.coreConfig.nodeSelector }}
+
+      {{- if .Values.enterpriseConfig.rbac.enabled }}
+      - name: {{ .Chart.Name }}-rbac-manager
+        image: "{{ .Values.enterpriseConfig.image.repository }}:{{ .Values.enterpriseConfig.image.tag }}"
+        imagePullPolicy: {{ .Values.enterpriseConfig.image.pullPolicy }}
+        command: ["/usr/local/bin/anchore-enterprise-manager"]
+        args: ["service", "start", "--service", "rbac_manager"]
+        envFrom:
+        - secretRef:
+            name: {{ template "fullname" . }}
+        env:
+        - name: ANCHORE_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: ANCHORE_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: ANCHORE_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        ports:
+        - containerPort: {{ .Values.enterpriseConfig.rbac.service.apiPort }}
+          name: rbac-manager
+        volumeMounts:
+        - name: anchore-license
+          mountPath: /license.yaml
+          subPath: license.yaml
+        - name: rbac-config-volume
+          mountPath: /config
+        {{- if .Values.globalConfig.internalServicesSslEnabled }}
+        - name: certs
+          mountPath: {{ default "/certs" .Values.coreConfig.ssl.certDir }}
+          readOnly: true
+        {{- end }}
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: rbac-manager
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: rbac-manager
+          timeoutSeconds: 10
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          failureThreshold: 10
+
+      - name: {{ .Chart.Name }}-rbac-authorizer
+        image: "{{ .Values.enterpriseConfig.image.repository }}:{{ .Values.enterpriseConfig.image.tag }}"
+        imagePullPolicy: {{ .Values.enterpriseConfig.image.pullPolicy }}
+        command: ["/usr/local/bin/anchore-enterprise-manager"]
+        args: ["service", "start", "--service", "rbac_authorizer"]
+        envFrom:
+        - secretRef:
+            name: {{ template "fullname" . }}
+        env:
+        - name: ANCHORE_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: ANCHORE_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: ANCHORE_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        ports:
+        - containerPort: {{ .Values.enterpriseConfig.rbac.service.authPort }}
+          name: rbac-auth
+        volumeMounts:
+        - name: anchore-license
+          mountPath: /license.yaml
+          subPath: license.yaml
+        - name: rbac-config-volume
+          mountPath: /config
+        {{- if .Values.globalConfig.internalServicesSslEnabled }}
+        - name: certs
+          mountPath: {{ default "/certs" .Values.coreConfig.ssl.certDir }}
+          readOnly: true
+        {{- end }}
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: rbac-auth
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: rbac-auth
+          timeoutSeconds: 10
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          failureThreshold: 10
+      imagePullSecrets:
+      - name: {{ .Values.enterpriseConfig.imagePullSecretName }}
+      {{- end }}
+
+      {{- if .Values.coreConfig.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.coreConfig.nodeSelector | indent 8 }}
-    {{- end }}
-    {{- with .Values.coreConfig.affinity }}
+      {{- end }}
+      {{- with .Values.coreConfig.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.coreConfig.tolerations }}
+      {{- end }}
+      {{- with .Values.coreConfig.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
-    {{- end }}
+      {{- end }}
