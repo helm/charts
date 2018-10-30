@@ -1,0 +1,41 @@
+image:
+  repository: quay.io/pusher/k8s-spot-termination-handler
+  tag: v0.1.0
+  pullPolicy: IfNotPresent
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+  # node-role.kubernetes.io/spot-worker: "true"
+
+## List of node taints to tolerate (requires Kubernetes >= 1.6)
+##
+tolerations: []
+
+## Configure resources
+##
+resources: {}
+  # To specify resources, uncomment the following lines, adjust them as necessary,
+  # and remove the curly braces after 'resources:'.
+  # requests:
+  #   cpu: 5m
+  #   memory: 20Mi
+  # limits:
+  #   cpu: 100m
+  #   memory: 100Mi
+
+## Enable RBAC
+##
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+## Create or use ServiceAccount
+##
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:

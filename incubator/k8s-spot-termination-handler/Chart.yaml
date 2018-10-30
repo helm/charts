@@ -1,0 +1,16 @@
+name: k8s-spot-termination-handler
+version: 0.1.0
+appVersion: 0.1.0
+description: Kubernetes AWS EC2 Spot Termination Handler
+keywords:
+  - aws
+  - spot
+  - spot-instances
+  - termination
+  - termination-handler
+home: https://github.com/pusher/k8s-spot-termination-handler
+sources:
+  - https://github.com/pusher/k8s-spot-termination-handler
+maintainers:
+- name: EmiiKhaos
+  email: e.karisch@pixelart.at
