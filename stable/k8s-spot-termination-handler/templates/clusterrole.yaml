@@ -36,4 +36,4 @@ rules:
       - pods/eviction
     verbs:
       - create
-{{- end}}
+{{- end }}

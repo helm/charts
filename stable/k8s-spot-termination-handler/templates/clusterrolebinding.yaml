@@ -16,4 +16,4 @@ subjects:
 - kind: ServiceAccount
   name: {{ template "k8s-spot-termination-handler.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
-{{- end}}
+{{- end }}
