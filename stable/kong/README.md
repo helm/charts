@@ -79,6 +79,8 @@ and their default values.
 | proxy.ingress.annotations         | Ingress annotations. See documentation for your ingress controller for details | `{}`          |
 | env                               | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)               |
 | runMigrations                     | Run Kong migrations job                                                | `true`                |
+| migrations.image.repository       | Busybox image to run Kong migration                                    | `busybox`             |
+| migrations.image.tag              | Busybox image tag                                                      | `latest`              |
 | readinessProbe                    | Kong readiness probe                                                   |                       |
 | livenessProbe                     | Kong liveness probe                                                    |                       |
 | affinity                          | Node/pod affinities                                                    |                       |
