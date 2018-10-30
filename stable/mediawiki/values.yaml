@@ -245,6 +245,7 @@ readinessProbe:
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
 podAnnotations: {}
+
 ## Prometheus Exporter / Metrics
 ##
 metrics:
@@ -268,4 +269,3 @@ metrics:
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   # resources: {}
-
