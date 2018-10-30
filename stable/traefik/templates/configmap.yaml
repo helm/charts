@@ -134,6 +134,8 @@ data:
         {{- end}}
         {{- if .Values.kubernetes.ingressEndpoint.publishedService }}
       publishedService = {{ .Values.kubernetes.ingressEndpoint.publishedService | quote }}
+        {{- else if .Values.kubernetes.ingressEndpoint.useDefaultPublishedService }}
+      publishedService = "{{ .Release.Namespace }}/{{ template "traefik.fullname" . }}"
         {{- end}}
       {{- end}}
     {{- end}}
