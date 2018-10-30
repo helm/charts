@@ -46,8 +46,7 @@ The following table lists the configurable parameters of the postgres Exporter c
 | `service.targetPort`                      | The target port of the container                               | `9216`                                        |
 | `resources`          |                                  |                    `{}`                                  |
 | `config.datasource`                 | Mongodb datasource configuration                      |                           `mongodb://localhost:27017 `         |
-| `config.auth`                | Enable for HTTP basic auth |  |
-| `annotations`                | pod annotations for easier discovery | `{}` |
+| `annotations`                | pod annotations for easier discovery | `prometheus.io/scrape: "true"  prometheus.io/port: "9216"` |
 
 
 
