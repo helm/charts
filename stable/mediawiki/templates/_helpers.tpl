@@ -52,3 +52,13 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "mediawiki.mariadb.fullname" -}}
 {{- printf "%s-%s" .Release.Name "mariadb" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Return the proper image name (for the metrics image)
+*/}}
+{{- define "metrics.image" -}}
+{{- $registryName :=  .Values.metrics.image.registry -}}
+{{- $repositoryName := .Values.metrics.image.repository -}}
+{{- $tag := .Values.metrics.image.tag | toString -}}
+{{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+{{- end -}}
