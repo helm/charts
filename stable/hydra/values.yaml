@@ -112,20 +112,39 @@ hydra:
     # minAvailable: 1
 
   service:
-    annotations: {}
-    # service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
+    ## Hydra public API
+    public:
+      annotations: {}
+      # service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
 
-    labels: {}
-    # key: value
+      labels: {}
+      # key: value
 
-    ## ServiceType
-    ## ref: https://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
-    type: ClusterIP
+      ## ServiceType
+      ## ref: https://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+      type: ClusterIP
 
-    ## Optional static port assignment for service type NodePort.
-    # nodePort: 30000
+      ## Optional static port assignment for service type NodePort.
+      # nodePort: 30000
 
-    port: 80
+      port: 80
+
+    ## Hydra Administrative API
+    admin:
+      annotations: {}
+      # service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
+
+      labels: {}
+      # key: value
+
+      ## ServiceType
+      ## ref: https://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+      type: ClusterIP
+
+      ## Optional static port assignment for service type NodePort.
+      # nodePort: 30000
+
+      port: 80
 
   ## Ingress configuration.
   ## ref: https://kubernetes.io/docs/user-guide/ingress/

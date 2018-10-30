@@ -1,8 +1,8 @@
-{{- $service := .Values.hydra.service -}}
+{{- $service := .Values.hydra.service.admin -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "hydra.fullname" . }}-http
+  name: {{ template "hydra.fullname" . }}-admin
 {{- with $service.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -20,7 +20,7 @@ spec:
   ports:
     - name: http
       port: {{ $service.port }}
-      targetPort: public
+      targetPort: admin
     {{- if and (eq "NodePort" $service.type) $service.nodePort }}
       nodePort: {{ $service.nodePort }}
     {{- end }}

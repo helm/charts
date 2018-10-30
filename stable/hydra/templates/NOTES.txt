@@ -5,11 +5,11 @@
 #########################################################################
 {{- end }}
 
-Hydra can be accessed:
+Hydra public API can be accessed:
 
-* Within your cluster, at the following DNS name at port {{ .Values.hydra.service.port }}:
+* Within your cluster, at the following DNS name at port {{ .Values.hydra.service.public.port }}:
 
-  {{ template "hydra.fullname" . }}-http.{{ .Release.Namespace }}.svc.cluster.local
+  {{ template "hydra.fullname" . }}-public.{{ .Release.Namespace }}.svc.cluster.local
 
 {{- if .Values.hydra.ingress.enabled }}
 
@@ -23,27 +23,59 @@ Hydra can be accessed:
 
 * From outside the cluster, run these commands in the same shell:
 
-{{- if contains "NodePort" .Values.hydra.service.type }}
+{{- if contains "NodePort" .Values.hydra.service.public.type }}
 
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "hydra.fullname" . }})
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "hydra.fullname" . }}-public)
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
 
-{{- else if contains "LoadBalancer" .Values.hydra.service.type }}
+{{- else if contains "LoadBalancer" .Values.hydra.service.public.type }}
 
   NOTE:
   It may take a few minutes for the LoadBalancer IP to be available.
-  You can watch the status of by running 'kubectl get svc -w {{ template "hydra.fullname" . }}'
+  You can watch the status of by running 'kubectl get svc -w {{ template "hydra.fullname" . }}-public'
 
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "hydra.fullname" . }}-http -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$SERVICE_IP:{{ .Values.hydra.service.port }}
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "hydra.fullname" . }}-public -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.hydra.service.public.port }}
 
-{{- else if contains "ClusterIP" .Values.hydra.service.type }}
+{{- else if contains "ClusterIP" .Values.hydra.service.public.type }}
 
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "hydra.name" . }},release={{ .Release.Name }} -o jsonpath="{.items[0].metadata.name}")
   echo "Use Hydra at http://127.0.0.1:4444"
   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 4444
 
 {{- end }}
+
+{{- end }}
+
+
+Hydra admin API can be accessed:
+
+* Within your cluster, at the following DNS name at port {{ .Values.hydra.service.admin.port }}:
+
+  {{ template "hydra.fullname" . }}-admin.{{ .Release.Namespace }}.svc.cluster.local
+
+* From outside the cluster, run these commands in the same shell:
+
+{{- if contains "NodePort" .Values.hydra.service.admin.type }}
+
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "hydra.fullname" . }}-admin)
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+
+{{- else if contains "LoadBalancer" .Values.hydra.service.admin.type }}
+
+  NOTE:
+  It may take a few minutes for the LoadBalancer IP to be available.
+  You can watch the status of by running 'kubectl get svc -w {{ template "hydra.fullname" . }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "hydra.fullname" . }}-admin -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.hydra.service.admin.port }}
+
+{{- else if contains "ClusterIP" .Values.hydra.service.admin.type }}
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "hydra.name" . }},release={{ .Release.Name }} -o jsonpath="{.items[0].metadata.name}")
+  echo "Use Hydra at http://127.0.0.1:4445"
+  kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 4445
 
 {{- end }}

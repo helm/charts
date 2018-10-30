@@ -61,11 +61,16 @@ Parameter | Description | Default
 `hydra.livenessProbe.timeoutSeconds` | Liveness Probe `timeoutSeconds` | `2`
 `hydra.readinessProbe.initialDelaySeconds` | Readiness Probe `initialDelaySeconds` | `30`
 `hydra.readinessProbe.timeoutSeconds` | Readiness Probe `timeoutSeconds` | `1`
-`hydra.service.annotations` | Annotations for the Hydra service | `{}`
-`hydra.service.labels` | Additional labels for the Hydra service | `{}`
-`hydra.service.type` | The service type | `ClusterIP`
-`hydra.service.port` | The service port | `80`
-`hydra.service.nodePort` | The node port used if the service is of type `NodePort` | `""`
+`hydra.service.public.annotations` | Annotations for the Hydra public API service | `{}`
+`hydra.service.public.labels` | Additional labels for the Hydra public API service | `{}`
+`hydra.service.public.type` | The Hydra public API service type | `ClusterIP`
+`hydra.service.public.port` | The Hydra public API service port | `80`
+`hydra.service.public.nodePort` | The node port used if the Hydra public API service is of type `NodePort` | `""`
+`hydra.service.admin.annotations` | Annotations for the Hydra admin API service | `{}`
+`hydra.service.admin.labels` | Additional labels for the Hydra admin API service | `{}`
+`hydra.service.admin.type` | The Hydra admin API service type | `ClusterIP`
+`hydra.service.admin.port` | The Hydra admin API service port | `80`
+`hydra.service.admin.nodePort` | The node port used if the Hydra admin API service is of type `NodePort` | `""`
 `hydra.ingress.enabled` | if `true`, an ingress is created | `false`
 `hydra.ingress.annotations` | annotations for the ingress | `{}`
 `hydra.ingress.path` | if `true`, an ingress is created | `/`
@@ -197,8 +202,9 @@ Prometheus metric scraping may be enabled via annotations to the service object 
 ```yaml
 hyrda:
   service:
-    annotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "4445"
-      prometheus.io/path: "/metrics/prometheus"
+    admin:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "4445"
+        prometheus.io/path: "/metrics/prometheus"
 ```

@@ -31,7 +31,7 @@ spec:
         paths:
           - path: {{ $ingress.path }}
             backend:
-              serviceName: {{ template "hydra.fullname" $ }}-http
+              serviceName: {{ template "hydra.fullname" $ }}-public
               servicePort: http
   {{- end }}
 {{- end -}}
